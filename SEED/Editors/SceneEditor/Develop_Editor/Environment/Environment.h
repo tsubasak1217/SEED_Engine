@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "Vector2.h"
 
-static const char* kWindowTitle = "SEED";
+static const char* kWindowTitle = "SceneEditor";
 
 static const uint32_t kWindowSizeX = 1280;
 static const uint32_t kWindowSizeY = 720;

@@ -16,7 +16,7 @@
     <ProjectGuid>{4830ED07-312D-489A-A51B-3785F629B370}</ProjectGuid>
     <RootNamespace>CG20</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SEED</ProjectName>
+    <ProjectName>SceneEditor</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -63,7 +63,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)Nodes\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -90,7 +90,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)Nodes\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -118,6 +118,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Nodes\EventScene.cpp" />
+    <ClCompile Include="Nodes\MainScene.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_draw.cpp" />
@@ -125,6 +127,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_tables.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="SEED\external\imgui\imnodes.cpp" />
     <ClCompile Include="SEED\lib\Functions\localFunc\LocalDrawer.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\DxFunc.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\Easing.cpp" />
@@ -164,11 +167,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
+    <ClInclude Include="Nodes\BaseNode.h" />
+    <ClInclude Include="Nodes\EventScene.h" />
+    <ClInclude Include="Nodes\InScene.h" />
+    <ClInclude Include="Nodes\MainScene.h" />
+    <ClInclude Include="Nodes\OutScene.h" />
     <ClInclude Include="SEED\external\imgui\imconfig.h" />
     <ClInclude Include="SEED\external\imgui\imgui.h" />
     <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />
     <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h" />
     <ClInclude Include="SEED\external\imgui\imgui_internal.h" />
+    <ClInclude Include="SEED\external\imgui\imnodes.h" />
+    <ClInclude Include="SEED\external\imgui\imnodes_internal.h" />
     <ClInclude Include="SEED\external\imgui\imstb_rectpack.h" />
     <ClInclude Include="SEED\external\imgui\imstb_textedit.h" />
     <ClInclude Include="SEED\external\imgui\imstb_truetype.h" />
@@ -217,9 +227,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
@@ -243,6 +250,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SEED\external\imgui\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

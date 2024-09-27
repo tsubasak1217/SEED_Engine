@@ -21,7 +21,9 @@
 using Microsoft::WRL::ComPtr;
 
 // imgui
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <imnodes.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 

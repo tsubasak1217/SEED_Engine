@@ -113,6 +113,9 @@
     <Filter Include="SEED\source\Manager\TextureManager">
       <UniqueIdentifier>{73650727-2a15-4b8e-8370-4bf7ecd36027}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Nodes">
+      <UniqueIdentifier>{2072c3e9-6c3e-4286-a6a1-e6a538b1dba0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -120,27 +123,6 @@
     </ClCompile>
     <ClCompile Include="SEED\lib\shapes\sphere.cpp">
       <Filter>SEED\lib\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp">
-      <Filter>SEED\external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\SEED.cpp">
       <Filter>SEED\source</Filter>
@@ -247,6 +229,36 @@
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClCompile>
+    <ClCompile Include="Nodes\EventScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes\MainScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imnodes.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -299,30 +311,6 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\tensor\Vector4.h">
       <Filter>SEED\lib\tensor</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imconfig.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_internal.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_textedit.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
-      <Filter>SEED\external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\SEED.h">
       <Filter>SEED\source</Filter>
@@ -435,11 +423,51 @@
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt">
+    <ClInclude Include="Nodes\EventScene.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\InScene.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\MainScene.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\OutScene.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\BaseNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imconfig.h">
       <Filter>SEED\external\imgui</Filter>
-    </Text>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_internal.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imnodes.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imnodes_internal.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_textedit.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3D.hlsli">
@@ -456,5 +484,10 @@
     <FxCompile Include="resources\shaders\Blur.CS.hlsl">
       <Filter>resources\shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SEED\external\imgui\LICENSE.txt">
+      <Filter>SEED\external\imgui</Filter>
+    </Text>
   </ItemGroup>
 </Project>

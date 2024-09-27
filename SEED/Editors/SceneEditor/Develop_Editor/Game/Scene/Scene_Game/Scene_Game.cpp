@@ -15,40 +15,7 @@ Scene_Game::~Scene_Game()
 
 void Scene_Game::Initialize()
 {
-    ////////////////////////////////////////////////////
-    //  デバッグ用の地面生成
-    ////////////////////////////////////////////////////
-    ground_ = std::make_unique<Model>("ground");
 
-    ////////////////////////////////////////////////////
-    //  ライトの方向初期化
-    ////////////////////////////////////////////////////
-
-    SEED::GetDirectionalLight()->direction_ = { 0.0f,-1.0f,0.0f };
-
-
-    ////////////////////////////////////////////////////
-    //  カメラ初期化
-    ////////////////////////////////////////////////////
-
-    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,0.0f };
-    SEED::GetCamera()->Update();
-
-    ////////////////////////////////////////////////////
-    //  天球の作成
-    ////////////////////////////////////////////////////
-
-    skydome_ = std::make_unique<Model>("skydome");
-    skydome_->scale_ = { 150.0f,150.0f,150.0f };
-    skydome_->lightingType_ = LIGHTINGTYPE_NONE;
-    skydome_->UpdateMatrix();
-
-
-    ////////////////////////////////////////////////////
-    //  解像度の初期設定
-    ////////////////////////////////////////////////////
-
-    SEED::ChangeResolutionRate(resolutionRate_);
 }
 
 void Scene_Game::Finalize()
@@ -59,19 +26,43 @@ void Scene_Game::Update()
 {
     /*======================= 前フレームの値保存 ======================*/
 
-    preRate_ = resolutionRate_;
 
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
+
+    ImGui::ShowDemoWindow();
+
+    ImNodes::BeginNodeEditor();
+
+    // ノード1の描画
+    ImNodes::BeginNode(1);
+    ImGui::Text("Node 1");
+    ImNodes::BeginInputAttribute(1); // 入力ピン
+    ImGui::Text("Input");
+    ImNodes::EndInputAttribute();
+    ImNodes::BeginOutputAttribute(2); // 出力ピン
+    ImGui::Text("Output");
+    ImNodes::EndOutputAttribute();
+    ImNodes::EndNode();
+
+    // ノード2の描画
+    ImNodes::BeginNode(2);
+    ImGui::Text("Node 2");
+    ImNodes::BeginInputAttribute(3); // 入力ピン
+    ImGui::Text("Input");
+    ImNodes::EndInputAttribute();
+    ImNodes::BeginOutputAttribute(4); // 出力ピン
+    ImGui::Text("Output");
+    ImNodes::EndOutputAttribute();
+    ImNodes::EndNode();
+
+    // 接続の描画
+    ImNodes::Link(1, 2, 4);  // ノード1の出力からノード2の入力に接続
+
+    ImNodes::EndNodeEditor();
+
 #endif
-
-    /*========================= 解像度の更新 ==========================*/
-
-    // 前フレームと値が違う場合のみ更新
-    if(resolutionRate_ != preRate_){
-        SEED::ChangeResolutionRate(resolutionRate_);
-    }
 
     /*========================= 各状態のの更新 ==========================*/
 
@@ -81,8 +72,5 @@ void Scene_Game::Update()
 
 void Scene_Game::Draw()
 {
-    skydome_->Draw();
-    ground_->Draw();
-
     currentState_->Draw();
 }

@@ -23,8 +23,7 @@ public:
 
     // 色；マテリアル
     uint32_t GH;
-    uint32_t color;
-    Vector4 colorf;
+    Vector4 color;
     
     // SRT
     Vector2 scale;

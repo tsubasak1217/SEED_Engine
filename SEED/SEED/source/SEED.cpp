@@ -54,11 +54,11 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
     instance_->imguiManager_->Initialize(instance_);
 
     ClockManager::Initialize();
+    TextureManager::Initialize();
     AudioManager::Initialize();
     InputManager::Initialize();
     ModelManager::Initialize();
     SceneManager::Initialize();
-
 
     instance_->StartUpLoad();
 }
@@ -116,8 +116,8 @@ void SEED::EndFrame(){
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-uint32_t SEED::LoadTexture(const std::string& filePath){
-    return instance_->dxManager_->CreateTexture("resources/textures/" + filePath);
+uint32_t SEED::LoadTexture(const std::string& filename){
+    return instance_->dxManager_->CreateTexture("resources/textures/" + filename);
 }
 
 // 起動時読み込み
@@ -125,11 +125,7 @@ void SEED::StartUpLoad(){
 
     AudioManager::StartUpLoad();
     ModelManager::StartUpLoad();
-
-    /*----------ここで画像読み込む-----------*/
-
-
-    /*------------------------------------*/
+    TextureManager::StartUpLoad();
 }
 
 // 画像の縦横幅を取得する関数
@@ -160,15 +156,15 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 
 void SEED::DrawTriangle(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType){
     Triangle tri(TransformToVec3(v1), TransformToVec3(v2), TransformToVec3(v3));
-    tri.colorf = color;
-    tri.litingType_ = lightingType;
+    tri.color = color;
+    tri.litingType = lightingType;
     SEED::DrawTriangle(tri, GH);
 }
 
 void SEED::DrawTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType){
     Triangle tri(v1, v2, v3);
-    tri.colorf = color;
-    tri.litingType_ = lightingType;
+    tri.color = color;
+    tri.litingType = lightingType;
     SEED::DrawTriangle(tri, GH);
 }
 
@@ -182,8 +178,8 @@ void SEED::DrawTriangle(
         scale, rotate, translate
     );
 
-    tri.colorf = color;
-    tri.litingType_ = lightingType;
+    tri.color = color;
+    tri.litingType = lightingType;
 
     SEED::DrawTriangle(tri, GH);
 }
@@ -197,8 +193,8 @@ void SEED::DrawTriangle(
         v1, v2, v3, scale, rotate, translate
     );
 
-    tri.colorf = color;
-    tri.litingType_ = lightingType;
+    tri.color = color;
+    tri.litingType = lightingType;
 
     SEED::DrawTriangle(tri, GH);
 }
@@ -209,7 +205,7 @@ void SEED::DrawTriangle(const Triangle& triangle, const Vector4& color, uint32_t
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        worldMat, color, triangle.litingType_, triangle.uvTransform_, true, GH
+        worldMat, color, triangle.litingType, triangle.uvTransform, true, GH
     );
 }
 
@@ -219,7 +215,7 @@ void SEED::DrawTriangle(const Triangle& triangle, uint32_t GH){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        worldMat, triangle.colorf, triangle.litingType_, triangle.uvTransform_, true, GH
+        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true, GH
     );
 }
 
@@ -230,7 +226,7 @@ void SEED::DrawTriangle2D(
     const Vector4& color, uint32_t GH, RESOLUTION_MODE resolutionMode
 ){
     Triangle2D tri(v1, v2, v3);
-    tri.colorf = color;
+    tri.color = color;
     SEED::DrawTriangle2D(tri, color,GH, resolutionMode);
 }
 
@@ -239,8 +235,8 @@ void SEED::DrawTriangle2D(
     RESOLUTION_MODE resolutionMode
 ){
     Triangle2D tri = triangle;
-    tri.colorf = color;
-    tri.GH_ = GH;
+    tri.color = color;
+    tri.GH = GH;
     tri.isStaticDraw = resolutionMode == STATIC_DRAW;
     SEED::DrawTriangle2D(tri);
 }
@@ -251,7 +247,7 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        triangle.GetWorldMatrix(), triangle.colorf, LIGHTINGTYPE_NONE, triangle.uvTransform_, false, triangle.GH_,
+        triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
         triangle.isStaticDraw
     );
 }
@@ -266,7 +262,7 @@ void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.colorf, quad.lightingType_, quad.uvTransform_, true, GH
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, GH
     );
 }
 
@@ -274,7 +270,7 @@ void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
 /*========================================== スプライト ===========================================*/
 
 void SEED::DrawSprite(
-    const Vector2& leftTop, const Vector2& size, uint32_t GH, uint32_t color,
+    const Vector2& leftTop, const Vector2& size, uint32_t GH, const Vector4& color,
     const Matrix4x4& uvTransform, RESOLUTION_MODE resolutionMode
 ){
     instance_->pPolygonManager_->AddSprite(

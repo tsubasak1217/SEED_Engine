@@ -2,7 +2,7 @@
 
 //---------------------- 正三角形 -------------------------
 
-Triangle MakeEqualTriangle(float radius, uint32_t color){
+Triangle MakeEqualTriangle(float radius, const Vector4& color){
 
     float devideTheta = (std::numbers::pi_v<float> *2.0f) / 3.0f;
     float startTheta = std::numbers::pi_v<float> *0.5f;
@@ -18,7 +18,7 @@ Triangle MakeEqualTriangle(float radius, uint32_t color){
     );
 }
 
-Triangle2D MakeEqualTriangle2D(float radius, uint32_t color){
+Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color){
 
     float devideTheta = (std::numbers::pi_v<float> *2.0f) / 3.0f;
     float startTheta = std::numbers::pi_v<float> *0.5f * -1.0f;
@@ -34,7 +34,7 @@ Triangle2D MakeEqualTriangle2D(float radius, uint32_t color){
     );
 }
 
-Quad MakeEqualQuad(float radius, uint32_t color)
+Quad MakeEqualQuad(float radius, const Vector4& color)
 {
     return Quad(
         { radius * -1.0f, radius },

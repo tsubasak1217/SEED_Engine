@@ -13,10 +13,9 @@ struct Quad{
     Vector3 scale;
     Vector3 rotate;
     Vector3 translate;
-    uint32_t color;
-    Vector4 colorf;
-    int32_t lightingType_;
-    Matrix4x4 uvTransform_;
+    Vector4 color;
+    int32_t lightingType;
+    Matrix4x4 uvTransform;
 
     Quad(){};
     Quad(
@@ -24,7 +23,7 @@ struct Quad{
         const Vector3& scale = { 1.0f,1.0f,1.0f },
         const Vector3& rotate = { 0.0f, 0.0f, 0.0f },
         const Vector3& translate = { 0.0f,0.0f,0.0f },
-        uint32_t color = 0xffffffff
+        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}
     ){
         localVertex[0] = v1;
         localVertex[1] = v2;
@@ -36,8 +35,7 @@ struct Quad{
         this->translate = translate;
 
         this->color = color;
-        colorf = MyMath::FloatColor(color);
-        lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
-        uvTransform_ = IdentityMat4();
+        lightingType = LIGHTINGTYPE_HALF_LAMBERT;
+        uvTransform = IdentityMat4();
     }
 };

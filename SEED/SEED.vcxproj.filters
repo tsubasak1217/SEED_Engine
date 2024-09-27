@@ -110,6 +110,9 @@
     <Filter Include="Game\Scene\Base">
       <UniqueIdentifier>{1669d08b-fae4-4cba-8888-3d6f9655bce6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\TextureManager">
+      <UniqueIdentifier>{73650727-2a15-4b8e-8370-4bf7ecd36027}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -240,6 +243,9 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp">
       <Filter>Game\Scene\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
+      <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -405,9 +411,6 @@
     <ClInclude Include="SEED\lib\structs\Sprite.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\DxManager\CameraTypes.h">
-      <Filter>SEED\source\Manager\DxManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
@@ -428,6 +431,9 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\Base\Scene_Base.h">
       <Filter>Game\Scene\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
+      <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

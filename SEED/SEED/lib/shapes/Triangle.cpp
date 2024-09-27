@@ -13,7 +13,7 @@ Triangle::Triangle(){
 Triangle::Triangle(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, 
     const Vector3& scale, const Vector3& rotate, 
-    const Vector3& translate, uint32_t color
+    const Vector3& translate, const Vector4& color
 ){
     localVertex[0] = v1;
     localVertex[1] = v2;
@@ -22,9 +22,8 @@ Triangle::Triangle(
     this->rotate = rotate;
     this->translate = translate;
     this->color = color;
-    colorf = MyMath::FloatColor(color);
-    litingType_ = LIGHTINGTYPE_HALF_LAMBERT;
-    uvTransform_ = IdentityMat4();
+    litingType = LIGHTINGTYPE_HALF_LAMBERT;
+    uvTransform = IdentityMat4();
 }
 
 
@@ -35,7 +34,7 @@ Triangle::Triangle(
 
 
 Triangle2D::Triangle2D(){
-    litingType_ = LIGHTINGTYPE_NONE;
+    litingType = LIGHTINGTYPE_NONE;
 }
 
 Triangle2D::Triangle2D(
@@ -43,7 +42,7 @@ Triangle2D::Triangle2D(
     const Vector2& scale,
     float rotate,
     const Vector2& translate,
-    uint32_t color
+    const Vector4& color
 ){
     localVertex[0] = v1;
     localVertex[1] = v2;
@@ -52,10 +51,9 @@ Triangle2D::Triangle2D(
     this->rotate = rotate;
     this->translate = translate;
     this->color = color;
-    colorf = MyMath::FloatColor(color);
-    litingType_ = LIGHTINGTYPE_NONE;
-    GH_ = SEED::LoadTexture("white1x1.png");
-    uvTransform_ = IdentityMat4();
+    litingType = LIGHTINGTYPE_NONE;
+    GH = TextureManager::LoadTexture("white1x1.png");
+    uvTransform = IdentityMat4();
     isStaticDraw = false;
 }
 

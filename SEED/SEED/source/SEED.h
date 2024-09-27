@@ -16,8 +16,11 @@
 #include <PolygonManager.h>
 #include <InputManager.h>
 #include <ModelManager.h>
+#include <TextureManager.h>
 
 class SEED{
+
+    friend TextureManager;
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     基本の関数                                    */
@@ -39,11 +42,14 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                 いろーんな関数                                    */
     /////////////////////////////////////////////////////////////////////////////////////
-public:
+private:
 
     // テクスチャを読み込む関数(返り値はグラフハンドル)
-    static uint32_t LoadTexture(const std::string& filePath);
+    static uint32_t LoadTexture(const std::string& filename);
     void StartUpLoad();
+    
+public:
+    
     // 画像の縦横幅を取得する関数
     static Vector2 GetImageSize(const std::wstring& fileName);
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
@@ -111,7 +117,7 @@ public:
     static void DrawSprite(
         const Vector2& leftTop, const Vector2& size,
         uint32_t GH = SEED::LoadTexture("white1x1.png"),
-        uint32_t color = 0xffffffff, const Matrix4x4& uvTranfosrm = IdentityMat4(),
+        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, const Matrix4x4& uvTranfosrm = IdentityMat4(),
         RESOLUTION_MODE resolutionMode = STATIC_DRAW
     );
 

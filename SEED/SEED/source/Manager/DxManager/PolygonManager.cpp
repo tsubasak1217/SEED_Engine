@@ -282,7 +282,7 @@ void PolygonManager::AddQuad(
 
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
-    uint32_t GH, uint32_t color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
+    uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
     bool isStaticDraw, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -326,7 +326,7 @@ void PolygonManager::AddSprite(
     item.modelData->vertices.push_back(VertexData(v[2], Vector2(0.0f, 1.0f), normalVec));
 
     // materialResource
-    item.material.color_ = FloatColor(color);
+    item.material.color_ = color;
     item.material.lightingType_ = false;
     item.material.uvTransform_ = uvTransform;
     item.material.GH_ = GH;
@@ -365,7 +365,7 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
     item.modelData = ModelManager::GetModelData(model->modelName_);
 
     // materialResource
-    item.material.color_ = model->colorf_;
+    item.material.color_ = model->color_;
     item.material.lightingType_ = model->lightingType_;
     item.material.uvTransform_ = model->GetUVTransform();
     item.material.GH_ = model->GetTextureGH();
@@ -577,12 +577,12 @@ void PolygonManager::DrawResult(){
 
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["blurredTexture_SRV"],
-            0xffffffff, uvTransform, { 0.0f,0.0f }, true, true
+            {1.0f,1.0f,1.0f,1.0f}, uvTransform, {0.0f,0.0f}, true, true
         );
     } else{
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["offScreenTexture"],
-            0xffffffff, uvTransform, { 0.0f,0.0f }, true, true
+            {1.0f,1.0f,1.0f,1.0f}, uvTransform, { 0.0f,0.0f }, true, true
         );
     }
 

@@ -1,0 +1,460 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{f0d5f36b-c9e2-4434-bca4-8189c4f6846d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\textures">
+      <UniqueIdentifier>{717565f8-a467-4997-a4b9-021c9fec4476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\models">
+      <UniqueIdentifier>{10066a33-9237-4aec-b54e-aeec016a8de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED">
+      <UniqueIdentifier>{ead20b62-9310-4c4b-9676-0bf0aeaf9e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib">
+      <UniqueIdentifier>{7b477ce5-b604-4e96-b38d-24e2d379bcf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\tensor">
+      <UniqueIdentifier>{6a0a6c9f-120a-4aff-a000-81856815ed71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\includes">
+      <UniqueIdentifier>{d6a1d27f-323b-4a84-80a7-1ce73f7769a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\external">
+      <UniqueIdentifier>{4cdf9d26-762a-4d9c-837c-121e7769fc55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\external\imgui">
+      <UniqueIdentifier>{00117a55-8320-4748-92f5-3ae1acc6a3ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\external\DirectXTex">
+      <UniqueIdentifier>{e0c3b7d0-227d-4b76-ac99-59b41b1e2347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source">
+      <UniqueIdentifier>{04879772-7791-493a-9177-6c99d3139b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager">
+      <UniqueIdentifier>{81b88d78-d558-4fa4-9e79-3fe70b444879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\DxManager">
+      <UniqueIdentifier>{3dc1bc62-8a75-4374-a815-e6432472a1f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\ImGuiManager">
+      <UniqueIdentifier>{25a5a1ab-065f-4550-a2a1-f604f381f857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\WindowManager">
+      <UniqueIdentifier>{879db3e0-c7fb-4a46-8dfd-209567c0292d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Environment">
+      <UniqueIdentifier>{c76ac1cf-25e2-4662-ad3e-03e262e41daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{82a39592-a2c8-4b01-86b5-cfc017e711f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene">
+      <UniqueIdentifier>{57a68ebc-382d-4baf-9f1c-2f5b96fc46b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Manager">
+      <UniqueIdentifier>{18c62cbb-7584-4504-89bb-9da913c7ca09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders">
+      <UniqueIdentifier>{cc2e6001-6b19-45c9-8e03-f5b57bb4c219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\structs">
+      <UniqueIdentifier>{dfb0181f-50e4-40ce-89a8-2dc99677b813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\EffectManager">
+      <UniqueIdentifier>{352add71-f54d-4b8f-8d79-342b5d2b6a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\AudioManager">
+      <UniqueIdentifier>{1772f60c-2167-469a-a85f-0f11e01f7ffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\ModelManager">
+      <UniqueIdentifier>{a57c8401-36fc-4b7e-ab24-efa409419a0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\InputManager">
+      <UniqueIdentifier>{5fcb6f83-0c60-4034-8310-a5311925867a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\shapes">
+      <UniqueIdentifier>{74ffae1b-3cbd-4e90-9989-65bc54c7551a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\functions">
+      <UniqueIdentifier>{6c079004-f052-4d69-9fc0-e2e8d277feb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Scene_Title">
+      <UniqueIdentifier>{791170b3-d43b-415a-b4b8-a36db8bf818b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Scene_Clear">
+      <UniqueIdentifier>{40882d95-9839-4113-a3b1-32d3a5b40fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Scene_Game">
+      <UniqueIdentifier>{95bc44e9-1aea-4395-90b7-0f6f20f6d620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\functions\myFunc">
+      <UniqueIdentifier>{5da5e23a-248d-4c0d-8687-90df7e0927e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\lib\functions\localFunc">
+      <UniqueIdentifier>{c0e9df94-28d0-4c24-bd94-19a46b79330c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Scene_Game\State">
+      <UniqueIdentifier>{aa058ec7-bd49-49f0-8322-ab4800dc4c31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\ClockManager">
+      <UniqueIdentifier>{669ebdce-2c36-4597-8d98-3bc34f82a364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Base">
+      <UniqueIdentifier>{1669d08b-fae4-4cba-8888-3d6f9655bce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\TextureManager">
+      <UniqueIdentifier>{73650727-2a15-4b8e-8370-4bf7ecd36027}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\shapes\sphere.cpp">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\SEED.cpp">
+      <Filter>SEED\source</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp">
+      <Filter>SEED\source\Manager\ImGuiManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp">
+      <Filter>SEED\source\Manager\WindowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\PSOManager.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\Camera.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp">
+      <Filter>Game\Scene\Scene_Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\SceneManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\structs\Model.cpp">
+      <Filter>SEED\lib\structs</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\AudioManager\AudioManager.cpp">
+      <Filter>SEED\source\Manager\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp">
+      <Filter>SEED\source\Manager\EffectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp">
+      <Filter>SEED\source\Manager\InputManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ModelManager\ModelManager.cpp">
+      <Filter>SEED\source\Manager\ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\tensor\Vector4.cpp">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\tensor\Vector2.cpp">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\tensor\Vector3.cpp">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp">
+      <Filter>Game\Scene\Scene_Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp">
+      <Filter>Game\Scene\Scene_Clear</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\MyFunc.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\MatrixFunc.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\MyMath.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\ShapeMath.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\DxFunc.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\Easing.cpp">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\localFunc\LocalDrawer.cpp">
+      <Filter>SEED\lib\functions\localFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\structs\Sprite.cpp">
+      <Filter>SEED\lib\structs</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\shapes\Triangle.cpp">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp">
+      <Filter>SEED\source\Manager\ClockManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Base\State_Base.cpp">
+      <Filter>Game\Scene\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Base\Scene_Base.cpp">
+      <Filter>Game\Scene\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
+      <Filter>SEED\source\Manager\TextureManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SEED\lib\includes\include_matrixes.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\includes\include_shapes.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\includes\include_tensors.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\includes\include_vectors.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\includes\includes.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\shapes\sphere.h">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\DirectionalLight.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Material.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Model.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Transform.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\VertexData.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Matrix2x2.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Matrix3x3.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Matrix4x4.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Vector2.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Vector3.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Vector4.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imconfig.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_internal.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_textedit.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\SEED.h">
+      <Filter>SEED\source</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ImGuiManager\ImGuiManager.h">
+      <Filter>SEED\source\Manager\ImGuiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h">
+      <Filter>SEED\source\Manager\WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\PSOManager.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\includes\include_useful.h">
+      <Filter>SEED\lib\includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\Camera.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\Environment.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\shapes\Triangle.h">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h">
+      <Filter>Game\Scene\Scene_Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\SceneManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\ModelData.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h">
+      <Filter>SEED\source\Manager\EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ModelManager\ModelManager.h">
+      <Filter>SEED\source\Manager\ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\AudioManager\AudioManager.h">
+      <Filter>SEED\source\Manager\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\InputManager.h">
+      <Filter>SEED\source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\CS_Buffers.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\shapes\Quad.h">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h">
+      <Filter>Game\Scene\Scene_Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h">
+      <Filter>Game\Scene\Scene_Clear</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\MatrixFunc.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\MyFunc.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\MyMath.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\ShapeMath.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\DxFunc.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\Easing.h">
+      <Filter>SEED\lib\functions\myFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h">
+      <Filter>SEED\lib\functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Sprite.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h">
+      <Filter>SEED\lib\functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ClockManager\ClockManager.h">
+      <Filter>SEED\source\Manager\ClockManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Base\State_Base.h">
+      <Filter>Game\Scene\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Base\Scene_Base.h">
+      <Filter>Game\Scene\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
+      <Filter>SEED\source\Manager\TextureManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SEED\external\imgui\LICENSE.txt">
+      <Filter>SEED\external\imgui</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\Object3D.hlsli">
+      <Filter>resources\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Object3d.VS.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Blur.CS.hlsl">
+      <Filter>resources\shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

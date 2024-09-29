@@ -14,6 +14,10 @@
 #include <State_Base.h>
 #include <Sprite.h>
 
+// Nodes
+#include <BaseNode.h>
+#include <NodeLink.h>
+#include <MainScene.h>
 
 class Scene_Game : public Scene_Base{
 
@@ -28,5 +32,15 @@ public:
 
 private:
 
+    void BeginEditor();
+    void DrawLink();
+    void UpdateLink();
+    void EndEditor();
+    void DisplayMenu();
 
+private:
+    std::vector<std::unique_ptr<BaseNode>>nodes_;
+    std::vector<std::unique_ptr<NodeLink>>links_;
+    int32_t hoveredLinkID_;
+    ImNodesEditorContext* editorContext_;
 };

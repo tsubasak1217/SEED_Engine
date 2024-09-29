@@ -42,7 +42,7 @@ void WindowManager::Initialize(SEED* pSEED){
     SEED::SetWindowHandle(CreateWindow(
         szAppName,
         ConvertString(pSEED_->windowTitle_).c_str(),
-        WS_OVERLAPPEDWINDOW,
+        WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),// ウィンドウスタイル
         //ウィンドウ左上座標
         CW_USEDEFAULT, CW_USEDEFAULT,
         //ウィンドウ幅と高さ

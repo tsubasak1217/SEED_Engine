@@ -116,6 +116,12 @@
     <Filter Include="Nodes">
       <UniqueIdentifier>{2072c3e9-6c3e-4286-a6a1-e6a538b1dba0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Nodes\Scenes">
+      <UniqueIdentifier>{4ad24a82-ca36-4e69-b498-00c96645e6dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Nodes\Events">
+      <UniqueIdentifier>{9a345fe9-f979-4f69-9484-eba8d7de6db9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -229,12 +235,6 @@
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClCompile>
-    <ClCompile Include="Nodes\EventScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\MainScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\external\imgui\imgui.cpp">
       <Filter>SEED\external\imgui</Filter>
     </ClCompile>
@@ -258,6 +258,18 @@
     </ClCompile>
     <ClCompile Include="SEED\external\imgui\imnodes.cpp">
       <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes\BaseNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes\Scenes\EventScene.cpp">
+      <Filter>Nodes\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes\Scenes\MainScene.cpp">
+      <Filter>Nodes\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodes\NodeLink.cpp">
+      <Filter>Nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -423,21 +435,6 @@
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClInclude>
-    <ClInclude Include="Nodes\EventScene.h">
-      <Filter>Nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\InScene.h">
-      <Filter>Nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\MainScene.h">
-      <Filter>Nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\OutScene.h">
-      <Filter>Nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\BaseNode.h">
-      <Filter>Nodes</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\external\imgui\imconfig.h">
       <Filter>SEED\external\imgui</Filter>
     </ClInclude>
@@ -467,6 +464,33 @@
     </ClInclude>
     <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
       <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\BaseNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Event\Custom.h">
+      <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Event\TimeLimit.h">
+      <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Event\Buttons.h">
+      <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Scenes\EventScene.h">
+      <Filter>Nodes\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Scenes\InScene.h">
+      <Filter>Nodes\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Scenes\MainScene.h">
+      <Filter>Nodes\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Scenes\OutScene.h">
+      <Filter>Nodes\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\NodeLink.h">
+      <Filter>Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

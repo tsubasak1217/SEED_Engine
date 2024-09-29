@@ -59,6 +59,8 @@ void ImGuiManager::Begin()
 void ImGuiManager::End()
 {
 #ifdef _DEBUG
+
+    ImNodes::SetNodeEditorSpacePos(0, { 0,0 });
     // 描画前準備
     ImGui::Render();
 

@@ -3,10 +3,27 @@
 #include <vector>
 #include <unordered_map>
 #include <stdint.h>
+#include <ImGuiManager.h>
 
 class BaseNode{
 public:
-    std::string name_;
+    BaseNode();
+    virtual void Draw();
+
+public:
+    // ノードの名前
+    char name_[128] = "unnamed";
+    // ノードのID
+    static uint32_t nodeID_next_;
+    uint32_t nodeID_;
+    // ノード内にある出力・入力ピンのID
+    static uint32_t pinID_next_;
+    std::unordered_map<std::string, uint32_t>inputID_;
+    std::unordered_map<std::string, uint32_t>outputID_;
+    // 初期座標
+    ImVec2 position_;
+    // ノードの色
+    uint32_t nodeColor_;
 };
 
 // シーン遷移の形式

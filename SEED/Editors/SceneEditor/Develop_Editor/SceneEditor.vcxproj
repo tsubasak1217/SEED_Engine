@@ -121,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Nodes\BaseNode.cpp" />
     <ClCompile Include="Nodes\NodeLink.cpp" />
     <ClCompile Include="Nodes\Scenes\EventScene.cpp" />
+    <ClCompile Include="Nodes\Scenes\InScene.cpp" />
     <ClCompile Include="Nodes\Scenes\MainScene.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />

@@ -18,6 +18,7 @@
 #include <BaseNode.h>
 #include <NodeLink.h>
 #include <MainScene.h>
+#include <InScene.h>
 
 class Scene_Game : public Scene_Base{
 

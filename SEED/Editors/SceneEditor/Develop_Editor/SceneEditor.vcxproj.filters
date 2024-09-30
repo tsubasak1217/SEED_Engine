@@ -271,6 +271,9 @@
     <ClCompile Include="Nodes\NodeLink.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="Nodes\Scenes\InScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

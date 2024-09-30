@@ -185,7 +185,7 @@ void Scene_Game::DisplayMenu(){
             }
 
             if(ImGui::MenuItem("InScene")){
-
+                nodes_.emplace_back(std::make_unique<InScene>());
             }
 
             if(ImGui::MenuItem("OutScene")){

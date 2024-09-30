@@ -27,8 +27,11 @@ public:
         "CUSTOM"
     };
 
-        // 遷移完了までの時間 (秒)
+    // 遷移完了までの時間 (秒)
     float time_;
+
+    // 遷移の色
+    Vector4 transitionColor_ = {0.0f,0.0f,0.0f,1.0f};
 
 private:
 

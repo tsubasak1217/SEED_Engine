@@ -128,9 +128,11 @@ void Scene_Game::UpdateLink(){
 
     // リンク上で右クリックが発生したかをチェック
     for(auto& link : links_){
-        if(ImNodes::IsLinkHovered(&link->id) && ImGui::IsMouseClicked(1)) {
+        int32_t id = link->id;
+
+        if(ImNodes::IsLinkHovered(&id) && ImGui::IsMouseClicked(1)) {
             ImGui::OpenPopup("link_context_menu");
-            hoveredLinkID_ = link->id;
+            hoveredLinkID_ = id;
             break;
         }
     }
@@ -181,7 +183,7 @@ void Scene_Game::DisplayMenu(){
             }
             
             if(ImGui::MenuItem("EventScene")){
-
+                nodes_.emplace_back(std::make_unique<EventScene>());
             }
 
             if(ImGui::MenuItem("InScene")){
@@ -189,7 +191,7 @@ void Scene_Game::DisplayMenu(){
             }
 
             if(ImGui::MenuItem("OutScene")){
-
+                nodes_.emplace_back(std::make_unique<OutScene>());
             }
 
             ImGui::EndMenu();

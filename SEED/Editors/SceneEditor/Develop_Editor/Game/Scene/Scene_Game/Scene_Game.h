@@ -19,6 +19,8 @@
 #include <NodeLink.h>
 #include <MainScene.h>
 #include <InScene.h>
+#include <OutScene.h>
+#include <EventScene.h>
 
 class Scene_Game : public Scene_Base{
 

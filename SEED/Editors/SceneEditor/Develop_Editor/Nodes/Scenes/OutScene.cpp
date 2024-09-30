@@ -1,12 +1,12 @@
-#include "InScene.h"
+#include "OutScene.h"
 
-InScene::InScene(){
+OutScene::OutScene(){
     // IDの割り当て
     nodeID_ = nodeID_next_;
     nodeID_next_++;
 
     // 名前・色・初期座標の設定
-    nodeColor_ = IM_COL32(38, 0, 255, 255);
+    nodeColor_ = IM_COL32(255, 0, 38, 255);
     position_ = { 580,300 };
     ImNodes::SetNodeGridSpacePos(nodeID_, position_);
 
@@ -18,7 +18,7 @@ InScene::InScene(){
 //                             描画
 ////////////////////////////////////////////////////////////////////
 
-void InScene::Draw(){
+void OutScene::Draw(){
 
     // 開始時処理
     BeginNode();
@@ -63,7 +63,7 @@ void InScene::Draw(){
 //                         描画内の関数
 ////////////////////////////////////////////////////////////////////
 
-void InScene::BeginNode(){
+void OutScene::BeginNode(){
     // 色の設定
     ImNodes::PushColorStyle(ImNodesCol_TitleBar, nodeColor_);
     ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, nodeColor_);
@@ -71,11 +71,11 @@ void InScene::BeginNode(){
     // タイトルバーの描画
     ImNodes::BeginNode(nodeID_);
     ImNodes::BeginNodeTitleBar();
-    ImGui::TextUnformatted("In Scene");
+    ImGui::TextUnformatted("Out Scene");
     ImNodes::EndNodeTitleBar();
 }
 
-void InScene::EndNode(){
+void OutScene::EndNode(){
     ImNodes::EndNode();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();

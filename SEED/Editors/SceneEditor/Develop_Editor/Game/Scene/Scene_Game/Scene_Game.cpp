@@ -115,14 +115,16 @@ void Scene_Game::UpdateLink(){
     int start_attr, end_attr;
     if(ImNodes::IsLinkCreated(&start_attr, &end_attr))
     {
-        // 新しいリンクを追加
-        links_.emplace_back(std::make_unique<NodeLink>());
+        if(PinManager::Connect(start_attr, end_attr)){
+            // 新しいリンクを追加
+            links_.emplace_back(std::make_unique<NodeLink>());
 
-        // 情報の入力
-        links_.back()->id = NodeLink::nextID;
-        NodeLink::nextID++;
-        links_.back()->start_attr = start_attr;
-        links_.back()->end_attr = end_attr;
+            // 情報の入力
+            links_.back()->id = NodeLink::nextID;
+            NodeLink::nextID++;
+            links_.back()->start_attr = start_attr;
+            links_.back()->end_attr = end_attr;
+        }
     }
 
 
@@ -192,27 +194,6 @@ void Scene_Game::DisplayMenu(){
 
             if(ImGui::MenuItem("OutScene")){
                 nodes_.emplace_back(std::make_unique<OutScene>());
-            }
-
-            ImGui::EndMenu();
-
-        }
-        
-        //////////////////////////////////////////////////////////
-        //
-        //////////////////////////////////////////////////////////
-        if(ImGui::BeginMenu("AddEvent")){
-
-            if(ImGui::MenuItem("Button")){
-                nodes_.emplace_back(std::make_unique<Buttons>());
-            }
-
-            if(ImGui::MenuItem("TimeLimit")){
-
-            }
-
-            if(ImGui::MenuItem("Custom")){
-
             }
 
             ImGui::EndMenu();

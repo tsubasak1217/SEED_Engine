@@ -10,14 +10,20 @@ Buttons::Buttons(){
     nodeID_ = nodeID_next_;
     nodeID_next_++;
 
+    // 属性の決定
+    nodeType_ = NodeType::BUTTON_EVENT;
+
     // 名前・色・初期座標の設定
     nodeColor_ = IM_COL32(0, 188, 3, 255);
     position_ = { 580,300 };
     ImNodes::SetNodeGridSpacePos(nodeID_, position_);
 
     // ピンのID割り当て
-    pin_in_ID_ = BaseNode::pinID_next_++;
-    pin_out_ID_ = BaseNode::pinID_next_++;
+    pin_in_ID_ = PinManager::pinID_next_;
+    AddPinID();
+
+    pin_out_ID_ = PinManager::pinID_next_;
+    AddPinID();
 }
 
 

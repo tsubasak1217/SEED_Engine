@@ -15,6 +15,7 @@
 #include <Sprite.h>
 
 // Nodes
+#include <PinManager.h>
 #include <BaseNode.h>
 #include <NodeLink.h>
 #include <MainScene.h>

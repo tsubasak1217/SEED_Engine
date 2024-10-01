@@ -27,8 +27,8 @@ public:
     std::unordered_map<std::string, uint32_t>connectSceneID_;
 
     // シーンの始まり、終わり (フェードイン、アウトなど)
-    std::pair<uint32_t,InScene*> inScene_;
-    std::pair<uint32_t,OutScene*> outScene_;
+    InScene* inScene_ = nullptr;
+    OutScene* outScene_ = nullptr;
 
     // シーン中に押されたキーに応じて起こるイベントシーン一覧 (pauseとか)
     std::vector<EventScene*>eventScenes_;

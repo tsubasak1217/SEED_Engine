@@ -2,7 +2,6 @@
 
 // static Initialize
 uint32_t BaseNode::nodeID_next_ = 1;
-uint32_t BaseNode::pinID_next_ = 1;
 
 // コンストラクタ
 BaseNode::BaseNode(){
@@ -12,10 +11,11 @@ BaseNode::BaseNode(){
     nodeColor_ = IM_COL32(5, 5, 5, 255);
     position_ = { 580,300 };
 
-    outputID_["output"] = pinID_next_;
-    pinID_next_++;
-    inputID_["input"] = pinID_next_;
-    pinID_next_++;
+    outputID_["output"] = PinManager::pinID_next_;
+    AddPinID();
+
+    inputID_["input"] = PinManager::pinID_next_;
+    AddPinID();
 
     ImNodes::SetNodeGridSpacePos(nodeID_, position_);
 }
@@ -51,4 +51,10 @@ void BaseNode::Draw(){
     ImNodes::EndNode();
     ImNodes::PopColorStyle();
     ImNodes::PopColorStyle();
+}
+
+void BaseNode::AddPinID(){
+    pinIDs_.push_back(PinManager::pinID_next_);
+    PinManager::pins_[PinManager::pinID_next_] = Pin(nodeType_, this);
+    PinManager::pinID_next_++;
 }

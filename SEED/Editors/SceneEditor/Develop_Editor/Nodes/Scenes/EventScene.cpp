@@ -6,22 +6,27 @@ EventScene::EventScene(){
     nodeID_ = nodeID_next_;
     nodeID_next_++;
 
+    // 属性の決定
+    nodeType_ = NodeType::EVENT_SCENE;
+
     // 名前・色・初期座標の設定
     nodeColor_ = IM_COL32(255, 112, 0, 255);
     position_ = { 580,300 };
     ImNodes::SetNodeGridSpacePos(nodeID_, position_);
 
     // 前のシーン・次のシーン
-    nextSceneID_["nextScene_" + std::to_string((int)nextSceneID_.size() + 1)] = pinID_next_;
-    pinID_next_++;
-    prevSceneID_ = pinID_next_;
-    pinID_next_++;
+    nextSceneID_["nextScene_" + std::to_string((int)nextSceneID_.size() + 1)] = PinManager::pinID_next_;
+    AddPinID();
+
+    prevSceneID_ = PinManager::pinID_next_;
+    AddPinID();
 
     // フェードイン・フェードアウト
-    inputID_["inScene"] = pinID_next_;
-    pinID_next_++;
-    inputID_["outScene"] = pinID_next_;
-    pinID_next_++;
+    inputID_["inScene"] = PinManager::pinID_next_;
+    AddPinID();
+
+    inputID_["outScene"] = PinManager::pinID_next_;
+    AddPinID();
 }
 
 EventScene::~EventScene(){
@@ -118,8 +123,8 @@ void EventScene::Draw_Pin_NextScenes(){
 
     // ボタンが押されたらピンを増やす
     if(ImGui::Button("Add Pin##1")){
-        nextSceneID_["nextScene_" + std::to_string((int)nextSceneID_.size() + 1)] = pinID_next_;
-        pinID_next_++;
+        nextSceneID_["nextScene_" + std::to_string((int)nextSceneID_.size() + 1)] = PinManager::pinID_next_;
+        AddPinID();
     };
 }
 

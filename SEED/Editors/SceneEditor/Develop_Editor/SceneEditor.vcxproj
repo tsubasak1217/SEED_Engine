@@ -120,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nodes\Base\BaseNode.cpp" />
     <ClCompile Include="Nodes\Base\NodeLink.cpp" />
+    <ClCompile Include="Nodes\Base\PinManager.cpp" />
     <ClCompile Include="Nodes\Events\Buttons.cpp" />
     <ClCompile Include="Nodes\Scenes\EventScene.cpp" />
     <ClCompile Include="Nodes\Scenes\InScene.cpp" />
@@ -174,6 +175,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="Nodes\Base\BaseNode.h" />
     <ClInclude Include="Nodes\Base\NodeLink.h" />
+    <ClInclude Include="Nodes\Base\PinManager.h" />
     <ClInclude Include="Nodes\Events\Buttons.h" />
     <ClInclude Include="Nodes\Events\Custom.h" />
     <ClInclude Include="Nodes\Events\TimeLimit.h" />

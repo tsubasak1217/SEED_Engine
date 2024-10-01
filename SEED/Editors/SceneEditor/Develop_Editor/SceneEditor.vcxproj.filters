@@ -283,6 +283,9 @@
     <ClCompile Include="Nodes\Events\Buttons.cpp">
       <Filter>Nodes\Events</Filter>
     </ClCompile>
+    <ClCompile Include="Nodes\Base\PinManager.cpp">
+      <Filter>Nodes\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -503,6 +506,9 @@
     </ClInclude>
     <ClInclude Include="Nodes\Events\TimeLimit.h">
       <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Base\PinManager.h">
+      <Filter>Nodes\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

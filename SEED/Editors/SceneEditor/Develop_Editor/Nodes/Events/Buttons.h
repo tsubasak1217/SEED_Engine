@@ -13,6 +13,10 @@ public:
     uint32_t pin_in_ID_;
     uint32_t pin_out_ID_;
 
+    // 接続しているシーンのノード
+    BaseNode* pAttachNode_In_ = nullptr;
+    BaseNode* pAttachNode_Out_ = nullptr;
+
     // イベントを起こすボタン一覧
     std::unordered_map<std::string,std::string>keyboardButtons_;
     std::unordered_map<std::string,std::string>padButtons_;

@@ -5,13 +5,17 @@ InScene::InScene(){
     nodeID_ = nodeID_next_;
     nodeID_next_++;
 
+    // 属性の決定
+    nodeType_ = NodeType::IN_SCENE;
+
     // 名前・色・初期座標の設定
     nodeColor_ = IM_COL32(38, 0, 255, 255);
     position_ = { 580,300 };
     ImNodes::SetNodeGridSpacePos(nodeID_, position_);
 
     // ピンのID割り当て
-    attachPinID_ = BaseNode::pinID_next_++;
+    attachPinID_ = PinManager::pinID_next_;
+    AddPinID();
 }
 
 ////////////////////////////////////////////////////////////////////

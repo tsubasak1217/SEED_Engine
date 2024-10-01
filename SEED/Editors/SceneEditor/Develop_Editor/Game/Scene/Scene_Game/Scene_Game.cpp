@@ -204,6 +204,7 @@ void Scene_Game::DisplayMenu(){
         if(ImGui::BeginMenu("AddEvent")){
 
             if(ImGui::MenuItem("Button")){
+                nodes_.emplace_back(std::make_unique<Buttons>());
             }
 
             if(ImGui::MenuItem("TimeLimit")){

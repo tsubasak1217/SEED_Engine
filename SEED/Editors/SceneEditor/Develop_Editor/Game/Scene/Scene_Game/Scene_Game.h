@@ -21,6 +21,7 @@
 #include <InScene.h>
 #include <OutScene.h>
 #include <EventScene.h>
+#include <Buttons.h>
 
 class Scene_Game : public Scene_Base{
 

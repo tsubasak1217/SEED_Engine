@@ -280,6 +280,9 @@
     <ClCompile Include="Nodes\Base\NodeLink.cpp">
       <Filter>Nodes\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Nodes\Events\Buttons.cpp">
+      <Filter>Nodes\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -474,15 +477,6 @@
     <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
       <Filter>SEED\external\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Nodes\Event\Custom.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Event\TimeLimit.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Event\Buttons.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Nodes\Scenes\EventScene.h">
       <Filter>Nodes\Scenes</Filter>
     </ClInclude>
@@ -500,6 +494,15 @@
     </ClInclude>
     <ClInclude Include="Nodes\Base\NodeLink.h">
       <Filter>Nodes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Events\Buttons.h">
+      <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Events\Custom.h">
+      <Filter>Nodes\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Nodes\Events\TimeLimit.h">
+      <Filter>Nodes\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

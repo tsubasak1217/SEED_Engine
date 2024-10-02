@@ -48,6 +48,8 @@ void AudioManager::Initialize()
     //CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     hr = instance_->InitializeMediaFoundation();
     assert(SUCCEEDED(hr));
+
+    StartUpLoad();
 }
 
 HRESULT AudioManager::InitializeMediaFoundation() {
@@ -204,6 +206,20 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume)
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
     instance_->sourceVoices_[filename]->SetVolume(volume);
+}
+
+
+/// <summary>
+/// 音声の高さを変更する
+/// </summary>
+/// <param name="filename"></param>
+/// <param name="pitch"></param>
+void AudioManager::SetAudioPitch(const std::string& filename, float pitch)
+{
+    // 指定要素がなければアサート
+    assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
+    // 設定
+    instance_->sourceVoices_[filename]->SetFrequencyRatio(pitch);
 }
 
 

@@ -3,7 +3,9 @@
 // audio
 #include <xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
+#include <xapo.h>
 
+// load
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
@@ -80,6 +82,7 @@ public:// エンジンで利用できる関数
     static void PauseAudio(const std::string& filename);
     static void RestertAudio(const std::string& filename);
     static void SetAudioVolume(const std::string& filename, float volume);
+    static void SetAudioPitch(const std::string& filename, float pitch);
     static bool IsPlayingAudio(const std::string& filename);
     static void LoadAudio(const std::string& filename);
     static void UnloadAudio(const std::string& filename);

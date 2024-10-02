@@ -43,6 +43,8 @@ private:
     void EndEditor();
     void DisplayMenu();
 
+    float pitch = 1.0f;
+
 private:
     std::vector<std::unique_ptr<BaseNode>>nodes_;
     std::vector<std::unique_ptr<NodeLink>>links_;

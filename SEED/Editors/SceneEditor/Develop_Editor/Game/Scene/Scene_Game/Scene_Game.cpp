@@ -14,6 +14,7 @@ Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
     nodes_.emplace_back(std::make_unique<MainScene>());
+    AudioManager::PlayAudio("ochiba.m4a",true,0.5f);
 }
 
 void Scene_Game::Finalize(){}
@@ -21,6 +22,7 @@ void Scene_Game::Finalize(){}
 void Scene_Game::Update(){
     /*======================= 前フレームの値保存 ======================*/
 
+    AudioManager::SetAudioPitch("ochiba.m4a", pitch);
 
     /*========================== ImGui =============================*/
 
@@ -51,6 +53,10 @@ void Scene_Game::Update(){
 
     // リンクの更新
     UpdateLink();
+
+    ImGui::Begin("pitch");
+    ImGui::DragFloat("pitch", &pitch,0.05f);
+    ImGui::End();
 
 #endif
 

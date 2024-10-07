@@ -33,9 +33,13 @@ public:
     // アンカーポイント
     Vector2 anchorPoint;
 
+    // 切り取り範囲
+    Vector2 clipLT;
+    Vector2 clipSize;
+
     // UVトランスフォーム
-    Matrix4x4 uvTransform;
-    
+    Matrix4x4 uvTransform;    
+
     // 解像度の変更を反映するかどうかの設定
     bool isStaticDraw;
 

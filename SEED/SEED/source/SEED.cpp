@@ -61,6 +61,8 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
     SceneManager::Initialize();
 
     instance_->StartUpLoad();
+
+    AudioManager::PlayAudio("koi.wav",true,0.5f);
 }
 
 void SEED::Finalize(){
@@ -269,21 +271,6 @@ void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
 
 /*========================================== スプライト ===========================================*/
 
-void SEED::DrawSprite(
-    const Vector2& leftTop, const Vector2& size, uint32_t GH, const Vector4& color,
-    const Matrix4x4& uvTransform, RESOLUTION_MODE resolutionMode
-){
-    instance_->pPolygonManager_->AddSprite(
-        size,
-        TranslateMatrix({leftTop.x,leftTop.y,0.0f}),
-        GH,
-        color,
-        uvTransform,
-        {0.0f,0.0f},
-        resolutionMode == STATIC_DRAW ? true : false,
-        false
-    );
-}
 
 void SEED::DrawSprite(const Sprite& sprite){
 
@@ -294,6 +281,8 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.color,
         sprite.uvTransform,
         sprite.anchorPoint,
+        sprite.clipLT,
+        sprite.clipSize,
         sprite.isStaticDraw,
         false
     );

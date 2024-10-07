@@ -114,12 +114,6 @@ public:
 
     static void DrawQuad(const Quad& quad,const uint32_t GH = SEED::LoadTexture("white1x1.png"));
 
-    static void DrawSprite(
-        const Vector2& leftTop, const Vector2& size,
-        uint32_t GH = SEED::LoadTexture("white1x1.png"),
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, const Matrix4x4& uvTranfosrm = IdentityMat4(),
-        RESOLUTION_MODE resolutionMode = STATIC_DRAW
-    );
 
     static void DrawSprite(const Sprite& sprite);
 

@@ -283,27 +283,47 @@ void PolygonManager::AddQuad(
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
+    const Vector2& clipLT, const Vector2& clipSize,
     bool isStaticDraw, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
 
-    Matrix4x4 adjustedWorldMat = Multiply(
-        worldMat,
-        TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
-    );
-
-    Matrix4x4 wvp = Multiply(adjustedWorldMat,pDxManager_->GetCamera()->projectionMat2D_);
+    // 遠近
     float zNear = pDxManager_->GetCamera()->znear_;
     float zfar = pDxManager_->GetCamera()->zfar_;
 
-    // 4頂点
-    Vector4 v[4];
-    v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
-    if(isSystemDraw){ v[0].z = zfar; }
+    // スプライトの四頂点を格納する変数
+    Vector4 v[4]{};
 
-    v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
-    v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
-    v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
+    // アンカーポイントを考慮したワールド座標を作成する行列
+    Matrix4x4 adjustedWorldMat;
+    if(MyMath::Length(clipSize) == 0.0f){
+        adjustedWorldMat = Multiply(
+            worldMat,
+            TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
+        );
+
+        // 4頂点
+        v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
+        if(isSystemDraw){ v[0].z = zfar; }
+        v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
+        v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
+        v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
+
+    } else{
+        adjustedWorldMat = Multiply(
+            worldMat,
+            TranslateMatrix({ clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,0.0f })
+        );
+
+        // 4頂点
+        v[0] = { clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,zNear,1.0f };
+        if(isSystemDraw){ v[0].z = zfar; }
+        v[1] = v[0] + Vector4(clipSize.x, 0.0f, 0.0f, 0.0f);
+        v[2] = v[0] + Vector4(0.0f, clipSize.y, 0.0f, 0.0f);
+        v[3] = v[0] + Vector4(clipSize.x, clipSize.y, 0.0f, 0.0f);
+    }
+
 
     Vector3 normalVec =
         MyMath::Normalize(MyMath::Cross(
@@ -318,13 +338,23 @@ void PolygonManager::AddSprite(
     InputItems item;
     item.modelData = new ModelData();
     // vertexResource
-    item.modelData->vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
-    item.modelData->vertices.push_back(VertexData(v[1], Vector2(1.0f, 0.0f), normalVec));
-    item.modelData->vertices.push_back(VertexData(v[3], Vector2(1.0f, 1.0f), normalVec));
-    item.modelData->vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
-    item.modelData->vertices.push_back(VertexData(v[3], Vector2(1.0f, 1.0f), normalVec));
-    item.modelData->vertices.push_back(VertexData(v[2], Vector2(0.0f, 1.0f), normalVec));
+    if(MyMath::Length(clipSize) == 0.0f){
+        item.modelData->vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[1], Vector2(1.0f, 0.0f), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[3], Vector2(1.0f, 1.0f), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[3], Vector2(1.0f, 1.0f), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[2], Vector2(0.0f, 1.0f), normalVec));
 
+    } else{// 描画範囲指定がある場合
+
+        item.modelData->vertices.push_back(VertexData(v[0], Vector2(clipLT.x/size.x, clipLT.y / size.y), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[1], Vector2((clipLT.x + clipSize.x) / size.x, clipLT.y / size.y), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[3], Vector2((clipLT.x + clipSize.x) / size.x, (clipLT.y + clipSize.y) / size.y), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[0], Vector2(clipLT.x / size.x, clipLT.y / size.y), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[3], Vector2((clipLT.x + clipSize.x) / size.x, (clipLT.y + clipSize.y) / size.y), normalVec));
+        item.modelData->vertices.push_back(VertexData(v[2], Vector2(clipLT.x / size.x, (clipLT.y + clipSize.y) / size.y), normalVec));
+    }
     // materialResource
     item.material.color_ = color;
     item.material.lightingType_ = false;
@@ -332,6 +362,7 @@ void PolygonManager::AddSprite(
     item.material.GH_ = GH;
     // wvpResource
     item.transform.world_ = adjustedWorldMat;
+    Matrix4x4 wvp = Multiply(adjustedWorldMat, pDxManager_->GetCamera()->projectionMat2D_);
     item.transform.WVP_ = wvp;
 
     /*-------------------- まとめたのを後ろに追加 --------------------*/
@@ -577,12 +608,14 @@ void PolygonManager::DrawResult(){
 
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["blurredTexture_SRV"],
-            {1.0f,1.0f,1.0f,1.0f}, uvTransform, {0.0f,0.0f}, true, true
+            {1.0f,1.0f,1.0f,1.0f}, uvTransform, {0.0f,0.0f}, 
+            { 0.0f,0.0f }, {0.0f,0.0f},true, true
         );
     } else{
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["offScreenTexture"],
-            {1.0f,1.0f,1.0f,1.0f}, uvTransform, { 0.0f,0.0f }, true, true
+            {1.0f,1.0f,1.0f,1.0f}, uvTransform, { 0.0f,0.0f },
+            { 0.0f,0.0f }, { 0.0f,0.0f }, true, true
         );
     }
 

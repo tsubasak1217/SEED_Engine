@@ -82,6 +82,7 @@ public:// 頂点情報の追加に関わる関数
     void AddSprite(
         const Vector2& size, const Matrix4x4& worldMat,
         uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform,const Vector2& anchorPoint,
+        const Vector2& clipLT, const Vector2& clipSize,
         bool isStaticDraw = true,bool isSystemDraw = false
     );
 

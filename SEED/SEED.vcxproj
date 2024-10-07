@@ -140,6 +140,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\tensor\Vector3.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector4.cpp" />
     <ClCompile Include="SEED\source\Manager\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp" />
     <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\Camera.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
@@ -203,6 +204,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\tensor\Vector3.h" />
     <ClInclude Include="SEED\lib\tensor\Vector4.h" />
     <ClInclude Include="SEED\source\Manager\AudioManager\AudioManager.h" />
+    <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h" />
     <ClInclude Include="SEED\source\Manager\ClockManager\ClockManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\Camera.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />

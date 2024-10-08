@@ -38,6 +38,4 @@ private:
     std::unique_ptr<Model> playerShadow_ = nullptr;
     std::unique_ptr<Model>skydome_ = nullptr;
 
-    Sprite sprite;
-
 };

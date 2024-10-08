@@ -15,6 +15,7 @@ uint32_t PolygonManager::triangleIndexCount_ = 0;
 uint32_t PolygonManager::quadIndexCount_ = 0;
 uint32_t PolygonManager::modelIndexCount_ = 0;
 uint32_t PolygonManager::spriteCount_ = 0;
+uint32_t PolygonManager::lineCount_ = 0;
 
 /*---------------------------------------------------------------------------------------------------------------*/
 /*                                                                                                               */

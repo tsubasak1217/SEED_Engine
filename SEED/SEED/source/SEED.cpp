@@ -289,7 +289,49 @@ void SEED::DrawSprite(const Sprite& sprite){
 }
 
 
-//--------------------------------------------------------------
+/*========================================== モデル ===========================================*/
+
 void SEED::DrawModel(Model* model){
     instance_->pPolygonManager_->AddModel(model);
+}
+
+
+/*========================================== 線 ===========================================*/
+
+void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color){
+    instance_->pPolygonManager_->AddLine(
+        TransformToVec4(v1),
+        TransformToVec4(v2),
+        IdentityMat4(), color, true, false
+    );
+}
+
+void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color){
+    instance_->pPolygonManager_->AddLine(
+        TransformToVec4(v1),
+        TransformToVec4(v2),
+        IdentityMat4(), color, false, false
+    );
+}
+
+void SEED::DrawGrid(float gridInterval, int32_t gridCount){
+
+    float width = gridInterval * gridCount;
+    Vector3 leftFront = { -width * 0.5f,0.0f,-width * 0.5f };
+
+    for(int xIdx = 0; xIdx < gridCount + 1; xIdx++){
+        SEED::DrawLine(
+            leftFront + Vector3(gridInterval * xIdx, 0.0f, 0.0f),
+            leftFront + Vector3(gridInterval * xIdx, 0.0f, width),
+            { 1.0f,1.0f,1.0f,1.0f }
+        );
+    }
+
+    for(int yIdx = 0; yIdx < gridCount + 1; yIdx++){
+        SEED::DrawLine(
+            leftFront + Vector3(0.0f, 0.0f, gridInterval * yIdx),
+            leftFront + Vector3(width, 0.0f, gridInterval * yIdx),
+            { 1.0f,1.0f,1.0f,1.0f }
+        );
+    }
 }

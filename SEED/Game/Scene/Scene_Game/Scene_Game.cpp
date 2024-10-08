@@ -20,12 +20,6 @@ void Scene_Game::Initialize()
     ////////////////////////////////////////////////////
     ground_ = std::make_unique<Model>("ground");
 
-    sprite = Sprite("uvChecker.png");
-    sprite.anchorPoint = { 0.5f,0.5f };
-    sprite.translate = { 640.0f,360.0f };
-    sprite.clipLT = { 256.0f,256.0f };
-    sprite.clipSize = { -64.0f,-64.0f };
-
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
@@ -83,7 +77,6 @@ void Scene_Game::Update()
 
     currentState_->Update();
 
-    sprite.rotate += 3.14f * (1.0f / 60.0f);
 }
 
 void Scene_Game::Draw()
@@ -93,5 +86,4 @@ void Scene_Game::Draw()
 
     currentState_->Draw();
 
-    SEED::DrawSprite(sprite);
 }

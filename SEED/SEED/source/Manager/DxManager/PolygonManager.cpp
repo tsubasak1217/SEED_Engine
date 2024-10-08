@@ -4,6 +4,7 @@
 #include <MyMath.h>
 #include <Environment.h>
 #include "ModelManager.h"
+#include "TextureManager.h"
 
 // external
 #include <assert.h>
@@ -95,6 +96,18 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_OFFSCREEN][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxSpriteCount);
+
+        // line
+        vertexResource_[MESHTYPE_LINE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), (sizeof(VertexData) * 2) * kMaxLineCount_);
+        materialResource_[MESHTYPE_LINE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxLineCount_);
+        wvpResource_[MESHTYPE_LINE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * kMaxLineCount_);
+        numElementResource_[MESHTYPE_LINE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
+        keyIndexResource_[MESHTYPE_LINE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxLineCount_);
     }
 
 
@@ -132,6 +145,7 @@ void PolygonManager::Reset(){
     quadIndexCount_ = 0;
     modelIndexCount_ = 0;
     spriteCount_ = 0;
+    lineCount_ = 0;
 }
 
 
@@ -417,8 +431,55 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
 }
 
 
+void PolygonManager::AddLine(
+    const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
+    const Vector4& color, bool view3D, bool isStaticDraw
+){
+    assert(triangleIndexCount_ < kMaxTriangleCount_);
 
-void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw){
+    Vector3 transformed[3];
+
+    transformed[0] = Multiply(TransformToVec3(v1), worldMat);
+    transformed[1] = Multiply(TransformToVec3(v2), worldMat);
+
+    Vector3 normalVec = { 0.0f,0.0f,1.0f };
+
+    Matrix4x4 wvp = Multiply(
+        worldMat,
+        view3D ?
+        pDxManager_->GetCamera()->viewProjectionMat_ :
+        pDxManager_->GetCamera()->projectionMat2D_
+    );
+
+    /*-------------------- 情報をまとめる --------------------*/
+
+    InputItems item;
+    item.modelData = new ModelData();
+    // vertexResource
+    item.modelData->vertices.push_back(VertexData(v1, Vector2(0.5f, 0.0f), normalVec));
+    item.modelData->vertices.push_back(VertexData(v2, Vector2(1.0f, 1.0f), normalVec));
+    // materialResource
+    item.material.color_ = color;
+    item.material.lightingType_ = LIGHTINGTYPE_NONE;
+    item.material.uvTransform_ = IdentityMat4();
+    item.material.GH_ = TextureManager::LoadTexture("white1x1.png");
+    // wvpResource
+    item.transform.world_ = worldMat;
+    item.transform.WVP_ = wvp;
+
+
+    /*-------------------- まとめたのを後ろに追加 --------------------*/
+    if(isStaticDraw == false){
+        inputData_[MESHTYPE_LINE][0].items.push_back(item);
+    } else{
+        inputData_[MESHTYPE_LINE][1].items.push_back(item);
+    }
+
+    lineCount_++;
+}
+
+
+void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw, bool isLine){
     // モノがなければreturn
     if(input->items.size() == 0){ return; }
     D3D12_VERTEX_BUFFER_VIEW* vbv = &input->vbv;
@@ -437,11 +498,20 @@ void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw){
     }
 
     // RootSignatureを設定。 PSOに設定しているけど別途設定が必要
-    pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature.Get());
-    pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState.Get()); // PSO
+    if(!isLine){
+        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].Get());
+        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].Get());
+    } else{
+        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)BlendMode::NORMAL][(int)PolygonTopology::LINE].Get());
+        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)BlendMode::NORMAL][(int)PolygonTopology::LINE].Get());
+    }
 
     // 形状を設定。 PSOに設定しているものとはまた別。 同じものを設定すると考えておけば良い
-    pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    if(!isLine){
+        pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    } else{
+        pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+    }
 
     // Resourceを設定
     pDxManager_->commandList->SetGraphicsRootShaderResourceView(0, input->materialResource->GetGPUVirtualAddress());
@@ -589,6 +659,8 @@ void PolygonManager::DrawPolygonAll(){
     SetRenderData(&inputData_[MESHTYPE_TRIANGLE][0]);
     // 矩形
     SetRenderData(&inputData_[MESHTYPE_QUAD][0]);
+    // 線
+    SetRenderData(&inputData_[MESHTYPE_LINE][0], false, true);
     // スプライト
     SetRenderData(&inputData_[MESHTYPE_SPRITE][0]);
 }
@@ -608,13 +680,13 @@ void PolygonManager::DrawResult(){
 
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["blurredTexture_SRV"],
-            {1.0f,1.0f,1.0f,1.0f}, uvTransform, {0.0f,0.0f}, 
+            { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
             { 0.0f,0.0f }, {0.0f,0.0f},true, true
         );
     } else{
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["offScreenTexture"],
-            {1.0f,1.0f,1.0f,1.0f}, uvTransform, { 0.0f,0.0f },
+            { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
             { 0.0f,0.0f }, { 0.0f,0.0f }, true, true
         );
     }
@@ -634,6 +706,8 @@ void PolygonManager::DrawResult(){
     SetRenderData(&inputData_[MESHTYPE_MODEL][1], true);
     // 三角形
     SetRenderData(&inputData_[MESHTYPE_TRIANGLE][1], true);
+    // 線
+    SetRenderData(&inputData_[MESHTYPE_LINE][0], true, true);
     // スプライト
     SetRenderData(&inputData_[MESHTYPE_SPRITE][1], true);
 

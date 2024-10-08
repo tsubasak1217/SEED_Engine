@@ -195,9 +195,9 @@ public:/*======================== DirectXの設定に必要な変数 ===========
     //                       PSO,rootSignature
     //==================================================================//
     
-    // ふつうのPSO
-    ComPtr<ID3D12PipelineState> commonPipelineState = nullptr;
-    ComPtr<ID3D12RootSignature> commonRootSignature = nullptr;
+    // ふつうのPSO  [blendModeの数][形状のパターン数]
+    ComPtr<ID3D12PipelineState> commonPipelineState[6][2];
+    ComPtr<ID3D12RootSignature> commonRootSignature[6][2];
     // コンピュートシェーダー用のやつ
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;
     ComPtr<ID3D12RootSignature> csRootSignature = nullptr;

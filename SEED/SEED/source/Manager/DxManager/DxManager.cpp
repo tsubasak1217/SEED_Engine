@@ -619,7 +619,15 @@ void DxManager::CompileShaders()
 
 void DxManager::InitPSO()
 {
-    psoManager_->Create();
+    for(int blendMode = 0; blendMode < 5; blendMode++){
+        for(int topology = 0; topology < 2; topology++){
+            psoManager_->Create(
+                commonRootSignature[blendMode][topology].GetAddressOf(),
+                commonPipelineState[blendMode][topology].GetAddressOf(),
+                PolygonTopology(topology), BlendMode(blendMode)
+            );
+        }
+    }
 
     // ComputeShader用
     csRootSignature.Attach(psoManager_->SettingCSRootSignature());
@@ -631,6 +639,7 @@ void DxManager::InitPSO()
     CS_ConstantBuffer.Attach(CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer)));
 
     device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(csPipelineState.GetAddressOf()));
+
 }
 
 void DxManager::SettingViewportAndScissor(float resolutionRate)

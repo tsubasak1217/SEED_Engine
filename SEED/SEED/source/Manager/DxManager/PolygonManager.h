@@ -88,9 +88,15 @@ public:// 頂点情報の追加に関わる関数
 
     void AddModel(Model* model, bool isStaticDraw = false);
 
+    void AddLine(
+        const Vector4& v1, const Vector4& v2,
+        const Matrix4x4& worldMat, const Vector4& color,
+        bool view3D, bool isStaticDraw = false
+    );
+
 private:
 
-    void SetRenderData(InputData* input, bool isStaticDraw = false);
+    void SetRenderData(InputData* input, bool isStaticDraw = false, bool isLine = false);
 
 private:// 外部参照のためのポインタ変数
 
@@ -103,6 +109,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxModelCount_ = 1048;
     static const int32_t kMaxModelVertexCount = 40000;
     static const int32_t kMaxSpriteCount = 1024;
+    static const int32_t kMaxLineCount_ = 40000;
 
 private:// 現在の描画数や頂点数などを格納する変数
 
@@ -110,19 +117,22 @@ private:// 現在の描画数や頂点数などを格納する変数
     static uint32_t quadIndexCount_;
     static uint32_t modelIndexCount_;
     static uint32_t spriteCount_;
+    static uint32_t lineCount_;
 
     int vertexCountAll = 0;
+
     
 
 private:
 
-    static const int kNumMeshVariation = 5;
+    static const int kNumMeshVariation = 6;
     enum MESH_TYPE : BYTE{
         MESHTYPE_TRIANGLE = 0,
         MESHTYPE_QUAD,
         MESHTYPE_MODEL,
         MESHTYPE_SPRITE,
-        MESHTYPE_OFFSCREEN
+        MESHTYPE_OFFSCREEN,
+        MESHTYPE_LINE,
     };
 
 private:// 実際に頂点情報や色などの情報が入っている変数

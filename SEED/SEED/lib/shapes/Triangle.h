@@ -7,6 +7,7 @@
 #include "MyMath.h"
 #include "MatrixFunc.h"
 #include "Material.h"
+#include "blendMode.h"
 
 struct Triangle{
 
@@ -16,7 +17,8 @@ struct Triangle{
         const Vector3& scale = { 1.0f,1.0f,1.0f },
         const Vector3& rotate = { 0.0f, 0.0f, 0.0f },
         const Vector3& translate = { 0.0f,0.0f,0.0f },
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}
+        const Vector4& color = {1.0f,1.0f,1.0f,1.0f},
+        BlendMode blendMode = BlendMode::NORMAL
     );
 
     Vector3 localVertex[3];
@@ -26,6 +28,7 @@ struct Triangle{
     Vector4 color;
     int32_t litingType;
     uint32_t GH;
+    BlendMode blendMode;
     Matrix4x4 uvTransform;
 };
 
@@ -37,7 +40,8 @@ struct Triangle2D{
         const Vector2& scale = { 1.0f,1.0f },
         float rotate = 0.0f,
         const Vector2& translate = { 0.0f,0.0f },
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
+        BlendMode blendMode = BlendMode::NORMAL
     );
 
 public:
@@ -48,6 +52,7 @@ public:
     Vector4 color;
     int32_t litingType;
     uint32_t GH;
+    BlendMode blendMode;
     Matrix4x4 uvTransform;
     // 解像度の変更を反映するかどうかの設定
     bool isStaticDraw;

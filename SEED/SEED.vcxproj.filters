@@ -113,6 +113,9 @@
     <Filter Include="SEED\source\Manager\TextureManager">
       <UniqueIdentifier>{73650727-2a15-4b8e-8370-4bf7ecd36027}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\AudioManager\XAPO">
+      <UniqueIdentifier>{0d21c4c1-bce2-4062-baaf-9562c0eaa41f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -246,6 +249,12 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
       <Filter>SEED\source\Manager\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp">
+      <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\shapes\Quad.cpp">
+      <Filter>SEED\lib\shapes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -434,6 +443,12 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
       <Filter>SEED\source\Manager\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h">
+      <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\blendMode.h">
+      <Filter>SEED\lib\structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,18 +1,15 @@
 // local
 #include <PSOManager.h>
 #include <DxManager.h>
+#include "blendMode.h"
 
-PSOManager::PSOManager(DxManager* pDxManager)
-{
+PSOManager::PSOManager(DxManager* pDxManager){
     pDxManager_ = pDxManager;
 }
 
-PSOManager::~PSOManager()
-{
-}
+PSOManager::~PSOManager(){}
 
-ID3D12RootSignature* PSOManager::SettingCSRootSignature()
-{
+ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     // ディスクリプタ範囲を定義（SRV、UAV、CBV）
     CD3DX12_DESCRIPTOR_RANGE ranges[5]{};
     ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0: inputTexture
@@ -65,8 +62,10 @@ ID3D12RootSignature* PSOManager::SettingCSRootSignature()
     return rootSignature;
 }
 
-void PSOManager::Create()
-{
+void PSOManager::Create(
+    ID3D12RootSignature** pRootSignature, ID3D12PipelineState** pPipelineState,
+    PolygonTopology topology, BlendMode blendMode
+){
     HRESULT hr;
     ID3DBlob* signatureBlob = nullptr;
     ID3DBlob* errorBlob = nullptr;
@@ -155,7 +154,7 @@ void PSOManager::Create()
     // RootSignatureの作成
     hr = pDxManager_->device->CreateRootSignature(
         0, signatureBlob->GetBufferPointer(),
-        signatureBlob->GetBufferSize(), IID_PPV_ARGS(pDxManager_->commonRootSignature.GetAddressOf())
+        signatureBlob->GetBufferSize(), IID_PPV_ARGS(pRootSignature)
     );
     assert(SUCCEEDED(hr));
 
@@ -203,14 +202,41 @@ void PSOManager::Create()
     // RenderTarget[0] のアルファブレンド設定
     blendDesc.RenderTarget[0].BlendEnable = TRUE;  // ブレンドを有効にする
     blendDesc.RenderTarget[0].LogicOpEnable = FALSE;
-    blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;  // ソースカラーのアルファ値を使う
-    blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;  // 1 - ソースアルファ値
-    blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;  // ソースとデスティネーションの加算
+
+    // ブレンドモードに応じた設定
+    if(blendMode == BlendMode::NORMAL){
+        blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+
+    } else if(blendMode == BlendMode::ADD){
+        blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+
+    } else if(blendMode == BlendMode::SUBTRACT){
+        blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+
+    } else if(blendMode == BlendMode::MULTIPLY){
+        blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+        blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_SRC_COLOR;
+
+    } else if(blendMode == BlendMode::SCREEN){
+        blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+        blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+
+    } else{
+        blendDesc.RenderTarget[0].BlendEnable = FALSE;
+    }
 
     // アルファチャンネルのブレンド
     blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;  // アルファ値はそのまま
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;  // アルファ値に影響しない
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;  // アルファ値に影響しない
 
     blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -218,7 +244,11 @@ void PSOManager::Create()
     /*--------------------------------- RasterizerStateの設定 ----------------------------------*/
 
     D3D12_RASTERIZER_DESC rasterizerDesc{};
-    rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;// 裏面を表示しない
+    if(topology == PolygonTopology::TRIANGLE){
+        rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;// 裏面を表示しない
+    } else{
+        rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;// 表示
+    }
     rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;// 三角形の中を塗りつぶす
     rasterizerDesc.MultisampleEnable = FALSE; // アンチエイリアシング無効化
     rasterizerDesc.AntialiasedLineEnable = FALSE; // ラインアンチエイリアシング無効化
@@ -234,7 +264,7 @@ void PSOManager::Create()
 
     // RootSignature
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
-    graphicsPipelineStateDesc.pRootSignature = pDxManager_->commonRootSignature.Get();
+    graphicsPipelineStateDesc.pRootSignature = *pRootSignature;
     graphicsPipelineStateDesc.InputLayout = inputLayoutDesc; // InputLayout
     graphicsPipelineStateDesc.VS = { pDxManager_->vertexShaderBlob->GetBufferPointer(),
     pDxManager_->vertexShaderBlob->GetBufferSize() }; // VertexShader
@@ -247,13 +277,17 @@ void PSOManager::Create()
     // 書き込むRTVの情報
     graphicsPipelineStateDesc.NumRenderTargets = 1;
     graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-    // 利用するトポロジ (形状)のタイプ。 三角形
-    graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    // 利用するトポロジ (形状)のタイプ。
+    if(topology == PolygonTopology::TRIANGLE){
+        graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    } else{
+        graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+    }
     // どのように画面に色を打ち込むかの設定 (気にしなくて良い)
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // 実際に生成
-    hr = pDxManager_->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pDxManager_->commonPipelineState.GetAddressOf()));
+    hr = pDxManager_->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pPipelineState));
 
 
     // 解放

@@ -18,7 +18,7 @@ void Scene_Game::Initialize()
     ////////////////////////////////////////////////////
     //  デバッグ用の地面生成
     ////////////////////////////////////////////////////
-    ground_ = std::make_unique<Model>("ground");
+
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -37,11 +37,6 @@ void Scene_Game::Initialize()
     ////////////////////////////////////////////////////
     //  天球の作成
     ////////////////////////////////////////////////////
-
-    skydome_ = std::make_unique<Model>("skydome");
-    skydome_->scale_ = { 150.0f,150.0f,150.0f };
-    skydome_->lightingType_ = LIGHTINGTYPE_NONE;
-    skydome_->UpdateMatrix();
 
 
     ////////////////////////////////////////////////////
@@ -81,8 +76,7 @@ void Scene_Game::Update()
 
 void Scene_Game::Draw()
 {
-    skydome_->Draw();
-    ground_->Draw();
-
+    SEED::DrawGrid(1.0f, 128);
     currentState_->Draw();
+
 }

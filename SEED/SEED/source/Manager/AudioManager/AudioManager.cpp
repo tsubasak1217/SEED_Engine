@@ -48,6 +48,8 @@ void AudioManager::Initialize()
     //CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     hr = instance_->InitializeMediaFoundation();
     assert(SUCCEEDED(hr));
+
+    StartUpLoad();
 }
 
 HRESULT AudioManager::InitializeMediaFoundation() {
@@ -67,9 +69,10 @@ HRESULT AudioManager::InitializeMediaFoundation() {
 void AudioManager::StartUpLoad()
 {
     // 以下にロード処理をまとめる
-    instance_->LoadAudio("ochiba.m4a");
+    //instance_->LoadAudio("ochiba.m4a");
     instance_->LoadAudio("kinmokusei.wav");
-    instance_->LoadAudio("higurashi.mp3");
+    //instance_->LoadAudio("higurashi.mp3");
+    instance_->LoadAudio("koi.wav");
 }
 
 

@@ -4,13 +4,13 @@
 class DxManager;
 class SEED;
 
-enum DEAPTH_TEXTURE_FORMAT : int {
-    NORMAL,
+enum class DEAPTH_TEXTURE_FORMAT {
+    NORMAL = 0,
     FOCUS
 };
 
-enum DX_RESOURCE_TYPE : int {
-    TEXTURE2D,
+enum class DX_RESOURCE_TYPE {
+    TEXTURE2D = 0,
     TEXTURE3D,
     RENDER_TARGET,
     DEPTH_STENCIL,

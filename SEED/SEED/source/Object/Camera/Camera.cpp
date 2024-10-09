@@ -6,8 +6,7 @@
 #include "Environment.h"
 
 
-void Camera::Update(){
-
+void Camera::UpdateMatrix(){
     // カメラのワールド行列
     worldMat_ = AffineMatrix(
         transform_.scale_,
@@ -32,13 +31,15 @@ void Camera::Update(){
     );
 
     // カメラ法線
-    normal_ = MyMath::Normalize(Multiply({0.0f,0.0f,1.0f}, RotateMatrix(transform_.rotate_)));
+    normal_ = MyMath::Normalize(Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(transform_.rotate_)));
 
     // ViewProjectionMatrixの計算
     viewProjectionMat_ = Multiply(viewMat_, projectionMat_);
     viewProjectionMat2D_ = Multiply(viewMat_, projectionMat2D_);
 
     // viewport行列
-    viewportMat_ = ViewportMatrix(kWindowSize, {0.0f,0.0f}, znear_, zfar_);
+    viewportMat_ = ViewportMatrix(kWindowSize, { 0.0f,0.0f }, znear_, zfar_);
     vpVp_ = Multiply(viewProjectionMat_, viewportMat_);
 }
+
+void Camera::Update(){}

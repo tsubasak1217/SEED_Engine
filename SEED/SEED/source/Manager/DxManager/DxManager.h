@@ -16,6 +16,7 @@
 #include <PolygonManager.h>
 #include <EffectManager.h>
 #include <Camera.h>
+#include <CameraManager.h>
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
@@ -80,6 +81,7 @@ public:/*============================ 描画に関わる関数 =================
 
     void PreDraw();
     void DrawPolygonAll();
+    void DrawGUI();
     void PostDraw();
 
 public:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
@@ -109,6 +111,7 @@ private:/*============================ マネージャー変数 ================
 private:/*============================== オブジェクト =============================*/
 
     Camera* camera_;
+    bool isDebugCameraAvtive_ = false;
 
 private:/*========================== テクスチャ管理変数 ============================*/
 
@@ -238,6 +241,9 @@ public:/*======================== DirectXの設定に必要な変数 ===========
 public:/*============================ アクセッサ関数 ============================*/
 
     Camera* GetCamera()const{ return camera_; }
+    void SetCamera(std::string nextCameraName){
+        camera_ = CameraManager::GetCamera(nextCameraName); 
+    }
     void SetCamera(Camera* camera){ camera_ = camera; }
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }
     float GetResolutionRate(){ return resolutionRate_; }

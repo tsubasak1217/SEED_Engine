@@ -30,8 +30,13 @@ enum class PAD_BUTTON : uint32_t{
     B = XINPUT_GAMEPAD_B,
     X = XINPUT_GAMEPAD_X,
     Y = XINPUT_GAMEPAD_Y,
-    LT = 0,
-    RT = 0
+    LT = VK_PAD_LTRIGGER,
+    RT = VK_PAD_RTRIGGER
+};
+
+enum class PAD_TRIGGER : uint32_t{
+    LEFT = 0,
+    RIGHT
 };
 
 // パッドの状態(今か前か)
@@ -76,20 +81,25 @@ public:// キーの状態を返す関数
     static bool IsReleaseKey(uint8_t key);
 
     /*------------ ゲームパッド -----------*/
-    static bool IsPressPadButton(PAD_BUTTON button,uint8_t padNumber = 0);
+    static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsPressAnyPadButton(PAD_BUTTON button);
-    // length 0 ~ 1 のベクトルで返ってくる
-    static Vector2 GetStickValue(
-        PAD_STICK stick, uint8_t padNumber = 0, 
+    // 左右トリガーの値を0.0 ~ 1.0で取得
+    static float GetLRTriggerValue(
+        PAD_TRIGGER LEFTorRIGHT, uint8_t padNumber = 0,
         PAD_STATE padState = PAD_STATE::CURRENT
     );
-    // 方向を返す (入力がなければ0ベクトル)
-    static Vector2 GetStickDirection(
+    // length 0 ~ 1 のベクトルで返ってくる
+    static Vector2 GetStickValue(
         PAD_STICK stick, uint8_t padNumber = 0,
         PAD_STATE padState = PAD_STATE::CURRENT
     );
+    // 方向を返す (入力がなければ0ベクトル)
+    //static Vector2 GetStickDirection(
+    //    PAD_STICK stick, uint8_t padNumber = 0,
+    //    PAD_STATE padState = PAD_STATE::CURRENT
+    //);
 
     // スティックのデッドゾーン設定
     static void SetDeadZone(float deadZone){ instance_->deadZone_ = deadZone; }

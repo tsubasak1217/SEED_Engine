@@ -168,6 +168,9 @@ public:
     std::string windowTitle_;
     uint32_t windowBackColor_;
 
+private:// パラメータやフラグ
+
+
 private:// 外部を参照するためのポインタ変数
 
     PolygonManager* pPolygonManager_;

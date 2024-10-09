@@ -44,6 +44,7 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
     instance_->kClientHeight_ = clientHeight;
     instance_->windowBackColor_ = 0x47ada3ff;
 
+    CameraManager::Initialize();
     instance_->leakChecker_ = new LeakChecker();
     instance_->windowManager_ = new WindowManager();
     instance_->dxManager_ = new DxManager();
@@ -96,6 +97,9 @@ void SEED::BeginFrame(){
 
     // 全入力情報を格納
     InputManager::GetAllInput();
+
+    // カメラの更新
+    CameraManager::Update();
 
     // imgui,directXのフレーム開始時処理
     instance_->imguiManager_->Begin();

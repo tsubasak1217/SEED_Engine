@@ -1,6 +1,7 @@
 // local
 #include <PSOManager.h>
 #include <DxManager.h>
+#include "blendMode.h"
 
 PSOManager::PSOManager(DxManager* pDxManager){
     pDxManager_ = pDxManager;

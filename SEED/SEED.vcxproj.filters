@@ -253,6 +253,9 @@
     <ClCompile Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp">
       <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\lib\shapes\Quad.cpp">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -443,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h">
       <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\blendMode.h">
+      <Filter>SEED\lib\structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -33,9 +33,5 @@ private:
     float preRate_ = resolutionRate_;
 
     // モデル
-    std::unique_ptr<Model> ground_;
-    std::vector<std::unique_ptr<Model>> playerModels_;
-    std::unique_ptr<Model> playerShadow_ = nullptr;
-    std::unique_ptr<Model>skydome_ = nullptr;
 
 };

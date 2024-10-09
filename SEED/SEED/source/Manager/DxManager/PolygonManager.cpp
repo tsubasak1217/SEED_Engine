@@ -32,7 +32,7 @@ PolygonManager::~PolygonManager(){
 }
 
 void PolygonManager::InitResources(){
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
 
         // triangle
         vertexResource_[MESHTYPE_TRIANGLE][i] =
@@ -114,7 +114,7 @@ void PolygonManager::InitResources(){
 
     // resourceの設定
     for(int i = 0; i < kNumMeshVariation; i++){
-        for(int j = 0; j < 2; j++){
+        for(int j = 0; j < (int)BlendMode::kBlendModeCount; j++){
             inputData_[i][j].vertexResource = vertexResource_[i][j].Get();
             inputData_[i][j].materialResource = materialResource_[i][j].Get();
             inputData_[i][j].wvpResource = wvpResource_[i][j].Get();
@@ -128,7 +128,7 @@ void PolygonManager::Finalize(){}
 
 void PolygonManager::Reset(){
     for(int i = 0; i < kNumMeshVariation; i++){
-        for(int j = 0; j < 2; j++){
+        for(int j = 0; j < (int)BlendMode::kBlendModeCount; j++){
 
             if(i != MESHTYPE_MODEL){
                 for(auto& item : inputData_[i][j].items){
@@ -178,7 +178,8 @@ Vector4 FloatColor(uint32_t color){
 void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH, bool isStaticDraw
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH, 
+    BlendMode blendMode, bool isStaticDraw
 ){
     assert(triangleIndexCount_ < kMaxTriangleCount_);
 
@@ -222,9 +223,9 @@ void PolygonManager::AddTriangle(
 
     /*-------------------- まとめたのを後ろに追加 --------------------*/
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_TRIANGLE][0].items.push_back(item);
+        inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
     } else{
-        inputData_[MESHTYPE_TRIANGLE][1].items.push_back(item);
+        inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
     }
 
     triangleIndexCount_++;
@@ -237,7 +238,8 @@ void PolygonManager::AddTriangle(
 void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH, bool isStaticDraw
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
+    BlendMode blendMode, bool isStaticDraw
 ){
     assert(quadIndexCount_ < kMaxQuadCount_);
 
@@ -286,9 +288,9 @@ void PolygonManager::AddQuad(
     /*-------------------- まとめたのを後ろに追加 --------------------*/
 
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_QUAD][0].items.push_back(item);
+        inputData_[MESHTYPE_QUAD][(int)blendMode].items.push_back(item);
     } else{
-        inputData_[MESHTYPE_QUAD][1].items.push_back(item);
+        inputData_[MESHTYPE_QUAD][(int)blendMode].items.push_back(item);
     }
 
     quadIndexCount_++;
@@ -298,7 +300,7 @@ void PolygonManager::AddQuad(
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
-    const Vector2& clipLT, const Vector2& clipSize,
+    const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
     bool isStaticDraw, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -384,12 +386,12 @@ void PolygonManager::AddSprite(
 
     if(isSystemDraw == false){
         if(isStaticDraw == false){
-            inputData_[MESHTYPE_SPRITE][0].items.push_back(item);
+            inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
         } else{
-            inputData_[MESHTYPE_SPRITE][1].items.push_back(item);
+            inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
         }
     } else{
-        inputData_[MESHTYPE_OFFSCREEN][0].items.push_back(item);
+        inputData_[MESHTYPE_OFFSCREEN][(int)blendMode].items.push_back(item);
     }
 
     spriteCount_++;
@@ -423,9 +425,9 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
     /*-------------------- まとめたのを後ろに追加 --------------------*/
 
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_MODEL][0].items.emplace_back(item);
+        inputData_[MESHTYPE_MODEL][(int)model->blendMode_].items.emplace_back(item);
     } else{
-        inputData_[MESHTYPE_MODEL][1].items.emplace_back(item);
+        inputData_[MESHTYPE_MODEL][(int)model->blendMode_].items.emplace_back(item);
     }
 
     modelIndexCount_++;
@@ -434,7 +436,7 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, bool isStaticDraw
+    const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw
 ){
     assert(triangleIndexCount_ < kMaxTriangleCount_);
 
@@ -471,16 +473,16 @@ void PolygonManager::AddLine(
 
     /*-------------------- まとめたのを後ろに追加 --------------------*/
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_LINE][0].items.push_back(item);
+        inputData_[MESHTYPE_LINE][(int)blendMode].items.push_back(item);
     } else{
-        inputData_[MESHTYPE_LINE][1].items.push_back(item);
+        inputData_[MESHTYPE_LINE][(int)blendMode].items.push_back(item);
     }
 
     lineCount_++;
 }
 
 
-void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw, bool isLine){
+void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool isStaticDraw, bool isLine){
     // モノがなければreturn
     if(input->items.size() == 0){ return; }
     D3D12_VERTEX_BUFFER_VIEW* vbv = &input->vbv;
@@ -500,11 +502,11 @@ void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw, bool isL
 
     // RootSignatureを設定。 PSOに設定しているけど別途設定が必要
     if(!isLine){
-        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].Get());
-        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].Get());
+        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)blendMode][(int)PolygonTopology::TRIANGLE].Get());
+        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)blendMode][(int)PolygonTopology::TRIANGLE].Get());
     } else{
-        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)BlendMode::NORMAL][(int)PolygonTopology::LINE].Get());
-        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)BlendMode::NORMAL][(int)PolygonTopology::LINE].Get());
+        pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[(int)blendMode][(int)PolygonTopology::LINE].Get());
+        pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[(int)blendMode][(int)PolygonTopology::LINE].Get());
     }
 
     // 形状を設定。 PSOに設定しているものとはまた別。 同じものを設定すると考えておけば良い
@@ -654,16 +656,19 @@ void PolygonManager::SetRenderData(InputData* input, bool isStaticDraw, bool isL
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/
 
 void PolygonManager::DrawPolygonAll(){
-    // モデル
-    SetRenderData(&inputData_[MESHTYPE_MODEL][0]);
-    // 三角形
-    SetRenderData(&inputData_[MESHTYPE_TRIANGLE][0]);
-    // 矩形
-    SetRenderData(&inputData_[MESHTYPE_QUAD][0]);
-    // 線
-    SetRenderData(&inputData_[MESHTYPE_LINE][0], false, true);
-    // スプライト
-    SetRenderData(&inputData_[MESHTYPE_SPRITE][0]);
+
+    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+        // 線
+        SetRenderData(&inputData_[MESHTYPE_LINE][i], BlendMode(i), false, true);
+        // モデル
+        SetRenderData(&inputData_[MESHTYPE_MODEL][i], BlendMode(i));
+        // 三角形
+        SetRenderData(&inputData_[MESHTYPE_TRIANGLE][i], BlendMode(i));
+        // 矩形
+        SetRenderData(&inputData_[MESHTYPE_QUAD][i], BlendMode(i));
+        // スプライト
+        SetRenderData(&inputData_[MESHTYPE_SPRITE][i], BlendMode(i));
+    }
 }
 
 void PolygonManager::DrawResult(){
@@ -676,19 +681,17 @@ void PolygonManager::DrawResult(){
     //ImGui::End();
 
     if(isActivePostEffect_){
-        //AddSprite({ 0.0f,0.0f }, windowSize, pDxManager_->systemTextures_["depthStencilSRV"], 0xffffffff, uvTransform, true);
-        //AddSprite({ 0.0f,0.0f }, windowSize, pDxManager_->systemTextures_["depthTexture_SRV"], 0xffffffff, uvTransform, true);
 
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["blurredTexture_SRV"],
             { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
-            { 0.0f,0.0f }, {0.0f,0.0f},true, true
+            { 0.0f,0.0f }, {0.0f,0.0f},BlendMode::NORMAL,true, true
         );
     } else{
         AddSprite(windowSize, IdentityMat4(),
             pDxManager_->systemTextures_["offScreenTexture"],
             { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
-            { 0.0f,0.0f }, { 0.0f,0.0f }, true, true
+            { 0.0f,0.0f }, { 0.0f,0.0f }, BlendMode::NORMAL, true, true
         );
     }
 
@@ -700,16 +703,6 @@ void PolygonManager::DrawResult(){
 
 
     // OffScreenToTextre
-    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][0], true);
-    // 矩形
-    SetRenderData(&inputData_[MESHTYPE_QUAD][1], true);
-    // モデル
-    SetRenderData(&inputData_[MESHTYPE_MODEL][1], true);
-    // 三角形
-    SetRenderData(&inputData_[MESHTYPE_TRIANGLE][1], true);
-    // 線
-    SetRenderData(&inputData_[MESHTYPE_LINE][0], true, true);
-    // スプライト
-    SetRenderData(&inputData_[MESHTYPE_SPRITE][1], true);
+    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][0], BlendMode::NORMAL, true);
 
 }

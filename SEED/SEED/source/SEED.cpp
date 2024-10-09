@@ -61,8 +61,6 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
     SceneManager::Initialize();
 
     instance_->StartUpLoad();
-
-    AudioManager::PlayAudio("koi.wav",true,0.5f);
 }
 
 void SEED::Finalize(){
@@ -156,24 +154,28 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 
 /*=============================================== 3D ===========================================*/
 
-void SEED::DrawTriangle(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType){
+void SEED::DrawTriangle(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& color, uint32_t GH,BlendMode blendMode, LIGHTING_TYPE lightingType){
     Triangle tri(TransformToVec3(v1), TransformToVec3(v2), TransformToVec3(v3));
     tri.color = color;
     tri.litingType = lightingType;
-    SEED::DrawTriangle(tri, GH);
+    tri.GH = GH;
+    tri.blendMode = blendMode;
+    SEED::DrawTriangle(tri);
 }
 
-void SEED::DrawTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType){
+void SEED::DrawTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType){
     Triangle tri(v1, v2, v3);
     tri.color = color;
     tri.litingType = lightingType;
-    SEED::DrawTriangle(tri, GH);
+    tri.GH = GH;
+    tri.blendMode = blendMode;
+    SEED::DrawTriangle(tri);
 }
 
 void SEED::DrawTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Vector3& scale, const Vector3& rotate, const Vector3& translate,
-    const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType
+    const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType
 ){
     Triangle tri(
         TransformToVec3(v1), TransformToVec3(v2), TransformToVec3(v3),
@@ -182,42 +184,41 @@ void SEED::DrawTriangle(
 
     tri.color = color;
     tri.litingType = lightingType;
+    tri.GH = GH;
+    tri.blendMode = blendMode;
 
-    SEED::DrawTriangle(tri, GH);
+    SEED::DrawTriangle(tri);
 }
 
 void SEED::DrawTriangle(
     const Vector3& v1, const Vector3& v2, const Vector3& v3,
     const Vector3& scale, const Vector3& rotate, const Vector3& translate,
-    const Vector4& color, uint32_t GH, LIGHTING_TYPE lightingType
+    const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType
 ){
-    Triangle tri(
-        v1, v2, v3, scale, rotate, translate
-    );
-
+    Triangle tri(v1, v2, v3, scale, rotate, translate);
     tri.color = color;
+    tri.GH = GH;
     tri.litingType = lightingType;
-
-    SEED::DrawTriangle(tri, GH);
+    tri.blendMode = blendMode;
+    SEED::DrawTriangle(tri);
 }
 
-void SEED::DrawTriangle(const Triangle& triangle, const Vector4& color, uint32_t GH){
+void SEED::DrawTriangle(const Triangle& triangle, const Vector4& color, uint32_t GH,BlendMode blendMode){
+    Triangle tri = triangle;
+    tri.color = color;
+    tri.GH = GH;
+    tri.blendMode = blendMode;
+    SEED::DrawTriangle(tri);
+}
+
+void SEED::DrawTriangle(const Triangle& triangle){
     Matrix4x4 worldMat = AffineMatrix(triangle.scale, triangle.rotate, triangle.translate);
     instance_->pPolygonManager_->AddTriangle(
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        worldMat, color, triangle.litingType, triangle.uvTransform, true, GH
-    );
-}
-
-void SEED::DrawTriangle(const Triangle& triangle, uint32_t GH){
-    Matrix4x4 worldMat = AffineMatrix(triangle.scale, triangle.rotate, triangle.translate);
-    instance_->pPolygonManager_->AddTriangle(
-        TransformToVec4(triangle.localVertex[0]),
-        TransformToVec4(triangle.localVertex[1]),
-        TransformToVec4(triangle.localVertex[2]),
-        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true, GH
+        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true, 
+        triangle.GH,triangle.blendMode
     );
 }
 
@@ -225,21 +226,22 @@ void SEED::DrawTriangle(const Triangle& triangle, uint32_t GH){
 
 void SEED::DrawTriangle2D(
     const Vector2& v1, const Vector2& v2, const Vector2& v3,
-    const Vector4& color, uint32_t GH, RESOLUTION_MODE resolutionMode
+    const Vector4& color, uint32_t GH, BlendMode blendMode, 
+    RESOLUTION_MODE resolutionMode
 ){
     Triangle2D tri(v1, v2, v3);
-    tri.color = color;
-    SEED::DrawTriangle2D(tri, color,GH, resolutionMode);
+    SEED::DrawTriangle2D(tri, color,GH,blendMode, resolutionMode);
 }
 
 void SEED::DrawTriangle2D(
     const Triangle2D& triangle, const Vector4& color, uint32_t GH,
-    RESOLUTION_MODE resolutionMode
+    BlendMode blendMode, RESOLUTION_MODE resolutionMode
 ){
     Triangle2D tri = triangle;
     tri.color = color;
     tri.GH = GH;
-    tri.isStaticDraw = resolutionMode == STATIC_DRAW;
+    tri.blendMode = blendMode;
+    tri.isStaticDraw = resolutionMode;
     SEED::DrawTriangle2D(tri);
 }
 
@@ -250,7 +252,7 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
-        triangle.isStaticDraw
+        triangle.blendMode,triangle.isStaticDraw
     );
 }
 
@@ -264,7 +266,7 @@ void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, GH
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, GH,quad.blendMode
     );
 }
 
@@ -283,6 +285,7 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.anchorPoint,
         sprite.clipLT,
         sprite.clipSize,
+        sprite.blendMode,
         sprite.isStaticDraw,
         false
     );
@@ -298,19 +301,19 @@ void SEED::DrawModel(Model* model){
 
 /*========================================== 線 ===========================================*/
 
-void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color){
+void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, BlendMode blendMode){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, true, false
+        IdentityMat4(), color, true, blendMode,false
     );
 }
 
-void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color){
+void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, false
+        IdentityMat4(), color, false, blendMode,false
     );
 }
 

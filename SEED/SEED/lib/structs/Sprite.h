@@ -6,6 +6,7 @@
 #include "MyMath.h"
 #include "MatrixFunc.h"
 #include "Material.h"
+#include "blendMode.h"
 
 struct Sprite{
 
@@ -24,7 +25,8 @@ public:
     // 色；マテリアル
     uint32_t GH;
     Vector4 color;
-    
+    BlendMode blendMode;
+
     // SRT
     Vector2 scale;
     float rotate;

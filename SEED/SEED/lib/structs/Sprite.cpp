@@ -13,6 +13,7 @@ Sprite::Sprite(){
     clipSize = { 0.0f,0.0f };
     color = { 1.0f,1.0f,1.0f,1.0f };
     GH = TextureManager::LoadTexture("white1x1.png");
+    blendMode = BlendMode::NORMAL;
     uvTransform = IdentityMat4();
     isStaticDraw = true;
 }

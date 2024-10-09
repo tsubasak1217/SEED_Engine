@@ -7,13 +7,14 @@
 /////////////////////////////////////////////////////////////////////////////////////
 
 Triangle::Triangle(){
-
+    litingType = LIGHTINGTYPE_HALF_LAMBERT;
+    blendMode = BlendMode::NORMAL;
 }
 
 Triangle::Triangle(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, 
     const Vector3& scale, const Vector3& rotate, 
-    const Vector3& translate, const Vector4& color
+    const Vector3& translate, const Vector4& color, BlendMode blendMode
 ){
     localVertex[0] = v1;
     localVertex[1] = v2;
@@ -22,6 +23,7 @@ Triangle::Triangle(
     this->rotate = rotate;
     this->translate = translate;
     this->color = color;
+    this->blendMode = blendMode;
     litingType = LIGHTINGTYPE_HALF_LAMBERT;
     uvTransform = IdentityMat4();
 }
@@ -35,6 +37,7 @@ Triangle::Triangle(
 
 Triangle2D::Triangle2D(){
     litingType = LIGHTINGTYPE_NONE;
+    blendMode = BlendMode::NORMAL;
 }
 
 Triangle2D::Triangle2D(
@@ -42,7 +45,8 @@ Triangle2D::Triangle2D(
     const Vector2& scale,
     float rotate,
     const Vector2& translate,
-    const Vector4& color
+    const Vector4& color,
+    BlendMode blendMode
 ){
     localVertex[0] = v1;
     localVertex[1] = v2;
@@ -51,6 +55,7 @@ Triangle2D::Triangle2D(
     this->rotate = rotate;
     this->translate = translate;
     this->color = color;
+    this->blendMode = blendMode;
     litingType = LIGHTINGTYPE_NONE;
     GH = TextureManager::LoadTexture("white1x1.png");
     uvTransform = IdentityMat4();

@@ -1,17 +1,10 @@
 #pragma once
+#include "blendMode.h"
+
 
 class DxManager;
 struct ID3D12RootSignature;
 struct ID3D12PipelineState;
-
-enum class BlendMode : int{
-    NONE,
-    NORMAL,
-    ADD,
-    SUBTRACT,
-    MULTIPLY,
-    SCREEN
-};
 
 enum class PolygonTopology : int{
     TRIANGLE,

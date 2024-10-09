@@ -703,6 +703,6 @@ void PolygonManager::DrawResult(){
 
 
     // OffScreenToTextre
-    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][0], BlendMode::NORMAL, true);
+    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL], BlendMode::NORMAL, true);
 
 }

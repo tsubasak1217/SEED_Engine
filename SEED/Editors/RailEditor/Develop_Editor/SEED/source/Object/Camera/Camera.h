@@ -8,8 +8,9 @@
 struct Camera{
 
     Camera()= default;
-    ~Camera() = default;
-    void Update();
+    virtual ~Camera() = default;
+    void UpdateMatrix();
+    virtual void Update();
 
     //=============================================================================
     //              メンバ変数

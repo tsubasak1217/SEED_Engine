@@ -30,8 +30,13 @@ enum class PAD_BUTTON : uint32_t{
     B = XINPUT_GAMEPAD_B,
     X = XINPUT_GAMEPAD_X,
     Y = XINPUT_GAMEPAD_Y,
-    LT = 0,
-    RT = 0
+    LT = VK_PAD_LTRIGGER,
+    RT = VK_PAD_RTRIGGER
+};
+
+enum class PAD_TRIGGER : uint32_t{
+    LEFT = 0,
+    RIGHT
 };
 
 // パッドの状態(今か前か)
@@ -80,6 +85,11 @@ public:// キーの状態を返す関数
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsPressAnyPadButton(PAD_BUTTON button);
+    // 左右トリガーの値を0.0 ~ 1.0で取得
+    static float GetLRTriggerValue(
+        PAD_TRIGGER LEFTorRIGHT, uint8_t padNumber = 0,
+        PAD_STATE padState = PAD_STATE::CURRENT
+    );
     // length 0 ~ 1 のベクトルで返ってくる
     static Vector2 GetStickValue(
         PAD_STICK stick, uint8_t padNumber = 0, 

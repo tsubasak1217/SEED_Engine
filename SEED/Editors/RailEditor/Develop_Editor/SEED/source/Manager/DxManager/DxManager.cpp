@@ -196,7 +196,7 @@ void DxManager::Initialize(SEED* pSEED)
     camera_->clipRange_ = kWindowSize;
     camera_->znear_ = 0.1f;
     camera_->zfar_ = 1000.0f;
-    camera_->Update();
+    camera_->UpdateMatrix();
 
     // 情報がそろったのでpolygonManagerの初期化
     polygonManager_->InitResources();

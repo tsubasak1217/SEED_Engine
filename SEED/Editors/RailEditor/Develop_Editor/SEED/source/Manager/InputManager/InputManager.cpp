@@ -6,8 +6,7 @@
 InputManager* InputManager::instance_ = nullptr;
 
 // デストラクタ
-InputManager::~InputManager()
-{
+InputManager::~InputManager(){
     if(instance_)
     {
         delete instance_;
@@ -16,8 +15,7 @@ InputManager::~InputManager()
 }
 
 // 単一のインスタンスを返す関数
-const InputManager* InputManager::GetInstance()
-{
+const InputManager* InputManager::GetInstance(){
     if(!instance_)
     {
         instance_ = new InputManager();
@@ -32,8 +30,7 @@ const InputManager* InputManager::GetInstance()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void InputManager::Initialize()
-{
+void InputManager::Initialize(){
     // 実体がなければ作る
     GetInstance();
 
@@ -45,8 +42,7 @@ void InputManager::Initialize()
 }
 
 
-void InputManager::InitializeDInput()
-{
+void InputManager::InitializeDInput(){
     HRESULT hr;
 
     // Inputオブジェクトの生成
@@ -73,8 +69,7 @@ void InputManager::InitializeDInput()
     assert(SUCCEEDED(hr));
 }
 
-void InputManager::InitializeXInput()
-{
+void InputManager::InitializeXInput(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++) {
         ZeroMemory(&xInputState_[i], sizeof(XINPUT_STATE));
         ZeroMemory(&preXInputState_[i], sizeof(XINPUT_STATE));
@@ -92,8 +87,7 @@ void InputManager::InitializeXInput()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void InputManager::GetAllInput()
-{
+void InputManager::GetAllInput(){
     // DirectInput
     instance_->GetDInputState();
 
@@ -102,8 +96,7 @@ void InputManager::GetAllInput()
 }
 
 
-void InputManager::GetDInputState()
-{
+void InputManager::GetDInputState(){
     // DirectInputのキーボード情報取得開始
     keyboard_->Acquire();
 
@@ -114,8 +107,7 @@ void InputManager::GetDInputState()
     keyboard_->GetDeviceState(sizeof(keys_), keys_);
 }
 
-void InputManager::GetXInputState()
-{
+void InputManager::GetXInputState(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++) {
 
         // 前フレームの状態保存
@@ -159,33 +151,89 @@ bool InputManager::IsReleaseKey(uint8_t key){
 
 //------ ゲームパッド ------//
 
-bool InputManager::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber)
-{
-    return instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT);
+bool InputManager::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
+        return instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT);
+
+    } else{
+
+        if(button == PAD_BUTTON::LT){
+            return GetLRTriggerValue(PAD_TRIGGER::LEFT) >= 0.9f;
+        } else{
+            return GetLRTriggerValue(PAD_TRIGGER::RIGHT) >= 0.9f;
+        }
+
+    }
 }
 
-bool InputManager::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber)
-{
-    return 
-        instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
-        !instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
+bool InputManager::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
+
+        return
+            instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
+            !instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
+
+    } else{
+        if(button == PAD_BUTTON::LT){
+            return
+                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
+                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::BEFORE) < 0.9f;
+        } else{
+            return
+                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
+                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::BEFORE) < 0.9f;
+        }
+    }
 }
 
-bool InputManager::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber)
-{
-    return
-        !instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
-        instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
+bool InputManager::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
+
+        return
+            !instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
+            instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
+
+    } else{
+        if(button == PAD_BUTTON::LT){
+            return
+                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
+                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
+        } else{
+            return
+                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
+                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
+        }
+    }
 }
 
-bool InputManager::IsPressAnyPadButton(PAD_BUTTON padNumber)
-{
+bool InputManager::IsPressAnyPadButton(PAD_BUTTON padNumber){
     padNumber;
     return false;
 }
 
-Vector2 InputManager::GetStickValue(PAD_STICK stick,uint8_t padNumber, PAD_STATE padState)
-{
+float InputManager::GetLRTriggerValue(PAD_TRIGGER LEFTorRIGHT, uint8_t padNumber, PAD_STATE padState){
+
+    float triggerValue;
+
+    // 対応するパッドの状態取得
+    XINPUT_GAMEPAD* pad;
+    if(padState == PAD_STATE::CURRENT){// 現在の状態
+        pad = &instance_->xInputState_[padNumber].Gamepad;
+    } else{// 前フレームの状態
+        pad = &instance_->preXInputState_[padNumber].Gamepad;
+    }
+
+    // 方向を取得
+    triggerValue = (float)(LEFTorRIGHT == PAD_TRIGGER::LEFT ? pad->bLeftTrigger : pad->bRightTrigger);
+    triggerValue /= 255.0f;
+
+    return triggerValue;
+}
+
+Vector2 InputManager::GetStickValue(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn
@@ -214,17 +262,15 @@ Vector2 InputManager::GetStickValue(PAD_STICK stick,uint8_t padNumber, PAD_STATE
     return { std::clamp(value.x,-1.0f,1.0f),std::clamp(value.y,-1.0f,1.0f) };
 }
 
-Vector2 InputManager::GetStickDirection(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState)
-{
-    return MyMath::Normalize(GetStickValue(stick,padNumber, padState));
+Vector2 InputManager::GetStickDirection(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
+    return MyMath::Normalize(GetStickValue(stick, padNumber, padState));
 }
 
 
 
 /*********************** 内部で使うやつ *********************/
 
-bool InputManager::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_STATE padState)
-{
+bool InputManager::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_STATE padState){
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn

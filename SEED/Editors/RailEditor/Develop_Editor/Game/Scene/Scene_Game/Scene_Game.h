@@ -9,6 +9,7 @@
 #include <list>
 
 // local
+#include <DebugCamera.h>
 #include <Triangle.h>
 #include <Model.h>
 #include <State_Base.h>
@@ -40,6 +41,8 @@ private:
     void MoveCamera();
 
 private:
+
+    std::unique_ptr<DebugCamera>debugCamera_ = nullptr;
 
     std::vector<std::unique_ptr<Model>>controlModels_;
     std::vector<Vector3*>controlPoints_;

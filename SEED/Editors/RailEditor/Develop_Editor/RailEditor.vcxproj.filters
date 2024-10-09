@@ -125,6 +125,12 @@
     <Filter Include="Game\Scene\Scene_Clear">
       <UniqueIdentifier>{40882d95-9839-4113-a3b1-32d3a5b40fe9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Object">
+      <UniqueIdentifier>{40628e10-a848-4f4d-b794-aac876a05f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Object\Camera">
+      <UniqueIdentifier>{a7db373c-88e9-4caf-a322-dd4eee86602a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -149,9 +155,6 @@
       <Filter>SEED\source\Manager\DxManager</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp">
-      <Filter>SEED\source\Manager\DxManager</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\source\Manager\DxManager\Camera.cpp">
       <Filter>SEED\source\Manager\DxManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp">
@@ -286,6 +289,12 @@
     <ClCompile Include="Nodes\Base\PinManager.cpp">
       <Filter>Nodes\Base</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\source\Object\Camera\Camera.cpp">
+      <Filter>SEED\source\Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp">
+      <Filter>SEED\source\Object\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -359,9 +368,6 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\includes\include_useful.h">
       <Filter>SEED\lib\includes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\DxManager\Camera.h">
-      <Filter>SEED\source\Manager\DxManager</Filter>
     </ClInclude>
     <ClInclude Include="Environment\Environment.h">
       <Filter>Environment</Filter>
@@ -509,6 +515,12 @@
     </ClInclude>
     <ClInclude Include="Nodes\Base\PinManager.h">
       <Filter>Nodes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\Camera.h">
+      <Filter>SEED\source\Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h">
+      <Filter>SEED\source\Object\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

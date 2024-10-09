@@ -670,14 +670,14 @@ void PolygonManager::DrawResult(){
     // OffScreenToTextre
     SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][0], true);
     // 矩形
-    SetRenderData(&inputData_[MESHTYPE_QUAD][1], true);
-    // モデル
-    SetRenderData(&inputData_[MESHTYPE_MODEL][1], true);
-    // 三角形
-    SetRenderData(&inputData_[MESHTYPE_TRIANGLE][1], true);
-    // 線
-    SetRenderData(&inputData_[MESHTYPE_LINE][0], true, true);
-    // スプライト
-    SetRenderData(&inputData_[MESHTYPE_SPRITE][1], true);
+    //SetRenderData(&inputData_[MESHTYPE_QUAD][1], true);
+    //// モデル
+    //SetRenderData(&inputData_[MESHTYPE_MODEL][1], true);
+    //// 三角形
+    //SetRenderData(&inputData_[MESHTYPE_TRIANGLE][1], true);
+    //// 線
+    //SetRenderData(&inputData_[MESHTYPE_LINE][0], true, true);
+    //// スプライト
+    //SetRenderData(&inputData_[MESHTYPE_SPRITE][1], true);
 
 }

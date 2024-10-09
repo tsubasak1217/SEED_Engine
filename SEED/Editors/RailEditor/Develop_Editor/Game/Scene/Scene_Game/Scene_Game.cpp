@@ -15,6 +15,7 @@ Scene_Game::Scene_Game(SceneManager* pSceneManager){
 Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
+    debugCamera_ = std::make_unique<DebugCamera>();
 }
 
 void Scene_Game::Finalize(){}
@@ -32,6 +33,7 @@ void Scene_Game::Update(){
     if(ImGui::Button("Add Control Point")){
         controlModels_.emplace_back(std::make_unique<Model>("sphere"));
         controlPoints_.emplace_back(&controlModels_.back()->translate_);
+        controlModels_.back()->color_ = { 1.0f,0.0f,0.0f,1.0f };
     }
 
     for(int i = 0; i < controlModels_.size(); i++){

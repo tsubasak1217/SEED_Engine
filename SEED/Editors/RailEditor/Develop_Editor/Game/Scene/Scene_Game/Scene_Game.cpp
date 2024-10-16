@@ -90,6 +90,7 @@ void Scene_Game::Update(){
 void Scene_Game::Draw(){
 
     railInfo_->Draw();
+    railCamera_->Draw();
     SEED::DrawGrid(1.0f, 100);
     currentState_->Draw();
 

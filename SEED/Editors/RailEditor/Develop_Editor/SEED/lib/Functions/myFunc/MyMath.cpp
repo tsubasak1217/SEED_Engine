@@ -351,9 +351,8 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
     }
 
     int size = int(tmpControlPoints.size() - 1);
-    float width = 1.0f / size;
-    float t2 = std::fmod(t, width) / width;
-    int idx = int(t / width);
+    float t2 = std::fmod(t * size, 1.0f);
+    int idx = int(t * size);
 
     result = PrimaryCatmullRom(
         tmpControlPoints[std::clamp(idx - 1, 0, size)],

@@ -69,9 +69,10 @@ HRESULT AudioManager::InitializeMediaFoundation() {
 void AudioManager::StartUpLoad()
 {
     // 以下にロード処理をまとめる
-    instance_->LoadAudio("ochiba.m4a");
+    //instance_->LoadAudio("ochiba.m4a");
     instance_->LoadAudio("kinmokusei.wav");
-    instance_->LoadAudio("higurashi.mp3");
+    //instance_->LoadAudio("higurashi.mp3");
+    instance_->LoadAudio("koi.wav");
 }
 
 
@@ -206,20 +207,6 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume)
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
     instance_->sourceVoices_[filename]->SetVolume(volume);
-}
-
-
-/// <summary>
-/// 音声の高さを変更する
-/// </summary>
-/// <param name="filename"></param>
-/// <param name="pitch"></param>
-void AudioManager::SetAudioPitch(const std::string& filename, float pitch)
-{
-    // 指定要素がなければアサート
-    assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
-    // 設定
-    instance_->sourceVoices_[filename]->SetFrequencyRatio(pitch);
 }
 
 

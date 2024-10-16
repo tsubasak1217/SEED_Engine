@@ -3,6 +3,7 @@
 #include <Environment.h>
 #include <MyMath.h>
 #include <CS_Buffers.h>
+#include "InputManager.h"
 
 void DxManager::Initialize(SEED* pSEED)
 {
@@ -19,8 +20,6 @@ void DxManager::Initialize(SEED* pSEED)
     // effectManagerの作成
     EffectManager* effectManagerInstance = new EffectManager(this);
     effectManager_.reset(effectManagerInstance);
-
-    camera_ = new Camera();
 
     /*===========================================================================================*/
     /*                                   DirextXの初期化                                          */
@@ -150,7 +149,7 @@ void DxManager::Initialize(SEED* pSEED)
 
     /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
 
-    InitializePostEffectTextures();
+    InitializeSystemTextures();
 
     /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
 
@@ -189,14 +188,25 @@ void DxManager::Initialize(SEED* pSEED)
     // ------------------------------------------------------------------------------------
 
     // カメラの情報
-    camera_->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
-    camera_->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
-    camera_->transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
-    camera_->projectionMode_ = PERSPECTIVE;
-    camera_->clipRange_ = kWindowSize;
-    camera_->znear_ = 0.1f;
-    camera_->zfar_ = 1000.0f;
-    camera_->UpdateMatrix();
+    camera_ = CameraManager::GetCamera("main");
+    CameraManager::GetCamera("main")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
+    CameraManager::GetCamera("main")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
+    CameraManager::GetCamera("main")->transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
+    CameraManager::GetCamera("main")->projectionMode_ = PERSPECTIVE;
+    CameraManager::GetCamera("main")->clipRange_ = kWindowSize;
+    CameraManager::GetCamera("main")->znear_ = 0.1f;
+    CameraManager::GetCamera("main")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("main")->UpdateMatrix();
+
+    // デバッグカメラの初期値
+    CameraManager::GetCamera("debug")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
+    CameraManager::GetCamera("debug")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
+    CameraManager::GetCamera("debug")->transform_.translate_ = { 0.0f,1.0f,0.0f }; // translate
+    CameraManager::GetCamera("debug")->projectionMode_ = PERSPECTIVE;
+    CameraManager::GetCamera("debug")->clipRange_ = kWindowSize;
+    CameraManager::GetCamera("debug")->znear_ = 0.1f;
+    CameraManager::GetCamera("debug")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("debug")->UpdateMatrix();
 
     // 情報がそろったのでpolygonManagerの初期化
     polygonManager_->InitResources();
@@ -440,7 +450,7 @@ void DxManager::CreateRTV()
     device->CreateRenderTargetView(offScreenResource.Get(), &rtvDesc, offScreenRtvHandle); // オフスクリーン用 * 1
 }
 
-void DxManager::InitializePostEffectTextures()
+void DxManager::InitializeSystemTextures()
 {
     // SRVの設定を行う変数
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -619,13 +629,7 @@ void DxManager::CompileShaders()
 
 void DxManager::InitPSO()
 {
-    //psoManager_->Create(
-    //    commonRootSignature[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].GetAddressOf(),
-    //    commonPipelineState[(int)BlendMode::NORMAL][(int)PolygonTopology::TRIANGLE].GetAddressOf(),
-    //    PolygonTopology::TRIANGLE, BlendMode::NORMAL
-    //);
-
-    for(int blendMode = 0; blendMode < 5; blendMode++){
+    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
         for(int topology = 0; topology < 2; topology++){
             psoManager_->Create(
                 commonRootSignature[blendMode][topology].GetAddressOf(),
@@ -645,6 +649,7 @@ void DxManager::InitPSO()
     CS_ConstantBuffer.Attach(CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer)));
 
     device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(csPipelineState.GetAddressOf()));
+
 }
 
 void DxManager::SettingViewportAndScissor(float resolutionRate)
@@ -751,6 +756,10 @@ void DxManager::PreDraw()
 
 void DxManager::DrawPolygonAll()
 {
+#ifdef _DEBUG
+    DrawGUI();
+#endif // DEBUG
+
     polygonManager_->DrawPolygonAll();
 
     // ここでぼかした画面を作る
@@ -817,6 +826,27 @@ void DxManager::DrawPolygonAll()
     
     // すべての描画が終了したのでオフスクリーンのRTVをクリアする。
     commandList->ClearRenderTargetView(offScreenRtvHandle, &clearColor.x, 0, nullptr);
+}
+
+void DxManager::DrawGUI(){
+#ifdef _DEBUG
+
+    ImGui::Begin("DxManager");
+
+    if(ImGui::Checkbox("isDebugCameraActive", &isDebugCameraAvtive_)){
+        SetCamera("debug");
+    }
+
+    if(isDebugCameraAvtive_ == false){
+        SetCamera("main");
+    }
+
+    ImGui::Text("x: %f", InputManager::GetStickValue(PAD_STICK::LEFT).x);
+    ImGui::Text("y: %f", InputManager::GetStickValue(PAD_STICK::LEFT).y);
+
+    ImGui::End();
+
+#endif // _DEBUG
 }
 
 void DxManager::PostDraw()
@@ -949,8 +979,6 @@ void DxManager::Finalize()
     psoManager_ = nullptr;
     delete polygonManager_;
     polygonManager_ = nullptr;
-    delete camera_;
-    camera_ = nullptr;
 
 #ifdef _DEBUG
     debugController->Release();

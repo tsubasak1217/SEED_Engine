@@ -17,6 +17,7 @@
 #include <InputManager.h>
 #include <ModelManager.h>
 #include <TextureManager.h>
+#include <BlendMode.h>
 
 class SEED{
 
@@ -47,14 +48,13 @@ private:
     // テクスチャを読み込む関数(返り値はグラフハンドル)
     static uint32_t LoadTexture(const std::string& filename);
     void StartUpLoad();
-    
+
 public:
-    
+
     // 画像の縦横幅を取得する関数
     static Vector2 GetImageSize(const std::wstring& fileName);
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
     static void ChangeResolutionRate(float resolutionRate);
-
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                          このエンジンが用意する描画関数                              */
@@ -72,12 +72,14 @@ public:
     static void DrawTriangle(
         const Vector3& v1, const Vector3& v2, const Vector3& v3,
         const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL,
         LIGHTING_TYPE lightingType = LIGHTINGTYPE_HALF_LAMBERT
     );
 
     static void DrawTriangle(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL,
         LIGHTING_TYPE lightingType = LIGHTINGTYPE_HALF_LAMBERT
     );
 
@@ -85,6 +87,7 @@ public:
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Vector3& scale, const Vector3& rotate, const Vector3& translate,
         const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL,
         LIGHTING_TYPE lightingType = LIGHTINGTYPE_HALF_LAMBERT
     );
 
@@ -92,34 +95,36 @@ public:
         const Vector3& v1, const Vector3& v2, const Vector3& v3,
         const Vector3& scale, const Vector3& rotate, const Vector3& translate,
         const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL,
         LIGHTING_TYPE lightingType = LIGHTINGTYPE_HALF_LAMBERT
     );
 
-    static void DrawTriangle(const Triangle& triangle, const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"));
-    static void DrawTriangle(const Triangle& triangle, uint32_t GH = SEED::LoadTexture("white1x1.png"));
- 
+    static void DrawTriangle(
+        const Triangle& triangle, const Vector4& color,
+        uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL
+    );
+    static void DrawTriangle(const Triangle& triangle);
+
     // 2D三角形
     static void DrawTriangle2D(
         const Vector2& v1, const Vector2& v2, const Vector2& v3,
-        const Vector4& color, uint32_t GH = 0, RESOLUTION_MODE resolutionMode = STATIC_DRAW
+        const Vector4& color, uint32_t GH = SEED::LoadTexture("white1x1.png"),
+        BlendMode blendMode = BlendMode::NORMAL,
+        RESOLUTION_MODE resolutionMode = STATIC_DRAW
     );
     static void DrawTriangle2D(
-        const Triangle2D& triangle, const Vector4& color, 
-        uint32_t GH = SEED::LoadTexture("white1x1.png"), RESOLUTION_MODE resolutionMode = STATIC_DRAW
+        const Triangle2D& triangle, const Vector4& color,
+        uint32_t GH = SEED::LoadTexture("white1x1.png"), BlendMode blendMode = BlendMode::NORMAL, 
+        RESOLUTION_MODE resolutionMode = STATIC_DRAW
     );
 
     static void DrawTriangle2D(const Triangle2D& triangle);
 
     /*=========================矩形の描画関数========================*/
 
-    static void DrawQuad(const Quad& quad,const uint32_t GH = SEED::LoadTexture("white1x1.png"));
+    static void DrawQuad(const Quad& quad, const uint32_t GH = SEED::LoadTexture("white1x1.png"));
 
-    static void DrawSprite(
-        const Vector2& leftTop, const Vector2& size,
-        uint32_t GH = SEED::LoadTexture("white1x1.png"),
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, const Matrix4x4& uvTranfosrm = IdentityMat4(),
-        RESOLUTION_MODE resolutionMode = STATIC_DRAW
-    );
 
     static void DrawSprite(const Sprite& sprite);
 
@@ -129,9 +134,10 @@ public:
 
     /*==========================線の描画関数==========================*/
 
-    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color);
-    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color);
+    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color,BlendMode blendMode = BlendMode::NORMAL);
+    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode = BlendMode::NORMAL);
     static void DrawGrid(float gridInterval, int32_t gridCount);
+
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */
@@ -160,6 +166,9 @@ public:
     int kClientHeight_;
     std::string windowTitle_;
     uint32_t windowBackColor_;
+
+private:// パラメータやフラグ
+
 
 private:// 外部を参照するためのポインタ変数
 

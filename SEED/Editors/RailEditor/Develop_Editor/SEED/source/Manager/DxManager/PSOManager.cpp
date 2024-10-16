@@ -1,18 +1,15 @@
 // local
 #include <PSOManager.h>
 #include <DxManager.h>
+#include "blendMode.h"
 
-PSOManager::PSOManager(DxManager* pDxManager)
-{
+PSOManager::PSOManager(DxManager* pDxManager){
     pDxManager_ = pDxManager;
 }
 
-PSOManager::~PSOManager()
-{
-}
+PSOManager::~PSOManager(){}
 
-ID3D12RootSignature* PSOManager::SettingCSRootSignature()
-{
+ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     // ディスクリプタ範囲を定義（SRV、UAV、CBV）
     CD3DX12_DESCRIPTOR_RANGE ranges[5]{};
     ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0: inputTexture
@@ -210,7 +207,7 @@ void PSOManager::Create(
     if(blendMode == BlendMode::NORMAL){
         blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
         blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
     } else if(blendMode == BlendMode::ADD){
         blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;

@@ -9,21 +9,11 @@
 #include <list>
 
 // local
-#include <DebugCamera.h>
 #include <Triangle.h>
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
 
-// Nodes
-#include <PinManager.h>
-#include <BaseNode.h>
-#include <NodeLink.h>
-#include <MainScene.h>
-#include <InScene.h>
-#include <OutScene.h>
-#include <EventScene.h>
-#include <Buttons.h>
 
 class Scene_Game : public Scene_Base{
 
@@ -38,13 +28,13 @@ public:
 
 private:
 
-    void MoveCamera();
+    // 解像度
+    float resolutionRate_ = 1.0f;
+    float preRate_ = resolutionRate_;
 
-private:
-
-    std::unique_ptr<DebugCamera>debugCamera_ = nullptr;
-
-    std::vector<std::unique_ptr<Model>>controlModels_;
-    std::vector<Vector3*>controlPoints_;
-    const int kSubdivision_ = 16;
+    // オブジェクト
+    std::vector<Vector3*>controlPoints_;// 打ち込んだ座標の一覧
+    std::vector<std::unique_ptr<Model>>controlModels_;// 打ち込んだ座標に表示されるモデル
+    std::vector<std::unique_ptr<Model>>twistModels_;// ねじれ管理用のモデル
+    const int kSubdivision_ = 16;// ベジェ曲線の一区間の分割数
 };

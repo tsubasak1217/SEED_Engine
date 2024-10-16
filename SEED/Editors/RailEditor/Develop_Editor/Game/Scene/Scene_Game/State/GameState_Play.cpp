@@ -15,7 +15,6 @@
 #include <GameState_Enter.h>
 
 // external
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <ImGui.h>
 #include <random>
 #include <cmath>

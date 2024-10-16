@@ -12,5 +12,5 @@ private:
 
 private:
     Vector3 moveDirection_;
-    float moveSpeed_;
+    float moveSpeed_ = 0.1f;
 };

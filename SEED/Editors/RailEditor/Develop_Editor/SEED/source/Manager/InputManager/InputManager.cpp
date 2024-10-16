@@ -262,9 +262,9 @@ Vector2 InputManager::GetStickValue(PAD_STICK stick, uint8_t padNumber, PAD_STAT
     return { std::clamp(value.x,-1.0f,1.0f),std::clamp(value.y,-1.0f,1.0f) };
 }
 
-Vector2 InputManager::GetStickDirection(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
-    return MyMath::Normalize(GetStickValue(stick, padNumber, padState));
-}
+//Vector2 InputManager::GetStickDirection(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
+//    return MyMath::Normalize(GetStickValue(stick, padNumber, padState));
+//}
 
 
 

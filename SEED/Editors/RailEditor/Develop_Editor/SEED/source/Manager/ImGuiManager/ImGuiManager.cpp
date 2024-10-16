@@ -23,9 +23,6 @@ void ImGuiManager::Initialize(SEED* pSEED)
         pDxManager_->SRV_UAV_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
         pDxManager_->SRV_UAV_DescriptorHeap->GetGPUDescriptorHandleForHeapStart()
     );
-
-    // ノードエディターの初期化
-    ImNodes::CreateContext();
 }
 
 void ImGuiManager::Finalize()
@@ -33,7 +30,6 @@ void ImGuiManager::Finalize()
     // ImGuiの終了処理
 #ifdef _DEBUG
     // 後始末
-    ImNodes::DestroyContext();
     ImGui_ImplDX12_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
@@ -59,8 +55,6 @@ void ImGuiManager::Begin()
 void ImGuiManager::End()
 {
 #ifdef _DEBUG
-
-    ImNodes::SetNodeEditorSpacePos(0, { 0,0 });
     // 描画前準備
     ImGui::Render();
 

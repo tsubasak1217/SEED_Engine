@@ -16,14 +16,13 @@
 #include <PolygonManager.h>
 #include <EffectManager.h>
 #include <Camera.h>
+#include <CameraManager.h>
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
 
 // imgui
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
-#include <imnodes.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
@@ -58,7 +57,7 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
     void CreateRTV();
 
     // 
-    void InitializePostEffectTextures();
+    void InitializeSystemTextures();
 
     // Shaderのコンパイルに関わる関数
     void InitDxCompiler();
@@ -82,6 +81,7 @@ public:/*============================ 描画に関わる関数 =================
 
     void PreDraw();
     void DrawPolygonAll();
+    void DrawGUI();
     void PostDraw();
 
 public:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
@@ -111,6 +111,7 @@ private:/*============================ マネージャー変数 ================
 private:/*============================== オブジェクト =============================*/
 
     Camera* camera_;
+    bool isDebugCameraAvtive_ = false;
 
 private:/*========================== テクスチャ管理変数 ============================*/
 
@@ -198,8 +199,9 @@ public:/*======================== DirectXの設定に必要な変数 ===========
     //==================================================================//
     
     // ふつうのPSO  [blendModeの数][形状のパターン数]
-    ComPtr<ID3D12PipelineState> commonPipelineState[6][2];
-    ComPtr<ID3D12RootSignature> commonRootSignature[6][2];
+    ComPtr<ID3D12PipelineState> commonPipelineState[(int)BlendMode::kBlendModeCount][2];
+    ComPtr<ID3D12RootSignature> commonRootSignature[(int)BlendMode::kBlendModeCount][2];
+
     // コンピュートシェーダー用のやつ
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;
     ComPtr<ID3D12RootSignature> csRootSignature = nullptr;
@@ -208,14 +210,16 @@ public:/*======================== DirectXの設定に必要な変数 ===========
 
     ComPtr<ID3D12Resource> CS_ConstantBuffer = nullptr;
 
-    //===================================================================//
+    //================================ テクスチャ ===================================//
 
     // TextureResource
     std::vector<ComPtr<ID3D12Resource>> textureResource;
     std::vector<ComPtr<ID3D12Resource>> intermediateResource;
     
-    //============================ ポストエフェクト用のテクスチャ ==============================//
+    // OIT用テクスチャ
+    ComPtr<ID3D12Resource> OIT_Texture_;
 
+    // ポストエフェクト用のテクスチャ
     ComPtr<ID3D12Resource> blurTextureResource;// ぼけた画像
     ComPtr<ID3D12Resource> depthTextureResource;// 深度情報の白黒画像
 
@@ -239,6 +243,9 @@ public:/*======================== DirectXの設定に必要な変数 ===========
 public:/*============================ アクセッサ関数 ============================*/
 
     Camera* GetCamera()const{ return camera_; }
+    void SetCamera(std::string nextCameraName){
+        camera_ = CameraManager::GetCamera(nextCameraName); 
+    }
     void SetCamera(Camera* camera){ camera_ = camera; }
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }
     float GetResolutionRate(){ return resolutionRate_; }

@@ -6,6 +6,7 @@
 #include "MyMath.h"
 #include "MatrixFunc.h"
 #include "Material.h"
+#include "blendMode.h"
 
 struct Sprite{
 
@@ -24,7 +25,8 @@ public:
     // 色；マテリアル
     uint32_t GH;
     Vector4 color;
-    
+    BlendMode blendMode;
+
     // SRT
     Vector2 scale;
     float rotate;
@@ -33,9 +35,13 @@ public:
     // アンカーポイント
     Vector2 anchorPoint;
 
+    // 切り取り範囲
+    Vector2 clipLT;
+    Vector2 clipSize;
+
     // UVトランスフォーム
-    Matrix4x4 uvTransform;
-    
+    Matrix4x4 uvTransform;    
+
     // 解像度の変更を反映するかどうかの設定
     bool isStaticDraw;
 

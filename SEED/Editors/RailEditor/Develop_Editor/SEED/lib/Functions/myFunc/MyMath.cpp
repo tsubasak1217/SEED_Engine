@@ -254,7 +254,8 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& points, float t){
     return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
 }
 
-Vector3 MyMath::CatmullRomPosition(std::vector<Vector3*> points, float t){
+
+Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& points, float t){
     assert(points.size() >= 4 && "制御点は4以上が必要です");
 
     size_t division = points.size() - 1; // 区間数は制御点の数 - 3

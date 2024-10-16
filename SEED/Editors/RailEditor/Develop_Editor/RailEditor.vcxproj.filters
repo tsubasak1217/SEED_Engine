@@ -89,6 +89,9 @@
     <Filter Include="Game\Scene\Scene_Title">
       <UniqueIdentifier>{791170b3-d43b-415a-b4b8-a36db8bf818b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\Scene_Clear">
+      <UniqueIdentifier>{40882d95-9839-4113-a3b1-32d3a5b40fe9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\Scene\Scene_Game">
       <UniqueIdentifier>{95bc44e9-1aea-4395-90b7-0f6f20f6d620}</UniqueIdentifier>
     </Filter>
@@ -110,26 +113,17 @@
     <Filter Include="SEED\source\Manager\TextureManager">
       <UniqueIdentifier>{73650727-2a15-4b8e-8370-4bf7ecd36027}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Nodes">
-      <UniqueIdentifier>{2072c3e9-6c3e-4286-a6a1-e6a538b1dba0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Nodes\Scenes">
-      <UniqueIdentifier>{4ad24a82-ca36-4e69-b498-00c96645e6dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Nodes\Events">
-      <UniqueIdentifier>{9a345fe9-f979-4f69-9484-eba8d7de6db9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Nodes\Base">
-      <UniqueIdentifier>{b6d08b37-6bff-4be8-a816-213ee3ec775d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\Scene_Clear">
-      <UniqueIdentifier>{40882d95-9839-4113-a3b1-32d3a5b40fe9}</UniqueIdentifier>
+    <Filter Include="SEED\source\Manager\AudioManager\XAPO">
+      <UniqueIdentifier>{0d21c4c1-bce2-4062-baaf-9562c0eaa41f}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\source\Object">
-      <UniqueIdentifier>{40628e10-a848-4f4d-b794-aac876a05f8b}</UniqueIdentifier>
+      <UniqueIdentifier>{a0464cef-8197-41ac-86bc-ea749439cd56}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\source\Object\Camera">
-      <UniqueIdentifier>{a7db373c-88e9-4caf-a322-dd4eee86602a}</UniqueIdentifier>
+      <UniqueIdentifier>{b71e7d71-ce8c-4eed-88b5-ddf68ce8df57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\CameraManager">
+      <UniqueIdentifier>{3fa53440-c31b-4d34-9cdf-92918a157234}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +132,27 @@
     </ClCompile>
     <ClCompile Include="SEED\lib\shapes\sphere.cpp">
       <Filter>SEED\lib\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp">
+      <Filter>SEED\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp">
+      <Filter>SEED\external\imgui</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\SEED.cpp">
       <Filter>SEED\source</Filter>
@@ -241,59 +256,20 @@
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui.cpp">
-      <Filter>SEED\external\imgui</Filter>
+    <ClCompile Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp">
+      <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\external\imgui\imnodes.cpp">
-      <Filter>SEED\external\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Scenes\EventScene.cpp">
-      <Filter>Nodes\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Scenes\MainScene.cpp">
-      <Filter>Nodes\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Scenes\InScene.cpp">
-      <Filter>Nodes\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Scenes\OutScene.cpp">
-      <Filter>Nodes\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Base\BaseNode.cpp">
-      <Filter>Nodes\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Base\NodeLink.cpp">
-      <Filter>Nodes\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Events\Buttons.cpp">
-      <Filter>Nodes\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="Nodes\Base\PinManager.cpp">
-      <Filter>Nodes\Base</Filter>
+    <ClCompile Include="SEED\lib\shapes\Quad.cpp">
+      <Filter>SEED\lib\shapes</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Object\Camera\Camera.cpp">
       <Filter>SEED\source\Object\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp">
       <Filter>SEED\source\Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\CameraManager\CameraManager.cpp">
+      <Filter>SEED\source\Manager\CameraManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +323,30 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\tensor\Vector4.h">
       <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imconfig.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imgui_internal.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_textedit.h">
+      <Filter>SEED\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
+      <Filter>SEED\external\imgui</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\SEED.h">
       <Filter>SEED\source</Filter>
@@ -456,65 +456,11 @@
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h">
       <Filter>SEED\source\Manager\TextureManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imconfig.h">
-      <Filter>SEED\external\imgui</Filter>
+    <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h">
+      <Filter>SEED\source\Manager\AudioManager\XAPO</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imgui_internal.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imnodes.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imnodes_internal.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_textedit.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\external\imgui\imstb_truetype.h">
-      <Filter>SEED\external\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Scenes\EventScene.h">
-      <Filter>Nodes\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Scenes\InScene.h">
-      <Filter>Nodes\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Scenes\MainScene.h">
-      <Filter>Nodes\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Scenes\OutScene.h">
-      <Filter>Nodes\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Base\BaseNode.h">
-      <Filter>Nodes\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Base\NodeLink.h">
-      <Filter>Nodes\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Events\Buttons.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Events\Custom.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Events\TimeLimit.h">
-      <Filter>Nodes\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="Nodes\Base\PinManager.h">
-      <Filter>Nodes\Base</Filter>
+    <ClInclude Include="SEED\lib\structs\blendMode.h">
+      <Filter>SEED\lib\structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Object\Camera\Camera.h">
       <Filter>SEED\source\Object\Camera</Filter>
@@ -522,6 +468,14 @@
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h">
       <Filter>SEED\source\Object\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h">
+      <Filter>SEED\source\Manager\CameraManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SEED\external\imgui\LICENSE.txt">
+      <Filter>SEED\external\imgui</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3D.hlsli">
@@ -538,10 +492,5 @@
     <FxCompile Include="resources\shaders\Blur.CS.hlsl">
       <Filter>resources\shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt">
-      <Filter>SEED\external\imgui</Filter>
-    </Text>
   </ItemGroup>
 </Project>

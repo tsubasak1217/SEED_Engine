@@ -81,7 +81,7 @@ public:// キーの状態を返す関数
     static bool IsReleaseKey(uint8_t key);
 
     /*------------ ゲームパッド -----------*/
-    static bool IsPressPadButton(PAD_BUTTON button,uint8_t padNumber = 0);
+    static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsPressAnyPadButton(PAD_BUTTON button);
@@ -92,14 +92,14 @@ public:// キーの状態を返す関数
     );
     // length 0 ~ 1 のベクトルで返ってくる
     static Vector2 GetStickValue(
-        PAD_STICK stick, uint8_t padNumber = 0, 
-        PAD_STATE padState = PAD_STATE::CURRENT
-    );
-    // 方向を返す (入力がなければ0ベクトル)
-    static Vector2 GetStickDirection(
         PAD_STICK stick, uint8_t padNumber = 0,
         PAD_STATE padState = PAD_STATE::CURRENT
     );
+    // 方向を返す (入力がなければ0ベクトル)
+    //static Vector2 GetStickDirection(
+    //    PAD_STICK stick, uint8_t padNumber = 0,
+    //    PAD_STATE padState = PAD_STATE::CURRENT
+    //);
 
     // スティックのデッドゾーン設定
     static void SetDeadZone(float deadZone){ instance_->deadZone_ = deadZone; }

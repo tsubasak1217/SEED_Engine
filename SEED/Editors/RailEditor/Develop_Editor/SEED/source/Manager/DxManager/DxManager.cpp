@@ -831,20 +831,6 @@ void DxManager::DrawPolygonAll()
 void DxManager::DrawGUI(){
 #ifdef _DEBUG
 
-    ImGui::Begin("DxManager");
-
-    if(ImGui::Checkbox("isDebugCameraActive", &isDebugCameraAvtive_)){
-        SetCamera("debug");
-    }
-
-    if(isDebugCameraAvtive_ == false){
-        SetCamera("main");
-    }
-
-    ImGui::Text("x: %f", InputManager::GetStickValue(PAD_STICK::LEFT).x);
-    ImGui::Text("y: %f", InputManager::GetStickValue(PAD_STICK::LEFT).y);
-
-    ImGui::End();
 
 #endif // _DEBUG
 }

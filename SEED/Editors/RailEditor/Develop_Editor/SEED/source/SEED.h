@@ -183,6 +183,7 @@ public:
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
     static DxManager* GetDxManager(){ return instance_->dxManager_; }
     static Camera* GetCamera(){ return GetInstance()->dxManager_->GetCamera(); }
+    static void SetCamera(const std::string& cameraName){ instance_->dxManager_->SetCamera(cameraName); }
 
     static HWND GetHWND(){ return hwnd; }
     static void SetWindowHandle(HWND handle){ hwnd = handle; }

@@ -13,7 +13,8 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
-
+#include "RailInfo.h"
+#include "RailCamera.h"
 
 class Scene_Game : public Scene_Base{
 
@@ -32,9 +33,7 @@ private:
     float resolutionRate_ = 1.0f;
     float preRate_ = resolutionRate_;
 
-    // オブジェクト
-    std::vector<Vector3*>controlPoints_;// 打ち込んだ座標の一覧
-    std::vector<std::unique_ptr<Model>>controlModels_;// 打ち込んだ座標に表示されるモデル
-    std::vector<std::unique_ptr<Model>>twistModels_;// ねじれ管理用のモデル
-    const int kSubdivision_ = 16;// ベジェ曲線の一区間の分割数
+    // レールカメラ
+    std::unique_ptr<RailInfo> railInfo_ = nullptr;
+    std::unique_ptr<RailCamera> railCamera_ = nullptr;
 };

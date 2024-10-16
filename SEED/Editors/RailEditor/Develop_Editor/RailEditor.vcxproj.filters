@@ -125,6 +125,9 @@
     <Filter Include="SEED\source\Manager\CameraManager">
       <UniqueIdentifier>{3fa53440-c31b-4d34-9cdf-92918a157234}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\Scene_Game\Objects">
+      <UniqueIdentifier>{7fe31f78-568b-4f07-a889-79441b7fe872}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -270,6 +273,12 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\CameraManager\CameraManager.cpp">
       <Filter>SEED\source\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\RailCamera.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\RailInfo.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +479,12 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h">
       <Filter>SEED\source\Manager\CameraManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\RailCamera.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\RailInfo.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

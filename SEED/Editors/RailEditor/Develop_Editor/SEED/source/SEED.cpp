@@ -98,12 +98,13 @@ void SEED::BeginFrame(){
     // 全入力情報を格納
     InputManager::GetAllInput();
 
-    // カメラの更新
-    CameraManager::Update();
 
     // imgui,directXのフレーム開始時処理
     instance_->imguiManager_->Begin();
     instance_->dxManager_->PreDraw();
+
+    // カメラの更新
+    CameraManager::Update();
 }
 
 void SEED::EndFrame(){

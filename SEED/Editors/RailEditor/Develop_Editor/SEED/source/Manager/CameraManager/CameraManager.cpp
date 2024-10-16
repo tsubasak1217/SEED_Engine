@@ -14,8 +14,11 @@ CameraManager::~CameraManager(){
 void CameraManager::Initialize(){
 
     GetInstance();
-    instance_->cameras_["main"] = std::make_unique<Camera>();
-    instance_->cameras_["debug"] = std::make_unique<DebugCamera>();
+    instance_->mainCamera_ = std::make_unique<Camera>();
+    instance_->debugCamera_ = std::make_unique<DebugCamera>();
+
+    instance_->cameras_["main"] = instance_->mainCamera_.get();
+    instance_->cameras_["debug"] = instance_->debugCamera_.get();
 }
 
 void CameraManager::Update(){
@@ -32,9 +35,16 @@ CameraManager* CameraManager::GetInstance(){
     return instance_;
 }
 
-Camera* CameraManager::GetCamera(std::string name){
+Camera* CameraManager::GetCamera(const std::string& name){
     // 指定要素がなければアサート
     if(instance_->cameras_.find(name) == instance_->cameras_.end()){ assert(false); }
     // カメラのポインタ
-    return instance_->cameras_[name].get();
+    return instance_->cameras_[name];
+}
+
+void CameraManager::AddCamera(const std::string& name, Camera* camera){
+    // 指定要素が既にあるとアサート
+    if(instance_->cameras_.find(name) != instance_->cameras_.end()){ assert(false); }
+    // カメラを追加
+    instance_->cameras_[name] = camera;
 }

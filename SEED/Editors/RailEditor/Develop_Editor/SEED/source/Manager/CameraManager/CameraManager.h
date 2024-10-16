@@ -26,10 +26,15 @@ private:
 public:
 
     // カメラのポインタ取得
-    static Camera* GetCamera(std::string name);
+    static Camera* GetCamera(const std::string& name);
+    static void AddCamera(const std::string& name, Camera* camera);
 
 private:
 
     // カメラの一覧
-    std::unordered_map<std::string, std::unique_ptr<Camera>>cameras_;
+    std::unordered_map<std::string, Camera*>cameras_;
+
+    // メインのカメラ
+    std::unique_ptr<Camera> mainCamera_;
+    std::unique_ptr<DebugCamera> debugCamera_;
 };

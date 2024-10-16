@@ -57,7 +57,7 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
     void CreateRTV();
 
     // 
-    void InitializePostEffectTextures();
+    void InitializeSystemTextures();
 
     // Shaderのコンパイルに関わる関数
     void InitDxCompiler();
@@ -199,8 +199,8 @@ public:/*======================== DirectXの設定に必要な変数 ===========
     //==================================================================//
     
     // ふつうのPSO  [blendModeの数][形状のパターン数]
-    ComPtr<ID3D12PipelineState> commonPipelineState[6][2];
-    ComPtr<ID3D12RootSignature> commonRootSignature[6][2];
+    ComPtr<ID3D12PipelineState> commonPipelineState[(int)BlendMode::kBlendModeCount][2];
+    ComPtr<ID3D12RootSignature> commonRootSignature[(int)BlendMode::kBlendModeCount][2];
 
     // コンピュートシェーダー用のやつ
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;
@@ -210,14 +210,16 @@ public:/*======================== DirectXの設定に必要な変数 ===========
 
     ComPtr<ID3D12Resource> CS_ConstantBuffer = nullptr;
 
-    //===================================================================//
+    //================================ テクスチャ ===================================//
 
     // TextureResource
     std::vector<ComPtr<ID3D12Resource>> textureResource;
     std::vector<ComPtr<ID3D12Resource>> intermediateResource;
     
-    //============================ ポストエフェクト用のテクスチャ ==============================//
+    // OIT用テクスチャ
+    ComPtr<ID3D12Resource> OIT_Texture_;
 
+    // ポストエフェクト用のテクスチャ
     ComPtr<ID3D12Resource> blurTextureResource;// ぼけた画像
     ComPtr<ID3D12Resource> depthTextureResource;// 深度情報の白黒画像
 

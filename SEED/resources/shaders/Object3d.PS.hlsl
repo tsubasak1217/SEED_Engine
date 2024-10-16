@@ -17,7 +17,7 @@ struct DirectionalLight
 
 StructuredBuffer<Material> gMaterial : register(t0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b0);
-Texture2D<float4> gTexture[128] : register(t1,space0);
+Texture2D<float4> gTexture[128] : register(t1, space0);
 SamplerState gSampler : register(s0);
 
 struct PixelShaderOutput
@@ -27,11 +27,16 @@ struct PixelShaderOutput
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
-    
+    float depth : SV_DEAPTH;
     int GH = gMaterial[input.instanceID].GH;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial[input.instanceID].uvTransform);
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);
     
+     // 入力が透明の場合は棄却
+    if (textureColor.a == 0.0f)
+    {
+        discard;
+    }
     
     PixelShaderOutput output;
     
@@ -50,10 +55,16 @@ PixelShaderOutput main(VertexShaderOutput input)
         output.color = gMaterial[input.instanceID].color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
         output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
     }
-    else// ライティングなし------------------------------------------------------------------------------------
+    else // ライティングなし------------------------------------------------------------------------------------
     {
         output.color = gMaterial[input.instanceID].color * textureColor;
     }
    
+    // 出力が透明の場合は棄却
+    if (output.color.a == 0.0f)
+    {
+        discard;
+    }
+    
     return output;
 }

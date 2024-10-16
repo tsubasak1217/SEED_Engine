@@ -149,7 +149,7 @@ void DxManager::Initialize(SEED* pSEED)
 
     /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
 
-    InitializePostEffectTextures();
+    InitializeSystemTextures();
 
     /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
 
@@ -450,7 +450,7 @@ void DxManager::CreateRTV()
     device->CreateRenderTargetView(offScreenResource.Get(), &rtvDesc, offScreenRtvHandle); // オフスクリーン用 * 1
 }
 
-void DxManager::InitializePostEffectTextures()
+void DxManager::InitializeSystemTextures()
 {
     // SRVの設定を行う変数
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -629,7 +629,7 @@ void DxManager::CompileShaders()
 
 void DxManager::InitPSO()
 {
-    for(int blendMode = 0; blendMode < 5; blendMode++){
+    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
         for(int topology = 0; topology < 2; topology++){
             psoManager_->Create(
                 commonRootSignature[blendMode][topology].GetAddressOf(),

@@ -9,16 +9,18 @@ Scene_Game::Scene_Game(SceneManager* pSceneManager){
     Initialize();
 };
 
-Scene_Game::~Scene_Game()
-{
-}
+Scene_Game::~Scene_Game(){}
 
-void Scene_Game::Initialize()
-{
+void Scene_Game::Initialize(){
+
     ////////////////////////////////////////////////////
-    //  デバッグ用の地面生成
+    //  モデル生成
     ////////////////////////////////////////////////////
 
+    model = new Model("teapot");
+    model->textureGH_ = TextureManager::LoadTexture("uvChecker.png");
+    model->blendMode_ = BlendMode::NORMAL;
+    model->color_ = { 1.0f,1.0f,1.0f,0.1f };
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -46,12 +48,9 @@ void Scene_Game::Initialize()
     SEED::ChangeResolutionRate(resolutionRate_);
 }
 
-void Scene_Game::Finalize()
-{
-}
+void Scene_Game::Finalize(){}
 
-void Scene_Game::Update()
-{
+void Scene_Game::Update(){
     /*======================= 前フレームの値保存 ======================*/
 
     preRate_ = resolutionRate_;
@@ -59,6 +58,14 @@ void Scene_Game::Update()
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
+
+    ImGui::Begin("Model");
+    ImGui::SliderInt(
+        "BlendMode",reinterpret_cast<int*>(&model->blendMode_),
+        0,int(BlendMode::kBlendModeCount) - 1
+    );
+    ImGui::SliderFloat("Alpha", &model->color_.w, 0.0f, 1.0f);
+    ImGui::End();
 
 #endif
 
@@ -71,12 +78,17 @@ void Scene_Game::Update()
 
     /*========================= 各状態のの更新 ==========================*/
 
+    for(int i = 0; i < 2; i++){
+        model->translate_ = { 0.5f * i,1.0f,0.0f };
+        model->UpdateMatrix();
+        model->Draw();
+    }
+
     currentState_->Update();
 
 }
 
-void Scene_Game::Draw()
-{
+void Scene_Game::Draw(){
     SEED::DrawGrid(1.0f, 128);
     currentState_->Draw();
 

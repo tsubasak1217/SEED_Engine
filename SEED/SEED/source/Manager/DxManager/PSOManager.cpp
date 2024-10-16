@@ -207,7 +207,7 @@ void PSOManager::Create(
     if(blendMode == BlendMode::NORMAL){
         blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
         blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+        blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
     } else if(blendMode == BlendMode::ADD){
         blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;

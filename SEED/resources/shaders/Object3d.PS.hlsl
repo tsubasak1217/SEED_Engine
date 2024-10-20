@@ -27,7 +27,7 @@ struct PixelShaderOutput
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
-    float depth : SV_DEAPTH;
+    //float depth : SV_DEAPTH;
     int GH = gMaterial[input.instanceID].GH;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial[input.instanceID].uvTransform);
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);

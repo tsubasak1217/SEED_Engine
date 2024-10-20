@@ -74,7 +74,7 @@ void RailCamera::Update(){
 
         transform_.translate_ = targetPoint_;
 
-
+        // カメラ確認用モデルの更新
         debugModel_->rotate_ = transform_.rotate_;
         debugModel_->translate_ = transform_.translate_;
         debugModel_->UpdateMatrix();

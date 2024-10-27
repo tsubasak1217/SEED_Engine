@@ -280,6 +280,9 @@
     <ClCompile Include="Game\Scene\Scene_Game\Objects\RailInfo.cpp">
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\lib\tensor\Quaternion.cpp">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -485,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\Objects\RailInfo.h">
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Quaternion.h">
+      <Filter>SEED\lib\tensor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

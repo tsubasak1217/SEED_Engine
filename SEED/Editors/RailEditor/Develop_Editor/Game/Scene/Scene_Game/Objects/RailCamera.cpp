@@ -1,5 +1,6 @@
 #include "RailCamera.h"
 #include "SEED.h"
+#include "MyMath.h"
 
 RailCamera::RailCamera(){
     debugModel_ = std::make_unique<Model>("suzanne");
@@ -60,18 +61,19 @@ void RailCamera::Update(){
         int nextIdx = std::clamp(idx + 1, 0, (int)pRailInfo_->controlPoints_.size() - 1);
 
         // z軸の回転を求める
-        float theta1 = std::acos(MyMath::Dot({ 0.0f,1.0f,0.0f }, MyMath::Normalize(pRailInfo_->twistModels_[idx]->translate_ - *pRailInfo_->controlPoints_[idx])));
-        float theta2 = std::acos(MyMath::Dot({ 0.0f,1.0f,0.0f }, MyMath::Normalize(pRailInfo_->twistModels_[nextIdx]->translate_ - *pRailInfo_->controlPoints_[nextIdx])));
-        float currentIdxRotateZ = theta1 + (theta2 - theta1) * t2;
+        //float theta1 = std::acos(MyMath::Dot({ 0.0f,1.0f,0.0f }, MyMath::Normalize(pRailInfo_->twistModels_[idx]->translate_ - *pRailInfo_->controlPoints_[idx])));
+        //float theta2 = std::acos(MyMath::Dot({ 0.0f,1.0f,0.0f }, MyMath::Normalize(pRailInfo_->twistModels_[nextIdx]->translate_ - *pRailInfo_->controlPoints_[nextIdx])));
+        //float currentIdxRotateZ = theta1 + (theta2 - theta1) * t2;
 
         // ベクトルから角度を求める
-        Vector3 dif = MyMath::Normalize(targetPoint_ - transform_.translate_);
-        transform_.rotate_ = {
-        std::atan2(-dif.y, MyMath::Length(dif)),// 縦方向の回転角(X軸回り)
-        std::atan2(dif.x, dif.z),// 横方向の回転角(Y軸回り)
-        -currentIdxRotateZ
-        };
+        //Vector3 dif = MyMath::Normalize(targetPoint_ - transform_.translate_);
+        //transform_.rotate_ = {
+        //std::atan2(-dif.y, MyMath::Length(dif)),// 縦方向の回転角(X軸回り)
+        //std::atan2(dif.x, dif.z),// 横方向の回転角(Y軸回り)
+        //-currentIdxRotateZ
+        //};
 
+        transform_.rotate_ = MyMath::Lerp(pRailInfo_->twistModels_[idx]->rotate_, pRailInfo_->twistModels_[nextIdx]->rotate_, t2);
         transform_.translate_ = targetPoint_;
 
         // カメラ確認用モデルの更新

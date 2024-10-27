@@ -139,6 +139,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\shapes\Triangle.cpp" />
     <ClCompile Include="SEED\lib\structs\Model.cpp" />
     <ClCompile Include="SEED\lib\structs\Sprite.cpp" />
+    <ClCompile Include="SEED\lib\tensor\Quaternion.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector2.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector3.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector4.cpp" />
@@ -208,6 +209,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\tensor\Matrix2x2.h" />
     <ClInclude Include="SEED\lib\tensor\Matrix3x3.h" />
     <ClInclude Include="SEED\lib\tensor\Matrix4x4.h" />
+    <ClInclude Include="SEED\lib\tensor\Quaternion.h" />
     <ClInclude Include="SEED\lib\tensor\Vector2.h" />
     <ClInclude Include="SEED\lib\tensor\Vector3.h" />
     <ClInclude Include="SEED\lib\tensor\Vector4.h" />

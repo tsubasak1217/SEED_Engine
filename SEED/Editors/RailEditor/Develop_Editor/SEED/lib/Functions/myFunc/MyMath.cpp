@@ -192,7 +192,7 @@ float MyMath::Deg2Rad(float deg){
 
 
 float MyMath::Lerp(const float v1, const float v2, float t){
-    return v1 + (v2 - v1) * t;;
+    return v1 + (v2 - v1) * t;
 }
 
 Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){

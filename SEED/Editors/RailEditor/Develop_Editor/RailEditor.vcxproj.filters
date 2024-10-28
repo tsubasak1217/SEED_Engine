@@ -128,6 +128,9 @@
     <Filter Include="Game\Scene\Scene_Game\Objects">
       <UniqueIdentifier>{7fe31f78-568b-4f07-a889-79441b7fe872}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\DxManager\DescriptorHeap">
+      <UniqueIdentifier>{12d1b875-78da-4f30-8b07-47f721816eb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -282,6 +285,21 @@
     </ClCompile>
     <ClCompile Include="SEED\lib\tensor\Quaternion.cpp">
       <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV .cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +509,21 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\tensor\Quaternion.h">
       <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

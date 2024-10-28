@@ -5,6 +5,8 @@
 #include <CS_Buffers.h>
 #include "InputManager.h"
 
+DxManager* DxManager::instance_ = nullptr;
+
 void DxManager::Initialize(SEED* pSEED)
 {
     // COMの初期化
@@ -13,7 +15,7 @@ void DxManager::Initialize(SEED* pSEED)
     // ポインタ代入
     pSEED_ = pSEED;
     // PSOManagerの作成
-    psoManager_ = new PSOManager(this);
+    psoManager_ = new PSOManager();
     // polygonManagerの作成
     polygonManager_ = new PolygonManager(this);
     pSEED_->SetPolygonManagerPtr(polygonManager_);
@@ -972,6 +974,17 @@ void DxManager::Finalize()
     CloseWindow(SEED::GetHWND());
     // COMの終了
     CoUninitialize();
+
+    delete instance_;
+    instance_ = nullptr;
+}
+
+DxManager* DxManager::GetInstance(){
+    if(!instance_){
+        instance_ = new DxManager();
+    }
+
+    return instance_;
 }
 
 LeakChecker::~LeakChecker()

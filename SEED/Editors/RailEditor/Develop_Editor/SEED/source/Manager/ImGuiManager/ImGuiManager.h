@@ -5,7 +5,7 @@ class SEED;
 
 class ImGuiManager{
 public:
-    void Initialize(SEED* pSEED);
+    void Initialize();
     void Finalize();
 
     void Draw();
@@ -13,7 +13,4 @@ public:
     void Begin();
     void End();
 
-private:
-    SEED* pSEED_;
-    DxManager* pDxManager_;
 };

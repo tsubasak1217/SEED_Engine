@@ -1,8 +1,6 @@
 #pragma once
 #include "blendMode.h"
 
-
-class DxManager;
 struct ID3D12RootSignature;
 struct ID3D12PipelineState;
 
@@ -11,9 +9,10 @@ enum class PolygonTopology : int{
     LINE
 };
 
-struct PSOManager{
+class PSOManager{
 
-    PSOManager(DxManager* pDxManager);
+public:
+    PSOManager();
     ~PSOManager();
 
     ID3D12RootSignature* SettingCSRootSignature();
@@ -22,7 +21,4 @@ struct PSOManager{
         PolygonTopology topology = PolygonTopology::TRIANGLE,
         BlendMode blendMode = BlendMode::NORMAL
     );
-
-private:
-    DxManager* pDxManager_;
 };

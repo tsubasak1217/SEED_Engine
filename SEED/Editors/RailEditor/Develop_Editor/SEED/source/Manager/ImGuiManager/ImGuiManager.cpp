@@ -1,11 +1,8 @@
 #include "ImGuiManager.h"
 #include "SEED.h"
 
-void ImGuiManager::Initialize(SEED* pSEED)
+void ImGuiManager::Initialize()
 {
-
-    pSEED_ = pSEED;
-    pDxManager_ = pSEED_->GetDxManager();
 
     /*===========================================================================================*/
     /*                                        ImGuiの初期化                                       */
@@ -16,12 +13,12 @@ void ImGuiManager::Initialize(SEED* pSEED)
     ImGui::StyleColorsDark();
     ImGui_ImplWin32_Init(SEED::GetHWND());
     ImGui_ImplDX12_Init(
-        pDxManager_->device.Get(),
-        pDxManager_->swapChainDesc.BufferCount,
-        pDxManager_->rtvDesc.Format,
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(),
-        pDxManager_->SRV_UAV_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-        pDxManager_->SRV_UAV_DescriptorHeap->GetGPUDescriptorHandleForHeapStart()
+        DxManager::GetInstance()->device.Get(),
+        DxManager::GetInstance()->swapChainDesc.BufferCount,
+        DxManager::GetInstance()->rtvDesc.Format,
+        DxManager::GetInstance()->SRV_UAV_DescriptorHeap.Get(),
+        DxManager::GetInstance()->SRV_UAV_DescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+        DxManager::GetInstance()->SRV_UAV_DescriptorHeap->GetGPUDescriptorHandleForHeapStart()
     );
 }
 
@@ -39,7 +36,7 @@ void ImGuiManager::Finalize()
 void ImGuiManager::Draw()
 {
     // ImGuiの描画
-    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), pDxManager_->commandList.Get());
+    ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), DxManager::GetInstance()->commandList.Get());
 }
 
 void ImGuiManager::Begin()

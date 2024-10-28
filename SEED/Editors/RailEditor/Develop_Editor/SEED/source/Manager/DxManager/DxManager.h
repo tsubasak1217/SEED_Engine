@@ -27,6 +27,10 @@ using Microsoft::WRL::ComPtr;
 #include <imgui_impl_win32.h>
 
 class SEED;
+class ImGuiManager;
+class PSOManager;
+class ViewManager;
+
 struct LeakChecker{
     ~LeakChecker();
 };
@@ -35,11 +39,28 @@ class DxManager{
 
     friend PolygonManager;
     friend EffectManager;
+    friend SEED;
+    friend ImGuiManager;
+    friend PSOManager;
+    friend ViewManager;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager(){};
     void Initialize(SEED* pSEED);
     void Finalize();
+    static DxManager* GetInstance();
+
+private:
+
+    // privateコンストラクタ
+    DxManager() = default;
+
+    // コピー禁止
+    DxManager(const DxManager&) = delete;
+    void operator=(const DxManager&) = delete;
+
+    // インスタンス
+    static DxManager* instance_;
 
 private:/*===================== 内部の細かい初期設定を行う関数 ======================*/
 
@@ -77,14 +98,14 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
     void CreateFence();
     void WaitForGPU();
 
-public:/*============================ 描画に関わる関数 ============================*/
+private:/*============================ 描画に関わる関数 ============================*/
 
     void PreDraw();
     void DrawPolygonAll();
     void DrawGUI();
     void PostDraw();
 
-public:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
+private:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
 
     // テクスチャを読み込む関数
     uint32_t CreateTexture(std::string filePath);
@@ -127,7 +148,7 @@ private:/*============================ パラメーター変数 ================
     bool changeResolutionOrder = false;
 
 
-public:/*======================== DirectXの設定に必要な変数 ========================*/
+private:/*======================== DirectXの設定に必要な変数 ========================*/
 
     // いろんなとこで実行結果を格納してくれる変数
     HRESULT hr;
@@ -240,7 +261,7 @@ public:/*======================== DirectXの設定に必要な変数 ===========
     D3D12_RECT scissorRect_default{};
 
 
-public:/*============================ アクセッサ関数 ============================*/
+private:/*============================ アクセッサ関数 ============================*/
 
     Camera* GetCamera()const{ return camera_; }
     void SetCamera(std::string nextCameraName){

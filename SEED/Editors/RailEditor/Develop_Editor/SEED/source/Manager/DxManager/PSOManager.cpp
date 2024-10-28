@@ -3,9 +3,7 @@
 #include <DxManager.h>
 #include "blendMode.h"
 
-PSOManager::PSOManager(DxManager* pDxManager){
-    pDxManager_ = pDxManager;
-}
+PSOManager::PSOManager(){}
 
 PSOManager::~PSOManager(){}
 
@@ -52,7 +50,7 @@ ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     ID3DBlob* errorBlob = nullptr;
     D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
     ID3D12RootSignature* rootSignature;
-    pDxManager_->device->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+    DxManager::GetInstance()->device->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 
     serializedRootSignature->Release();
     if(errorBlob){
@@ -152,7 +150,7 @@ void PSOManager::Create(
     }
 
     // RootSignatureの作成
-    hr = pDxManager_->device->CreateRootSignature(
+    hr = DxManager::GetInstance()->device->CreateRootSignature(
         0, signatureBlob->GetBufferPointer(),
         signatureBlob->GetBufferSize(), IID_PPV_ARGS(pRootSignature)
     );
@@ -266,10 +264,10 @@ void PSOManager::Create(
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
     graphicsPipelineStateDesc.pRootSignature = *pRootSignature;
     graphicsPipelineStateDesc.InputLayout = inputLayoutDesc; // InputLayout
-    graphicsPipelineStateDesc.VS = { pDxManager_->vertexShaderBlob->GetBufferPointer(),
-    pDxManager_->vertexShaderBlob->GetBufferSize() }; // VertexShader
-    graphicsPipelineStateDesc.PS = { pDxManager_->pixelShaderBlob->GetBufferPointer(),
-    pDxManager_->pixelShaderBlob->GetBufferSize() };// PixelShader
+    graphicsPipelineStateDesc.VS = { DxManager::GetInstance()->vertexShaderBlob->GetBufferPointer(),
+    DxManager::GetInstance()->vertexShaderBlob->GetBufferSize()}; // VertexShader
+    graphicsPipelineStateDesc.PS = { DxManager::GetInstance()->pixelShaderBlob->GetBufferPointer(),
+    DxManager::GetInstance()->pixelShaderBlob->GetBufferSize() };// PixelShader
     graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;// DepsStencilState
     graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     graphicsPipelineStateDesc.BlendState = blendDesc; // BlendState
@@ -287,7 +285,7 @@ void PSOManager::Create(
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // 実際に生成
-    hr = pDxManager_->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pPipelineState));
+    hr = DxManager::GetInstance()->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pPipelineState));
 
 
     // 解放

@@ -21,8 +21,6 @@ SEED* SEED::instance_ = nullptr;
 SEED::~SEED(){
     delete imguiManager_;
     imguiManager_ = nullptr;
-    delete dxManager_;
-    dxManager_ = nullptr;
     delete windowManager_;
     windowManager_ = nullptr;
     delete leakChecker_;
@@ -47,12 +45,12 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
     CameraManager::Initialize();
     instance_->leakChecker_ = new LeakChecker();
     instance_->windowManager_ = new WindowManager();
-    instance_->dxManager_ = new DxManager();
+    DxManager::GetInstance();
     instance_->imguiManager_ = new ImGuiManager();
 
     instance_->windowManager_->Initialize(instance_);
-    instance_->dxManager_->Initialize(instance_);
-    instance_->imguiManager_->Initialize(instance_);
+    DxManager::GetInstance()->Initialize(instance_);
+    instance_->imguiManager_->Initialize();
 
     ClockManager::Initialize();
     TextureManager::Initialize();
@@ -67,7 +65,7 @@ void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle
 void SEED::Finalize(){
     instance_->imguiManager_->Finalize();
     instance_->windowManager_->Finalize();
-    instance_->dxManager_->Finalize();
+    DxManager::GetInstance()->Finalize();
 }
 
 SEED* SEED::GetInstance(){
@@ -101,16 +99,16 @@ void SEED::BeginFrame(){
 
     // imgui,directXのフレーム開始時処理
     instance_->imguiManager_->Begin();
-    instance_->dxManager_->PreDraw();
+    DxManager::GetInstance()->PreDraw();
 
     // カメラの更新
     CameraManager::Update();
 }
 
 void SEED::EndFrame(){
-    instance_->dxManager_->DrawPolygonAll();
+    DxManager::GetInstance()->DrawPolygonAll();
     instance_->imguiManager_->End();
-    instance_->dxManager_->PostDraw();
+    DxManager::GetInstance()->PostDraw();
     // 経過時間を取得
     ClockManager::EndFrame();
 }
@@ -122,7 +120,7 @@ void SEED::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////
 
 uint32_t SEED::LoadTexture(const std::string& filename){
-    return instance_->dxManager_->CreateTexture("resources/textures/" + filename);
+    return DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
 }
 
 // 起動時読み込み
@@ -150,7 +148,7 @@ Vector2 SEED::GetImageSize(const std::wstring& fileName){
 }
 
 void SEED::ChangeResolutionRate(float resolutionRate){
-    instance_->dxManager_->ChangeResolutionRate(resolutionRate);
+    DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
 }
 
 /*--------------------------------------------------------------------------------------------------*/

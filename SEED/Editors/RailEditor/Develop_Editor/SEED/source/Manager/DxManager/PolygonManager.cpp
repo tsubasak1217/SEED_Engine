@@ -531,7 +531,7 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
     textureSrvHandleGPU = GetGPUDescriptorHandle(
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        1
+        0
     );
 
     // テクスチャのディスクリプタをセット

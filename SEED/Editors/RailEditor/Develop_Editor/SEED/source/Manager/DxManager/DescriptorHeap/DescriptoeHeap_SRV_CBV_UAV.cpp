@@ -2,7 +2,7 @@
 
 DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
     kMaxViewCount_ = 0xffff;
-    viewCount_ = 1;// 0番目はimgui
+    viewCount_ = 1;
 
     descriptorSize_ =
         DxManager::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(

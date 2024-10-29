@@ -3,16 +3,16 @@
 Matrix4x4 Quaternion::MakeMatrix() const{
     // クォータニオンの各成分
     Matrix4x4 result;
-    float xx = axis.x * axis.x;
-    float yy = axis.y * axis.y;
-    float zz = axis.z * axis.z;
-    float ww = angle * angle;
-    float xy = axis.x * axis.y;
-    float xz = axis.x * axis.z;
-    float yz = axis.y * axis.z;
-    float wx = angle * axis.x;
-    float wy = angle * axis.y;
-    float wz = angle * axis.z;
+    float xx = x * x;
+    float yy = y * y;
+    float zz = z * z;
+    float ww = w * w;
+    float xy = x * y;
+    float xz = x * z;
+    float yz = y * z;
+    float wx = w * x;
+    float wy = w * y;
+    float wz = w * z;
 
     result.m[0][0] = ww + xx - yy - zz;
     result.m[0][1] = 2.0f * (xy + wz);

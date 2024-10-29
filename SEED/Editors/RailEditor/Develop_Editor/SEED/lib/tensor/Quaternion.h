@@ -6,11 +6,13 @@ struct Quaternion{
     
 public:
 
-    Vector3 axis;
-    float angle;
+    float x;
+    float y;
+    float z;
+    float w;
 
 public:
 
     Matrix4x4 MakeMatrix()const;
-
+    Quaternion AngleAxis(float angle, const Vector3& axis);
 };

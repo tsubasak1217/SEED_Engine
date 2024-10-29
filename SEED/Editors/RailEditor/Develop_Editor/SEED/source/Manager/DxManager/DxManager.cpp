@@ -536,7 +536,7 @@ void DxManager::CompileShaders()
 {
     // VertexShader
     vertexShaderBlob = CompileShader(
-        L"resources/shaders/Object3d.VS.hlsl",
+        L"resources/shaders/ParticleShader/ParticleShader.VS.hlsl",
         L"vs_6_0",
         L"main",
         dxcUtils.Get(),
@@ -547,7 +547,7 @@ void DxManager::CompileShaders()
 
     // PixelShader
     pixelShaderBlob = CompileShader(
-        L"resources/shaders/Object3d.PS.hlsl",
+        L"resources/shaders/ParticleShader/ParticleShader.PS.hlsl",
         L"ps_6_0",
         L"main",
         dxcUtils.Get(),

@@ -1,4 +1,4 @@
-struct VertexShaderOutput
+ï»¿struct VertexShaderOutput
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD0;
@@ -13,7 +13,7 @@ struct LightingType
     static const int HALF_LAMBERT = 2;
 };
 
-/*- ‰¼: ”ñüŒ`‚ğüŒ`‚É•ÏŠ·‚·‚éŠÖ”-*/
+/*- ä»®: éç·šå½¢ã‚’ç·šå½¢ã«å¤‰æ›ã™ã‚‹é–¢æ•°-*/
 float DepthToLinear(float depth, float near, float far)
 {
     float z = depth * 2.0f - 1.0f;
@@ -21,16 +21,16 @@ float DepthToLinear(float depth, float near, float far)
     return (linearDepth - near) / (far - near);
 }
 
-// ƒtƒH[ƒJƒX‚·‚é[“x‚â”ÍˆÍ
-// 0.0 ~ 1.0‚ÌŠÔ‚Åƒsƒ“ƒg‚ª‡‚¤’†S[“x
+// ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã™ã‚‹æ·±åº¦ã‚„ç¯„å›²
+// 0.0 ~ 1.0ã®é–“ã§ãƒ”ãƒ³ãƒˆãŒåˆã†ä¸­å¿ƒæ·±åº¦
 static const float focusDepth = 0.2f;
-// ƒsƒ“ƒg‚ª‰e‹¿‚ğ‹y‚Ú‚·’¼Œa
+// ãƒ”ãƒ³ãƒˆãŒå½±éŸ¿ã‚’åŠã¼ã™ç›´å¾„
 static const float focusRange = 6.0f;
-// ƒsƒ“ƒg‚ª‰e‹¿‚ğ‹y‚Ú‚·”¼Œa
+// ãƒ”ãƒ³ãƒˆãŒå½±éŸ¿ã‚’åŠã¼ã™åŠå¾„
 static const float rangeRadius = focusRange * 0.65f;
 //
 static const float inverseRange = 1.0f / focusRange;
-// Å‹ß’lAÅ‰“’l
+// æœ€è¿‘å€¤ã€æœ€é å€¤
 static const float2 min_max =
 {
     focusDepth - rangeRadius,

@@ -52,14 +52,15 @@ void EffectManager::TransfarToCS()
     // ========================== 送信する画像の決定ゾーン ============================ //
 
     // SRVHeapを設定
-    ID3D12DescriptorHeap* descriptorHeaps[] = { pDxManager_->SRV_UAV_DescriptorHeap.Get() };
+    ID3D12DescriptorHeap* descriptorHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get()};
     pDxManager_->commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
     // まずは通常のスクリーンショットを転送する
     D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
     srvGpuHandle = GetGPUDescriptorHandle(
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(), pDxManager_->descriptorSizeSRV_UAV,
-        pDxManager_->systemTextures_["offScreenTexture"] + 1
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+        ViewManager::GetTextureHandle("offScreen_0")
     );
 
     // 転送
@@ -69,8 +70,9 @@ void EffectManager::TransfarToCS()
     // 次に書き込み用のリソースを転送する
     D3D12_GPU_DESCRIPTOR_HANDLE uavGpuHandle;
     uavGpuHandle = GetGPUDescriptorHandle(
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(), pDxManager_->descriptorSizeSRV_UAV, 
-        pDxManager_->systemTextures_["blurredTexture_UAV"] + 1
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+        ViewManager::GetTextureHandle("blur_0_UAV")
     );
 
     // 転送
@@ -79,20 +81,23 @@ void EffectManager::TransfarToCS()
 
     // DepthStencilResourceのSRVを転送する
     srvGpuHandle = GetGPUDescriptorHandle(
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(), pDxManager_->descriptorSizeSRV_UAV,
-        pDxManager_->systemTextures_["depthStencilSRV"] + 1
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+        ViewManager::GetTextureHandle("depth_0")
     );
+
 
     // 転送
     pDxManager_->commandList->SetComputeRootDescriptorTable(2, srvGpuHandle);
 
 
-
     // 深度情報書き込み用のテクスチャを転送する
     srvGpuHandle = GetGPUDescriptorHandle(
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(), pDxManager_->descriptorSizeSRV_UAV,
-        pDxManager_->systemTextures_["depthTexture_UAV"] + 1
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+        ViewManager::GetTextureHandle("depth_1")
     );
+
 
     // 転送
     pDxManager_->commandList->SetComputeRootDescriptorTable(3, uavGpuHandle);

@@ -23,6 +23,7 @@ void DxManager::Initialize(SEED* pSEED)
     EffectManager* effectManagerInstance = new EffectManager(this);
     effectManager_.reset(effectManagerInstance);
 
+
     /*===========================================================================================*/
     /*                                   DirextXの初期化                                          */
     /*===========================================================================================*/
@@ -36,6 +37,9 @@ void DxManager::Initialize(SEED* pSEED)
     /* --------------  Deviceの生成 -------------------- */
 
     CreateDevice();
+
+    // view管理マネージャの初期化
+    ViewManager::GetInstance();
 
     /*---------- デバッグレイヤーでエラーが出た場合止める ----------*/
 
@@ -161,23 +165,15 @@ void DxManager::Initialize(SEED* pSEED)
 
     /*------------------------------ DepthStencilViewの作成 -------------------------------*/
 
-    // DSV用のヒ－プはヒープタイプが違うので別途作る
-    dsvDescriptorHeap = CreateDescriptorHeap(
-        device.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false
-    );
-
     // DSVの設定
     D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-    dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
     // DSVHeapの先頭にDSVを作る
-    device->CreateDepthStencilView(
-        depthStencilResource.Get(),
-        &dsvDesc,
-        dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()
-    );
+    ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.Get(), &dsvDesc, "depthStencil_1");
+    // ハンドルを得る
+    dsvHandle = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
 
     /*--------------------------------- VewportとScissor ---------------------------------*/
 
@@ -404,63 +400,38 @@ void DxManager::GetSwapChainResources()
 
 void DxManager::CreateAllDescriptorHeap()
 {
-    // RTVのディスクリプタヒープを作成
-    rtvDescriptorHeap.Attach(CreateDescriptorHeap(
-        device.Get(),
-        D3D12_DESCRIPTOR_HEAP_TYPE_RTV,//レンダーターゲットビュー用に設定
-        3,// ダブルバッファ用とオフスクリーンように計3つ。 多くても別に構わない
-        false
-    ));
-
-
-    // SRVのディスクリプタヒープを作成
-    SRV_UAV_DescriptorHeap.Attach(CreateDescriptorHeap(
-        device.Get(),
-        D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,// SRV用に設定
-        0xffff,// ディスクリプタ数
-        true
-    ));
 
 }
 
 void DxManager::CheckDescriptorSize()
 {
-    // ディスクリプタのサイズ
-    descriptorSizeSRV_UAV =
-        device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    descriptorSizeRTV =
-        device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    descriptorSizeDSV =
-        device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
 }
 
 void DxManager::CreateRTV()
 {
     // RTVの設定
+    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
     rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 出力結果をSRGBに変換して書き込むように設定
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャとして書き込むように設定
 
-    // ダブルバッファなのでRTVを2つとオフスクリーン用に1つ作る。
-    // ディスクリプタヒープの先頭から作成するので先頭アドレスを取得し、順番に入れていく
-    rtvHandles[0] = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    rtvHandles[1].ptr = rtvHandles[0].ptr + descriptorSizeRTV;
-    offScreenRtvHandle.ptr = rtvHandles[0].ptr + (descriptorSizeRTV * 2);
+    // RTVを作成
+    ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[0].Get(), &rtvDesc, "doubleBuffer_0");// ダブルバッファ用
+    ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[1].Get(), &rtvDesc, "doubleBuffer_1");// ダブルバッファ用
+    ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.Get(), &rtvDesc, "offScreen_0");// オフスクリーン用
 
-    // 取得したアドレスにRTVを3つ作る
-    device->CreateRenderTargetView(swapChainResources[0].Get(), &rtvDesc, rtvHandles[0]);// swapChain用 * 2
-    device->CreateRenderTargetView(swapChainResources[1].Get(), &rtvDesc, rtvHandles[1]);
-    device->CreateRenderTargetView(offScreenResource.Get(), &rtvDesc, offScreenRtvHandle); // オフスクリーン用 * 1
+    // ハンドル取得
+    rtvHandles[0] = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_0");
+    rtvHandles[1] = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_1");
+    offScreenHandle = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
 }
 
 void DxManager::InitializeSystemTextures()
 {
     // SRVの設定を行う変数
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU;
-    D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
     //uav
     D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
-    D3D12_CPU_DESCRIPTOR_HANDLE textureUavHandleCPU;
 
     //================================ オフスクリーンのキャプチャ用テクスチャの初期化 ================================//
 
@@ -470,14 +441,8 @@ void DxManager::InitializeSystemTextures()
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
     srvDesc.Texture2D.MipLevels = 1;
 
-    textureSrvHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-    textureSrvHandleGPU = GetGPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-
     // SRVの生成
-    device->CreateShaderResourceView(offScreenResource.Get(), &srvDesc, textureSrvHandleCPU);
-
-    systemTextures_["offScreenTexture"] = systemTextureCount;
-    systemTextureCount++;
+    ViewManager::CreateView(VIEW_TYPE::SRV, offScreenResource.Get(), &srvDesc, "offScreen_0");
 
     //========================= DepthStencilResourceをテクスチャとして参照する用のSRV作成 ===============================//
 
@@ -487,14 +452,8 @@ void DxManager::InitializeSystemTextures()
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
     srvDesc.Texture2D.MipLevels = 1;
 
-    textureSrvHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-    textureSrvHandleGPU = GetGPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-
     // SRVの生成
-    device->CreateShaderResourceView(depthStencilResource.Get(), &srvDesc, textureSrvHandleCPU);
-
-    systemTextures_["depthStencilSRV"] = systemTextureCount;
-    systemTextureCount++;
+    ViewManager::CreateView(VIEW_TYPE::SRV, depthStencilResource.Get(), &srvDesc, "depth_0");
 
     //========================= 深度情報をテクスチャとして表示する用のResource作成 ===============================//
 
@@ -511,24 +470,14 @@ void DxManager::InitializeSystemTextures()
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
     srvDesc.Texture2D.MipLevels = 1;
-    textureSrvHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-    textureSrvHandleGPU = GetGPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
 
     // SRVの生成
-    device->CreateShaderResourceView(depthTextureResource.Get(), &srvDesc, textureSrvHandleCPU);
-
-    systemTextures_["depthTexture_SRV"] = systemTextureCount;
-    systemTextureCount++;
+    ViewManager::CreateView(VIEW_TYPE::SRV, depthTextureResource.Get(), &srvDesc, "depth_1");
 
     // UAVの作成
     uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
-
-    textureUavHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-    device->CreateUnorderedAccessView(depthTextureResource.Get(), nullptr, &uavDesc, textureUavHandleCPU);
-
-    systemTextures_["depthTexture_UAV"] = systemTextureCount;
-    systemTextureCount++;
+    ViewManager::CreateView(VIEW_TYPE::UAV, depthTextureResource.Get(), &uavDesc, "depth_1_UAV");
 
     //==================================== ぼけたテクスチャ用のResourceの初期化 =======================================//
 
@@ -547,25 +496,15 @@ void DxManager::InitializeSystemTextures()
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
     srvDesc.Texture2D.MipLevels = 1;
 
-    textureSrvHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-    textureSrvHandleGPU = GetGPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount);
-
     // SRVの生成
-    device->CreateShaderResourceView(blurTextureResource.Get(), &srvDesc, textureSrvHandleCPU);
-
-    systemTextures_["blurredTexture_SRV"] = systemTextureCount;
-    systemTextureCount++;
-
+    ViewManager::CreateView(VIEW_TYPE::SRV, blurTextureResource.Get(), &srvDesc, "blur_0");
 
     // UAVの作成
     uavDesc.Format = blurTextureResource->GetDesc().Format;
     uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 
-    textureUavHandleCPU = GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV,1 + systemTextureCount);
-    device->CreateUnorderedAccessView(blurTextureResource.Get(), nullptr, &uavDesc, textureUavHandleCPU);
-
-    systemTextures_["blurredTexture_UAV"] = systemTextureCount;
-    systemTextureCount++;
+    // UAVの生成
+    ViewManager::CreateView(VIEW_TYPE::UAV, blurTextureResource.Get(), &uavDesc, "blur_0_UAV");
 }
 
 void DxManager::CreateFence()
@@ -695,14 +634,27 @@ void DxManager::ClearViewSettings()
 {
     // 指定した色で画面全体をクリアする
     clearColor = MyMath::FloatColor(SEED::GetWindowColor());
-    commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], &clearColor.x, 0, nullptr);
-    commandList->ClearRenderTargetView(offScreenRtvHandle, &clearColor.x, 0, nullptr);
+    commandList->ClearRenderTargetView(
+        rtvHandles[backBufferIndex],
+        &clearColor.x, 0, nullptr
+    );
+
+    commandList->ClearRenderTargetView(
+        offScreenHandle,
+        &clearColor.x, 0, nullptr
+    );
 
     // DSVとオフスクリーンのRTVを結びつける
-    commandList->OMSetRenderTargets(1, &offScreenRtvHandle, false, &dsvHandle);
+    commandList->OMSetRenderTargets(
+        1, &offScreenHandle,
+        false, &dsvHandle
+    );
 
     // フレームの最初にもっとも遠くにクリアする
-    commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+    commandList->ClearDepthStencilView(
+        dsvHandle,
+        D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
+    );
 }
 
 void DxManager::WaitForGPU()
@@ -752,7 +704,7 @@ void DxManager::PreDraw()
         imGuiがフレーム単位でHeapの中身を操作するため
         SRVのHeapは毎フレームセットし直す
     */
-    ID3D12DescriptorHeap* ppHeaps[] = { SRV_UAV_DescriptorHeap.Get() };
+    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get()};
     commandList->SetDescriptorHeaps(1, ppHeaps);
 }
 
@@ -762,15 +714,28 @@ void DxManager::DrawPolygonAll()
     DrawGUI();
 #endif // DEBUG
 
+
     polygonManager_->DrawPolygonAll();
+
 
     // ここでぼかした画面を作る
     effectManager_->TransfarToCS();
 
     // ここでオフスクリーンからバックバッファに描画対象を切り変える
-    commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], &clearColor.x, 0, nullptr);
-    commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-    commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
+    commandList->ClearRenderTargetView(
+        rtvHandles[backBufferIndex],
+        &clearColor.x, 0, nullptr
+    );
+
+    commandList->ClearDepthStencilView(
+        dsvHandle,
+        D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
+    );
+
+    commandList->OMSetRenderTargets(
+        1, &rtvHandles[backBufferIndex],
+        false, &dsvHandle
+    );
 
     // ぼかした画面を写せる状態に
     TransitionResourceState(
@@ -785,11 +750,11 @@ void DxManager::DrawPolygonAll()
         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
     );
 
-    TransitionResourceState(
-        depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-    );
+    //TransitionResourceState(
+    //    depthStencilResource.Get(),
+    //    D3D12_RESOURCE_STATE_DEPTH_WRITE,
+    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+    //);
 
     TransitionResourceState(
         depthTextureResource.Get(),
@@ -827,7 +792,10 @@ void DxManager::DrawPolygonAll()
     //);
     
     // すべての描画が終了したのでオフスクリーンのRTVをクリアする。
-    commandList->ClearRenderTargetView(offScreenRtvHandle, &clearColor.x, 0, nullptr);
+    commandList->ClearRenderTargetView(
+        ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0"), 
+        &clearColor.x, 0, nullptr
+    );
 }
 
 void DxManager::DrawGUI(){
@@ -891,7 +859,7 @@ uint32_t DxManager::CreateTexture(std::string filePath)
 {
 
     // 既にある場合
-    if(textures_.find(filePath) != textures_.end()){ return textures_[filePath]; }
+    if(ViewManager::GetTextureHandle(filePath) != -1){ return ViewManager::GetTextureHandle(filePath); }
 
     /*----------------------------- TextureResourceの作成,転送 -----------------------------*/
 
@@ -914,18 +882,8 @@ uint32_t DxManager::CreateTexture(std::string filePath)
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
     srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
-    // SRVを作成するDescriptorHeapの場所を決める(0番目,imgui 1番目,キャプチャ用なので2番目からスタート)
-    D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU =
-        GetCPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount + textureCount_);
-    D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU =
-        GetGPUDescriptorHandle(SRV_UAV_DescriptorHeap.Get(), descriptorSizeSRV_UAV, 1 + systemTextureCount + textureCount_);
-
-    // SRVの生成
-    device->CreateShaderResourceView(textureResource.back().Get(), &srvDesc, textureSrvHandleCPU);
-
-    // グラフハンドルもついでに返す
-    textures_[filePath] = systemTextureCount + textureCount_;
-    return systemTextureCount + textureCount_++;// システム画像の枚数 + 通常のテクスチャの枚数
+    // SRVの作成
+    return ViewManager::CreateView(VIEW_TYPE::SRV, textureResource.back().Get(), &srvDesc, filePath);
 }
 
 

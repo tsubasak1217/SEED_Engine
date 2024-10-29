@@ -17,6 +17,7 @@
 #include <InputManager.h>
 #include <ModelManager.h>
 #include <TextureManager.h>
+#include <ViewManager.h>
 #include <BlendMode.h>
 
 class SEED{

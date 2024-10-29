@@ -17,6 +17,7 @@
 #include <EffectManager.h>
 #include <Camera.h>
 #include <CameraManager.h>
+#include <ViewManager.h>
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
@@ -25,6 +26,7 @@ using Microsoft::WRL::ComPtr;
 #include <imgui.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
+
 
 class SEED;
 class ImGuiManager;
@@ -136,10 +138,6 @@ private:/*============================== オブジェクト ====================
 
 private:/*========================== テクスチャ管理変数 ============================*/
 
-    std::unordered_map<std::string, uint32_t>textures_;
-    std::unordered_map<std::string, uint32_t>systemTextures_;
-    uint32_t textureCount_ = 0;
-    uint32_t systemTextureCount = 0;
 
 private:/*============================ パラメーター変数 ============================*/
 
@@ -180,23 +178,11 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     // オフスクリーン用
     ComPtr<ID3D12Resource> offScreenResource = nullptr;
     // RTV用
-    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
     D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2]{};
-    D3D12_CPU_DESCRIPTOR_HANDLE offScreenRtvHandle;
+    D3D12_CPU_DESCRIPTOR_HANDLE offScreenHandle;
     // その他
     Vector4 clearColor;
 
-    /*===================================================================*/
-
-    // ディスクリプタのサイズ
-    uint32_t descriptorSizeSRV_UAV;
-    uint32_t descriptorSizeRTV;
-    uint32_t descriptorSizeDSV;
-
-    // ディスクリプタヒープ類
-    ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap = nullptr;
-    ComPtr<ID3D12DescriptorHeap> SRV_UAV_DescriptorHeap = nullptr;
-    ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap = nullptr;
 
     //==================================================================//
     //                            Shader
@@ -271,5 +257,7 @@ private:/*============================ アクセッサ関数 ===================
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }
     float GetResolutionRate(){ return resolutionRate_; }
     float GetPreResolutionRate(){ return preResolutionRate_; }
-    uint32_t GetSystemTextureCount()const{ return systemTextureCount; }
+
+public:
+    ID3D12Device* GetDevice()const{ return device.Get(); }
 };

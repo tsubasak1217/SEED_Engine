@@ -149,8 +149,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV .cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
@@ -226,6 +227,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />

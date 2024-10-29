@@ -295,10 +295,13 @@
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.cpp">
       <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV .cpp">
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.cpp">
       <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.cpp">
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp">
       <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClCompile>
   </ItemGroup>
@@ -523,6 +526,12 @@
       <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h">
       <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
     </ClInclude>
   </ItemGroup>

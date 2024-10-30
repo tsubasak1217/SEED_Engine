@@ -32,6 +32,8 @@ struct Camera{
     Matrix4x4 viewProjectionMat2D_;
     Matrix4x4 viewportMat_;
     Matrix4x4 vpVp_;
+
+    bool isActive_ = true;
 };
 
 enum PROJECTIONMODE{

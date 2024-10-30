@@ -13,4 +13,4 @@ Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color);
 
 //---------------------- 正四角形 -------------------------
 
-Quad MakeEqualQuad(float radius, const Vector4& color);
+Quad MakeEqualQuad(float radius, const Vector4& color = {1.0f,1.0f,1.0f,1.0f});

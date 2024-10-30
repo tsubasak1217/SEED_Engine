@@ -15,6 +15,7 @@
 #include <Sprite.h>
 #include "RailInfo.h"
 #include "RailCamera.h"
+#include "Player.h"
 
 class Scene_Game : public Scene_Base{
 
@@ -36,4 +37,7 @@ private:
     // レールカメラ
     std::unique_ptr<RailInfo> railInfo_ = nullptr;
     std::unique_ptr<RailCamera> railCamera_ = nullptr;
+
+    // プレイヤー
+    std::unique_ptr<Player> player_ = nullptr;
 };

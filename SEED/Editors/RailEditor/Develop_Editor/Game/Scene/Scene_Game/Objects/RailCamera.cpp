@@ -20,9 +20,19 @@ void RailCamera::Update(){
 
     } else{
 
+        if(isDebugCameraActive_ == false){
+            SEED::SetCamera("main");
+            CameraManager::GetCamera("debug")->isActive_ = false;
+        } else{
+            SEED::SetCamera("debug");
+            CameraManager::GetCamera("debug")->isActive_ = true;
+        }
+
         if(ImGui::Checkbox("isRailCameraActive", &isRailCameraActive_)){
 
             SEED::SetCamera("railCamera");
+            CameraManager::GetCamera("debug")->isActive_ = false;
+            isDebugCameraActive_ = false;
             rail_t_ = 0.0f;
             if(pRailInfo_->controlPoints_.size() > 0){
                 transform_.translate_ = *pRailInfo_->controlPoints_[0];
@@ -32,9 +42,6 @@ void RailCamera::Update(){
             SEED::SetCamera("debug");
         }
 
-        if(isDebugCameraActive_ == false){
-            SEED::SetCamera("main");
-        }
     }
 
     ImGui::SliderFloat("t", &rail_t_, 0.0f, 1.0f);
@@ -70,7 +77,7 @@ void RailCamera::Update(){
         //transform_.rotate_ = {
         //std::atan2(-dif.y, MyMath::Length(dif)),// 縦方向の回転角(X軸回り)
         //std::atan2(dif.x, dif.z),// 横方向の回転角(Y軸回り)
-        //-currentIdxRotateZ
+        //rail_t_* (5.0f * 6.28f)
         //};
 
         transform_.rotate_ = MyMath::Lerp(pRailInfo_->twistModels_[idx]->rotate_, pRailInfo_->twistModels_[nextIdx]->rotate_, t2);
@@ -86,5 +93,5 @@ void RailCamera::Update(){
 }
 
 void RailCamera::Draw(){
-    debugModel_->Draw();
+    //debugModel_->Draw();
 }

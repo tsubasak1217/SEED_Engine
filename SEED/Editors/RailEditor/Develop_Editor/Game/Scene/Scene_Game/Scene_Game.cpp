@@ -52,6 +52,11 @@ void Scene_Game::Initialize(){
     CameraManager::GetCamera("railCamera")->zfar_ = 1000.0f;
     CameraManager::GetCamera("railCamera")->UpdateMatrix();
 
+    // プレイヤーの初期化
+    player_ = std::make_unique<Player>(railCamera_->transform_.translate_);
+    player_->SetRailCameraPtr(railCamera_.get());
+
+
     ////////////////////////////////////////////////////
     //  解像度の初期設定
     ////////////////////////////////////////////////////
@@ -84,7 +89,7 @@ void Scene_Game::Update(){
 
     railInfo_->Update();
     currentState_->Update();
-
+    player_->Update();
 }
 
 void Scene_Game::Draw(){
@@ -93,5 +98,5 @@ void Scene_Game::Draw(){
     railCamera_->Draw();
     SEED::DrawGrid(1.0f, 100);
     currentState_->Draw();
-
+    player_->Draw();
 }

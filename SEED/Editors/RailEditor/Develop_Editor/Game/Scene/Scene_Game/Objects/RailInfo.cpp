@@ -1,4 +1,5 @@
 #include "RailInfo.h"
+#include "ShapeMath.h"
 
 RailInfo::~RailInfo(){}
 
@@ -91,4 +92,42 @@ void RailInfo::Draw(){
         );
     }
 
+    // レール用の分割数
+    int railCount = totalSubdivision / 8;
+    std::vector<Vector3> railPoints;
+    for(int i = 0; i < railCount; i++){
+
+        float rail_t = float(i) / float(railCount);
+
+        int size = int(controlPoints_.size() - 1);
+        float t2 = std::fmod(rail_t * size, 1.0f);
+        int idx = int(rail_t * size);
+        int nextIdx = std::clamp(idx + 1, 0, (int)controlPoints_.size() - 1);
+
+        Vector3 rotate;
+        rotate = MyMath::Lerp(twistModels_[idx]->rotate_, twistModels_[nextIdx]->rotate_, t2);
+
+        Vector3 railPoint[2]{};
+        railPoint[0] = (Vector3(1.0f, 0.0f, 0.0f) * RotateMatrix(rotate)) * railHalfWidth_;
+        railPoint[1] = (Vector3(-1.0f, 0.0f, 0.0f) * RotateMatrix(rotate)) * railHalfWidth_;
+
+        Vector3 catmullromPos = MyMath::CatmullRomPosition(controlPoints_, rail_t);
+
+        //レールの描画頂点の計算
+        railPoints.push_back(catmullromPos + railPoint[0]);
+        railPoints.push_back(catmullromPos + railPoint[1]);
+    }
+
+    int railGH = TextureManager::LoadTexture("rail.png");
+    for(int i = 0; i < ((int)railPoints.size() / 2) - 1; i++){
+
+        Quad quad = MakeEqualQuad(1.0f);
+        quad.lightingType = LIGHTINGTYPE_NONE;
+        quad.localVertex[0] = railPoints[(i * 2) + 3];
+        quad.localVertex[1] = railPoints[(i * 2) + 2];
+        quad.localVertex[2] = railPoints[i * 2 + 1];
+        quad.localVertex[3] = railPoints[i * 2];
+        
+        SEED::DrawQuad(quad, railGH);
+    }
 }

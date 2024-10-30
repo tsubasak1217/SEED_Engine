@@ -221,92 +221,31 @@ Vector3 MyMath::PrimaryCatmullRom(const Vector3& p1, const Vector3& p2, const Ve
     return result;
 }
 
-//Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
-//    assert(controlPoints.size() >= 4 && "制御点は4以上が必要です");
-//
-//    size_t division = controlPoints.size() - 1; // 区間数は制御点の数 - 3
-//    float areaWidth = 1.0f / division; // 各区間の長さ
-//
-//    // 区間番号
-//    float t_2 = std::fmod(t, areaWidth) * division;
-//    t_2 = std::clamp(t_2, 0.0f, 1.0f);
-//
-//    size_t index = static_cast<size_t>(t / areaWidth);
-//    index = std::clamp(int(index), 0, int(division - 1));
-//
-//    // 4つの制御点のインデックス
-//    size_t index0 = index - 1;
-//    size_t index1 = index;
-//    size_t index2 = index + 1;
-//    size_t index3 = index + 2;
-//
-//
-//    //最初の区間のp0はp1を重複使用する
-//    if(index == 0){
-//        index0 = index1;
-//    }
-//    //最後の区間のp3はp2を重複使用する
-//    if(index3 >= controlPoints.size()){
-//        index3 = index2;
-//    }
-//
-//    // インデックスが範囲を超えないようにする
-//    index0 = std::clamp(index0, size_t(0), controlPoints.size() - 1);
-//    index1 = std::clamp(index1, size_t(0), controlPoints.size() - 1);
-//    index2 = std::clamp(index2, size_t(0), controlPoints.size() - 1);
-//    index3 = std::clamp(index3, size_t(0), controlPoints.size() - 1);
-//
-//    const Vector3& p0 = controlPoints[index0];
-//    const Vector3& p1 = controlPoints[index1];
-//    const Vector3& p2 = controlPoints[index2];
-//    const Vector3& p3 = controlPoints[index3];
-//
-//    return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
-//}
-//
-//
-//Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t){
-//    assert(controlPoints.size() >= 4 && "制御点は4以上が必要です");
-//
-//    size_t division = controlPoints.size() - 1; // 区間数は制御点の数 - 3
-//    float areaWidth = 1.0f / division; // 各区間の長さ
-//
-//    // 区間番号
-//    float t_2 = std::fmod(t, areaWidth) * division;
-//    t_2 = std::clamp(t_2, 0.0f, 1.0f);
-//
-//    size_t index = static_cast<size_t>(t / areaWidth);
-//    index = std::clamp(int(index), 0, int(division - 1));
-//
-//    // 4つの制御点のインデックス
-//    size_t index0 = index - 1;
-//    size_t index1 = index;
-//    size_t index2 = index + 1;
-//    size_t index3 = index + 2;
-//
-//
-//    //最初の区間のp0はp1を重複使用する
-//    if(index == 0){
-//        index0 = index1;
-//    }
-//    //最後の区間のp3はp2を重複使用する
-//    if(index3 >= controlPoints.size()){
-//        index3 = index2;
-//    }
-//
-//    // インデックスが範囲を超えないようにする
-//    index0 = std::clamp(index0, size_t(0), controlPoints.size() - 1);
-//    index1 = std::clamp(index1, size_t(0), controlPoints.size() - 1);
-//    index2 = std::clamp(index2, size_t(0), controlPoints.size() - 1);
-//    index3 = std::clamp(index3, size_t(0), controlPoints.size() - 1);
-//
-//    const Vector3& p0 = *controlPoints[index0];
-//    const Vector3& p1 = *controlPoints[index1];
-//    const Vector3& p2 = *controlPoints[index2];
-//    const Vector3& p3 = *controlPoints[index3];
-//
-//    return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
-//}
+
+Vector3 CalcSpline(const Vector3& p1, const Vector3& p2, const Vector3& v1, Vector3 v2, float t){
+    Matrix4x4 T = Matrix4x4();
+    Matrix4x4 H = Matrix4x4();
+    Matrix4x4 G = Matrix4x4();
+
+    T.m[0][0] = t * t * t; 
+    T.m[0][1] = t * t; T.m[0][2] = t;
+    T.m[0][3] = 1;
+
+    H.m[0][0] = 2; H.m[0][1] = -2; H.m[0][2] = 1; H.m[0][3] = 1;
+    H.m[1][0] = -3;H.m[1][1] = 3;  H.m[1][2] = -2;H.m[1][3] = -1;
+    H.m[2][0] = 0; H.m[2][1] = 0;  H.m[2][2] = 1; H.m[2][3] = 0;
+    H.m[3][0] = 1; H.m[3][1] = 0;  H.m[3][2] = 0; H.m[3][3] = 0;
+
+    G.m[0][0] = p1.x; G.m[0][1] = p1.y; G.m[0][2] = p1.z; G.m[0][3] = 1;
+    G.m[1][0] = p2.x; G.m[1][1] = p2.y; G.m[1][2] = p2.z; G.m[1][3] = 1;
+    G.m[2][0] = v1.x; G.m[2][1] = v1.y; G.m[2][2] = v1.z; G.m[2][3] = 1;
+    G.m[3][0] = v2.x; G.m[3][1] = v2.y; G.m[3][2] = v2.z; G.m[3][3] = 1;
+
+    Matrix4x4 calcMat = T * H * G;
+
+    return Vector3(calcMat.m[0][0], calcMat.m[0][1], calcMat.m[0][2]);
+}
+
 
 Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
 

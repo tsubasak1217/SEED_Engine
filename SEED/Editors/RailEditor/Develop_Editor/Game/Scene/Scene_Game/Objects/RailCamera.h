@@ -16,6 +16,7 @@ public:
 public:
 
     void SetRailInfo(RailInfo* railInfo){ pRailInfo_ = railInfo; }
+    bool GetIsDebugCameraActive()const{ return isDebugCameraActive_; }
 
 private:
 

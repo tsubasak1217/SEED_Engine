@@ -283,6 +283,15 @@
     <ClCompile Include="SEED\lib\tensor\Quaternion.cpp">
       <Filter>SEED\lib\tensor</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Player.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Bullet.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Reticle.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -491,6 +500,15 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\tensor\Quaternion.h">
       <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Player.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Bullet.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Reticle.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

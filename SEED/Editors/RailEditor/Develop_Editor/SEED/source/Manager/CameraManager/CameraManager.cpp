@@ -25,6 +25,7 @@ void CameraManager::Update(){
 
     // カメラの更新
     for(auto& camera : instance_->cameras_){
+        if(!camera.second->isActive_){ continue; }
         camera.second->Update();
         camera.second->UpdateMatrix();
     }

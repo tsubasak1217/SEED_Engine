@@ -1,5 +1,6 @@
 #pragma once
 #include "include_tensors.h"
+#include <cmath>
 #include <climits>
 #include <stdint.h>
 #include <vector>

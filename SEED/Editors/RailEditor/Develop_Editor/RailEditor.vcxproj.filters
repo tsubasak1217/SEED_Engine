@@ -137,6 +137,9 @@
     <Filter Include="SEED\source\Manager\ParticleManager">
       <UniqueIdentifier>{7700f9b3-f2a6-46c7-870c-c0ccf12331a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\ParticleManager\Particles">
+      <UniqueIdentifier>{f4629fb1-f4f0-46a5-923b-59dc553c0e59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -283,12 +286,6 @@
     <ClCompile Include="SEED\source\Manager\CameraManager\CameraManager.cpp">
       <Filter>SEED\source\Manager\CameraManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\Objects\RailCamera.cpp">
-      <Filter>Game\Scene\Scene_Game\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\Objects\RailInfo.cpp">
-      <Filter>Game\Scene\Scene_Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\lib\tensor\Quaternion.cpp">
       <Filter>SEED\lib\tensor</Filter>
     </ClCompile>
@@ -312,6 +309,12 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\ParticleManager\ParticleManager.cpp">
       <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.cpp">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.cpp">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -513,12 +516,6 @@
     <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h">
       <Filter>SEED\source\Manager\CameraManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\Objects\RailCamera.h">
-      <Filter>Game\Scene\Scene_Game\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\Objects\RailInfo.h">
-      <Filter>Game\Scene\Scene_Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\lib\tensor\Quaternion.h">
       <Filter>SEED\lib\tensor</Filter>
     </ClInclude>
@@ -545,6 +542,21 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\ParticleManager\ParticleManager.h">
       <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range1D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range2D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range3D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

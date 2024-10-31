@@ -13,8 +13,6 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
-#include "RailInfo.h"
-#include "RailCamera.h"
 
 class Scene_Game : public Scene_Base{
 
@@ -33,7 +31,4 @@ private:
     float resolutionRate_ = 1.0f;
     float preRate_ = resolutionRate_;
 
-    // レールカメラ
-    std::unique_ptr<RailInfo> railInfo_ = nullptr;
-    std::unique_ptr<RailCamera> railCamera_ = nullptr;
 };

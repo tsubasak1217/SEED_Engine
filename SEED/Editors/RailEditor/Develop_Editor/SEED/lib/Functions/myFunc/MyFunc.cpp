@@ -1,10 +1,11 @@
 #include "MyFunc.h"
+#include "MyMath.h"
 
-int32_t MyFunc::Random(int min, int max)
-{
-    // 乱数生成器を作成
-    std::random_device rd;
-    std::mt19937 gen(rd());
+// staticメンバーの定義
+std::random_device MyFunc::rd;
+std::mt19937 MyFunc::gen(MyFunc::rd());
+
+int32_t MyFunc::Random(int min, int max){
 
     // minからmaxまでの一様分布を設定
     std::uniform_int_distribution<> distrib(min, max);
@@ -14,15 +15,29 @@ int32_t MyFunc::Random(int min, int max)
 }
 
 float MyFunc::Random(float min, float max){
-    // 乱数生成器を作成
-    std::random_device rd;
-    std::mt19937 gen(rd());
 
     // minからmaxまでの一様分布を設定 (float用)
     std::uniform_real_distribution<float> distrib(min, max);
 
     // 乱数を生成して返す
     return distrib(gen);
+}
+
+
+//
+Vector3 MyFunc::Random(const Range3D& range){
+    return {
+        Random(range.min.x, range.max.x),
+        Random(range.min.y, range.max.y),
+        Random(range.min.z, range.max.z)
+    };
+}
+
+Vector2 MyFunc::Random(const Range2D& range){
+    return {
+    Random(range.min.x, range.max.x),
+    Random(range.min.y, range.max.y)
+    };
 }
 
 

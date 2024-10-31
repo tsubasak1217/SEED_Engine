@@ -199,7 +199,7 @@ void DxManager::Initialize(SEED* pSEED)
     // デバッグカメラの初期値
     CameraManager::GetCamera("debug")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
     CameraManager::GetCamera("debug")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
-    CameraManager::GetCamera("debug")->transform_.translate_ = { 0.0f,1.0f,0.0f }; // translate
+    CameraManager::GetCamera("debug")->transform_.translate_ = { 0.0f,1.0f,-100.0f }; // translate
     CameraManager::GetCamera("debug")->projectionMode_ = PERSPECTIVE;
     CameraManager::GetCamera("debug")->clipRange_ = kWindowSize;
     CameraManager::GetCamera("debug")->znear_ = 0.1f;

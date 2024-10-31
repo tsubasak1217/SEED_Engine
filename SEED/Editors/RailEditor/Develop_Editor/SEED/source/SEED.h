@@ -135,8 +135,8 @@ public:
 
     /*==========================線の描画関数==========================*/
 
-    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color,BlendMode blendMode = BlendMode::NORMAL);
-    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode = BlendMode::NORMAL);
+    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL);
+    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL);
     static void DrawGrid(float gridInterval, int32_t gridCount);
 
 

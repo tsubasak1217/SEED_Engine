@@ -26,12 +26,17 @@ public:
 public:
 
     bool GetIsAlive()const{return lifeTime_ > 0.0f;}
+    void SetAcceleration(const Vector3& acceleration){ acceleration_ = acceleration; }
+    const Vector3& GetPos()const{ return particle_->translate_; }
 
 protected:
 
     std::unique_ptr<Model>particle_;
     Vector3 direction_;
     float speed_;
+    Vector3 velocity_;
+    Vector3 acceleration_;
+    Vector3 totalAcceleration_;
     float kLifeTime_;
     float lifeTime_;
 };

@@ -24,10 +24,10 @@ RadialParticle::RadialParticle(
 void RadialParticle::Update(){
 
     // パーティクルの移動
-    particle_->translate_ += direction_ * speed_ * ClockManager::DeltaTime();
+    velocity_ = direction_ * speed_ * ClockManager::DeltaTime();
 
     // 色を時間経過で薄くする
-    particle_->color_.w = lifeTime_ / kLifeTime_;
+    particle_->color_.w = std::clamp(lifeTime_ / kLifeTime_,0.0f,1.0f);
 
     // 寿命、ビルボードの更新
     BaseParticle::Update();

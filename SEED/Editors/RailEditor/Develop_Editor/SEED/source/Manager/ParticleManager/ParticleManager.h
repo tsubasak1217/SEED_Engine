@@ -5,6 +5,7 @@
 #include "SEED.h"
 #include "Range1D.h"
 #include "Range3D.h"
+#include "AccelerarionField.h"
 
 // particles
 #include "BaseParticle.h"
@@ -29,6 +30,13 @@ public:
     static void Draw();
 
 public:
+
+    /// <summary>
+    /// 加速フィールドを作成する
+    /// </summary>
+    /// <param name="range">フィールドの範囲</param>
+    /// <param name="force">加速度</param>
+    static void CreateAccelerationField(const Range3D& range, const Vector3& force);
 
     /// <summary>
     /// パーティクルを発生させる
@@ -78,10 +86,16 @@ public:
 
 private:
 
+    // パーティクルと加速フィールドの衝突判定
+    void CollisionParticle2Field();
+
+private:
+
     static ParticleManager* instance_;
 
 private:
 
-    std::list<std::shared_ptr<BaseParticle>> particles_;
-
+    bool isFieldActive_;
+    std::list<std::unique_ptr<BaseParticle>> particles_;
+    std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
 };

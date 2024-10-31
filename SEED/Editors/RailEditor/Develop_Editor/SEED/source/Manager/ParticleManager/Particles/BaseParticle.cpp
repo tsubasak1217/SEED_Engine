@@ -32,6 +32,9 @@ BaseParticle::BaseParticle(
 
     // ブレンドモードを設定
     particle_->blendMode_ = blendMode;
+
+    // ライトを無効に
+    particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;
 }
 
 void BaseParticle::Update(){
@@ -39,6 +42,11 @@ void BaseParticle::Update(){
     particle_->rotate_ = SEED::GetCamera()->transform_.rotate_;
     // 寿命を減らす
     lifeTime_ -= ClockManager::DeltaTime();
+    // 加速度を追加
+    totalAcceleration_ += acceleration_ * ClockManager::DeltaTime();
+    velocity_ += totalAcceleration_ * ClockManager::DeltaTime();
+    // 移動
+    particle_->translate_ += velocity_;
     // パーティクルのトランスフォーム更新
     particle_->UpdateMatrix();
 }

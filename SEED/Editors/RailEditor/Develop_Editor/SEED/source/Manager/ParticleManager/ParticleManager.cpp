@@ -28,13 +28,26 @@ ParticleManager* ParticleManager::GetInstance(){
 ///////////////////////////////////////////////
 void ParticleManager::Update(){
 
+
+#ifdef _DEBUG
+    ImGui::Begin("isFieldActive");
+    ImGui::Checkbox("isFieldActive", &instance_->isFieldActive_);
+    ImGui::End();
+#endif // _DEBUG
+
+
+    // パーティクルとフィールドの衝突判定
+    if(instance_->isFieldActive_){
+        instance_->CollisionParticle2Field();
+    }
+
     // パーティクルの更新
     for(auto& particle : instance_->particles_){
         particle->Update();
     }
 
     // 死んでいるパーティクルを削除
-    instance_->particles_.remove_if([](const std::shared_ptr<BaseParticle>& particle){
+    instance_->particles_.remove_if([](auto& particle){
         return !particle->GetIsAlive();
     });
 }
@@ -48,6 +61,23 @@ void ParticleManager::Draw(){
     for(auto& particle : instance_->particles_){
         particle->Draw();
     }
+
+#ifdef _DEBUG
+    for(auto& AccelerationField : instance_->accelerationFields_){
+        AccelerationField->DrawRange();
+    }
+#endif // _DEBUG
+}
+
+/// <summary>
+/// 加速フィールドを作成する
+/// </summary>
+/// <param name="range">フィールドの範囲</param>
+/// <param name="force">加速度</param>
+void ParticleManager::CreateAccelerationField(const Range3D& range, const Vector3& force){
+    instance_->accelerationFields_.emplace_back(
+        std::make_unique<AccelerationField>(force, range)
+    );
 }
 
 
@@ -77,8 +107,8 @@ void ParticleManager::Emit(
 
         switch(type){
         case ParticleType::kRadial:
-            instance_->particles_.push_back(
-                std::make_shared<RadialParticle>(
+            instance_->particles_.emplace_back(
+                std::make_unique<RadialParticle>(
                     positionRange, radiusRange, speedRange, lifeTime, colors, blendMode
                 ));
 
@@ -115,6 +145,16 @@ void ParticleManager::Emit(
     if(timer >= interval){
         Emit(type, positionRange, radiusRange, speedRange, lifeTime, colors, count, blendMode);
         timer = 0.0f;
+    }
+}
+
+void ParticleManager::CollisionParticle2Field(){
+    for(auto& particle : instance_->particles_){
+        for(auto& field : instance_->accelerationFields_){
+            if(field->CheckCollision(particle->GetPos())){
+                particle->SetAcceleration(field->acceleration);
+            }
+        }
     }
 }
 

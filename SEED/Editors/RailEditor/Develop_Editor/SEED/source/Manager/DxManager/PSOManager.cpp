@@ -193,13 +193,13 @@ void PSOManager::Create(
     // すべての色を書き込むよう設定
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-    // ブレンドステートの設定 (アルファブレンド)
-    blendDesc.AlphaToCoverageEnable = FALSE;
-    blendDesc.IndependentBlendEnable = FALSE;
+    //// ブレンドステートの設定 (アルファブレンド)
+    //blendDesc.AlphaToCoverageEnable = FALSE;
+    //blendDesc.IndependentBlendEnable = FALSE;
 
-    // RenderTarget[0] のアルファブレンド設定
+    //// RenderTarget[0] のアルファブレンド設定
     blendDesc.RenderTarget[0].BlendEnable = TRUE;  // ブレンドを有効にする
-    blendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+    //blendDesc.RenderTarget[0].LogicOpEnable = FALSE;
 
     // ブレンドモードに応じた設定
     if(blendMode == BlendMode::NORMAL){
@@ -236,8 +236,8 @@ void PSOManager::Create(
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
     blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;  // アルファ値に影響しない
 
-    blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+    //blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+    //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     /*--------------------------------- RasterizerStateの設定 ----------------------------------*/
 

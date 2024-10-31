@@ -40,24 +40,24 @@ PixelShaderOutput main(VertexShaderOutput input)
     PixelShaderOutput output;
     
     
-    if (gMaterial[input.instanceID].lightingType == LightingType::HALF_LAMBERT)// ハーフランバート-------------
-    {
-        float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
-        float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-
-        output.color = gMaterial[input.instanceID].color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
-        output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
-    }
-    else if (gMaterial[input.instanceID].lightingType == LightingType::LAMBERT)// ランバート------------------
-    {
-        float cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
-        output.color = gMaterial[input.instanceID].color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
-        output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
-    }
-    else // ライティングなし------------------------------------------------------------------------------------
-    {
+    //if (gMaterial[input.instanceID].lightingType == LightingType::HALF_LAMBERT)// ハーフランバート-------------
+    //{
+    //    float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
+    //    float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+    //
+    //    output.color = gMaterial[input.instanceID].color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
+    //    output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
+    //}
+    //else if (gMaterial[input.instanceID].lightingType == LightingType::LAMBERT)// ランバート------------------
+    //{
+    //    float cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
+    //    output.color = gMaterial[input.instanceID].color * textureColor * gDirectionalLight.color * cos * gDirectionalLight.intensity;
+    //    output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
+    //}
+    //else // ライティングなし------------------------------------------------------------------------------------
+    //{
         output.color = gMaterial[input.instanceID].color * textureColor;
-    }
+    //}
    
     // 出力が透明の場合は棄却
     if (output.color.a == 0.0f)

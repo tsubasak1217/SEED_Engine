@@ -316,6 +316,9 @@
     <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.cpp">
       <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp">
+      <Filter>SEED\lib\structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -557,6 +560,9 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h">
       <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\AccelerarionField.h">
+      <Filter>SEED\lib\structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

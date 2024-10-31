@@ -18,6 +18,11 @@ void Scene_Game::Initialize(){
     ParticleManager::GetInstance();
     SEED::SetCamera("debug");
 
+    ParticleManager::CreateAccelerationField(
+        Range3D({ -2.0f,-2.0f,-2.0f }, { 2.0f,2.0f,2.0f }),
+        { -10.0f,0.0f,0.0f }
+    );
+
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
@@ -34,7 +39,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,0.0f };
+    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,-50.0f };
     SEED::GetCamera()->Update();
 
     ////////////////////////////////////////////////////
@@ -67,6 +72,10 @@ void Scene_Game::Update(){
     /*========================= 解像度の更新 ==========================*/
 
     // 前フレームと値が違う場合のみ更新
+    ImGui::Begin("resolutionRate");
+    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
+    ImGui::End();
+
     if(resolutionRate_ != preRate_){
         SEED::ChangeResolutionRate(resolutionRate_);
     }
@@ -74,12 +83,12 @@ void Scene_Game::Update(){
     /*========================= 各状態の更新 ==========================*/
 
     ParticleManager::Emit(
-        ParticleType::kRadial,
-        Range3D({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }),
-        Range1D(1.0f, 2.0f),
-        Range1D(1.0f, 2.0f),
-        5.0f,
-        {
+        ParticleType::kRadial,// パーティクルの種類
+        Range3D({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }),// 生成範囲
+        Range1D(1.0f, 2.0f),// 生成時の大きさの範囲
+        Range1D(2.0f, 4.0f),// 生成時の速度の範囲
+        5.0f,// パーティクルの寿命
+        {// パーティクルの色一覧
             {1.0f,0.0f,0.0f,1.0f},
             {0.0f,1.0f,0.0f,1.0f},
             {0.0f,0.0f,1.0f,1.0f},
@@ -87,9 +96,9 @@ void Scene_Game::Update(){
             {0.0f,1.0f,1.0f,1.0f},
             {1.0f,0.0f,1.0f,1.0f}
         },
-        0.2f,
-        1,
-        BlendMode::ADD
+        0.1f,// パーティクルの生成間隔
+        16,// 生成数
+        BlendMode::ADD// ブレンドモード
         );
 
     currentState_->Update();

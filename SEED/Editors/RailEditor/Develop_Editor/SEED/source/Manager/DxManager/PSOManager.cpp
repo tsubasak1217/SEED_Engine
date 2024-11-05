@@ -234,7 +234,7 @@ void PSOManager::Create(
     // アルファチャンネルのブレンド
     blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;  // アルファ値はそのまま
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;  // アルファ値に影響しない
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;  // アルファ値に影響しない
 
     //blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
     //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;

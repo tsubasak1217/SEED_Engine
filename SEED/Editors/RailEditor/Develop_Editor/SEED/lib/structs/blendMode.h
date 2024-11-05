@@ -4,8 +4,8 @@ enum class BlendMode{
     NONE = 0,
     MULTIPLY,
     SUBTRACT,
-    ADD,
     NORMAL,
+    ADD,
     SCREEN,
     kBlendModeCount
 };

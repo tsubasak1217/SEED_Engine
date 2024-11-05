@@ -34,6 +34,9 @@ private:
     float resolutionRate_ = 1.0f;
     float preRate_ = resolutionRate_;
 
+    // 天球
+    std::unique_ptr<Model>skySphere_ = nullptr;
+
     // レールカメラ
     std::unique_ptr<RailInfo> railInfo_ = nullptr;
     std::unique_ptr<RailCamera> railCamera_ = nullptr;

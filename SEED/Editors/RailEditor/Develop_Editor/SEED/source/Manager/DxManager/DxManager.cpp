@@ -195,7 +195,7 @@ void DxManager::Initialize(SEED* pSEED)
     CameraManager::GetCamera("main")->projectionMode_ = PERSPECTIVE;
     CameraManager::GetCamera("main")->clipRange_ = kWindowSize;
     CameraManager::GetCamera("main")->znear_ = 0.1f;
-    CameraManager::GetCamera("main")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("main")->zfar_ = 2000.0f;
     CameraManager::GetCamera("main")->UpdateMatrix();
 
     // デバッグカメラの初期値
@@ -205,7 +205,7 @@ void DxManager::Initialize(SEED* pSEED)
     CameraManager::GetCamera("debug")->projectionMode_ = PERSPECTIVE;
     CameraManager::GetCamera("debug")->clipRange_ = kWindowSize;
     CameraManager::GetCamera("debug")->znear_ = 0.1f;
-    CameraManager::GetCamera("debug")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("debug")->zfar_ = 2000.0f;
     CameraManager::GetCamera("debug")->UpdateMatrix();
 
     // 情報がそろったのでpolygonManagerの初期化

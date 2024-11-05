@@ -18,6 +18,13 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
+    // 天球
+    skySphere_ = std::make_unique<Model>("skydome");
+    skySphere_->scale_ = { 1000.0f,1000.0f,1000.0f };
+    skySphere_->textureGH_ = TextureManager::LoadTexture("starrySky.png");
+    skySphere_->lightingType_ = LIGHTINGTYPE_NONE;
+    skySphere_->UpdateMatrix();
+
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -49,7 +56,7 @@ void Scene_Game::Initialize(){
     CameraManager::GetCamera("railCamera")->projectionMode_ = PERSPECTIVE;
     CameraManager::GetCamera("railCamera")->clipRange_ = kWindowSize;
     CameraManager::GetCamera("railCamera")->znear_ = 0.1f;
-    CameraManager::GetCamera("railCamera")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("railCamera")->zfar_ = 2000.0f;
     CameraManager::GetCamera("railCamera")->UpdateMatrix();
 
     // プレイヤーの初期化
@@ -75,6 +82,9 @@ void Scene_Game::Update(){
 
 #ifdef _DEBUG
 
+    ImGui::Begin("resolutionRate");
+    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
+    ImGui::End();
 
 #endif
 
@@ -94,6 +104,7 @@ void Scene_Game::Update(){
 
 void Scene_Game::Draw(){
 
+    skySphere_->Draw();
     railInfo_->Draw();
     railCamera_->Draw();
     SEED::DrawGrid(1.0f, 100);

@@ -81,7 +81,7 @@ void RailCamera::Update(){
         //};
 
         transform_.rotate_ = MyMath::Lerp(pRailInfo_->twistModels_[idx]->rotate_, pRailInfo_->twistModels_[nextIdx]->rotate_, t2);
-        transform_.translate_ = targetPoint_;
+        transform_.translate_ = targetPoint_  + offset_ * RotateMatrix(transform_.rotate_);
 
         // カメラ確認用モデルの更新
         debugModel_->rotate_ = transform_.rotate_;

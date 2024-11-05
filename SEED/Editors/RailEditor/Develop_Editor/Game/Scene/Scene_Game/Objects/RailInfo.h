@@ -6,11 +6,15 @@
 class RailInfo{
 
 public:
-    RailInfo() = default;
+    RailInfo();
     ~RailInfo();
 
     void Update();
     void Draw();
+
+
+    void OutputToJson();
+    void LoadFromJson();
 
 public:
     // オブジェクト

@@ -113,6 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Base\State_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Objects\Bullet.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Obstacles.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Objects\Player.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Objects\RailCamera.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Objects\RailInfo.cpp" />
@@ -170,6 +171,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Base\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Objects\Bullet.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Obstacles.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Objects\Player.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Objects\RailCamera.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Objects\RailInfo.h" />

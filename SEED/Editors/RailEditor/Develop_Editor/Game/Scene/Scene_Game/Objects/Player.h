@@ -15,6 +15,7 @@ public:
 
     void Update();
     void Draw();
+    void Shoot();
 
 public:
     void SetRailCameraPtr(RailCamera* railCamera){ pRailCamera_ = railCamera; }
@@ -26,4 +27,7 @@ public:
     std::unique_ptr<Model> player_ = nullptr;
     std::unique_ptr<Reticle> reticle_ = nullptr;
     std::list<std::unique_ptr<Bullet>>bullets_;
+
+    bool isBeam_ = false;
+    Vector3 beamVec_;
 };

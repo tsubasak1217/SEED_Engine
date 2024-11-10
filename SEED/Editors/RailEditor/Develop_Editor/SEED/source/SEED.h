@@ -124,7 +124,14 @@ public:
     /*=========================矩形の描画関数========================*/
 
     static void DrawQuad(const Quad& quad, const uint32_t GH = SEED::LoadTexture("white1x1.png"));
-
+    static void DrawQuad(
+        const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
+        const uint32_t GH = TextureManager::LoadTexture("white1x1.png"),
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
+        const LIGHTING_TYPE lightingType = LIGHTINGTYPE_HALF_LAMBERT,
+        const Matrix4x4& uvTransform = IdentityMat4(),
+        const BlendMode blendMode = BlendMode::NORMAL
+    );
 
     static void DrawSprite(const Sprite& sprite);
 

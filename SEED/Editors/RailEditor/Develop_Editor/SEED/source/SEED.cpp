@@ -275,6 +275,20 @@ void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
     );
 }
 
+void SEED::DrawQuad(
+    const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4, 
+    const uint32_t GH, const Vector4& color, const LIGHTING_TYPE lightingType,
+    const Matrix4x4& uvTransform, const BlendMode blendMode
+){
+    instance_->pPolygonManager_->AddQuad(
+        v1,
+        v2,
+        v3,
+        v4,
+        IdentityMat4(), color, lightingType, uvTransform, true, GH,blendMode
+    );
+}
+
 
 /*========================================== スプライト ===========================================*/
 

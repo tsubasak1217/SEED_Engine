@@ -45,6 +45,8 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_TRIANGLE][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxTriangleCount_);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxTriangleCount_);
 
         // model
         vertexResource_[MESHTYPE_MODEL][i] =
@@ -57,6 +59,8 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_MODEL][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxModelCount_);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxModelCount_);
 
         // quad
         vertexResource_[MESHTYPE_QUAD][i] =
@@ -68,6 +72,8 @@ void PolygonManager::InitResources(){
         numElementResource_[MESHTYPE_QUAD][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_QUAD][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxQuadCount_);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxQuadCount_);
 
         // sprite
@@ -83,6 +89,8 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_SPRITE][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxSpriteCount);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxSpriteCount);
 
         // offscreen
         vertexResource_[MESHTYPE_OFFSCREEN][i] =
@@ -97,6 +105,8 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_OFFSCREEN][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxSpriteCount);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxSpriteCount);
 
         // line
         vertexResource_[MESHTYPE_LINE][i] =
@@ -109,17 +119,22 @@ void PolygonManager::InitResources(){
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int));
         keyIndexResource_[MESHTYPE_LINE][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxLineCount_);
+        beginIndexResource_[MESHTYPE_TRIANGLE][i] =
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(int) * kMaxLineCount_);
+
     }
 
 
     // resourceの設定
     for(int i = 0; i < kNumMeshVariation; i++){
         for(int j = 0; j < (int)BlendMode::kBlendModeCount; j++){
-            inputData_[i][j].vertexResource = vertexResource_[i][j].Get();
-            inputData_[i][j].materialResource = materialResource_[i][j].Get();
-            inputData_[i][j].wvpResource = wvpResource_[i][j].Get();
-            inputData_[i][j].numElementResource = numElementResource_[i][j].Get();
-            inputData_[i][j].keyIndexResource = keyIndexResource_[i][j].Get();
+            inputData_[i][j] = std::make_unique<InputData>();
+            inputData_[i][j]->vertexResource = vertexResource_[i][j].Get();
+            inputData_[i][j]->materialResource = materialResource_[i][j].Get();
+            inputData_[i][j]->wvpResource = wvpResource_[i][j].Get();
+            inputData_[i][j]->numElementResource = numElementResource_[i][j].Get();
+            inputData_[i][j]->keyIndexResource = keyIndexResource_[i][j].Get();
+            inputData_[i][j]->beginIndexResource = beginIndexResource_[i][j].Get();
         }
     }
 }
@@ -131,14 +146,15 @@ void PolygonManager::Reset(){
         for(int j = 0; j < (int)BlendMode::kBlendModeCount; j++){
 
             if(i != MESHTYPE_MODEL){
-                for(auto& item : inputData_[i][j].items){
+                for(auto& item : inputData_[i][j]->items){
                     delete item.modelData;
                     item.modelData = nullptr;
                 }
             }
 
-            inputData_[i][j].items.clear();
-            inputData_[i][j].keyIndices.clear();
+            inputData_[i][j]->items.clear();
+            inputData_[i][j]->keyIndices.clear();
+            inputData_[i][j]->modelCollection_.clear();
         }
     }
 
@@ -211,6 +227,7 @@ void PolygonManager::AddTriangle(
     item.modelData->vertices.push_back(VertexData(v1, Vector2(0.5f, 0.0f), normalVec));
     item.modelData->vertices.push_back(VertexData(v2, Vector2(1.0f, 1.0f), normalVec));
     item.modelData->vertices.push_back(VertexData(v3, Vector2(0.0f, 1.0f), normalVec));
+
     // materialResource
     item.material.color_ = color;
     item.material.lightingType_ = lightingType;
@@ -223,12 +240,19 @@ void PolygonManager::AddTriangle(
 
     /*-------------------- まとめたのを後ろに追加 --------------------*/
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_TRIANGLE][(int)blendMode]->items.push_back(item);
     } else{
-        inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_TRIANGLE][(int)blendMode]->items.push_back(item);
     }
 
     triangleIndexCount_++;
+
+    // 登録済みのモデルかどうかを判定するための変数。登録済みの場合はその頂点開始番号を格納する
+    inputData_[MESHTYPE_TRIANGLE][(int)blendMode]->modelCollection_.emplace(
+        "system_triangle_" + std::to_string(triangleIndexCount_), 
+        (uint32_t)item.modelData->vertices.size()
+    );
+
 }
 
 
@@ -288,9 +312,9 @@ void PolygonManager::AddQuad(
     /*-------------------- まとめたのを後ろに追加 --------------------*/
 
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_QUAD][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_QUAD][(int)blendMode]->items.push_back(item);
     } else{
-        inputData_[MESHTYPE_QUAD][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_QUAD][(int)blendMode]->items.push_back(item);
     }
 
     quadIndexCount_++;
@@ -386,12 +410,12 @@ void PolygonManager::AddSprite(
 
     if(isSystemDraw == false){
         if(isStaticDraw == false){
-            inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
+            inputData_[MESHTYPE_SPRITE][(int)blendMode]->items.push_back(item);
         } else{
-            inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
+            inputData_[MESHTYPE_SPRITE][(int)blendMode]->items.push_back(item);
         }
     } else{
-        inputData_[MESHTYPE_OFFSCREEN][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_OFFSCREEN][(int)blendMode]->items.push_back(item);
     }
 
     spriteCount_++;
@@ -425,9 +449,9 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
     /*-------------------- まとめたのを後ろに追加 --------------------*/
 
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_MODEL][(int)model->blendMode_].items.emplace_back(item);
+        inputData_[MESHTYPE_MODEL][(int)model->blendMode_]->items.emplace_back(item);
     } else{
-        inputData_[MESHTYPE_MODEL][(int)model->blendMode_].items.emplace_back(item);
+        inputData_[MESHTYPE_MODEL][(int)model->blendMode_]->items.emplace_back(item);
     }
 
     modelIndexCount_++;
@@ -473,9 +497,9 @@ void PolygonManager::AddLine(
 
     /*-------------------- まとめたのを後ろに追加 --------------------*/
     if(isStaticDraw == false){
-        inputData_[MESHTYPE_LINE][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_LINE][(int)blendMode]->items.push_back(item);
     } else{
-        inputData_[MESHTYPE_LINE][(int)blendMode].items.push_back(item);
+        inputData_[MESHTYPE_LINE][(int)blendMode]->items.push_back(item);
     }
 
     lineCount_++;
@@ -547,7 +571,9 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
     TransformMatrix* transformData;
     int* numElementData;
     int* keyIndexData;
+    int* beginIndexData;
 
+    int resourceVertexCount = 0;
     vertexCountAll = 0;
     input->instanceCount = 0;
 
@@ -556,6 +582,7 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
     input->wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
     input->numElementResource->Map(0, nullptr, reinterpret_cast<void**>(&numElementData));
     input->keyIndexResource->Map(0, nullptr, reinterpret_cast<void**>(&keyIndexData));
+    input->beginIndexResource->Map(0, nullptr, reinterpret_cast<void**>(&beginIndexData));
 
 
     /*///////////////////////////////////////////////*/
@@ -567,11 +594,20 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
     for(auto& item : input->items){
 
         // 頂点情報
-        std::memcpy(
-            vertexData + vertexCountAll,
-            item.modelData->vertices.data(),
-            sizeof(VertexData) * (int)item.modelData->vertices.size()
-        );
+        if(input->modelCollection_.find(item.modelName) == input->modelCollection_.end()){
+            // 未登録のモデルの場合に追加する
+            std::memcpy(
+                vertexData + resourceVertexCount,
+                item.modelData->vertices.data(),
+                sizeof(VertexData) * (int)item.modelData->vertices.size()
+            );
+            
+            // モデル名と頂点番号の対応
+            input->modelCollection_[item.modelName] = resourceVertexCount;
+
+            // 頂点リソースの頂点数をインクリメント
+            resourceVertexCount += (int)item.modelData->vertices.size();
+        }
 
         // マテリアル情報
         std::memcpy(
@@ -593,11 +629,17 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
         input->keyIndices.push_back(vertexCountAll);
     }
 
-    for(int32_t i = 0; i < input->keyIndices.size(); i++){
+    for(int32_t i = 0; i < input->instanceCount; i++){
         // インスタンスが切り替わる頂点
         std::memcpy(
             keyIndexData + i,
             &input->keyIndices[i], sizeof(int32_t)
+        );
+
+        // インスタンスの開始頂点
+        std::memcpy(
+            beginIndexData + i,
+            &input->modelCollection_[input->items[i].modelName], sizeof(int32_t)
         );
     }
 
@@ -659,15 +701,15 @@ void PolygonManager::DrawPolygonAll(){
 
     for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
         // 線
-        SetRenderData(&inputData_[MESHTYPE_LINE][i], BlendMode(i), false, true);
+        SetRenderData(inputData_[MESHTYPE_LINE][i].get(), BlendMode(i), false, true);
         // モデル
-        SetRenderData(&inputData_[MESHTYPE_MODEL][i], BlendMode(i));
+        SetRenderData(inputData_[MESHTYPE_MODEL][i].get(), BlendMode(i));
         // 三角形
-        SetRenderData(&inputData_[MESHTYPE_TRIANGLE][i], BlendMode(i));
+        SetRenderData(inputData_[MESHTYPE_TRIANGLE][i].get(), BlendMode(i));
         // 矩形
-        SetRenderData(&inputData_[MESHTYPE_QUAD][i], BlendMode(i));
+        SetRenderData(inputData_[MESHTYPE_QUAD][i].get(), BlendMode(i));
         // スプライト
-        SetRenderData(&inputData_[MESHTYPE_SPRITE][i], BlendMode(i));
+        SetRenderData(inputData_[MESHTYPE_SPRITE][i].get(), BlendMode(i));
     }
 }
 
@@ -703,6 +745,6 @@ void PolygonManager::DrawResult(){
 
 
     // OffScreenToTextre
-    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL], BlendMode::NORMAL, true);
+    SetRenderData(inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL].get(), BlendMode::NORMAL, true);
 
 }

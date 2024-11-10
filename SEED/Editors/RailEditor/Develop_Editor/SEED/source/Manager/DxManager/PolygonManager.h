@@ -34,6 +34,7 @@ struct ID3D12Resource;
 
 struct InputItems{
     ModelData* modelData;
+    std::string modelName;
     Material material;
     TransformMatrix transform;
     uint16_t index;
@@ -43,12 +44,16 @@ struct InputData{
     std::list<InputItems>items;
     std::vector<int32_t>keyIndices;
     int instanceCount;
-    ID3D12Resource* vertexResource;
-    ID3D12Resource* materialResource;
-    ID3D12Resource* wvpResource;
-    ID3D12Resource* numElementResource;
-    ID3D12Resource* keyIndexResource;
+    ID3D12Resource* vertexResource;// すべての頂点情報を格納するリソース
+    ID3D12Resource* materialResource;// マテリアルを格納するリソース
+    ID3D12Resource* wvpResource;// ワールド行列を格納するリソース
+    ID3D12Resource* numElementResource;// モデルの総数を格納するリソース
+    ID3D12Resource* keyIndexResource;// モデルが切り替わる頂点の番号を格納するリソース
+    ID3D12Resource* beginIndexResource;// 各要素の頂点リソースの開始番号を格納するリソース
     D3D12_VERTEX_BUFFER_VIEW vbv;
+
+    // 登録済みのモデルかどうかを判定するための変数。登録済みの場合はその頂点開始番号を格納する
+    std::unordered_map<std::string, uint32_t> modelCollection_;
 };
 
 
@@ -140,8 +145,7 @@ private:
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 
-    InputData inputData_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-
+    std::unique_ptr<InputData> inputData_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
 
 private:// Resourceを格納する変数
 
@@ -151,6 +155,7 @@ private:// Resourceを格納する変数
     ComPtr<ID3D12Resource> wvpResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
     ComPtr<ID3D12Resource> numElementResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
     ComPtr<ID3D12Resource> keyIndexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
+    ComPtr<ID3D12Resource> beginIndexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
 
 private:
 

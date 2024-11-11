@@ -25,7 +25,6 @@ void TextureManager::Initialize(){
 
     // 初期化時読み込み
     StartUpLoad();
-
 }
 
 // 起動時に読み込みたいモデルをここで読み込む

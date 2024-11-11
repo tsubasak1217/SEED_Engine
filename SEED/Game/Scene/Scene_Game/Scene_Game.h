@@ -14,7 +14,6 @@
 #include <State_Base.h>
 #include <Sprite.h>
 
-
 class Scene_Game : public Scene_Base{
 
 public:
@@ -32,6 +31,4 @@ private:
     float resolutionRate_ = 1.0f;
     float preRate_ = resolutionRate_;
 
-    // モデル
-    Model* model;
 };

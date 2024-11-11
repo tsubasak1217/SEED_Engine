@@ -529,9 +529,9 @@ void PolygonManager::SetRenderData(InputData* input, BlendMode blendMode, bool i
 
     // グラフハンドルに応じたテクスチャハンドルを得る
     textureSrvHandleGPU = GetGPUDescriptorHandle(
-        pDxManager_->SRV_UAV_DescriptorHeap.Get(),
-        pDxManager_->descriptorSizeSRV_UAV,
-        1
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+        0
     );
 
     // テクスチャのディスクリプタをセット
@@ -683,23 +683,23 @@ void PolygonManager::DrawResult(){
     if(isActivePostEffect_){
 
         AddSprite(windowSize, IdentityMat4(),
-            pDxManager_->systemTextures_["blurredTexture_SRV"],
+            ViewManager::GetTextureHandle("blur_0"),
             { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
             { 0.0f,0.0f }, {0.0f,0.0f},BlendMode::NORMAL,true, true
         );
     } else{
         AddSprite(windowSize, IdentityMat4(),
-            pDxManager_->systemTextures_["offScreenTexture"],
+            ViewManager::GetTextureHandle("offScreen_0"),
             { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
             { 0.0f,0.0f }, { 0.0f,0.0f }, BlendMode::NORMAL, true, true
         );
     }
 
-    pDxManager_->TransitionResourceState(
-        pDxManager_->depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE
-    );
+    //pDxManager_->TransitionResourceState(
+    //    pDxManager_->depthStencilResource.Get(),
+    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
+    //);
 
 
     // OffScreenToTextre

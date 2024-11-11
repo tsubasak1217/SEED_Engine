@@ -2,6 +2,8 @@
 #include <GameState_Play.h>
 #include <GameState_Enter.h>
 #include <SEED.h>
+#include "Environment.h"
+#include "ParticleManager.h"
 
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
@@ -13,14 +15,18 @@ Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
 
+    ParticleManager::GetInstance();
+    SEED::SetCamera("debug");
+
+    ParticleManager::CreateAccelerationField(
+        Range3D({ -2.0f,-2.0f,-2.0f }, { 2.0f,2.0f,2.0f }),
+        { -10.0f,0.0f,0.0f }
+    );
+
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    model = new Model("teapot");
-    model->textureGH_ = TextureManager::LoadTexture("uvChecker.png");
-    model->blendMode_ = BlendMode::NORMAL;
-    model->color_ = { 1.0f,1.0f,1.0f,0.1f };
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -33,12 +39,13 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,0.0f };
+    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,-50.0f };
     SEED::GetCamera()->Update();
 
     ////////////////////////////////////////////////////
-    //  天球の作成
+    //  いろんなものの作成
     ////////////////////////////////////////////////////
+
 
 
     ////////////////////////////////////////////////////
@@ -59,37 +66,46 @@ void Scene_Game::Update(){
 
 #ifdef _DEBUG
 
-    ImGui::Begin("Model");
-    ImGui::SliderInt(
-        "BlendMode",reinterpret_cast<int*>(&model->blendMode_),
-        0,int(BlendMode::kBlendModeCount) - 1
-    );
-    ImGui::SliderFloat("Alpha", &model->color_.w, 0.0f, 1.0f);
-    ImGui::End();
 
 #endif
 
     /*========================= 解像度の更新 ==========================*/
 
     // 前フレームと値が違う場合のみ更新
+    ImGui::Begin("resolutionRate");
+    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
+    ImGui::End();
+
     if(resolutionRate_ != preRate_){
         SEED::ChangeResolutionRate(resolutionRate_);
     }
 
-    /*========================= 各状態のの更新 ==========================*/
+    /*========================= 各状態の更新 ==========================*/
 
-    for(int i = 0; i < 2; i++){
-        model->translate_ = { 0.5f * i,1.0f,0.0f };
-        model->UpdateMatrix();
-        model->Draw();
-    }
+    ParticleManager::Emit(
+        ParticleType::kRadial,// パーティクルの種類
+        Range3D({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }),// 生成範囲
+        Range1D(1.0f, 2.0f),// 生成時の大きさの範囲
+        Range1D(2.0f, 4.0f),// 生成時の速度の範囲
+        5.0f,// パーティクルの寿命
+        {// パーティクルの色一覧
+            {1.0f,0.0f,0.0f,1.0f},
+            {0.0f,1.0f,0.0f,1.0f},
+            {0.0f,0.0f,1.0f,1.0f},
+            {1.0f,1.0f,0.0f,1.0f},
+            {0.0f,1.0f,1.0f,1.0f},
+            {1.0f,0.0f,1.0f,1.0f}
+        },
+        0.1f,// パーティクルの生成間隔
+        16,// 生成数
+        BlendMode::ADD// ブレンドモード
+        );
 
     currentState_->Update();
-
+    ParticleManager::Update();
 }
 
 void Scene_Game::Draw(){
     SEED::DrawGrid(1.0f, 128);
-    currentState_->Draw();
-
+    ParticleManager::Draw();
 }

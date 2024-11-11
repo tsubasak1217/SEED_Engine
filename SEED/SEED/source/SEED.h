@@ -17,6 +17,7 @@
 #include <InputManager.h>
 #include <ModelManager.h>
 #include <TextureManager.h>
+#include <ViewManager.h>
 #include <BlendMode.h>
 
 class SEED{
@@ -134,8 +135,8 @@ public:
 
     /*==========================線の描画関数==========================*/
 
-    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color,BlendMode blendMode = BlendMode::NORMAL);
-    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode = BlendMode::NORMAL);
+    static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL);
+    static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL);
     static void DrawGrid(float gridInterval, int32_t gridCount);
 
 
@@ -151,7 +152,6 @@ private:// マネージャたち
 
     LeakChecker* leakChecker_ = nullptr;
     WindowManager* windowManager_ = nullptr;
-    DxManager* dxManager_ = nullptr;
     ImGuiManager* imguiManager_ = nullptr;
 
 private:// ウインドウに関する変数
@@ -181,8 +181,8 @@ private:// 外部を参照するためのポインタ変数
 public:
 
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
-    static DxManager* GetDxManager(){ return instance_->dxManager_; }
-    static Camera* GetCamera(){ return GetInstance()->dxManager_->GetCamera(); }
+    static Camera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
+    static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
 
     static HWND GetHWND(){ return hwnd; }
     static void SetWindowHandle(HWND handle){ hwnd = handle; }
@@ -191,5 +191,5 @@ public:
     static UINT ProcessMessage(){ return msg_.message; }
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
-    static DirectionalLight* GetDirectionalLight(){ return GetInstance()->dxManager_->directionalLight; }
+    static DirectionalLight* GetDirectionalLight(){ return DxManager::GetInstance()->directionalLight; }
 };

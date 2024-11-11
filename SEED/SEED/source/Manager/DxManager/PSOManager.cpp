@@ -3,9 +3,7 @@
 #include <DxManager.h>
 #include "blendMode.h"
 
-PSOManager::PSOManager(DxManager* pDxManager){
-    pDxManager_ = pDxManager;
-}
+PSOManager::PSOManager(){}
 
 PSOManager::~PSOManager(){}
 
@@ -52,7 +50,7 @@ ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     ID3DBlob* errorBlob = nullptr;
     D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
     ID3D12RootSignature* rootSignature;
-    pDxManager_->device->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
+    DxManager::GetInstance()->device->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 
     serializedRootSignature->Release();
     if(errorBlob){
@@ -152,7 +150,7 @@ void PSOManager::Create(
     }
 
     // RootSignatureの作成
-    hr = pDxManager_->device->CreateRootSignature(
+    hr = DxManager::GetInstance()->device->CreateRootSignature(
         0, signatureBlob->GetBufferPointer(),
         signatureBlob->GetBufferSize(), IID_PPV_ARGS(pRootSignature)
     );
@@ -195,13 +193,13 @@ void PSOManager::Create(
     // すべての色を書き込むよう設定
     blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-    // ブレンドステートの設定 (アルファブレンド)
-    blendDesc.AlphaToCoverageEnable = FALSE;
-    blendDesc.IndependentBlendEnable = FALSE;
+    //// ブレンドステートの設定 (アルファブレンド)
+    //blendDesc.AlphaToCoverageEnable = FALSE;
+    //blendDesc.IndependentBlendEnable = FALSE;
 
-    // RenderTarget[0] のアルファブレンド設定
+    //// RenderTarget[0] のアルファブレンド設定
     blendDesc.RenderTarget[0].BlendEnable = TRUE;  // ブレンドを有効にする
-    blendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+    //blendDesc.RenderTarget[0].LogicOpEnable = FALSE;
 
     // ブレンドモードに応じた設定
     if(blendMode == BlendMode::NORMAL){
@@ -236,10 +234,10 @@ void PSOManager::Create(
     // アルファチャンネルのブレンド
     blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;  // アルファ値はそのまま
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
-    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;  // アルファ値に影響しない
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;  // アルファ値に影響しない
 
-    blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
-    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+    //blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+    //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     /*--------------------------------- RasterizerStateの設定 ----------------------------------*/
 
@@ -257,7 +255,13 @@ void PSOManager::Create(
 
     D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
     depthStencilDesc.DepthEnable = true;// Depth機能有効化
-    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
+
+    if(blendMode == BlendMode::ADD){
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
+    } else{
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
+    }
+
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
 
     /*--------------------------------- PSOの作成 -----------------------------------*/
@@ -266,10 +270,10 @@ void PSOManager::Create(
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
     graphicsPipelineStateDesc.pRootSignature = *pRootSignature;
     graphicsPipelineStateDesc.InputLayout = inputLayoutDesc; // InputLayout
-    graphicsPipelineStateDesc.VS = { pDxManager_->vertexShaderBlob->GetBufferPointer(),
-    pDxManager_->vertexShaderBlob->GetBufferSize() }; // VertexShader
-    graphicsPipelineStateDesc.PS = { pDxManager_->pixelShaderBlob->GetBufferPointer(),
-    pDxManager_->pixelShaderBlob->GetBufferSize() };// PixelShader
+    graphicsPipelineStateDesc.VS = { DxManager::GetInstance()->vertexShaderBlob->GetBufferPointer(),
+    DxManager::GetInstance()->vertexShaderBlob->GetBufferSize()}; // VertexShader
+    graphicsPipelineStateDesc.PS = { DxManager::GetInstance()->pixelShaderBlob->GetBufferPointer(),
+    DxManager::GetInstance()->pixelShaderBlob->GetBufferSize() };// PixelShader
     graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;// DepsStencilState
     graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     graphicsPipelineStateDesc.BlendState = blendDesc; // BlendState
@@ -287,7 +291,7 @@ void PSOManager::Create(
     graphicsPipelineStateDesc.SampleDesc.Count = 1;
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // 実際に生成
-    hr = pDxManager_->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pPipelineState));
+    hr = DxManager::GetInstance()->device->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(pPipelineState));
 
 
     // 解放

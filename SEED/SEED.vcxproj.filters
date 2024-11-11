@@ -125,6 +125,21 @@
     <Filter Include="SEED\source\Manager\CameraManager">
       <UniqueIdentifier>{3fa53440-c31b-4d34-9cdf-92918a157234}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\Scene_Game\Objects">
+      <UniqueIdentifier>{7fe31f78-568b-4f07-a889-79441b7fe872}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\DxManager\DescriptorHeap">
+      <UniqueIdentifier>{12d1b875-78da-4f30-8b07-47f721816eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders\ParticleShader">
+      <UniqueIdentifier>{c56f31d5-0b10-476d-9a2c-9bd45a1047f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\ParticleManager">
+      <UniqueIdentifier>{7700f9b3-f2a6-46c7-870c-c0ccf12331a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Manager\ParticleManager\Particles">
+      <UniqueIdentifier>{f4629fb1-f4f0-46a5-923b-59dc553c0e59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -270,6 +285,39 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\CameraManager\CameraManager.cpp">
       <Filter>SEED\source\Manager\CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\tensor\Quaternion.cpp">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\ParticleManager.cpp">
+      <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.cpp">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.cpp">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp">
+      <Filter>SEED\lib\structs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +519,51 @@
     <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h">
       <Filter>SEED\source\Manager\CameraManager</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\lib\tensor\Quaternion.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h">
+      <Filter>SEED\source\Manager\DxManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h">
+      <Filter>SEED\source\Manager\DxManager\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\ParticleManager.h">
+      <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range1D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range2D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range3D.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h">
+      <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\AccelerarionField.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">
@@ -480,6 +573,9 @@
   <ItemGroup>
     <None Include="resources\shaders\Object3D.hlsli">
       <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli">
+      <Filter>resources\shaders\ParticleShader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +587,12 @@
     </FxCompile>
     <FxCompile Include="resources\shaders\Blur.CS.hlsl">
       <Filter>resources\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.PS.hlsl">
+      <Filter>resources\shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
+      <Filter>resources\shaders\ParticleShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

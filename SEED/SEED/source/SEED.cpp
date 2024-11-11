@@ -119,10 +119,6 @@ void SEED::EndFrame(){
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-uint32_t SEED::LoadTexture(const std::string& filename){
-    return DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
-}
-
 // 起動時読み込み
 void SEED::StartUpLoad(){
 

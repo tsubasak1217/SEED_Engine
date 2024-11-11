@@ -29,6 +29,7 @@ using Microsoft::WRL::ComPtr;
 
 
 class SEED;
+class TextureManager;
 class ImGuiManager;
 class PSOManager;
 class ViewManager;
@@ -42,6 +43,7 @@ class DxManager{
     friend PolygonManager;
     friend EffectManager;
     friend SEED;
+    friend TextureManager;
     friend ImGuiManager;
     friend PSOManager;
     friend ViewManager;

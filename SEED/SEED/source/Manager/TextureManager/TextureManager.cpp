@@ -1,5 +1,6 @@
 #include <TextureManager.h>
 #include <SEED.h>
+#include "DxManager.h"
 
 // static変数初期化
 TextureManager* TextureManager::instance_ = nullptr;
@@ -38,7 +39,7 @@ uint32_t TextureManager::LoadTexture(const std::string& filename){
     }
 
     // 読み込み
-    instance_->graphHandle_[filename] = SEED::LoadTexture(filename);
+    instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
 
     return instance_->graphHandle_[filename];
 }

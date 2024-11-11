@@ -46,6 +46,7 @@ uint32_t ViewManager::CreateView(
 
     uint32_t handle = 0;
 
+    // ビューを作成してハンドルを格納する
     if(viewType == VIEW_TYPE::SRV or viewType == VIEW_TYPE::CBV or viewType == VIEW_TYPE::UAV){
 
         handle = instance_->descriptorHeaps_["SRV_CBV_UAV"]->CreateView(viewType, pResource, pDesc);

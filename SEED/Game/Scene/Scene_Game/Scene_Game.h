@@ -33,5 +33,5 @@ private:
     float preRate_ = resolutionRate_;
 
     // モデル
-
+    Model* model;
 };

@@ -56,7 +56,6 @@ public:
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
     static void ChangeResolutionRate(float resolutionRate);
 
-
     /////////////////////////////////////////////////////////////////////////////////////
     /*                          このエンジンが用意する描画関数                              */
     /////////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +166,9 @@ public:
     int kClientHeight_;
     std::string windowTitle_;
     uint32_t windowBackColor_;
+
+private:// パラメータやフラグ
+
 
 private:// 外部を参照するためのポインタ変数
 

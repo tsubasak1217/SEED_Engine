@@ -415,8 +415,8 @@ void PolygonManager::AddModel(Model* model, bool isStaticDraw){
     // materialResource
     item.material.color_ = model->color_;
     item.material.lightingType_ = model->lightingType_;
-    item.material.uvTransform_ = model->GetUVTransform();
-    item.material.GH_ = model->GetTextureGH();
+    item.material.uvTransform_ = model->uvTransform_;
+    item.material.GH_ = model->textureGH_;
     // wvpResource
     item.transform.world_ = model->GetWorldMat();
     item.transform.WVP_ = wvp;

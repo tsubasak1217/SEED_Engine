@@ -16,6 +16,8 @@
 #include "RailInfo.h"
 #include "RailCamera.h"
 #include "Player.h"
+#include "Informations/PlayerGage.h"
+#include "Obstacles.h"
 
 class Scene_Game : public Scene_Base{
 
@@ -43,4 +45,10 @@ private:
 
     // プレイヤー
     std::unique_ptr<Player> player_ = nullptr;
+
+    // 障害物たち
+    std::unique_ptr<Obstacles> obstacles_ = nullptr;
+
+    // ゲージ
+    std::unique_ptr<PlayerGage> playerGage_ = nullptr;
 };

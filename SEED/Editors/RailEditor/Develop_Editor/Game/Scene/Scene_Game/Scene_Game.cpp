@@ -63,6 +63,12 @@ void Scene_Game::Initialize(){
     player_ = std::make_unique<Player>(railCamera_->transform_.translate_);
     player_->SetRailCameraPtr(railCamera_.get());
 
+    // 障害物たち
+    obstacles_ = std::make_unique<Obstacles>();
+
+    // ゲージの初期化
+    playerGage_ = std::make_unique<PlayerGage>();
+    playerGage_->SetPlayer(player_.get());
 
     ////////////////////////////////////////////////////
     //  解像度の初期設定
@@ -100,6 +106,8 @@ void Scene_Game::Update(){
     railInfo_->Update();
     currentState_->Update();
     player_->Update();
+    obstacles_->Update();
+    playerGage_->Update();
 }
 
 void Scene_Game::Draw(){
@@ -110,4 +118,7 @@ void Scene_Game::Draw(){
     SEED::DrawGrid(1.0f, 100);
     currentState_->Draw();
     player_->Draw();
+    obstacles_->Draw();
+    playerGage_->Draw();
+
 }

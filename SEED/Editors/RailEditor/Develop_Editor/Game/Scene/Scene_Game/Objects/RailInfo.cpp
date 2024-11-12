@@ -15,6 +15,8 @@ void RailInfo::Update(){
 
     ImGui::Begin("Control Point");
 
+    ImGui::Checkbox("isDebugDraw", &isDebugDraw_);
+
     if(ImGui::Button("Output to json")){
         OutputToJson();
     }
@@ -32,9 +34,12 @@ void RailInfo::Update(){
         controlPoints_.emplace_back(&controlModels_.back()->translate_);
         controlAngles_.emplace_back(&controlModels_.back()->rotate_);
 
+        Vector3 rotate{};
+        if(twistModels_.size()){ rotate = twistModels_.back()->rotate_; }
         twistModels_.emplace_back(std::make_unique<Model>("suzanne2"));
         twistModels_.back()->color_ = { 0.0f,1.0f,0.0f,1.0f };
         twistModels_.back()->scale_ = { 0.5f,0.5f,0.5f };
+        twistModels_.back()->rotate_ = rotate;
         twistModels_.back()->translate_ = emitPos;
     }
 
@@ -84,22 +89,25 @@ void RailInfo::Update(){
 void RailInfo::Draw(){
 
     // 描画
-    for(auto& controlPoint : controlModels_){
-        controlPoint->Draw();
-    }
-
-    for(auto& twistModel : twistModels_){
-        twistModel->Draw();
-    }
-
-    // レール間の線の描画
     int totalSubdivision = ((int)controlPoints_.size() - 1) * kSubdivision_;
-    for(int i = 0; i < totalSubdivision - 1; i++){
-        SEED::DrawLine(
-            MyMath::CatmullRomPosition(controlPoints_, float(i) / float(totalSubdivision)),
-            MyMath::CatmullRomPosition(controlPoints_, float(i + 1) / float(totalSubdivision)),
-            { 1.0f,0.0f,0.0f,1.0f }
-        );
+
+    if(isDebugDraw_){
+        for(auto& controlPoint : controlModels_){
+            controlPoint->Draw();
+        }
+
+        for(auto& twistModel : twistModels_){
+            twistModel->Draw();
+        }
+
+        // レール間の線の描画
+        for(int i = 0; i < totalSubdivision - 1; i++){
+            SEED::DrawLine(
+                MyMath::CatmullRomPosition(controlPoints_, float(i) / float(totalSubdivision)),
+                MyMath::CatmullRomPosition(controlPoints_, float(i + 1) / float(totalSubdivision)),
+                { 1.0f,0.0f,0.0f,1.0f }
+            );
+        }
     }
 
     // レール用の分割数
@@ -137,7 +145,7 @@ void RailInfo::Draw(){
         quad.localVertex[1] = railPoints[(i * 2) + 2];
         quad.localVertex[2] = railPoints[i * 2 + 1];
         quad.localVertex[3] = railPoints[i * 2];
-        
+
         SEED::DrawQuad(quad, railGH);
     }
 }

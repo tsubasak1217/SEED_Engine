@@ -30,4 +30,8 @@ public:
 
     bool isBeam_ = false;
     Vector3 beamVec_;
+
+    // ゲージ、スコア
+    float shotGage_ = 1.0f;
+    int score_ = 1085;
 };

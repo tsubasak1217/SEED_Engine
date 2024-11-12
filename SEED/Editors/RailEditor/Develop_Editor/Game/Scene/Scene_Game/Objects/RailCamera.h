@@ -25,7 +25,7 @@ private:
     bool isMove_ = false;
     RailInfo* pRailInfo_ = nullptr;
     float rail_t_ = 0.0f;
-    float addValue_ = 0.001f;
+    float addValue_ = 0.0002f;
     Vector3 targetPoint_;
     Vector3 offset_ = { 0.0f,1.0f,0.0f };
      

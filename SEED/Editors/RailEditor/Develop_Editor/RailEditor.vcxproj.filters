@@ -128,6 +128,9 @@
     <Filter Include="Game\Scene\Scene_Game\Objects">
       <UniqueIdentifier>{7fe31f78-568b-4f07-a889-79441b7fe872}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\Scene_Game\Information">
+      <UniqueIdentifier>{9b565dd3-eb30-4d5a-aba3-0305e9cea7cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -293,6 +296,21 @@
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\Objects\Obstacles.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Informations\PlayerGage.cpp">
+      <Filter>Game\Scene\Scene_Game\Information</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\BaseEnemy.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\UFO.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Ghost.cpp">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\Objects\Baloon.cpp">
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -514,6 +532,21 @@
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\Objects\Obstacles.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Informations\PlayerGage.h">
+      <Filter>Game\Scene\Scene_Game\Information</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\BaseEnemy.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\UFO.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Ghost.h">
+      <Filter>Game\Scene\Scene_Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\Objects\Baloon.h">
       <Filter>Game\Scene\Scene_Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>

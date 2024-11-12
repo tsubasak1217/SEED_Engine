@@ -58,12 +58,13 @@ void Player::Update(){
 // 描画
 void Player::Draw(){
 
-    // プレイヤーの描画
-    player_->Draw();
-    
-    // レティクルの描画
+
     if(!pRailCamera_->GetIsDebugCameraActive()){
+        // レティクルの描画
         reticle_->Draw();
+    } else{
+        // プレイヤーの描画
+        player_->Draw();
     }
 
     // 弾の描画
@@ -110,7 +111,7 @@ void Player::Shoot(){
             Vector3(kWindowCenter.x * 1.5f,kWindowSizeY,SEED::GetCamera()->znear_) * inverseVPV
             };
 
-            Matrix4x4 translateMat = TranslateMatrix({ 0.0f,ClockManager::TotalTime(),0.0f});
+            Matrix4x4 translateMat = TranslateMatrix({ 0.0f,ClockManager::TotalTime() * 2.0f,0.0f });
 
             SEED::DrawQuad(
                 v[0], v[1], v[2], v[3],
@@ -121,9 +122,11 @@ void Player::Shoot(){
             );
 
             isBeam_ = true;
+            shotGage_ = std::clamp(shotGage_ - 0.01f, 0.0f, 1.0f);
 
         } else{
             isBeam_ = false;
+            shotGage_ = std::clamp(shotGage_ + 0.01f, 0.0f, 1.0f);
         }
     }
 }

@@ -1,0 +1,125 @@
+#include "Obstacles.h"
+#include "Baloon.h"
+#include "UFO.h"
+#include "Ghost.h"
+#include "InputManager.h"
+#include <SEED.h>
+
+Obstacles::Obstacles(){
+    Initialize();
+}
+
+Obstacles::~Obstacles(){}
+
+void Obstacles::Initialize(){
+    LoadFromJson();
+}
+
+void Obstacles::Update(){
+
+    EditByImGui();
+
+    for(auto& obstacle : obstacles_){
+        obstacle->Update();
+    }
+}
+
+void Obstacles::Draw(){
+    for(auto& obstacle : obstacles_){
+        obstacle->Draw();
+    }
+}
+
+void Obstacles::EditByImGui(){
+    if(ImGui::CollapsingHeader("Obstacles")){
+
+        if(ImGui::Button("Output to json")){
+            OutputToJson();
+        }
+        if(ImGui::Button("Add Baloon")){
+            obstacles_.push_back(std::make_unique<Baloon>());
+            Vector3 emitPos = SEED::GetCamera()->transform_.translate_ + SEED::GetCamera()->normal_ * 5.0f;
+            obstacles_.back()->model_->translate_ = emitPos;
+        }
+        if(ImGui::Button("Add Ghost")){
+            obstacles_.push_back(std::make_unique<Ghost>());
+            Vector3 emitPos = SEED::GetCamera()->transform_.translate_ + SEED::GetCamera()->normal_ * 5.0f;
+            obstacles_.back()->model_->translate_ = emitPos;
+        }
+        if(ImGui::Button("Add UFO")){
+            obstacles_.push_back(std::make_unique<UFO>());
+            Vector3 emitPos = SEED::GetCamera()->transform_.translate_ + SEED::GetCamera()->normal_ * 5.0f;
+            obstacles_.back()->model_->translate_ = emitPos;
+        }
+
+        for(auto& obstacle : obstacles_){
+            if(ImGui::CollapsingHeader(std::to_string(obstacle->obstacleID_).c_str())){
+                if(ImGui::Button("Delete")){
+                    obstacles_.remove(obstacle);
+                    break;
+                }
+
+                ImGui::Text("Position");
+                ImGui::DragFloat3("x", &obstacle->model_->translate_.x, 0.1f);
+
+                float sin = std::sinf(3.14f * ClockManager::TotalTime() * 3.0f);
+                obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f) * (sin * 0.2f + 1.0f);
+            } else{
+                obstacle->model_->scale_ = Vector3(1.0f, 1.0f,1.0f);
+            }
+        }
+    }
+}
+
+void Obstacles::OutputToJson(){
+    nlohmann::json j;
+    for(auto& obstacle : obstacles_){
+        nlohmann::json item;
+
+        item["type"] = static_cast<int>(obstacle->type_);
+        item["position"]["x"] = obstacle->model_->translate_.x;
+        item["position"]["y"] = obstacle->model_->translate_.y;
+        item["position"]["z"] = obstacle->model_->translate_.z;
+
+        j["obstacles"].push_back(item);
+    }
+
+    std::string directory = "resources/jsons/obstacles/";
+    std::filesystem::create_directories(directory); // ディレクトリが存在しない場合は作成
+
+    std::ofstream file(directory + "obstacles.json");
+    file << j.dump(4);
+    file.close();
+}
+
+void Obstacles::LoadFromJson(){
+    std::ifstream file("resources/jsons/obstacles/obstacles.json");
+    if(!file.is_open()){
+        return;
+    }
+
+    nlohmann::json j;
+    file >> j;
+
+    for(const auto& item : j["obstacles"]){
+        EnemyType type = static_cast<EnemyType>(item["type"]);
+
+        switch(type){
+        case EnemyType::Baloon:
+            obstacles_.push_back(std::make_unique<Baloon>());
+            break;
+        case EnemyType::Ghost:
+            obstacles_.push_back(std::make_unique<Ghost>());
+            break;
+        case EnemyType::UFO:
+            obstacles_.push_back(std::make_unique<UFO>());
+            break;
+        default:
+            break;
+        }
+
+        obstacles_.back()->model_->translate_.x = item["position"]["x"];
+        obstacles_.back()->model_->translate_.y = item["position"]["y"];
+        obstacles_.back()->model_->translate_.z = item["position"]["z"];
+    }
+}

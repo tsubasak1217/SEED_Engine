@@ -24,4 +24,7 @@ public:
     std::vector<std::unique_ptr<Model>>twistModels_;// ねじれ管理用のモデル
     const int kSubdivision_ = 16;// ベジェ曲線の一区間の分割数
     float railHalfWidth_ = 0.5f;// レールの幅
+
+    //
+    bool isDebugDraw_ = true;
 };

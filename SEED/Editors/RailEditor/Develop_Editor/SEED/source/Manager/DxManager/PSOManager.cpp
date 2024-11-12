@@ -245,7 +245,7 @@ void PSOManager::Create(
 
     D3D12_RASTERIZER_DESC rasterizerDesc{};
     if(topology == PolygonTopology::TRIANGLE){
-        rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;// 裏面を表示しない
+        rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;// 裏面を表示しない
     } else{
         rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;// 表示
     }

@@ -8,5 +8,7 @@ public:
 
 public:
     void Update() override;
-
+    
+private:
+    float upSpeed_ = 0.05f;
 };

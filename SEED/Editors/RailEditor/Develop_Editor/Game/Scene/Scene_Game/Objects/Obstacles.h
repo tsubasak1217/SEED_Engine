@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseEnemy.h"
+#include "Player.h"
 #include <json.hpp>
 
 class Obstacles{
@@ -17,7 +18,14 @@ private:
     void EditByImGui();
     void OutputToJson();
     void LoadFromJson();
+    void CheckCollision();
+
+public:
+
+    void SetPlayerPtr(Player* pPlayer){ pPlayer_ = pPlayer; }
 
 private:
     std::list<std::unique_ptr<BaseEnemy>>obstacles_;
+    Player* pPlayer_ = nullptr;
+    float effectDistance_ = 20.0f;
 };

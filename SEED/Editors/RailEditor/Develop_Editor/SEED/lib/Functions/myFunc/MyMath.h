@@ -88,6 +88,8 @@ public:
     static Vector3 ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, const Vector3& point);
 
 
+    static bool CollisionLine_Point(const Vector3& origin, const Vector3& end, const Vector3& point, float radius);
+
     //================================================================
     //                      個人用な便利関数
     //================================================================

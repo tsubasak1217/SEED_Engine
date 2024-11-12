@@ -65,6 +65,7 @@ void Scene_Game::Initialize(){
 
     // 障害物たち
     obstacles_ = std::make_unique<Obstacles>();
+    obstacles_->SetPlayerPtr(player_.get());
 
     // ゲージの初期化
     playerGage_ = std::make_unique<PlayerGage>();

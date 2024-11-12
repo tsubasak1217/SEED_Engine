@@ -10,5 +10,8 @@ Baloon::Baloon(){
 Baloon::~Baloon(){}
 
 void Baloon::Update(){
+    if(isActive_){
+        model_->translate_.y += upSpeed_;
+    }
     BaseEnemy::Update();
 }

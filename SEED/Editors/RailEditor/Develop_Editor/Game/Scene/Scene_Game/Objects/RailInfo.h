@@ -26,5 +26,5 @@ public:
     float railHalfWidth_ = 0.5f;// レールの幅
 
     //
-    bool isDebugDraw_ = true;
+    bool isDebugDraw_ = false;
 };

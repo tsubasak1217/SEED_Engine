@@ -12,21 +12,34 @@ Obstacles::Obstacles(){
 Obstacles::~Obstacles(){}
 
 void Obstacles::Initialize(){
+    obstacles_.clear();
     LoadFromJson();
 }
 
 void Obstacles::Update(){
+
+#ifdef _DEBUG
+    if(InputManager::IsTriggerKey(DIK_R)){
+        Initialize();
+    }
+#endif // _DEBUG
+
 
     EditByImGui();
 
     for(auto& obstacle : obstacles_){
         obstacle->Update();
     }
+
+    CheckCollision();
+
+    // 条件を満たしたオブジェクトの削除
+    obstacles_.remove_if([](auto& obstacle){return !obstacle->GetIsAlive(); });
 }
 
 void Obstacles::Draw(){
     for(auto& obstacle : obstacles_){
-        obstacle->Draw();
+            obstacle->Draw();
     }
 }
 
@@ -65,7 +78,7 @@ void Obstacles::EditByImGui(){
                 float sin = std::sinf(3.14f * ClockManager::TotalTime() * 3.0f);
                 obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f) * (sin * 0.2f + 1.0f);
             } else{
-                obstacle->model_->scale_ = Vector3(1.0f, 1.0f,1.0f);
+                obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f);
             }
         }
     }
@@ -121,5 +134,32 @@ void Obstacles::LoadFromJson(){
         obstacles_.back()->model_->translate_.x = item["position"]["x"];
         obstacles_.back()->model_->translate_.y = item["position"]["y"];
         obstacles_.back()->model_->translate_.z = item["position"]["z"];
+    }
+}
+
+void Obstacles::CheckCollision(){
+
+    if(!pPlayer_->pRailCamera_->GetIsRailCameraActive()){ return; }
+
+    for(auto& obstacle : obstacles_){
+
+        float distance = MyMath::Length(obstacle->model_->translate_ - pPlayer_->player_->translate_);
+
+        // 近づいたらアクティブに
+        if(distance < effectDistance_){
+            obstacle->SetIsActive(true);
+        }
+
+        if(obstacle->GetIsActive()){
+            if(pPlayer_->isBeam_){
+                bool isHit = MyMath::CollisionLine_Point(
+                    pPlayer_->player_->translate_, pPlayer_->player_->translate_ + pPlayer_->beamVec_ * 20.0f, obstacle->model_->translate_, obstacle->radius_
+                );
+
+                if(isHit){
+                    obstacle->SetIsAlive(false);
+                }
+            }
+        }
     }
 }

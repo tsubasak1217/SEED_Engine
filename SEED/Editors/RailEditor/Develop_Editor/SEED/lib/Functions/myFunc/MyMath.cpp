@@ -178,6 +178,12 @@ Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, 
     return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
 }
 
+bool MyMath::CollisionLine_Point(const Vector3& origin, const Vector3& end, const Vector3& point, float radius){
+    Vector3 closest = ClosestPoint(origin, end, point);
+    float distance = Length(closest, point);
+    return distance < radius;
+}
+
 //================================================================
 //                      個人用な便利関数
 //================================================================

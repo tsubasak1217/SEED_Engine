@@ -6,6 +6,7 @@ Reticle::Reticle(){
     reticle_ = std::make_unique<Sprite>("reticle.png");
     reticle_->size = { 128.0f,128.0f };
     reticle_->anchorPoint = { 0.5f,0.5f };
+    reticle_->translate = kWindowCenter;
 }
 
 Reticle::~Reticle(){}

@@ -25,6 +25,7 @@ private:
 
     // ゲージ関連
     std::unique_ptr<Sprite>shotGage_ = nullptr;
+    std::unique_ptr<Sprite>shotGageBlack_ = nullptr;
     std::unique_ptr<Sprite>shotGageFrame_ = nullptr;
     std::unique_ptr<Sprite>scoreGageBack_ = nullptr;
     std::vector<std::unique_ptr<Sprite>>score_;

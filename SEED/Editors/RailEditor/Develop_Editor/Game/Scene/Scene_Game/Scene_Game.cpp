@@ -25,6 +25,11 @@ void Scene_Game::Initialize(){
     skySphere_->lightingType_ = LIGHTINGTYPE_NONE;
     skySphere_->UpdateMatrix();
 
+    // 地面
+    ground_ = std::make_unique<Model>("World");
+    ground_->translate_ = { 0.0f,-30.0f,0.0f };
+    ground_->color_ = MyMath::FloatColor(0x211509ff);
+    ground_->UpdateMatrix();
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -57,7 +62,9 @@ void Scene_Game::Initialize(){
     CameraManager::GetCamera("railCamera")->clipRange_ = kWindowSize;
     CameraManager::GetCamera("railCamera")->znear_ = 0.1f;
     CameraManager::GetCamera("railCamera")->zfar_ = 2000.0f;
+    CameraManager::GetCamera("railCamera")->fov_ = 0.7f;
     CameraManager::GetCamera("railCamera")->UpdateMatrix();
+    SEED::SetCamera("railCamera");
 
     // プレイヤーの初期化
     player_ = std::make_unique<Player>(railCamera_->transform_.translate_);
@@ -109,6 +116,12 @@ void Scene_Game::Update(){
     player_->Update();
     obstacles_->Update();
     playerGage_->Update();
+
+    if(railCamera_->GetT() == 1.0f){
+        if(InputManager::IsTriggerKey(DIK_SPACE) or InputManager::IsTriggerPadButton(PAD_BUTTON::A)){
+            Initialize();
+        }
+    }
 }
 
 void Scene_Game::Draw(){
@@ -116,7 +129,8 @@ void Scene_Game::Draw(){
     skySphere_->Draw();
     railInfo_->Draw();
     railCamera_->Draw();
-    SEED::DrawGrid(1.0f, 100);
+    //SEED::DrawGrid(1.0f, 100);
+    ground_->Draw();
     currentState_->Draw();
     player_->Draw();
     obstacles_->Draw();

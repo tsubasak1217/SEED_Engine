@@ -19,7 +19,7 @@ void Camera::UpdateMatrix(){
 
     //射影行列の生成
     projectionMat_ = PerspectiveMatrix(
-        0.45f,
+        fov_,
         clipRange_.x / clipRange_.y,
         znear_, zfar_
     );

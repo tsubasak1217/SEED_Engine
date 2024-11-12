@@ -51,4 +51,7 @@ private:
 
     // ゲージ
     std::unique_ptr<PlayerGage> playerGage_ = nullptr;
+
+    // 地面
+    std::unique_ptr<Model>ground_ = nullptr;
 };

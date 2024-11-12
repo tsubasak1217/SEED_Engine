@@ -19,7 +19,7 @@ public:
 
 public:
     void SetRailCameraPtr(RailCamera* railCamera){ pRailCamera_ = railCamera; }
-
+    void AddPoint(int point){ score_ += point; }
 public:
 
     RailCamera* pRailCamera_ = nullptr;
@@ -33,5 +33,5 @@ public:
 
     // ゲージ、スコア
     float shotGage_ = 1.0f;
-    int score_ = 1085;
+    int score_ = 0;
 };

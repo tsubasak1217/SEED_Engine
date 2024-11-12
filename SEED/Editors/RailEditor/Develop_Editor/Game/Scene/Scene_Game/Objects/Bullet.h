@@ -16,8 +16,8 @@ public:
     bool GetIsAlive()const{ return lifetime_ > 0.0f; };
 
 private:
-    float lifetime_ = 5.0f;
+    float lifetime_ = 1.0f;
     Vector3 direction_;
-    float speed_ = 10.0f;
+    float speed_ = 2.0f;
     std::unique_ptr<Model>bullet_ = nullptr;
 };

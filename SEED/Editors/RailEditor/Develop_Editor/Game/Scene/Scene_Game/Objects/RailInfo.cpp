@@ -21,7 +21,7 @@ void RailInfo::Update(){
         OutputToJson();
     }
 
-    if(ImGui::Button("Add Control Point") or InputManager::IsTriggerPadButton(PAD_BUTTON::A)){
+    if(ImGui::Button("Add Control Point") or InputManager::IsTriggerPadButton(PAD_BUTTON::B)){
 
         // カメラの正面にコントロールポイントを配置
         Vector3 emitPos = SEED::GetCamera()->transform_.translate_ + SEED::GetCamera()->normal_ * 5.0f;

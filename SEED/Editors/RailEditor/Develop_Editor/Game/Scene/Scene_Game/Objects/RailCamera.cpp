@@ -87,11 +87,33 @@ void RailCamera::Update(){
         debugModel_->rotate_ = transform_.rotate_;
         debugModel_->translate_ = transform_.translate_;
         debugModel_->UpdateMatrix();
+    } else{
+        if(rail_t_ == 0){
+
+            // 注視点
+            targetPoint_ = MyMath::CatmullRomPosition(pRailInfo_->controlPoints_, rail_t_);
+            transform_.translate_ = targetPoint_ + offset_ * RotateMatrix(transform_.rotate_);
+
+            if(InputManager::IsTriggerPadButton(PAD_BUTTON::A) or InputManager::IsTriggerKey(DIK_SPACE)){
+                isMove_ = true;
+            }
+        }
     }
+
+
 
     UpdateMatrix();
 }
 
 void RailCamera::Draw(){
-    //debugModel_->Draw();
+
+    if(rail_t_ == 0){
+        Sprite sprite = Sprite("start.png");
+        SEED::DrawSprite(sprite);
+    }
+
+    if(rail_t_ == 1.0f){
+        Sprite sprite = Sprite("clear.png");
+        SEED::DrawSprite(sprite);
+    }
 }

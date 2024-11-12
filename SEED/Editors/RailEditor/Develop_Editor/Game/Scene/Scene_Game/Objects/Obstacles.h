@@ -26,6 +26,8 @@ public:
 
 private:
     std::list<std::unique_ptr<BaseEnemy>>obstacles_;
+    std::list<std::unique_ptr<Bullet>>particles_;
+
     Player* pPlayer_ = nullptr;
-    float effectDistance_ = 20.0f;
+    float effectDistance_ = 10.0f;
 };

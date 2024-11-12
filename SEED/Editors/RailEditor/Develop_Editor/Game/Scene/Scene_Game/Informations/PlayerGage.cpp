@@ -10,8 +10,11 @@ PlayerGage::~PlayerGage(){}
 void PlayerGage::Initialize(){
     shotGage_ = std::make_unique<Sprite>("shotGage.png");
     shotGageFrame_ = std::make_unique<Sprite>("shotGageFrame.png");
+    shotGageBlack_ = std::make_unique<Sprite>("shotGage_Black.png");
     shotGage_->anchorPoint = { 0.0f,1.0f };
     shotGageFrame_->anchorPoint = { 0.0f,1.0f };
+    shotGageBlack_->anchorPoint = { 0.0f,0.0f };
+    shotGageBlack_->size = { 66.0f,435.0f };
 
     scoreGageBack_ = std::make_unique<Sprite>("scoreBack.png");
 
@@ -25,20 +28,33 @@ void PlayerGage::Update(){
     // スコアの計算
     CalcScoreGage();
 
+    // ショットゲージの伸縮
+    StretchShotGage();
+
     // ImGuiでの編集
+#ifdef _DEBUG
     EditByImGui();
+#endif // _DEBUG
 
     // スコアのスプライトの配置
     for(int i = 0; i < score_.size(); i++){
         score_[i]->translate = scoreBasePos_ + scoreOffset_ * float(i);
         score_[i]->scale = scoreBaseScale_;
     }
+
+    shotGageFrame_->translate = shotGage_->translate;
+    shotGageFrame_->scale = shotGage_->scale;
+    shotGageBlack_->translate = shotGage_->translate + Vector2(-2.0f, -450.0f);
+
 }
 
 
 void PlayerGage::Draw(){
     // ショットゲージ
     shotGage_->Draw();
+
+    // ショットゲージの黒い部分
+    shotGageBlack_->Draw();
 
     // ショットゲージのフレーム
     shotGageFrame_->Draw();
@@ -89,8 +105,7 @@ void PlayerGage::CalcScoreGage(){
 }
 
 void PlayerGage::StretchShotGage(){
-    shotGage_->clipLT = { 0.0f,420.0f * (1.0f - pPlayer_->shotGage_) };
-
+    shotGageBlack_->scale.y = 1.0f - pPlayer_->shotGage_;
 }
 
 // ImGuiでの編集
@@ -101,6 +116,7 @@ void PlayerGage::EditByImGui(){
     ImGui::DragFloat2("shotGageScale", &shotGage_->scale.x, 0.1f);
     shotGageFrame_->translate = shotGage_->translate;
     shotGageFrame_->scale = shotGage_->scale;
+
 
     ImGui::DragFloat2("scoreGageBackPos", &scoreGageBack_->translate.x, 1.0f);
     ImGui::DragFloat2("scoreGageBackScale", &scoreGageBack_->scale.x, 0.1f);

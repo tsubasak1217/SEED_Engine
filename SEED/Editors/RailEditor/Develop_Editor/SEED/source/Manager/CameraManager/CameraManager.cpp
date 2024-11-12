@@ -38,14 +38,14 @@ CameraManager* CameraManager::GetInstance(){
 
 Camera* CameraManager::GetCamera(const std::string& name){
     // 指定要素がなければアサート
-    if(instance_->cameras_.find(name) == instance_->cameras_.end()){ assert(false); }
+    if(instance_->cameras_.find(name) == instance_->cameras_.end()){ return nullptr; }
     // カメラのポインタ
     return instance_->cameras_[name];
 }
 
 void CameraManager::AddCamera(const std::string& name, Camera* camera){
     // 指定要素が既にあるとアサート
-    if(instance_->cameras_.find(name) != instance_->cameras_.end()){ assert(false); }
+    //if(instance_->cameras_.find(name) != instance_->cameras_.end()){ return; }
     // カメラを追加
     instance_->cameras_[name] = camera;
 }

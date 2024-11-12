@@ -18,10 +18,11 @@ public:
     void SetRailInfo(RailInfo* railInfo){ pRailInfo_ = railInfo; }
     bool GetIsDebugCameraActive()const{ return isDebugCameraActive_; }
     bool GetIsRailCameraActive()const{ return isRailCameraActive_; }
+    float GetT()const{ return rail_t_; }
 
 private:
 
-    bool isRailCameraActive_ = false;
+    bool isRailCameraActive_ = true;
     bool isDebugCameraActive_ = false;
     bool isMove_ = false;
     RailInfo* pRailInfo_ = nullptr;

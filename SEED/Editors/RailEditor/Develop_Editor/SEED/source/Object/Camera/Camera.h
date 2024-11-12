@@ -21,6 +21,7 @@ struct Camera{
     uint32_t projectionMode_;
     float znear_;
     float zfar_;
+    float fov_ = 0.45f;
 
     Vector3 normal_;
 

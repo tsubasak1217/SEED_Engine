@@ -9,4 +9,7 @@ public:
 public:
     void Update() override;
 
+private:
+    Vector3 direction_;
+    float speed_ = 0.1f;
 };

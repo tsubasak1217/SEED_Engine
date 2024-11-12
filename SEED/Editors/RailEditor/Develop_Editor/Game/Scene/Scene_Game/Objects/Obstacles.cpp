@@ -4,6 +4,7 @@
 #include "Ghost.h"
 #include "InputManager.h"
 #include <SEED.h>
+#include "MyFunc.h"
 
 Obstacles::Obstacles(){
     Initialize();
@@ -22,24 +23,39 @@ void Obstacles::Update(){
     if(InputManager::IsTriggerKey(DIK_R)){
         Initialize();
     }
+
+    EditByImGui();
 #endif // _DEBUG
 
 
-    EditByImGui();
-
     for(auto& obstacle : obstacles_){
         obstacle->Update();
+    }
+
+    for(auto& particle : particles_){
+        particle->Update();
     }
 
     CheckCollision();
 
     // 条件を満たしたオブジェクトの削除
     obstacles_.remove_if([](auto& obstacle){return !obstacle->GetIsAlive(); });
+    particles_.remove_if([](auto& particle){return !particle->GetIsAlive(); });
 }
 
 void Obstacles::Draw(){
     for(auto& obstacle : obstacles_){
+        if(pPlayer_->pRailCamera_->GetIsRailCameraActive()){
+            if(obstacle->GetIsActive()){
+                obstacle->Draw();
+            }
+        } else{
             obstacle->Draw();
+        }
+    }
+
+    for(auto& particle : particles_){
+        particle->Draw();
     }
 }
 
@@ -77,10 +93,12 @@ void Obstacles::EditByImGui(){
 
                 float sin = std::sinf(3.14f * ClockManager::TotalTime() * 3.0f);
                 obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f) * (sin * 0.2f + 1.0f);
-            } else{
-                obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f);
             }
         }
+    } else{
+        //for(auto& obstacle : obstacles_){
+        //    obstacle->model_->scale_ = Vector3(1.0f, 1.0f, 1.0f);
+        //}
     }
 }
 
@@ -153,11 +171,20 @@ void Obstacles::CheckCollision(){
         if(obstacle->GetIsActive()){
             if(pPlayer_->isBeam_){
                 bool isHit = MyMath::CollisionLine_Point(
-                    pPlayer_->player_->translate_, pPlayer_->player_->translate_ + pPlayer_->beamVec_ * 20.0f, obstacle->model_->translate_, obstacle->radius_
+                    pPlayer_->player_->translate_, pPlayer_->player_->translate_ + pPlayer_->beamVec_, obstacle->model_->translate_, obstacle->radius_
                 );
 
                 if(isHit){
                     obstacle->SetIsAlive(false);
+                    pPlayer_->AddPoint(obstacle->GetPoint());
+
+                    Vector3 pos = obstacle->model_->translate_;
+
+                    for(int i = 0; i < 12; i++){
+
+                        Vector3 direction = MyMath::Normalize({ MyFunc::Random(-100.0f,100.0f),MyFunc::Random(-100.0f,100.0f),MyFunc::Random(-100.0f,100.0f) });
+                        particles_.push_back(std::make_unique<Bullet>(pos,direction));
+                    }
                 }
             }
         }

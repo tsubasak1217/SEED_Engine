@@ -24,7 +24,7 @@ void Obstacles::Update(){
         Initialize();
     }
 
-    EditByImGui();
+//    EditByImGui();
 #endif // _DEBUG
 
 

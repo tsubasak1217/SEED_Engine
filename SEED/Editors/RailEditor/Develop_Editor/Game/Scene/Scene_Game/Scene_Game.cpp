@@ -96,9 +96,9 @@ void Scene_Game::Update(){
 
 #ifdef _DEBUG
 
-    ImGui::Begin("resolutionRate");
-    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
-    ImGui::End();
+   // ImGui::Begin("resolutionRate");
+   // ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
+   // ImGui::End();
 
 #endif
 
@@ -111,7 +111,7 @@ void Scene_Game::Update(){
 
     /*========================= 各状態の更新 ==========================*/
 
-    railInfo_->Update();
+    //railInfo_->Update();
     currentState_->Update();
     player_->Update();
     obstacles_->Update();

@@ -33,7 +33,7 @@ void PlayerGage::Update(){
 
     // ImGuiでの編集
 #ifdef _DEBUG
-    EditByImGui();
+    //EditByImGui();
 #endif // _DEBUG
 
     // スコアのスプライトの配置

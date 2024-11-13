@@ -12,42 +12,42 @@ void RailCamera::Update(){
 
 #ifdef _DEBUG
 
-    //ImGui::Begin("RailCamera");
+    ImGui::Begin("RailCamera");
 
-    //if(isRailCameraActive_){
-    //
-    //    ImGui::Checkbox("isRailCameraActive", &isRailCameraActive_);
+    if(isRailCameraActive_){
+    
+        ImGui::Checkbox("isRailCameraActive", &isRailCameraActive_);
 
-    //} else{
+    } else{
 
-    //    if(isDebugCameraActive_ == false){
-    //        SEED::SetCamera("main");
-    //        CameraManager::GetCamera("debug")->isActive_ = false;
-    //    } else{
-    //        SEED::SetCamera("debug");
-    //        CameraManager::GetCamera("debug")->isActive_ = true;
-    //    }
+        if(isDebugCameraActive_ == false){
+            SEED::SetCamera("main");
+            CameraManager::GetCamera("debug")->isActive_ = false;
+        } else{
+            SEED::SetCamera("debug");
+            CameraManager::GetCamera("debug")->isActive_ = true;
+        }
 
-    //    if(ImGui::Checkbox("isRailCameraActive", &isRailCameraActive_)){
+        if(ImGui::Checkbox("isRailCameraActive", &isRailCameraActive_)){
 
-    //        SEED::SetCamera("railCamera");
-    //        CameraManager::GetCamera("debug")->isActive_ = false;
-    //        isDebugCameraActive_ = false;
-    //        rail_t_ = 0.0f;
-    //        if(pRailInfo_->controlPoints_.size() > 0){
-    //            transform_.translate_ = *pRailInfo_->controlPoints_[0];
-    //        }
+            SEED::SetCamera("railCamera");
+            CameraManager::GetCamera("debug")->isActive_ = false;
+            isDebugCameraActive_ = false;
+            rail_t_ = 0.0f;
+            if(pRailInfo_->controlPoints_.size() > 0){
+                transform_.translate_ = *pRailInfo_->controlPoints_[0];
+            }
 
-    //    } else if(ImGui::Checkbox("isDebugCameraActive", &isDebugCameraActive_)){
-    //        SEED::SetCamera("debug");
-    //    }
+        } else if(ImGui::Checkbox("isDebugCameraActive", &isDebugCameraActive_)){
+            SEED::SetCamera("debug");
+        }
 
-    //}
+    }
 
-    //ImGui::SliderFloat("t", &rail_t_, 0.0f, 1.0f);
-    //ImGui::Checkbox("isMove", &isMove_);
+    ImGui::SliderFloat("t", &rail_t_, 0.0f, 1.0f);
+    ImGui::Checkbox("isMove", &isMove_);
 
-    //ImGui::End();
+    ImGui::End();
 
 #endif // _DEBUG
 

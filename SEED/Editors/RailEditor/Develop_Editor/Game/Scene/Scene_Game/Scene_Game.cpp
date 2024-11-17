@@ -50,7 +50,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     railInfo_ = std::make_unique<RailInfo>();
-    
+
     railCamera_ = std::make_unique<RailCamera>();
     railCamera_->SetRailInfo(railInfo_.get());
     CameraManager::AddCamera("railCamera", railCamera_.get());

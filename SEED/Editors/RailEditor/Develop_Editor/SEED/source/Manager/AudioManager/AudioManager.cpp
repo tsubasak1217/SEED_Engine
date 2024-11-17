@@ -149,7 +149,7 @@ void AudioManager::PlayAudio(const std::string& filename, bool loop,float volume
 void AudioManager::EndAudio(const std::string& filename)
 {
     // 指定要素がなければアサート
-    assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
+    assert(instance_->audios_.find(filename) != instance_->audios_.end());
 
     // 再生中でなければリターン
     if(IsPlayingAudio(filename) == false){ return; }

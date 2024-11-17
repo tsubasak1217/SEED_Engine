@@ -185,6 +185,8 @@ void Obstacles::CheckCollision(){
                         Vector3 direction = MyMath::Normalize({ MyFunc::Random(-100.0f,100.0f),MyFunc::Random(-100.0f,100.0f),MyFunc::Random(-100.0f,100.0f) });
                         particles_.push_back(std::make_unique<Bullet>(pos,direction));
                     }
+
+                    AudioManager::PlayAudio("explosion.mp3", false, 0.3f);
                 }
             }
         }

@@ -73,6 +73,9 @@ void AudioManager::StartUpLoad()
     instance_->LoadAudio("kinmokusei.wav");
     //instance_->LoadAudio("higurashi.mp3");
     instance_->LoadAudio("koi.wav");
+    instance_->LoadAudio("AL_shootingBGM.mp3");
+    instance_->LoadAudio("beam.mp3");
+    instance_->LoadAudio("explosion.mp3");
 }
 
 
@@ -147,6 +150,9 @@ void AudioManager::EndAudio(const std::string& filename)
 {
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
+
+    // 再生中でなければリターン
+    if(IsPlayingAudio(filename) == false){ return; }
 
     // 停止、終了
     HRESULT hr;

@@ -83,6 +83,12 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     SEED::ChangeResolutionRate(resolutionRate_);
+
+    ////////////////////////////////////////////////////
+    //  音源再生
+    ////////////////////////////////////////////////////
+    AudioManager::EndAudio("AL_shootingBGM.mp3");
+    AudioManager::PlayAudio("AL_shootingBGM.mp3", true, 0.3f);
 }
 
 void Scene_Game::Finalize(){}

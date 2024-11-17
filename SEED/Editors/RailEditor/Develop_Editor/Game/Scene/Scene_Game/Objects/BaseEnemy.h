@@ -32,7 +32,7 @@ protected:
 public:
     std::unique_ptr<Model>model_ = nullptr;
     EnemyType type_;
-    float radius_ = 2.0f;
+    float radius_ = 0.5f;
     int32_t obstacleID_;
     
 protected:

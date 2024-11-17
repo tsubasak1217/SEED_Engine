@@ -122,11 +122,16 @@ void Player::Shoot(){
 
                 isBeam_ = true;
                 shotGage_ = std::clamp(shotGage_ - 0.01f, 0.0f, 1.0f);
+
+                if(InputManager::IsTriggerPadButton(PAD_BUTTON::A)){
+                    AudioManager::PlayAudio("beam.mp3", true, 1.0f);
+                }
             }
 
         } else{
             isBeam_ = false;
             shotGage_ = std::clamp(shotGage_ + 0.01f, 0.0f, 1.0f);
+            AudioManager::EndAudio("beam.mp3");
         }
     }
 }

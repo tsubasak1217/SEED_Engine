@@ -6,4 +6,5 @@
 struct ModelData{
     std::vector<VertexData>vertices;
     MaterialData materialData;
+    std::string modelName;
 };

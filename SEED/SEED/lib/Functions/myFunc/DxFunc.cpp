@@ -576,6 +576,7 @@ ModelData LoadObjFile(const std::string& directoryPath, const std::string& filen
         }
     }
 
+    modelData.modelName = filename;
     return modelData;
 }
 

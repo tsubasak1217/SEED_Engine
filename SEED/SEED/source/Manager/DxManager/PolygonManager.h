@@ -36,7 +36,6 @@ struct InputItems{
     ModelData* modelData;
     Material material;
     TransformMatrix transform;
-    uint16_t index;
 };
 
 struct InputData{
@@ -51,8 +50,22 @@ struct InputData{
     D3D12_VERTEX_BUFFER_VIEW vbv;
 };
 
+struct ModelDrawData{
+    ModelData* modelData;
+    std::list<Material>materials[(int32_t)BlendMode::kBlendModeCount];
+    std::list<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
 
-class PolygonManager{
+    static std::vector<int32_t>modelSwitchIndices;
+    int instanceCount;
+
+    ID3D12Resource* vertexResource;
+    ID3D12Resource* materialResource;
+    ID3D12Resource* wvpResource;
+    D3D12_VERTEX_BUFFER_VIEW vbv;
+};
+
+
+class PolygonManager {
 
 public:// 根幹をなす関数
 
@@ -100,6 +113,7 @@ public:// 頂点情報の追加に関わる関数
 private:
 
     void SetRenderData(InputData* input, BlendMode blendMode, bool isStaticDraw = false, bool isLine = false);
+    void SetModelData();
 
 private:// 外部参照のためのポインタ変数
 
@@ -142,6 +156,8 @@ private:// 実際に頂点情報や色などの情報が入っている変数
 
     InputData inputData_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
 
+    // モデル用
+    std::unordered_map < std::string , std::unique_ptr<ModelDrawData >> modelDrawData_;
 
 private:// Resourceを格納する変数
 
@@ -151,6 +167,13 @@ private:// Resourceを格納する変数
     ComPtr<ID3D12Resource> wvpResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
     ComPtr<ID3D12Resource> numElementResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
     ComPtr<ID3D12Resource> keyIndexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
+
+    // モデル用
+    ComPtr<ID3D12Resource> modelVertexResource_;
+    ComPtr<ID3D12Resource> modelIndexResource_;
+    ComPtr<ID3D12Resource> modelMaterialResource_;
+    ComPtr<ID3D12Resource> modelWvpResource_;
+
 
 private:
 

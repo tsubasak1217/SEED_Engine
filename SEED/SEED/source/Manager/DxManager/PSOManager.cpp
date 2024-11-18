@@ -76,7 +76,7 @@ void PSOManager::Create(
     descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
     /*--------------- ルートパラメーターの設定 ----------------*/
-    D3D12_ROOT_PARAMETER rootParameters[6] = {};
+    D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
     //=============================================================================================//
 
@@ -94,7 +94,7 @@ void PSOManager::Create(
     //DescriptorRange,DescriptorTableの設定
     D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
     descriptorRange[0].BaseShaderRegister = 1;// t1から始まる
-    descriptorRange[0].NumDescriptors = 128;// 数は1280
+    descriptorRange[0].NumDescriptors = 128;// 数は128
     descriptorRange[0].RegisterSpace = 0;
     descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;// SRVを使う
     descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;// offsetを自動計算
@@ -109,15 +109,15 @@ void PSOManager::Create(
     rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
     rootParameters[3].Descriptor.ShaderRegister = 0;// レジスタ番号b0を使う
 
-    /*----------------------keyIndexNum---------------------------*/
-    rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// DescriptorTableを使う
-    rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
-    rootParameters[4].Descriptor.ShaderRegister = 1;// レジスタ番号b0を使う
+    ///*----------------------keyIndexNum---------------------------*/
+    //rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// DescriptorTableを使う
+    //rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
+    //rootParameters[4].Descriptor.ShaderRegister = 1;// レジスタ番号b0を使う
 
-    /*----------------------NumElements---------------------------*/
-    rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
-    rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
-    rootParameters[5].Descriptor.ShaderRegister = 0;// レジスタ番号b0を使う
+    ///*----------------------NumElements---------------------------*/
+    //rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
+    //rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
+    //rootParameters[5].Descriptor.ShaderRegister = 0;// レジスタ番号b0を使う
 
 
     //=============================================================================================//

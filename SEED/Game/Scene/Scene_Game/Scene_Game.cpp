@@ -15,18 +15,28 @@ Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
 
-    ParticleManager::GetInstance();
     SEED::SetCamera("debug");
-
-    ParticleManager::CreateAccelerationField(
-        Range3D({ -2.0f,-2.0f,-2.0f }, { 2.0f,2.0f,2.0f }),
-        { -10.0f,0.0f,0.0f }
-    );
 
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
 
+    models_.emplace_back(std::make_unique<Model>("suzanne"));
+    models_.emplace_back(std::make_unique<Model>("cube"));
+    models_.emplace_back(std::make_unique<Model>("suzanne"));
+    models_.emplace_back(std::make_unique<Model>("suzanne"));
+    models_.emplace_back(std::make_unique<Model>("cube"));
+    models_.emplace_back(std::make_unique<Model>("teapot"));
+
+
+    models_[2]->blendMode_ = BlendMode::ADD;
+    models_[3]->blendMode_ = BlendMode::ADD;
+    models_[4]->blendMode_ = BlendMode::ADD;
+
+    for(int i = 0; i < models_.size(); i++){
+        models_[i]->translate_ = { (float)i * 10.0f,0.0f,20.0f };
+        models_[i]->UpdateMatrix();
+    }
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -82,30 +92,13 @@ void Scene_Game::Update(){
 
     /*========================= 各状態の更新 ==========================*/
 
-    ParticleManager::Emit(
-        ParticleType::kRadial,// パーティクルの種類
-        Range3D({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }),// 生成範囲
-        Range1D(1.0f, 2.0f),// 生成時の大きさの範囲
-        Range1D(2.0f, 4.0f),// 生成時の速度の範囲
-        5.0f,// パーティクルの寿命
-        {// パーティクルの色一覧
-            {1.0f,0.0f,0.0f,1.0f},
-            {0.0f,1.0f,0.0f,1.0f},
-            {0.0f,0.0f,1.0f,1.0f},
-            {1.0f,1.0f,0.0f,1.0f},
-            {0.0f,1.0f,1.0f,1.0f},
-            {1.0f,0.0f,1.0f,1.0f}
-        },
-        0.1f,// パーティクルの生成間隔
-        16,// 生成数
-        BlendMode::ADD// ブレンドモード
-        );
 
+ 
     currentState_->Update();
-    ParticleManager::Update();
 }
 
 void Scene_Game::Draw(){
-    SEED::DrawGrid(1.0f, 128);
-    ParticleManager::Draw();
+    for(auto& model : models_){
+        model->Draw();
+    }
 }

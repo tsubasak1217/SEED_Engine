@@ -12,8 +12,6 @@ struct INT
 };
 
 StructuredBuffer<TransformationMatrix> InstanceData : register(t0);
-StructuredBuffer<INT> keyIndices : register(t1);
-ConstantBuffer<INT> numElements : register(b0);
 
 struct VertexShaderInput
 {
@@ -22,23 +20,9 @@ struct VertexShaderInput
     float3 normal : NORMAL0;
 };
 
-VertexShaderOutput main(VertexShaderInput input, uint vertexID : SV_VertexID)
+VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID)
 {
     VertexShaderOutput output;
-    int instanceID;
-    
-    for (instanceID = 0; instanceID < numElements.value;)
-    {
-        if (vertexID >= keyIndices[instanceID].value)
-        {
-            instanceID++;
-        }
-        else
-        {
-            break;
-        }
-    }
-    
     output.position = mul(input.position, InstanceData[instanceID].WVP);
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3) InstanceData[instanceID].world));

@@ -51,17 +51,23 @@ struct InputData{
 };
 
 struct ModelDrawData{
+
+    // 各種データ
     ModelData* modelData;
     std::list<Material>materials[(int32_t)BlendMode::kBlendModeCount];
     std::list<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
 
+    // 各BlendModeごとのVBV
+    D3D12_VERTEX_BUFFER_VIEW vbv[(int32_t)BlendMode::kBlendModeCount];
+
+    // モデルの種類が切り替わるインデックス
     static std::vector<int32_t>modelSwitchIndices;
     int instanceCount;
 
-    ID3D12Resource* vertexResource;
-    ID3D12Resource* materialResource;
-    ID3D12Resource* wvpResource;
-    D3D12_VERTEX_BUFFER_VIEW vbv;
+    // モデル用リソースの参照用ポインタ
+    static ID3D12Resource* vertexResource;
+    static ID3D12Resource* materialResource;
+    static ID3D12Resource* wvpResource;
 };
 
 
@@ -102,7 +108,7 @@ public:// 頂点情報の追加に関わる関数
         bool isStaticDraw = true,bool isSystemDraw = false
     );
 
-    void AddModel(Model* model, bool isStaticDraw = false);
+    void AddModel(Model* model);
 
     void AddLine(
         const Vector4& v1, const Vector4& v2,

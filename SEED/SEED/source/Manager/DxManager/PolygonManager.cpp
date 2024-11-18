@@ -17,6 +17,11 @@ uint32_t PolygonManager::modelIndexCount_ = 0;
 uint32_t PolygonManager::spriteCount_ = 0;
 uint32_t PolygonManager::lineCount_ = 0;
 
+std::vector<int32_t> ModelDrawData::modelSwitchIndices;
+ID3D12Resource* ModelDrawData::vertexResource = nullptr;
+ID3D12Resource* ModelDrawData::materialResource = nullptr;
+ID3D12Resource* ModelDrawData::wvpResource = nullptr;
+
 /*---------------------------------------------------------------------------------------------------------------*/
 /*                                                                                                               */
 /*                                             初期化処理・終了処理                                                 */
@@ -119,6 +124,9 @@ void PolygonManager::InitResources(){
     modelWvpResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * kMaxModelCount_);
 
+    ModelDrawData::vertexResource = modelVertexResource_.Get();
+    ModelDrawData::materialResource = modelMaterialResource_.Get();
+    ModelDrawData::wvpResource = modelWvpResource_.Get();
 
     // resourceの設定
     for(int i = 0; i < kNumMeshVariation; i++){
@@ -147,6 +155,13 @@ void PolygonManager::Reset(){
 
             inputData_[i][j].items.clear();
             inputData_[i][j].keyIndices.clear();
+        }
+    }
+
+    for(auto& modelData : modelDrawData_){
+        for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+            modelData.second->transforms[i].clear();
+            modelData.second->materials[i].clear();
         }
     }
 
@@ -407,7 +422,7 @@ void PolygonManager::AddSprite(
 
 
 /*----------------------------------- モデルの情報を追加する関数 ---------------------------------------*/
-void PolygonManager::AddModel(Model* model, bool isStaticDraw){
+void PolygonManager::AddModel(Model* model){
 
     Matrix4x4 wvp = Multiply(
         model->GetWorldMat(),
@@ -699,6 +714,7 @@ void PolygonManager::SetModelData(){
     // モノがなければreturn
     if(modelDrawData_.size() == 0){ return; }
     int instanceCountAll = 0;
+    vertexCountAll = 0;
 
     /*===========================================================================================*/
     /*                               すべての三角形に共通の設定                                      */
@@ -714,48 +730,41 @@ void PolygonManager::SetModelData(){
 
     for(auto& modelData : modelDrawData_){
 
+        bool vertexExist = false;
         auto& item = modelData.second;
         ModelDrawData::modelSwitchIndices.push_back(vertexCountAll);
-
-        D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv;
-        // Resourceを設定
-        pDxManager_->commandList->SetGraphicsRootShaderResourceView(0, item->materialResource->GetGPUVirtualAddress());
-        pDxManager_->commandList->SetGraphicsRootShaderResourceView(1, item->wvpResource->GetGPUVirtualAddress());
-        pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
-        vbv->BufferLocation = item->vertexResource->GetGPUVirtualAddress();
-
-        // グラフハンドルに応じたテクスチャハンドルを得る
-        D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
-
-        // グラフハンドルに応じたテクスチャハンドルを得る
-        textureSrvHandleGPU = GetGPUDescriptorHandle(
-            ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
-            ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-            0
-        );
-
-        // テクスチャのディスクリプタをセット
-        pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
         /*===========================================================================================*/
         /*                                         情報の書き込み                                      */
         /*===========================================================================================*/
 
         for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+            // 各モデルの現在のブレンドモードのインスタンス数
+            int instanceCount = (int)item->transforms[i].size();
+            // 一度に描画する頂点の数
+            int vertexCount = instanceCount * (int)item->modelData->vertices.size();
+            // インスタンスがなければ次のループへ
+            if(instanceCount == 0){ continue; }
 
-            // RootSignatureを設定。 PSOに設定しているけど別途設定が必要
+
+            // RootSignature・PSOを設定
             pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[i][(int)PolygonTopology::TRIANGLE].Get());
             pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[i][(int)PolygonTopology::TRIANGLE].Get());
 
+            // Resourceを設定
+            pDxManager_->commandList->SetGraphicsRootShaderResourceView(0, ModelDrawData::materialResource->GetGPUVirtualAddress());
+            pDxManager_->commandList->SetGraphicsRootShaderResourceView(1, ModelDrawData::wvpResource->GetGPUVirtualAddress());
+            pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
+
+
+            // 各リソースのアドレスをMapしてポインタに格納
             VertexData* vertexData;
             Material* materialData;
             TransformMatrix* transformData;
 
-            vertexCountAll += (int)item->modelData->vertices.size();
-
-            item->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-            item->materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-            item->wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
+            ModelDrawData::vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+            ModelDrawData::materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+            ModelDrawData::wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
 
 
             /*///////////////////////////////////////////////*/
@@ -766,32 +775,34 @@ void PolygonManager::SetModelData(){
 
 
             // 頂点情報
-            std::memcpy(
-                vertexData,
-                item->modelData->vertices.data(),
-                sizeof(VertexData) * (int)modelData.second->modelData->vertices.size()
-            );
+            if(!vertexExist){//一度のみ
+                std::memcpy(
+                    vertexData + ModelDrawData::modelSwitchIndices.back(),// に
+                    item->modelData->vertices.data(),// から
+                    sizeof(VertexData) * (int)item->modelData->vertices.size()// のサイズコピー
+                );
+
+                vertexExist = true;
+            }
 
             // マテリアル情報
             std::memcpy(
                 materialData + instanceCountAll,
-                &item->materials[i] + (sizeof(Material) * instanceCountAll), sizeof(Material)
+                &item->materials[i],
+                sizeof(Material) * instanceCount
             );
 
 
             // トランスフォーム情報
             std::memcpy(
-                transformData + input->instanceCount,
-                &item.transform, sizeof(TransformMatrix)
+                transformData + instanceCountAll,
+                &item->transforms[i],
+                sizeof(TransformMatrix) * instanceCount
             );
 
             // 総頂点、インスタンス数をインクリメント
-            vertexCountAll += (int)item.modelData->vertices.size();
-            instanceCountAll++;
-
-            // インスタンスが切り替わる頂点
-            input->keyIndices.push_back(vertexCountAll);
-
+            vertexCountAll += vertexCount;
+            instanceCountAll += instanceCount;
 
 
             /*///////////////////////////////////////////////*/
@@ -801,27 +812,33 @@ void PolygonManager::SetModelData(){
             /*///////////////////////////////////////////////*/
 
 
-            D3D12_RANGE writeRange[5] = {
+            D3D12_RANGE writeRange[3] = {
                 {0,sizeof(VertexData) * vertexCountAll},
-                {0,sizeof(Material) * input->instanceCount},
-                {0,sizeof(TransformMatrix) * input->instanceCount},
-                {0,sizeof(int32_t)},
-                {0,sizeof(int32_t) * input->instanceCount},
+                {0,sizeof(Material) * instanceCount},
+                {0,sizeof(TransformMatrix) * instanceCount},
             };
 
-            input->vertexResource->Unmap(0, &writeRange[0]);
-            input->materialResource->Unmap(0, &writeRange[1]);
-            input->wvpResource->Unmap(0, &writeRange[2]);
+            item->vertexResource->Unmap(0, &writeRange[0]);
+            item->materialResource->Unmap(0, &writeRange[1]);
+            item->wvpResource->Unmap(0, &writeRange[2]);
 
 
             /*///////////////////////////////////////////////*/
             /*                   VBVの設定                    */
             /*///////////////////////////////////////////////*/
 
+            D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv[i];
+            int size = sizeof(VertexData);
 
-            vbv->SizeInBytes = sizeof(VertexData) * vertexCountAll;
-            vbv->StrideInBytes = sizeof(VertexData);
-            pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv); // VBVのセット
+            // Resource上の開始位置設定
+            vbv->BufferLocation =
+                ModelDrawData::vertexResource->GetGPUVirtualAddress() +
+                (ModelDrawData::modelSwitchIndices.back() * size);
+            // サイズ、ストライドの設定
+            vbv->SizeInBytes = size * vertexCount;
+            vbv->StrideInBytes = size;
+            // VBVのセット
+            pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv);
 
 
             /*///////////////////////////////////////////////*/
@@ -831,8 +848,8 @@ void PolygonManager::SetModelData(){
             /*///////////////////////////////////////////////*/
 
             pDxManager_->commandList->DrawInstanced(
-                vertexCountAll,
-                1,
+                (int)item->modelData->vertices.size(),
+                instanceCount,
                 0,
                 0
             );
@@ -846,18 +863,20 @@ void PolygonManager::SetModelData(){
 
 void PolygonManager::DrawPolygonAll(){
 
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-        // 線
-        SetRenderData(&inputData_[MESHTYPE_LINE][i], BlendMode(i), false, true);
-        // モデル
-        SetRenderData(&inputData_[MESHTYPE_MODEL][i], BlendMode(i));
-        // 三角形
-        SetRenderData(&inputData_[MESHTYPE_TRIANGLE][i], BlendMode(i));
-        // 矩形
-        SetRenderData(&inputData_[MESHTYPE_QUAD][i], BlendMode(i));
-        // スプライト
-        SetRenderData(&inputData_[MESHTYPE_SPRITE][i], BlendMode(i));
-    }
+    //for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+    //    // 線
+    //    SetRenderData(&inputData_[MESHTYPE_LINE][i], BlendMode(i), false, true);
+    //    // モデル
+    //    SetRenderData(&inputData_[MESHTYPE_MODEL][i], BlendMode(i));
+    //    // 三角形
+    //    SetRenderData(&inputData_[MESHTYPE_TRIANGLE][i], BlendMode(i));
+    //    // 矩形
+    //    SetRenderData(&inputData_[MESHTYPE_QUAD][i], BlendMode(i));
+    //    // スプライト
+    //    SetRenderData(&inputData_[MESHTYPE_SPRITE][i], BlendMode(i));
+    //}
+
+    //SetModelData();
 }
 
 void PolygonManager::DrawResult(){
@@ -892,6 +911,6 @@ void PolygonManager::DrawResult(){
 
 
     // OffScreenToTextre
-    SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL], BlendMode::NORMAL, true);
-
+    //SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL], BlendMode::NORMAL, true);
+    SetModelData();
 }

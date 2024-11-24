@@ -15,7 +15,7 @@ struct DirectionalLight
     float intensity;
 };
 
-StructuredBuffer<Material> gMaterial : register(t0);
+StructuredBuffer<Material> gMaterial : register(t0, space0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b0);
 Texture2D<float4> gTexture[128] : register(t1, space0);
 SamplerState gSampler : register(s0);

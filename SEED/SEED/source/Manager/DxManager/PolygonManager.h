@@ -6,6 +6,7 @@
 // local
 #include <Vector4.h>
 #include <VertexData.h>
+#include <InstanceData.h>
 #include <Model.h>
 #include <Material.h>
 #include <Transform.h>
@@ -54,11 +55,13 @@ struct ModelDrawData{
 
     // 各種データ
     ModelData* modelData;
-    std::list<Material>materials[(int32_t)BlendMode::kBlendModeCount];
-    std::list<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
+    std::vector<Material>materials[(int32_t)BlendMode::kBlendModeCount];
+    std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
+    std::vector<InstanceData> instanceData[(int32_t)BlendMode::kBlendModeCount];
 
     // 各BlendModeごとのVBV
-    D3D12_VERTEX_BUFFER_VIEW vbv[(int32_t)BlendMode::kBlendModeCount];
+    D3D12_VERTEX_BUFFER_VIEW vbv_vertex[(int32_t)BlendMode::kBlendModeCount];
+    D3D12_VERTEX_BUFFER_VIEW vbv_instance[(int32_t)BlendMode::kBlendModeCount];
 
     // モデルの種類が切り替わるインデックス
     static std::vector<int32_t>modelSwitchIndices;
@@ -68,6 +71,7 @@ struct ModelDrawData{
     static ID3D12Resource* vertexResource;
     static ID3D12Resource* materialResource;
     static ID3D12Resource* wvpResource;
+    static ID3D12Resource* instanceResource;
 };
 
 
@@ -130,7 +134,8 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxTriangleCount_ = 256;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
     static const int32_t kMaxModelCount_ = 1024;
-    static const int32_t kMaxModelVertexCount = 10000;
+    static const int32_t kMaxVerticesCountInResource_ = 10240000;
+    static const int32_t kMaxModelVertexCount = 500000;
     static const int32_t kMaxSpriteCount = 128;
     static const int32_t kMaxLineCount_ = 51200;
 
@@ -179,7 +184,7 @@ private:// Resourceを格納する変数
     ComPtr<ID3D12Resource> modelIndexResource_;
     ComPtr<ID3D12Resource> modelMaterialResource_;
     ComPtr<ID3D12Resource> modelWvpResource_;
-
+    ComPtr<ID3D12Resource> indexOffsetResource_;
 
 private:
 

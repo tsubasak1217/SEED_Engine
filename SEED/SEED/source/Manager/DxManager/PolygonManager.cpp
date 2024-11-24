@@ -21,6 +21,7 @@ std::vector<int32_t> ModelDrawData::modelSwitchIndices;
 ID3D12Resource* ModelDrawData::vertexResource = nullptr;
 ID3D12Resource* ModelDrawData::materialResource = nullptr;
 ID3D12Resource* ModelDrawData::wvpResource = nullptr;
+ID3D12Resource* ModelDrawData::instanceResource = nullptr;
 
 /*---------------------------------------------------------------------------------------------------------------*/
 /*                                                                                                               */
@@ -53,7 +54,7 @@ void PolygonManager::InitResources(){
 
         // model
         vertexResource_[MESHTYPE_MODEL][i] =
-            CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxModelVertexCount * kMaxModelCount_);
+            CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxVerticesCountInResource_);
         materialResource_[MESHTYPE_MODEL][i] =
             CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxModelCount_);
         wvpResource_[MESHTYPE_MODEL][i] =
@@ -118,15 +119,21 @@ void PolygonManager::InitResources(){
 
     // model
     modelVertexResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxModelVertexCount * kMaxModelCount_);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxVerticesCountInResource_);
     modelMaterialResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxModelCount_);
     modelWvpResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * kMaxModelCount_);
+    indexOffsetResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(InstanceData) * kMaxModelCount_);
+
+    // viewの作成
+
 
     ModelDrawData::vertexResource = modelVertexResource_.Get();
     ModelDrawData::materialResource = modelMaterialResource_.Get();
     ModelDrawData::wvpResource = modelWvpResource_.Get();
+    ModelDrawData::instanceResource = indexOffsetResource_.Get();
 
     // resourceの設定
     for(int i = 0; i < kNumMeshVariation; i++){
@@ -162,8 +169,11 @@ void PolygonManager::Reset(){
         for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
             modelData.second->transforms[i].clear();
             modelData.second->materials[i].clear();
+            modelData.second->instanceData[i].clear();
         }
     }
+
+    ModelDrawData::modelSwitchIndices.clear();
 
     triangleIndexCount_ = 0;
     quadIndexCount_ = 0;
@@ -449,6 +459,9 @@ void PolygonManager::AddModel(Model* model){
     auto& transform = item->transforms[(int)model->blendMode_].emplace_back(TransformMatrix());
     transform.world_ = model->GetWorldMat();
     transform.WVP_ = wvp;
+
+    // instanceData
+    item->instanceData[(int)model->blendMode_].emplace_back(InstanceData());
 
     item->instanceCount++;
     modelIndexCount_++;
@@ -756,16 +769,35 @@ void PolygonManager::SetModelData(){
             pDxManager_->commandList->SetGraphicsRootShaderResourceView(1, ModelDrawData::wvpResource->GetGPUVirtualAddress());
             pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
 
+            // グラフハンドルに応じたテクスチャハンドルを得る
+            D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
+            textureSrvHandleGPU = GetGPUDescriptorHandle(
+                ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+                ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+                0
+            );
+
+
+
+            // テクスチャのテーブルをセット
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, textureSrvHandleGPU);
+
+            // テクスチャのテーブルをセット
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, textureSrvHandleGPU);
+
+            // テクスチャのテーブルをセット
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
             // 各リソースのアドレスをMapしてポインタに格納
             VertexData* vertexData;
             Material* materialData;
             TransformMatrix* transformData;
+            InstanceData* instanceData;
 
             ModelDrawData::vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
             ModelDrawData::materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
             ModelDrawData::wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
-
+            ModelDrawData::instanceResource->Map(0, nullptr, reinterpret_cast<void**>(&instanceData));
 
             /*///////////////////////////////////////////////*/
 
@@ -788,7 +820,7 @@ void PolygonManager::SetModelData(){
             // マテリアル情報
             std::memcpy(
                 materialData + instanceCountAll,
-                &item->materials[i],
+                item->materials[i].data(),
                 sizeof(Material) * instanceCount
             );
 
@@ -796,13 +828,22 @@ void PolygonManager::SetModelData(){
             // トランスフォーム情報
             std::memcpy(
                 transformData + instanceCountAll,
-                &item->transforms[i],
+                item->transforms[i].data(),
                 sizeof(TransformMatrix) * instanceCount
             );
 
-            // 総頂点、インスタンス数をインクリメント
-            vertexCountAll += vertexCount;
-            instanceCountAll += instanceCount;
+
+            // インスタンス情報
+            for(auto& instanceData2 : item->instanceData[i]){
+                instanceData2.indexOffset = instanceCountAll;
+            }
+
+            std::memcpy(
+                instanceData + instanceCountAll,
+                item->instanceData[i].data(),
+                sizeof(InstanceData) * instanceCount
+            );
+
 
 
             /*///////////////////////////////////////////////*/
@@ -813,11 +854,11 @@ void PolygonManager::SetModelData(){
 
 
             D3D12_RANGE writeRange[3] = {
-                {0,sizeof(VertexData) * vertexCountAll},
+                {0,sizeof(VertexData) * kMaxVerticesCountInResource_},
                 {0,sizeof(Material) * instanceCount},
                 {0,sizeof(TransformMatrix) * instanceCount},
             };
-
+            
             item->vertexResource->Unmap(0, &writeRange[0]);
             item->materialResource->Unmap(0, &writeRange[1]);
             item->wvpResource->Unmap(0, &writeRange[2]);
@@ -827,19 +868,37 @@ void PolygonManager::SetModelData(){
             /*                   VBVの設定                    */
             /*///////////////////////////////////////////////*/
 
-            D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv[i];
+            /*-------------------- 頂点ごとのデータ --------------------*/
+
+            D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex[i];
             int size = sizeof(VertexData);
 
             // Resource上の開始位置設定
             vbv->BufferLocation =
                 ModelDrawData::vertexResource->GetGPUVirtualAddress() +
                 (ModelDrawData::modelSwitchIndices.back() * size);
-            // サイズ、ストライドの設定
-            vbv->SizeInBytes = size * vertexCount;
+            // 総サイズ、刻み幅の設定
+            vbv->SizeInBytes = size * (int)item->modelData->vertices.size();
             vbv->StrideInBytes = size;
             // VBVのセット
             pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv);
 
+
+            /*-------------------- インスタンスごとのデータ --------------------*/
+
+            vbv = &item->vbv_instance[i];
+            size = sizeof(InstanceData);
+
+            // Resource上の開始位置設定
+            vbv->BufferLocation =
+                ModelDrawData::instanceResource->GetGPUVirtualAddress() + (instanceCountAll * size);
+
+            // 総サイズ、刻み幅の設定
+            vbv->SizeInBytes = size * instanceCount;
+            vbv->StrideInBytes = size;
+
+            // VBVのセット
+            pDxManager_->commandList->IASetVertexBuffers(1, 1, vbv);
 
             /*///////////////////////////////////////////////*/
 
@@ -853,6 +912,11 @@ void PolygonManager::SetModelData(){
                 0,
                 0
             );
+
+
+            // 総頂点、インスタンス数をインクリメント
+            vertexCountAll += vertexCount;
+            instanceCountAll += instanceCount;
         }
     }
 

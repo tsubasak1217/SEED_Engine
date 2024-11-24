@@ -21,21 +21,32 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    models_.emplace_back(std::make_unique<Model>("suzanne"));
-    models_.emplace_back(std::make_unique<Model>("cube"));
-    models_.emplace_back(std::make_unique<Model>("suzanne"));
-    models_.emplace_back(std::make_unique<Model>("suzanne"));
-    models_.emplace_back(std::make_unique<Model>("cube"));
-    models_.emplace_back(std::make_unique<Model>("teapot"));
+    //models_.emplace_back(std::make_unique<Model>("suzanne"));
+    //models_.emplace_back(std::make_unique<Model>("sphere"));
+    //models_.emplace_back(std::make_unique<Model>("suzanne"));
+    //models_.emplace_back(std::make_unique<Model>("suzanne"));
+    //models_.emplace_back(std::make_unique<Model>("sphere"));
+    //models_.emplace_back(std::make_unique<Model>("teapot"));
+    //
+    //models_[2]->blendMode_ = BlendMode::ADD;
+    //models_[3]->blendMode_ = BlendMode::ADD;
+    //models_[4]->blendMode_ = BlendMode::ADD;
+    
+    //for(int i = 0; i < models_.size(); i++){
+    //    models_[i]->translate_ = { (float)i * 2.0f,0.0f,0.0f };
+    //    models_[i]->UpdateMatrix();
+    //}
 
-
-    models_[2]->blendMode_ = BlendMode::ADD;
-    models_[3]->blendMode_ = BlendMode::ADD;
-    models_[4]->blendMode_ = BlendMode::ADD;
-
-    for(int i = 0; i < models_.size(); i++){
-        models_[i]->translate_ = { (float)i * 10.0f,0.0f,20.0f };
-        models_[i]->UpdateMatrix();
+    for(int i = 0; i < 128; i++){
+        auto& model = models_.emplace_back(std::make_unique<Model>("bunny"));
+        model->translate_ = { (float)i * 1.0f,0.0f,5.0f };
+    
+        if(i % 2 == 0){
+            model->blendMode_ = BlendMode::ADD;
+            model->translate_.z += 5.0f;
+        }
+    
+        model->UpdateMatrix();
     }
 
     ////////////////////////////////////////////////////
@@ -82,7 +93,8 @@ void Scene_Game::Update(){
     /*========================= 解像度の更新 ==========================*/
 
     // 前フレームと値が違う場合のみ更新
-    ImGui::Begin("resolutionRate");
+    ImGui::Begin("environment");
+    ImGui::Text("FPS: %f", 1.0f / ClockManager::DeltaTime());
     ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
     ImGui::End();
 
@@ -98,7 +110,7 @@ void Scene_Game::Update(){
 }
 
 void Scene_Game::Draw(){
-    for(auto& model : models_){
-        model->Draw();
+    for(int i = 0; i < models_.size(); i++){
+        models_[i]->Draw();
     }
 }

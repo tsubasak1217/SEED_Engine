@@ -564,6 +564,9 @@
     <ClInclude Include="SEED\lib\structs\AccelerarionField.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\lib\structs\InstanceData.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

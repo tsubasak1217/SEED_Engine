@@ -78,36 +78,80 @@ void PSOManager::Create(
     /*--------------- ルートパラメーターの設定 ----------------*/
     D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
-    //=============================================================================================//
-
     /*---------------------- material ------------------------*/
-    rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
-    rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
-    rootParameters[0].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
+    D3D12_DESCRIPTOR_RANGE descriptorRangeMaterial[1] = {};
+    descriptorRangeMaterial[0].BaseShaderRegister = 0; // t0 から始まる
+    descriptorRangeMaterial[0].NumDescriptors = 1; // 1個の SRV を格納
+    descriptorRangeMaterial[0].RegisterSpace = 0;
+    descriptorRangeMaterial[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV を使う
+    descriptorRangeMaterial[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
+
+    rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // DescriptorTable を使用
+    rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader で使う
+    rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRangeMaterial; // material のディスクリプタテーブル
+    rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeMaterial); // 1つの範囲
 
     /*---------------------- transform ------------------------*/
-    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
-    rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // VertexShaderで使う
-    rootParameters[1].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
+    D3D12_DESCRIPTOR_RANGE descriptorRangeTransform[1] = {};
+    descriptorRangeTransform[0].BaseShaderRegister = 0; // t1 から始まる
+    descriptorRangeTransform[0].NumDescriptors = 1; // 1個の SRV を格納
+    descriptorRangeTransform[0].RegisterSpace = 0;
+    descriptorRangeTransform[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV を使う
+    descriptorRangeTransform[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
+
+    rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // DescriptorTable を使用
+    rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // VertexShader で使う
+    rootParameters[1].DescriptorTable.pDescriptorRanges = descriptorRangeTransform; // transform のディスクリプタテーブル
+    rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeTransform); // 1つの範囲
 
     /*------------------------ texture -----------------------*/
-    //DescriptorRange,DescriptorTableの設定
-    D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-    descriptorRange[0].BaseShaderRegister = 1;// t1から始まる
-    descriptorRange[0].NumDescriptors = 128;// 数は128
-    descriptorRange[0].RegisterSpace = 0;
-    descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;// SRVを使う
-    descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;// offsetを自動計算
+    D3D12_DESCRIPTOR_RANGE descriptorRangeTexture[1] = {};
+    descriptorRangeTexture[0].BaseShaderRegister = 1; // t0 から始まる
+    descriptorRangeTexture[0].NumDescriptors = 128; // 128個の SRV を格納
+    descriptorRangeTexture[0].RegisterSpace = 0;
+    descriptorRangeTexture[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; // SRV を使う
+    descriptorRangeTexture[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; // 自動計算
 
-    rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
-    rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
-    rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;// Tableの中身の配列を指定
-    rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);// Tableで利用する数
+    rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; // DescriptorTable を使用
+    rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader で使う
+    rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRangeTexture; // texture も material のテーブルを使う
+    rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRangeTexture); // material テーブルを利用
 
-    /*----------------------Lighting---------------------------*/
-    rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
-    rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
-    rootParameters[3].Descriptor.ShaderRegister = 0;// レジスタ番号b0を使う
+    /*---------------------- Lighting ---------------------------*/
+    rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // CBV を使用
+    rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader で使う
+    rootParameters[3].Descriptor.ShaderRegister = 0; // レジスタ番号 b0 を使う
+
+    //=============================================================================================//
+
+ //b0を使う   /*---------------------- material ------------------------*/
+ //   rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
+ //   rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
+ //   rootParameters[0].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
+
+ //   /*---------------------- transform ------------------------*/
+ //   rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
+ //   rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // VertexShaderで使う
+ //   rootParameters[1].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
+
+ //   /*------------------------ texture -----------------------*/
+ //   //DescriptorRange,DescriptorTableの設定
+ //   D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+ //   descriptorRange[0].BaseShaderRegister = 1;// t1から始まる
+ //   descriptorRange[0].NumDescriptors = 128;// 数は128
+ //   descriptorRange[0].RegisterSpace = 0;
+ //   descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;// SRVを使う
+ //   descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;// offsetを自動計算
+
+ //   rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
+ //   rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
+ //   rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;// Tableの中身の配列を指定
+ //   rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);// Tableで利用する数
+
+ //   /*----------------------Lighting---------------------------*/
+ //   rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
+ //   rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
+ //   rootParameters[3].Descriptor.ShaderRegister = 0;// レジスタ番号
 
     ///*----------------------keyIndexNum---------------------------*/
     //rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// DescriptorTableを使う
@@ -163,24 +207,33 @@ void PSOManager::Create(
     CPUからVertexShaderに渡すデータがどのようなものなのか指定するもの
            VertexShaderInputにあるメンバ変数の数だけ設定する
     */
-    D3D12_INPUT_ELEMENT_DESC inputElementDescs[3]{};
+    D3D12_INPUT_ELEMENT_DESC inputElementDescs[4]{};
 
     // 頂点座標
     inputElementDescs[0].SemanticName = "POSITION";
     inputElementDescs[0].SemanticIndex = 0;
+    inputElementDescs[0].InputSlot = 0;
     inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
     // テクスチャ座標
     inputElementDescs[1].SemanticName = "TEXCOORD";
     inputElementDescs[1].SemanticIndex = 0;
+    inputElementDescs[1].InputSlot = 0;
     inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
     inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
     // 法線ベクトル
     inputElementDescs[2].SemanticName = "NORMAL";
     inputElementDescs[2].SemanticIndex = 0;
+    inputElementDescs[2].InputSlot = 0;
     inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
     inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
+    // 要素のオフセット
+    inputElementDescs[3].SemanticName = "INDEX_OFFSET";
+    inputElementDescs[3].SemanticIndex = 0;
+    inputElementDescs[3].InputSlot = 1;
+    inputElementDescs[3].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;//インスタンスごと
+    inputElementDescs[3].Format = DXGI_FORMAT_R32_SINT;
+    inputElementDescs[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
     // 上で作成したデータ群をひとつの変数に入れる
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -256,11 +309,11 @@ void PSOManager::Create(
     D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
     depthStencilDesc.DepthEnable = true;// Depth機能有効化
 
-    if(blendMode == BlendMode::ADD){
-        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
-    } else{
+    //if(blendMode == BlendMode::ADD){
+    //    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
+    //} else{
         depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
-    }
+    //}
 
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
 

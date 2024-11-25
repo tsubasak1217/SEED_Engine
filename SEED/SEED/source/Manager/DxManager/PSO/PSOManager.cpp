@@ -279,8 +279,6 @@ void PSOManager::Create(
     blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
     blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;  // アルファ値に影響しない
 
-    //blendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
-    //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     /*--------------------------------- RasterizerStateの設定 ----------------------------------*/
 
@@ -299,11 +297,11 @@ void PSOManager::Create(
     D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
     depthStencilDesc.DepthEnable = true;// Depth機能有効化
 
-    //if(blendMode == BlendMode::ADD){
-    //    depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
-    //} else{
-        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
-    //}
+    if(blendMode == BlendMode::ADD){
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
+    } else{
+      depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
+    }
 
     depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
 

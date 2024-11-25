@@ -4,6 +4,7 @@
 #include <MyMath.h>
 #include <CS_Buffers.h>
 #include "InputManager.h"
+#include "PSO/PSOManager.h"
 
 DxManager* DxManager::instance_ = nullptr;
 
@@ -15,7 +16,7 @@ void DxManager::Initialize(SEED* pSEED)
     // ポインタ代入
     pSEED_ = pSEED;
     // PSOManagerの作成
-    psoManager_ = new PSOManager();
+    PSOManager::GetInstance();
     // polygonManagerの作成
     polygonManager_ = new PolygonManager(this);
     pSEED_->SetPolygonManagerPtr(polygonManager_);
@@ -173,7 +174,7 @@ void DxManager::Initialize(SEED* pSEED)
     // DSVHeapの先頭にDSVを作る
     ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.Get(), &dsvDesc, "depthStencil_1");
     // ハンドルを得る
-    dsvHandle = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
+    dsvHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
 
     /*--------------------------------- VewportとScissor ---------------------------------*/
 
@@ -421,9 +422,9 @@ void DxManager::CreateRTV()
     ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.Get(), &rtvDesc, "offScreen_0");// オフスクリーン用
 
     // ハンドル取得
-    rtvHandles[0] = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_0");
-    rtvHandles[1] = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_1");
-    offScreenHandle = ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
+    rtvHandles[0] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_0");
+    rtvHandles[1] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_1");
+    offScreenHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
 }
 
 void DxManager::InitializeSystemTextures()
@@ -572,7 +573,7 @@ void DxManager::InitPSO()
 {
     for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
         for(int topology = 0; topology < 2; topology++){
-            psoManager_->Create(
+            PSOManager::Create(
                 commonRootSignature[blendMode][topology].GetAddressOf(),
                 commonPipelineState[blendMode][topology].GetAddressOf(),
                 PolygonTopology(topology), BlendMode(blendMode)
@@ -581,7 +582,7 @@ void DxManager::InitPSO()
     }
 
     // ComputeShader用
-    csRootSignature.Attach(psoManager_->SettingCSRootSignature());
+    csRootSignature.Attach(PSOManager::SettingCSRootSignature());
     D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
     psoDesc.pRootSignature = csRootSignature.Get();
     psoDesc.CS = { reinterpret_cast<BYTE*>(computeShaderBlob->GetBufferPointer()), computeShaderBlob->GetBufferSize() };
@@ -793,7 +794,7 @@ void DxManager::DrawPolygonAll()
     
     // すべての描画が終了したのでオフスクリーンのRTVをクリアする。
     commandList->ClearRenderTargetView(
-        ViewManager::GetHandle(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0"), 
+        ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0"), 
         &clearColor.x, 0, nullptr
     );
 }
@@ -921,8 +922,6 @@ void DxManager::Finalize()
     CloseHandle(fenceEvent);
     polygonManager_->Finalize();
 
-    delete psoManager_;
-    psoManager_ = nullptr;
     delete polygonManager_;
     polygonManager_ = nullptr;
 

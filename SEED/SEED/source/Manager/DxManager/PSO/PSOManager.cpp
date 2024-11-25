@@ -1,11 +1,35 @@
 // local
-#include <PSOManager.h>
+#include "PSO/PSOManager.h"
 #include <DxManager.h>
 #include "blendMode.h"
 
-PSOManager::PSOManager(){}
+/////////////////////////////////////////////////////////////////////////////////////////////
+//                         static変数初期化
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+PSOManager* PSOManager::instance_ = nullptr;
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//                          初期化・終了関数
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+PSOManager* PSOManager::GetInstance(){
+    if(!instance_){
+        instance_ = new PSOManager();
+    }
+
+    return instance_;
+}
 
 PSOManager::~PSOManager(){}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//                                     CS用の作成関数
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 
 ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     // ディスクリプタ範囲を定義（SRV、UAV、CBV）
@@ -60,6 +84,13 @@ ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     return rootSignature;
 }
 
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//                                      全般PSOの作成関数
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 void PSOManager::Create(
     ID3D12RootSignature** pRootSignature, ID3D12PipelineState** pPipelineState,
     PolygonTopology topology, BlendMode blendMode
@@ -76,6 +107,7 @@ void PSOManager::Create(
     descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
     /*--------------- ルートパラメーターの設定 ----------------*/
+
     D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
     /*---------------------- material ------------------------*/
@@ -121,48 +153,6 @@ void PSOManager::Create(
     rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // CBV を使用
     rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShader で使う
     rootParameters[3].Descriptor.ShaderRegister = 0; // レジスタ番号 b0 を使う
-
-    //=============================================================================================//
-
- //b0を使う   /*---------------------- material ------------------------*/
- //   rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
- //   rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
- //   rootParameters[0].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
-
- //   /*---------------------- transform ------------------------*/
- //   rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// SRVを使用
- //   rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // VertexShaderで使う
- //   rootParameters[1].Descriptor.ShaderRegister = 0; // レジスタ番号t0とバインド
-
- //   /*------------------------ texture -----------------------*/
- //   //DescriptorRange,DescriptorTableの設定
- //   D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
- //   descriptorRange[0].BaseShaderRegister = 1;// t1から始まる
- //   descriptorRange[0].NumDescriptors = 128;// 数は128
- //   descriptorRange[0].RegisterSpace = 0;
- //   descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;// SRVを使う
- //   descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;// offsetを自動計算
-
- //   rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;// DescriptorTableを使う
- //   rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
- //   rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;// Tableの中身の配列を指定
- //   rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);// Tableで利用する数
-
- //   /*----------------------Lighting---------------------------*/
- //   rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
- //   rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShaderで使う
- //   rootParameters[3].Descriptor.ShaderRegister = 0;// レジスタ番号
-
-    ///*----------------------keyIndexNum---------------------------*/
-    //rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// DescriptorTableを使う
-    //rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
-    //rootParameters[4].Descriptor.ShaderRegister = 1;// レジスタ番号b0を使う
-
-    ///*----------------------NumElements---------------------------*/
-    //rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// DescriptorTableを使う
-    //rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // PixelShaderで使う
-    //rootParameters[5].Descriptor.ShaderRegister = 0;// レジスタ番号b0を使う
-
 
     //=============================================================================================//
 

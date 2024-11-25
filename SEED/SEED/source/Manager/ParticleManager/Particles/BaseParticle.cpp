@@ -9,7 +9,7 @@ BaseParticle::BaseParticle(
     BlendMode blendMode
 ){
     // パーティクルのモデルを生成
-    particle_ = std::make_unique<Model>("Plane");
+    particle_ = std::make_unique<Model>("plane");
 
     // 座標をランダム決定
     particle_->translate_ = MyFunc::Random(positionRange);

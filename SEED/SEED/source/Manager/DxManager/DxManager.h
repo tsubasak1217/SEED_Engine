@@ -12,7 +12,6 @@
 #include <matrixFunc.h>
 #include <sphere.h>
 #include <includes.h>
-#include <PSOManager.h>
 #include <PolygonManager.h>
 #include <EffectManager.h>
 #include <Camera.h>
@@ -129,7 +128,6 @@ private:/*========================= 外部参照のためのポインタ =======
 
 private:/*============================ マネージャー変数 ============================*/
 
-    PSOManager* psoManager_ = nullptr;// PSOを作成するクラス
     PolygonManager* polygonManager_ = nullptr;
     std::unique_ptr<EffectManager> effectManager_ = nullptr;
 

@@ -31,23 +31,23 @@ void Scene_Game::Initialize(){
     //models_[2]->blendMode_ = BlendMode::ADD;
     //models_[3]->blendMode_ = BlendMode::ADD;
     //models_[4]->blendMode_ = BlendMode::ADD;
-    
+
     //for(int i = 0; i < models_.size(); i++){
     //    models_[i]->translate_ = { (float)i * 2.0f,0.0f,0.0f };
     //    models_[i]->UpdateMatrix();
     //}
 
-    for(int i = 0; i < 128; i++){
-        auto& model = models_.emplace_back(std::make_unique<Model>("bunny"));
-        model->translate_ = { (float)i * 1.0f,0.0f,5.0f };
-    
-        if(i % 2 == 0){
-            model->blendMode_ = BlendMode::ADD;
-            model->translate_.z += 5.0f;
-        }
-    
-        model->UpdateMatrix();
-    }
+    //for(int i = 0; i < 128; i++){
+    //    auto& model = models_.emplace_back(std::make_unique<Model>("bunny"));
+    //    model->translate_ = { (i/16) * 2.0f,0.0f,(i % 16) * 4.0f };
+    //
+    //    if(i % 2 == 0){
+    //        model->blendMode_ = BlendMode::ADD;
+    //        model->translate_.z += 2.0f;
+    //    }
+    //
+    //    model->UpdateMatrix();
+    //}
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -67,7 +67,7 @@ void Scene_Game::Initialize(){
     //  いろんなものの作成
     ////////////////////////////////////////////////////
 
-
+    ParticleManager::GetInstance();
 
     ////////////////////////////////////////////////////
     //  解像度の初期設定
@@ -86,17 +86,17 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-
+    ImGui::Begin("environment");
+    /*===== FPS表示 =====*/
+    ImGui::Text("FPS: %f", 1.0f / ClockManager::DeltaTime());
+    /*===== 解像度の更新 ====*/
+    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
+    ImGui::End();
 
 #endif
 
-    /*========================= 解像度の更新 ==========================*/
 
     // 前フレームと値が違う場合のみ更新
-    ImGui::Begin("environment");
-    ImGui::Text("FPS: %f", 1.0f / ClockManager::DeltaTime());
-    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
-    ImGui::End();
 
     if(resolutionRate_ != preRate_){
         SEED::ChangeResolutionRate(resolutionRate_);
@@ -104,8 +104,23 @@ void Scene_Game::Update(){
 
     /*========================= 各状態の更新 ==========================*/
 
+    ParticleManager::Emit(
+        ParticleType::kRadial,
+        Range3D({ -10.0f,-10.0f,-10.0f }, { 10.0f,10.0f,10.0f }),
+        Range1D(1.0f, 3.5f),
+        Range1D(0.1f, 0.5f),
+        1.0f,
+        {
+            Vector4(1.0f,0.0f,0.0f,1.0f),
+            Vector4(0.0f,1.0f,0.0f,1.0f),
+            Vector4(0.0f,0.0f,1.0f,1.0f)
+        },
+        5,
+        BlendMode::ADD
+    );
 
- 
+
+    ParticleManager::Update();
     currentState_->Update();
 }
 
@@ -113,4 +128,7 @@ void Scene_Game::Draw(){
     for(int i = 0; i < models_.size(); i++){
         models_[i]->Draw();
     }
+
+
+    ParticleManager::Draw();
 }

@@ -5,6 +5,7 @@
 #include <Environment.h>
 #include "ModelManager.h"
 #include "TextureManager.h"
+#include "PSO/PSOManager.h"
 
 // external
 #include <assert.h>
@@ -127,9 +128,42 @@ void PolygonManager::InitResources(){
     indexOffsetResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(InstanceData) * kMaxModelCount_);
 
+
+
+    //================================ オフスクリーンのキャプチャ用テクスチャの初期化 ================================//
+
+
+    ////////////////////////////////////////////////
     // viewの作成
+    ////////////////////////////////////////////////
+    
+    // SRVのDescの設定
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
+    instancingSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc.Buffer.FirstElement = 0;
+    instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc.Buffer.NumElements = kMaxModelCount_;
+
+    /*------------- Transform用 --------------*/
+    instancingSrvDesc.Buffer.StructureByteStride = sizeof(TransformMatrix);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, modelWvpResource_.Get(),
+        &instancingSrvDesc, "instancingResource_Transform"
+    );
+
+    /*------------- Material用 --------------*/
+    instancingSrvDesc.Buffer.StructureByteStride = sizeof(Material);// マテリアルのサイズに変更
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, modelMaterialResource_.Get(),
+        &instancingSrvDesc, "instancingResource_Material"
+    );
 
 
+    ////////////////////////////////////////////////
+    // リソースの割り当て
+    ////////////////////////////////////////////////
     ModelDrawData::vertexResource = modelVertexResource_.Get();
     ModelDrawData::materialResource = modelMaterialResource_.Get();
     ModelDrawData::wvpResource = modelWvpResource_.Get();
@@ -764,29 +798,24 @@ void PolygonManager::SetModelData(){
             pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[i][(int)PolygonTopology::TRIANGLE].Get());
             pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[i][(int)PolygonTopology::TRIANGLE].Get());
 
+
             // Resourceを設定
-            pDxManager_->commandList->SetGraphicsRootShaderResourceView(0, ModelDrawData::materialResource->GetGPUVirtualAddress());
-            pDxManager_->commandList->SetGraphicsRootShaderResourceView(1, ModelDrawData::wvpResource->GetGPUVirtualAddress());
             pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
 
-            // グラフハンドルに応じたテクスチャハンドルを得る
-            D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU;
-            textureSrvHandleGPU = GetGPUDescriptorHandle(
-                ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
-                ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-                0
-            );
 
-
-
+            // SRVヒープの上のアドレスを格納するハンドル
+            D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
+            // マテリアルのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
+            // トランスフォームのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
             // テクスチャのテーブルをセット
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, textureSrvHandleGPU);
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
 
-            // テクスチャのテーブルをセット
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, textureSrvHandleGPU);
 
-            // テクスチャのテーブルをセット
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
 
             // 各リソースのアドレスをMapしてポインタに格納
             VertexData* vertexData;
@@ -798,6 +827,7 @@ void PolygonManager::SetModelData(){
             ModelDrawData::materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
             ModelDrawData::wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
             ModelDrawData::instanceResource->Map(0, nullptr, reinterpret_cast<void**>(&instanceData));
+
 
             /*///////////////////////////////////////////////*/
 

@@ -140,6 +140,9 @@
     <Filter Include="SEED\source\Manager\ParticleManager\Particles">
       <UniqueIdentifier>{f4629fb1-f4f0-46a5-923b-59dc553c0e59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\DxManager\PSO">
+      <UniqueIdentifier>{bca07d4f-4587-4f19-9c99-aee5bc2bd832}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -180,9 +183,6 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp">
       <Filter>SEED\source\Manager\WindowManager</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\source\Manager\DxManager\PSOManager.cpp">
-      <Filter>SEED\source\Manager\DxManager</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp">
       <Filter>SEED\source\Manager\DxManager</Filter>
@@ -319,6 +319,9 @@
     <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp">
       <Filter>SEED\lib\structs</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -407,9 +410,6 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h">
       <Filter>SEED\source\Manager\WindowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\DxManager\PSOManager.h">
-      <Filter>SEED\source\Manager\DxManager</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h">
       <Filter>SEED\source\Manager\DxManager</Filter>
@@ -566,6 +566,15 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\structs\InstanceData.h">
       <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSO.h">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

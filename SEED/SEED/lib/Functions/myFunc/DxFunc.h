@@ -98,9 +98,5 @@ D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
     uint32_t descriptorSize,
     uint32_t index);
 
-// objファイルを読み込む関数
-ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
 // Matrix4x4 を DirectX::XMMATRIX に変換する関数
 DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix);

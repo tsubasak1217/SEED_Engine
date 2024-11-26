@@ -7,8 +7,7 @@ Model::Model(const std::string& filename){
     Initialize(filename);
 }
 
-void Model::Initialize(const std::string& filename)
-{
+void Model::Initialize(const std::string& filename){
     modelName_ = filename;
     ModelManager::LoadModel(modelName_);
 
@@ -17,14 +16,22 @@ void Model::Initialize(const std::string& filename)
     translate_ = { 0.0f,0.0f,0.0f };
     worldMat_ = IdentityMat4();
 
-    uv_scale_ = ModelManager::GetModelData(modelName_)->materialData.UV_scale_;
-    uv_rotate_ = { 0.0f,0.0f,0.0f };
-    uv_translate_ = 
-        ModelManager::GetModelData(modelName_)->materialData.UV_offset_ +
-        ModelManager::GetModelData(modelName_)->materialData.UV_translate_;
-    uvTransform_ = AffineMatrix(uv_scale_,uv_rotate_,uv_translate_);
+    // マテリアルの数だけ初期化
+    for(int i = 0; i < ModelManager::GetModelData(modelName_)->materials.size(); i++){
 
-    textureGH_ = TextureManager::LoadTexture(ModelManager::GetModelData(modelName_)->materialData.textureFilePath_);
+        uv_scale_.push_back(ModelManager::GetModelData(modelName_)->materials[i].UV_scale_);
+        uv_rotate_.push_back({ 0.0f,0.0f,0.0f });
+        uv_translate_.push_back(
+            ModelManager::GetModelData(modelName_)->materials[i].UV_offset_ +
+            ModelManager::GetModelData(modelName_)->materials[i].UV_translate_
+        );
+
+        uvTransform_.push_back(AffineMatrix(uv_scale_.back(), uv_rotate_.back(), uv_translate_.back()));
+        textureGH_.push_back(
+            TextureManager::LoadTexture(ModelManager::GetModelData(modelName_)->materials[i].textureFilePath_)
+        );
+    }
+
     color_ = { 1.0f,1.0f,1.0f,1.0f };
     lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
 }
@@ -33,11 +40,19 @@ void Model::Draw(){
     SEED::DrawModel(this);
 }
 
-void Model::UpdateMatrix(){
-    worldMat_ = AffineMatrix(scale_, rotate_, translate_);
-    uvTransform_ = AffineMatrix(uv_scale_, uv_rotate_, uv_translate_);
 
-    if (parent_){
+void Model::UpdateMatrix(){
+
+    // ワールド変換行列の更新
+    worldMat_ = AffineMatrix(scale_, rotate_, translate_);
+
+    // UV変換行列の更新
+    for(int i = 0; i < uvTransform_.size(); i++){
+        uvTransform_[i] = AffineMatrix(uv_scale_[i], uv_rotate_[i], uv_translate_[i]);
+    }
+
+    // 親のワールド変換行列を掛ける
+    if(parent_){
         worldMat_ = Multiply(worldMat_, parent_->worldMat_);
     }
 }

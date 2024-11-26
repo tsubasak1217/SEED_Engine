@@ -33,15 +33,15 @@ public:
     Matrix4x4 worldMat_;
     bool isRotateWithQuaternion_;
 
-    uint32_t textureGH_;
+    std::vector<uint32_t> textureGH_;
     Vector4 color_;
     int32_t lightingType_;
     BlendMode blendMode_;
 
-    Vector3 uv_scale_;
-    Vector3 uv_rotate_;
-    Vector3 uv_translate_;
-    Matrix4x4 uvTransform_;
+    std::vector<Vector3> uv_scale_;
+    std::vector<Vector3> uv_rotate_;
+    std::vector<Vector3> uv_translate_;
+    std::vector<Matrix4x4> uvTransform_;
 
     // 親となるワールド変換へのポインタ
     const Model* parent_ = nullptr;

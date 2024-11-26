@@ -21,33 +21,17 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    //models_.emplace_back(std::make_unique<Model>("suzanne"));
-    //models_.emplace_back(std::make_unique<Model>("sphere"));
-    //models_.emplace_back(std::make_unique<Model>("suzanne"));
-    //models_.emplace_back(std::make_unique<Model>("suzanne"));
-    //models_.emplace_back(std::make_unique<Model>("sphere"));
-    //models_.emplace_back(std::make_unique<Model>("teapot"));
-    //
-    //models_[2]->blendMode_ = BlendMode::ADD;
-    //models_[3]->blendMode_ = BlendMode::ADD;
-    //models_[4]->blendMode_ = BlendMode::ADD;
-
-    //for(int i = 0; i < models_.size(); i++){
-    //    models_[i]->translate_ = { (float)i * 2.0f,0.0f,0.0f };
-    //    models_[i]->UpdateMatrix();
-    //}
-
-    //for(int i = 0; i < 128; i++){
-    //    auto& model = models_.emplace_back(std::make_unique<Model>("bunny"));
-    //    model->translate_ = { (i/16) * 2.0f,0.0f,(i % 16) * 4.0f };
-    //
-    //    if(i % 2 == 0){
-    //        model->blendMode_ = BlendMode::ADD;
-    //        model->translate_.z += 2.0f;
-    //    }
-    //
-    //    model->UpdateMatrix();
-    //}
+    for(int i = 0; i < 128; i++){
+        auto& model = models_.emplace_back(std::make_unique<Model>("teapot.obj"));
+        model->translate_ = { (i/16) * 2.0f,0.0f,(i % 16) * 4.0f };
+    
+        if(i % 2 == 0){
+            model->blendMode_ = BlendMode::ADD;
+            model->translate_.z += 2.0f;
+        }
+    
+        model->UpdateMatrix();
+    }
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化

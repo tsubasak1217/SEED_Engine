@@ -18,11 +18,8 @@ uint32_t PolygonManager::modelIndexCount_ = 0;
 uint32_t PolygonManager::spriteCount_ = 0;
 uint32_t PolygonManager::lineCount_ = 0;
 
-std::vector<int32_t> ModelDrawData::modelSwitchIndices;
-ID3D12Resource* ModelDrawData::vertexResource = nullptr;
-ID3D12Resource* ModelDrawData::materialResource = nullptr;
-ID3D12Resource* ModelDrawData::wvpResource = nullptr;
-ID3D12Resource* ModelDrawData::instanceResource = nullptr;
+std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIndices;
+
 
 /*---------------------------------------------------------------------------------------------------------------*/
 /*                                                                                                               */
@@ -125,8 +122,8 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxModelCount_);
     modelWvpResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * kMaxModelCount_);
-    indexOffsetResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(InstanceData) * kMaxModelCount_);
+    offsetResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * kMaxModelCount_);
 
 
 
@@ -164,10 +161,6 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
     // リソースの割り当て
     ////////////////////////////////////////////////
-    ModelDrawData::vertexResource = modelVertexResource_.Get();
-    ModelDrawData::materialResource = modelMaterialResource_.Get();
-    ModelDrawData::wvpResource = modelWvpResource_.Get();
-    ModelDrawData::instanceResource = indexOffsetResource_.Get();
 
     // resourceの設定
     for(int i = 0; i < kNumMeshVariation; i++){
@@ -199,16 +192,12 @@ void PolygonManager::Reset(){
         }
     }
 
-    for(auto& modelData : modelDrawData_){
-        for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-            modelData.second->transforms[i].clear();
-            modelData.second->materials[i].clear();
-            modelData.second->instanceData[i].clear();
-        }
-    }
 
+    // モデルの情報をリセット
+    modelDrawData_.clear();
     ModelDrawData::modelSwitchIndices.clear();
 
+    // カウントのリセット
     triangleIndexCount_ = 0;
     quadIndexCount_ = 0;
     modelIndexCount_ = 0;
@@ -472,40 +461,69 @@ void PolygonManager::AddSprite(
 /*----------------------------------- モデルの情報を追加する関数 ---------------------------------------*/
 void PolygonManager::AddModel(Model* model){
 
+
+    //////////////////////////////////////////////////////////////////////////
+    //                     モデル描画データがが存在しないときのみ
+    //////////////////////////////////////////////////////////////////////////
+    if(modelDrawData_.find(model->modelName_) == modelDrawData_.end()){
+        modelDrawData_[model->modelName_] = std::make_unique<ModelDrawData>();
+        // vertexResource
+        modelDrawData_[model->modelName_]->modelData = ModelManager::GetModelData(model->modelName_);
+
+    }
+
+    // サイズ確保
+    auto& item = modelDrawData_[model->modelName_];
+    int meshSize = (int)modelDrawData_[model->modelName_]->modelData->meshes.size();
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //                          materialResourceの設定
+    /////////////////////////////////////////////////////////////////////////
+
+    modelDrawData_[model->modelName_]->materials[(int)model->blendMode_].resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
+
+        auto& material = item->materials[(int)model->blendMode_][meshIdx];
+        item->materials[(int)model->blendMode_][meshIdx].resize(material.size() + 1);
+        material.back().color_ = model->color_;
+        material.back().lightingType_ = model->lightingType_;
+        material.back().uvTransform_ = model->uvTransform_[meshIdx];
+        material.back().GH_ = model->textureGH_[meshIdx];
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                          transformResourceの設定
+    //////////////////////////////////////////////////////////////////////////
+
     Matrix4x4 wvp = Multiply(
         model->GetWorldMat(),
         pDxManager_->GetCamera()->viewProjectionMat_
     );
 
-
-    if(modelDrawData_.find(model->modelName_) == modelDrawData_.end()){
-        modelDrawData_[model->modelName_] = std::make_unique<ModelDrawData>();
-        // vertexResource
-        modelDrawData_[model->modelName_]->modelData = ModelManager::GetModelData(model->modelName_);
-    }
-
-
-    // materialResource
-    auto& item = modelDrawData_[model->modelName_];
-    for(int materialIdx = 0; materialIdx < item->modelData->materials.size(); materialIdx++){
-        auto& material = item->materials[(int)model->blendMode_].emplace_back(Material());
-        material.color_ = model->color_;
-        material.lightingType_ = model->lightingType_;
-        material.uvTransform_ = model->uvTransform_[materialIdx];
-        material.GH_ = model->textureGH_[materialIdx];
-    }
-
-
-    // wvpResource
     auto& transform = item->transforms[(int)model->blendMode_].emplace_back(TransformMatrix());
     transform.world_ = model->GetWorldMat();
     transform.WVP_ = wvp;
 
-    // instanceData
-    item->instanceData[(int)model->blendMode_].emplace_back(InstanceData());
+    //////////////////////////////////////////////////////////////////////////
+    //                              offset情報の設定
+    //////////////////////////////////////////////////////////////////////////
 
-    item->instanceCount++;
+    modelDrawData_[model->modelName_]->offsetData[(int)model->blendMode_].resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
+        auto& offsetData = item->offsetData[(int)model->blendMode_][meshIdx];
+        item->offsetData[(int)model->blendMode_][meshIdx].resize(offsetData.size() + 1);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                                  vbv
+    //////////////////////////////////////////////////////////////////////////
+    item->vbv_vertex.resize(meshSize);
+    item->vbv_instance[(int)model->blendMode_].resize(meshSize);
+
+    // 要素数を更新
     modelIndexCount_++;
+    item->instanceCount++;
 }
 
 //void PolygonManager::AddModel(Model* model, bool isStaticDraw){
@@ -776,150 +794,189 @@ void PolygonManager::SetModelData(){
     int instanceCountAll = 0;
     vertexCountAll = 0;
 
-    /*===========================================================================================*/
-    /*                               すべての三角形に共通の設定                                      */
-    /*===========================================================================================*/
+    // 一列に格納する用の配列
+    std::vector<Material> materialArray;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /*                                          共通の処理                                        */
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // シザー矩形とviewport
     pDxManager_->commandList->RSSetViewports(1, &pDxManager_->viewport); // Viewport
     pDxManager_->commandList->RSSetScissorRects(1, &pDxManager_->scissorRect); // Scissor
 
-    // 形状を設定。 PSOに設定しているものとはまた別。 同じものを設定すると考えておけば良い
+    // 形状を設定
     pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    // 各リソースのアドレスをMapしてポインタに格納
+    VertexData* vertexData;
+    Material* materialData;
+    TransformMatrix* transformData;
+    OffsetData* offsetData;
+
+    modelVertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+    modelMaterialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
+    modelWvpResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
+    offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&offsetData));
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /*                                        modelごとの処理                                     */
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    for(auto& modelData : modelDrawData_){
+
+        int modelVertexCount = 0;
+        auto& item = modelData.second;
+        ModelDrawData::modelSwitchIndices[modelData.first] = vertexCountAll;
+
+        /*--------------------------------------*/
+        //         modelの頂点を書き込む
+        /*--------------------------------------*/
+        for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
+
+            int meshVertexCount = (int)item->modelData->meshes[meshIdx].vertices.size();
+            item->meshSwitchIndices.emplace_back(modelVertexCount);// メッシュが切り替わる頂点番号を記録
+
+            // 頂点情報を書き込む
+            std::memcpy(
+                vertexData + ModelDrawData::modelSwitchIndices[modelData.first] + item->meshSwitchIndices.back(),// に
+                item->modelData->meshes[meshIdx].vertices.data(),// から
+                sizeof(VertexData) * meshVertexCount// のサイズコピー
+            );
+
+            // 数をインクリメント
+            modelVertexCount += meshVertexCount;
+            vertexCountAll += meshVertexCount;
+
+        }
+
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        /*                                      blendModeごとの処理                                   */
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
+
+
+            // 各モデルの現在のブレンドモードのインスタンス数
+            int instanceCount = (int)item->transforms[blendIdx].size();
+            if(instanceCount == 0){ continue; }
+
+
+            /*--------------------------------------*/
+            //      トランスフォーム情報を書き込む
+            /*--------------------------------------*/
+            std::memcpy(
+                transformData + instanceCountAll,
+                item->transforms[blendIdx].data(),
+                sizeof(TransformMatrix) * instanceCount
+            );
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            /*                                     materialを一列に格納                                    */
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
+
+                // すべてのマテリアルを一列に並べる
+                materialArray.insert(
+                    materialArray.end(),
+                    item->materials[blendIdx][meshIdx].begin(),
+                    item->materials[blendIdx][meshIdx].end()
+                );
+            }
+
+            // インスタンス数をインクリメント
+            instanceCountAll += instanceCount;
+        }
+    }
+
+
+    /*--------------------------------------*/
+    //       マテリアル情報を書き込む
+    /*--------------------------------------*/
+    std::memcpy(
+        materialData,
+        materialArray.data(),
+        sizeof(Material) * (int)materialArray.size()
+    );
+
+
+
+
+
+
+    int meshCountAll = 0;
+    instanceCountAll = 0;
 
     for(auto& modelData : modelDrawData_){
 
-        bool vertexExist = false;
         auto& item = modelData.second;
-        ModelDrawData::modelSwitchIndices.push_back(vertexCountAll);
 
         /*===========================================================================================*/
-        /*                                         情報の書き込み                                      */
+        /*                                      blendModeごとの処理                                   */
         /*===========================================================================================*/
+        for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
 
-        for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+
+            // 各モデルの現在のブレンドモードのインスタンス数
+            int instanceCount = (int)item->transforms[blendIdx].size();
+            if(instanceCount == 0){ continue; }
+
+
+            // RootSignature・PSOを設定
+            pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[blendIdx][(int)PolygonTopology::TRIANGLE].Get());
+            pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[blendIdx][(int)PolygonTopology::TRIANGLE].Get());
+            // Resourceを設定
+            pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
+
+            // SRVヒープの上のアドレスを格納するハンドル
+            D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
+            // マテリアルのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
+            // トランスフォームのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
+            // テクスチャのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+
+
 
             for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
-                // 各モデルの現在のブレンドモードのインスタンス数
-                int instanceCount = (int)item->transforms[i].size();
-                // 一度に描画する頂点の数
-                int vertexCount = instanceCount * int(item->modelData->meshes[meshIdx].vertices.size());
 
 
-                // RootSignature・PSOを設定
-                pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[i][(int)PolygonTopology::TRIANGLE].Get());
-                pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[i][(int)PolygonTopology::TRIANGLE].Get());
-
-
-                // Resourceを設定
-                pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
-
-
-                // SRVヒープの上のアドレスを格納するハンドル
-                D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
-                // マテリアルのテーブルをセット
-                srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
-                // トランスフォームのテーブルをセット
-                srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
-                // テクスチャのテーブルをセット
-                srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
-
-
-
-                // 各リソースのアドレスをMapしてポインタに格納
-                VertexData* vertexData;
-                Material* materialData;
-                TransformMatrix* transformData;
-                InstanceData* instanceData;
-
-                ModelDrawData::vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-                ModelDrawData::materialResource->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-                ModelDrawData::wvpResource->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
-                ModelDrawData::instanceResource->Map(0, nullptr, reinterpret_cast<void**>(&instanceData));
-
-
-                /*///////////////////////////////////////////////*/
-
-                /*      　     HLSLに送る情報の書き込み              */
-
-                /*///////////////////////////////////////////////*/
-
-
-                // 頂点情報
-                if(!vertexExist){//一度のみ
-                    std::memcpy(
-                        vertexData + ModelDrawData::modelSwitchIndices.back(),// に
-                        item->modelData->meshes[meshIdx].vertices.data(),// から
-                        sizeof(VertexData) * (int)item->modelData->meshes[meshIdx].vertices.size()// のサイズコピー
-                    );
-
-                    vertexExist = true;
-                }
-
-                // マテリアル情報
-                std::memcpy(
-                    materialData + instanceCountAll,
-                    item->materials[i].data(),
-                    sizeof(Material) * instanceCount
-                );
-
-
-                // トランスフォーム情報
-                std::memcpy(
-                    transformData + instanceCountAll,
-                    item->transforms[i].data(),
-                    sizeof(TransformMatrix) * instanceCount
-                );
-
-
-                // インスタンス情報
-                for(auto& instanceData2 : item->instanceData[i]){
-                    instanceData2.indexOffset = instanceCountAll;
+                /*--------------------------------------*/
+                //      オフセット情報を書き込む
+                /*--------------------------------------*/
+                for(auto& offset : item->offsetData[blendIdx][meshIdx]){
+                    offset.instanceOffset = instanceCountAll;
+                    offset.meshOffset = meshCountAll;
                 }
 
                 std::memcpy(
-                    instanceData + instanceCountAll,
-                    item->instanceData[i].data(),
-                    sizeof(InstanceData) * instanceCount
+                    offsetData + meshCountAll,
+                    item->offsetData[blendIdx][meshIdx].data(),
+                    sizeof(OffsetData) * instanceCount
                 );
 
-
-
                 /*///////////////////////////////////////////////*/
 
-                /*      　            Unmap                      */
-
-                /*///////////////////////////////////////////////*/
-
-
-                D3D12_RANGE writeRange[3] = {
-                    {0,sizeof(VertexData) * kMaxVerticesCountInResource_},
-                    {0,sizeof(Material) * instanceCount},
-                    {0,sizeof(TransformMatrix) * instanceCount},
-                };
-
-                item->vertexResource->Unmap(0, &writeRange[0]);
-                item->materialResource->Unmap(0, &writeRange[1]);
-                item->wvpResource->Unmap(0, &writeRange[2]);
-
-
-                /*///////////////////////////////////////////////*/
                 /*                   VBVの設定                    */
+
                 /*///////////////////////////////////////////////*/
+
 
                 /*-------------------- 頂点ごとのデータ --------------------*/
 
-                D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex[i];
+                D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex[meshIdx];
                 int size = sizeof(VertexData);
 
                 // Resource上の開始位置設定
                 vbv->BufferLocation =
-                    ModelDrawData::vertexResource->GetGPUVirtualAddress() +
-                    (ModelDrawData::modelSwitchIndices.back() * size);
+                    modelVertexResource_.Get()->GetGPUVirtualAddress() +
+                    ((ModelDrawData::modelSwitchIndices[modelData.first] + item->meshSwitchIndices[meshIdx]) * size);
                 // 総サイズ、刻み幅の設定
                 vbv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].vertices.size();
                 vbv->StrideInBytes = size;
@@ -929,23 +986,25 @@ void PolygonManager::SetModelData(){
 
                 /*-------------------- インスタンスごとのデータ --------------------*/
 
-                vbv = &item->vbv_instance[i];
-                size = sizeof(InstanceData);
+                D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance[blendIdx][meshIdx];
+                size = sizeof(OffsetData);
 
                 // Resource上の開始位置設定
-                vbv->BufferLocation =
-                    ModelDrawData::instanceResource->GetGPUVirtualAddress() + (instanceCountAll * size);
+                vbv2->BufferLocation =
+                    offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                 // 総サイズ、刻み幅の設定
-                vbv->SizeInBytes = size * instanceCount;
-                vbv->StrideInBytes = size;
+                vbv2->SizeInBytes = size * instanceCount;
+                vbv2->StrideInBytes = size;
 
                 // VBVのセット
-                pDxManager_->commandList->IASetVertexBuffers(1, 1, vbv);
+                pDxManager_->commandList->IASetVertexBuffers(1, 1, vbv2);
+
+
 
                 /*///////////////////////////////////////////////*/
 
-                /*      　              描画                      */
+                /*      　        メッシュごとに描画                */
 
                 /*///////////////////////////////////////////////*/
 
@@ -957,14 +1016,12 @@ void PolygonManager::SetModelData(){
                 );
 
 
-                // 総頂点、インスタンス数をインクリメント
-                vertexCountAll += vertexCount;
-                instanceCountAll += instanceCount;
+                meshCountAll += instanceCount;
             }
+
+            instanceCountAll += instanceCount;
         }
     }
-
-
 }
 
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/

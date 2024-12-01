@@ -10,6 +10,7 @@ Model::Model(const std::string& filename){
 void Model::Initialize(const std::string& filename){
     modelName_ = filename;
     ModelManager::LoadModel(modelName_);
+    auto modelData = ModelManager::GetModelData(modelName_);
 
     scale_ = { 1.0f,1.0f,1.0f };
     rotate_ = { 0.0f,0.0f,0.0f };
@@ -17,18 +18,18 @@ void Model::Initialize(const std::string& filename){
     worldMat_ = IdentityMat4();
 
     // マテリアルの数だけ初期化
-    for(int i = 0; i < ModelManager::GetModelData(modelName_)->materials.size(); i++){
+    for(int i = 0; i < modelData->materials.size(); i++){
 
-        uv_scale_.push_back(ModelManager::GetModelData(modelName_)->materials[i].UV_scale_);
+        uv_scale_.push_back(modelData->materials[i].UV_scale_);
         uv_rotate_.push_back({ 0.0f,0.0f,0.0f });
         uv_translate_.push_back(
-            ModelManager::GetModelData(modelName_)->materials[i].UV_offset_ +
-            ModelManager::GetModelData(modelName_)->materials[i].UV_translate_
+            modelData->materials[i].UV_offset_ +
+            modelData->materials[i].UV_translate_
         );
 
         uvTransform_.push_back(AffineMatrix(uv_scale_.back(), uv_rotate_.back(), uv_translate_.back()));
         textureGH_.push_back(
-            TextureManager::LoadTexture(ModelManager::GetModelData(modelName_)->materials[i].textureFilePath_)
+            TextureManager::LoadTexture(modelData->materials[i].textureFilePath_)
         );
     }
 

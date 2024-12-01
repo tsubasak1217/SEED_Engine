@@ -6,7 +6,7 @@
 // local
 #include <Vector4.h>
 #include <VertexData.h>
-#include <InstanceData.h>
+#include <OffsetData.h>
 #include <Model.h>
 #include <Material.h>
 #include <Transform.h>
@@ -55,23 +55,19 @@ struct ModelDrawData{
 
     // 各種データ
     ModelData* modelData;
-    std::vector<Material>materials[(int32_t)BlendMode::kBlendModeCount];
+    std::vector <std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount];
     std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
-    std::vector<InstanceData> instanceData[(int32_t)BlendMode::kBlendModeCount];
+    std::vector< std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount];
 
-    // 各BlendModeごとのVBV
-    D3D12_VERTEX_BUFFER_VIEW vbv_vertex[(int32_t)BlendMode::kBlendModeCount];
-    D3D12_VERTEX_BUFFER_VIEW vbv_instance[(int32_t)BlendMode::kBlendModeCount];
+    // VBV
+    std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_vertex;// 開始位置などを格納。mesh数分用意
+    std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_instance[(int32_t)BlendMode::kBlendModeCount];// 開始位置などを格納。 blendMode * mesh数分用意
 
     // モデルの種類が切り替わるインデックス
-    static std::vector<int32_t>modelSwitchIndices;
+    static std::unordered_map<std::string,int32_t>modelSwitchIndices;
+    std::vector<int32_t>meshSwitchIndices;// メッシュの切り替わるインデックス
     int instanceCount;
 
-    // モデル用リソースの参照用ポインタ
-    static ID3D12Resource* vertexResource;
-    static ID3D12Resource* materialResource;
-    static ID3D12Resource* wvpResource;
-    static ID3D12Resource* instanceResource;
 };
 
 
@@ -184,7 +180,7 @@ private:// Resourceを格納する変数
     ComPtr<ID3D12Resource> modelIndexResource_;
     ComPtr<ID3D12Resource> modelMaterialResource_;
     ComPtr<ID3D12Resource> modelWvpResource_;
-    ComPtr<ID3D12Resource> indexOffsetResource_;
+    ComPtr<ID3D12Resource> offsetResource_;
 
 private:
 

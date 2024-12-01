@@ -197,7 +197,7 @@ void PSOManager::Create(
     CPUからVertexShaderに渡すデータがどのようなものなのか指定するもの
            VertexShaderInputにあるメンバ変数の数だけ設定する
     */
-    D3D12_INPUT_ELEMENT_DESC inputElementDescs[4]{};
+    D3D12_INPUT_ELEMENT_DESC inputElementDescs[5]{};
 
     // 頂点座標
     inputElementDescs[0].SemanticName = "POSITION";
@@ -224,6 +224,14 @@ void PSOManager::Create(
     inputElementDescs[3].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;//インスタンスごと
     inputElementDescs[3].Format = DXGI_FORMAT_R32_SINT;
     inputElementDescs[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    // メッシュのオフセット
+    inputElementDescs[4].SemanticName = "MESH_OFFSET";
+    inputElementDescs[4].SemanticIndex = 0;
+    inputElementDescs[4].InputSlot = 1;
+    inputElementDescs[4].InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;//インスタンスごと
+    inputElementDescs[4].Format = DXGI_FORMAT_R32_SINT;
+    inputElementDescs[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 
     // 上で作成したデータ群をひとつの変数に入れる
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};

@@ -564,7 +564,7 @@
     <ClInclude Include="SEED\lib\structs\AccelerarionField.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\structs\InstanceData.h">
+    <ClInclude Include="SEED\lib\structs\OffsetData.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSO.h">

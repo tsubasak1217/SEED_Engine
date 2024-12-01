@@ -21,13 +21,27 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    for(int i = 0; i < 128; i++){
-        auto& model = models_.emplace_back(std::make_unique<Model>("teapot.obj"));
-        model->translate_ = { (i/16) * 2.0f,0.0f,(i % 16) * 4.0f };
+    for(int i = 0; i < 64; i++){
+
+        if(i % 4 == 0){
+            models_.emplace_back(std::make_unique<Model>("Player_result.gltf"));
+        } else if(i % 4 == 1){
+            models_.emplace_back(std::make_unique<Model>("multiMaterial.obj"));
+        } else if(i % 4 == 2){
+            models_.emplace_back(std::make_unique<Model>("bunny.obj"));
+        } else if(i % 4 == 3){
+            models_.emplace_back(std::make_unique<Model>("teapot.obj"));
+        }
+
+        auto& model = models_.back();
+        model->translate_ = { (i % 4)* 10.0f,0.0f,(i / 4 )* 10.0f };
     
-        if(i % 2 == 0){
+        if(i % 3 == 0){
+            model->blendMode_ = BlendMode::SUBTRACT;
+        } else if(i % 3 == 1){
+            model->blendMode_ = BlendMode::NORMAL;
+        } else if(i % 3 == 2){
             model->blendMode_ = BlendMode::ADD;
-            model->translate_.z += 2.0f;
         }
     
         model->UpdateMatrix();
@@ -114,5 +128,5 @@ void Scene_Game::Draw(){
     }
 
 
-    ParticleManager::Draw();
+   // ParticleManager::Draw();
 }

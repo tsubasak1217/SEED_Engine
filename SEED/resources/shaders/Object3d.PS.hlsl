@@ -34,7 +34,8 @@ PixelShaderOutput main(VertexShaderOutput input)
      // 入力が透明の場合は棄却
     if (textureColor.a == 0.0f)
     {
-        discard;
+        textureColor.a = 1.0f;
+        //discard;
     }
     
     PixelShaderOutput output;
@@ -62,7 +63,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     // 出力が透明の場合は棄却
     if (output.color.a == 0.0f)
     {
-        discard;
+        output.color.a = 1.0f;
+        //discard;
     }
     
     return output;

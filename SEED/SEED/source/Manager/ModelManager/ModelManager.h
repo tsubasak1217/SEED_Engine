@@ -39,8 +39,11 @@ public:
 
 private:
     // Loadに必要な関数
-    ModelData* LoadObjFile(const std::string& directoryPath, const std::string& filename);
-    MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+    ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
+    std::vector<MeshData> ParseMeshes(const aiScene* scene);
+    std::vector<MaterialData> ParseMaterials(const aiScene* scene);
+    ModelNode ReadModelNode(const aiNode* node);
+
 
 private:
     static ModelManager* instance_;

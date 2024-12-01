@@ -11,6 +11,7 @@ struct INT
     int value;
 };
 
+
 StructuredBuffer<TransformationMatrix> InstanceData : register(t0, space0);
 
 struct VertexShaderInput
@@ -22,6 +23,7 @@ struct VertexShaderInput
     
     // VBV_1
     int indexOffset : INDEX_OFFSET0;
+    int meshOffset : MESH_OFFSET0;
 };
 
 VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID)
@@ -32,6 +34,6 @@ VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID
     output.position = mul(input.position, InstanceData[index].WVP);
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(input.normal, (float3x3) InstanceData[index].world));
-    output.instanceID = index;
+    output.instanceID = input.meshOffset + instanceID;
     return output;
 }

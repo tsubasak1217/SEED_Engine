@@ -211,7 +211,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\structs\blendMode.h" />
     <ClInclude Include="SEED\lib\structs\CS_Buffers.h" />
     <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
-    <ClInclude Include="SEED\lib\structs\InstanceData.h" />
+    <ClInclude Include="SEED\lib\structs\OffsetData.h" />
     <ClInclude Include="SEED\lib\structs\Material.h" />
     <ClInclude Include="SEED\lib\structs\Model.h" />
     <ClInclude Include="SEED\lib\structs\ModelData.h" />

@@ -141,7 +141,6 @@ void Scene_Game::Draw(){
     sprite.blendMode = BlendMode::ADD;
     SEED::DrawSprite(sprite);
 
-
     // 三角形描画テスト
     Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
     triangle.translate = {0.0f,0.0f,10.0f};

@@ -19,6 +19,7 @@
 #include <TextureManager.h>
 #include <ViewManager.h>
 #include <BlendMode.h>
+#include <ShapeMath.h>
 
 class SEED{
 
@@ -123,8 +124,8 @@ public:
 
     /*=========================矩形の描画関数========================*/
 
-    static void DrawQuad(const Quad& quad, const uint32_t GH = TextureManager::LoadTexture("white1x1.png"));
-
+    static void DrawQuad(const Quad& quad);
+    static void DrawQuad2D(const Quad2D& quad);
 
     static void DrawSprite(const Sprite& sprite);
 
@@ -136,7 +137,7 @@ public:
 
     static void DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL);
     static void DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL);
-    static void DrawGrid(float gridInterval, int32_t gridCount);
+    static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 50);
 
 
     /////////////////////////////////////////////////////////////////////////////////////

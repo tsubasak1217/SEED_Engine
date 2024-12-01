@@ -26,6 +26,7 @@ Triangle::Triangle(
     this->blendMode = blendMode;
     litingType = LIGHTINGTYPE_HALF_LAMBERT;
     uvTransform = IdentityMat4();
+    GH = TextureManager::LoadTexture("white1x1.png");
 }
 
 

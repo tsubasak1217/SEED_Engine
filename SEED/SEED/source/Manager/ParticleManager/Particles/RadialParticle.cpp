@@ -9,7 +9,7 @@ RadialParticle::RadialParticle(
     BlendMode blendMode
 ) : BaseParticle(positionRange, radiusRange, speedRange, lifeTime, colors, blendMode){
 
-    particle_->textureGH_.push_back(TextureManager::LoadTexture("particle.png"));
+    particle_->textureGH_[0] = TextureManager::LoadTexture("particle.png");
 
     // パーティクルの向きをランダム決定
     float theta = MyFunc::Random(0.0f, 2.0f * 3.14f);

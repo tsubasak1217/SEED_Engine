@@ -41,4 +41,5 @@ public:
     static void AddNewCount(const std::string& name);
     static float DeltaTime(){ return instance_->deltaTime_; }
     static float TimeRate(){ return instance_->timeRate_; }
+    static float TotalTime(){ return instance_->totalTime_; }
 };

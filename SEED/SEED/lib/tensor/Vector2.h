@@ -1,5 +1,7 @@
 #pragma once
 
+struct Vector3;
+
 /// <summary>
 /// 2次元ベクトル
 /// </summary>
@@ -105,4 +107,7 @@ struct Vector2 final {
     bool operator==(const Vector2& obj) const{
         return x == obj.x && y == obj.y;
     }
+
+
+    Vector3 ToVec3() const;
 };

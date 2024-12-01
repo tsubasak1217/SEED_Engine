@@ -2,6 +2,7 @@
 #include <assert.h>
 
 struct Vector3;
+struct Matrix4x4;
 
 struct Vector4 final{
     float x;
@@ -72,6 +73,8 @@ struct Vector4 final{
         z *= value;
         w *= value;
     }
+
+    void operator*=(const Matrix4x4& matrix);
 
     //================== Equal ====================//
 

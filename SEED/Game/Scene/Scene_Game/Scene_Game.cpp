@@ -21,7 +21,7 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    for(int i = 0; i < 590; i++){
+    for(int i = 0; i < 128; i++){
 
         if(i % 4 == 0){
             models_.emplace_back(std::make_unique<Model>("Player_result.gltf"));
@@ -36,14 +36,10 @@ void Scene_Game::Initialize(){
         auto& model = models_.back();
         model->translate_ = { (i % 4)* 10.0f,0.0f,(i / 4 )* 10.0f };
     
-        if(i % 3 == 0){
-            model->blendMode_ = BlendMode::SUBTRACT;
-        } else if(i % 3 == 1){
-            model->blendMode_ = BlendMode::NORMAL;
-        } else if(i % 3 == 2){
+        if(i % 2 == 0){
             model->blendMode_ = BlendMode::ADD;
         }
-    
+
         model->UpdateMatrix();
     }
 
@@ -84,9 +80,17 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
+
+    static float totalFrame = -1.0f;
+    static float totalDeltaTime = 0.0f;
+    if(totalFrame > 0.0f){
+        totalDeltaTime += 1.0f / ClockManager::DeltaTime();
+    }
+    totalFrame++;
+
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", 1.0f / ClockManager::DeltaTime());
+    ImGui::Text("FPS: %f", totalDeltaTime/totalFrame);
     /*===== 解像度の更新 ====*/
     ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.0f, 1.0f);
     ImGui::End();
@@ -123,10 +127,42 @@ void Scene_Game::Update(){
 }
 
 void Scene_Game::Draw(){
+
+
+    // モデル描画テスト
     for(int i = 0; i < models_.size(); i++){
         models_[i]->Draw();
     }
+    ParticleManager::Draw();
 
 
-   // ParticleManager::Draw();
+    // スプライト描画テスト
+    Sprite sprite = Sprite("uvChecker.png");
+    sprite.blendMode = BlendMode::ADD;
+    SEED::DrawSprite(sprite);
+
+
+    // 三角形描画テスト
+    Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+    triangle.translate = {0.0f,0.0f,10.0f};
+    Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
+    triangle2D.translate = { 640.0f,360.0f };
+    triangle2D.blendMode = BlendMode::SUBTRACT;
+    SEED::DrawTriangle(triangle);
+    SEED::DrawTriangle2D(triangle2D);
+
+    // ライン描画テスト
+    SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
+    SEED::DrawLine2D({ 0.0f,0.0f }, { 1280.0f,720.0f }, { 0.0f,0.0f,1.0f,1.0f });
+    SEED::DrawGrid();
+
+
+    // 四角形描画テスト
+    Quad quad = MakeEqualQuad(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+    quad.blendMode = BlendMode::MULTIPLY;
+    Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
+    quad2D.translate = { 1200.0f,360.0f };
+    SEED::DrawQuad(quad);
+    SEED::DrawQuad2D(quad2D);
+
 }

@@ -3,6 +3,7 @@
 #include <DxFunc.h>
 #include <MatrixFunc.h>
 #include <MyMath.h>
+#include <ShapeMath.h>
 #include <includes.h>
 #include <Environment.h>
 #include <SceneManager.h>
@@ -258,17 +259,28 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
 /*=============================================== 矩形 ===========================================*/
 
 
-void SEED::DrawQuad(const Quad& quad, const uint32_t GH){
+void SEED::DrawQuad(const Quad& quad){
     Matrix4x4 worldMat = AffineMatrix(quad.scale, quad.rotate, quad.translate);
     instance_->pPolygonManager_->AddQuad(
         quad.localVertex[0],
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, GH,quad.blendMode
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH,quad.blendMode
     );
 }
 
+void SEED::DrawQuad2D(const Quad2D& quad){
+
+    Matrix4x4 worldMat = AffineMatrix(quad.scale.ToVec3(), { 0.0f,0.0f,quad.rotate }, quad.translate.ToVec3());
+    instance_->pPolygonManager_->AddQuad(
+        quad.localVertex[0].ToVec3(),
+        quad.localVertex[1].ToVec3(),
+        quad.localVertex[2].ToVec3(),
+        quad.localVertex[3].ToVec3(),
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, quad.blendMode
+    );
+}
 
 /*========================================== スプライト ===========================================*/
 

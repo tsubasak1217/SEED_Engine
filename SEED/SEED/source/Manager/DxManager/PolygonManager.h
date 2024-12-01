@@ -19,64 +19,65 @@ class DxManager;
 struct D3D12_VERTEX_BUFFER_VIEW;
 struct ID3D12Resource;
 
-//struct TriangleData{
-//    std::vector<VertexData>vertices;
-//    std::vector<Material>colorf;
-//    std::vector<TransformMatrix>transform;
-//    std::vector<uint32_t>GH;
-//};
-//
-//struct Models{
-//    std::vector<ModelData>modelData;
-//    std::vector<Material>material;
-//    std::vector<TransformMatrix>transform;
-//    std::vector<uint32_t>GH;
-//};
-
-struct InputItems{
-    ModelData* modelData;
-    Material material;
-    TransformMatrix transform;
-};
-
-struct InputData{
-    std::list<InputItems>items;
-    std::vector<int32_t>keyIndices;
-    int instanceCount;
-    ID3D12Resource* vertexResource;
-    ID3D12Resource* materialResource;
-    ID3D12Resource* wvpResource;
-    ID3D12Resource* numElementResource;
-    ID3D12Resource* keyIndexResource;
-    D3D12_VERTEX_BUFFER_VIEW vbv;
-};
 
 struct ModelDrawData{
 
     // 各種データ
     ModelData* modelData;
-    std::vector <std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount];
+    std::vector<std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount];
     std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount];
-    std::vector< std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount];
+    std::vector<std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount];
 
     // VBV
     static D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
     static D3D12_VERTEX_BUFFER_VIEW vbv_instance;
-
     // IBV
     static D3D12_INDEX_BUFFER_VIEW ibv;
 
     // モデルの種類が切り替わる番号(頂点)
-    static std::unordered_map<std::string,int32_t>modelSwitchIdx_Vertex;
+    static std::unordered_map<std::string, int32_t>modelSwitchIdx_Vertex;
     std::vector<int32_t>meshSwitchIdx_Vertex;// メッシュの切り替わる番号
 
     // モデルの種類が切り替わる番号(インデックス)
     static std::unordered_map<std::string, int32_t>modelSwitchIdx_Index;
     std::vector<int32_t>meshSwitchIdx_Index;// メッシュの切り替わる番号
+
+    // 描画する順番
+    int8_t drawOrder = 0;
+    //すでに描画されたかどうか
+    bool alreadyDrawn = false;
 };
 
 
-class PolygonManager {
+class PolygonManager{
+
+private:// 内部で使用する定数や列挙型
+
+    static const int kPrimitiveVariation = 8;
+    enum PRIMITIVE_TYPE : BYTE{
+        PRIMITIVE_TRIANGLE = 0,
+        PRIMITIVE_TRIANGLE2D,
+        PRIMITIVE_QUAD,
+        PRIMITIVE_QUAD2D,
+        PRIMITIVE_LINE,
+        PRIMITIVE_LINE2D,
+        PRIMITIVE_SPRITE,
+        PRIMITIVE_OFFSCREEN,
+    };
+
+
+    enum class DrawOrder : BYTE{
+        Model = 0,
+        Triangle,
+        Quad,
+        Line,
+        Triangle2D,
+        Quad2D,
+        Line2D,
+        Sprite,
+        Offscreen,
+    };
+
 
 public:// 根幹をなす関数
 
@@ -90,27 +91,31 @@ public:
     void DrawPolygonAll();
     void DrawResult();
 
+private:
+
+    void InitializePrimitive();
+
 public:// 頂点情報の追加に関わる関数
 
     void AddTriangle(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Matrix4x4& worldMat, const Vector4& color,
-        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, 
-        uint32_t GH,BlendMode blendMode, bool isStaticDraw = false
+        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
+        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false
     );
 
     void AddQuad(
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
         const Matrix4x4& worldMat, const Vector4& color,
-        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, 
-        uint32_t GH,BlendMode blendMode, bool isStaticDraw = false
+        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
+        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false
     );
 
     void AddSprite(
         const Vector2& size, const Matrix4x4& worldMat,
-        uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform,const Vector2& anchorPoint,
+        uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
         const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-        bool isStaticDraw = true,bool isSystemDraw = false
+        bool isStaticDraw = true, bool isSystemDraw = false
     );
 
     void AddModel(Model* model);
@@ -123,8 +128,8 @@ public:// 頂点情報の追加に関わる関数
 
 private:
 
-    void SetRenderData(InputData* input, BlendMode blendMode, bool isStaticDraw = false, bool isLine = false);
-    void SetModelData();
+    void WriteRenderData();
+    void SetRenderData(const DrawOrder& drawOrder);
 
 private:// 外部参照のためのポインタ変数
 
@@ -151,35 +156,13 @@ private:// 現在の描画数や頂点数などを格納する変数
 
     int vertexCountAll = 0;
 
-    
-
-private:
-
-    static const int kNumMeshVariation = 6;
-    enum MESH_TYPE : BYTE{
-        MESHTYPE_TRIANGLE = 0,
-        MESHTYPE_QUAD,
-        MESHTYPE_MODEL,
-        MESHTYPE_SPRITE,
-        MESHTYPE_OFFSCREEN,
-        MESHTYPE_LINE,
-    };
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 
-    InputData inputData_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-
     // モデル用
-    std::unordered_map < std::string , std::unique_ptr<ModelDrawData >> modelDrawData_;
+    std::unordered_map<std::string, std::unique_ptr<ModelDrawData>> modelDrawData_;
 
-private:// Resourceを格納する変数
-
-    ComPtr<ID3D12Resource> vertexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-    ComPtr<ID3D12Resource> indexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-    ComPtr<ID3D12Resource> materialResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-    ComPtr<ID3D12Resource> wvpResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-    ComPtr<ID3D12Resource> numElementResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
-    ComPtr<ID3D12Resource> keyIndexResource_[kNumMeshVariation][(int)BlendMode::kBlendModeCount];
+private:// Resource
 
     // モデル用
     ComPtr<ID3D12Resource> modelVertexResource_;
@@ -187,6 +170,11 @@ private:// Resourceを格納する変数
     ComPtr<ID3D12Resource> modelMaterialResource_;
     ComPtr<ID3D12Resource> modelWvpResource_;
     ComPtr<ID3D12Resource> offsetResource_;
+
+private:
+
+    // プリミティブな描画に使用するデータ
+    ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount];
 
 private:
 

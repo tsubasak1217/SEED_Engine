@@ -37,13 +37,27 @@ Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color){
 Quad MakeEqualQuad(float radius, const Vector4& color)
 {
     return Quad(
-        { radius * -1.0f, radius },
-        { radius, radius },
-        { radius * -1.0f, radius * -1.0f },
-        { radius, radius * -1.0f },
+        { -radius, radius ,0.0f},
+        { radius, radius,0.0f },
+        { -radius, -radius ,0.0f},
+        { radius, -radius,0.0f},
         { 1.0f,1.0f,1.0f },
         { 0.0f,0.0f,0.0f },
         { 0.0f,0.0f,0.0f },
+        color
+    );
+}
+
+
+Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
+    return Quad2D(
+        { -radius, -radius },
+        { radius, -radius },
+        { -radius, radius},
+        { radius, radius},
+        { 1.0f,1.0f },
+        0.0f,
+        { 0.0f,0.0f },
         color
     );
 }

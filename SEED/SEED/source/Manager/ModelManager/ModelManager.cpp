@@ -63,7 +63,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
-        aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_Triangulate
+        aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_GenNormals
     );
 
 
@@ -99,7 +99,6 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
         aiMesh* mesh = scene->mMeshes[meshIdx];
         MeshData meshData;
 
-        assert(mesh->HasNormals());          // 法線必須
         assert(mesh->HasTextureCoords(0));   // UV座標必須
 
         // faceを解析する

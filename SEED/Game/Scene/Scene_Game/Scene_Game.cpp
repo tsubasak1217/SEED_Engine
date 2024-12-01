@@ -21,7 +21,7 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    for(int i = 0; i < 64; i++){
+    for(int i = 0; i < 584; i++){
 
         if(i % 4 == 0){
             models_.emplace_back(std::make_unique<Model>("Player_result.gltf"));

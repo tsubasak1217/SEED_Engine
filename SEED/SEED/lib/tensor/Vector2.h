@@ -100,4 +100,9 @@ struct Vector2 final {
 		x = x / obj.x;
 		y = y / obj.y;
 	}
+
+    // EQUAL---------------------------------
+    bool operator==(const Vector2& obj) const{
+        return x == obj.x && y == obj.y;
+    }
 };

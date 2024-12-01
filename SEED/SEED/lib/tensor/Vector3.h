@@ -146,6 +146,8 @@ struct Vector3 final {
 		z = z / obj.z;
 	}
 
+    // EQUAL---------------------------------
+    bool operator==(const Vector3& obj) const{ return x == obj.x && y == obj.y && z == obj.z; }
 
     Vector4 ToVec4();
 };

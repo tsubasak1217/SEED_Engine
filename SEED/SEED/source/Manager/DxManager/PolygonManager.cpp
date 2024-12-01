@@ -18,8 +18,11 @@ uint32_t PolygonManager::modelIndexCount_ = 0;
 uint32_t PolygonManager::spriteCount_ = 0;
 uint32_t PolygonManager::lineCount_ = 0;
 
-std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIndices;
-
+std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIdx_Vertex;
+std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIdx_Index;
+D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_vertex;
+D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_instance;
+D3D12_INDEX_BUFFER_VIEW ModelDrawData::ibv;
 
 /*---------------------------------------------------------------------------------------------------------------*/
 /*                                                                                                               */
@@ -118,12 +121,14 @@ void PolygonManager::InitResources(){
     // model
     modelVertexResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxVerticesCountInResource_);
+    modelIndexResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(uint32_t) * kMaxModelVertexCount);
     modelMaterialResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxModelCount_);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxMeshCount_);
     modelWvpResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * kMaxModelCount_);
     offsetResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * kMaxModelCount_);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * kMaxMeshCount_);
 
 
 
@@ -195,7 +200,8 @@ void PolygonManager::Reset(){
 
     // モデルの情報をリセット
     modelDrawData_.clear();
-    ModelDrawData::modelSwitchIndices.clear();
+    ModelDrawData::modelSwitchIdx_Vertex.clear();
+    ModelDrawData::modelSwitchIdx_Index.clear();
 
     // カウントのリセット
     triangleIndexCount_ = 0;
@@ -515,15 +521,9 @@ void PolygonManager::AddModel(Model* model){
         item->offsetData[(int)model->blendMode_][meshIdx].resize(offsetData.size() + 1);
     }
 
-    //////////////////////////////////////////////////////////////////////////
-    //                                  vbv
-    //////////////////////////////////////////////////////////////////////////
-    item->vbv_vertex.resize(meshSize);
-    item->vbv_instance[(int)model->blendMode_].resize(meshSize);
 
     // 要素数を更新
     modelIndexCount_++;
-    item->instanceCount++;
 }
 
 //void PolygonManager::AddModel(Model* model, bool isStaticDraw){
@@ -792,6 +792,7 @@ void PolygonManager::SetModelData(){
     // モノがなければreturn
     if(modelDrawData_.size() == 0){ return; }
     int instanceCountAll = 0;
+    int indexCountAll = 0;
     vertexCountAll = 0;
 
     // 一列に格納する用の配列
@@ -810,11 +811,13 @@ void PolygonManager::SetModelData(){
 
     // 各リソースのアドレスをMapしてポインタに格納
     VertexData* vertexData;
+    uint32_t* indexData;
     Material* materialData;
     TransformMatrix* transformData;
     OffsetData* offsetData;
 
     modelVertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+    modelIndexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
     modelMaterialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
     modelWvpResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
     offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&offsetData));
@@ -830,28 +833,43 @@ void PolygonManager::SetModelData(){
     for(auto& modelData : modelDrawData_){
 
         int modelVertexCount = 0;
+        int modelIndexCount = 0;
         auto& item = modelData.second;
-        ModelDrawData::modelSwitchIndices[modelData.first] = vertexCountAll;
+        ModelDrawData::modelSwitchIdx_Vertex[modelData.first] = vertexCountAll;
+        ModelDrawData::modelSwitchIdx_Index[modelData.first] = indexCountAll;
 
         /*--------------------------------------*/
-        //         modelの頂点を書き込む
+        //      modelの頂点,index情報を書き込む
         /*--------------------------------------*/
         for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
 
             int meshVertexCount = (int)item->modelData->meshes[meshIdx].vertices.size();
-            item->meshSwitchIndices.emplace_back(modelVertexCount);// メッシュが切り替わる頂点番号を記録
+            int meshIndexCount = (int)item->modelData->meshes[meshIdx].indices.size();
+
+            item->meshSwitchIdx_Vertex.emplace_back(modelVertexCount);// メッシュが切り替わる頂点番号を記録
+            item->meshSwitchIdx_Index.emplace_back(modelIndexCount);// メッシュが切り替わるインデックス番号を記録
 
             // 頂点情報を書き込む
             std::memcpy(
-                vertexData + ModelDrawData::modelSwitchIndices[modelData.first] + item->meshSwitchIndices.back(),// に
+                vertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
                 item->modelData->meshes[meshIdx].vertices.data(),// から
                 sizeof(VertexData) * meshVertexCount// のサイズコピー
             );
 
+
+            // インデックス情報を書き込む
+            std::memcpy(
+                indexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index.back(),// に
+                item->modelData->meshes[meshIdx].indices.data(),// から
+                sizeof(uint32_t) * meshIndexCount// のサイズコピー
+            );
+
+
             // 数をインクリメント
             modelVertexCount += meshVertexCount;
+            modelIndexCount += meshIndexCount;
             vertexCountAll += meshVertexCount;
-
+            indexCountAll += meshIndexCount;
         }
     }
 
@@ -988,13 +1006,13 @@ void PolygonManager::SetModelData(){
 
                 /*-------------------- 頂点ごとのデータ --------------------*/
 
-                D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex[meshIdx];
+                D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex;
                 int size = sizeof(VertexData);
 
                 // Resource上の開始位置設定
                 vbv->BufferLocation =
                     modelVertexResource_.Get()->GetGPUVirtualAddress() +
-                    ((ModelDrawData::modelSwitchIndices[modelData.first] + item->meshSwitchIndices[meshIdx]) * size);
+                    ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
 
                 // 総サイズ、刻み幅の設定
                 vbv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].vertices.size();
@@ -1007,7 +1025,7 @@ void PolygonManager::SetModelData(){
 
                 /*-------------------- インスタンスごとのデータ --------------------*/
 
-                D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance[blendIdx][meshIdx];
+                D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
                 size = sizeof(OffsetData);
 
                 // Resource上の開始位置設定
@@ -1019,8 +1037,31 @@ void PolygonManager::SetModelData(){
                 vbv2->StrideInBytes = size;
 
                 // VBVのセット
+                assert(meshCountAll < kMaxMeshCount_);// メッシュ数が上限を超えていないか確認
                 pDxManager_->commandList->IASetVertexBuffers(1, 1, vbv2);
 
+
+                /*///////////////////////////////////////////////////////////////////////////*/
+
+                /*                                IBVの設定                                   */
+                
+                /*///////////////////////////////////////////////////////////////////////////*/
+
+
+                D3D12_INDEX_BUFFER_VIEW* ibv = &item->ibv;
+                size = sizeof(int32_t);
+
+                // Resource上の開始位置設定
+                ibv->BufferLocation =
+                    modelIndexResource_.Get()->GetGPUVirtualAddress() +
+                    ((ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx]) * size);
+
+                // 総サイズ、刻み幅の設定
+                ibv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].indices.size();
+                ibv->Format = DXGI_FORMAT_R32_UINT;
+
+                // IBVのセット
+                pDxManager_->commandList->IASetIndexBuffer(ibv);
 
 
                 /*/////////////////////////////////////////////////////////////////*/
@@ -1029,9 +1070,10 @@ void PolygonManager::SetModelData(){
 
                 /*/////////////////////////////////////////////////////////////////*/
 
-                pDxManager_->commandList->DrawInstanced(
-                    (int)item->modelData->meshes[meshIdx].vertices.size(),
+                pDxManager_->commandList->DrawIndexedInstanced(
+                    (int)item->modelData->meshes[meshIdx].indices.size(),
                     instanceCount,
+                    0,
                     0,
                     0
                 );

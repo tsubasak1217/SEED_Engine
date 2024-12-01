@@ -92,6 +92,28 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 // メッシュデータを解析
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// 頂点データの比較用にハッシュ関数と等価演算子を定義
+struct VertexHash{
+    size_t operator()(const VertexData& vertex) const{
+        size_t hash = 0;
+        hash ^= std::hash<float>()(vertex.position_.x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<float>()(vertex.position_.y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<float>()(vertex.position_.z) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<float>()(vertex.texcoord_.x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= std::hash<float>()(vertex.texcoord_.y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        return hash;
+    }
+};
+
+struct VertexEqual{
+    bool operator()(const VertexData& lhs, const VertexData& rhs) const{
+        return lhs.position_ == rhs.position_ &&
+            lhs.normal_ == rhs.normal_ &&
+            lhs.texcoord_ == rhs.texcoord_;
+    }
+};
+
+
 std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
     std::vector<MeshData> meshes;
 
@@ -99,46 +121,48 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
         aiMesh* mesh = scene->mMeshes[meshIdx];
         MeshData meshData;
 
-        assert(mesh->HasTextureCoords(0));   // UV座標必須
+        assert(mesh->HasTextureCoords(0)); // UV座標必須
+
+        // 頂点を一意に管理するためのマップ
+        std::unordered_map<VertexData, uint32_t, VertexHash, VertexEqual> uniqueVertices;
 
         // faceを解析する
-        for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx){
-
+        for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx) {
             aiFace& face = mesh->mFaces[faceIdx];
-            assert(face.mNumIndices == 3);// 三角形以外は
+            assert(face.mNumIndices == 3); // 三角形以外は無視
 
-            // vertexを解析する
-            for(uint32_t element = 0; element < face.mNumIndices; ++element){
+            // インデックスデータを構築
+            for(uint32_t element = 0; element < face.mNumIndices; ++element) {
+                uint32_t vertexIdx = face.mIndices[element];
 
                 // 頂点の情報を取得
-                uint32_t vertexIdx = face.mIndices[element];
                 aiVector3D position = mesh->mVertices[vertexIdx];
                 aiVector3D normal = mesh->mNormals[vertexIdx];
                 aiVector3D texcoord = mesh->mTextureCoords[0][vertexIdx];
 
-                // 頂点を格納
+                // 頂点を作成
                 VertexData vertex;
-                vertex.position_ = { position.x,position.y,position.z,1.0f };
-                vertex.normal_ = { normal.x,normal.y,normal.z };
-                vertex.texcoord_ = { texcoord.x,texcoord.y };
+                vertex.position_ = { position.x, position.y, position.z, 1.0f };
+                vertex.normal_ = { normal.x, normal.y, normal.z };
+                vertex.texcoord_ = { texcoord.x, texcoord.y };
 
                 // 左手座標系に変換
                 vertex.position_.x *= -1.0f;
                 vertex.normal_.x *= -1.0f;
 
-                // 頂点を格納
-                meshData.vertices.push_back(vertex);
+                // 頂点を一意に管理
+                if(uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = static_cast<uint32_t>(meshData.vertices.size());
+                    meshData.vertices.push_back(vertex);
+                }
+
+                // インデックスを追加
+                meshData.indices.push_back(uniqueVertices[vertex]);
             }
-
-
-            //// インデックスデータを構築
-            for(uint32_t i = 0; i < 3; ++i) {
-                meshData.indices.push_back(face.mIndices[i]);
-            }
-
-            // マテリアルインデックスを設定
-            meshData.materialIndex = mesh->mMaterialIndex;
         }
+
+        // マテリアルインデックスを設定
+        meshData.materialIndex = mesh->mMaterialIndex;
 
         // メッシュを追加
         meshes.push_back(meshData);
@@ -146,6 +170,61 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
 
     return meshes;
 }
+
+//std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
+//    std::vector<MeshData> meshes;
+//
+//    for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
+//        aiMesh* mesh = scene->mMeshes[meshIdx];
+//        MeshData meshData;
+//
+//        assert(mesh->HasTextureCoords(0));   // UV座標必須
+//
+//        // faceを解析する
+//        for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx){
+//
+//            aiFace& face = mesh->mFaces[faceIdx];
+//            assert(face.mNumIndices == 3);// 三角形以外は
+//
+//            // vertexを解析する
+//            for(uint32_t element = 0; element < face.mNumIndices; ++element){
+//
+//                // 頂点の情報を取得
+//                uint32_t vertexIdx = face.mIndices[element];
+//                aiVector3D position = mesh->mVertices[vertexIdx];
+//                aiVector3D normal = mesh->mNormals[vertexIdx];
+//                aiVector3D texcoord = mesh->mTextureCoords[0][vertexIdx];
+//
+//                // 頂点を格納
+//                VertexData vertex;
+//                vertex.position_ = { position.x,position.y,position.z,1.0f };
+//                vertex.normal_ = { normal.x,normal.y,normal.z };
+//                vertex.texcoord_ = { texcoord.x,texcoord.y };
+//
+//                // 左手座標系に変換
+//                vertex.position_.x *= -1.0f;
+//                vertex.normal_.x *= -1.0f;
+//
+//                // 頂点を格納
+//                meshData.vertices.push_back(vertex);
+//            }
+//
+//
+//            //// インデックスデータを構築
+//            for(uint32_t i = 0; i < 3; ++i) {
+//                meshData.indices.push_back(face.mIndices[i]);
+//            }
+//
+//            // マテリアルインデックスを設定
+//            meshData.materialIndex = mesh->mMaterialIndex;
+//        }
+//
+//        // メッシュを追加
+//        meshes.push_back(meshData);
+//    }
+//
+//    return meshes;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // マテリアルデータを解析

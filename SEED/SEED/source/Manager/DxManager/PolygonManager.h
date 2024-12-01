@@ -60,14 +60,19 @@ struct ModelDrawData{
     std::vector< std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount];
 
     // VBV
-    std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_vertex;// 開始位置などを格納。mesh数分用意
-    std::vector<D3D12_VERTEX_BUFFER_VIEW> vbv_instance[(int32_t)BlendMode::kBlendModeCount];// 開始位置などを格納。 blendMode * mesh数分用意
+    static D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
+    static D3D12_VERTEX_BUFFER_VIEW vbv_instance;
 
-    // モデルの種類が切り替わるインデックス
-    static std::unordered_map<std::string,int32_t>modelSwitchIndices;
-    std::vector<int32_t>meshSwitchIndices;// メッシュの切り替わるインデックス
-    int instanceCount;
+    // IBV
+    static D3D12_INDEX_BUFFER_VIEW ibv;
 
+    // モデルの種類が切り替わる番号(頂点)
+    static std::unordered_map<std::string,int32_t>modelSwitchIdx_Vertex;
+    std::vector<int32_t>meshSwitchIdx_Vertex;// メッシュの切り替わる番号
+
+    // モデルの種類が切り替わる番号(インデックス)
+    static std::unordered_map<std::string, int32_t>modelSwitchIdx_Index;
+    std::vector<int32_t>meshSwitchIdx_Index;// メッシュの切り替わる番号
 };
 
 
@@ -130,6 +135,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxTriangleCount_ = 256;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
     static const int32_t kMaxModelCount_ = 1024;
+    static const int32_t kMaxMeshCount_ = kMaxModelCount_ * 5;
     static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 500000;
     static const int32_t kMaxSpriteCount = 128;

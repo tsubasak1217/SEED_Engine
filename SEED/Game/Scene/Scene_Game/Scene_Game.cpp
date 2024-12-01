@@ -21,14 +21,14 @@ void Scene_Game::Initialize(){
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    for(int i = 0; i < 584; i++){
+    for(int i = 0; i < 590; i++){
 
         if(i % 4 == 0){
             models_.emplace_back(std::make_unique<Model>("Player_result.gltf"));
         } else if(i % 4 == 1){
-            models_.emplace_back(std::make_unique<Model>("multiMaterial.obj"));
-        } else if(i % 4 == 2){
             models_.emplace_back(std::make_unique<Model>("bunny.obj"));
+        } else if(i % 4 == 2){
+            models_.emplace_back(std::make_unique<Model>("sphere.obj"));
         } else if(i % 4 == 3){
             models_.emplace_back(std::make_unique<Model>("teapot.obj"));
         }

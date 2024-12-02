@@ -137,31 +137,58 @@ void Scene_Game::Draw(){
 
 
     // スプライト描画テスト
-    //Sprite sprite = Sprite("uvChecker.png");
-    //sprite.blendMode = BlendMode::ADD;
-    //SEED::DrawSprite(sprite);
+    Sprite sprite[3] = { Sprite("uvChecker.png"),Sprite("symmetryORE1.png"),Sprite("symmetryORE2.png") };
+    sprite[0].drawLocation = DrawLocation::Back;
+    sprite[1].drawLocation = DrawLocation::Back;
+    sprite[1].layer = 1;
+
+    sprite[1].size = { 128.0f,128.0f };
+    sprite[2].size = { 256.0f,256.0f };
+
+    sprite[2].translate = { 360.0f,0.0f};
+
+    sprite[0].isStaticDraw = true;
+    sprite[1].isStaticDraw = true;
+    sprite[2].isStaticDraw = true;
+
+    SEED::DrawSprite(sprite[0]);
+    SEED::DrawSprite(sprite[1]);
+    SEED::DrawSprite(sprite[2]);
 
     // 三角形描画テスト
-    //Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
-    //triangle.translate = {0.0f,0.0f,10.0f};
-    //Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
-    //triangle2D.translate = { 640.0f,360.0f };
-    //triangle2D.blendMode = BlendMode::SUBTRACT;
-    //SEED::DrawTriangle(triangle);
-    //SEED::DrawTriangle2D(triangle2D);
+    Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+    triangle.translate = {0.0f,0.0f,10.0f};
+    SEED::DrawTriangle(triangle);
+
+    for(int i = 0; i < 16; i++){
+        Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
+        triangle2D.translate = MyFunc::Random({ 0.0f,0.0f }, {640.0f,720.0f});
+        triangle2D.blendMode = BlendMode::SUBTRACT;
+        triangle2D.isStaticDraw = true;
+        SEED::DrawTriangle2D(triangle2D);
+    }
 
     // ライン描画テスト
-    //SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
-    //SEED::DrawLine2D({ 0.0f,0.0f }, { 1280.0f,720.0f }, { 0.0f,0.0f,1.0f,1.0f });
+    SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
+    SEED::DrawLine2D({ 0.0f,0.0f }, { 1280.0f,720.0f }, { 0.0f,0.0f,1.0f,1.0f });
     SEED::DrawGrid();
 
 
     // 四角形描画テスト
-    //Quad quad = MakeEqualQuad(5.0f, { 1.0f,0.0f,1.0f,1.0f });
-    //quad.blendMode = BlendMode::MULTIPLY;
-    //Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
-    //quad2D.translate = { 1200.0f,360.0f };
-    //SEED::DrawQuad(quad);
-    //SEED::DrawQuad2D(quad2D);
+    Quad quad[10];
+    for(int i = 0; i < 10; i++){
+        quad[i] = MakeEqualQuad(10.0f, { 1.0f,0.0f,0.0f,1.0f });
+        quad[i].translate = { i * 20.0f,0.0f,(i%2) * -20.0f };
+        quad[i].blendMode = BlendMode::MULTIPLY;
+        SEED::DrawQuad(quad[i]);
+    }
+    
+    for(int i = 0; i < 16; i++){
+        Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
+        quad2D.translate = MyFunc::Random({640.0f,0.0f} ,{ 1200.0f,720.0f });
+        quad2D.blendMode = BlendMode::SCREEN;
+        quad2D.isStaticDraw = true;
+        SEED::DrawQuad2D(quad2D);
+    }
 
 }

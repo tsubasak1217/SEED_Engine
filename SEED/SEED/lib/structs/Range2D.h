@@ -5,9 +5,9 @@
 struct Range2D{
 
     Range2D() = default;
-    Range2D(const Vector2& p1, const Vector2& p2){
-        min = Vector2((std::min)(p1.x,p2.x), (std::min)(p1.y,p2.y));
-        max = Vector2((std::max)(p1.x,p2.x), (std::max)(p1.y,p2.y));
+    Range2D(const Vector2& min, const Vector2& max){
+        this->min = Vector2((std::min)(min.x,max.x), (std::min)(min.y,max.y));
+        this->max = Vector2((std::max)(min.x,max.x), (std::max)(min.y,max.y));
     }
 
     Vector2 min;

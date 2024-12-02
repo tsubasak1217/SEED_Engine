@@ -5,6 +5,11 @@
 std::random_device MyFunc::rd;
 std::mt19937 MyFunc::gen(MyFunc::rd());
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 指定した範囲の乱数を返す関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//------------------ int ------------------//
 int32_t MyFunc::Random(int min, int max){
 
     // minからmaxまでの一様分布を設定
@@ -14,6 +19,7 @@ int32_t MyFunc::Random(int min, int max){
     return distrib(gen);
 }
 
+//------------------ float ------------------//
 float MyFunc::Random(float min, float max){
 
     // minからmaxまでの一様分布を設定 (float用)
@@ -24,27 +30,33 @@ float MyFunc::Random(float min, float max){
 }
 
 
-//
+//----------------- 3次元ベクトル用 -----------------//
+
+Vector3 MyFunc::Random(const Vector3& min, const Vector3& max){
+    return { Random(min.x, max.x),Random(min.y, max.y),Random(min.z, max.z) };
+}
+
 Vector3 MyFunc::Random(const Range3D& range){
-    return {
-        Random(range.min.x, range.max.x),
-        Random(range.min.y, range.max.y),
-        Random(range.min.z, range.max.z)
-    };
+    return Random(range.min, range.max);
+}
+
+//----------------- 2次元ベクトル用 -----------------//
+
+Vector2 MyFunc::Random(const Vector2& min, const Vector2& max){
+    return { Random(min.x, max.x),Random(min.y, max.y) };
 }
 
 Vector2 MyFunc::Random(const Range2D& range){
-    return {
-    Random(range.min.x, range.max.x),
-    Random(range.min.y, range.max.y)
-    };
+    return Random(range.min, range.max);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 
-int32_t MyFunc::Spiral(int32_t input,int32_t min, int32_t max){
-
-    if(max <= min){ 
+    if(max <= min){
         assert(false);
     }
 
@@ -54,7 +66,7 @@ int32_t MyFunc::Spiral(int32_t input,int32_t min, int32_t max){
 
         int32_t sub = input - max;
         return min + ((sub - 1) % range);
-    
+
     } else if(input < min){
 
         int32_t sub = input - min;
@@ -65,7 +77,7 @@ int32_t MyFunc::Spiral(int32_t input,int32_t min, int32_t max){
 }
 
 
-float MyFunc::Spiral(float input,float min, float max){
+float MyFunc::Spiral(float input, float min, float max){
 
     if(max <= min){
         assert(false);
@@ -76,12 +88,12 @@ float MyFunc::Spiral(float input,float min, float max){
     if(input > max){
 
         float sub = input - max;
-        return min + std::fmod(sub,range);
+        return min + std::fmod(sub, range);
 
     } else if(input < min){
 
         float sub = input - min;
-        return max + std::fmod(sub,range);
+        return max + std::fmod(sub, range);
     }
 
     return input;

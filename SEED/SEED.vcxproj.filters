@@ -576,6 +576,9 @@
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\lib\structs\DrawLocation.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

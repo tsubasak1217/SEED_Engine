@@ -5,9 +5,9 @@
 struct Range3D{
 
     Range3D() = default;
-    Range3D(const Vector3& p1, const Vector3& p2){
-        min = Vector3((std::min)(p1.x, p2.x), (std::min)(p1.y, p2.y),(std::min)(p1.z,p2.z));
-        max = Vector3((std::max)(p1.x, p2.x), (std::max)(p1.y, p2.y),(std::max)(p1.z,p2.z));
+    Range3D(const Vector3& min, const Vector3& max){
+        this->min = Vector3((std::min)(min.x, max.x), (std::min)(min.y, max.y),(std::min)(min.z,max.z));
+        this->max = Vector3((std::max)(min.x, max.x), (std::max)(min.y, max.y),(std::max)(min.z,max.z));
     }
 
     Vector3 min;

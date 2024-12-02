@@ -9,6 +9,13 @@ struct Vector2 final {
 	float x = 0;
 	float y = 0;
 
+
+    Vector2() = default;
+    Vector2(float x, float y){
+        this->x = x;
+        this->y = y;
+    }
+
 	// ADD-----------------------------------
 	Vector2 operator+(const Vector2& obj) const {
 		Vector2 result;

@@ -252,7 +252,7 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
-        triangle.blendMode,triangle.isStaticDraw
+        triangle.blendMode, triangle.isStaticDraw, triangle.drawLocation, triangle.layer
     );
 }
 
@@ -278,7 +278,8 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[1].ToVec3(),
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, quad.blendMode
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, quad.blendMode,
+        quad.isStaticDraw, quad.drawLocation, quad.layer
     );
 }
 
@@ -298,6 +299,8 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.clipSize,
         sprite.blendMode,
         sprite.isStaticDraw,
+        sprite.drawLocation,
+        sprite.layer,
         false
     );
 }
@@ -324,7 +327,7 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, blendMode,false
+        IdentityMat4(), color, false, blendMode,false,DrawLocation::Front,0
     );
 }
 

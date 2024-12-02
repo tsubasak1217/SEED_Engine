@@ -24,6 +24,16 @@ D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_vertex;
 D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_instance;
 D3D12_INDEX_BUFFER_VIEW ModelDrawData::ibv;
 
+
+std::string blendName[(int)BlendMode::kBlendModeCount] = {
+    "_Blend::NONE",
+    "_Blend::MUL",
+    "_Blend::SUB",
+    "_Blend::NORMAL",
+    "_Blend::ADD",
+    "_Blend::SCREEN"
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
 /*                                             初期化処理・終了処理                                                 */
@@ -109,6 +119,11 @@ void PolygonManager::Reset(){
     spriteCount_ = 0;
     lineCount_ = 0;
 
+    objCount3D_ = 0;
+    objCount2D_back_ = 0;
+    objCount2D_front_ = 0;
+    objCountStaticDraw_ = 0;
+
     // プリミティブ描画情報の初期化
     InitializePrimitive();
 }
@@ -119,13 +134,20 @@ void PolygonManager::InitializePrimitive(){
 
 
     for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_LINE_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
-        modelDrawData_["ENGINE_DRAW_LINE2D_Blend" + std::to_string(blendIdx)] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+
+        // 解像度に影響しない描画
+        modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+
     }
 
 
@@ -140,45 +162,31 @@ void PolygonManager::InitializePrimitive(){
     // プリミティブの描画情報を初期化
     for(int32_t blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
 
-        // プリミティブの描画情報を初期化
-        std::vector<TransformMatrix*> transforms3D;
-        std::vector<TransformMatrix*> transforms2D;
-        transforms3D.push_back(&modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-        transforms3D.push_back(&modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-        //transforms3D.push_back(&modelDrawData_["ENGINE_DRAW_LINE_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-
-        transforms2D.push_back(&modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-        transforms2D.push_back(&modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-        transforms2D.push_back(&modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-        //transforms2D.push_back(&modelDrawData_["ENGINE_DRAW_LINE2D_Blend" + std::to_string(blendIdx)]->transforms[blendIdx].emplace_back(TransformMatrix()));
-
-        for(auto& transform3D : transforms3D){
-            transform3D->world_ = IdentityMat4();
-            transform3D->WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
-        }
-
-        for(auto& transform2D : transforms2D){
-            transform2D->world_ = IdentityMat4();
-            transform2D->WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
-        }
-
         // 参照先を設定
-        modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE][blendIdx];
-        modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_QUAD][blendIdx];
-        modelDrawData_["ENGINE_DRAW_LINE_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_LINE][blendIdx];
-        modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE2D][blendIdx];
-        modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_QUAD2D][blendIdx];
-        modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx];
-        modelDrawData_["ENGINE_DRAW_LINE2D_Blend" + std::to_string(blendIdx)]->modelData = &primitiveData_[PRIMITIVE_LINE2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE][blendIdx];
+        modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD][blendIdx];
+        modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE][blendIdx];
+        modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][blendIdx];
+        modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx];
+        modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_SPRITE][blendIdx];
 
         // 描画順を設定
-        modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Triangle;
-        modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Quad;
-        modelDrawData_["ENGINE_DRAW_LINE_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Line;
-        modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Triangle2D;
-        modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Quad2D;
-        modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Sprite;
-        modelDrawData_["ENGINE_DRAW_LINE2D_Blend" + std::to_string(blendIdx)]->drawOrder = (int8_t)DrawOrder::Line2D;
+        modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Triangle;
+        modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Triangle2D;
+        modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticTriangle2D;
+        modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Quad;
+        modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Quad2D;
+        modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticQuad2D;
+        modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Line;
+        modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Line2D;
+        modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticLine2D;
+        modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Sprite;
+        modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
     }
 }
 
@@ -217,15 +225,33 @@ void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, bool isStaticDraw
+    BlendMode blendMode, bool isStaticDraw,
+    DrawLocation drawLocation, uint32_t layer
 ){
+
     assert(triangleIndexCount_ < kMaxTriangleCount_);
 
     Vector3 transformed[3];
+    float layerZ = layer * 0.001f;
 
     transformed[0] = Multiply(TransformToVec3(v1), worldMat);
     transformed[1] = Multiply(TransformToVec3(v2), worldMat);
     transformed[2] = Multiply(TransformToVec3(v3), worldMat);
+
+    // レイヤー、描画場所に応じたZ値に設定
+    if(drawLocation != DrawLocation::Not2D){
+        if(drawLocation == DrawLocation::Back && !isStaticDraw){
+            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            transformed[0].z = zFar;
+            transformed[1].z = zFar;
+            transformed[2].z = zFar;
+        } else{
+            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            transformed[0].z = zNear;
+            transformed[1].z = zNear;
+            transformed[2].z = zNear;
+        }
+    }
 
     Vector3 normalVec =
         MyMath::Normalize(MyMath::Cross(
@@ -238,23 +264,33 @@ void PolygonManager::AddTriangle(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto& drawData = view3D ? primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode] : primitiveData_[PRIMITIVE_TRIANGLE2D][(int)blendMode];
+    auto* modelData = view3D ? &primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode] : &primitiveData_[PRIMITIVE_TRIANGLE2D][(int)blendMode];
+    auto* drawData3D = modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[(int)blendMode]].get();
+    auto* drawData2D = modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[(int)blendMode]].get();
+    if(isStaticDraw){
+        modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode];
+        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[(int)blendMode]].get();
+    }
+
     // vertexResource
-    auto& mesh = drawData.meshes.emplace_back(MeshData());
+    modelData->meshes.resize(1);
+    auto& mesh = modelData->meshes[0];
     mesh.vertices.push_back(VertexData(transformed[0].ToVec4(), Vector2(0.5f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[1].ToVec4(), Vector2(1.0f, 1.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec));
     //indexResource
-    mesh.indices.push_back(0);
-    mesh.indices.push_back(1);
-    mesh.indices.push_back(2);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 1);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 2);
     // materialResource
-    auto& baseMaterial = drawData.materials.emplace_back(MaterialData());
-    baseMaterial.textureFilePath_ = "";
-    baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
-    baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
-    baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
-
+    if(modelData->materials.size() == 0){
+        modelData->materials.resize(1);
+        auto& baseMaterial = modelData->materials[0];
+        baseMaterial.textureFilePath_ = "";
+        baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
+        baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
+        baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    }
 
     ///////////////////////////////////////////////////////////////////
     /*-------------------- 描画データに情報を書き込む --------------------*/
@@ -262,42 +298,74 @@ void PolygonManager::AddTriangle(
 
     // material
     if(view3D){
-        modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].push_back(std::vector<Material>());
-        auto& material = modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].back().emplace_back(Material());
+        drawData3D->materials[(int)blendMode].resize(1);
+        auto& material = drawData3D->materials[(int)blendMode].back().emplace_back(Material());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
         material.GH_ = GH;
 
     } else{
-        modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].push_back(std::vector<Material>());
-        auto& material = modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].back().emplace_back(Material());
+        drawData2D->materials[(int)blendMode].resize(1);
+        auto& material = drawData2D->materials[(int)blendMode].back().emplace_back(Material());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
         material.GH_ = GH;
+    }
+
+
+    // transform
+    if(view3D){
+        auto& transform = drawData3D->transforms[(int)blendMode].emplace_back(TransformMatrix());
+        transform.world_ = IdentityMat4();
+        transform.WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
+    } else{
+        auto& transform = drawData2D->transforms[(int)blendMode].emplace_back(TransformMatrix());
+        transform.world_ = worldMat;
+        transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
     }
 
 
     // offsetResourceの数を更新
     if(view3D){
-        auto& offsetData = modelDrawData_["ENGINE_DRAW_TRIANGLE_Blend" + std::to_string((int)blendMode)]->offsetData[(int)blendMode];
-        offsetData.emplace_back(std::vector<OffsetData>());
-        offsetData.back().resize(1);
+        auto& offsetData = drawData3D->offsetData[(int)blendMode];
+        offsetData.resize(1);
+        offsetData.back().push_back(OffsetData());
+        drawData3D->indexCount += 3;
     } else{
-        auto& offsetData = modelDrawData_["ENGINE_DRAW_TRIANGLE2D_Blend" + std::to_string((int)blendMode)]->offsetData[(int)blendMode];
-        offsetData.emplace_back(std::vector<OffsetData>());
-        offsetData.back().resize(1);
-    }
-
-    /*-------------------- まとめたのを後ろに追加 --------------------*/
-    if(isStaticDraw == false){
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
-    } else{
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+        auto& offsetData = drawData2D->offsetData[(int)blendMode];
+        offsetData.resize(1);
+        offsetData.back().push_back(OffsetData());
+        drawData2D->indexCount += 3;
     }
 
     triangleIndexCount_++;
+
+    if(view3D){
+        objCount3D_++;
+    } else{
+        if(isStaticDraw){
+            objCountStaticDraw_++;
+        } else{
+
+        }
+    }
+
+    // カウントを更新
+    if(view3D){
+        objCount3D_++;
+    } else{
+        if(isStaticDraw){
+            objCountStaticDraw_++;
+        } else{
+            if(drawLocation == DrawLocation::Front){
+                objCount2D_front_++;
+            } else{
+                objCount2D_back_++;
+            }
+        }
+    }
 }
 
 
@@ -313,17 +381,35 @@ void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, bool isStaticDraw
+    BlendMode blendMode, bool isStaticDraw,
+    DrawLocation drawLocation, uint32_t layer
 ){
 
     assert(triangleIndexCount_ < kMaxTriangleCount_);
 
     Vector3 transformed[4];
-
+    float layerZ = layer * 0.001f;
     transformed[0] = Multiply(v1, worldMat);
     transformed[1] = Multiply(v2, worldMat);
     transformed[2] = Multiply(v3, worldMat);
     transformed[3] = Multiply(v4, worldMat);
+
+    // レイヤー、描画場所に応じたZ値に設定
+    if(drawLocation != DrawLocation::Not2D){
+        if(drawLocation == DrawLocation::Back && !isStaticDraw){
+            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            transformed[0].z = zFar;
+            transformed[1].z = zFar;
+            transformed[2].z = zFar;
+            transformed[3].z = zFar;
+        } else{
+            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            transformed[0].z = zNear;
+            transformed[1].z = zNear;
+            transformed[2].z = zNear;
+            transformed[3].z = zNear;
+        }
+    }
 
     Vector3 normalVec =
         MyMath::Normalize(MyMath::Cross(
@@ -336,27 +422,39 @@ void PolygonManager::AddQuad(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto& drawData = view3D ? primitiveData_[PRIMITIVE_QUAD][(int)blendMode] : primitiveData_[PRIMITIVE_QUAD2D][(int)blendMode];
+    auto* modelData = view3D ? &primitiveData_[PRIMITIVE_QUAD][(int)blendMode] : &primitiveData_[PRIMITIVE_QUAD2D][(int)blendMode];
+    auto* drawData3D = modelDrawData_["ENGINE_DRAW_QUAD" + blendName[(int)blendMode]].get();
+    auto* drawData2D = modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[(int)blendMode]].get();
+    if(isStaticDraw){
+        modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][(int)blendMode];
+        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[(int)blendMode]].get();
+    }
+
     // vertexResource
-    auto& mesh = drawData.meshes.emplace_back(MeshData());
+    modelData->meshes.resize(1);
+    auto& mesh = modelData->meshes[0];
     mesh.vertices.push_back(VertexData(transformed[0].ToVec4(), Vector2(0.0f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[1].ToVec4(), Vector2(1.0f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[3].ToVec4(), Vector2(1.0f, 1.0f), normalVec));
-    //indexResource
-    mesh.indices.push_back(0);
-    mesh.indices.push_back(1);
-    mesh.indices.push_back(3);
-    mesh.indices.push_back(0);
-    mesh.indices.push_back(3);
-    mesh.indices.push_back(2);
-    // materialResource
-    auto& baseMaterial = drawData.materials.emplace_back(MaterialData());
-    baseMaterial.textureFilePath_ = "";
-    baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
-    baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
-    baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
 
+    //indexResource
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 1);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 3);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 3);
+    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 2);
+
+    // materialResource
+    if(modelData->materials.size() == 0){
+        modelData->materials.resize(1);
+        auto& baseMaterial = modelData->materials[0];
+        baseMaterial.textureFilePath_ = "";
+        baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
+        baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
+        baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    }
 
     ///////////////////////////////////////////////////////////////////
     /*-------------------- 描画データに情報を書き込む --------------------*/
@@ -364,39 +462,62 @@ void PolygonManager::AddQuad(
 
     // material
     if(view3D){
-        modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].push_back(std::vector<Material>());
-        auto& material = modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].back().emplace_back(Material());
+        drawData3D->materials[(int)blendMode].resize(1);
+        auto& material = drawData3D->materials[(int)blendMode].back().emplace_back(Material());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
         material.GH_ = GH;
 
     } else{
-        modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].push_back(std::vector<Material>());
-        auto& material = modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].back().emplace_back(Material());
+        drawData2D->materials[(int)blendMode].resize(1);
+        auto& material = drawData2D->materials[(int)blendMode].back().emplace_back(Material());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
         material.GH_ = GH;
+    }
+
+
+    // transform
+    if(view3D){
+        auto& transform = drawData3D->transforms[(int)blendMode].emplace_back(TransformMatrix());
+        transform.world_ = IdentityMat4();
+        transform.WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
+    } else{
+        auto& transform = drawData2D->transforms[(int)blendMode].emplace_back(TransformMatrix());
+        transform.world_ = IdentityMat4();
+        transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
     }
 
 
     // offsetResourceの数を更新
     if(view3D){
-        auto& offsetData = modelDrawData_["ENGINE_DRAW_QUAD_Blend" + std::to_string((int)blendMode)]->offsetData[(int)blendMode];
-        offsetData.emplace_back(std::vector<OffsetData>());
-        offsetData.back().resize(1);
+        auto& offsetData = drawData3D->offsetData[(int)blendMode];
+        offsetData.resize(1);
+        offsetData.back().push_back(OffsetData());
+        drawData3D->indexCount += 4;
     } else{
-        auto& offsetData = modelDrawData_["ENGINE_DRAW_QUAD2D_Blend" + std::to_string((int)blendMode)]->offsetData[(int)blendMode];
-        offsetData.emplace_back(std::vector<OffsetData>());
-        offsetData.back().resize(1);
+        auto& offsetData = drawData2D->offsetData[(int)blendMode];
+        offsetData.resize(1);
+        offsetData.back().push_back(OffsetData());
+        drawData2D->indexCount += 4;
     }
 
-    /*-------------------- まとめたのを後ろに追加 --------------------*/
-    if(isStaticDraw == false){
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+
+    // カウントを更新
+    if(view3D){
+        objCount3D_++;
     } else{
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+        if(isStaticDraw){
+            objCountStaticDraw_++;
+        } else{
+            if(drawLocation == DrawLocation::Front){
+                objCount2D_front_++;
+            } else{
+                objCount2D_back_++;
+            }
+        }
     }
 
     quadIndexCount_++;
@@ -415,7 +536,7 @@ void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
     const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-    bool isStaticDraw, bool isSystemDraw
+    bool isStaticDraw, DrawLocation drawLocation, uint32_t layer,bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     blendMode;
@@ -426,8 +547,9 @@ void PolygonManager::AddSprite(
     ///////////////////////////////////////////////////////////////////
 
     // 遠近
-    float zNear = pDxManager_->GetCamera()->znear_;
-    float zfar = pDxManager_->GetCamera()->zfar_;
+    float layerZ = 0.001f * layer;
+    float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+    float zfar = pDxManager_->GetCamera()->zfar_ - layerZ;
 
     // スプライトの四頂点を格納する変数
     Vector4 v[4]{};
@@ -480,10 +602,24 @@ void PolygonManager::AddSprite(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto& drawData = primitiveData_[PRIMITIVE_SPRITE][(int)blendMode];
+    auto* modelData = isStaticDraw ?
+        &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)blendMode] :
+        &primitiveData_[PRIMITIVE_SPRITE][(int)blendMode];
+    auto* drawData = isStaticDraw ?
+        modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[(int)blendMode]].get() :
+        modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[(int)blendMode]].get();
+
+    // 背面描画の場合はzFarに設定
+    if(drawLocation == DrawLocation::Back && !isStaticDraw){
+        v[0].z = zfar;
+        v[1].z = zfar;
+        v[2].z = zfar;
+        v[3].z = zfar;
+    }
 
     // vertexResource
-    auto& mesh = drawData.meshes.emplace_back(MeshData());
+    modelData->meshes.resize(1);
+    auto& mesh = modelData->meshes[0];
 
     if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
         mesh.vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
@@ -499,50 +635,60 @@ void PolygonManager::AddSprite(
     }
 
     //indexResource
-    mesh.indices.push_back(0);
-    mesh.indices.push_back(1);
-    mesh.indices.push_back(3);
-    mesh.indices.push_back(0);
-    mesh.indices.push_back(3);
-    mesh.indices.push_back(2);
+    mesh.indices.push_back(drawData->indexCount + 0);
+    mesh.indices.push_back(drawData->indexCount + 1);
+    mesh.indices.push_back(drawData->indexCount + 3);
+    mesh.indices.push_back(drawData->indexCount + 0);
+    mesh.indices.push_back(drawData->indexCount + 3);
+    mesh.indices.push_back(drawData->indexCount + 2);
 
     // materialResource
-    auto& baseMaterial = drawData.materials.emplace_back(MaterialData());
-    baseMaterial.textureFilePath_ = "";
-    baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
-    baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
-    baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    if(modelData->materials.size() == 0){
+        modelData->materials.resize(1);
+        auto& baseMaterial = modelData->materials[0];
+        baseMaterial.textureFilePath_ = "";
+        baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
+        baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
+        baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    }
 
 
     ///////////////////////////////////////////////////////////////////
     /*-------------------- 描画データに情報を書き込む --------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].push_back(std::vector<Material>());
-    auto& material = modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string((int)blendMode)]->materials[(int)blendMode].back().emplace_back(Material());
+    // material
+    drawData->materials[(int)blendMode].resize(1);
+    auto& material = drawData->materials[(int)blendMode].back().emplace_back(Material());
     material.color_ = color;
     material.lightingType_ = LIGHTINGTYPE_NONE;
     material.uvTransform_ = uvTransform;
     material.GH_ = GH;
 
+    // transform
+    auto& transform = drawData->transforms[(int)blendMode].emplace_back(TransformMatrix());
+    transform.world_ = IdentityMat4();
+    transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+
     // offsetResourceの数を更新
-    auto& offsetData = modelDrawData_["ENGINE_DRAW_SPRITE_Blend" + std::to_string((int)blendMode)]->offsetData[(int)blendMode];
-    offsetData.emplace_back(std::vector<OffsetData>());
-    offsetData.back().resize(1);
+    auto& offsetData = drawData->offsetData[(int)blendMode];
+    offsetData.resize(1);
+    offsetData.back().push_back(OffsetData());
+    drawData->indexCount += 4;
 
-    /*-------------------- まとめたのを後ろに追加 --------------------*/
-
-    if(isSystemDraw == false){
-        if(isStaticDraw == false){
-            // inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
-        } else{
-            /// inputData_[MESHTYPE_SPRITE][(int)blendMode].items.push_back(item);
-        }
+    // カウントを更新
+    if(isStaticDraw){
+        objCountStaticDraw_++;
     } else{
-        // inputData_[MESHTYPE_OFFSCREEN][(int)blendMode].items.push_back(item);
+        if(drawLocation == DrawLocation::Front){
+            objCount2D_front_++;
+        } else{
+            objCount2D_back_++;
+        }
     }
 
     spriteCount_++;
+
 }
 
 
@@ -611,7 +757,9 @@ void PolygonManager::AddModel(Model* model){
     }
 
 
+
     // 要素数を更新
+    objCount3D_++;
     modelIndexCount_++;
 }
 
@@ -626,35 +774,58 @@ void PolygonManager::AddModel(Model* model){
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw
+    const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw,
+    DrawLocation drawLocation, uint32_t layer
 ){
 
     assert(lineCount_ < kMaxLineCount_);
     Vector3 normalVec = { 0.0f,0.0f,-1.0f };
+    Vector4 v[2]{ v1,v2 };
+    float layerZ = 0.001f * layer;
+
+    // レイヤー、描画場所に応じたZ値に設定
+    if(drawLocation != DrawLocation::Not2D){
+        if(drawLocation == DrawLocation::Back){
+            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            v[0].z = zFar;
+            v[1].z = zFar;
+        } else{
+            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            v[0].z = zNear;
+            v[1].z = zNear;
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto& modelData = view3D ? primitiveData_[PRIMITIVE_LINE][(int)blendMode] : primitiveData_[PRIMITIVE_LINE2D][(int)blendMode];
-    auto& drawData3D = modelDrawData_["ENGINE_DRAW_LINE_Blend" + std::to_string((int)blendMode)];
-    auto& drawData2D = modelDrawData_["ENGINE_DRAW_LINE2D_Blend" + std::to_string((int)blendMode)];
+    auto* modelData = view3D ? &primitiveData_[PRIMITIVE_LINE][(int)blendMode] : &primitiveData_[PRIMITIVE_LINE2D][(int)blendMode];
+    auto* drawData3D = modelDrawData_["ENGINE_DRAW_LINE" + blendName[(int)blendMode]].get();
+    auto* drawData2D = modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[(int)blendMode]].get();
+    if(isStaticDraw){
+        modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][(int)blendMode];
+        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[(int)blendMode]].get();
+    }
+
 
     // vertexResource
-    modelData.meshes.resize(1);
-    auto& mesh = modelData.meshes[0];
-    mesh.vertices.push_back(VertexData(v1, Vector2(0.0f, 0.0f), normalVec));
-    mesh.vertices.push_back(VertexData(v2, Vector2(1.0f, 1.0f), normalVec));
+    modelData->meshes.resize(1);
+    auto& mesh = modelData->meshes[0];
+    mesh.vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
+    mesh.vertices.push_back(VertexData(v[1], Vector2(1.0f, 1.0f), normalVec));
     //indexResource
     mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
     mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 1);
     // materialResource
-    auto& baseMaterial = modelData.materials.emplace_back(MaterialData());
-    baseMaterial.textureFilePath_ = "";
-    baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
-    baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
-    baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
-
+    if(modelData->materials.size() == 0){
+        modelData->materials.resize(1);
+        auto& baseMaterial = modelData->materials[0];
+        baseMaterial.textureFilePath_ = "";
+        baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
+        baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
+        baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    }
 
     ///////////////////////////////////////////////////////////////////
     /*-------------------- 描画データに情報を書き込む --------------------*/
@@ -702,11 +873,19 @@ void PolygonManager::AddLine(
         drawData2D->indexCount += 2;
     }
 
-    /*-------------------- まとめたのを後ろに追加 --------------------*/
-    if(isStaticDraw == false){
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+    // カウントを更新
+    if(view3D){
+        objCount3D_++;
     } else{
-        //inputData_[MESHTYPE_TRIANGLE][(int)blendMode].items.push_back(item);
+        if(isStaticDraw){
+            objCountStaticDraw_++;
+        } else{
+            if(drawLocation == DrawLocation::Front){
+                objCount2D_front_++;
+            } else{
+                objCount2D_back_++;
+            }
+        }
     }
 
     lineCount_++;
@@ -886,7 +1065,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     int32_t instanceInterval = 0;
     if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
         instanceInterval = 2;
-    } else if(drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D){
+    } else if(drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D){
         instanceInterval = 4;
     } else if(drawOrder == DrawOrder::Triangle or drawOrder == DrawOrder::Triangle2D){
         instanceInterval = 3;
@@ -897,11 +1076,17 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // シザー矩形とviewport
-    pDxManager_->commandList->RSSetViewports(1, &pDxManager_->viewport); // Viewport
-    pDxManager_->commandList->RSSetScissorRects(1, &pDxManager_->scissorRect); // Scissor
+    if((int)drawOrder < (int)DrawOrder::Offscreen){
+        pDxManager_->commandList->RSSetViewports(1, &pDxManager_->viewport); // Viewport
+        pDxManager_->commandList->RSSetScissorRects(1, &pDxManager_->scissorRect); // Scissor
+
+    } else{// 解像度に影響されない描画用の設定
+        pDxManager_->commandList->RSSetViewports(1, &pDxManager_->viewport_default); // Viewport
+        pDxManager_->commandList->RSSetScissorRects(1, &pDxManager_->scissorRect_default); // Scissor
+    }
 
     // 形状を設定
-    if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D){
+    if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D && drawOrder != DrawOrder::StaticLine2D){
         pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     } else{
         pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -927,7 +1112,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
         // RootSignature・PSOを設定
-        if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D){
+        if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D && drawOrder != DrawOrder::StaticLine2D){
             pDxManager_->commandList->SetGraphicsRootSignature(pDxManager_->commonRootSignature[blendIdx][(int)PolygonTopology::TRIANGLE].Get());
             pDxManager_->commandList->SetPipelineState(pDxManager_->commonPipelineState[blendIdx][(int)PolygonTopology::TRIANGLE].Get());
         } else{
@@ -1106,7 +1291,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 void PolygonManager::DrawPolygonAll(){
 
-    //WriteRenderData();
+    WriteRenderData();
     //SetRenderData(DrawOrder::Line);
     //SetRenderData(DrawOrder::Model);
     //SetRenderData(DrawOrder::Triangle);
@@ -1115,6 +1300,22 @@ void PolygonManager::DrawPolygonAll(){
     //SetRenderData(DrawOrder::Triangle2D);
     //SetRenderData(DrawOrder::Quad2D);
     //SetRenderData(DrawOrder::Sprite);
+
+    // 3D
+    if(objCount3D_ > 0){
+        SetRenderData(DrawOrder::Line);
+        SetRenderData(DrawOrder::Model);
+        SetRenderData(DrawOrder::Triangle);
+        SetRenderData(DrawOrder::Quad);
+    }
+
+    // 2D
+    if(objCount2D_front_ > 0){
+        SetRenderData(DrawOrder::Line2D);
+        SetRenderData(DrawOrder::Triangle2D);
+        SetRenderData(DrawOrder::Quad2D);
+        SetRenderData(DrawOrder::Sprite);
+    }
 }
 
 void PolygonManager::DrawResult(){
@@ -1155,13 +1356,13 @@ void PolygonManager::DrawResult(){
     // オフスクリーンの描画結果を貼り付ける
     //SetRenderData(DrawOrder::Offscreen);
 
-    // 
-    SetRenderData(DrawOrder::Line);
-    SetRenderData(DrawOrder::Model);
-    //SetRenderData(DrawOrder::Triangle);
-    //SetRenderData(DrawOrder::Quad);
-    //SetRenderData(DrawOrder::Line2D);
-    //SetRenderData(DrawOrder::Triangle2D);
-    //SetRenderData(DrawOrder::Quad2D);
-    //SetRenderData(DrawOrder::Sprite);
+
+    
+    // 解像度に影響されない描画(オフスクリーン結果より後に描画)
+    if(objCountStaticDraw_ > 0){
+        SetRenderData(DrawOrder::StaticLine2D);
+        SetRenderData(DrawOrder::StaticQuad2D);
+        SetRenderData(DrawOrder::StaticTriangle2D);
+        SetRenderData(DrawOrder::StaticSprite);
+    }
 }

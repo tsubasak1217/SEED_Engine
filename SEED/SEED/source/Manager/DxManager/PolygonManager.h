@@ -11,6 +11,7 @@
 #include <Material.h>
 #include <Transform.h>
 #include "blendMode.h"
+#include "DrawLocation.h"
 
 //
 using Microsoft::WRL::ComPtr;
@@ -44,9 +45,9 @@ struct ModelDrawData{
 
     // 描画する順番
     int8_t drawOrder = 0;
-    //すでに描画されたかどうか
-    bool alreadyDrawn = false;
+    int32_t layer = 0;
 
+    // インデックス数(プリミティブ用)
     int32_t indexCount = 0;
 };
 
@@ -55,7 +56,7 @@ class PolygonManager{
 
 private:// 内部で使用する定数や列挙型
 
-    static const int kPrimitiveVariation = 8;
+    static const int kPrimitiveVariation = 12;
     enum PRIMITIVE_TYPE : BYTE{
         PRIMITIVE_TRIANGLE = 0,
         PRIMITIVE_TRIANGLE2D,
@@ -65,6 +66,11 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_LINE2D,
         PRIMITIVE_SPRITE,
         PRIMITIVE_OFFSCREEN,
+        // 以下は解像度の変更の影響を受けない描画用
+        PRIMITIVE_STATIC_TRIANGLE2D,
+        PRIMITIVE_STATIC_QUAD2D,
+        PRIMITIVE_STATIC_SPRITE,
+        PRIMITIVE_STATIC_LINE2D,
     };
 
 
@@ -78,7 +84,12 @@ private:// 内部で使用する定数や列挙型
         Line2D,
         Sprite,
         Offscreen,
+        StaticTriangle2D,
+        StaticQuad2D,
+        StaticSprite,
+        StaticLine2D,
     };
+
 
 
 public:// 根幹をなす関数
@@ -103,21 +114,24 @@ public:// 頂点情報の追加に関わる関数
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Matrix4x4& worldMat, const Vector4& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
-        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false
+        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false,
+        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
     void AddQuad(
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
         const Matrix4x4& worldMat, const Vector4& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
-        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false
+        uint32_t GH, BlendMode blendMode, bool isStaticDraw = false,
+        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
     void AddSprite(
         const Vector2& size, const Matrix4x4& worldMat,
         uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
         const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-        bool isStaticDraw = true, bool isSystemDraw = false
+        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0,
+        bool isSystemDraw = false
     );
 
     void AddModel(Model* model);
@@ -125,7 +139,8 @@ public:// 頂点情報の追加に関わる関数
     void AddLine(
         const Vector4& v1, const Vector4& v2,
         const Matrix4x4& worldMat, const Vector4& color,
-        bool view3D, BlendMode blendMode, bool isStaticDraw = false
+        bool view3D, BlendMode blendMode, bool isStaticDraw = false,
+        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
 private:
@@ -156,6 +171,12 @@ private:// 現在の描画数や頂点数などを格納する変数
     static uint32_t spriteCount_;
     static uint32_t lineCount_;
     int vertexCountAll = 0;
+
+    // 総描画数
+    int32_t objCount2D_back_ = 0;
+    int32_t objCount2D_front_ = 0;
+    int32_t objCount3D_ = 0;
+    int32_t objCountStaticDraw_ = 0;
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 

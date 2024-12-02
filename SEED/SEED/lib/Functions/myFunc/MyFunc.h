@@ -16,7 +16,9 @@ public:
     // 指定した範囲の乱数を返す関数
     static int32_t Random(int min, int max);
     static float Random(float min, float max);
+    static Vector3 Random(const Vector3& min, const Vector3& max);
     static Vector3 Random(const Range3D& range);
+    static Vector2 Random(const Vector2& min, const Vector2& max);
     static Vector2 Random(const Range2D& range);
 
     // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)

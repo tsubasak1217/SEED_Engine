@@ -2,6 +2,7 @@
 #include <cassert>
 #include "Matrix4x4.h"
 
+
 struct Vector4;
 
 /// <summary>
@@ -11,6 +12,15 @@ struct Vector3 final {
 	float x = 0;
 	float y = 0;
 	float z = 0;
+
+
+    Vector3() = default;
+    Vector3(float x, float y, float z){
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
 
 	// ADD----------------------------------
 	Vector3 operator+(const Vector3& obj) const {

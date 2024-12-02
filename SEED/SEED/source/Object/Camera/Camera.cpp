@@ -6,7 +6,14 @@
 #include "Environment.h"
 
 
+float znearOffsetForLayer = 0.09f;
+
 void Camera::UpdateMatrix(){
+
+    znear_ = std::clamp(znear_, 0.1f, zfar_);
+    float adjustedZnear = znear_ - znearOffsetForLayer;
+    adjustedZnear = std::clamp(adjustedZnear, 0.01f, zfar_);
+
     // カメラのワールド行列
     worldMat_ = AffineMatrix(
         transform_.scale_,
@@ -27,7 +34,7 @@ void Camera::UpdateMatrix(){
     projectionMat2D_ = OrthoMatrix(
         0.0f, clipRange_.x,
         0.0f, clipRange_.y,
-        znear_, zfar_
+        adjustedZnear, zfar_
     );
 
     // カメラ法線

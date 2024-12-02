@@ -137,31 +137,31 @@ void Scene_Game::Draw(){
 
 
     // スプライト描画テスト
-    Sprite sprite = Sprite("uvChecker.png");
-    sprite.blendMode = BlendMode::ADD;
-    SEED::DrawSprite(sprite);
+    //Sprite sprite = Sprite("uvChecker.png");
+    //sprite.blendMode = BlendMode::ADD;
+    //SEED::DrawSprite(sprite);
 
     // 三角形描画テスト
-    Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
-    triangle.translate = {0.0f,0.0f,10.0f};
-    Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
-    triangle2D.translate = { 640.0f,360.0f };
-    triangle2D.blendMode = BlendMode::SUBTRACT;
-    SEED::DrawTriangle(triangle);
-    SEED::DrawTriangle2D(triangle2D);
+    //Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+    //triangle.translate = {0.0f,0.0f,10.0f};
+    //Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
+    //triangle2D.translate = { 640.0f,360.0f };
+    //triangle2D.blendMode = BlendMode::SUBTRACT;
+    //SEED::DrawTriangle(triangle);
+    //SEED::DrawTriangle2D(triangle2D);
 
     // ライン描画テスト
-    SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
-    SEED::DrawLine2D({ 0.0f,0.0f }, { 1280.0f,720.0f }, { 0.0f,0.0f,1.0f,1.0f });
+    //SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
+    //SEED::DrawLine2D({ 0.0f,0.0f }, { 1280.0f,720.0f }, { 0.0f,0.0f,1.0f,1.0f });
     SEED::DrawGrid();
 
 
     // 四角形描画テスト
-    Quad quad = MakeEqualQuad(5.0f, { 1.0f,0.0f,1.0f,1.0f });
-    quad.blendMode = BlendMode::MULTIPLY;
-    Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
-    quad2D.translate = { 1200.0f,360.0f };
-    SEED::DrawQuad(quad);
-    SEED::DrawQuad2D(quad2D);
+    //Quad quad = MakeEqualQuad(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+    //quad.blendMode = BlendMode::MULTIPLY;
+    //Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
+    //quad2D.translate = { 1200.0f,360.0f };
+    //SEED::DrawQuad(quad);
+    //SEED::DrawQuad2D(quad2D);
 
 }

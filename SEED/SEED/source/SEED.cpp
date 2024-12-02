@@ -337,7 +337,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(gridInterval * xIdx, 0.0f, 0.0f),
             leftFront + Vector3(gridInterval * xIdx, 0.0f, width),
-            { 1.0f,1.0f,1.0f,1.0f }
+            { 1.0f,0.0f,0.0f,1.0f }
         );
     }
 
@@ -345,7 +345,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(0.0f, 0.0f, gridInterval * yIdx),
             leftFront + Vector3(width, 0.0f, gridInterval * yIdx),
-            { 1.0f,1.0f,1.0f,1.0f }
+            { 0.0f,0.0f,1.0f,1.0f }
         );
     }
 }

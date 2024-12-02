@@ -46,6 +46,8 @@ struct ModelDrawData{
     int8_t drawOrder = 0;
     //すでに描画されたかどうか
     bool alreadyDrawn = false;
+
+    int32_t indexCount = 0;
 };
 
 
@@ -140,7 +142,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxTriangleCount_ = 256;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
     static const int32_t kMaxModelCount_ = 1024;
-    static const int32_t kMaxMeshCount_ = kMaxModelCount_ * 5;
+    static const int32_t kMaxMeshCount_ = 0xffff;
     static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 500000;
     static const int32_t kMaxSpriteCount = 128;
@@ -153,9 +155,7 @@ private:// 現在の描画数や頂点数などを格納する変数
     static uint32_t modelIndexCount_;
     static uint32_t spriteCount_;
     static uint32_t lineCount_;
-
     int vertexCountAll = 0;
-
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 

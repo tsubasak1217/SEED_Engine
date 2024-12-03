@@ -1090,12 +1090,22 @@ void PolygonManager::WriteRenderData(){
             if(item->drawOrder != (int)DrawOrder::Line){
                 for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
 
-                    // すべてのマテリアルを一列に並べる
-                    materialArray.insert(
-                        materialArray.end(),
-                        item->materials[blendIdx][meshIdx].begin(),
-                        item->materials[blendIdx][meshIdx].end()
-                    );
+
+                    if(item->drawOrder == (int)DrawOrder::Offscreen){
+                        // すべてのマテリアルを一列に並べる
+                        materialArray.insert(
+                            materialArray.end(),
+                            item->materials[blendIdx][meshIdx].begin(),
+                            item->materials[blendIdx][meshIdx].end()
+                        );
+                    } else{
+                        // すべてのマテリアルを一列に並べる
+                        materialArray.insert(
+                            materialArray.end(),
+                            item->materials[blendIdx][meshIdx].begin(),
+                            item->materials[blendIdx][meshIdx].end()
+                        );
+                    }
                 }
             } else{
                 for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
@@ -1123,6 +1133,16 @@ void PolygonManager::WriteRenderData(){
         sizeof(Material) * (int)materialArray.size()
     );
 
+
+    /*/////////////////////////////////////////////////////////////////*/
+
+    /*      　                     UnMap                               */
+    
+    /*/////////////////////////////////////////////////////////////////*/
+    modelIndexResource_.Get()->Unmap(0, nullptr);
+    modelVertexResource_.Get()->Unmap(0, nullptr);
+    modelMaterialResource_.Get()->Unmap(0, nullptr);
+    modelWvpResource_.Get()->Unmap(0, nullptr);
 }
 
 
@@ -1146,10 +1166,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     int32_t instanceInterval = 0;
     if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
         instanceInterval = 2;
-    } else if(drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D){
-        instanceInterval = 4;
+
     } else if(drawOrder == DrawOrder::Triangle or drawOrder == DrawOrder::Triangle2D){
         instanceInterval = 3;
+
+    } else if(
+        drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or
+        drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D or drawOrder == DrawOrder::Offscreen)
+    {
+        instanceInterval = 4;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1172,9 +1197,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     } else{
         pDxManager_->commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
     }
-
-    OffsetData* offsetData;
-    offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&offsetData));
 
     /*===========================================================================================*/
 
@@ -1245,6 +1267,12 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 /*--------------------------------------*/
                 //      オフセット情報を書き込む
                 /*--------------------------------------*/
+                
+                // map
+                OffsetData* offsetData;
+                offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&offsetData));
+
+                // 書き込み
                 for(auto& offset : item->offsetData[blendIdx][meshIdx]){
                     offset.instanceOffset = instanceCountAll;
                     offset.meshOffset = meshCountAll;
@@ -1257,6 +1285,8 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     sizeof(OffsetData) * instanceCount
                 );
 
+                // Unmap
+                offsetResource_.Get()->Unmap(0, nullptr);
 
 
                 /*///////////////////////////////////////////////////////////////////////////*/
@@ -1370,17 +1400,9 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/
 
-void PolygonManager::DrawPolygonAll(){
+void PolygonManager::DrawToOffscreen(){
 
     WriteRenderData();
-    //SetRenderData(DrawOrder::Line);
-    //SetRenderData(DrawOrder::Model);
-    //SetRenderData(DrawOrder::Triangle);
-    //SetRenderData(DrawOrder::Quad);
-    //SetRenderData(DrawOrder::Line2D);
-    //SetRenderData(DrawOrder::Triangle2D);
-    //SetRenderData(DrawOrder::Quad2D);
-    //SetRenderData(DrawOrder::Sprite);
 
     // 3D
     if(objCount3D_ > 0){

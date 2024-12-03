@@ -82,8 +82,8 @@ int32_t ViewManager::GetTextureHandle(const std::string& textureName){
         == instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV].end()){
         return -1;
     }
-
-    return instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV][textureName];
+    int32_t gh = instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV][textureName];
+    return gh;
 }
 
 

@@ -130,39 +130,39 @@ void Scene_Game::Draw(){
 
 
     // モデル描画テスト
-    //for(int i = 0; i < models_.size(); i++){
-    //    models_[i]->Draw();
-    //}
-    //ParticleManager::Draw();
+    for(int i = 0; i < models_.size(); i++){
+        models_[i]->Draw();
+    }
+    ParticleManager::Draw();
 
 
     // スプライト描画テスト
-    //Sprite sprite[3] = { Sprite("uvChecker.png"),Sprite("symmetryORE1.png"),Sprite("symmetryORE2.png") };
-    //sprite[0].drawLocation = DrawLocation::Back;
-    //sprite[1].drawLocation = DrawLocation::Back;
-    //sprite[1].layer = 1;
-    //
-    //sprite[1].size = { 128.0f,128.0f };
-    //sprite[2].size = { 256.0f,256.0f };
-    //
-    //sprite[2].translate = { 360.0f,0.0f};
-    //
-    //for(int i = 0; i < 3; i++){
-    //    sprite[i].isStaticDraw = true;
-    //    SEED::DrawSprite(sprite[i]);
-    //}
-    //
-    //// 三角形描画テスト
+    Sprite sprite[3] = { Sprite("uvChecker.png"),Sprite("symmetryORE1.png"),Sprite("symmetryORE2.png") };
+    sprite[0].drawLocation = DrawLocation::Back;
+    sprite[1].drawLocation = DrawLocation::Back;
+    sprite[1].layer = 1;
+    
+    sprite[1].size = { 128.0f,128.0f };
+    sprite[2].size = { 256.0f,256.0f };
+    
+    sprite[2].translate = { 360.0f,0.0f};
+    
+    for(int i = 0; i < 3; i++){
+        sprite[i].isStaticDraw = true;
+        SEED::DrawSprite(sprite[i]);
+    }
+    
+    // 三角形描画テスト
     Triangle triangle = MakeEqualTriangle(5.0f, { 1.0f,0.0f,1.0f,1.0f });
     triangle.translate = {0.0f,0.0f,10.0f};
     SEED::DrawTriangle(triangle);
-    //
-    //for(int i = 0; i < 256; i++){
-    //    Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
-    //    triangle2D.translate = MyFunc::Random({ 0.0f,0.0f }, {640.0f,720.0f});
-    //    triangle2D.blendMode = BlendMode::SUBTRACT;
-    //    SEED::DrawTriangle2D(triangle2D);
-    //}
+    
+    for(int i = 0; i < 256; i++){
+        Triangle2D triangle2D = MakeEqualTriangle2D(60.0f, { 1.0f,0.0f,0.0f,1.0f });
+        triangle2D.translate = MyFunc::Random({ 0.0f,0.0f }, {640.0f,720.0f});
+        triangle2D.blendMode = BlendMode::SUBTRACT;
+        SEED::DrawTriangle2D(triangle2D);
+    }
 
     // ライン描画テスト
     SEED::DrawLine({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 1.0f,0.0f,0.0f,1.0f });
@@ -178,12 +178,12 @@ void Scene_Game::Draw(){
         quad[i].blendMode = BlendMode::MULTIPLY;
         SEED::DrawQuad(quad[i]);
     }
-    //
-    //for(int i = 0; i < 16; i++){
-    //    Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
-    //    quad2D.translate = MyFunc::Random({640.0f,0.0f} ,{ 1200.0f,720.0f });
-    //    quad2D.blendMode = BlendMode::SCREEN;
-    //    SEED::DrawQuad2D(quad2D);
-    //}
+    
+    for(int i = 0; i < 16; i++){
+        Quad2D quad2D = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,1.0f,1.0f });
+        quad2D.translate = MyFunc::Random({640.0f,0.0f} ,{ 1200.0f,720.0f });
+        quad2D.blendMode = BlendMode::SCREEN;
+        SEED::DrawQuad2D(quad2D);
+    }
 
 }

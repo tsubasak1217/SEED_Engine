@@ -101,7 +101,7 @@ public:// 根幹をなす関数
     void Reset();
 
 public:
-    void DrawPolygonAll();
+    void DrawToOffscreen();
     void DrawResult();
 
 private:

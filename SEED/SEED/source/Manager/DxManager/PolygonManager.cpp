@@ -1402,6 +1402,33 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 void PolygonManager::DrawToOffscreen(){
 
+}
+
+void PolygonManager::DrawResult(){
+
+#ifdef _DEBUG
+    //ImGui::Begin("PostEffect");
+    //ImGui::Checkbox("active", &isActivePostEffect_);
+    //ImGui::End();
+#endif // _DEBUG
+
+    //if(isActivePostEffect_){
+
+    //    AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+
+    //} else{
+    //    //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+    //    AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+    //    //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+    //}
+
+    //pDxManager_->TransitionResourceState(
+    //    pDxManager_->depthStencilResource.Get(),
+    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
+    //);
+
+
     WriteRenderData();
 
     // 3D
@@ -1418,44 +1445,5 @@ void PolygonManager::DrawToOffscreen(){
         SetRenderData(DrawOrder::Triangle2D);
         SetRenderData(DrawOrder::Quad2D);
         SetRenderData(DrawOrder::Sprite);
-    }
-}
-
-void PolygonManager::DrawResult(){
-
-#ifdef _DEBUG
-    ImGui::Begin("PostEffect");
-    ImGui::Checkbox("active", &isActivePostEffect_);
-    ImGui::End();
-#endif // _DEBUG
-
-    if(isActivePostEffect_){
-
-        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-
-    } else{
-        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
-        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
-    }
-
-    //pDxManager_->TransitionResourceState(
-    //    pDxManager_->depthStencilResource.Get(),
-    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
-    //);
-
-
-    WriteRenderData();
-
-    // オフスクリーンの描画結果を貼り付ける
-    SetRenderData(DrawOrder::Offscreen);
-
-    // 解像度に影響されない描画(オフスクリーン結果より後に描画)
-    if(objCountStaticDraw_ > 0){
-        SetRenderData(DrawOrder::StaticLine2D);
-        SetRenderData(DrawOrder::StaticQuad2D);
-        SetRenderData(DrawOrder::StaticTriangle2D);
-        SetRenderData(DrawOrder::StaticSprite);
     }
 }

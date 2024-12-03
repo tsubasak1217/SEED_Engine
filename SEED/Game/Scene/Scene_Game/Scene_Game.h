@@ -27,7 +27,6 @@ public:
 
 private:
 
-    std::vector<std::unique_ptr<Model>>models_;
 
     // 解像度
     float resolutionRate_ = 1.0f;

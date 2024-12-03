@@ -134,6 +134,7 @@ void PolygonManager::InitializePrimitive(){
 
 
     for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
+        // 通常の描画
         modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
         modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
         modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
@@ -147,6 +148,7 @@ void PolygonManager::InitializePrimitive(){
         modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
         modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
         modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
+        modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx]] = std::make_unique<ModelDrawData>();
 
     }
 
@@ -174,6 +176,7 @@ void PolygonManager::InitializePrimitive(){
         modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][blendIdx];
         modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx];
         modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_SPRITE][blendIdx];
+        modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx]]->modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][blendIdx];
 
         // 描画順を設定
         modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Triangle;
@@ -187,6 +190,7 @@ void PolygonManager::InitializePrimitive(){
         modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticLine2D;
         modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Sprite;
         modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
+        modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
     }
 }
 
@@ -536,7 +540,7 @@ void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
     const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-    bool isStaticDraw, DrawLocation drawLocation, uint32_t layer,bool isSystemDraw
+    bool isStaticDraw, DrawLocation drawLocation, uint32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     blendMode;
@@ -889,6 +893,83 @@ void PolygonManager::AddLine(
     }
 
     lineCount_++;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                    オフスクリーンの描画結果を描画処理に追加する関数                                            //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
+
+    Vector2 windowSize = { float(kWindowSizeX),float(kWindowSizeY) };
+    float scaleRate = float(pDxManager_->GetPreResolutionRate());
+    Matrix4x4 uvTransform = AffineMatrix({ scaleRate,scaleRate,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
+    float zfar = pDxManager_->GetCamera()->zfar_;
+
+    // 4頂点
+    Vector4 v[4]{
+        { 0.0f,0.0f,zfar,1.0f },
+        { windowSize.x,0.0f,zfar,1.0f },
+        { 0.0f,windowSize.y,zfar,1.0f },
+        { windowSize.x,windowSize.y,zfar,1.0f }
+    };
+
+    ///////////////////////////////////////////////////////////////////
+    /*-------------------- ModelDataに情報を追加する--------------------*/
+    ///////////////////////////////////////////////////////////////////
+
+    auto* modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][(int)blendMode];
+    auto* drawData = modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[(int)blendMode]].get();
+
+    // vertexResource
+    modelData->meshes.resize(1);
+    auto& mesh = modelData->meshes[0];
+    mesh.vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), { 0.0f,0.0f,-1.0f }));
+    mesh.vertices.push_back(VertexData(v[1], Vector2(1.0f, 0.0f), { 0.0f,0.0f,-1.0f }));
+    mesh.vertices.push_back(VertexData(v[2], Vector2(0.0f, 1.0f), { 0.0f,0.0f,-1.0f }));
+    mesh.vertices.push_back(VertexData(v[3], Vector2(1.0f, 1.0f), { 0.0f,0.0f,-1.0f }));
+
+    //indexResource
+    mesh.indices.push_back(drawData->indexCount + 0);
+    mesh.indices.push_back(drawData->indexCount + 1);
+    mesh.indices.push_back(drawData->indexCount + 3);
+    mesh.indices.push_back(drawData->indexCount + 0);
+    mesh.indices.push_back(drawData->indexCount + 3);
+    mesh.indices.push_back(drawData->indexCount + 2);
+
+    // materialResource
+    if(modelData->materials.size() == 0){
+        modelData->materials.resize(1);
+        auto& baseMaterial = modelData->materials[0];
+        baseMaterial.textureFilePath_ = "";
+        baseMaterial.UV_scale_ = { 1.0f,1.0f,1.0f };
+        baseMaterial.UV_offset_ = { 0.0f,0.0f,0.0f };
+        baseMaterial.UV_translate_ = { 0.0f,0.0f,0.0f };
+    }
+
+    // material
+    drawData->materials[(int)blendMode].resize(1);
+    auto& material = drawData->materials[(int)blendMode].back().emplace_back(Material());
+    material.color_ = { 1.0f,1.0f,1.0f,1.0f };
+    material.lightingType_ = LIGHTINGTYPE_NONE;
+    material.uvTransform_ = uvTransform;
+    material.GH_ = GH;
+
+    // transform
+    auto& transform = drawData->transforms[(int)blendMode].emplace_back(TransformMatrix());
+    transform.world_ = IdentityMat4();
+    transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+
+    // offsetResourceの数を更新
+    auto& offsetData = drawData->offsetData[(int)blendMode];
+    offsetData.resize(1);
+    offsetData.back().push_back(OffsetData());
+    drawData->indexCount += 4;
+
 }
 
 
@@ -1319,28 +1400,22 @@ void PolygonManager::DrawPolygonAll(){
 }
 
 void PolygonManager::DrawResult(){
-    Vector2 windowSize = { float(kWindowSizeX),float(kWindowSizeY) };
-    float scaleRate = float(pDxManager_->GetPreResolutionRate());
-    Matrix4x4 uvTransform = AffineMatrix({ scaleRate,scaleRate,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
 
-    //ImGui::Begin("PostEffect");
-    //ImGui::Checkbox("active", &isActivePostEffect_);
-    //ImGui::End();
+#ifdef _DEBUG
+    ImGui::Begin("PostEffect");
+    ImGui::Checkbox("active", &isActivePostEffect_);
+    ImGui::End();
+#endif // _DEBUG
 
-    //if(isActivePostEffect_){
-    //
-    //    AddSprite(windowSize, IdentityMat4(),
-    //        ViewManager::GetTextureHandle("blur_0"),
-    //        { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
-    //        { 0.0f,0.0f }, { 0.0f,0.0f }, BlendMode::NORMAL, true, true
-    //    );
-    //} else{
-    //    AddSprite(windowSize, IdentityMat4(),
-    //        ViewManager::GetTextureHandle("offScreen_0"),
-    //        { 1.0f,1.0f,1.0f,1.0f }, uvTransform, { 0.0f,0.0f },
-    //        { 0.0f,0.0f }, { 0.0f,0.0f }, BlendMode::NORMAL, true, true
-    //    );
-    //}
+    if(isActivePostEffect_){
+
+        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+
+    } else{
+        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+    }
 
     //pDxManager_->TransitionResourceState(
     //    pDxManager_->depthStencilResource.Get(),
@@ -1349,15 +1424,11 @@ void PolygonManager::DrawResult(){
     //);
 
 
-    // OffScreenToTextre
-    //SetRenderData(&inputData_[MESHTYPE_OFFSCREEN][(int)BlendMode::NORMAL], BlendMode::NORMAL, true);
-
     WriteRenderData();
+
     // オフスクリーンの描画結果を貼り付ける
-    //SetRenderData(DrawOrder::Offscreen);
+    SetRenderData(DrawOrder::Offscreen);
 
-
-    
     // 解像度に影響されない描画(オフスクリーン結果より後に描画)
     if(objCountStaticDraw_ > 0){
         SetRenderData(DrawOrder::StaticLine2D);

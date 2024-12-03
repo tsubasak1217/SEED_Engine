@@ -633,10 +633,20 @@ void DxManager::TransitionResourceState(ID3D12Resource* resource, D3D12_RESOURCE
 
 void DxManager::ClearViewSettings()
 {
+    //////////////////////////////////////////////////////////////////
+    // RTVのクリア
+    //////////////////////////////////////////////////////////////////
+
     // 指定した色で画面全体をクリアする
     clearColor = MyMath::FloatColor(SEED::GetWindowColor());
     commandList->ClearRenderTargetView(
         rtvHandles[backBufferIndex],
+        &clearColor.x, 0, nullptr
+    );
+
+    // オフスクリーンのRTVをクリアする
+    commandList->ClearRenderTargetView(
+        ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0"),
         &clearColor.x, 0, nullptr
     );
 
@@ -645,13 +655,17 @@ void DxManager::ClearViewSettings()
         &clearColor.x, 0, nullptr
     );
 
+    //////////////////////////////////////////////////////////////////
     // DSVとオフスクリーンのRTVを結びつける
+    //////////////////////////////////////////////////////////////////
     commandList->OMSetRenderTargets(
         1, &offScreenHandle,
         false, &dsvHandle
     );
 
+    //////////////////////////////////////////////////////////////////
     // フレームの最初にもっとも遠くにクリアする
+    //////////////////////////////////////////////////////////////////
     commandList->ClearDepthStencilView(
         dsvHandle,
         D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
@@ -792,11 +806,6 @@ void DxManager::DrawPolygonAll()
     //    D3D12_RESOURCE_STATE_DEPTH_WRITE
     //);
     
-    // すべての描画が終了したのでオフスクリーンのRTVをクリアする。
-    commandList->ClearRenderTargetView(
-        ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0"), 
-        &clearColor.x, 0, nullptr
-    );
 }
 
 void DxManager::DrawGUI(){

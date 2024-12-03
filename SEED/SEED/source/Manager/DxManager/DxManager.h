@@ -222,9 +222,6 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     // TextureResource
     std::vector<ComPtr<ID3D12Resource>> textureResource;
     std::vector<ComPtr<ID3D12Resource>> intermediateResource;
-    
-    // OIT用テクスチャ
-    ComPtr<ID3D12Resource> OIT_Texture_;
 
     // ポストエフェクト用のテクスチャ
     ComPtr<ID3D12Resource> blurTextureResource;// ぼけた画像

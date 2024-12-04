@@ -45,7 +45,12 @@ void Model::Draw(){
 void Model::UpdateMatrix(){
 
     // ワールド変換行列の更新
-    worldMat_ = AffineMatrix(scale_, rotate_, translate_);
+    if(isRotateWithQuaternion_){
+        worldMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
+    } else{
+        worldMat_ = AffineMatrix(scale_, rotate_, translate_);
+        rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);
+    }
 
     // UV変換行列の更新
     for(int i = 0; i < uvTransform_.size(); i++){

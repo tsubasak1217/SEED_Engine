@@ -1,7 +1,10 @@
 #pragma once
 #include <vector>
+#include <string>
+#include <unordered_map>
 #include "VertexData.h"
 #include "Material.h" 
+#include "Animation.h"
 
 // メッシュデータ構造体
 struct MeshData{
@@ -21,6 +24,7 @@ struct ModelNode{
 struct ModelData{
     std::vector<MeshData>meshes;
     std::vector<MaterialData> materials;
+    std::unordered_map<std::string, Animation> animations;
     ModelNode rootNode;
     std::string modelName;
 };

@@ -1,6 +1,8 @@
 #pragma once
 #include "Keyframe.h"
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 template<typename T>
 struct AnimationCurve{
@@ -14,7 +16,6 @@ struct NodeAnimation{
 };
 
 struct Animation{
-    std::string name;// アニメーション名
     float duration;// アニメーションの長さ(秒)
-    std::vector<NodeAnimation> nodeAnimations;
+    std::unordered_map<std::string,NodeAnimation> nodeAnimations;
 };

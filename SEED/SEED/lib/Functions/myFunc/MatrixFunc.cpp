@@ -632,6 +632,15 @@ Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector
     return matrix;
 }
 
+Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate){
+    Matrix4x4 matrix(Multiply(ScaleMatrix(scale), rotate.MakeMatrix()));
+    matrix.m[3][0] = translate.x;
+    matrix.m[3][1] = translate.y;
+    matrix.m[3][2] = translate.z;
+    return matrix;
+}
+
+
 // 正則行列かどうか確認する関数--------------------------------------
 // 3x3 行列の行列式を計算する関数
 float Determinant3x3(const Matrix3x3& mat) {

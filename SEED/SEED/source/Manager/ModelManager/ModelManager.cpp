@@ -81,7 +81,8 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // マテリアルデータの読み込み
     modelData->materials = ParseMaterials(scene);
     modelData->modelName = filename;
-
+    // アニメーションデータの読み込み
+    modelData->animations = LoadAnimation(directoryPath, filename);
 
     return modelData;
 }
@@ -171,60 +172,6 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
     return meshes;
 }
 
-//std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
-//    std::vector<MeshData> meshes;
-//
-//    for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
-//        aiMesh* mesh = scene->mMeshes[meshIdx];
-//        MeshData meshData;
-//
-//        assert(mesh->HasTextureCoords(0));   // UV座標必須
-//
-//        // faceを解析する
-//        for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx){
-//
-//            aiFace& face = mesh->mFaces[faceIdx];
-//            assert(face.mNumIndices == 3);// 三角形以外は
-//
-//            // vertexを解析する
-//            for(uint32_t element = 0; element < face.mNumIndices; ++element){
-//
-//                // 頂点の情報を取得
-//                uint32_t vertexIdx = face.mIndices[element];
-//                aiVector3D position = mesh->mVertices[vertexIdx];
-//                aiVector3D normal = mesh->mNormals[vertexIdx];
-//                aiVector3D texcoord = mesh->mTextureCoords[0][vertexIdx];
-//
-//                // 頂点を格納
-//                VertexData vertex;
-//                vertex.position_ = { position.x,position.y,position.z,1.0f };
-//                vertex.normal_ = { normal.x,normal.y,normal.z };
-//                vertex.texcoord_ = { texcoord.x,texcoord.y };
-//
-//                // 左手座標系に変換
-//                vertex.position_.x *= -1.0f;
-//                vertex.normal_.x *= -1.0f;
-//
-//                // 頂点を格納
-//                meshData.vertices.push_back(vertex);
-//            }
-//
-//
-//            //// インデックスデータを構築
-//            for(uint32_t i = 0; i < 3; ++i) {
-//                meshData.indices.push_back(face.mIndices[i]);
-//            }
-//
-//            // マテリアルインデックスを設定
-//            meshData.materialIndex = mesh->mMaterialIndex;
-//        }
-//
-//        // メッシュを追加
-//        meshes.push_back(meshData);
-//    }
-//
-//    return meshes;
-//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // マテリアルデータを解析
@@ -313,10 +260,10 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node){
 // アニメーションを解析
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Animation ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
+std::unordered_map<std::string,Animation> ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
 
     // アニメーションデータの格納用
-    Animation animation;
+    std::unordered_map<std::string, Animation> result;
 
     // assinmpのインポート設定
     Assimp::Importer importer;
@@ -325,44 +272,86 @@ Animation ModelManager::LoadAnimation(const std::string& directoryPath, const st
     assert(scene->HasAnimations());// animationがない場合はアサート
 
     // アニメーションの解析を行っていく
-    aiAnimation* aiAnimation = scene->mAnimations[0];
-    animation.name = aiAnimation->mName.C_Str();// アニメーション名を設定
-    animation.duration = float(aiAnimation->mDuration / aiAnimation->mTicksPerSecond);// アニメーションの長さを秒単位に設定
+    for(uint32_t animIdx = 0; animIdx < scene->mNumAnimations; ++animIdx) {
 
+        aiAnimation* anim = scene->mAnimations[animIdx];
+        Animation animation;
 
-    for(uint32_t channelIdx = 0; channelIdx < aiAnimation->mNumChannels; ++channelIdx) {
-        aiNodeAnim* aiNodeAnim = aiAnimation->mChannels[channelIdx];
-        NodeAnimation nodeAnimation;
+        // アニメーションの長さを取得
+        assert(anim->mTicksPerSecond != 0);// 0であればアサート
+        animation.duration = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
 
-        // 位置情報の解析
-        for(uint32_t keiIdx = 0; keiIdx < aiNodeAnim->mNumPositionKeys; ++keiIdx) {
-            aiVectorKey key = aiNodeAnim->mPositionKeys[keiIdx];
-            Keyframe<Vector3> frame;
-            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
-            frame.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
-            nodeAnimation.translate.keyframes.push_back(frame);
+        // ノードごとのアニメーションを解析
+        for(uint32_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx) {
+            aiNodeAnim* channel = anim->mChannels[channelIdx];
+            NodeAnimation nodeAnim;
+
+            // 位置アニメーションを解析
+            if(channel->mNumPositionKeys > 0) {
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumPositionKeys; ++keyIdx) {
+                    aiVectorKey key = channel->mPositionKeys[keyIdx];
+                    Keyframe<Vector3> keyframe;
+                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.value = Vector3(-key.mValue.x, key.mValue.y, key.mValue.z);
+                    nodeAnim.translate.keyframes.push_back(keyframe);
+                }
+            }
+
+            // 回転アニメーションを解析
+            if(channel->mNumRotationKeys > 0) {
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumRotationKeys; ++keyIdx) {
+                    aiQuatKey key = channel->mRotationKeys[keyIdx];
+                    Keyframe<Quaternion> keyframe;
+                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.value = Quaternion(key.mValue.x, -key.mValue.y, -key.mValue.z, key.mValue.w);
+                    nodeAnim.rotate.keyframes.push_back(keyframe);
+                }
+            }
+
+            // スケールアニメーションを解析
+            if(channel->mNumScalingKeys > 0) {
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumScalingKeys; ++keyIdx) {
+                    aiVectorKey key = channel->mScalingKeys[keyIdx];
+                    Keyframe<Vector3> keyframe;
+                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+                    nodeAnim.scale.keyframes.push_back(keyframe);
+                }
+            }
+
+            // ノード名をキーにしてアニメーションデータに追加(重複を確認して重複している名前があれば後ろに番号を割り当てる)
+            if(animation.nodeAnimations.find(channel->mNodeName.C_Str()) == animation.nodeAnimations.end()){
+                animation.nodeAnimations[channel->mNodeName.C_Str()] = nodeAnim;
+
+            } else{
+                int i = 1;
+                while(true){
+                    std::string nodeName = channel->mNodeName.C_Str() + std::to_string(i);
+                    if(animation.nodeAnimations.find(nodeName) == animation.nodeAnimations.end()){
+                        animation.nodeAnimations[nodeName] = nodeAnim;
+                        break;
+                    }
+                    i++;
+                }
+            }
         }
 
-        // 回転情報の解析
-        for(uint32_t keyIdx = 0; keyIdx < aiNodeAnim->mNumRotationKeys; ++keyIdx) {
-            aiQuatKey key = aiNodeAnim->mRotationKeys[keyIdx];
-            Keyframe<Quaternion> frame;
-            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
-            frame.value = Quaternion(key.mValue.w, key.mValue.x, key.mValue.y, key.mValue.z);
-            nodeAnimation.rotate.keyframes.push_back(frame);
+        // アニメーションデータを追加(重複を確認して重複している名前があれば後ろに番号を割り当てる)
+        if(result.find(anim->mName.C_Str()) == result.end()){
+            result[anim->mName.C_Str()] = animation;
+        } else{
+            int i = 1;
+            while(true){
+                std::string animName = anim->mName.C_Str() + std::to_string(i);
+                if(result.find(animName) == result.end()){
+                    result[animName] = animation;
+                    break;
+                }
+                i++;
+            }
         }
-
-        // スケール情報の解析
-        for(uint32_t keyIdx = 0; keyIdx < aiNodeAnim->mNumScalingKeys; ++keyIdx) {
-            aiVectorKey key = aiNodeAnim->mScalingKeys[keyIdx];
-            Keyframe<Vector3> frame;
-            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
-            frame.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
-            nodeAnimation.scale.keyframes.push_back(frame);
-        }
-
-        animation.nodeAnimations.push_back(nodeAnimation);
     }
 
-    return animation;
+
+    return result;
 }

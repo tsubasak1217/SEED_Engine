@@ -25,23 +25,28 @@ public:
 
 public:
 
+    // 名前
     std::string modelName_;
 
+    // トランスフォーム情報
     Vector3 scale_;
     Vector3 rotate_;
+    Quaternion rotateQuat_;
     Vector3 translate_;
     Matrix4x4 worldMat_;
-    bool isRotateWithQuaternion_;
 
+    // マテリアル情報(vectorのものはメッシュごとに存在)
     std::vector<uint32_t> textureGH_;
     Vector4 color_;
     int32_t lightingType_;
     BlendMode blendMode_;
-
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;
     std::vector<Vector3> uv_translate_;
     std::vector<Matrix4x4> uvTransform_;
+
+    // フラグ類
+    bool isRotateWithQuaternion_;// クォータニオンで回転するか
 
     // 親となるワールド変換へのポインタ
     const Model* parent_ = nullptr;

@@ -2,6 +2,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Quaternion.h"
 #include "Matrix2x2.h"
 #include "Matrix3x3.h"
 #include "Matrix4x4.h"
@@ -77,6 +78,7 @@ Matrix4x4 TranslateMatrix(const Vector3& t);
 // アフィン変換行列を作る関数
 Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);

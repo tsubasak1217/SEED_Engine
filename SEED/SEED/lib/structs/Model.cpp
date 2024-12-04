@@ -47,9 +47,10 @@ void Model::UpdateMatrix(){
     // ワールド変換行列の更新
     if(isRotateWithQuaternion_){
         worldMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
+        rotate_ = Quaternion::ToEuler(rotateQuat_);// 切り替えても大丈夫なように同期させておく
     } else{
         worldMat_ = AffineMatrix(scale_, rotate_, translate_);
-        rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);
+        rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
 
     // UV変換行列の更新
@@ -61,4 +62,8 @@ void Model::UpdateMatrix(){
     if(parent_){
         worldMat_ = Multiply(worldMat_, parent_->worldMat_);
     }
+}
+
+void Model::PlayAnimation(const std::string& animationName,bool loop, float speedRate){
+
 }

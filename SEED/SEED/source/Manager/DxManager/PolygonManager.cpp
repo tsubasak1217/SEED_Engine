@@ -1402,6 +1402,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 void PolygonManager::DrawToOffscreen(){
 
+    // オフスクリーンの描画依頼をここで出しておく
+    if(isActivePostEffect_){
+        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+    } else{
+        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+    }
+
+    // 情報を書き込む
     WriteRenderData();
 
     // 3D
@@ -1428,25 +1438,6 @@ void PolygonManager::DrawResult(){
     ImGui::Checkbox("active", &isActivePostEffect_);
     ImGui::End();
 #endif // _DEBUG
-
-    if(isActivePostEffect_){
-
-        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-
-    } else{
-        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
-        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
-    }
-
-    //pDxManager_->TransitionResourceState(
-    //    pDxManager_->depthStencilResource.Get(),
-    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
-    //);
-
-
-    WriteRenderData();
 
     // オフスクリーンの描画結果を貼り付ける
     SetRenderData(DrawOrder::Offscreen);

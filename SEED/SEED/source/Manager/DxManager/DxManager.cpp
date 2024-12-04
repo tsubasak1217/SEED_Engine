@@ -145,6 +145,8 @@ void DxManager::Initialize(SEED* pSEED)
         pSEED_->kClientHeight_
     );
 
+    depthStencilResource->SetName(L"depthStencilResource");
+
     /*----------------------------------LightingのResource---------------------------------*/
 
     lightingResource = CreateBufferResource(device.Get(), sizeof(DirectionalLight));
@@ -386,6 +388,9 @@ void DxManager::CreateRenderTargets()
 
     // offScreen用のレンダーターゲットを作成
     offScreenResource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
+
+    // リソースに名前をつける
+    offScreenResource.Get()->SetName(L"offScreenResource");
 }
 
 void DxManager::GetSwapChainResources()
@@ -466,6 +471,9 @@ void DxManager::InitializeSystemTextures()
         STATE_UNORDERED_ACCESS
     ));
 
+    // 名前の設定
+    depthTextureResource->SetName(L"depthTextureResource");
+
     // Texture用SRVの作成
     srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -490,6 +498,8 @@ void DxManager::InitializeSystemTextures()
         STATE_UNORDERED_ACCESS
     ));
 
+    // 名前の設定
+    blurTextureResource->SetName(L"blurTextureResource");
 
     // Texture用SRVの作成
     srvDesc.Format = blurTextureResource->GetDesc().Format;
@@ -742,8 +752,38 @@ void DxManager::DrawPolygonAll()
     // ここで描画結果に対して処理を行う
     //////////////////////////////////////////////////////////////////////////
 
-    /*----ぼかした画面を作る-----*/
+    //------------ 参照するリソースの状態を遷移させる--------------//
+
+    TransitionResourceState(
+       offScreenResource.Get(),
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+    );
+
+    TransitionResourceState(
+        depthStencilResource.Get(),
+        D3D12_RESOURCE_STATE_DEPTH_WRITE,
+        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+    );
+
+
+    /*----------------------ぼかした画面を作る-------------------*/
+
     effectManager_->TransfarToCS();
+
+    //---------------------- 元の状態に遷移 ---------------------//
+
+    TransitionResourceState(
+        offScreenResource.Get(),
+        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+        D3D12_RESOURCE_STATE_RENDER_TARGET
+    );
+
+    TransitionResourceState(
+        depthStencilResource.Get(),
+        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -787,11 +827,6 @@ void DxManager::DrawPolygonAll()
         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
     );
 
-    //TransitionResourceState(
-    //    depthStencilResource.Get(),
-    //    D3D12_RESOURCE_STATE_DEPTH_WRITE,
-    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-    //);
 
     TransitionResourceState(
         depthTextureResource.Get(),
@@ -828,12 +863,6 @@ void DxManager::DrawPolygonAll()
         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
         D3D12_RESOURCE_STATE_UNORDERED_ACCESS
     );
-
-    //TransitionResourceState(
-    //    depthStencilResource.Get(),
-    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
-    //);
     
 }
 

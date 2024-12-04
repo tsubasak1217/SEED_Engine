@@ -13,7 +13,8 @@
 #include <assimp/postprocess.h>
 
 // local
-#include "modelData.h"
+#include "ModelData.h"
+#include "Animation.h"
 
 class ModelManager{
 
@@ -43,7 +44,7 @@ private:
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
     std::vector<MaterialData> ParseMaterials(const aiScene* scene);
     ModelNode ReadModelNode(const aiNode* node);
-
+    Animation LoadAnimation(const std::string& directoryPath, const std::string& filename);
 
 private:
     static ModelManager* instance_;

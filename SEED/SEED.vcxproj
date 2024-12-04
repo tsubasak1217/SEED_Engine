@@ -208,10 +208,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\shapes\sphere.h" />
     <ClInclude Include="SEED\lib\shapes\Triangle.h" />
     <ClInclude Include="SEED\lib\structs\AccelerarionField.h" />
+    <ClInclude Include="SEED\lib\structs\Animation.h" />
     <ClInclude Include="SEED\lib\structs\blendMode.h" />
     <ClInclude Include="SEED\lib\structs\CS_Buffers.h" />
     <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
     <ClInclude Include="SEED\lib\structs\DrawLocation.h" />
+    <ClInclude Include="SEED\lib\structs\Keyframe.h" />
     <ClInclude Include="SEED\lib\structs\OffsetData.h" />
     <ClInclude Include="SEED\lib\structs\Material.h" />
     <ClInclude Include="SEED\lib\structs\Model.h" />

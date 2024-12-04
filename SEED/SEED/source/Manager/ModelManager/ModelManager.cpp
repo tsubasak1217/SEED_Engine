@@ -309,60 +309,60 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node){
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// マテリアルファイルを読み込む
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//MaterialData ModelManager::LoadMaterialFile(const std::string& directoryPath, const std::string& filename){
-//
-//    // ファイルを開く
-//    std::ifstream file(directoryPath + "/" + filename);
-//    assert(file.is_open());// 失敗したらアサート
-//
-//    MaterialData materialData;
-//    std::string line;
-//
-//    while(std::getline(file, line)){
-//
-//        // まずobjファイルの行の先頭の識別子を読む
-//        std::string identifer;
-//        std::istringstream s(line);
-//        s >> identifer;
-//
-//        if(identifer == "map_Kd"){// ファイル名
-//
-//            std::string textureFilename;
-//            Vector3 scale = { 1.0f,1.0f,1.0f };
-//            Vector3 offset = { 0.0f,0.0f,0.0f };
-//            Vector3 translate = { 0.0f,0.0f,0.0f };
-//
-//            // ファイル名を格納
-//            while(s >> textureFilename) {
-//                if(textureFilename[0] == '-') {
-//                    std::string option = textureFilename.substr(1);
-//                    if(option == "s") {
-//                        s >> scale.x >> scale.y >> scale.z;
-//                    } else if(option == "o") {
-//                        s >> offset.x >> offset.y >> offset.z;
-//                    } else if(option == "t") {
-//                        s >> translate.x >> translate.y >> translate.z;
-//                    }
-//                } else {
-//                    materialData.textureFilePath_ = textureFilename;
-//                }
-//            }
-//
-//            materialData.UV_scale_ = scale;
-//            materialData.UV_offset_ = offset;
-//            materialData.UV_translate_ = translate;
-//        }
-//    }
-//
-//    // テクスチャなしのモデルの場合
-//    if(materialData.textureFilePath_ == ""){
-//        materialData.textureFilePath_ = "white1x1.png";
-//    }
-//
-//    return materialData;
-//}
-//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// アニメーションを解析
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Animation ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
+
+    // アニメーションデータの格納用
+    Animation animation;
+
+    // assinmpのインポート設定
+    Assimp::Importer importer;
+    std::string filePath = directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) + "/" + filename;
+    const aiScene* scene = importer.ReadFile(filePath.c_str(),0);
+    assert(scene->HasAnimations());// animationがない場合はアサート
+
+    // アニメーションの解析を行っていく
+    aiAnimation* aiAnimation = scene->mAnimations[0];
+    animation.name = aiAnimation->mName.C_Str();// アニメーション名を設定
+    animation.duration = float(aiAnimation->mDuration / aiAnimation->mTicksPerSecond);// アニメーションの長さを秒単位に設定
+
+
+    for(uint32_t channelIdx = 0; channelIdx < aiAnimation->mNumChannels; ++channelIdx) {
+        aiNodeAnim* aiNodeAnim = aiAnimation->mChannels[channelIdx];
+        NodeAnimation nodeAnimation;
+
+        // 位置情報の解析
+        for(uint32_t keiIdx = 0; keiIdx < aiNodeAnim->mNumPositionKeys; ++keiIdx) {
+            aiVectorKey key = aiNodeAnim->mPositionKeys[keiIdx];
+            Keyframe<Vector3> frame;
+            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
+            frame.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+            nodeAnimation.translate.keyframes.push_back(frame);
+        }
+
+        // 回転情報の解析
+        for(uint32_t keyIdx = 0; keyIdx < aiNodeAnim->mNumRotationKeys; ++keyIdx) {
+            aiQuatKey key = aiNodeAnim->mRotationKeys[keyIdx];
+            Keyframe<Quaternion> frame;
+            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
+            frame.value = Quaternion(key.mValue.w, key.mValue.x, key.mValue.y, key.mValue.z);
+            nodeAnimation.rotate.keyframes.push_back(frame);
+        }
+
+        // スケール情報の解析
+        for(uint32_t keyIdx = 0; keyIdx < aiNodeAnim->mNumScalingKeys; ++keyIdx) {
+            aiVectorKey key = aiNodeAnim->mScalingKeys[keyIdx];
+            Keyframe<Vector3> frame;
+            frame.time = float(key.mTime / aiAnimation->mTicksPerSecond);
+            frame.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+            nodeAnimation.scale.keyframes.push_back(frame);
+        }
+
+        animation.nodeAnimations.push_back(nodeAnimation);
+    }
+
+    return animation;
+}

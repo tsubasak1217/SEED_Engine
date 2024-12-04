@@ -579,6 +579,12 @@
     <ClInclude Include="SEED\lib\structs\DrawLocation.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Keyframe.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Animation.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

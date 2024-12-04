@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "VertexData.h"
 #include "Material.h" 
+#include "Transform.h"
 #include "Animation.h"
 
 // メッシュデータ構造体
@@ -15,6 +16,7 @@ struct MeshData{
 
 // モデルのノード構造体
 struct ModelNode{
+    QuaternionTransform transform;
     Matrix4x4 localMatrix;
     std::string name;
     std::vector<ModelNode> children;

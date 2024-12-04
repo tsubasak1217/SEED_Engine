@@ -1,5 +1,5 @@
 #include "ModelManager.h"
-
+#include "MatrixFunc.h"
 
 // static変数初期化
 ModelManager* ModelManager::instance_ = nullptr;
@@ -238,13 +238,18 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node){
     aiMatrix4x4 aiLocalMatrix = node->mTransformation;
     aiLocalMatrix.Transpose(); // 転置（Assimpは列優先）
 
-    result.localMatrix = Matrix4x4(
-        aiLocalMatrix.a1, aiLocalMatrix.a2, aiLocalMatrix.a3, aiLocalMatrix.a4,
-        aiLocalMatrix.b1, aiLocalMatrix.b2, aiLocalMatrix.b3, aiLocalMatrix.b4,
-        aiLocalMatrix.c1, aiLocalMatrix.c2, aiLocalMatrix.c3, aiLocalMatrix.c4,
-        aiLocalMatrix.d1, aiLocalMatrix.d2, aiLocalMatrix.d3, aiLocalMatrix.d4
-    );
+    // ローカル行列を分解
+    aiVector3D aiScale, aiTranslate;
+    aiQuaternion aiRotate;
+    node->mTransformation.Decompose(aiScale, aiRotate, aiTranslate);
 
+    // 情報を格納(左手座標に変換して)
+    result.transform.scale_ = Vector3(aiScale.x, aiScale.y, aiScale.z);
+    result.transform.rotate_ = Quaternion(aiRotate.x, -aiRotate.y, -aiRotate.z, aiRotate.w);
+    result.transform.translate_ = Vector3(-aiTranslate.x, aiTranslate.y, aiTranslate.z);
+    result.localMatrix = AffineMatrix(result.transform.scale_, result.transform.rotate_, result.transform.translate_);
+
+    // ノード名を取得
     result.name = node->mName.C_Str();
 
     // 子ノードを再帰的に処理
@@ -255,6 +260,61 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node){
     return result;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ジョイントを作成
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int32_t ModelManager::CreateJoint(
+    const ModelNode& node,
+    const std::optional<int32_t>& parent,
+    std::vector<ModelJoint>&joints
+){
+    ModelJoint joint;
+    joint.name = node.name;
+    joint.localMatrix = node.localMatrix;
+    joint.skeletonMatrix = node.localMatrix;
+    joint.skeletonMatrix = IdentityMat4();
+    joint.transform = node.transform;
+    joint.index = static_cast<int32_t>(joints.size());
+    joint.parent = parent;
+    joints.push_back(joint);
+
+    for(const ModelNode& child : node.children ){
+        // 子ジョイントを作成しindexを登録
+        int32_t childIndex = CreateJoint(child, joint.index, joints);
+        joints[joint.index].children.push_back(childIndex);
+    }
+
+    return joint.index;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// スケルトン関連
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
+    ModelSkeleton skeleton;
+    skeleton.rootIndex = CreateJoint(rootNode, std::nullopt, skeleton.joints);
+
+    for(const ModelJoint& joint : skeleton.joints){
+        skeleton.jointMap.emplace(joint.name, joint.index);
+    }
+
+    return skeleton;
+}
+
+
+void ModelManager::UpdateSkeleton(ModelSkeleton& skeleton){
+    for(ModelJoint& joint : skeleton.joints){
+        joint.localMatrix = AffineMatrix(joint.transform.scale_, joint.transform.rotate_, joint.transform.translate_);
+        if(joint.parent){
+            joint.skeletonMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonMatrix;
+        } else{
+            joint.skeletonMatrix = joint.localMatrix;
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // アニメーションを解析
@@ -269,7 +329,7 @@ std::unordered_map<std::string,Animation> ModelManager::LoadAnimation(const std:
     Assimp::Importer importer;
     std::string filePath = directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) + "/" + filename;
     const aiScene* scene = importer.ReadFile(filePath.c_str(),0);
-    assert(scene->HasAnimations());// animationがない場合はアサート
+    if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 
     // アニメーションの解析を行っていく
     for(uint32_t animIdx = 0; animIdx < scene->mNumAnimations; ++animIdx) {
@@ -355,3 +415,4 @@ std::unordered_map<std::string,Animation> ModelManager::LoadAnimation(const std:
 
     return result;
 }
+

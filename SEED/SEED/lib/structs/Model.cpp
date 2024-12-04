@@ -3,6 +3,12 @@
 #include "SEED.h"
 #include "ModelManager.h"
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                          //
+//                                          初期化・終了処理                                                   //
+//                                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Model::Model(const std::string& filename){
     Initialize(filename);
 }
@@ -37,11 +43,34 @@ void Model::Initialize(const std::string& filename){
     lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
 }
 
-void Model::Draw(){
-    SEED::DrawModel(this);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                          //
+//                                               更新処理                                                    //
+//                                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Model::Update(){
+
+    // アニメーションの更新
+    if(isAnimation_){
+        totalAnimationTime_ += ClockManager::DeltaTime() * animationSpeedRate_;
+
+        // ループするかどうかで処理を変える
+        if(isAnimationLoop_){
+            animationTime_ = std::fmod(totalAnimationTime_, animationDuration_);
+        } else{
+            animationTime_ = std::clamp(totalAnimationTime_, 0.0f,animationDuration_);
+        }
+
+        animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
+    }
+
+    // マトリックスの更新
+    UpdateMatrix();
 }
 
 
+// マトリックスの更新
 void Model::UpdateMatrix(){
 
     // ワールド変換行列の更新
@@ -64,6 +93,48 @@ void Model::UpdateMatrix(){
     }
 }
 
-void Model::PlayAnimation(const std::string& animationName,bool loop, float speedRate){
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                          //
+//                                               描画処理                                                    //
+//                                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Model::Draw(){
+    SEED::DrawModel(this);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                          //
+//                                           アニメーション関連                                                //
+//                                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// アニメーション開始
+void Model::StartAnimation(const std::string& animationName, bool loop, float speedRate){
+    isAnimation_ = true;
+    isAnimationLoop_ = loop;
+    animationTime_ = 0.0f;
+    totalAnimationTime_ = 0.0f;
+    animationSpeedRate_ = speedRate;
+    animationDuration_ = ModelManager::GetModelData(modelName_)->animations[animationName].duration;
+}
+
+// アニメーション一時停止
+void Model::PauseAnimation(){
+    isAnimation_ = false;
+}
+
+// アニメーション再開
+void Model::RestartAnimation(){
+    isAnimation_ = true;
+}
+
+// アニメーション終了
+void Model::EndAnimation(){
+    isAnimation_ = false;
+    animationName_ = "";
+    animationTime_ = 0.0f;
+    animationLoopCount_ = 0;
+    totalAnimationTime_ = 0.0f;
 }

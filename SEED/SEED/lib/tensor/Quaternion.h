@@ -27,10 +27,13 @@ public:
     static Quaternion EulerToQuaternion(const Vector3& eulerRotate);
     static Vector3 ToEuler(const Quaternion& q);
     Vector3 ToEuler()const;
+
+    // Make
     Vector3 MakeForward()const;
     Vector3 MakeUp()const;
     Vector3 MakeRight()const;
     Matrix4x4 MakeMatrix()const;
+    Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)const;
 
 public:
     // Operators

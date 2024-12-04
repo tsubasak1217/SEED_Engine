@@ -7,13 +7,16 @@
 #include <numeric>
 #include <algorithm>
 
-
 const float kDeltaTime = 0.016f;
 
-class MyMath
+enum VIEWMODE{
+    kScreen,
+    kWorld
+};
 
-{
+class MyMath{
 public:
+
 
     //================================================================
     //                      数学的な関数
@@ -64,7 +67,7 @@ public:
     // 2ベクトルの外積を求める関数 (2D)
     static float Cross(const Vector2& vec1, const Vector2& vec2);
     // 2ベクトルの外積を求める関数 (3D)
-    static Vector3 Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode);
+    static Vector3 Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode = kWorld);
     // 3点の座標を指定して外積を求める関数 (長さで正規化する) (2D)
     static float Cross(const Vector2& originPos, const Vector2& endPos, const Vector2& targetPos);
 
@@ -147,9 +150,4 @@ public:
     // HSVをRGBに変換する関数
     static uint32_t HSV_to_RGB(float h, float s, float v, float alpha);
     static uint32_t HSV_to_RGB(Vector4 HSVA_color);
-};
-
-enum VIEWMODE{
-    kScreen,
-    kWorld
 };

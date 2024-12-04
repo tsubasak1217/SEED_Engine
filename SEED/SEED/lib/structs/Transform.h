@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include "Quaternion.h"
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -14,9 +15,15 @@
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
-struct Transform {
+struct EulerTransform {
     Vector3 scale_;
     Vector3 rotate_;
+    Vector3 translate_;
+};
+
+struct QuaternionTransform{
+    Vector3 scale_;
+    Quaternion rotate_;
     Vector3 translate_;
 };
 

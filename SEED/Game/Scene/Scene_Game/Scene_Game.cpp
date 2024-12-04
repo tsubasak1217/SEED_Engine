@@ -22,6 +22,16 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
 
+    model_[2] = std::make_unique<Model>("teapot.obj");
+    model_[0] = std::make_unique<Model>("walk.gltf");
+    model_[1] = std::make_unique<Model>("sneakWalk.gltf");
+    model_[3] = std::make_unique<Model>("sphere.obj");
+
+    for(int i = 0; i < 4; i++){
+        model_[i]->translate_ = { 10.0f * i,0.0f,0.0f };
+        model_[i]->scale_ = { 100.0f,100.0f,100.0f };
+        model_[i]->UpdateMatrix();
+    }
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -86,9 +96,19 @@ void Scene_Game::Update(){
 
     /*========================= 各状態の更新 ==========================*/
 
+    for(auto& model : model_){
+        model->Update();
+    }
+
+
     currentState_->Update();
 }
 
 void Scene_Game::Draw(){
+
     SEED::DrawGrid();
+
+    for(auto& model : model_){
+        model->Draw();
+    }
 }

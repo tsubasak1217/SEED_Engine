@@ -25,15 +25,16 @@ public:
     Model() = default;
     Model(const std::string& filename);
     void Initialize(const std::string& filename);
-    void Draw();
+    virtual void Update();
+    virtual void Draw();
 
 public:
     // 行列の更新
-    void UpdateMatrix();
+    virtual void UpdateMatrix();
 
 public:
     // アニメーション関連
-    void PlayAnimation(const std::string& animationName, bool loop,float speedRate = 1.0f);
+    void StartAnimation(const std::string& animationName, bool loop,float speedRate = 1.0f);
     void PauseAnimation();
     void RestartAnimation();
     void EndAnimation();
@@ -42,7 +43,8 @@ public:
 public:// アクセッサ
 
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
-
+    Matrix4x4 GetUVTransform(int index)const{ return uvTransform_[index]; }
+    int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -88,12 +90,15 @@ private:
     // --------------------- アニメーションパラメータ ---------------------//
 
 public:
-    bool isAnimation_ = false;// アニメーションを行うか
     float animationTime_ = 0.0f;// アニメーションの時間
     float animationSpeedRate_ = 1.0f;// アニメーションの速度の倍率
 
 private:
+    float animationDuration_ = 0.0f;// アニメーション自体の時間
+    float totalAnimationTime_ = 0.0f;// アニメーションの総再生時間
+    bool isAnimationLoop_ = false;// アニメーションをループさせるか
+    int32_t animationLoopCount_ = 0;// アニメーションのループ回数
+    bool isAnimation_ = false;// アニメーションを行うか
     std::string animationName_;// アニメーションの名前
-
 
 };

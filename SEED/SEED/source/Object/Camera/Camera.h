@@ -16,7 +16,7 @@ struct Camera{
     //              メンバ変数
     //=============================================================================
 
-    Transform transform_;
+    EulerTransform transform_;
     Vector2 clipRange_;
     uint32_t projectionMode_;
     float znear_;

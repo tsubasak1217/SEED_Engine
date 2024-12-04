@@ -1,6 +1,8 @@
 #include "Quaternion.h"
 #include "MyMath.h"
+#include "MatrixFunc.h"
 #include <cmath> 
+#include <numbers>
 
 Quaternion::Quaternion(float x, float y, float z, float w){
     // 各成分を設定
@@ -285,6 +287,44 @@ Matrix4x4 Quaternion::MakeMatrix() const{
     result.m[3][3] = 1.0f;
 
     return result;
+}
+
+// FromベクトルからToベクトルへの回転行列を計算する関数
+Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to) const{
+    // FromベクトルとToベクトルの正規化
+    Vector3 fromN = MyMath::Normalize(from);
+    Vector3 toN = MyMath::Normalize(to);
+
+    // FromベクトルとToベクトルの内積
+    float dot = MyMath::Dot(fromN, toN);
+
+    // FromベクトルとToベクトルが逆方向の場合
+    if(dot < -0.999999f){
+        // 90度回転する軸を計算
+        Vector3 axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
+        if(MyMath::Length(axis) < 0.000001f){
+            axis = MyMath::Cross(Vector3(0.0f, 1.0f, 0.0f), fromN);
+        }
+        axis = MyMath::Normalize(axis);
+
+        // 90度回転するクォータニオンを計算
+        return Quaternion(axis, 3.14159f * 0.5f).MakeMatrix();
+    }
+
+    // FromベクトルとToベクトルが同じ方向の場合
+    if(dot > 0.999999f){
+        // 単位行列を返す
+        return IdentityMat4();
+    }
+
+    // FromベクトルとToベクトルの外積を計算
+    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));
+
+    // FromベクトルとToベクトルの角度を計算
+    float angle = std::acosf(dot);
+
+    // 軸と角度からクォータニオンを計算
+    return Quaternion(axis, angle).MakeMatrix();
 }
 
 //////////////////////////////////////////////////////////

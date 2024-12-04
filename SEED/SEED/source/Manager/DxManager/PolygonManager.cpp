@@ -733,7 +733,7 @@ void PolygonManager::AddModel(Model* model){
         item->materials[(int)model->blendMode_][meshIdx].resize(material.size() + 1);
         material.back().color_ = model->color_;
         material.back().lightingType_ = model->lightingType_;
-        material.back().uvTransform_ = model->uvTransform_[meshIdx];
+        material.back().uvTransform_ = model->GetUVTransform(meshIdx);
         material.back().GH_ = model->textureGH_[meshIdx];
     }
 

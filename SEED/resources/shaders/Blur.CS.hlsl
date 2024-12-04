@@ -3,8 +3,8 @@
 Texture2D<float4> inputTexture : register(t0);
 RWTexture2D<float4> outputTexture : register(u0);
 
-Texture2D<float4> inputDepthTexture : register(t1);
-RWTexture2D<float4> outputDepthTexture : register(u1);
+Texture2D<float4> inputDepthTexture : register(t1);// depthStencilのほう
+RWTexture2D<float4> outputDepthTexture : register(u1);// depthTextureのほう
 
 SamplerState gSampler : register(s0);
 
@@ -25,17 +25,17 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     }
     
     // 色の取得
-    float4 blurredColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 currentPixelColor = inputTexture.Load(int3(pixelCoord, 0));
-    float4 outputColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     int radius = int(ceil(8.0f * resolutionRate));
-    float pixelCount = 0;
     uint2 currentPixelCoord = uint2(0, 0);
+    float pixelCount = 0;
+    float4 blurredColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    float4 outputColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
 
     // テクスチャから深度データを取得
     float depthData = inputDepthTexture.Load(int3(DTid.xy, 0)).x;
-    depthData = DepthToLinear(depthData, 0.1f, 1000.0f);
+    depthData = DepthToLinear(depthData, 0.01f, 1000.0f);
     float focusLevel = CalcDepthData(depthData);
     
     
@@ -51,13 +51,13 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
             currentPixelCoord.y = pixelCoord.y + col;
             currentPixelCoord.y = clamp(currentPixelCoord.y, 0, 719);
             
-            // 深度情報を参照して、ボケていない部分はあまり色に影響を与えないようにする
+            // 今のピクセルの深度情報を参照して、ボケていない部分はあまり色に影響を与えないようにする
             float currentDepth = inputDepthTexture.Load(int3(currentPixelCoord, 0)).x;
             currentDepth = DepthToLinear(currentDepth, 0.1f, 1000.0f);
-            currentDepth = CalcDepthData(currentDepth);
+            //currentDepth = CalcDepthData(currentDepth);
             
             
-            float blurLevel = 1.0f - currentDepth; //CalcDepthData(inputDepthTexture.Load(int3(currentPixelCoord, 0)));
+            float blurLevel = 1.0f - currentDepth;
             
             blurredColor += inputTexture.Load(int3(currentPixelCoord, 0)) * blurLevel;
             pixelCount += blurLevel;
@@ -78,7 +78,7 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
         
 
     // 加工
-    outputTexture[pixelCoord] = float4(1.0f, 1.0f, 1.0f, 1.0f) * depthData; //blurredColor;
+    outputTexture[pixelCoord] = blurredColor;
     
     // 深度情報の計算
     outputDepthTexture[pixelCoord] = float4(1.0f, 1.0f, 1.0f, 1.0f) * depthData;

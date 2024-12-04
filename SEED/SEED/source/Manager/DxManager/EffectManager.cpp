@@ -22,19 +22,6 @@ void EffectManager::Finalize(){}
 void EffectManager::TransfarToCS()
 {
 
-    pDxManager_->TransitionResourceState(
-        pDxManager_->offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-    );
-
-    pDxManager_->TransitionResourceState(
-        pDxManager_->depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-    );
-
-
     // ========================== RootSignatureを設定 ============================ //
 
     pDxManager_->commandList->SetComputeRootSignature(pDxManager_->csRootSignature.Get());
@@ -92,10 +79,10 @@ void EffectManager::TransfarToCS()
 
 
     // 深度情報書き込み用のテクスチャを転送する
-    srvGpuHandle = GetGPUDescriptorHandle(
+    uavGpuHandle = GetGPUDescriptorHandle(
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetTextureHandle("depth_1")
+        ViewManager::GetTextureHandle("depth_1_UAV")
     );
 
 
@@ -112,18 +99,6 @@ void EffectManager::TransfarToCS()
 
     pDxManager_->commandList->Dispatch(dispatchX,dispatchY,1);
 
-    //
-    pDxManager_->TransitionResourceState(
-        pDxManager_->offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_RENDER_TARGET
-    );
-
-    pDxManager_->TransitionResourceState(
-        pDxManager_->depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE
-    );
 }
 
 // デプスバッファからリードバックバッファへコピー

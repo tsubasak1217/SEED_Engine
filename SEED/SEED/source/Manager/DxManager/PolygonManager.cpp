@@ -1402,6 +1402,25 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 void PolygonManager::DrawToOffscreen(){
 
+    // オフスクリーンの描画依頼をここで出しておく
+    if(isActivePostEffect_){
+        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+    } else{
+        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+    }
+
+    // Resourceに情報を書き込む
+    WriteRenderData();
+
+    // 3D
+    if(objCount3D_ > 0){
+        SetRenderData(DrawOrder::Line);
+        SetRenderData(DrawOrder::Model);
+        SetRenderData(DrawOrder::Triangle);
+        SetRenderData(DrawOrder::Quad);
+    }
 }
 
 void PolygonManager::DrawResult(){
@@ -1412,32 +1431,8 @@ void PolygonManager::DrawResult(){
     //ImGui::End();
 #endif // _DEBUG
 
-    //if(isActivePostEffect_){
-
-    //    AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-
-    //} else{
-    //    //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-    //    AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
-    //    //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
-    //}
-
-    //pDxManager_->TransitionResourceState(
-    //    pDxManager_->depthStencilResource.Get(),
-    //    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-    //    D3D12_RESOURCE_STATE_DEPTH_WRITE
-    //);
-
-
-    WriteRenderData();
-
-    // 3D
-    if(objCount3D_ > 0){
-        SetRenderData(DrawOrder::Line);
-        SetRenderData(DrawOrder::Model);
-        SetRenderData(DrawOrder::Triangle);
-        SetRenderData(DrawOrder::Quad);
-    }
+    // オフスクリーンの描画結果を貼り付ける
+    SetRenderData(DrawOrder::Offscreen);
 
     // 2D
     if(objCount2D_front_ > 0){

@@ -1,9 +1,21 @@
 #pragma once
 #include "Keyframe.h"
+#include "Transform.h"
+#include "ModelData.h"
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <string>
 #include <optional>
+#include <span>
+
+#include <DxFunc.h>
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//                                  基本のアニメーション構造体                                   //
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
 struct AnimationCurve{
@@ -15,6 +27,15 @@ struct NodeAnimation{
     AnimationCurve<Quaternion> rotate;
     AnimationCurve<Vector3> scale;
 };
+
+struct Animation{
+    float duration;// アニメーションの長さ(秒)
+    std::unordered_map<std::string, NodeAnimation> nodeAnimations;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//                                     スキニング関連の構造体                                   //
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 struct ModelJoint{
     QuaternionTransform transform;// トランスフォーム情報
@@ -32,7 +53,43 @@ struct ModelSkeleton{
     std::vector<ModelJoint> joints;// 所属しているジョイント
 };
 
-struct Animation{
-    float duration;// アニメーションの長さ(秒)
-    std::unordered_map<std::string,NodeAnimation> nodeAnimations;
+struct VertexWeightData{
+    float weight;// ウェイト
+    int32_t jointIndex;// ジョイントのインデックス
+
 };
+
+struct JointWeightData{
+    Matrix4x4 inverseBindPoseMatrix;// 逆バインド行列
+    std::vector<VertexWeightData> vertexWeights;// 頂点ウェイト
+};
+
+/*-------------- GPUに情報を送る用 --------------*/
+
+const uint8_t kMaxInfluence = 4;
+struct VertexInfluence{
+    std::array<float, kMaxInfluence> weights;
+    std::array<int32_t, kMaxInfluence> jointIndices;
+};
+
+struct WellForGPU{
+    Matrix4x4 skeletonSpaceMatrix;// 位置用
+    Matrix4x4 skeletonSpaceInverceTransposeMatrix;// 法線用
+};
+
+struct SkinCluster{
+    std::vector<Matrix4x4> inverseBindPoseMatrices;
+
+    ComPtr<ID3D12Resource> influenceResource;
+    D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
+    std::span<VertexInfluence> mappedInfluences;
+
+    ComPtr<ID3D12Resource> paletteResource;
+    std::span<WellForGPU> mappedPalette;
+    std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> paletteSrvHandle;
+
+};
+
+SkinCluster CreateSkinCluster(
+    const ComPtr<ID3D12Device>& device, const ModelSkeleton& skeleton, const ModelData& modelData
+);

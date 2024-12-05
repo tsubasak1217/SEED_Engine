@@ -49,7 +49,9 @@ private:
     int32_t CreateJoint(const ModelNode& node,const std::optional<int32_t>& parent,std::vector<ModelJoint>& joints);
     ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
     void UpdateSkeleton(ModelSkeleton& skeleton);
+    std::unordered_map<std::string, JointWeightData> ParseSkinCluster(const aiMesh* mesh);
     std::unordered_map<std::string,Animation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
+
 
 private:
     static ModelManager* instance_;

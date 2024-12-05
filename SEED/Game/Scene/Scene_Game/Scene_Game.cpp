@@ -22,14 +22,13 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
 
-    model_[2] = std::make_unique<Model>("teapot.obj");
     model_[0] = std::make_unique<Model>("walk.gltf");
     model_[1] = std::make_unique<Model>("sneakWalk.gltf");
+    model_[2] = std::make_unique<Model>("teapot.obj");
     model_[3] = std::make_unique<Model>("sphere.obj");
 
     for(int i = 0; i < 4; i++){
         model_[i]->translate_ = { 10.0f * i,0.0f,0.0f };
-        model_[i]->scale_ = { 100.0f,100.0f,100.0f };
         model_[i]->UpdateMatrix();
     }
 
@@ -111,4 +110,8 @@ void Scene_Game::Draw(){
     for(auto& model : model_){
         model->Draw();
     }
+
+
+    Triangle2D triangle = MakeEqualTriangle2D(100.0f, { 1.0f,1.0f,1.0f,1.0f });
+    SEED::DrawTriangle2D(triangle);
 }

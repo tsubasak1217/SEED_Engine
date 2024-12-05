@@ -27,6 +27,8 @@ struct ModelData{
     std::vector<MeshData>meshes;
     std::vector<MaterialData> materials;
     std::unordered_map<std::string, Animation> animations;
+    std::unordered_map<std::string, JointWeightData> skinClusterData;
+    ModelSkeleton defaultSkeleton;
     ModelNode rootNode;
     std::string modelName;
 };

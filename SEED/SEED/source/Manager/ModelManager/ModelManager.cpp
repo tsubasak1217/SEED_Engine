@@ -293,6 +293,7 @@ int32_t ModelManager::CreateJoint(
 // スケルトン関連
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// スケルトンの作成
 ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
     ModelSkeleton skeleton;
     skeleton.rootIndex = CreateJoint(rootNode, std::nullopt, skeleton.joints);
@@ -304,7 +305,7 @@ ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
     return skeleton;
 }
 
-
+// スケルトン行列の更新
 void ModelManager::UpdateSkeleton(ModelSkeleton& skeleton){
     for(ModelJoint& joint : skeleton.joints){
         joint.localMatrix = AffineMatrix(joint.transform.scale_, joint.transform.rotate_, joint.transform.translate_);
@@ -314,6 +315,48 @@ void ModelManager::UpdateSkeleton(ModelSkeleton& skeleton){
             joint.skeletonMatrix = joint.localMatrix;
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// スキンクラスタを解析
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::unordered_map<std::string, JointWeightData> ModelManager::ParseSkinCluster(const aiMesh* mesh){
+    std::unordered_map<std::string, JointWeightData> result;
+
+    for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+
+        //------------- jointごとの格納領域を作る -------------//
+
+        aiBone* bone = mesh->mBones[boneIndex];
+        std::string jointName = bone->mName.C_Str();
+        JointWeightData& jointWeightData = result[jointName];
+
+        //----------- InverseBindPoseMatrixの抽出 -----------//
+
+        aiMatrix4x4 bindPoseMatrixAssimp = bone->mOffsetMatrix.Inverse();
+        aiVector3D scale, translate;
+        aiQuaternion rotate;
+        bindPoseMatrixAssimp.Decompose(scale, rotate, translate);
+        // バインドポーズ行列を左手座標系に変換し求める
+        Matrix4x4 bindPoseMatrix = AffineMatrix(
+            { scale.x, scale.y, scale.z },
+            { rotate.x, -rotate.y, -rotate.z, rotate.w },
+            { -translate.x, translate.y, translate.z }
+        );
+        // 逆バインドポーズ行列に変換し格納
+        jointWeightData.inverseBindPoseMatrix = InverseMatrix(bindPoseMatrix);
+
+        //--------------- Weight情報を取り出す ---------------//
+
+        for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+            jointWeightData.vertexWeights.push_back(
+                VertexWeightData(bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId)
+            );
+        }
+    }
+
+    return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

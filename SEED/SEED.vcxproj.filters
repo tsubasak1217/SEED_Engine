@@ -322,6 +322,9 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\lib\structs\Animation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

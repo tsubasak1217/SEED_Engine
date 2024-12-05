@@ -323,7 +323,7 @@
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClCompile>
     <ClCompile Include="SEED\lib\structs\Animation.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>SEED\lib\structs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

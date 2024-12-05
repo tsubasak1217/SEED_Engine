@@ -1420,6 +1420,7 @@ void PolygonManager::DrawToOffscreen(){
         SetRenderData(DrawOrder::Model);
         SetRenderData(DrawOrder::Triangle);
         SetRenderData(DrawOrder::Quad);
+        SetRenderData(DrawOrder::Sprite);
     }
 }
 
@@ -1439,6 +1440,6 @@ void PolygonManager::DrawResult(){
         SetRenderData(DrawOrder::Line2D);
         SetRenderData(DrawOrder::Triangle2D);
         SetRenderData(DrawOrder::Quad2D);
-        SetRenderData(DrawOrder::Sprite);
+        SetRenderData(DrawOrder::StaticSprite);
     }
 }

@@ -112,6 +112,10 @@ void Scene_Game::Draw(){
     }
 
 
+    Sprite sprite = Sprite("uvChecker.png");
+    //sprite.isStaticDraw = false;
+    SEED::DrawSprite(sprite);
+
     Triangle2D triangle = MakeEqualTriangle2D(100.0f, { 1.0f,1.0f,1.0f,1.0f });
     SEED::DrawTriangle2D(triangle);
 }

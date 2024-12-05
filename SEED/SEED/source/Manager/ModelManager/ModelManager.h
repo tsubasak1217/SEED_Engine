@@ -14,7 +14,7 @@
 
 // local
 #include "ModelData.h"
-#include "Animation.h"
+#include "ModelAnimation.h"
 
 class ModelManager{
 
@@ -50,7 +50,7 @@ private:
     ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
     void UpdateSkeleton(ModelSkeleton& skeleton);
     std::unordered_map<std::string, JointWeightData> ParseSkinCluster(const aiMesh* mesh);
-    std::unordered_map<std::string,Animation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
+    std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
 
 
 private:

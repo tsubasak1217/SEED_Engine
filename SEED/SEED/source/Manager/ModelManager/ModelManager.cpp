@@ -363,10 +363,10 @@ std::unordered_map<std::string, JointWeightData> ModelManager::ParseSkinCluster(
 // アニメーションを解析
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::unordered_map<std::string,Animation> ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
+std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
 
     // アニメーションデータの格納用
-    std::unordered_map<std::string, Animation> result;
+    std::unordered_map<std::string, ModelAnimation> result;
 
     // assinmpのインポート設定
     Assimp::Importer importer;
@@ -378,7 +378,7 @@ std::unordered_map<std::string,Animation> ModelManager::LoadAnimation(const std:
     for(uint32_t animIdx = 0; animIdx < scene->mNumAnimations; ++animIdx) {
 
         aiAnimation* anim = scene->mAnimations[animIdx];
-        Animation animation;
+        ModelAnimation animation;
 
         // アニメーションの長さを取得
         assert(anim->mTicksPerSecond != 0);// 0であればアサート

@@ -322,8 +322,8 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\structs\Animation.cpp">
-      <Filter>SEED\lib\structs</Filter>
+    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -585,9 +585,7 @@
     <ClInclude Include="SEED\lib\structs\Keyframe.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Animation.h">
-      <Filter>SEED\lib\structs</Filter>
-    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -55,7 +55,7 @@ struct ModelSkeleton{
 
 struct VertexWeightData{
     float weight;// ウェイト
-    int32_t jointIndex;// ジョイントのインデックス
+    int32_t vertexIndex;// ジョイントのインデックス
 
 };
 

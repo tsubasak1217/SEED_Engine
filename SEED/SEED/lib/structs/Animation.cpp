@@ -52,4 +52,25 @@ SkinCluster CreateSkinCluster(
     skinCluster.inverseBindPoseMatrices.resize(skeleton.joints.size(), IdentityMat4());
 
     // modelDataを解析して、Influenceを作成
+    for(const auto& jointWeight : modelData.skinClusterData){// ModelDataのSkinClusterDataを解析
+
+        auto it = skeleton.jointMap.find(jointWeight.first);// 対象のjointが存在するか確認
+        if(it == skeleton.jointMap.end()){
+            continue;// jointが存在しない場合はスキップ
+        }
+
+        skinCluster.inverseBindPoseMatrices[it->second] = jointWeight.second.inverseBindPoseMatrix;// InverrseBindPoseMatrixを格納
+        for(const auto& vertexWeight : jointWeight.second.vertexWeights){// 頂点ウェイトを格納
+
+            auto& currentInfluence = skinCluster.mappedInfluences[vertexWeight.vertexIndex];// 対象の頂点ウェイトを取得
+
+            for(uint32_t index = 0; index < kMaxInfluence; ++index){// 空いている場所に格納
+
+                if(currentInfluence.weights[index] == 0.0f){// weight == 0 が空の状態なのでその場所にweightとindexxを格納
+                    currentInfluence.weights[index] = vertexWeight.weight;
+                    currentInfluence.jointIndices[index] = it->second;
+                    break;
+                }
+            }
+        }
 }

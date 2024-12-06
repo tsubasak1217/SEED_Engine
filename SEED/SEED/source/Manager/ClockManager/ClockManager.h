@@ -31,6 +31,7 @@ private:
     float deltaTime_;
     float totalTime_ = 0.0f;
     float timeRate_ = 1.0f;
+    float fps_;
     static const float kFrameTime_;
 
 
@@ -42,4 +43,5 @@ public:
     static float DeltaTime(){ return instance_->deltaTime_; }
     static float TimeRate(){ return instance_->timeRate_; }
     static float TotalTime(){ return instance_->totalTime_; }
+    static float FPS(){ return instance_->fps_; }
 };

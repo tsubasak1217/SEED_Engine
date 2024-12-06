@@ -648,6 +648,7 @@ void DxManager::ClearViewSettings()
     //////////////////////////////////////////////////////////////////
 
     // オフスクリーンのRTVをクリアする
+    clearColor = MyMath::FloatColor(SEED::GetWindowColor());
     commandList->ClearRenderTargetView(
         offScreenHandle,
         &clearColor.x, 0, nullptr
@@ -797,7 +798,6 @@ void DxManager::DrawPolygonAll()
     );
 
     /*----------バックバッファをクリアする----------*/
-    clearColor = MyMath::FloatColor(SEED::GetWindowColor());
     commandList->ClearRenderTargetView(
         rtvHandles[backBufferIndex],
         &clearColor.x, 0, nullptr

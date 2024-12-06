@@ -69,37 +69,19 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-
-    static float totalFrame = -1.0f;
-    static float totalDeltaTime = 0.0f;
-
-    if(totalFrame > 0.0f){
-        totalDeltaTime += 1.0f / ClockManager::DeltaTime();
-    }
-
-    totalFrame++;
-
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", totalDeltaTime/totalFrame);
+    ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
-
 #endif
 
 
     // 前フレームと値が違う場合のみ更新
-
     if(resolutionRate_ != preRate_){
         SEED::ChangeResolutionRate(resolutionRate_);
     }
 
     /*========================= 各状態の更新 ==========================*/
-
-    for(auto& model : model_){
-        model->Update();
-    }
-
-
     currentState_->Update();
 }
 
@@ -107,15 +89,4 @@ void Scene_Game::Draw(){
 
     SEED::DrawGrid();
 
-    for(auto& model : model_){
-        model->Draw();
-    }
-
-
-    Sprite sprite = Sprite("uvChecker.png");
-    //sprite.isStaticDraw = false;
-    SEED::DrawSprite(sprite);
-
-    Triangle2D triangle = MakeEqualTriangle2D(100.0f, { 1.0f,1.0f,1.0f,1.0f });
-    SEED::DrawTriangle2D(triangle);
 }

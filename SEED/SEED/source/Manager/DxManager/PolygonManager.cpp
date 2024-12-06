@@ -62,6 +62,8 @@ void PolygonManager::InitResources(){
     offsetResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
 
+    // resourceのMapping
+    MapOnce();
 
     // primitiveの初期化
     InitializePrimitive();
@@ -192,6 +194,15 @@ void PolygonManager::InitializePrimitive(){
         modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
         modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
     }
+}
+
+// 初期化時に一度のみマッピングを行う
+void PolygonManager::MapOnce(){
+    modelVertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapVertexData));
+    modelIndexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapIndexData));
+    modelMaterialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapMaterialData));
+    modelWvpResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapTransformData));
+    offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapOffsetData));
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -991,21 +1002,6 @@ void PolygonManager::WriteRenderData(){
     // 一列に格納する用の配列
     std::vector<Material> materialArray;
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    /*                                          共通の処理                                        */
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    // 各リソースのアドレスをMapしてポインタに格納
-    VertexData* vertexData;
-    uint32_t* indexData;
-    Material* materialData;
-    TransformMatrix* transformData;
-
-
-    modelVertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-    modelIndexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
-    modelMaterialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
-    modelWvpResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformData));
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1034,7 +1030,7 @@ void PolygonManager::WriteRenderData(){
 
             // 頂点情報を書き込む
             std::memcpy(
-                vertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                mapVertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
                 item->modelData->meshes[meshIdx].vertices.data(),// から
                 sizeof(VertexData) * meshVertexCount// のサイズコピー
             );
@@ -1042,7 +1038,7 @@ void PolygonManager::WriteRenderData(){
 
             // インデックス情報を書き込む
             std::memcpy(
-                indexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index.back(),// に
+                mapIndexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index.back(),// に
                 item->modelData->meshes[meshIdx].indices.data(),// から
                 sizeof(uint32_t) * meshIndexCount// のサイズコピー
             );
@@ -1077,7 +1073,7 @@ void PolygonManager::WriteRenderData(){
             //      トランスフォーム情報を書き込む
             /*--------------------------------------*/
             std::memcpy(
-                transformData + instanceCountAll,
+                mapTransformData + instanceCountAll,
                 item->transforms[blendIdx].data(),
                 sizeof(TransformMatrix) * instanceCount
             );
@@ -1128,21 +1124,11 @@ void PolygonManager::WriteRenderData(){
     //       マテリアル情報を書き込む
     /*--------------------------------------*/
     std::memcpy(
-        materialData,
+        mapMaterialData,
         materialArray.data(),
         sizeof(Material) * (int)materialArray.size()
     );
 
-
-    /*/////////////////////////////////////////////////////////////////*/
-
-    /*      　                     UnMap                               */
-    
-    /*/////////////////////////////////////////////////////////////////*/
-    modelIndexResource_.Get()->Unmap(0, nullptr);
-    modelVertexResource_.Get()->Unmap(0, nullptr);
-    modelMaterialResource_.Get()->Unmap(0, nullptr);
-    modelWvpResource_.Get()->Unmap(0, nullptr);
 }
 
 
@@ -1267,11 +1253,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 /*--------------------------------------*/
                 //      オフセット情報を書き込む
                 /*--------------------------------------*/
-                
-                // map
-                OffsetData* offsetData;
-                offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&offsetData));
-
+               
                 // 書き込み
                 for(auto& offset : item->offsetData[blendIdx][meshIdx]){
                     offset.instanceOffset = instanceCountAll;
@@ -1280,13 +1262,10 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 }
 
                 std::memcpy(
-                    offsetData + meshCountAll,
+                    mapOffsetData + meshCountAll,
                     item->offsetData[blendIdx][meshIdx].data(),
                     sizeof(OffsetData) * instanceCount
                 );
-
-                // Unmap
-                offsetResource_.Get()->Unmap(0, nullptr);
 
 
                 /*///////////////////////////////////////////////////////////////////////////*/
@@ -1422,6 +1401,14 @@ void PolygonManager::DrawToOffscreen(){
         SetRenderData(DrawOrder::Quad);
         SetRenderData(DrawOrder::Sprite);
     }
+
+    // 2D
+    if(objCount2D_front_ > 0){
+        SetRenderData(DrawOrder::Line2D);
+        SetRenderData(DrawOrder::Triangle2D);
+        SetRenderData(DrawOrder::Quad2D);
+        SetRenderData(DrawOrder::Sprite);
+    }
 }
 
 void PolygonManager::DrawResult(){
@@ -1436,10 +1423,10 @@ void PolygonManager::DrawResult(){
     SetRenderData(DrawOrder::Offscreen);
 
     // 2D
-    if(objCount2D_front_ > 0){
-        SetRenderData(DrawOrder::Line2D);
-        SetRenderData(DrawOrder::Triangle2D);
-        SetRenderData(DrawOrder::Quad2D);
+    if(objCountStaticDraw_ > 0){
+        SetRenderData(DrawOrder::StaticLine2D);
+        SetRenderData(DrawOrder::StaticTriangle2D);
+        SetRenderData(DrawOrder::StaticQuad2D);
         SetRenderData(DrawOrder::StaticSprite);
     }
 }

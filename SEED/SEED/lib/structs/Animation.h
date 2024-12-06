@@ -1,7 +1,6 @@
 #pragma once
 #include "Keyframe.h"
 #include "Transform.h"
-#include "ModelData.h"
 #include <vector>
 #include <array>
 #include <unordered_map>
@@ -9,9 +8,11 @@
 #include <optional>
 #include <span>
 
-#include <DxFunc.h>
+#include <d3dx12.h>
+#include <d3d12.h>
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
+struct ModelData;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //                                  基本のアニメーション構造体                                   //

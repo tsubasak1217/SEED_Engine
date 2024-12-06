@@ -51,8 +51,11 @@ void ClockManager::EndFrame(){
     // 時間のレートを計算
     instance_->timeRate_ = instance_->deltaTime_ / kFrameTime_;
 
+    // FPSを計算
+    instance_->fps_ = 1.0f / instance_->deltaTime_;
+
     // 60 FPS でループを回すための待機
-    std::this_thread::sleep_for(std::chrono::duration<float>(kFrameTime_) - elapsedTime);
+    //std::this_thread::sleep_for(std::chrono::duration<float>(kFrameTime_) - elapsedTime);
 }
 
 void ClockManager::Update(){}

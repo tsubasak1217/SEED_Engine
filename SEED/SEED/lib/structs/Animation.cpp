@@ -1,5 +1,7 @@
 #include "Animation.h"
 #include "ViewManager.h"
+#include "ModelData.h"
+#include "DxFunc.h"
 
 SkinCluster CreateSkinCluster(
     const ComPtr<ID3D12Device>& device, const ModelSkeleton& skeleton, const ModelData& modelData
@@ -23,7 +25,7 @@ SkinCluster CreateSkinCluster(
     paletteSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     paletteSrvDesc.Buffer.FirstElement = 0;
     paletteSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    paletteSrvDesc.Buffer.NumElements = skeleton.joints.size();
+    paletteSrvDesc.Buffer.NumElements = (UINT)skeleton.joints.size();
     paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
     ViewManager::CreateView(VIEW_TYPE::SRV, skinCluster.influenceResource.Get(), &paletteSrvDesc, "skinClusterPalette");
 
@@ -33,7 +35,7 @@ SkinCluster CreateSkinCluster(
 
     int32_t modelVertexCount = 0;
     for(const auto& mesh : modelData.meshes){
-        modelVertexCount += mesh.vertices.size();
+        modelVertexCount += (int32_t)mesh.vertices.size();
     }
 
     // Resourceの作成
@@ -41,7 +43,7 @@ SkinCluster CreateSkinCluster(
     VertexInfluence* mappedInfluences = nullptr;
     skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluences));
     std::memset(mappedInfluences, 0, sizeof(VertexInfluence) * modelVertexCount);// 0で初期化
-    skinCluster.mappedInfluences = { mappedInfluences, modelVertexCount };
+    skinCluster.mappedInfluences = { mappedInfluences, (size_t)modelVertexCount };
 
     // Influence用のVBVの作成
     skinCluster.influenceBufferView.BufferLocation = skinCluster.influenceResource->GetGPUVirtualAddress();
@@ -74,4 +76,6 @@ SkinCluster CreateSkinCluster(
             }
         }
     }
+
+    return skinCluster;
 }

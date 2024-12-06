@@ -107,6 +107,7 @@ public:
 private:
 
     void InitializePrimitive();
+    void MapOnce();
 
 public:// 頂点情報の追加に関わる関数
 
@@ -194,6 +195,13 @@ private:// Resource
     ComPtr<ID3D12Resource> modelMaterialResource_;
     ComPtr<ID3D12Resource> modelWvpResource_;
     ComPtr<ID3D12Resource> offsetResource_;
+
+    // Map用
+    VertexData* mapVertexData;
+    uint32_t* mapIndexData;
+    Material* mapMaterialData;
+    TransformMatrix* mapTransformData;
+    OffsetData* mapOffsetData;
 
 private:
 

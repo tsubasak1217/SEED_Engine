@@ -102,7 +102,7 @@ public:// 根幹をなす関数
 
 public:
     void DrawToOffscreen();
-    void DrawResult();
+    void DrawToBackBuffer();
 
 private:
 

@@ -1381,13 +1381,18 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 void PolygonManager::DrawToOffscreen(){
 
+#ifdef _DEBUG
+    //ImGui::Begin("PostEffect");
+    //ImGui::Checkbox("active", &isActivePostEffect_);
+    //ImGui::End();
+#endif // _DEBUG
+
     // オフスクリーンの描画依頼をここで出しておく
     if(isActivePostEffect_){
         AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-    } else{
-        //AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
         //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+    } else{
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
     }
 
     // Resourceに情報を書き込む
@@ -1411,18 +1416,12 @@ void PolygonManager::DrawToOffscreen(){
     }
 }
 
-void PolygonManager::DrawResult(){
-
-#ifdef _DEBUG
-    //ImGui::Begin("PostEffect");
-    //ImGui::Checkbox("active", &isActivePostEffect_);
-    //ImGui::End();
-#endif // _DEBUG
+void PolygonManager::DrawToBackBuffer(){
 
     // オフスクリーンの描画結果を貼り付ける
     SetRenderData(DrawOrder::Offscreen);
 
-    // 2D
+    // 解像度の変更に影響を受けない2D描画
     if(objCountStaticDraw_ > 0){
         SetRenderData(DrawOrder::StaticLine2D);
         SetRenderData(DrawOrder::StaticTriangle2D);

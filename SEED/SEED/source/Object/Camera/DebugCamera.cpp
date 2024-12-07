@@ -20,15 +20,15 @@ void DebugCamera::Move(){
     
     //移動方向の取得
     moveDirection_ = {
-        InputManager::GetStickValue(PAD_STICK::LEFT).x,
-        InputManager::GetLRTriggerValue(PAD_TRIGGER::LEFT) - InputManager::GetLRTriggerValue(PAD_TRIGGER::RIGHT),
-        InputManager::GetStickValue(PAD_STICK::LEFT).y
+        Input::GetStickValue(LR::LEFT).x,
+        Input::GetLRTriggerValue(LR::LEFT) - Input::GetLRTriggerValue(LR::RIGHT),
+        Input::GetStickValue(LR::LEFT).y
     };
 
     // 回転量の計算
     Vector3 rotateValue = {
-        -rotateSpeed_ * InputManager::GetStickValue(PAD_STICK::RIGHT).y,
-        rotateSpeed_ * InputManager::GetStickValue(PAD_STICK::RIGHT).x,
+        -rotateSpeed_ * Input::GetStickValue(LR::RIGHT).y,
+        rotateSpeed_ * Input::GetStickValue(LR::RIGHT).x,
         0.0f
     };
 

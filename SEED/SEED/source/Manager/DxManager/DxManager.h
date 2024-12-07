@@ -49,8 +49,8 @@ class DxManager{
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager(){};
-    void Initialize(SEED* pSEED);
-    void Finalize();
+    static void Initialize(SEED* pSEED);
+    static void Finalize();
     static DxManager* GetInstance();
 
 private:

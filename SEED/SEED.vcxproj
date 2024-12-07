@@ -168,6 +168,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.cpp" />
     <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.cpp" />
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\Camera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp" />
@@ -256,6 +257,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h" />
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h" />
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
+    <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
     <ClInclude Include="SEED\source\Object\Camera\Camera.h" />
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />

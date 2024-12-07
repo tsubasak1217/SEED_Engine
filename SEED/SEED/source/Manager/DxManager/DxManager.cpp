@@ -10,19 +10,22 @@ DxManager* DxManager::instance_ = nullptr;
 
 void DxManager::Initialize(SEED* pSEED)
 {
+    // インスタンスの取得
+    GetInstance();
+
     // COMの初期化
     CoInitializeEx(0, COINIT_MULTITHREADED);
 
     // ポインタ代入
-    pSEED_ = pSEED;
+    instance_->pSEED_ = pSEED;
     // PSOManagerの作成
     PSOManager::GetInstance();
     // polygonManagerの作成
-    polygonManager_ = new PolygonManager(this);
-    pSEED_->SetPolygonManagerPtr(polygonManager_);
+    instance_->polygonManager_ = new PolygonManager(instance_);
+    instance_->pSEED_->SetPolygonManagerPtr(instance_->polygonManager_);
     // effectManagerの作成
-    EffectManager* effectManagerInstance = new EffectManager(this);
-    effectManager_.reset(effectManagerInstance);
+    EffectManager* effectManagerInstance = new EffectManager(instance_);
+    instance_->effectManager_.reset(effectManagerInstance);
 
 
     /*===========================================================================================*/
@@ -32,12 +35,12 @@ void DxManager::Initialize(SEED* pSEED)
     /*------------ デバッグレイヤーの有効化 ---------------*/
 
 #ifdef _DEBUG
-    CreateDebugLayer();
+    instance_->CreateDebugLayer();
 #endif
 
     /* --------------  Deviceの生成 -------------------- */
 
-    CreateDevice();
+    instance_->CreateDevice();
 
     // view管理マネージャの初期化
     ViewManager::GetInstance();
@@ -45,7 +48,7 @@ void DxManager::Initialize(SEED* pSEED)
     /*---------- デバッグレイヤーでエラーが出た場合止める ----------*/
 
 #ifdef _DEBUG
-    CheckDebugLayer();
+    instance_->CheckDebugLayer();
 #endif
 
 
@@ -56,7 +59,7 @@ void DxManager::Initialize(SEED* pSEED)
     /*----- コマンドに関わるものの生成 -------*/
 
     // GPUに命令を投げるやつとか命令の入れ物を作る
-    CreateCommanders();
+    instance_->CreateCommanders();
 
     /*===========================================================================================*/
     /*                               ダブルバッファリングにしよう                                    */
@@ -65,13 +68,13 @@ void DxManager::Initialize(SEED* pSEED)
     /*--------------------- スワップチェーンの作成 --------------------------*/
 
     // SwapChain ~ 画面を複数用意し、表示されていない画面で描画を同時進行で行う
-    CreateRenderTargets();
+    instance_->CreateRenderTargets();
 
     /*--------------- SwapChain から Resourceを引っ張ってくる ---------------*/
 
     // 【 Resource 】 ~ GPUのメモリ上にあるデータのうち、描画や表示に関わるものの総称。
     // 画面そのものもResourceなので、ここで取得
-    GetSwapChainResources();
+    instance_->GetSwapChainResources();
 
     /*---------------------- ディスクリプタヒープの作成 ----------------------*/
 
@@ -84,10 +87,10 @@ void DxManager::Initialize(SEED* pSEED)
         Viewの実行    : GPU (CPU上のdescriptorを参照できる)
     */
 
-    CreateAllDescriptorHeap();
+    instance_->CreateAllDescriptorHeap();
 
     // ディスクリプタのサイズを確認
-    CheckDescriptorSize();
+    instance_->CheckDescriptorSize();
 
     /*----------------------------- RTVの作成 -----------------------------*/
 
@@ -95,7 +98,7 @@ void DxManager::Initialize(SEED* pSEED)
         ここでは "描く" という処理を行いたいため、
         描画担当のView、"RTV"(RenderTargetVier) を作成
     */
-    CreateRTV();
+    instance_->CreateRTV();
 
     /*------------------- CPUとGPUの同期のための変数作成 ---------------------*/
 
@@ -103,7 +106,7 @@ void DxManager::Initialize(SEED* pSEED)
         GPUからfenceに対して、fenceValueの値が書き込まれるまでResetを待つようにする。
         そのために必要な変数を用意しておく
     */
-    CreateFence();
+    instance_->CreateFence();
 
     /*===========================================================================================*/
     /*                                ポリゴンを描画していくゾーン                                    */
@@ -119,10 +122,10 @@ void DxManager::Initialize(SEED* pSEED)
     */
 
     // Shaderコンパイルのためのコンパイラの初期化
-    InitDxCompiler();
+    instance_->InitDxCompiler();
 
     // shaderをコンパイルする
-    CompileShaders();
+    instance_->CompileShaders();
 
     /*------------------------PSOの生成-----------------------*/
 
@@ -135,36 +138,36 @@ void DxManager::Initialize(SEED* pSEED)
     */
 
     // PSOManagerクラスに丸投げ
-    InitPSO();
+    instance_->InitPSO();
 
     /*------------------------- DepthStencilTextureResourceの作成 -------------------------*/
 
-    depthStencilResource = CreateDepthStencilTextureResource(
-        device.Get(),
-        pSEED_->kClientWidth_,
-        pSEED_->kClientHeight_
+    instance_->depthStencilResource = CreateDepthStencilTextureResource(
+        instance_->device.Get(),
+        instance_->pSEED_->kClientWidth_,
+        instance_->pSEED_->kClientHeight_
     );
 
-    depthStencilResource->SetName(L"depthStencilResource");
+    instance_->depthStencilResource->SetName(L"depthStencilResource");
 
     /*----------------------------------LightingのResource---------------------------------*/
 
-    lightingResource = CreateBufferResource(device.Get(), sizeof(DirectionalLight));
-    lightingResource->Map(0, nullptr, reinterpret_cast<void**>(&directionalLight));
+    instance_->lightingResource = CreateBufferResource(instance_->device.Get(), sizeof(DirectionalLight));
+    instance_->lightingResource->Map(0, nullptr, reinterpret_cast<void**>(&instance_->directionalLight));
 
-    directionalLight->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight->direction_ = { 0.0f,0.0f,1.0f };
-    directionalLight->intensity = 1.0f;
+    instance_->directionalLight->color_ = MyMath::FloatColor(0xffffffff);
+    instance_->directionalLight->direction_ = { 0.0f,0.0f,1.0f };
+    instance_->directionalLight->intensity = 1.0f;
 
     /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
 
-    InitializeSystemTextures();
+    instance_->InitializeSystemTextures();
 
     /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
 
     // white1x1だけ読み込んでおく
-    CreateTexture("resources/textures/white1x1.png");
-    CreateTexture("resources/textures/uvChecker.png");
+    instance_->CreateTexture("resources/textures/white1x1.png");
+    instance_->CreateTexture("resources/textures/uvChecker.png");
 
     /*------------------------------ DepthStencilViewの作成 -------------------------------*/
 
@@ -174,22 +177,22 @@ void DxManager::Initialize(SEED* pSEED)
     dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
     // DSVHeapの先頭にDSVを作る
-    ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.Get(), &dsvDesc, "depthStencil_1");
+    ViewManager::CreateView(VIEW_TYPE::DSV, instance_->depthStencilResource.Get(), &dsvDesc, "depthStencil_1");
     // ハンドルを得る
-    dsvHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
+    instance_->dsvHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
 
     /*--------------------------------- VewportとScissor ---------------------------------*/
 
-    SettingViewportAndScissor(resolutionRate_);
+    instance_->SettingViewportAndScissor(instance_->resolutionRate_);
 
     // 初期化時のものをデフォルト値として保存
-    viewport_default = viewport;
-    scissorRect_default = scissorRect;
+    instance_->viewport_default = instance_->viewport;
+    instance_->scissorRect_default = instance_->scissorRect;
 
     // ------------------------------------------------------------------------------------
 
     // カメラの情報
-    camera_ = CameraManager::GetCamera("main");
+    instance_->camera_ = CameraManager::GetCamera("main");
     CameraManager::GetCamera("main")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
     CameraManager::GetCamera("main")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
     CameraManager::GetCamera("main")->transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
@@ -210,7 +213,7 @@ void DxManager::Initialize(SEED* pSEED)
     CameraManager::GetCamera("debug")->UpdateMatrix();
 
     // 情報がそろったのでpolygonManagerの初期化
-    polygonManager_->InitResources();
+    instance_->polygonManager_->InitResources();
 }
 
 
@@ -377,7 +380,7 @@ void DxManager::CreateRenderTargets()
     // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
     hr = dxgiFactory->CreateSwapChainForHwnd(
         commandQueue.Get(),
-        SEED::GetHWND(),
+        WindowManager::GetHWND(SEED::GetInstance()->windowTitle_),
         &swapChainDesc,
         nullptr, nullptr,
         reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf())
@@ -770,7 +773,7 @@ void DxManager::DrawPolygonAll()
 
     /*----------------------ぼかした画面を作る-------------------*/
 
-    effectManager_->TransfarToCS();
+    //effectManager_->TransfarToCS();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
@@ -1000,16 +1003,16 @@ void DxManager::SavePreVariable()
 
 void DxManager::Finalize()
 {
-    CloseHandle(fenceEvent);
-    polygonManager_->Finalize();
+    CloseHandle(instance_->fenceEvent);
+    instance_->polygonManager_->Finalize();
 
-    delete polygonManager_;
-    polygonManager_ = nullptr;
+    delete instance_->polygonManager_;
+    instance_->polygonManager_ = nullptr;
 
 #ifdef _DEBUG
-    debugController->Release();
+    instance_->debugController->Release();
 #endif
-    CloseWindow(SEED::GetHWND());
+    CloseWindow(WindowManager::GetHWND(SEED::GetInstance()->windowTitle_));
     // COMの終了
     CoUninitialize();
 

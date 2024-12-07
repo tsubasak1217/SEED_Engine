@@ -1,12 +1,14 @@
 #include <SEED.h>
 #include <Environment.h>
 #include <SceneManager.h>
+#include <WindowManager.h>
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-    SEED::Initialize(hInstance, nCmdShow, kWindowTitle, 1280, 720);
+    WindowManager::Initialize(hInstance, nCmdShow);
+    SEED::Initialize(kWindowSizeX, kWindowSizeY);
 
-    while(SEED::ProcessMessage() != WM_QUIT){
+    while(WindowManager::ProcessMessage() != WM_QUIT){
         SEED::BeginFrame();
 
         SceneManager::Update();

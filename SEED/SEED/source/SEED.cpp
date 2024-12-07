@@ -9,207 +9,122 @@
 #include <SceneManager.h>
 //
 
-/*----------------------------------- static変数の初期化----------------------------------------*/
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*                                                                                                               */
+/*                                              static変数の初期化                                                 */
+/*                                                                                                               */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-HWND SEED::hwnd = nullptr;
-HINSTANCE SEED::hInstance_ = nullptr;
-int SEED::nCmdShow_ = 0;
-MSG SEED::msg_ = {};
 SEED* SEED::instance_ = nullptr;
+std::wstring SEED::windowTitle_ = L"SEED";
 
-/*---------------------------------コンストラクタ、デストラクタ------------------------------------*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*                                                                                                               */
+/*                                                初期化、終了処理                                                  */
+/*                                                                                                               */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*-----------------コンストラクタ、デストラクタ---------------------*/
 
 SEED::~SEED(){
-    delete imguiManager_;
-    imguiManager_ = nullptr;
-    delete windowManager_;
-    windowManager_ = nullptr;
     delete leakChecker_;
     leakChecker_ = nullptr;
     delete instance_;
     instance_ = nullptr;
 }
 
-/*-------------------------------------- 初期化、終了処理 -----------------------------------------*/
-
-void SEED::Initialize(HINSTANCE hInstance, int nCmdShow, const char* windowTitle, int clientWidth, int clientHeight){
-
-    instance_ = GetInstance();
-
-    instance_->hInstance_ = hInstance;
-    instance_->nCmdShow_ = nCmdShow;
-    instance_->windowTitle_ = windowTitle;
-    instance_->kClientWidth_ = clientWidth;
-    instance_->kClientHeight_ = clientHeight;
-    instance_->windowBackColor_ = 0x47ada3ff;
-
-    CameraManager::Initialize();
-    instance_->leakChecker_ = new LeakChecker();
-    instance_->windowManager_ = new WindowManager();
-    DxManager::GetInstance();
-    instance_->imguiManager_ = new ImGuiManager();
-
-    instance_->windowManager_->Initialize(instance_);
-    DxManager::GetInstance()->Initialize(instance_);
-    instance_->imguiManager_->Initialize();
-
-    ClockManager::Initialize();
-    TextureManager::Initialize();
-    AudioManager::Initialize();
-    InputManager::Initialize();
-    ModelManager::Initialize();
-    SceneManager::Initialize();
-
-    instance_->StartUpLoad();
-}
-
-void SEED::Finalize(){
-    instance_->imguiManager_->Finalize();
-    instance_->windowManager_->Finalize();
-    DxManager::GetInstance()->Finalize();
-}
+/*---------------------- インスタンス取得 ------------------------*/
 
 SEED* SEED::GetInstance(){
-    static std::once_flag onceFlag;
-    std::call_once(
-        onceFlag,
-        [](){
-        if(!instance_){ instance_ = new SEED; }
-    });
-
+    if(instance_ == nullptr){
+        instance_ = new SEED();
+    }
     return instance_;
 }
 
-/*------------------------------------ ゲームエンジン実行部分 --------------------------------------*/
+/*------------------------ 初期化処理 ---------------------------*/
 
-/*-------------------------------------- ゲームループ内の関数 -----------------------------------------*/
+void SEED::Initialize(int clientWidth, int clientHeight){
+
+    GetInstance();
+    instance_->windowTitle_ = instance_->windowTitle_;
+    instance_->kClientWidth_ = clientWidth;
+    instance_->kClientHeight_ = clientHeight;
+    instance_->windowBackColor_ = 0x47ada3ff;
+    instance_->leakChecker_ = new LeakChecker();
+
+    // メインウインドウの作成
+    WindowManager::Create(instance_->windowTitle_, clientWidth, clientHeight);
+
+    // 各マネージャの初期化
+    CameraManager::Initialize();
+    DxManager::Initialize(instance_);
+    ImGuiManager::Initialize();
+    ClockManager::Initialize();
+    TextureManager::Initialize();
+    AudioManager::Initialize();
+    Input::Initialize();
+    ModelManager::Initialize();
+    SceneManager::Initialize();
+
+    // 起動時読み込み
+    instance_->StartUpLoad();
+}
+
+/*------------------------- 終了処理 ---------------------------*/
+
+void SEED::Finalize(){
+    ImGuiManager::Finalize();
+    DxManager::Finalize();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*                                                                                                               */
+/*                                             ゲームループ内の関数                                                 */
+/*                                                                                                               */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*----------------------- フレーム開始処理 ----------------------*/
 
 void SEED::BeginFrame(){
-    // ウインドウにメッセージがある場合、優先して処理する
-    if(PeekMessage(&instance_->msg_, NULL, 0, 0, PM_REMOVE)) {
-        TranslateMessage(&instance_->msg_);
-        DispatchMessage(&instance_->msg_);
-    }
+
+    // ウインドウの更新
+    WindowManager::Update();
 
     // 時間を保存
     ClockManager::BeginFrame();
 
     // 全入力情報を格納
-    InputManager::GetAllInput();
-
+    Input::GetAllInput();
 
     // imgui,directXのフレーム開始時処理
-    instance_->imguiManager_->Begin();
+    ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
 
     // カメラの更新
     CameraManager::Update();
 }
 
+/*----------------------- フレーム終了処理 ----------------------*/
+
 void SEED::EndFrame(){
+    // 描画
     DxManager::GetInstance()->DrawPolygonAll();
-    instance_->imguiManager_->End();
+    ImGuiManager::PostDraw();
     DxManager::GetInstance()->PostDraw();
     // 経過時間を取得
     ClockManager::EndFrame();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
 
-/*                             テクスチャを読み込む関数                                */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*                                                                                                               */
+/*                                               描画に関わる関数                                                  */
+/*                                                                                                               */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////
-
-// 起動時読み込み
-void SEED::StartUpLoad(){
-
-    AudioManager::StartUpLoad();
-    ModelManager::StartUpLoad();
-    TextureManager::StartUpLoad();
-}
-
-// 画像の縦横幅を取得する関数
-Vector2 SEED::GetImageSize(const std::wstring& fileName){
-    
-    // パスの結合
-    std::wstring filePath = L"resources/textures/" + fileName;
-
-    // 画像をロード
-    Gdiplus::Image image(filePath.c_str());
-
-    // 画像の幅と高さを取得
-    int width = image.GetWidth();
-    int height = image.GetHeight();
-
-    return {float(width),float(height)};
-}
-
-void SEED::ChangeResolutionRate(float resolutionRate){
-    DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
-}
-
-/*--------------------------------------------------------------------------------------------------*/
-/*                                            描画関数                                               */
-/*--------------------------------------------------------------------------------------------------*/
-
-/*=============================================== 3D ===========================================*/
-
-void SEED::DrawTriangle(const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& color, uint32_t GH,BlendMode blendMode, LIGHTING_TYPE lightingType){
-    Triangle tri(TransformToVec3(v1), TransformToVec3(v2), TransformToVec3(v3));
-    tri.color = color;
-    tri.litingType = lightingType;
-    tri.GH = GH;
-    tri.blendMode = blendMode;
-    SEED::DrawTriangle(tri);
-}
-
-void SEED::DrawTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType){
-    Triangle tri(v1, v2, v3);
-    tri.color = color;
-    tri.litingType = lightingType;
-    tri.GH = GH;
-    tri.blendMode = blendMode;
-    SEED::DrawTriangle(tri);
-}
-
-void SEED::DrawTriangle(
-    const Vector4& v1, const Vector4& v2, const Vector4& v3,
-    const Vector3& scale, const Vector3& rotate, const Vector3& translate,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType
-){
-    Triangle tri(
-        TransformToVec3(v1), TransformToVec3(v2), TransformToVec3(v3),
-        scale, rotate, translate
-    );
-
-    tri.color = color;
-    tri.litingType = lightingType;
-    tri.GH = GH;
-    tri.blendMode = blendMode;
-
-    SEED::DrawTriangle(tri);
-}
-
-void SEED::DrawTriangle(
-    const Vector3& v1, const Vector3& v2, const Vector3& v3,
-    const Vector3& scale, const Vector3& rotate, const Vector3& translate,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, LIGHTING_TYPE lightingType
-){
-    Triangle tri(v1, v2, v3, scale, rotate, translate);
-    tri.color = color;
-    tri.GH = GH;
-    tri.litingType = lightingType;
-    tri.blendMode = blendMode;
-    SEED::DrawTriangle(tri);
-}
-
-void SEED::DrawTriangle(const Triangle& triangle, const Vector4& color, uint32_t GH,BlendMode blendMode){
-    Triangle tri = triangle;
-    tri.color = color;
-    tri.GH = GH;
-    tri.blendMode = blendMode;
-    SEED::DrawTriangle(tri);
-}
+/*============================================== 三角形 =========================================*/
 
 void SEED::DrawTriangle(const Triangle& triangle){
     Matrix4x4 worldMat = AffineMatrix(triangle.scale, triangle.rotate, triangle.translate);
@@ -222,28 +137,6 @@ void SEED::DrawTriangle(const Triangle& triangle){
     );
 }
 
-/*=============================================== 2D ===========================================*/
-
-void SEED::DrawTriangle2D(
-    const Vector2& v1, const Vector2& v2, const Vector2& v3,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, 
-    RESOLUTION_MODE resolutionMode
-){
-    Triangle2D tri(v1, v2, v3);
-    SEED::DrawTriangle2D(tri, color,GH,blendMode, resolutionMode);
-}
-
-void SEED::DrawTriangle2D(
-    const Triangle2D& triangle, const Vector4& color, uint32_t GH,
-    BlendMode blendMode, RESOLUTION_MODE resolutionMode
-){
-    Triangle2D tri = triangle;
-    tri.color = color;
-    tri.GH = GH;
-    tri.blendMode = blendMode;
-    tri.isStaticDraw = resolutionMode;
-    SEED::DrawTriangle2D(tri);
-}
 
 void SEED::DrawTriangle2D(const Triangle2D& triangle){
 
@@ -351,4 +244,43 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
             { 1.0f,1.0f,1.0f,1.0f }
         );
     }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*                                                                                                               */
+/*                                                その他細かい関数                                                  */
+/*                                                                                                               */
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*----------------------- 起動時読み込み -----------------------*/
+
+void SEED::StartUpLoad(){
+
+    AudioManager::StartUpLoad();
+    ModelManager::StartUpLoad();
+    TextureManager::StartUpLoad();
+}
+
+/*------------------ 画像の縦横幅を取得する関数 ------------------*/
+
+Vector2 SEED::GetImageSize(const std::wstring& fileName){
+
+    // パスの結合
+    std::wstring filePath = L"resources/textures/" + fileName;
+
+    // 画像をロード
+    Gdiplus::Image image(filePath.c_str());
+
+    // 画像の幅と高さを取得
+    int width = image.GetWidth();
+    int height = image.GetHeight();
+
+    return { float(width),float(height) };
+}
+
+/*------------------ 画面の解像度を変更する関数 ------------------*/
+
+void SEED::ChangeResolutionRate(float resolutionRate){
+    DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
 }

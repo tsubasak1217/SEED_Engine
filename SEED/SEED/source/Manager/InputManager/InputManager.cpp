@@ -1,12 +1,33 @@
 #include "InputManager.h"
 #include "SEED.h"
 #include "MyMath.h"
+#include "ImGuiManager.h"
 
 // static変数初期化
-InputManager* InputManager::instance_ = nullptr;
+Input* Input::instance_ = nullptr;
+
+std::unordered_map<PAD_BUTTON, uint32_t>Input::buttonMap_ = {
+    {PAD_BUTTON::UP, XINPUT_GAMEPAD_DPAD_UP},
+    {PAD_BUTTON::DOWN, XINPUT_GAMEPAD_DPAD_DOWN},
+    {PAD_BUTTON::LEFT, XINPUT_GAMEPAD_DPAD_LEFT},
+    {PAD_BUTTON::RIGHT, XINPUT_GAMEPAD_DPAD_RIGHT},
+    {PAD_BUTTON::START, XINPUT_GAMEPAD_START},
+    {PAD_BUTTON::BACK, XINPUT_GAMEPAD_BACK},
+    {PAD_BUTTON::L_STICK, XINPUT_GAMEPAD_LEFT_THUMB},
+    {PAD_BUTTON::R_STICK, XINPUT_GAMEPAD_RIGHT_THUMB},
+    {PAD_BUTTON::LB, XINPUT_GAMEPAD_LEFT_SHOULDER},
+    {PAD_BUTTON::RB, XINPUT_GAMEPAD_RIGHT_SHOULDER},
+    {PAD_BUTTON::A, XINPUT_GAMEPAD_A},
+    {PAD_BUTTON::B, XINPUT_GAMEPAD_B},
+    {PAD_BUTTON::X, XINPUT_GAMEPAD_X},
+    {PAD_BUTTON::Y, XINPUT_GAMEPAD_Y},
+    {PAD_BUTTON::LT, VK_PAD_LTRIGGER},
+    {PAD_BUTTON::RT, VK_PAD_RTRIGGER}
+};
+
 
 // デストラクタ
-InputManager::~InputManager(){
+Input::~Input(){
     if(instance_)
     {
         delete instance_;
@@ -15,10 +36,10 @@ InputManager::~InputManager(){
 }
 
 // 単一のインスタンスを返す関数
-const InputManager* InputManager::GetInstance(){
+const Input* Input::GetInstance(){
     if(!instance_)
     {
-        instance_ = new InputManager();
+        instance_ = new Input();
     }
 
     return instance_;
@@ -30,7 +51,7 @@ const InputManager* InputManager::GetInstance(){
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void InputManager::Initialize(){
+void Input::Initialize(){
     // 実体がなければ作る
     GetInstance();
 
@@ -42,16 +63,18 @@ void InputManager::Initialize(){
 }
 
 
-void InputManager::InitializeDInput(){
+void Input::InitializeDInput(){
     HRESULT hr;
 
     // Inputオブジェクトの生成
     IDirectInput8* directInput = nullptr;
     hr = DirectInput8Create(
-        SEED::GetHINSTANCE(), DIRECTINPUT_VERSION, IID_IDirectInput8,
+        WindowManager::GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8,
         (void**)&directInput, nullptr
     );
     assert(SUCCEEDED(hr));
+
+    /*======================== キーボード ========================*/
 
     // キーボードデバイスの生成
     hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
@@ -63,13 +86,29 @@ void InputManager::InitializeDInput(){
 
     // 制御レベルの設定
     hr = keyboard_->SetCooperativeLevel(
-        SEED::GetHWND(),
+        WindowManager::GetHWND(SEED::GetWindowTitle()),
         DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
     );
     assert(SUCCEEDED(hr));
+
+    /*========================== マウス ==========================*/
+
+    // マウスデバイスの生成
+    hr = directInput->CreateDevice(GUID_SysMouse, &mouse_, NULL);
+    assert(SUCCEEDED(hr));
+
+    // 入力形式のセット
+    hr = mouse_->SetDataFormat(&c_dfDIMouse);
+    assert(SUCCEEDED(hr));
+
+    // 制御レベルの設定
+    hr = mouse_->SetCooperativeLevel(
+        WindowManager::GetHWND(SEED::GetWindowTitle()),
+        DISCL_FOREGROUND | DISCL_NONEXCLUSIVE
+    );
 }
 
-void InputManager::InitializeXInput(){
+void Input::InitializeXInput(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++) {
         ZeroMemory(&xInputState_[i], sizeof(XINPUT_STATE));
         ZeroMemory(&preXInputState_[i], sizeof(XINPUT_STATE));
@@ -87,7 +126,7 @@ void InputManager::InitializeXInput(){
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void InputManager::GetAllInput(){
+void Input::GetAllInput(){
     // DirectInput
     instance_->GetDInputState();
 
@@ -96,18 +135,26 @@ void InputManager::GetAllInput(){
 }
 
 
-void InputManager::GetDInputState(){
+void Input::GetDInputState(){
+
     // DirectInputのキーボード情報取得開始
     keyboard_->Acquire();
-
     // 前のフレームのキー情報を保存
     std::memcpy(preKeys_, keys_, sizeof(BYTE) * kMaxKey_);
-
     // 現在の全キーの状態を取得する
     keyboard_->GetDeviceState(sizeof(keys_), keys_);
+
+
+    // マウスの情報取得開始
+    mouse_->Acquire();
+    // 前のフレームのマウス情報を保存
+    std::memcpy(&preMouseState_, &mouseState_, sizeof(DIMOUSESTATE));
+    // 現在のマウス状態を取得
+    mouse_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
+
 }
 
-void InputManager::GetXInputState(){
+void Input::GetXInputState(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++) {
 
         // 前フレームの状態保存
@@ -135,86 +182,217 @@ void InputManager::GetXInputState(){
 
 /********************* 外部から使えるやつ *******************/
 
-//------- キーボード -------//
 
-bool InputManager::IsPressKey(uint8_t key){
+//--------------------------------- キーボード -----------------------------------------//
+
+bool Input::IsPressKey(uint8_t key){
     return instance_->keys_[key];
 }
 
-bool InputManager::IsTriggerKey(uint8_t key){
+bool Input::IsTriggerKey(uint8_t key){
     return instance_->keys_[key] && !instance_->preKeys_[key];
 }
 
-bool InputManager::IsReleaseKey(uint8_t key){
+bool Input::IsReleaseKey(uint8_t key){
     return !instance_->keys_[key] && instance_->preKeys_[key];
 }
 
-//------ ゲームパッド ------//
+//----------------------------------- マウス -------------------------------------------//
 
-bool InputManager::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber){
-
-    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
-        return instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT);
-
-    } else{
-
-        if(button == PAD_BUTTON::LT){
-            return GetLRTriggerValue(PAD_TRIGGER::LEFT) >= 0.9f;
-        } else{
-            return GetLRTriggerValue(PAD_TRIGGER::RIGHT) >= 0.9f;
-        }
-
+// マウスのボタンが押されているかどうか
+bool Input::IsPressMouse(MOUSE_BUTTON button){
+    switch(button){
+    case MOUSE_BUTTON::LEFT:
+        return instance_->mouseState_.rgbButtons[0] & 0x80;
+    case MOUSE_BUTTON::RIGHT:
+        return instance_->mouseState_.rgbButtons[1] & 0x80;
+    case MOUSE_BUTTON::MIDDLE:
+        return instance_->mouseState_.rgbButtons[2] & 0x80;
+    default:
+        return false;
     }
 }
 
-bool InputManager::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber){
+// マウスのボタンが押された瞬間
+bool Input::IsTriggerMouse(MOUSE_BUTTON button){
+    switch(button){
+    case MOUSE_BUTTON::LEFT:
+        return (instance_->mouseState_.rgbButtons[0] & 0x80) && !(instance_->preMouseState_.rgbButtons[0] & 0x80);
+    case MOUSE_BUTTON::RIGHT:
+        return (instance_->mouseState_.rgbButtons[1] & 0x80) && !(instance_->preMouseState_.rgbButtons[1] & 0x80);
+    case MOUSE_BUTTON::MIDDLE:
+        return (instance_->mouseState_.rgbButtons[2] & 0x80) && !(instance_->preMouseState_.rgbButtons[2] & 0x80);
+    default:
+        return false;
+    }
 
-    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
+}
 
-        return
-            instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
-            !instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
-
-    } else{
-        if(button == PAD_BUTTON::LT){
-            return
-                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
-                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::BEFORE) < 0.9f;
-        } else{
-            return
-                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
-                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::BEFORE) < 0.9f;
-        }
+// マウスのボタンが離された瞬間かどうか
+bool Input::IsReleaseMouse(MOUSE_BUTTON button){
+    switch(button){
+    case MOUSE_BUTTON::LEFT:
+        return !(instance_->mouseState_.rgbButtons[0] & 0x80) && (instance_->preMouseState_.rgbButtons[0] & 0x80);
+    case MOUSE_BUTTON::RIGHT:
+        return !(instance_->mouseState_.rgbButtons[1] & 0x80) && (instance_->preMouseState_.rgbButtons[1] & 0x80);
+    case MOUSE_BUTTON::MIDDLE:
+        return !(instance_->mouseState_.rgbButtons[2] & 0x80) && (instance_->preMouseState_.rgbButtons[2] & 0x80);
+    default:
+        return false;
     }
 }
 
-bool InputManager::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber){
-
-    if(button != PAD_BUTTON::LT && button != PAD_BUTTON::RT){
-
-        return
-            !instance_->IsPressPadButton(padNumber, button, PAD_STATE::CURRENT) &&
-            instance_->IsPressPadButton(padNumber, button, PAD_STATE::BEFORE);
-
-    } else{
-        if(button == PAD_BUTTON::LT){
-            return
-                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
-                GetLRTriggerValue(PAD_TRIGGER::LEFT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
-        } else{
-            return
-                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
-                GetLRTriggerValue(PAD_TRIGGER::RIGHT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
-        }
-    }
+// マウスの移動量を取得
+Vector2 Input::GetMouseVector(){
+    return { (float)instance_->mouseState_.lX,(float)instance_->mouseState_.lY };
 }
 
-bool InputManager::IsPressAnyPadButton(PAD_BUTTON padNumber){
-    padNumber;
+// マウスの方向を取得
+Vector2 Input::GetMouseDirection(){
+    Vector2 vec = GetMouseVector();
+    if(MyMath::Length(vec)){
+        return MyMath::Normalize(vec);
+    }
+
+    return Vector2();
+}
+
+Vector2 Input::GetMousePosition(){
+    POINT point;
+
+    // マウスの座標を取得
+    GetCursorPos(&point);
+    ScreenToClient(WindowManager::GetHWND(SEED::GetWindowTitle()), &point);
+    Vector2 result = { (float)point.x,(float)point.y };
+
+    // 比率をかけてもとに戻す
+    Vector2 adjustScale = Vector2(1.0f,1.0f) / WindowManager::GetWindowScale(SEED::GetWindowTitle());
+
+    return result * adjustScale;
+}
+
+
+
+//---------------------------------- ゲームパッド --------------------------------------//
+
+bool Input::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    // 押されているボタンがあれば加算される
+    uint32_t result = 0;
+
+    // ビットの立っているボタンを取得
+    std::vector<PAD_BUTTON>buttons;
+    for(auto& [key, value] : instance_->buttonMap_){
+        if((button & key) != 0){
+            buttons.push_back(key);
+        }
+    }
+
+    // ボタンの状態を取得
+    for(auto& b : buttons){
+        if(b != PAD_BUTTON::LT && b != PAD_BUTTON::RT){
+            result += instance_->IsPressPadButton(padNumber, b, PAD_STATE::CURRENT);
+        } else{
+            if(b == PAD_BUTTON::LT){
+                result += GetLRTriggerValue(LR::LEFT) >= 0.9f;
+            } else{
+                result += GetLRTriggerValue(LR::RIGHT) >= 0.9f;
+            }
+        }
+    }
+
+    // 1以上ならtrue
+    return result > 0;
+}
+
+
+bool Input::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    // 押されているボタンがあれば加算される
+    uint32_t result = 0;
+
+    // ビットの立っているボタンを取得
+    std::vector<PAD_BUTTON>buttons;
+    for(auto& [key, value] : instance_->buttonMap_){
+        if((button & key) != 0){
+            buttons.push_back(key);
+        }
+    }
+
+    // ボタンの状態を取得
+    for(auto& b : buttons){
+        if(b != PAD_BUTTON::LT && b != PAD_BUTTON::RT){
+
+            result +=
+                instance_->IsPressPadButton(padNumber, b, PAD_STATE::CURRENT) &&
+                !instance_->IsPressPadButton(padNumber, b, PAD_STATE::BEFORE);
+
+        } else{
+            if(b == PAD_BUTTON::LT){
+                result +=
+                    GetLRTriggerValue(LR::LEFT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
+                    GetLRTriggerValue(LR::LEFT, padNumber, PAD_STATE::BEFORE) < 0.9f;
+            } else{
+                result +=
+                    GetLRTriggerValue(LR::RIGHT, padNumber, PAD_STATE::CURRENT) >= 0.9f &&
+                    GetLRTriggerValue(LR::RIGHT, padNumber, PAD_STATE::BEFORE) < 0.9f;
+            }
+        }
+    }
+
+    // 1以上ならtrue
+    return result > 0;
+}
+
+bool Input::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber){
+
+    // 押されているボタンがあれば加算される
+    uint32_t result = 0;
+
+    // ビットの立っているボタンを取得
+    std::vector<PAD_BUTTON>buttons;
+    for(auto& [key, value] : instance_->buttonMap_){
+        if((button & key) != 0){
+            buttons.push_back(key);
+        }
+    }
+
+    // ボタンの状態を取得
+    for(auto& b : buttons){
+        if(b != PAD_BUTTON::LT && b != PAD_BUTTON::RT){
+
+            result +=
+                !instance_->IsPressPadButton(padNumber, b, PAD_STATE::CURRENT) &&
+                instance_->IsPressPadButton(padNumber, b, PAD_STATE::BEFORE);
+
+        } else{
+            if(b == PAD_BUTTON::LT){
+                result +=
+                    GetLRTriggerValue(LR::LEFT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
+                    GetLRTriggerValue(LR::LEFT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
+            } else{
+                result +=
+                    GetLRTriggerValue(LR::RIGHT, padNumber, PAD_STATE::CURRENT) < 0.9f &&
+                    GetLRTriggerValue(LR::RIGHT, padNumber, PAD_STATE::BEFORE) >= 0.9f;
+            }
+        }
+    }
+
+    // 1以上ならtrue
+    return result > 0;
+}
+
+
+bool Input::IsPressAnyPadButton(uint8_t padNumber){
+
+    for(auto& [key, value] : instance_->buttonMap_){
+        if(instance_->IsPressPadButton(padNumber, key, PAD_STATE::CURRENT)){ return true; }
+    }
+
     return false;
 }
 
-float InputManager::GetLRTriggerValue(PAD_TRIGGER LEFTorRIGHT, uint8_t padNumber, PAD_STATE padState){
+float Input::GetLRTriggerValue(LR LEFTorRIGHT, uint8_t padNumber, PAD_STATE padState){
 
     float triggerValue;
 
@@ -227,13 +405,13 @@ float InputManager::GetLRTriggerValue(PAD_TRIGGER LEFTorRIGHT, uint8_t padNumber
     }
 
     // 方向を取得
-    triggerValue = (float)(LEFTorRIGHT == PAD_TRIGGER::LEFT ? pad->bLeftTrigger : pad->bRightTrigger);
+    triggerValue = (float)(LEFTorRIGHT == LR::LEFT ? pad->bLeftTrigger : pad->bRightTrigger);
     triggerValue /= 255.0f;
 
     return triggerValue;
 }
 
-Vector2 InputManager::GetStickValue(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
+Vector2 Input::GetStickValue(LR stick, uint8_t padNumber, PAD_STATE padState){
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn
@@ -249,8 +427,8 @@ Vector2 InputManager::GetStickValue(PAD_STICK stick, uint8_t padNumber, PAD_STAT
 
     // 方向を取得
     Vector2 value = {
-    (float)(stick == PAD_STICK::LEFT ? pad->sThumbLX : pad->sThumbRX),
-    (float)(stick == PAD_STICK::LEFT ? pad->sThumbLY : pad->sThumbRY)
+    (float)(stick == LR::LEFT ? pad->sThumbLX : pad->sThumbRX),
+    (float)(stick == LR::LEFT ? pad->sThumbLY : pad->sThumbRY)
     };
 
     // SHORT型の最大値で割って-1 ~ 1にして返す
@@ -262,15 +440,12 @@ Vector2 InputManager::GetStickValue(PAD_STICK stick, uint8_t padNumber, PAD_STAT
     return { std::clamp(value.x,-1.0f,1.0f),std::clamp(value.y,-1.0f,1.0f) };
 }
 
-//Vector2 InputManager::GetStickDirection(PAD_STICK stick, uint8_t padNumber, PAD_STATE padState){
-//    return MyMath::Normalize(GetStickValue(stick, padNumber, padState));
-//}
 
 
 
 /*********************** 内部で使うやつ *********************/
 
-bool InputManager::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_STATE padState){
+bool Input::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_STATE padState){
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn
@@ -285,17 +460,13 @@ bool InputManager::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_ST
         pad = &instance_->preXInputState_[padNumber].Gamepad;
     }
 
-
     if(button == PAD_BUTTON::LT){// 左トリガー(押し切った時)
+        return pad->bLeftTrigger >= 255;
 
-        return pad->bLeftTrigger == 255;
-
-    } else if(button == PAD_BUTTON::LT){// 右トリガー(押し切った時)
-
-        return pad->bRightTrigger == 255;
+    } else if(button == PAD_BUTTON::RT){// 右トリガー(押し切った時)
+        return pad->bRightTrigger >= 255;
 
     } else {// トリガーボタン以外のボタン
-
-        return pad->wButtons & (uint32_t)button;
+        return pad->wButtons & buttonMap_[button];
     }
 }

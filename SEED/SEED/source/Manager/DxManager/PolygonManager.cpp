@@ -772,7 +772,6 @@ void PolygonManager::AddModel(Model* model){
     }
 
 
-
     // 要素数を更新
     objCount3D_++;
     modelIndexCount_++;

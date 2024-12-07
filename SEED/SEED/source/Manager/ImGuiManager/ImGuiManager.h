@@ -4,13 +4,24 @@
 class SEED;
 
 class ImGuiManager{
+private:
+    // プライベートコンストラクタ
+    ImGuiManager() = default;
+    // コピー禁止
+    ImGuiManager(const ImGuiManager&) = delete;
+    ImGuiManager& operator=(const ImGuiManager&) = delete;
+    // シングルトン
+    static ImGuiManager* instance_;
+
 public:
-    void Initialize();
-    void Finalize();
+    static ImGuiManager* GetInstance();
 
-    void Draw();
+    static void Initialize();
+    static void Finalize();
 
-    void Begin();
-    void End();
+    static void Draw();
+
+    static void PreDraw();
+    static void PostDraw();
 
 };

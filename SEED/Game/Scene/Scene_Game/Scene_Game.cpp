@@ -73,17 +73,6 @@ void Scene_Game::Update(){
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
-
-    /*===== 入力情報 =====*/
-    ImGui::Begin("Input");
-    ImGui::Text("AnyKey: %d",Input::IsPressAnyPadButton());
-    ImGui::Text("A,LT,RT: %d", Input::IsPressPadButton(PAD_BUTTON::A | PAD_BUTTON::LT | PAD_BUTTON::RT));
-    ImGui::Text("mouse left: %d", Input::IsTriggerMouse(MOUSE_BUTTON::LEFT));
-    ImGui::Text("mouse right: %d", Input::IsTriggerMouse(MOUSE_BUTTON::RIGHT));
-    ImGui::Text("mouse left: %d", Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE));
-    ImGui::Text("mouse pos: %f,%f", Input::GetMousePosition().x, Input::GetMousePosition().y);
-    ImGui::End();
-
 #endif
 
 

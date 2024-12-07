@@ -1,10 +1,11 @@
 #pragma once
-#include "SEED.h"
-#include "SEED.h"
 #include "Range3D.h"
 #include "Range1D.h"
 #include "MyFunc.h"
-#include <initializer_list>
+#include "Model.h"
+#include "TextureManager.h"
+#include "ClockManager.h"
+#include <vector>
 #include <memory>
 
 class BaseParticle{
@@ -14,8 +15,8 @@ public:
         const Range3D& positionRange,
         const Range1D& radiusRange,
         const Range1D& speedRange,
-        float lifeTime,
-        const std::initializer_list<Vector4>& colors,
+        const Range1D& lifeTime,
+        const std::vector<Vector4>& colors,
         BlendMode blendMode = BlendMode::ADD
     );
     virtual ~BaseParticle() = default;

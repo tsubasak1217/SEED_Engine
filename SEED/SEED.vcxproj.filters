@@ -328,6 +328,9 @@
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp">
       <Filter>SEED\source\Manager\WindowManager</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\source\Manager\ParticleManager\Emitter.cpp">
+      <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -591,6 +594,9 @@
     <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h">
       <Filter>SEED\source\Manager\WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\ParticleManager\Emitter.h">
+      <Filter>SEED\source\Manager\ParticleManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

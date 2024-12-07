@@ -66,6 +66,7 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
+    ParticleManager::GetInstance();
     SceneManager::Initialize();
 
     // 起動時読み込み

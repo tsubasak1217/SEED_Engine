@@ -392,6 +392,14 @@ bool Input::IsPressAnyPadButton(uint8_t padNumber){
     return false;
 }
 
+bool Input::IsTriggerAnyPadButton(uint8_t padNumber){
+    for(auto& [key, value] : instance_->buttonMap_){
+        if(instance_->IsTriggerPadButton(key,padNumber)){ return true; }
+    }
+
+    return false;
+}
+
 float Input::GetLRTriggerValue(LR LEFTorRIGHT, uint8_t padNumber, PAD_STATE padState){
 
     float triggerValue;

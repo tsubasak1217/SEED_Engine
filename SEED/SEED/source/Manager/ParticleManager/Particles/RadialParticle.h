@@ -8,8 +8,8 @@ public:
         const Range3D& positionRange,
         const Range1D& radiusRange,
         const Range1D& speedRange,
-        float lifeTime,
-        const std::initializer_list<Vector4>& colors,
+        const Range1D& lifeTime,
+        const std::vector<Vector4>& colors,
         BlendMode blendMode = BlendMode::ADD
     );
     ~RadialParticle() = default;

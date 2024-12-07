@@ -1,11 +1,12 @@
 #include "BaseParticle.h"
+#include "SEED.h"
 
 BaseParticle::BaseParticle(
     const Range3D& positionRange,
     const Range1D& radiusRange,
     const Range1D& speedRange,
-    float lifeTime,
-    const std::initializer_list<Vector4>& colors,
+    const Range1D& lifeTime,
+    const std::vector<Vector4>& colors,
     BlendMode blendMode
 ){
     // パーティクルのモデルを生成
@@ -22,13 +23,11 @@ BaseParticle::BaseParticle(
     speed_ = MyFunc::Random(speedRange.min, speedRange.max);
 
     // 寿命をランダム決定
-    kLifeTime_ = lifeTime;
+    kLifeTime_ = MyFunc::Random(lifeTime.min,lifeTime.max);
     lifeTime_ = kLifeTime_;
 
     // 色をランダム決定
-    std::vector<Vector4>colorList;
-    for(auto& color : colors){ colorList.emplace_back(color); }
-    particle_->color_ = colorList[MyFunc::Random(0, (int)colors.size() - 1)];
+    particle_->color_ = colors[MyFunc::Random(0, (int)colors.size() - 1)];
 
     // ブレンドモードを設定
     particle_->blendMode_ = blendMode;

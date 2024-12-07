@@ -10,6 +10,7 @@
 #include <AudioManager.h>
 #include <ClockManager.h>
 #include <PolygonManager.h>
+#include <ParticleManager.h>
 #include <InputManager.h>
 #include <ModelManager.h>
 #include <TextureManager.h>

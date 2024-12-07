@@ -27,10 +27,5 @@ public:
 
 private:
 
-    std::unique_ptr<Model> model_[4];
-
-    // 解像度
-    float resolutionRate_ = 1.0f;
-    float preRate_ = resolutionRate_;
 
 };

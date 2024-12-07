@@ -1,7 +1,9 @@
+#pragma once
 #include <random>
 #include <cstdint>
 #include "Vector3.h"
 #include "Vector2.h"
+#include "Range1D.h"
 #include "Range3D.h"
 #include "Range2D.h"
 

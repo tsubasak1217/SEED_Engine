@@ -11,6 +11,7 @@ BaseParticle::BaseParticle(
 ){
     // パーティクルのモデルを生成
     particle_ = std::make_unique<Model>("plane.obj");
+    particle_->isRotateWithQuaternion_ = false;
 
     // 座標をランダム決定
     particle_->translate_ = MyFunc::Random(positionRange);

@@ -39,25 +39,6 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  いろんなものの作成
     ////////////////////////////////////////////////////
-
-    Emitter emitter;
-    emitter.emitType = EmitType::kInfinite;
-    emitter.particleType = ParticleType::kRadial;
-    emitter.positionRange = Range3D({ -10.0f, 0.0f, -10.0f }, { 10.0f, 0.0f, 10.0f });
-    emitter.radiusRange = Range1D(0.1f, 0.5f);
-    emitter.speedRange = Range1D(1.0f, 5.0f);
-    emitter.lifeTimeRange = Range1D(1.0f, 5.0f);
-    emitter.colors = { {1.0f,0.0f,0.0f,1.0f},{0.0f,1.0f,0.0f,1.0f},{0.0f,0.0f,1.0f,1.0f} };
-    emitter.interval = 0.1f;
-    emitter.numEmitEvery = 2;
-    emitter.blendMode = BlendMode::ADD;
-    emitter.kMaxEmitCount = 100;
-    emitter.blendMode = BlendMode::ADD;
-
-
-    // エミッターの追加
-    ParticleManager::AddEmitter(emitter);
-
 }
 
 void Scene_Game::Finalize(){}

@@ -12,5 +12,4 @@ struct AccelerationField{
     Range3D range;
 
     bool CheckCollision(const Vector3& pos);
-    void DrawRange();
 };

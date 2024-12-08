@@ -24,6 +24,7 @@ private:
 public:
     ~ParticleManager();
     static ParticleManager* GetInstance();
+    static void Initialize();
     static void Update();
     static void Draw();
 
@@ -39,7 +40,6 @@ public:
     /// <summary>
     /// エミッターを追加する
     /// </summary>
-    /// <param name="emitter"></param>
     static void AddEmitter(const Emitter& emitter);
 
     /// <summary>
@@ -57,7 +57,8 @@ public:
     static void AddEmitter(
         EmitType emitType,
         ParticleType particleType,
-        const Range3D& positionRange,
+        const Vector3& center,
+        const Vector3& emitRange,
         const Range1D& radiusRange,
         const Range1D& speedRange,
         const Range1D& lifeTimeRange,
@@ -79,14 +80,6 @@ private:
     /// <summary>
     /// パーティクルを発生させる
     /// </summary>
-    /// <param name="type">パーティクルの種類</param>
-    /// <param name="positionRange">発生範囲</param>
-    /// <param name="radiusRange">大きさの範囲</param>
-    /// <param name="speedRange">スピードの範囲</param>
-    /// <param name="lifeTime">寿命時間</param>
-    /// <param name="colors">発生させる色の一覧</param>
-    /// <param name="count">一度に発生させる数</param>
-    /// <param name="blendMode">ブレンドモード</param>
     static void Emit(
         ParticleType type,
         const Range3D& positionRange,
@@ -97,6 +90,20 @@ private:
         int32_t numEmit = 1,
         BlendMode blendMode = BlendMode::ADD
     );
+
+    /// <summary>
+    /// ImGuiでエミッターの編集
+    /// </summary>
+    void EditEmitter();
+
+private:// ファイルの入出力
+
+    // jsonファイルに保存
+    void SaveToJson();
+    // jsonファイルから読み込み
+    void LoadFromJson();
+    // ホットリロード
+    void HotReload();
 
 private:
 
@@ -110,6 +117,8 @@ private:
 private:
 
     bool isFieldActive_;
+    bool isFieldVisible_ = true;
+
     std::list<std::unique_ptr<Emitter>> emitters_;
     std::list<std::unique_ptr<BaseParticle>> particles_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;

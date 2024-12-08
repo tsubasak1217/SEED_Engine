@@ -12,6 +12,9 @@ std::mt19937 MyFunc::gen(MyFunc::rd());
 //------------------ int ------------------//
 int32_t MyFunc::Random(int min, int max){
 
+    // もしminがmaxより大きい場合は入れ替える
+    if(min > max){ std::swap(min, max); }
+
     // minからmaxまでの一様分布を設定
     std::uniform_int_distribution<> distrib(min, max);
 
@@ -21,6 +24,9 @@ int32_t MyFunc::Random(int min, int max){
 
 //------------------ float ------------------//
 float MyFunc::Random(float min, float max){
+
+    // もしminがmaxより大きい場合は入れ替える
+    if(min > max){std::swap(min, max);}
 
     // minからmaxまでの一様分布を設定 (float用)
     std::uniform_real_distribution<float> distrib(min, max);

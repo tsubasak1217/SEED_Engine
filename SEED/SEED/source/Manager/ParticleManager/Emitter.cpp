@@ -1,12 +1,19 @@
 #include "Emitter.h"
 #include "ClockManager.h"
 
-void Emitter::Update(){
-    static float time = interval;
-    time += ClockManager::DeltaTime();
+Emitter::Emitter(){
+    colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+    totalTime = interval;
+}
 
-    if(time >= interval){
-        time = 0.0f;
+void Emitter::Update(){
+
+    if(!isActive){ return; }
+
+    totalTime += ClockManager::DeltaTime();
+
+    if(totalTime >= interval){
+        totalTime = 0.0f;
         emitOrder = true;
         emitCount++;
 
@@ -17,7 +24,7 @@ void Emitter::Update(){
 
         // カスタム発生 or 1回発生の場合は最大発生回数に達したら非アクティブにする
         if(emitCount >= kMaxEmitCount or emitType == EmitType::kOnce){
-            isActive = false;
+            isAlive = false;
             return;
         }
     }

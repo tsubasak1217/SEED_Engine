@@ -23,9 +23,14 @@
 #include <Sprite.h>
 #include <Camera.h>
 #include <BlendMode.h>
+#include "AABB.h"
+#include "OBB.h"
 
 // math
 #include <ShapeMath.h>
+
+// external
+#include <json.hpp>
 
 
 class SEED{
@@ -93,6 +98,10 @@ public:
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
+    // AABB, OBBの描画関数
+    static void DrawAABB(const AABB& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+
     // デバッグ用のグリッド描画関数
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
 
@@ -140,7 +149,7 @@ public:// ウインドウに関する変数
     int kClientWidth_;
     int kClientHeight_;
     static std::wstring windowTitle_;
-    uint32_t windowBackColor_;
+    static uint32_t windowBackColor_;
 
 private:// 外部を参照するためのポインタ変数
 

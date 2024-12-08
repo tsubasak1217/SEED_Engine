@@ -143,6 +143,9 @@
     <Filter Include="SEED\source\Manager\DxManager\PSO">
       <UniqueIdentifier>{bca07d4f-4587-4f19-9c99-aee5bc2bd832}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\JsonManager">
+      <UniqueIdentifier>{6b4c708f-b8ac-4bee-bf2d-471171dcd6d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -330,6 +333,9 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\ParticleManager\Emitter.cpp">
       <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp">
+      <Filter>SEED\source\Manager\JsonManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -597,6 +603,15 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\ParticleManager\Emitter.h">
       <Filter>SEED\source\Manager\ParticleManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\shapes\AABB.h">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\shapes\OBB.h">
+      <Filter>SEED\lib\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h">
+      <Filter>SEED\source\Manager\JsonManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

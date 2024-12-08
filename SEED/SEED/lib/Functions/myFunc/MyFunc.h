@@ -23,6 +23,9 @@ public:
     static Vector2 Random(const Vector2& min, const Vector2& max);
     static Vector2 Random(const Range2D& range);
 
+    // ランダムな方向を返す関数
+    static Vector3 RandomVector();
+
     // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
     static int32_t Spiral(int32_t input,int32_t min, int32_t max);
     static float Spiral(float input,float min, float max);

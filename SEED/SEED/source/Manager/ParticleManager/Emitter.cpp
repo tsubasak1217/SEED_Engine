@@ -1,8 +1,10 @@
 #include "Emitter.h"
 #include "ClockManager.h"
+#include "TextureManager.h"
 
 Emitter::Emitter(){
     colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+    texturePaths.push_back(std::string("ParticleTextures/particle.png"));
     totalTime = interval;
 }
 

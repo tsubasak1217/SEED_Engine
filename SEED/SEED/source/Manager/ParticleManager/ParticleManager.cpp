@@ -43,8 +43,39 @@ ParticleManager* ParticleManager::GetInstance(){
 void ParticleManager::Initialize(){
     // インスタンスを取得
     GetInstance();
+    // テクスチャの読み込み
+    instance_->LoadParticleTexture();
     // Jsonファイルから読み込み
     instance_->HotReload();
+}
+
+// 起動時のテクスチャの読み込み
+void ParticleManager::LoadParticleTexture(){
+
+    // resources/textures/ParticleTextures/ 以下の階層にあるテクスチャを自動で読む
+    std::vector<std::string> fileNames;
+
+    // 指定されたディレクトリ内のすべてのファイルを探索
+    for(const auto& entry : std::filesystem::directory_iterator("resources/textures/ParticleTextures/")) {
+        if(entry.is_regular_file()) { // 通常のファイルのみ取得（ディレクトリを除外）
+            // もしファイル名が".png"で終わっていたら
+            if(entry.path().extension() == ".png"){
+                // ファイル名を追加
+                fileNames.push_back("ParticleTextures/" + entry.path().filename().string()); // ファイル名のみ追加
+            }
+        }
+    }
+
+    // テクスチャの読み込み
+    for(const auto& fileName : fileNames){
+
+        // テクスチャの読み込み
+        int handle = TextureManager::LoadTexture(fileName);
+
+        // GPUハンドルを取得
+        textureIDs_[fileName] =
+            (ImTextureID)ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,7 +166,7 @@ void ParticleManager::Draw(){
             SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
             // パーティクルの進行方向を描画
             SEED::DrawLine(
-                emitter->center, 
+                emitter->center,
                 emitter->center + MyMath::Normalize(emitter->baseDirection) * 5.0f,
                 { 1.0f,0.0f,1.0f,1.0f }
             );
@@ -143,6 +174,7 @@ void ParticleManager::Draw(){
     }
 #endif // _DEBUG
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -187,7 +219,7 @@ void ParticleManager::AddEmitter(const Emitter& emitter){
 void ParticleManager::AddEmitter(
     EmitType emitType, ParticleType particleType,
     const Vector3& center, const Vector3& emitRange, const Range1D& radiusRange,
-    const Vector3& baseDirection,float directionRange,
+    const Vector3& baseDirection, float directionRange,
     const Range1D& speedRange, const Range1D& lifeTimeRange,
     const std::initializer_list<Vector4>& colors,
     float interval, int32_t numEmitEvery, BlendMode blendMode, int32_t numEmitMax
@@ -224,65 +256,21 @@ void ParticleManager::AddEmitter(
 /// <param name="emitter"></param>
 void ParticleManager::Emit(Emitter& emitter){
 
-    if(emitter.emitOrder){
+    if(!emitter.emitOrder){ return; }
+    if(!emitter.isActive){ return; }
 
-        Range3D emitRange;
-        emitRange.min = emitter.center - emitter.emitRange * 0.5f;
-        emitRange.max = emitter.center + emitter.emitRange * 0.5f;
+    // パーティクルを発生させる
+    for(int32_t i = 0; i < emitter.numEmitEvery; ++i){
 
-        Emit(
-            emitter.particleType,
-            emitRange,
-            emitter.radiusRange,
-            emitter.baseDirection,
-            emitter.directionRange,
-            emitter.speedRange,
-            emitter.lifeTimeRange,
-            emitter.colors,
-            emitter.numEmitEvery,
-            emitter.blendMode
-        );
-
-        emitter.emitOrder = false;
-    }
-}
-
-/// <summary>
-/// パーティクルを発生させる
-/// </summary>
-/// <param name="type">パーティクルの種類</param>
-/// <param name="positionRange">発生範囲</param>
-/// <param name="radiusRange">大きさの範囲</param>
-/// <param name="speedRange">スピードの範囲</param>
-/// <param name="lifeTime">寿命時間</param>
-/// <param name="colors">発生させる色の一覧</param>
-/// <param name="count">一度に発生させる数</param>
-/// <param name="blendMode">ブレンドモード</param>
-void ParticleManager::Emit(
-    ParticleType type,
-    const Range3D& positionRange,
-    const Range1D& radiusRange,
-    const Vector3& baseDirection,
-    float directionRange,
-    const Range1D& speedRange,
-    const Range1D& lifeTimeRange,
-    const std::vector<Vector4>& colors,
-    int32_t numEmit,
-    BlendMode blendMode
-){
-
-    for(int32_t i = 0; i < numEmit; ++i){
-
-        switch(type){
+        switch(emitter.particleType){
         case ParticleType::kRadial:
-            instance_->particles_.emplace_back(
-                std::make_unique<RadialParticle>(
-                    positionRange, radiusRange, baseDirection,directionRange,speedRange, lifeTimeRange, colors, blendMode
-                ));
-
+            instance_->particles_.emplace_back(std::make_unique<RadialParticle>(emitter));
             break;
         }
     }
+
+    // 発生命令をリセット
+    emitter.emitOrder = false;
 }
 
 
@@ -304,11 +292,14 @@ void ParticleManager::EditEmitter(){
             // インデントする
             ImGui::Indent();
 
+            ImGui::Checkbox("isActive", &emitter->isActive);
+
             // 全般の情報
             if(ImGui::CollapsingHeader("General")){
                 ImGui::Indent();
-
-                ImGui::Checkbox("isActive", &emitter->isActive);
+                ImGui::Checkbox("isBillboard", &emitter->isBillboard);
+                if(ImGui::Checkbox("isUseRotate", &emitter->isUseRotate)){ emitter->isBillboard = false; }
+                ImGui::Checkbox("isUseGravity", &emitter->isUseGravity);
                 ImGui::DragFloat3("center", &emitter->center.x, 0.05f);
                 ImGui::Combo("emitType", (int*)&emitter->emitType, "kOnce\0kInfinite\0kCustom\0");
                 ImGui::Combo("particleType", (int*)&emitter->particleType, "kRadial\0");
@@ -323,7 +314,7 @@ void ParticleManager::EditEmitter(){
             ImGui::Separator();
 
             // 範囲などの情報
-            if(ImGui::CollapsingHeader("Range")){
+            if(ImGui::CollapsingHeader("Behavior")){
                 ImGui::Indent();
 
                 ImGui::Text("-------- Emit --------");
@@ -342,6 +333,28 @@ void ParticleManager::EditEmitter(){
                 ImGui::Text("------ LifeTime ------");
                 ImGui::DragFloat("lifeTimeRange.min", &emitter->lifeTimeRange.min, 0.05f, 0.0f, emitter->lifeTimeRange.max);
                 ImGui::DragFloat("lifeTimeRange.max", &emitter->lifeTimeRange.max, 0.05f, emitter->lifeTimeRange.min);
+
+                // 回転が適用されている場合のみ
+                if(emitter->isUseRotate && !emitter->isBillboard){
+                    ImGui::Text("------- Rotate -------");
+                    ImGui::DragFloat("rotateSpeedRange.min", &emitter->rotateSpeedRange.min, 0.01f, 0.0f, emitter->rotateSpeedRange.max);
+                    ImGui::DragFloat("rotateSpeedRange.max", &emitter->rotateSpeedRange.max, 0.01f, emitter->rotateSpeedRange.min);
+                }
+
+                // 重力が適用されている場合のみ
+                if(emitter->isUseGravity){
+                    ImGui::Text("------- Gravity -------");
+                    ImGui::DragFloat("gravity", &emitter->gravity, 0.01f);
+                }
+
+                ImGui::Unindent();
+            }
+
+            ImGui::Separator();
+
+            // マテリアルなどの情報
+            if(ImGui::CollapsingHeader("Material")){
+                ImGui::Indent();
 
                 // 色の設定
                 ImGui::Text("-------- Colors --------");
@@ -369,6 +382,48 @@ void ParticleManager::EditEmitter(){
                     ImGui::Unindent();
                 }
 
+                // テクスチャの設定
+                ImGui::Text("-------- Textures --------");
+                if(ImGui::CollapsingHeader("TextureList")){
+                    ImGui::Indent();
+
+                    // エミッターに追加されたテクスチャのリスト
+                    if(ImGui::CollapsingHeader("EmitTextures")){
+                        ImGui::Indent();
+
+                        // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
+                        for(int32_t i = 0; i < emitter->texturePaths.size(); i++){
+                            if(ImGui::ImageButton(textureIDs_[emitter->texturePaths[i]], ImVec2(50, 50))){
+                                // 消す
+                                if(emitter->texturePaths.size() > 1){
+                                    emitter->texturePaths.erase(
+                                        std::remove(emitter->texturePaths.begin(), emitter->texturePaths.end(), emitter->texturePaths[i]),
+                                        emitter->texturePaths.end()
+                                    );
+                                }
+                            }
+                        }
+
+                        ImGui::Unindent();
+                    }
+
+                    // すべてのテクスチャのリスト
+                    if(ImGui::CollapsingHeader("Liblaly")){
+                        ImGui::Indent();
+
+                        // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
+                        for(auto& texture : textureIDs_){
+                            if(ImGui::ImageButton(texture.second, ImVec2(50, 50))){
+                                emitter->texturePaths.push_back(texture.first);
+                            }
+                        }
+
+                        ImGui::Unindent();
+                    }
+
+                    ImGui::Unindent();
+                }
+
                 ImGui::Unindent();
             }
 
@@ -379,7 +434,7 @@ void ParticleManager::EditEmitter(){
                 ImGui::Indent();
 
                 ImGui::DragFloat("emitInterval", &emitter->interval, 0.01f, 0.0f);
-                ImGui::DragInt("numEmitEvery", &emitter->numEmitEvery, 1,0,100);
+                ImGui::DragInt("numEmitEvery", &emitter->numEmitEvery, 1, 0, 100);
                 if(emitter->emitType == EmitType::kCustom){
                     ImGui::DragInt("kMaxEmitCount", &emitter->kMaxEmitCount, 1);
                 }
@@ -388,6 +443,7 @@ void ParticleManager::EditEmitter(){
             }
 
             // 削除ボタン
+            ImGui::Text("-- DeleteEmitter --");
             if(ImGui::Button("DeleteEmitter")){
                 it = instance_->emitters_.erase(it); // 要素を削除し、次の要素を取得
                 continue; // 削除したので次の要素に進む
@@ -400,6 +456,8 @@ void ParticleManager::EditEmitter(){
         ++it;// 次の要素に進む
         ++instanceNum;
     }
+
+    ImGui::Separator();
 
     // エミッターの追加ボタン
     ImGui::Text("-- AddEmitter --");
@@ -442,6 +500,9 @@ void ParticleManager::SaveToJson(){
 
         // 全般の情報
         emitterJson["isActive"] = emitter->isActive;
+        emitterJson["isBillboard"] = emitter->isBillboard;
+        emitterJson["isUseRotate"] = emitter->isUseRotate;
+        emitterJson["isUseGravity"] = emitter->isUseGravity;
         emitterJson["emitType"] = (int)emitter->emitType;
         emitterJson["particleType"] = (int)emitter->particleType;
         emitterJson["blendMode"] = (int)emitter->blendMode;
@@ -450,8 +511,12 @@ void ParticleManager::SaveToJson(){
         // 範囲などの情報
         emitterJson["emitRange"] = { emitter->emitRange.x, emitter->emitRange.y, emitter->emitRange.z };
         emitterJson["radiusRange"] = { emitter->radiusRange.min, emitter->radiusRange.max };
+        emitterJson["baseDirection"] = { emitter->baseDirection.x, emitter->baseDirection.y, emitter->baseDirection.z };
+        emitterJson["directionRange"] = emitter->directionRange;
         emitterJson["speedRange"] = { emitter->speedRange.min, emitter->speedRange.max };
+        emitterJson["rotateSpeedRange"] = { emitter->rotateSpeedRange.min, emitter->rotateSpeedRange.max };
         emitterJson["lifeTimeRange"] = { emitter->lifeTimeRange.min, emitter->lifeTimeRange.max };
+        emitterJson["gravity"] = emitter->gravity;
 
         // 発生頻度などの情報
         emitterJson["interval"] = emitter->interval;
@@ -461,6 +526,11 @@ void ParticleManager::SaveToJson(){
         // 色の情報
         for(auto& color : emitter->colors){
             emitterJson["colors"].push_back({ color.x, color.y, color.z, color.w });
+        }
+
+        // テクスチャの情報
+        for(auto& textureHandle : emitter->texturePaths){
+            emitterJson["textureHandles"].push_back(textureHandle);
         }
 
         j["emitters"].push_back(emitterJson);
@@ -477,7 +547,6 @@ void ParticleManager::SaveToJson(){
 void ParticleManager::LoadFromJson(){
     std::ifstream ifs("resources/jsons/particle/Emitters.json");
     if(ifs.fail()){
-        MessageBoxA(nullptr, "Json file is not found", "LoadFromJson", MB_OK);
         return;
     }
 
@@ -490,6 +559,9 @@ void ParticleManager::LoadFromJson(){
 
         // 全般の情報
         emitter.isActive = emitterJson["isActive"];
+        emitter.isBillboard = emitterJson["isBillboard"];
+        emitter.isUseRotate = emitterJson["isUseRotate"];
+        emitter.isUseGravity = emitterJson["isUseGravity"];
         emitter.emitType = (EmitType)emitterJson["emitType"];
         emitter.particleType = (ParticleType)emitterJson["particleType"];
         emitter.blendMode = (BlendMode)emitterJson["blendMode"];
@@ -504,12 +576,21 @@ void ParticleManager::LoadFromJson(){
         emitter.radiusRange = Range1D(
             emitterJson["radiusRange"][0], emitterJson["radiusRange"][1]
         );
+        emitter.baseDirection = Vector3(
+            emitterJson["baseDirection"][0], emitterJson["baseDirection"][1], emitterJson["baseDirection"][2]
+        );
+        emitter.directionRange = emitterJson["directionRange"];
         emitter.speedRange = Range1D(
             emitterJson["speedRange"][0], emitterJson["speedRange"][1]
+        );
+        emitter.rotateSpeedRange = Range1D(
+            emitterJson["rotateSpeedRange"][0], emitterJson["rotateSpeedRange"][1]
         );
         emitter.lifeTimeRange = Range1D(
             emitterJson["lifeTimeRange"][0], emitterJson["lifeTimeRange"][1]
         );
+        emitter.gravity = emitterJson["gravity"];
+
 
         // 発生頻度などの情報
         emitter.interval = emitterJson["interval"];
@@ -520,6 +601,12 @@ void ParticleManager::LoadFromJson(){
         emitter.colors.clear();
         for(auto& color : emitterJson["colors"]){
             emitter.colors.emplace_back(Vector4(color[0], color[1], color[2], color[3]));
+        }
+
+        // テクスチャの情報
+        emitter.texturePaths.clear();
+        for(auto& textureHandle : emitterJson["textureHandles"]){
+            emitter.texturePaths.push_back(textureHandle);
         }
 
         instance_->emitters_.emplace_back(std::make_unique<Emitter>(emitter));

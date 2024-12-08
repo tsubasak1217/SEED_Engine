@@ -1,17 +1,6 @@
 #include "RadialParticle.h"
 
-RadialParticle::RadialParticle(
-    const Range3D& positionRange,
-    const Range1D& radiusRange,
-    const Vector3& baseDirection,
-    float directionRange,
-    const Range1D& speedRange,
-    const Range1D& lifeTime,
-    const std::vector<Vector4>& colors,
-    BlendMode blendMode
-) : BaseParticle(positionRange, radiusRange, baseDirection, directionRange, speedRange, lifeTime, colors, blendMode){
-
-    particle_->textureGH_[0] = TextureManager::LoadTexture("particle.png");
+RadialParticle::RadialParticle(const Emitter& emitter) : BaseParticle(emitter){
 }
 
 void RadialParticle::Update(){

@@ -325,9 +325,6 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp">
       <Filter>SEED\source\Manager\WindowManager</Filter>
     </ClCompile>
@@ -597,7 +594,6 @@
     <ClInclude Include="SEED\lib\structs\Keyframe.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h">
       <Filter>SEED\source\Manager\WindowManager</Filter>
     </ClInclude>

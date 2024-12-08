@@ -2,6 +2,9 @@
 #include <list>
 #include <memory>
 #include <initializer_list>
+#include <unordered_map>
+#include <string>
+#include "ImGuiManager.h"
 #include "Range1D.h"
 #include "Range3D.h"
 #include "AccelerarionField.h"
@@ -27,6 +30,9 @@ public:
     static void Initialize();
     static void Update();
     static void Draw();
+
+private:
+    void LoadParticleTexture();
 
 public:
 
@@ -78,23 +84,6 @@ private:
     /// </summary>
     static void Emit(Emitter& emitter);
 
-
-    /// <summary>
-    /// パーティクルを発生させる
-    /// </summary>
-    static void Emit(
-        ParticleType type,
-        const Range3D& positionRange,
-        const Range1D& radiusRange,
-        const Vector3& baseDirection,
-        float directionRange,
-        const Range1D& speedRange,
-        const Range1D& lifeTimeRange,
-        const std::vector<Vector4>& colors,
-        int32_t numEmit = 1,
-        BlendMode blendMode = BlendMode::ADD
-    );
-
     /// <summary>
     /// ImGuiでエミッターの編集
     /// </summary>
@@ -126,4 +115,7 @@ private:
     std::list<std::unique_ptr<Emitter>> emitters_;
     std::list<std::unique_ptr<BaseParticle>> particles_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
+
+    // テクスチャのID(エディター用)
+    std::unordered_map<std::string, ImTextureID> textureIDs_;
 };

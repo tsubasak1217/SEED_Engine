@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"SEED";
+std::wstring SEED::windowTitle_ = L"LE2A_12_クロカワ_ツバサ";
 uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
 
 

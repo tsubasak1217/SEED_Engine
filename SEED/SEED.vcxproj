@@ -141,7 +141,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\shapes\Triangle.cpp" />
     <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp" />
     <ClCompile Include="SEED\lib\structs\Model.cpp" />
-    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\structs\Sprite.cpp" />
     <ClCompile Include="SEED\lib\tensor\Quaternion.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector2.cpp" />
@@ -219,7 +218,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
     <ClInclude Include="SEED\lib\structs\DrawLocation.h" />
     <ClInclude Include="SEED\lib\structs\Keyframe.h" />
-    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
     <ClInclude Include="SEED\lib\structs\OffsetData.h" />
     <ClInclude Include="SEED\lib\structs\Material.h" />
     <ClInclude Include="SEED\lib\structs\Model.h" />

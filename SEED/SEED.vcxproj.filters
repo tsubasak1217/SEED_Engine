@@ -334,6 +334,9 @@
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp">
       <Filter>SEED\source\Manager\JsonManager</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
+      <Filter>SEED\lib\structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -608,6 +611,9 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h">
       <Filter>SEED\source\Manager\JsonManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\ModelAnimation.h">
+      <Filter>SEED\lib\structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

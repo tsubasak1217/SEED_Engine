@@ -7,7 +7,6 @@
 #include <includes.h>
 #include <Environment.h>
 #include <SceneManager.h>
-//
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -16,7 +15,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"SEED";
+std::wstring SEED::windowTitle_ = L"LE2A_12_クロカワ_ツバサ";
+uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,6 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     instance_->windowTitle_ = instance_->windowTitle_;
     instance_->kClientWidth_ = clientWidth;
     instance_->kClientHeight_ = clientHeight;
-    instance_->windowBackColor_ = 0x47ada3ff;
     instance_->leakChecker_ = new LeakChecker();
 
     // メインウインドウの作成
@@ -66,6 +65,7 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
+    ParticleManager::Initialize();
     SceneManager::Initialize();
 
     // 起動時読み込み
@@ -224,6 +224,63 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     );
 }
 
+///////////////////////////////////////////////////////
+// AABB,OBBの描画関数
+///////////////////////////////////////////////////////
+void SEED::DrawAABB(const AABB& aabb, const Vector4& color){
+    OBB obb;
+    obb.center = aabb.center;
+    obb.halfSize = aabb.halfSize;
+    DrawOBB(obb, color);
+}
+
+void SEED::DrawOBB(const OBB& obb, const Vector4& color){
+
+    //ローカルな頂点を計算
+    Vector3 vertex[8] = {
+        Vector3(-obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z),
+        Vector3(obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z),
+        Vector3(obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z),
+        Vector3(-obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z),
+        Vector3(-obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z),
+        Vector3(obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z),
+        Vector3(obb.halfSize.x,obb.halfSize.y,obb.halfSize.z),
+        Vector3(-obb.halfSize.x,obb.halfSize.y,obb.halfSize.z)
+    };
+
+    // 回転がある場合は回転を適用
+    if(MyMath::Length(obb.rotate)){
+        for(int i = 0; i < 8; i++){
+            vertex[i] *= RotateMatrix(obb.rotate);
+        }
+    }
+
+    // 移動を適用
+    for(int i = 0; i < 8; i++){
+        vertex[i] += obb.center;
+    }
+
+    // 描画
+    DrawLine(vertex[0], vertex[1], color);
+    DrawLine(vertex[1], vertex[2], color);
+    DrawLine(vertex[2], vertex[3], color);
+    DrawLine(vertex[3], vertex[0], color);
+
+    DrawLine(vertex[4], vertex[5], color);
+    DrawLine(vertex[5], vertex[6], color);
+    DrawLine(vertex[6], vertex[7], color);
+    DrawLine(vertex[7], vertex[4], color);
+
+    DrawLine(vertex[0], vertex[4], color);
+    DrawLine(vertex[1], vertex[5], color);
+    DrawLine(vertex[2], vertex[6], color);
+    DrawLine(vertex[3], vertex[7], color);
+}
+
+
+/////////////////////////////////////////////////////////////
+// グリッドの描画
+/////////////////////////////////////////////////////////////
 void SEED::DrawGrid(float gridInterval, int32_t gridCount){
 
     float width = gridInterval * gridCount;
@@ -233,7 +290,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(gridInterval * xIdx, 0.0f, 0.0f),
             leftFront + Vector3(gridInterval * xIdx, 0.0f, width),
-            { 1.0f,1.0f,1.0f,1.0f }
+            { 0.2f,0.2f,0.2f,1.0f }
         );
     }
 
@@ -241,7 +298,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(0.0f, 0.0f, gridInterval * yIdx),
             leftFront + Vector3(width, 0.0f, gridInterval * yIdx),
-            { 1.0f,1.0f,1.0f,1.0f }
+            { 0.2f,0.2f,0.2f,1.0f }
         );
     }
 }

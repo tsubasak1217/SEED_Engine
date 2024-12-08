@@ -12,6 +12,9 @@ std::mt19937 MyFunc::gen(MyFunc::rd());
 //------------------ int ------------------//
 int32_t MyFunc::Random(int min, int max){
 
+    // もしminがmaxより大きい場合は入れ替える
+    if(min > max){ std::swap(min, max); }
+
     // minからmaxまでの一様分布を設定
     std::uniform_int_distribution<> distrib(min, max);
 
@@ -21,6 +24,9 @@ int32_t MyFunc::Random(int min, int max){
 
 //------------------ float ------------------//
 float MyFunc::Random(float min, float max){
+
+    // もしminがmaxより大きい場合は入れ替える
+    if(min > max){ std::swap(min, max); }
 
     // minからmaxまでの一様分布を設定 (float用)
     std::uniform_real_distribution<float> distrib(min, max);
@@ -48,6 +54,21 @@ Vector2 MyFunc::Random(const Vector2& min, const Vector2& max){
 
 Vector2 MyFunc::Random(const Range2D& range){
     return Random(range.min, range.max);
+}
+
+//--------------- ランダムな方向を返す関数 ---------------//
+
+Vector3 MyFunc::RandomVector(){
+    // ランダムなthetaとphiの範囲
+    float theta = MyFunc::Random(0.0f, 2.0f * 3.14159265358979323846f); // 0 ~ 2π
+    float phi = MyFunc::Random(0.0f, 3.14159265358979323846f); // 0 ~ π
+
+    // 球座標から直交座標への変換
+    float x = std::sin(phi) * std::cos(theta);
+    float y = std::sin(phi) * std::sin(theta);
+    float z = std::cos(phi);
+
+    return { x, y, z };
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

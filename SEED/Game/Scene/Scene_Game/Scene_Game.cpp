@@ -22,16 +22,6 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
 
-    model_[0] = std::make_unique<Model>("walk.gltf");
-    model_[1] = std::make_unique<Model>("sneakWalk.gltf");
-    model_[2] = std::make_unique<Model>("teapot.obj");
-    model_[3] = std::make_unique<Model>("sphere.obj");
-
-    for(int i = 0; i < 4; i++){
-        model_[i]->translate_ = { 10.0f * i,0.0f,0.0f };
-        model_[i]->UpdateMatrix();
-    }
-
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
@@ -49,22 +39,11 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  いろんなものの作成
     ////////////////////////////////////////////////////
-
-    ParticleManager::GetInstance();
-
-    ////////////////////////////////////////////////////
-    //  解像度の初期設定
-    ////////////////////////////////////////////////////
-
-    SEED::ChangeResolutionRate(resolutionRate_);
 }
 
 void Scene_Game::Finalize(){}
 
 void Scene_Game::Update(){
-    /*======================= 前フレームの値保存 ======================*/
-
-    preRate_ = resolutionRate_;
 
     /*========================== ImGui =============================*/
 
@@ -75,18 +54,22 @@ void Scene_Game::Update(){
     ImGui::End();
 #endif
 
-
-    // 前フレームと値が違う場合のみ更新
-    if(resolutionRate_ != preRate_){
-        SEED::ChangeResolutionRate(resolutionRate_);
-    }
-
     /*========================= 各状態の更新 ==========================*/
     currentState_->Update();
+
+    // パーティクルの更新
+    ParticleManager::Update();
+
 }
 
 void Scene_Game::Draw(){
 
+    // グリッドの描画
     SEED::DrawGrid();
+    
+    // パーティクルの描画
+    ParticleManager::Draw();
 
+    // チュートリアルの描画
+    SEED::DrawSprite(Sprite("tutorial.png"));
 }

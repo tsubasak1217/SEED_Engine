@@ -88,7 +88,7 @@ public:// エンジンで利用できる関数
 private:
     void PlayAudio(
         IXAudio2* xAudio2,const SoundData& soundData, 
-        const std::string& filename, bool loop
+        const std::string& filename, bool loop, float volume
     );
     SoundData LoadWave(const char* filename);
     SoundData LoadMP3(const wchar_t* filename);

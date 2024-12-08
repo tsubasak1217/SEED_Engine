@@ -1,23 +1,18 @@
 #pragma once
-#include "SEED.h"
-#include "SEED.h"
 #include "Range3D.h"
 #include "Range1D.h"
 #include "MyFunc.h"
-#include <initializer_list>
+#include "Model.h"
+#include "TextureManager.h"
+#include "ClockManager.h"
+#include "Emitter.h"
+#include <vector>
 #include <memory>
 
 class BaseParticle{
 public:
     BaseParticle() = default;
-    BaseParticle(
-        const Range3D& positionRange,
-        const Range1D& radiusRange,
-        const Range1D& speedRange,
-        float lifeTime,
-        const std::initializer_list<Vector4>& colors,
-        BlendMode blendMode = BlendMode::ADD
-    );
+    BaseParticle(const Emitter& emitter);
     virtual ~BaseParticle() = default;
 
     virtual void Update();
@@ -31,12 +26,35 @@ public:
 
 protected:
 
+    // モデル
     std::unique_ptr<Model>particle_;
+
+    // ビルボードを適用するかどうか
+    bool isBillboard_;
+
+    // 移動関連
+    Vector3 baseDirection_;
+    float directionRange_;
     Vector3 direction_;
     float speed_;
     Vector3 velocity_;
     Vector3 acceleration_;
     Vector3 totalAcceleration_;
+
+    // 寿命関連
     float kLifeTime_;
     float lifeTime_;
+
+    // 重力関連
+    bool isUseGravity_;
+    float gravity_;
+    float gravityAcceleration_;
+
+    // 回転関連
+    bool isUseRotate_;
+    float rotateSpeed_;
+    Vector3 rotateAxis_;
+
+    // テクスチャ
+    uint32_t textureHandle_;
 };

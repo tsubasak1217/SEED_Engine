@@ -7,8 +7,7 @@ AudioManager* AudioManager::instance_ = nullptr;
 const std::string AudioManager::directoryPath_ = "resources/audios/";
 
 // デストラクタ
-AudioManager::~AudioManager()
-{
+AudioManager::~AudioManager(){
     if(instance_){
         delete instance_;
         instance_ = nullptr;
@@ -16,8 +15,7 @@ AudioManager::~AudioManager()
 }
 
 // インスタンス取得関数
-const AudioManager* AudioManager::GetInstance()
-{
+const AudioManager* AudioManager::GetInstance(){
     if(!instance_){
         instance_ = new AudioManager();
     }
@@ -31,8 +29,7 @@ const AudioManager* AudioManager::GetInstance()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void AudioManager::Initialize()
-{
+void AudioManager::Initialize(){
     // インスタンスなければ作成
     GetInstance();
 
@@ -52,7 +49,7 @@ void AudioManager::Initialize()
     StartUpLoad();
 }
 
-HRESULT AudioManager::InitializeMediaFoundation() {
+HRESULT AudioManager::InitializeMediaFoundation(){
     HRESULT hr = MFStartup(MF_VERSION);
     if(FAILED(hr)) {
         return hr;
@@ -66,8 +63,7 @@ HRESULT AudioManager::InitializeMediaFoundation() {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void AudioManager::StartUpLoad()
-{
+void AudioManager::StartUpLoad(){
     // 以下にロード処理をまとめる
     //instance_->LoadAudio("ochiba.m4a");
     instance_->LoadAudio("kinmokusei.wav");
@@ -83,10 +79,11 @@ void AudioManager::StartUpLoad()
 /////////////////////////////////////////////////////////////////////////////////////
 
 void AudioManager::PlayAudio(
-    IXAudio2* xAudio2, const SoundData& soundData, 
-    const std::string& filename, bool loop
+    IXAudio2* xAudio2, const SoundData& soundData,
+    const std::string& filename, bool loop, float volume
 ){
     HRESULT hr;
+    std::string tmpFilename = filename;
 
     // CreateSourceVoiceを呼び出す前に、既存のSourceVoiceを解放する
     if(sourceVoices_[filename] != nullptr) {
@@ -94,7 +91,19 @@ void AudioManager::PlayAudio(
     }
 
     // ソースボイスの作成
-    hr = xAudio2->CreateSourceVoice(&sourceVoices_[filename], &soundData.wfex);
+    if(loop){
+        hr = xAudio2->CreateSourceVoice(&sourceVoices_[filename], &soundData.wfex);
+    } else{
+        // 同じファイル名がある場合は連番をつける
+        int count = 0;
+        while(sourceVoices_.find(tmpFilename) != sourceVoices_.end()){
+            count++;
+            tmpFilename = filename + std::to_string(count);
+        }
+
+        hr = xAudio2->CreateSourceVoice(&sourceVoices_[tmpFilename], &soundData.wfex);
+    }
+
     assert(SUCCEEDED(hr));
 
     // 再生する波形データの設定
@@ -107,9 +116,11 @@ void AudioManager::PlayAudio(
     }
 
     // 再生
-    hr = sourceVoices_[filename]->SubmitSourceBuffer(&buf);
+    hr = sourceVoices_[tmpFilename]->SubmitSourceBuffer(&buf);
     assert(SUCCEEDED(hr));
-    hr = sourceVoices_[filename]->Start();
+    hr = sourceVoices_[tmpFilename]->SetVolume(volume);
+    assert(SUCCEEDED(hr));
+    hr = sourceVoices_[tmpFilename]->Start();
     assert(SUCCEEDED(hr));
 }
 
@@ -118,15 +129,12 @@ void AudioManager::PlayAudio(
 /// </summary>
 /// <param name="filename">ファイル名</param>
 /// <param name="loop">ループ可否</param>
-void AudioManager::PlayAudio(const std::string& filename, bool loop,float volume)
-{
+void AudioManager::PlayAudio(const std::string& filename, bool loop, float volume){
     // 指定要素がなければアサート
     assert(instance_->audios_.find(filename) != instance_->audios_.end());
 
     // 再生
-    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop);
-    // 音量設定
-    SetAudioVolume(filename, volume);
+    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume);
 
     // 再生フラグを立てる
     instance_->isPlaying_[filename] = true;
@@ -143,8 +151,7 @@ void AudioManager::PlayAudio(const std::string& filename, bool loop,float volume
 /// 音声の再生を終了する
 /// </summary>
 /// <param name="filename">ファイル名</param>
-void AudioManager::EndAudio(const std::string& filename)
-{
+void AudioManager::EndAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
 
@@ -163,8 +170,7 @@ void AudioManager::EndAudio(const std::string& filename)
 /// 再生中の音声を一時停止する
 /// </summary>
 /// <param name="filename">ファイル名</param>
-void AudioManager::PauseAudio(const std::string& filename)
-{
+void AudioManager::PauseAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     //　停止
@@ -181,8 +187,7 @@ void AudioManager::PauseAudio(const std::string& filename)
 /// 音声の再生を再開する
 /// </summary>
 /// <param name="filename">ファイル名</param>
-void AudioManager::RestertAudio(const std::string& filename)
-{
+void AudioManager::RestertAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
 
@@ -201,8 +206,7 @@ void AudioManager::RestertAudio(const std::string& filename)
 /// </summary>
 /// <param name="filename">ファイル名</param>
 /// <param name="volume">音量。0.0: 無音  1.0: デフォルト。 1より大きくしすぎると音割れポッターになる</param>
-void AudioManager::SetAudioVolume(const std::string& filename, float volume)
-{
+void AudioManager::SetAudioVolume(const std::string& filename, float volume){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
@@ -215,8 +219,7 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume)
 /// </summary>
 /// <param name="filename">ファイル名</param>
 /// <returns>音声が再生されているか</returns>
-bool AudioManager::IsPlayingAudio(const std::string& filename)
-{
+bool AudioManager::IsPlayingAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->isPlaying_.find(filename) != instance_->isPlaying_.end());
 
@@ -230,8 +233,7 @@ bool AudioManager::IsPlayingAudio(const std::string& filename)
 
 /////////////////////////////////////////////////////////////////////////////////////
 // WAV,MP3,M4Aファイルに対応。
-void AudioManager::LoadAudio(const std::string& filename)
-{
+void AudioManager::LoadAudio(const std::string& filename){
     // 要素がなければ
     if(instance_->audios_.find(filename) == instance_->audios_.end()){
         // 音をロードして追加
@@ -257,8 +259,7 @@ void AudioManager::LoadAudio(const std::string& filename)
     }
 }
 
-SoundData AudioManager::LoadWave(const char* filename)
-{
+SoundData AudioManager::LoadWave(const char* filename){
     std::ifstream file;
 
     // ファイルをバイナリで開く
@@ -334,7 +335,7 @@ SoundData AudioManager::LoadWave(const char* filename)
 
 
 // MP3ファイルの読み込み
-SoundData AudioManager::LoadMP3(const wchar_t* filename) {
+SoundData AudioManager::LoadMP3(const wchar_t* filename){
 
     HRESULT hr = InitializeMediaFoundation();
     if(FAILED(hr)) {
@@ -433,8 +434,7 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename) {
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void AudioManager::UnloadAudio(const std::string& filename)
-{
+void AudioManager::UnloadAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->audios_.find(filename) != instance_->audios_.end());
     // 解放
@@ -445,8 +445,7 @@ void AudioManager::UnloadAudio(const std::string& filename)
     instance_->isPlaying_.erase(instance_->isPlaying_.find(filename));
 }
 
-void AudioManager::UnloadAllAudio()
-{
+void AudioManager::UnloadAllAudio(){
     for(auto& audio : instance_->audios_){
         instance_->UnloadAudio(&audio.second);
     }
@@ -455,8 +454,7 @@ void AudioManager::UnloadAllAudio()
     instance_->sourceVoices_.clear();
 }
 
-void AudioManager::UnloadAudio(SoundData* soundData)
-{
+void AudioManager::UnloadAudio(SoundData* soundData){
     delete[] soundData->pBuffer;
     soundData->pBuffer = 0;
     soundData->bufferSize = 0;

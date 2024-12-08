@@ -1,24 +1,6 @@
 #include "RadialParticle.h"
 
-RadialParticle::RadialParticle(
-    const Range3D& positionRange, 
-    const Range1D& radiusRange, 
-    const Range1D& speedRange,
-    float lifeTime,
-    const std::initializer_list<Vector4>& colors,
-    BlendMode blendMode
-) : BaseParticle(positionRange, radiusRange, speedRange, lifeTime, colors, blendMode){
-
-    particle_->textureGH_[0] = TextureManager::LoadTexture("particle.png");
-
-    // パーティクルの向きをランダム決定
-    float theta = MyFunc::Random(0.0f, 2.0f * 3.14f);
-    float phi = MyFunc::Random(0.0f, 2.0f * 3.14f);
-    direction_ = {
-        std::cosf(theta),
-        std::sinf(theta),
-        std::sinf(phi)
-    };
+RadialParticle::RadialParticle(const Emitter& emitter) : BaseParticle(emitter){
 }
 
 void RadialParticle::Update(){
@@ -27,7 +9,7 @@ void RadialParticle::Update(){
     velocity_ = direction_ * speed_ * ClockManager::DeltaTime();
 
     // 色を時間経過で薄くする
-    particle_->color_.w = std::clamp(lifeTime_ / kLifeTime_,0.0f,1.0f);
+    particle_->color_.w = std::clamp(lifeTime_ / kLifeTime_, 0.0f, 1.0f);
 
     // 寿命、ビルボードの更新
     BaseParticle::Update();

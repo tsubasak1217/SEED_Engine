@@ -39,6 +39,8 @@ public:
     Vector3 center;// 中心座標
     Vector3 emitRange = {10.0f,10.0f,10.0f};// 発生範囲
     Range1D radiusRange = {0.5f,3.0f};// 大きさの幅
+    Vector3 baseDirection = { 0.0f,1.0f,0.0f };// パーティクルの向き
+    float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
     Range1D speedRange = {0.1f,1.0f};// 速度の幅
     Range1D lifeTimeRange = {1.0f,3.0f};// 寿命時間の幅
     std::vector<Vector4> colors;// 発生させる色の一覧

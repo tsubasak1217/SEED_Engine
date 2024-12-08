@@ -28,19 +28,19 @@
                 ]
             ],
             "emitRange": [
-                10.0,
-                10.0,
-                10.0
+                0.0,
+                0.0,
+                0.0
             ],
             "emitType": 1,
-            "interval": 0.10000000149011612,
+            "interval": 0.23000000417232513,
             "isActive": true,
             "kMaxEmitCount": 100,
             "lifeTimeRange": [
                 1.0,
                 5.0
             ],
-            "numEmitEvery": 2,
+            "numEmitEvery": 78,
             "particleType": 0,
             "radiusRange": [
                 0.10000000149011612,
@@ -84,14 +84,14 @@
                 10.0
             ],
             "emitType": 1,
-            "interval": 0.10000000149011612,
+            "interval": 0.10999999940395355,
             "isActive": true,
             "kMaxEmitCount": 100,
             "lifeTimeRange": [
                 1.0,
                 5.0
             ],
-            "numEmitEvery": 2,
+            "numEmitEvery": 3,
             "particleType": 0,
             "radiusRange": [
                 0.10000000149011612,
@@ -123,14 +123,14 @@
                 10.0
             ],
             "emitType": 1,
-            "interval": 0.10000000149011612,
+            "interval": 0.17000000178813934,
             "isActive": true,
             "kMaxEmitCount": 1,
             "lifeTimeRange": [
                 1.0,
                 3.0
             ],
-            "numEmitEvery": 1,
+            "numEmitEvery": 2,
             "particleType": 0,
             "radiusRange": [
                 0.5,
@@ -138,7 +138,46 @@
             ],
             "speedRange": [
                 0.10000000149011612,
-                1.0
+                7.480000019073486
+            ]
+        },
+        {
+            "blendMode": 4,
+            "center": [
+                27.899999618530273,
+                0.0,
+                0.0
+            ],
+            "colors": [
+                [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "emitRange": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "emitType": 1,
+            "interval": 0.20999999344348907,
+            "isActive": false,
+            "kMaxEmitCount": 1,
+            "lifeTimeRange": [
+                1.0,
+                3.0
+            ],
+            "numEmitEvery": 25,
+            "particleType": 0,
+            "radiusRange": [
+                0.5,
+                3.0
+            ],
+            "speedRange": [
+                0.10000000149011612,
+                14.720000267028809
             ]
         }
     ]

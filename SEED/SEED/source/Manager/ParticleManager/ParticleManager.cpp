@@ -133,6 +133,12 @@ void ParticleManager::Draw(){
             area.center = emitter->center;
             area.halfSize = emitter->emitRange * 0.5f;
             SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
+            // パーティクルの進行方向を描画
+            SEED::DrawLine(
+                emitter->center, 
+                emitter->center + MyMath::Normalize(emitter->baseDirection) * 5.0f,
+                { 1.0f,0.0f,1.0f,1.0f }
+            );
         }
     }
 #endif // _DEBUG
@@ -181,6 +187,7 @@ void ParticleManager::AddEmitter(const Emitter& emitter){
 void ParticleManager::AddEmitter(
     EmitType emitType, ParticleType particleType,
     const Vector3& center, const Vector3& emitRange, const Range1D& radiusRange,
+    const Vector3& baseDirection,float directionRange,
     const Range1D& speedRange, const Range1D& lifeTimeRange,
     const std::initializer_list<Vector4>& colors,
     float interval, int32_t numEmitEvery, BlendMode blendMode, int32_t numEmitMax
@@ -191,6 +198,8 @@ void ParticleManager::AddEmitter(
     emitter.center = center;
     emitter.emitRange = emitRange;
     emitter.radiusRange = radiusRange;
+    emitter.baseDirection = baseDirection;
+    emitter.directionRange = directionRange;
     emitter.speedRange = speedRange;
     emitter.lifeTimeRange = lifeTimeRange;
     emitter.colors = colors;
@@ -225,6 +234,8 @@ void ParticleManager::Emit(Emitter& emitter){
             emitter.particleType,
             emitRange,
             emitter.radiusRange,
+            emitter.baseDirection,
+            emitter.directionRange,
             emitter.speedRange,
             emitter.lifeTimeRange,
             emitter.colors,
@@ -251,6 +262,8 @@ void ParticleManager::Emit(
     ParticleType type,
     const Range3D& positionRange,
     const Range1D& radiusRange,
+    const Vector3& baseDirection,
+    float directionRange,
     const Range1D& speedRange,
     const Range1D& lifeTimeRange,
     const std::vector<Vector4>& colors,
@@ -264,7 +277,7 @@ void ParticleManager::Emit(
         case ParticleType::kRadial:
             instance_->particles_.emplace_back(
                 std::make_unique<RadialParticle>(
-                    positionRange, radiusRange, speedRange, lifeTimeRange, colors, blendMode
+                    positionRange, radiusRange, baseDirection,directionRange,speedRange, lifeTimeRange, colors, blendMode
                 ));
 
             break;
@@ -318,6 +331,11 @@ void ParticleManager::EditEmitter(){
                 ImGui::Text("------- Radius -------");
                 ImGui::DragFloat("radiusRange.min", &emitter->radiusRange.min, 0.01f, 0.0f, emitter->radiusRange.max);
                 ImGui::DragFloat("radiusRange.max", &emitter->radiusRange.max, 0.01f, emitter->radiusRange.min);
+                ImGui::Text("------ Direction ------");
+                if(ImGui::DragFloat3("baseDirection", &emitter->baseDirection.x, 0.01f)){
+                    emitter->baseDirection = MyMath::Normalize(emitter->baseDirection);
+                };
+                ImGui::DragFloat("directionRange", &emitter->directionRange, 0.01f, 0.0f, 1.0f);
                 ImGui::Text("------- Speed -------");
                 ImGui::DragFloat("speedRange.min", &emitter->speedRange.min, 0.02f, 0.0f, emitter->speedRange.max);
                 ImGui::DragFloat("speedRange.max", &emitter->speedRange.max, 0.02f, emitter->speedRange.min);

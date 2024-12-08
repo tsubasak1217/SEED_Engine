@@ -14,6 +14,8 @@ public:
     BaseParticle(
         const Range3D& positionRange,
         const Range1D& radiusRange,
+        const Vector3& baseDirection,
+        float directionRange,
         const Range1D& speedRange,
         const Range1D& lifeTime,
         const std::vector<Vector4>& colors,
@@ -33,6 +35,8 @@ public:
 protected:
 
     std::unique_ptr<Model>particle_;
+    Vector3 baseDirection_;
+    float directionRange_;
     Vector3 direction_;
     float speed_;
     Vector3 velocity_;

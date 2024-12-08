@@ -33,7 +33,7 @@ public:
     Vector3 MakeUp()const;
     Vector3 MakeRight()const;
     Matrix4x4 MakeMatrix()const;
-    Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)const;
+    static Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 
 public:
     // Operators

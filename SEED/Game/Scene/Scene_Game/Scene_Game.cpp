@@ -69,7 +69,4 @@ void Scene_Game::Draw(){
     
     // パーティクルの描画
     ParticleManager::Draw();
-
-    // チュートリアルの描画
-    SEED::DrawSprite(Sprite("tutorial.png"));
 }

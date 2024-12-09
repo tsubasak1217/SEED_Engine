@@ -81,6 +81,6 @@ struct Vector4 final{
 
     bool operator==(const Vector4& obj) const{ return x == obj.x && y == obj.y && z == obj.z && w == obj.w; }
 
-    Vector3 ToVec3();
+    Vector3 ToVec3()const;
 };
 

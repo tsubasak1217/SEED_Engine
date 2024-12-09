@@ -133,7 +133,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true, 
-        triangle.GH,triangle.blendMode
+        triangle.GH,triangle.blendMode, triangle.cullMode
     );
 }
 
@@ -145,7 +145,8 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
-        triangle.blendMode, triangle.isStaticDraw, triangle.drawLocation, triangle.layer
+        triangle.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
+        triangle.isStaticDraw, triangle.drawLocation, triangle.layer
     );
 }
 
@@ -159,7 +160,8 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH,quad.blendMode
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH,quad.blendMode,
+        quad.cullMode
     );
 }
 
@@ -171,7 +173,8 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[1].ToVec3(),
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, quad.blendMode,
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, 
+        quad.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
     );
 }
@@ -191,6 +194,7 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.clipLT,
         sprite.clipSize,
         sprite.blendMode,
+        D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         sprite.isStaticDraw,
         sprite.drawLocation,
         sprite.layer,

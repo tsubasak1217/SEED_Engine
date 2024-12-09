@@ -1,14 +1,20 @@
 #pragma once
 #include "blendMode.h"
+#include "Pipeline.h"
+#include "RootSignature.h"
 
 struct ID3D12RootSignature;
 struct ID3D12PipelineState;
 
-enum class PolygonTopology : int{
-    TRIANGLE,
-    LINE
+// パイプラインの種類
+enum class PippelineType{
+    Normal = 0,
+    Skinning,
 };
 
+//////////////////////////////////////////////////////////////////////
+// パイプラインの管理クラス
+//////////////////////////////////////////////////////////////////////
 class PSOManager{
 
 private:
@@ -24,14 +30,19 @@ private:
     static PSOManager* instance_;
 
 public:
+
     static PSOManager* GetInstance();
     ~PSOManager();
 
+public:
+
+    // ConputeShaderのルートシグネチャ作成
     static ID3D12RootSignature* SettingCSRootSignature();
 
-    static void Create(
-        ID3D12RootSignature** pRootSignature, ID3D12PipelineState** pPipelineState,
-        PolygonTopology topology = PolygonTopology::TRIANGLE,
-        BlendMode blendMode = BlendMode::NORMAL
-    );
+    // テンプレートパラメータの生成
+    static void GenerateTemplateParameter(RootSignature* pRootSignature, Pipeline* pPipeline,PippelineType pypelineType);
+
+    // PSOの生成
+    static void Create(RootSignature* pRootSignature,Pipeline* pPipeline);
+
 };

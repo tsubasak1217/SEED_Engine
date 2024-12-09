@@ -79,7 +79,7 @@ SkinCluster CreateSkinCluster(
     return skinCluster;
 }
 
-// SkinClusterの更新
+// SkinClusterのMatrix更新
 void Update(SkinCluster& skinCluster, const ModelSkeleton& skeleton){
     for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
 

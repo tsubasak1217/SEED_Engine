@@ -159,7 +159,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp" />
     <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp" />
@@ -250,7 +252,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSO.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h" />
@@ -306,6 +308,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

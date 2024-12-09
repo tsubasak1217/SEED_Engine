@@ -1,12 +1,13 @@
 ﻿#include "Object3D.hlsli"
 
+/////////////////////////////////////// Transform //////////////////////////////////////////////
+
 struct TransformationMatrix {
     float4x4 WVP;
     float4x4 world;
 };
 
-
-StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
+///////////////////////////////////////// Input ////////////////////////////////////////////////
 
 struct VertexShaderInput {
     // VBV_0 (VertexData)
@@ -20,6 +21,11 @@ struct VertexShaderInput {
     int interval : INTERVAL0; //line->2,triangle->3,quad->4
 };
 
+
+StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
+
+
+///////////////////////////////////////// main ////////////////////////////////////////////////
 
 // Output
 VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {

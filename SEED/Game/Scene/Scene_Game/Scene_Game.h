@@ -27,5 +27,5 @@ public:
 
 private:
 
-
+    std::list<std::unique_ptr<Model>> models_;
 };

@@ -79,6 +79,7 @@ public:
     Vector4 color_;
     int32_t lightingType_;
     BlendMode blendMode_;
+    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;
     std::vector<Vector3> uv_translate_;
@@ -90,6 +91,7 @@ private:
     // --------------------- アニメーションパラメータ ---------------------//
 
 public:
+    bool isAnimation_ = false;// アニメーションを行うか
     float animationTime_ = 0.0f;// アニメーションの時間
     float animationSpeedRate_ = 1.0f;// アニメーションの速度の倍率
 
@@ -98,7 +100,6 @@ private:
     float totalAnimationTime_ = 0.0f;// アニメーションの総再生時間
     bool isAnimationLoop_ = false;// アニメーションをループさせるか
     int32_t animationLoopCount_ = 0;// アニメーションのループ回数
-    bool isAnimation_ = false;// アニメーションを行うか
     std::string animationName_;// アニメーションの名前
 
 };

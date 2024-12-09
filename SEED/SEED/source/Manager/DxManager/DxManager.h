@@ -9,6 +9,8 @@
 
 // mine
 #include <DxFunc.h>
+#include <PSO/Pipeline.h>
+#include <PSO/RootSignature.h>
 #include <matrixFunc.h>
 #include <sphere.h>
 #include <includes.h>
@@ -136,8 +138,10 @@ private:/*============================== オブジェクト ====================
     Camera* camera_;
     bool isDebugCameraAvtive_ = false;
 
-private:/*========================== テクスチャ管理変数 ============================*/
+private:/*================================= 定数 =================================*/
 
+    static const int8_t kTopologyCount = 2;
+    static const int8_t kCullModeCount = 3;
 
 private:/*============================ パラメーター変数 ============================*/
 
@@ -194,11 +198,11 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
 
     // VertexShader
-    ComPtr<IDxcBlob> vertexShaderBlob = nullptr;
+    std::unordered_map<std::string,ComPtr<IDxcBlob>> vsBlobs;
     // PixelShader
-    ComPtr<IDxcBlob> pixelShaderBlob = nullptr;
+    std::unordered_map<std::string, ComPtr<IDxcBlob>> psBlobs;
     // PixelShader
-    ComPtr<IDxcBlob> computeShaderBlob = nullptr;
+    std::unordered_map<std::string, ComPtr<IDxcBlob>> csBlobs;
 
 
     //==================================================================//
@@ -206,8 +210,16 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     //==================================================================//
     
     // ふつうのPSO  [blendModeの数][形状のパターン数]
-    ComPtr<ID3D12PipelineState> commonPipelineState[(int)BlendMode::kBlendModeCount][2];
-    ComPtr<ID3D12RootSignature> commonRootSignature[(int)BlendMode::kBlendModeCount][2];
+    //ComPtr<ID3D12PipelineState> commonPipelineState[(int)BlendMode::kBlendModeCount][2];
+    //ComPtr<ID3D12RootSignature> commonRootSignature[(int)BlendMode::kBlendModeCount][2];
+
+    // アニメーションしないPSO
+    Pipeline pipelines[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
+    RootSignature rootSignatures[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
+
+    // アニメーションするPSO (modelしか使わない)
+    Pipeline skinningPipelines[(int)BlendMode::kBlendModeCount][kCullModeCount];
+    RootSignature skinningRootSignatures[(int)BlendMode::kBlendModeCount][kCullModeCount];
 
     // コンピュートシェーダー用のやつ
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;

@@ -337,6 +337,12 @@
     <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
       <Filter>SEED\lib\structs</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp">
+      <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -582,7 +588,7 @@
     <ClInclude Include="SEED\lib\structs\OffsetData.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSO.h">
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h">
@@ -644,6 +650,9 @@
     </FxCompile>
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
       <Filter>resources\shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
+      <Filter>resources\shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

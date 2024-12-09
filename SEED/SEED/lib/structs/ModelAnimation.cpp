@@ -78,3 +78,15 @@ SkinCluster CreateSkinCluster(
 
     return skinCluster;
 }
+
+// SkinClusterの更新
+void Update(SkinCluster& skinCluster, const ModelSkeleton& skeleton){
+    for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
+
+        assert(jointIndex < skinCluster.inverseBindPoseMatrices.size());
+        skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix =
+            skinCluster.inverseBindPoseMatrices[jointIndex] * skeleton.joints[jointIndex].skeletonMatrix;
+        skinCluster.mappedPalette[jointIndex].skeletonSpaceInverceTransposeMatrix =
+            Transpose(InverseMatrix(skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix));
+    }
+}

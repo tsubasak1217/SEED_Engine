@@ -39,6 +39,9 @@ void ModelManager::Initialize(){
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
     LoadModel("Player_result.gltf");
+
+    LoadModel("cube.obj");
+    LoadModel("sphere.obj");
     //LoadModel("ground.obj");
 }
 

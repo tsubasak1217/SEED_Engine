@@ -146,6 +146,9 @@
     <Filter Include="SEED\source\Manager\JsonManager">
       <UniqueIdentifier>{6b4c708f-b8ac-4bee-bf2d-471171dcd6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Editor">
+      <UniqueIdentifier>{33f87c9e-4132-416e-95cb-22191112e837}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -342,6 +345,12 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp">
+      <Filter>SEED\source\Manager\JsonManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\FieldEditor.cpp">
+      <Filter>Game\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -620,6 +629,12 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\structs\ModelAnimation.h">
       <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h">
+      <Filter>SEED\source\Manager\JsonManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\FieldEditor.h">
+      <Filter>Game\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

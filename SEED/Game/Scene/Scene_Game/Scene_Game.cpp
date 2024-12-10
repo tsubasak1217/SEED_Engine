@@ -5,6 +5,8 @@
 #include "Environment.h"
 #include "ParticleManager.h"
 
+#include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
+
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     ChangeState(new GameState_Play(this));
@@ -52,6 +54,9 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  いろんなものの作成
     ////////////////////////////////////////////////////
+    fieldEditor_ = std::make_unique<FieldEditor>();
+    fieldEditor_->Initialize();
+
 }
 
 void Scene_Game::Finalize(){}
@@ -65,6 +70,8 @@ void Scene_Game::Update(){
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
+
+    fieldEditor_->ShowImGui();
 #endif
 
     /*========================= 各状態の更新 ==========================*/
@@ -72,6 +79,9 @@ void Scene_Game::Update(){
 
     // パーティクルの更新
     ParticleManager::Update();
+
+    // fieldEditorの更新
+    fieldEditor_->Update();
 
 }
 
@@ -86,4 +96,7 @@ void Scene_Game::Draw(){
 
     // パーティクルの描画
     ParticleManager::Draw();
+
+    // fieldEditorの描画
+    fieldEditor_->Draw();
 }

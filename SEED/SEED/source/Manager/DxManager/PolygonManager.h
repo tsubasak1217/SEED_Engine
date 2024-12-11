@@ -84,6 +84,7 @@ private:// 内部で使用する定数や列挙型
         Triangle,
         Quad,
         Line,
+        Particle,
         Triangle2D,
         Quad2D,
         Line2D,
@@ -93,6 +94,8 @@ private:// 内部で使用する定数や列挙型
         StaticQuad2D,
         StaticSprite,
         StaticLine2D,
+        // カウント用。これより後ろには追加しないこと
+        DrawOrderCount
     };
 
 
@@ -184,16 +187,12 @@ private:// 現在の描画数や頂点数などを格納する変数
     static uint32_t lineCount_;
     int vertexCountAll = 0;
 
-    // 総描画数
-    int32_t objCount2D_back_ = 0;
-    int32_t objCount2D_front_ = 0;
-    int32_t objCount3D_ = 0;
-    int32_t objCountStaticDraw_ = 0;
     // カリングモードごとの描画数
-    int32_t objCountCull_[3];
+    std::array<int32_t, 3>objCountCull_;
     // ブレンドモードごとの描画数
-    int32_t objCountBlend_[(int32_t)BlendMode::kBlendModeCount];
-
+    std::array<int32_t, (int)BlendMode::kBlendModeCount>objCountBlend_;
+    // 描画種類ごとの描画数
+    std::array<int32_t, (int)DrawOrder::DrawOrderCount> objCounts_;
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 

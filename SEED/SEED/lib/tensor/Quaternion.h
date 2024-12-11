@@ -39,6 +39,7 @@ public:
 public:
     // Operators
     Quaternion operator+(const Quaternion& q)const;
+    Quaternion operator-(const Quaternion& q)const;
     Quaternion operator*(const Quaternion& q)const;
     Quaternion operator*(float f)const;
     Quaternion operator/(float f)const;

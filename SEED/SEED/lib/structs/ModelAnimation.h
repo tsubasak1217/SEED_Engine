@@ -58,7 +58,7 @@ struct ModelAnimation{
 struct ModelJoint{
     QuaternionTransform transform;// トランスフォーム情報
     Matrix4x4 localMatrix;// ローカル行列
-    Matrix4x4 skeletonMatrix;// スケルトン行列
+    Matrix4x4 skeletonSpaceMatrix;// スケルトン行列
     std::string name;// ノード名
     std::vector<int32_t> children;// 子ノードのインデックスリスト
     int32_t index;// インデックス

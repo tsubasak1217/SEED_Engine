@@ -122,6 +122,7 @@ void PSOManager::GenerateTemplateParameter(
         pPipeline->AddInputElementDesc("INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("MESH_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("JOINT_INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("JOINT_INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
 
         /*------------------- Shader -----------------------*/
@@ -137,10 +138,10 @@ void PSOManager::GenerateTemplateParameter(
         /*---------------- RootParameter ------------------*/
         // material(PS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
-        // texture(PS_t1,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, D3D12_SHADER_VISIBILITY_PIXEL);
         // transform(VS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
+        // texture(PS_t1,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, D3D12_SHADER_VISIBILITY_PIXEL);
         // Lighting(PS_b0)
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
         // MatrixPalette(VS_t1)
@@ -155,6 +156,7 @@ void PSOManager::GenerateTemplateParameter(
         pPipeline->AddInputElementDesc("INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("MESH_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("JOINT_INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("JOINT_INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         pPipeline->AddInputElementDesc("INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
         // VBV_2
         pPipeline->AddInputElementDesc("WEIGHT", 0, 2, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA);

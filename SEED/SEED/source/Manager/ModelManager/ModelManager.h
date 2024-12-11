@@ -54,7 +54,7 @@ private:
     int32_t CreateJoint(const ModelNode& node,const std::optional<int32_t>& parent,std::vector<ModelJoint>& joints);
     ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
     static ModelSkeleton AnimatedSkeleton(const ModelAnimation& modelAnimation,const ModelSkeleton& defaultSkeleton,float time);
-    void UpdateSkeleton(ModelSkeleton& skeleton);
+    void UpdateSkeleton(ModelSkeleton* skeleton);
     std::unordered_map<std::string, JointWeightData> CreateJointWeightData(const aiScene* scene);
     void CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData);
 

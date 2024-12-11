@@ -59,7 +59,7 @@ void ModelManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
-    LoadModel("Player_result.gltf");
+    //LoadModel("Player_result.gltf");
     //LoadModel("ground.obj");
 }
 
@@ -303,7 +303,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
                 for(uint32_t keyIdx = 0; keyIdx < channel->mNumPositionKeys; ++keyIdx) {
                     aiVectorKey key = channel->mPositionKeys[keyIdx];
                     Keyframe<Vector3> keyframe;
-                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
                     keyframe.value = Vector3(-key.mValue.x, key.mValue.y, key.mValue.z);
                     nodeAnim.translate.keyframes.push_back(keyframe);
                 }
@@ -314,7 +314,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
                 for(uint32_t keyIdx = 0; keyIdx < channel->mNumRotationKeys; ++keyIdx) {
                     aiQuatKey key = channel->mRotationKeys[keyIdx];
                     Keyframe<Quaternion> keyframe;
-                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
                     keyframe.value = Quaternion(key.mValue.x, -key.mValue.y, -key.mValue.z, key.mValue.w);
                     nodeAnim.rotate.keyframes.push_back(keyframe);
                 }
@@ -325,7 +325,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
                 for(uint32_t keyIdx = 0; keyIdx < channel->mNumScalingKeys; ++keyIdx) {
                     aiVectorKey key = channel->mScalingKeys[keyIdx];
                     Keyframe<Vector3> keyframe;
-                    keyframe.time = static_cast<float>(key.mTime);
+                    keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
                     keyframe.value = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
                     nodeAnim.scale.keyframes.push_back(keyframe);
                 }
@@ -473,8 +473,8 @@ int32_t ModelManager::CreateJoint(
     ModelJoint joint;
     joint.name = node.name;
     joint.localMatrix = node.localMatrix;
-    joint.skeletonMatrix = node.localMatrix;
-    joint.skeletonMatrix = IdentityMat4();
+    joint.skeletonSpaceMatrix = node.localMatrix;
+    joint.skeletonSpaceMatrix = IdentityMat4();
     joint.transform = node.transform;
     joint.index = static_cast<int32_t>(joints.size());
     joint.parent = parent;
@@ -524,14 +524,15 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             // スケールアニメーションを適用
             Vector3 scale = instance_->CalcMomentValue(nodeAnim.scale.keyframes, time);
 
-            // アニメーション行列を作成
-            Matrix4x4 animationMatrix = AffineMatrix(scale, rotate, translate);
-            joint.localMatrix = animationMatrix;
+            // トランスフォーム情報を更新
+            joint.transform.translate_ = translate;
+            joint.transform.rotate_ = rotate;
+            joint.transform.scale_ = scale;
         }
     }
 
     // スケルトン行列を更新
-    instance_->UpdateSkeleton(skeleton);
+    instance_->UpdateSkeleton(&skeleton);
 
     return skeleton;
 }
@@ -539,13 +540,13 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
 /*-----------------------------------------------------------*/
 // スケルトン行列の更新
 /*-----------------------------------------------------------*/
-void ModelManager::UpdateSkeleton(ModelSkeleton& skeleton){
-    for(ModelJoint& joint : skeleton.joints){
+void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton){
+    for(ModelJoint& joint : skeleton->joints){
         joint.localMatrix = AffineMatrix(joint.transform.scale_, joint.transform.rotate_, joint.transform.translate_);
         if(joint.parent){
-            joint.skeletonMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonMatrix;
+            joint.skeletonSpaceMatrix = joint.localMatrix * skeleton->joints[*joint.parent].skeletonSpaceMatrix;
         } else{
-            joint.skeletonMatrix = joint.localMatrix;
+            joint.skeletonSpaceMatrix = joint.localMatrix;
         }
     }
 }
@@ -613,6 +614,16 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
     auto& palette = modelData->defaultSkinClusterData;
     palette.inverseBindPoseMatrices.resize(skeleton.joints.size(), IdentityMat4());
 
+    // vertexInfluenceを頂点数で初期化
+    for(auto& mesh : modelData->meshes){
+        mesh.vertexInfluences.resize(mesh.vertices.size());
+        for(auto& influence : mesh.vertexInfluences){
+            std::fill(std::begin(influence.weights), std::end(influence.weights), 0.0f);
+            std::fill(std::begin(influence.jointIndices), std::end(influence.jointIndices), 0);
+        }
+    }
+
+
     // modelDataを解析して、Influenceを作成
     for(const auto& jointWeight : modelData->jointWeightData){// ModelDataのweightDataを解析
 
@@ -622,6 +633,7 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
         }
 
         palette.inverseBindPoseMatrices[it->second] = jointWeight.second.inverseBindPoseMatrix;// InverseBindPoseMatrixを格納
+
         for(const auto& vertexWeight : jointWeight.second.vertexWeights){// 頂点ウェイトを格納
 
             for(int meshIdx = 0; meshIdx < modelData->meshes.size(); ++meshIdx){
@@ -630,8 +642,6 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
                     continue;
                 }
 
-                // メッシュ頂点分のサイズを確保
-                modelData->meshes[meshIdx].vertexInfluences.resize(modelData->meshes[meshIdx].vertices.size());
                 // 格納場所を取得
                 auto& currentInfluence = modelData->meshes[meshIdx].vertexInfluences[vertexWeight.vertexIndex];
 
@@ -646,6 +656,66 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
             }
         }
     }
+
+
+    // すべてのメッシュをループ
+    //for(auto& mesh : modelData->meshes) {
+    //    // 頂点インフルエンスをメッシュの頂点数分初期化
+    //    mesh.vertexInfluences.resize(mesh.vertices.size());
+    //    for(auto& influence : mesh.vertexInfluences) {
+    //        std::fill(std::begin(influence.weights), std::end(influence.weights), 0.0f);
+    //        std::fill(std::begin(influence.jointIndices), std::end(influence.jointIndices), -1);
+    //    }
+    //}
+
+    // 関節ウェイトデータをループ
+    //for(const auto& [jointName, jointData] : modelData->jointWeightData) {
+    //    auto jointIndexIt = modelData->defaultSkeleton.jointMap.find(jointName);
+    //    if(jointIndexIt == modelData->defaultSkeleton.jointMap.end()) {
+    //        continue; // 関節がスケルトンに存在しない場合スキップ
+    //    }
+    //    int32_t jointIndex = jointIndexIt->second;
+
+    //    // 頂点ウェイトをループ
+    //    for(const auto& vertexWeight : jointData.vertexWeights) {
+    //        int32_t vertexIndex = vertexWeight.vertexIndex;
+    //        float weight = vertexWeight.weight;
+
+    //        // 頂点が属するメッシュを検索
+    //        for(auto& mesh : modelData->meshes) {
+    //            if(vertexIndex < 0 || vertexIndex >= static_cast<int32_t>(mesh.vertices.size())) {
+    //                vertexIndex -= static_cast<int32_t>(mesh.vertices.size());
+    //                continue; // 頂点インデックスがこのメッシュの範囲外なら次のメッシュへ
+    //            }
+
+    //            // 該当する頂点のインフルエンスにウェイトを適用
+    //            auto& vertexInfluence = mesh.vertexInfluences[vertexIndex];
+
+    //            // 空きスロットに格納
+    //            for(uint32_t i = 0; i < kMaxInfluence; ++i) {
+    //                if(vertexInfluence.weights[i] == 0.0f) {
+    //                    vertexInfluence.weights[i] = weight;
+    //                    vertexInfluence.jointIndices[i] = jointIndex;
+    //                    break;
+    //                }
+    //            }
+
+    //            // ウェイトが小さい場合はスキップ
+    //            if(weight <= 0.0f) {
+    //                continue;
+    //            }
+
+    //            // ウェイトが大きい順にソートして優先度を管理
+    //            for(uint32_t i = 0; i < kMaxInfluence - 1; ++i) {
+    //                if(vertexInfluence.weights[i] < vertexInfluence.weights[i + 1]) {
+    //                    std::swap(vertexInfluence.weights[i], vertexInfluence.weights[i + 1]);
+    //                    std::swap(vertexInfluence.jointIndices[i], vertexInfluence.jointIndices[i + 1]);
+    //                }
+    //            }
+    //            break; // 対象のメッシュが見つかった場合は終了
+    //        }
+    //    }
+    //}
 }
 
 

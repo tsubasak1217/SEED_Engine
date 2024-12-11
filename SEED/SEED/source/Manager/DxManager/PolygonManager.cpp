@@ -62,20 +62,27 @@ void PolygonManager::InitResources(){
     // model
     modelVertexResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexData) * kMaxVerticesCountInResource_);
+    modelVertexResource_->SetName(L"modelVertexResource");
     modelIndexResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(uint32_t) * kMaxModelVertexCount);
+    modelIndexResource_->SetName(L"modelIndexResource");
     modelMaterialResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxMeshCount_ * 50);
+    modelMaterialResource_->SetName(L"modelMaterialResource");
     modelWvpResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xffff);
+    modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
+    offsetResource_->SetName(L"offsetResource");
 
     // Skinning
     vertexInfluenceResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexInfluence) * kMaxVerticesCountInResource_);
+    vertexInfluenceResource_->SetName(L"vertexInfluenceResource");
     paletteResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 0xffff);
+    paletteResource_->SetName(L"paletteResource");
 
     // resourceのMapping
     MapOnce();
@@ -149,20 +156,9 @@ void PolygonManager::Reset(){
     modelIndexCount_ = 0;
     spriteCount_ = 0;
     lineCount_ = 0;
-
-    objCount3D_ = 0;
-    objCount2D_back_ = 0;
-    objCount2D_front_ = 0;
-    objCountStaticDraw_ = 0;
-
-    // カリングモードごとの描画数のリセット
-    for(int i = 0; i < 3; ++i){
-        objCountCull_[i] = 0;
-    }
-    // ブレンドモードごとの描画数のリセット
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; ++i){
-        objCountBlend_[i] = 0;
-    }
+    objCounts_.fill(0);
+    objCountCull_.fill(0);
+    objCountBlend_.fill(0);
 
     // プリミティブ描画情報の初期化
     InitializePrimitive();
@@ -384,18 +380,10 @@ void PolygonManager::AddTriangle(
 
 
     // カウントを更新
-    if(view3D){
-        objCount3D_++;
+    if(isStaticDraw){
+        objCounts_[(int)DrawOrder::StaticTriangle2D]++;
     } else{
-        if(isStaticDraw){
-            objCountStaticDraw_++;
-        } else{
-            if(drawLocation == DrawLocation::Front){
-                objCount2D_front_++;
-            } else{
-                objCount2D_back_++;
-            }
-        }
+        view3D ? objCounts_[(int)DrawOrder::Triangle]++ : objCounts_[(int)DrawOrder::Triangle2D]++;
     }
 
     objCountCull_[(int)cullMode - 1]++;
@@ -546,18 +534,10 @@ void PolygonManager::AddQuad(
 
 
     // カウントを更新
-    if(view3D){
-        objCount3D_++;
+    if(isStaticDraw){
+        objCounts_[(int)DrawOrder::StaticQuad2D]++;
     } else{
-        if(isStaticDraw){
-            objCountStaticDraw_++;
-        } else{
-            if(drawLocation == DrawLocation::Front){
-                objCount2D_front_++;
-            } else{
-                objCount2D_back_++;
-            }
-        }
+        view3D ? objCounts_[(int)DrawOrder::Quad]++ : objCounts_[(int)DrawOrder::Quad2D]++;
     }
 
     objCountCull_[(int)cullMode - 1]++;
@@ -722,14 +702,11 @@ void PolygonManager::AddSprite(
 
     // カウントを更新
     if(isStaticDraw){
-        objCountStaticDraw_++;
+        objCounts_[(int)DrawOrder::StaticSprite]++;
     } else{
-        if(drawLocation == DrawLocation::Front){
-            objCount2D_front_++;
-        } else{
-            objCount2D_back_++;
-        }
+        objCounts_[(int)DrawOrder::Sprite]++;
     }
+
 
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
@@ -755,6 +732,9 @@ void PolygonManager::AddModel(Model* model){
     if(model->isAnimation_){
         // アニメーションしているモデルは別のデータとして扱う
         modelName += std::string("_Skinning");
+    } else if(model->isParticle_){
+        // パーティクルは別のデータとして扱う
+        modelName += std::string("_Particle");
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -821,7 +801,12 @@ void PolygonManager::AddModel(Model* model){
     }
 
     // 要素数を更新
-    objCount3D_++;
+    if(model->isAnimation_){
+        objCounts_[(int)DrawOrder::AnimationModel]++;
+    } else{
+        model->isParticle_ ? objCounts_[(int)DrawOrder::Particle]++ : objCounts_[(int)DrawOrder::Model]++;
+    }
+
     objCountCull_[(int)model->cullMode - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
     modelIndexCount_++;
@@ -942,18 +927,10 @@ void PolygonManager::AddLine(
     }
 
     // カウントを更新
-    if(view3D){
-        objCount3D_++;
+    if(isStaticDraw){
+        objCounts_[(int)DrawOrder::StaticLine2D]++;
     } else{
-        if(isStaticDraw){
-            objCountStaticDraw_++;
-        } else{
-            if(drawLocation == DrawLocation::Front){
-                objCount2D_front_++;
-            } else{
-                objCount2D_back_++;
-            }
-        }
+        view3D ? objCounts_[(int)DrawOrder::Line]++ : objCounts_[(int)DrawOrder::Line2D]++;
     }
 
     objCountCull_[0]++;
@@ -1040,6 +1017,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     drawData->indexCount += 4;
 
     // カウントを更新
+    objCounts_[(int)DrawOrder::Offscreen]++;
     objCountBlend_[(int)blendMode]++;
     objCountCull_[0]++;
 }
@@ -1105,13 +1083,11 @@ void PolygonManager::WriteRenderData(){
             );
 
             // 頂点の影響度(VertexInfluence)を書き込む
-            if(item->drawOrder == (int)DrawOrder::AnimationModel){
-                std::memcpy(
-                    mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
-                    item->modelData->meshes[meshIdx].vertexInfluences.data(),// から
-                    sizeof(VertexInfluence) * meshVertexCount// のサイズコピー
-                );
-            }
+            std::memcpy(
+                mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                item->modelData->meshes[meshIdx].vertexInfluences.data(),// から
+                sizeof(VertexInfluence) * meshVertexCount// のサイズコピー
+            );
 
 
             // 数をインクリメント
@@ -1136,7 +1112,7 @@ void PolygonManager::WriteRenderData(){
                 // 各モデルの現在のブレンドモードのインスタンス数確認
                 auto& item = modelData.second;
                 int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-                int jointSize = (int)item->modelData->jointWeightData.size();
+                int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
                 if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
                 if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
 
@@ -1167,17 +1143,20 @@ void PolygonManager::WriteRenderData(){
                     /*      アニメーション用の情報を格納        */
                     /*--------------------------------------*/
                     if(item->drawOrder == (int)DrawOrder::AnimationModel){
-                        std::memcpy(
-                            mapPaletteData + animationJointCount,
-                            item->paletteData[blendIdx][cullModeIdx].data(),
-                            sizeof(WellForGPU) * item->paletteData[blendIdx][cullModeIdx].size()
-                        );
+
+                        for(int instanceIdx = 0; instanceIdx < item->paletteData[blendIdx][cullModeIdx].size(); instanceIdx++){
+                            std::memcpy(
+                                mapPaletteData + animationJointCount + (jointSize * instanceIdx),
+                                item->paletteData[blendIdx][cullModeIdx][instanceIdx].data(),
+                                sizeof(WellForGPU) * item->paletteData[blendIdx][cullModeIdx][instanceIdx].size()
+                            );
+                        }
                     }
                 }
 
                 // アニメーション用の情報を更新
                 if(item->drawOrder == (int)DrawOrder::AnimationModel){
-                    animationJointCount += jointSize;
+                    animationJointCount += jointSize * instanceCount;
                 }
 
                 // インスタンス数をインクリメント
@@ -1213,6 +1192,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
     // モノがなければreturn
     if(modelDrawData_.size() == 0){ return; }
+    if(objCounts_[(int)drawOrder] == 0){ return; }
 
 
     // インスタンスが切り替わる頂点間隔の決定(モデルは必要ないため0)
@@ -1331,7 +1311,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 // 各モデルの現在のブレンドモードのインスタンス数
                 auto& item = modelData.second;
                 int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-                int jointSize = (int)item->modelData->jointWeightData.size();
+                int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
                 if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
                 if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
 
@@ -1356,7 +1336,8 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         offset.instanceOffset = instanceCountAll;
                         offset.meshOffset = meshCountAll;
                         offset.jointIndexOffset = animationJointCount;
-                        offset.interval = instanceInterval;
+                        offset.jointinterval = jointSize;
+                        offset.primitiveInterval = instanceInterval;
                     }
 
                     std::memcpy(
@@ -1418,7 +1399,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // アニメーションモデルの場合のみ
                     if(drawOrder == DrawOrder::AnimationModel){
-                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_instance;
+                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
                         size = sizeof(VertexInfluence);
 
                         // Resource上の開始位置設定
@@ -1485,14 +1466,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         );
                     }
 
+                    // アニメーション用のジョイント数のインクリメント
+                    if(drawOrder == DrawOrder::AnimationModel){
+                        animationJointCount += jointSize * instanceCount;
+                    }
+
                     // 描画総メッシュ数のインクリメント
                     meshCountAll += instanceCount;
                 }
 
-                // アニメーション用のジョイント数のインクリメント
-                if(drawOrder == DrawOrder::AnimationModel){
-                    animationJointCount += jointSize;
-                }
 
                 // 描画総インスタンス数のインクリメント
                 instanceCountAll += instanceCount;
@@ -1523,22 +1505,19 @@ void PolygonManager::DrawToOffscreen(){
     WriteRenderData();
 
     // 3D
-    if(objCount3D_ > 0){
-        SetRenderData(DrawOrder::Line);
-        SetRenderData(DrawOrder::Model);
-        SetRenderData(DrawOrder::AnimationModel);
-        SetRenderData(DrawOrder::Triangle);
-        SetRenderData(DrawOrder::Quad);
-        SetRenderData(DrawOrder::Sprite);
-    }
+    SetRenderData(DrawOrder::Line);
+    SetRenderData(DrawOrder::Model);
+    SetRenderData(DrawOrder::AnimationModel);
+    SetRenderData(DrawOrder::Triangle);
+    SetRenderData(DrawOrder::Quad);
+    SetRenderData(DrawOrder::Particle);
+    SetRenderData(DrawOrder::Sprite);
 
     // 2D
-    if(objCount2D_front_ > 0){
-        SetRenderData(DrawOrder::Line2D);
-        SetRenderData(DrawOrder::Triangle2D);
-        SetRenderData(DrawOrder::Quad2D);
-        SetRenderData(DrawOrder::Sprite);
-    }
+    SetRenderData(DrawOrder::Line2D);
+    SetRenderData(DrawOrder::Triangle2D);
+    SetRenderData(DrawOrder::Quad2D);
+    SetRenderData(DrawOrder::Sprite);
 }
 
 void PolygonManager::DrawToBackBuffer(){
@@ -1546,12 +1525,9 @@ void PolygonManager::DrawToBackBuffer(){
     // オフスクリーンの描画結果を貼り付ける
     SetRenderData(DrawOrder::Offscreen);
 
-
     // 解像度の変更に影響を受けない2D描画
-    if(objCountStaticDraw_ > 0){
-        SetRenderData(DrawOrder::StaticLine2D);
-        SetRenderData(DrawOrder::StaticTriangle2D);
-        SetRenderData(DrawOrder::StaticQuad2D);
-        SetRenderData(DrawOrder::StaticSprite);
-    }
+    SetRenderData(DrawOrder::StaticLine2D);
+    SetRenderData(DrawOrder::StaticTriangle2D);
+    SetRenderData(DrawOrder::StaticQuad2D);
+    SetRenderData(DrawOrder::StaticSprite);
 }

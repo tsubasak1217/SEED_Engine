@@ -42,6 +42,11 @@ void Model::Initialize(const std::string& filename){
 
     color_ = { 1.0f,1.0f,1.0f,1.0f };
     lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
+
+
+    // アニメーションの情報取得
+    hasAnimation_ = modelData->animations.size() > 0;// アニメーションが存在するか
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,13 +120,31 @@ void Model::Draw(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // アニメーション開始
-void Model::StartAnimation(const std::string& animationName, bool loop, float speedRate){
+void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
+
+    // アニメーションがない場合は処理しない
+    if(!hasAnimation_){ return; }
+    auto& animations = ModelManager::GetModelData(modelName_)->animations;
+    // 範囲外例外処理
+    if(animations.size() - 1 < animationIndex) { assert(false); }
+
+    // アニメーション名の取得
+    int index = 0;
+    for(auto animetion : animations){
+        if(index == animationIndex){
+            animationName_ = animetion.first;
+            break;
+        }
+        index++;
+    }
+
+    // 情報の設定
     isAnimation_ = true;
     isAnimationLoop_ = loop;
     animationTime_ = 0.0f;
     totalAnimationTime_ = 0.0f;
     animationSpeedRate_ = speedRate;
-    animationDuration_ = ModelManager::GetModelData(modelName_)->animations[animationName].duration;
+    animationDuration_ = ModelManager::GetModelData(modelName_)->animations[animationName_].duration;
 }
 
 // アニメーション一時停止
@@ -147,12 +170,10 @@ void Model::EndAnimation(){
 void Model::UpdatePalette(){
 
     // アニメーションしない場合は更新しない
-    if(!isAnimation_) { return; }
-    // アニメーションがない場合は更新しない
-    auto& animations = ModelManager::GetModelData(modelName_)->animations;
-    if(animations.find(animationName_) == animations.end()) { return; }
+    if(!isAnimation_ or !hasAnimation_) { return; }
 
     // アニメーション適用後のスケルトンを取得
+    auto& animations = ModelManager::GetModelData(modelName_)->animations;
     ModelSkeleton skeleton = ModelManager::GetModelData(modelName_)->defaultSkeleton;
     skeleton = ModelManager::AnimatedSkeleton(
         animations[animationName_],
@@ -162,16 +183,20 @@ void Model::UpdatePalette(){
 
     // スキニング用のパレットの更新
     auto inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
+    palette_.resize(skeleton.joints.size());
     for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
 
         assert(jointIndex < inverseBindPoseMatrices.size());
 
         // スケルトン空間行列の更新
         palette_[jointIndex].skeletonSpaceMatrix =
-            inverseBindPoseMatrices[jointIndex] * skeleton.joints[jointIndex].skeletonMatrix;
+            inverseBindPoseMatrices[jointIndex] * skeleton.joints[jointIndex].skeletonSpaceMatrix;
 
         // スケルトン空間行列の逆行列転置行列の更新
         palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
             Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
     }
+
+    int a;
+    a = 0;
 }

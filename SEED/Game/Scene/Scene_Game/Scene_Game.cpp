@@ -24,8 +24,8 @@ void Scene_Game::Initialize(){
     std::vector<std::string>paths = {
         //"bunny.obj",
         //"cube.obj",
+        "SimpleSkin_multiMesh.gltf",
         "simpleSkin.gltf",
-        "sneakWalk.gltf",
         "walk.gltf",
     };
 
@@ -36,7 +36,7 @@ void Scene_Game::Initialize(){
     };
 
     for(int i = 0; i < 32; i++){
-        animationModels_.push_back(std::make_unique<Model>(paths[i%3]));
+        animationModels_.push_back(std::make_unique<Model>(paths[i%2]));
         animationModels_.back()->scale_ = { 5.0f,5.0f,5.0f };
         animationModels_.back()->translate_ = { 10.0f * i,0.0f,-5.0f };
         animationModels_.back()->rotate_ = { 0.0f,3.14f,0.0f };

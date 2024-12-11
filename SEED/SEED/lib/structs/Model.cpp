@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Model.h"
 #include "MatrixFunc.h"
 #include "SEED.h"
@@ -63,6 +64,9 @@ void Model::Update(){
         }
 
         animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
+
+        // スキニング用のパレットの更新
+        UpdatePalette();
     }
 
     // マトリックスの更新
@@ -137,4 +141,37 @@ void Model::EndAnimation(){
     animationTime_ = 0.0f;
     animationLoopCount_ = 0;
     totalAnimationTime_ = 0.0f;
+}
+
+// スキニング用のパレットの更新
+void Model::UpdatePalette(){
+
+    // アニメーションしない場合は更新しない
+    if(!isAnimation_) { return; }
+    // アニメーションがない場合は更新しない
+    auto& animations = ModelManager::GetModelData(modelName_)->animations;
+    if(animations.find(animationName_) == animations.end()) { return; }
+
+    // アニメーション適用後のスケルトンを取得
+    ModelSkeleton skeleton = ModelManager::GetModelData(modelName_)->defaultSkeleton;
+    skeleton = ModelManager::AnimatedSkeleton(
+        animations[animationName_],
+        skeleton,
+        animationTime_
+    );
+
+    // スキニング用のパレットの更新
+    auto inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
+    for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
+
+        assert(jointIndex < inverseBindPoseMatrices.size());
+
+        // スケルトン空間行列の更新
+        palette_[jointIndex].skeletonSpaceMatrix =
+            inverseBindPoseMatrices[jointIndex] * skeleton.joints[jointIndex].skeletonMatrix;
+
+        // スケルトン空間行列の逆行列転置行列の更新
+        palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
+            Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
+    }
 }

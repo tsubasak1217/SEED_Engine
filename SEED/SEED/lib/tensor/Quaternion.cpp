@@ -90,6 +90,32 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 }
 
+// クォータニオンの球面補間
+Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
+    // 内積を計算
+    float dot = Dot(q1, q2);
+
+    // 内積が負の場合は符号を反転
+    Quaternion q = q2;
+    if(dot < 0){
+        q = q * -1;
+        dot = -dot;
+    }
+
+    // 内積が1に近い場合は線形補間
+    if(dot > 0.9995f){
+        return q1.Lerp(q, t);
+    }
+
+    // 内積が1に近い場合は線形補間
+    float theta = std::acosf(dot);
+    float sinTheta = std::sinf(theta);
+    float sinTTheta = std::sinf(t * theta);
+    float sin1TTheta = std::sinf((1 - t) * theta);
+
+    return ((q1 * sin1TTheta) + (q * sinTTheta)) / sinTheta;
+}
+
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);

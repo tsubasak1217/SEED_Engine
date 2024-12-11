@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <unordered_map>
 #include <vector>
+#include <queue>
 #include <wrl/client.h>
 // local
 #include <Vector4.h>
@@ -29,10 +30,12 @@ struct ModelDrawData{
     std::vector<std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount][3];
+    std::vector<std::vector<WellForGPU>> paletteData[(int32_t)BlendMode::kBlendModeCount][3];
 
     // VBV
     static D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
     static D3D12_VERTEX_BUFFER_VIEW vbv_instance;
+    static D3D12_VERTEX_BUFFER_VIEW vbv_skinning;
     // IBV
     static D3D12_INDEX_BUFFER_VIEW ibv;
 
@@ -196,8 +199,10 @@ private:// 実際に頂点情報や色などの情報が入っている変数
 
     // モデル用
     std::unordered_map<std::string, std::unique_ptr<ModelDrawData>> modelDrawData_;
+    // プリミティブな描画に使用するデータ
+    ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
-private:// Resource
+private:// Resource (すべての描画で1つにまとめている)
 
     // モデル用
     ComPtr<ID3D12Resource> modelVertexResource_;
@@ -206,17 +211,19 @@ private:// Resource
     ComPtr<ID3D12Resource> modelWvpResource_;
     ComPtr<ID3D12Resource> offsetResource_;
 
+    // スキニング用
+    ComPtr<ID3D12Resource> vertexInfluenceResource_;
+    ComPtr<ID3D12Resource> paletteResource_;
+
     // Map用
     VertexData* mapVertexData;
     uint32_t* mapIndexData;
     Material* mapMaterialData;
     TransformMatrix* mapTransformData;
     OffsetData* mapOffsetData;
+    VertexInfluence* mapVertexInfluenceData;
+    WellForGPU* mapPaletteData;
 
-private:
-
-    // プリミティブな描画に使用するデータ
-    ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
 private:
 

@@ -15,6 +15,8 @@
 
 class Model{
 
+    friend class PolygonManager;
+
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
     //                                      以下メンバ関数                                       //
@@ -39,6 +41,9 @@ public:
     void RestartAnimation();
     void EndAnimation();
 
+private:
+    // スキニング用のパレットの更新
+    void UpdatePalette();
 
 public:// アクセッサ
 
@@ -101,5 +106,5 @@ private:
     bool isAnimationLoop_ = false;// アニメーションをループさせるか
     int32_t animationLoopCount_ = 0;// アニメーションのループ回数
     std::string animationName_;// アニメーションの名前
-
+    std::vector<WellForGPU> palette_;// スキニング情報
 };

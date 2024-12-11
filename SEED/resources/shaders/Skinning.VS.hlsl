@@ -30,10 +30,10 @@ struct VertexShaderInput {
     // VBV_1 (OffsetData)
     int indexOffset : INDEX_OFFSET0;
     int meshOffset : MESH_OFFSET0;
+    int jointIndexOffset : JOINT_INDEX_OFFSET0;
     int interval : INTERVAL0; //line->2,triangle->3,quad->4
     
     // VBV_2 (Animation)
-    bool isSkinning : IS_SKINNING0;
     float4 weight : WEIGHT0;
     int4 jointIndex : JOINT_INDEX0;
 };
@@ -48,13 +48,6 @@ StructuredBuffer<Well> gMatrixPalette : register(t1, space0);
 // Skinning
 Skinned Skinning(VertexShaderInput input) {
     Skinned output;
-    
-    // early return
-    if (!input.isSkinning) {
-        output.position = input.position;
-        output.normal = input.normal;
-        return output;
-    }
     
     // calculate skinned position
     output.position = mul(input.position, gMatrixPalette[input.jointIndex.x].skeletonSpaceMatrix) * input.weight.x;

@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\GameObject\BaseObject.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
@@ -122,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
@@ -181,6 +183,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\GameObject\BaseObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />
@@ -192,6 +195,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
+    <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h" />
     <ClInclude Include="SEED\external\imgui\imconfig.h" />
     <ClInclude Include="SEED\external\imgui\imgui.h" />

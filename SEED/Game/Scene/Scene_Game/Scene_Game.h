@@ -13,6 +13,7 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
+#include "../Player/Player.h"
 
 #include "../Game/Editor/FieldEditor.h"
 
@@ -30,6 +31,8 @@ public:
 private:
 
     std::list<std::unique_ptr<Model>> models_;
+
+    std::unique_ptr<Player> player_;
 
     //editor
     std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;

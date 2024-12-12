@@ -32,8 +32,8 @@ void Scene_Game::Initialize(){
     };
 
     for(int i = 0; i < 32; i++){
-        models_.push_back(std::make_unique<Model>(paths[MyFunc::Random(0, (int)paths.size() - 1)]));
-        models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f}, { 32.0f,5.0f,32.0f }));
+        models_.push_back(std::make_unique<Model>(paths[MyFunc::Random(0,(int)paths.size() - 1)]));
+        models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f},{32.0f,5.0f,32.0f}));
         models_.back()->UpdateMatrix();
     }
 
@@ -41,14 +41,14 @@ void Scene_Game::Initialize(){
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetDirectionalLight()->direction_ = { -1.0f,0.0f,0.0f };
+    SEED::GetDirectionalLight()->direction_ = {-1.0f,0.0f,0.0f};
 
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->transform_.translate_ = { 0.0f,3.0f,-50.0f };
+    SEED::GetCamera()->transform_.translate_ = {0.0f,3.0f,-50.0f};
     SEED::GetCamera()->Update();
 
     ////////////////////////////////////////////////////
@@ -57,6 +57,9 @@ void Scene_Game::Initialize(){
     fieldEditor_ = std::make_unique<FieldEditor>();
     fieldEditor_->Initialize();
 
+    // Player の 初期化
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
 }
 
 void Scene_Game::Finalize(){}
@@ -68,7 +71,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ClockManager::FPS());
+    ImGui::Text("FPS: %f",ClockManager::FPS());
     ImGui::End();
 
     fieldEditor_->ShowImGui();
@@ -89,10 +92,9 @@ void Scene_Game::Draw(){
 
     // グリッドの描画
     SEED::DrawGrid();
-    
-    for(auto& model : models_){
-        model->Draw();
-    }
+
+    // Player の 描画
+    player_->Draw();
 
     // パーティクルの描画
     ParticleManager::Draw();

@@ -29,6 +29,7 @@ public:
 
 private:
 
+    std::list<std::unique_ptr<Model>> animationModels_;
     std::list<std::unique_ptr<Model>> models_;
 
     //editor

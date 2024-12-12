@@ -337,9 +337,6 @@
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp">
       <Filter>SEED\source\Manager\JsonManager</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
-      <Filter>SEED\lib\structs</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp">
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClCompile>
@@ -351,6 +348,9 @@
     </ClCompile>
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
       <Filter>Game\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -607,9 +607,6 @@
       <Filter>SEED\source\Manager\DxManager\PSO</Filter>
     </ClInclude>
     <ClInclude Include="SEED\lib\structs\DrawLocation.h">
-      <Filter>SEED\lib\structs</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Keyframe.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h">

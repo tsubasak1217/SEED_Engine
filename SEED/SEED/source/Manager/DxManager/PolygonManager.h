@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <unordered_map>
 #include <vector>
+#include <queue>
 #include <wrl/client.h>
 // local
 #include <Vector4.h>
@@ -29,10 +30,12 @@ struct ModelDrawData{
     std::vector<std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount][3];
+    std::vector<std::vector<WellForGPU>> paletteData[(int32_t)BlendMode::kBlendModeCount][3];
 
     // VBV
     static D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
     static D3D12_VERTEX_BUFFER_VIEW vbv_instance;
+    static D3D12_VERTEX_BUFFER_VIEW vbv_skinning;
     // IBV
     static D3D12_INDEX_BUFFER_VIEW ibv;
 
@@ -81,6 +84,7 @@ private:// 内部で使用する定数や列挙型
         Triangle,
         Quad,
         Line,
+        Particle,
         Triangle2D,
         Quad2D,
         Line2D,
@@ -90,6 +94,8 @@ private:// 内部で使用する定数や列挙型
         StaticQuad2D,
         StaticSprite,
         StaticLine2D,
+        // カウント用。これより後ろには追加しないこと
+        DrawOrderCount
     };
 
 
@@ -181,23 +187,21 @@ private:// 現在の描画数や頂点数などを格納する変数
     static uint32_t lineCount_;
     int vertexCountAll = 0;
 
-    // 総描画数
-    int32_t objCount2D_back_ = 0;
-    int32_t objCount2D_front_ = 0;
-    int32_t objCount3D_ = 0;
-    int32_t objCountStaticDraw_ = 0;
     // カリングモードごとの描画数
-    int32_t objCountCull_[3];
+    std::array<int32_t, 3>objCountCull_;
     // ブレンドモードごとの描画数
-    int32_t objCountBlend_[(int32_t)BlendMode::kBlendModeCount];
-
+    std::array<int32_t, (int)BlendMode::kBlendModeCount>objCountBlend_;
+    // 描画種類ごとの描画数
+    std::array<int32_t, (int)DrawOrder::DrawOrderCount> objCounts_;
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 
     // モデル用
     std::unordered_map<std::string, std::unique_ptr<ModelDrawData>> modelDrawData_;
+    // プリミティブな描画に使用するデータ
+    ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
-private:// Resource
+private:// Resource (すべての描画で1つにまとめている)
 
     // モデル用
     ComPtr<ID3D12Resource> modelVertexResource_;
@@ -206,17 +210,19 @@ private:// Resource
     ComPtr<ID3D12Resource> modelWvpResource_;
     ComPtr<ID3D12Resource> offsetResource_;
 
+    // スキニング用
+    ComPtr<ID3D12Resource> vertexInfluenceResource_;
+    ComPtr<ID3D12Resource> paletteResource_;
+
     // Map用
     VertexData* mapVertexData;
     uint32_t* mapIndexData;
     Material* mapMaterialData;
     TransformMatrix* mapTransformData;
     OffsetData* mapOffsetData;
+    VertexInfluence* mapVertexInfluenceData;
+    WellForGPU* mapPaletteData;
 
-private:
-
-    // プリミティブな描画に使用するデータ
-    ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
 private:
 

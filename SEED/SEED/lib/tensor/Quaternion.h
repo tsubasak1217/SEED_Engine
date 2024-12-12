@@ -20,6 +20,7 @@ public:
     Quaternion Normalize()const;
     Quaternion Inverse()const;
     Quaternion Slerp(const Quaternion& q, float t)const;
+    static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
     Quaternion Lerp(const Quaternion& q, float t)const;
 
     // Convert
@@ -38,6 +39,7 @@ public:
 public:
     // Operators
     Quaternion operator+(const Quaternion& q)const;
+    Quaternion operator-(const Quaternion& q)const;
     Quaternion operator*(const Quaternion& q)const;
     Quaternion operator*(float f)const;
     Quaternion operator/(float f)const;

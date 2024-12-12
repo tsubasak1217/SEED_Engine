@@ -1,7 +1,7 @@
 #pragma once
-#include "Keyframe.h"
 #include "Transform.h"
 #include "Matrix4x4.h"
+#include "Quaternion.h"
 #include "Vector3.h"
 #include <vector>
 #include <array>
@@ -22,17 +22,30 @@ struct ModelData;
 //                                  基本のアニメーション構造体                                   //
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+/*--------- キーフレーム ----------*/
+template<typename T>
+struct Keyframe{
+    T value;
+    float time;
+};
+
+using KeyframeVec3 = Keyframe<Vector3>;
+using KeyframeQuaternion = Keyframe<Quaternion>;
+
+/*------ アニメーションカーブ ------*/
 template<typename T>
 struct AnimationCurve{
     std::vector<Keyframe<T>> keyframes;
 };
 
+/*--- アニメーション(ノードごと) ---*/
 struct NodeAnimation{
     AnimationCurve<Vector3> translate;
     AnimationCurve<Quaternion> rotate;
     AnimationCurve<Vector3> scale;
 };
 
+/*------ アニメーション(全体) ------*/
 struct ModelAnimation{
     float duration;// アニメーションの長さ(秒)
     std::unordered_map<std::string, NodeAnimation> nodeAnimations;
@@ -45,7 +58,7 @@ struct ModelAnimation{
 struct ModelJoint{
     QuaternionTransform transform;// トランスフォーム情報
     Matrix4x4 localMatrix;// ローカル行列
-    Matrix4x4 skeletonMatrix;// スケルトン行列
+    Matrix4x4 skeletonSpaceMatrix;// スケルトン行列
     std::string name;// ノード名
     std::vector<int32_t> children;// 子ノードのインデックスリスト
     int32_t index;// インデックス
@@ -61,7 +74,6 @@ struct ModelSkeleton{
 struct VertexWeightData{
     float weight;// ウェイト
     int32_t vertexIndex;// ジョイントのインデックス
-
 };
 
 struct JointWeightData{
@@ -83,21 +95,8 @@ struct WellForGPU{
 };
 
 struct SkinCluster{
+    // 逆バインドポーズ行列
     std::vector<Matrix4x4> inverseBindPoseMatrices;
-
-    ComPtr<ID3D12Resource> influenceResource;
-    D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
-    std::span<VertexInfluence> mappedInfluences;
-
-    ComPtr<ID3D12Resource> paletteResource;
-    std::span<WellForGPU> mappedPalette;
-    std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> paletteSrvHandle;
-
+    // スキニング用のパレット
+    std::vector<WellForGPU> palette;
 };
-
-
-SkinCluster CreateSkinCluster(
-    const ComPtr<ID3D12Device>& device, const ModelSkeleton& skeleton, const ModelData& modelData
-);
-
-void Update(SkinCluster& skinCluster, const ModelSkeleton& skeleton);

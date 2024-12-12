@@ -80,6 +80,13 @@ Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
 
+// 行列から平行移動成分を取り出す
+Vector3 ExtractTranslation(const Matrix4x4& matrix);
+// 行列から拡大縮小成分を取り出す
+Vector3 ExtractScale(const Matrix4x4& matrix);
+// 行列から回転成分を取り出す
+Vector3 ExtractRotation(const Matrix4x4& matrix);
+
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
 Matrix3x3 InverseMatrix(const Matrix3x3& matrix);

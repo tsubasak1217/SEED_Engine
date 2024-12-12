@@ -173,16 +173,14 @@ void Model::UpdatePalette(){
     if(!isAnimation_ or !hasAnimation_) { return; }
 
     // アニメーション適用後のスケルトンを取得
-    auto& animations = ModelManager::GetModelData(modelName_)->animations;
-    ModelSkeleton skeleton = ModelManager::GetModelData(modelName_)->defaultSkeleton;
-    skeleton = ModelManager::AnimatedSkeleton(
-        animations[animationName_],
-        skeleton,
+    const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+        ModelManager::GetModelData(modelName_)->animations[animationName_],
+        ModelManager::GetModelData(modelName_)->defaultSkeleton,
         animationTime_
     );
 
     // スキニング用のパレットの更新
-    auto inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
+    const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
     palette_.resize(skeleton.joints.size());
     for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
 
@@ -196,7 +194,4 @@ void Model::UpdatePalette(){
         palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
             Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
     }
-
-    int a;
-    a = 0;
 }

@@ -149,6 +149,18 @@
     <Filter Include="Game\Editor">
       <UniqueIdentifier>{33f87c9e-4132-416e-95cb-22191112e837}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\source\Manager\CollisionManager">
+      <UniqueIdentifier>{f42daa87-99b2-4642-8a35-6eaa89668988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\source\Object\Collision">
+      <UniqueIdentifier>{c573d485-4cd6-4118-bdf7-f974e2dfce0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects">
+      <UniqueIdentifier>{ce731463-61bf-4b16-af09-9285481234b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Enums">
+      <UniqueIdentifier>{c8b6c5d7-fc94-4aa9-940b-d042aaa49b3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -351,6 +363,12 @@
     </ClCompile>
     <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp">
+      <Filter>SEED\source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Object\Collision\Collider.cpp">
+      <Filter>SEED\source\Object\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -576,15 +594,6 @@
     <ClInclude Include="SEED\source\Manager\ParticleManager\ParticleManager.h">
       <Filter>SEED\source\Manager\ParticleManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range1D.h">
-      <Filter>SEED\lib\structs</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range2D.h">
-      <Filter>SEED\lib\structs</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range3D.h">
-      <Filter>SEED\lib\structs</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h">
       <Filter>SEED\source\Manager\ParticleManager\Particles</Filter>
     </ClInclude>
@@ -632,6 +641,24 @@
     </ClInclude>
     <ClInclude Include="Game\Editor\FieldEditor.h">
       <Filter>Game\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h">
+      <Filter>SEED\source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Collision\Collider.h">
+      <Filter>SEED\source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enums\ObjectType.h">
+      <Filter>Game\Objects\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range3D.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range2D.h">
+      <Filter>SEED\lib\tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range1D.h">
+      <Filter>SEED\lib\tensor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

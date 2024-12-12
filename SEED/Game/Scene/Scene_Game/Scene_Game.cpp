@@ -26,9 +26,9 @@ void Scene_Game::Initialize(){
     std::vector<std::string>paths = {
         //"bunny.obj",
         //"cube.obj",
-        "SimpleSkin_multiMesh.gltf",
-        "simpleSkin.gltf",
+        "sneakWalk.gltf",
         "walk.gltf",
+        "SimpleSkin_multiMesh.gltf",
     };
 
     std::vector<std::string>paths2 = {
@@ -131,13 +131,17 @@ void Scene_Game::Draw(){
     // グリッドの描画
     SEED::DrawGrid();
 
-    for(auto& model : models_){
-        model->Draw();
-    }
+    //for(auto& model : models_){
+    //    model->Draw();
+    //}
 
     for(auto& model : animationModels_){
         model->Draw();
     }
+
+    //SEED::DrawCylinder({ 0.0f,3.0f,0.0f }, { 10.0f,8.0f,6.0f },1.0f,8);
+    //SEED::DrawSphere({ 0.0f,3.0f,0.0f }, {10.0f,3.0f,5.0f}, 8);
+    //SEED::DrawSphere({ 10.0f,8.0f,6.0f }, 1.0f, 8);
 
     // パーティクルの描画
     ParticleManager::Draw();

@@ -513,10 +513,13 @@ ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
 ModelSkeleton ModelManager::AnimatedSkeleton(
     const ModelAnimation& modelAnimation, const ModelSkeleton& defaultSkeleton, float time
 ){
-    ModelSkeleton skeleton = defaultSkeleton;
+    ModelSkeleton skeleton;
+    skeleton.joints.resize(defaultSkeleton.joints.size());
+    int idx = 0;
 
-    for(auto& joint : skeleton.joints){
-        if(auto it = modelAnimation.nodeAnimations.find(joint.name); it != modelAnimation.nodeAnimations.end()){
+    // 指定した時間の値を取得
+    for(auto& defaultJoint : defaultSkeleton.joints){
+        if(auto it = modelAnimation.nodeAnimations.find(defaultJoint.name); it != modelAnimation.nodeAnimations.end()){
 
             // ノードアニメーションを取得
             const NodeAnimation& nodeAnim = it->second;
@@ -528,10 +531,17 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             Vector3 scale = instance_->CalcMomentValue(nodeAnim.scale.keyframes, time);
 
             // トランスフォーム情報を更新
-            joint.transform.translate_ = translate;
-            joint.transform.rotate_ = rotate;
-            joint.transform.scale_ = scale;
+            skeleton.joints[idx].transform.translate_ = translate;
+            skeleton.joints[idx].transform.rotate_ = rotate;
+            skeleton.joints[idx].transform.scale_ = scale;
+        } else{
+            // ノードアニメーションがない場合はデフォルトの値を設定
+            skeleton.joints[idx].transform = defaultJoint.transform;
+            skeleton.joints[idx].skeletonSpaceMatrix = IdentityMat4();
         }
+
+        skeleton.joints[idx].parent = defaultJoint.parent;
+        idx++;
     }
 
     // スケルトン行列を更新

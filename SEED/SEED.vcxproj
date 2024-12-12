@@ -112,7 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\GameObject\BaseObject.cpp" />
+    <ClCompile Include="Game\Food\Food.cpp" />
+    <ClCompile Include="Game\GameObject\GameObject.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
@@ -185,7 +186,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\GameObject\BaseObject.h" />
+    <ClInclude Include="Game\Food\Food.h" />
+    <ClInclude Include="Game\GameObject\GameObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />

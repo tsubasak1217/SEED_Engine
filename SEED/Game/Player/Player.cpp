@@ -8,13 +8,11 @@
 #include "Model.h"
 
 Player::Player()
-    : BaseObject("Player"){}
+    : GameObject("Player"){}
 
 Player::~Player(){}
 
 void Player::Initialize(){
-    // model 
-    model_ = std::make_unique<Model>("teapot.obj");
     // Quaternion を off に
     model_->isRotateWithQuaternion_ = false;
 

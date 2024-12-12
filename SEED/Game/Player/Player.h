@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "../GameObject/BaseObject.h"
+#include "../GameObject/GameObject.h"
 
 class IPlayerBehavior;
 class Player
-    : public BaseObject{
+    : public GameObject{
 public:
     Player();
     ~Player();

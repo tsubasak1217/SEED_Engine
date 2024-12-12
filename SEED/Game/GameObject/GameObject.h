@@ -9,11 +9,11 @@ class Model;
 struct Vector3;
 struct Quaternion;
 
-class BaseObject{
+class GameObject{
 public:
-    BaseObject();
-    BaseObject(const std::string& _name);
-    ~BaseObject();
+    GameObject();
+    GameObject(const std::string& _name);
+    virtual ~GameObject();
 
     virtual void Initialize() = 0;
     virtual void Update() = 0;

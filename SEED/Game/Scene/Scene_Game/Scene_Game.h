@@ -29,9 +29,7 @@ public:
     void Draw()override;
 
 private:
-
-    std::list<std::unique_ptr<Model>> models_;
-
+    // Objects
     std::unique_ptr<Player> player_;
 
     //editor

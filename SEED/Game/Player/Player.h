@@ -4,7 +4,7 @@
 
 #include "../GameObject/BaseObject.h"
 
-
+class IPlayerBehavior;
 class Player
     : public BaseObject{
 public:
@@ -14,6 +14,6 @@ public:
     void Initialize()override;
     void Update()override;
 private:
-
+    std::unique_ptr<IPlayerBehavior> currentBehavior_;
 private:
 };

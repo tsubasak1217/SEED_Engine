@@ -91,8 +91,8 @@ struct Vector2 final {
 	// DEVIDE---------------------------------
 	Vector2 operator/(float obj) const {
 		return  {
-		y / obj,
-		x / obj
+		x / obj,
+		y / obj
 		};
 	}
 	Vector2 operator/(const Vector2& obj) const {

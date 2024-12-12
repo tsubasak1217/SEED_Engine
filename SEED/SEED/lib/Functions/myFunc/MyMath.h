@@ -33,6 +33,15 @@ public:
     // ベクトルの長さを返す関数 (3D)
     static float Length(const Vector3& vec);
 
+    // 2点間の距離の2乗を計算する関数 (2D)
+    static float LengthSq(const Vector2& pos1,const Vector2& pos2);
+    // 2点間の距離の2乗を計算する関数 (3D)
+    static float LengthSq(const Vector3& pos1,const Vector3& pos2);
+    // ベクトルの長さの2乗を返す関数 (2D)
+    static float LengthSq(const Vector2& vec);
+    // ベクトルの長さの2乗を返す関数 (3D)
+    static float LengthSq(const Vector3& vec);
+
     /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
     // ベクトルを正規化する関数 (2D)

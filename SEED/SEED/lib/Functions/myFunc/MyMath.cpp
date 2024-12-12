@@ -34,6 +34,31 @@ float MyMath::Length(const Vector3& vec)
     return std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }
 
+float MyMath::LengthSq(const Vector2& pos1,const Vector2& pos2)
+{
+    float xLength = (pos1.x - pos2.x);
+    float yLength = (pos1.y - pos2.y);
+    return xLength * xLength + yLength * yLength;
+}
+
+float MyMath::LengthSq(const Vector3& pos1,const Vector3& pos2)
+{
+    float xLength = (pos1.x - pos2.x);
+    float yLength = (pos1.y - pos2.y);
+    float zLength = (pos1.z - pos2.z);
+    return xLength * xLength + yLength * yLength + zLength * zLength;
+}
+
+float MyMath::LengthSq(const Vector2& vec)
+{
+    return vec.x * vec.x + vec.y * vec.y;
+}
+
+float MyMath::LengthSq(const Vector3& vec)
+{
+    return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
+}
+
 /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
 Vector2 MyMath::Normalize(const Vector2& vec)

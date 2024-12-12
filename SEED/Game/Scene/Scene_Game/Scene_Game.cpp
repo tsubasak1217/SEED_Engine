@@ -20,24 +20,6 @@ void Scene_Game::Initialize(){
     SEED::SetCamera("debug");
 
     ////////////////////////////////////////////////////
-    //  モデル生成
-    ////////////////////////////////////////////////////
-
-    std::vector<std::string>paths = {
-        //"bunny.obj",
-        "cube.obj",
-        "sphere.obj",
-        "Player_result.gltf",
-        "teapot.obj",
-    };
-
-    for(int i = 0; i < 32; i++){
-        models_.push_back(std::make_unique<Model>(paths[MyFunc::Random(0,(int)paths.size() - 1)]));
-        models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f},{32.0f,5.0f,32.0f}));
-        models_.back()->UpdateMatrix();
-    }
-
-    ////////////////////////////////////////////////////
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
 
@@ -76,6 +58,8 @@ void Scene_Game::Update(){
 
     fieldEditor_->ShowImGui();
 #endif
+
+    player_->Update();
 
     /*========================= 各状態の更新 ==========================*/
     currentState_->Update();

@@ -7,6 +7,7 @@
 
 #include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
 
+
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     ChangeState(new GameState_Play(this));
@@ -39,9 +40,15 @@ void Scene_Game::Initialize(){
     fieldEditor_ = std::make_unique<FieldEditor>();
     fieldEditor_->Initialize();
 
+    // eggManager の 初期化 (Player に set するので 先に 初期化)
+    eggManager_ = std::make_unique<EggManager>();
+    eggManager_->Initialize();
+
     // Player の 初期化
     player_ = std::make_unique<Player>();
     player_->Initialize();
+     // EggManager を set
+    player_->SetEggManager(eggManager_.get());
 }
 
 void Scene_Game::Finalize(){}
@@ -59,7 +66,9 @@ void Scene_Game::Update(){
     fieldEditor_->ShowImGui();
 #endif
 
+    /*========================== Objects =============================*/
     player_->Update();
+    eggManager_->Update();
 
     /*========================= 各状態の更新 ==========================*/
     currentState_->Update();
@@ -69,7 +78,6 @@ void Scene_Game::Update(){
 
     // fieldEditorの更新
     fieldEditor_->Update();
-
 }
 
 void Scene_Game::Draw(){
@@ -77,7 +85,8 @@ void Scene_Game::Draw(){
     // グリッドの描画
     SEED::DrawGrid();
 
-    // Player の 描画
+    /*========================== Objects =============================*/
+    eggManager_->Draw();
     player_->Draw();
 
     // パーティクルの描画

@@ -13,7 +13,9 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
+
 #include "../Player/Player.h"
+#include "../Egg/EggManager.h"
 
 #include "../Game/Editor/FieldEditor.h"
 
@@ -30,7 +32,8 @@ public:
 
 private:
     // Objects
-    std::unique_ptr<Player> player_;
+    std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<EggManager> eggManager_ = nullptr;
 
     //editor
     std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;

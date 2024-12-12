@@ -10,6 +10,7 @@ public:
     IPlayerBehavior(Player* _player);
     virtual ~IPlayerBehavior();
 
+    virtual void Initialize() = 0;
     virtual void Update() = 0;
 protected:
     // この Behavior が 動かす Player

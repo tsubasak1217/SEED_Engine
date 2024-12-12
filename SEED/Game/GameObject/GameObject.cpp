@@ -5,14 +5,14 @@
 GameObject::GameObject(){}
 
 GameObject::GameObject(const std::string& _name)
-    :name_(_name){
-    // model 読み込み
-    model_ = std::make_unique<Model>("teapot.obj");
-}
+    :name_(_name){}
 
 GameObject::~GameObject(){}
 
 void GameObject::Draw(){
+    if(!isAlive_){
+        return; // skip
+    }
     model_->Draw();
 }
 

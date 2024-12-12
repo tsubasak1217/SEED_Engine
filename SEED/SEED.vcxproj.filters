@@ -364,7 +364,13 @@
     <ClCompile Include="Game\PlayerBehavior\PlayerRootBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Food\Food.cpp">
+    <ClCompile Include="Game\Egg\Egg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Egg\EggManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayerBehavior\PlayerThrowEggBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -655,7 +661,9 @@
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\PlayerBehavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\PlayerBehavior\PlayerRootBehavior.h" />
-    <ClInclude Include="Game\Food\Food.h" />
+    <ClInclude Include="Game\Egg\Egg.h" />
+    <ClInclude Include="Game\Egg\EggManager.h" />
+    <ClInclude Include="Game\PlayerBehavior\PlayerThrowEggBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

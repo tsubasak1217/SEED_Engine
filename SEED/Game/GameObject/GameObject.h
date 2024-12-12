@@ -20,10 +20,19 @@ public:
     void Draw();
 
 protected:
+    // 生きているかどうか 
+    //  死んでたら 描画スキップ
+    bool isAlive_ = false;
+
     std::unique_ptr<Model> model_;
 private:
     std::string name_ = "";
 public:
+    // isAlive の アクセッサー
+    bool GetIsAlive()const{ return isAlive_; }
+    void SetIsAlive(bool _isAlive){ isAlive_ = _isAlive; }
+
+    // Name の アクセッサー
     const std::string& GetName()const{ return name_; }
     void SetName(const std::string& _name){ name_ = _name.c_str(); }
 

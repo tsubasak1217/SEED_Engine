@@ -13,14 +13,15 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
+#include "GameState_Play.h"
 
 #include "../Game/Editor/FieldEditor.h"
 
-class Scene_Game : public Scene_Base{
+
+class Scene_Game : public IScene{
 
 public:
-    Scene_Game() = default;
-    Scene_Game(SceneManager* pSceneManager);
+    Scene_Game();
     ~Scene_Game()override;
     void Initialize()override;
     void Finalize()override;
@@ -29,9 +30,4 @@ public:
 
 private:
 
-    std::list<std::unique_ptr<Model>> animationModels_;
-    std::list<std::unique_ptr<Model>> models_;
-
-    //editor
-    std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;
 };

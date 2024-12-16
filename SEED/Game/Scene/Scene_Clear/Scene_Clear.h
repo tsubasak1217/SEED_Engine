@@ -2,9 +2,9 @@
 #include "Scene_Base.h"
 #include <memory>
 
-class Scene_Clear : public Scene_Base{
+class Scene_Clear : public IScene{
 public:
-    Scene_Clear(SceneManager* pSceneManager);
+    Scene_Clear();
     ~Scene_Clear()override;
     void Initialize()override;
     void Finalize()override;

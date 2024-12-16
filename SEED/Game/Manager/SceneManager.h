@@ -24,8 +24,8 @@ private:
     SceneManager& operator=(const SceneManager& other) = delete;
 
 public:
-    static void ChangeScene(Scene_Base* newScene);
+    static void ChangeScene(IScene* nextScene);
 
 private:
-    static std::unique_ptr<Scene_Base> pScene_;
+    static std::unique_ptr<IScene> currentScene_;
 };

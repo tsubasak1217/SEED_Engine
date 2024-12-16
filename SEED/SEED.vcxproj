@@ -114,6 +114,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
+    <ClCompile Include="Game\Objects\Bullet.cpp" />
+    <ClCompile Include="Game\Objects\ColliderObject.cpp" />
+    <ClCompile Include="Game\Objects\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Player.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
     <ClCompile Include="Game\Scene\Base\State_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
@@ -186,7 +190,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Objects\Bullet.h" />
+    <ClInclude Include="Game\Objects\ColliderObject.h" />
+    <ClInclude Include="Game\Objects\Enemy.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
+    <ClInclude Include="Game\Objects\Player.h" />
     <ClInclude Include="Game\Scene\Base\Scene_Base.h" />
     <ClInclude Include="Game\Scene\Base\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />

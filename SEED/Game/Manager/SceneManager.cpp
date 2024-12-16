@@ -4,10 +4,10 @@
 #include "Scene_Clear/Scene_Clear.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
-std::unique_ptr<Scene_Base> SceneManager::pScene_ = nullptr;
+std::unique_ptr<IScene> SceneManager::currentScene_ = nullptr;
 
 SceneManager::SceneManager(){
-    pScene_.reset(new Scene_Game(instance_));
+    currentScene_.reset(new Scene_Title());
 }
 
 SceneManager::~SceneManager(){
@@ -20,11 +20,16 @@ void SceneManager::Initialize(){
 }
 
 void SceneManager::Update(){
-    pScene_->Update();
+
+    if(currentScene_->GetNextScene() != nullptr){
+        ChangeScene(currentScene_->GetNextScene());
+    }
+
+    currentScene_->Update();
 }
 
 void SceneManager::Draw(){
-    pScene_->Draw();
+    currentScene_->Draw();
 }
 
 SceneManager* SceneManager::GetInstance(){
@@ -36,6 +41,7 @@ SceneManager* SceneManager::GetInstance(){
     return instance_;
 }
 
-void SceneManager::ChangeScene(Scene_Base* newScene){
-    pScene_.reset(newScene);
+void SceneManager::ChangeScene(IScene* newScene){
+    currentScene_.reset(newScene);
+    currentScene_->Initialize();
 }

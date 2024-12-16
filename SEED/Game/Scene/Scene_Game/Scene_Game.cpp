@@ -26,9 +26,10 @@ void Scene_Game::Initialize(){
     std::vector<std::string>paths = {
         //"bunny.obj",
         //"cube.obj",
-        "simpleSkin.gltf",
+        //"SimpleSkin_multiMesh.gltf",
+        //"simpleSkin.gltf",
         "walk.gltf",
-        "SimpleSkin_multiMesh.gltf",
+        "sneakWalk.gltf",
     };
 
     std::vector<std::string>paths2 = {
@@ -38,7 +39,7 @@ void Scene_Game::Initialize(){
     };
 
     for(int i = 0; i < 32; i++){
-        animationModels_.push_back(std::make_unique<Model>(paths[i % 1]));
+        animationModels_.push_back(std::make_unique<Model>(paths[i % 2]));
         animationModels_.back()->scale_ = { 5.0f,5.0f,5.0f };
         animationModels_.back()->translate_ = { 10.0f * i,0.0f,-5.0f };
         animationModels_.back()->rotate_ = { 0.0f,3.14f,0.0f };
@@ -100,15 +101,15 @@ void Scene_Game::Update(){
         model->Update();
     }
 
-    for(auto& model : models_){
-        model->Update();
-    }
+    //for(auto& model : models_){
+    //    model->Update();
+    //}
 
     // パーティクルの更新
-    ParticleManager::Update();
+    //ParticleManager::Update();
 
     // fieldEditorの更新
-    fieldEditor_->Update();
+    //fieldEditor_->Update();
 
 }
 
@@ -125,7 +126,7 @@ void Scene_Game::Draw(){
         model->Draw();
     }
 
-    SEED::DrawCapsule({ 0.0f,3.0f,0.0f }, { 10.0f,8.0f,6.0f },1.0f,8);
+    //SEED::DrawCapsule({ 0.0f,3.0f,0.0f }, { 10.0f,8.0f,6.0f },1.0f,8);
     //SEED::DrawSphere({ 0.0f,3.0f,0.0f }, {10.0f,3.0f,5.0f}, 8);
     //SEED::DrawSphere({ 10.0f,8.0f,6.0f }, 1.0f, 8);
 
@@ -133,5 +134,5 @@ void Scene_Game::Draw(){
     ParticleManager::Draw();
 
     // fieldEditorの描画
-    fieldEditor_->Draw();
+    //fieldEditor_->Draw();
 }

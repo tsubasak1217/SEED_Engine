@@ -59,11 +59,7 @@ void ModelManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
-    LoadModel("Player_result.gltf");
 
-    LoadModel("cube.obj");
-    LoadModel("sphere.obj");
-    //LoadModel("ground.obj");
 }
 
 void ModelManager::LoadModel(const std::string& filename){
@@ -504,6 +500,8 @@ ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
         skeleton.jointMap.emplace(joint.name, joint.index);
     }
 
+    UpdateSkeleton(&skeleton);
+
     return skeleton;
 }
 
@@ -645,7 +643,7 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
             continue;// jointが存在しない場合はスキップ
         }
 
-        palette.inverseBindPoseMatrices[it->second] = jointWeight.second.inverseBindPoseMatrix;// InverseBindPoseMatrixを格納
+        palette.inverseBindPoseMatrices[(*it).second] = jointWeight.second.inverseBindPoseMatrix;// InverseBindPoseMatrixを格納
 
         for(const auto& vertexWeight : jointWeight.second.vertexWeights){// 頂点ウェイトを格納
 
@@ -658,6 +656,7 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
                 // 格納場所を取得
                 auto& currentInfluence = modelData->meshes[meshIdx].vertexInfluences[vertexWeight.vertexIndex];
 
+
                 // ウェイト、インデックス情報を格納していく
                 for(uint32_t index = 0; index < kMaxInfluence; ++index){// 空いている場所に格納
                     if(currentInfluence.weights[index] == 0.0f){// weight == 0 が空の状態なのでその場所にweightとindexを格納
@@ -669,66 +668,6 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
             }
         }
     }
-
-
-    // すべてのメッシュをループ
-    //for(auto& mesh : modelData->meshes) {
-    //    // 頂点インフルエンスをメッシュの頂点数分初期化
-    //    mesh.vertexInfluences.resize(mesh.vertices.size());
-    //    for(auto& influence : mesh.vertexInfluences) {
-    //        std::fill(std::begin(influence.weights), std::end(influence.weights), 0.0f);
-    //        std::fill(std::begin(influence.jointIndices), std::end(influence.jointIndices), -1);
-    //    }
-    //}
-
-    // 関節ウェイトデータをループ
-    //for(const auto& [jointName, jointData] : modelData->jointWeightData) {
-    //    auto jointIndexIt = modelData->defaultSkeleton.jointMap.find(jointName);
-    //    if(jointIndexIt == modelData->defaultSkeleton.jointMap.end()) {
-    //        continue; // 関節がスケルトンに存在しない場合スキップ
-    //    }
-    //    int32_t jointIndex = jointIndexIt->second;
-
-    //    // 頂点ウェイトをループ
-    //    for(const auto& vertexWeight : jointData.vertexWeights) {
-    //        int32_t vertexIndex = vertexWeight.vertexIndex;
-    //        float weight = vertexWeight.weight;
-
-    //        // 頂点が属するメッシュを検索
-    //        for(auto& mesh : modelData->meshes) {
-    //            if(vertexIndex < 0 || vertexIndex >= static_cast<int32_t>(mesh.vertices.size())) {
-    //                vertexIndex -= static_cast<int32_t>(mesh.vertices.size());
-    //                continue; // 頂点インデックスがこのメッシュの範囲外なら次のメッシュへ
-    //            }
-
-    //            // 該当する頂点のインフルエンスにウェイトを適用
-    //            auto& vertexInfluence = mesh.vertexInfluences[vertexIndex];
-
-    //            // 空きスロットに格納
-    //            for(uint32_t i = 0; i < kMaxInfluence; ++i) {
-    //                if(vertexInfluence.weights[i] == 0.0f) {
-    //                    vertexInfluence.weights[i] = weight;
-    //                    vertexInfluence.jointIndices[i] = jointIndex;
-    //                    break;
-    //                }
-    //            }
-
-    //            // ウェイトが小さい場合はスキップ
-    //            if(weight <= 0.0f) {
-    //                continue;
-    //            }
-
-    //            // ウェイトが大きい順にソートして優先度を管理
-    //            for(uint32_t i = 0; i < kMaxInfluence - 1; ++i) {
-    //                if(vertexInfluence.weights[i] < vertexInfluence.weights[i + 1]) {
-    //                    std::swap(vertexInfluence.weights[i], vertexInfluence.weights[i + 1]);
-    //                    std::swap(vertexInfluence.jointIndices[i], vertexInfluence.jointIndices[i + 1]);
-    //                }
-    //            }
-    //            break; // 対象のメッシュが見つかった場合は終了
-    //        }
-    //    }
-    //}
 }
 
 

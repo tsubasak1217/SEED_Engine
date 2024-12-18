@@ -208,10 +208,6 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     //==================================================================//
     //                       PSO,rootSignature
     //==================================================================//
-    
-    // ふつうのPSO  [blendModeの数][形状のパターン数]
-    //ComPtr<ID3D12PipelineState> commonPipelineState[(int)BlendMode::kBlendModeCount][2];
-    //ComPtr<ID3D12RootSignature> commonRootSignature[(int)BlendMode::kBlendModeCount][2];
 
     // アニメーションしないPSO
     Pipeline pipelines[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];

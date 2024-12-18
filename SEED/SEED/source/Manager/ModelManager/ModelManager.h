@@ -19,6 +19,7 @@
 class ModelManager{
 
     friend class Model;
+    friend class PolygonManager;
 
 private:
 

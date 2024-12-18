@@ -1,6 +1,7 @@
 // local
 #include <PolygonManager.h>
 #include <DxManager.h>
+#include <SEED.h>
 #include <MyMath.h>
 #include <MyFunc.h>
 #include <Environment.h>
@@ -810,6 +811,29 @@ void PolygonManager::AddModel(Model* model){
     objCountCull_[(int)model->cullMode - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
     modelIndexCount_++;
+
+    // モデルのスケルトンを描画
+    if(model->isSkeletonVisible_){
+
+        const auto& modeldata = ModelManager::GetModelData(model->modelName_);
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            modeldata->animations[model->animationName_],
+            modeldata->defaultSkeleton,
+            model->animationTime_
+        );
+
+        for(int i = 0; i < skeleton.joints.size(); i++){
+
+            if(skeleton.joints[i].parent){
+                Vector3 point[2];
+                point[0] = Vector3(0.0f,0.0f,0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
+                point[1] = Vector3(0.0f, 0.0f, 0.0f) * 
+                    skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+
+                SEED::DrawLine(point[0], point[1], {0.0f,0.0f,1.0f,1.0f});
+            }
+        }
+    }
 }
 
 

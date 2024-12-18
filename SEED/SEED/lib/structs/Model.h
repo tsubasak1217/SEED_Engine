@@ -52,6 +52,7 @@ public:// アクセッサ
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
     bool GetIsAnimation()const{ return isAnimation_; }
+    void SetIsSkeletonVisible(bool isSkeletonVisible){ isSkeletonVisible_ = isSkeletonVisible; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -104,6 +105,7 @@ public:
 private:
     bool hasAnimation_ = false;// アニメーションが存在するか
     bool isAnimation_ = false;// アニメーションを行うか
+    bool isSkeletonVisible_ = false;// スケルトンを表示するか
     float animationDuration_ = 0.0f;// アニメーション自体の時間
     float totalAnimationTime_ = 0.0f;// アニメーションの総再生時間
     bool isAnimationLoop_ = false;// アニメーションをループさせるか

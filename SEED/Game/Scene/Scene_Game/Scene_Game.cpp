@@ -27,7 +27,7 @@ void Scene_Game::Initialize(){
         //"bunny.obj",
         //"cube.obj",
         //"SimpleSkin_multiMesh.gltf",
-        //"simpleSkin.gltf",
+        "simpleSkin.gltf",
         "walk.gltf",
         "sneakWalk.gltf",
     };
@@ -38,24 +38,25 @@ void Scene_Game::Initialize(){
         "sphere.obj",
     };
 
-    for(int i = 0; i < 32; i++){
-        animationModels_.push_back(std::make_unique<Model>(paths[i % 2]));
+    for(int i = 0; i < 1; i++){
+        animationModels_.push_back(std::make_unique<Model>(paths[i % 1]));
         animationModels_.back()->scale_ = { 5.0f,5.0f,5.0f };
         animationModels_.back()->translate_ = { 10.0f * i,0.0f,-5.0f };
         animationModels_.back()->rotate_ = { 0.0f,3.14f,0.0f };
-        animationModels_.back()->StartAnimation(0, true, 0.05f * i);
+        animationModels_.back()->StartAnimation(0, true, 1.0f * (i + 1));
+        animationModels_.back()->SetIsSkeletonVisible(true);
         animationModels_.back()->isRotateWithQuaternion_ = false;
         //models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f}, { 32.0f,5.0f,32.0f }));
         animationModels_.back()->UpdateMatrix();
     }
 
-    for(int i = 0; i < 3; i++){
-        models_.push_back(std::make_unique<Model>(paths2[i]));
-        models_.back()->scale_ = { 1.0f,1.0f,1.0f };
-        models_.back()->translate_ = { 10.0f * i,0.0f,10.0f };
-        models_.back()->isRotateWithQuaternion_ = false;
-        models_.back()->UpdateMatrix();
-    }
+    //for(int i = 0; i < 3; i++){
+    //    models_.push_back(std::make_unique<Model>(paths2[i]));
+    //    models_.back()->scale_ = { 1.0f,1.0f,1.0f };
+    //    models_.back()->translate_ = { 10.0f * i,0.0f,10.0f };
+    //    models_.back()->isRotateWithQuaternion_ = false;
+    //    models_.back()->UpdateMatrix();
+    //}
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -68,7 +69,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->transform_.translate_ = { 0.0f,2.0f,-15.0f };
+    SEED::GetCamera()->transform_.translate_ = { 0.0f,2.0f,-30.0f };
     SEED::GetCamera()->Update();
 
     ////////////////////////////////////////////////////
@@ -116,7 +117,7 @@ void Scene_Game::Update(){
 void Scene_Game::Draw(){
 
     // グリッドの描画
-    SEED::DrawGrid();
+    //SEED::DrawGrid();
 
     //for(auto& model : models_){
     //    model->Draw();
@@ -131,7 +132,7 @@ void Scene_Game::Draw(){
     //SEED::DrawSphere({ 10.0f,8.0f,6.0f }, 1.0f, 8);
 
     // パーティクルの描画
-    ParticleManager::Draw();
+    //ParticleManager::Draw();
 
     // fieldEditorの描画
     //fieldEditor_->Draw();

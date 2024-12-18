@@ -152,7 +152,6 @@ private:// インスタンス
     static SEED* instance_;
 
 private:// 監視用変数
-    LeakChecker* leakChecker_ = nullptr;
 
 public:// ウインドウに関する変数
     int kClientWidth_;

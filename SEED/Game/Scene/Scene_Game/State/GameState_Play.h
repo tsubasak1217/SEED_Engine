@@ -11,8 +11,8 @@
 #include <State_Base.h>
 #include <Sprite.h>
 #include <Player.h>
-#include <Enemy.h>
-#include <ColliderObject.h>
+#include "Commands/ICommand.h"
+#include "Commands/InputHandler.h"
 
 class Scene_Game;
 class GameState_Exit;
@@ -33,6 +33,7 @@ public:
 
 private:
 
+    ICommand* command_;
+    InputHandler* inputHandler_;
     std::unique_ptr<Player> player_;
-    std::list<std::unique_ptr<Enemy>> enemies_;
 };

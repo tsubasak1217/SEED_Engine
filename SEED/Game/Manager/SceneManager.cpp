@@ -7,7 +7,7 @@ SceneManager* SceneManager::instance_ = nullptr;
 std::unique_ptr<IScene> SceneManager::currentScene_ = nullptr;
 
 SceneManager::SceneManager(){
-    currentScene_.reset(new Scene_Title());
+    currentScene_.reset(new Scene_Game());
 }
 
 SceneManager::~SceneManager(){

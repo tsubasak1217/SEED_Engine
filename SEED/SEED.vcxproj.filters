@@ -161,6 +161,9 @@
     <Filter Include="Game\Objects\Enums">
       <UniqueIdentifier>{c8b6c5d7-fc94-4aa9-940b-d042aaa49b3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Commands">
+      <UniqueIdentifier>{fa76d3be-c3c4-49f6-b427-39c98ea3b75b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -370,17 +373,14 @@
     <ClCompile Include="SEED\source\Object\Collision\Collider.cpp">
       <Filter>SEED\source\Object\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy.cpp">
-      <Filter>Game\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Bullet.cpp">
-      <Filter>Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Player.cpp">
       <Filter>Game\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\ColliderObject.cpp">
-      <Filter>Game\Objects</Filter>
+    <ClCompile Include="Game\Objects\Commands\MoveCommand.cpp">
+      <Filter>Game\Objects\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Commands\InputHandler.cpp">
+      <Filter>Game\Objects\Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -675,14 +675,14 @@
     <ClInclude Include="Game\Objects\Player.h">
       <Filter>Game\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy.h">
-      <Filter>Game\Objects</Filter>
+    <ClInclude Include="Game\Objects\Commands\ICommand.h">
+      <Filter>Game\Objects\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Bullet.h">
-      <Filter>Game\Objects</Filter>
+    <ClInclude Include="Game\Objects\Commands\InputHandler.h">
+      <Filter>Game\Objects\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\ColliderObject.h">
-      <Filter>Game\Objects</Filter>
+    <ClInclude Include="Game\Objects\Commands\MoveCommand.h">
+      <Filter>Game\Objects\Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

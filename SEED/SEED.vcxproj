@@ -113,6 +113,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
+    <ClCompile Include="Game\Objects\BaseObject.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
     <ClCompile Include="Game\Scene\Base\State_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
@@ -178,6 +179,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Objects\BaseObject.h" />
     <ClInclude Include="Game\Scene\Base\Scene_Base.h" />
     <ClInclude Include="Game\Scene\Base\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />

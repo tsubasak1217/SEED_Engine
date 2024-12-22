@@ -146,6 +146,15 @@
     <Filter Include="SEED\source\Manager\JsonManager">
       <UniqueIdentifier>{6b4c708f-b8ac-4bee-bf2d-471171dcd6d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects">
+      <UniqueIdentifier>{fce0e4c0-eccd-48ec-bcb6-962f6c23abbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{4ba38caf-3e34-43eb-b4f6-07776279e18c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Enemy">
+      <UniqueIdentifier>{5e14fa05-798f-4971-a494-a891dda949ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -333,6 +342,9 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp">
       <Filter>SEED\source\Manager\JsonManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BaseObject.cpp">
+      <Filter>Game\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -608,6 +620,9 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h">
       <Filter>SEED\source\Manager\JsonManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BaseObject.h">
+      <Filter>Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

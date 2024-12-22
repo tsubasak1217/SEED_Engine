@@ -1,6 +1,9 @@
 #pragma once
 #include <random>
 #include <cstdint>
+#include <map>
+#include <vector>
+#include <string>
 #include "Vector3.h"
 #include "Vector2.h"
 #include "Range1D.h"
@@ -25,6 +28,7 @@ public:
 
     // ランダムな方向を返す関数
     static Vector3 RandomVector();
+    static Vector2 RandomVector2();
 
     // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
     static int32_t Spiral(int32_t input,int32_t min, int32_t max);
@@ -32,5 +36,36 @@ public:
 
     // ベクトルから三次元の回転角を算出する関数
     static Vector3 CalcRotateVec(const Vector3& vec);
+
+    // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)
+    template <typename T>
+    static int32_t ToBack(std::map<std::string, T>& myMap, const std::string& token);
 };
 
+template<typename T>
+inline int32_t MyFunc::ToBack(std::map<std::string, T>& myMap, const std::string& token){
+    // 前後に分けるための一時コンテナ
+    std::vector<std::pair<std::string, T>> withToken;
+    std::vector<std::pair<std::string, T>> withoutToken;
+
+    // 分ける処理
+    for(const auto& [key, value] : myMap) {
+        if(key.find(token) != std::string::npos) {
+            withToken.push_back({ key, value }); // トークンを含む
+        } else {
+            withoutToken.push_back({ key, value }); // トークンを含まない
+        }
+    }
+
+    // 元のマップをクリアして再挿入
+    myMap.clear();
+    for(const auto& pair : withoutToken) {
+        myMap.insert(pair);
+    }
+    for(const auto& pair : withToken) {
+        myMap.insert(pair);
+    }
+
+    // 何番目かを返す
+    return withToken.size();
+}

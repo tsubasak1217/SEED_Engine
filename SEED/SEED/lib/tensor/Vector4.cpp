@@ -13,7 +13,7 @@ void Vector4::operator*=(const Matrix4x4& matrix){
     w = 1.0f;
 }
 
-Vector3 Vector4::ToVec3(){
+Vector3 Vector4::ToVec3()const{
     assert(w != 0.0f);
     return { x / w,y / w ,z / w };
 }

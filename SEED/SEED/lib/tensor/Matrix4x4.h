@@ -40,7 +40,7 @@ struct Matrix4x4 final{
         m[3][3] = dd;
     }
 
-    Matrix4x4 operator*(const Matrix4x4 other){
+    Matrix4x4 operator*(const Matrix4x4 other)const{
 
         Matrix4x4 result;
 

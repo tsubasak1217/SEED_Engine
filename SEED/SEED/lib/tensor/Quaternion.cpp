@@ -90,6 +90,55 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 }
 
+// クォータニオンの球面補間
+Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
+    // Compute the dot product
+    float dot = Dot(q1, q2);
+
+    // Clamp the dot product to stay in the range of acos()
+    if(dot < -1.0f) dot = -1.0f;
+    if(dot > 1.0f) dot = 1.0f;
+
+    // If the dot product is negative, slerp the opposite of q2 to ensure the shortest path
+    Quaternion q2Adjusted = q2;
+    if(dot < 0.0f) {
+        q2Adjusted.w = -q2.w;
+        q2Adjusted.x = -q2.x;
+        q2Adjusted.y = -q2.y;
+        q2Adjusted.z = -q2.z;
+        dot = -dot;
+    }
+
+    // If the quaternions are very close, use linear interpolation to avoid numerical instability
+    const float EPSILON = 1e-6f;
+    if(dot > 1.0f - EPSILON) {
+        // Perform linear interpolation and normalize the result
+        Quaternion result;
+        result.w = q1.w + t * (q2Adjusted.w - q1.w);
+        result.x = q1.x + t * (q2Adjusted.x - q1.x);
+        result.y = q1.y + t * (q2Adjusted.y - q1.y);
+        result.z = q1.z + t * (q2Adjusted.z - q1.z);
+        return result.Normalize();
+    }
+
+    // Calculate the angle between the quaternions
+    float theta = std::acos(dot);
+    float sinTheta = std::sin(theta);
+
+    // Compute the weights for the interpolation
+    float weight1 = std::sin((1.0f - t) * theta) / sinTheta;
+    float weight2 = std::sin(t * theta) / sinTheta;
+
+    // Compute the interpolated quaternion
+    Quaternion result;
+    result.w = weight1 * q1.w + weight2 * q2Adjusted.w;
+    result.x = weight1 * q1.x + weight2 * q2Adjusted.x;
+    result.y = weight1 * q1.y + weight2 * q2Adjusted.y;
+    result.z = weight1 * q1.z + weight2 * q2Adjusted.z;
+
+    return result;
+}
+
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);
@@ -325,6 +374,10 @@ Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& t
 //////////////////////////////////////////////////////////
 Quaternion Quaternion::operator+(const Quaternion& q) const{
     return Quaternion(x + q.x, y + q.y, z + q.z, w + q.w);
+}
+
+Quaternion Quaternion::operator-(const Quaternion& q) const{
+    return Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
 }
 
 Quaternion Quaternion::operator*(const Quaternion& q) const{

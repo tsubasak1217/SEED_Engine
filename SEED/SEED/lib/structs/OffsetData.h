@@ -4,5 +4,7 @@
 struct OffsetData{
     int32_t instanceOffset;
     int32_t meshOffset;
-    int32_t interval;
+    int32_t jointIndexOffset;
+    int32_t jointinterval;
+    int32_t primitiveInterval;
 };

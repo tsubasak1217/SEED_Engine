@@ -63,7 +63,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)Game\Objects\Enums\;$(ProjectDir)Game\Objects\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -92,7 +92,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)SEED\external\assimp\lib\;$(ProjectDir)SEED\source\Manager\JsonManager\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)Game\Objects\Enums\;$(ProjectDir)Game\Objects\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\BaseObject.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
@@ -122,6 +123,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
@@ -142,6 +145,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\shapes\Triangle.cpp" />
     <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp" />
     <ClCompile Include="SEED\lib\structs\Model.cpp" />
+    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\structs\Sprite.cpp" />
     <ClCompile Include="SEED\lib\tensor\Quaternion.cpp" />
     <ClCompile Include="SEED\lib\tensor\Vector2.cpp" />
@@ -159,7 +163,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp" />
     <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp" />
@@ -174,11 +180,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\Camera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp" />
+    <ClCompile Include="SEED\source\Object\Collision\Collider.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Environment\Environment.h" />
+    <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="Game\Objects\BaseObject.h" />
     <ClInclude Include="Game\Scene\Base\Scene_Base.h" />
     <ClInclude Include="Game\Scene\Base\State_Base.h" />
@@ -188,6 +197,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
+    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
+    <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h" />
     <ClInclude Include="SEED\external\imgui\imconfig.h" />
     <ClInclude Include="SEED\external\imgui\imgui.h" />
     <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />
@@ -219,7 +230,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\structs\CS_Buffers.h" />
     <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
     <ClInclude Include="SEED\lib\structs\DrawLocation.h" />
-    <ClInclude Include="SEED\lib\structs\Keyframe.h" />
+    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
     <ClInclude Include="SEED\lib\structs\OffsetData.h" />
     <ClInclude Include="SEED\lib\structs\Material.h" />
     <ClInclude Include="SEED\lib\structs\Model.h" />
@@ -250,7 +261,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSO.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h" />
@@ -267,6 +278,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
     <ClInclude Include="SEED\source\Object\Camera\Camera.h" />
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />
+    <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +318,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

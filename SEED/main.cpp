@@ -3,6 +3,8 @@
 #include <SceneManager.h>
 #include <WindowManager.h>
 
+static LeakChecker leakChecker;
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
     WindowManager::Initialize(hInstance, nCmdShow);

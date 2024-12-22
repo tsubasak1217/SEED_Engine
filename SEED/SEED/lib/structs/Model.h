@@ -15,6 +15,8 @@
 
 class Model{
 
+    friend class PolygonManager;
+
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
     //                                      以下メンバ関数                                       //
@@ -34,17 +36,23 @@ public:
 
 public:
     // アニメーション関連
-    void StartAnimation(const std::string& animationName, bool loop,float speedRate = 1.0f);
+    void StartAnimation(int32_t animationIndex, bool loop,float speedRate = 1.0f);
     void PauseAnimation();
     void RestartAnimation();
     void EndAnimation();
 
+private:
+    // スキニング用のパレットの更新
+    void UpdatePalette();
 
 public:// アクセッサ
 
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
     Matrix4x4 GetUVTransform(int index)const{ return uvTransform_[index]; }
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
+    void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
+    bool GetIsAnimation()const{ return isAnimation_; }
+    void SetIsSkeletonVisible(bool isSkeletonVisible){ isSkeletonVisible_ = isSkeletonVisible; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -79,6 +87,7 @@ public:
     Vector4 color_;
     int32_t lightingType_;
     BlendMode blendMode_;
+    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;
     std::vector<Vector3> uv_translate_;
@@ -94,11 +103,17 @@ public:
     float animationSpeedRate_ = 1.0f;// アニメーションの速度の倍率
 
 private:
+    bool hasAnimation_ = false;// アニメーションが存在するか
+    bool isAnimation_ = false;// アニメーションを行うか
+    bool isSkeletonVisible_ = false;// スケルトンを表示するか
     float animationDuration_ = 0.0f;// アニメーション自体の時間
     float totalAnimationTime_ = 0.0f;// アニメーションの総再生時間
     bool isAnimationLoop_ = false;// アニメーションをループさせるか
     int32_t animationLoopCount_ = 0;// アニメーションのループ回数
-    bool isAnimation_ = false;// アニメーションを行うか
     std::string animationName_;// アニメーションの名前
+    std::vector<WellForGPU> palette_;// スキニング情報
 
+    // ---------------------------- その他 -----------------------------//
+public:
+    bool isParticle_ = false;// パーティクルかどうか
 };

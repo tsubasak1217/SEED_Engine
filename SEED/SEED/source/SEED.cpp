@@ -28,8 +28,6 @@ uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
 /*-----------------コンストラクタ、デストラクタ---------------------*/
 
 SEED::~SEED(){
-    delete leakChecker_;
-    leakChecker_ = nullptr;
     delete instance_;
     instance_ = nullptr;
 }
@@ -51,7 +49,6 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     instance_->windowTitle_ = instance_->windowTitle_;
     instance_->kClientWidth_ = clientWidth;
     instance_->kClientHeight_ = clientHeight;
-    instance_->leakChecker_ = new LeakChecker();
 
     // メインウインドウの作成
     WindowManager::Create(instance_->windowTitle_, clientWidth, clientHeight);
@@ -132,8 +129,8 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true, 
-        triangle.GH,triangle.blendMode
+        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
+        triangle.GH, triangle.blendMode, triangle.cullMode
     );
 }
 
@@ -145,7 +142,8 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
-        triangle.blendMode, triangle.isStaticDraw, triangle.drawLocation, triangle.layer
+        triangle.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
+        triangle.isStaticDraw, triangle.drawLocation, triangle.layer
     );
 }
 
@@ -159,7 +157,8 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH,quad.blendMode
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH, quad.blendMode,
+        quad.cullMode
     );
 }
 
@@ -171,7 +170,8 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[1].ToVec3(),
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH, quad.blendMode,
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH,
+        quad.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
     );
 }
@@ -191,6 +191,7 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.clipLT,
         sprite.clipSize,
         sprite.blendMode,
+        D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         sprite.isStaticDraw,
         sprite.drawLocation,
         sprite.layer,
@@ -212,7 +213,7 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, 
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, true, blendMode,false
+        IdentityMat4(), color, true, blendMode, false
     );
 }
 
@@ -220,7 +221,7 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, blendMode,false,DrawLocation::Front,0
+        IdentityMat4(), color, false, blendMode, false, DrawLocation::Front, 0
     );
 }
 
@@ -275,6 +276,123 @@ void SEED::DrawOBB(const OBB& obb, const Vector4& color){
     DrawLine(vertex[1], vertex[5], color);
     DrawLine(vertex[2], vertex[6], color);
     DrawLine(vertex[3], vertex[7], color);
+}
+
+
+
+/////////////////////////////////////////////////////////////
+// 球の描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision, const Vector4& color){
+
+    // 常識的な範囲に納める
+    subdivision = std::clamp(subdivision, 3, 16);
+
+    // 球の頂点を計算
+    std::vector<Vector3> vertex((subdivision + 1) * subdivision); // 余分な頂点を確保
+    float pi = static_cast<float>(std::numbers::pi);
+
+    for(int i = 0; i <= subdivision; i++) { // 緯度方向: 0～subdivision
+        float theta = pi * i / subdivision; // 緯度角
+        for(int j = 0; j < subdivision; j++) { // 経度方向: 0～subdivision-1
+            float phi = 2.0f * pi * j / subdivision; // 経度角
+
+            // 頂点の計算
+            vertex[i * subdivision + j] = center + Vector3(
+                radius.x * std::sin(theta) * std::cos(phi),
+                radius.y * std::cos(theta),
+                radius.z * std::sin(theta) * std::sin(phi)
+            );
+        }
+    }
+
+    // 線の描画(ラインで)
+    for(int i = 0; i < subdivision; i++) { // 緯度方向
+        for(int j = 0; j < subdivision; j++) { // 経度方向
+            int current = i * subdivision + j;
+            int next = current + 1; // 経度方向の次の頂点
+            int nextRow = (i + 1) * subdivision + j; // 緯度方向の次の頂点
+
+            // 経度方向の線
+            DrawLine(vertex[current], vertex[current % subdivision == subdivision - 1 ? i * subdivision : next], color);
+
+            // 緯度方向の線
+            DrawLine(vertex[current], vertex[nextRow], color);
+        }
+    }
+}
+
+
+void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Vector4& color){
+    DrawSphere(center, Vector3(radius,radius,radius), subdivision, color);
+}
+
+
+/////////////////////////////////////////////////////////////
+// 円柱の描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
+
+    if(subdivision < 3) {
+        subdivision = 3; // 最低3分割は必要
+    }
+
+    // 円柱の軸ベクトルと高さ
+    Vector3 axis = MyMath::Normalize(end - start);
+
+    // 基準となる法線ベクトル（円生成の基準）
+    Vector3 up = (fabs(axis.y) < 0.99f) ? Vector3(0, 1, 0) : Vector3(1, 0, 0);
+    Vector3 tangent = MyMath::Normalize(MyMath::Cross(up, axis));      // 円周の方向
+    Vector3 bitangent = MyMath::Cross(axis, tangent);          // 円の垂直方向
+
+    // 円周上の頂点計算
+    std::vector<Vector3> bottomCircle(subdivision);
+    std::vector<Vector3> topCircle(subdivision);
+    float angleStep = 2.0f * 3.14159265359f / subdivision;
+
+    for(int i = 0; i < subdivision; ++i) {
+        float angle = i * angleStep;
+        float x = cos(angle) * radius;
+        float z = sin(angle) * radius;
+
+        // 円周上の点を計算
+        bottomCircle[i] = start + tangent * x + bitangent * z;
+        topCircle[i] = end + tangent * x + bitangent * z;
+    }
+
+    // 線分を描画
+    for(int i = 0; i < subdivision; ++i) {
+        int next = (i + 1) % subdivision;
+
+        // 底面の線分
+        DrawLine(bottomCircle[i], bottomCircle[next], color);
+
+        // 上面の線分
+        DrawLine(topCircle[i], topCircle[next], color);
+
+        // 底面と上面をつなぐ線分
+        DrawLine(bottomCircle[i], topCircle[i], color);
+    }
+}
+
+
+/////////////////////////////////////////////////////////////
+// カプセルの描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
+    // 視点と終点に球を描画
+    DrawSphere(start, radius, subdivision, color);
+    DrawSphere(end, radius, subdivision, color);
+    // 円柱を描画
+    DrawCylinder(start, end, radius, subdivision, color);
+}
+
+void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Vector4& color){
+    // 視点と終点に球を描画
+    DrawSphere(start, radius, subdivision, color);
+    DrawSphere(end, radius, subdivision, color);
+    // 円柱を描画
+    DrawCylinder(start, end,MyMath::Length(radius), subdivision, color);
 }
 
 

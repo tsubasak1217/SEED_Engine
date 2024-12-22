@@ -14,6 +14,8 @@
 #include <State_Base.h>
 #include <Sprite.h>
 
+#include "../Game/Editor/FieldEditor.h"
+
 class Scene_Game : public Scene_Base{
 
 public:
@@ -27,5 +29,9 @@ public:
 
 private:
 
+    std::list<std::unique_ptr<Model>> animationModels_;
+    std::list<std::unique_ptr<Model>> models_;
 
+    //editor
+    std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;
 };

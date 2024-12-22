@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
+#include <DxFunc.h>
 #include "MyMath.h"
 #include "MatrixFunc.h"
 #include "Material.h"
@@ -30,6 +31,7 @@ struct Triangle{
     int32_t litingType;
     uint32_t GH;
     BlendMode blendMode;
+    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
     Matrix4x4 uvTransform;
 };
 

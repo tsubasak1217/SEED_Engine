@@ -8,8 +8,7 @@
 
 DxManager* DxManager::instance_ = nullptr;
 
-void DxManager::Initialize(SEED* pSEED)
-{
+void DxManager::Initialize(SEED* pSEED){
     // インスタンスの取得
     GetInstance();
 
@@ -221,8 +220,7 @@ void DxManager::Initialize(SEED* pSEED)
 /*                                      初期設定を行う関数                                      */
 /*===========================================================================================*/
 
-void DxManager::CreateDebugLayer()
-{
+void DxManager::CreateDebugLayer(){
     if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
         // デバッグレイヤーを有効化する
         debugController->EnableDebugLayer();
@@ -231,8 +229,7 @@ void DxManager::CreateDebugLayer()
     }
 }
 
-void DxManager::CreateDevice()
-{
+void DxManager::CreateDevice(){
     /*------------------------------- DXGIFactoryの生成 --------------------------------*/
     hr = CreateDXGIFactory(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
     // 作成失敗していたらアサート
@@ -302,15 +299,14 @@ void DxManager::CreateDevice()
     Log("Complete create D3D12Device!!!\n");
 }
 
-void DxManager::CheckDebugLayer()
-{
+void DxManager::CheckDebugLayer(){
     if(SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
         // ヤバエラー時に止まる
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
         //エラー時に止まる
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
         // 警告時に止まる
-        infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+        //infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
         // 抑制するメッセージのID
         D3D12_MESSAGE_ID denyIds[] = {
@@ -335,8 +331,7 @@ void DxManager::CheckDebugLayer()
     }
 }
 
-void DxManager::CreateCommanders()
-{
+void DxManager::CreateCommanders(){
 
     /*------------------------------- コマンドキューの生成 --------------------------------*/
 
@@ -365,8 +360,7 @@ void DxManager::CreateCommanders()
     assert(SUCCEEDED(hr));
 }
 
-void DxManager::CreateRenderTargets()
-{
+void DxManager::CreateRenderTargets(){
     // 画面の縦横幅
     swapChainDesc.Width = pSEED_->kClientWidth_;
     swapChainDesc.Height = pSEED_->kClientHeight_;
@@ -396,8 +390,7 @@ void DxManager::CreateRenderTargets()
     offScreenResource.Get()->SetName(L"offScreenResource");
 }
 
-void DxManager::GetSwapChainResources()
-{
+void DxManager::GetSwapChainResources(){
     // SwapChain から Resourceを引っ張ってくる
     // うまく取得できなければ起動できない
     hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
@@ -407,18 +400,15 @@ void DxManager::GetSwapChainResources()
 
 }
 
-void DxManager::CreateAllDescriptorHeap()
-{
+void DxManager::CreateAllDescriptorHeap(){
 
 }
 
-void DxManager::CheckDescriptorSize()
-{
+void DxManager::CheckDescriptorSize(){
 
 }
 
-void DxManager::CreateRTV()
-{
+void DxManager::CreateRTV(){
     // RTVの設定
     D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
     rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 出力結果をSRGBに変換して書き込むように設定
@@ -435,8 +425,7 @@ void DxManager::CreateRTV()
     offScreenHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
 }
 
-void DxManager::InitializeSystemTextures()
-{
+void DxManager::InitializeSystemTextures(){
     // SRVの設定を行う変数
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
     //uav
@@ -521,8 +510,7 @@ void DxManager::InitializeSystemTextures()
     ViewManager::CreateView(VIEW_TYPE::UAV, blurTextureResource.Get(), &uavDesc, "blur_0_UAV");
 }
 
-void DxManager::CreateFence()
-{
+void DxManager::CreateFence(){
     //初期値でFenceを作る
     fenceValue = 0;
     hr = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
@@ -533,8 +521,7 @@ void DxManager::CreateFence()
     assert(fenceEvent != nullptr);
 }
 
-void DxManager::InitDxCompiler()
-{
+void DxManager::InitDxCompiler(){
     // インスタンスの作成
     hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(dxcUtils.GetAddressOf()));
     assert(SUCCEEDED(hr));
@@ -546,10 +533,9 @@ void DxManager::InitDxCompiler()
     assert(SUCCEEDED(hr));
 }
 
-void DxManager::CompileShaders()
-{
+void DxManager::CompileShaders(){
     // VertexShader
-    vertexShaderBlob = CompileShader(
+    vsBlobs["commonVS"] = CompileShader(
         L"resources/shaders/Object3d.VS.hlsl",
         L"vs_6_0",
         L"main",
@@ -557,10 +543,20 @@ void DxManager::CompileShaders()
         dxcCompiler.Get(),
         includeHandler.Get()
     );
-    assert(vertexShaderBlob != nullptr);
+    assert(vsBlobs["commonVS"] != nullptr);
+
+    vsBlobs["skinningVS"] = CompileShader(
+        L"resources/shaders/Skinning.VS.hlsl",
+        L"vs_6_0",
+        L"main",
+        dxcUtils.Get(),
+        dxcCompiler.Get(),
+        includeHandler.Get()
+    );
+    assert(vsBlobs["skinningVS"] != nullptr);
 
     // PixelShader
-    pixelShaderBlob = CompileShader(
+    psBlobs["commonPS"] = CompileShader(
         L"resources/shaders/Object3d.PS.hlsl",
         L"ps_6_0",
         L"main",
@@ -568,10 +564,10 @@ void DxManager::CompileShaders()
         dxcCompiler.Get(),
         includeHandler.Get()
     );
-    assert(pixelShaderBlob != nullptr);
+    assert(psBlobs["commonPS"] != nullptr);
 
     // ComputeShader
-    computeShaderBlob = CompileShader(
+    csBlobs["blurCS"] = CompileShader(
         L"resources/shaders/Blur.CS.hlsl",
         L"cs_6_0",
         L"CSMain",
@@ -579,26 +575,79 @@ void DxManager::CompileShaders()
         dxcCompiler.Get(),
         includeHandler.Get()
     );
-    assert(computeShaderBlob != nullptr);
+    assert(csBlobs["blurCS"] != nullptr);
 }
 
-void DxManager::InitPSO()
-{
+void DxManager::InitPSO(){
+    /*==================================================================================*/
+    //                              通常のパイプラインの初期化
+    /*==================================================================================*/
     for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
-        for(int topology = 0; topology < 2; topology++){
+        for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
+            for(int topology = 0; topology < kTopologyCount; topology++){
+
+                // 通常のパイプライン
+                pipelines[blendMode][topology][cullMode].Initialize(
+                    (BlendMode)blendMode,
+                    (PolygonTopology)topology,
+                    D3D12_CULL_MODE(cullMode + 1)
+                );
+
+                // テンプレートのパラメーターを作成
+                PSOManager::GenerateTemplateParameter(
+                    &rootSignatures[blendMode][topology][cullMode],
+                    &pipelines[blendMode][topology][cullMode],
+                    PippelineType::Normal
+                );
+
+                // PSOの作成
+                PSOManager::Create(
+                    &rootSignatures[blendMode][topology][cullMode],
+                    &pipelines[blendMode][topology][cullMode]
+                );
+            }
+        }
+    }
+
+    /*==================================================================================*/
+    //                           スキニング用のパイプラインの初期化
+    /*==================================================================================*/
+    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
+        for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
+            // スキニング用のパイプライン
+            skinningPipelines[blendMode][cullMode] = Pipeline(
+                (BlendMode)blendMode,
+                PolygonTopology::TRIANGLE,
+                D3D12_CULL_MODE(cullMode + 1)
+            );
+
+            // ルートシグネチャの初期化
+            skinningRootSignatures[blendMode][cullMode] = RootSignature();
+
+            // テンプレートのパラメーターを作成
+            PSOManager::GenerateTemplateParameter(
+                &skinningRootSignatures[blendMode][cullMode],
+                &skinningPipelines[blendMode][cullMode],
+                PippelineType::Skinning
+            );
+
+            // PSOの作成
             PSOManager::Create(
-                commonRootSignature[blendMode][topology].GetAddressOf(),
-                commonPipelineState[blendMode][topology].GetAddressOf(),
-                PolygonTopology(topology), BlendMode(blendMode)
+                &skinningRootSignatures[blendMode][cullMode],
+                &skinningPipelines[blendMode][cullMode]
             );
         }
     }
+
+    /*==================================================================================*/
+    //                         ComputeShader用のパイプラインの初期化
+    /*==================================================================================*/
 
     // ComputeShader用
     csRootSignature.Attach(PSOManager::SettingCSRootSignature());
     D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
     psoDesc.pRootSignature = csRootSignature.Get();
-    psoDesc.CS = { reinterpret_cast<BYTE*>(computeShaderBlob->GetBufferPointer()), computeShaderBlob->GetBufferSize() };
+    psoDesc.CS = { reinterpret_cast<BYTE*>(csBlobs["blurCS"]->GetBufferPointer()), csBlobs["blurCS"]->GetBufferSize()};
 
     // CBVの初期化
     CS_ConstantBuffer.Attach(CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer)));
@@ -607,8 +656,7 @@ void DxManager::InitPSO()
 
 }
 
-void DxManager::SettingViewportAndScissor(float resolutionRate)
-{
+void DxManager::SettingViewportAndScissor(float resolutionRate){
 
     // ビューポート
     // クライアント領域のサイズと一緒にして画面全体に表示
@@ -628,8 +676,7 @@ void DxManager::SettingViewportAndScissor(float resolutionRate)
 }
 
 
-void DxManager::TransitionResourceState(ID3D12Resource* resource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
-{
+void DxManager::TransitionResourceState(ID3D12Resource* resource, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter){
     // 同じなら処理しない
     if(stateAfter == stateBefore){ return; }
 
@@ -644,8 +691,7 @@ void DxManager::TransitionResourceState(ID3D12Resource* resource, D3D12_RESOURCE
     commandList->ResourceBarrier(1, &barrier);
 }
 
-void DxManager::ClearViewSettings()
-{
+void DxManager::ClearViewSettings(){
     //////////////////////////////////////////////////////////////////
     // RTVのクリア
     //////////////////////////////////////////////////////////////////
@@ -674,8 +720,7 @@ void DxManager::ClearViewSettings()
     );
 }
 
-void DxManager::WaitForGPU()
-{
+void DxManager::WaitForGPU(){
     // Fenceの値を更新
     fenceValue++;
     // GPUがここまでたどり着いたときに、 Fenceの値を指定した値に代入するようにSignalを送る
@@ -701,8 +746,7 @@ void DxManager::WaitForGPU()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void DxManager::PreDraw()
-{
+void DxManager::PreDraw(){
 
     // フレームの初めに前フレームの値を保存
     SavePreVariable();
@@ -725,7 +769,7 @@ void DxManager::PreDraw()
         imGuiがフレーム単位でHeapの中身を操作するため
         SRVのHeapは毎フレームセットし直す
     */
-    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get()};
+    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get() };
     commandList->SetDescriptorHeaps(1, ppHeaps);
 }
 
@@ -739,8 +783,7 @@ void DxManager::PreDraw()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void DxManager::DrawPolygonAll()
-{
+void DxManager::DrawPolygonAll(){
 #ifdef _DEBUG
     DrawGUI();
 #endif // DEBUG
@@ -749,7 +792,7 @@ void DxManager::DrawPolygonAll()
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
-    
+
     polygonManager_->DrawToOffscreen();
 
     //////////////////////////////////////////////////////////////////////////
@@ -759,7 +802,7 @@ void DxManager::DrawPolygonAll()
     //------------ 参照するリソースの状態を遷移させる--------------//
 
     TransitionResourceState(
-       offScreenResource.Get(),
+        offScreenResource.Get(),
         D3D12_RESOURCE_STATE_RENDER_TARGET,
         D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
     );
@@ -840,7 +883,7 @@ void DxManager::DrawPolygonAll()
     //////////////////////////////////////////////////////////////////
     //   最終結果を画面サイズの矩形に貼り付けて表示
     //////////////////////////////////////////////////////////////////
-   
+
 
     polygonManager_->DrawToBackBuffer();
 
@@ -848,7 +891,7 @@ void DxManager::DrawPolygonAll()
     //////////////////////////////////////////////////////////////////
     // すべてのリソースを基本の状態に戻す
     //////////////////////////////////////////////////////////////////
-    
+
     TransitionResourceState(
         blurTextureResource.Get(),
         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
@@ -866,7 +909,7 @@ void DxManager::DrawPolygonAll()
         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
         D3D12_RESOURCE_STATE_UNORDERED_ACCESS
     );
-    
+
 }
 
 void DxManager::DrawGUI(){
@@ -885,8 +928,7 @@ void DxManager::DrawGUI(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DxManager::PostDraw()
-{
+void DxManager::PostDraw(){
     // 画面に描く処理はすべて終わり、 画面に映すので、状態を遷移
     // 今回はRenderTargetからPresent にする
     TransitionResourceState(swapChainResources[backBufferIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -940,8 +982,7 @@ void DxManager::PostDraw()
 //           テクスチャを作成してグラフハンドルを返す関数          //
 //////////////////////////////////////////////////////////////
 
-uint32_t DxManager::CreateTexture(std::string filePath)
-{
+uint32_t DxManager::CreateTexture(std::string filePath){
 
     // 既にある場合
     if(ViewManager::GetTextureHandle(filePath) != -1){ return ViewManager::GetTextureHandle(filePath); }
@@ -977,22 +1018,19 @@ uint32_t DxManager::CreateTexture(std::string filePath)
 //           解像度を変更してRTVやScissorを設定し直す関数        ///
 //////////////////////////////////////////////////////////////
 
-void DxManager::ChangeResolutionRate(float resolutionRate)
-{
+void DxManager::ChangeResolutionRate(float resolutionRate){
     resolutionRate_ = std::clamp(resolutionRate, 0.0f, 1.0f);
     changeResolutionOrder = true;
 }
 
-void DxManager::ReCreateResolutionSettings()
-{
+void DxManager::ReCreateResolutionSettings(){
     SettingViewportAndScissor(resolutionRate_);// scissorなどを再設定
 
     // 命令フラグを下げる
     changeResolutionOrder = false;
 }
 
-void DxManager::SavePreVariable()
-{
+void DxManager::SavePreVariable(){
     preResolutionRate_ = resolutionRate_;
 }
 
@@ -1001,8 +1039,7 @@ void DxManager::SavePreVariable()
 /*                                          後処理                                            */
 /*===========================================================================================*/
 
-void DxManager::Finalize()
-{
+void DxManager::Finalize(){
     CloseHandle(instance_->fenceEvent);
     instance_->polygonManager_->Finalize();
 
@@ -1028,14 +1065,12 @@ DxManager* DxManager::GetInstance(){
     return instance_;
 }
 
-LeakChecker::~LeakChecker()
-{
+LeakChecker::~LeakChecker(){
     // 解放漏れがないかチェック
     ComPtr<IDXGIDebug1> debug;
     if(SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
         debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-        debug->Release();
     }
 }

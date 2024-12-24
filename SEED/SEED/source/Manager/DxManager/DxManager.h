@@ -256,7 +256,7 @@ private:/*============================ アクセッサ関数 ===================
 
     Camera* GetCamera()const{ return camera_; }
     void SetCamera(std::string nextCameraName){
-        camera_ = CameraManager::GetCamera(nextCameraName); 
+        camera_ = CameraManager::GetCamera(nextCameraName);
     }
     void SetCamera(Camera* camera){ camera_ = camera; }
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }

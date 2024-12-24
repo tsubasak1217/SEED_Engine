@@ -8,6 +8,22 @@
 
 float znearOffsetForLayer = 0.09f;
 
+Camera::Camera(){
+    Initialize();
+}
+
+void Camera::Initialize(){
+    transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
+    transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
+    transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
+    projectionMode_ = PERSPECTIVE;
+    clipRange_ = kWindowSize;
+    znear_ = 0.1f;
+    zfar_ = 1000.0f;
+    fov_ = 0.45f;
+    UpdateMatrix();
+}
+
 void Camera::UpdateMatrix(){
 
     znear_ = std::clamp(znear_, 0.1f, zfar_);
@@ -26,7 +42,7 @@ void Camera::UpdateMatrix(){
 
     //射影行列の生成
     projectionMat_ = PerspectiveMatrix(
-        0.45f,
+        fov_,
         clipRange_.x / clipRange_.y,
         znear_, zfar_
     );

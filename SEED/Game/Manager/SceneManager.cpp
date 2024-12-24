@@ -21,6 +21,8 @@ void SceneManager::Initialize(){
 
 void SceneManager::Update(){
     pScene_->Update();
+    // シーン更新終了後にカメラを更新
+    CameraManager::Update();
 }
 
 void SceneManager::Draw(){

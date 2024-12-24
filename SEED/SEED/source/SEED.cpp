@@ -99,8 +99,6 @@ void SEED::BeginFrame(){
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
 
-    // カメラの更新
-    CameraManager::Update();
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/

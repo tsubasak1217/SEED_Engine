@@ -82,14 +82,22 @@ void Model::Update(){
 // マトリックスの更新
 void Model::UpdateMatrix(){
 
-    // ワールド変換行列の更新
+    // ローカル変換行列の更新
     if(isRotateWithQuaternion_){
-        worldMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
+        localMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
         rotate_ = Quaternion::ToEuler(rotateQuat_);// 切り替えても大丈夫なように同期させておく
     } else{
-        worldMat_ = AffineMatrix(scale_, rotate_, translate_);
+        localMat_ = AffineMatrix(scale_, rotate_, translate_);
         rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
+
+    // ワールド変換行列を求める
+    if(parent_){
+        worldMat_ = Multiply(localMat_, parent_->worldMat_);
+    } else{
+        worldMat_ = localMat_;
+    }
+
 
     // UV変換行列の更新
     for(int i = 0; i < uvTransform_.size(); i++){

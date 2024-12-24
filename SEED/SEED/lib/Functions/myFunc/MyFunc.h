@@ -30,6 +30,9 @@ public:
     static Vector3 RandomVector();
     static Vector2 RandomVector2();
 
+    // thetaとphiからベクトルを生成する関数
+    static Vector3 CreateVector(float theta, float phi);
+
     // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
     static int32_t Spiral(int32_t input,int32_t min, int32_t max);
     static float Spiral(float input,float min, float max);

@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include "MatrixFunc.h"
 #include "ModelData.h"
 #include "VertexData.h"
 #include "Vector3.h"
@@ -47,8 +48,18 @@ private:
 
 public:// アクセッサ
 
+    // トランスフォーム
+    Matrix4x4 GetLocalMat()const{ return localMat_; }
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
+    Vector3 GetLocalTranslate()const{ return ExtractTranslation(localMat_); }
+    Vector3 GetWorldTranslate()const{ return ExtractTranslation(worldMat_);}
+    Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }
+    Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
+
+    // マテリアル
     Matrix4x4 GetUVTransform(int index)const{ return uvTransform_[index]; }
+
+    // アニメーション
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
     bool GetIsAnimation()const{ return isAnimation_; }
@@ -77,6 +88,7 @@ public:
     bool isRotateWithQuaternion_ = true;// クォータニオンで回転するか
 
 private:
+    Matrix4x4 localMat_;
     Matrix4x4 worldMat_;
 
 

@@ -75,7 +75,7 @@ void BaseParticle::Update(){
     // ビルボード処理
     //////////////////////////////////////
     if(isBillboard_){
-        particle_->rotate_ = SEED::GetCamera()->transform_.rotate_;
+        particle_->rotate_ = SEED::GetCamera()->GetRotation();
     }
 
     //////////////////////////////////////

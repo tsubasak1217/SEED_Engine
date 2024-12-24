@@ -170,6 +170,9 @@
     <Filter Include="Game\Objects\Enemy">
       <UniqueIdentifier>{5e14fa05-798f-4971-a494-a891dda949ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Player\PlayerState">
+      <UniqueIdentifier>{58141efe-cfce-4632-bc4a-7a8cc4c19937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -370,9 +373,6 @@
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
       <Filter>Game\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\structs\ModelAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp">
       <Filter>SEED\source\Manager\CollisionManager</Filter>
     </ClCompile>
@@ -381,6 +381,24 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\BaseObject.cpp">
       <Filter>Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Object\Camera\FollowCamera.cpp">
+      <Filter>SEED\source\Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Move.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Attack.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Idle.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Jump.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -674,6 +692,30 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\BaseObject.h">
       <Filter>Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h">
+      <Filter>SEED\source\Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\IPlayerState.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Attack.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

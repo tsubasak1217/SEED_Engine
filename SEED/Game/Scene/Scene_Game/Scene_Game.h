@@ -13,7 +13,8 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
-
+#include "FollowCamera.h"
+#include "../Game/Objects/Player/Player.h"
 #include "../Game/Editor/FieldEditor.h"
 
 class Scene_Game : public Scene_Base{
@@ -29,9 +30,7 @@ public:
 
 private:
 
-    std::list<std::unique_ptr<Model>> animationModels_;
-    std::list<std::unique_ptr<Model>> models_;
+    std::unique_ptr<FollowCamera> followCamera_;
+    std::unique_ptr<Player> player_;
 
-    //editor
-    std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;
 };

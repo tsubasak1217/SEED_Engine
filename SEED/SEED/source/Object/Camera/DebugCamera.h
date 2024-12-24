@@ -3,7 +3,7 @@
 #include "Vector3.h"
 
 struct DebugCamera : public Camera{
-    DebugCamera() = default;
+    DebugCamera();
     ~DebugCamera()override;
     void Update()override;
 
@@ -12,6 +12,6 @@ private:
 
 private:
     Vector3 moveDirection_;
-    float moveSpeed_ = 0.5f;
+    float moveSpeed_ = 30.0f;
     float rotateSpeed_ = 0.025f;
 };

@@ -340,6 +340,13 @@ Matrix4x4 Quaternion::MakeMatrix() const{
 
 // FromベクトルからToベクトルへの回転行列を計算する関数
 Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to) {
+    return LookAt(from, to).MakeMatrix();
+}
+
+//////////////////////////////////////////////////////////
+// LookAt関数
+//////////////////////////////////////////////////////////
+Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     // FromベクトルとToベクトルの正規化
     Vector3 fromN = MyMath::Normalize(from);
     Vector3 toN = MyMath::Normalize(to);
@@ -355,18 +362,18 @@ Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& t
             axis = MyMath::Cross(Vector3(0.0f, 1.0f, 0.0f), fromN);
         }
         axis = MyMath::Normalize(axis);
-        return Quaternion(axis, (float)std::numbers::pi).MakeMatrix();
+        return Quaternion(axis, (float)std::numbers::pi);
     }
 
     // FromベクトルとToベクトルが同じ方向の場合
     if(dot > 0.999999f) {
-        return IdentityMat4(); // 単位行列を返す
+        return Quaternion(); // 単位行列を返す
     }
 
     // 通常のケース
     Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));
     float angle = std::acos(dot); // dotが[-1, 1]の範囲なので安全
-    return Quaternion(axis, angle).MakeMatrix();
+    return Quaternion(axis, angle);
 }
 
 //////////////////////////////////////////////////////////

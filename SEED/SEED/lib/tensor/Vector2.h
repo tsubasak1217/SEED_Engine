@@ -1,5 +1,6 @@
 #pragma once
 
+struct Matrix3x3;
 struct Vector3;
 
 /// <summary>
@@ -87,6 +88,10 @@ struct Vector2 final {
 		x *= obj;
 		y *= obj;
 	}
+
+    Vector2 operator*(const Matrix3x3& mat) const;
+
+    void operator*=(const Matrix3x3& mat);
 
 	// DEVIDE---------------------------------
 	Vector2 operator/(float obj) const {

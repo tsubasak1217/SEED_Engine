@@ -17,10 +17,10 @@ protected:
 protected:
     // 移動処理
     void Move();
+    void Rotate();
 
 private:
     void DecideStickVelocity();
-    void Rotate();
 
 private:
     float moveSpeed_ = 30.0f;

@@ -25,11 +25,11 @@ private:
     BaseObject* target_ = nullptr;
     Vector3 defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
     float distance_ = 20.0f;
-    float theta_ = 0.0f;
-    float phi_ = 0.0f;
+    float theta_ = -3.14f * 0.5f;
+    float phi_ = 3.14f * 0.5f;
     float rotateSpeed_ = 0.025f;
 
     // 限界角度
-    float kMaxPhi_ = 1.5f;
+    float kMaxPhi_ = 3.14f * 0.5f;
     float kMinPhi_ = 0.1f;
 };

@@ -28,7 +28,10 @@ void PlayerState_Jump::Update(){
     Jump();
 
     // 移動処理(ジャンプしながらも動ける)
-    PlayerState_Move::Move();
+    Move();
+
+    // 回転処理
+    Rotate();
 
     // ステート管理
     ManageState();
@@ -54,15 +57,15 @@ void PlayerState_Jump::ManageState(){
 // ジャンプ処理
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::Jump(){
-    // ジャンプ終了処理
-    if(pPlayer_->GetWorldTranslate().y <= 0.0f){
-        if(!isJump_){ return; }
-        isJump_ = false;
-        isDrop_ = false;
-        jumpVelocity_ = 0.0f;
-    }
 
     // 落下速度を加算
     jumpVelocity_ += gravity_ * (isJump_ * isDrop_) * ClockManager::DeltaTime();
     pPlayer_->HandleMove(Vector3(0.0f, jumpVelocity_, 0.0f));
+
+    // ジャンプ終了処理
+    if(pPlayer_->GetWorldTranslate().y <= 0.0f){
+        isJump_ = false;
+        isDrop_ = false;
+        jumpVelocity_ = 0.0f;
+    }
 }

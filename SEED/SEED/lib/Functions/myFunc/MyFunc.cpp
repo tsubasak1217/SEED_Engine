@@ -84,12 +84,12 @@ Vector2 MyFunc::RandomVector2(){
 
 //----------------- thetaとphiからベクトルを生成する関数 -----------------//
 Vector3 MyFunc::CreateVector(float theta, float phi){
-    // 球座標から直交座標への変換
+    // 球座標から直交座標への変換（左手座標系用）
     float x = std::sin(phi) * std::cos(theta);
-    float y = std::sin(phi) * std::sin(theta);
-    float z = std::cos(phi);
+    float y = std::cos(phi);
+    float z = std::sin(phi) * std::sin(theta);
 
-    return { x, z, y };
+    return { x, y, z };
 }
 
 

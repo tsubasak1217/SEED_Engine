@@ -173,6 +173,12 @@
     <Filter Include="Game\Objects\Player\PlayerState">
       <UniqueIdentifier>{58141efe-cfce-4632-bc4a-7a8cc4c19937}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Base">
+      <UniqueIdentifier>{95e56dfb-2540-4c4a-9c28-a968ecc95466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Enemy\EnemyState">
+      <UniqueIdentifier>{1fa401b3-4c70-4469-bd5d-5c08dede308c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -379,9 +385,6 @@
     <ClCompile Include="SEED\source\Object\Collision\Collider.cpp">
       <Filter>SEED\source\Object\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\BaseObject.cpp">
-      <Filter>Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Player\Player.cpp">
       <Filter>Game\Objects\Player</Filter>
     </ClCompile>
@@ -399,6 +402,18 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Jump.cpp">
       <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\BaseObject.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -690,9 +705,6 @@
     <ClInclude Include="SEED\lib\structs\Range1D.h">
       <Filter>SEED\lib\tensor</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\BaseObject.h">
-      <Filter>Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Player\Player.h">
       <Filter>Game\Objects\Player</Filter>
     </ClInclude>
@@ -701,9 +713,6 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h">
       <Filter>SEED\source\Object\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\IPlayerState.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
@@ -716,6 +725,18 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\BaseObject.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\IState.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\BaseCharacter.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

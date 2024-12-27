@@ -37,7 +37,8 @@ public:
 
 public:
     // アニメーション関連
-    void StartAnimation(int32_t animationIndex, bool loop,float speedRate = 1.0f);
+    void StartAnimation(int32_t animationIndex, bool loop,float speedRate = 1.0f);// インデックスから取得
+    void StartAnimation(const std::string& animationName, bool loop, float speedRate = 1.0f);// 名前から取得
     void PauseAnimation();
     void RestartAnimation();
     void EndAnimation();
@@ -62,7 +63,9 @@ public:// アクセッサ
     // アニメーション
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
+    void SetAnimationSpeedRate(float speedRate){ animationSpeedRate_ = speedRate; }
     bool GetIsAnimation()const{ return isAnimation_; }
+    float GetAnimationDuration()const{ return animationDuration_; }
     void SetIsSkeletonVisible(bool isSkeletonVisible){ isSkeletonVisible_ = isSkeletonVisible; }
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +127,11 @@ private:
     int32_t animationLoopCount_ = 0;// アニメーションのループ回数
     std::string animationName_;// アニメーションの名前
     std::vector<WellForGPU> palette_;// スキニング情報
+    // 補間用変数
+    std::unique_ptr<ModelSkeleton> preSkeleton_ = nullptr;// アニメーションが切り替わる前のスケルトン
+    const float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
+    float animLerpTime_ = 0.0f;// アニメーションの補間時間
+    float progressOfAnimLerp_ = 0.0f;// アニメーションの補間進捗度
 
     // ---------------------------- その他 -----------------------------//
 public:

@@ -4,14 +4,15 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Jump::PlayerState_Jump(Player* player){
+PlayerState_Jump::PlayerState_Jump(BaseCharacter* player){
     Initialize(player);
+    pCharacter_->SetAnimation("jump", true);
 }
 
 PlayerState_Jump::~PlayerState_Jump(){}
 
-void PlayerState_Jump::Initialize(Player* player){
-    IPlayerState::Initialize(player);
+void PlayerState_Jump::Initialize(BaseCharacter* player){
+    IState::Initialize(player);
 
     // ジャンプの初期化
     isJump_ = true;
@@ -31,7 +32,9 @@ void PlayerState_Jump::Update(){
     Move();
 
     // 回転処理
-    Rotate();
+    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
+        Rotate();
+    }
 
     // ステート管理
     ManageState();
@@ -49,7 +52,7 @@ void PlayerState_Jump::Draw(){}
 void PlayerState_Jump::ManageState(){
     // 着地
     if(!isJump_ && !isDrop_){
-        pPlayer_->ChangeState(new PlayerState_Idle(pPlayer_));
+        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
     }
 }
 
@@ -60,10 +63,10 @@ void PlayerState_Jump::Jump(){
 
     // 落下速度を加算
     jumpVelocity_ += gravity_ * (isJump_ * isDrop_) * ClockManager::DeltaTime();
-    pPlayer_->HandleMove(Vector3(0.0f, jumpVelocity_, 0.0f));
+    pCharacter_->HandleMove(Vector3(0.0f, jumpVelocity_, 0.0f));
 
     // ジャンプ終了処理
-    if(pPlayer_->GetWorldTranslate().y <= 0.0f){
+    if(pCharacter_->GetWorldTranslate().y <= 0.0f){
         isJump_ = false;
         isDrop_ = false;
         jumpVelocity_ = 0.0f;

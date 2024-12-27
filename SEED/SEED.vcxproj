@@ -114,7 +114,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
-    <ClCompile Include="Game\Objects\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
+    <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Attack.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Idle.cpp" />
@@ -192,11 +195,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
+    <ClInclude Include="Game\Objects\Base\BaseObject.h" />
+    <ClInclude Include="Game\Objects\Base\IState.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
-    <ClInclude Include="Game\Objects\BaseObject.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\IPlayerState.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Attack.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />

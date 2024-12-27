@@ -2,6 +2,7 @@
 #include "MatrixFunc.h"
 #include "ViewManager.h"
 #include "MyMath.h"
+#include "MyFunc.h"
 #include <d3dx12.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -82,7 +83,8 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string filePath = directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) + "/" + filename;
+    std::string modelName = filename.substr(0, filename.find_last_of('.'));
+    std::string filePath = directoryPath + "/" + modelName + "/" + filename;
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -96,7 +98,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // メッシュデータの読み込み
     modelData->meshes = ParseMeshes(scene);
     // マテリアルデータの読み込み
-    modelData->materials = ParseMaterials(scene);
+    modelData->materials = ParseMaterials(scene, modelName);
     modelData->modelName = filename;
     // アニメーションデータの読み込み
     modelData->animations = LoadAnimation(directoryPath, filename);
@@ -149,51 +151,44 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
     for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
         aiMesh* mesh = scene->mMeshes[meshIdx];
         MeshData meshData;
+        bool hasTexcoords_ = mesh->HasTextureCoords(0);
 
-        assert(mesh->HasTextureCoords(0)); // UV座標必須
+        // 頂点を元ファイルの順番で格納
+        for(uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx) {
+            aiVector3D position = mesh->mVertices[vertexIdx];
+            aiVector3D normal = mesh->mNormals[vertexIdx];
+            aiVector3D texcoord = { 0.0f, 0.0f, 0.0f };
+            if(hasTexcoords_) {
+                texcoord = mesh->mTextureCoords[0][vertexIdx];
+            }
 
-        // 頂点を一意に管理するためのマップ
-        std::unordered_map<VertexData, uint32_t, VertexHash, VertexEqual> uniqueVertices;
+            // 頂点を作成
+            VertexData vertex;
+            vertex.position_ = { position.x, position.y, position.z, 1.0f };
+            vertex.normal_ = { normal.x, normal.y, normal.z };
+            vertex.texcoord_ = { texcoord.x, texcoord.y };
 
-        // faceを解析する
+            // 左手座標系に変換
+            vertex.position_.x *= -1.0f;
+            vertex.normal_.x *= -1.0f;
+
+            // 頂点をそのまま格納
+            meshData.vertices.push_back(vertex);
+        }
+
+        // インデックスを格納
         for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx) {
             aiFace& face = mesh->mFaces[faceIdx];
             assert(face.mNumIndices == 3); // 三角形以外は無視
 
-            // インデックスデータを構築
+            // インデックスデータを追加
             for(uint32_t element = 0; element < face.mNumIndices; ++element) {
-                uint32_t vertexIdx = face.mIndices[element];
-
-                // 頂点の情報を取得
-                aiVector3D position = mesh->mVertices[vertexIdx];
-                aiVector3D normal = mesh->mNormals[vertexIdx];
-                aiVector3D texcoord = mesh->mTextureCoords[0][vertexIdx];
-
-                // 頂点を作成
-                VertexData vertex;
-                vertex.position_ = { position.x, position.y, position.z, 1.0f };
-                vertex.normal_ = { normal.x, normal.y, normal.z };
-                vertex.texcoord_ = { texcoord.x, texcoord.y };
-
-                // 左手座標系に変換
-                vertex.position_.x *= -1.0f;
-                vertex.normal_.x *= -1.0f;
-
-                // 頂点を一意に管理
-                if(uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(meshData.vertices.size());
-                    meshData.vertices.push_back(vertex);
-                }
-
-                // インデックスを追加
-                meshData.indices.push_back(uniqueVertices[vertex]);
+                meshData.indices.push_back(face.mIndices[element]);
             }
         }
 
         // マテリアルインデックスを設定
         meshData.materialIndex = mesh->mMaterialIndex;
-
-
 
         // メッシュを追加
         meshes.push_back(meshData);
@@ -201,7 +196,6 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
 
     return meshes;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +205,7 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene){
+std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName){
     std::vector<MaterialData> materials;
 
     // マテリアルを読み込む
@@ -221,7 +215,7 @@ std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene){
 
         aiString texturePath;
         if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
-            materialData.textureFilePath_ = std::string(texturePath.C_Str());
+            materialData.textureFilePath_ = "../models/" + modelName + "/" + std::string(texturePath.C_Str());
         }
 
         // テクスチャがない場合は白テクスチャを設定
@@ -548,6 +542,47 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
     return skeleton;
 }
 
+// スケルトンの補間
+ModelSkeleton ModelManager::InterpolateSkeleton(
+    const ModelSkeleton& skeletonA, const ModelSkeleton& skeletonB, float t
+){
+    // 違うジョイント数の場合は補間できない
+    if(skeletonA.joints.size() != skeletonB.joints.size()){
+        assert(false);
+    }
+
+    // ジョイントごとに補間
+    ModelSkeleton skeleton;
+
+    for(uint32_t i = 0; i < skeletonA.joints.size(); ++i){
+        ModelJoint jointA = skeletonA.joints[i];
+        ModelJoint jointB = skeletonB.joints[i];
+
+        // 補間
+        Quaternion rotate = Quaternion::Slerp(jointA.transform.rotate_, jointB.transform.rotate_, t);
+        Vector3 translate = MyMath::Lerp(jointA.transform.translate_, jointB.transform.translate_, t);
+        Vector3 scale = MyMath::Lerp(jointA.transform.scale_, jointB.transform.scale_, t);
+
+        // 補間したジョイントを作成
+        ModelJoint joint;
+        joint.transform.rotate_ = rotate;
+        joint.transform.translate_ = translate;
+        joint.transform.scale_ = scale;
+        joint.localMatrix = AffineMatrix(scale, rotate, translate);
+        joint.skeletonSpaceMatrix = joint.localMatrix;
+        joint.index = i;
+        joint.parent = jointA.parent;
+        joint.name = jointA.name;
+
+        skeleton.joints.push_back(joint);
+    }
+
+    // スケルトン行列を更新
+    instance_->UpdateSkeleton(&skeleton);
+
+    return skeleton;
+}
+
 /*-----------------------------------------------------------*/
 // スケルトン行列の更新
 /*-----------------------------------------------------------*/
@@ -576,6 +611,7 @@ void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton){
 std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeightData(const aiScene* scene){
 
     std::unordered_map<std::string, JointWeightData> result;
+    int32_t vertexCount = 0;
 
     for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
         aiMesh* mesh = scene->mMeshes[meshIdx];
@@ -607,10 +643,15 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
 
             for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
                 jointWeightData.vertexWeights.push_back(
-                    VertexWeightData(bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId)
+                    VertexWeightData(
+                        bone->mWeights[weightIndex].mWeight,
+                        vertexCount + bone->mWeights[weightIndex].mVertexId
+                    )
                 );
             }
         }
+
+        vertexCount += mesh->mNumVertices;
     }
 
     return result;
@@ -625,15 +666,21 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
     auto& palette = modelData->defaultSkinClusterData;
     palette.inverseBindPoseMatrices.resize(skeleton.joints.size(), IdentityMat4());
 
-    // vertexInfluenceを頂点数で初期化
+    // meshごとのvertexInfluence格納場所を作成
+    int32_t vertexCount = 0;
     for(auto& mesh : modelData->meshes){
         mesh.vertexInfluences.resize(mesh.vertices.size());
-        for(auto& influence : mesh.vertexInfluences){
-            std::fill(std::begin(influence.weights), std::end(influence.weights), 0.0f);
-            std::fill(std::begin(influence.jointIndices), std::end(influence.jointIndices), 0);
-        }
+        vertexCount += (int32_t)mesh.vertices.size();
     }
 
+    // 全頂点分の影響情報を格納する場所を作成(あとでmeshごとに分ける)
+    std::vector<VertexInfluence*> influences;
+    influences.resize(vertexCount);
+    for(auto& influence : influences){
+        influence = new VertexInfluence();
+        std::fill(std::begin(influence->weights), std::end(influence->weights), 0.0f);
+        std::fill(std::begin(influence->jointIndices), std::end(influence->jointIndices), 0);
+    }
 
     // modelDataを解析して、Influenceを作成
     for(const auto& jointWeight : modelData->jointWeightData){// ModelDataのweightDataを解析
@@ -647,26 +694,37 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
 
         for(const auto& vertexWeight : jointWeight.second.vertexWeights){// 頂点ウェイトを格納
 
-            for(int meshIdx = 0; meshIdx < modelData->meshes.size(); ++meshIdx){
+            if(vertexWeight.vertexIndex > vertexCount){
+                continue;
+            }
 
-                if(modelData->meshes[meshIdx].vertices.size() <= vertexWeight.vertexIndex){
-                    continue;
-                }
+            // 格納場所を取得
+            auto& currentInfluence = influences[vertexWeight.vertexIndex];
 
-                // 格納場所を取得
-                auto& currentInfluence = modelData->meshes[meshIdx].vertexInfluences[vertexWeight.vertexIndex];
-
-
-                // ウェイト、インデックス情報を格納していく
-                for(uint32_t index = 0; index < kMaxInfluence; ++index){// 空いている場所に格納
-                    if(currentInfluence.weights[index] == 0.0f){// weight == 0 が空の状態なのでその場所にweightとindexを格納
-                        currentInfluence.weights[index] = vertexWeight.weight;
-                        currentInfluence.jointIndices[index] = it->second;
-                        break;
-                    }
+            // ウェイト、インデックス情報を格納していく
+            for(uint32_t index = 0; index < kMaxInfluence; ++index){// 空いている場所に格納
+                if(currentInfluence->weights[index] == 0.0f){// weight == 0 が空の状態なのでその場所にweightとindexを格納
+                    currentInfluence->weights[index] = vertexWeight.weight;
+                    currentInfluence->jointIndices[index] = it->second;
+                    break;
                 }
             }
         }
+    }
+
+    // influencesをmeshごとに分ける
+    int32_t vertexIndex = 0;
+    for(auto& mesh : modelData->meshes){
+        for(auto& vertexInfluence : mesh.vertexInfluences){
+            vertexInfluence = *influences[vertexIndex];
+            vertexIndex++;
+        }
+    }
+
+    // 解放
+    for(auto& influence : influences){
+        delete influence;
+        influence = nullptr;
     }
 }
 

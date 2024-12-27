@@ -1,14 +1,14 @@
 #pragma once
-#include "../Game/Objects/Player/PlayerState/IPlayerState.h"
+#include "Base/IState.h"
 
-class PlayerState_Idle : public IPlayerState{
+class PlayerState_Idle : public IState{
 public:
     PlayerState_Idle() = default;
-    PlayerState_Idle(Player* player);
+    PlayerState_Idle(BaseCharacter* player);
     ~PlayerState_Idle()override;
     void Update()override;
     void Draw()override;
-    void Initialize(Player* player)override;
+    void Initialize(BaseCharacter* player)override;
 
 protected:
     // ステート管理

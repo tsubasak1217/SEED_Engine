@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "MyMath.h"
 #include "MyFunc.h"
-#include "../Game/Objects/BaseObject.h"
+#include "Base/BaseObject.h"
 
 struct FollowCamera : public Camera{
 

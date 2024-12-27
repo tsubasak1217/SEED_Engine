@@ -22,6 +22,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     player_ = std::make_unique<Player>();
+    enemies_.push_back(std::make_unique<Enemy>());
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -68,6 +69,10 @@ void Scene_Game::Update(){
     currentState_->Update();
 
     player_->Update();
+
+    for(auto& enemy : enemies_) {
+        enemy->Update();
+    }
 }
 
 void Scene_Game::Draw(){
@@ -76,4 +81,8 @@ void Scene_Game::Draw(){
     SEED::DrawGrid();
 
     player_->Draw();
+
+    for(auto& enemy : enemies_) {
+        enemy->Draw();
+    }
 }

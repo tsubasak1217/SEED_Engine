@@ -43,8 +43,10 @@ public:
     // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)
     template <typename T>
     static int32_t ToBack(std::map<std::string, T>& myMap, const std::string& token);
+
 };
 
+// マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)
 template<typename T>
 inline int32_t MyFunc::ToBack(std::map<std::string, T>& myMap, const std::string& token){
     // 前後に分けるための一時コンテナ

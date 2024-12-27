@@ -2,18 +2,20 @@
 #include "PlayerState_Jump.h"
 #include "PlayerState_Attack.h"
 #include "PlayerState_Idle.h"
+#include "Player/Player.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Move::PlayerState_Move(Player* player){
+PlayerState_Move::PlayerState_Move(BaseCharacter* player){
     Initialize(player);
+    pCharacter_->SetAnimation("running",true);
 }
 
 PlayerState_Move::~PlayerState_Move(){}
 
-void PlayerState_Move::Initialize(Player* player){
-    IPlayerState::Initialize(player);
+void PlayerState_Move::Initialize(BaseCharacter* player){
+    IState::Initialize(player);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,7 +40,7 @@ void PlayerState_Move::Draw(){}
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Move::Move(){
     DecideStickVelocity();
-    pPlayer_->HandleMove(acceleration_);
+    pCharacter_->HandleMove(acceleration_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,7 @@ void PlayerState_Move::DecideStickVelocity(){
     stickDirection_ = Input::GetStickValue(LR::LEFT);
 
     // カメラの回転を考慮して補正
+    Player* pPlayer_ = dynamic_cast<Player*>(pCharacter_);
     if(pPlayer_->GetFollowCamera()){
         stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
     }
@@ -62,11 +65,11 @@ void PlayerState_Move::DecideStickVelocity(){
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Move::Rotate(){
     // 移動ベクトルを求める
-    moveVec_ = pPlayer_->GetWorldTranslate() - pPlayer_->GetPrePos();
+    moveVec_ = pCharacter_->GetWorldTranslate() - pCharacter_->GetPrePos();
 
     // 移動ベクトルから回転を求める
     if(MyMath::Length(moveVec_) > 0.0f){
-        pPlayer_->HandleRotate(Vector3(0.0f,MyFunc::CalcRotateVec(moveVec_).y,0.0f));
+        pCharacter_->HandleRotate(Vector3(0.0f,MyFunc::CalcRotateVec(moveVec_).y,0.0f));
     }
 }
 
@@ -77,19 +80,19 @@ void PlayerState_Move::ManageState(){
 
     // ジャンプ状態へ
     if(Input::IsPressPadButton(PAD_BUTTON::A)){
-        pPlayer_->ChangeState(new PlayerState_Jump(pPlayer_));
+        pCharacter_->ChangeState(new PlayerState_Jump(pCharacter_));
         return;
     }
 
     // 攻撃状態へ
     if(Input::IsPressPadButton(PAD_BUTTON::B)){
-        pPlayer_->ChangeState(new PlayerState_Attack(pPlayer_));
+        pCharacter_->ChangeState(new PlayerState_Attack(pCharacter_));
         return;
     }
 
     // アイドル状態へ
     if(MyMath::Length(moveVec_) == 0.0f){
-        pPlayer_->ChangeState(new PlayerState_Idle(pPlayer_));
+        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
         return;
     }
 

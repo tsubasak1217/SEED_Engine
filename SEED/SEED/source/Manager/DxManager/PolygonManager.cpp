@@ -826,11 +826,11 @@ void PolygonManager::AddModel(Model* model){
 
             if(skeleton.joints[i].parent){
                 Vector3 point[2];
-                point[0] = Vector3(0.0f,0.0f,0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
-                point[1] = Vector3(0.0f, 0.0f, 0.0f) * 
+                point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
+                point[1] = Vector3(0.0f, 0.0f, 0.0f) *
                     skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
 
-                SEED::DrawLine(point[0], point[1], {0.0f,0.0f,1.0f,1.0f});
+                SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
             }
         }
     }
@@ -1395,8 +1395,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     // VBVのセット
                     pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv);
 
-
-
                     /*-------------------- インスタンスごとのデータ --------------------*/
 
                     D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
@@ -1425,11 +1423,11 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     if(drawOrder == DrawOrder::AnimationModel){
                         D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
                         size = sizeof(VertexInfluence);
-
+                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
                             vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
-                            ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                            ofst;
 
                         // 総サイズ、刻み幅の設定
                         vbv3->SizeInBytes = size * (UINT)item->modelData->meshes[meshIdx].vertices.size();
@@ -1490,13 +1488,14 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         );
                     }
 
-                    // アニメーション用のジョイント数のインクリメント
-                    if(drawOrder == DrawOrder::AnimationModel){
-                        animationJointCount += jointSize * instanceCount;
-                    }
 
                     // 描画総メッシュ数のインクリメント
                     meshCountAll += instanceCount;
+                }
+
+                // アニメーション用のジョイント数のインクリメント
+                if(drawOrder == DrawOrder::AnimationModel){
+                    animationJointCount += jointSize * instanceCount;
                 }
 
 

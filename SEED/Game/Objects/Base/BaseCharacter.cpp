@@ -15,7 +15,7 @@ BaseCharacter::~BaseCharacter(){}
 
 void BaseCharacter::Initialize(){
     // モデルの初期化
-    model_ = std::make_unique<Model>("man.gltf");
+    model_ = std::make_unique<Model>("Assets/man.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 }

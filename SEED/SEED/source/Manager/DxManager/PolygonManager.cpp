@@ -915,7 +915,7 @@ void PolygonManager::AddLine(
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
-        material.GH_ = TextureManager::LoadTexture("white1x1.png");
+        material.GH_ = TextureManager::LoadTexture("Assets/white1x1.png");
 
     } else{
         drawData2D->materials[(int)blendMode][0].resize(1);
@@ -923,7 +923,7 @@ void PolygonManager::AddLine(
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
-        material.GH_ = TextureManager::LoadTexture("white1x1.png");
+        material.GH_ = TextureManager::LoadTexture("Assets/white1x1.png");
     }
 
     // transform

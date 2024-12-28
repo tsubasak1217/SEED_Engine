@@ -84,7 +84,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // assinmpのインポート設定
     Assimp::Importer importer;
     std::string modelName = filename.substr(0, filename.find_last_of('.'));
-    std::string filePath = directoryPath + "/" + modelName + "/" + filename;
+    std::string filePath = directoryPath + "/" + modelName + "/" + filename.substr(filename.find_last_of('/'));
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -220,7 +220,7 @@ std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, con
 
         // テクスチャがない場合は白テクスチャを設定
         if(materialData.textureFilePath_ == ""){
-            materialData.textureFilePath_ = "white1x1.png";
+            materialData.textureFilePath_ = "Assets/white1x1.png";
         }
 
         materials.push_back(materialData);
@@ -238,7 +238,7 @@ std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, con
         } else {
             // マテリアルが対応していない場合はデフォルトマテリアルを割り当て
             MaterialData defaultMaterial;
-            defaultMaterial.textureFilePath_ = "white1x1.png";
+            defaultMaterial.textureFilePath_ = "Assets/white1x1.png";
             meshMaterials.push_back(defaultMaterial);
         }
     }
@@ -272,7 +272,9 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string filePath = directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) + "/" + filename;
+    std::string filePath =
+        directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) 
+        + "/" + filename.substr(filename.find_last_of('/'));
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 

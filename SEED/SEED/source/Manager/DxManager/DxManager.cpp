@@ -165,8 +165,8 @@ void DxManager::Initialize(SEED* pSEED){
     /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
 
     // white1x1だけ読み込んでおく
-    instance_->CreateTexture("resources/textures/white1x1.png");
-    instance_->CreateTexture("resources/textures/uvChecker.png");
+    instance_->CreateTexture("resources/textures/Assets/white1x1.png");
+    instance_->CreateTexture("resources/textures/Assets/uvChecker.png");
 
     /*------------------------------ DepthStencilViewの作成 -------------------------------*/
 

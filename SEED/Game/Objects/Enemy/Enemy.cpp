@@ -13,7 +13,7 @@ Enemy::~Enemy(){}
 
 void Enemy::Initialize(){
     // モデルの初期化
-    model_ = std::make_unique<Model>("zombie.gltf");
+    model_ = std::make_unique<Model>("Assets/zombie.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 

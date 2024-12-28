@@ -11,7 +11,7 @@ BaseObject::BaseObject(){
 BaseObject::~BaseObject(){}
 
 void BaseObject::Initialize(){
-    model_ = std::make_unique<Model>("suzanne2.obj");
+    model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
 }
 

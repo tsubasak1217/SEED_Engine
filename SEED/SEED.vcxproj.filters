@@ -179,6 +179,9 @@
     <Filter Include="Game\Objects\Enemy\EnemyState">
       <UniqueIdentifier>{1fa401b3-4c70-4469-bd5d-5c08dede308c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SEED\lib\enums">
+      <UniqueIdentifier>{879ddeb3-739b-40ba-9156-a34da7635b3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -313,7 +316,7 @@
     <ClCompile Include="SEED\lib\shapes\Quad.cpp">
       <Filter>SEED\lib\shapes</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Object\Camera\Camera.cpp">
+    <ClCompile Include="SEED\source\Object\Camera\BaseCamera.cpp">
       <Filter>SEED\source\Object\Camera</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp">
@@ -603,7 +606,7 @@
     <ClInclude Include="SEED\lib\structs\blendMode.h">
       <Filter>SEED\lib\structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Object\Camera\Camera.h">
+    <ClInclude Include="SEED\source\Object\Camera\BaseCamera.h">
       <Filter>SEED\source\Object\Camera</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h">
@@ -737,6 +740,21 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h">
       <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
+      <Filter>SEED\source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\BitSet.h">
+      <Filter>SEED\lib\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
+      <Filter>SEED\source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
+      <Filter>SEED\source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\enums\LR.h">
+      <Filter>SEED\lib\enums</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 #include <vector>
 #include "Base/BaseCharacter.h"
 #include "Collision/Collider.h"
-#include "Camera.h"
+#include "BaseCamera.h"
 
 class IPlayerState;
 
@@ -19,10 +19,10 @@ public:// Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration)override;
 
 public:// アクセッサ
-    void SetFollowCameraPtr(Camera* pCamera){pCamera_ = pCamera;}
-    const Camera* GetFollowCamera()const{ return pCamera_; }
+    void SetFollowCameraPtr(BaseCamera* pCamera){pCamera_ = pCamera;}
+    const BaseCamera* GetFollowCamera()const{ return pCamera_; }
 
 private:// フォローカメラ、ターゲット用
-    Camera* pCamera_ = nullptr;
+    BaseCamera* pCamera_ = nullptr;
 
 };

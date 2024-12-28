@@ -16,7 +16,7 @@
 #include <includes.h>
 #include <PolygonManager.h>
 #include <EffectManager.h>
-#include <Camera.h>
+#include <BaseCamera.h>
 #include <CameraManager.h>
 #include <ViewManager.h>
 
@@ -135,7 +135,7 @@ private:/*============================ マネージャー変数 ================
 
 private:/*============================== オブジェクト =============================*/
 
-    Camera* camera_;
+    BaseCamera* camera_;
     bool isDebugCameraAvtive_ = false;
 
 private:/*================================= 定数 =================================*/
@@ -254,11 +254,11 @@ private:/*======================== DirectXの設定に必要な変数 ==========
 
 private:/*============================ アクセッサ関数 ============================*/
 
-    Camera* GetCamera()const{ return camera_; }
+    BaseCamera* GetCamera()const{ return camera_; }
     void SetCamera(std::string nextCameraName){
         camera_ = CameraManager::GetCamera(nextCameraName);
     }
-    void SetCamera(Camera* camera){ camera_ = camera; }
+    void SetCamera(BaseCamera* camera){ camera_ = camera; }
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }
     float GetResolutionRate(){ return resolutionRate_; }
     float GetPreResolutionRate(){ return preResolutionRate_; }

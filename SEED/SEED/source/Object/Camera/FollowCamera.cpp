@@ -11,8 +11,20 @@ FollowCamera::FollowCamera(){
 FollowCamera::~FollowCamera(){}
 
 void FollowCamera::Initialize(){
+    // カメラのoffset初期設定
     defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
-    Camera::Initialize();
+    distance_ = 20.0f;
+    // 角度の初期設定
+    theta_ = -3.14f * 0.5f;
+    phi_ = 3.14f * 0.5f;
+    rotateSpeed_ = 0.025f;
+    // 限界角度
+    kMaxPhi_ = 3.14f * 0.5f;
+    kMinPhi_ = 0.1f;
+    // inputのデフォルト設定
+    angleInput_.Value = [](){return Input::GetStickValue(LR::RIGHT); };
+    // カメラ共通の初期化処理
+    BaseCamera::Initialize();
 }
 
 void FollowCamera::Update(){
@@ -37,8 +49,8 @@ void FollowCamera::Update(){
 
 void FollowCamera::UpdateAngle(){
     // カメラの角度を更新
-    theta_ += -Input::GetStickValue(LR::RIGHT).x * rotateSpeed_ * ClockManager::TimeRate();
-    phi_ += Input::GetStickValue(LR::RIGHT).y * rotateSpeed_ * ClockManager::TimeRate();
+    theta_ += -angleInput_.Value().x * rotateSpeed_ * ClockManager::TimeRate();
+    phi_ += angleInput_.Value().y * rotateSpeed_ * ClockManager::TimeRate();
 
     // 角度の制限
     phi_ = std::clamp(phi_, kMinPhi_, kMaxPhi_);

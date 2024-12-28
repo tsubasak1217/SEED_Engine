@@ -3,7 +3,7 @@
 #include <vector>
 #include "BaseObject.h"
 #include "Collision/Collider.h"
-#include "Camera.h"
+#include "BaseCamera.h"
 
 class IState;
 

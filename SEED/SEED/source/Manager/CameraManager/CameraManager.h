@@ -1,5 +1,5 @@
 #pragma once
-#include "Camera.h"
+#include "BaseCamera.h"
 #include "DebugCamera.h"
 #include <memory>
 #include <unordered_map>
@@ -26,15 +26,15 @@ private:
 public:
 
     // カメラのポインタ取得
-    static Camera* GetCamera(const std::string& name);
-    static void AddCamera(const std::string& name, Camera* camera);
+    static BaseCamera* GetCamera(const std::string& name);
+    static void AddCamera(const std::string& name, BaseCamera* camera);
 
 private:
 
     // カメラの一覧
-    std::unordered_map<std::string, Camera*>cameras_;
+    std::unordered_map<std::string, BaseCamera*>cameras_;
 
     // メインのカメラ
-    std::unique_ptr<Camera> mainCamera_;
+    std::unique_ptr<BaseCamera> mainCamera_;
     std::unique_ptr<DebugCamera> debugCamera_;
 };

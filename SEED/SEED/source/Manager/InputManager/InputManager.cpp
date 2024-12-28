@@ -189,13 +189,62 @@ bool Input::IsPressKey(uint8_t key){
     return instance_->keys_[key];
 }
 
+bool Input::IsPressKey(const std::initializer_list<uint8_t>& keys){
+    for(auto& key : keys){
+        if(instance_->keys_[key]){ return true; }
+    }
+
+    return false;
+}
+
+bool Input::IsPressAnyKey(){
+    for(int i = 0; i < kMaxKey_; i++){
+        if(instance_->keys_[i]){ return true; }
+    }
+
+    return false;
+}
+
 bool Input::IsTriggerKey(uint8_t key){
     return instance_->keys_[key] && !instance_->preKeys_[key];
+}
+
+bool Input::IsTriggerKey(const std::initializer_list<uint8_t>& keys){
+    for(auto& key : keys){
+        if(instance_->keys_[key] && !instance_->preKeys_[key]){ return true; }
+    }
+
+    return false;
+}
+
+bool Input::IsTriggerAnyKey(){
+    for(int i = 0; i < kMaxKey_; i++){
+        if(instance_->keys_[i] && !instance_->preKeys_[i]){ return true; }
+    }
+
+    return false;
 }
 
 bool Input::IsReleaseKey(uint8_t key){
     return !instance_->keys_[key] && instance_->preKeys_[key];
 }
+
+bool Input::IsReleaseKey(const std::initializer_list<uint8_t>& keys){
+    for(auto& key : keys){
+        if(!instance_->keys_[key] && instance_->preKeys_[key]){ return true; }
+    }
+
+    return false;
+}
+
+bool Input::IsReleaseAnyKey(){
+    for(int i = 0; i < kMaxKey_; i++){
+        if(!instance_->keys_[i] && instance_->preKeys_[i]){ return true; }
+    }
+
+    return false;
+}
+
 
 //----------------------------------- マウス -------------------------------------------//
 

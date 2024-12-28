@@ -3,7 +3,7 @@
 #include <vector>
 #include "Base/BaseCharacter.h"
 #include "Collision/Collider.h"
-#include "Camera.h"
+#include "BaseCamera.h"
 
 class IEnemyState;
 

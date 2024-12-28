@@ -21,7 +21,7 @@
 #include <Triangle.h>
 #include <Quad.h>
 #include <Sprite.h>
-#include <Camera.h>
+#include <BaseCamera.h>
 #include <BlendMode.h>
 #include "AABB.h"
 #include "OBB.h"
@@ -135,7 +135,7 @@ public:
 public:
 
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
-    static Camera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
+    static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
     static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
 
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }

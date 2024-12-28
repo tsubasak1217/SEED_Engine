@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 
-struct Camera{
+struct BaseCamera{
 
-    Camera();
-    virtual ~Camera() = default;
+    BaseCamera();
+    virtual ~BaseCamera() = default;
     virtual void Initialize();
     void UpdateMatrix();
     virtual void Update();

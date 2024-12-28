@@ -1,10 +1,11 @@
 #pragma once
-#include "Camera.h"
+#include "BaseCamera.h"
 #include "MyMath.h"
 #include "MyFunc.h"
 #include "Base/BaseObject.h"
+#include "InputHangler.h"
 
-struct FollowCamera : public Camera{
+struct FollowCamera : public BaseCamera{
 
 public:
     FollowCamera();
@@ -23,13 +24,17 @@ public:
 private:
 
     BaseObject* target_ = nullptr;
-    Vector3 defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
-    float distance_ = 20.0f;
-    float theta_ = -3.14f * 0.5f;
-    float phi_ = 3.14f * 0.5f;
-    float rotateSpeed_ = 0.025f;
+    Vector3 defaultOffset_;
+    float distance_;
+    float theta_;
+    float phi_;
+    float rotateSpeed_;
 
     // 限界角度
-    float kMaxPhi_ = 3.14f * 0.5f;
-    float kMinPhi_ = 0.1f;
+    float kMaxPhi_;
+    float kMinPhi_;
+
+    // 入力ハンドラ
+public:/*外部からキーコンフィグ設定可能にするためpublic*/
+    InputHandler<Vector2> angleInput_;
 };

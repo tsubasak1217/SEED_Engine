@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "BaseCamera.h"
 #include "MatrixFunc.h"
 #include "MyMath.h"
 #include "MatrixFunc.h"
@@ -8,11 +8,11 @@
 
 float znearOffsetForLayer = 0.09f;
 
-Camera::Camera(){
+BaseCamera::BaseCamera(){
     Initialize();
 }
 
-void Camera::Initialize(){
+void BaseCamera::Initialize(){
     transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
     transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
     transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
@@ -24,7 +24,7 @@ void Camera::Initialize(){
     UpdateMatrix();
 }
 
-void Camera::UpdateMatrix(){
+void BaseCamera::UpdateMatrix(){
 
     znear_ = std::clamp(znear_, 0.1f, zfar_);
     float adjustedZnear = znear_ - znearOffsetForLayer;
@@ -65,4 +65,4 @@ void Camera::UpdateMatrix(){
     vpVp_ = Multiply(viewProjectionMat_, viewportMat_);
 }
 
-void Camera::Update(){}
+void BaseCamera::Update(){}

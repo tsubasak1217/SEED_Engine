@@ -1,8 +1,8 @@
 #pragma once
-#include "Camera.h"
+#include "BaseCamera.h"
 #include "Vector3.h"
 
-struct DebugCamera : public Camera{
+struct DebugCamera : public BaseCamera{
     DebugCamera();
     ~DebugCamera()override;
     void Update()override;

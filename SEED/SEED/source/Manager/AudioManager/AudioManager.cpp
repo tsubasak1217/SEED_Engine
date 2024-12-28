@@ -65,10 +65,6 @@ HRESULT AudioManager::InitializeMediaFoundation(){
 
 void AudioManager::StartUpLoad(){
     // 以下にロード処理をまとめる
-    //instance_->LoadAudio("ochiba.m4a");
-    instance_->LoadAudio("kinmokusei.wav");
-    //instance_->LoadAudio("higurashi.mp3");
-    instance_->LoadAudio("koi.wav");
 }
 
 

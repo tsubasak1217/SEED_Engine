@@ -15,5 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-    float sensingDistance_;// 感知距離
+    float sensingDistance_ = 60.0f;// 感知距離
 };

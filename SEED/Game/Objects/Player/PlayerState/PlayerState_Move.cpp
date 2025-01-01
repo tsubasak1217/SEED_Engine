@@ -79,7 +79,7 @@ void PlayerState_Move::Rotate(){
                 Quaternion::Slerp(
                     pCharacter_->GetWorldRotate(),
                     rotateVec_,
-                    lerpRate_
+                    lerpRate_ * ClockManager::TimeRate()
                 )
             );
 

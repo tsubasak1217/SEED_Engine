@@ -20,9 +20,66 @@ void EnemyState_Walk::Initialize(BaseCharacter* player){
 }
 
 //////////////////////////////////////////////////////////////////////////
+// 移動処理
+//////////////////////////////////////////////////////////////////////////
+void EnemyState_Walk::Move(){
+
+    // Enemy型にキャスト
+    Enemy* pEnemy = dynamic_cast<Enemy*>(pCharacter_);
+    // プレイヤーへの方向を計算
+    Vector3 moveDirection = 
+        pEnemy->GetTargetPlayer()->GetWorldTranslate() - pEnemy->GetWorldTranslate();
+    moveDirection.y = 0.0f;
+    moveDirection = MyMath::Normalize(moveDirection);
+
+    // 移動
+    pEnemy->HandleMove(moveDirection * moveSpeed_ * ClockManager::DeltaTime());
+    pEnemy->UpdateMatrix();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 移動に合わせた回転処理
+//////////////////////////////////////////////////////////////////////////
+void EnemyState_Walk::Rotate(){
+
+    // 移動ベクトルを求める
+    Vector3 moveVec = pCharacter_->GetWorldTranslate() - pCharacter_->GetPrePos();
+
+    // 移動ベクトルから回転を求める
+    if(MyMath::Length(moveVec) > 0.0f){
+        Vector3 rotateVec_ = MyFunc::CalcRotateVec(moveVec);
+        rotateVec_.x = 0.0f;
+
+        if(isLerpRotate_){// 補間回転する場合
+
+            // 補間後の回転を求める
+            Vector3 lerped = Quaternion::ToEuler(
+                Quaternion::Slerp(
+                    pCharacter_->GetWorldRotate(),
+                    rotateVec_,
+                    lerpRate_ * ClockManager::TimeRate()
+                )
+            );
+
+            pCharacter_->HandleRotate(lerped);
+
+        } else{
+            pCharacter_->HandleRotate(rotateVec_);
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void EnemyState_Walk::Update(){
+
+    // 移動処理
+    Move();
+
+    // 回転処理
+    Rotate();
+
     // ステート管理
     ManageState();
 }

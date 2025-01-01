@@ -22,3 +22,7 @@ void BaseObject::Update(){
 void BaseObject::Draw(){
     model_->Draw();
 }
+
+void BaseObject::UpdateMatrix(){
+    model_->UpdateMatrix();
+}

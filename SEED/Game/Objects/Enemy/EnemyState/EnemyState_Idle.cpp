@@ -17,7 +17,6 @@ void EnemyState_Idle::Initialize(BaseCharacter* enemy){
     ICharacterState::Initialize(enemy);
     pCharacter_->HandleRotate(Vector3(0.0f, 3.14f, 0.0f));
     pCharacter_->SetAnimation("idle", true);
-    sensingDistance_ = 30.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////

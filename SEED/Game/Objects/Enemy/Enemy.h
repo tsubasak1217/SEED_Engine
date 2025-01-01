@@ -6,8 +6,6 @@
 #include "BaseCamera.h"
 #include "Player/Player.h"
 
-class IEnemyState;
-
 class Enemy : public BaseCharacter{
 public:
     Enemy();
@@ -20,6 +18,7 @@ public:
 public:
 
     float GetDistanceToPlayer()const;
+    const Player* GetTargetPlayer()const{ return pPlayer_; }
 
 private:
     Player* pPlayer_ = nullptr;

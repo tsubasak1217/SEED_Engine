@@ -65,10 +65,7 @@ void Model::Update(){
         if(isAnimationLoop_){
             animationTime_ = std::fmod(totalAnimationTime_, animationDuration_);
         } else{
-            animationTime_ = std::clamp(totalAnimationTime_, 0.0f,animationDuration_);
-            if(animationTime_ == animationDuration_){
-                isAnimation_ = false;
-            }
+            animationTime_ = std::clamp(totalAnimationTime_, 0.0f, animationDuration_);
         }
 
         animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
@@ -140,11 +137,31 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
     if(animations.size() - 1 < animationIndex) { assert(false); }
 
     // 切り替える前にスケルトンの状態を保持
-    preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
-        ModelManager::GetModelData(modelName_)->animations[animationName_],
-        ModelManager::GetModelData(modelName_)->defaultSkeleton,
-        animationTime_
-    )));
+    if(!preSkeleton_){
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        )));
+    } else{
+        // アニメーション適用後のスケルトンを取得
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        );
+
+        // アニメーション補間
+        progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+
+        // 補間後のスケルトンを設定
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
+            *preSkeleton_,
+            skeleton,
+            progressOfAnimLerp_
+        )));
+    }
 
     // アニメーション名の取得
     int index = 0;
@@ -181,11 +198,31 @@ void Model::StartAnimation(const std::string& animationName, bool loop, float sp
     }
 
     // 切り替える前にスケルトンの状態を保持
-    preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
-        ModelManager::GetModelData(modelName_)->animations[animationName_],
-        ModelManager::GetModelData(modelName_)->defaultSkeleton,
-        animationTime_
-    )));
+    if(!preSkeleton_){
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        )));
+    } else{
+        // アニメーション適用後のスケルトンを取得
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        );
+
+        // アニメーション補間
+        progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+
+        // 補間後のスケルトンを設定
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
+            *preSkeleton_,
+            skeleton,
+            progressOfAnimLerp_
+        )));
+    }
 
     // 情報の設定
     isAnimation_ = true;

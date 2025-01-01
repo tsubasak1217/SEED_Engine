@@ -16,6 +16,9 @@ public:
     virtual void Update();
     virtual void Draw();
 
+public:
+    void UpdateMatrix();
+
 public:// アクセッサ
 
     // 基礎情報

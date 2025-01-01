@@ -37,3 +37,11 @@ void Enemy::Update(){
 void Enemy::Draw(){
     BaseCharacter::Draw();
 }
+
+//////////////////////////////////////////////////////////////////////////
+// その他
+//////////////////////////////////////////////////////////////////////////
+float Enemy::GetDistanceToPlayer() const{
+    if(!pPlayer_){assert(false);}
+    return MyMath::Length(GetWorldTranslate(), pPlayer_->GetWorldTranslate());
+}

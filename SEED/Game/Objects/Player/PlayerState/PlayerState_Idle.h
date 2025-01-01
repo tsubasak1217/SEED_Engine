@@ -1,7 +1,7 @@
 #pragma once
-#include "Base/IState.h"
+#include "Base/ICharacterState.h"
 
-class PlayerState_Idle : public IState{
+class PlayerState_Idle : public ICharacterState{
 public:
     PlayerState_Idle() = default;
     PlayerState_Idle(BaseCharacter* player);

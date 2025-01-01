@@ -16,12 +16,13 @@ PlayerState_Attack::PlayerState_Attack(BaseCharacter* player){
 PlayerState_Attack::~PlayerState_Attack(){}
 
 void PlayerState_Attack::Initialize(BaseCharacter* player){
-    IState::Initialize(player);
+    ICharacterState::Initialize(player);
 }
 
 //////////////////////////////////////////////////////////////////////////
 //　更新処理
 //////////////////////////////////////////////////////////////////////////
+
 void PlayerState_Attack::Update(){
     // コンボ時間を減らす
     attackTime_ -= ClockManager::DeltaTime();

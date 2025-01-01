@@ -9,13 +9,13 @@
 //////////////////////////////////////////////////////////////////////////
 PlayerState_Move::PlayerState_Move(BaseCharacter* player){
     Initialize(player);
-    pCharacter_->SetAnimation("running",true);
+    pCharacter_->SetAnimation("running", true);
 }
 
 PlayerState_Move::~PlayerState_Move(){}
 
 void PlayerState_Move::Initialize(BaseCharacter* player){
-    IState::Initialize(player);
+    ICharacterState::Initialize(player);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,25 @@ void PlayerState_Move::Rotate(){
 
     // 移動ベクトルから回転を求める
     if(MyMath::Length(moveVec_) > 0.0f){
-        pCharacter_->HandleRotate(Vector3(0.0f,MyFunc::CalcRotateVec(moveVec_).y,0.0f));
+        Vector3 rotateVec_ = MyFunc::CalcRotateVec(moveVec_);
+        rotateVec_.x = 0.0f;
+
+        if(isLerpRotate_){// 補間回転する場合
+
+            // 補間後の回転を求める
+            Vector3 lerped = Quaternion::ToEuler(
+                Quaternion::Slerp(
+                    pCharacter_->GetWorldRotate(),
+                    rotateVec_,
+                    lerpRate_
+                )
+            );
+
+            pCharacter_->HandleRotate(lerped);
+
+        } else{
+            pCharacter_->HandleRotate(rotateVec_);
+        }
     }
 }
 

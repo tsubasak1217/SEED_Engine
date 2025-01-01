@@ -1,11 +1,11 @@
 #pragma once
 #include "Base/ICharacterState.h"
 
-class EnemyState_Idle : public ICharacterState{
+class EnemyState_StandUp : public ICharacterState{
 public:
-    EnemyState_Idle() = default;
-    EnemyState_Idle(BaseCharacter* enemy);
-    ~EnemyState_Idle()override;
+    EnemyState_StandUp() = default;
+    EnemyState_StandUp(BaseCharacter* enemy);
+    ~EnemyState_StandUp()override;
     void Update()override;
     void Draw()override;
     void Initialize(BaseCharacter* enemy)override;
@@ -15,5 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-    float sensingDistance_;// 感知距離
+
 };

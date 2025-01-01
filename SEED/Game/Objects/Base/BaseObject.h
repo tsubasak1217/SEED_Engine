@@ -36,6 +36,10 @@ public:// アクセッサ
     void SetParent(const BaseObject* parent){ model_->parent_ = parent->model_.get(); }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
+public:// 当たり判定が生じた時の処理
+
+    virtual void OnCollision(BaseObject* other){ other; }
+
 protected:
     static uint32_t nextID_;
     uint32_t objectID_;

@@ -1,7 +1,7 @@
 #pragma once
-#include "Base/IState.h"
+#include "Base/ICharacterState.h"
 
-class PlayerState_Move : public IState{
+class PlayerState_Move : public ICharacterState{
 public:
     PlayerState_Move() = default;
     PlayerState_Move(BaseCharacter* player);
@@ -23,6 +23,10 @@ private:
     void DecideStickVelocity();
 
 private:
+    // 回転の補間
+    bool isLerpRotate_ = true;
+    float lerpRate_ = 0.25f;
+    // 移動情報
     float moveSpeed_ = 30.0f;
     Vector2 stickDirection_;
     Vector3 acceleration_;

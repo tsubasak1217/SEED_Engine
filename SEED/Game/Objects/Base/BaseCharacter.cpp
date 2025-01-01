@@ -1,7 +1,7 @@
 #include "BaseCharacter.h"
 #include "InputManager.h"
 #include "ImGuiManager.h"
-#include "IState.h"
+#include "ICharacterState.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -32,6 +32,8 @@ void BaseCharacter::Update(){
     // 状態に応じた更新処理
     if(currentState_){
         currentState_->Update();
+        // state固有のColliderをCollisionManagerに渡す
+        currentState_->HandOverColliders();
     }
 
     BaseObject::Update();
@@ -55,7 +57,7 @@ void BaseCharacter::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
 //////////////////////////////////////////////////////////////////////////
-void BaseCharacter::ChangeState(IState* nextState){
+void BaseCharacter::ChangeState(ICharacterState* nextState){
     currentState_.reset(nextState);
 }
 
@@ -68,4 +70,16 @@ void BaseCharacter::HandleRotate(const Vector3& rotate){
     // 回転
     model_->rotate_ = rotate;
     model_->UpdateMatrix();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// コライダー関連
+//////////////////////////////////////////////////////////////////////////
+
+void BaseCharacter::AddCollider(Collider* collider){
+    colliders_.push_back(collider);
+}
+
+void BaseCharacter::ResetCollider(){
+    colliders_.clear();
 }

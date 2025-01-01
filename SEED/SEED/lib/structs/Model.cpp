@@ -66,6 +66,9 @@ void Model::Update(){
             animationTime_ = std::fmod(totalAnimationTime_, animationDuration_);
         } else{
             animationTime_ = std::clamp(totalAnimationTime_, 0.0f,animationDuration_);
+            if(animationTime_ == animationDuration_){
+                isAnimation_ = false;
+            }
         }
 
         animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
@@ -88,7 +91,7 @@ void Model::UpdateMatrix(){
         rotate_ = Quaternion::ToEuler(rotateQuat_);// 切り替えても大丈夫なように同期させておく
     } else{
         localMat_ = AffineMatrix(scale_, rotate_, translate_);
-        rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
+        rotateQuat_ = Quaternion::ToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
 
     // ワールド変換行列を求める

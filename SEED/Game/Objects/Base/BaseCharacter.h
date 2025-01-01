@@ -5,7 +5,7 @@
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
 
-class IState;
+class ICharacterState;
 
 class BaseCharacter : public BaseObject{
 public:
@@ -17,9 +17,13 @@ public:
 
 
 public:// Stateから呼び出す関数
-    void ChangeState(IState* nextState);
+    void ChangeState(ICharacterState* nextState);
     virtual void HandleMove(const Vector3& acceleration);
     virtual void HandleRotate(const Vector3& rotate);
+
+public:// コライダー関連
+    void AddCollider(Collider* collider);
+    void ResetCollider();
 
 public:// アクセッサ
 
@@ -27,12 +31,17 @@ public:// アクセッサ
     void SetAnimation(const std::string& animName, bool loop){ model_->StartAnimation(animName, loop); }
     void SetAnimation(int32_t animIdx, bool loop){ model_->StartAnimation(animIdx, loop); }
     float GetAnimationDuration()const{ return model_->GetAnimationDuration(); }
+    bool GetIsEndAnimation()const{ return model_->GetIsEndAnimation(); }
+    bool GetIsDamaged()const{ return isDamaged_; }
 
 protected:// 衝突判定用
-    std::vector<Collider> colliders_;
+    std::vector<Collider*> colliders_;
+
+protected:// パラメータ
+    bool isDamaged_ = false;
 
 protected:// 状態管理用
-    std::unique_ptr<IState> currentState_ = nullptr;
+    std::unique_ptr<ICharacterState> currentState_ = nullptr;
 
 protected:// 前フレームでの情報
     Vector3 prePos_;

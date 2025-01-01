@@ -4,6 +4,7 @@
 #include "Base/BaseCharacter.h"
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
+#include "Player/Player.h"
 
 class IEnemyState;
 
@@ -15,4 +16,10 @@ public:
     void Update() override;
     void Draw() override;
 
+public:
+
+    float GetDistanceToPlayer()const;
+
+private:
+    Player* pPlayer_ = nullptr;
 };

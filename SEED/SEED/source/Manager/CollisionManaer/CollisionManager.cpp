@@ -1,17 +1,47 @@
 #include "CollisionManager.h"
 
+/////////////////////////////////////////////////////////////////////////////////////
+// static変数の初期化
+/////////////////////////////////////////////////////////////////////////////////////
+
+CollisionManager* CollisionManager::instance_ = nullptr;
+
+/////////////////////////////////////////////////////////////////////////////////////
+// コンストラクタ・デストラクタ・初期化関数
+/////////////////////////////////////////////////////////////////////////////////////
+
 CollisionManager::~CollisionManager(){}
+
+CollisionManager* CollisionManager::GetInstance(){
+    if(instance_ == nullptr){
+        instance_ = new CollisionManager();
+    }
+    return instance_;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 当たり判定関数
+/////////////////////////////////////////////////////////////////////////////////////
 
 void CollisionManager::CheckCollision(){}
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+// コライダーの追加・削除関数
+/////////////////////////////////////////////////////////////////////////////////////
+
 void CollisionManager::ResetColliderList(){
-    colliders_.clear();
+    instance_->colliders_.clear();
 }
 
 void CollisionManager::AddCollider(Collider* object){
-    colliders_.push_back(object);
+    instance_->colliders_.push_back(object);
 }
 
-void CollisionManager::AddCollider(std::list<Collider*> objects){
-    colliders_.insert(colliders_.end(), objects.begin(), objects.end());
+void CollisionManager::AddColliders(std::list<Collider*> objects){
+    instance_->colliders_.insert(instance_->colliders_.end(), objects.begin(), objects.end());
+}
+
+void CollisionManager::AddColliders(std::vector<Collider*> objects){
+    instance_->colliders_.insert(instance_->colliders_.end(), objects.begin(), objects.end());
 }

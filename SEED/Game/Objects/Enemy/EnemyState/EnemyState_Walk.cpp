@@ -1,28 +1,28 @@
-#include "EnemyState_Idle.h"
-#include "Enemy/Enemy.h"
-// 状態クラスのインクルード
-#include "EnemyState_Damaged.h"
 #include "EnemyState_Walk.h"
+#include "Enemy/Enemy.h"
+// 各ステートのヘッダーをインクルード
+#include "EnemyState_Idle.h"
+#include "EnemyState_Attack.h"
+#include "EnemyState_Damaged.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_Idle::EnemyState_Idle(BaseCharacter* enemy){
-    Initialize(enemy);
+EnemyState_Walk::EnemyState_Walk(BaseCharacter* player){
+    Initialize(player);
 }
 
-EnemyState_Idle::~EnemyState_Idle(){}
+EnemyState_Walk::~EnemyState_Walk(){}
 
-void EnemyState_Idle::Initialize(BaseCharacter* enemy){
-    ICharacterState::Initialize(enemy);
-    pCharacter_->HandleRotate(Vector3(0.0f, 3.14f, 0.0f));
-    pCharacter_->SetAnimation("idle", true);
+void EnemyState_Walk::Initialize(BaseCharacter* player){
+    ICharacterState::Initialize(player);
+    pCharacter_->SetAnimation("walk", true);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void EnemyState_Idle::Update(){
+void EnemyState_Walk::Update(){
     // ステート管理
     ManageState();
 }
@@ -30,25 +30,26 @@ void EnemyState_Idle::Update(){
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void EnemyState_Idle::Draw(){}
+void EnemyState_Walk::Draw(){}
 
 //////////////////////////////////////////////////////////////////////////
 // ステート管理
 //////////////////////////////////////////////////////////////////////////
-void EnemyState_Idle::ManageState(){
+void EnemyState_Walk::ManageState(){
 
     // Enemy型にキャスト
     Enemy* pEnemy = dynamic_cast<Enemy*>(pCharacter_);
 
-    // ダメージを受けたらダメージ状態に遷移
+    // 攻撃を受けたらダメージ状態に遷移
     if(pEnemy->GetIsDamaged()){
         pCharacter_->ChangeState(new EnemyState_Damaged(pCharacter_));
         return;
     }
 
-    // プレイヤーを発見したら追跡状態に遷移
-    if(pEnemy->GetDistanceToPlayer() < sensingDistance_){
-        pCharacter_->ChangeState(new EnemyState_Walk(pCharacter_));
+    // 攻撃可能距離にプレイヤーがいたら攻撃状態に遷移
+    if(pEnemy->GetDistanceToPlayer() < attackRange_){
+        pCharacter_->ChangeState(new EnemyState_Attack(pCharacter_));
         return;
     }
+
 }

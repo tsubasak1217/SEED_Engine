@@ -6,21 +6,23 @@ class CollisionManager{
 private:
     // シングルトン
     CollisionManager() = default;
-    CollisionManager* instance_ = nullptr;
+    static CollisionManager* instance_;
     CollisionManager(const CollisionManager&) = delete;
     CollisionManager& operator=(const CollisionManager&) = delete;
 
 public:
     ~CollisionManager();
+    static CollisionManager* GetInstance();
 
 public:// 当たり判定関数-------------------------------------------------------------------
-    void CheckCollision();
+    static void CheckCollision();
 
 
 public:// コライダーの追加・削除関数---------------------------------------------------------
-    void ResetColliderList();
-    void AddCollider(Collider* object);
-    void AddCollider(std::list<Collider*> objects);
+    static void ResetColliderList();
+    static void AddCollider(Collider* object);
+    static void AddColliders(std::list<Collider*> objects);
+    static void AddColliders(std::vector<Collider*> objects);
 
 private:// メンバ変数---------------------------------------------------------------------
 

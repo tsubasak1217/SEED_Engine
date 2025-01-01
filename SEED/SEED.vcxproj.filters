@@ -416,7 +416,22 @@
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -732,7 +747,7 @@
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Base\IState.h">
+    <ClInclude Include="Game\Objects\Base\ICharacterState.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h">
@@ -755,6 +770,21 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\enums\LR.h">
       <Filter>SEED\Lib\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

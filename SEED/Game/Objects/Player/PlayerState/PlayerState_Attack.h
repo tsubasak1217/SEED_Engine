@@ -1,7 +1,7 @@
 #pragma once
-#include "Base/IState.h"
+#include "Base/ICharacterState.h"
 
-class PlayerState_Attack : public IState{
+class PlayerState_Attack : public ICharacterState{
 public:
     PlayerState_Attack() = default;
     PlayerState_Attack(BaseCharacter* player);

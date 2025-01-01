@@ -15,7 +15,7 @@ PlayerState_Idle::PlayerState_Idle(BaseCharacter* player){
 PlayerState_Idle::~PlayerState_Idle(){}
 
 void PlayerState_Idle::Initialize(BaseCharacter* player){
-    IState::Initialize(player);
+    ICharacterState::Initialize(player);
     pCharacter_->SetAnimation("idle", true);
 }
 

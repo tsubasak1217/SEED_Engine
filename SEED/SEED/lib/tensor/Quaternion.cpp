@@ -139,6 +139,15 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
     return result;
 }
 
+Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
+    // クォータニオンに変換
+    Quaternion q1 = Quaternion::ToQuaternion(r1);
+    Quaternion q2 = Quaternion::ToQuaternion(r2);
+
+    // 球面補間
+    return q1.Slerp(q2, t);
+}
+
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);
@@ -167,7 +176,7 @@ Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis){
 
 
 // オイラー角からクォータニオンに変換
-Quaternion Quaternion::EulerToQuaternion(const Vector3& eulerRotate) {
+Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate) {
     // オイラー角の各成分
     float cx = std::cosf(eulerRotate.x * 0.5f);
     float sx = std::sinf(eulerRotate.x * 0.5f);

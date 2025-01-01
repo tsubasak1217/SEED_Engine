@@ -12,7 +12,7 @@ PlayerState_Jump::PlayerState_Jump(BaseCharacter* player){
 PlayerState_Jump::~PlayerState_Jump(){}
 
 void PlayerState_Jump::Initialize(BaseCharacter* player){
-    IState::Initialize(player);
+    ICharacterState::Initialize(player);
 
     // ジャンプの初期化
     isJump_ = true;

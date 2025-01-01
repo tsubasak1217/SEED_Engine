@@ -21,11 +21,12 @@ public:
     Quaternion Inverse()const;
     Quaternion Slerp(const Quaternion& q, float t)const;
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
+    static Quaternion Slerp(const Vector3& r1, const Vector3& r2, float t);
     Quaternion Lerp(const Quaternion& q, float t)const;
 
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);
-    static Quaternion EulerToQuaternion(const Vector3& eulerRotate);
+    static Quaternion ToQuaternion(const Vector3& eulerRotate);
     static Vector3 ToEuler(const Quaternion& q);
     Vector3 ToEuler()const;
 

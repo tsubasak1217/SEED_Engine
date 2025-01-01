@@ -11,6 +11,7 @@ class IEnemyState;
 class Enemy : public BaseCharacter{
 public:
     Enemy();
+    Enemy(Player* pPlayer);
     ~Enemy();
     void Initialize() override;
     void Update() override;

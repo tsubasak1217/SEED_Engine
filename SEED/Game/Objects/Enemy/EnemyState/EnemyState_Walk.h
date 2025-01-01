@@ -15,5 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-    float attackRange_ = 100.0f;
+    float attackRange_ = 15.0f;
 };

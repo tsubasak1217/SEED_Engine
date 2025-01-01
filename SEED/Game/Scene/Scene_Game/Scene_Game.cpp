@@ -22,7 +22,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     player_ = std::make_unique<Player>();
-    enemies_.push_back(std::make_unique<Enemy>());
+    enemies_.push_back(std::make_unique<Enemy>(player_.get()));
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化

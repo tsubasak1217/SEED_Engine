@@ -9,6 +9,12 @@ Enemy::Enemy(){
     Initialize();
 }
 
+Enemy::Enemy(Player* pPlayer){
+    name_ = "Enemy";
+    pPlayer_ = pPlayer;
+    Initialize();
+}
+
 Enemy::~Enemy(){}
 
 void Enemy::Initialize(){

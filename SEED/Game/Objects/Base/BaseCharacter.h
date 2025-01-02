@@ -24,6 +24,7 @@ public:// Stateから呼び出す関数
 public:// コライダー関連
     void AddCollider(Collider* collider);
     void ResetCollider();
+    void HandOverColliders();
 
 public:// アクセッサ
 

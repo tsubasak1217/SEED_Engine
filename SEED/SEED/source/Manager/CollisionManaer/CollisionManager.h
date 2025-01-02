@@ -13,6 +13,7 @@ private:
 public:
     ~CollisionManager();
     static CollisionManager* GetInstance();
+    static void Initialize();
 
 public:// 当たり判定関数-------------------------------------------------------------------
     static void CheckCollision();

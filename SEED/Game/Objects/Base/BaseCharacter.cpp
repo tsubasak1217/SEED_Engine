@@ -32,8 +32,6 @@ void BaseCharacter::Update(){
     // 状態に応じた更新処理
     if(currentState_){
         currentState_->Update();
-        // state固有のColliderをCollisionManagerに渡す
-        currentState_->HandOverColliders();
     }
 
     BaseObject::Update();
@@ -82,4 +80,17 @@ void BaseCharacter::AddCollider(Collider* collider){
 
 void BaseCharacter::ResetCollider(){
     colliders_.clear();
+}
+
+void BaseCharacter::HandOverColliders(){
+
+    // キャラクターの基本コライダーを渡す
+    for(auto& collider : colliders_){
+        CollisionManager::AddCollider(collider);
+    }
+
+    // state固有のcolliderも渡す
+    if(currentState_){
+        currentState_->HandOverColliders();
+    }
 }

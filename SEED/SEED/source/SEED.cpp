@@ -7,6 +7,7 @@
 #include <includes.h>
 #include <Environment.h>
 #include <SceneManager.h>
+#include <CollisionManaer/CollisionManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -64,6 +65,7 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     ModelManager::Initialize();
     ParticleManager::Initialize();
     SceneManager::Initialize();
+    CollisionManager::Initialize();
 
     // 起動時読み込み
     instance_->StartUpLoad();

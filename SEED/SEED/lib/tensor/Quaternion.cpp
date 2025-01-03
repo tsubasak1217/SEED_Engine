@@ -90,6 +90,44 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 }
 
+// クォータニオンの球面補間
+Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
+    // 入力の補間係数をクランプ
+    t = std::clamp(t, 0.0f, 1.0f);
+
+    // q1とq2の内積を計算
+    float dot = Dot(q1, q2);
+
+    // 内積が負の場合は反転
+    Quaternion q1Adjusted = q2;
+    if(dot < 0.0f) {
+        q1Adjusted = q1 * -1.0f;
+        dot = -dot;
+    }
+
+    // 内積が非常に1に近い場合は線形補間を使用
+    if(dot > 0.9995f) {
+        Quaternion result = q1 * (1.0f - t) + q2 * t;
+        return result.Normalize(); // 結果を正規化して返す
+    }
+
+    // 球面補間を計算
+    float theta = std::acos(dot); // 角度を計算
+    float sinTheta = std::sin(theta); // sin(theta) を計算
+
+    //// sinThetaが非常に小さい場合の特別処理
+    //if(sinTheta < 1e-6f) {
+    //    return q1; // 角度がほぼゼロの場合はq1を返す
+    //}
+
+    // 補間係数を計算
+    float a = std::sin((1.0f - t) * theta) / sinTheta;
+    float b = std::sin(t * theta) / sinTheta;
+
+    // Slerp結果を計算
+    return (q1 * a) + (q1Adjusted * b);
+}
+
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);
@@ -325,6 +363,10 @@ Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& t
 //////////////////////////////////////////////////////////
 Quaternion Quaternion::operator+(const Quaternion& q) const{
     return Quaternion(x + q.x, y + q.y, z + q.z, w + q.w);
+}
+
+Quaternion Quaternion::operator-(const Quaternion& q) const{
+    return Quaternion(x - q.x, y - q.y, z - q.z, w - q.w);
 }
 
 Quaternion Quaternion::operator*(const Quaternion& q) const{

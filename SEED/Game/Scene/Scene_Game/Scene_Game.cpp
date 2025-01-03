@@ -7,7 +7,6 @@
 
 #include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
 
-
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     ChangeState(new GameState_Play(this));
@@ -19,6 +18,24 @@ Scene_Game::~Scene_Game(){}
 void Scene_Game::Initialize(){
 
     SEED::SetCamera("debug");
+
+    ////////////////////////////////////////////////////
+    //  モデル生成
+    ////////////////////////////////////////////////////
+
+    std::vector<std::string>paths = {
+        //"bunny.obj",
+        "cube.obj",
+        "sphere.obj",
+        "Player_result.gltf",
+        "teapot.obj",
+    };
+
+    for(int i = 0; i < 32; i++){
+        models_.push_back(std::make_unique<Model>(paths[MyFunc::Random(0, (int)paths.size() - 1)]));
+        models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f}, { 32.0f,5.0f,32.0f }));
+        models_.back()->UpdateMatrix();
+    }
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -60,7 +77,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f",ClockManager::FPS());
+    ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
 
     fieldEditor_->ShowImGui();

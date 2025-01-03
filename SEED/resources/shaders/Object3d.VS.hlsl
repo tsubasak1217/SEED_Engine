@@ -18,6 +18,7 @@ struct VertexShaderInput {
     // VBV_1 (OffsetData)
     int indexOffset : INDEX_OFFSET0;
     int meshOffset : MESH_OFFSET0;
+    int jointIndexOffset : JOINT_INDEX_OFFSET0;
     int interval : INTERVAL0; //line->2,triangle->3,quad->4
 };
 

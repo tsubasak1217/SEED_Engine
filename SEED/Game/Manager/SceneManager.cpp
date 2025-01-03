@@ -33,6 +33,7 @@ void SceneManager::Update(){
 
 void SceneManager::Draw(){
     pScene_->Draw();
+    CollisionManager::Draw();
 }
 
 SceneManager* SceneManager::GetInstance(){

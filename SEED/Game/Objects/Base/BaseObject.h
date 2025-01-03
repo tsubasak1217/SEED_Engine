@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 #include <algorithm>
+#include "Collision/Collider.h"
+#include "CollisionManaer/CollisionManager.h"
 #include "ClockManager.h"
 #include "MyMath.h"
 #include "MyFunc.h"
@@ -39,14 +41,22 @@ public:// アクセッサ
     void SetParent(const BaseObject* parent){ model_->parent_ = parent->model_.get(); }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
-public:// 当たり判定が生じた時の処理
+public:// コライダー関連
+    void AddCollider(Collider* collider);
+    void ResetCollider();
+    virtual void HandOverColliders();
+    virtual void OnCollision(const BaseObject* other){ other; }
 
-    virtual void OnCollision(BaseObject* other){ other; }
+private:
+    virtual void InitCollider(){};
 
 protected:
     static uint32_t nextID_;
     uint32_t objectID_;
     std::string name_;
+
+protected:// 衝突判定用
+    std::vector<std::unique_ptr<Collider>> colliders_;
 
 protected:
 

@@ -31,9 +31,11 @@ void BaseCharacter::Update(){
 
     // 状態に応じた更新処理
     if(currentState_){
+        // 更新処理
         currentState_->Update();
     }
 
+    HandOverColliders();
     BaseObject::Update();
 }
 
@@ -71,25 +73,14 @@ void BaseCharacter::HandleRotate(const Vector3& rotate){
 }
 
 //////////////////////////////////////////////////////////////////////////
-// コライダー関連
+// 衝突判定関連
 //////////////////////////////////////////////////////////////////////////
-
-void BaseCharacter::AddCollider(Collider* collider){
-    colliders_.push_back(collider);
-}
-
-void BaseCharacter::ResetCollider(){
-    colliders_.clear();
-}
-
 void BaseCharacter::HandOverColliders(){
 
-    // キャラクターの基本コライダーを渡す
-    for(auto& collider : colliders_){
-        CollisionManager::AddCollider(collider);
-    }
+    // 基本コライダーを渡す
+    BaseObject::HandOverColliders();
 
-    // state固有のcolliderも渡す
+    // state固有のコライダーを渡す
     if(currentState_){
         currentState_->HandOverColliders();
     }

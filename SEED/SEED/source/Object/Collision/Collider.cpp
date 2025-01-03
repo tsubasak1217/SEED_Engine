@@ -1,5 +1,13 @@
 #include "Collider.h"
 #include "SEED.h"
+#include "Base/BaseObject.h"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 
+//    static変数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t Collider::nextID_ = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -7,32 +15,9 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Collider::Collider(ColliderType colliderType){
-    switch(colliderType){
-    case ColliderType::Line:
-        currentPoints_.resize(2);;
-        break;
-    case ColliderType::Capsule:
-        currentPoints_.resize(2);
-        break;
-    case ColliderType::Plane:
-        currentPoints_.resize(4);
-        break;
-    case ColliderType::Sphere:
-        currentPoints_.resize(1);
-        break;
-    case ColliderType::AABB:
-        currentPoints_.resize(1);
-        break;
-    case ColliderType::OBB:
-        currentPoints_.resize(1);
-        break;
-    default:
-        break;
-    }
 
-    prePoints_.resize(currentPoints_.size());
-    this->colliderType_ = colliderType;
+Collider::Collider(){
+    colliderID_ = nextID_++;
 }
 
 Collider::~Collider(){}
@@ -44,9 +29,27 @@ Collider::~Collider(){}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Collider::Update(){
+
+    // 衝突フラグの更新
+    preIsCollision_ = isCollision_;
+    isCollision_ = false;
+
+    // 衝突リストのクリア
+    collisionList_.clear();
+
+    // 色の初期化
+    color_ = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
+    // 行列の更新
     UpdateMatrix();
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     行列更新関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Collider::UpdateMatrix(){
 
     // ローカル行列の更新
@@ -93,56 +96,8 @@ void Collider::UpdateMatrix(){
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Collider::Draw(){
+void Collider::Draw(){}
 
-    Vector4 color = isCollision_ ? 
-        Vector4(1.0f, 0.0f, 0.0f, 1.0f) :
-        Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-
-    switch(colliderType_){
-    case ColliderType::Line:/*----------------------------------*/
-    {
-        SEED::DrawLine(currentPoints_[0], currentPoints_[1], color);
-        break;
-    }
-    case ColliderType::Capsule:/*----------------------------------*/
-    {
-        SEED::DrawCapsule(currentPoints_[0], currentPoints_[1], scale_ * radius_, 8, color);
-        break;
-    }
-    case ColliderType::Plane:/*----------------------------------*/
-    {
-        SEED::DrawLine(currentPoints_[0], currentPoints_[1], color);
-        SEED::DrawLine(currentPoints_[1], currentPoints_[2], color);
-        SEED::DrawLine(currentPoints_[2], currentPoints_[3], color);
-        SEED::DrawLine(currentPoints_[3], currentPoints_[0], color);
-        break;
-    }
-    case ColliderType::Sphere:/*----------------------------------*/
-    {
-        SEED::DrawSphere(currentPoints_[0], scale_ * radius_, 8, color);
-        break;
-    }
-    case ColliderType::AABB:/*----------------------------------*/
-    {
-        AABB aabb;
-        aabb.center = currentPoints_[0];
-        aabb.halfSize = halfSize_ * scale_;
-        SEED::DrawAABB(aabb, color);
-        break;
-    }
-    case ColliderType::OBB:/*----------------------------------*/
-    {
-        OBB obb;
-        obb.center = currentPoints_[0];
-        obb.halfSize = halfSize_ * scale_;
-        obb.rotate = rotate_;
-        break;
-    }
-    default:
-        break;
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -150,7 +105,27 @@ void Collider::Draw(){
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Collider::CheckCollision(Collider* collider){ collider; }
+
 void Collider::OnCollision(Collider* collider){
-    collider;
+
+    // 衝突フラグを立てる
     isCollision_ = true;
+    // 赤色に変更
+    color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+    // 親オブジェクトにも衝突を通知
+    if(parentObject_){
+        parentObject_->OnCollision(collider->parentObject_);
+    }
+
+    // 衝突リストに追加
+    collisionList_.insert(collider->colliderID_);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     衝突判定用のAABB更新関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Collider::UpdateBox(){}

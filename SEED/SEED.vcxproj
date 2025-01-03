@@ -136,6 +136,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
@@ -154,7 +155,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\Functions\myFunc\MyMath.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\ShapeMath.cpp" />
     <ClCompile Include="SEED\lib\shapes\Quad.cpp" />
-    <ClCompile Include="SEED\lib\shapes\sphere.cpp" />
     <ClCompile Include="SEED\lib\shapes\Triangle.cpp" />
     <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp" />
     <ClCompile Include="SEED\lib\structs\Model.cpp" />
@@ -194,6 +194,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\FollowCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Collision\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +232,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Line.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
     <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
@@ -255,7 +266,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\lib\shapes\AABB.h" />
     <ClInclude Include="SEED\lib\shapes\OBB.h" />
     <ClInclude Include="SEED\lib\shapes\Quad.h" />
-    <ClInclude Include="SEED\lib\shapes\sphere.h" />
     <ClInclude Include="SEED\lib\shapes\Triangle.h" />
     <ClInclude Include="SEED\lib\structs\AccelerarionField.h" />
     <ClInclude Include="SEED\lib\structs\blendMode.h" />
@@ -312,6 +322,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h" />
     <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>
   <ItemGroup>

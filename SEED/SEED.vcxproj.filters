@@ -187,9 +187,6 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\shapes\sphere.cpp">
-      <Filter>SEED\Lib\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\external\imgui\imgui.cpp">
       <Filter>SEED\External\imgui</Filter>
     </ClCompile>
@@ -433,6 +430,30 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp">
       <Filter>Game\Objects\Enemy\EnemyState</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -449,9 +470,6 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\includes\includes.h">
       <Filter>SEED\Lib\Includes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\shapes\sphere.h">
-      <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="SEED\lib\structs\DirectionalLight.h">
       <Filter>SEED\Lib\Structs</Filter>
@@ -785,6 +803,39 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h">
       <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Octree.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Line.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
+      <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

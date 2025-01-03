@@ -52,6 +52,7 @@ public:// アクセッサ
     // トランスフォーム
     Matrix4x4 GetLocalMat()const{ return localMat_; }
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
+    const Matrix4x4* GetWorldMatPtr()const{ return &worldMat_; }
     Vector3 GetLocalTranslate()const{ return ExtractTranslation(localMat_); }
     Vector3 GetWorldTranslate()const{ return ExtractTranslation(worldMat_);}
     Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }

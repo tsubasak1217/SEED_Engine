@@ -2,7 +2,6 @@
 #include <list>
 #include <vector>
 #include "BaseObject.h"
-#include "Collision/Collider.h"
 #include "BaseCamera.h"
 
 class ICharacterState;
@@ -21,10 +20,8 @@ public:// Stateから呼び出す関数
     virtual void HandleMove(const Vector3& acceleration);
     virtual void HandleRotate(const Vector3& rotate);
 
-public:// コライダー関連
-    void AddCollider(Collider* collider);
-    void ResetCollider();
-    void HandOverColliders();
+protected:
+    void HandOverColliders()override;
 
 public:// アクセッサ
 
@@ -34,9 +31,6 @@ public:// アクセッサ
     float GetAnimationDuration()const{ return model_->GetAnimationDuration(); }
     bool GetIsEndAnimation()const{ return model_->GetIsEndAnimation(); }
     bool GetIsDamaged()const{ return isDamaged_; }
-
-protected:// 衝突判定用
-    std::vector<Collider*> colliders_;
 
 protected:// パラメータ
     bool isDamaged_ = false;

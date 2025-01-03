@@ -67,6 +67,9 @@ Matrix4x4 ScaleMatrix(const Vector3& scale);
 
 // 回転行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
+Matrix4x4 RotateXMatrix(float theta);
+Matrix4x4 RotateYMatrix(float theta);
+Matrix4x4 RotateZMatrix(float theta);
 Matrix4x4 RotateMatrix(const Vector3& rotate);
 
 // 平行移動行列を作る関数

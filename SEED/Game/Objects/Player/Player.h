@@ -15,6 +15,9 @@ public:
     void Update() override;
     void Draw() override;
 
+private:
+    void InitCollider()override;
+
 public:// Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration)override;
 

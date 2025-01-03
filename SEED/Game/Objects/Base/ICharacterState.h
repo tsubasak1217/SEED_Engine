@@ -17,7 +17,7 @@ public:
 public:// コライダー追加
     void HandOverColliders(){
         for(auto& collider : colliders_){
-            CollisionManager::AddCollider(collider);
+            CollisionManager::AddCollider(collider.get());
         }
     }
 
@@ -26,6 +26,6 @@ protected:
 
 protected:
     BaseCharacter* pCharacter_ = nullptr;
-    std::vector<Collider*> colliders_;
+    std::vector<std::unique_ptr<Collider>> colliders_;
 
 };

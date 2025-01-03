@@ -16,7 +16,17 @@ void BaseObject::Initialize(){
 }
 
 void BaseObject::Update(){
+
+    // モデルの更新
     model_->Update();
+
+    // コライダーの更新
+    for(auto& collider : colliders_){
+        collider->Update();
+    }
+
+    // 衝突判定のためのコライダーを渡す
+    HandOverColliders();
 }
 
 void BaseObject::Draw(){
@@ -25,4 +35,25 @@ void BaseObject::Draw(){
 
 void BaseObject::UpdateMatrix(){
     model_->UpdateMatrix();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// コライダー関連
+//////////////////////////////////////////////////////////////////////////
+
+void BaseObject::AddCollider(Collider* collider){
+    colliders_.emplace_back(std::make_unique<Collider>());
+    colliders_.back().reset(collider);
+}
+
+void BaseObject::ResetCollider(){
+    colliders_.clear();
+}
+
+void BaseObject::HandOverColliders(){
+
+    // キャラクターの基本コライダーを渡す
+    for(auto& collider : colliders_){
+        CollisionManager::AddCollider(collider.get());
+    }
 }

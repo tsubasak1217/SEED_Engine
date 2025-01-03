@@ -529,97 +529,44 @@ Matrix3x3 RotateMatrix(float theta) {
     return result;
 }
 
+Matrix4x4 RotateXMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[1][1] = cos;
+    mat.m[2][1] = -sin;
+    mat.m[1][2] = sin;
+    mat.m[2][2] = cos;
+    return mat;
+}
+
+Matrix4x4 RotateYMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[0][0] = cos;
+    mat.m[2][0] = sin;
+    mat.m[0][2] = -sin;
+    mat.m[2][2] = cos;
+    return mat;
+}
+
+Matrix4x4 RotateZMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[0][0] = cos;
+    mat.m[1][0] = -sin;
+    mat.m[0][1] = sin;
+    mat.m[1][1] = cos;
+    return mat;
+}
+
 Matrix4x4 RotateMatrix(const Vector3& rotate) {
-    Matrix4x4 rotateMat[3];
-
-    /*-------X軸の回転行列-------*/
-    if(rotate.x) {
-
-        float sin = std::sin(rotate.x);
-        float cos = std::cos(rotate.x);
-
-        rotateMat[0].m[0][0] = 1;
-        rotateMat[0].m[1][0] = 0;
-        rotateMat[0].m[2][0] = 0;
-        rotateMat[0].m[3][0] = 0;
-
-        rotateMat[0].m[0][1] = 0;
-        rotateMat[0].m[1][1] = cos;
-        rotateMat[0].m[2][1] = -sin;
-        rotateMat[0].m[3][1] = 0;
-
-        rotateMat[0].m[0][2] = 0;
-        rotateMat[0].m[1][2] = sin;
-        rotateMat[0].m[2][2] = cos;
-        rotateMat[0].m[3][2] = 0;
-
-        rotateMat[0].m[0][3] = 0;
-        rotateMat[0].m[1][3] = 0;
-        rotateMat[0].m[2][3] = 0;
-        rotateMat[0].m[3][3] = 1;
-    } else {
-        rotateMat[0] = IdentityMat4();
-    }
-
-    /*-------Y軸の回転行列-------*/
-    if(rotate.y) {
-
-        float sin = std::sin(rotate.y);
-        float cos = std::cos(rotate.y);
-
-        rotateMat[1].m[0][0] = cos;
-        rotateMat[1].m[1][0] = 0;
-        rotateMat[1].m[2][0] = sin;
-        rotateMat[1].m[3][0] = 0;
-
-        rotateMat[1].m[0][1] = 0;
-        rotateMat[1].m[1][1] = 1;
-        rotateMat[1].m[2][1] = 0;
-        rotateMat[1].m[3][1] = 0;
-
-        rotateMat[1].m[0][2] = -sin;
-        rotateMat[1].m[1][2] = 0;
-        rotateMat[1].m[2][2] = cos;
-        rotateMat[1].m[3][2] = 0;
-
-        rotateMat[1].m[0][3] = 0;
-        rotateMat[1].m[1][3] = 0;
-        rotateMat[1].m[2][3] = 0;
-        rotateMat[1].m[3][3] = 1;
-    } else {
-        rotateMat[1] = IdentityMat4();
-    }
-
-    /*-------Z軸の回転行列-------*/
-    if(rotate.z) {
-
-        float sin = std::sin(rotate.z);
-        float cos = std::cos(rotate.z);
-
-        rotateMat[2].m[0][0] = cos;
-        rotateMat[2].m[1][0] = -sin;
-        rotateMat[2].m[2][0] = 0;
-        rotateMat[2].m[3][0] = 0;
-
-        rotateMat[2].m[0][1] = sin;
-        rotateMat[2].m[1][1] = cos;
-        rotateMat[2].m[2][1] = 0;
-        rotateMat[2].m[3][1] = 0;
-
-        rotateMat[2].m[0][2] = 0;
-        rotateMat[2].m[1][2] = 0;
-        rotateMat[2].m[2][2] = 1;
-        rotateMat[2].m[3][2] = 0;
-
-        rotateMat[2].m[0][3] = 0;
-        rotateMat[2].m[1][3] = 0;
-        rotateMat[2].m[2][3] = 0;
-        rotateMat[2].m[3][3] = 1;
-    } else {
-        rotateMat[2] = IdentityMat4();
-    }
-
-    return Multiply(rotateMat[0], Multiply(rotateMat[1], rotateMat[2]));
+    Matrix4x4 rotX = std::abs(rotate.x) > 1e-6f ? RotateXMatrix(rotate.x) : IdentityMat4();
+    Matrix4x4 rotY = std::abs(rotate.y) > 1e-6f ? RotateYMatrix(rotate.y) : IdentityMat4();
+    Matrix4x4 rotZ = std::abs(rotate.z) > 1e-6f ? RotateZMatrix(rotate.z) : IdentityMat4();
+    return rotX * (rotY * rotZ);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

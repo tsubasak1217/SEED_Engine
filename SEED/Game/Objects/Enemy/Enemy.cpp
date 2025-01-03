@@ -23,6 +23,10 @@ void Enemy::Initialize(){
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 
+    // コライダーの初期化
+    ResetCollider();
+    InitCollider();
+
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
@@ -42,6 +46,18 @@ void Enemy::Update(){
 //////////////////////////////////////////////////////////////////////////
 void Enemy::Draw(){
     BaseCharacter::Draw();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// コライダー関連
+//////////////////////////////////////////////////////////////////////////
+void Enemy::InitCollider(){
+    colliders_.emplace_back(new Collider_OBB());
+    Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
+    obb->SetParentObject(this);
+    obb->SetParentMatrix(model_->GetWorldMatPtr());
+    obb->SetSize({ 3.0f,6.0f,3.0f });
+    obb->offset_ = { 0.0f, 3.0f, 0.0f };
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -77,6 +77,9 @@ struct Vector3 final {
 		y -= obj;
 		z -= obj;
 	}
+    Vector3 operator-() const{
+        return Vector3(-x, -y, -z);
+    }
 
 	// MULTIPLY-----------------------------
 	Vector3 operator*(const Vector3& obj) const {
@@ -128,17 +131,19 @@ struct Vector3 final {
 
     void operator*=(const Matrix4x4& obj){
         float w;
+        Vector3 tmp(x,y,z);
 
-        x = x * obj.m[0][0] + y * obj.m[1][0] + z * obj.m[2][0] + obj.m[3][0];
-        y = x * obj.m[0][1] + y * obj.m[1][1] + z * obj.m[2][1] + obj.m[3][1];
-        z = x * obj.m[0][2] + y * obj.m[1][2] + z * obj.m[2][2] + obj.m[3][2];
-        w = x * obj.m[0][3] + y * obj.m[1][3] + z * obj.m[2][3] + obj.m[3][3];
+        x = tmp.x * obj.m[0][0] + tmp.y * obj.m[1][0] + tmp.z * obj.m[2][0] + obj.m[3][0];
+        y = tmp.x * obj.m[0][1] + tmp.y * obj.m[1][1] + tmp.z * obj.m[2][1] + obj.m[3][1];
+        z = tmp.x * obj.m[0][2] + tmp.y * obj.m[1][2] + tmp.z * obj.m[2][2] + obj.m[3][2];
+        w = tmp.x * obj.m[0][3] + tmp.y * obj.m[1][3] + tmp.z * obj.m[2][3] + obj.m[3][3];
 
         assert(w != 0);
 
         x /= w;
         y /= w;
         z /= w;
+
     }
 
 

@@ -1,9 +1,19 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include <unordered_set>
 #include "Vector3.h"
 #include "Matrix4x4.h"
 #include "ObjectType.h"
+#include "AABB.h"
+#include "OBB.h"
+#include "Line.h"
+#include "Quad.h"
+#include "Sphere.h"
+#include "Capsule.h"
+
+// 前方宣言
+class BaseObject;
 
 // コライダーの種類
 enum class ColliderType : uint32_t{
@@ -19,20 +29,29 @@ enum class ColliderType : uint32_t{
 class Collider{
 
 public:// 基本関数--------------------------------------------------------------
-    Collider() = default;
-    Collider(ColliderType colliderType);
+    Collider();
     ~Collider();
 
 public:
-    void Update();
-    void UpdateMatrix();
-    void Draw();
+    virtual void Update();
+    virtual void UpdateMatrix();
+    virtual void Draw();
+    virtual void CheckCollision(Collider* collider);
     virtual void OnCollision(Collider* collider);
+
+protected:
+    virtual void UpdateBox();
 
 public:// アクセッサ--------------------------------------------------------------
 
+    // 基礎情報
+    void SetParentObject(BaseObject* parentObject){ parentObject_ = parentObject; }
+    void SetObjectType(ObjectType objectType){ objectType_ = objectType; }
+    ColliderType GetColliderType()const{ return colliderType_; }
+    uint32_t GetColliderID()const{ return colliderID_; }
+
     // ペアレント情報
-    void SetParentMatrix(Matrix4x4* parentMat,bool isParentScale = true){
+    void SetParentMatrix(const Matrix4x4* parentMat,bool isParentScale = true){
         parentMat_ = parentMat; 
         isParentScale_ = isParentScale;
     }
@@ -44,15 +63,21 @@ public:// アクセッサ-------------------------------------------------------
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
     Matrix4x4 GetLocalMat()const{ return localMat_; }
 
-private:// 基礎情報--------------------------------------------------------------
+    // 衝突判定用
+    const AABB& GetBox()const{ return coverAABB_; }
+
+protected:// 基礎情報--------------------------------------------------------------
+    BaseObject* parentObject_ = nullptr;    
     ColliderType colliderType_;
-    ObjectType objectType_;
+    ObjectType objectType_ = ObjectType::None;
     static uint32_t nextID_;
     uint32_t colliderID_;
     bool isCollision_ = false;
+    bool preIsCollision_ = false;
+    Vector4 color_;
 
-private:// 親子付け情報-----------------------------------------------------------
-    Matrix4x4* parentMat_ = nullptr;
+protected:// 親子付け情報-----------------------------------------------------------
+    const Matrix4x4* parentMat_ = nullptr;
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
@@ -63,16 +88,16 @@ public:// 物理パラメータ-------------------------------------------------
     float miu_;
 
 public:// トランスフォーム情報------------------------------------------------------
-    Vector3 scale_;
+    Vector3 scale_{1.0f,1.0f,1.0f};
     Vector3 rotate_;
     Vector3 translate_;
-private:
+    Vector3 offset_;
+
+protected:
     Matrix4x4 localMat_;
     Matrix4x4 worldMat_;
 
-public:// 衝突に使用するパラメータ--------------------------------------------------
-    std::vector<Vector3> prePoints_;
-    std::vector<Vector3> currentPoints_;
-    Vector3 halfSize_;// OBB,AABB用
-    float radius_;// Sphere,カプセル用
+protected:// 衝突に使用するパラメータ--------------------------------------------------
+    AABB coverAABB_;// 頂点を包含するAABB
+    std::unordered_set<uint32_t> collisionList_;// 今のフレームですでに衝突したオブジェクトのIDリスト
 };

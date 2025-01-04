@@ -100,3 +100,7 @@ struct SkinCluster{
     // スキニング用のパレット
     std::vector<WellForGPU> palette;
 };
+
+/*----------------- animation用関数 --------------------*/
+Vector3 CalcMomentValue(const std::vector<KeyframeVec3>& keyFrames, float time);
+Quaternion CalcMomentValue(const std::vector<KeyframeQuaternion>& keyFrames, float time);

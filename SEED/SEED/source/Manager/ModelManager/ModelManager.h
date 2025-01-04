@@ -49,8 +49,6 @@ private:
 
     // アニメーション関連
     std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
-    Vector3 CalcMomentValue(const std::vector<KeyframeVec3>& keyFrames, float time);
-    Quaternion CalcMomentValue(const std::vector<KeyframeQuaternion>& keyFrames, float time);
     ModelNode ReadModelNode(const aiNode* node);
     int32_t CreateJoint(const ModelNode& node,const std::optional<int32_t>& parent,std::vector<ModelJoint>& joints);
     ModelSkeleton CreateSkeleton(const ModelNode& rootNode);

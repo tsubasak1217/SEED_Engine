@@ -11,6 +11,7 @@
 #include "Quad.h"
 #include "Sphere.h"
 #include "Capsule.h"
+#include "ColliderAnimationData.h"
 
 // 前方宣言
 class BaseObject;
@@ -100,4 +101,9 @@ protected:
 protected:// 衝突に使用するパラメータ--------------------------------------------------
     AABB coverAABB_;// 頂点を包含するAABB
     std::unordered_set<uint32_t> collisionList_;// 今のフレームですでに衝突したオブジェクトのIDリスト
+
+protected:// コライダーが動く場合のアニメーションデータ-----------------------------------
+    std::unique_ptr<ColliderAnimationData> animationData_ = nullptr;
+    float animationTime_ = 0.0f;
+    bool isLoop_ = false;
 };

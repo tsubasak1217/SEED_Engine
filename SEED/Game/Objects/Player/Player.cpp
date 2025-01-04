@@ -12,6 +12,7 @@
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
 Player::Player() : BaseCharacter(){
+    className_ = "Player";
     name_ = "Player";
     Initialize();
 }

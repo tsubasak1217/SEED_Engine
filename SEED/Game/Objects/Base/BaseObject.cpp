@@ -4,6 +4,7 @@ uint32_t BaseObject::nextID_ = 0;
 
 BaseObject::BaseObject(){
     objectID_ = nextID_++;
+    className_ = "BaseObject";
     name_ = "BaseObject";
     Initialize();
 }

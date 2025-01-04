@@ -363,52 +363,6 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 }
 
 
-/*--------------------------------------*/
-// 秒数からアニメーションの値を計算
-/*--------------------------------------*/
-Vector3 ModelManager::CalcMomentValue(const std::vector<KeyframeVec3>& keyFrames, float time){
-    Vector3 result;
-    // キーフレームがない場合は0を返す
-    if(keyFrames.size() == 0){ return result; }
-    // 最初のキーフレームより前の場合は最初のキーフレームの値を返す
-    if(time <= keyFrames[0].time){ return keyFrames[0].value; }
-    // 最後のキーフレームより後の場合は最後のキーフレームの値を返す
-    if(time >= keyFrames[keyFrames.size() - 1].time){ return keyFrames[keyFrames.size() - 1].value; }
-
-    // キーフレーム間の値を計算
-    for(uint32_t i = 0; i < keyFrames.size() - 1; ++i) {
-        if(time >= keyFrames[i].time && time <= keyFrames[i + 1].time) {
-            float t = (time - keyFrames[i].time) / (keyFrames[i + 1].time - keyFrames[i].time);
-            result = MyMath::Lerp(keyFrames[i].value, keyFrames[i + 1].value, t);
-            break;
-        }
-    }
-
-    return result;
-}
-
-// クォータニオン版
-Quaternion ModelManager::CalcMomentValue(const std::vector<KeyframeQuaternion>& keyFrames, float time){
-    Quaternion result;
-    // キーフレームがない場合は0を返す
-    if(keyFrames.size() == 0){ return result; }
-    // 最初のキーフレームより前の場合は最初のキーフレームの値を返す
-    if(time <= keyFrames[0].time){ return keyFrames[0].value; }
-    // 最後のキーフレームより後の場合は最後のキーフレームの値を返す
-    if(time >= keyFrames[keyFrames.size() - 1].time){ return keyFrames[keyFrames.size() - 1].value; }
-
-    // キーフレーム間の値を計算
-    for(uint32_t i = 0; i < keyFrames.size() - 1; ++i) {
-        if(time >= keyFrames[i].time && time <= keyFrames[i + 1].time) {
-            float t = (time - keyFrames[i].time) / (keyFrames[i + 1].time - keyFrames[i].time);
-            result = Quaternion::Slerp(keyFrames[i].value, keyFrames[i + 1].value, t);
-            break;
-        }
-    }
-
-    return result;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                        //
@@ -518,11 +472,11 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             // ノードアニメーションを取得
             const NodeAnimation& nodeAnim = it->second;
             // 位置アニメーションを適用
-            Vector3 translate = instance_->CalcMomentValue(nodeAnim.translate.keyframes, time);
+            Vector3 translate = CalcMomentValue(nodeAnim.translate.keyframes, time);
             // 回転アニメーションを適用
-            Quaternion rotate = instance_->CalcMomentValue(nodeAnim.rotate.keyframes, time);
+            Quaternion rotate = CalcMomentValue(nodeAnim.rotate.keyframes, time);
             // スケールアニメーションを適用
-            Vector3 scale = instance_->CalcMomentValue(nodeAnim.scale.keyframes, time);
+            Vector3 scale = CalcMomentValue(nodeAnim.scale.keyframes, time);
 
             // トランスフォーム情報を更新
             skeleton.joints[idx].transform.translate_ = translate;

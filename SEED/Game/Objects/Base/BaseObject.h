@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "Collision/Collider.h"
 #include "CollisionManaer/CollisionManager.h"
+#include "CollisionManaer/ColliderEditor.h"
 #include "ClockManager.h"
 #include "MyMath.h"
 #include "MyFunc.h"
@@ -53,6 +54,7 @@ private:
 protected:
     static uint32_t nextID_;
     uint32_t objectID_;
+    std::string className_;
     std::string name_;
 
 protected:// 衝突判定用
@@ -61,6 +63,9 @@ protected:// 衝突判定用
 protected:
 
     Vector3 targetOffset_;
+
+protected:// Colliderの作成用メンバー
+    std::unique_ptr<ColliderEditor> colliderEditor_;
 
 protected:
     std::unique_ptr<Model> model_;

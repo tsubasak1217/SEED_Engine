@@ -40,6 +40,16 @@ void Collider::Update(){
     // 色の初期化
     color_ = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
+    // コライダーのアニメーション時間の更新
+    if(animationData_){
+        animationTime_ += ClockManager::DeltaTime();
+        if(isLoop_){
+            animationTime_ = std::fmod(animationTime_, animationData_->GetDuration());
+        } else{
+            animationTime_ = std::clamp(animationTime_, 0.0f, animationData_->GetDuration());
+        }
+    }
+
     // 行列の更新
     UpdateMatrix();
 }
@@ -51,6 +61,13 @@ void Collider::Update(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Collider::UpdateMatrix(){
+
+    // アニメーションが存在する場合には各トランスフォームを計算
+    if(animationData_){
+        scale_ = animationData_->GetScale(animationTime_);
+        rotate_ = Quaternion::ToEuler(animationData_->GetRotation(animationTime_));
+        translate_ = animationData_->GetTranslation(animationTime_);
+    }
 
     // ローカル行列の更新
     localMat_ = AffineMatrix(scale_, rotate_, translate_);

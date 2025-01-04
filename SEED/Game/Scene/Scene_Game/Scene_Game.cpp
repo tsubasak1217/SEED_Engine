@@ -65,14 +65,18 @@ void Scene_Game::Update(){
 
 #endif
 
+    /*========================== Manager ============================*/
+
+    ParticleManager::Update();
+
     /*========================= 各状態の更新 ==========================*/
     currentState_->Update();
 
     player_->Update();
 
-    for(auto& enemy : enemies_) {
-        enemy->Update();
-    }
+    //for(auto& enemy : enemies_) {
+    //    enemy->Update();
+    //}
 }
 
 void Scene_Game::Draw(){
@@ -80,9 +84,11 @@ void Scene_Game::Draw(){
     // グリッドの描画
     SEED::DrawGrid();
 
+    ParticleManager::Draw();
+
     player_->Draw();
 
-    for(auto& enemy : enemies_) {
-        enemy->Draw();
-    }
+    //for(auto& enemy : enemies_) {
+    //    enemy->Draw();
+    //}
 }

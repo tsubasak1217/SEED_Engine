@@ -4,7 +4,7 @@
 BaseParticle::BaseParticle(const Emitter& emitter){
 
     ////////////////// パーティクルのモデルを生成 /////////////////////
-    particle_ = std::make_unique<Model>("Plane.obj");
+    particle_ = std::make_unique<Model>("Assets/Plane.obj");
     particle_->isRotateWithQuaternion_ = false;
     particle_->isParticle_ = true;
 

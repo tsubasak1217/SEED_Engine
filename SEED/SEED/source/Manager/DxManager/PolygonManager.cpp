@@ -748,6 +748,8 @@ void PolygonManager::AddModel(Model* model){
         // drawOrder
         if(model->isAnimation_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::AnimationModel;
+        } else if(model->isParticle_){
+            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Particle;
         }
     }
 
@@ -1405,7 +1407,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                     // 総サイズ、刻み幅の設定
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
                         vbv2->SizeInBytes = size * instanceCount;
                     } else{
                         vbv2->SizeInBytes = size;
@@ -1466,7 +1468,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*/////////////////////////////////////////////////////////////////*/
 
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),

@@ -71,6 +71,40 @@ void Collider_Plane::UpdateBox(){
 }
 
 //////////////////////////////////////////////////////////////////
+// ImGuiでの編集
+//////////////////////////////////////////////////////////////////
+void Collider_Plane::Edit(const std::string& headerName){
+#ifdef _DEBUG
+
+    if(ImGui::CollapsingHeader(headerName.c_str())){
+        ImGui::Indent();
+
+        color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+        // ローカル座標
+        ImGui::Text("------ Vertices ------");
+        ImGui::Indent();
+        ImGui::DragFloat3("v0", &local_.localVertex[0].x, 0.05f);
+        ImGui::DragFloat3("v1", &local_.localVertex[1].x, 0.05f);
+        ImGui::DragFloat3("v2", &local_.localVertex[2].x, 0.05f);
+        ImGui::DragFloat3("v3", &local_.localVertex[3].x, 0.05f);
+        ImGui::Unindent();
+
+        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+        // オフセット
+        ImGui::Text("------ Offset ------");
+        ImGui::Indent();
+        ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+        ImGui::Unindent();
+
+        ImGui::Unindent();
+    }
+
+#endif // _DEBUG
+}
+
+//////////////////////////////////////////////////////////////////
 // ローカル座標の設定
 //////////////////////////////////////////////////////////////////
 void Collider_Plane::SetLocalVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3){

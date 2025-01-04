@@ -13,6 +13,9 @@ protected:
     void UpdateBox()override;
 
 public:
+    void Edit(const std::string& headerName)override;
+
+public:
     Sphere GetSphere()const{ return body_; }
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetRadius(float radius){ body_.radius = radius; }

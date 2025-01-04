@@ -10,6 +10,9 @@ public:
 
 protected:
     void UpdateBox()override;
+    
+public:
+    void Edit(const std::string& headerName)override;
 
 public:
     Line GetLine()const{ return body_; }

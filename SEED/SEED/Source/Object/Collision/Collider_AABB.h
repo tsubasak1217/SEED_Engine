@@ -13,6 +13,9 @@ protected:
     void UpdateBox()override;
 
 public:
+    void Edit(const std::string& headerName)override;
+
+public:
     AABB GetAABB()const{ return body_; }
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetAABBSize(const Vector3& size){ body_.halfSize = size * 0.5f; }

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <unordered_set>
+#include "ImGuiManager/ImGuiManager.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
 #include "ObjectType.h"
@@ -43,6 +44,9 @@ public:
 protected:
     virtual void UpdateBox();
 
+public:
+    virtual void Edit(const std::string& headerName) = 0;
+
 public:// アクセッサ--------------------------------------------------------------
 
     // 基礎情報
@@ -53,7 +57,7 @@ public:// アクセッサ-------------------------------------------------------
 
     // ペアレント情報
     void SetParentMatrix(const Matrix4x4* parentMat,bool isParentScale = true){
-        parentMat_ = parentMat; 
+        parentMat_ = parentMat;
         isParentScale_ = isParentScale;
     }
     void SetIsParentRotate(bool isParentRotate){ isParentRotate_ = isParentRotate; }

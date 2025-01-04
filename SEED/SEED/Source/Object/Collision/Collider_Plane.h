@@ -13,6 +13,9 @@ protected:
     void UpdateBox()override;
 
 public:
+    void Edit(const std::string& headerName)override;
+
+public:
     Quad GetPlane()const{ return body_; }
     void SetLocalVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3);
 

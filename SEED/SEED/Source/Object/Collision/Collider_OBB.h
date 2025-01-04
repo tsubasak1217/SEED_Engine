@@ -13,6 +13,9 @@ protected:
     void UpdateBox()override;
 
 public:
+    void Edit(const std::string& headerName)override;
+
+public:
     OBB GetOBB()const{ return body_; }
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetSize(const Vector3& size){ body_.halfSize = size * 0.5f; }

@@ -15,6 +15,7 @@ public:
 
 private:
     void UpdateAngle();
+    void UpdateDistance();
 
 public:
     void SetTarget(BaseObject* target){ target_ = target; }
@@ -37,4 +38,5 @@ private:
     // 入力ハンドラ
 public:/*外部からキーコンフィグ設定可能にするためpublic*/
     InputHandler<Vector2> angleInput_;
+    InputHandler<float> distanceInput_;
 };

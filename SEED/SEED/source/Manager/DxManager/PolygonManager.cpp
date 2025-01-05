@@ -1536,7 +1536,7 @@ void PolygonManager::DrawToOffscreen(){
     SetRenderData(DrawOrder::Triangle);
     SetRenderData(DrawOrder::Quad);
     SetRenderData(DrawOrder::Particle);
-    SetRenderData(DrawOrder::Sprite);
+    //SetRenderData(DrawOrder::Sprite);
 
     // 2D
     SetRenderData(DrawOrder::Line2D);

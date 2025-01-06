@@ -90,7 +90,7 @@ void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CUL
 
     depthStencilDesc_.DepthEnable = true;// Depth機能有効化
 
-    if(blendMode == BlendMode::ADD or blendMode == BlendMode::SCREEN){
+    if(blendMode == BlendMode::ADD or blendMode == BlendMode::SCREEN or blendMode == BlendMode::SUBTRACT){
         depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
     } else{
         depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする

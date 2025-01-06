@@ -4,7 +4,7 @@
 BaseParticle::BaseParticle(const Emitter& emitter){
 
     ////////////////// パーティクルのモデルを生成 /////////////////////
-    particle_ = std::make_unique<Model>("Plane.obj");
+    particle_ = std::make_unique<Model>("Assets/Plane.obj");
     particle_->isRotateWithQuaternion_ = false;
     particle_->isParticle_ = true;
 
@@ -16,8 +16,9 @@ BaseParticle::BaseParticle(const Emitter& emitter){
 
     ////////////////////// 座標をランダム決定 ////////////////////////
     Range3D emitRange;
-    emitRange.min = emitter.center - emitter.emitRange * 0.5f;
-    emitRange.max = emitter.center + emitter.emitRange * 0.5f;
+    Vector3 center = emitter.GetCenter();
+    emitRange.min = center - emitter.emitRange * 0.5f;
+    emitRange.max = center + emitter.emitRange * 0.5f;
     particle_->translate_ = MyFunc::Random(emitRange);
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
@@ -58,6 +59,9 @@ BaseParticle::BaseParticle(const Emitter& emitter){
 
     ///////////////////// ブレンドモードを設定 ////////////////////////
     particle_->blendMode_ = emitter.blendMode;
+
+    //////////////////////// カリングを設定 ////////////////////////
+    particle_->cullMode = D3D12_CULL_MODE(emitter.cullingMode + 1);
 
     //////////////////////// ライトを無効に //////////////////////////
     particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;

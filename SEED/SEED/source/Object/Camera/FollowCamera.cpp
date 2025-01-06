@@ -23,6 +23,10 @@ void FollowCamera::Initialize(){
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
     angleInput_.Value = [](){return Input::GetStickValue(LR::RIGHT); };
+    distanceInput_.Value = [](){
+        return Input::GetLRTriggerValue(LR::LEFT) - Input::GetLRTriggerValue(LR::RIGHT);
+    };
+
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
 }
@@ -30,6 +34,9 @@ void FollowCamera::Initialize(){
 void FollowCamera::Update(){
     // ターゲットが設定されていない場合は何もしない
     if(target_ == nullptr) {return;}
+
+    // カメラ距離の更新
+    UpdateDistance();
 
     // カメラの角度を更新
     UpdateAngle();
@@ -54,4 +61,10 @@ void FollowCamera::UpdateAngle(){
 
     // 角度の制限
     phi_ = std::clamp(phi_, kMinPhi_, kMaxPhi_);
+}
+
+void FollowCamera::UpdateDistance(){
+    // カメラの距離を更新
+    distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
+    distance_ = std::clamp(distance_, 15.0f, 50.0f);
 }

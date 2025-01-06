@@ -3,6 +3,7 @@
 #include <memory>
 #include <initializer_list>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include "ImGuiManager.h"
 #include "Range1D.h"
@@ -49,54 +50,40 @@ public:
     static void AddEmitter(const Emitter& emitter);
 
     /// <summary>
-    /// エミッターを追加する(直接)
+    /// エフェクトを出現させる
     /// </summary>
-    /// <param name="type">パーティクルの種類</param>
-    /// <param name="positionRange">発生範囲</param>
-    /// <param name="radiusRange">大きさの範囲</param>
-    /// <param name="speedRange">スピードの範囲</param>
-    /// <param name="lifeTime">寿命時間</param>
-    /// <param name="colors">発生させる色の一覧</param>
-    /// <param name="interval">発生間隔</param>
-    /// <param name="count">一度に発生させる数</param>
-    /// <param name="blendMode">ブレンドモード</param>
-    static void AddEmitter(
-        EmitType emitType,
-        ParticleType particleType,
-        const Vector3& center,
-        const Vector3& emitRange,
-        const Range1D& radiusRange,
-        const Vector3& baseDirection,
-        float directionRange,
-        const Range1D& speedRange,
-        const Range1D& lifeTimeRange,
-        const std::initializer_list<Vector4>& colors,
-        float interval,
-        int32_t numEmitEvery = 1,
-        BlendMode blendMode = BlendMode::ADD,
-        int32_t numEmitMax = 1
-    );
+    static void AddEffect(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat);
+    static void AddEffect(const std::string& fileName, const Matrix4x4* parentMat);
+    static void AddEffect(const std::string& fileName, const Vector3& position);
 
 private:
 
     /// <summary>
     /// エミッターの情報からパーティクルを発生させる
     /// </summary>
-    static void Emit(Emitter& emitter);
+    static void Emit(Emitter* emitter);
 
     /// <summary>
     /// ImGuiでエミッターの編集
     /// </summary>
-    void EditEmitter();
+    void EditAll();
+    void EditEmitterGroup(EmitterGroup* emitterGroup);
+    void EditEmitter(Emitter* emitter);
+    void EditGeneral(Emitter* emitter);
+    void EditRangeParameters(Emitter* emitter);
+    void EditMaterial(Emitter* emitter);
+    void EditFrequency(Emitter* emitter);
 
 private:// ファイルの入出力
 
     // jsonファイルに保存
-    void SaveToJson();
+    void OutputToJson(const EmitterGroup& emitterGroup,const std::string& outputFileName);
+    void OutputEmitterGroup(const EmitterGroup& emitterGroup);
     // jsonファイルから読み込み
-    void LoadFromJson();
-    // ホットリロード
-    void HotReload();
+    void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);
+    EmitterGroup LoadFromJson(const std::string& fileName);
+    // ファイルを選択して読み込み
+    void Load();
 
 private:
 
@@ -112,10 +99,17 @@ private:
     bool isFieldActive_;
     bool isFieldVisible_ = true;
 
+    // エフェクトデータ
+    std::unordered_map<std::string, EmitterGroup> effectData_;// ロードしたエフェクトの情報
+    std::list<std::unique_ptr<EmitterGroup>> effects_;// エフェクトのリスト
+
+    // エミッター,パーティクル、フィールドのリスト
     std::list<std::unique_ptr<Emitter>> emitters_;
     std::list<std::unique_ptr<BaseParticle>> particles_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
 
-    // テクスチャのID(エディター用)
-    std::unordered_map<std::string, ImTextureID> textureIDs_;
+    // エディター用変数
+    std::list<std::unique_ptr<EmitterGroup>> emitterGroups_;// エディターから追加されるエミッターグループ
+    std::unordered_map<std::string, ImTextureID> textureIDs_;// テクスチャのID
+    char outputFileName_[64];
 };

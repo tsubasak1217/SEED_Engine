@@ -38,6 +38,7 @@ public:// アクセッサ
     Vector3 GetWorldScale() const{ return model_->GetWorldScale(); }
     Matrix4x4 GetLocalMat() const{ return model_->GetLocalMat(); }
     Matrix4x4 GetWorldMat() const{ return model_->GetWorldMat(); }
+    const Matrix4x4* GetWorldMatPtr() const{ return model_->GetWorldMatPtr(); }
     void SetParent(const Model* parent){ model_->parent_ = parent; }
     void SetParent(const BaseObject* parent){ model_->parent_ = parent->model_.get(); }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }

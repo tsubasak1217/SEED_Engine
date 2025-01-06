@@ -3,9 +3,16 @@
 #include "Range3D.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Matrix4x4.h"
+#include "MatrixFunc.h"
 #include "BlendMode.h"
 #include <vector>
+#include <list>
+#include <memory>
 #include <string>
+#include <d3d12.h>
+
+class EmitterGroup;
 
 // パーティクルの種類
 enum class ParticleType : int32_t{
@@ -18,7 +25,6 @@ enum class EmitType : int32_t{
     kInfinite,// 無限に発生
     kCustom,// カスタム
 };
-
 
 // パーティクルを発生させるための構造体
 class Emitter{
@@ -33,6 +39,9 @@ public:
     // 更新処理
     void Update();
 
+public:
+    Vector3 GetCenter() const;
+
     //---------------------- フラグ類 ----------------------//
 public:
     bool isActive = true;// アクティブかどうか
@@ -44,6 +53,7 @@ public:
 
     //-------------------- 発生パラメータ ------------------//
 public:
+    EmitterGroup* parentGroup = nullptr;// 親グループ
     ParticleType particleType = ParticleType::kRadial;// パーティクルの種類
     Vector3 center;// 中心座標
     Vector3 emitRange = {10.0f,10.0f,10.0f};// 発生範囲
@@ -59,6 +69,7 @@ public:
     float interval = 0.1f;// 発生間隔
     int32_t numEmitEvery = 1;// 一度に発生させる数
     BlendMode blendMode = BlendMode::ADD;// ブレンドモード
+    uint32_t cullingMode = (uint32_t)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1;// カリングモード
 
 
     //-------------------- 管理用パラメータ ------------------//
@@ -69,4 +80,44 @@ public:// アクティブ・非アクティブ管理のための変数
 private:
     float totalTime;// 経過時間
     int32_t emitCount = 0;// 発生させた回数
+};
+
+
+
+// パーティクルをプリセット化するための構造体
+class EmitterGroup{
+public:
+    EmitterGroup() = default;
+    EmitterGroup(const Matrix4x4* parentMat) : parentMat(parentMat){}
+
+public:
+    bool GetIsAlive() const{
+        if(emitters.size() == 0){ return true; }
+        for(const auto& emitter : emitters){
+            if(emitter.isAlive){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Vector3 GetCenter() const{
+        if(parentMat){
+            return ExtractTranslation(*parentMat) + offset;
+        } else{
+            return offset;
+        }
+    }
+
+    void TeachParent(){
+        for(auto& emitter : emitters){
+            emitter.parentGroup = this;
+        }
+    }
+
+public:
+    std::string name = "";
+    const Matrix4x4* parentMat = nullptr;
+    std::list<Emitter> emitters;
+    Vector3 offset;
 };

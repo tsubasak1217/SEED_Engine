@@ -44,7 +44,7 @@ void StageViewCamera::Update(){
 // 1) スティック入力でピッチ・ヨーを更新する
 //////////////////////////////////////////////////////////////////////////
 void StageViewCamera::Move(){
-    Vector2 stickValue = Input::GetStickValue(LR::LEFT);
+    Vector2 stickValue = Input::GetStickValue(LR::RIGHT);
 
     // 入力が小さい場合は何もしない
     if (MyMath::Length(Vector3 {stickValue.x, 0.0f, stickValue.y}) < 0.1f){

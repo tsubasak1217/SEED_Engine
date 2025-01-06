@@ -12,6 +12,7 @@ BaseObject::BaseObject(){
 BaseObject::~BaseObject(){}
 
 void BaseObject::Initialize(){
+    // モデルの初期化
     model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
 }
@@ -36,6 +37,13 @@ void BaseObject::Draw(){
 
 void BaseObject::UpdateMatrix(){
     model_->UpdateMatrix();
+}
+
+// コライダーの編集
+void BaseObject::EditCollider(){
+    if(colliderEditor_){
+        colliderEditor_->Edit();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

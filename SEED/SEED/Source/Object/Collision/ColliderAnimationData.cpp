@@ -1,11 +1,24 @@
 #include "ColliderAnimationData.h"
 #include <SEED.h>
+#include "MyMath.h"
+
+//////////////////////////////////////////////////////////////////////////////
+// コンストラクタ
+//////////////////////////////////////////////////////////////////////////////
+ColliderAnimationData::ColliderAnimationData(){
+    nodeAnimation = std::make_unique<NodeAnimation>();
+    // 初期値の設定
+    duration_ = 0.0f;
+    nodeAnimation->translate.keyframes.push_back(Keyframe<Vector3>({ 0.0f,0.0f,0.0f }, 0.0f));
+    nodeAnimation->rotate.keyframes.push_back(Keyframe<Quaternion>(Quaternion(), 0.0f));
+    nodeAnimation->scale.keyframes.push_back(Keyframe<Vector3>({ 1.0f,1.0f,1.0f }, 0.0f));
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // ImGuiでの編集
 //////////////////////////////////////////////////////////////////////////////
 
-void ColliderAnimationData::EditByImGui(const std::string& headerName){
+void ColliderAnimationData::Edit(const std::string& headerName){
 #ifdef _DEBUG
     if(ImGui::CollapsingHeader(headerName.c_str())){
         ImGui::Indent();
@@ -25,6 +38,9 @@ void ColliderAnimationData::EditByImGui(const std::string& headerName){
                 InsertElement(insertLocation_);
             }
 
+            // 追加場所の描画
+            DrawCollider(insertLocation_ * duration_);
+
             ImGui::Unindent();
         }
 
@@ -38,57 +54,71 @@ void ColliderAnimationData::EditByImGui(const std::string& headerName){
             ImGui::SliderFloat("deleteLocation", &deleteLocation_, 0.0f, 1.0f);
 
             // 削除ボタン
-            if(ImGui::Button("Delete")){
+            if(ImGui::Button("Erase")){
                 DeleteElement(deleteLocation_);
             }
 
+
+            // 削除場所の描画
+            DrawCollider(deleteLocation_ * duration_,true);
+
             ImGui::Unindent();
         }
 
 
-        /*----------------------------------*/ 
+        /*----------------------------------*/
         // パラメータの編集
         /*----------------------------------*/
-        if(ImGui::CollapsingHeader("Parameters")){
-            ImGui::Indent();
+        // 時間の設定
+        if(ImGui::DragFloat("duration", &duration_, 0.05f)){
+            // 各要素の時間を更新
+            for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+                float t = float(i) / float(nodeAnimation->translate.keyframes.size() - 1);
+                nodeAnimation->translate.keyframes[i].time = duration_ * t;
+                nodeAnimation->rotate.keyframes[i].time = duration_ * t;
+                nodeAnimation->scale.keyframes[i].time = duration_ * t;
+            }
+        };
 
-            // 時間の設定
-            ImGui::InputFloat("lifetime", &duration_);
-
-            /*----------------------------------*/
-            // transformの編集
-            /*----------------------------------*/
-            if(ImGui::CollapsingHeader("Transform")){
+        // 各indexの要素を表示
+        for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+            // ヘッダー名
+            std::string indexID = "##" + std::to_string(i);
+            std::string transformName = "Transform( " + std::to_string(i) + " )";
+            // ヘッダーが開かれたときの処理
+            if(ImGui::CollapsingHeader(transformName.c_str())){
                 ImGui::Indent();
 
-                // 各indexの要素を表示
-                for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+                //scale
+                ImGui::DragFloat3(std::string("scale" + indexID).c_str(), &nodeAnimation->scale.keyframes[i].value.x, 0.005f);
 
-                    if(ImGui::CollapsingHeader(std::string(std::string("index_") + std::to_string(i)).c_str())){
-                        ImGui::Indent();
+                // rotate
+                Vector3 additionalRotate;
+                if(ImGui::DragFloat3(std::string("rotate" + indexID).c_str(), &additionalRotate.x, 3.14f * 0.005f)){
+                    Vector3 up = nodeAnimation->rotate.keyframes[i].value.MakeUp();
+                    Vector3 right = nodeAnimation->rotate.keyframes[i].value.MakeRight();
+                    Vector3 forward = nodeAnimation->rotate.keyframes[i].value.MakeForward();
 
-                        //scale
-                        ImGui::DragFloat3("scale", &nodeAnimation->scale.keyframes[i].value.x);
+                    Quaternion addRotate =
+                        Quaternion::AngleAxis(additionalRotate.x, right) *
+                        Quaternion::AngleAxis(additionalRotate.z, forward) *
+                        Quaternion::AngleAxis(additionalRotate.y, up);
 
-                        // rotate
-                        Vector3 additionalRotate;
-                        if(ImGui::DragFloat3("rotate", &additionalRotate.x)){
-                            Quaternion additionalQuat = Quaternion::ToQuaternion(additionalRotate);
-                            nodeAnimation->rotate.keyframes[i].value =
-                                additionalQuat * nodeAnimation->rotate.keyframes[i].value;
-                        }
+                    nodeAnimation->rotate.keyframes[i].value = addRotate * nodeAnimation->rotate.keyframes[i].value;
 
-                        // translate
-                        ImGui::DragFloat3("translate", &nodeAnimation->translate.keyframes[i].value.x);
-
-                        ImGui::Unindent();
-                    }
+                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, up * 10.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, right * 10.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, forward * 10.0f, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
                 }
+
+                // translate
+                ImGui::DragFloat3(std::string("translate" + indexID).c_str(), &nodeAnimation->translate.keyframes[i].value.x, 0.025f);
+
 
                 ImGui::Unindent();
             }
-            ImGui::Unindent();
         }
+
 
         // コライダーの軌道描画
         DrawCollider();
@@ -112,8 +142,8 @@ void ColliderAnimationData::InsertElement(float location){
     // 時間をもとにindexを求める
     /*----------------------*/
     for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
-        if(time >= nodeAnimation->translate.keyframes[i].time){
-            index = i + 1;
+        if(time <= nodeAnimation->translate.keyframes[i].time){
+            index = std::clamp(i,0,(int)nodeAnimation->translate.keyframes.size() - 1);
             break;
         }
     }
@@ -123,8 +153,8 @@ void ColliderAnimationData::InsertElement(float location){
     /*----------------------*/
     // translate
     nodeAnimation->translate.keyframes.insert(
-        nodeAnimation->translate.keyframes.begin() + index, 
-        Keyframe<Vector3>(GetTranslation(time),time)
+        nodeAnimation->translate.keyframes.begin() + index,
+        Keyframe<Vector3>(GetTranslation(time), time)
     );
 
     // rotate
@@ -138,6 +168,14 @@ void ColliderAnimationData::InsertElement(float location){
         nodeAnimation->scale.keyframes.begin() + index,
         Keyframe<Vector3>(GetScale(time), time)
     );
+
+    // 時間を等間隔に
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        float t = float(i) / float(nodeAnimation->translate.keyframes.size() - 1);
+        nodeAnimation->translate.keyframes[i].time = duration_ * t;
+        nodeAnimation->rotate.keyframes[i].time = duration_ * t;
+        nodeAnimation->scale.keyframes[i].time = duration_ * t;
+    }
 }
 
 /*------ 要素の削除 ------*/
@@ -149,9 +187,13 @@ void ColliderAnimationData::DeleteElement(float location){
     // 時間をもとにindexを求める
     /*----------------------*/
     for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
-        if(time >= nodeAnimation->translate.keyframes[i].time){
-            index = i;
-            break;
+        if(time <= nodeAnimation->translate.keyframes[i].time){
+            if(i == nodeAnimation->translate.keyframes.size() - 1 && time == nodeAnimation->translate.keyframes.back().time){
+                index = i;
+            } else{
+                index = std::clamp(i, 0, (int)nodeAnimation->translate.keyframes.size() - 1);
+                break;
+            }
         }
     }
 
@@ -172,26 +214,161 @@ void ColliderAnimationData::DeleteElement(float location){
     nodeAnimation->scale.keyframes.erase(
         nodeAnimation->scale.keyframes.begin() + index
     );
+
+    if(nodeAnimation->scale.keyframes.size() == 0){ return; }
+
+    /*----------------------*/
+    // 時間を更新
+    /*----------------------*/
+
+    // 先頭を0に合わせる
+    float frontTime = nodeAnimation->translate.keyframes.front().time;
+    if(frontTime > 0.0f){
+        for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+            nodeAnimation->translate.keyframes[i].time -= frontTime;
+            nodeAnimation->rotate.keyframes[i].time -= frontTime;
+            nodeAnimation->scale.keyframes[i].time -= frontTime;
+        }
+    }
+
+    // 時間を更新
+    float nextDuration = nodeAnimation->translate.keyframes.back().time;
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        float t = nodeAnimation->translate.keyframes[i].time / nextDuration;
+        nodeAnimation->translate.keyframes[i].time = duration_ * t;
+        nodeAnimation->rotate.keyframes[i].time = duration_ * t;
+        nodeAnimation->scale.keyframes[i].time = duration_ * t;
+    }
+
+    // 時間を等間隔に
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        float t = float(i) / float(nodeAnimation->translate.keyframes.size() - 1);
+        nodeAnimation->translate.keyframes[i].time = duration_ * t;
+        nodeAnimation->rotate.keyframes[i].time = duration_ * t;
+        nodeAnimation->scale.keyframes[i].time = duration_ * t;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // コライダーの軌道描画
 //////////////////////////////////////////////////////////////////////////////
-void ColliderAnimationData::DrawCollider() const{}
+void ColliderAnimationData::DrawCollider() const{
+
+    // 一列にまとめる
+    std::vector<Vector3> translate;
+    std::vector<Quaternion> rotate;
+    std::vector<Vector3> scale;
+
+    // 軸モデルの生成
+    Model axis = Model("Assets/axis.obj");
+    axis.scale_ = Vector3(0.3f, 0.3f, 0.3f);
+
+    // 要素を取り出し、行列を計算
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        translate.push_back(nodeAnimation->translate.keyframes[i].value);
+        rotate.push_back(nodeAnimation->rotate.keyframes[i].value);
+        scale.push_back(nodeAnimation->scale.keyframes[i].value);
+
+        if(parentMat_){
+            // 親の行列から取り出した要素を打ち消す行列を作成
+            Matrix4x4 worldMat = AffineMatrix(scale[i], rotate[i], translate[i]) * (*parentMat_);
+
+            // 行列から各要素を計算
+            translate[i] = ExtractTranslation(worldMat);
+            rotate[i] = Quaternion::ToQuaternion(ExtractRotation(worldMat));
+            scale[i] = ExtractScale(worldMat);
+        }
+
+        // 軸モデルの描画
+        axis.translate_ = translate[i];
+        axis.scale_ = scale[i] * axis.scale_;
+        axis.rotateQuat_ = rotate[i];
+        axis.UpdateMatrix();
+        axis.Draw();
+    }
+
+    // 軌道の描画
+    SEED::DrawSpline(translate, 4, {1.0f,1.0f,1.0f,1.0f},false);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// 時間指定で
+//////////////////////////////////////////////////////////////////////////////
+void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
+
+    // 軸モデルの生成
+    Model axis = Model("Assets/axis.obj");
+    axis.scale_ = Vector3(0.3f, 0.3f, 0.3f);
+    axis.color_ = Vector4(1.0f, 1.0f, 1.0f, 0.5f);
+
+    // indexDrawなら時間からindexの時間を求める
+    if(indexDraw == true){
+        for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+            if(time <= nodeAnimation->translate.keyframes[i].time){
+                if(i == nodeAnimation->translate.keyframes.size() - 1 && time == nodeAnimation->translate.keyframes.back().time){
+                    time = nodeAnimation->translate.keyframes[i].time;
+                    break;
+                } else{
+                    int32_t index = std::clamp(i, 0, (int)nodeAnimation->translate.keyframes.size() - 1);
+                    time = nodeAnimation->translate.keyframes[index].time;
+                    break;
+                }
+            }
+        }
+
+        axis.color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    // 軸モデルの描画
+    Vector3 translate = GetTranslation(time);
+    Quaternion rotate = GetRotation(time);
+    Vector3 scale = GetScale(time);
+
+    if(parentMat_){
+        // 親の行列を掛け合わせる
+        Matrix4x4 resultMat = AffineMatrix(scale, rotate, translate) * (*parentMat_);
+
+        // 行列から各要素を計算
+        translate = ExtractTranslation(resultMat);
+        rotate = Quaternion::ToQuaternion(ExtractRotation(resultMat));
+        scale = ExtractScale(resultMat);
+    }
+
+    // 軸モデルの描画
+    axis.translate_ = translate;
+    axis.scale_ = scale * axis.scale_;
+    axis.rotateQuat_ = rotate;
+    if(indexDraw){ axis.scale_ *= 1.1f; }
+    axis.UpdateMatrix();
+    axis.Draw();
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // 時間に応じた値を計算
 //////////////////////////////////////////////////////////////////////////////
 Vector3 ColliderAnimationData::GetScale(float time) const{
-    return CalcMomentValue(nodeAnimation->scale.keyframes, time);
+    Vector3 result = CalcMomentValue(nodeAnimation->scale.keyframes, time);
+    return result;
 }
 
 Quaternion ColliderAnimationData::GetRotation(float time) const{
-    return CalcMomentValue(nodeAnimation->rotate.keyframes, time);
+    Quaternion result = CalcMomentValue(nodeAnimation->rotate.keyframes, time);
+    return result;
 }
 
 Vector3 ColliderAnimationData::GetTranslation(float time) const{
-    return CalcMomentValue(nodeAnimation->translate.keyframes, time);
+    // 時間が0ならば0を返す
+    if(duration_ == 0.0f){ return Vector3(0.0f, 0.0f, 0.0f); }
+
+    // 時間に応じた値を計算
+    std::vector<Vector3> translate;
+    float t = time / duration_;
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        translate.push_back(nodeAnimation->translate.keyframes[i].value);
+    }
+    return MyMath::CatmullRomPosition(translate, t);
 }
 
 //////////////////////////////////////////////////////////////////////////////

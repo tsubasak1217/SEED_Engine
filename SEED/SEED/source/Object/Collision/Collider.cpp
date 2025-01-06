@@ -44,10 +44,19 @@ void Collider::Update(){
     if(animationData_){
         animationTime_ += ClockManager::DeltaTime();
         if(isLoop_){
-            animationTime_ = std::fmod(animationTime_, animationData_->GetDuration());
+            if(animationData_->GetDuration() != 0.0f){
+                animationTime_ = std::fmod(animationTime_, animationData_->GetDuration());
+            } else{
+                animationTime_ = 0.0f;
+            }
         } else{
             animationTime_ = std::clamp(animationTime_, 0.0f, animationData_->GetDuration());
         }
+
+        // アニメーションデータの取得
+        scale_ = animationData_->GetScale(animationTime_);
+        rotate_ = Quaternion::ToEuler(animationData_->GetRotation(animationTime_));
+        translate_ = animationData_->GetTranslation(animationTime_);
     }
 
     // 行列の更新
@@ -76,7 +85,7 @@ void Collider::UpdateMatrix(){
     if(parentMat_){
 
         if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
-            worldMat_ = *parentMat_ * localMat_;
+            worldMat_ = localMat_  * (*parentMat_);
             return;
         } else{
             
@@ -170,4 +179,21 @@ nlohmann::json Collider::GetJsonData(){
     j["isParentTranslate"] = isParentTranslate_;
 
     return j;
+}
+
+void Collider::EditAnimation(){
+    // アニメーションするかどうか
+    if(isAnimation_){
+
+        // アニメーションデータがない場合は作成
+        if(!animationData_){
+            animationData_ = std::make_unique<ColliderAnimationData>();
+            animationData_->SetParentMat(parentMat_);
+        }
+
+        // アニメーションデータの編集
+        std::string animationName = "AnimationData( collider_" + std::to_string(colliderID_) + " )";
+        animationData_->Edit(animationName.c_str());
+
+    }
 }

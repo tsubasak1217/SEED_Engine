@@ -422,6 +422,51 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
 }
 
 
+/////////////////////////////////////////////////////////////
+// スプライン曲線の描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawSpline(const std::vector<Vector3>& points,uint32_t subdivision, const Vector4& color,bool isControlPointVisible){
+
+    // 点が2つ未満の場合は描画しない
+    if(points.size() < 2){return;}
+
+    // 必要な変数を用意
+    float t = 0;
+    uint32_t totalSubdivision = uint32_t(points.size() - 1) * subdivision;
+    std::optional<Vector3> previous = std::nullopt;
+
+    // スプライン曲線の描画
+    for(uint32_t i = 0; i <= totalSubdivision; i++){
+
+        // 現在の位置を求める
+        t = float(i) / totalSubdivision;
+
+        // 現在の区間の点を求める
+        Vector3 p = MyMath::CatmullRomPosition(points, t);
+
+        // 線を描画
+        if(previous != std::nullopt){
+            DrawLine(previous.value(), p, color);
+        }
+
+        // 現在の点を保存
+        previous = p;
+    }
+
+    // 制御点の描画
+    if(!isControlPointVisible){ return; }
+    Model controlPointModel = Model("Assets/cube.obj");
+    controlPointModel.scale_ = { 0.5f,0.5f,0.5f };
+    controlPointModel.color_ = { 1.0f,0.0f,0.0f,1.0f };
+
+    for(int i = 0; i < points.size(); i++){
+        controlPointModel.translate_ = points[i];
+        controlPointModel.UpdateMatrix();
+        DrawModel(&controlPointModel);
+    }
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
 /*                                                その他細かい関数                                                  */

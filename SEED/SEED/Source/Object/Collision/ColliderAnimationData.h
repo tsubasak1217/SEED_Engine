@@ -9,23 +9,25 @@
 #include "Matrix4x4.h"
 
 class ColliderAnimationData{
-    friend class ColliderManager;// ColliderManagerにはアクセス権を与える
-
 public:
-    ColliderAnimationData() = default;
+    ColliderAnimationData();
+    void SetParentMat(const Matrix4x4* parentMat){ parentMat_ = parentMat; }
     float GetDuration()const{ return duration_; }
     Vector3 GetScale(float time)const;
     Quaternion GetRotation(float time)const;
     Vector3 GetTranslation(float time)const;
     nlohmann::json GetJsonData()const;
 
+public:
+    void Edit(const std::string& headerName);
 private:
-    void EditByImGui(const std::string& headerName);
     void InsertElement(float location);
     void DeleteElement(float location);
     void DrawCollider()const;
+    void DrawCollider(float time,bool indexDraw = false);
 
 private:
+    const Matrix4x4* parentMat_ = nullptr;
     float duration_;// コライダーの寿命
     std::unique_ptr<NodeAnimation> nodeAnimation;// Colliderが生きている間の動き
     float insertLocation_ = 1.0f;// 挿入位置

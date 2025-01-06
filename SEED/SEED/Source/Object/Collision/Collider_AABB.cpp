@@ -121,12 +121,13 @@ void Collider_AABB::UpdateBox(){
 void Collider_AABB::Edit(){
 #ifdef _DEBUG
 
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
     // 中心座標
     ImGui::Text("------ Center ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &local_.center.x, 0.1f);
+    ImGui::DragFloat3(std::string("Center" + colliderID).c_str(), &local_.center.x, 0.1f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -134,7 +135,7 @@ void Collider_AABB::Edit(){
     // 半径
     ImGui::Text("------ HalfSie ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &body_.halfSize.x, 0.025f);
+    ImGui::DragFloat3(std::string("HalfSie" + colliderID).c_str(), &body_.halfSize.x, 0.025f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -142,8 +143,12 @@ void Collider_AABB::Edit(){
     // オフセット
     ImGui::Text("------ Offset ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
 
 #endif // _DEBUG
 }

@@ -58,12 +58,13 @@ void Collider_Capsule::Edit(){
 
 #ifdef _DEBUG
 
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
     // 中心座標
     ImGui::Text("------ Origin ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &local_.origin.x, 0.05f);
+    ImGui::DragFloat3(std::string("Origin" + colliderID).c_str(), &local_.origin.x, 0.05f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -71,7 +72,7 @@ void Collider_Capsule::Edit(){
     // 半径
     ImGui::Text("-------- End -------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &local_.end.x, 0.05f);
+    ImGui::DragFloat3(std::string("End" + colliderID).c_str(), &local_.end.x, 0.05f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -79,7 +80,7 @@ void Collider_Capsule::Edit(){
     // 半径
     ImGui::Text("------ Radius ------");
     ImGui::Indent();
-    ImGui::DragFloat("radius", &body_.radius, 0.05f, 0.0f);
+    ImGui::DragFloat(std::string("Radius" + colliderID).c_str(), &body_.radius, 0.05f, 0.0f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -87,8 +88,12 @@ void Collider_Capsule::Edit(){
     // オフセット
     ImGui::Text("------ Offset ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
 
 #endif // _DEBUG
 

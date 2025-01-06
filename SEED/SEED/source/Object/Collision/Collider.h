@@ -30,7 +30,7 @@ enum class ColliderType : uint32_t{
 
 // コライダーの基底クラス
 class Collider{
-
+    friend class ColliderEditor;
 public:// 基本関数--------------------------------------------------------------
     Collider();
     virtual ~Collider();
@@ -48,6 +48,8 @@ protected:
 public:// 編集用関数--------------------------------------------------------------
     virtual void Edit();
     virtual nlohmann::json GetJsonData();
+protected:
+    void EditAnimation();
 
 public:// アクセッサ--------------------------------------------------------------
 
@@ -109,7 +111,8 @@ protected:// 衝突に使用するパラメータ-------------------------------
     std::unordered_set<uint32_t> collisionList_;// 今のフレームですでに衝突したオブジェクトのIDリスト
 
 protected:// コライダーが動く場合のアニメーションデータ-----------------------------------
+    bool isAnimation_ = false;
     std::unique_ptr<ColliderAnimationData> animationData_ = nullptr;
     float animationTime_ = 0.0f;
-    bool isLoop_ = false;
+    bool isLoop_ = true;
 };

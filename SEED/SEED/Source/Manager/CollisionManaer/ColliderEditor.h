@@ -21,6 +21,10 @@ public:// 編集・ファイル操作関数
 private:
     void AddCollider();
     void OutputToJson();
+    void LoadFromJson();
+
+public:// コライダー関連
+    void HandOverColliders();
 
 public:// アクセッサ
     void SetParentMat(const Matrix4x4* parentMat){ parentMat_ = parentMat; }

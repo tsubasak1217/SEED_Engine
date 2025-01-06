@@ -76,15 +76,16 @@ void Collider_Plane::UpdateBox(){
 void Collider_Plane::Edit(){
 #ifdef _DEBUG
 
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
     // ローカル座標
     ImGui::Text("------ Vertices ------");
     ImGui::Indent();
-    ImGui::DragFloat3("v0", &local_.localVertex[0].x, 0.05f);
-    ImGui::DragFloat3("v1", &local_.localVertex[1].x, 0.05f);
-    ImGui::DragFloat3("v2", &local_.localVertex[2].x, 0.05f);
-    ImGui::DragFloat3("v3", &local_.localVertex[3].x, 0.05f);
+    ImGui::DragFloat3(std::string("v0" + colliderID).c_str(), &local_.localVertex[0].x, 0.05f);
+    ImGui::DragFloat3(std::string("v1" + colliderID).c_str(), &local_.localVertex[1].x, 0.05f);
+    ImGui::DragFloat3(std::string("v2" + colliderID).c_str(), &local_.localVertex[2].x, 0.05f);
+    ImGui::DragFloat3(std::string("v3" + colliderID).c_str(), &local_.localVertex[3].x, 0.05f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -92,8 +93,12 @@ void Collider_Plane::Edit(){
     // オフセット
     ImGui::Text("------ Offset ------");
     ImGui::Indent();
-    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
 
 #endif // _DEBUG
 }

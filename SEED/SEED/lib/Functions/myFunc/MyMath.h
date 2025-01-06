@@ -105,10 +105,11 @@ public:
 
     //スプライン補完をする関数
     static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
-    static Vector3 PrimaryCatmullRom(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4, float t);
     //スプライン補完を使用して位置を設定する関数
     static Vector3 CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t);
     static Vector3 CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t);
+    // 制御点を等間隔に修正する関数
+    static void ToConstantControlPoints(std::vector<Vector3>* pControlPoints);
 
     static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& matrix);
 

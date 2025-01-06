@@ -19,7 +19,7 @@ public:
 public:
     AABB GetAABB()const{ return body_; }
     void SetCenter(const Vector3& center){ local_.center = center; }
-    void SetAABBSize(const Vector3& size){ body_.halfSize = size * 0.5f; }
+    void SetSize(const Vector3& size){ body_.halfSize = size * 0.5f; }
 
 private:
     AABB local_;

@@ -30,6 +30,9 @@ void Player::Initialize(){
     ResetCollider();
     InitCollider();
 
+    // コライダーエディターの初期化
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, model_->GetWorldMatPtr());
+
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
@@ -56,12 +59,12 @@ void Player::Draw(){
 // コライダー関連
 //////////////////////////////////////////////////////////////////////////
 void Player::InitCollider(){
-    colliders_.emplace_back(new Collider_OBB());
-    Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
-    obb->SetParentObject(this);
-    obb->SetParentMatrix(model_->GetWorldMatPtr());
-    obb->SetSize({ 3.0f,6.0f,3.0f });
-    obb->offset_ = { 0.0f, 3.0f, 0.0f };
+    //colliders_.emplace_back(new Collider_OBB());
+    //Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
+    //obb->SetParentObject(this);
+    //obb->SetParentMatrix(model_->GetWorldMatPtr());
+    //obb->SetSize({ 3.0f,6.0f,3.0f });
+    //obb->offset_ = { 0.0f, 3.0f, 0.0f };
 }
 
 

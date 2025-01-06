@@ -49,7 +49,6 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(player_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
 
-
 }
 
 void Scene_Game::Finalize(){}
@@ -74,6 +73,7 @@ void Scene_Game::Update(){
     currentState_->Update();
 
     player_->Update();
+    player_->EditCollider();
 
     for(auto& enemy : enemies_) {
         enemy->Update();

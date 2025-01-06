@@ -245,23 +245,12 @@ Vector3 Quaternion::ToEuler() const{
 
 // クォータニオンから前方ベクトルを取得
 Vector3 Quaternion::MakeForward() const{
-    // クォータニオンの各成分
-    float xx = x * x;
-    float yy = y * y;
-    float zz = z * z;
-    float ww = w * w;
-    float xz = x * z;
-    float yz = y * z;
-    float wx = w * x;
-    float wy = w * y;
 
-    // 前方ベクトルを計算
-    Vector3 result;
-    result.x = 2.0f * (xz - wy);
-    result.y = 2.0f * (yz + wx);
-    result.z = ww - xx - yy + zz;
+    Vector3 up = MakeUp();
+    Vector3 right = MakeRight();
 
-    return MyMath::Normalize(result);
+
+    return MyMath::Cross(-up, right);
 }
 
 

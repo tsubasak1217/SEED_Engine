@@ -21,6 +21,7 @@ public:
 
 public:
     void UpdateMatrix();
+    void EditCollider();
 
 public:// アクセッサ
 

@@ -37,7 +37,7 @@ private:// メンバ変数------------------------------------------------------
 
     // 八分木
     std::unique_ptr<Octree> octree_ = nullptr;
-    bool isDrawCollider_ = false;
+    bool isDrawCollider_ = true;
 
     // コライダー辞書
     std::unordered_map<uint32_t, Collider*> colliderList_;

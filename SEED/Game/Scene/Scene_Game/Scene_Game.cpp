@@ -75,9 +75,9 @@ void Scene_Game::Update(){
 
     player_->Update();
 
-    //for(auto& enemy : enemies_) {
-    //    enemy->Update();
-    //}
+    for(auto& enemy : enemies_) {
+        enemy->Update();
+    }
 }
 
 void Scene_Game::Draw(){
@@ -89,7 +89,7 @@ void Scene_Game::Draw(){
 
     player_->Draw();
 
-    //for(auto& enemy : enemies_) {
-    //    enemy->Draw();
-    //}
+    for(auto& enemy : enemies_) {
+        enemy->Draw();
+    }
 }

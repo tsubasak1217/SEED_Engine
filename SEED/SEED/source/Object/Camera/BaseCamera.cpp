@@ -5,7 +5,6 @@
 #include "InputManager.h"
 #include "Environment.h"
 
-
 float znearOffsetForLayer = 0.09f;
 
 BaseCamera::BaseCamera(){

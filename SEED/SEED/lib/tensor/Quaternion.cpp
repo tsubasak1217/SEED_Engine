@@ -218,20 +218,84 @@ Vector3 Quaternion::ToEuler(const Quaternion& q){
     return result;
 }
 
+Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
+    float trace = mat.m[0][0] + mat.m[1][1] + mat.m[2][2]; // 対角成分の合計
+
+    if (trace > 0.0f){
+        float s = std::sqrt(trace + 1.0f) * 0.5f;
+        float invS = 0.5f / s; // sの逆数
+        return Quaternion(
+            (mat.m[1][2] - mat.m[2][1]) * invS,
+            (mat.m[2][0] - mat.m[0][2]) * invS,
+            (mat.m[0][1] - mat.m[1][0]) * invS,
+            s
+        );
+    } else{
+        // 最大成分の判定
+        if (mat.m[0][0] > mat.m[1][1] && mat.m[0][0] > mat.m[2][2]){
+            float s = std::sqrt(1.0f + mat.m[0][0] - mat.m[1][1] - mat.m[2][2]) * 2.0f;
+            float invS = 1.0f / s;
+            return Quaternion(
+                0.25f * s,
+                (mat.m[0][1] + mat.m[1][0]) * invS,
+                (mat.m[0][2] + mat.m[2][0]) * invS,
+                (mat.m[1][2] - mat.m[2][1]) * invS
+            );
+        } else if (mat.m[1][1] > mat.m[2][2]){
+            float s = std::sqrt(1.0f + mat.m[1][1] - mat.m[0][0] - mat.m[2][2]) * 2.0f;
+            float invS = 1.0f / s;
+            return Quaternion(
+                (mat.m[0][1] + mat.m[1][0]) * invS,
+                0.25f * s,
+                (mat.m[1][2] + mat.m[2][1]) * invS,
+                (mat.m[2][0] - mat.m[0][2]) * invS
+            );
+        } else{
+            float s = std::sqrt(1.0f + mat.m[2][2] - mat.m[0][0] - mat.m[1][1]) * 2.0f;
+            float invS = 1.0f / s;
+            return Quaternion(
+                (mat.m[0][2] + mat.m[2][0]) * invS,
+                (mat.m[1][2] + mat.m[2][1]) * invS,
+                0.25f * s,
+                (mat.m[0][1] - mat.m[1][0]) * invS
+            );
+        }
+    }
+}
+
+
+
+Quaternion Quaternion::LookRotation(const Vector3& eye, const Vector3& target, const Vector3& up){
+    Vector3 f = MyMath::Normalize(target - eye); // 前方向ベクトル
+    Vector3 s = MyMath::Normalize(MyMath::Cross(f, up)); // 右方向ベクトル
+    Vector3 u = MyMath::Normalize(MyMath::Cross(s, f));  // 上方向ベクトル
+
+    // 回転行列の生成
+    Matrix4x4 rotationMatrix = {};
+    rotationMatrix.m[0][0] = s.x; rotationMatrix.m[0][1] = s.y; rotationMatrix.m[0][2] = s.z; rotationMatrix.m[0][3] = 0.0f; // 右方向ベクトルを行列の1列目に設定
+    rotationMatrix.m[1][0] = u.x; rotationMatrix.m[1][1] = u.y; rotationMatrix.m[1][2] = u.z; rotationMatrix.m[1][3] = 0.0f; // 上方向ベクトルを行列の2列目に設定
+    rotationMatrix.m[2][0] = -f.x; rotationMatrix.m[2][1] = -f.y; rotationMatrix.m[2][2] = -f.z; rotationMatrix.m[2][3] = 0.0f; // 前方向ベクトルを行列の3列目に設定
+    rotationMatrix.m[3][0] = 0.0f; rotationMatrix.m[3][1] = 0.0f; rotationMatrix.m[3][2] = 0.0f; rotationMatrix.m[3][3] = 1.0f;
+
+    // 回転行列からクォータニオンを生成
+    return Quaternion::MatrixToQuaternion(rotationMatrix);
+}
+
+
 
 // クォータニオンからオイラー角に変換
 Vector3 Quaternion::ToEuler() const{
     // クォータニオンの各成分
-    float xx = x * x;
-    float yy = y * y;
-    float zz = z * z;
-    float ww = w * w;
-    float xy = x * y;
-    float xz = x * z;
-    float yz = y * z;
-    float wx = w * x;
-    float wy = w * y;
-    float wz = w * z;
+    float xx = this->x * this->x;
+    float yy = this->y * this->y;
+    float zz = this->z * this->z;
+    float ww = this->w * this->w;
+    float xy = this->x * this->y;
+    float xz = this->x * this->z;
+    float yz = this->y * this->z;
+    float wx = this->w * this->x;
+    float wy = this->w * this->y;
+    float wz = this->w * this->z;
 
     // オイラー角を計算
     Vector3 result;
@@ -413,6 +477,32 @@ Quaternion Quaternion::operator/(float f) const{
     return Quaternion(x / f, y / f, z / f, w / f);
 }
 
+Vector3 Quaternion::operator*(const Vector3& v) const{
+    // 1) v を「スカラー部 0、ベクトル部 v」のクォータニオンに変換
+    Quaternion qv(v.x, v.y, v.z, 0.0f);
 
+    // 2) qv' = q * qv
+    Quaternion qvPrime;
+    qvPrime.w = w * qv.w - x * qv.x - y * qv.y - z * qv.z;
+    qvPrime.x = w * qv.x + x * qv.w + y * qv.z - z * qv.y;
+    qvPrime.y = w * qv.y - x * qv.z + y * qv.w + z * qv.x;
+    qvPrime.z = w * qv.z + x * qv.y - y * qv.x + z * qv.w;
 
+    // 3) conj(q) = ( -x, -y, -z, w )  (正規化されている前提)
+    Quaternion conjQ(-x, -y, -z, w);
+
+    // 4) qv' * conj(q) を計算すると (スカラー部は捨てる)
+    Quaternion result;
+    result.w = qvPrime.w * conjQ.w - qvPrime.x * conjQ.x
+        - qvPrime.y * conjQ.y - qvPrime.z * conjQ.z;
+    result.x = qvPrime.w * conjQ.x + qvPrime.x * conjQ.w
+        + qvPrime.y * conjQ.z - qvPrime.z * conjQ.y;
+    result.y = qvPrime.w * conjQ.y - qvPrime.x * conjQ.z
+        + qvPrime.y * conjQ.w + qvPrime.z * conjQ.x;
+    result.z = qvPrime.w * conjQ.z + qvPrime.x * conjQ.y
+        - qvPrime.y * conjQ.x + qvPrime.z * conjQ.w;
+
+    // 最後にベクトル部 (x, y, z) を取り出す
+    return Vector3(result.x, result.y, result.z);
+}
 

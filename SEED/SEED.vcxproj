@@ -136,6 +136,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
@@ -193,6 +194,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Object\Camera\BaseCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\FollowCamera.cpp" />
+    <ClCompile Include="SEED\source\Object\Camera\StageViewCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Collision\Collider.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp" />
@@ -232,6 +234,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
@@ -321,6 +324,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Object\Camera\BaseCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h" />
+    <ClInclude Include="SEED\source\Object\Camera\StageViewCamera.h" />
     <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h" />

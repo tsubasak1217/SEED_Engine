@@ -352,6 +352,12 @@
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
       <Filter>Game\Editor</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\source\Object\Camera\StageViewCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -636,6 +642,8 @@
     <ClInclude Include="Game\Editor\FieldEditor.h">
       <Filter>Game\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\StageViewCamera.h" />
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

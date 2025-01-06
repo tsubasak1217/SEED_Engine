@@ -5,7 +5,6 @@
 #include "InputManager.h"
 #include "Environment.h"
 
-
 float znearOffsetForLayer = 0.09f;
 
 void Camera::UpdateMatrix(){
@@ -49,4 +48,6 @@ void Camera::UpdateMatrix(){
     vpVp_ = Multiply(viewProjectionMat_, viewportMat_);
 }
 
-void Camera::Update(){}
+void Camera::Update(){
+}
+

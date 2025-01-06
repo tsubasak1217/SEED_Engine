@@ -1,6 +1,8 @@
 #pragma once
 #include "Camera.h"
 #include "DebugCamera.h"
+#include "StageViewCamera.h"
+
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -34,6 +36,8 @@ private:
     // カメラの一覧
     std::unordered_map<std::string, Camera*>cameras_;
 
+    //stageを見渡すためのカメラ
+    std::unique_ptr<StageViewCamera> stageViewCamera_;
     // メインのカメラ
     std::unique_ptr<Camera> mainCamera_;
     std::unique_ptr<DebugCamera> debugCamera_;

@@ -11,7 +11,7 @@ struct Camera{
     virtual ~Camera() = default;
     void UpdateMatrix();
     virtual void Update();
-
+    virtual void ShowGui(){}
     //=============================================================================
     //              メンバ変数
     //=============================================================================
@@ -32,6 +32,9 @@ struct Camera{
     Matrix4x4 viewProjectionMat2D_;
     Matrix4x4 viewportMat_;
     Matrix4x4 vpVp_;
+
+
+
 };
 
 enum PROJECTIONMODE{

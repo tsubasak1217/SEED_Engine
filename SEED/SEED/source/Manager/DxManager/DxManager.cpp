@@ -211,6 +211,17 @@ void DxManager::Initialize(SEED* pSEED){
     CameraManager::GetCamera("debug")->zfar_ = 1000.0f;
     CameraManager::GetCamera("debug")->UpdateMatrix();
 
+    // ステージを見渡す用のカメラ
+    instance_->camera_ = CameraManager::GetCamera("stageView");
+    CameraManager::GetCamera("stageView")->transform_.scale_ = {1.0f,1.0f,1.0f}; // scale
+    CameraManager::GetCamera("stageView")->transform_.rotate_ = {0.0f,0.0f,0.0f}; // rotate
+    CameraManager::GetCamera("stageView")->transform_.translate_ = {0.0f,1.0f,-10.0f}; // translate
+    CameraManager::GetCamera("stageView")->projectionMode_ = PERSPECTIVE;
+    CameraManager::GetCamera("stageView")->clipRange_ = kWindowSize;
+    CameraManager::GetCamera("stageView")->znear_ = 0.1f;
+    CameraManager::GetCamera("stageView")->zfar_ = 1000.0f;
+    CameraManager::GetCamera("stageView")->UpdateMatrix();
+
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
 }

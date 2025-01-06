@@ -17,7 +17,7 @@ Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
 
-    SEED::SetCamera("debug");
+    SEED::SetCamera("stageView");
 
     ////////////////////////////////////////////////////
     //  モデル生成

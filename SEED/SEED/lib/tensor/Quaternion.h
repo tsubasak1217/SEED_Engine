@@ -21,9 +21,11 @@ public:
     Quaternion Inverse()const;
     Quaternion Slerp(const Quaternion& q, float t)const;
     Quaternion Lerp(const Quaternion& q, float t)const;
+    static Quaternion LookRotation(const Vector3& eye, const Vector3& target, const Vector3& up = {0.0f,1.0f,0.0f});
 
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);
+    static Quaternion MatrixToQuaternion(const Matrix4x4& mat);
     static Quaternion EulerToQuaternion(const Vector3& eulerRotate);
     static Vector3 ToEuler(const Quaternion& q);
     Vector3 ToEuler()const;
@@ -41,6 +43,8 @@ public:
     Quaternion operator*(const Quaternion& q)const;
     Quaternion operator*(float f)const;
     Quaternion operator/(float f)const;
+
+    Vector3 operator*(const Vector3& v) const;
 
 public:
 

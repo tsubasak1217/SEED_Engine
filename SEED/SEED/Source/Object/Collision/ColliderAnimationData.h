@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <json.hpp>
 #include "ModelAnimation.h"
 #include "ImGuiManager.h"
 #include "Quaternion.h"
@@ -16,6 +17,7 @@ public:
     Vector3 GetScale(float time)const;
     Quaternion GetRotation(float time)const;
     Vector3 GetTranslation(float time)const;
+    nlohmann::json GetJsonData()const;
 
 private:
     void EditByImGui(const std::string& headerName);

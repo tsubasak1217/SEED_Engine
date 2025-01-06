@@ -1,5 +1,6 @@
 #pragma once
 #include <cassert>
+#include <nlohmann/json.hpp>
 #include "Matrix4x4.h"
 
 
@@ -166,3 +167,15 @@ struct Vector3 final {
 
     Vector4 ToVec4();
 };
+
+// Vector3をJSONに変換する関数
+inline void to_json(nlohmann::json& j, const Vector3& vec){
+    j = { {"x", vec.x}, {"y", vec.y}, {"z", vec.z} };
+}
+
+// JSON から Vector3 に変換
+inline void from_json(const nlohmann::json& j, Vector3& v){
+    v.x = j.at("x").get<float>();
+    v.y = j.at("y").get<float>();
+    v.z = j.at("z").get<float>();
+}

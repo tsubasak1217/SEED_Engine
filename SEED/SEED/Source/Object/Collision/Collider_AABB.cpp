@@ -118,36 +118,54 @@ void Collider_AABB::UpdateBox(){
 //////////////////////////////////////////////////////////////////
 // ImGuiでのパラメーター編集
 //////////////////////////////////////////////////////////////////
-void Collider_AABB::Edit(const std::string& headerName){
+void Collider_AABB::Edit(){
 #ifdef _DEBUG
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
 
-        color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
-        // 中心座標
-        ImGui::Text("------ Center ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &local_.center.x, 0.1f);
-        ImGui::Unindent();
+    // 中心座標
+    ImGui::Text("------ Center ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &local_.center.x, 0.1f);
+    ImGui::Unindent();
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        // 半径
-        ImGui::Text("------ HalfSie ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &body_.halfSize.x, 0.025f);
-        ImGui::Unindent();
+    // 半径
+    ImGui::Text("------ HalfSie ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &body_.halfSize.x, 0.025f);
+    ImGui::Unindent();
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        // オフセット
-        ImGui::Text("------ Offset ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
-        ImGui::Unindent();
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::Unindent();
 
-        ImGui::Unindent();
-    }
 #endif // _DEBUG
+}
+
+//////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+//////////////////////////////////////////////////////////////////
+nlohmann::json Collider_AABB::GetJsonData(){
+    nlohmann::json json;
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // コライダーの種類
+    json["colliderType"] = "AABB";
+
+    // ローカル座標
+    json["local"]["center"] = local_.center;
+    json["local"]["halfSize"] = body_.halfSize;
+
+    // オフセット
+    json["offset"] = offset_;
+
+    return json;
 }

@@ -98,38 +98,51 @@ void Collider_Sphere::UpdateBox(){
 ////////////////////////////////////////////////////////////
 // ImGuiでのパラメーター編集
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::Edit(const std::string& headerName){
+void Collider_Sphere::Edit(){
 #ifdef _DEBUG
 
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
-        color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+    // 中心座標
+    ImGui::Text("------ Center ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &local_.center.x, 0.1f);
+    ImGui::Unindent();
 
-        // 中心座標
-        ImGui::Text("------ Center ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &local_.center.x, 0.1f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    // 半径
+    ImGui::Text("------ Radius ------");
+    ImGui::Indent();
+    ImGui::DragFloat("radius", &body_.radius, 0.05f, 0.0f);
+    ImGui::Unindent();
 
-        // 半径
-        ImGui::Text("------ Radius ------");
-        ImGui::Indent();
-        ImGui::DragFloat("radius", &body_.radius,0.05f,0.0f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
-        // オフセット
-        ImGui::Text("------ Offset ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
-        ImGui::Unindent();
-
-        ImGui::Unindent();
-    }
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::Unindent();
 
 #endif // _DEBUG
+}
+
+////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+////////////////////////////////////////////////////////////
+nlohmann::json Collider_Sphere::GetJsonData(){
+    nlohmann::json json = Collider::GetJsonData();
+
+    // コライダーの種類
+    json["colliderType"] = "Sphere";
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // 球の情報
+    json["center"] = local_.center;
+    json["radius"] = body_.radius;
+
+    return json;
 }

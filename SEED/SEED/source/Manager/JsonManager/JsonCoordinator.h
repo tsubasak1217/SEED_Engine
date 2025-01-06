@@ -71,18 +71,6 @@ private:
 //                  inline Function
 //===================================================================*/
 
-// Vector3 を JSON 形式に変換
-inline void to_json(json& j, const Vector3& v){
-    j = json {{"x", v.x}, {"y", v.y}, {"z", v.z}};
-}
-
-// JSON から Vector3 に変換
-inline void from_json(const json& j, Vector3& v){
-    v.x = j.at("x").get<float>();
-    v.y = j.at("y").get<float>();
-    v.z = j.at("z").get<float>();
-}
-
 // AdjustableValue を JSON 形式に変換
 inline void to_json(json& j, const AdjustableValue& value){
     std::visit([&] (const auto& arg){ j = arg; }, value);

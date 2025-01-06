@@ -4,7 +4,7 @@
 class Collider_Capsule : public Collider{
 public:
     Collider_Capsule();
-    ~Collider_Capsule() = default;
+    ~Collider_Capsule()override = default;
     void UpdateMatrix() override;
     void Draw() override;
 
@@ -12,7 +12,8 @@ protected:
     void UpdateBox()override;
 
 public:
-    void Edit(const std::string& headerName)override;
+    void Edit()override;
+    nlohmann::json GetJsonData()override;
 
 public:
     Capsule GetCapsule()const{ return body_; }

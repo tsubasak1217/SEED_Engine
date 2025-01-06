@@ -4,7 +4,7 @@
 class Collider_AABB : public Collider{
 public:
     Collider_AABB();
-    ~Collider_AABB() = default;
+    ~Collider_AABB()override = default;
     void UpdateMatrix() override;
     void Draw() override;
     void CheckCollision(Collider* collider)override;
@@ -13,7 +13,8 @@ protected:
     void UpdateBox()override;
 
 public:
-    void Edit(const std::string& headerName)override;
+    void Edit()override;
+    nlohmann::json GetJsonData()override;
 
 public:
     AABB GetAABB()const{ return body_; }

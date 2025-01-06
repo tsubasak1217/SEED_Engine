@@ -32,8 +32,24 @@ void ColliderEditor::Edit(){
 
         // 各コライダーの編集
         for(int i = 0; i < colliders_.size(); i++){
+            // ヘッダー名
             std::string colliderName = "Collider" + std::to_string(i);
-            colliders_[i]->Edit(colliderName);
+
+            // ヘッダーの表示
+            if(ImGui::CollapsingHeader(headerName.c_str())){
+                ImGui::Indent();
+
+                // コライダーの編集
+                colliders_[i]->Edit();
+
+                // コライダーの削除
+                if(ImGui::Button("Delete Collider")){
+                    colliders_.erase(colliders_.begin() + i);
+                    break;// 配列数が合わなくなるので一旦抜ける
+                }
+
+                ImGui::Unindent();
+            }
         }
 
         ImGui::Unindent();
@@ -82,4 +98,21 @@ void ColliderEditor::AddCollider(){
 #endif // _DEBUG
 }
 
-void ColliderEditor::OutputToJson(){}
+
+////////////////////////////////////////////////////////////
+// Jsonファイルへの出力
+////////////////////////////////////////////////////////////
+void ColliderEditor::OutputToJson(){
+
+    nlohmann::json j;
+
+    // コライダーの数
+    for(int i = 0; i < colliders_.size(); i++){
+        j["colliders"][i] = colliders_[i]->GetJsonData();
+    }
+
+    // ファイルへの書き込み
+    std::ofstream ofs("Resources/jsond/Colliders" + className_ + ".json");
+    ofs << j.dump(4);
+    ofs.close();
+}

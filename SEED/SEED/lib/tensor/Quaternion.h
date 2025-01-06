@@ -56,3 +56,16 @@ public:
 public:
 
 };
+
+// QuaternionをJSONに変換する関数
+inline void to_json(nlohmann::json& j, const Quaternion& quat){
+    j = { {"x", quat.x}, {"y", quat.y}, {"z", quat.z}, {"w", quat.w} };
+}
+
+// JSONからQuaternionを読み込む関数
+inline void from_json(const nlohmann::json& j, Quaternion& quat){
+    quat.x = j.value("x", 0.0f);
+    quat.y = j.value("y", 0.0f);
+    quat.z = j.value("z", 0.0f);
+    quat.w = j.value("w", 1.0f);
+}

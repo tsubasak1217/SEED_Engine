@@ -193,3 +193,35 @@ Quaternion ColliderAnimationData::GetRotation(float time) const{
 Vector3 ColliderAnimationData::GetTranslation(float time) const{
     return CalcMomentValue(nodeAnimation->translate.keyframes, time);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Jsonデータの取得
+//////////////////////////////////////////////////////////////////////////////
+nlohmann::json ColliderAnimationData::GetJsonData() const{
+    nlohmann::json json;
+
+    // 各要素を独立した配列にする
+    std::vector<Vector3> translate;
+    std::vector<Quaternion> rotate;
+    std::vector<Vector3> scale;
+    std::vector<float> time;
+
+    // 各要素を取得
+    for(int i = 0; i < nodeAnimation->translate.keyframes.size(); i++){
+        translate.push_back(nodeAnimation->translate.keyframes[i].value);
+        rotate.push_back(nodeAnimation->rotate.keyframes[i].value);
+        scale.push_back(nodeAnimation->scale.keyframes[i].value);
+        time.push_back(nodeAnimation->translate.keyframes[i].time);
+    }
+
+    // アニメーションのデータをまとめていく
+    json["duration"] = duration_;
+    json["nodeAnimation"] = {
+        {"translate", translate},
+        {"rotate", rotate},
+        {"scale", scale},
+        {"time", time}
+    };
+
+    return json;
+}

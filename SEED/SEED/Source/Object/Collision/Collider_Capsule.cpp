@@ -28,7 +28,7 @@ void Collider_Capsule::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////////////
 void Collider_Capsule::Draw(){
-    SEED::DrawCapsule(body_.origin,body_.end,body_.radius,6,color_);
+    SEED::DrawCapsule(body_.origin, body_.end, body_.radius, 6, color_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,49 +54,64 @@ void Collider_Capsule::UpdateBox(){
 //////////////////////////////////////////////////////////////////////////
 // ImGuiでの編集
 //////////////////////////////////////////////////////////////////////////
-void Collider_Capsule::Edit(const std::string& headerName){
+void Collider_Capsule::Edit(){
 
 #ifdef _DEBUG
 
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
-        color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+    // 中心座標
+    ImGui::Text("------ Origin ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &local_.origin.x, 0.05f);
+    ImGui::Unindent();
 
-        // 中心座標
-        ImGui::Text("------ Origin ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &local_.origin.x, 0.05f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    // 半径
+    ImGui::Text("-------- End -------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &local_.end.x, 0.05f);
+    ImGui::Unindent();
 
-        // 半径
-        ImGui::Text("-------- End -------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &local_.end.x, 0.05f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    // 半径
+    ImGui::Text("------ Radius ------");
+    ImGui::Indent();
+    ImGui::DragFloat("radius", &body_.radius, 0.05f, 0.0f);
+    ImGui::Unindent();
 
-        // 半径
-        ImGui::Text("------ Radius ------");
-        ImGui::Indent();
-        ImGui::DragFloat("radius", &body_.radius, 0.05f, 0.0f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
-        // オフセット
-        ImGui::Text("------ Offset ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
-        ImGui::Unindent();
-
-        ImGui::Unindent();
-    }
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::Unindent();
 
 #endif // _DEBUG
 
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+//////////////////////////////////////////////////////////////////////////
+nlohmann::json Collider_Capsule::GetJsonData(){
+    nlohmann::json json;
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // ローカル座標
+    json["local"]["origin"] = { local_.origin.x,local_.origin.y,local_.origin.z };
+    json["local"]["end"] = { local_.end.x,local_.end.y,local_.end.z };
+    json["radius"] = body_.radius;
+
+    // オフセット
+    json["offset"] = { offset_.x,offset_.y,offset_.z };
+
+    return json;
 }
 

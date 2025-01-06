@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <unordered_set>
+#include <json.hpp>
 #include "ImGuiManager/ImGuiManager.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
@@ -32,7 +33,7 @@ class Collider{
 
 public:// 基本関数--------------------------------------------------------------
     Collider();
-    ~Collider();
+    virtual ~Collider();
 
 public:
     virtual void Update();
@@ -44,8 +45,9 @@ public:
 protected:
     virtual void UpdateBox();
 
-public:
-    virtual void Edit(const std::string& headerName) = 0;
+public:// 編集用関数--------------------------------------------------------------
+    virtual void Edit();
+    virtual nlohmann::json GetJsonData();
 
 public:// アクセッサ--------------------------------------------------------------
 

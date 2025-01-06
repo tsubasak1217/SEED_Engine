@@ -20,7 +20,7 @@ Collider_Plane::Collider_Plane() : Collider(){
 // 行列の更新
 //////////////////////////////////////////////////////////////////
 void Collider_Plane::UpdateMatrix(){
-    
+
     // ワールド行列の更新
     Collider::UpdateMatrix();
 
@@ -73,35 +73,56 @@ void Collider_Plane::UpdateBox(){
 //////////////////////////////////////////////////////////////////
 // ImGuiでの編集
 //////////////////////////////////////////////////////////////////
-void Collider_Plane::Edit(const std::string& headerName){
+void Collider_Plane::Edit(){
 #ifdef _DEBUG
 
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
-        color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+    // ローカル座標
+    ImGui::Text("------ Vertices ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("v0", &local_.localVertex[0].x, 0.05f);
+    ImGui::DragFloat3("v1", &local_.localVertex[1].x, 0.05f);
+    ImGui::DragFloat3("v2", &local_.localVertex[2].x, 0.05f);
+    ImGui::DragFloat3("v3", &local_.localVertex[3].x, 0.05f);
+    ImGui::Unindent();
 
-        // ローカル座標
-        ImGui::Text("------ Vertices ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("v0", &local_.localVertex[0].x, 0.05f);
-        ImGui::DragFloat3("v1", &local_.localVertex[1].x, 0.05f);
-        ImGui::DragFloat3("v2", &local_.localVertex[2].x, 0.05f);
-        ImGui::DragFloat3("v3", &local_.localVertex[3].x, 0.05f);
-        ImGui::Unindent();
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
-        // オフセット
-        ImGui::Text("------ Offset ------");
-        ImGui::Indent();
-        ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
-        ImGui::Unindent();
-
-        ImGui::Unindent();
-    }
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3("x:y:z", &offset_.x, 0.1f);
+    ImGui::Unindent();
 
 #endif // _DEBUG
+}
+
+
+//////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+//////////////////////////////////////////////////////////////////
+nlohmann::json Collider_Plane::GetJsonData(){
+    nlohmann::json json;
+
+    // タイプ
+    json["Type"] = "Plane";
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // オフセット
+    json["Offset"] = offset_;
+
+    // ローカル座標
+    json["Vertices"] = {
+        { "v0", local_.localVertex[0]},
+        { "v1", local_.localVertex[1]},
+        { "v2", local_.localVertex[2]},
+        { "v3", local_.localVertex[3]}
+    };
+
+    return json;
 }
 
 //////////////////////////////////////////////////////////////////

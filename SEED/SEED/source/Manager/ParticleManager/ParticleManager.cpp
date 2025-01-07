@@ -90,9 +90,6 @@ void ParticleManager::Update(){
     ImGui::Checkbox("isFieldVisible", &instance_->isFieldVisible_);
     instance_->EditAll();
     ImGui::End();
-
-
-
 #endif // _DEBUG
 
     ////////////////////////////////////////////

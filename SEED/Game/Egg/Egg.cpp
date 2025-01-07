@@ -18,18 +18,21 @@ void Egg::Initialize(){
     model_ = std::make_unique<Model>("suzanne2.obj");
 
     isAlive_ = true;
+
+    lifeTime_ = maxLifeTime_;
 }
 
 void Egg::Update(){
     if(!isAlive_){
         return;
     }
+    const float& deltaTime = ClockManager::DeltaTime();
 
     // 投げられているなら 重力計算
     if(isThrowed_){
         { // 重力 計算
             const float kGravity = -9.8f;
-            velocity_.y += kGravity * ClockManager::DeltaTime();
+            velocity_.y += kGravity * deltaTime;
         }
 
         // maxSpeed より Velocity が 大きかったら maxSpeed 揃える

@@ -129,6 +129,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\PlayerBehavior\IPlayerBehavior.cpp" />
     <ClCompile Include="Game\PlayerBehavior\PlayerRootBehavior.cpp" />
     <ClCompile Include="Game\PlayerBehavior\PlayerThrowEggBehavior.cpp" />
+    <ClCompile Include="Game\PlayerBehavior\PlayerSpawnFromEgg.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
@@ -206,6 +207,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\PlayerBehavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\PlayerBehavior\PlayerRootBehavior.h" />
     <ClInclude Include="Game\PlayerBehavior\PlayerThrowEggBehavior.h" />
+    <ClInclude Include="Game\PlayerBehavior\PlayerSpawnFromEgg.h" />
     <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h" />
     <ClInclude Include="SEED\external\imgui\imconfig.h" />
     <ClInclude Include="SEED\external\imgui\imgui.h" />

@@ -23,6 +23,9 @@ public:
 private:
     Vector3 velocity_ = {0.0f,0.0f,0.0f};
 
+    const float maxLifeTime_ = 3.0f;
+    float lifeTime_ = 0.0f;
+
     const float maxSpeed_ = 10.0f;
 
     /// <summary>

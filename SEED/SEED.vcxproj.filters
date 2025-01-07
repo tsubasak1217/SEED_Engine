@@ -373,6 +373,9 @@
     <ClCompile Include="Game\PlayerBehavior\PlayerThrowEggBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayerBehavior\PlayerSpawnFromEgg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -661,6 +664,7 @@
     <ClInclude Include="Game\Egg\Egg.h" />
     <ClInclude Include="Game\Egg\EggManager.h" />
     <ClInclude Include="Game\PlayerBehavior\PlayerThrowEggBehavior.h" />
+    <ClInclude Include="Game\PlayerBehavior\PlayerSpawnFromEgg.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

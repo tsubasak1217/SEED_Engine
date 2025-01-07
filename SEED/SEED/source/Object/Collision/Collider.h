@@ -40,7 +40,7 @@ public:
     virtual void UpdateMatrix();
     virtual void Draw();
     virtual void CheckCollision(Collider* collider);
-    virtual void OnCollision(Collider* collider);
+    virtual void OnCollision(Collider* collider, ObjectType objectType);
 
 protected:
     virtual void UpdateBox();
@@ -58,8 +58,10 @@ public:// アクセッサ-------------------------------------------------------
     // 基礎情報
     void SetParentObject(BaseObject* parentObject){ parentObject_ = parentObject; }
     void SetObjectType(ObjectType objectType){ objectType_ = objectType; }
+    ObjectType GetObjectType()const{ return objectType_; }
     ColliderType GetColliderType()const{ return colliderType_; }
     uint32_t GetColliderID()const{ return colliderID_; }
+    void SetColliderID(uint32_t colliderID){ colliderID_ = colliderID; }
 
     // ペアレント情報
     void SetParentMatrix(const Matrix4x4* parentMat, bool isParentScale = true){
@@ -81,10 +83,13 @@ public:// アクセッサ-------------------------------------------------------
     const AABB& GetBox()const{ return coverAABB_; }
 
     // アニメーション
-    bool IsEndAnimation()const{ return animationTime_ >= animationData_->GetDuration() && !isLoop_; }
+    bool IsEndAnimation()const{
+        if(animationData_ == std::nullopt){ return false; }
+        return animationTime_ >= animationData_->GetDuration() && !isLoop_;
+    }
 
 protected:// 基礎情報--------------------------------------------------------------
-    BaseObject* parentObject_ = nullptr;    
+    BaseObject* parentObject_ = nullptr;
     ColliderType colliderType_;
     ObjectType objectType_ = ObjectType::None;
     static uint32_t nextID_;
@@ -105,7 +110,7 @@ public:// 物理パラメータ-------------------------------------------------
     float miu_;
 
 public:// トランスフォーム情報------------------------------------------------------
-    Vector3 scale_{1.0f,1.0f,1.0f};
+    Vector3 scale_{ 1.0f,1.0f,1.0f };
     Vector3 rotate_;
     Vector3 translate_;
     Vector3 offset_;

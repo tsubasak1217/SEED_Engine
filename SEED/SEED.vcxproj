@@ -116,6 +116,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp" />

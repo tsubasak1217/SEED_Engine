@@ -141,7 +141,7 @@ void Collider::Draw(){}
 
 void Collider::CheckCollision(Collider* collider){ collider; }
 
-void Collider::OnCollision(Collider* collider){
+void Collider::OnCollision(Collider* collider,ObjectType objectType){
 
     // 衝突フラグを立てる
     isCollision_ = true;
@@ -149,7 +149,7 @@ void Collider::OnCollision(Collider* collider){
     color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     // 親オブジェクトにも衝突を通知
     if(parentObject_){
-        parentObject_->OnCollision(collider->parentObject_);
+        parentObject_->OnCollision(collider->parentObject_,objectType);
     }
 
     // 衝突リストに追加

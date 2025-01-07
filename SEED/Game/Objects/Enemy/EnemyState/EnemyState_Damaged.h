@@ -15,5 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-
+    float unrivaledTime_ = 1.0f;// 無敵時間
 };

@@ -22,6 +22,9 @@ public:// アクセッサ
     void SetFollowCameraPtr(BaseCamera* pCamera){pCamera_ = pCamera;}
     const BaseCamera* GetFollowCamera()const{ return pCamera_; }
 
+public:
+    void OnCollision(const BaseObject* other, ObjectType objectType)override;
+
 private:// フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;
 

@@ -463,6 +463,9 @@
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

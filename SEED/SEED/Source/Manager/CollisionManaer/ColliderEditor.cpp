@@ -30,60 +30,58 @@ ColliderEditor::~ColliderEditor(){}
 ////////////////////////////////////////////////////////////
 void ColliderEditor::Edit(){
 #ifdef _DEBUG
-
+    // ウィンドウの表示
     std::string headerName = "ColliderEditor( " + className_ + " )";
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
-
-        // コライダーの追加
-        AddColliderOnGUI();
-
-        // jsonファイルからの読み込み
-        InputOnGUI();
-
-        // jsonファイルへの出力
-        OutputOnGUI();
-
-        ImGui::Separator();
-        ImGui::Dummy({ 0.0f,10.0f });
+    ImGui::Begin(headerName.c_str());
 
 
-        // 各コライダーの編集
-        for(int i = 0; i < colliders_.size(); i++){
-            // ヘッダー名
-            std::string colliderID = "##" + std::to_string(colliders_[i]->GetColliderID());
-            std::string colliderName = "Collider( " + std::to_string(i) + " )" + colliderID;
+    // コライダーの追加
+    AddColliderOnGUI();
 
-            // ヘッダーの表示
-            if(ImGui::CollapsingHeader(colliderName.c_str())){
-                ImGui::Indent();
+    // jsonファイルからの読み込み
+    InputOnGUI();
 
-                // コライダーの削除
-                if(DeleteColliderOnGUI(i)){
-                    break;// 削除されたらループを抜ける
-                }
+    // jsonファイルへの出力
+    OutputOnGUI();
 
-                // コライダーの編集
-                colliders_[i]->Edit();
+    ImGui::Separator();
+    ImGui::Dummy({ 0.0f,10.0f });
 
 
-                ImGui::Unindent();
+    // 各コライダーの編集
+    for(int i = 0; i < colliders_.size(); i++){
+        // ヘッダー名
+        std::string colliderID = "##" + std::to_string(colliders_[i]->GetColliderID());
+        std::string colliderName = "Collider( " + std::to_string(i) + " )" + colliderID;
 
-                // アニメーションの編集
-                if(colliders_[i]->isAnimation_){
-                    colliders_[i]->EditAnimation();
-                }
+        // ヘッダーの表示
+        if(ImGui::CollapsingHeader(colliderName.c_str())){
+            ImGui::Indent();
 
-                ImGui::Separator();
+            // コライダーの削除
+            if(DeleteColliderOnGUI(i)){
+                break;// 削除されたらループを抜ける
             }
+
+            // コライダーの編集
+            colliders_[i]->Edit();
+
+
+            ImGui::Unindent();
+
+            // アニメーションの編集
+            if(colliders_[i]->isAnimation_){
+                colliders_[i]->EditAnimation();
+            }
+
+            ImGui::Separator();
         }
-
-        // コライダーを渡す
-        HandOverColliders();
-
-        ImGui::Unindent();
     }
 
+    // コライダーを渡す
+    HandOverColliders();
+
+    ImGui::End();
 #endif // _DEBUG
 }
 
@@ -302,6 +300,8 @@ void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* pare
 
     for(auto& collider : colliderData_[fileName]){
 
+        int colliderID = 0;
+
         // コライダーの形状に応じて生成
         switch(collider->GetColliderType())
         {
@@ -309,42 +309,54 @@ void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* pare
         {
             pColliderArray->push_back(std::make_unique<Collider_Sphere>());
             Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(pColliderArray->back().get());
+            colliderID = sphere->GetColliderID();
             *sphere = *dynamic_cast<Collider_Sphere*>(collider.get());
+            sphere->SetColliderID(colliderID);
             break;
         }
         case ColliderType::AABB:
         {
             pColliderArray->push_back(std::make_unique<Collider_AABB>());
             Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(pColliderArray->back().get());
+            colliderID = aabb->GetColliderID();
             *aabb = *dynamic_cast<Collider_AABB*>(collider.get());
+            aabb->SetColliderID(colliderID);
             break;
         }
         case ColliderType::OBB:
         {
             pColliderArray->push_back(std::make_unique<Collider_OBB>());
             Collider_OBB* obb = dynamic_cast<Collider_OBB*>(pColliderArray->back().get());
+            colliderID = obb->GetColliderID();
             *obb = *dynamic_cast<Collider_OBB*>(collider.get());
+            obb->SetColliderID(colliderID);
             break;
         }
         case ColliderType::Line:
         {
             pColliderArray->push_back(std::make_unique<Collider_Line>());
             Collider_Line* line = dynamic_cast<Collider_Line*>(pColliderArray->back().get());
+            colliderID = line->GetColliderID();
             *line = *dynamic_cast<Collider_Line*>(collider.get());
+            line->SetColliderID(colliderID);
             break;
         }
         case ColliderType::Capsule:
         {
             pColliderArray->push_back(std::make_unique<Collider_Capsule>());
             Collider_Capsule* capsule = dynamic_cast<Collider_Capsule*>(pColliderArray->back().get());
+            colliderID = capsule->GetColliderID();
             *capsule = *dynamic_cast<Collider_Capsule*>(collider.get());
+            capsule->SetColliderID(colliderID);
             break;
         }
         case ColliderType::Plane:
         {
             pColliderArray->push_back(std::make_unique<Collider_Plane>());
             Collider_Plane* plane = dynamic_cast<Collider_Plane*>(pColliderArray->back().get());
+            colliderID = plane->GetColliderID();
             *plane = *dynamic_cast<Collider_Plane*>(collider.get());
+            plane->SetColliderID(colliderID);
             break;
         }
         }

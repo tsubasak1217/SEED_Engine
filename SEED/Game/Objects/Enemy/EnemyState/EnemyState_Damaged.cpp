@@ -7,13 +7,14 @@
 //////////////////////////////////////////////////////////////////////////
 EnemyState_Damaged::EnemyState_Damaged(const std::string& stateName, BaseCharacter* player){
     Initialize(stateName, player);
+    pCharacter_->SetUnrivalledTime(unrivaledTime_);
 }
 
 EnemyState_Damaged::~EnemyState_Damaged(){}
 
 void EnemyState_Damaged::Initialize(const std::string& stateName, BaseCharacter* player){
     ICharacterState::Initialize(stateName, player);
-    pCharacter_->SetAnimation("damaged", true);
+    pCharacter_->SetAnimation("damaged", false);
 }
 
 //////////////////////////////////////////////////////////////////////////

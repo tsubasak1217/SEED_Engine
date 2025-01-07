@@ -28,6 +28,7 @@ public:// アクセッサ
 
     // 基礎情報
     uint32_t GetObjectID() const{ return objectID_; }
+    ObjectType GetObjectType() const{ return objectType_; }
     std::string GetName() const{ return name_; }
     void SetName(const std::string& name){ name_ = name; }
 
@@ -49,15 +50,17 @@ public:// コライダー関連
     void AddCollider(Collider* collider);
     void ResetCollider();
     virtual void HandOverColliders();
-    virtual void OnCollision(const BaseObject* other){ other; }
+    virtual void OnCollision(const BaseObject* other, ObjectType objectType);
 
 protected:
-    void LoadColliders();
-    virtual void InitColliders();
+    void LoadColliders(ObjectType objectType);
+    virtual void InitColliders(ObjectType objectType);
+    void UpdateColliders();
 
 protected:
     static uint32_t nextID_;
     uint32_t objectID_;
+    ObjectType objectType_;
     std::string className_;
     std::string name_;
 

@@ -19,6 +19,8 @@ ColliderAnimationData::ColliderAnimationData(){
 //////////////////////////////////////////////////////////////////////////////
 
 void ColliderAnimationData::Edit(const std::string& headerName){
+
+    headerName;
 #ifdef _DEBUG
     if(ImGui::CollapsingHeader(headerName.c_str())){
         ImGui::Indent();

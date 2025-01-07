@@ -34,7 +34,14 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     player_ = std::make_unique<Player>();
-    enemies_.push_back(std::make_unique<Enemy>(player_.get()));
+    //enemies_.push_back(std::make_unique<Enemy>(player_.get()));
+
+    for(int i = 0; i < 12; i++) {
+        auto& enemy = enemies_.emplace_back(std::make_unique<Enemy>(player_.get()));
+        enemy->SetTranslate({ MyFunc::Random(-50.0f,50.0f),0.0f,MyFunc::Random(-50.0f,50.0f) });
+        enemy->UpdateMatrix();
+    }
+
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -97,7 +104,6 @@ void Scene_Game::Update(){
     currentState_->Update();
 
     player_->Update();
-    player_->EditCollider();
 
     for(auto& enemy : enemies_) {
         enemy->Update();
@@ -132,6 +138,10 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
+
     player_->EndFrame();
 
+    for(auto& enemy : enemies_) {
+        enemy->EndFrame();
+    }
 }

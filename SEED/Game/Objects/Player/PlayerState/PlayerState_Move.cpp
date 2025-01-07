@@ -55,7 +55,16 @@ void PlayerState_Move::DecideStickVelocity(){
         stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
     }
 
-    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime();
+    // ダッシュ
+    bool isDash = Input::IsPressPadButton(PAD_BUTTON::Y);
+
+    if(isDash){
+        pCharacter_->SetAnimationSpeedRate(3.0f);
+    } else{
+        pCharacter_->SetAnimationSpeedRate(1.0f);
+    }
+
+    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime() * (1.0f + (isDash * 2.0f));
 }
 
 //////////////////////////////////////////////////////////////////////////

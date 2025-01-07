@@ -16,7 +16,7 @@ void BaseObject::Initialize(){
     model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
     // コライダーの初期化
-    InitColliders();
+    InitColliders(ObjectType::None);
 }
 
 void BaseObject::Update(){
@@ -25,12 +25,7 @@ void BaseObject::Update(){
     model_->Update();
 
     // コライダーの更新
-    for(auto& collider : colliders_){
-        collider->Update();
-    }
-
-    // 衝突判定のためのコライダーを渡す
-    HandOverColliders();
+    UpdateColliders();
 }
 
 void BaseObject::Draw(){
@@ -71,13 +66,46 @@ void BaseObject::HandOverColliders(){
     }
 }
 
+// 衝突処理
+void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
+    other;
+    objectType;
+}
+
+
 // コライダーの読み込み
-void BaseObject::LoadColliders(){
+void BaseObject::LoadColliders(ObjectType objectType){
+    // コライダーの読み込み
     ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
+
+    // オブジェクトの属性を取得
+    for(auto& collider : colliders_){
+        collider->SetObjectType(objectType);
+    }
 }
 
 // コライダーの初期化
-void BaseObject::InitColliders(){
+void BaseObject::InitColliders(ObjectType objectType){
     colliders_.clear();
-    LoadColliders();
+    LoadColliders(objectType);
+}
+
+// コライダーの更新
+void BaseObject::UpdateColliders(){
+
+    // コライダーの更新
+    for(auto& collider : colliders_){
+        collider->Update();
+    }
+
+    // 終了した要素の削除
+    for(int i = 0; i < colliders_.size(); ++i){
+        if(colliders_[i]->IsEndAnimation()){
+            colliders_.erase(colliders_.begin() + i);
+            --i;
+        }
+    }
+
+    // コライダーを渡す
+    HandOverColliders();
 }

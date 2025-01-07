@@ -15,12 +15,19 @@ public:
     void Update() override;
     void Draw() override;
 
+protected:
+    void Damage(int32_t damage)override;
 
 public:
-
     float GetDistanceToPlayer()const;
     const Player* GetTargetPlayer()const{ return pPlayer_; }
 
+public:
+    void OnCollision(const BaseObject* other, ObjectType objectType)override;
+
 private:
     Player* pPlayer_ = nullptr;
+
+private:
+    int32_t HP_;
 };

@@ -15,40 +15,14 @@ public:
     virtual ~ICharacterState() = default;
     virtual void Update() = 0;
     virtual void Draw() = 0;
-    virtual void EndFrame(){
-        ManageState();
-    };
-    virtual void Initialize(const std::string& stateName,BaseCharacter* character){ 
-        pCharacter_ = character; 
-        stateName_ = stateName;
-        colliderEditor_ = std::make_unique<ColliderEditor>(stateName_,pCharacter_->GetWorldMatPtr());
-    }
+    virtual void EndFrame();
+    virtual void Initialize(const std::string& stateName, BaseCharacter* character);
 
 public:// コライダー関連
-    void HandOverColliders(){
-        for(auto& collider : colliders_){
-            CollisionManager::AddCollider(collider.get());
-        }
-    }
-
-    // ステート名からコライダーを読み込む
-    void InitColliders(){
-        colliders_.clear();
-        ColliderEditor::LoadColliders(stateName_ + ".json", pCharacter_,&colliders_);
-    }
-
-    void InitColliders(const std::string& fileName){
-        colliders_.clear();
-        ColliderEditor::LoadColliders(fileName,pCharacter_,&colliders_);
-
-    }
-
-    void UpdateColliders(){
-        for(auto& collider : colliders_){
-            collider->Update();
-        }
-        HandOverColliders();
-    }
+    void HandOverColliders();
+    void InitColliders(ObjectType objectType);
+    void InitColliders(const std::string& fileName, ObjectType objectType);
+    void UpdateColliders();
 
 protected:
     virtual void ManageState() = 0;

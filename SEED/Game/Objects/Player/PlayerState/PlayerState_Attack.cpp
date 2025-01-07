@@ -8,7 +8,7 @@
 PlayerState_Attack::PlayerState_Attack(const std::string& stateName, BaseCharacter* player){
     Initialize(stateName, player);
     pCharacter_->SetAnimation("punch", true);
-    InitColliders(colliderNames_[phase_ - 1]);
+    InitColliders(colliderNames_[phase_ - 1],ObjectType::PlayerAttack);
     // アニメーションの時間から攻撃時間を設定
     kAttackTime_ = pCharacter_->GetAnimationDuration();
     attackTime_ = kAttackTime_;
@@ -92,7 +92,7 @@ void PlayerState_Attack::Combo(){
             phase_++;
 
             // コライダーの変更
-            InitColliders(colliderNames_[phase_ - 1]);
+            InitColliders(colliderNames_[phase_ - 1], ObjectType::PlayerAttack);
 
             // アニメーションを変更
             pCharacter_->SetAnimation(animationNames_[phase_ - 1], false);

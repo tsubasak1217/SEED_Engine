@@ -21,13 +21,16 @@ Player::~Player(){}
 
 void Player::Initialize(){
 
+    // 属性の決定
+    objectType_ = ObjectType::Player;
+
     // モデルの初期化
     model_ = std::make_unique<Model>("Assets/man.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 
     // コライダーの初期化
-    InitColliders();
+    InitColliders(ObjectType::Player);
 
     // コライダーエディターの初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, model_->GetWorldMatPtr());
@@ -70,4 +73,13 @@ void Player::HandleMove(const Vector3& acceleration){
     // 移動制限
     model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
     model_->UpdateMatrix();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// 衝突時処理
+//////////////////////////////////////////////////////////////////////////
+void Player::OnCollision(const BaseObject* other, ObjectType objectType){
+    other;
+    objectType;
 }

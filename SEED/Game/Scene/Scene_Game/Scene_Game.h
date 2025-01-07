@@ -35,4 +35,6 @@ private:
     std::unique_ptr<Player> player_;
     std::list<std::unique_ptr<Enemy>> enemies_;
 
+    std::unique_ptr<FieldEditor> fieldEditor_;
+
 };

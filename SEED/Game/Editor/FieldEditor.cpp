@@ -30,7 +30,9 @@ void FieldEditor::Draw(){
 }
 
 void FieldEditor::AddModel(const std::string& modelName){
-    auto newModel = std::make_unique<Model>(modelName);
+    std::string path = "assets/" + modelName;
+    auto newModel = std::make_unique<Model>(path);
+    newModel->isRotateWithQuaternion_ = false;
     fieldModel_.emplace_back(std::move(newModel));
 }
 
@@ -99,10 +101,18 @@ void FieldEditor::SaveToJson(const std::string& filePath){
 
         for (size_t i = 0; i < fieldModel_.size(); ++i){
             const auto& model = fieldModel_[i];
+
+            // モデル名から "assets/" プレフィックスを取り除く
+            std::string modelName = model->modelName_;
+            const std::string prefix = "assets/";
+            if (modelName.rfind(prefix, 0) == 0){  // modelName が prefix で始まる場合
+                modelName = modelName.substr(prefix.length());
+            }
+
             json modelJson = {
-                {"name", model->modelName_},
+                {"name", modelName},
                 {"position", {model->translate_.x, model->translate_.y, model->translate_.z}},
-                {"scale", {model->scale_.x, model->scale_.y, model->scale_.z}},
+                {"scale",    {model->scale_.x, model->scale_.y, model->scale_.z}},
                 {"rotation", {model->rotate_.x, model->rotate_.y, model->rotate_.z}}
             };
             jsonData["models"].push_back(modelJson);
@@ -194,7 +204,7 @@ void FieldEditor::ShowImGui(){
 
         ImGui::DragFloat3("Position", &position.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
-        ImGui::DragFloat3("Rotation", &rotation.x, 1.0f);
+        ImGui::DragFloat3("Rotation", &rotation.x, 0.01f);
 
         model->translate_ = position;
         model->scale_ = scale;

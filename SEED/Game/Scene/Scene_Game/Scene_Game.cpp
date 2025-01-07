@@ -51,6 +51,9 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(player_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
 
+    fieldEditor_ = std::make_unique<FieldEditor>();
+    fieldEditor_->Initialize();
+
 
 }
 
@@ -66,6 +69,8 @@ void Scene_Game::Update(){
     ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
 
+
+    fieldEditor_->ShowImGui();
 #endif
 
     /*========================== Manager ============================*/
@@ -80,6 +85,9 @@ void Scene_Game::Update(){
     //for(auto& enemy : enemies_) {
     //    enemy->Update();
     //}
+
+    fieldEditor_->Update();
+
 }
 
 void Scene_Game::Draw(){
@@ -94,4 +102,6 @@ void Scene_Game::Draw(){
     //for(auto& enemy : enemies_) {
     //    enemy->Draw();
     //}
+
+    fieldEditor_->Draw();
 }

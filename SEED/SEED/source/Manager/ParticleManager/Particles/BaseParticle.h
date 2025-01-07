@@ -28,6 +28,8 @@ protected:
 
     // モデル
     std::unique_ptr<Model>particle_;
+    // 保存しておくスケール
+    Vector3 kScale_;
 
     // ビルボードを適用するかどうか
     bool isBillboard_;

@@ -21,20 +21,20 @@
                     1.0
                 ]
             ],
-            "directionRange": 0.05999999865889549,
+            "directionRange": 0.09000000357627869,
             "emitRange": [
                 0.0,
                 0.0,
                 0.0
             ],
-            "emitType": 0,
-            "gravity": -15.020000457763672,
-            "interval": 0.009999999776482582,
+            "emitType": 2,
+            "gravity": -12.770000457763672,
+            "interval": 0.029999999329447746,
             "isActive": false,
             "isBillboard": false,
             "isUseGravity": true,
             "isUseRotate": true,
-            "kMaxEmitCount": 1,
+            "kMaxEmitCount": 3,
             "lifeTimeRange": [
                 1.0,
                 3.0
@@ -42,16 +42,16 @@
             "numEmitEvery": 5,
             "particleType": 0,
             "radiusRange": [
-                0.5,
-                1.6200000047683716
+                0.20999999344348907,
+                1.559999942779541
             ],
             "rotateSpeedRange": [
-                3.190000057220459,
-                3.6500000953674316
+                0.0,
+                1.0
             ],
             "speedRange": [
-                9.359999656677246,
-                14.819999694824219
+                3.059999942779541,
+                14.359999656677246
             ],
             "textureHandles": [
                 "ParticleTextures/blood.png"

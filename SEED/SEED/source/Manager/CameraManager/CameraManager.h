@@ -28,6 +28,7 @@ public:
     // カメラのポインタ取得
     static BaseCamera* GetCamera(const std::string& name);
     static void AddCamera(const std::string& name, BaseCamera* camera);
+    static void DeleteCamera(const std::string& name);
 
 private:
 

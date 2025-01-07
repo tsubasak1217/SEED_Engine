@@ -7,54 +7,54 @@
                 1.0,
                 0.0
             ],
-            "blendMode": 0,
+            "blendMode": 2,
             "center": [
                 0.0,
-                0.0,
+                5.0,
                 0.0
             ],
             "colors": [
                 [
-                    1.0,
-                    1.0,
-                    1.0,
+                    0.03200690820813179,
+                    0.603110671043396,
+                    0.7254902124404907,
                     1.0
                 ]
             ],
-            "directionRange": 0.05999999865889549,
+            "directionRange": 0.019999999552965164,
             "emitRange": [
-                0.0,
-                0.0,
-                0.0
+                200.0,
+                10.0,
+                200.0
             ],
-            "emitType": 0,
-            "gravity": -15.020000457763672,
-            "interval": 0.009999999776482582,
-            "isActive": false,
-            "isBillboard": false,
-            "isUseGravity": true,
-            "isUseRotate": true,
+            "emitType": 1,
+            "gravity": -9.800000190734863,
+            "interval": 0.0,
+            "isActive": true,
+            "isBillboard": true,
+            "isUseGravity": false,
+            "isUseRotate": false,
             "kMaxEmitCount": 1,
             "lifeTimeRange": [
                 1.0,
                 3.0
             ],
-            "numEmitEvery": 5,
+            "numEmitEvery": 6,
             "particleType": 0,
             "radiusRange": [
                 0.5,
-                1.6200000047683716
+                1.8700000047683716
             ],
             "rotateSpeedRange": [
-                3.190000057220459,
-                3.6500000953674316
+                0.0,
+                1.0
             ],
             "speedRange": [
-                9.359999656677246,
-                14.819999694824219
+                1.7799999713897705,
+                3.200000047683716
             ],
             "textureHandles": [
-                "ParticleTextures/blood.png"
+                "ParticleTextures/particle.png"
             ]
         }
     ]

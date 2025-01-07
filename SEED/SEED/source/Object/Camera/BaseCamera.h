@@ -13,6 +13,11 @@ struct BaseCamera{
     void UpdateMatrix();
     virtual void Update();
 
+public:
+    void SetShake(float time, float power, const Vector3 level = {1.0f,1.0f,1.0f});
+private:
+    Vector3 CalcShake();
+
 public:// アクセッサ
 
     const Vector3& GetTranslation() const{ return transform_.translate_; }
@@ -58,6 +63,12 @@ protected:
     Matrix4x4 viewProjectionMat2D_;
     Matrix4x4 viewportMat_;
     Matrix4x4 vpVp_;
+
+    // シェイク
+    float shakeTime_;
+    float kShakeTime_;
+    float shakePower_;
+    Vector3 shakeLevel_;
 };
 
 enum PROJECTIONMODE{

@@ -24,6 +24,7 @@ BaseParticle::BaseParticle(const Emitter& emitter){
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(emitter.radiusRange.min, emitter.radiusRange.max);
     particle_->scale_ = { radius,radius,radius };
+    kScale_ = particle_->scale_;
 
     //////////////////// 進行方向をランダム決定 ///////////////////////
     float angleRange = 3.14f * std::clamp(emitter.directionRange, 0.0f, 1.0f);

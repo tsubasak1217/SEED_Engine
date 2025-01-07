@@ -31,9 +31,17 @@ public:
     void EndFrame()override;
 
 private:
+    void FadeIn();
+    void FadeOut();
+
+private:
 
     std::unique_ptr<FollowCamera> followCamera_;
     std::unique_ptr<Player> player_;
     std::list<std::unique_ptr<Enemy>> enemies_;
-
+    bool isClear_ = false;
+    bool isStartFadeOut_ = false;
+    bool isStartFadeIn_ = true;
+    float kFadeTime_ = 2.0f;
+    float fadeTime_ = kFadeTime_;
 };

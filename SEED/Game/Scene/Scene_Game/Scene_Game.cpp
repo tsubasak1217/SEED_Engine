@@ -4,6 +4,9 @@
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
+#include "Scene_Title.h"
+#include "SceneManager.h"
+#include "CameraManager/CameraManager.h"
 
 #include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
 
@@ -19,7 +22,9 @@ Scene_Game::Scene_Game(SceneManager* pSceneManager){
     Initialize();
 };
 
-Scene_Game::~Scene_Game(){}
+Scene_Game::~Scene_Game(){
+    CameraManager::DeleteCamera("follow");
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -40,6 +45,7 @@ void Scene_Game::Initialize(){
         auto& enemy = enemies_.emplace_back(std::make_unique<Enemy>(player_.get()));
         enemy->SetTranslate({ MyFunc::Random(-50.0f,50.0f),0.0f,MyFunc::Random(-50.0f,50.0f) });
         enemy->UpdateMatrix();
+        ParticleManager::AddEffect("zombie.json", { 0.0f,0.0f,0.0f }, enemy->GetWorldMatPtr());
     }
 
 
@@ -68,6 +74,12 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(player_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
 
+    // エフェクトの追加
+    ParticleManager::AddEffect("leaves.json", { 0.0f,3.0f,0.0f }, player_->GetWorldMatPtr());
+    ParticleManager::AddEffect("snow.json", { 0.0f,0.0f,0.0f });
+    ParticleManager::AddEffect("darkPower.json", { 0.0f,0.0f,0.0f });
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +97,11 @@ void Scene_Game::Finalize(){}
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Update(){
+
+    if(isClear_){
+        pSceneManager_->ChangeScene(new Scene_Title(pSceneManager_));
+        return;
+    }
 
     /*========================== ImGui =============================*/
 
@@ -108,6 +125,20 @@ void Scene_Game::Update(){
     for(auto& enemy : enemies_) {
         enemy->Update();
     }
+
+    if(enemies_.size() == 0) {
+        isStartFadeOut_ = true;
+    }
+
+    if(isStartFadeIn_){
+        FadeIn();
+    }
+
+    if(isStartFadeOut_){
+        FadeOut();
+    }
+
+
 }
 
 
@@ -129,6 +160,9 @@ void Scene_Game::Draw(){
     for(auto& enemy : enemies_) {
         enemy->Draw();
     }
+
+    Sprite sprite = Sprite("howto.png");
+    SEED::DrawSprite(sprite);
 }
 
 
@@ -143,5 +177,54 @@ void Scene_Game::EndFrame(){
 
     for(auto& enemy : enemies_) {
         enemy->EndFrame();
+    }
+
+    // 死んだ敵の削除
+    enemies_.remove_if([](const std::unique_ptr<Enemy>& enemy) {
+        return !enemy->GetIsAlive();
+    });
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  フェードイン
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Game::FadeIn(){
+    fadeTime_ -= ClockManager::DeltaTime();
+
+    float t = fadeTime_ / kFadeTime_;
+
+    Sprite sprite("Assets/white1x1.png");
+    sprite.size = { 1280.0f,720.0f };
+    sprite.color = { 1.0f,1.0f,1.0f,t };
+    SEED::DrawSprite(sprite);
+
+    if(fadeTime_ <= 0.0f){
+        isStartFadeIn_ = false;
+        fadeTime_ = kFadeTime_;
+    }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  フェードアウト
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Game::FadeOut(){
+    fadeTime_ -= ClockManager::DeltaTime();
+
+    float t = fadeTime_ / kFadeTime_;
+    fadeTime_ -= ClockManager::DeltaTime();
+
+    Sprite sprite("Assets/white1x1.png");
+    sprite.size = { 1280.0f,720.0f };
+    sprite.color = { 1.0f,1.0f,1.0f,1.0f - t };
+    SEED::DrawSprite(sprite);
+
+    if(fadeTime_ <= 0.0f){
+        isClear_ = true;
     }
 }

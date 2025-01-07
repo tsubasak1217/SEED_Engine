@@ -283,7 +283,7 @@ void ParticleManager::AddEffect(const std::string& fileName, const Vector3& posi
 void ParticleManager::Emit(Emitter* emitter){
 
     if(!emitter->emitOrder){ return; }
-    if(!emitter->isActive){ return; }
+    if(!emitter->isActive && !emitter->isEdittting){ return; }
 
     // パーティクルを発生させる
     for(int32_t i = 0; i < emitter->numEmitEvery; ++i){
@@ -439,6 +439,7 @@ void ParticleManager::EditEmitterGroup(EmitterGroup* emitterGroup){
     if(ImGui::Button("AddEmitter")){
         emitterGroup->emitters.emplace_back(Emitter());
         emitterGroup->emitters.back().parentGroup = emitterGroup;
+        emitterGroup->emitters.back().isEdittting = true;
     }
 
     // エミッターグループをjsonに保存
@@ -446,11 +447,11 @@ void ParticleManager::EditEmitterGroup(EmitterGroup* emitterGroup){
         // 入力前に文字列をクリア
         for(auto& character : outputFileName_){ character = '\0'; }
         // 名前があれば入れておく
-        if(emitterGroup->name != ""){
-            for(int32_t i = 0; i < emitterGroup->name.size(); ++i){
-                outputFileName_[i] = emitterGroup->name[i];
-            }
-        }
+        //if(emitterGroup->name != ""){
+        //    for(int32_t i = 0; i < emitterGroup->name.size(); ++i){
+        //        outputFileName_[i] = '\0';
+        //    }
+        //}
 
         ImGui::OpenPopup("OutputToJson");
     }
@@ -841,6 +842,10 @@ void ParticleManager::Load(){
             EmitterGroup emitterGroup = LoadFromJson(fileName);
             instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>(emitterGroup));
             instance_->emitterGroups_.back()->TeachParent();
+
+            for(auto& emitter : instance_->emitterGroups_.back()->emitters){
+                emitter.isEdittting = true;
+            }
         }
     }
 }

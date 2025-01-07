@@ -174,3 +174,18 @@ nlohmann::json Collider_AABB::GetJsonData(){
 
     return json;
 }
+
+//////////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+//////////////////////////////////////////////////////////////////
+void Collider_AABB::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.center = jsonData["local"]["center"];
+    body_.halfSize = jsonData["local"]["halfSize"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+}

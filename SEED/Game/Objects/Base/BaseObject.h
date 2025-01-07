@@ -18,6 +18,7 @@ public:
     virtual void Initialize();
     virtual void Update();
     virtual void Draw();
+    virtual void EndFrame();
 
 public:
     void UpdateMatrix();
@@ -50,8 +51,9 @@ public:// コライダー関連
     virtual void HandOverColliders();
     virtual void OnCollision(const BaseObject* other){ other; }
 
-private:
-    virtual void InitCollider(){};
+protected:
+    void LoadColliders();
+    virtual void InitColliders();
 
 protected:
     static uint32_t nextID_;
@@ -63,7 +65,6 @@ protected:// 衝突判定用
     std::vector<std::unique_ptr<Collider>> colliders_;
 
 protected:
-
     Vector3 targetOffset_;
 
 protected:// Colliderの作成用メンバー

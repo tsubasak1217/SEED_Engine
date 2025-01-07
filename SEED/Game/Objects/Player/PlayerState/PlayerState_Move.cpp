@@ -7,15 +7,15 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Move::PlayerState_Move(BaseCharacter* player){
-    Initialize(player);
+PlayerState_Move::PlayerState_Move(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
     pCharacter_->SetAnimation("running", true);
 }
 
 PlayerState_Move::~PlayerState_Move(){}
 
-void PlayerState_Move::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void PlayerState_Move::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -26,8 +26,6 @@ void PlayerState_Move::Update(){
     Move();
     // 回転処理
     Rotate();
-    // ステート管理
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,19 +96,19 @@ void PlayerState_Move::ManageState(){
 
     // ジャンプ状態へ
     if(Input::IsPressPadButton(PAD_BUTTON::A)){
-        pCharacter_->ChangeState(new PlayerState_Jump(pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
         return;
     }
 
     // 攻撃状態へ
     if(Input::IsPressPadButton(PAD_BUTTON::B)){
-        pCharacter_->ChangeState(new PlayerState_Attack(pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Attack("Player_Attack",pCharacter_));
         return;
     }
 
     // アイドル状態へ
     if(MyMath::Length(moveVec_) == 0.0f){
-        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }
 

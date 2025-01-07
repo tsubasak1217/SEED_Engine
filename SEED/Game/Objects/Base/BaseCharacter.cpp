@@ -53,6 +53,18 @@ void BaseCharacter::Draw(){
     BaseObject::Draw();
 }
 
+//////////////////////////////////////////////////////////////////////////
+// フレーム終了時の処理
+//////////////////////////////////////////////////////////////////////////
+void BaseCharacter::EndFrame(){
+    // 状態に応じた終了処理
+    if(currentState_){
+        currentState_->EndFrame();
+    }
+
+    BaseObject::EndFrame();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
@@ -83,5 +95,14 @@ void BaseCharacter::HandOverColliders(){
     // state固有のコライダーを渡す
     if(currentState_){
         currentState_->HandOverColliders();
+    }
+}
+
+// コライダーの初期化
+void BaseCharacter::InitColliders(){
+    BaseObject::InitColliders();
+    // state固有のコライダーを初期化
+    if(currentState_){
+        currentState_->InitColliders();
     }
 }

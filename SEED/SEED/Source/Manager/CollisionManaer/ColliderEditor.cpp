@@ -1,4 +1,5 @@
 #include "ColliderEditor.h"
+#include "Base/BaseObject.h"
 #include "CollisionManager.h"
 #include "Collision/Collider_AABB.h"
 #include "Collision/Collider_Sphere.h"
@@ -7,6 +8,12 @@
 #include "Collision/Collider_Line.h"
 #include "Collision/Collider_Capsule.h"
 #include "Collision/Collider_Plane.h"
+
+////////////////////////////////////////////////////////////
+// 静的メンバ変数
+////////////////////////////////////////////////////////////
+
+std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>> ColliderEditor::colliderData_;
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
@@ -29,7 +36,14 @@ void ColliderEditor::Edit(){
         ImGui::Indent();
 
         // コライダーの追加
-        AddCollider();
+        AddColliderOnGUI();
+
+        // jsonファイルからの読み込み
+        InputOnGUI();
+
+        // jsonファイルへの出力
+        OutputOnGUI();
+
         ImGui::Separator();
         ImGui::Dummy({ 0.0f,10.0f });
 
@@ -45,34 +59,13 @@ void ColliderEditor::Edit(){
                 ImGui::Indent();
 
                 // コライダーの削除
-                if(ImGui::Button("Delete Collider")){
-                    ImGui::OpenPopup("Delete Collider");
+                if(DeleteColliderOnGUI(i)){
+                    break;// 削除されたらループを抜ける
                 }
-
 
                 // コライダーの編集
                 colliders_[i]->Edit();
 
-
-                // 削除の確認
-                if(ImGui::BeginPopupModal("Delete Collider", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
-                    ImGui::Text("Are you sure you want to delete this collider?");
-                    ImGui::Separator();
-
-                    // 削除ボタン
-                    if(ImGui::Button("OK", ImVec2(120, 0))){
-                        colliders_.erase(colliders_.begin() + i);
-                        ImGui::CloseCurrentPopup();
-                        ImGui::EndPopup();
-                        break;// 配列数が合わなくなるので一旦抜ける
-                    }
-                    ImGui::SameLine();
-                    // キャンセルボタン
-                    if(ImGui::Button("Cancel", ImVec2(120, 0))){
-                        ImGui::CloseCurrentPopup();
-                    }
-                    ImGui::EndPopup();
-                }
 
                 ImGui::Unindent();
 
@@ -94,7 +87,11 @@ void ColliderEditor::Edit(){
 #endif // _DEBUG
 }
 
-void ColliderEditor::AddCollider(){
+
+////////////////////////////////////////////////////////////
+// コライダーの追加関連のGUI
+////////////////////////////////////////////////////////////
+void ColliderEditor::AddColliderOnGUI(){
 #ifdef _DEBUG
     // 追加するコライダーの形状を選択
     ImGui::Combo(
@@ -154,9 +151,124 @@ void ColliderEditor::AddCollider(){
 
         // 行列に親子付け
         colliders_.back()->SetParentMatrix(parentMat_);
+        colliders_.back()->isEdit_ = true;
     }
 
 #endif // _DEBUG
+}
+
+
+////////////////////////////////////////////////////////////
+// コライダーの削除関連のGUI
+////////////////////////////////////////////////////////////
+bool ColliderEditor::DeleteColliderOnGUI(uint32_t index){
+    // コライダーの削除
+    if(ImGui::Button("Delete Collider")){
+        ImGui::OpenPopup("Delete Collider");
+    }
+
+    // 削除の確認
+    if(ImGui::BeginPopupModal("Delete Collider", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        ImGui::Text("Are you sure you want to delete this collider?");
+        ImGui::Separator();
+
+        // 削除ボタン
+        if(ImGui::Button("OK", ImVec2(120, 0))){
+            colliders_.erase(colliders_.begin() + index);
+            ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+            return true;
+        }
+        ImGui::SameLine();
+        // キャンセルボタン
+        if(ImGui::Button("Cancel", ImVec2(120, 0))){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////
+// Jsonファイルへの出力関連のGUI
+////////////////////////////////////////////////////////////
+
+void ColliderEditor::OutputOnGUI(){
+    if(ImGui::Button("Output to Json")){
+        OutputToJson();
+        // ウィンドウで成功ログを表示
+        ImGui::OpenPopup("Output to Json");
+    }
+
+    // 成功ログの表示
+    if(ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        std::string log = "[" + className_ + ".json] is output to Json.";
+        ImGui::Text(log.c_str());
+        if(ImGui::Button("OK", ImVec2(120, 0))){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
+
+////////////////////////////////////////////////////////////
+// Jsonファイルからの読み込み関連のGUI
+////////////////////////////////////////////////////////////
+void ColliderEditor::InputOnGUI(){
+
+    // ファイルの一覧をドロップダウンで表示
+    static std::vector<std::string> files;
+    static int selectFile = 0;
+    files.clear();
+    // ファイルの一覧を取得
+    std::string path = "Resources/jsons/Colliders";
+    for(const auto& entry : std::filesystem::directory_iterator(path)){
+        files.push_back(entry.path().filename().string());
+    }
+
+    // ファイルの一覧を表示
+    if(ImGui::Button("Load Collider")){
+        ImGui::OpenPopup("FileList");
+    }
+
+    // ファイルの一覧をポップアップで表示
+    if(ImGui::BeginPopup("FileList")){
+        int i = 0;
+        for(i = 0; i < files.size(); i++){
+            if(ImGui::Selectable(files[i].c_str(), selectFile == i, ImGuiSelectableFlags_DontClosePopups)){
+                selectFile = i;
+            }
+        }
+
+        if(files.size()){
+
+            ImGui::Text("Selected File : %s", files[selectFile].c_str());
+
+            // OKボタン
+            if(ImGui::Button("OK", ImVec2(120, 0))){
+                LoadFromJson(files[selectFile]);
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            // キャンセルボタン
+            if(ImGui::Button("Cancel", ImVec2(120, 0))){
+                ImGui::CloseCurrentPopup();
+            }
+
+        } else{
+            ImGui::Text("No files.");
+            // OKボタン
+            if(ImGui::Button("OK", ImVec2(120, 0))){
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+
 }
 
 
@@ -173,7 +285,7 @@ void ColliderEditor::OutputToJson(){
     }
 
     // ファイルへの書き込み
-    std::ofstream ofs("Resources/jsond/Colliders" + className_ + ".json");
+    std::ofstream ofs("Resources/jsons/Colliders/" + className_ + ".json");
     ofs << j.dump(4);
     ofs.close();
 }
@@ -181,10 +293,159 @@ void ColliderEditor::OutputToJson(){
 ////////////////////////////////////////////////////////////
 // Jsonファイルからの読み込み
 ////////////////////////////////////////////////////////////
-void ColliderEditor::LoadFromJson(){
+
+void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray){
+    // 無ければ読み込む
+    if(colliderData_.find(fileName) == colliderData_.end()){
+        LoadColliderData(fileName);
+    }
+
+    for(auto& collider : colliderData_[fileName]){
+
+        // コライダーの形状に応じて生成
+        switch(collider->GetColliderType())
+        {
+        case ColliderType::Sphere:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_Sphere>());
+            Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(pColliderArray->back().get());
+            *sphere = *dynamic_cast<Collider_Sphere*>(collider.get());
+            break;
+        }
+        case ColliderType::AABB:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_AABB>());
+            Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(pColliderArray->back().get());
+            *aabb = *dynamic_cast<Collider_AABB*>(collider.get());
+            break;
+        }
+        case ColliderType::OBB:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_OBB>());
+            Collider_OBB* obb = dynamic_cast<Collider_OBB*>(pColliderArray->back().get());
+            *obb = *dynamic_cast<Collider_OBB*>(collider.get());
+            break;
+        }
+        case ColliderType::Line:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_Line>());
+            Collider_Line* line = dynamic_cast<Collider_Line*>(pColliderArray->back().get());
+            *line = *dynamic_cast<Collider_Line*>(collider.get());
+            break;
+        }
+        case ColliderType::Capsule:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_Capsule>());
+            Collider_Capsule* capsule = dynamic_cast<Collider_Capsule*>(pColliderArray->back().get());
+            *capsule = *dynamic_cast<Collider_Capsule*>(collider.get());
+            break;
+        }
+        case ColliderType::Plane:
+        {
+            pColliderArray->push_back(std::make_unique<Collider_Plane>());
+            Collider_Plane* plane = dynamic_cast<Collider_Plane*>(pColliderArray->back().get());
+            *plane = *dynamic_cast<Collider_Plane*>(collider.get());
+            break;
+        }
+        }
 
 
+    }
+
+    for(auto& collider : *pColliderArray){
+        // 親子付け
+        collider->SetParentMatrix(parentObject->GetWorldMatPtr());
+        collider->SetParentObject(parentObject);
+    }
 }
+
+// エディター用の読み込み関数
+void ColliderEditor::LoadFromJson(const std::string& fileName){
+    // ファイルの読み込み
+    std::ifstream ifs("Resources/jsons/Colliders/" + fileName);
+    if(ifs.fail()){
+        return;
+    }
+
+    // ファイルの解析
+    nlohmann::json j;
+    ifs >> j;
+
+    // コライダーの数
+    for(int i = 0; i < j["colliders"].size(); i++){
+        // コライダーの形状
+        std::string colliderType = j["colliders"][i]["colliderType"];
+        if(colliderType == "Sphere"){
+            colliders_.push_back(std::make_unique<Collider_Sphere>());
+        } else if(colliderType == "AABB"){
+            colliders_.push_back(std::make_unique<Collider_AABB>());
+        } else if(colliderType == "OBB"){
+            colliders_.push_back(std::make_unique<Collider_OBB>());
+        } else if(colliderType == "Line"){
+            colliders_.push_back(std::make_unique<Collider_Line>());
+        } else if(colliderType == "Capsule"){
+            colliders_.push_back(std::make_unique<Collider_Capsule>());
+        } else if(colliderType == "Plane"){
+            colliders_.push_back(std::make_unique<Collider_Plane>());
+        }
+
+        // コライダーの読み込み
+        colliders_.back()->LoadFromJson(j["colliders"][i]);
+        colliders_.back()->SetParentMatrix(parentMat_);
+    }
+
+    ifs.close();
+}
+
+
+// 外部から呼び出せる読み込み関数
+void ColliderEditor::LoadColliderData(const std::string fileName){
+
+    // すでに読み込んでいたらリターン
+    if(colliderData_.find(fileName) != colliderData_.end()){
+        return;
+    }
+
+    std::vector<Collider*> colliders;
+
+    // ファイルの読み込み
+    std::ifstream ifs("Resources/jsons/Colliders/" + fileName);
+    if(ifs.fail()){
+        return;
+    }
+
+    // ファイルの解析
+    nlohmann::json j;
+    ifs >> j;
+
+    // コライダーの数
+    for(int i = 0; i < j["colliders"].size(); i++){
+        // コライダーの形状
+        std::string colliderType = j["colliders"][i]["colliderType"];
+        if(colliderType == "Sphere"){
+            colliders.push_back(new Collider_Sphere());
+        } else if(colliderType == "AABB"){
+            colliders.push_back(new Collider_AABB());
+        } else if(colliderType == "OBB"){
+            colliders.push_back(new Collider_OBB());
+        } else if(colliderType == "Line"){
+            colliders.push_back(new Collider_Line());
+        } else if(colliderType == "Capsule"){
+            colliders.push_back(new Collider_Capsule());
+        } else if(colliderType == "Plane"){
+            colliders.push_back(new Collider_Plane());
+        }
+
+        // コライダーの読み込み
+        colliders.back()->LoadFromJson(j["colliders"][i]);
+
+        // コライダー情報を追加
+        colliderData_[fileName].emplace_back(std::move(colliders.back()));
+    }
+
+    ifs.close();
+}
+
 
 ////////////////////////////////////////////////////////////
 // コライダーをCollisionManagerに渡す

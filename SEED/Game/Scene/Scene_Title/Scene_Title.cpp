@@ -26,3 +26,5 @@ void Scene_Title::Draw()
 {
     currentState_->Draw();
 }
+
+void Scene_Title::EndFrame(){}

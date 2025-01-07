@@ -110,13 +110,29 @@ nlohmann::json Collider_Capsule::GetJsonData(){
     json.merge_patch(Collider::GetJsonData());
 
     // ローカル座標
-    json["local"]["origin"] = { local_.origin.x,local_.origin.y,local_.origin.z };
-    json["local"]["end"] = { local_.end.x,local_.end.y,local_.end.z };
+    json["local"]["origin"] = local_.origin;
+    json["local"]["end"] = local_.end;
     json["radius"] = body_.radius;
 
     // オフセット
-    json["offset"] = { offset_.x,offset_.y,offset_.z };
+    json["offset"] = offset_;
 
     return json;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+//////////////////////////////////////////////////////////////////////////
+void Collider_Capsule::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.origin = jsonData["local"]["origin"];
+    local_.end = jsonData["local"]["end"];
+    body_.radius = jsonData["radius"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
 }
 

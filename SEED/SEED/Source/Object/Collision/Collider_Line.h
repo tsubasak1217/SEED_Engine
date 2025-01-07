@@ -14,6 +14,7 @@ protected:
 public:
     void Edit()override;
     nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Line GetLine()const{ return body_; }

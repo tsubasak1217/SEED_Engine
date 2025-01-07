@@ -151,3 +151,18 @@ nlohmann::json Collider_Sphere::GetJsonData(){
 
     return json;
 }
+
+////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+////////////////////////////////////////////////////////////
+void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // 球の情報
+    local_.center = jsonData["center"];
+    body_.radius = jsonData["radius"];
+
+    // 行列の更新
+    UpdateMatrix();
+}

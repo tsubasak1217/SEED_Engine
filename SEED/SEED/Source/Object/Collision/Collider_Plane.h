@@ -15,6 +15,7 @@ protected:
 public:
     void Edit()override;
     nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Quad GetPlane()const{ return body_; }

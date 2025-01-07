@@ -13,7 +13,7 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
-
+    void EndFrame() override;
 
 public:// Stateから呼び出す関数
     void ChangeState(ICharacterState* nextState);
@@ -22,6 +22,7 @@ public:// Stateから呼び出す関数
 
 protected:
     void HandOverColliders()override;
+    void InitColliders()override;
 
 public:// アクセッサ
 

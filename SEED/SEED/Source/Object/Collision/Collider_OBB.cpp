@@ -163,3 +163,21 @@ nlohmann::json Collider_OBB::GetJsonData(){
 
     return json;
 }
+
+////////////////////////////////////////////////////////////////
+// jsonデータからコライダーの情報を読み込む
+////////////////////////////////////////////////////////////////
+void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般の情報
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.center = jsonData["local"]["center"];
+    body_.halfSize = jsonData["local"]["halfSize"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+
+    // 行列の更新
+    UpdateMatrix();
+}

@@ -15,6 +15,8 @@ void BaseObject::Initialize(){
     // モデルの初期化
     model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
+    // コライダーの初期化
+    InitColliders();
 }
 
 void BaseObject::Update(){
@@ -34,6 +36,8 @@ void BaseObject::Update(){
 void BaseObject::Draw(){
     model_->Draw();
 }
+
+void BaseObject::EndFrame(){}
 
 void BaseObject::UpdateMatrix(){
     model_->UpdateMatrix();
@@ -65,4 +69,15 @@ void BaseObject::HandOverColliders(){
     for(auto& collider : colliders_){
         CollisionManager::AddCollider(collider.get());
     }
+}
+
+// コライダーの読み込み
+void BaseObject::LoadColliders(){
+    ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
+}
+
+// コライダーの初期化
+void BaseObject::InitColliders(){
+    colliders_.clear();
+    LoadColliders();
 }

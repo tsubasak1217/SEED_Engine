@@ -25,14 +25,13 @@ void Enemy::Initialize(){
     model_->isRotateWithQuaternion_ = false;
 
     // コライダーの初期化
-    ResetCollider();
-    InitCollider();
+    InitColliders();
 
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<EnemyState_Idle>(this);
+    currentState_ = std::make_unique<EnemyState_Idle>("Enemy_Idle",this);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -52,14 +51,8 @@ void Enemy::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // コライダー関連
 //////////////////////////////////////////////////////////////////////////
-void Enemy::InitCollider(){
-    //colliders_.emplace_back(new Collider_OBB());
-    //Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
-    //obb->SetParentObject(this);
-    //obb->SetParentMatrix(model_->GetWorldMatPtr());
-    //obb->SetSize({ 3.0f,6.0f,3.0f });
-    //obb->offset_ = { 0.0f, 3.0f, 0.0f };
-}
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // その他

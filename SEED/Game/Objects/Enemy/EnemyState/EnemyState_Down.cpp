@@ -5,14 +5,14 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_Down::EnemyState_Down(BaseCharacter* player){
-    Initialize(player);
+EnemyState_Down::EnemyState_Down(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
 }
 
 EnemyState_Down::~EnemyState_Down(){}
 
-void EnemyState_Down::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void EnemyState_Down::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
     pCharacter_->SetAnimation("down", true);
 }
 
@@ -20,8 +20,7 @@ void EnemyState_Down::Initialize(BaseCharacter* player){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void EnemyState_Down::Update(){
-    // ステート管理
-    ManageState();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,7 +35,7 @@ void EnemyState_Down::ManageState(){
 
     // 時間がたったら立ち上がる
     if(pCharacter_->GetIsEndAnimation()){
-        pCharacter_->ChangeState(new EnemyState_StandUp(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_StandUp("Enemy_StandUp",pCharacter_));
         return;
     }
 

@@ -15,6 +15,7 @@ protected:
 public:
     void Edit()override;
     nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Sphere GetSphere()const{ return body_; }

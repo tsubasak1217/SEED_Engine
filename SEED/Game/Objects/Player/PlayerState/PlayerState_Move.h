@@ -4,11 +4,11 @@
 class PlayerState_Move : public ICharacterState{
 public:
     PlayerState_Move() = default;
-    PlayerState_Move(BaseCharacter* player);
+    PlayerState_Move(const std::string& stateName, BaseCharacter* player);
     ~PlayerState_Move()override;
     void Update()override;
     void Draw()override;
-    void Initialize(BaseCharacter* player)override;
+    void Initialize(const std::string& stateName, BaseCharacter* player)override;
 
 protected:
     // ステート管理

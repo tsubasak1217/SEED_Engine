@@ -48,6 +48,8 @@ protected:
 public:// 編集用関数--------------------------------------------------------------
     virtual void Edit();
     virtual nlohmann::json GetJsonData();
+    virtual void LoadFromJson(const nlohmann::json& jsonData);
+
 protected:
     void EditAnimation();
 
@@ -60,9 +62,12 @@ public:// アクセッサ-------------------------------------------------------
     uint32_t GetColliderID()const{ return colliderID_; }
 
     // ペアレント情報
-    void SetParentMatrix(const Matrix4x4* parentMat,bool isParentScale = true){
+    void SetParentMatrix(const Matrix4x4* parentMat, bool isParentScale = true){
         parentMat_ = parentMat;
         isParentScale_ = isParentScale;
+        if(animationData_){
+            animationData_->SetParentMat(parentMat_);
+        }
     }
     void SetIsParentRotate(bool isParentRotate){ isParentRotate_ = isParentRotate; }
     void SetIsParentScale(bool isParentScale){ isParentScale_ = isParentScale; }
@@ -72,8 +77,11 @@ public:// アクセッサ-------------------------------------------------------
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
     Matrix4x4 GetLocalMat()const{ return localMat_; }
 
-    // 衝突判定用
+    // 衝突判定八分木用
     const AABB& GetBox()const{ return coverAABB_; }
+
+    // アニメーション
+    bool IsEndAnimation()const{ return animationTime_ >= animationData_->GetDuration() && !isLoop_; }
 
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;    
@@ -112,7 +120,9 @@ protected:// 衝突に使用するパラメータ-------------------------------
 
 protected:// コライダーが動く場合のアニメーションデータ-----------------------------------
     bool isAnimation_ = false;
-    std::unique_ptr<ColliderAnimationData> animationData_ = nullptr;
+    std::optional<ColliderAnimationData> animationData_ = std::nullopt;
     float animationTime_ = 0.0f;
-    bool isLoop_ = true;
+    bool isLoop_ = false;
+    bool isEditorLoop_ = true;
+    bool isEdit_ = false;
 };

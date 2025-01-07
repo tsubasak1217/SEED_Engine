@@ -13,6 +13,7 @@ public:
     virtual void Finalize() = 0;
     virtual void Update();
     virtual void Draw();
+    virtual void EndFrame() = 0;
 
 public:
     void ChangeScene(Scene_Base* nextScene);

@@ -7,14 +7,14 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_Idle::EnemyState_Idle(BaseCharacter* enemy){
-    Initialize(enemy);
+EnemyState_Idle::EnemyState_Idle(const std::string& stateName, BaseCharacter* enemy){
+    Initialize(stateName, enemy);
 }
 
 EnemyState_Idle::~EnemyState_Idle(){}
 
-void EnemyState_Idle::Initialize(BaseCharacter* enemy){
-    ICharacterState::Initialize(enemy);
+void EnemyState_Idle::Initialize(const std::string& stateName, BaseCharacter* enemy){
+    ICharacterState::Initialize(stateName, enemy);
     pCharacter_->HandleRotate(Vector3(0.0f, 3.14f, 0.0f));
     pCharacter_->SetAnimation("idle", true);
 }
@@ -23,8 +23,6 @@ void EnemyState_Idle::Initialize(BaseCharacter* enemy){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void EnemyState_Idle::Update(){
-    // ステート管理
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -42,13 +40,13 @@ void EnemyState_Idle::ManageState(){
 
     // ダメージを受けたらダメージ状態に遷移
     if(pEnemy->GetIsDamaged()){
-        pCharacter_->ChangeState(new EnemyState_Damaged(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Damaged("Enemy_Damaged", pCharacter_));
         return;
     }
 
     // プレイヤーを発見したら追跡状態に遷移
     if(pEnemy->GetDistanceToPlayer() < sensingDistance_){
-        pCharacter_->ChangeState(new EnemyState_Walk(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Walk("Enemy_Walk",pCharacter_));
         return;
     }
 }

@@ -65,7 +65,7 @@ void Model::Update(){
         if(isAnimationLoop_){
             animationTime_ = std::fmod(totalAnimationTime_, animationDuration_);
         } else{
-            animationTime_ = std::clamp(totalAnimationTime_, 0.0f,animationDuration_);
+            animationTime_ = std::clamp(totalAnimationTime_, 0.0f, animationDuration_);
         }
 
         animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
@@ -82,14 +82,22 @@ void Model::Update(){
 // マトリックスの更新
 void Model::UpdateMatrix(){
 
-    // ワールド変換行列の更新
+    // ローカル変換行列の更新
     if(isRotateWithQuaternion_){
-        worldMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
+        localMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
         rotate_ = Quaternion::ToEuler(rotateQuat_);// 切り替えても大丈夫なように同期させておく
     } else{
-        worldMat_ = AffineMatrix(scale_, rotate_, translate_);
-        rotateQuat_ = Quaternion::EulerToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
+        localMat_ = AffineMatrix(scale_, rotate_, translate_);
+        rotateQuat_ = Quaternion::ToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
+
+    // ワールド変換行列を求める
+    if(parent_){
+        worldMat_ = Multiply(localMat_, parent_->worldMat_);
+    } else{
+        worldMat_ = localMat_;
+    }
+
 
     // UV変換行列の更新
     for(int i = 0; i < uvTransform_.size(); i++){
@@ -119,7 +127,7 @@ void Model::Draw(){
 //                                                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// アニメーション開始
+// アニメーション開始(インデックスから)
 void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
 
     // アニメーションがない場合は処理しない
@@ -127,6 +135,33 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
     auto& animations = ModelManager::GetModelData(modelName_)->animations;
     // 範囲外例外処理
     if(animations.size() - 1 < animationIndex) { assert(false); }
+
+    // 切り替える前にスケルトンの状態を保持
+    if(!preSkeleton_){
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        )));
+    } else{
+        // アニメーション適用後のスケルトンを取得
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        );
+
+        // アニメーション補間
+        progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+
+        // 補間後のスケルトンを設定
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
+            *preSkeleton_,
+            skeleton,
+            progressOfAnimLerp_
+        )));
+    }
 
     // アニメーション名の取得
     int index = 0;
@@ -138,6 +173,7 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
         index++;
     }
 
+
     // 情報の設定
     isAnimation_ = true;
     isAnimationLoop_ = loop;
@@ -145,6 +181,58 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
     totalAnimationTime_ = 0.0f;
     animationSpeedRate_ = speedRate;
     animationDuration_ = ModelManager::GetModelData(modelName_)->animations[animationName_].duration;
+    animLerpTime_ = 0.0f;
+}
+
+// アニメーション開始(アニメーション名から)
+void Model::StartAnimation(const std::string& animationName, bool loop, float speedRate){
+
+    // アニメーションがない場合は処理しない
+    if(!hasAnimation_){ return; }
+
+    // アニメーション名が存在するか確認
+    if(ModelManager::GetModelData(modelName_)->animations.find(animationName)
+        == ModelManager::GetModelData(modelName_)->animations.end())
+    {
+        assert(false);// 存在しないのでアサート
+    }
+
+    // 切り替える前にスケルトンの状態を保持
+    if(!preSkeleton_){
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        )));
+    } else{
+        // アニメーション適用後のスケルトンを取得
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            ModelManager::GetModelData(modelName_)->animations[animationName_],
+            ModelManager::GetModelData(modelName_)->defaultSkeleton,
+            animationTime_
+        );
+
+        // アニメーション補間
+        progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+
+        // 補間後のスケルトンを設定
+        preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
+            *preSkeleton_,
+            skeleton,
+            progressOfAnimLerp_
+        )));
+    }
+
+    // 情報の設定
+    isAnimation_ = true;
+    isAnimationLoop_ = loop;
+    animationTime_ = 0.0f;
+    totalAnimationTime_ = 0.0f;
+    animationSpeedRate_ = speedRate;
+    animationName_ = animationName;
+    animationDuration_ = ModelManager::GetModelData(modelName_)->animations[animationName_].duration;
+    animLerpTime_ = 0.0f;
 }
 
 // アニメーション一時停止
@@ -173,16 +261,58 @@ void Model::UpdatePalette(){
     if(!isAnimation_ or !hasAnimation_) { return; }
 
     // アニメーション適用後のスケルトンを取得
-    auto& animations = ModelManager::GetModelData(modelName_)->animations;
-    ModelSkeleton skeleton = ModelManager::GetModelData(modelName_)->defaultSkeleton;
-    skeleton = ModelManager::AnimatedSkeleton(
-        animations[animationName_],
-        skeleton,
+    const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+        ModelManager::GetModelData(modelName_)->animations[animationName_],
+        ModelManager::GetModelData(modelName_)->defaultSkeleton,
         animationTime_
     );
 
+    // アニメーション補間
+    if(preSkeleton_){
+        if(progressOfAnimLerp_ < 1.0f){
+
+            // 補間の進捗度(t)
+            progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
+            progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+
+            // 補間後のスケルトンを取得
+            const ModelSkeleton& lerpedSkeleton = ModelManager::InterpolateSkeleton(
+                *preSkeleton_,
+                skeleton,
+                progressOfAnimLerp_
+            );
+
+            // 補間時間を加算
+            animLerpTime_ += ClockManager::DeltaTime();
+
+            // スキニング用のパレットの更新
+            const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
+            palette_.resize(lerpedSkeleton.joints.size());
+            for(size_t jointIndex = 0; jointIndex < lerpedSkeleton.joints.size(); ++jointIndex){
+
+                assert(jointIndex < inverseBindPoseMatrices.size());
+
+                // スケルトン空間行列の更新
+                palette_[jointIndex].skeletonSpaceMatrix =
+                    inverseBindPoseMatrices[jointIndex] * lerpedSkeleton.joints[jointIndex].skeletonSpaceMatrix;
+
+                // スケルトン空間行列の逆行列転置行列の更新
+                palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
+                    Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
+            }
+
+            return;
+
+        } else{
+            // 補間終了
+            preSkeleton_.release();
+            progressOfAnimLerp_ = 0.0f;
+            animLerpTime_ = 0.0f;
+        }
+    }
+
     // スキニング用のパレットの更新
-    auto inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
+    const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
     palette_.resize(skeleton.joints.size());
     for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
 
@@ -196,7 +326,4 @@ void Model::UpdatePalette(){
         palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
             Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
     }
-
-    int a;
-    a = 0;
 }

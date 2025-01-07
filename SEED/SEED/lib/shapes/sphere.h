@@ -1,9 +1,8 @@
 #pragma once
-#include "Vector4.h"
+#include "Vector3.h"
 #include <vector>
 
 struct Sphere{
-    Sphere(int kSubdivision);
-public:
-    std::vector<std::vector<Vector4>>vertexes_;
+    Vector3 center;
+    float radius;
 };

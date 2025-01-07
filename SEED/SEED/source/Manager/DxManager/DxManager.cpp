@@ -165,8 +165,8 @@ void DxManager::Initialize(SEED* pSEED){
     /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
 
     // white1x1だけ読み込んでおく
-    instance_->CreateTexture("resources/textures/white1x1.png");
-    instance_->CreateTexture("resources/textures/uvChecker.png");
+    instance_->CreateTexture("resources/textures/Assets/white1x1.png");
+    instance_->CreateTexture("resources/textures/Assets/uvChecker.png");
 
     /*------------------------------ DepthStencilViewの作成 -------------------------------*/
 
@@ -190,26 +190,7 @@ void DxManager::Initialize(SEED* pSEED){
 
     // ------------------------------------------------------------------------------------
 
-    // カメラの情報
     instance_->camera_ = CameraManager::GetCamera("main");
-    CameraManager::GetCamera("main")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
-    CameraManager::GetCamera("main")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
-    CameraManager::GetCamera("main")->transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
-    CameraManager::GetCamera("main")->projectionMode_ = PERSPECTIVE;
-    CameraManager::GetCamera("main")->clipRange_ = kWindowSize;
-    CameraManager::GetCamera("main")->znear_ = 0.1f;
-    CameraManager::GetCamera("main")->zfar_ = 1000.0f;
-    CameraManager::GetCamera("main")->UpdateMatrix();
-
-    // デバッグカメラの初期値
-    CameraManager::GetCamera("debug")->transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
-    CameraManager::GetCamera("debug")->transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
-    CameraManager::GetCamera("debug")->transform_.translate_ = { 0.0f,1.0f,-100.0f }; // translate
-    CameraManager::GetCamera("debug")->projectionMode_ = PERSPECTIVE;
-    CameraManager::GetCamera("debug")->clipRange_ = kWindowSize;
-    CameraManager::GetCamera("debug")->znear_ = 0.1f;
-    CameraManager::GetCamera("debug")->zfar_ = 1000.0f;
-    CameraManager::GetCamera("debug")->UpdateMatrix();
 
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
@@ -306,7 +287,7 @@ void DxManager::CheckDebugLayer(){
         //エラー時に止まる
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
         // 警告時に止まる
-        infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+        //infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
         // 抑制するメッセージのID
         D3D12_MESSAGE_ID denyIds[] = {
@@ -1072,6 +1053,5 @@ LeakChecker::~LeakChecker(){
         debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
-        debug->Release();
     }
 }

@@ -13,6 +13,8 @@
 #include <Model.h>
 #include <State_Base.h>
 #include <Sprite.h>
+#include "FollowCamera.h"
+#include "../Game/Objects/Enemy/Enemy.h"
 
 #include "../Player/Player.h"
 #include "../Egg/EggManager.h"
@@ -35,6 +37,6 @@ private:
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
-    //editor
-    std::unique_ptr<FieldEditor> fieldEditor_ = nullptr;
+    std::unique_ptr<FollowCamera> followCamera
+
 };

@@ -17,25 +17,12 @@ Scene_Game::~Scene_Game(){}
 
 void Scene_Game::Initialize(){
 
-    SEED::SetCamera("debug");
-
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    std::vector<std::string>paths = {
-        //"bunny.obj",
-        "cube.obj",
-        "sphere.obj",
-        "Player_result.gltf",
-        "teapot.obj",
-    };
-
-    for(int i = 0; i < 32; i++){
-        models_.push_back(std::make_unique<Model>(paths[MyFunc::Random(0, (int)paths.size() - 1)]));
-        models_.back()->translate_ = MyFunc::Random(Range3D({-32.0f,5.0f,-32.0f}, { 32.0f,5.0f,32.0f }));
-        models_.back()->UpdateMatrix();
-    }
+    player_ = std::make_unique<Player>();
+    enemies_.push_back(std::make_unique<Enemy>(player_.get()));
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -48,14 +35,19 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->transform_.translate_ = {0.0f,3.0f,-50.0f};
+    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
     SEED::GetCamera()->Update();
 
+    followCamera_ = std::make_unique<FollowCamera>();
+    CameraManager::AddCamera("follow", followCamera_.get());
+    SEED::SetCamera("follow");
+
     ////////////////////////////////////////////////////
-    //  いろんなものの作成
+    //  親子付けなど
     ////////////////////////////////////////////////////
-    fieldEditor_ = std::make_unique<FieldEditor>();
-    fieldEditor_->Initialize();
+
+    followCamera_->SetTarget(player_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
 
     // eggManager の 初期化 (Player に set するので 先に 初期化)
     eggManager_ = std::make_unique<EggManager>();
@@ -80,21 +72,21 @@ void Scene_Game::Update(){
     ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
 
-    fieldEditor_->ShowImGui();
 #endif
 
-    /*========================== Objects =============================*/
-    player_->Update();
-    eggManager_->Update();
+    /*========================== Manager ============================*/
+
+    ParticleManager::Update();
 
     /*========================= 各状態の更新 ==========================*/
     currentState_->Update();
 
-    // パーティクルの更新
-    ParticleManager::Update();
+    player_->Update();
+    player_->EditCollider();
 
-    // fieldEditorの更新
-    fieldEditor_->Update();
+    for(auto& enemy : enemies_) {
+        enemy->Update();
+    }
 }
 
 void Scene_Game::Draw(){
@@ -102,13 +94,11 @@ void Scene_Game::Draw(){
     // グリッドの描画
     SEED::DrawGrid();
 
-    /*========================== Objects =============================*/
-    eggManager_->Draw();
-    player_->Draw();
-
-    // パーティクルの描画
     ParticleManager::Draw();
 
-    // fieldEditorの描画
-    fieldEditor_->Draw();
+    player_->Draw();
+
+    for(auto& enemy : enemies_) {
+        enemy->Draw();
+    }
 }

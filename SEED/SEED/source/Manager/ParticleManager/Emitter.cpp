@@ -31,3 +31,12 @@ void Emitter::Update(){
         }
     }
 }
+
+// 中心座標を取得
+Vector3 Emitter::GetCenter() const{
+    if(parentGroup){
+        return parentGroup->GetCenter() + center;
+    } else{
+        return center;
+    }
+}

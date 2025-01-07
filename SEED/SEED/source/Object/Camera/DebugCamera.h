@@ -1,9 +1,9 @@
 #pragma once
-#include "Camera.h"
+#include "BaseCamera.h"
 #include "Vector3.h"
 
-struct DebugCamera : public Camera{
-    DebugCamera() = default;
+struct DebugCamera : public BaseCamera{
+    DebugCamera();
     ~DebugCamera()override;
     void Update()override;
 
@@ -12,6 +12,6 @@ private:
 
 private:
     Vector3 moveDirection_;
-    float moveSpeed_ = 0.5f;
+    float moveSpeed_ = 30.0f;
     float rotateSpeed_ = 0.025f;
 };

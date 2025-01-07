@@ -92,40 +92,60 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 // クォータニオンの球面補間
 Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
-    // 入力の補間係数をクランプ
-    t = std::clamp(t, 0.0f, 1.0f);
-
-    // q1とq2の内積を計算
+    // Compute the dot product
     float dot = Dot(q1, q2);
 
-    // 内積が負の場合は反転
-    Quaternion q1Adjusted = q2;
+    // Clamp the dot product to stay in the range of acos()
+    if(dot < -1.0f) dot = -1.0f;
+    if(dot > 1.0f) dot = 1.0f;
+
+    // If the dot product is negative, slerp the opposite of q2 to ensure the shortest path
+    Quaternion q2Adjusted = q2;
     if(dot < 0.0f) {
-        q1Adjusted = q1 * -1.0f;
+        q2Adjusted.w = -q2.w;
+        q2Adjusted.x = -q2.x;
+        q2Adjusted.y = -q2.y;
+        q2Adjusted.z = -q2.z;
         dot = -dot;
     }
 
-    // 内積が非常に1に近い場合は線形補間を使用
-    if(dot > 0.9995f) {
-        Quaternion result = q1 * (1.0f - t) + q2 * t;
-        return result.Normalize(); // 結果を正規化して返す
+    // If the quaternions are very close, use linear interpolation to avoid numerical instability
+    const float EPSILON = 1e-6f;
+    if(dot > 1.0f - EPSILON) {
+        // Perform linear interpolation and normalize the result
+        Quaternion result;
+        result.w = q1.w + t * (q2Adjusted.w - q1.w);
+        result.x = q1.x + t * (q2Adjusted.x - q1.x);
+        result.y = q1.y + t * (q2Adjusted.y - q1.y);
+        result.z = q1.z + t * (q2Adjusted.z - q1.z);
+        return result.Normalize();
     }
 
-    // 球面補間を計算
-    float theta = std::acos(dot); // 角度を計算
-    float sinTheta = std::sin(theta); // sin(theta) を計算
+    // Calculate the angle between the quaternions
+    float theta = std::acos(dot);
+    float sinTheta = std::sin(theta);
 
-    //// sinThetaが非常に小さい場合の特別処理
-    //if(sinTheta < 1e-6f) {
-    //    return q1; // 角度がほぼゼロの場合はq1を返す
-    //}
+    // Compute the weights for the interpolation
+    float weight1 = std::sin((1.0f - t) * theta) / sinTheta;
+    float weight2 = std::sin(t * theta) / sinTheta;
 
-    // 補間係数を計算
-    float a = std::sin((1.0f - t) * theta) / sinTheta;
-    float b = std::sin(t * theta) / sinTheta;
+    // Compute the interpolated quaternion
+    Quaternion result;
+    result.w = weight1 * q1.w + weight2 * q2Adjusted.w;
+    result.x = weight1 * q1.x + weight2 * q2Adjusted.x;
+    result.y = weight1 * q1.y + weight2 * q2Adjusted.y;
+    result.z = weight1 * q1.z + weight2 * q2Adjusted.z;
 
-    // Slerp結果を計算
-    return (q1 * a) + (q1Adjusted * b);
+    return result;
+}
+
+Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
+    // クォータニオンに変換
+    Quaternion q1 = Quaternion::ToQuaternion(r1);
+    Quaternion q2 = Quaternion::ToQuaternion(r2);
+
+    // 球面補間
+    return q1.Slerp(q2, t);
 }
 
 // クォータニオンの線形補間
@@ -156,7 +176,7 @@ Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis){
 
 
 // オイラー角からクォータニオンに変換
-Quaternion Quaternion::EulerToQuaternion(const Vector3& eulerRotate) {
+Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate) {
     // オイラー角の各成分
     float cx = std::cosf(eulerRotate.x * 0.5f);
     float sx = std::sinf(eulerRotate.x * 0.5f);
@@ -225,23 +245,12 @@ Vector3 Quaternion::ToEuler() const{
 
 // クォータニオンから前方ベクトルを取得
 Vector3 Quaternion::MakeForward() const{
-    // クォータニオンの各成分
-    float xx = x * x;
-    float yy = y * y;
-    float zz = z * z;
-    float ww = w * w;
-    float xz = x * z;
-    float yz = y * z;
-    float wx = w * x;
-    float wy = w * y;
 
-    // 前方ベクトルを計算
-    Vector3 result;
-    result.x = 2.0f * (xz - wy);
-    result.y = 2.0f * (yz + wx);
-    result.z = ww - xx - yy + zz;
+    Vector3 up = MakeUp();
+    Vector3 right = MakeRight();
 
-    return MyMath::Normalize(result);
+
+    return MyMath::Cross(-up, right);
 }
 
 
@@ -329,6 +338,13 @@ Matrix4x4 Quaternion::MakeMatrix() const{
 
 // FromベクトルからToベクトルへの回転行列を計算する関数
 Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to) {
+    return LookAt(from, to).MakeMatrix();
+}
+
+//////////////////////////////////////////////////////////
+// LookAt関数
+//////////////////////////////////////////////////////////
+Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     // FromベクトルとToベクトルの正規化
     Vector3 fromN = MyMath::Normalize(from);
     Vector3 toN = MyMath::Normalize(to);
@@ -344,18 +360,18 @@ Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& t
             axis = MyMath::Cross(Vector3(0.0f, 1.0f, 0.0f), fromN);
         }
         axis = MyMath::Normalize(axis);
-        return Quaternion(axis, (float)std::numbers::pi).MakeMatrix();
+        return Quaternion(axis, (float)std::numbers::pi);
     }
 
     // FromベクトルとToベクトルが同じ方向の場合
     if(dot > 0.999999f) {
-        return IdentityMat4(); // 単位行列を返す
+        return Quaternion(); // 単位行列を返す
     }
 
     // 通常のケース
     Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));
     float angle = std::acos(dot); // dotが[-1, 1]の範囲なので安全
-    return Quaternion(axis, angle).MakeMatrix();
+    return Quaternion(axis, angle);
 }
 
 //////////////////////////////////////////////////////////

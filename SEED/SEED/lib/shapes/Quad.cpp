@@ -18,7 +18,7 @@ Quad::Quad(
     this->color = color;
     this->blendMode = blendMode;
     lightingType = LIGHTINGTYPE_HALF_LAMBERT;
-    GH = TextureManager::LoadTexture("white1x1.png");
+    GH = TextureManager::LoadTexture("Assets/white1x1.png");
     uvTransform = IdentityMat4();
 }
 
@@ -39,6 +39,6 @@ Quad2D::Quad2D(
     this->color = color;
     this->blendMode = blendMode;
     lightingType = LIGHTINGTYPE_NONE;
-    GH = TextureManager::LoadTexture("white1x1.png");
+    GH = TextureManager::LoadTexture("Assets/white1x1.png");
     uvTransform = IdentityMat4();
 }

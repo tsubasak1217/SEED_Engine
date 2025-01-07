@@ -1,10 +1,14 @@
 #include "MatrixFunc.h"
+#include "MyMath.h"
 #include <cmath>
+#include <numbers>
 #include <cassert>
 
-//================================================================
-//                        行列関数
-//================================================================
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     加算
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 加算
 Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
@@ -45,6 +49,12 @@ Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
     return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     減算
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 減算
 Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
@@ -84,6 +94,12 @@ Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
     return result;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     割り算
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // -----------------割り算------------------
 Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
     Matrix2x2 result;
@@ -122,6 +138,12 @@ Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
 
     return result;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     行列の席を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ---------------積を求める----------------
 Vector2 Multiply(const Vector2& vector, const Matrix2x2& matrix) {
@@ -218,6 +240,12 @@ Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
     return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     行列をスカラー倍する関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // --------------スカラー倍----------------
 Vector2 Multiply(const Vector2& vector, float scalar) {
     return { vector.x * scalar,vector.y * scalar };
@@ -258,6 +286,12 @@ Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
 
     return result;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     変換関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 同時座標系からデカルト座標系に変換する関数
 Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix) {
@@ -326,6 +360,12 @@ Vector4 TransformToVec4(const Vector2& vec)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     単位行列を作る関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 単位行列を返す関数
 Matrix2x2 IdentityMat2() {
 
@@ -371,6 +411,13 @@ Matrix4x4 NegaIdentityMat4() {
 
     return identity;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     拡大縮小行列を作る関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*------------------------- 拡大縮小行列を作る関数 --------------------------*/
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
@@ -457,6 +504,12 @@ Matrix4x4 ScaleMatrix(const Vector3& scale) {
     return matrix;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     回転行列を作る関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*------------------------- 回転行列を作る関数 --------------------------*/
 Matrix3x3 RotateMatrix(float theta) {
 
@@ -476,100 +529,52 @@ Matrix3x3 RotateMatrix(float theta) {
     return result;
 }
 
-Matrix4x4 RotateMatrix(const Vector3& rotate) {
-    Matrix4x4 rotateMat[3];
-
-    /*-------X軸の回転行列-------*/
-    if(rotate.x) {
-
-        float sin = std::sin(rotate.x);
-        float cos = std::cos(rotate.x);
-
-        rotateMat[0].m[0][0] = 1;
-        rotateMat[0].m[1][0] = 0;
-        rotateMat[0].m[2][0] = 0;
-        rotateMat[0].m[3][0] = 0;
-
-        rotateMat[0].m[0][1] = 0;
-        rotateMat[0].m[1][1] = cos;
-        rotateMat[0].m[2][1] = -sin;
-        rotateMat[0].m[3][1] = 0;
-
-        rotateMat[0].m[0][2] = 0;
-        rotateMat[0].m[1][2] = sin;
-        rotateMat[0].m[2][2] = cos;
-        rotateMat[0].m[3][2] = 0;
-
-        rotateMat[0].m[0][3] = 0;
-        rotateMat[0].m[1][3] = 0;
-        rotateMat[0].m[2][3] = 0;
-        rotateMat[0].m[3][3] = 1;
-    } else {
-        rotateMat[0] = IdentityMat4();
-    }
-
-    /*-------Y軸の回転行列-------*/
-    if(rotate.y) {
-
-        float sin = std::sin(rotate.y);
-        float cos = std::cos(rotate.y);
-
-        rotateMat[1].m[0][0] = cos;
-        rotateMat[1].m[1][0] = 0;
-        rotateMat[1].m[2][0] = sin;
-        rotateMat[1].m[3][0] = 0;
-
-        rotateMat[1].m[0][1] = 0;
-        rotateMat[1].m[1][1] = 1;
-        rotateMat[1].m[2][1] = 0;
-        rotateMat[1].m[3][1] = 0;
-
-        rotateMat[1].m[0][2] = -sin;
-        rotateMat[1].m[1][2] = 0;
-        rotateMat[1].m[2][2] = cos;
-        rotateMat[1].m[3][2] = 0;
-
-        rotateMat[1].m[0][3] = 0;
-        rotateMat[1].m[1][3] = 0;
-        rotateMat[1].m[2][3] = 0;
-        rotateMat[1].m[3][3] = 1;
-    } else {
-        rotateMat[1] = IdentityMat4();
-    }
-
-    /*-------Z軸の回転行列-------*/
-    if(rotate.z) {
-
-        float sin = std::sin(rotate.z);
-        float cos = std::cos(rotate.z);
-
-        rotateMat[2].m[0][0] = cos;
-        rotateMat[2].m[1][0] = -sin;
-        rotateMat[2].m[2][0] = 0;
-        rotateMat[2].m[3][0] = 0;
-
-        rotateMat[2].m[0][1] = sin;
-        rotateMat[2].m[1][1] = cos;
-        rotateMat[2].m[2][1] = 0;
-        rotateMat[2].m[3][1] = 0;
-
-        rotateMat[2].m[0][2] = 0;
-        rotateMat[2].m[1][2] = 0;
-        rotateMat[2].m[2][2] = 1;
-        rotateMat[2].m[3][2] = 0;
-
-        rotateMat[2].m[0][3] = 0;
-        rotateMat[2].m[1][3] = 0;
-        rotateMat[2].m[2][3] = 0;
-        rotateMat[2].m[3][3] = 1;
-    } else {
-        rotateMat[2] = IdentityMat4();
-    }
-
-    return Multiply(rotateMat[0], Multiply(rotateMat[1], rotateMat[2]));
+Matrix4x4 RotateXMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[1][1] = cos;
+    mat.m[2][1] = -sin;
+    mat.m[1][2] = sin;
+    mat.m[2][2] = cos;
+    return mat;
 }
 
-/*------------------------- 平行移動行列を作る関数 --------------------------*/
+Matrix4x4 RotateYMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[0][0] = cos;
+    mat.m[2][0] = sin;
+    mat.m[0][2] = -sin;
+    mat.m[2][2] = cos;
+    return mat;
+}
+
+Matrix4x4 RotateZMatrix(float theta){
+    Matrix4x4 mat = IdentityMat4();
+    float sin = std::sin(theta);
+    float cos = std::cos(theta);
+    mat.m[0][0] = cos;
+    mat.m[1][0] = -sin;
+    mat.m[0][1] = sin;
+    mat.m[1][1] = cos;
+    return mat;
+}
+
+Matrix4x4 RotateMatrix(const Vector3& rotate) {
+    Matrix4x4 rotX = std::abs(rotate.x) > 1e-6f ? RotateXMatrix(rotate.x) : IdentityMat4();
+    Matrix4x4 rotY = std::abs(rotate.y) > 1e-6f ? RotateYMatrix(rotate.y) : IdentityMat4();
+    Matrix4x4 rotZ = std::abs(rotate.z) > 1e-6f ? RotateZMatrix(rotate.z) : IdentityMat4();
+    return rotX * (rotY * rotZ);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     平行移動行列を作る関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Matrix3x3 TranslateMatrix(float tx, float ty) {
     Matrix3x3 matrix;
     matrix.m[0][0] = 1;  matrix.m[0][1] = 0;  matrix.m[0][2] = 0;
@@ -605,7 +610,12 @@ Matrix4x4 TranslateMatrix(const Vector3& t) {
 }
 
 
-/*------------------------- アフィン行列を作る関数 --------------------------*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     アフィン変換行列を作る関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 translate) {
 
     Matrix3x3 matrix;
@@ -640,6 +650,74 @@ Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vec
     return matrix;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     ワールド行列から各SRT成分を取り出す関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 行列から平行移動成分を取り出す
+Vector3 ExtractTranslation(const Matrix4x4& matrix){
+    return Vector3(matrix.m[3][0], matrix.m[3][1], matrix.m[3][2]);
+}
+
+// 行列から拡大縮小成分を取り出す
+Vector3 ExtractScale(const Matrix4x4& matrix){
+    float scaleX = MyMath::Length(Vector3(matrix.m[0][0], matrix.m[0][1], matrix.m[0][2]));
+    float scaleY = MyMath::Length(Vector3(matrix.m[1][0], matrix.m[1][1], matrix.m[1][2]));
+    float scaleZ = MyMath::Length(Vector3(matrix.m[2][0], matrix.m[2][1], matrix.m[2][2]));
+    return Vector3(scaleX, scaleY, scaleZ);
+}
+
+// 行列から回転成分を取り出す
+Vector3 ExtractRotation(const Matrix4x4& matrix){
+    // スケールを取り除くために各軸を正規化
+    Vector3 scale = ExtractScale(matrix);
+    Matrix4x4 rotationMatrix = matrix;
+
+    rotationMatrix.m[0][0] /= scale.x;
+    rotationMatrix.m[0][1] /= scale.x;
+    rotationMatrix.m[0][2] /= scale.x;
+
+    rotationMatrix.m[1][0] /= scale.y;
+    rotationMatrix.m[1][1] /= scale.y;
+    rotationMatrix.m[1][2] /= scale.y;
+
+    rotationMatrix.m[2][0] /= scale.z;
+    rotationMatrix.m[2][1] /= scale.z;
+    rotationMatrix.m[2][2] /= scale.z;
+
+    // オイラー角を抽出 (YXZ順)
+    float pitch, yaw, roll;
+
+    if(rotationMatrix.m[2][1] < 1) {
+        if(rotationMatrix.m[2][1] > -1) {
+            yaw = asin(-rotationMatrix.m[2][1]);
+            pitch = atan2(rotationMatrix.m[2][0], rotationMatrix.m[2][2]);
+            roll = atan2(rotationMatrix.m[0][1], rotationMatrix.m[1][1]);
+        } else {
+            // 特殊ケース: rotationMatrix.m[2][1] = -1
+            yaw = std::numbers::pi_v<float> / 2;
+            pitch = -atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
+            roll = 0;
+        }
+    } else {
+        // 特殊ケース: rotationMatrix.m[2][1] = 1
+        yaw = -std::numbers::pi_v<float> / 2;
+        pitch = atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
+        roll = 0;
+    }
+
+    return Vector3(yaw, pitch, roll);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    　逆行列を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 正則行列かどうか確認する関数--------------------------------------
 // 3x3 行列の行列式を計算する関数
@@ -805,7 +883,12 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
     return inv;
 };
 
-//転置行列を求める関数
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    　転置行列を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Matrix2x2 Transpose(const Matrix2x2& matrix) {
 
     Matrix2x2 result;
@@ -847,7 +930,13 @@ Matrix4x4 Transpose(const Matrix4x4& matrix) {
 }
 
 
-//正射影行列を求める関数
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    　投影行列を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 正射影行列を求める関数(2D)
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom) {
 
     Matrix3x3 result;
@@ -867,6 +956,7 @@ Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom) {
     return result;
 }
 
+// 正射影行列を求める関数(3D)
 Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar) {
 
     Matrix4x4 result;
@@ -894,10 +984,12 @@ Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float zn
     return result;
 }
 
+// アスペクト比を求める関数
 float AspectRatio(float windowWidth, float windowHeight) {
     return windowWidth / windowHeight;
 }
 
+// 透視投影行列を求める関数
 Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar) {
 
     Matrix4x4 result;
@@ -925,7 +1017,14 @@ Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zf
     return result;
 }
 
-//ビューポート変換行列を求める関数
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    　ビューポート行列を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//ビューポート変換行列を求める関数(2D)
 Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop) {
 
     Matrix3x3 result;
@@ -945,6 +1044,7 @@ Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop) {
     return result;
 }
 
+// ビューポート変換行列を求める関数(3D)
 Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minDepth, float maxDepth) {
 
     Matrix4x4 result;
@@ -973,6 +1073,11 @@ Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minD
 }
 ;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    　WvpVp行列を求める関数
+// 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //レンダリングパイプライン作る関数
 Matrix3x3 WvpVpMatrix(

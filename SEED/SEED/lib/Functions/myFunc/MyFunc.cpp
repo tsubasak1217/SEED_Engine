@@ -71,6 +71,29 @@ Vector3 MyFunc::RandomVector(){
     return { x, y, z };
 }
 
+Vector2 MyFunc::RandomVector2(){
+    // ランダムなthetaの範囲
+    float theta = MyFunc::Random(0.0f, 2.0f * 3.14159265358979323846f); // 0 ~ 2π
+
+    // 球座標から直交座標への変換
+    float x = std::cos(theta);
+    float y = std::sin(theta);
+
+    return { x, y };
+}
+
+//----------------- thetaとphiからベクトルを生成する関数 -----------------//
+Vector3 MyFunc::CreateVector(float theta, float phi){
+    // 球座標から直交座標への変換（左手座標系用）
+    float x = std::sin(phi) * std::cos(theta);
+    float y = std::cos(phi);
+    float z = std::sin(phi) * std::sin(theta);
+
+    return { x, y, z };
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,15 +147,19 @@ float MyFunc::Spiral(float input, float min, float max){
 
 // ベクトルから三次元の回転角を算出する関数
 Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
-    Vector3 rotate = { 0.0f,0.0f,0.0f };
+    Vector3 rotate = { 0.0f, 0.0f, 0.0f };
 
-    // 移動ベクトルから回転角をを求め更新する
-    if(MyMath::Length(vec) != 0.0){
-        rotate = {
-            std::atan2(-vec.y, MyMath::Length(vec)),// 縦方向の回転角(X軸回り)
-            std::atan2(vec.x, vec.z),// 横方向の回転角(Y軸回り)
-            0.0f
-        };
+    // ベクトルの長さを計算
+    float length = MyMath::Length(vec);
+    if(length != 0.0f) {
+        // 正規化されたベクトル
+        Vector3 normalizedVec = vec / length;
+
+        // X軸回りの回転角
+        rotate.x = -std::asin(normalizedVec.y); // Y成分で縦方向の角度を決定
+
+        // Y軸回りの回転角
+        rotate.y = std::atan2(normalizedVec.x, normalizedVec.z); // XとZの比率で横方向の角度を決定
     }
 
     return rotate;

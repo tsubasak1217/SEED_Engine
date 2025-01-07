@@ -19,6 +19,7 @@
 class ModelManager{
 
     friend class Model;
+    friend class PolygonManager;
 
 private:
 
@@ -44,16 +45,15 @@ private:
     // Loadに必要な関数
     ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
-    std::vector<MaterialData> ParseMaterials(const aiScene* scene);
+    std::vector<MaterialData> ParseMaterials(const aiScene* scene, const std::string& modelName);
 
     // アニメーション関連
     std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
-    Vector3 CalcMomentValue(const std::vector<KeyframeVec3>& keyFrames, float time);
-    Quaternion CalcMomentValue(const std::vector<KeyframeQuaternion>& keyFrames, float time);
     ModelNode ReadModelNode(const aiNode* node);
     int32_t CreateJoint(const ModelNode& node,const std::optional<int32_t>& parent,std::vector<ModelJoint>& joints);
     ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
     static ModelSkeleton AnimatedSkeleton(const ModelAnimation& modelAnimation,const ModelSkeleton& defaultSkeleton,float time);
+    static ModelSkeleton InterpolateSkeleton(const ModelSkeleton& skeletonA, const ModelSkeleton& skeletonB, float t);
     void UpdateSkeleton(ModelSkeleton* skeleton);
     std::unordered_map<std::string, JointWeightData> CreateJointWeightData(const aiScene* scene);
     void CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData);

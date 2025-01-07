@@ -1,5 +1,7 @@
 #pragma once
+#include <nlohmann/json.hpp>
 
+struct Matrix3x3;
 struct Vector3;
 
 /// <summary>
@@ -88,6 +90,10 @@ struct Vector2 final {
 		y *= obj;
 	}
 
+    Vector2 operator*(const Matrix3x3& mat) const;
+
+    void operator*=(const Matrix3x3& mat);
+
 	// DEVIDE---------------------------------
 	Vector2 operator/(float obj) const {
 		return  {
@@ -118,3 +124,14 @@ struct Vector2 final {
 
     Vector3 ToVec3() const;
 };
+
+// Vector2をJSONに変換する関数
+inline void to_json(nlohmann::json& j, const Vector2& vec){
+    j = { {"x", vec.x}, {"y", vec.y} };
+}
+
+// JSONをVector2に変換する関数
+inline void from_json(const nlohmann::json& j, Vector2& vec){
+    vec.x = j.at("x").get<float>();
+    vec.y = j.at("y").get<float>();
+}

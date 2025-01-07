@@ -224,7 +224,15 @@ Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
 }
 
+//================================================================
+//                      スプライン補間の関数
+//================================================================
+
+// 4点を直接指定してCatmull-Rom補間を行う関数
 Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
+
+    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+
     float t2 = t * t;
     float t3 = t2 * t;
 
@@ -236,119 +244,30 @@ Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, co
     return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
 }
 
-Vector3 MyMath::PrimaryCatmullRom(const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4, float t){
-    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
-    Vector3 result;
-
-    // 三次元にする
-    result = CatmullRomInterpolation(p1, p2, p3, p4, t);
-
-    return result;
-}
-
-//Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
-//    assert(controlPoints.size() >= 4 && "制御点は4以上が必要です");
-//
-//    size_t division = controlPoints.size() - 1; // 区間数は制御点の数 - 3
-//    float areaWidth = 1.0f / division; // 各区間の長さ
-//
-//    // 区間番号
-//    float t_2 = std::fmod(t, areaWidth) * division;
-//    t_2 = std::clamp(t_2, 0.0f, 1.0f);
-//
-//    size_t index = static_cast<size_t>(t / areaWidth);
-//    index = std::clamp(int(index), 0, int(division - 1));
-//
-//    // 4つの制御点のインデックス
-//    size_t index0 = index - 1;
-//    size_t index1 = index;
-//    size_t index2 = index + 1;
-//    size_t index3 = index + 2;
-//
-//
-//    //最初の区間のp0はp1を重複使用する
-//    if(index == 0){
-//        index0 = index1;
-//    }
-//    //最後の区間のp3はp2を重複使用する
-//    if(index3 >= controlPoints.size()){
-//        index3 = index2;
-//    }
-//
-//    // インデックスが範囲を超えないようにする
-//    index0 = std::clamp(index0, size_t(0), controlPoints.size() - 1);
-//    index1 = std::clamp(index1, size_t(0), controlPoints.size() - 1);
-//    index2 = std::clamp(index2, size_t(0), controlPoints.size() - 1);
-//    index3 = std::clamp(index3, size_t(0), controlPoints.size() - 1);
-//
-//    const Vector3& p0 = controlPoints[index0];
-//    const Vector3& p1 = controlPoints[index1];
-//    const Vector3& p2 = controlPoints[index2];
-//    const Vector3& p3 = controlPoints[index3];
-//
-//    return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
-//}
-//
-//
-//Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t){
-//    assert(controlPoints.size() >= 4 && "制御点は4以上が必要です");
-//
-//    size_t division = controlPoints.size() - 1; // 区間数は制御点の数 - 3
-//    float areaWidth = 1.0f / division; // 各区間の長さ
-//
-//    // 区間番号
-//    float t_2 = std::fmod(t, areaWidth) * division;
-//    t_2 = std::clamp(t_2, 0.0f, 1.0f);
-//
-//    size_t index = static_cast<size_t>(t / areaWidth);
-//    index = std::clamp(int(index), 0, int(division - 1));
-//
-//    // 4つの制御点のインデックス
-//    size_t index0 = index - 1;
-//    size_t index1 = index;
-//    size_t index2 = index + 1;
-//    size_t index3 = index + 2;
-//
-//
-//    //最初の区間のp0はp1を重複使用する
-//    if(index == 0){
-//        index0 = index1;
-//    }
-//    //最後の区間のp3はp2を重複使用する
-//    if(index3 >= controlPoints.size()){
-//        index3 = index2;
-//    }
-//
-//    // インデックスが範囲を超えないようにする
-//    index0 = std::clamp(index0, size_t(0), controlPoints.size() - 1);
-//    index1 = std::clamp(index1, size_t(0), controlPoints.size() - 1);
-//    index2 = std::clamp(index2, size_t(0), controlPoints.size() - 1);
-//    index3 = std::clamp(index3, size_t(0), controlPoints.size() - 1);
-//
-//    const Vector3& p0 = *controlPoints[index0];
-//    const Vector3& p1 = *controlPoints[index1];
-//    const Vector3& p2 = *controlPoints[index2];
-//    const Vector3& p3 = *controlPoints[index3];
-//
-//    return CatmullRomInterpolation(p0, p1, p2, p3, t_2);
-//}
-
+// 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
 Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
 
+    if(controlPoints.size() == 0){ return{0.0f,0.0f,0.0f}; }
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
 
     Vector3 result;
     std::vector<Vector3> tmpControlPoints = controlPoints;
     // 要素数が必要数に達するまでコピーして追加
     while(tmpControlPoints.size() < 4){
-        tmpControlPoints.push_back(tmpControlPoints.back());
+        // 要素数が必要数に達するまでコピーして追加
+        while(tmpControlPoints.size() < 4){
+            tmpControlPoints.push_back(tmpControlPoints.back());
+        }
+
+        // 等間隔に制御点を修正
+        ToConstantControlPoints(&tmpControlPoints);
     }
 
     int size = int(tmpControlPoints.size() - 1);
     float t2 = std::fmod(t * size,1.0f);
     int idx = int(t * size);
 
-    result = PrimaryCatmullRom(
+    result = CatmullRomInterpolation(
         tmpControlPoints[std::clamp(idx - 1, 0, size)],
         tmpControlPoints[idx],
         tmpControlPoints[std::clamp(idx + 1, 0, size)],
@@ -359,6 +278,7 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, fl
     return result;
 }
 
+// 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
 Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t){
 
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
@@ -371,15 +291,21 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
     }
 
     // 要素数が必要数に達するまでコピーして追加
-    while(tmpControlPoints.size() < 4){
-        tmpControlPoints.push_back(tmpControlPoints.back());
+    if(tmpControlPoints.size() < 4){
+        // 要素数が必要数に達するまでコピーして追加
+        while(tmpControlPoints.size() < 4){
+            tmpControlPoints.push_back(tmpControlPoints.back());
+        }
+
+        // 等間隔に制御点を修正
+        ToConstantControlPoints(&tmpControlPoints);
     }
 
     int size = int(tmpControlPoints.size() - 1);
     float t2 = std::fmod(t * size, 1.0f);
     int idx = int(t * size);
 
-    result = PrimaryCatmullRom(
+    result = CatmullRomInterpolation(
         tmpControlPoints[std::clamp(idx - 1, 0, size)],
         tmpControlPoints[idx],
         tmpControlPoints[std::clamp(idx + 1, 0, size)],
@@ -389,6 +315,46 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
 
     return result;
 }
+
+// 制御点を等間隔に修正する関数
+void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
+
+    // 全区間の大体の長さを求める
+    int kLoop = (int)pControlPoints->size() * 16;
+    float totalLength = 0.0f;
+    Vector3 prev = pControlPoints->front();
+
+    for(int i = 1; i <= kLoop; i++){
+        Vector3 next = CatmullRomPosition(*pControlPoints, (float)i / (float)kLoop);
+        totalLength += Length(next - prev);
+        prev = next;
+    }
+
+    // 1区間の長さを求める
+    float interval = totalLength / (float)(pControlPoints->size() - 1);// 1区間の長さ
+
+    // 制御点を等間隔に修正
+    std::vector<Vector3> original = *pControlPoints;
+    prev = original.front();
+    totalLength = 0.0f;
+    int prevIdx = 0;
+
+    for(int i = 0; i < kLoop; i++){
+        Vector3 next = CatmullRomPosition(original, (float)i / (float)kLoop);
+        totalLength += Length(next - prev);
+        prev = next;
+
+        // 区間が一つ進んだら制御点を修正
+        int idx = int(totalLength / interval);
+        if(prevIdx < idx){
+            (*pControlPoints)[idx] = next;
+            prevIdx = idx;
+        }
+    }
+
+    if(pControlPoints->size() != original.size()){ assert(false); }
+}
+
 
 
 Vector3 MyMath::TransformNormal(const Vector3& normal, const Matrix4x4& matrix){

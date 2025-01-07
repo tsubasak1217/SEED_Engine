@@ -1,6 +1,7 @@
 // local
 #include <PolygonManager.h>
 #include <DxManager.h>
+#include <SEED.h>
 #include <MyMath.h>
 #include <MyFunc.h>
 #include <Environment.h>
@@ -275,12 +276,12 @@ void PolygonManager::AddTriangle(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -357,11 +358,11 @@ void PolygonManager::AddTriangle(
     if(view3D){
         auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
         transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
         transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
     }
 
 
@@ -420,13 +421,13 @@ void PolygonManager::AddQuad(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
             transformed[3].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -511,11 +512,11 @@ void PolygonManager::AddQuad(
     if(view3D){
         auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
         transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
         transform.world_ = IdentityMat4();
-        transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
     }
 
 
@@ -570,8 +571,8 @@ void PolygonManager::AddSprite(
 
     // 遠近
     float layerZ = 0.001f * layer;
-    float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
-    float zfar = pDxManager_->GetCamera()->zfar_ - layerZ;
+    float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+    float zfar = pDxManager_->GetCamera()->GetZFar() - layerZ;
 
     // スプライトの四頂点を格納する変数
     Vector4 v[4]{};
@@ -692,7 +693,7 @@ void PolygonManager::AddSprite(
     // transform
     auto& transform = drawData->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
     transform.world_ = IdentityMat4();
-    transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+    transform.WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][(int)cullMode - 1];
@@ -747,6 +748,8 @@ void PolygonManager::AddModel(Model* model){
         // drawOrder
         if(model->isAnimation_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::AnimationModel;
+        } else if(model->isParticle_){
+            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Particle;
         }
     }
 
@@ -776,7 +779,7 @@ void PolygonManager::AddModel(Model* model){
 
     Matrix4x4 wvp = Multiply(
         model->GetWorldMat(),
-        pDxManager_->GetCamera()->viewProjectionMat_
+        pDxManager_->GetCamera()->GetViewProjectionMat()
     );
 
     auto& transform = item->transforms[(int)model->blendMode_][(int)model->cullMode - 1].emplace_back(TransformMatrix());
@@ -810,6 +813,29 @@ void PolygonManager::AddModel(Model* model){
     objCountCull_[(int)model->cullMode - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
     modelIndexCount_++;
+
+    // モデルのスケルトンを描画
+    if(model->isSkeletonVisible_){
+
+        const auto& modeldata = ModelManager::GetModelData(model->modelName_);
+        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+            modeldata->animations[model->animationName_],
+            modeldata->defaultSkeleton,
+            model->animationTime_
+        );
+
+        for(int i = 0; i < skeleton.joints.size(); i++){
+
+            if(skeleton.joints[i].parent){
+                Vector3 point[2];
+                point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
+                point[1] = Vector3(0.0f, 0.0f, 0.0f) *
+                    skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+
+                SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
+            }
+        }
+    }
 }
 
 
@@ -835,11 +861,11 @@ void PolygonManager::AddLine(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back){
-            float zFar = pDxManager_->GetCamera()->zfar_ - layerZ;
+            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
             v[0].z = zFar;
             v[1].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->znear_ - layerZ;
+            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
             v[0].z = zNear;
             v[1].z = zNear;
         }
@@ -891,7 +917,7 @@ void PolygonManager::AddLine(
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
-        material.GH_ = TextureManager::LoadTexture("white1x1.png");
+        material.GH_ = TextureManager::LoadTexture("Assets/white1x1.png");
 
     } else{
         drawData2D->materials[(int)blendMode][0].resize(1);
@@ -899,18 +925,18 @@ void PolygonManager::AddLine(
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
-        material.GH_ = TextureManager::LoadTexture("white1x1.png");
+        material.GH_ = TextureManager::LoadTexture("Assets/white1x1.png");
     }
 
     // transform
     if(view3D){
         auto& transform = drawData3D->transforms[(int)blendMode][0].emplace_back(TransformMatrix());
         transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->viewProjectionMat_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][0].emplace_back(TransformMatrix());
         transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+        transform.WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
     }
 
     // offsetResourceの数を更新
@@ -951,7 +977,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     Vector2 windowSize = { float(kWindowSizeX),float(kWindowSizeY) };
     float scaleRate = float(pDxManager_->GetPreResolutionRate());
     Matrix4x4 uvTransform = AffineMatrix({ scaleRate,scaleRate,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
-    float zfar = pDxManager_->GetCamera()->zfar_;
+    float zfar = pDxManager_->GetCamera()->GetZFar();
 
     // 4頂点
     Vector4 v[4]{
@@ -1008,7 +1034,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     // transform
     auto& transform = drawData->transforms[(int)blendMode][0].emplace_back(TransformMatrix());
     transform.world_ = IdentityMat4();
-    transform.WVP_ = pDxManager_->GetCamera()->projectionMat2D_;
+    transform.WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][0];
@@ -1371,8 +1397,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     // VBVのセット
                     pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv);
 
-
-
                     /*-------------------- インスタンスごとのデータ --------------------*/
 
                     D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
@@ -1383,7 +1407,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                     // 総サイズ、刻み幅の設定
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
                         vbv2->SizeInBytes = size * instanceCount;
                     } else{
                         vbv2->SizeInBytes = size;
@@ -1401,11 +1425,11 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     if(drawOrder == DrawOrder::AnimationModel){
                         D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
                         size = sizeof(VertexInfluence);
-
+                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
                             vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
-                            ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                            ofst;
 
                         // 総サイズ、刻み幅の設定
                         vbv3->SizeInBytes = size * (UINT)item->modelData->meshes[meshIdx].vertices.size();
@@ -1444,7 +1468,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*/////////////////////////////////////////////////////////////////*/
 
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),
@@ -1466,13 +1490,14 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         );
                     }
 
-                    // アニメーション用のジョイント数のインクリメント
-                    if(drawOrder == DrawOrder::AnimationModel){
-                        animationJointCount += jointSize * instanceCount;
-                    }
 
                     // 描画総メッシュ数のインクリメント
                     meshCountAll += instanceCount;
+                }
+
+                // アニメーション用のジョイント数のインクリメント
+                if(drawOrder == DrawOrder::AnimationModel){
+                    animationJointCount += jointSize * instanceCount;
                 }
 
 
@@ -1511,7 +1536,7 @@ void PolygonManager::DrawToOffscreen(){
     SetRenderData(DrawOrder::Triangle);
     SetRenderData(DrawOrder::Quad);
     SetRenderData(DrawOrder::Particle);
-    SetRenderData(DrawOrder::Sprite);
+    //SetRenderData(DrawOrder::Sprite);
 
     // 2D
     SetRenderData(DrawOrder::Line2D);

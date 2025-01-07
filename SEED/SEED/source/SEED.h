@@ -21,7 +21,7 @@
 #include <Triangle.h>
 #include <Quad.h>
 #include <Sprite.h>
-#include <Camera.h>
+#include <BaseCamera.h>
 #include <BlendMode.h>
 #include "AABB.h"
 #include "OBB.h"
@@ -98,13 +98,24 @@ public:
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
+    /*=========================デバッグ用の描画関数=======================*/
+
     // AABB, OBBの描画関数
     static void DrawAABB(const AABB& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
 
+    // 球の描画関数
+    static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    // 円柱の描画関数
+    static void DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    // カプセルの描画関数
+    static void DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // デバッグ用のグリッド描画関数
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
-
+    // スプライン曲線の描画
+    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                その他細かい関数                                   */
@@ -126,7 +137,7 @@ public:
 public:
 
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
-    static Camera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
+    static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
     static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
 
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
@@ -143,7 +154,6 @@ private:// インスタンス
     static SEED* instance_;
 
 private:// 監視用変数
-    LeakChecker* leakChecker_ = nullptr;
 
 public:// ウインドウに関する変数
     int kClientWidth_;

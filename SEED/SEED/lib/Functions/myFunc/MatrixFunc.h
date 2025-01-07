@@ -67,6 +67,9 @@ Matrix4x4 ScaleMatrix(const Vector3& scale);
 
 // 回転行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
+Matrix4x4 RotateXMatrix(float theta);
+Matrix4x4 RotateYMatrix(float theta);
+Matrix4x4 RotateZMatrix(float theta);
 Matrix4x4 RotateMatrix(const Vector3& rotate);
 
 // 平行移動行列を作る関数
@@ -79,6 +82,13 @@ Matrix4x4 TranslateMatrix(const Vector3& t);
 Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
+
+// 行列から平行移動成分を取り出す
+Vector3 ExtractTranslation(const Matrix4x4& matrix);
+// 行列から拡大縮小成分を取り出す
+Vector3 ExtractScale(const Matrix4x4& matrix);
+// 行列から回転成分を取り出す
+Vector3 ExtractRotation(const Matrix4x4& matrix);
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);

@@ -20,6 +20,7 @@ public:
     Quaternion Normalize()const;
     static Quaternion Normalize(const Quaternion& q);
     Quaternion Inverse()const;
+    static Quaternion Inverse(const Quaternion& q);
     Quaternion Slerp(const Quaternion& q, float t)const;
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
     static Quaternion Slerp(const Vector3& r1, const Vector3& r2, float t);
@@ -38,6 +39,14 @@ public:
     Matrix4x4 MakeMatrix()const;
     static Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
     static Quaternion LookAt(const Vector3& from, const Vector3& to);
+    // 単位クォータニオン
+    static Quaternion Identity();
+    // 共役クォータニオン
+    Quaternion Conjugate()const;
+    static Quaternion Conjugate(const Quaternion& q);
+    // ノルム
+    float Norm()const;
+    static float Norm(const Quaternion& q);
 
 public:
     // Operators

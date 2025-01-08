@@ -116,28 +116,29 @@ void Scene_Game::Draw(){
     ParticleManager::Draw();
 
     // MTの課題用の描画
-    Vector3 from0 = MyMath::Normalize({ 1.0f, 0.7f, 0.5f });
-    Vector3 to0 = -from0;
-    Vector3 from1 = MyMath::Normalize({ -0.6f, 0.9f, 0.2f });
-    Vector3 to1 = MyMath::Normalize({ 0.4f, 0.7f, -0.5f });
-    Matrix4x4 rotateMat[3] = {
-        Quaternion::DirectionToDirection({ 1.0f,0.0f,0.0f }, { -1.0f,0.0f,0.0f }),
-        Quaternion::DirectionToDirection(from0, to0),
-        Quaternion::DirectionToDirection(from1, to1)
-    };
+    Quaternion q1 = Quaternion(2.0f, 3.0f, 4.0f, 1.0f);
+    Quaternion q2 = Quaternion(1.0f,3.0f, 5.0f, 2.0f);
+    Quaternion Identity = Quaternion::Identity();
+    Quaternion Conjugate = q1.Conjugate();
+    Quaternion Inverse = q1.Inverse();
+    Quaternion normalized = q1.Normalize();
+    Quaternion mul1 = q1 * q2;
+    Quaternion mul2 = q2 * q1;
+    float norm = q1.Norm();
 
 #ifdef _DEBUG
 
     ImGui::Begin("MT4");
-    
-    for(int i = 0; i < 3; i++){
-        ImGui::Text("rotateMat[%d]", i);
-        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[0][0], rotateMat[i].m[0][1], rotateMat[i].m[0][2], rotateMat[i].m[0][3]);
-        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[1][0], rotateMat[i].m[1][1], rotateMat[i].m[1][2], rotateMat[i].m[1][3]);
-        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[2][0], rotateMat[i].m[2][1], rotateMat[i].m[2][2], rotateMat[i].m[2][3]);
-        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[3][0], rotateMat[i].m[3][1], rotateMat[i].m[3][2], rotateMat[i].m[3][3]);
-        ImGui::Dummy(ImVec2(0.0f, 10.0f));
-    }
+
+    ImGui::Text("Quaternion1: %f, %f, %f, %f", q1.x, q1.y, q1.z, q1.w);
+    ImGui::Text("Quaternion2: %f, %f, %f, %f", q2.x, q2.y, q2.z, q2.w);
+    ImGui::Text("Identity: %f, %f, %f, %f", Identity.x, Identity.y, Identity.z, Identity.w);
+    ImGui::Text("Conjugate: %f, %f, %f, %f", Conjugate.x, Conjugate.y, Conjugate.z, Conjugate.w);
+    ImGui::Text("Inverse: %f, %f, %f, %f", Inverse.x, Inverse.y, Inverse.z, Inverse.w);
+    ImGui::Text("Normalized: %f, %f, %f, %f", normalized.x, normalized.y, normalized.z, normalized.w);
+    ImGui::Text("Mul1: %f, %f, %f, %f", mul1.x, mul1.y, mul1.z, mul1.w);
+    ImGui::Text("Mul2: %f, %f, %f, %f", mul2.x, mul2.y, mul2.z, mul2.w);
+    ImGui::Text("Norm: %f", norm);
 
     ImGui::End();
 

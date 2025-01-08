@@ -67,9 +67,26 @@ Quaternion Quaternion::Normalize(const Quaternion& q){
 }
 
 
-// クォータニオンの逆数
+// クォータニオンの逆
 Quaternion Quaternion::Inverse() const{
-    return Quaternion(-x, -y, -z, w);
+    // クォータニオンのノルムの2乗を計算
+    float normSquared = w * w + x * x + y * y + z * z;
+
+    // ノルムの2乗が0に近い場合、逆クォータニオンは定義できない
+    if(normSquared < 0.000001f) {
+        assert(false);
+        return Quaternion();
+    }
+
+    // 共役を計算
+    Quaternion conjugate = Conjugate();
+
+    // 逆クォータニオンは共役をノルムの2乗で割ったもの
+    return conjugate / normSquared;
+}
+
+Quaternion Quaternion::Inverse(const Quaternion& q){
+    return q.Inverse();
 }
 
 
@@ -382,6 +399,33 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));  // 外積で回転軸を計算
     float angle = std::acos(dot);  // dotが[-1, 1]の範囲なので安全
     return Quaternion::AngleAxis(angle, axis);
+}
+
+
+// 単位クォータニオン
+Quaternion Quaternion::Identity(){
+    return Quaternion();
+}
+
+// 共役クォータニオン
+Quaternion Quaternion::Conjugate() const{
+    return Quaternion(-x, -y, -z, w);
+
+}
+
+// 共役クォータニオン
+Quaternion Quaternion::Conjugate(const Quaternion& q){
+    return Quaternion(-q.x, -q.y, -q.z, q.w);
+}
+
+// ノルム
+float Quaternion::Norm() const{
+    return std::sqrt(x * x + y * y + z * z + w * w);
+}
+
+// ノルム
+float Quaternion::Norm(const Quaternion& q){
+    return std::sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
 }
 
 //////////////////////////////////////////////////////////

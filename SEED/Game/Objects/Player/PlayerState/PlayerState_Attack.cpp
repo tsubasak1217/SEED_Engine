@@ -39,10 +39,12 @@ void PlayerState_Attack::Update(){
 //　描画処理
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Attack::Draw(){
+#ifdef _DEBUG
     // コライダーの描画
     for(auto& collider : colliders_){
         collider->Draw();
     }
+#endif // _DEBUG
 }
 
 

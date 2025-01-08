@@ -30,7 +30,7 @@
             "emitType": 0,
             "gravity": -15.020000457763672,
             "interval": 0.009999999776482582,
-            "isActive": false,
+            "isActive": true,
             "isBillboard": false,
             "isUseGravity": true,
             "isUseRotate": true,

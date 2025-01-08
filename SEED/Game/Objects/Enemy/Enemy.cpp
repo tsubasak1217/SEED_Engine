@@ -124,8 +124,8 @@ void Enemy::OnCollision(const BaseObject* other, ObjectType objectType){
         }
         
         // 血しぶきを出す
-        //ParticleManager::AddEffect("blood.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
-        //ParticleManager::AddEffect("blood2.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
+        ParticleManager::AddEffect("blood.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
+        ParticleManager::AddEffect("blood2.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
 
         // カメラシェイクを設定する
         SEED::SetCameraShake(0.5f, 0.5f, { 0.5f,0.5f,0.5f });

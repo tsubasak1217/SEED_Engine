@@ -116,26 +116,25 @@ void Scene_Game::Draw(){
     ParticleManager::Draw();
 
     // MTの課題用の描画
-    Quaternion rotation = Quaternion::AngleAxis(0.45f, MyMath::Normalize({ 1.0f,0.4f,-0.2f }));
-    Vector3 pos = { 2.1f,-0.9f,1.3f };
-    Matrix4x4 rotateMat = rotation.MakeMatrix();
-    Vector3 rotatedByQuaternion = Quaternion::RotatedVector(pos, rotation);
-    Vector3 rotatedByMatrix = pos * rotateMat;
+    Quaternion rotation1 = Quaternion::AngleAxis(0.3f, { 0.71f,0.71f,0.0f });
+    Quaternion rotation2 = Quaternion::AngleAxis(3.141592f, { 0.71f,0.0f,0.71f });
+    Quaternion interpolated[5] = {
+        Quaternion::Slerp(rotation1,rotation2, 0.0f),
+        Quaternion::Slerp(rotation1,rotation2, 0.3f),
+        Quaternion::Slerp(rotation1,rotation2, 0.5f),
+        Quaternion::Slerp(rotation1,rotation2, 0.7f),
+        Quaternion::Slerp(rotation1,rotation2, 1.0f)
+    };
 
+    
 #ifdef _DEBUG
 
     ImGui::Begin("MT4");
 
-    ImGui::Text("Quaternion : %f, %f, %f,%f", rotation.x, rotation.y, rotation.z,rotation.w);
-
-    ImGui::Text("Matrix :");
-    ImGui::Text("{ %f, %f, %f, %f }", rotateMat.m[0][0], rotateMat.m[0][1], rotateMat.m[0][2], rotateMat.m[0][3]);
-    ImGui::Text("{ %f, %f, %f, %f }", rotateMat.m[1][0], rotateMat.m[1][1], rotateMat.m[1][2], rotateMat.m[1][3]);
-    ImGui::Text("{ %f, %f, %f, %f }", rotateMat.m[2][0], rotateMat.m[2][1], rotateMat.m[2][2], rotateMat.m[2][3]);
-    ImGui::Text("{ %f, %f, %f, %f }", rotateMat.m[3][0], rotateMat.m[3][1], rotateMat.m[3][2], rotateMat.m[3][3]);
-
-    ImGui::Text("Rotated by Quaternion : %f, %f, %f", rotatedByQuaternion.x, rotatedByQuaternion.y, rotatedByQuaternion.z);
-    ImGui::Text("Rotated by Matrix : %f, %f, %f", rotatedByMatrix.x, rotatedByMatrix.y, rotatedByMatrix.z);
+    for(int i = 0; i < 5; i++){
+        ImGui::Text("interpolated%d : %f %f %f %f", i, interpolated[i].x, interpolated[i].y, interpolated[i].z, interpolated[i].w);
+        ImGui::Separator();
+    }
 
     ImGui::End();
 

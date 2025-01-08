@@ -162,6 +162,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
     return result;
 }
 
+// クォータニオンの球面補間(オイラー角から)
 Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
     // クォータニオンに変換
     Quaternion q1 = Quaternion::ToQuaternion(r1);

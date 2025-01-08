@@ -122,24 +122,20 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
     // Compute the dot product
     float dot = Dot(q1, q2);
 
-    // Clamp the dot product to stay in the range of acos()
+    // dotを-1.0～1.0の範囲にクランプ
     if(dot < -1.0f) dot = -1.0f;
     if(dot > 1.0f) dot = 1.0f;
 
-    // If the dot product is negative, slerp the opposite of q2 to ensure the shortest path
+    // 共役クォータニオンを計算
     Quaternion q2Adjusted = q2;
     if(dot < 0.0f) {
-        q2Adjusted.w = -q2.w;
-        q2Adjusted.x = -q2.x;
-        q2Adjusted.y = -q2.y;
-        q2Adjusted.z = -q2.z;
+        q2Adjusted = Conjugate(q2);
         dot = -dot;
     }
 
-    // If the quaternions are very close, use linear interpolation to avoid numerical instability
+    // ほぼ同じ方向の場合は線形補間
     const float EPSILON = 1e-6f;
     if(dot > 1.0f - EPSILON) {
-        // Perform linear interpolation and normalize the result
         Quaternion result;
         result.w = q1.w + t * (q2Adjusted.w - q1.w);
         result.x = q1.x + t * (q2Adjusted.x - q1.x);
@@ -148,15 +144,15 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
         return result.Normalize();
     }
 
-    // Calculate the angle between the quaternions
+    // 角度を計算
     float theta = std::acos(dot);
     float sinTheta = std::sin(theta);
 
-    // Compute the weights for the interpolation
+    // ウェイトを計算
     float weight1 = std::sin((1.0f - t) * theta) / sinTheta;
     float weight2 = std::sin(t * theta) / sinTheta;
 
-    // Compute the interpolated quaternion
+    // 補間結果を計算
     Quaternion result;
     result.w = weight1 * q1.w + weight2 * q2Adjusted.w;
     result.x = weight1 * q1.x + weight2 * q2Adjusted.x;
@@ -178,6 +174,14 @@ Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);
+}
+
+
+// Quaternionで回転させたベクトルを計算
+Vector3 Quaternion::RotatedVector(const Vector3& vec, const Quaternion& q){
+    Quaternion r(vec.x, vec.y, vec.z,0.0f);
+    Quaternion result = q * r * q.Conjugate();
+    return Vector3(result.x, result.y, result.z);
 }
 
 

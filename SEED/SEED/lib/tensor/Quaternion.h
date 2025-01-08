@@ -25,6 +25,7 @@ public:
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
     static Quaternion Slerp(const Vector3& r1, const Vector3& r2, float t);
     Quaternion Lerp(const Quaternion& q, float t)const;
+    static Vector3 RotatedVector(const Vector3& vec, const Quaternion& q);
 
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);

@@ -1,5 +1,6 @@
 #include "SceneManager.h"
-#include "Scene_Game.h"
+#include "Scene_Base.h"
+#include "Scene_Game/Scene_Game.h"
 #include "Scene_Title/Scene_Title.h"
 #include "Scene_Clear/Scene_Clear.h"
 #include "CollisionManaer/CollisionManager.h"
@@ -14,7 +15,7 @@ std::unique_ptr<Scene_Base> SceneManager::pScene_ = nullptr;
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////////////////
 SceneManager::SceneManager(){
-    pScene_.reset(new Scene_Title(instance_));
+    pScene_.reset(new Scene_Game(instance_));
 }
 
 SceneManager::~SceneManager(){
@@ -49,6 +50,13 @@ void SceneManager::Update(){
 void SceneManager::Draw(){
     pScene_->Draw();
     CollisionManager::Draw();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// フレーム開始処理
+///////////////////////////////////////////////////////////////////////////////
+void SceneManager::BeginFrame(){
+    pScene_->BeginFrame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

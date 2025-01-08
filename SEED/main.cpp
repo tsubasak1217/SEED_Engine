@@ -12,6 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 
     while(WindowManager::ProcessMessage() != WM_QUIT){
         SEED::BeginFrame();
+        SceneManager::BeginFrame();
 
         SceneManager::Update();
         SceneManager::Draw();

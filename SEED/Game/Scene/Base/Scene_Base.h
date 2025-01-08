@@ -1,8 +1,7 @@
 #pragma once
-#include <State_Base.h>
 #include <memory>
-
-class SceneManager;
+#include <SceneManager.h>
+#include <State_Base.h>
 
 class Scene_Base{
 public:
@@ -11,8 +10,9 @@ public:
     virtual ~Scene_Base(){};
     virtual void Initialize() = 0;
     virtual void Finalize() = 0;
-    virtual void Update();
-    virtual void Draw();
+    virtual void Update() = 0;
+    virtual void Draw() = 0;
+    virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
 
 public:

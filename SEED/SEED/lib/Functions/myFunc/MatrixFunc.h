@@ -71,6 +71,8 @@ Matrix4x4 RotateXMatrix(float theta);
 Matrix4x4 RotateYMatrix(float theta);
 Matrix4x4 RotateZMatrix(float theta);
 Matrix4x4 RotateMatrix(const Vector3& rotate);
+Matrix4x4 RotateMatrix(const Quaternion& rotate);
+Matrix4x4 RotateMatrix(const Vector3& axis,float angle);
 
 // 平行移動行列を作る関数
 Matrix3x3 TranslateMatrix(float tx, float ty);

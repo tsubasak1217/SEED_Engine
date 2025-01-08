@@ -57,6 +57,16 @@ Quaternion Quaternion::Normalize() const{
 }
 
 
+Quaternion Quaternion::Normalize(const Quaternion& q){
+    // クォータニオンの長さを計算
+    float length = std::sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+
+    // 各成分を長さで割って正規化
+    assert(length != 0);
+    return Quaternion(q.x / length, q.y / length, q.z / length, q.w / length);
+}
+
+
 // クォータニオンの逆数
 Quaternion Quaternion::Inverse() const{
     return Quaternion(-x, -y, -z, w);
@@ -176,7 +186,7 @@ Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis){
 
 
 // オイラー角からクォータニオンに変換
-Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate) {
+Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate){
     // オイラー角の各成分
     float cx = std::cosf(eulerRotate.x * 0.5f);
     float sx = std::sinf(eulerRotate.x * 0.5f);
@@ -337,7 +347,7 @@ Matrix4x4 Quaternion::MakeMatrix() const{
 }
 
 // FromベクトルからToベクトルへの回転行列を計算する関数
-Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to) {
+Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to){
     return LookAt(from, to).MakeMatrix();
 }
 
@@ -355,9 +365,9 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     // FromベクトルとToベクトルが逆方向の場合
     if(dot < -0.999999f) {
         // 任意の軸を選択して180度回転
-        Vector3 axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
+        Vector3 axis = MyMath::Cross(Vector3(0.0f, 0.0f, 1.0f), fromN);
         if(MyMath::Length(axis) < 0.000001f) {
-            axis = MyMath::Cross(Vector3(0.0f, 1.0f, 0.0f), fromN);
+            axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
         }
         axis = MyMath::Normalize(axis);
         return Quaternion(axis, (float)std::numbers::pi);
@@ -368,10 +378,10 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
         return Quaternion(); // 単位行列を返す
     }
 
-    // 通常のケース
-    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));
-    float angle = std::acos(dot); // dotが[-1, 1]の範囲なので安全
-    return Quaternion(axis, angle);
+    // 通常のケース（dotが-1 < dot < 1 の場合）
+    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));  // 外積で回転軸を計算
+    float angle = std::acos(dot);  // dotが[-1, 1]の範囲なので安全
+    return Quaternion::AngleAxis(angle, axis);
 }
 
 //////////////////////////////////////////////////////////

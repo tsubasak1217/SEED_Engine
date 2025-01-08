@@ -18,6 +18,7 @@ public:
     float Dot(const Quaternion& q)const;
     static float Dot(const Quaternion& q1, const Quaternion& q2);
     Quaternion Normalize()const;
+    static Quaternion Normalize(const Quaternion& q);
     Quaternion Inverse()const;
     Quaternion Slerp(const Quaternion& q, float t)const;
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);

@@ -116,29 +116,33 @@ void Scene_Game::Draw(){
     ParticleManager::Draw();
 
     // MTの課題用の描画
-    Vector3 axis = { 1.0f,1.0f,1.0f };
-    float angle = 0.44f;
-    Matrix4x4 rotateMat = RotateMatrix(axis, angle);
+    Vector3 from0 = MyMath::Normalize({ 1.0f, 0.7f, 0.5f });
+    Vector3 to0 = -from0;
+    Vector3 from1 = MyMath::Normalize({ -0.6f, 0.9f, 0.2f });
+    Vector3 to1 = MyMath::Normalize({ 0.4f, 0.7f, -0.5f });
+    Matrix4x4 rotateMat[3] = {
+        Quaternion::DirectionToDirection({ 1.0f,0.0f,0.0f }, { -1.0f,0.0f,0.0f }),
+        Quaternion::DirectionToDirection(from0, to0),
+        Quaternion::DirectionToDirection(from1, to1)
+    };
 
 #ifdef _DEBUG
 
     ImGui::Begin("MT4");
-    ImGui::Text("axis : {%f,%f,%f}", axis.x, axis.y, axis.z);
-    ImGui::Text("angle : %f", angle);
-    ImGui::Text("matrix : ");
-    ImGui::Text("{%f,%f,%f,%f},", rotateMat.m[0][0], rotateMat.m[0][1], rotateMat.m[0][2], rotateMat.m[0][3]);
-    ImGui::Text("{%f,%f,%f,%f},", rotateMat.m[1][0], rotateMat.m[1][1], rotateMat.m[1][2], rotateMat.m[1][3]);
-    ImGui::Text("{%f,%f,%f,%f},", rotateMat.m[2][0], rotateMat.m[2][1], rotateMat.m[2][2], rotateMat.m[2][3]);
-    ImGui::Text("{%f,%f,%f,%f},", rotateMat.m[3][0], rotateMat.m[3][1], rotateMat.m[3][2], rotateMat.m[3][3]);
+    
+    for(int i = 0; i < 3; i++){
+        ImGui::Text("rotateMat[%d]", i);
+        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[0][0], rotateMat[i].m[0][1], rotateMat[i].m[0][2], rotateMat[i].m[0][3]);
+        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[1][0], rotateMat[i].m[1][1], rotateMat[i].m[1][2], rotateMat[i].m[1][3]);
+        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[2][0], rotateMat[i].m[2][1], rotateMat[i].m[2][2], rotateMat[i].m[2][3]);
+        ImGui::Text("{ %f, %f, %f, %f }", rotateMat[i].m[3][0], rotateMat[i].m[3][1], rotateMat[i].m[3][2], rotateMat[i].m[3][3]);
+        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+    }
+
     ImGui::End();
 
 #endif // _DEBUG
 
-    // 描画
-    Model suzanne("Assets/suzanne.obj");
-    suzanne.rotateQuat_ = Quaternion(axis, angle);
-    suzanne.UpdateMatrix();
-    suzanne.Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

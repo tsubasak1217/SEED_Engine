@@ -117,7 +117,7 @@ void Scene_Game::Draw(){
 
     // MTの課題用の描画
     Quaternion rotation1 = Quaternion::AngleAxis(0.3f, { 0.71f,0.71f,0.0f });
-    Quaternion rotation2 = Quaternion::AngleAxis(3.141592f, { 0.71f,0.0f,0.71f });
+    Quaternion rotation2 = { -rotation1.x, -rotation1.y, -rotation1.z, -rotation1.w };
     Quaternion interpolated[5] = {
         Quaternion::Slerp(rotation1,rotation2, 0.0f),
         Quaternion::Slerp(rotation1,rotation2, 0.3f),

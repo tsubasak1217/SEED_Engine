@@ -119,17 +119,17 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 // クォータニオンの球面補間
 Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
-    // Compute the dot product
+    // 内積を計算
     float dot = Dot(q1, q2);
 
     // dotを-1.0～1.0の範囲にクランプ
     if(dot < -1.0f) dot = -1.0f;
     if(dot > 1.0f) dot = 1.0f;
 
-    // 共役クォータニオンを計算
     Quaternion q2Adjusted = q2;
     if(dot < 0.0f) {
-        q2Adjusted = Conjugate(q2);
+        // 逆方向の場合は符号を反転
+        q2Adjusted = { -q2.x, -q2.y, -q2.z, -q2.w };
         dot = -dot;
     }
 

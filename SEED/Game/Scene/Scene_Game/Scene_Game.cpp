@@ -22,7 +22,6 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     player_ = std::make_unique<Player>();
-    enemies_.push_back(std::make_unique<Enemy>(player_.get()));
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -35,28 +34,29 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
+    SEED::GetCamera()->SetTranslation({0.0f,2.0f,-30.0f});
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow", followCamera_.get());
+    CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
     //  親子付けなど
     ////////////////////////////////////////////////////
 
-    followCamera_->SetTarget(player_.get());
-    player_->SetFollowCameraPtr(followCamera_.get());
-
-    // eggManager の 初期化 (Player に set するので 先に 初期化)
-    eggManager_ = std::make_unique<EggManager>();
-    eggManager_->Initialize();
-
     // Player の 初期化
     player_ = std::make_unique<Player>();
     player_->Initialize();
-     // EggManager を set
+
+    followCamera_->SetTarget(player_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
+
+    // EggManager の 初期化
+    eggManager_ = std::make_unique<EggManager>();
+    eggManager_->SetPlayer(player_.get());
+    eggManager_->Initialize();
+
     player_->SetEggManager(eggManager_.get());
 }
 
@@ -69,7 +69,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ClockManager::FPS());
+    ImGui::Text("FPS: %f",ClockManager::FPS());
     ImGui::End();
 
 #endif
@@ -84,9 +84,7 @@ void Scene_Game::Update(){
     player_->Update();
     player_->EditCollider();
 
-    for(auto& enemy : enemies_) {
-        enemy->Update();
-    }
+    eggManager_->Update();
 }
 
 void Scene_Game::Draw(){
@@ -97,8 +95,6 @@ void Scene_Game::Draw(){
     ParticleManager::Draw();
 
     player_->Draw();
+    eggManager_->Draw();
 
-    for(auto& enemy : enemies_) {
-        enemy->Draw();
-    }
 }

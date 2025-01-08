@@ -1,23 +1,22 @@
 #pragma once
 #include "Scene_Base.h"
-#include "State_Base.h"
 
 // external
+#include <list>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <list>
 
 // local
-#include <Triangle.h>
 #include <Model.h>
-#include <State_Base.h>
 #include <Sprite.h>
+#include <Triangle.h>
+//camera
 #include "FollowCamera.h"
-#include "../Game/Objects/Enemy/Enemy.h"
 
-#include "../Player/Player.h"
-#include "../Egg/EggManager.h"
+// objects
+#include "../Game/Objects/Player/Player.h"
+#include "Egg/Manager/EggManager.h"
 
 #include "../Game/Editor/FieldEditor.h"
 
@@ -35,8 +34,9 @@ public:
 private:
     // Objects
     std::unique_ptr<Player> player_ = nullptr;
+
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
-    std::unique_ptr<FollowCamera> followCamera
+    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
 };

@@ -19,7 +19,6 @@ public:// Stateから呼び出す関数
     void ChangeState(ICharacterState* nextState);
     virtual void HandleMove(const Vector3& acceleration);
     virtual void HandleRotate(const Vector3& rotate);
-
 protected:
     void HandOverColliders()override;
 

@@ -8,7 +8,7 @@
 class ICharacterState{
 public:
     ICharacterState() = default;
-    ICharacterState(BaseCharacter* character){ character; }
+    ICharacterState(BaseCharacter* character):pCharacter_(character){}
     virtual ~ICharacterState() = default;
     virtual void Update() = 0;
     virtual void Draw() = 0;
@@ -27,5 +27,4 @@ protected:
 protected:
     BaseCharacter* pCharacter_ = nullptr;
     std::vector<std::unique_ptr<Collider>> colliders_;
-
 };

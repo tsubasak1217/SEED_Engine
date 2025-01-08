@@ -5,6 +5,7 @@
 #include <vector>
 
 class Egg;
+class Player;
 
 ////////////////////////////////////////////////////
 //  Player が 扱う 卵 を まとめて， 管理するクラス
@@ -22,7 +23,12 @@ public:
 private:
     static const uint32_t maxEggsSize_;
     std::vector<std::unique_ptr<Egg>> eggs_;
+
+    Player* player_ = nullptr;
+
 public:
+    void SetPlayer(Player* _player){ player_ = _player; }
+
     /// <summary>
     /// 卵を増やす
     /// </summary>
@@ -35,5 +41,9 @@ public:
     /// <returns></returns>
     std::unique_ptr<Egg>& GetFrontEgg();
 
+    /// <summary>
+    /// 卵が空かどうか
+    /// </summary>
+    /// <returns>空なら true</returns>
     bool GetIsEmpty()const{ return eggs_.empty(); }
 };

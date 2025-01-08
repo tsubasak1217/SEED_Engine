@@ -1,9 +1,11 @@
 #include "PlayerState_Idle.h"
 // 状態クラスのインクルード
-#include "PlayerState_Idle.h"
-#include "PlayerState_Attack.h"
 #include "PlayerState_Jump.h"
 #include "PlayerState_Move.h"
+#include "PlayerState_ThrowEgg.h"
+
+//状態を表されている主
+#include "Player/Player.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -16,7 +18,7 @@ PlayerState_Idle::~PlayerState_Idle(){}
 
 void PlayerState_Idle::Initialize(BaseCharacter* player){
     ICharacterState::Initialize(player);
-    pCharacter_->SetAnimation("idle", true);
+    pCharacter_->SetAnimation("idle",true);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,15 +45,16 @@ void PlayerState_Idle::ManageState(){
         return;
     }
 
-    // 攻撃状態へ
-    if(Input::IsPressPadButton(PAD_BUTTON::B)){
-        pCharacter_->ChangeState(new PlayerState_Attack(pCharacter_));
-        return;
-    }
-
     // 移動
     if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
         pCharacter_->ChangeState(new PlayerState_Move(pCharacter_));
+        return;
+    }
+
+    // 卵 を 投げる状態へ
+    if(Input::IsTriggerPadButton(PAD_BUTTON::RB)){
+        Player* pPlayer_ = dynamic_cast<Player*>(pCharacter_);
+        pCharacter_->ChangeState(new PlayerState_ThrowEgg(pPlayer_,pPlayer_->GetEggManager()));
         return;
     }
 }

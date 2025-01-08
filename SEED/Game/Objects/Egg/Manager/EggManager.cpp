@@ -1,6 +1,8 @@
 #include "EggManager.h"
 
-#include "Egg.h"
+//Objects
+#include "../Egg.h"
+#include"Player/Player.h"
 
 const uint32_t EggManager::maxEggsSize_ = 10;
 
@@ -11,7 +13,7 @@ EggManager::~EggManager(){}
 void EggManager::Initialize(){
     eggs_.reserve(maxEggsSize_);
 
-    eggs_.push_back(std::make_unique<Egg>());
+    eggs_.push_back(std::make_unique<Egg>(player_));
     eggs_.back()->Initialize();
 }
 

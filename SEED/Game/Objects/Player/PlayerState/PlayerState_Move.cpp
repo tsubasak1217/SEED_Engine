@@ -1,15 +1,18 @@
 #include "PlayerState_Move.h"
-#include "PlayerState_Jump.h"
-#include "PlayerState_Attack.h"
-#include "PlayerState_Idle.h"
+
+//parentObject
 #include "Player/Player.h"
+// Others State
+#include "PlayerState_Jump.h"
+#include "PlayerState_Idle.h"
+#include "PlayerState_ThrowEgg.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
 PlayerState_Move::PlayerState_Move(BaseCharacter* player){
     Initialize(player);
-    pCharacter_->SetAnimation("running", true);
+    pCharacter_->SetAnimation("running",true);
 }
 
 PlayerState_Move::~PlayerState_Move(){}
@@ -57,7 +60,7 @@ void PlayerState_Move::DecideStickVelocity(){
         stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
     }
 
-    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime();
+    acceleration_ = Vector3(stickDirection_.x,0.0f,stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,10 +80,10 @@ void PlayerState_Move::Rotate(){
             // 補間後の回転を求める
             Vector3 lerped = Quaternion::ToEuler(
                 Quaternion::Slerp(
-                    pCharacter_->GetWorldRotate(),
-                    rotateVec_,
-                    lerpRate_ * ClockManager::TimeRate()
-                )
+                pCharacter_->GetWorldRotate(),
+                rotateVec_,
+                lerpRate_ * ClockManager::TimeRate()
+            )
             );
 
             pCharacter_->HandleRotate(lerped);
@@ -102,16 +105,16 @@ void PlayerState_Move::ManageState(){
         return;
     }
 
-    // 攻撃状態へ
-    if(Input::IsPressPadButton(PAD_BUTTON::B)){
-        pCharacter_->ChangeState(new PlayerState_Attack(pCharacter_));
-        return;
-    }
-
     // アイドル状態へ
     if(MyMath::Length(moveVec_) == 0.0f){
         pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
         return;
     }
 
+    // 卵 を 投げる状態へ
+    if(Input::IsPressPadButton(PAD_BUTTON::RB)){
+        Player* pPlayer_ = dynamic_cast<Player*>(pCharacter_);
+        pCharacter_->ChangeState(new PlayerState_ThrowEgg(pPlayer_,pPlayer_->GetEggManager()));
+        return;
+    }
 }

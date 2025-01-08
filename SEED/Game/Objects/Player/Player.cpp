@@ -1,17 +1,22 @@
 #include "Player.h"
+
+///engine
+//module
 #include "InputManager.h"
 #include "ImGuiManager.h"
 
+// object
+#include "Egg/Manager/EggManager.h"
+
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
-#include "PlayerState/PlayerState_Attack.h"
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter(){
+Player::Player(): BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
@@ -20,7 +25,6 @@ Player::Player() : BaseCharacter(){
 Player::~Player(){}
 
 void Player::Initialize(){
-
     // モデルの初期化
     model_ = std::make_unique<Model>("Assets/man.gltf");
     model_->UpdateMatrix();
@@ -31,15 +35,14 @@ void Player::Initialize(){
     InitCollider();
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, model_->GetWorldMatPtr());
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,model_->GetWorldMatPtr());
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
+    targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 
     // 状態の初期化
     currentState_ = std::make_unique<PlayerState_Idle>(this);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
@@ -58,15 +61,7 @@ void Player::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // コライダー関連
 //////////////////////////////////////////////////////////////////////////
-void Player::InitCollider(){
-    //colliders_.emplace_back(new Collider_OBB());
-    //Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
-    //obb->SetParentObject(this);
-    //obb->SetParentMatrix(model_->GetWorldMatPtr());
-    //obb->SetSize({ 3.0f,6.0f,3.0f });
-    //obb->offset_ = { 0.0f, 3.0f, 0.0f };
-}
-
+void Player::InitCollider(){}
 
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
@@ -76,6 +71,6 @@ void Player::HandleMove(const Vector3& acceleration){
     model_->translate_ += acceleration;
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
     model_->UpdateMatrix();
 }

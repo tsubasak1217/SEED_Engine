@@ -1,11 +1,17 @@
 #pragma once
+
+//parent
+#include "Base/BaseCharacter.h"
+// container
 #include <list>
 #include <vector>
-#include "Base/BaseCharacter.h"
+//object
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
-
+class EggManager;
+//state
 class IPlayerState;
+
 
 class Player : public BaseCharacter{
 public:
@@ -22,10 +28,13 @@ public:// Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration)override;
 
 public:// アクセッサ
-    void SetFollowCameraPtr(BaseCamera* pCamera){pCamera_ = pCamera;}
+    void SetFollowCameraPtr(BaseCamera* pCamera){ pCamera_ = pCamera; }
     const BaseCamera* GetFollowCamera()const{ return pCamera_; }
 
+    EggManager* GetEggManager(){ return eggManager_; }
+    void SetEggManager(EggManager* eggManager){ eggManager_ = eggManager; }
 private:// フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;
 
+    EggManager* eggManager_ = nullptr;
 };

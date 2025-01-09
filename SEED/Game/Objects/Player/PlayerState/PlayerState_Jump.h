@@ -4,11 +4,11 @@
 class PlayerState_Jump : public PlayerState_Move{
 public:
     PlayerState_Jump() = default;
-    PlayerState_Jump(BaseCharacter* player);
+    PlayerState_Jump(const std::string& stateName, BaseCharacter* player);
     ~PlayerState_Jump()override;
     void Update()override;
     void Draw()override;
-    void Initialize(BaseCharacter* player)override;
+    void Initialize(const std::string& stateName, BaseCharacter* player)override;
 
 protected:
     // ステート管理

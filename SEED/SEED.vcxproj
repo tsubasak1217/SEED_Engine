@@ -116,6 +116,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp" />
@@ -136,6 +137,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
@@ -203,6 +206,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +243,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
     <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
@@ -333,6 +338,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>
   <ItemGroup>

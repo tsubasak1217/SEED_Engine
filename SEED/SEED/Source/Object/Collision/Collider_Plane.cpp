@@ -20,7 +20,7 @@ Collider_Plane::Collider_Plane() : Collider(){
 // 行列の更新
 //////////////////////////////////////////////////////////////////
 void Collider_Plane::UpdateMatrix(){
-    
+
     // ワールド行列の更新
     Collider::UpdateMatrix();
 
@@ -68,6 +68,83 @@ void Collider_Plane::UpdateBox(){
 
     coverAABB_.center = (min + max) * 0.5f;
     coverAABB_.halfSize = (max - min) * 0.5f;
+}
+
+//////////////////////////////////////////////////////////////////
+// ImGuiでの編集
+//////////////////////////////////////////////////////////////////
+void Collider_Plane::Edit(){
+#ifdef _DEBUG
+
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // ローカル座標
+    ImGui::Text("------ Vertices ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("v0" + colliderID).c_str(), &local_.localVertex[0].x, 0.05f);
+    ImGui::DragFloat3(std::string("v1" + colliderID).c_str(), &local_.localVertex[1].x, 0.05f);
+    ImGui::DragFloat3(std::string("v2" + colliderID).c_str(), &local_.localVertex[2].x, 0.05f);
+    ImGui::DragFloat3(std::string("v3" + colliderID).c_str(), &local_.localVertex[3].x, 0.05f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
+    ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
+
+#endif // _DEBUG
+}
+
+
+//////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+//////////////////////////////////////////////////////////////////
+nlohmann::json Collider_Plane::GetJsonData(){
+    nlohmann::json json;
+
+    // タイプ
+    json["Type"] = "Plane";
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // オフセット
+    json["Offset"] = offset_;
+
+    // ローカル座標
+    json["Vertices"] = {
+        { "v0", local_.localVertex[0]},
+        { "v1", local_.localVertex[1]},
+        { "v2", local_.localVertex[2]},
+        { "v3", local_.localVertex[3]}
+    };
+
+    return json;
+}
+
+//////////////////////////////////////////////////////////////////
+// jsonデータ読み込み関数
+//////////////////////////////////////////////////////////////////
+void Collider_Plane::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // オフセット
+    offset_ = jsonData["Offset"];
+
+    // ローカル座標
+    local_.localVertex[0] = jsonData["Vertices"]["v0"];
+    local_.localVertex[1] = jsonData["Vertices"]["v1"];
+    local_.localVertex[2] = jsonData["Vertices"]["v2"];
+    local_.localVertex[3] = jsonData["Vertices"]["v3"];
 }
 
 //////////////////////////////////////////////////////////////////

@@ -9,25 +9,19 @@
 #include <Triangle.h>
 #include <Model.h>
 #include <State_Base.h>
-#include <Sprite.h>
-
-
-class Scene_Game;
-class GameState_Exit;
-class GameState_Enter;
-
+#include <Scene_Base.h>
 
 class GameState_Play : public State_Base{
-
-    friend GameState_Exit;
-    friend GameState_Enter;
-
 public:
-    GameState_Play(Scene_Game* pScene);
+    GameState_Play() = default;
+    GameState_Play(Scene_Base* pScene);
     ~GameState_Play();
     void Update()override;
     void Draw()override;
-    void Initialize();
+    void Initialize()override;
+    void Finalize()override;
+    void BeginFrame()override;
+    void EndFrame()override;
 
 private:
 

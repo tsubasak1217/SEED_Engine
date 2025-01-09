@@ -9,9 +9,12 @@ public:
     State_Base() = default;
     State_Base(Scene_Base* pScene) : pScene_(pScene){};
     virtual ~State_Base(){};
+    virtual void Initialize() = 0;
+    virtual void Finalize() = 0;
     virtual void Update() = 0;
     virtual void Draw() = 0;
-    void ShiftState(State_Base* nextState);
+    virtual void BeginFrame() = 0;
+    virtual void EndFrame() = 0;
 
 protected:
     Scene_Base* pScene_ = nullptr;

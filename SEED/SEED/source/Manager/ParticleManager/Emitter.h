@@ -50,6 +50,7 @@ public:
     bool isBillboard = true;// ビルボード処理を行うかどうか
     bool isUseGravity = false;// ライトを有効にするかどうか
     bool isUseRotate = false;// 回転処理を行うかどうか
+    bool isEdittting = false;// 編集中かどうか
 
     //-------------------- 発生パラメータ ------------------//
 public:

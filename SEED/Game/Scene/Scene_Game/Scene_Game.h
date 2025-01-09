@@ -28,13 +28,15 @@ public:
     void Finalize()override;
     void Update()override;
     void Draw()override;
+    void BeginFrame()override;
+    void EndFrame()override;
+
+private:
+
 
 private:
 
     std::unique_ptr<FollowCamera> followCamera_;
-    std::unique_ptr<Player> player_;
-    std::list<std::unique_ptr<Enemy>> enemies_;
 
     std::unique_ptr<FieldEditor> fieldEditor_;
-
 };

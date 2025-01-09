@@ -15,15 +15,15 @@ public:
     void Update() override;
     void Draw() override;
 
-private:
-    void InitCollider()override;
-
 public:// Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration)override;
 
 public:// アクセッサ
     void SetFollowCameraPtr(BaseCamera* pCamera){pCamera_ = pCamera;}
     const BaseCamera* GetFollowCamera()const{ return pCamera_; }
+
+public:
+    void OnCollision(const BaseObject* other, ObjectType objectType)override;
 
 private:// フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;

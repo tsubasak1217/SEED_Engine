@@ -57,9 +57,36 @@ Quaternion Quaternion::Normalize() const{
 }
 
 
-// クォータニオンの逆数
+Quaternion Quaternion::Normalize(const Quaternion& q){
+    // クォータニオンの長さを計算
+    float length = std::sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
+
+    // 各成分を長さで割って正規化
+    assert(length != 0);
+    return Quaternion(q.x / length, q.y / length, q.z / length, q.w / length);
+}
+
+
+// クォータニオンの逆
 Quaternion Quaternion::Inverse() const{
-    return Quaternion(-x, -y, -z, w);
+    // クォータニオンのノルムの2乗を計算
+    float normSquared = w * w + x * x + y * y + z * z;
+
+    // ノルムの2乗が0に近い場合、逆クォータニオンは定義できない
+    if(normSquared < 0.000001f) {
+        assert(false);
+        return Quaternion();
+    }
+
+    // 共役を計算
+    Quaternion conjugate = Conjugate();
+
+    // 逆クォータニオンは共役をノルムの2乗で割ったもの
+    return conjugate / normSquared;
+}
+
+Quaternion Quaternion::Inverse(const Quaternion& q){
+    return q.Inverse();
 }
 
 
@@ -92,27 +119,23 @@ Quaternion Quaternion::Slerp(const Quaternion& q, float t) const{
 
 // クォータニオンの球面補間
 Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t){
-    // Compute the dot product
+    // 内積を計算
     float dot = Dot(q1, q2);
 
-    // Clamp the dot product to stay in the range of acos()
+    // dotを-1.0～1.0の範囲にクランプ
     if(dot < -1.0f) dot = -1.0f;
     if(dot > 1.0f) dot = 1.0f;
 
-    // If the dot product is negative, slerp the opposite of q2 to ensure the shortest path
     Quaternion q2Adjusted = q2;
     if(dot < 0.0f) {
-        q2Adjusted.w = -q2.w;
-        q2Adjusted.x = -q2.x;
-        q2Adjusted.y = -q2.y;
-        q2Adjusted.z = -q2.z;
+        // 逆方向の場合は符号を反転
+        q2Adjusted = { -q2.x, -q2.y, -q2.z, -q2.w };
         dot = -dot;
     }
 
-    // If the quaternions are very close, use linear interpolation to avoid numerical instability
+    // ほぼ同じ方向の場合は線形補間
     const float EPSILON = 1e-6f;
     if(dot > 1.0f - EPSILON) {
-        // Perform linear interpolation and normalize the result
         Quaternion result;
         result.w = q1.w + t * (q2Adjusted.w - q1.w);
         result.x = q1.x + t * (q2Adjusted.x - q1.x);
@@ -121,15 +144,15 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
         return result.Normalize();
     }
 
-    // Calculate the angle between the quaternions
+    // 角度を計算
     float theta = std::acos(dot);
     float sinTheta = std::sin(theta);
 
-    // Compute the weights for the interpolation
+    // ウェイトを計算
     float weight1 = std::sin((1.0f - t) * theta) / sinTheta;
     float weight2 = std::sin(t * theta) / sinTheta;
 
-    // Compute the interpolated quaternion
+    // 補間結果を計算
     Quaternion result;
     result.w = weight1 * q1.w + weight2 * q2Adjusted.w;
     result.x = weight1 * q1.x + weight2 * q2Adjusted.x;
@@ -139,6 +162,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q1, const Quaternion& q2, float t
     return result;
 }
 
+// クォータニオンの球面補間(オイラー角から)
 Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
     // クォータニオンに変換
     Quaternion q1 = Quaternion::ToQuaternion(r1);
@@ -151,6 +175,14 @@ Quaternion Quaternion::Slerp(const Vector3& r1, const Vector3& r2, float t){
 // クォータニオンの線形補間
 Quaternion Quaternion::Lerp(const Quaternion& q, float t) const{
     return (*this * (1 - t)) + (q * t);
+}
+
+
+// Quaternionで回転させたベクトルを計算
+Vector3 Quaternion::RotatedVector(const Vector3& vec, const Quaternion& q){
+    Quaternion r(vec.x, vec.y, vec.z,0.0f);
+    Quaternion result = q * r * q.Conjugate();
+    return Vector3(result.x, result.y, result.z);
 }
 
 
@@ -176,7 +208,7 @@ Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis){
 
 
 // オイラー角からクォータニオンに変換
-Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate) {
+Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate){
     // オイラー角の各成分
     float cx = std::cosf(eulerRotate.x * 0.5f);
     float sx = std::sinf(eulerRotate.x * 0.5f);
@@ -265,23 +297,6 @@ Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
 
 
 
-Quaternion Quaternion::LookRotation(const Vector3& eye, const Vector3& target, const Vector3& up){
-    Vector3 f = MyMath::Normalize(target - eye); // 前方向ベクトル
-    Vector3 s = MyMath::Normalize(MyMath::Cross(f, up)); // 右方向ベクトル
-    Vector3 u = MyMath::Normalize(MyMath::Cross(s, f));  // 上方向ベクトル
-
-    // 回転行列の生成
-    Matrix4x4 rotationMatrix = {};
-    rotationMatrix.m[0][0] = s.x; rotationMatrix.m[0][1] = s.y; rotationMatrix.m[0][2] = s.z; rotationMatrix.m[0][3] = 0.0f; // 右方向ベクトルを行列の1列目に設定
-    rotationMatrix.m[1][0] = u.x; rotationMatrix.m[1][1] = u.y; rotationMatrix.m[1][2] = u.z; rotationMatrix.m[1][3] = 0.0f; // 上方向ベクトルを行列の2列目に設定
-    rotationMatrix.m[2][0] = -f.x; rotationMatrix.m[2][1] = -f.y; rotationMatrix.m[2][2] = -f.z; rotationMatrix.m[2][3] = 0.0f; // 前方向ベクトルを行列の3列目に設定
-    rotationMatrix.m[3][0] = 0.0f; rotationMatrix.m[3][1] = 0.0f; rotationMatrix.m[3][2] = 0.0f; rotationMatrix.m[3][3] = 1.0f;
-
-    // 回転行列からクォータニオンを生成
-    return Quaternion::MatrixToQuaternion(rotationMatrix);
-}
-
-
 
 // クォータニオンからオイラー角に変換
 Vector3 Quaternion::ToEuler() const{
@@ -309,23 +324,12 @@ Vector3 Quaternion::ToEuler() const{
 
 // クォータニオンから前方ベクトルを取得
 Vector3 Quaternion::MakeForward() const{
-    // クォータニオンの各成分
-    float xx = x * x;
-    float yy = y * y;
-    float zz = z * z;
-    float ww = w * w;
-    float xz = x * z;
-    float yz = y * z;
-    float wx = w * x;
-    float wy = w * y;
 
-    // 前方ベクトルを計算
-    Vector3 result;
-    result.x = 2.0f * (xz - wy);
-    result.y = 2.0f * (yz + wx);
-    result.z = ww - xx - yy + zz;
+    Vector3 up = MakeUp();
+    Vector3 right = MakeRight();
 
-    return MyMath::Normalize(result);
+
+    return MyMath::Cross(-up, right);
 }
 
 
@@ -412,7 +416,7 @@ Matrix4x4 Quaternion::MakeMatrix() const{
 }
 
 // FromベクトルからToベクトルへの回転行列を計算する関数
-Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to) {
+Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& to){
     return LookAt(from, to).MakeMatrix();
 }
 
@@ -430,9 +434,9 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     // FromベクトルとToベクトルが逆方向の場合
     if(dot < -0.999999f) {
         // 任意の軸を選択して180度回転
-        Vector3 axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
+        Vector3 axis = MyMath::Cross(Vector3(0.0f, 0.0f, 1.0f), fromN);
         if(MyMath::Length(axis) < 0.000001f) {
-            axis = MyMath::Cross(Vector3(0.0f, 1.0f, 0.0f), fromN);
+            axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
         }
         axis = MyMath::Normalize(axis);
         return Quaternion(axis, (float)std::numbers::pi);
@@ -443,10 +447,37 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
         return Quaternion(); // 単位行列を返す
     }
 
-    // 通常のケース
-    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));
-    float angle = std::acos(dot); // dotが[-1, 1]の範囲なので安全
-    return Quaternion(axis, angle);
+    // 通常のケース（dotが-1 < dot < 1 の場合）
+    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));  // 外積で回転軸を計算
+    float angle = std::acos(dot);  // dotが[-1, 1]の範囲なので安全
+    return Quaternion::AngleAxis(angle, axis);
+}
+
+
+// 単位クォータニオン
+Quaternion Quaternion::Identity(){
+    return Quaternion();
+}
+
+// 共役クォータニオン
+Quaternion Quaternion::Conjugate() const{
+    return Quaternion(-x, -y, -z, w);
+
+}
+
+// 共役クォータニオン
+Quaternion Quaternion::Conjugate(const Quaternion& q){
+    return Quaternion(-q.x, -q.y, -q.z, q.w);
+}
+
+// ノルム
+float Quaternion::Norm() const{
+    return std::sqrt(x * x + y * y + z * z + w * w);
+}
+
+// ノルム
+float Quaternion::Norm(const Quaternion& q){
+    return std::sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
 }
 
 //////////////////////////////////////////////////////////

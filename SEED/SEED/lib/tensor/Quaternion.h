@@ -18,12 +18,14 @@ public:
     float Dot(const Quaternion& q)const;
     static float Dot(const Quaternion& q1, const Quaternion& q2);
     Quaternion Normalize()const;
+    static Quaternion Normalize(const Quaternion& q);
     Quaternion Inverse()const;
+    static Quaternion Inverse(const Quaternion& q);
     Quaternion Slerp(const Quaternion& q, float t)const;
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
     static Quaternion Slerp(const Vector3& r1, const Vector3& r2, float t);
     Quaternion Lerp(const Quaternion& q, float t)const;
-    static Quaternion LookRotation(const Vector3& eye, const Vector3& target, const Vector3& up = {0.0f,1.0f,0.0f});
+    static Vector3 RotatedVector(const Vector3& vec, const Quaternion& q);
 
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);
@@ -40,6 +42,14 @@ public:
     Matrix4x4 MakeMatrix()const;
     static Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
     static Quaternion LookAt(const Vector3& from, const Vector3& to);
+    // 単位クォータニオン
+    static Quaternion Identity();
+    // 共役クォータニオン
+    Quaternion Conjugate()const;
+    static Quaternion Conjugate(const Quaternion& q);
+    // ノルム
+    float Norm()const;
+    static float Norm(const Quaternion& q);
 
 public:
     // Operators
@@ -61,3 +71,16 @@ public:
 public:
 
 };
+
+// QuaternionをJSONに変換する関数
+inline void to_json(nlohmann::json& j, const Quaternion& quat){
+    j = { {"x", quat.x}, {"y", quat.y}, {"z", quat.z}, {"w", quat.w} };
+}
+
+// JSONからQuaternionを読み込む関数
+inline void from_json(const nlohmann::json& j, Quaternion& quat){
+    quat.x = j.value("x", 0.0f);
+    quat.y = j.value("y", 0.0f);
+    quat.z = j.value("z", 0.0f);
+    quat.w = j.value("w", 1.0f);
+}

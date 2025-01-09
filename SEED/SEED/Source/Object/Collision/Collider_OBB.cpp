@@ -50,8 +50,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
         if(Collision::OBB::Sphere(body_, sphere->GetSphere())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -59,8 +59,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
         if(Collision::OBB::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -68,8 +68,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
         if(Collision::OBB::OBB(body_, obb->GetOBB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -77,8 +77,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::OBB::Line(body_, line->GetLine())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -93,4 +93,91 @@ void Collider_OBB::UpdateBox(){
     coverAABB_.center = body_.center;
     float maxLen = (std::max)({ body_.halfSize.x, body_.halfSize.y, body_.halfSize.z });
     coverAABB_.halfSize = Vector3(maxLen, maxLen, maxLen);
+}
+
+////////////////////////////////////////////////////////////////
+// ImGuiでの編集
+////////////////////////////////////////////////////////////////
+void Collider_OBB::Edit(){
+#ifdef _DEBUG
+
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 中心座標
+    ImGui::Text("------ Center ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Center" + colliderID).c_str(), &local_.center.x, 0.1f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // 半径
+    ImGui::Text("------ HalfSie ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("HalfSie" + colliderID).c_str(), &body_.halfSize.x, 0.025f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // 回転
+    ImGui::Text("------ Rotate ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Rotate" + colliderID).c_str(), &rotate_.x, 0.1f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
+    ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
+
+#endif // _DEBUG
+}
+
+
+////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+////////////////////////////////////////////////////////////////
+nlohmann::json Collider_OBB::GetJsonData(){
+    nlohmann::json json;
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // コライダーの種類
+    json["colliderType"] = "OBB";
+
+    // ローカル座標
+    json["local"]["center"] = local_.center;
+    json["local"]["halfSize"] = body_.halfSize;
+
+    // オフセット
+    json["offset"] = offset_;
+
+    return json;
+}
+
+////////////////////////////////////////////////////////////////
+// jsonデータからコライダーの情報を読み込む
+////////////////////////////////////////////////////////////////
+void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般の情報
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.center = jsonData["local"]["center"];
+    body_.halfSize = jsonData["local"]["halfSize"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+
+    // 行列の更新
+    UpdateMatrix();
 }

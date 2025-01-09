@@ -4,15 +4,15 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Jump::PlayerState_Jump(BaseCharacter* player){
-    Initialize(player);
+PlayerState_Jump::PlayerState_Jump(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
     pCharacter_->SetAnimation("jump", true);
 }
 
 PlayerState_Jump::~PlayerState_Jump(){}
 
-void PlayerState_Jump::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void PlayerState_Jump::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
 
     // ジャンプの初期化
     isJump_ = true;
@@ -35,10 +35,6 @@ void PlayerState_Jump::Update(){
     if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
         Rotate();
     }
-
-    // ステート管理
-    ManageState();
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -52,7 +48,7 @@ void PlayerState_Jump::Draw(){}
 void PlayerState_Jump::ManageState(){
     // 着地
     if(!isJump_ && !isDrop_){
-        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
     }
 }
 

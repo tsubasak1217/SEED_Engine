@@ -26,7 +26,12 @@ void Emitter::Update(){
 
         // カスタム発生 or 1回発生の場合は最大発生回数に達したら非アクティブにする
         if(emitCount >= kMaxEmitCount or emitType == EmitType::kOnce){
-            isAlive = false;
+            if(!isEdittting){
+                isAlive = false;
+            } else{
+                isActive = false;
+                emitCount = 0;
+            }
             return;
         }
     }

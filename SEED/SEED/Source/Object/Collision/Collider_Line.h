@@ -4,12 +4,17 @@
 class Collider_Line : public Collider{
 public:
     Collider_Line();
-    ~Collider_Line() = default;
+    ~Collider_Line()override = default;
     void UpdateMatrix() override;
     void Draw() override;
 
 protected:
     void UpdateBox()override;
+    
+public:
+    void Edit()override;
+    nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Line GetLine()const{ return body_; }

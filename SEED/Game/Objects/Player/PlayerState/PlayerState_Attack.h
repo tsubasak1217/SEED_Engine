@@ -4,11 +4,11 @@
 class PlayerState_Attack : public ICharacterState{
 public:
     PlayerState_Attack() = default;
-    PlayerState_Attack(BaseCharacter* player);
+    PlayerState_Attack(const std::string& stateName, BaseCharacter* player);
     ~PlayerState_Attack()override;
     void Update()override;
     void Draw()override;
-    void Initialize(BaseCharacter* player)override;
+    void Initialize(const std::string& stateName, BaseCharacter* player)override;
 
 protected:
     // ステート管理
@@ -30,6 +30,12 @@ private:
         "punch",
         "kick",
         "spinAttack"
+    };
+
+    std::string colliderNames_[kMaxPhase_] = {
+        "Player_Punch.json",
+        "Player_Kick.json",
+        "Player_SpinAttack.json"
     };
 
 };

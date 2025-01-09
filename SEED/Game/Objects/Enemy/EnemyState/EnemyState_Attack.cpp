@@ -7,14 +7,14 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_Attack::EnemyState_Attack(BaseCharacter* player){
-    Initialize(player);
+EnemyState_Attack::EnemyState_Attack(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
 }
 
 EnemyState_Attack::~EnemyState_Attack(){}
 
-void EnemyState_Attack::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void EnemyState_Attack::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
     pCharacter_->SetAnimation("attack", false);
 }
 
@@ -22,8 +22,7 @@ void EnemyState_Attack::Initialize(BaseCharacter* player){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void EnemyState_Attack::Update(){
-    // ステート管理
-    ManageState();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -38,7 +37,7 @@ void EnemyState_Attack::ManageState(){
 
     // 
     if(pCharacter_->GetIsEndAnimation()){
-        pCharacter_->ChangeState(new EnemyState_Idle(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Idle("Enemy_Idle",pCharacter_));
         return;
     }
 

@@ -1,8 +1,11 @@
 #pragma once
 
+
 #include "../Base/BaseCharacter.h"
 
 #include "Vector3.h"
+
+class EggManager;
 
 ////////////////////////////////////////////////////
 //  Player が 扱う 卵
@@ -20,17 +23,17 @@ public:
 
     void Initialize()override;
     void Update()override;
+public:// ステートから呼び出す関数
+    void Break();
 private:
-    /// <summary>
-    /// 投げられたか
-    /// </summary>
-    bool isThrowed_ = false;
+    EggManager* eggManager_ = nullptr;
 
     BaseObject* player_ = nullptr;
-public:
-    /// <summary>
-    /// 投げる
-    /// </summary>
-    void ThrowThis();
-    bool GetThrow()const{ return isThrowed_; }
+
+    bool isBreak_ = false;
+public:// アクセッサ
+    void SetPlayer(BaseObject* _player){ player_ = _player; }
+    void SetEggManager(EggManager* _eggManager){ eggManager_ = _eggManager; }
+
+    bool GetIsBreak()const{ return isBreak_; }
 };

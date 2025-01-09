@@ -32,6 +32,6 @@ private:
     Vector3 throwDirection_ = {0.0f,0.0f,0.0f};
     // 投げるパワー
     const float throwPower_ = 0.0f;
-    // 飛んでいく上方向 は 固定
-    const float throwRotateX_ = 4.0f;
+
+    Vector3 throwDirectionOffset_ = {0.0f,1.0f,1.0f};
 };

@@ -52,6 +52,9 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(player_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
 
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
+
     // EggManager の 初期化
     eggManager_ = std::make_unique<EggManager>();
     eggManager_->SetPlayer(player_.get());

@@ -15,9 +15,11 @@
 #include "FollowCamera.h"
 
 // objects
-#include "../Game/Objects/Player/Player.h"
+#include "Player/Player.h"
 #include "Egg/Manager/EggManager.h"
 
+//manager
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Editor/FieldEditor.h"
 
 class Scene_Game : public Scene_Base{
@@ -34,6 +36,7 @@ public:
 private:
     // Objects
     std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
 
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 

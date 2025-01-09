@@ -25,7 +25,6 @@ private:
     std::vector<std::unique_ptr<Egg>> eggs_;
 
     Player* player_ = nullptr;
-
 public:
     void SetPlayer(Player* _player){ player_ = _player; }
 
@@ -34,6 +33,12 @@ public:
     /// </summary>
     /// <param name="_egg"></param>
     void AddEgg(std::unique_ptr<Egg> _egg);
+
+    /// <summary>
+    /// 指定した卵を削除
+    /// </summary>
+    /// <param name="_egg"></param>
+    void RemoveEgg(Egg* _egg);
 
     /// <summary>
     /// 先頭 の 卵 を 入手

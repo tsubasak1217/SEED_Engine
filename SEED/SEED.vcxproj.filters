@@ -478,6 +478,15 @@
     <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -792,6 +801,9 @@
     <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />
+    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h" />
+    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

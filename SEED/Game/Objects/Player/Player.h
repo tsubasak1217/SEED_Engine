@@ -8,10 +8,10 @@
 //object
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
-class EggManager;
 //state
 class IPlayerState;
-
+// manager
+class EggManager;
 
 class Player : public BaseCharacter{
 public:
@@ -20,6 +20,8 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
+
+    void Spawn(const Vector3& pos);
 
 private:
     void InitCollider()override;

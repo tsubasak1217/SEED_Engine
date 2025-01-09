@@ -59,8 +59,9 @@ void PlayerState_ThrowEgg::Draw(){}
 void PlayerState_ThrowEgg::ManageState(){
     // 卵 を 投げる状態へ
     if(Input::IsReleasePadButton(PAD_BUTTON::RB)){
+        throwDirectionOffset_ = MyMath::Normalize(throwDirectionOffset_);
         // Player の 現在向いてる方向
-        throwDirection_ = Vector3(0.0f,0.0f,1.0f) * RotateMatrix(pCharacter_->GetWorldRotate());
+        throwDirection_ = throwDirectionOffset_ * RotateMatrix(pCharacter_->GetWorldRotate());
         throwDirection_ = MyMath::Normalize(throwDirection_);
         Vector3 throwVelocity = throwDirection_ * throwPower_;
         throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_));

@@ -13,7 +13,8 @@
 
 EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _velocity)
     :ICharacterState(_egg),
-    velocity_(_velocity){}
+    velocity_(_velocity){
+}
 
 EggState_Thrown::~EggState_Thrown(){}
 
@@ -43,6 +44,6 @@ void EggState_Thrown::ManageState(){
     // 地面に ついたら(仮)
     if(pCharacter_->GetWorldTranslate().y <= 0.0f){
         pCharacter_->SetTranslateY(0.0f);
-        pCharacter_->ChangeState(new EggState_Break());
+        pCharacter_->ChangeState(new EggState_Break(pCharacter_));
     }
 }

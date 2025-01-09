@@ -5,13 +5,14 @@
 #include "InputManager.h"
 #include "ImGuiManager.h"
 
-// object
+// manager
 #include "Egg/Manager/EggManager.h"
 
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
+#include "PlayerState/PlayerState_Spawn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -56,6 +57,10 @@ void Player::Update(){
 //////////////////////////////////////////////////////////////////////////
 void Player::Draw(){
     BaseCharacter::Draw();
+}
+
+void Player::Spawn(const Vector3& pos){
+    ChangeState(new PlayerState_Spawn(this,pos));
 }
 
 //////////////////////////////////////////////////////////////////////////

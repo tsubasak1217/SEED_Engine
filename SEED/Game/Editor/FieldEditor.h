@@ -6,12 +6,15 @@
 // lib
 #include "../SEED/lib/tensor/Vector3.h"
 
+#include "imgui.h"
+
 // c++
 #include <vector>
 #include <list>
 #include <memory>
 #include <string>
 #include <cstdint>
+#include <unordered_map>
 
 class FieldEditor{
 public:
@@ -39,6 +42,8 @@ private:
     void LoadFromJson(const std::string& filePath);
     void SaveToJson(const std::string& filePath);
 
+    void LoadFieldModelTexture();
+
 private:
     //===================================================================*/
     //                   private fields
@@ -47,6 +52,12 @@ private:
     std::list<std::string> modelNames_ {};
 
     bool isEditing_ = false;
+
+    int testInt = 0;
+    float testFloat = 0.0f;
+    Vector3 testVector3 = Vector3(0.0f, 0.0f, 0.0f);
+
+    std::unordered_map<std::string, ImTextureID> textureIDs_;// テクスチャのID
 
     const std::string jsonPath = "resources/jsons/fieldModels/fieldModels.json";
 };

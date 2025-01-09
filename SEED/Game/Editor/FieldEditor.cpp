@@ -1,10 +1,12 @@
 #include "FieldEditor.h"
+
+#include "JsonManager/JsonCoordinator.h"
+
 #include "../SEED/external/imgui/imgui.h"
 #include "../SEED.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-using json = nlohmann::json;
 
 FieldEditor::FieldEditor(){
     fieldModel_.clear();
@@ -16,9 +18,20 @@ void FieldEditor::Initialize(){
     modelNames_ = {"groundCube", "sphere"};
 
     LoadFromJson(jsonPath);
+
+    JsonCoordinator::RegisterItem("FieldEditor", "testInt", testInt);
+    JsonCoordinator::RegisterItem("FieldEditor", "testFloat", testFloat);
+    JsonCoordinator::RegisterItem("FieldEditor", "testVector3", testVector3);
 }
 
 void FieldEditor::Update(){
+#ifdef _DEBUG
+    ImGui::Begin("FieldEditor");
+    JsonCoordinator::RenderGroupUI("FieldEditor");
+    ImGui::End();
+#endif // _DEBUG
+
+
     for (auto& model : fieldModel_){
         model->Update();
     }
@@ -130,6 +143,33 @@ void FieldEditor::SaveToJson(const std::string& filePath){
     }
 }
 
+void FieldEditor::LoadFieldModelTexture(){
+    // resources/textures/fieldModelTextures/ 以下の階層にあるテクスチャを自動で読む
+    std::vector<std::string> fileNames;
+
+    // 指定されたディレクトリ内のすべてのファイルを探索
+    for (const auto& entry : std::filesystem::directory_iterator("resources/textures/fieldModelTextures/")){
+        if (entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
+            // もしファイル名が".png"で終わっていたら
+            if (entry.path().extension() == ".png"){
+                // ファイル名を追加
+                fileNames.push_back("fieldModelTextures/" + entry.path().filename().string()); // ファイル名のみ追加
+            }
+        }
+    }
+
+    // テクスチャの読み込み
+    for (const auto& fileName : fileNames){
+
+        // テクスチャの読み込み
+        int handle = TextureManager::LoadTexture(fileName);
+
+        // GPUハンドルを取得
+        textureIDs_[fileName] =
+            ( ImTextureID ) ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
+    }
+}
+
 void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
     ImGui::Begin("Field Editor");
@@ -138,13 +178,19 @@ void FieldEditor::ShowImGui(){
 
     // モデル選択ドロップダウン
     static int selectedModelNameIndex = 0;
-    if (!modelNames_.empty()){
-        std::vector<const char*> modelNameCStrs;
-        for (const auto& name : modelNames_){
-            modelNameCStrs.push_back(name.c_str());
-        }
-        ImGui::Text("Select Model to Add:");
-        ImGui::Combo("##ModelSelector", &selectedModelNameIndex, modelNameCStrs.data(), static_cast< int >(modelNameCStrs.size()));
+    ImGui::Text("Model List:");
+    static int selectedModelIndex = -1;
+
+    if (selectedModelNameIndex >= 0 && selectedModelNameIndex < static_cast< int >(modelNames_.size())){
+        auto it = std::next(modelNames_.begin(), selectedModelNameIndex);
+        std::string imagePath = "fieldModelTextures/" + *it + "Image.png";
+
+        ////// 画像ボタンを表示（サイズは適宜調整）
+        //if (ImGui::ImageButton(textureIDs_[imagePath], ImVec2(50, 50))){
+        //    // 画像がクリックされたら、そのモデルを選択
+        //    selectedModelIndex = selectedModelNameIndex;
+        //}
+
     }
 
     // モデル追加ボタン

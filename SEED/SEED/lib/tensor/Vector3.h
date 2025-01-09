@@ -180,6 +180,16 @@ inline void from_json(const nlohmann::json& j, Vector3& v){
     v.z = j.at("z").get<float>();
 }
 
+inline void to_json(nlohmann::ordered_json& j, const Vector3& vec){
+    j = {{"x", vec.x}, {"y", vec.y}, {"z", vec.z}};
+}
+
+inline void from_json(const nlohmann::ordered_json& j, Vector3& v){
+    v.x = j.at("x").get<float>();
+    v.y = j.at("y").get<float>();
+    v.z = j.at("z").get<float>();
+}
+
 struct Vector3Int{
     int x;
     int y;

@@ -24,4 +24,3 @@ private:
     std::list<std::unique_ptr<Enemy>> enemies_;
     Player* pPlayer_ = nullptr;
 };
-

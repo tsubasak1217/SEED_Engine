@@ -14,13 +14,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game(SceneManager* pSceneManager){
+Scene_Game::Scene_Game(SceneManager *pSceneManager)
+{
     pSceneManager_ = pSceneManager;
     ChangeState(new GameState_Play(this));
     Initialize();
 };
 
-Scene_Game::~Scene_Game(){
+Scene_Game::~Scene_Game()
+{
     CameraManager::DeleteCamera("follow");
 }
 
@@ -30,26 +32,26 @@ Scene_Game::~Scene_Game(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize(){
+void Scene_Game::Initialize()
+{
 
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
 
-
+    player_ = std::make_unique<Player>();
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetDirectionalLight()->direction_ = { -1.0f,0.0f,0.0f };
-
+    SEED::GetDirectionalLight()->direction_ = {-1.0f, 0.0f, 0.0f};
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
+    SEED::GetCamera()->SetTranslation({0.0f, 2.0f, -30.0f});
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
@@ -60,21 +62,25 @@ void Scene_Game::Initialize(){
     //  親子付けなど
     ////////////////////////////////////////////////////
 
+    // Player の 初期化
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
 
-    ////////////////////////////////////////////////////
-    //  editor
-    ////////////////////////////////////////////////////
-    fieldEditor_ = std::make_unique<FieldEditor>();
-    fieldEditor_->Initialize();
+    followCamera_->SetTarget(player_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
+
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
+
+    // EggManager の 初期化
+    eggManager_ = std::make_unique<EggManager>();
+    eggManager_->SetPlayer(player_.get());
+    eggManager_->Initialize();
+
+    player_->SetEggManager(eggManager_.get());
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-//  終了処理
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
-void Scene_Game::Finalize(){}
+void Scene_Game::Finalize() {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -82,7 +88,8 @@ void Scene_Game::Finalize(){}
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update(){
+void Scene_Game::Update()
+{
 
     /*========================== ImGui =============================*/
 
@@ -92,12 +99,14 @@ void Scene_Game::Update(){
     ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::End();
 
-
     fieldEditor_->ShowImGui();
 
-    if (fieldEditor_->GetIsEditing()){
+    if (fieldEditor_->GetIsEditing())
+    {
         SEED::SetCamera("debug");
-    } else{
+    }
+    else
+    {
         SEED::SetCamera("follow");
     }
 
@@ -108,14 +117,20 @@ void Scene_Game::Update(){
     ParticleManager::Update();
 
     /*========================= 各状態の更新 ==========================*/
+    currentState_->Update();
 
-    if(currentState_){
+    player_->Update();
+    player_->EditCollider();
+
+    eggManager_->Update();
+
+    if (currentState_)
+    {
         currentState_->Update();
     }
 
     fieldEditor_->Update();
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -123,7 +138,8 @@ void Scene_Game::Update(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw(){
+void Scene_Game::Draw()
+{
 
     // フィールドの描画
     fieldEditor_->Draw();
@@ -134,6 +150,8 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
+    player_->Draw();
+    eggManager_->Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -141,16 +159,15 @@ void Scene_Game::Draw(){
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame(){
-
+void Scene_Game::BeginFrame()
+{
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame(){
-
+void Scene_Game::EndFrame()
+{
 }

@@ -1,25 +1,33 @@
 #include "Player.h"
+
+/// engine
+// module
 #include "InputManager.h"
 #include "ImGuiManager.h"
 
+// manager
+#include "Egg/Manager/EggManager.h"
+
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
-#include "PlayerState/PlayerState_Attack.h"
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
+#include "PlayerState/PlayerState_Spawn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter(){
+Player::Player() : BaseCharacter()
+{
     className_ = "Player";
     name_ = "Player";
     Initialize();
 }
 
-Player::~Player(){}
+Player::~Player() {}
 
-void Player::Initialize(){
+void Player::Initialize()
+{
 
     // 属性の決定
     objectType_ = ObjectType::Player;
@@ -39,34 +47,39 @@ void Player::Initialize(){
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Update(){
+void Player::Update()
+{
     BaseCharacter::Update();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Draw(){
+void Player::Draw()
+{
     BaseCharacter::Draw();
+}
+
+void Player::Spawn(const Vector3 &pos)
+{
+    ChangeState(new PlayerState_Spawn(this, pos));
 }
 
 //////////////////////////////////////////////////////////////////////////
 // コライダー関連
 //////////////////////////////////////////////////////////////////////////
 
-
-
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
 //////////////////////////////////////////////////////////////////////////
-void Player::HandleMove(const Vector3& acceleration){
+void Player::HandleMove(const Vector3 &acceleration)
+{
     // 移動
     model_->translate_ += acceleration;
 
@@ -75,11 +88,11 @@ void Player::HandleMove(const Vector3& acceleration){
     model_->UpdateMatrix();
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other, ObjectType objectType){
+void Player::OnCollision(const BaseObject *other, ObjectType objectType)
+{
     other;
     objectType;
 }

@@ -93,7 +93,6 @@ void BaseCharacter::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::ChangeState(ICharacterState* nextState){
     currentState_.reset(nextState);
-    currentState_->Initialize(this);
 }
 
 void BaseCharacter::HandleMove(const Vector3& acceleration){

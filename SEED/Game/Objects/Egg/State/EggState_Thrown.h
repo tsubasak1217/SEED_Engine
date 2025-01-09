@@ -11,7 +11,7 @@ public:
     /// <param name="_throwDirection">卵が飛んでいく方向</param>
     EggState_Thrown(BaseCharacter* _egg,const Vector3& _velocity);
     ~EggState_Thrown();
-    void Initialize(BaseCharacter* character)override;
+    void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update()override;
     void Draw()override;
 protected:

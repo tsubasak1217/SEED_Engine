@@ -9,8 +9,8 @@ EggState_Follow::EggState_Follow(BaseCharacter* _egg,BaseObject* _followTarget)
 
 EggState_Follow::~EggState_Follow(){}
 
-void EggState_Follow::Initialize(BaseCharacter* character){
-    ICharacterState::Initialize(character);
+void EggState_Follow::Initialize(const std::string& stateName,BaseCharacter* character){
+    ICharacterState::Initialize(stateName,character);
 }
 
 void EggState_Follow::Update(){

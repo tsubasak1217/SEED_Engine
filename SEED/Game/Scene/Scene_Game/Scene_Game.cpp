@@ -14,15 +14,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game(SceneManager *pSceneManager)
-{
+Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     ChangeState(new GameState_Play(this));
     Initialize();
 };
 
-Scene_Game::~Scene_Game()
-{
+Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
 }
 
@@ -32,8 +30,7 @@ Scene_Game::~Scene_Game()
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize()
-{
+void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
     //  モデル生成
@@ -45,30 +42,36 @@ void Scene_Game::Initialize()
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetDirectionalLight()->direction_ = {-1.0f, 0.0f, 0.0f};
+    SEED::GetDirectionalLight()->direction_ = {-1.0f,0.0f,0.0f};
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({0.0f, 2.0f, -30.0f});
+    SEED::GetCamera()->SetTranslation({0.0f,2.0f,-30.0f});
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow", followCamera_.get());
+    CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
+
+    ////////////////////////////////////////////////////
+    //  エディター初期化
+    ////////////////////////////////////////////////////
+    fieldEditor_ = std::make_unique<FieldEditor>();
+    fieldEditor_->Initialize();
 
     ////////////////////////////////////////////////////
     //  親子付けなど
     ////////////////////////////////////////////////////
 
     // Player の 初期化
-    player_ = std::make_unique<Player>();
     player_->Initialize();
 
     followCamera_->SetTarget(player_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
 
+    // PlayerCorpseManager の 初期化
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
 
@@ -80,7 +83,7 @@ void Scene_Game::Initialize()
     player_->SetEggManager(eggManager_.get());
 }
 
-void Scene_Game::Finalize() {}
+void Scene_Game::Finalize(){}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -88,25 +91,21 @@ void Scene_Game::Finalize() {}
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update()
-{
+void Scene_Game::Update(){
 
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ClockManager::FPS());
+    ImGui::Text("FPS: %f",ClockManager::FPS());
     ImGui::End();
 
     fieldEditor_->ShowImGui();
 
-    if (fieldEditor_->GetIsEditing())
-    {
+    if(fieldEditor_->GetIsEditing()){
         SEED::SetCamera("debug");
-    }
-    else
-    {
+    } else{
         SEED::SetCamera("follow");
     }
 
@@ -124,8 +123,7 @@ void Scene_Game::Update()
 
     eggManager_->Update();
 
-    if (currentState_)
-    {
+    if(currentState_){
         currentState_->Update();
     }
 
@@ -138,8 +136,7 @@ void Scene_Game::Update()
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw()
-{
+void Scene_Game::Draw(){
 
     // フィールドの描画
     fieldEditor_->Draw();
@@ -159,15 +156,11 @@ void Scene_Game::Draw()
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame()
-{
-}
+void Scene_Game::BeginFrame(){}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame()
-{
-}
+void Scene_Game::EndFrame(){}

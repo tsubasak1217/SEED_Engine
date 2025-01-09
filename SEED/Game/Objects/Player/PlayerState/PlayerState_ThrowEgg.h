@@ -12,12 +12,10 @@
 class PlayerState_ThrowEgg
     :public PlayerState_Move{
 public:
-    PlayerState_ThrowEgg(
-        BaseCharacter* _player,
-        EggManager* _eggManager);
+    PlayerState_ThrowEgg(const std::string& stateName,BaseCharacter* player);
     ~PlayerState_ThrowEgg();
 
-    void Initialize(BaseCharacter* character)override;
+    void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update()override;
     void Draw()override;
 private:

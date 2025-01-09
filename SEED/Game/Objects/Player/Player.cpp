@@ -68,7 +68,9 @@ void Player::Draw()
 
 void Player::Spawn(const Vector3 &pos)
 {
-    ChangeState(new PlayerState_Spawn(this, pos));
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this);
+    state->SetSpawnPos(pos);
+    ChangeState(state);
 }
 
 //////////////////////////////////////////////////////////////////////////

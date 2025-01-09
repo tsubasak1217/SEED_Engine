@@ -11,5 +11,3 @@ void PlayerCorpse::Initialize(){
 void PlayerCorpse::Update(){
     BaseObject::Update();
 }
-
-void PlayerCorpse::InitCollider(){}

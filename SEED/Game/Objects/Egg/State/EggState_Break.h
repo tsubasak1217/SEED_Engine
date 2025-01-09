@@ -8,7 +8,7 @@ public:
     EggState_Break(BaseCharacter* character);
     ~EggState_Break() = default;
 
-    void Initialize(BaseCharacter* character)override;
+    void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update() override;
     void Draw() override;
 protected:

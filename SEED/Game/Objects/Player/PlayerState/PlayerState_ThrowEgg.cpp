@@ -21,25 +21,25 @@
 #include "MatrixFunc.h"
 #include "MyMath.h"
 
-PlayerState_ThrowEgg::PlayerState_ThrowEgg(BaseCharacter* _player,EggManager* _eggManager)
-    :PlayerState_Move(_player),
-    eggManager_(_eggManager){}
+PlayerState_ThrowEgg::PlayerState_ThrowEgg(const std::string& stateName,BaseCharacter* player){
+    Initialize(stateName,player);
+}
 
 PlayerState_ThrowEgg::~PlayerState_ThrowEgg(){}
 
-void PlayerState_ThrowEgg::Initialize(BaseCharacter* character){
-    ICharacterState::Initialize(character);
+void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter* character){
+    ICharacterState::Initialize(stateName,character);
 
     // Player の 現在向いてる方向 v
     throwDirection_ = Vector3(0.0f,0.0f,1.0f) * RotateMatrix(pCharacter_->GetWorldRotate());
 
-    // Egg に Velocity を セット
-    if(eggManager_->GetIsEmpty()){
-        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
-        return;
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+    if(!pPlayer){
+        assert(false);
     }
-    throwEgg_ = eggManager_->GetFrontEgg().get();
+    eggManager_ = pPlayer->GetEggManager();
 
+    throwEgg_ = eggManager_->GetFrontEgg().get();
 }
 
 void PlayerState_ThrowEgg::Update(){
@@ -65,7 +65,7 @@ void PlayerState_ThrowEgg::ManageState(){
         throwDirection_ = MyMath::Normalize(throwDirection_);
         Vector3 throwVelocity = throwDirection_ * throwPower_;
         throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_));
-        pCharacter_->ChangeState(new PlayerState_Idle(pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }
 }

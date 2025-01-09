@@ -12,14 +12,14 @@
 
 
 EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _velocity)
-    :ICharacterState(_egg),
-    velocity_(_velocity){
+    :velocity_(_velocity){
+    pCharacter_ = _egg;
 }
 
 EggState_Thrown::~EggState_Thrown(){}
 
-void EggState_Thrown::Initialize(BaseCharacter* character){
-    ICharacterState::Initialize(character);
+void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* character){
+    ICharacterState::Initialize(stateName,character);
 }
 
 void EggState_Thrown::Update(){

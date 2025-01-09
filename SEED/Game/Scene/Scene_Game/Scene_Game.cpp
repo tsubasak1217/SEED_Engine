@@ -67,7 +67,7 @@ void Scene_Game::Initialize(){
     //  editor
     ////////////////////////////////////////////////////
     fieldEditor_ = std::make_unique<FieldEditor>();
-
+    fieldEditor_->Initialize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,8 @@ void Scene_Game::Update(){
     if(currentState_){
         currentState_->Update();
     }
+
+    fieldEditor_->Update();
 }
 
 
@@ -117,6 +119,9 @@ void Scene_Game::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw(){
+
+    // フィールドの描画
+    fieldEditor_->Draw();
 
     // グリッドの描画
     SEED::DrawGrid();

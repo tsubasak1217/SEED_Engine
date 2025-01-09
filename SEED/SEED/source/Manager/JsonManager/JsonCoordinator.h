@@ -102,6 +102,17 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
         s_groupData_[group] = json::object();
     }
 
+    // 同じグループ内で既に同じキーが登録されているか確認
+    if (s_bindings_[group].count(key) > 0){
+        // 既に登録済みの場合でも、targetにデータを同期する
+        auto existingVal = s_groupData_[group][key].get<AdjustableValue>();
+        if (auto valPtr = std::get_if<T>(&existingVal)){
+            target = *valPtr;
+        }
+        // 既に登録済みなので、ここでの再登録はしないで終わりでござる
+        return true;
+    }
+
     // データに登録
     s_groupData_[group][key] = target;
 
@@ -118,7 +129,7 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
         target = *valPtr;
     }
 
-    // デバッグログ
+    // デバッグログなどがあればここに記述
 
     return true;
 }

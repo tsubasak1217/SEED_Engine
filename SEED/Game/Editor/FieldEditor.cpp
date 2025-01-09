@@ -19,6 +19,8 @@ void FieldEditor::Initialize(){
 
     LoadFromJson(jsonPath);
 
+    LoadFieldModelTexture();
+
 }
 
 void FieldEditor::Update(){
@@ -168,37 +170,44 @@ void FieldEditor::ShowImGui(){
 
     ImGui::Checkbox("isEditing", &isEditing_);
 
-    // モデル選択ドロップダウン
+    // 選択モデル関連の静的変数
     static int selectedModelNameIndex = 0;
-    ImGui::Text("Model List:");
     static int selectedModelIndex = -1;
+    static int lastSelectedModelIdxForTransform = -1;
+    static Vector3Int moveChunk {0, 0, 0};
+    static Vector3Int scaleChunk {1, 1, 1};
 
-    if (selectedModelNameIndex >= 0 && selectedModelNameIndex < static_cast< int >(modelNames_.size())){
-        auto it = std::next(modelNames_.begin(), selectedModelNameIndex);
-        std::string imagePath = "fieldModelTextures/" + *it + "Image.png";
+    // モデル一覧画像ボタン表示
+    ImGui::Text("Select a Model:");
+    for (int i = 0; i < static_cast< int >(modelNames_.size()); ++i){
+        const std::string& modelName = *std::next(modelNames_.begin(), i);
+        std::string imagePath = "fieldModelTextures/" + modelName + "Image.png";
 
-        ////// 画像ボタンを表示（サイズは適宜調整）
-        //if (ImGui::ImageButton(textureIDs_[imagePath], ImVec2(50, 50))){
-        //    // 画像がクリックされたら、そのモデルを選択
-        //    selectedModelIndex = selectedModelNameIndex;
-        //}
-
-    }
-
-    // モデル追加ボタン
-    if (ImGui::Button("Add Selected Model")){
-        if (selectedModelNameIndex >= 0 && selectedModelNameIndex < static_cast< int >(modelNames_.size())){
-            auto it = std::next(modelNames_.begin(), selectedModelNameIndex);
-            AddModel(*it + ".obj");
-            if (!fieldModel_.empty()){
-                fieldModel_.back()->translate_ = Vector3(0.0f, 0.0f, 0.0f);
-                fieldModel_.back()->scale_ = Vector3(10.0f, 10.0f, 10.0f);
-                fieldModel_.back()->rotate_ = Vector3(0.0f, 0.0f, 0.0f);
+        auto texIt = textureIDs_.find(imagePath);
+        if (texIt != textureIDs_.end()){
+            if (ImGui::ImageButton(texIt->second, ImVec2(64, 64))){
+                selectedModelIndex = i;
             }
+        } else{
+            ImGui::Text("Texture not found: %s", imagePath.c_str());
+        }
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
+
+    // モデル追加・保存ボタン
+    if (ImGui::Button("Add Selected Model") && selectedModelIndex >= 0 &&
+        selectedModelIndex < static_cast< int >(modelNames_.size())){
+        auto it = std::next(modelNames_.begin(), selectedModelIndex);
+        AddModel(*it + ".obj");
+        selectedModelNameIndex = static_cast< int >(fieldModel_.size()) - 1;
+        if (!fieldModel_.empty()){
+            auto& newModel = fieldModel_.back();
+            newModel->translate_ = Vector3(0.0f, 0.0f, 0.0f);
+            newModel->scale_ = Vector3(10.0f, 10.0f, 10.0f);
+            newModel->rotate_ = Vector3(0.0f, 0.0f, 0.0f);
         }
     }
-
-    // 保存ボタンなどの処理
     ImGui::SameLine();
     if (ImGui::Button("Save Models")){
         SaveToJson(jsonPath);
@@ -206,21 +215,17 @@ void FieldEditor::ShowImGui(){
 
     ImGui::Separator();
 
-    //---------------------------------------------
-    // 既存の「Model List」表示
-    //---------------------------------------------
+    // 左側のモデルリスト
     ImGui::BeginChild("Model List", ImVec2(200, 300), true);
     ImGui::Text("Model List:");
-    for (int i = 0; i < fieldModel_.size(); ++i){
+    for (int i = 0; i < static_cast< int >(fieldModel_.size()); ++i){
         std::string label = "Model " + std::to_string(i);
-
-        if (selectedModelNameIndex == i){
+        bool isSelected = (selectedModelNameIndex == i);
+        if (isSelected){
             fieldModel_[i]->color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.4f, 0.4f, 0.0f, 1.0f));
-            if (ImGui::Selectable(label.c_str(), true)){
-                // すでに選択しているので特に何もしない
-            }
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 0.f, 1.f));
+            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.4f, 0.4f, 0.f, 1.f));
+            ImGui::Selectable(label.c_str(), true);
             ImGui::PopStyleColor(2);
         } else{
             fieldModel_[i]->color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -233,15 +238,51 @@ void FieldEditor::ShowImGui(){
 
     ImGui::SameLine();
 
-    //---------------------------------------------
-    // 既存のモデル編集エリア
-    //---------------------------------------------
+    // 右側のモデル編集エリア
     ImGui::BeginChild("Model Editor", ImVec2(250, 300), true);
-    if (selectedModelNameIndex >= 0 && selectedModelNameIndex < fieldModel_.size()){
+    if (selectedModelNameIndex >= 0 && selectedModelNameIndex < static_cast< int >(fieldModel_.size())){
         auto& model = fieldModel_[selectedModelNameIndex];
         ImGui::Text("Editing Model %d", selectedModelNameIndex);
         ImGui::Separator();
 
+        // チャンク変換操作の初期化
+        static const float CHUNK_MOVE = 10.0f;
+        static const float CHUNK_SCALE = 10.0f;
+        if (selectedModelNameIndex != lastSelectedModelIdxForTransform){
+            moveChunk = {0, 0, 0};
+            scaleChunk = {
+                static_cast< int >(model->scale_.x) / 10,
+                static_cast< int >(model->scale_.y) / 10,
+                static_cast< int >(model->scale_.z) / 10
+            };
+            lastSelectedModelIdxForTransform = selectedModelNameIndex;
+        }
+
+        ImGui::Text("Chunk Transform");
+        Vector3Int tempMove = moveChunk;
+        Vector3Int tempScale = scaleChunk;
+
+        ImGui::SliderInt3("Move (chunks)", &tempMove.x, -10, 10);
+        ImGui::SliderInt3("Scale (chunks)", &tempScale.x, 1, 10);
+
+        if (tempMove != moveChunk){
+            Vector3Int diff = {tempMove.x - moveChunk.x, tempMove.y - moveChunk.y, tempMove.z - moveChunk.z};
+            model->translate_.x += diff.x * CHUNK_MOVE;
+            model->translate_.y += diff.y * CHUNK_MOVE;
+            model->translate_.z += diff.z * CHUNK_MOVE;
+            moveChunk = tempMove;
+        }
+        if (tempScale != scaleChunk){
+            Vector3Int diff = {tempScale.x - scaleChunk.x, tempScale.y - scaleChunk.y, tempScale.z - scaleChunk.z};
+            model->scale_.x += diff.x * CHUNK_SCALE;
+            model->scale_.y += diff.y * CHUNK_SCALE;
+            model->scale_.z += diff.z * CHUNK_SCALE;
+            scaleChunk = tempScale;
+        }
+
+        ImGui::Separator();
+
+        // 位置・スケール・回転の編集
         Vector3 position = model->translate_;
         Vector3 scale = model->scale_;
         Vector3 rotation = model->rotate_;
@@ -253,57 +294,6 @@ void FieldEditor::ShowImGui(){
         model->translate_ = position;
         model->scale_ = scale;
         model->rotate_ = rotation;
-
-        static const float CHUNK_MOVE = 10.0f; // 1チャンクで座標10移動
-        static const float CHUNK_SCALE = 10.0f; // 1チャンクでスケール10変化
-
-        static int lastSelectedModelIndex = -1;
-
-        static Vector3Int moveChunk = {0, 0, 0};
-        static Vector3Int scaleChunk = {1, 1, 1};
-
-        //1チャンクにつき10
-        if (selectedModelNameIndex != lastSelectedModelIndex){
-            moveChunk = {0, 0, 0};
-            scaleChunk = Vector3Int(
-                static_cast< int >(model->scale_.x) / 10,
-                static_cast< int >(model->scale_.y) / 10,
-                static_cast< int >(model->scale_.z) / 10
-            );
-            lastSelectedModelIndex = selectedModelNameIndex;
-        }
-
-        ImGui::Separator();
-        ImGui::Text("Dynamic Chunk Transform");
-
-        static Vector3Int oldMove = {0, 0, 0};
-        static Vector3Int oldScale = {1, 1, 1};
-
-        Vector3Int tempMove = moveChunk;
-        Vector3Int tempScale = scaleChunk;
-
-        ImGui::SliderInt3("Move (chunks)", &tempMove.x, -10, 10);
-        ImGui::SliderInt3("Scale (chunks)", &tempScale.x, 1, 10);
-
-        if (tempMove != moveChunk){
-            Vector3Int diff = tempMove - moveChunk;
-
-            model->translate_.x += diff.x * CHUNK_MOVE;
-            model->translate_.y += diff.y * CHUNK_MOVE;
-            model->translate_.z += diff.z * CHUNK_MOVE;
-
-            moveChunk = tempMove;
-        }
-
-        if (tempScale != scaleChunk){
-            Vector3Int diff = tempScale - scaleChunk;
-
-            model->scale_.x += diff.x * CHUNK_SCALE;
-            model->scale_.y += diff.y * CHUNK_SCALE;
-            model->scale_.z += diff.z * CHUNK_SCALE;
-
-            scaleChunk = tempScale;
-        }
 
         ImGui::Separator();
         if (ImGui::Button("Remove Selected Model")){
@@ -318,3 +308,4 @@ void FieldEditor::ShowImGui(){
     ImGui::End();
 #endif // _DEBUG
 }
+

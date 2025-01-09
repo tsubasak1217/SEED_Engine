@@ -569,6 +569,17 @@ Matrix4x4 RotateMatrix(const Vector3& rotate) {
     return rotX * (rotY * rotZ);
 }
 
+/*------------------- Quaternionから回転行列を作成 --------------------*/
+Matrix4x4 RotateMatrix(const Quaternion& rotate){
+    return rotate.MakeMatrix();
+}
+
+/*------------------- 任意軸と角度から回転行列を作成 --------------------*/
+Matrix4x4 RotateMatrix(const Vector3& axis, float angle){
+    Quaternion q = Quaternion::AngleAxis(angle, axis);
+    return q.MakeMatrix();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //     平行移動行列を作る関数

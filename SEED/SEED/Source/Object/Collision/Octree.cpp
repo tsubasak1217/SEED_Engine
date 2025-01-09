@@ -5,12 +5,14 @@
 // 所属するコライダーを描画
 //////////////////////////////////////////////////////////////////////////////
 void Octree::DrawCollider(){
+#ifdef _DEBUG
     for(auto& collider : colliders_){
         collider->Draw();
     }
     for(auto& child : children_){
         child->DrawCollider();
     }
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1,31 +1,20 @@
 #pragma once
-
-// external
-#include <string>
-#include <vector>
-#include <memory>
-#include <list>
-
-// local
-#include <Triangle.h>
-#include <Model.h>
 #include "State_Base.h"
-#include <Sprite.h>
-
-
-class Scene_Game;
-class SEED;
+#include "Scene_Base.h"
 
 // ゲームの基底ステート
 class GameState_Enter : public State_Base{
 
 public:
     GameState_Enter() = default;
-    GameState_Enter(Scene_Game* pScene);
-    ~GameState_Enter();
-
-    void Update();
-    void Draw();
+    GameState_Enter(Scene_Base* pScene);
+    ~GameState_Enter()override;
+    void Initialize()override;
+    void Finalize()override;
+    void Update()override;
+    void Draw()override;
+    void BeginFrame()override;
+    void EndFrame()override;
 
 private:
 

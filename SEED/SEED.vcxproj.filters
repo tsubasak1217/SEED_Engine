@@ -451,10 +451,19 @@
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
       <Filter>SEED\Source\Object\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
+      <Filter>SEED\Source\Manager\ModelManager</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Object\Camera\StageViewCamera.cpp">
+    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
@@ -849,8 +858,13 @@
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Object\Camera\StageViewCamera.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Manager\EnemyManager.h" />
     <ClInclude Include="Game\Editor\EnemyEditor.h" />
   </ItemGroup>

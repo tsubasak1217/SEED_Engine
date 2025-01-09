@@ -21,7 +21,6 @@ struct CollisionData{
     Vector3 pushBackAxis;
     float dot = 1.0f;
     float collideDepth = 1000000.0f;
-    bool isCollided = false;
 };
 
 namespace Collision{

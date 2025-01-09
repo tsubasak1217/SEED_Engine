@@ -28,7 +28,7 @@ void Collider_Capsule::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////////////
 void Collider_Capsule::Draw(){
-    SEED::DrawCapsule(body_.origin,body_.end,body_.radius,6,color_);
+    SEED::DrawCapsule(body_.origin, body_.end, body_.radius, 6, color_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -49,3 +49,90 @@ void Collider_Capsule::UpdateBox(){
     coverAABB_.center = (min + max) * 0.5f;
     coverAABB_.halfSize = (max - min) * 0.5f;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// ImGuiでの編集
+//////////////////////////////////////////////////////////////////////////
+void Collider_Capsule::Edit(){
+
+#ifdef _DEBUG
+
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
+    color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 中心座標
+    ImGui::Text("------ Origin ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Origin" + colliderID).c_str(), &local_.origin.x, 0.05f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // 半径
+    ImGui::Text("-------- End -------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("End" + colliderID).c_str(), &local_.end.x, 0.05f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // 半径
+    ImGui::Text("------ Radius ------");
+    ImGui::Indent();
+    ImGui::DragFloat(std::string("Radius" + colliderID).c_str(), &body_.radius, 0.05f, 0.0f);
+    ImGui::Unindent();
+
+    ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+    // オフセット
+    ImGui::Text("------ Offset ------");
+    ImGui::Indent();
+    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
+    ImGui::Unindent();
+
+    // アニメーションフラグ
+    ImGui::Text("------ Animation ------");
+    ImGui::Checkbox("Animation", &isAnimation_);
+
+#endif // _DEBUG
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// コライダーの情報をjson形式でまとめる
+//////////////////////////////////////////////////////////////////////////
+nlohmann::json Collider_Capsule::GetJsonData(){
+    nlohmann::json json;
+
+    // 全般の情報
+    json.merge_patch(Collider::GetJsonData());
+
+    // ローカル座標
+    json["local"]["origin"] = local_.origin;
+    json["local"]["end"] = local_.end;
+    json["radius"] = body_.radius;
+
+    // オフセット
+    json["offset"] = offset_;
+
+    return json;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+//////////////////////////////////////////////////////////////////////////
+void Collider_Capsule::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.origin = jsonData["local"]["origin"];
+    local_.end = jsonData["local"]["end"];
+    body_.radius = jsonData["radius"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+}
+

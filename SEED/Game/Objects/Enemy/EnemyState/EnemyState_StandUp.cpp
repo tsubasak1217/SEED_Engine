@@ -6,14 +6,14 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_StandUp::EnemyState_StandUp(BaseCharacter* player){
-    Initialize(player);
+EnemyState_StandUp::EnemyState_StandUp(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
 }
 
 EnemyState_StandUp::~EnemyState_StandUp(){}
 
-void EnemyState_StandUp::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void EnemyState_StandUp::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
     pCharacter_->SetAnimation("standUp", false);
 }
 
@@ -21,8 +21,6 @@ void EnemyState_StandUp::Initialize(BaseCharacter* player){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void EnemyState_StandUp::Update(){
-    // ステート管理
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -37,13 +35,13 @@ void EnemyState_StandUp::ManageState(){
 
     // 立ち上がり切ったらアイドル状態に遷移
     if(pCharacter_->GetIsEndAnimation()){
-        pCharacter_->ChangeState(new EnemyState_Idle(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Idle("Enemy_Idle", pCharacter_));
         return;
     }
 
     // ダメージを受けたらダメージ状態に遷移
     if(pCharacter_->GetIsDamaged()){
-        pCharacter_->ChangeState(new EnemyState_Damaged(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Damaged("Enemy_Damaged",pCharacter_));
         return;
     }
 

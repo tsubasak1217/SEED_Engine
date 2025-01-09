@@ -2,6 +2,8 @@
 #include "InputManager.h"
 #include "ImGuiManager.h"
 #include "ICharacterState.h"
+#include "TextureManager/TextureManager.h"
+#include "SEED.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -29,6 +31,9 @@ void BaseCharacter::Update(){
     // 前フレームの座標の保存
     prePos_ = GetWorldTranslate();
 
+    // フラグの初期化
+    isDamaged_ = false;
+
     // 状態に応じた更新処理
     if(currentState_){
         // 更新処理
@@ -51,6 +56,35 @@ void BaseCharacter::Draw(){
 
     // 基本モデルの描画
     BaseObject::Draw();
+
+    Quad q = Quad(
+        Vector3(-3.0f, 0.01f, 3.0f),
+        Vector3(3.0f, 0.01f, 3.0f),
+        Vector3(-3.0f, 0.01f, -3.0f),
+        Vector3(3.0f, 0.01f, -3.0f)
+    );
+
+    q.GH = TextureManager::LoadTexture("ParticleTextures/particle.png");
+    q.blendMode = BlendMode::SUBTRACT;
+
+    for(int i = 0; i < 4; i++){
+        q.localVertex[i] += GetWorldTranslate();
+        q.localVertex[i].y = 0.01f;
+    }
+
+    SEED::DrawQuad(q);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// フレーム終了時の処理
+//////////////////////////////////////////////////////////////////////////
+void BaseCharacter::EndFrame(){
+    // 状態に応じた終了処理
+    if(currentState_){
+        currentState_->EndFrame();
+    }
+
+    BaseObject::EndFrame();
 }
 
 
@@ -84,4 +118,24 @@ void BaseCharacter::HandOverColliders(){
     if(currentState_){
         currentState_->HandOverColliders();
     }
+}
+
+// コライダーの初期化
+void BaseCharacter::InitColliders(ObjectType objectType){
+    BaseObject::InitColliders(objectType);
+    colliders_;
+    // state固有のコライダーを初期化
+    if(currentState_){
+        currentState_->InitColliders(objectType);
+    }
+}
+
+// ダメージを受ける処理
+void BaseCharacter::Damage(int32_t damage){
+    HP_ -= damage;
+    if(HP_ <= 0){
+        isAlive_ = false;
+    }
+
+    isDamaged_ = true;
 }

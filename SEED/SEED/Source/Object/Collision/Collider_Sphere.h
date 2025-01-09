@@ -4,13 +4,18 @@
 class Collider_Sphere : public Collider{
 public:
     Collider_Sphere();
-    ~Collider_Sphere() = default;
+    ~Collider_Sphere()override = default;
     void UpdateMatrix() override;
     void Draw() override;
     void CheckCollision(Collider* collider)override;
 
 protected:
     void UpdateBox()override;
+
+public:
+    void Edit()override;
+    nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Sphere GetSphere()const{ return body_; }

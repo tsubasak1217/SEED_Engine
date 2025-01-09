@@ -4,11 +4,11 @@
 class EnemyState_Idle : public ICharacterState{
 public:
     EnemyState_Idle() = default;
-    EnemyState_Idle(BaseCharacter* enemy);
+    EnemyState_Idle(const std::string& stateName, BaseCharacter* enemy);
     ~EnemyState_Idle()override;
     void Update()override;
     void Draw()override;
-    void Initialize(BaseCharacter* enemy)override;
+    void Initialize(const std::string& stateName, BaseCharacter* enemy)override;
 
 protected:
     // ステート管理

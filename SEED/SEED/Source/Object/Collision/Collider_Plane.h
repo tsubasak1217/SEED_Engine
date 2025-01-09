@@ -4,13 +4,18 @@
 class Collider_Plane : public Collider{
 public:
     Collider_Plane();
-    ~Collider_Plane() = default;
+    ~Collider_Plane()override = default;
     void UpdateMatrix() override;
     void Draw() override;
     void CheckCollision(Collider* collider)override;
 
 protected:
     void UpdateBox()override;
+
+public:
+    void Edit()override;
+    nlohmann::json GetJsonData()override;
+    void LoadFromJson(const nlohmann::json& jsonData)override;
 
 public:
     Quad GetPlane()const{ return body_; }

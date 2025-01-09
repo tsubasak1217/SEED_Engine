@@ -192,9 +192,6 @@ void DxManager::Initialize(SEED* pSEED){
 
     instance_->camera_ = CameraManager::GetCamera("main");
 
-    // ステージを見渡す用のカメラ
-    instance_->camera_ = CameraManager::GetCamera("stageView");
-
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
 }

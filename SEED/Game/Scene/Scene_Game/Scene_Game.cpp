@@ -4,8 +4,15 @@
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
-
+#include "Scene_Title.h"
+#include "CameraManager/CameraManager.h"
 #include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  コンストラクタ・デストラクタ
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
@@ -13,19 +20,23 @@ Scene_Game::Scene_Game(SceneManager* pSceneManager){
     Initialize();
 };
 
-Scene_Game::~Scene_Game(){}
+Scene_Game::~Scene_Game(){
+    CameraManager::DeleteCamera("follow");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  初期化
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Initialize(){
-
-    SEED::SetCamera("stageView");
 
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
 
-    player_ = std::make_unique<Player>();
-    enemyManager_ = std::make_unique<EnemyManager>(player_.get());
-    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
+
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -43,22 +54,33 @@ void Scene_Game::Initialize(){
 
     followCamera_ = std::make_unique<FollowCamera>();
     CameraManager::AddCamera("follow", followCamera_.get());
-   // SEED::SetCamera("follow");
+    SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
     //  親子付けなど
     ////////////////////////////////////////////////////
 
-    followCamera_->SetTarget(player_.get());
-    player_->SetFollowCameraPtr(followCamera_.get());
 
+    ////////////////////////////////////////////////////
+    //  editor
+    ////////////////////////////////////////////////////
     fieldEditor_ = std::make_unique<FieldEditor>();
     fieldEditor_->Initialize();
-
-
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  終了処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
 void Scene_Game::Finalize(){}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  更新処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Update(){
 
@@ -73,7 +95,12 @@ void Scene_Game::Update(){
 
     fieldEditor_->ShowImGui();
 
-    enemyEditor_->ShowImGui();
+    if (fieldEditor_->GetIsEditing()){
+        SEED::SetCamera("debug");
+    } else{
+        SEED::SetCamera("follow");
+    }
+
 #endif
 
     /*========================== Manager ============================*/
@@ -81,26 +108,49 @@ void Scene_Game::Update(){
     ParticleManager::Update();
 
     /*========================= 各状態の更新 ==========================*/
-    currentState_->Update();
 
-    player_->Update();
-
-    enemyManager_->Update();
+    if(currentState_){
+        currentState_->Update();
+    }
 
     fieldEditor_->Update();
-
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  描画処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
 void Scene_Game::Draw(){
+
+    // フィールドの描画
+    fieldEditor_->Draw();
 
     // グリッドの描画
     SEED::DrawGrid();
 
+    // パーティクルの描画
     ParticleManager::Draw();
 
-    player_->Draw();
+}
 
-    enemyManager_->Draw();
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  フレーム開始時の処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Game::BeginFrame(){
 
-    fieldEditor_->Draw();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  フレーム終了時の処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Game::EndFrame(){
+
 }

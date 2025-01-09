@@ -19,7 +19,7 @@ protected:
     virtual void ManageState()override;
 private:
     Vector3 spawnPos_;
-    float spawnTime_;
+    float spawnTime_ = 2.0f;
     float spawnTimeLimit_;
 public:
     void SetSpawnPos(const Vector3& _spawnPos){ spawnPos_ = _spawnPos; }

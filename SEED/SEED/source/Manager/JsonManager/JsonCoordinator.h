@@ -101,10 +101,6 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
     if (!s_groupData_.count(group)){
         s_groupData_[group] = json::object();
     }
-    //すでに登録されているものはスルー
-    if(s_groupData_[group].count(key) > 0){
-        return false;
-    }
 
     // 同じグループ内で既に同じキーが登録されているか確認
     if (s_bindings_[group].count(key) > 0){
@@ -115,10 +111,12 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
         }
         // 既に登録済みなので、ここでの再登録はしないで終わりでござる
         return true;
+    }else{
+        // データに登録
+        s_groupData_[group][key] = target;
     }
 
-    // データに登録
-    s_groupData_[group][key] = target;
+    
 
     // バインディング登録
     s_bindings_[group][key] = [&target] (const AdjustableValue& value){

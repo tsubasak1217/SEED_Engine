@@ -31,8 +31,9 @@ PlayerState_ThrowEgg::~PlayerState_ThrowEgg(){}
 void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-    // Player の 現在向いてる方向 v
-    throwDirection_ = Vector3(0.0f,0.0f,1.0f) * RotateMatrix(pCharacter_->GetWorldRotate());
+    JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
+    JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
+    JsonCoordinator::RegisterItem("Player","throwDirectionOffset",throwDirectionOffset_);
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(!pPlayer){
@@ -43,9 +44,8 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     throwEgg_ = eggManager_->GetFrontEgg().get();
     throwEgg_->ChangeState(new EggState_Idle(throwEgg_));
 
-    JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
-    JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
-    JsonCoordinator::RegisterItem("Player","throwDirectionOffset",throwDirectionOffset_);
+    // Player の 現在向いてる方向 v
+    throwDirection_ = throwDirectionOffset_ * RotateMatrix(pCharacter_->GetWorldRotate());
 }
 
 void PlayerState_ThrowEgg::Update(){

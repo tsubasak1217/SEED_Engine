@@ -19,8 +19,14 @@ public:
 
 public:
     AABB GetAABB()const{ return body_; }
+    AABB GetPreAABB()const{
+        Collider_AABB* preAabbCollider = dynamic_cast<Collider_AABB*>(preCollider_);
+        return preAabbCollider->GetAABB();
+    }
+
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetSize(const Vector3& size){ body_.halfSize = size * 0.5f; }
+    bool IsMoved()override;
 
 private:
     AABB local_;

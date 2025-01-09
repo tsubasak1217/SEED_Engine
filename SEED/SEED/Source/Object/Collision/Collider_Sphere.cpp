@@ -166,3 +166,19 @@ void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
     // 行列の更新
     UpdateMatrix();
 }
+
+////////////////////////////////////////////////////////////
+// 移動したかどうか
+////////////////////////////////////////////////////////////
+bool Collider_Sphere::IsMoved(){
+    Sphere sphere[2] = {
+        GetSphere(),
+        GetPreSphere()
+    };
+
+    if(sphere[0].center != sphere[1].center or sphere[0].radius != sphere[1].radius){
+        return true;
+    }
+
+    return false;
+}

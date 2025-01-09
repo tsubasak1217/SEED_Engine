@@ -79,6 +79,15 @@ public:// アクセッサ-------------------------------------------------------
     Matrix4x4 GetWorldMat()const{ return worldMat_; }
     Matrix4x4 GetLocalMat()const{ return localMat_; }
 
+    // トランスフォーム取得
+    Vector3 GetWoarldTranslate()const{ return ExtractTranslation(worldMat_) + offset_; }
+    Vector3 GetLocalTranslate()const{ return ExtractTranslation(localMat_) + offset_; }
+    Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }
+    Vector3 GetLocalRotate()const{ return ExtractRotation(localMat_); }
+    Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
+    Vector3 GetLocalScale()const{ return ExtractScale(localMat_); }
+    virtual bool IsMoved();
+
     // 衝突判定八分木用
     const AABB& GetBox()const{ return coverAABB_; }
 
@@ -90,6 +99,7 @@ public:// アクセッサ-------------------------------------------------------
 
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;
+    Collider* preCollider_;
     ColliderType colliderType_;
     ObjectType objectType_ = ObjectType::None;
     static uint32_t nextID_;

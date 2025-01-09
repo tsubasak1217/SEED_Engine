@@ -8,7 +8,7 @@
 
 EggState_Follow::EggState_Follow(BaseCharacter* _egg,BaseObject* _followTarget)
     :followTarget_(_followTarget){
-    pCharacter_ = _egg;
+    Initialize("Follow",_egg);
 }
 
 EggState_Follow::~EggState_Follow(){}

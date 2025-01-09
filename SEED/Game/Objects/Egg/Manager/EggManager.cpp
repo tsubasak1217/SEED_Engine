@@ -19,6 +19,8 @@ void EggManager::Initialize(){
     auto& spawnedEgg = eggs_.back();
     spawnedEgg->SetEggManager(this);
     spawnedEgg->Initialize();
+
+    JsonCoordinator::LoadGroup("Egg");
 }
 
 void EggManager::Update(){
@@ -26,7 +28,12 @@ void EggManager::Update(){
         return egg->GetIsBreak();
                   });
 
+    ImGui::Begin("Egg");
     JsonCoordinator::RenderGroupUI("Egg");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("Egg");
+    }
+    ImGui::End();
 
     if(eggs_.empty()){
         eggs_.push_back(std::make_unique<Egg>(player_));

@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp" />
@@ -219,6 +220,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h" />

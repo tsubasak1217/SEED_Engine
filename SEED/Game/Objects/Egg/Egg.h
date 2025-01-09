@@ -31,6 +31,8 @@ private:
     BaseObject* player_ = nullptr;
 
     bool isBreak_ = false;
+
+    float weight_ = 1.0f;
 public:// アクセッサ
     void SetPlayer(BaseObject* _player){ player_ = _player; }
     void SetEggManager(EggManager* _eggManager){ eggManager_ = _eggManager; }

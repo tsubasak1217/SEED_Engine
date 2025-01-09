@@ -22,4 +22,6 @@ protected:
 
 private:
     Vector3 velocity_ = {0.0f,0.0f,0.0f};
+
+    float weight_;
 };

@@ -9,7 +9,7 @@
 #include "JsonManager/JsonCoordinator.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character){
-    pCharacter_ = character;
+    Initialize("Break",character);
 }
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){

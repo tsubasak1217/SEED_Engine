@@ -17,6 +17,6 @@ protected:
 private:
     BaseCharacter* deadPlayer_ = nullptr;
 
-    const float breakTime_ = 1.0f;
+    float breakTime_ = 1.0f;
     float leftTime_ = 0.0f;
 };

@@ -1,0 +1,9 @@
+{
+    "followOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -2.490000009536743
+    },
+    "followSensitivity": 0.20000000298023224,
+    "BreakTime": 1.0
+}

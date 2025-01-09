@@ -29,7 +29,7 @@ private:
     // 投げる方向
     Vector3 throwDirection_ = {0.0f,0.0f,0.0f};
     // 投げるパワー
-    const float throwPower_ = 20.0f;
+    float throwPower_ = 20.0f;
 
     Vector3 throwDirectionOffset_ = {0.0f,1.0f,1.0f};
 };

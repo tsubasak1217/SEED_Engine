@@ -101,6 +101,10 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
     if (!s_groupData_.count(group)){
         s_groupData_[group] = json::object();
     }
+    //すでに登録されているものはスルー
+    if(s_groupData_[group].count(key) > 0){
+        return false;
+    }
 
     // データに登録
     s_groupData_[group][key] = target;

@@ -29,6 +29,8 @@ void Egg::Initialize(){
     model_ = std::make_unique<Model>("Assets/cube.obj");
 
     currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
+
+    JsonCoordinator::RegisterItem("Egg","Weight",weight_);
 }
 
 void Egg::Update(){

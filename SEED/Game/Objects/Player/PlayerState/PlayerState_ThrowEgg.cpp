@@ -4,7 +4,7 @@
 #include "PlayerState_Idle.h"
 //eggState
 #include "Egg/State/EggState_Thrown.h"
-
+#include "Egg/State/EggState_Idle.h"
 // stl
 #include <algorithm>
 
@@ -41,9 +41,9 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     eggManager_ = pPlayer->GetEggManager();
 
     throwEgg_ = eggManager_->GetFrontEgg().get();
+    throwEgg_->ChangeState(new EggState_Idle(throwEgg_));
 
     JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
-    JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
     JsonCoordinator::RegisterItem("Player","throwDirectionOffset",throwDirectionOffset_);
 }
@@ -52,6 +52,8 @@ void PlayerState_ThrowEgg::Update(){
     // 移動＆回転
     PlayerState_Move::Move();
     PlayerState_Move::Rotate();
+
+    throwDirectionOffset_= MyMath::Normalize(throwDirectionOffset_);
 
     // 卵 の 位置 を 更新
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));
@@ -71,6 +73,7 @@ void PlayerState_ThrowEgg::ManageState(){
         throwDirection_ = MyMath::Normalize(throwDirection_);
         Vector3 throwVelocity = throwDirection_ * throwPower_;
         throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_));
+
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }

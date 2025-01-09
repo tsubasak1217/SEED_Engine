@@ -37,4 +37,6 @@ private:
 private:
 
     std::unique_ptr<FollowCamera> followCamera_;
+
+    std::unique_ptr<FieldEditor> fieldEditor_;
 };

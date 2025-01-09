@@ -297,24 +297,6 @@ Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
 
 
 
-Quaternion Quaternion::LookRotation(const Vector3& eye, const Vector3& target, const Vector3& up){
-    Vector3 f = MyMath::Normalize(target - eye); // 前方向ベクトル
-    Vector3 s = MyMath::Normalize(MyMath::Cross(f, up)); // 右方向ベクトル
-    Vector3 u = MyMath::Normalize(MyMath::Cross(s, f));  // 上方向ベクトル
-
-    // 回転行列の生成
-    Matrix4x4 rotationMatrix = {};
-    rotationMatrix.m[0][0] = s.x; rotationMatrix.m[0][1] = s.y; rotationMatrix.m[0][2] = s.z; rotationMatrix.m[0][3] = 0.0f; // 右方向ベクトルを行列の1列目に設定
-    rotationMatrix.m[1][0] = u.x; rotationMatrix.m[1][1] = u.y; rotationMatrix.m[1][2] = u.z; rotationMatrix.m[1][3] = 0.0f; // 上方向ベクトルを行列の2列目に設定
-    rotationMatrix.m[2][0] = -f.x; rotationMatrix.m[2][1] = -f.y; rotationMatrix.m[2][2] = -f.z; rotationMatrix.m[2][3] = 0.0f; // 前方向ベクトルを行列の3列目に設定
-    rotationMatrix.m[3][0] = 0.0f; rotationMatrix.m[3][1] = 0.0f; rotationMatrix.m[3][2] = 0.0f; rotationMatrix.m[3][3] = 1.0f;
-
-    // 回転行列からクォータニオンを生成
-    return Quaternion::MatrixToQuaternion(rotationMatrix);
-}
-
-
-
 // クォータニオンからオイラー角に変換
 Vector3 Quaternion::ToEuler() const{
     // クォータニオンの各成分

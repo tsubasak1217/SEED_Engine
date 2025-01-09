@@ -16,6 +16,8 @@
 #include "FollowCamera.h"
 #include "../Game/Objects/Player/Player.h"
 #include "../Game/Objects/Enemy/Enemy.h"
+#include "../Game/Manager/EnemyManager.h"
+#include "../Game/Editor/EnemyEditor.h"
 #include "../Game/Editor/FieldEditor.h"
 
 class Scene_Game : public Scene_Base{
@@ -33,7 +35,10 @@ private:
 
     std::unique_ptr<FollowCamera> followCamera_;
     std::unique_ptr<Player> player_;
-    std::list<std::unique_ptr<Enemy>> enemies_;
+
+    // 敵
+    std::unique_ptr<EnemyManager> enemyManager_;
+    std::unique_ptr<EnemyEditor> enemyEditor_;
 
     std::unique_ptr<FieldEditor> fieldEditor_;
 

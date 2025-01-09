@@ -24,7 +24,8 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     player_ = std::make_unique<Player>();
-    enemies_.push_back(std::make_unique<Enemy>(player_.get()));
+    enemyManager_ = std::make_unique<EnemyManager>(player_.get());
+    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
 
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
@@ -71,6 +72,8 @@ void Scene_Game::Update(){
 
 
     fieldEditor_->ShowImGui();
+
+    enemyEditor_->ShowImGui();
 #endif
 
     /*========================== Manager ============================*/
@@ -82,9 +85,7 @@ void Scene_Game::Update(){
 
     player_->Update();
 
-    //for(auto& enemy : enemies_) {
-    //    enemy->Update();
-    //}
+    enemyManager_->Update();
 
     fieldEditor_->Update();
 
@@ -99,9 +100,7 @@ void Scene_Game::Draw(){
 
     player_->Draw();
 
-    //for(auto& enemy : enemies_) {
-    //    enemy->Draw();
-    //}
+    enemyManager_->Draw();
 
     fieldEditor_->Draw();
 }

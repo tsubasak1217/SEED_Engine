@@ -115,31 +115,6 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
-    // MTの課題用の描画
-    Quaternion rotation1 = Quaternion::AngleAxis(0.3f, { 0.71f,0.71f,0.0f });
-    Quaternion rotation2 = { -rotation1.x, -rotation1.y, -rotation1.z, -rotation1.w };
-    Quaternion interpolated[5] = {
-        Quaternion::Slerp(rotation1,rotation2, 0.0f),
-        Quaternion::Slerp(rotation1,rotation2, 0.3f),
-        Quaternion::Slerp(rotation1,rotation2, 0.5f),
-        Quaternion::Slerp(rotation1,rotation2, 0.7f),
-        Quaternion::Slerp(rotation1,rotation2, 1.0f)
-    };
-
-    
-#ifdef _DEBUG
-
-    ImGui::Begin("MT4");
-
-    for(int i = 0; i < 5; i++){
-        ImGui::Text("interpolated%d : %f %f %f %f", i, interpolated[i].x, interpolated[i].y, interpolated[i].z, interpolated[i].w);
-        ImGui::Separator();
-    }
-
-    ImGui::End();
-
-#endif // _DEBUG
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

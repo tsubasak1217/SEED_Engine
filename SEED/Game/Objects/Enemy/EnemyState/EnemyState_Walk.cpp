@@ -8,14 +8,14 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-EnemyState_Walk::EnemyState_Walk(BaseCharacter* player){
-    Initialize(player);
+EnemyState_Walk::EnemyState_Walk(const std::string& stateName, BaseCharacter* player){
+    Initialize(stateName, player);
 }
 
 EnemyState_Walk::~EnemyState_Walk(){}
 
-void EnemyState_Walk::Initialize(BaseCharacter* player){
-    ICharacterState::Initialize(player);
+void EnemyState_Walk::Initialize(const std::string& stateName, BaseCharacter* player){
+    ICharacterState::Initialize(stateName, player);
     pCharacter_->SetAnimation("walk", true);
 }
 
@@ -80,8 +80,6 @@ void EnemyState_Walk::Update(){
     // 回転処理
     Rotate();
 
-    // ステート管理
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,13 +97,13 @@ void EnemyState_Walk::ManageState(){
 
     // 攻撃を受けたらダメージ状態に遷移
     if(pEnemy->GetIsDamaged()){
-        pCharacter_->ChangeState(new EnemyState_Damaged(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Damaged("Enemy_Damaged",pCharacter_));
         return;
     }
 
     // 攻撃可能距離にプレイヤーがいたら攻撃状態に遷移
     if(pEnemy->GetDistanceToPlayer() < attackRange_){
-        pCharacter_->ChangeState(new EnemyState_Attack(pCharacter_));
+        pCharacter_->ChangeState(new EnemyState_Attack("Enemy_Idle",pCharacter_));
         return;
     }
 

@@ -53,8 +53,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
         if(Collision::AABB::Sphere(body_, sphere->GetSphere())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -62,8 +62,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
         if(Collision::AABB::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -71,8 +71,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
         if(Collision::AABB::OBB(body_, obb->GetOBB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -80,8 +80,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::AABB::Line(body_, line->GetLine())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -89,8 +89,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         //Collider_Capsule* capsule = dynamic_cast<Collider_Capsule*>(collider);
         //if(Collision::AABB::Capsule(body_, capsule->GetCapsule())){
-        //    OnCollision(collider);
-        //    collider->OnCollision(this);
+        //    OnCollision(collider,collider->GetObjectType());
+        //    collider->OnCollision(this,objectType_);
         //}
         break;
     }
@@ -98,8 +98,8 @@ void Collider_AABB::CheckCollision(Collider* collider){
     {
         //Collider_Plane* plane = dynamic_cast<Collider_Plane*>(collider);
         //if(Collision::AABB::Plane(body_, plane->GetPlane())){
-        //    OnCollision(collider);
-        //    collider->OnCollision(this);
+        //    OnCollision(collider,collider->GetObjectType());
+        //    collider->OnCollision(this,objectType_);
         //}
         break;
     }
@@ -173,4 +173,19 @@ nlohmann::json Collider_AABB::GetJsonData(){
     json["offset"] = offset_;
 
     return json;
+}
+
+//////////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+//////////////////////////////////////////////////////////////////
+void Collider_AABB::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.center = jsonData["local"]["center"];
+    body_.halfSize = jsonData["local"]["halfSize"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
 }

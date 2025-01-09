@@ -11,27 +11,30 @@
 #include <Model.h>
 #include <Sprite.h>
 #include <Triangle.h>
-//camera
+// camera
 #include "FollowCamera.h"
 
 // objects
 #include "Player/Player.h"
 #include "Egg/Manager/EggManager.h"
 
-//manager
+// manager
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Editor/FieldEditor.h"
 
-class Scene_Game : public Scene_Base{
+class Scene_Game : public Scene_Base
+{
 
 public:
     Scene_Game() = default;
-    Scene_Game(SceneManager* pSceneManager);
-    ~Scene_Game()override;
-    void Initialize()override;
-    void Finalize()override;
-    void Update()override;
-    void Draw()override;
+    Scene_Game(SceneManager *pSceneManager);
+    ~Scene_Game() override;
+    void Initialize() override;
+    void Finalize() override;
+    void Update() override;
+    void Draw() override;
+    void BeginFrame() override;
+    void EndFrame() override;
 
 private:
     // Objects
@@ -42,4 +45,5 @@ private:
 
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
+    std::unique_ptr<FieldEditor> fieldEditor_;
 };

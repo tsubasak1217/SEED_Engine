@@ -49,6 +49,7 @@ Vector3 TransformToVec3(const Vector2& vec);
 Vector3 TransformToVec3(const Vector4& vec);
 Vector3 Expand0ToVec3(const Vector2& vec);
 Vector3 Expand1ToVec3(const Vector2& vec);
+
 // Vec4に変換する関数
 Vector4 TransformToVec4(const Vector3& vec);
 Vector4 TransformToVec4(const Vector2& vec);
@@ -71,6 +72,8 @@ Matrix4x4 RotateXMatrix(float theta);
 Matrix4x4 RotateYMatrix(float theta);
 Matrix4x4 RotateZMatrix(float theta);
 Matrix4x4 RotateMatrix(const Vector3& rotate);
+Matrix4x4 RotateMatrix(const Quaternion& rotate);
+Matrix4x4 RotateMatrix(const Vector3& axis,float angle);
 
 // 平行移動行列を作る関数
 Matrix3x3 TranslateMatrix(float tx, float ty);

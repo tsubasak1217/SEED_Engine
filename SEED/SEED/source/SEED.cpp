@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"LE2A_12_クロカワ_ツバサ";
+std::wstring SEED::windowTitle_ = L"SEED";
 uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
 
 
@@ -55,10 +55,10 @@ void SEED::Initialize(int clientWidth, int clientHeight){
     WindowManager::Create(instance_->windowTitle_, clientWidth, clientHeight);
 
     // 各マネージャの初期化
+    ClockManager::Initialize();
     CameraManager::Initialize();
     DxManager::Initialize(instance_);
     ImGuiManager::Initialize();
-    ClockManager::Initialize();
     TextureManager::Initialize();
     AudioManager::Initialize();
     Input::Initialize();
@@ -503,4 +503,9 @@ Vector2 SEED::GetImageSize(const std::wstring& fileName){
 
 void SEED::ChangeResolutionRate(float resolutionRate){
     DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
+}
+
+/*------------------ カメラにシェイクを設定する関数 ------------------*/
+void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
+    GetCamera()->SetShake(time, power, shakeLevel);
 }

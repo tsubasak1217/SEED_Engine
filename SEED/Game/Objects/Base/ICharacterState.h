@@ -1,30 +1,41 @@
 #pragma once
+#include <memory>
+#include <string>
 #include <vector>
 #include "../Game/Objects/Base/BaseCharacter.h"
 #include "Collision/Collider.h"
 #include "InputManager.h"
 #include "CollisionManaer/CollisionManager.h"
+#include "CollisionManaer/ColliderEditor.h"
 
-class ICharacterState{
+class ICharacterState
+{
 public:
     ICharacterState() = default;
-    ICharacterState(BaseCharacter* character):pCharacter_(character){}
+    ICharacterState(const std::string &stateName, BaseCharacter *character)
+    {
+        stateName;
+        character;
+    }
     virtual ~ICharacterState() = default;
     virtual void Update() = 0;
     virtual void Draw() = 0;
-    virtual void Initialize(BaseCharacter* character){ pCharacter_ = character; }
+    virtual void EndFrame();
+    virtual void Initialize(const std::string &stateName, BaseCharacter *character);
 
-public:// コライダー追加
-    void HandOverColliders(){
-        for(auto& collider : colliders_){
-            CollisionManager::AddCollider(collider.get());
-        }
-    }
+public: // コライダー関連
+    void HandOverColliders();
+    void InitColliders(ObjectType objectType);
+    void InitColliders(const std::string &fileName, ObjectType objectType);
+    void UpdateColliders();
 
 protected:
     virtual void ManageState() = 0;
 
 protected:
-    BaseCharacter* pCharacter_ = nullptr;
+    std::string stateName_ = "";
+    BaseCharacter *pCharacter_ = nullptr;
     std::vector<std::unique_ptr<Collider>> colliders_;
+    std::unique_ptr<ColliderEditor> colliderEditor_ = nullptr;
+    bool isChangeState_ = false;
 };

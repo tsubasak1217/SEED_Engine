@@ -112,3 +112,18 @@ nlohmann::json Collider_Line::GetJsonData(){
 
     return json;
 }
+
+//////////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+//////////////////////////////////////////////////////////////////
+void Collider_Line::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.origin_ = jsonData["local"]["origin"];
+    local_.end_ = jsonData["local"]["end"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+}

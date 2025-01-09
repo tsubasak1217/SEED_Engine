@@ -131,6 +131,23 @@ nlohmann::json Collider_Plane::GetJsonData(){
 }
 
 //////////////////////////////////////////////////////////////////
+// jsonデータ読み込み関数
+//////////////////////////////////////////////////////////////////
+void Collider_Plane::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // オフセット
+    offset_ = jsonData["Offset"];
+
+    // ローカル座標
+    local_.localVertex[0] = jsonData["Vertices"]["v0"];
+    local_.localVertex[1] = jsonData["Vertices"]["v1"];
+    local_.localVertex[2] = jsonData["Vertices"]["v2"];
+    local_.localVertex[3] = jsonData["Vertices"]["v3"];
+}
+
+//////////////////////////////////////////////////////////////////
 // ローカル座標の設定
 //////////////////////////////////////////////////////////////////
 void Collider_Plane::SetLocalVertices(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector3& v3){

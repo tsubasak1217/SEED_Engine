@@ -50,8 +50,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
         if(Collision::OBB::Sphere(body_, sphere->GetSphere())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -59,8 +59,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
         if(Collision::OBB::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -68,8 +68,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
         if(Collision::OBB::OBB(body_, obb->GetOBB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -77,8 +77,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::OBB::Line(body_, line->GetLine())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -162,4 +162,22 @@ nlohmann::json Collider_OBB::GetJsonData(){
     json["offset"] = offset_;
 
     return json;
+}
+
+////////////////////////////////////////////////////////////////
+// jsonデータからコライダーの情報を読み込む
+////////////////////////////////////////////////////////////////
+void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般の情報
+    Collider::LoadFromJson(jsonData);
+
+    // ローカル座標
+    local_.center = jsonData["local"]["center"];
+    body_.halfSize = jsonData["local"]["halfSize"];
+
+    // オフセット
+    offset_ = jsonData["offset"];
+
+    // 行列の更新
+    UpdateMatrix();
 }

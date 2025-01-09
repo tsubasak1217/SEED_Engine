@@ -1,9 +1,11 @@
 #pragma once
 #include "SEED.h"
-#include "Scene_Base.h"
 #include <memory>
-class SEED;
 
+// 前方宣言
+class Scene_Base;
+
+// シーン管理クラス(シングルトン)
 class SceneManager{
 
 private:
@@ -13,13 +15,12 @@ public:
     static void Initialize();
     static void Update();
     static void Draw();
+    static void BeginFrame();
+    static void EndFrame();
     static SceneManager* GetInstance();
 
 private:
-    // インスタンス
     static SceneManager* instance_;
-
-    // コピー禁止
     SceneManager(const SceneManager& other) = delete;
     SceneManager& operator=(const SceneManager& other) = delete;
 

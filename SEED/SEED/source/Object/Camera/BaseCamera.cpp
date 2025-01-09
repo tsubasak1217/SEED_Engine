@@ -1,10 +1,11 @@
 #include "BaseCamera.h"
 #include "MatrixFunc.h"
 #include "MyMath.h"
+#include "MyFunc.h"
 #include "MatrixFunc.h"
 #include "InputManager.h"
 #include "Environment.h"
-
+#include "ClockManager.h"
 
 float znearOffsetForLayer = 0.09f;
 
@@ -34,7 +35,7 @@ void BaseCamera::UpdateMatrix(){
     worldMat_ = AffineMatrix(
         transform_.scale_,
         transform_.rotate_,
-        transform_.translate_
+        transform_.translate_ + CalcShake()
     );
 
     // カメラの逆行列
@@ -63,6 +64,30 @@ void BaseCamera::UpdateMatrix(){
     // viewport行列
     viewportMat_ = ViewportMatrix(kWindowSize, { 0.0f,0.0f }, znear_, zfar_);
     vpVp_ = Multiply(viewProjectionMat_, viewportMat_);
+
+    // shakeの時間を減らす
+    shakeTime_ = std::clamp(shakeTime_ - ClockManager::DeltaTime(), 0.0f, 1000000.0f);
 }
 
 void BaseCamera::Update(){}
+
+
+// カメラを揺らす
+void BaseCamera::SetShake(float time, float power, const Vector3 level){
+    kShakeTime_ = time;
+    shakeTime_ = kShakeTime_;
+    shakePower_ = power;
+    shakeLevel_ = level;
+}
+
+
+// シェイクの計算
+Vector3 BaseCamera::CalcShake(){
+    if(kShakeTime_ == 0.0f){
+        return { 0.0f,0.0f,0.0f };
+    }
+
+    float t = shakeTime_ / kShakeTime_;
+    Vector3 rondomVec = MyFunc::RandomVector();
+    return (rondomVec * shakePower_ * t) * shakeLevel_;
+}

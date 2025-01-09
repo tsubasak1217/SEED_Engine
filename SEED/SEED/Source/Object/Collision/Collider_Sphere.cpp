@@ -50,8 +50,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
         if(Collision::Sphere::Sphere(body_, sphere->GetSphere())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -59,8 +59,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
         if(Collision::Sphere::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -68,8 +68,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
         if(Collision::Sphere::OBB(body_, obb->GetOBB())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -77,8 +77,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::Sphere::Line(body_, line->GetLine())){
-            OnCollision(collider);
-            collider->OnCollision(this);
+            OnCollision(collider,collider->GetObjectType());
+            collider->OnCollision(this,objectType_);
         }
         break;
     }
@@ -150,4 +150,19 @@ nlohmann::json Collider_Sphere::GetJsonData(){
     json["radius"] = body_.radius;
 
     return json;
+}
+
+////////////////////////////////////////////////////////////
+// jsonデータから読み込み
+////////////////////////////////////////////////////////////
+void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
+    // 全般情報の読み込み
+    Collider::LoadFromJson(jsonData);
+
+    // 球の情報
+    local_.center = jsonData["center"];
+    body_.radius = jsonData["radius"];
+
+    // 行列の更新
+    UpdateMatrix();
 }

@@ -220,6 +220,26 @@ float MyMath::Lerp(const float v1, const float v2, float t){
     return v1 + (v2 - v1) * t;
 }
 
+float MyMath::LerpShortAngle(float a, float b, float t){
+    const float TWO_PI = 2.0f * ( float ) std::numbers::pi; // 2π (6.283185307179586)
+    const float PI = ( float ) std::numbers::pi;            // π (3.141592653589793)
+
+    // 角度差分を求める
+    float diff = b - a;
+
+    // 角度を[-π, π]に補正する
+    diff = fmod(diff, TWO_PI);
+    if (diff > PI){
+        diff -= TWO_PI;
+    } else if (diff < -PI){
+        diff += TWO_PI;
+    }
+
+    // Lerpを使用して補間
+    return Lerp(a, a + diff, t);
+
+}
+
 Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
 }

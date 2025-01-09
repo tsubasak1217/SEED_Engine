@@ -1,6 +1,7 @@
 #include "FollowCamera.h"
 #include "Quaternion.h"
 #include "InputManager.h"
+#include "ImGuiManager.h"
 #include "ClockManager.h"
 #include "ImGuiManager.h"
 
@@ -16,7 +17,7 @@ void FollowCamera::Initialize(){
     distance_ = 20.0f;
     // 角度の初期設定
     theta_ = -3.14f * 0.5f;
-    phi_ = 3.14f * 0.5f;
+    phi_ = 3.14f * 0.45f;
     rotateSpeed_ = 0.025f;
     // 限界角度
     kMaxPhi_ = 3.14f * 0.5f;
@@ -32,8 +33,6 @@ void FollowCamera::Initialize(){
 }
 
 void FollowCamera::Update(){
-    // ターゲットが設定されていない場合は何もしない
-    if(target_ == nullptr) {return;}
 
     // カメラ距離の更新
     UpdateDistance();
@@ -42,7 +41,8 @@ void FollowCamera::Update(){
     UpdateAngle();
 
     // カメラの位置を設定
-    Vector3 targetPos = target_->GetTargetPos();
+    Vector3 targetPos = Vector3(0.0f, 0.0f, 0.0f);
+    if(target_){ targetPos = target_->GetTargetPos(); }
 
     // カメラのオフセットベクトルを計算
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
@@ -66,5 +66,10 @@ void FollowCamera::UpdateAngle(){
 void FollowCamera::UpdateDistance(){
     // カメラの距離を更新
     distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
-    distance_ = std::clamp(distance_, 15.0f, 50.0f);
+    distance_ = std::clamp(distance_, 15.0f, 500.0f);
+
+    ImGui::Begin("input");
+    ImGui::Text("angleInput: %f, %f", angleInput_.Value().x, angleInput_.Value().y);
+    ImGui::Text("distanceInput: %f", distanceInput_.Value());
+    ImGui::End();
 }

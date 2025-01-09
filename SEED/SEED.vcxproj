@@ -119,6 +119,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
     <ClCompile Include="Game\Objects\Egg\Egg.cpp" />
     <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
@@ -146,6 +147,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
@@ -251,6 +253,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
     <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />

@@ -129,7 +129,8 @@ public:
     static Vector2 GetImageSize(const std::wstring& fileName);
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
     static void ChangeResolutionRate(float resolutionRate);
-
+    // カメラにシェイクを設定する関数
+    static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                 アクセッサ関数                                    */

@@ -43,13 +43,21 @@ void Collider::Update(){
     // コライダーのアニメーション時間の更新
     if(animationData_){
         animationTime_ += ClockManager::DeltaTime();
-        if(isLoop_){
-            if(animationData_->GetDuration() != 0.0f){
-                animationTime_ = std::fmod(animationTime_, animationData_->GetDuration());
+        if(isLoop_ or isEditorLoop_){
+
+            // エディターじゃない場合かつループしない場合は最後のフレームで止める
+            if(!isLoop_ && isEdit_ == false){
+                animationTime_ = std::clamp(animationTime_, 0.0f, animationData_->GetDuration());
             } else{
-                animationTime_ = 0.0f;
+                // ループする
+                if(animationData_->GetDuration() != 0.0f){
+                    animationTime_ = std::fmod(animationTime_, animationData_->GetDuration());
+                } else{
+                    animationTime_ = 0.0f;// 0除算対策
+                }
             }
-        } else{
+
+        } else{// ループしない
             animationTime_ = std::clamp(animationTime_, 0.0f, animationData_->GetDuration());
         }
 
@@ -133,7 +141,7 @@ void Collider::Draw(){}
 
 void Collider::CheckCollision(Collider* collider){ collider; }
 
-void Collider::OnCollision(Collider* collider){
+void Collider::OnCollision(Collider* collider,ObjectType objectType){
 
     // 衝突フラグを立てる
     isCollision_ = true;
@@ -141,7 +149,7 @@ void Collider::OnCollision(Collider* collider){
     color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     // 親オブジェクトにも衝突を通知
     if(parentObject_){
-        parentObject_->OnCollision(collider->parentObject_);
+        parentObject_->OnCollision(collider->parentObject_,objectType);
     }
 
     // 衝突リストに追加
@@ -177,19 +185,62 @@ nlohmann::json Collider::GetJsonData(){
     j["isParentRotate"] = isParentRotate_;
     j["isParentScale"] = isParentScale_;
     j["isParentTranslate"] = isParentTranslate_;
+    j["isAnimation"] = isAnimation_;
+
+    if(isAnimation_){
+        if(animationData_){
+            j["isLoop"] = isLoop_;
+            j["animationData"] = animationData_->GetJsonData();
+        }
+    }
 
     return j;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     jsonデータ読み込み関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Collider::LoadFromJson(const nlohmann::json& jsonData){
+
+    // 全般情報の読み込み
+    isMovable_ = jsonData["isMovable"];
+    mass_ = jsonData["mass"];
+    miu_ = jsonData["miu"];
+    isParentRotate_ = jsonData["isParentRotate"];
+    isParentScale_ = jsonData["isParentScale"];
+    isParentTranslate_ = jsonData["isParentTranslate"];
+    isAnimation_ = jsonData["isAnimation"];
+
+    // アニメーションデータがある場合はインスタンスを作成し読み込む
+    if(isAnimation_){
+        isLoop_ = jsonData["isLoop"];
+        animationData_ = ColliderAnimationData();
+        animationData_->SetParentMat(parentMat_);
+        animationData_->LoadFromJson(jsonData["animationData"],parentMat_);
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     アニメーション編集関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Collider::EditAnimation(){
     // アニメーションするかどうか
     if(isAnimation_){
 
         // アニメーションデータがない場合は作成
-        if(!animationData_){
-            animationData_ = std::make_unique<ColliderAnimationData>();
+        if(animationData_ == std::nullopt){
+            animationData_ = ColliderAnimationData();
             animationData_->SetParentMat(parentMat_);
         }
+
+        // Editorでループさせるかどうか
+        ImGui::Checkbox("Loop", &isEditorLoop_);
 
         // アニメーションデータの編集
         std::string animationName = "AnimationData( collider_" + std::to_string(colliderID_) + " )";

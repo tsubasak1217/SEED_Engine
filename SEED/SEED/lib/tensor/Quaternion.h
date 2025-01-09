@@ -18,14 +18,19 @@ public:
     float Dot(const Quaternion& q)const;
     static float Dot(const Quaternion& q1, const Quaternion& q2);
     Quaternion Normalize()const;
+    static Quaternion Normalize(const Quaternion& q);
     Quaternion Inverse()const;
+    static Quaternion Inverse(const Quaternion& q);
     Quaternion Slerp(const Quaternion& q, float t)const;
     static Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);
     static Quaternion Slerp(const Vector3& r1, const Vector3& r2, float t);
     Quaternion Lerp(const Quaternion& q, float t)const;
+    static Vector3 RotatedVector(const Vector3& vec, const Quaternion& q);
 
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);
+    static Quaternion MatrixToQuaternion(const Matrix4x4& mat);
+    static Quaternion EulerToQuaternion(const Vector3& eulerRotate);
     static Quaternion ToQuaternion(const Vector3& eulerRotate);
     static Vector3 ToEuler(const Quaternion& q);
     Vector3 ToEuler()const;
@@ -37,6 +42,14 @@ public:
     Matrix4x4 MakeMatrix()const;
     static Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
     static Quaternion LookAt(const Vector3& from, const Vector3& to);
+    // 単位クォータニオン
+    static Quaternion Identity();
+    // 共役クォータニオン
+    Quaternion Conjugate()const;
+    static Quaternion Conjugate(const Quaternion& q);
+    // ノルム
+    float Norm()const;
+    static float Norm(const Quaternion& q);
 
 public:
     // Operators
@@ -45,6 +58,8 @@ public:
     Quaternion operator*(const Quaternion& q)const;
     Quaternion operator*(float f)const;
     Quaternion operator/(float f)const;
+
+    Vector3 operator*(const Vector3& v) const;
 
 public:
 

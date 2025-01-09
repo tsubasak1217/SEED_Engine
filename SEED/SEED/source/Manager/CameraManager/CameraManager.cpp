@@ -1,6 +1,6 @@
 #include "CameraManager.h"
 #include <cassert>
-
+#include <imgui.h>
 // static変数初期化
 CameraManager* CameraManager::instance_ = nullptr;
 
@@ -15,9 +15,11 @@ void CameraManager::Initialize(){
 
     GetInstance();
     instance_->mainCamera_ = std::make_unique<BaseCamera>();
+    instance_->stageViewCamera_ = std::make_unique<StageViewCamera>();
     instance_->debugCamera_ = std::make_unique<DebugCamera>();
 
     instance_->cameras_["main"] = instance_->mainCamera_.get();
+    instance_->cameras_["stageView"] = instance_->stageViewCamera_.get();
     instance_->cameras_["debug"] = instance_->debugCamera_.get();
 }
 
@@ -25,8 +27,8 @@ void CameraManager::Update(){
 
     // カメラの更新
     for(auto& camera : instance_->cameras_){
-        camera.second->Update();
         camera.second->UpdateMatrix();
+        camera.second->Update();
     }
 }
 

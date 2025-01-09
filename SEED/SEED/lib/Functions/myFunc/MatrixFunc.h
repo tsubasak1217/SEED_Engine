@@ -49,6 +49,7 @@ Vector3 TransformToVec3(const Vector2& vec);
 Vector3 TransformToVec3(const Vector4& vec);
 Vector3 Expand0ToVec3(const Vector2& vec);
 Vector3 Expand1ToVec3(const Vector2& vec);
+
 // Vec4に変換する関数
 Vector4 TransformToVec4(const Vector3& vec);
 Vector4 TransformToVec4(const Vector2& vec);

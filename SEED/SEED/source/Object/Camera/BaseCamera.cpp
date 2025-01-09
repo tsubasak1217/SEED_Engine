@@ -7,7 +7,6 @@
 #include "Environment.h"
 #include "ClockManager.h"
 
-
 float znearOffsetForLayer = 0.09f;
 
 BaseCamera::BaseCamera(){

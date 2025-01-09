@@ -7,6 +7,8 @@
 
 // manager
 #include "Egg/Manager/EggManager.h"
+//lib
+#include "JsonManager/JsonCoordinator.h"
 
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
@@ -48,6 +50,8 @@ void Player::Initialize()
 
     // 状態の初期化
     currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
+
+    JsonCoordinator::LoadGroup("Player");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,6 +59,12 @@ void Player::Initialize()
 //////////////////////////////////////////////////////////////////////////
 void Player::Update()
 {
+    ImGui::Begin("Player");
+    JsonCoordinator::RenderGroupUI("Player");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("Player");
+    }
+    ImGui::End();
     BaseCharacter::Update();
 }
 

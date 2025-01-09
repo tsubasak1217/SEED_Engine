@@ -111,10 +111,12 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
         }
         // 既に登録済みなので、ここでの再登録はしないで終わりでござる
         return true;
+    }else{
+        // データに登録
+        s_groupData_[group][key] = target;
     }
 
-    // データに登録
-    s_groupData_[group][key] = target;
+    
 
     // バインディング登録
     s_bindings_[group][key] = [&target] (const AdjustableValue& value){

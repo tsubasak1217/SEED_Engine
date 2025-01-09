@@ -478,6 +478,33 @@
     <ClCompile Include="Game\Editor\EnemyEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -777,9 +804,6 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Attack.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
@@ -918,6 +942,7 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
     <ClInclude Include="Game\Manager\EnemyManager.h" />
     <ClInclude Include="Game\Editor\EnemyEditor.h" />
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

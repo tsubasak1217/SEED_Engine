@@ -3,6 +3,8 @@
 //Objects
 #include "../Egg.h"
 #include"Player/Player.h"
+//lib
+#include "JsonManager/JsonCoordinator.h"
 
 const uint32_t EggManager::maxEggsSize_ = 10;
 
@@ -17,12 +19,29 @@ void EggManager::Initialize(){
     auto& spawnedEgg = eggs_.back();
     spawnedEgg->SetEggManager(this);
     spawnedEgg->Initialize();
+
+    JsonCoordinator::LoadGroup("Egg");
 }
 
 void EggManager::Update(){
     std::erase_if(eggs_,[](std::unique_ptr<Egg>& egg){
         return egg->GetIsBreak();
                   });
+
+    ImGui::Begin("Egg");
+    JsonCoordinator::RenderGroupUI("Egg");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("Egg");
+    }
+    ImGui::End();
+
+    if(eggs_.empty()){
+        eggs_.push_back(std::make_unique<Egg>(player_));
+        auto& spawnedEgg = eggs_.back();
+        spawnedEgg->SetEggManager(this);
+        spawnedEgg->Initialize();
+    }
+
     for(auto& egg : eggs_){
         egg->Update();
     }

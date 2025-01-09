@@ -10,8 +10,8 @@ EggState_Break::EggState_Break(BaseCharacter* character){
     pCharacter_ = character;
 }
 
-void EggState_Break::Initialize(BaseCharacter* character){
-    ICharacterState::Initialize(character);
+void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
+    ICharacterState::Initialize(stateName,character);
 
     leftTime_ = breakTime_;
 }

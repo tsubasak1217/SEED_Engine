@@ -9,11 +9,10 @@ class PlayerState_Spawn
     :public ICharacterState{
 public:
     PlayerState_Spawn();
-    PlayerState_Spawn(BaseCharacter* character,
-                      const Vector3& _spawnPos);
+    PlayerState_Spawn(const std::string& stateName,BaseCharacter* player);
     virtual ~PlayerState_Spawn();
 
-    void Initialize(BaseCharacter* character);
+    void Initialize(const std::string& stateName,BaseCharacter* character);
     void Update()override;
     void Draw() override;
 protected:

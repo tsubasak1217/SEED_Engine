@@ -14,7 +14,6 @@ public:
     void Update() override;
 
 private:
-    void InitCollider()override;
 private:
     //member
     PlayerCorpseManager* manager_ = nullptr;

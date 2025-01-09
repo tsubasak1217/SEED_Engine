@@ -13,7 +13,7 @@ public:
     EggState_Follow(BaseCharacter* _egg,
                     BaseObject* _followTarget);
     ~EggState_Follow();
-    void Initialize(BaseCharacter* character)override;
+    void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update()override;
     void Draw()override;
 

@@ -32,6 +32,8 @@ void PlayerState_Move::Update()
     Move();
     // 回転処理
     Rotate();
+    // state遷移
+    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,7 +138,10 @@ void PlayerState_Move::ManageState()
     if (Input::IsPressPadButton(PAD_BUTTON::RB))
     {
         Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
-        pCharacter_->ChangeState(new PlayerState_ThrowEgg(pPlayer_, pPlayer_->GetEggManager()));
+        if(pPlayer_->GetEggManager()->GetIsEmpty()){
+            return;
+        }
+        pCharacter_->ChangeState(new PlayerState_ThrowEgg("Player_ThrowEgg",pPlayer_));
         return;
     }
 }

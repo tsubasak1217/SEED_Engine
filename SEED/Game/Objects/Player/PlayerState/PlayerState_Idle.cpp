@@ -36,6 +36,8 @@ void PlayerState_Idle::Update()
     }
 
     HandOverColliders();
+
+    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -66,8 +68,11 @@ void PlayerState_Idle::ManageState()
     // 卵 を 投げる状態へ
     if (Input::IsTriggerPadButton(PAD_BUTTON::RB))
     {
-        Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
-        pCharacter_->ChangeState(new PlayerState_ThrowEgg(pPlayer_, pPlayer_->GetEggManager()));
+        Player* pPlayer_ = dynamic_cast<Player*>(pCharacter_);
+        if(pPlayer_->GetEggManager()->GetIsEmpty()){
+            return;
+        }
+        pCharacter_->ChangeState(new PlayerState_ThrowEgg("Player_ThrowEgg",pPlayer_));
         return;
     }
 }

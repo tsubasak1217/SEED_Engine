@@ -15,7 +15,8 @@
 // Object
 #include "../Player/Player.h"
 #include "Egg/Egg.h"
-
+//lib
+#include "JsonManager/JsonCoordinator.h"
 // math
 #include "Matrix4x4.h"
 #include "MatrixFunc.h"
@@ -40,6 +41,11 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     eggManager_ = pPlayer->GetEggManager();
 
     throwEgg_ = eggManager_->GetFrontEgg().get();
+
+    JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
+    JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
+    JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
+    JsonCoordinator::RegisterItem("Player","throwDirectionOffset",throwDirectionOffset_);
 }
 
 void PlayerState_ThrowEgg::Update(){

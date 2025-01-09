@@ -1,5 +1,9 @@
 #include "EggState_Follow.h"
 
+//lib
+#include "JsonManager/JsonCoordinator.h"
+
+//math
 #include "MyMath.h"
 
 EggState_Follow::EggState_Follow(BaseCharacter* _egg,BaseObject* _followTarget)
@@ -11,6 +15,9 @@ EggState_Follow::~EggState_Follow(){}
 
 void EggState_Follow::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
+
+    JsonCoordinator::RegisterItem("Egg","followOffset",followOffset_);
+    JsonCoordinator::RegisterItem("Egg","followSensitivity",followSensitivity_);
 }
 
 void EggState_Follow::Update(){

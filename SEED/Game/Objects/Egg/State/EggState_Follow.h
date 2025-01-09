@@ -22,7 +22,7 @@ protected:
     // ステート管理
     void ManageState()override;
 private:
-    const Vector3 followOffset_ = Vector3(0.0f,0.0f,0.0f);
     BaseObject* followTarget_ = nullptr;
-    const float followSensitivity_ = 0.2f;
+    Vector3 followOffset_ = Vector3(0.0f,0.0f,0.0f);
+    float followSensitivity_ = 0.2f;
 };

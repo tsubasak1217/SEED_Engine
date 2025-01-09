@@ -5,6 +5,8 @@
 
 //manager
 #include "ClockManager.h"
+//lib
+#include "JsonManager/JsonCoordinator.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character){
     pCharacter_ = character;
@@ -14,6 +16,8 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
     ICharacterState::Initialize(stateName,character);
 
     leftTime_ = breakTime_;
+
+    JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
 }
 
 void EggState_Break::Update(){

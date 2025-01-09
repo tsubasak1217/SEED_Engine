@@ -13,6 +13,7 @@
 #include "Player/Player.h"
 
 // Manager
+#include "JsonManager/JsonCoordinator.h"
 #include "Manager/EggManager.h"
 
 Egg::Egg(BaseObject* _player)

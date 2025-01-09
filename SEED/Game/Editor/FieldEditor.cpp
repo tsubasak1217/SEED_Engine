@@ -13,7 +13,7 @@ FieldEditor::FieldEditor(){
 
 void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
-    modelNames_ = {"cube", "sphere"};
+    modelNames_ = {"groundCube", "sphere"};
 
     LoadFromJson(jsonPath);
 }

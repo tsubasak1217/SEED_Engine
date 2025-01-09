@@ -472,6 +472,12 @@
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Manager\EnemyManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\EnemyEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -910,6 +916,8 @@
     <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h" />
     <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
+    <ClInclude Include="Game\Manager\EnemyManager.h" />
+    <ClInclude Include="Game\Editor\EnemyEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

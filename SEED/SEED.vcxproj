@@ -115,6 +115,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp" />
+    <ClCompile Include="Game\Editor\EnemyEditor.cpp" />
+    <ClCompile Include="Game\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
@@ -220,6 +222,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h" />
+    <ClInclude Include="Game\Editor\EnemyEditor.h" />
+    <ClInclude Include="Game\Manager\EnemyManager.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Manager\SceneManager.h" />

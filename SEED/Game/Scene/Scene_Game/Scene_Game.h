@@ -13,6 +13,10 @@
 #include <Triangle.h>
 // camera
 #include "FollowCamera.h"
+#include "../Game/Objects/Player/Player.h"
+#include "../Game/Objects/Enemy/Enemy.h"
+#include "../Game/Manager/EnemyManager.h"
+#include "../Game/Editor/EnemyEditor.h"
 
 // objects
 #include "Player/Player.h"

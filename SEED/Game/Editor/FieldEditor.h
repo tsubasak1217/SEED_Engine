@@ -28,23 +28,25 @@ public:
     // ui/imgui
     void ShowImGui();
 
+    // getter
+    bool GetIsEditing()const{ return isEditing_; }
+
 private:
     //===================================================================*/
     //                   private methods
     //===================================================================*/
     void AddModel(const std::string& modelName);
-
     void LoadFromJson(const std::string& filePath);
-
     void SaveToJson(const std::string& filePath);
 
 private:
     //===================================================================*/
-    //                   private methods
+    //                   private fields
     //===================================================================*/
     std::vector<std::unique_ptr<Model>> fieldModel_ {};
-    std::list<std::string>modelNames_ {};
+    std::list<std::string> modelNames_ {};
+
+    bool isEditing_ = false;
 
     const std::string jsonPath = "resources/jsons/fieldModels/fieldModels.json";
-
 };

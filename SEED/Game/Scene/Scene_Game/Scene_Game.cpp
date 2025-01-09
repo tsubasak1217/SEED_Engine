@@ -94,6 +94,13 @@ void Scene_Game::Update(){
 
 
     fieldEditor_->ShowImGui();
+
+    if (fieldEditor_->GetIsEditing()){
+        SEED::SetCamera("debug");
+    } else{
+        SEED::SetCamera("stageView");
+    }
+
 #endif
 
     /*========================== Manager ============================*/

@@ -25,11 +25,11 @@ private:
     Egg* throwEgg_ = nullptr;
 
     // 投げる卵のオフセット
-    Vector3 eggOffset_ = {0.0f,0.0f,0.0f};
+    Vector3 eggOffset_ = {0.0f,0.0f,5.0f};
     // 投げる方向
     Vector3 throwDirection_ = {0.0f,0.0f,0.0f};
     // 投げるパワー
-    const float throwPower_ = 0.0f;
+    const float throwPower_ = 20.0f;
 
     Vector3 throwDirectionOffset_ = {0.0f,1.0f,1.0f};
 };

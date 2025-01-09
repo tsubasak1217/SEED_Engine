@@ -98,7 +98,7 @@ void Scene_Game::Update(){
     if (fieldEditor_->GetIsEditing()){
         SEED::SetCamera("debug");
     } else{
-        SEED::SetCamera("stageView");
+        SEED::SetCamera("follow");
     }
 
 #endif

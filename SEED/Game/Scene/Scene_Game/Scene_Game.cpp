@@ -32,8 +32,6 @@ Scene_Game::~Scene_Game(){
 
 void Scene_Game::Initialize(){
 
-    SEED::SetCamera("stageView");
-
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
@@ -56,7 +54,7 @@ void Scene_Game::Initialize(){
 
     followCamera_ = std::make_unique<FollowCamera>();
     CameraManager::AddCamera("follow", followCamera_.get());
-   // SEED::SetCamera("follow");
+    SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
     //  親子付けなど

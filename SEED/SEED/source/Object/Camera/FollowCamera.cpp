@@ -65,10 +65,8 @@ void FollowCamera::UpdateAngle(){
 
 void FollowCamera::UpdateDistance(){
     // カメラの距離を更新
-    float add = distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
-    distance_ += add;
-    distance_ += 1.0f;
-    //distance_ = std::clamp(distance_, 15.0f, 500.0f);
+    distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
+    distance_ = std::clamp(distance_, 15.0f, 500.0f);
 
     ImGui::Begin("input");
     ImGui::Text("angleInput: %f, %f", angleInput_.Value().x, angleInput_.Value().y);

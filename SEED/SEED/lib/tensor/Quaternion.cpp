@@ -297,7 +297,6 @@ Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
 
 
 
-
 // クォータニオンからオイラー角に変換
 Vector3 Quaternion::ToEuler() const{
     // クォータニオンの各成分

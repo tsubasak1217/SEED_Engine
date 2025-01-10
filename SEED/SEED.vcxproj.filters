@@ -182,6 +182,21 @@
     <Filter Include="SEED\Lib\Tensor">
       <UniqueIdentifier>{6a0a6c9f-120a-4aff-a000-81856815ed71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Egg">
+      <UniqueIdentifier>{cca3f840-70e4-4111-af48-f4d32131feb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Egg\Manager">
+      <UniqueIdentifier>{bebf6711-ebc2-4d7c-a23b-8c2a9dbb78c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Egg\State">
+      <UniqueIdentifier>{f4902676-ede7-467e-9d5d-54b4d020b536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\PlayerCorpse">
+      <UniqueIdentifier>{89adef21-cdad-452f-b8f2-852a452abbe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\PlayerCorpse\Manager">
+      <UniqueIdentifier>{ecff6474-2377-4d49-9096-32d484106cf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -409,104 +424,104 @@
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\Egg.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\EnemyManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Editor\EnemyEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\Egg.cpp">
+      <Filter>Game\Objects\Egg</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp">
+      <Filter>Game\Objects\Egg\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\EnemyManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\EnemyEditor.cpp">
+      <Filter>Game\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp">
+      <Filter>Game\Objects\PlayerCorpse</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
+      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -777,124 +792,6 @@
     <ClInclude Include="Game\Editor\FieldEditor.h">
       <Filter>Game\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Object\Collision\Collider.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enums\ObjectType.h">
-      <Filter>Game\Objects\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range3D.h">
-      <Filter>SEED\Lib\Tensor</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range2D.h">
-      <Filter>SEED\Lib\Tensor</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\Range1D.h">
-      <Filter>SEED\Lib\Tensor</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\Player.h">
-      <Filter>Game\Objects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
-      <Filter>Game\Objects\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h">
-      <Filter>SEED\Source\Object\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Base\BaseObject.h">
-      <Filter>Game\Objects\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Base\ICharacterState.h">
-      <Filter>Game\Objects\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Base\BaseCharacter.h">
-      <Filter>Game\Objects\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\structs\BitSet.h">
-      <Filter>SEED\Lib\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\enums\LR.h">
-      <Filter>SEED\Lib\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Octree.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
-      <Filter>SEED\Lib\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Shapes\Line.h">
-      <Filter>SEED\Lib\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
-      <Filter>SEED\Lib\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
@@ -934,18 +831,162 @@
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="Game\Objects\Egg\Egg.h" />
-    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h" />
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h" />
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />
-    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h" />
-    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
-    <ClInclude Include="Game\Manager\EnemyManager.h" />
-    <ClInclude Include="Game\Editor\EnemyEditor.h" />
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
+    <ClInclude Include="Game\Objects\Base\BaseObject.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\BaseCharacter.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Collision\Collider.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\Egg.h">
+      <Filter>Game\Objects\Egg</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h">
+      <Filter>Game\Objects\Egg\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enums\ObjectType.h">
+      <Filter>Game\Objects\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Octree.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h">
+      <Filter>SEED\Source\Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\ICharacterState.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\enums\LR.h">
+      <Filter>SEED\Lib\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Line.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range1D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range2D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range3D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\BitSet.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\EnemyManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\EnemyEditor.h">
+      <Filter>Game\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h">
+      <Filter>Game\Objects\PlayerCorpse</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h">
+      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

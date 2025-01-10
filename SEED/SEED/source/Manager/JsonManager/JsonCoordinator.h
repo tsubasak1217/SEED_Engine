@@ -102,36 +102,35 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
         s_groupData_[group] = json::object();
     }
 
-    // 同じグループ内で既に同じキーが登録されているか確認
+    // すでにバインディングがあれば、JSON → target の同期だけ
     if (s_bindings_[group].count(key) > 0){
-        // 既に登録済みの場合でも、targetにデータを同期する
         auto existingVal = s_groupData_[group][key].get<AdjustableValue>();
         if (auto valPtr = std::get_if<T>(&existingVal)){
             target = *valPtr;
         }
-        // 既に登録済みなので、ここでの再登録はしないで終わりでござる
         return true;
-    }else{
-        // データに登録
+    }
+
+    // まだバインディングが無い場合は、「JSON にキーがあるか」をチェック
+    if (s_groupData_[group].contains(key)){
+        // JSON 側にキーがあれば、JSON → target
+        auto existingVal = s_groupData_[group][key].get<AdjustableValue>();
+        if (auto valPtr = std::get_if<T>(&existingVal)){
+            target = *valPtr;
+        }
+        // もし型が違う場合は、何らかのログを出すか変換ロジックを入れるなど検討
+    } else{
+        // JSON 側にキーが無ければ、target → JSON
         s_groupData_[group][key] = target;
     }
 
-    
-
-    // バインディング登録
-    s_bindings_[group][key] = [&target] (const AdjustableValue& value){
+    // バインディング登録（target のポインタをコピーキャプチャ）
+    s_bindings_[group][key] = [targetPtr = &target] (const AdjustableValue& value){
         if (auto valPtr = std::get_if<T>(&value)){
-            target = *valPtr;
+            *targetPtr = *valPtr;
         }
         };
 
-    // データを変数に同期
-    auto val = s_groupData_[group][key].get<AdjustableValue>();
-    if (auto valPtr = std::get_if<T>(&val)){
-        target = *valPtr;
-    }
-
-    // デバッグログなどがあればここに記述
-
     return true;
 }
+

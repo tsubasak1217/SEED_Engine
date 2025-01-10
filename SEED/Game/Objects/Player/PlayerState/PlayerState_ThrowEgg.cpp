@@ -17,6 +17,8 @@
 #include "Egg/Egg.h"
 //lib
 #include "JsonManager/JsonCoordinator.h"
+
+
 // math
 #include "Matrix4x4.h"
 #include "MatrixFunc.h"
@@ -46,6 +48,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
 
     // Player の 現在向いてる方向 v
     throwDirection_ = throwDirectionOffset_ * RotateMatrix(pCharacter_->GetWorldRotate());
+
 }
 
 void PlayerState_ThrowEgg::Update(){

@@ -24,7 +24,6 @@ void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* cha
     ICharacterState::Initialize(stateName,character);
 
 
-    JsonCoordinator::RegisterItem("Egg","Weight",weight_);
 }
 
 void EggState_Thrown::Update(){

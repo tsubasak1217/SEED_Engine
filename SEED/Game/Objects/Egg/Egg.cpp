@@ -30,7 +30,7 @@ void Egg::Initialize(){
 
     currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
 
-    JsonCoordinator::RegisterItem("Egg","Weight",weight_);
+    JsonCoordinator::RegisterItem("Egg","weight",weight_);
 }
 
 void Egg::Update(){

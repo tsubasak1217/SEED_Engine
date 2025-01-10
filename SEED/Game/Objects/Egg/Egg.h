@@ -37,5 +37,7 @@ public:// アクセッサ
     void SetPlayer(BaseObject* _player){ player_ = _player; }
     void SetEggManager(EggManager* _eggManager){ eggManager_ = _eggManager; }
 
+    float GetWeight()const{ return weight_; }
+
     bool GetIsBreak()const{ return isBreak_; }
 };

@@ -92,3 +92,7 @@ void RootSignature::AddDescriptorTable(
         assert(false);
     }
 }
+
+void RootSignature::Release(){
+    rootSignature.Reset();
+}

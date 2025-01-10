@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <gdiplus.h>
 #include <cstdint>
+#include <memory>
 
 #pragma comment (lib,"gdiplus.lib")
 
@@ -50,7 +51,7 @@ class DxManager{
     friend ViewManager;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
-    ~DxManager(){};
+    ~DxManager();
     static void Initialize(SEED* pSEED);
     static void Finalize();
     static DxManager* GetInstance();
@@ -123,6 +124,9 @@ private:/*============================ その他の関数 ======================
 
     // 前フレームの変数値を保存する関数
     void SavePreVariable();
+
+    // リソースの解放を手動で行う関数
+    void Release();
 
 private:/*========================= 外部参照のためのポインタ ========================*/
 

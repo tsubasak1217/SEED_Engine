@@ -6,9 +6,13 @@
 
 ViewManager* ViewManager::instance_ = nullptr;
 
-ViewManager::~ViewManager(){
-    delete instance_;
-    instance_ = nullptr;
+ViewManager::~ViewManager(){}
+
+void ViewManager::Finalize(){
+    if(instance_){
+        delete instance_;
+        instance_ = nullptr;
+    }
 }
 
 ViewManager* ViewManager::GetInstance(){
@@ -50,7 +54,7 @@ uint32_t ViewManager::CreateView(
     if(viewType == VIEW_TYPE::SRV or viewType == VIEW_TYPE::CBV or viewType == VIEW_TYPE::UAV){
 
         handle = instance_->descriptorHeaps_["SRV_CBV_UAV"]->CreateView(viewType, pResource, pDesc);
-        instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV].try_emplace(viewName,handle);
+        instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV].try_emplace(viewName, handle);
         return handle;
 
     } else if(viewType == VIEW_TYPE::RTV){
@@ -61,7 +65,7 @@ uint32_t ViewManager::CreateView(
 
     } else if(viewType == VIEW_TYPE::DSV){
 
-        handle = instance_->descriptorHeaps_["DSV"]->CreateView(viewType, pResource,pDesc);
+        handle = instance_->descriptorHeaps_["DSV"]->CreateView(viewType, pResource, pDesc);
         instance_->handles_[(uint32_t)DESCRIPTOR_HEAP_TYPE::DSV].try_emplace(viewName, handle);
         return handle;
     }
@@ -141,7 +145,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE heapT
         assert(false);
     }
 
-    return GetHandleCPU(heapType,distance);
+    return GetHandleCPU(heapType, distance);
 }
 
 
@@ -184,7 +188,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapT
 /// <param name="textureName"></param>
 /// <returns></returns>
 D3D12_GPU_DESCRIPTOR_HANDLE ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapType, const std::string& viewName){
-    
+
     uint32_t distance = 0;
 
     if(heapType == DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV){
@@ -210,7 +214,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapT
 /// </summary>
 /// <param name="heapType"></param>
 /// <returns></returns>
-ComPtr<ID3D12DescriptorHeap> ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE heapType){
+ID3D12DescriptorHeap* ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE heapType){
 
     if(heapType == DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV){
         return instance_->descriptorHeaps_["SRV_CBV_UAV"]->GetHeap();

@@ -26,6 +26,8 @@ public:
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
+    void Release();
+
 public:
 
     void AddInputElementDesc(

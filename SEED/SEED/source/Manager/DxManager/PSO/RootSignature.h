@@ -21,6 +21,8 @@ struct RootSignature{
         UINT registerSpace = 0
     );
 
+    void Release();
+
     ComPtr<ID3D12RootSignature> rootSignature;
     D3D12_ROOT_SIGNATURE_DESC desc;
     std::array<D3D12_ROOT_PARAMETER, 16> parameters{};

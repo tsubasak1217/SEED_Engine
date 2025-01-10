@@ -22,6 +22,7 @@ private:
 public:
 
     ~ViewManager();
+    static void Finalize();
     static ViewManager* GetInstance();
 
 public:
@@ -38,7 +39,7 @@ public:
     static D3D12_CPU_DESCRIPTOR_HANDLE GetHandleCPU(DESCRIPTOR_HEAP_TYPE heapType, const std::string& viewName);
     static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapType, uint32_t index);
     static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapType, const std::string& viewName);
-    static ComPtr<ID3D12DescriptorHeap> GetHeap(DESCRIPTOR_HEAP_TYPE heapType);
+    static ID3D12DescriptorHeap* GetHeap(DESCRIPTOR_HEAP_TYPE heapType);
     static uint32_t GetDescriptorSize(DESCRIPTOR_HEAP_TYPE heapType);
 
 private:

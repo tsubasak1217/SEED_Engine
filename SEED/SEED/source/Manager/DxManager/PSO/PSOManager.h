@@ -37,7 +37,7 @@ public:
 public:
 
     // ConputeShaderのルートシグネチャ作成
-    static ID3D12RootSignature* SettingCSRootSignature();
+    static ComPtr<ID3D12RootSignature> SettingCSRootSignature();
 
     // テンプレートパラメータの生成
     static void GenerateTemplateParameter(RootSignature* pRootSignature, Pipeline* pPipeline,PippelineType pypelineType);

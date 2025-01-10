@@ -10,12 +10,12 @@ DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
         );
 
     // SRVのディスクリプタヒープを作成
-    descriptorHeap_.Attach(CreateDescriptorHeap(
+    descriptorHeap_ = CreateDescriptorHeap(
         DxManager::GetInstance()->GetDevice(),
         D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,// SRV用に設定
         kMaxViewCount_,// ディスクリプタ数
         true
-    ));
+    );
 }
 
 

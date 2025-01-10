@@ -89,7 +89,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    //ImGui::Text("FPS: %f", ClockManager::FPS());
+    ImGui::Text("FPS: %f", ClockManager::FPS());
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
 
@@ -127,6 +127,8 @@ void Scene_Game::Draw(){
 
     // パーティクルの描画
     ParticleManager::Draw();
+
+    SEED::DrawSprite(Sprite("Assets/uvChecker.png"));
 
 }
 

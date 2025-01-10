@@ -51,7 +51,7 @@ uint32_t Align(uint32_t size, uint32_t alignment){
 
 
 //--------------------------------- HLSLをコンパイルする関数------------------------------------------//
-IDxcBlob* CompileShader(
+ComPtr<IDxcBlob> CompileShader(
     const std::wstring& filePath,
     const wchar_t* profile,
     const wchar_t* entryPoint,
@@ -66,7 +66,7 @@ IDxcBlob* CompileShader(
     /*------------------------ ファイルを読み込む --------------------------*/
 
     // hlslファイルを読む
-    IDxcBlobEncoding* shaderSource = nullptr;
+    ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
     HRESULT hr = dxcUtils->LoadFile(filePath.c_str(), nullptr, &shaderSource);
     // 読めなかったら止める
     assert(SUCCEEDED(hr));
@@ -88,7 +88,7 @@ IDxcBlob* CompileShader(
     };
 
     // 実際にShaderをコンパイルする
-    IDxcResult* shaderResult = nullptr;
+    ComPtr<IDxcResult> shaderResult = nullptr;
     hr = dxcCompiler->Compile(
         &shaderSourceBuffer,// 読み込んだファイル
         arguments,// コンパイルオプション
@@ -103,7 +103,7 @@ IDxcBlob* CompileShader(
     /*---------------------------- エラー確認 ------------------------------*/
 
     // 警告・エラーが出てたらログに出して止める
-    IDxcBlobUtf8* shaderError = nullptr;
+    ComPtr<IDxcBlobUtf8> shaderError = nullptr;
     shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
     if(shaderError != nullptr && shaderError->GetStringLength() != 0) {
         Log(shaderError->GetStringPointer());
@@ -114,7 +114,7 @@ IDxcBlob* CompileShader(
     /*-------------------- コンパイル結果を受け取って返す ----------------------*/
 
     // コンパイル結果から実行用のバイナリ部分を取得
-    IDxcBlob* shaderBlob = nullptr;
+    ComPtr<IDxcBlob> shaderBlob = nullptr;
     hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
     assert(SUCCEEDED(hr));
     // 成功したログを出す
@@ -133,10 +133,10 @@ IDxcBlob* CompileShader(
 
 // ----------------------------------DescriptorHeap作成関数-----------------------------------------//
 
-ID3D12DescriptorHeap* CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible){
+ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible){
 
     // ディスクリプタヒープとディスクリプターを格納する変数
-    ID3D12DescriptorHeap* descriptorHeap = nullptr;
+    ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
     D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 
     descriptorHeapDesc.Type = heapType; // ヒープタイプ設定
@@ -154,21 +154,13 @@ ID3D12DescriptorHeap* CreateDescriptorHeap(ID3D12Device* device, D3D12_DESCRIPTO
     return descriptorHeap;
 }
 
-void CreateDescriptorHeap(ID3D12Device* device, ID3D12DescriptorHeap* heap, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible){
-
-    // ディスクリプタヒープとディスクリプターを格納する変数
+void CreateDescriptorHeap(ID3D12Device* device, ComPtr<ID3D12DescriptorHeap>& heap, D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible){
     D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+    descriptorHeapDesc.Type = heapType;
+    descriptorHeapDesc.NumDescriptors = numDescriptors;
+    descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-    descriptorHeapDesc.Type = heapType; // ヒープタイプ設定
-    descriptorHeapDesc.NumDescriptors = numDescriptors; // ディスクリプターの数を設定
-    descriptorHeapDesc.Flags = shaderVisible ?// visibleかどうか
-        D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-    // ディスクリプタヒープを作成
-    HRESULT hr;
-    hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&heap));
-
-    // ディスクリプタヒープが作れなかったので起動できない
+    HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&heap));
     assert(SUCCEEDED(hr));
 }
 
@@ -208,9 +200,9 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     return mipImages;
 }
 
-ID3D12Resource* InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state){
+ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state){
     // GPUからコピーするリソースを作成
-    ID3D12Resource* resource;
+    ComPtr<ID3D12Resource> resource;
     D3D12_HEAP_PROPERTIES heapProperties{};
     heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
@@ -270,7 +262,7 @@ ID3D12Resource* InitializeTextureResource(ID3D12Device* device, uint32_t width, 
 // ------------------------------リソース作成に関する関数---------------------------------------//
 
 // バッファ用
-ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
+ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
 
     //頂点リソース用のヒープの設定
     D3D12_HEAP_PROPERTIES uploadHeapProperties{};
@@ -290,7 +282,7 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
     bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
     // リソースの作成
-    ID3D12Resource* bufferResource = nullptr;
+    ComPtr<ID3D12Resource> bufferResource = nullptr;
     HRESULT hr;
 
     assert(&uploadHeapProperties);
@@ -309,7 +301,7 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
 
 
 // テクスチャ用
-ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata){
+ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata){
 
     // metadataをもとにResourceの設定
     D3D12_RESOURCE_DESC resourceDesc{};
@@ -328,7 +320,7 @@ ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMe
     //heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
 
     // リソースの作成
-    ID3D12Resource* resource = nullptr;
+    ComPtr<ID3D12Resource> resource = nullptr;
     HRESULT hr;
     hr = device->CreateCommittedResource(
         &heapProperties,
@@ -344,7 +336,7 @@ ID3D12Resource* CreateTextureResource(ID3D12Device* device, const DirectX::TexMe
     return resource;
 }
 
-ID3D12Resource* CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height){
+ComPtr<ID3D12Resource> CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height){
     D3D12_RESOURCE_DESC resourceDesc{};
     resourceDesc.Width = width;// テクスチャの幅
     resourceDesc.Height = height;// テクスチャの高さ
@@ -360,7 +352,7 @@ ID3D12Resource* CreateRenderTargetTextureResource(ID3D12Device* device, int32_t 
     heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;//VRAM上に作る
 
     // Resourceの作成
-    ID3D12Resource* resource = nullptr;
+    ComPtr<ID3D12Resource> resource = nullptr;
     HRESULT hr;
     hr = device->CreateCommittedResource(
         &heapProperties,// heapの設定
@@ -377,7 +369,7 @@ ID3D12Resource* CreateRenderTargetTextureResource(ID3D12Device* device, int32_t 
 }
 
 // 深度ステンシルのリソースを作成する関数
-ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height){
+ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height){
 
     D3D12_RESOURCE_DESC resourceDesc{};
     resourceDesc.Width = width;// テクスチャの幅
@@ -399,7 +391,7 @@ ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t 
     depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;// Resourceと合わせる
 
     // Resourceの作成
-    ID3D12Resource* resource = nullptr;
+    ComPtr<ID3D12Resource> resource = nullptr;
     HRESULT hr;
     hr = device->CreateCommittedResource(
         &heapProperties,// heapの設定
@@ -417,14 +409,16 @@ ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t 
 
 //データを転送するUploadTextureData関数
 [[nodiscard]]
-ID3D12Resource* UploadTextureData(
+ComPtr<ID3D12Resource> UploadTextureData(
     ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12Device* device,
-    ID3D12GraphicsCommandList* commandList){
+    ID3D12GraphicsCommandList* commandList
+){
+
     std::vector<D3D12_SUBRESOURCE_DATA> subresources;
     DirectX::PrepareUpload(device, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
     uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, UINT(subresources.size()));
-    ID3D12Resource* intermediateResource = CreateBufferResource(device, intermediateSize);
-    UpdateSubresources(commandList, texture, intermediateResource, 0, 0, UINT(subresources.size()), subresources.data());
+    ComPtr<ID3D12Resource> intermediateResource = CreateBufferResource(device, intermediateSize);
+    UpdateSubresources(commandList, texture, intermediateResource.Get(), 0, 0, UINT(subresources.size()), subresources.data());
 
     //
     D3D12_RESOURCE_BARRIER barrier{};

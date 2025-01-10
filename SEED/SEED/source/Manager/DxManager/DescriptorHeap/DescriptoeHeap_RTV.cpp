@@ -9,12 +9,12 @@ DescriptorHeap_RTV::DescriptorHeap_RTV(){
         );
 
     // RTVのディスクリプタヒープを作成
-    descriptorHeap_.Attach(CreateDescriptorHeap(
+    descriptorHeap_ = CreateDescriptorHeap(
         DxManager::GetInstance()->GetDevice(),
         D3D12_DESCRIPTOR_HEAP_TYPE_RTV,//レンダーターゲットビュー用に設定
         kMaxViewCount_,// ダブルバッファ用とオフスクリーンように計3つ。 多くても別に構わない
         false
-    ));
+    );
 }
 
 uint32_t DescriptorHeap_RTV::CreateView(VIEW_TYPE viewType, ID3D12Resource* pResource, const void* pDesc){

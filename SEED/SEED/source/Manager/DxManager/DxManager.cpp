@@ -1023,6 +1023,7 @@ void DxManager::SavePreVariable(){
 
 DxManager::~DxManager(){}
 
+/*-------------------- 終了処理 -------------------*/
 void DxManager::Finalize(){
 
     // 解放
@@ -1037,6 +1038,7 @@ void DxManager::Finalize(){
 
 }
 
+/*-------------------- ComObjectの解放 -------------------*/
 void DxManager::Release(){
 
     // リソース
@@ -1052,39 +1054,23 @@ void DxManager::Release(){
     delete polygonManager_;
     polygonManager_ = nullptr;
 
-    // ルートシグネチャ
+    // ディスクリプタヒープ
+    ViewManager::Finalize();
+
+    // ルートシグネチャ・パイプラインの解放
+    csRootSignature.Reset();
+    csPipelineState.Reset();
+
     for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
         for(int j = 0; j < kTopologyCount; j++){
             for(int k = 0; k < kCullModeCount; k++){
                 rootSignatures[i][j][k].Release();
-            }
-        }
-    }
-
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-        for(int j = 0; j < kCullModeCount; j++){
-            skinningRootSignatures[i][j].Release();
-        }
-    }
-
-    csRootSignature.Reset();
-
-    // パイプラインステート
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-        for(int j = 0; j < kTopologyCount; j++){
-            for(int k = 0; k < kCullModeCount; k++){
+                skinningRootSignatures[i][k].Release();
                 pipelines[i][j][k].Release();
+                skinningPipelines[i][k].Release();
             }
         }
     }
-
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-        for(int j = 0; j < kCullModeCount; j++){
-            skinningPipelines[i][j].Release();
-        }
-    }
-
-    instance_->csPipelineState.Reset();
 
     // コンパイル系
     for(auto& vsBlob : vsBlobs){ vsBlob.second.Reset(); }
@@ -1093,9 +1079,6 @@ void DxManager::Release(){
     dxcCompiler.Reset();
     dxcUtils.Reset();
     includeHandler.Reset();
-
-    // ディスクリプタヒープ
-    ViewManager::Finalize();
 
     // スワップチェイン
     swapChain.Reset();
@@ -1121,6 +1104,7 @@ void DxManager::Release(){
 #endif // _DEBUG
 }
 
+/*-------------------- インスタンスの取得 -------------------*/
 DxManager* DxManager::GetInstance(){
     if(!instance_){
         instance_ = new DxManager();
@@ -1129,6 +1113,7 @@ DxManager* DxManager::GetInstance(){
     return instance_;
 }
 
+/*-------------------- リークチェッカー -------------------*/
 LeakChecker::~LeakChecker(){
     // 解放漏れがないかチェック
     ComPtr<IDXGIDebug1> debug;

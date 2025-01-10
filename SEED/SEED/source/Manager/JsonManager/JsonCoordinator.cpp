@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-std::string JsonCoordinator::s_baseDirectory_ = "Resources/json/";
+std::string JsonCoordinator::s_baseDirectory_ = "Resources/jsons/";
 
 //-------------------------------------------------------------------
 // ディレクトリ作成

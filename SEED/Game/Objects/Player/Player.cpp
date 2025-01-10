@@ -9,7 +9,6 @@
 #include "Egg/Manager/EggManager.h"
 //lib
 #include "JsonManager/JsonCoordinator.h"
-
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
 #include "PlayerState/PlayerState_Jump.h"
@@ -24,6 +23,7 @@ Player::Player() : BaseCharacter()
     className_ = "Player";
     name_ = "Player";
     Initialize();
+
 }
 
 Player::~Player() {}

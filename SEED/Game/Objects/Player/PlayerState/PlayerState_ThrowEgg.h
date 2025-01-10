@@ -26,10 +26,10 @@ private:
 
     // 投げる卵のオフセット
     Vector3 eggOffset_ = {0.0f,0.0f,5.0f};
-    // 投げる方向
-    Vector3 throwDirection_ = {0.0f,0.0f,0.0f};
+    // 投げる方向のオフセット
+    Vector3 throwDirection_ = {0.0f,1.0f,1.0f};
     // 投げるパワー
     float throwPower_ = 20.0f;
-
-    Vector3 throwDirectionOffset_ = {0.0f,1.0f,1.0f};
+    //投げる卵の重さ
+    float eggWeight_ = 1.0f;
 };

@@ -9,7 +9,7 @@ public:
     /// コンストラクタ
     /// </summary>
     /// <param name="_throwDirection">卵が飛んでいく方向</param>
-    EggState_Thrown(BaseCharacter* _egg,const Vector3& _velocity);
+    EggState_Thrown(BaseCharacter* _egg,const Vector3& _directionXY,float _rotateY,float _speed);
     ~EggState_Thrown();
     void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update()override;
@@ -21,7 +21,13 @@ protected:
     void ManageState()override;
 
 private:
-    Vector3 velocity_ = {0.0f,0.0f,0.0f};
+    float throwTime_;
+    float leftTime_;
+
+    Vector3 beforePos_;
+    Vector3 directionXY_;
+    float rotateY_;
+    float speed_;
 
     float weight_;
 };

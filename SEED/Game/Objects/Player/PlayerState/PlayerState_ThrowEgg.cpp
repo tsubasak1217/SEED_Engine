@@ -9,6 +9,7 @@
 #include <algorithm>
 
 // Engine
+#include "SEED.h"
 #include "ClockManager.h"
 #include "InputManager.h"
 
@@ -18,11 +19,11 @@
 //lib
 #include "JsonManager/JsonCoordinator.h"
 
-
 // math
 #include "Matrix4x4.h"
 #include "MatrixFunc.h"
 #include "MyMath.h"
+#include "MyFunc.h"
 
 PlayerState_ThrowEgg::PlayerState_ThrowEgg(const std::string& stateName,BaseCharacter* player){
     Initialize(stateName,player);
@@ -35,7 +36,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
 
     JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
-    JsonCoordinator::RegisterItem("Player","throwDirectionOffset",throwDirectionOffset_);
+    JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(!pPlayer){
@@ -45,10 +46,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
 
     throwEgg_ = eggManager_->GetFrontEgg().get();
     throwEgg_->ChangeState(new EggState_Idle(throwEgg_));
-
-    // Player の 現在向いてる方向 v
-    throwDirection_ = throwDirectionOffset_ * RotateMatrix(pCharacter_->GetWorldRotate());
-
+    eggWeight_ = dynamic_cast<Egg*>(throwEgg_)->GetWeight();
 }
 
 void PlayerState_ThrowEgg::Update(){
@@ -56,26 +54,42 @@ void PlayerState_ThrowEgg::Update(){
     PlayerState_Move::Move();
     PlayerState_Move::Rotate();
 
-    throwDirectionOffset_= MyMath::Normalize(throwDirectionOffset_);
+    throwDirection_= MyMath::Normalize(throwDirection_);
 
     // 卵 の 位置 を 更新
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));
+    throwEgg_->HandleRotate(pCharacter_->GetWorldRotate());
 
     // ステート管理
     ManageState();
 }
 
-void PlayerState_ThrowEgg::Draw(){}
+constexpr float timePerSegment = 0.1f / 32.0f;
+void PlayerState_ThrowEgg::Draw(){
+
+    Vector3 eggPos = throwEgg_->GetWorldTranslate();
+    Vector3 preSegmentPos = eggPos;
+    float index = 0.0f;
+    while(true){
+        // 地面につくまで描画する
+        if(preSegmentPos.y <= 0.0f){
+            return;
+        }
+        index += 1.0f;
+
+        Vector2 parabolic2d =  MyFunc::CalculateParabolic(Vector2(throwDirection_.x,throwDirection_.y),throwPower_,timePerSegment * index,9.8f * eggWeight_);
+        Vector3 parabolic3d = Vector3(0.0f,parabolic2d.y,parabolic2d.x) * RotateYMatrix(pCharacter_->GetWorldRotate().y) + eggPos;
+
+        SEED::DrawLine(preSegmentPos,parabolic3d,Vector4(0.3f,1.0f,0.3f,1.0f));
+
+        preSegmentPos = parabolic3d;
+    }
+}
 
 void PlayerState_ThrowEgg::ManageState(){
     // 卵 を 投げる状態へ
     if(Input::IsReleasePadButton(PAD_BUTTON::RB)){
-        throwDirectionOffset_ = MyMath::Normalize(throwDirectionOffset_);
-        // Player の 現在向いてる方向
-        throwDirection_ = throwDirectionOffset_ * RotateMatrix(pCharacter_->GetWorldRotate());
-        throwDirection_ = MyMath::Normalize(throwDirection_);
-        Vector3 throwVelocity = throwDirection_ * throwPower_;
-        throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_));
+        throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
 
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;

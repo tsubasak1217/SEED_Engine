@@ -8,12 +8,12 @@ DescriptorHeap_DSV::DescriptorHeap_DSV(){
         );
 
     // DSV用のヒ－プはヒープタイプが違うので別途作る
-    descriptorHeap_.Attach(CreateDescriptorHeap(
+    descriptorHeap_ = CreateDescriptorHeap(
         DxManager::GetInstance()->GetDevice(),
         D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 
         kMaxViewCount_, 
         false
-    ));
+    );
 }
 
 

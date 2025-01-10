@@ -12,7 +12,7 @@ public:
 
 public:
     virtual uint32_t CreateView(VIEW_TYPE viewType,ID3D12Resource* pResource, const void* pDesc);
-    ComPtr<ID3D12DescriptorHeap> GetHeap(){ return descriptorHeap_; }
+    ID3D12DescriptorHeap* GetHeap(){ return descriptorHeap_.Get(); }
     uint32_t GetDescriptorSize(){ return descriptorSize_; };
     D3D12_CPU_DESCRIPTOR_HANDLE GetHeapStartCPU();
     D3D12_GPU_DESCRIPTOR_HANDLE GetHeapStartGPU();

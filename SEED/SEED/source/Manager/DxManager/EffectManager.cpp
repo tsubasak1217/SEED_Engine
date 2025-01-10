@@ -39,13 +39,13 @@ void EffectManager::TransfarToCS()
     // ========================== 送信する画像の決定ゾーン ============================ //
 
     // SRVHeapを設定
-    ID3D12DescriptorHeap* descriptorHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get()};
+    ID3D12DescriptorHeap* descriptorHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)};
     pDxManager_->commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
     // まずは通常のスクリーンショットを転送する
     D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
     srvGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetTextureHandle("offScreen_0")
     );
@@ -57,7 +57,7 @@ void EffectManager::TransfarToCS()
     // 次に書き込み用のリソースを転送する
     D3D12_GPU_DESCRIPTOR_HANDLE uavGpuHandle;
     uavGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetTextureHandle("blur_0_UAV")
     );
@@ -68,7 +68,7 @@ void EffectManager::TransfarToCS()
 
     // DepthStencilResourceのSRVを転送する
     srvGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetTextureHandle("depth_0")
     );
@@ -80,7 +80,7 @@ void EffectManager::TransfarToCS()
 
     // 深度情報書き込み用のテクスチャを転送する
     uavGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get(),
+        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetTextureHandle("depth_1_UAV")
     );

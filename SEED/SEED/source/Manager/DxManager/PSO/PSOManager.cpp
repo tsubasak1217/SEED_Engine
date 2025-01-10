@@ -31,7 +31,7 @@ PSOManager::~PSOManager(){}
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 
-ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
+ComPtr<ID3D12RootSignature> PSOManager::SettingCSRootSignature(){
     // ディスクリプタ範囲を定義（SRV、UAV、CBV）
     CD3DX12_DESCRIPTOR_RANGE ranges[5]{};
     ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0: inputTexture
@@ -70,10 +70,10 @@ ID3D12RootSignature* PSOManager::SettingCSRootSignature(){
     rootSignatureDesc.NumStaticSamplers = _countof(staticSamplers);
 
 
-    ID3DBlob* serializedRootSignature = nullptr;
-    ID3DBlob* errorBlob = nullptr;
+    ComPtr<ID3DBlob> serializedRootSignature = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
     D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSignature, &errorBlob);
-    ID3D12RootSignature* rootSignature;
+    ComPtr<ID3D12RootSignature> rootSignature;
     DxManager::GetInstance()->device->CreateRootSignature(0, serializedRootSignature->GetBufferPointer(), serializedRootSignature->GetBufferSize(), IID_PPV_ARGS(&rootSignature));
 
     serializedRootSignature->Release();
@@ -192,8 +192,8 @@ void PSOManager::GenerateTemplateParameter(
 
 void PSOManager::Create(RootSignature* pRootSignature, Pipeline* pPipeline){
     HRESULT hr;
-    ID3DBlob* signatureBlob = nullptr;
-    ID3DBlob* errorBlob = nullptr;
+    ComPtr<ID3DBlob> signatureBlob = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
 
     /*-------------------- RootSignatureの作成 ----------------------*/
 

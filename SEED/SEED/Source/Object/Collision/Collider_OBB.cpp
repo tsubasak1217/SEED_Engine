@@ -181,3 +181,20 @@ void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
     // 行列の更新
     UpdateMatrix();
 }
+
+
+////////////////////////////////////////////////////////////////
+// 移動したかどうか
+////////////////////////////////////////////////////////////////
+bool Collider_OBB::IsMoved(){
+    OBB obb[2] = {
+        GetOBB(),
+        GetPreOBB()
+    };
+
+    if(obb[0].center != obb[1].center or obb[0].halfSize != obb[1].halfSize or obb[0].rotate != obb[1].rotate){
+        return true;
+    }
+
+    return false;
+}

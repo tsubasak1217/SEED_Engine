@@ -8,6 +8,7 @@
 
 DxManager* DxManager::instance_ = nullptr;
 
+
 void DxManager::Initialize(SEED* pSEED){
     // インスタンスの取得
     GetInstance();
@@ -212,6 +213,7 @@ void DxManager::CreateDebugLayer(){
 
 void DxManager::CreateDevice(){
     /*------------------------------- DXGIFactoryの生成 --------------------------------*/
+
     hr = CreateDXGIFactory(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
     // 作成失敗していたらアサート
     assert(SUCCEEDED(hr));
@@ -281,6 +283,7 @@ void DxManager::CreateDevice(){
 }
 
 void DxManager::CheckDebugLayer(){
+
     if(SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
         // ヤバエラー時に止まる
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -306,9 +309,6 @@ void DxManager::CheckDebugLayer(){
 
         // 指定したメッセージの表示を抑制する
         infoQueue->PushStorageFilter(&filter);
-
-        // 解放
-        infoQueue->Release();
     }
 }
 
@@ -436,13 +436,13 @@ void DxManager::InitializeSystemTextures(){
 
     //========================= 深度情報をテクスチャとして表示する用のResource作成 ===============================//
 
-    depthTextureResource.Attach(InitializeTextureResource(
+    depthTextureResource = InitializeTextureResource(
         device.Get(),
         pSEED_->kClientWidth_,
         pSEED_->kClientHeight_,
         DXGI_FORMAT_R8G8B8A8_UNORM,
         STATE_UNORDERED_ACCESS
-    ));
+    );
 
     // 名前の設定
     depthTextureResource->SetName(L"depthTextureResource");
@@ -463,13 +463,13 @@ void DxManager::InitializeSystemTextures(){
 
     //==================================== ぼけたテクスチャ用のResourceの初期化 =======================================//
 
-    blurTextureResource.Attach(InitializeTextureResource(
+    blurTextureResource = InitializeTextureResource(
         device.Get(),
         pSEED_->kClientWidth_,
         pSEED_->kClientHeight_,
         DXGI_FORMAT_R8G8B8A8_UNORM,
         STATE_UNORDERED_ACCESS
-    ));
+    );
 
     // 名前の設定
     blurTextureResource->SetName(L"blurTextureResource");
@@ -625,13 +625,13 @@ void DxManager::InitPSO(){
     /*==================================================================================*/
 
     // ComputeShader用
-    csRootSignature.Attach(PSOManager::SettingCSRootSignature());
+    csRootSignature = PSOManager::SettingCSRootSignature();
     D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
     psoDesc.pRootSignature = csRootSignature.Get();
-    psoDesc.CS = { reinterpret_cast<BYTE*>(csBlobs["blurCS"]->GetBufferPointer()), csBlobs["blurCS"]->GetBufferSize()};
+    psoDesc.CS = { reinterpret_cast<BYTE*>(csBlobs["blurCS"]->GetBufferPointer()), csBlobs["blurCS"]->GetBufferSize() };
 
     // CBVの初期化
-    CS_ConstantBuffer.Attach(CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer)));
+    CS_ConstantBuffer = CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer));
 
     device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(csPipelineState.GetAddressOf()));
 
@@ -750,7 +750,7 @@ void DxManager::PreDraw(){
         imGuiがフレーム単位でHeapの中身を操作するため
         SRVのHeapは毎フレームセットし直す
     */
-    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV).Get() };
+    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV) };
     commandList->SetDescriptorHeaps(1, ppHeaps);
 }
 
@@ -1016,28 +1016,95 @@ void DxManager::SavePreVariable(){
 }
 
 
+
 /*===========================================================================================*/
 /*                                          後処理                                            */
 /*===========================================================================================*/
 
+DxManager::~DxManager(){}
+
+/*-------------------- 終了処理 -------------------*/
 void DxManager::Finalize(){
-    CloseHandle(instance_->fenceEvent);
-    instance_->polygonManager_->Finalize();
 
-    delete instance_->polygonManager_;
-    instance_->polygonManager_ = nullptr;
+    // 解放
+    instance_->Release();
 
-#ifdef _DEBUG
-    instance_->debugController->Release();
-#endif
-    CloseWindow(WindowManager::GetHWND(SEED::GetInstance()->windowTitle_));
-    // COMの終了
-    CoUninitialize();
-
+    // インスタンスの解放
     delete instance_;
     instance_ = nullptr;
+
+    // ウィンドウの終了
+    CloseWindow(WindowManager::GetHWND(SEED::GetInstance()->windowTitle_));
+
 }
 
+/*-------------------- ComObjectの解放 -------------------*/
+void DxManager::Release(){
+
+    // リソース
+    for(auto& textureRs : textureResource){ textureRs.Reset(); }
+    for(auto& intermediateRs : intermediateResource){ intermediateRs.Reset(); }
+    for(auto& swapChainRTV : swapChainResources){ swapChainRTV.Reset(); }
+    offScreenResource.Reset();
+    depthStencilResource.Reset();
+    depthTextureResource.Reset();
+    blurTextureResource.Reset();
+    CS_ConstantBuffer.Reset();
+    lightingResource.Reset();
+    delete polygonManager_;
+    polygonManager_ = nullptr;
+
+    // ディスクリプタヒープ
+    ViewManager::Finalize();
+
+    // ルートシグネチャ・パイプラインの解放
+    csRootSignature.Reset();
+    csPipelineState.Reset();
+
+    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+        for(int j = 0; j < kTopologyCount; j++){
+            for(int k = 0; k < kCullModeCount; k++){
+                rootSignatures[i][j][k].Release();
+                skinningRootSignatures[i][k].Release();
+                pipelines[i][j][k].Release();
+                skinningPipelines[i][k].Release();
+            }
+        }
+    }
+
+    // コンパイル系
+    for(auto& vsBlob : vsBlobs){ vsBlob.second.Reset(); }
+    for(auto& psBlob : psBlobs){ psBlob.second.Reset(); }
+    for(auto& csBlob : csBlobs){ csBlob.second.Reset(); }
+    dxcCompiler.Reset();
+    dxcUtils.Reset();
+    includeHandler.Reset();
+
+    // スワップチェイン
+    swapChain.Reset();
+
+    // フェンス
+    CloseHandle(instance_->fenceEvent);
+    fence.Reset();
+
+    // コマンドリスト系
+    commandList.Reset();
+    commandAllocator.Reset();
+    commandQueue.Reset();
+
+    // デバイス
+    device.Reset();
+    useAdapter.Reset();
+    dxgiFactory.Reset();
+
+    // デバッグ系
+#ifdef _DEBUG
+    infoQueue.Reset();
+    debugController.Reset();
+#endif // _DEBUG
+}
+
+/*-------------------- インスタンスの取得 -------------------*/
 DxManager* DxManager::GetInstance(){
     if(!instance_){
         instance_ = new DxManager();
@@ -1046,6 +1113,7 @@ DxManager* DxManager::GetInstance(){
     return instance_;
 }
 
+/*-------------------- リークチェッカー -------------------*/
 LeakChecker::~LeakChecker(){
     // 解放漏れがないかチェック
     ComPtr<IDXGIDebug1> debug;
@@ -1054,4 +1122,7 @@ LeakChecker::~LeakChecker(){
         debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
     }
+
+    // COMの終了
+    CoUninitialize();
 }

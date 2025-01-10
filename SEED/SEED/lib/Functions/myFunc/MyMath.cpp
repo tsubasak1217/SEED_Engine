@@ -203,6 +203,63 @@ Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, 
     return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
 }
 
+std::array<Vector3, 2> MyMath::ClosestPoint(const Line& l1, const Line& l2){
+
+    // 2直線の方向ベクトル
+    Vector3 dir1 = l1.end_ - l1.origin_;
+    Vector3 dir2 = l2.end_ - l2.origin_;
+    
+    // 2直線の長さ
+    float length1 = Length(dir1);
+    float length2 = Length(dir2);
+
+    // 点が同じ場所の場合
+    if(length1 == 0.0f){
+        if(length2 == 0.0f){
+            return { l1.origin_, l2.origin_ };
+        } else{
+            return { l1.origin_, ClosestPoint(l2.origin_, l2.end_, l1.origin_) };
+        }
+    } else if(length2 == 0.0f){
+        if(length1 == 0.0f){
+            return { l1.origin_, l2.origin_ };
+        } else{
+            return { ClosestPoint(l1.origin_, l1.end_, l2.origin_), l2.origin_ };
+        }
+    }
+
+    // 2直線の始点間のベクトル
+    Vector3 originVec = l2.origin_ - l1.origin_;
+
+    // 2直線の方向ベクトルの外積
+    Vector3 cross = Cross(dir1, dir2);
+    float crossLength = Length(cross);
+
+    // 許容誤差
+    const float EPSILON = 1e-6f;
+
+    // 2直線が平行な場合
+    if(crossLength < EPSILON) {
+        return { l1.origin_, l2.origin_ };
+    }
+
+    // 外積の大きさを利用したスカラー値の計算
+    float t1 = Dot(Cross(originVec, dir2), cross) / (crossLength * crossLength);
+    float t2 = Dot(Cross(originVec, dir1), cross) / (crossLength * crossLength);
+
+    // 交点を計算
+    Vector3 closest1 = l1.origin_ + dir1 * t1;
+    Vector3 closest2 = l2.origin_ + dir2 * t2;
+
+    return { closest1, closest2 };
+}
+
+// 2直線の距離を求める関数
+float MyMath::LineDistance(const Line& l1, const Line& l2){
+    std::array<Vector3, 2> closest = ClosestPoint(l1, l2);
+    return Length(closest[1] - closest[0]);
+}
+
 //================================================================
 //                      個人用な便利関数
 //================================================================

@@ -189,3 +189,19 @@ void Collider_AABB::LoadFromJson(const nlohmann::json& jsonData){
     // オフセット
     offset_ = jsonData["offset"];
 }
+
+//////////////////////////////////////////////////////////////////
+// 移動したかどうか
+//////////////////////////////////////////////////////////////////
+bool Collider_AABB::IsMoved(){
+    AABB aabb[2] = {
+        GetAABB(),
+        GetPreAABB()
+    };
+
+    if(aabb[0].center != aabb[1].center or aabb[0].halfSize != aabb[1].halfSize){
+        return true;
+    }
+
+    return false;
+}

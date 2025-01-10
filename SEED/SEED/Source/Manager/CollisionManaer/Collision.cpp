@@ -782,3 +782,22 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
     // ここまで来たら衝突
     return true;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//==================================== カプセル同士の衝突判定 =======================================//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collision::Capsule::Capsule(const::Capsule& capsule1, const::Capsule& capsule2){
+
+    // ラインの作成
+    ::Line line[2] = {
+        ::Line(capsule1.origin, capsule1.end),
+        ::Line(capsule2.origin, capsule2.end)
+    };
+
+    // 線分同士の最短距離を取得
+    float closestDistance = MyMath::LineDistance(line[0], line[1]);
+
+    // カプセルの半径の和よりも短ければ衝突している
+    return closestDistance <= capsule1.radius + capsule2.radius;
+}

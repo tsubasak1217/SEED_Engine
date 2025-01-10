@@ -148,6 +148,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
+    <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />

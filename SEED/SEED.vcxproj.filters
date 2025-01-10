@@ -505,6 +505,9 @@
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

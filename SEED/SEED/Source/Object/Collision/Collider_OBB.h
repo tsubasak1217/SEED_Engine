@@ -19,8 +19,14 @@ public:
 
 public:
     OBB GetOBB()const{ return body_; }
+    OBB GetPreOBB()const{ 
+        Collider_OBB* preObbCollider = dynamic_cast<Collider_OBB*>(preCollider_);
+        return preObbCollider->GetOBB();
+    }
+
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetSize(const Vector3& size){ body_.halfSize = size * 0.5f; }
+    bool IsMoved()override;
 
 private:
     OBB local_;

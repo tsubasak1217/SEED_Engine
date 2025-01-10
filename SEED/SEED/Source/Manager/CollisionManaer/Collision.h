@@ -7,13 +7,10 @@
 #include "Sphere.h"
 #include "Quad.h"
 #include "Triangle.h"
+#include "Capsule.h"
+#include "Collision/Collider.h"
 
 struct CollisionData{
-    Vector3 pos1;
-    Vector3 pos2;
-
-    Vector3 moveVec1;
-    Vector3 moveVec2;
 
     Vector3 preRotate1;
     Vector3 preRotate2;
@@ -54,6 +51,10 @@ namespace Collision{
 
     namespace Quad{
         //bool Line(const ::Quad& quad, const ::Line& line);
+    }
+
+    namespace Capsule{
+        bool Capsule(const ::Capsule& capsule1, const ::Capsule& capsule2);
     }
 }
 

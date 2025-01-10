@@ -19,8 +19,14 @@ public:
 
 public:
     Sphere GetSphere()const{ return body_; }
+    Sphere GetPreSphere()const{
+        Collider_Sphere* preSphereCollider = dynamic_cast<Collider_Sphere*>(preCollider_);
+        return preSphereCollider->GetSphere();
+    }
+
     void SetCenter(const Vector3& center){ local_.center = center; }
     void SetRadius(float radius){ body_.radius = radius; }
+    bool IsMoved()override;
 
 private:
     Sphere local_;

@@ -19,8 +19,13 @@ protected:
     void Damage(int32_t damage)override;
 
 public:
+    //--- getter / setter ---//
     float GetDistanceToPlayer()const;
     const Player* GetTargetPlayer()const{ return pPlayer_; }
+
+    void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
+    int32_t GetHP()const{ return HP_; }
+    void SetHP(int32_t hp){ HP_ = hp; }
 
 public:
     void OnCollision(const BaseObject* other, ObjectType objectType)override;

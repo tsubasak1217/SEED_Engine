@@ -1,23 +1,25 @@
 #pragma once
 
+// lib
 #include <string>
+#include <cstdint>
 
 class EnemyManager;
 
 class EnemyEditor{
 public:
-    EnemyEditor(EnemyManager* manager);
+    explicit EnemyEditor(EnemyManager* manager);
     ~EnemyEditor() = default;
 
     void ShowImGui();
 
 private:
-    void LoadFromJson();
-    void SaveToJson();
+    //--- 新規追加: セーブ/ロード機能 ---
+    void SaveEnemies();
+    void LoadEnemies();
 
 private:
-    const std::string jsonPath = "resources/jsons/Enemy.json";
-
     EnemyManager* pEnemyManager_ = nullptr;
+    uint32_t selectedEnemyIndex_ = 0;
+    int32_t enemyCount_ = 0;
 };
-

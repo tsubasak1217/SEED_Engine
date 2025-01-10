@@ -42,7 +42,6 @@ void Enemy::Initialize(){
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
-
     // HP
     kMaxHP_ = 100;
     HP_ = kMaxHP_;
@@ -76,7 +75,6 @@ void Enemy::Draw(){
 void Enemy::Damage(int32_t damage){
     HP_ -= damage;
     isDamaged_ = true;
-
     if(HP_ <= 0){
         ChangeState(new EnemyState_Down("Enemy_Down", this));
     }

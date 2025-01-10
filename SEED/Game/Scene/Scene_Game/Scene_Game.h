@@ -47,6 +47,10 @@ private:
 
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
+    // Enemy
+    std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
+    std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
+
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
     std::unique_ptr<FieldEditor> fieldEditor_;

@@ -23,7 +23,7 @@ EggState_Thrown::~EggState_Thrown(){}
 void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-
+    weight_ = JsonCoordinator::GetValue("Egg","weight").has_value();
 }
 
 void EggState_Thrown::Update(){
@@ -34,12 +34,9 @@ void EggState_Thrown::Update(){
 
 void EggState_Thrown::Draw(){}
 
-const float kGravity = -9.8f;
+const float kGravity = 9.8f;
 void EggState_Thrown::MoveThrow(){
     velocity_.y -= kGravity * weight_ * ClockManager::DeltaTime();
-    // 方向を再計算
-    velocity_ = MyMath::Normalize(velocity_) * MyMath::Length(velocity_);
-
     // 移動
     pCharacter_->HandleMove(velocity_);
 }

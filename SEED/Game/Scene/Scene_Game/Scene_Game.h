@@ -25,6 +25,7 @@
 // manager
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Editor/FieldEditor.h"
+#include "../Game/Manager/FieldObjectManager.h"
 
 class Scene_Game : public Scene_Base
 {
@@ -54,4 +55,5 @@ private:
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
     std::unique_ptr<FieldEditor> fieldEditor_;
+    std::unique_ptr<FieldObjectManager> fieldObjectManager_;
 };

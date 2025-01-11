@@ -11,6 +11,7 @@
 // state
 class IPlayerState;
 // manager
+class PlayerCorpseManager;
 class EggManager;
 
 class Player : public BaseCharacter
@@ -33,6 +34,9 @@ public: // アクセッサ
     void SetFollowCameraPtr(BaseCamera *pCamera) { pCamera_ = pCamera; }
     const BaseCamera *GetFollowCamera() const { return pCamera_; }
 
+    PlayerCorpseManager* GetCorpseManager(){ return corpseManager_; }
+    void SetCorpseManager(PlayerCorpseManager* corpseManager){ corpseManager_ = corpseManager; }
+
     EggManager *GetEggManager() { return eggManager_; }
     void SetEggManager(EggManager *eggManager) { eggManager_ = eggManager; }
 
@@ -42,5 +46,6 @@ public:
 private: // フォローカメラ、ターゲット用
     BaseCamera *pCamera_ = nullptr;
 
+    PlayerCorpseManager* corpseManager_ = nullptr;
     EggManager *eggManager_ = nullptr;
 };

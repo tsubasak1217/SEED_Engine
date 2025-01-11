@@ -53,7 +53,7 @@ void EggManager::Draw(){
     }
 }
 
-void EggManager::AddEgg(std::unique_ptr<Egg> _egg){
+void EggManager::AddEgg(std::unique_ptr<Egg>& _egg){
     /// 最大サイズ なら Skip
     if(eggs_.size() >= maxEggsSize_){
         return;

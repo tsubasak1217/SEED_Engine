@@ -3,6 +3,12 @@
 //others state
 #include "PlayerState_Idle.h"
 
+//player
+#include "Player/Player.h"
+#include "PlayerCorpse/PlayerCorpse.h"
+//manager
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
+
 //manager
 #include "ClockManager.h"
 
@@ -25,6 +31,16 @@ void PlayerState_Spawn::Update(){
 void PlayerState_Spawn::Draw(){}
 
 void PlayerState_Spawn::ManageState(){
-        pCharacter_->SetTranslate(spawnPos_);
-        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
+    // 死体を 置く
+    {
+        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+        std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
+        pCorpse->Initialize();
+        pCorpse->SetManager(pPlayer->GetCorpseManager());
+        pCorpse->SetTranslate(pCharacter_->GetWorldTranslate());
+        pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+    }
+
+    pCharacter_->SetTranslate(spawnPos_);
+    pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
 }

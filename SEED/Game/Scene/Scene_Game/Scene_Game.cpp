@@ -74,6 +74,7 @@ void Scene_Game::Initialize(){
     // PlayerCorpseManager の 初期化
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
+    player_->SetCorpseManager(playerCorpseManager_.get());
 
     // EggManager の 初期化
     eggManager_ = std::make_unique<EggManager>();
@@ -105,8 +106,8 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ClockManager::FPS());
-    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::Text("FPS: %f",ClockManager::FPS());
+    ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
     ImGui::End();
 
     fieldEditor_->ShowImGui();
@@ -132,6 +133,7 @@ void Scene_Game::Update(){
     player_->EditCollider();
 
     eggManager_->Update();
+    playerCorpseManager_->Update();
 
     enemyManager_->Update();
 
@@ -164,6 +166,7 @@ void Scene_Game::Draw(){
 
     //すべてのenemyの描画
     enemyManager_->Draw();
+    playerCorpseManager_->Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

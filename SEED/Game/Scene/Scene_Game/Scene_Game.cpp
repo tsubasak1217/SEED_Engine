@@ -58,7 +58,8 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  エディター初期化
     ////////////////////////////////////////////////////
-    fieldEditor_ = std::make_unique<FieldEditor>();
+    fieldObjectManager_ = std::make_unique<FieldObjectManager>();
+    fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
     fieldEditor_->Initialize();
 
     ////////////////////////////////////////////////////
@@ -86,7 +87,7 @@ void Scene_Game::Initialize(){
 
     // EnemyEditor の 初期化
     enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
-
+    
 
     player_->SetEggManager(eggManager_.get());
 }
@@ -141,7 +142,7 @@ void Scene_Game::Update(){
         currentState_->Update();
     }
 
-    fieldEditor_->Update();
+    fieldObjectManager_->Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +154,7 @@ void Scene_Game::Update(){
 void Scene_Game::Draw(){
 
     // フィールドの描画
-    fieldEditor_->Draw();
+    fieldObjectManager_->Draw();
 
     // グリッドの描画
     SEED::DrawGrid();

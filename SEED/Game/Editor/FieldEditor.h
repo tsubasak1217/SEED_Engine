@@ -3,6 +3,9 @@
 // engine
 #include "../SEED/lib/structs/Model.h"
 
+// local
+#include "../Manager/FieldObjectManager.h"
+
 // lib
 #include "../SEED/lib/tensor/Vector3.h"
 
@@ -16,17 +19,19 @@
 #include <cstdint>
 #include <unordered_map>
 
+// ImGui用のテクスチャIDなどを保持
+using TextureMap = std::unordered_map<std::string, ImTextureID>;
+
 class FieldEditor{
 public:
     //===================================================================*/
     //                   public methods
     //===================================================================*/
     FieldEditor();
+    FieldEditor(FieldObjectManager& manager);
     ~FieldEditor() = default;
 
     void Initialize();
-    void Update();
-    void Draw();
 
     // ui/imgui
     void ShowImGui();
@@ -48,12 +53,14 @@ private:
     //===================================================================*/
     //                   private fields
     //===================================================================*/
-    std::vector<std::unique_ptr<Model>> fieldModel_ {};
     std::list<std::string> modelNames_ {};
+
+    FieldObjectManager& manager_;
 
     bool isEditing_ = false;
 
-    std::unordered_map<std::string, ImTextureID> textureIDs_;// テクスチャのID
+    // テクスチャ管理
+    TextureMap textureIDs_;
 
-    const std::string jsonPath = "resources/jsons/fieldModels/fieldModels.json";
+    const std::string jsonPath_ = "resources/jsons/fieldModels/fieldModels.json";
 };

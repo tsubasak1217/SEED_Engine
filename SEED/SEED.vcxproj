@@ -112,6 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp" />
@@ -221,6 +223,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />

@@ -32,7 +32,7 @@ public:
     /// 卵を増やす
     /// </summary>
     /// <param name="_egg"></param>
-    void AddEgg(std::unique_ptr<Egg> _egg);
+    void AddEgg(std::unique_ptr<Egg>& _egg);
 
     /// <summary>
     /// 指定した卵を削除

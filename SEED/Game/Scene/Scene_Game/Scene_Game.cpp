@@ -81,6 +81,13 @@ void Scene_Game::Initialize(){
     eggManager_->SetPlayer(player_.get());
     eggManager_->Initialize();
 
+    // EnemyManager の 初期化
+    enemyManager_ = std::make_unique<EnemyManager>(player_.get());
+
+    // EnemyEditor の 初期化
+    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
+
+
     player_->SetEggManager(eggManager_.get());
 }
 
@@ -111,6 +118,8 @@ void Scene_Game::Update(){
         SEED::SetCamera("follow");
     }
 
+    enemyEditor_->ShowImGui();
+
 #endif
 
     /*========================== Manager ============================*/
@@ -125,6 +134,8 @@ void Scene_Game::Update(){
 
     eggManager_->Update();
     playerCorpseManager_->Update();
+
+    enemyManager_->Update();
 
     if(currentState_){
         currentState_->Update();
@@ -152,6 +163,9 @@ void Scene_Game::Draw(){
 
     player_->Draw();
     eggManager_->Draw();
+
+    //すべてのenemyの描画
+    enemyManager_->Draw();
     playerCorpseManager_->Draw();
 }
 

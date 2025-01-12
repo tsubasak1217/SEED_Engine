@@ -129,11 +129,9 @@ void EnemyEditor::SaveEnemies(){
     JsonCoordinator::LoadGroup(group);
 
     // 2) 敵の一覧を取得
-    enemyCount_ = ( int ) pEnemyManager_->GetEnemies().size();
+    
     auto& enemies = pEnemyManager_->GetEnemies();
-    // 敵数をセット
-    const std::string countKey = "Count";
-    JsonCoordinator::RegisterItem<int>(group, countKey, enemyCount_);
+   
     // 敵の情報を1体ずつ書き込む
     for (int i = 0; i < ( int ) enemies.size(); i++){
         // キー文字列
@@ -149,6 +147,10 @@ void EnemyEditor::SaveEnemies(){
         JsonCoordinator::RegisterItem(group, posKey, pos);
         JsonCoordinator::RegisterItem(group, hpKey, hp);
     }
+    enemyCount_ = ( int ) pEnemyManager_->GetEnemies().size();
+    // 敵数をセット
+    const std::string countKey = "Count";
+    JsonCoordinator::RegisterItem(group, countKey, enemyCount_);
 
     // 3) SaveGroup でファイルに保存
     JsonCoordinator::SaveGroup(group);

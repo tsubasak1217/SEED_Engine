@@ -31,7 +31,8 @@ public:
     void SetColor(const Vector4& color){ model_->color_ = color; }
 
     const std::string& GetName()const{ return name_; }
-private:
+
+protected:
     //表示用モデル
     std::unique_ptr<Model> model_;
 

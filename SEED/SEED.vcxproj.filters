@@ -541,6 +541,33 @@
     <ClCompile Include="Game\Manager\FieldObjectManager.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpeningState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpenedState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\patterns\IObserver.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\patterns\ISubject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1017,6 +1044,17 @@
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
       <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
+    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
+    <ClInclude Include="SEED\lib\patterns\IObserver.h" />
+    <ClInclude Include="SEED\lib\patterns\ISubject.h" />
+    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

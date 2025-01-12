@@ -36,8 +36,6 @@ void PlayerState_Idle::Update()
     }
 
     HandOverColliders();
-
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -34,8 +34,6 @@ void PlayerState_Jump::Update(){
     if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
         Rotate();
     }
-
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,6 @@ void EggState_Follow::Initialize(const std::string& stateName,BaseCharacter* cha
 
 void EggState_Follow::Update(){
     MoveFollow();
-    ManageState();
 }
 
 void EggState_Follow::Draw(){}

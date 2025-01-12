@@ -60,8 +60,6 @@ void PlayerState_ThrowEgg::Update(){
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));
     throwEgg_->HandleRotate(pCharacter_->GetWorldRotate());
 
-    // ステート管理
-    ManageState();
 }
 
 constexpr float timePerSegment = 0.1f / 32.0f;

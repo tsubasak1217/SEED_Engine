@@ -32,8 +32,6 @@ void PlayerState_Move::Update()
     Move();
     // 回転処理
     Rotate();
-    // state遷移
-    ManageState();
 }
 
 //////////////////////////////////////////////////////////////////////////

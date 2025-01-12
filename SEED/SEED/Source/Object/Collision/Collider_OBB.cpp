@@ -9,10 +9,13 @@
 #include <SEED.h>
 
 ////////////////////////////////////////////////////////////////
-// コンストラクタ
+// コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////
 Collider_OBB::Collider_OBB() : Collider(){
     colliderType_ = ColliderType::OBB;
+}
+
+Collider_OBB::~Collider_OBB(){
 }
 
 ////////////////////////////////////////////////////////////////
@@ -38,20 +41,69 @@ void Collider_OBB::Draw(){
 }
 
 ////////////////////////////////////////////////////////////////
+// フレーム開始時処理
+////////////////////////////////////////////////////////////////
+void Collider_OBB::BeginFrame(){
+    // 前回のAABBを保存
+    preBody_ = body_;
+
+    Collider::BeginFrame();
+}
+
+////////////////////////////////////////////////////////////////
 // 衝突判定
 ////////////////////////////////////////////////////////////////
 void Collider_OBB::CheckCollision(Collider* collider){
 
     // すでに衝突している場合は処理を行わない
     if(collisionList_.find(collider->GetColliderID()) != collisionList_.end()){ return; }
+    CollisionData collisionData;
 
     switch(collider->GetColliderType()){
     case ColliderType::Sphere:
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
-        if(Collision::OBB::Sphere(body_, sphere->GetSphere())){
+        collisionData = Collision::OBB::Sphere(this,sphere);
+
+        if(collisionData.isCollide){
             OnCollision(collider,collider->GetObjectType());
             collider->OnCollision(this,objectType_);
+            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
+            // 押し戻し
+            if(parentObject_){
+                // 法線 * 押し戻す割合
+                parentObject_->AddWorldTranslate(
+                    -pushBack * collisionData.pushBackRatio_B.value()
+                );
+
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    parentObject_->SetIsDrop(false);
+                }
+
+            } else{
+                body_.center += -pushBack * collisionData.pushBackRatio_B.value();
+            }
+
+            // 衝突したオブジェクトも押し戻す
+            if(collider->GetParentObject()){
+                collider->GetParentObject()->AddWorldTranslate(
+                    pushBack * collisionData.pushBackRatio_A.value()
+                );
+
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    collider->GetParentObject()->SetIsDrop(false);
+                }
+
+            } else{
+                sphere->AddCenter(pushBack * collisionData.pushBackRatio_A.value());
+            }
+
+            // 行列を更新する
+            UpdateMatrix();
+            sphere->UpdateMatrix();
         }
         break;
     }
@@ -103,6 +155,9 @@ void Collider_OBB::Edit(){
 
     std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 全般情報
+    Collider::Edit();
 
     // 中心座標
     ImGui::Text("------ Center ------");

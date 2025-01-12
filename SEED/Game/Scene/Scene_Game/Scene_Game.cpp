@@ -35,7 +35,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
-
+    player_ = std::make_unique<Player>();
 
 
     ////////////////////////////////////////////////////
@@ -66,6 +66,8 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     fieldEditor_ = std::make_unique<FieldEditor>();
     fieldEditor_->Initialize();
+
+    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +95,6 @@ void Scene_Game::Update(){
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
 
-
     fieldEditor_->ShowImGui();
 #endif
 
@@ -108,6 +109,11 @@ void Scene_Game::Update(){
     }
 
     fieldEditor_->Update();
+
+    player_->Update();
+    player_->EditCollider();
+
+    fieldColliderEditor_->Edit();
 }
 
 
@@ -128,7 +134,8 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
-    SEED::DrawSprite(Sprite("Assets/uvChecker.png"));
+    // プレイヤーの描画
+    player_->Draw();
 
 }
 
@@ -138,7 +145,7 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
-
+    player_->BeginFrame();
 }
 
 
@@ -148,5 +155,5 @@ void Scene_Game::BeginFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
-
+    player_->EndFrame();
 }

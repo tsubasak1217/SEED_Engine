@@ -37,6 +37,7 @@ private:
 private:
 
     std::unique_ptr<FollowCamera> followCamera_;
-
+    std::unique_ptr<Player> player_;
+    std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FieldEditor> fieldEditor_;
 };

@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_set>
 #include <json.hpp>
+#include <Physics.h>
 #include "ImGuiManager/ImGuiManager.h"
 #include "Vector3.h"
 #include "Matrix4x4.h"
@@ -39,6 +40,7 @@ public:
     virtual void Update();
     virtual void UpdateMatrix();
     virtual void Draw();
+    virtual void BeginFrame();
     virtual void CheckCollision(Collider* collider);
     virtual void OnCollision(Collider* collider, ObjectType objectType);
 
@@ -57,6 +59,7 @@ public:// アクセッサ-------------------------------------------------------
 
     // 基礎情報
     void SetParentObject(BaseObject* parentObject){ parentObject_ = parentObject; }
+    BaseObject* GetParentObject()const{ return parentObject_; }
     void SetObjectType(ObjectType objectType){ objectType_ = objectType; }
     ObjectType GetObjectType()const{ return objectType_; }
     ColliderType GetColliderType()const{ return colliderType_; }
@@ -99,7 +102,6 @@ public:// アクセッサ-------------------------------------------------------
 
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;
-    Collider* preCollider_;
     ColliderType colliderType_;
     ObjectType objectType_ = ObjectType::None;
     static uint32_t nextID_;
@@ -115,9 +117,10 @@ protected:// 親子付け情報-------------------------------------------------
     bool isParentTranslate_ = true;
 
 public:// 物理パラメータ----------------------------------------------------------
-    bool isMovable_ = false;
-    float mass_;
+    bool isMovable_ = true;
+    float mass_ = 1.0f;
     float miu_;
+    bool isGhost_ = false;// 当たり判定のみ行い押し戻ししない場合true
 
 public:// トランスフォーム情報------------------------------------------------------
     Vector3 scale_{ 1.0f,1.0f,1.0f };

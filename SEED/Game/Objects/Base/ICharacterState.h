@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <Physics.h>
 #include "../Game/Objects/Base/BaseCharacter.h"
 #include "Collision/Collider.h"
 #include "InputManager.h"

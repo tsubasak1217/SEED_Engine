@@ -4,9 +4,10 @@
 class Collider_Line : public Collider{
 public:
     Collider_Line();
-    ~Collider_Line()override = default;
+    ~Collider_Line()override;
     void UpdateMatrix() override;
     void Draw() override;
+    void BeginFrame()override;
 
 protected:
     void UpdateBox()override;
@@ -18,9 +19,11 @@ public:
 
 public:
     Line GetLine()const{ return body_; }
+    Line GetPreLine()const{ return preBody_; }
     void SetLocalPosition(const Vector3& origin, const Vector3& end){ local_.origin_ = origin; local_.end_ = end; }
 
 private:
     Line local_;
     Line body_;
+    Line preBody_;
 };

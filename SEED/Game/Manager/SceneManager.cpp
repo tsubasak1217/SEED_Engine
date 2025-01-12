@@ -4,6 +4,7 @@
 #include "Scene_Title/Scene_Title.h"
 #include "Scene_Clear/Scene_Clear.h"
 #include "CollisionManaer/CollisionManager.h"
+#include "CollisionManaer/ColliderEditor.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // static変数

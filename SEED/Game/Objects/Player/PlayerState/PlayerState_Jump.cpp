@@ -16,7 +16,6 @@ void PlayerState_Jump::Initialize(const std::string& stateName, BaseCharacter* p
 
     // ジャンプの初期化
     isJump_ = true;
-    isDrop_ = true;
     jumpVelocity_ = jumpPower_;
 }
 
@@ -47,7 +46,7 @@ void PlayerState_Jump::Draw(){}
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::ManageState(){
     // 着地
-    if(!isJump_ && !isDrop_){
+    if(!isJump_){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
     }
 }
@@ -58,13 +57,11 @@ void PlayerState_Jump::ManageState(){
 void PlayerState_Jump::Jump(){
 
     // 落下速度を加算
-    jumpVelocity_ += gravity_ * (isJump_ * isDrop_) * ClockManager::DeltaTime();
     pCharacter_->HandleMove(Vector3(0.0f, jumpVelocity_, 0.0f));
 
     // ジャンプ終了処理
-    if(pCharacter_->GetWorldTranslate().y <= 0.0f){
+    if(pCharacter_->GetWorldTranslate().y <= 0.0f or pCharacter_->GetIsDrop() == false){
         isJump_ = false;
-        isDrop_ = false;
         jumpVelocity_ = 0.0f;
     }
 }

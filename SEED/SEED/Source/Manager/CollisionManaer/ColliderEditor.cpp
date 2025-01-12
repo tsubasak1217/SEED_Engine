@@ -18,9 +18,13 @@ std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>> Collider
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
 ////////////////////////////////////////////////////////////
-ColliderEditor::ColliderEditor(const std::string& className, const Matrix4x4* parentMat){
+
+ColliderEditor::ColliderEditor(const std::string& className, BaseObject* parent){
     className_ = className;
-    parentMat_ = parentMat;
+    parentObject_ = parent;
+    if(parent){
+        parentMat_ = parent->GetWorldMatPtr();
+    }
 }
 
 ColliderEditor::~ColliderEditor(){}
@@ -29,7 +33,14 @@ ColliderEditor::~ColliderEditor(){}
 // コライダーの編集
 ////////////////////////////////////////////////////////////
 void ColliderEditor::Edit(){
+
 #ifdef _DEBUG
+
+    // フレームの開始
+    for(auto& collider : colliders_){
+        collider->BeginFrame();
+    }
+
     // ウィンドウの表示
     std::string headerName = "ColliderEditor( " + className_ + " )";
     ImGui::Begin(headerName.c_str());
@@ -148,6 +159,7 @@ void ColliderEditor::AddColliderOnGUI(){
         }
 
         // 行列に親子付け
+        colliders_.back()->SetParentObject(parentObject_);
         colliders_.back()->SetParentMatrix(parentMat_);
         colliders_.back()->isEdit_ = true;
     }

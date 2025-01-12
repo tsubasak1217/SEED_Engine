@@ -38,11 +38,11 @@ void BaseObject::Initialize(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Update(){
 
+    // 落下処理
+    Drop();
+
     // モデルの更新
     model_->Update();
-
-    // コライダーの更新
-    UpdateColliders();
 }
 
 
@@ -59,16 +59,42 @@ void BaseObject::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
-void BaseObject::BeginFrame(){}
+void BaseObject::BeginFrame(){
+
+    // コライダーの開始処理
+    for(auto& collider : colliders_){
+        collider->BeginFrame();
+    }
+}
 
 
 
 //////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 //////////////////////////////////////////////////////////////////////////
-void BaseObject::EndFrame(){}
+void BaseObject::EndFrame(){
+    // コライダーの更新
+    UpdateColliders();
+}
 
 
+
+//////////////////////////////////////////////////////////////////////////
+// 落下処理
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::Drop(){
+    if(!isDrop_){
+        dropSpeed_ = 0.0f;
+    } else{
+        if(!isApplyGravity_){
+            dropSpeed_ = 0.0f;
+            return;
+        }
+
+        dropSpeed_ += Physics::kGravity * ClockManager::DeltaTime();
+        AddWorldTranslate(Vector3(0.0f, -dropSpeed_, 0.0f));
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // マトリックスの更新
@@ -88,6 +114,19 @@ void BaseObject::EditCollider(){
     }
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::AddWorldTranslate(const Vector3& addValue){
+    if(GetParent() != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Vector3 localAddValue = addValue * invParentMat;
+        model_->translate_ += localAddValue;
+    } else{
+        model_->translate_ += addValue;
+    }
+}
 
 
 //////////////////////////////////////////////////////////////////////////

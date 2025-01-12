@@ -463,14 +463,14 @@
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -855,12 +855,17 @@
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
       <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\Physics.h">
+      <Filter>Environment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

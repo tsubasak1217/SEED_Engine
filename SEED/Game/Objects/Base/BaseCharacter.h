@@ -13,6 +13,7 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
+    void BeginFrame() override;
     void EndFrame() override;
 
 public:// Stateから呼び出す関数

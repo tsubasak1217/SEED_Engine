@@ -30,16 +30,6 @@ Collider::~Collider(){}
 
 void Collider::Update(){
 
-    // 衝突フラグの更新
-    preIsCollision_ = isCollision_;
-    isCollision_ = false;
-
-    // 衝突リストのクリア
-    collisionList_.clear();
-
-    // 色の初期化
-    color_ = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-
     // コライダーのアニメーション時間の更新
     if(animationData_){
         animationTime_ += ClockManager::DeltaTime();
@@ -132,6 +122,25 @@ void Collider::UpdateMatrix(){
 
 void Collider::Draw(){}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     フレーム開始時関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Collider::BeginFrame(){
+
+    // 衝突フラグの更新
+    preIsCollision_ = isCollision_;
+    isCollision_ = false;
+
+    // 衝突リストのクリア
+    collisionList_.clear();
+
+    // 色の初期化
+    color_ = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -169,7 +178,18 @@ void Collider::UpdateBox(){}
 //     ImGuiでの編集関数
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Collider::Edit(){}
+void Collider::Edit(){
+#ifdef _DEBUG
+
+    std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
+    ImGui::Text("------ physics ------");
+    ImGui::InputFloat(std::string("Mass" + colliderID).c_str(), &mass_);
+    ImGui::InputFloat(std::string("Miu" + colliderID).c_str(), &miu_);
+    ImGui::Checkbox(std::string("IsMovable" + colliderID).c_str(), &isMovable_);
+    ImGui::Checkbox(std::string("IsGhost" + colliderID).c_str(), &isGhost_);
+
+#endif // _DEBUG
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -182,6 +202,7 @@ nlohmann::json Collider::GetJsonData(){
     j["isMovable"] = isMovable_;
     j["mass"] = mass_;
     j["miu"] = miu_;
+    j["isGhost"] = isGhost_;
     j["isParentRotate"] = isParentRotate_;
     j["isParentScale"] = isParentScale_;
     j["isParentTranslate"] = isParentTranslate_;
@@ -209,6 +230,7 @@ void Collider::LoadFromJson(const nlohmann::json& jsonData){
     isMovable_ = jsonData["isMovable"];
     mass_ = jsonData["mass"];
     miu_ = jsonData["miu"];
+    isGhost_ = jsonData["isGhost"];
     isParentRotate_ = jsonData["isParentRotate"];
     isParentScale_ = jsonData["isParentScale"];
     isParentTranslate_ = jsonData["isParentTranslate"];

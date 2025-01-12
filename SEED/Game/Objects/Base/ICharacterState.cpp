@@ -14,7 +14,7 @@ void ICharacterState::EndFrame(){
 void ICharacterState::Initialize(const std::string& stateName, BaseCharacter* character){
     pCharacter_ = character;
     stateName_ = stateName;
-    colliderEditor_ = std::make_unique<ColliderEditor>(stateName_, pCharacter_->GetWorldMatPtr());
+    colliderEditor_ = std::make_unique<ColliderEditor>(stateName_, pCharacter_);
 }
 
 //////////////////////////////////////////////////////////////////////////

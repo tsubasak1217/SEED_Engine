@@ -18,10 +18,6 @@ private:
     void Jump();
 
 private:
-    bool isJump_ = false;
-    bool isDrop_ = false;
     float jumpPower_ = 120.0f / 60.0f;
-    float gravity_ = -9.8f;
-    float jumpVelocity_;
 
 };

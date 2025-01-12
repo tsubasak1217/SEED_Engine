@@ -197,6 +197,9 @@
     <Filter Include="Game\Objects\PlayerCorpse\Manager">
       <UniqueIdentifier>{ecff6474-2377-4d49-9096-32d484106cf5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject">
+      <UniqueIdentifier>{c6e361b1-2d93-48e7-a031-cdb71632d554}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -523,11 +526,20 @@
     <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
       <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\ICharacterState.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\FieldObjectManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp">
       <Filter>ソース ファイル</Filter>
@@ -848,9 +860,6 @@
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
     <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
     <ClInclude Include="SEED\lib\structs\Range1D.h" />
     <ClInclude Include="SEED\lib\structs\Range2D.h" />
     <ClInclude Include="SEED\lib\structs\Range3D.h" />
@@ -999,26 +1008,41 @@
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
+    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h">
+      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
-      <Filter>SEED\Source\Manager\InputManager</Filter>
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\EnemyManager.h">
-      <Filter>Game\Manager</Filter>
+    <ClInclude Include="Environment\Physics.h">
+      <Filter>Environment</Filter>
     </ClInclude>
     <ClInclude Include="Game\Editor\EnemyEditor.h">
       <Filter>Game\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Manager\EnemyManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
+      <Filter>Game\Objects\FieldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\FieldObjectManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h">
       <Filter>Game\Objects\PlayerCorpse</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h">
-      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
+    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Manager\FieldObjectManager.h" />

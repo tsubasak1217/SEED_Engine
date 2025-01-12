@@ -3,10 +3,13 @@
 #include <SEED.h>
 
 //////////////////////////////////////////////////////////////////
-// コンストラクタ
+// コンストラクタ・デストラクタ
 //////////////////////////////////////////////////////////////////
 Collider_Line::Collider_Line() : Collider(){
     colliderType_ = ColliderType::Line;
+}
+
+Collider_Line::~Collider_Line(){
 }
 
 //////////////////////////////////////////////////////////////////
@@ -29,6 +32,16 @@ void Collider_Line::UpdateMatrix(){
 //////////////////////////////////////////////////////////////////
 void Collider_Line::Draw(){
     SEED::DrawLine(body_.origin_, body_.end_, color_);
+}
+
+//////////////////////////////////////////////////////////////////
+// フレーム開始時処理
+//////////////////////////////////////////////////////////////////
+void Collider_Line::BeginFrame(){
+    // 前回のAABBを保存
+    preBody_ = body_;
+
+    Collider::BeginFrame();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -59,6 +72,9 @@ void Collider_Line::Edit(){
 
     std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 全般情報
+    Collider::Edit();
 
     // 中心座標
     ImGui::Text("------ Origin ------");

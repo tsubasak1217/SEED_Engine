@@ -14,12 +14,16 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
+    void BeginFrame() override;
     void EndFrame() override;
 
-public: // Stateから呼び出す関数
-    void ChangeState(ICharacterState *nextState);
-    virtual void HandleMove(const Vector3 &acceleration);
-    virtual void HandleRotate(const Vector3 &rotate);
+protected:
+    void EndFrameJumpFlagUpdate();
+
+public:// Stateから呼び出す関数
+    void ChangeState(ICharacterState* nextState);
+    virtual void HandleMove(const Vector3& acceleration);
+    virtual void HandleRotate(const Vector3& rotate);
 
 protected: // コライダー
     void HandOverColliders() override;
@@ -27,6 +31,7 @@ protected: // コライダー
 
 protected:
     virtual void Damage(int32_t damage);
+    virtual void Jump();
 
 public: // アクセッサ
     const Vector3 &GetPrePos() const { return prePos_; }
@@ -38,12 +43,16 @@ public: // アクセッサ
     float GetAnimationDuration() const { return model_->GetAnimationDuration(); }
     bool GetIsEndAnimation() const { return model_->GetIsEndAnimation(); }
     // HPに関連するアクセッサ
-    bool GetIsDamaged() const { return isDamaged_; }
-    bool GetIsAlive() const { return isAlive_; }
-    void SetIsAlive(bool isAlive) { isAlive_ = isAlive; }
-    int32_t GetHP() const { return HP_; }
-    void SetUnrivalledTime(float time) { unrivalledTime_ = time; }
-    float GetUnrivalledTime() const { return unrivalledTime_; }
+    bool GetIsDamaged()const{ return isDamaged_; }
+    bool GetIsAlive()const{ return isAlive_; }
+    void SetIsAlive(bool isAlive){ isAlive_ = isAlive; }
+    int32_t GetHP()const{ return HP_; }
+    void SetUnrivalledTime(float time){ unrivalledTime_ = time; }
+    float GetUnrivalledTime()const{ return unrivalledTime_; }
+    // ジャンプに関連するアクセッサ
+    bool GetIsJump()const{ return isJump_; }
+    void SetIsJump(bool isJump){ isJump_ = isJump; }
+    void SetJumpPower(float power){ jumpPower_ = power; }
 
 protected: // パラメータ
     bool isAlive_ = true;
@@ -52,7 +61,11 @@ protected: // パラメータ
     bool isDamaged_ = false;
     float unrivalledTime_ = 0.0f;
 
-protected: // 状態管理用
+protected:// ジャンプ
+    bool isJump_ = false;
+    float jumpPower_ = 120.0f / 60.0f;
+
+protected:// 状態管理用
     std::unique_ptr<ICharacterState> currentState_ = nullptr;
 
 protected: // 前フレームでの情報

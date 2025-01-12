@@ -16,7 +16,7 @@ class ColliderEditor{
 private:// 基本関数
     ColliderEditor() = default;
 public:
-    ColliderEditor(const std::string& className, const Matrix4x4* parentMat);
+    ColliderEditor(const std::string& className, BaseObject* parent);
     ~ColliderEditor();
 
 public:// 編集・ファイル操作関数
@@ -42,6 +42,7 @@ public:// アクセッサ
 private:
     std::string className_;
     ColliderType addColliderType_ = ColliderType::OBB;
+    BaseObject* parentObject_ = nullptr;
     const Matrix4x4* parentMat_ = nullptr;
     std::vector<std::unique_ptr<Collider>>colliders_;
     // ロードしたコライダーのデータ

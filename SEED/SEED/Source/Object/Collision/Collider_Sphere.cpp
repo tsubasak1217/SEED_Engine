@@ -10,11 +10,13 @@
 #include <SEED.h>
 
 ////////////////////////////////////////////////////////////
-// コンストラクタ
+// コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////
 Collider_Sphere::Collider_Sphere() : Collider(){
     colliderType_ = ColliderType::Sphere;
 }
+
+Collider_Sphere::~Collider_Sphere(){}
 
 ////////////////////////////////////////////////////////////
 // 行列の更新
@@ -37,6 +39,17 @@ void Collider_Sphere::Draw(){
     SEED::DrawSphere(body_.center, body_.radius, 6, color_);
 }
 
+
+////////////////////////////////////////////////////////////
+// フレーム開始時処理
+////////////////////////////////////////////////////////////
+void Collider_Sphere::BeginFrame(){
+    // 前回のAABBを保存
+    preBody_ = body_;
+
+    Collider::BeginFrame();
+}
+
 ////////////////////////////////////////////////////////////
 // 衝突判定
 ////////////////////////////////////////////////////////////
@@ -45,31 +58,111 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     // すでに衝突している場合は処理を行わない
     if(collisionList_.find(collider->GetColliderID()) != collisionList_.end()){ return; }
 
+    CollisionData collisionData;
+
     switch(collider->GetColliderType()){
     case ColliderType::Sphere:
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
         if(Collision::Sphere::Sphere(body_, sphere->GetSphere())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
     case ColliderType::AABB:
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
-        if(Collision::Sphere::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+        collisionData = Collision::Sphere::AABB(this, aabb);
+
+        if(collisionData.isCollide){
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
+                Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
+                // 衝突した場合は押し戻す
+                if(parentObject_){
+                    // 法線 * 押し戻す割合
+                    parentObject_->AddWorldTranslate(
+                        pushBack * collisionData.pushBackRatio_A.value()
+                    );
+
+                    // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                    if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                        parentObject_->SetIsDrop(false);
+                    }
+
+                } else{
+                    body_.center += pushBack * collisionData.pushBackRatio_A.value();
+                }
+
+                // 衝突したオブジェクトも押し戻す
+                if(collider->GetParentObject()){
+                    collider->GetParentObject()->AddWorldTranslate(
+                        -pushBack * collisionData.pushBackRatio_B.value()
+                    );
+
+                    // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                    if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                        collider->GetParentObject()->SetIsDrop(false);
+                    }
+
+                } else{
+                    aabb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());
+                }
+
+
+                // 行列を更新する
+                UpdateMatrix();
+                aabb->UpdateMatrix();
         }
         break;
     }
     case ColliderType::OBB:
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
-        if(Collision::Sphere::OBB(body_, obb->GetOBB())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+        collisionData = Collision::Sphere::OBB(this, obb);
+
+        if(collisionData.isCollide){
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
+            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
+            // 衝突した場合は押し戻す
+            if(parentObject_){
+                // 法線 * 押し戻す割合
+                parentObject_->AddWorldTranslate(
+                    pushBack * collisionData.pushBackRatio_A.value()
+                );
+
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    parentObject_->SetIsDrop(false);
+                }
+
+            } else{
+                body_.center += pushBack * collisionData.pushBackRatio_A.value();
+            }
+
+            // 衝突したオブジェクトも押し戻す
+            if(collider->GetParentObject()){
+                collider->GetParentObject()->AddWorldTranslate(
+                    -pushBack * collisionData.pushBackRatio_B.value()
+                );
+
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    collider->GetParentObject()->SetIsDrop(false);
+                }
+
+            } else{
+                obb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());
+            }
+
+
+            // 行列を更新する
+            UpdateMatrix();
+            obb->UpdateMatrix();
         }
         break;
     }
@@ -77,8 +170,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::Sphere::Line(body_, line->GetLine())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
@@ -103,6 +196,9 @@ void Collider_Sphere::Edit(){
 
     std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 全般情報
+    Collider::Edit();
 
     // 中心座標
     ImGui::Text("------ Center ------");

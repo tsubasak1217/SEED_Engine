@@ -38,11 +38,11 @@ void BaseObject::Initialize(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Update(){
 
+    // 落下処理
+    Drop();
+
     // モデルの更新
     model_->Update();
-
-    // コライダーの更新
-    UpdateColliders();
 }
 
 
@@ -51,6 +51,7 @@ void BaseObject::Update(){
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Draw(){
+    model_->UpdateMatrix();
     model_->Draw();
 }
 
@@ -59,15 +60,30 @@ void BaseObject::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
-void BaseObject::BeginFrame(){}
+void BaseObject::BeginFrame(){
+
+    // 落下フラグの初期化
+    isDrop_ = true;
+
+    // コライダーの開始処理
+    for(auto& collider : colliders_){
+        collider->BeginFrame();
+    }
+}
 
 
 
 //////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 //////////////////////////////////////////////////////////////////////////
-void BaseObject::EndFrame(){}
+void BaseObject::EndFrame(){
 
+    // 落下処理の更新
+    EndFrameDropFlagUpdate();
+
+    // コライダーの更新
+    UpdateColliders();
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,6 +104,45 @@ void BaseObject::EditCollider(){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// 落下処理
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::Drop(){
+    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_);
+}
+
+// フレーム終了時の落下更新処理
+void BaseObject::EndFrameDropFlagUpdate(){
+    // 落下フラグの更新
+    if(GetWorldTranslate().y <= 0.0f){
+        isDrop_ = false;
+    }
+
+    // 終了時の落下フラグに応じた処理
+    if(!isDrop_){
+        dropSpeed_ = 0.0f;
+    } else{
+        if(!isApplyGravity_){
+            dropSpeed_ = 0.0f;
+            return;
+        }
+
+        dropSpeed_ += Physics::kGravity * ClockManager::DeltaTime();
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::AddWorldTranslate(const Vector3& addValue){
+    if(GetParent() != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Vector3 localAddValue = addValue * invParentMat;
+        model_->translate_ += localAddValue;
+    } else{
+        model_->translate_ += addValue;
+    }
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,7 +191,7 @@ void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::LoadColliders(ObjectType objectType){
     // コライダーの読み込み
-    ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
+    ColliderEditor::LoadColliders(className_ + ".json", this, &colliders_);
 
     // オブジェクトの属性を取得
     for(auto& collider : colliders_){

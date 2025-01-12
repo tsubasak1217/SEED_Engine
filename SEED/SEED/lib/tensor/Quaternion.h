@@ -30,7 +30,6 @@ public:
     // Convert
     static Quaternion AngleAxis(float angle, const Vector3& axis);
     static Quaternion MatrixToQuaternion(const Matrix4x4& mat);
-    static Quaternion EulerToQuaternion(const Vector3& eulerRotate);
     static Quaternion ToQuaternion(const Vector3& eulerRotate);
     static Vector3 ToEuler(const Quaternion& q);
     Vector3 ToEuler()const;

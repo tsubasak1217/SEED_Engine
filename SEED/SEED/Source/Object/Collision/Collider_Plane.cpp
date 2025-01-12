@@ -10,10 +10,13 @@
 #include "SEED.h"
 
 //////////////////////////////////////////////////////////////////
-// コンストラクタ
+// コンストラクタ・デストラクタ
 //////////////////////////////////////////////////////////////////
 Collider_Plane::Collider_Plane() : Collider(){
     colliderType_ = ColliderType::Plane;
+}
+
+Collider_Plane::~Collider_Plane(){
 }
 
 //////////////////////////////////////////////////////////////////
@@ -41,6 +44,18 @@ void Collider_Plane::Draw(){
     SEED::DrawLine(body_.localVertex[1], body_.localVertex[2], color_);
     SEED::DrawLine(body_.localVertex[2], body_.localVertex[3], color_);
     SEED::DrawLine(body_.localVertex[3], body_.localVertex[0], color_);
+}
+
+
+//////////////////////////////////////////////////////////////////
+// フレーム開始時処理
+//////////////////////////////////////////////////////////////////
+void Collider_Plane::BeginFrame(){
+    // 前回のAABBを保存
+    preBody_ = body_;
+
+    Collider::BeginFrame();
+
 }
 
 //////////////////////////////////////////////////////////////////
@@ -78,6 +93,9 @@ void Collider_Plane::Edit(){
 
     std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
+
+    // 全般情報
+    Collider::Edit();
 
     // ローカル座標
     ImGui::Text("------ Vertices ------");

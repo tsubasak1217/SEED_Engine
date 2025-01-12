@@ -36,7 +36,7 @@ void Enemy::Initialize(){
     currentState_ = std::make_unique<EnemyState_Idle>("Enemy_Idle", this);
 
     // コライダーの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, model_->GetWorldMatPtr());
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::Enemy);
 
     // ターゲットになる際の注目点のオフセット

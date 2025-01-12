@@ -54,6 +54,7 @@ private:
     std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
 
+    std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
     // Field

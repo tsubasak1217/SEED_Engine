@@ -35,6 +35,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  モデル生成
     ////////////////////////////////////////////////////
+    player_ = std::make_unique<Player>();
 
     player_ = std::make_unique<Player>();
 
@@ -91,6 +92,9 @@ void Scene_Game::Initialize(){
     
 
     player_->SetEggManager(eggManager_.get());
+
+
+    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 }
 
 void Scene_Game::Finalize(){}
@@ -144,6 +148,8 @@ void Scene_Game::Update(){
     }
 
     fieldObjectManager_->Update();
+
+    fieldColliderEditor_->Edit();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +169,7 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
+    // プレイヤーの描画
     player_->Draw();
     eggManager_->Draw();
 
@@ -176,11 +183,16 @@ void Scene_Game::Draw(){
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame(){}
+void Scene_Game::BeginFrame(){
+    player_->BeginFrame();
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame(){}
+void Scene_Game::EndFrame(){
+    player_->EndFrame();
+}

@@ -43,7 +43,7 @@ void Player::Initialize()
     InitColliders(ObjectType::Player);
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, model_->GetWorldMatPtr());
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
 
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);

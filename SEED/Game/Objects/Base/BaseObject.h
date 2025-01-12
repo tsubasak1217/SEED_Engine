@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <algorithm>
+#include <Physics.h>
 #include "Collision/Collider.h"
 #include "CollisionManaer/CollisionManager.h"
 #include "CollisionManaer/ColliderEditor.h"
@@ -25,6 +26,10 @@ public:
     void UpdateMatrix();
     void EditCollider();
 
+protected:
+    void Drop();
+    void EndFrameDropFlagUpdate();
+
 public:// アクセッサ
 
     // 基礎情報
@@ -36,6 +41,7 @@ public:// アクセッサ
     // トランスフォーム
     Vector3 GetLocalTranslate() const{ return model_->translate_; }
     Vector3 GetWorldTranslate() const{ return model_->GetWorldTranslate(); }
+    void AddWorldTranslate(const Vector3& addValue);
     Vector3 GetLocalRotate() const{ return model_->rotate_; }
     Vector3 GetWorldRotate() const{ return model_->GetWorldRotate(); }
     Vector3 GetLocalScale() const{ return model_->scale_; }
@@ -45,6 +51,7 @@ public:// アクセッサ
     const Matrix4x4* GetWorldMatPtr() const{ return model_->GetWorldMatPtr(); }
     void SetParent(const Model* parent){ model_->parent_ = parent; }
     void SetParent(const BaseObject* parent){ model_->parent_ = parent->model_.get(); }
+    const Model* GetParent() const{ return model_->parent_; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
     void SetScale(const Vector3& scale){ model_->scale_ = scale; }
@@ -63,6 +70,12 @@ public:// アクセッサ
     void SetTranslateX(float x){ model_->translate_.x = x; }
     void SetTranslateY(float y){ model_->translate_.y = y; }
     void SetTranslateZ(float z){ model_->translate_.z = z; }
+
+    // 物理
+    void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
+    bool GetIsApplyGravity()const{ return isApplyGravity_; }
+    void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
+    bool GetIsDrop()const{ return isDrop_; }
 
 public:// コライダー関連
     void AddCollider(Collider* collider);
@@ -84,6 +97,11 @@ protected:
 
 protected:// 衝突判定用
     std::vector<std::unique_ptr<Collider>> colliders_;
+
+protected:// 物理
+    bool isApplyGravity_ = true;
+    bool isDrop_ = false;
+    float dropSpeed_ = 0.0f;
 
 protected:
     Vector3 targetOffset_;

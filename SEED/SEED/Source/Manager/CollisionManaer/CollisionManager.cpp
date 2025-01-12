@@ -56,6 +56,11 @@ void CollisionManager::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////
 
 void CollisionManager::CheckCollision(){
+
+    for(auto& collider : instance_->colliderList_){
+        collider.second->UpdateMatrix();
+    }
+
     instance_->octree_->CheckCollision();
 }
 

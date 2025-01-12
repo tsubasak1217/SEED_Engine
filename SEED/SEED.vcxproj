@@ -112,11 +112,21 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp" />
+    <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp" />
+    <ClCompile Include="Game\Editor\EnemyEditor.cpp" />
+    <ClCompile Include="Game\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
+    <ClCompile Include="Game\Objects\Egg\Egg.cpp" />
+    <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp" />
@@ -124,11 +134,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.cpp" />
+    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp" />
+    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Attack.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Jump.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Move.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp" />
     <ClCompile Include="Game\Scene\Base\Scene_Base.cpp" />
     <ClCompile Include="Game\Scene\Base\State_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
@@ -137,6 +149,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
@@ -210,6 +223,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h" />
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h" />
+    <ClInclude Include="Game\Editor\EnemyEditor.h" />
+    <ClInclude Include="Game\Manager\EnemyManager.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
@@ -217,6 +238,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
+    <ClInclude Include="Game\Objects\Egg\Egg.h" />
+    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h" />
@@ -225,11 +248,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
+    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h" />
+    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Attack.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h" />
     <ClInclude Include="Game\Scene\Base\Scene_Base.h" />
     <ClInclude Include="Game\Scene\Base\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
@@ -238,6 +263,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
     <ClInclude Include="SEED\lib\enums\LR.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />

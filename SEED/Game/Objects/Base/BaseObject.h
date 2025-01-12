@@ -54,6 +54,23 @@ public:// アクセッサ
     const Model* GetParent() const{ return model_->parent_; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
+    void SetScale(const Vector3& scale){ model_->scale_ = scale; }
+    void SetScaleX(float x){ model_->scale_.x = x; }
+    void SetScaleY(float y){ model_->scale_.y = y; }
+    void SetScaleZ(float z){ model_->scale_.z = z; }
+
+    void SetRotateWithQuaternion(bool isRotateWithQuaternion){ model_->isRotateWithQuaternion_ = isRotateWithQuaternion; }
+    void SetRotate(const Vector3& rotate){ model_->rotate_ = rotate; }
+    void SetRotate(const Quaternion& rotate){ model_->rotateQuat_ = rotate; }
+    void SetRotateX(float x){ model_->rotate_.x = x; }
+    void SetRotateY(float y){ model_->rotate_.y = y; }
+    void SetRotateZ(float z){ model_->rotate_.z = z; }
+
+    void SetTranslate(const Vector3& translate){ model_->translate_ = translate; }
+    void SetTranslateX(float x){ model_->translate_.x = x; }
+    void SetTranslateY(float y){ model_->translate_.y = y; }
+    void SetTranslateZ(float z){ model_->translate_.z = z; }
+
     // 物理
     void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
     bool GetIsApplyGravity()const{ return isApplyGravity_; }

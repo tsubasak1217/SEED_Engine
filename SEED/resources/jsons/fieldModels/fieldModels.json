@@ -1,1 +1,148 @@
-null
+{
+    "models": [
+        {
+            "name": "groundCube.obj",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                40.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "sphere.obj",
+            "position": [
+                0.0,
+                5.099998474121094,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "groundCube.obj",
+            "position": [
+                0.0,
+                40.0,
+                30.0
+            ],
+            "scale": [
+                10.0,
+                20.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "groundCube.obj",
+            "position": [
+                -20.0,
+                40.0,
+                30.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "groundCube.obj",
+            "position": [
+                -20.0,
+                0.0,
+                -30.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "groundCube.obj",
+            "position": [
+                -20.0,
+                10.0,
+                -10.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "sphere.obj",
+            "position": [
+                -20.0,
+                20.0,
+                -10.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "name": "groundCube.obj",
+            "position": [
+                -20.0,
+                20.0,
+                10.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ]
+}

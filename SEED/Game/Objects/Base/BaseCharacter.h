@@ -6,7 +6,8 @@
 
 class ICharacterState;
 
-class BaseCharacter : public BaseObject{
+class BaseCharacter : public BaseObject
+{
 public:
     BaseCharacter();
     ~BaseCharacter();
@@ -24,24 +25,23 @@ public:// Stateから呼び出す関数
     virtual void HandleMove(const Vector3& acceleration);
     virtual void HandleRotate(const Vector3& rotate);
 
-protected:// コライダー
-    void HandOverColliders()override;
-    void InitColliders(ObjectType objectType)override;
+protected: // コライダー
+    void HandOverColliders() override;
+    void InitColliders(ObjectType objectType) override;
 
 protected:
     virtual void Damage(int32_t damage);
     virtual void Jump();
 
-public:// アクセッサ
-
-    const Vector3& GetPrePos()const{ return prePos_; }
-    void SetTranslate(const Vector3& pos){ model_->translate_ = pos; }
+public: // アクセッサ
+    const Vector3 &GetPrePos() const { return prePos_; }
+    void SetTranslate(const Vector3 &pos) { model_->translate_ = pos; }
     // アニメーション関連
-    void SetAnimation(const std::string& animName, bool loop){ model_->StartAnimation(animName, loop); }
-    void SetAnimation(int32_t animIdx, bool loop){ model_->StartAnimation(animIdx, loop); }
-    void SetAnimationSpeedRate(float rate){ model_->SetAnimationSpeedRate(rate); }
-    float GetAnimationDuration()const{ return model_->GetAnimationDuration(); }
-    bool GetIsEndAnimation()const{ return model_->GetIsEndAnimation(); }
+    void SetAnimation(const std::string &animName, bool loop) { model_->StartAnimation(animName, loop); }
+    void SetAnimation(int32_t animIdx, bool loop) { model_->StartAnimation(animIdx, loop); }
+    void SetAnimationSpeedRate(float rate) { model_->SetAnimationSpeedRate(rate); }
+    float GetAnimationDuration() const { return model_->GetAnimationDuration(); }
+    bool GetIsEndAnimation() const { return model_->GetIsEndAnimation(); }
     // HPに関連するアクセッサ
     bool GetIsDamaged()const{ return isDamaged_; }
     bool GetIsAlive()const{ return isAlive_; }
@@ -54,7 +54,7 @@ public:// アクセッサ
     void SetIsJump(bool isJump){ isJump_ = isJump; }
     void SetJumpPower(float power){ jumpPower_ = power; }
 
-protected:// パラメータ
+protected: // パラメータ
     bool isAlive_ = true;
     int32_t kMaxHP_ = 100;
     int32_t HP_;
@@ -68,6 +68,6 @@ protected:// ジャンプ
 protected:// 状態管理用
     std::unique_ptr<ICharacterState> currentState_ = nullptr;
 
-protected:// 前フレームでの情報
+protected: // 前フレームでの情報
     Vector3 prePos_;
 };

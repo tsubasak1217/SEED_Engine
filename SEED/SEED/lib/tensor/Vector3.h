@@ -179,3 +179,86 @@ inline void from_json(const nlohmann::json& j, Vector3& v){
     v.y = j.at("y").get<float>();
     v.z = j.at("z").get<float>();
 }
+
+inline void to_json(nlohmann::ordered_json& j, const Vector3& vec){
+    j = {{"x", vec.x}, {"y", vec.y}, {"z", vec.z}};
+}
+
+inline void from_json(const nlohmann::ordered_json& j, Vector3& v){
+    v.x = j.at("x").get<float>();
+    v.y = j.at("y").get<float>();
+    v.z = j.at("z").get<float>();
+}
+
+struct Vector3Int{
+    int x;
+    int y;
+    int z;
+
+    // コンストラクタ
+    Vector3Int() : x(0), y(0), z(0){}
+    Vector3Int(int x, int y, int z) : x(x), y(y), z(z){}
+
+    // 加算演算子
+    Vector3Int operator+(const Vector3Int& other) const{
+        return Vector3Int(x + other.x, y + other.y, z + other.z);
+    }
+
+    Vector3Int& operator+=(const Vector3Int& other){
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
+    // 減算演算子
+    Vector3Int operator-(const Vector3Int& other) const{
+        return Vector3Int(x - other.x, y - other.y, z - other.z);
+    }
+
+    Vector3Int& operator-=(const Vector3Int& other){
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
+
+    // スカラー乗算演算子
+    Vector3Int operator*(int scalar) const{
+        return Vector3Int(x * scalar, y * scalar, z * scalar);
+    }
+
+    Vector3Int& operator*=(int scalar){
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
+        return *this;
+    }
+
+    // スカラー除算演算子
+    Vector3Int operator/(int scalar) const{
+        return Vector3Int(x / scalar, y / scalar, z / scalar);
+    }
+
+    Vector3Int& operator/=(int scalar){
+        x /= scalar;
+        y /= scalar;
+        z /= scalar;
+        return *this;
+    }
+
+    // 等価比較演算子
+    bool operator==(const Vector3Int& other) const{
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    // 不等価比較演算子
+    bool operator!=(const Vector3Int& other) const{
+        return !(*this == other);
+    }
+
+    // 符号反転演算子
+    Vector3Int operator-() const{
+        return Vector3Int(-x, -y, -z);
+    }
+};

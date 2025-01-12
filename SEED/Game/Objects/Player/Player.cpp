@@ -1,25 +1,35 @@
 #include "Player.h"
-#include "InputManager.h"
-#include "ImGuiManager.h"
 
+/// engine
+// module
+#include "ImGuiManager.h"
+#include "InputManager.h"
+
+// manager
+#include "Egg/Manager/EggManager.h"
+//lib
+#include "JsonManager/JsonCoordinator.h"
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
-#include "PlayerState/PlayerState_Attack.h"
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
+#include "PlayerState/PlayerState_Spawn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter(){
+Player::Player() : BaseCharacter()
+{
     className_ = "Player";
     name_ = "Player";
     Initialize();
+
 }
 
-Player::~Player(){}
+Player::~Player() {}
 
-void Player::Initialize(){
+void Player::Initialize()
+{
 
     // 属性の決定
     objectType_ = ObjectType::Player;
@@ -39,34 +49,49 @@ void Player::Initialize(){
     targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
-}
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
 
+    JsonCoordinator::LoadGroup("Player");
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Update(){
+void Player::Update()
+{
+    ImGui::Begin("Player");
+    JsonCoordinator::RenderGroupUI("Player");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("Player");
+    }
+    ImGui::End();
     BaseCharacter::Update();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Draw(){
+void Player::Draw()
+{
     BaseCharacter::Draw();
+}
+
+void Player::Spawn(const Vector3 &pos)
+{
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this);
+    state->SetSpawnPos(pos);
+    ChangeState(state);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // コライダー関連
 //////////////////////////////////////////////////////////////////////////
 
-
-
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
 //////////////////////////////////////////////////////////////////////////
-void Player::HandleMove(const Vector3& acceleration){
+void Player::HandleMove(const Vector3 &acceleration)
+{
     // 移動
     model_->translate_ += acceleration;
 
@@ -75,11 +100,11 @@ void Player::HandleMove(const Vector3& acceleration){
     model_->UpdateMatrix();
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other, ObjectType objectType){
+void Player::OnCollision(const BaseObject *other, ObjectType objectType)
+{
     other;
     objectType;
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-std::string JsonCoordinator::s_baseDirectory_ = "Resources/json/";
+std::string JsonCoordinator::s_baseDirectory_ = "Resources/jsons/";
 
 //-------------------------------------------------------------------
 // ディレクトリ作成
@@ -145,7 +145,7 @@ void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::
             }
         } else if (std::holds_alternative<float>(value)){
             float val = std::get<float>(value);
-            if (ImGui::InputFloat(key.c_str(), &val)){
+            if (ImGui::DragFloat(key.c_str(), &val, 0.01f)){
                 SetValue(group, key, val);
             }
         } else if (std::holds_alternative<Vector3>(value)){

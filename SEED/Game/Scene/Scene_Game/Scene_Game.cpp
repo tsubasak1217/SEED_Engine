@@ -59,7 +59,8 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  エディター初期化
     ////////////////////////////////////////////////////
-    fieldObjectManager_ = std::make_unique<FieldObjectManager>();
+    
+    fieldObjectManager_ = std::make_unique<FieldObjectManager>(eventManager_);
     fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
     fieldEditor_->Initialize();
 

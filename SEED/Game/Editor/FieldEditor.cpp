@@ -1,5 +1,8 @@
 #include "FieldEditor.h"
 
+// local
+#include "FieldObject/Door/Door.h"
+
 //engine
 #include "../SEED/external/imgui/imgui.h"
 #include "../SEED.h"
@@ -15,17 +18,15 @@ FieldEditor::FieldEditor(FieldObjectManager& manager)
     modelNames_.clear();
 }
 
-
 void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
-    modelNames_ = {"groundCube", "sphere"};
+    modelNames_ = {"groundCube", "sphere","door"};
 
     LoadFromJson(jsonPath_);
 
     LoadFieldModelTexture();
 
 }
-
 
 void FieldEditor::AddModel(const std::string& modelName){
     // ModelFieldObject を new して manager に登録
@@ -38,6 +39,22 @@ void FieldEditor::AddModel(const std::string& modelName){
 
     // Managerに登録
     manager_.AddFieldObject(std::move(newObj));
+}
+
+void FieldEditor::AddDoor(const std::string& modelName){
+    // Door オブジェクトを生成
+    auto newDoor = std::make_unique<Door>(modelName);
+
+    // Door の初期化
+    newDoor->Initialize();
+
+    // ドアの位置・スケール・回転などの初期設定（必要に応じて変更）
+    newDoor->SetPosition({0.f, 0.f, 0.f});
+    newDoor->SetScale({10.f, 10.f, 10.f});
+    newDoor->SetRotation({0.f, 0.f, 0.f});
+
+    // Manager に登録
+    manager_.AddFieldObject(std::move(newDoor));
 }
 
 void FieldEditor::LoadFromJson(const std::string& filePath){
@@ -212,7 +229,14 @@ void FieldEditor::ShowImGui(){
         auto iter = modelNames_.begin();
         std::advance(iter, selectedModelIndex);
         const std::string& selectedName = *iter;
-        AddModel(selectedName + ".obj");
+
+        if (selectedName == "door"){
+            // 選択されたモデルが "door" の場合
+            AddDoor(selectedName + ".obj"); // 必要に応じて適切なモデル名に変更
+        } else{
+            // その他のモデルの場合
+            AddModel(selectedName + ".obj");
+        }
     }
     ImGui::SameLine();
     if (ImGui::Button("Save Models")){

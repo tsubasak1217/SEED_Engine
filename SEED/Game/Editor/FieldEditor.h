@@ -44,6 +44,7 @@ private:
     //                   private methods
     //===================================================================*/
     void AddModel(const std::string& modelName);
+    void AddDoor(const std::string& modelName);
     void LoadFromJson(const std::string& filePath);
     void SaveToJson(const std::string& filePath);
 

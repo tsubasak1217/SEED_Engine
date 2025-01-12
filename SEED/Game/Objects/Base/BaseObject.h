@@ -23,9 +23,12 @@ public:
     virtual void EndFrame();
 
 public:
-    void Drop();
     void UpdateMatrix();
     void EditCollider();
+
+protected:
+    void Drop();
+    void EndFrameDropFlagUpdate();
 
 public:// アクセッサ
 

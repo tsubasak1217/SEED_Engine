@@ -16,6 +16,9 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
 
+protected:
+    void EndFrameJumpFlagUpdate();
+
 public:// Stateから呼び出す関数
     void ChangeState(ICharacterState* nextState);
     virtual void HandleMove(const Vector3& acceleration);
@@ -27,6 +30,7 @@ protected:// コライダー
 
 protected:
     virtual void Damage(int32_t damage);
+    virtual void Jump();
 
 public:// アクセッサ
 
@@ -45,7 +49,10 @@ public:// アクセッサ
     int32_t GetHP()const{ return HP_; }
     void SetUnrivalledTime(float time){ unrivalledTime_ = time; }
     float GetUnrivalledTime()const{ return unrivalledTime_; }
-
+    // ジャンプに関連するアクセッサ
+    bool GetIsJump()const{ return isJump_; }
+    void SetIsJump(bool isJump){ isJump_ = isJump; }
+    void SetJumpPower(float power){ jumpPower_ = power; }
 
 protected:// パラメータ
     bool isAlive_ = true;
@@ -53,6 +60,10 @@ protected:// パラメータ
     int32_t HP_;
     bool isDamaged_ = false;
     float unrivalledTime_ = 0.0f;
+
+protected:// ジャンプ
+    bool isJump_ = false;
+    float jumpPower_ = 120.0f / 60.0f;
 
 protected:// 状態管理用
     std::unique_ptr<ICharacterState> currentState_ = nullptr;

@@ -148,9 +148,6 @@ void Scene_Game::Update(){
 
     fieldObjectManager_->Update();
 
-    player_->Update();
-    player_->EditCollider();
-
     fieldColliderEditor_->Edit();
 }
 

@@ -11,6 +11,8 @@
 #include <Model.h>
 #include <Sprite.h>
 #include <Triangle.h>
+#include "Manager/EventManager/EventManager.h"
+
 // camera
 #include "FollowCamera.h"
 #include "../Game/Objects/Player/Player.h"
@@ -54,6 +56,8 @@ private:
 
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
+    // Field
+    EventManager eventManager_;
     std::unique_ptr<FieldEditor> fieldEditor_;
     std::unique_ptr<FieldObjectManager> fieldObjectManager_;
 };

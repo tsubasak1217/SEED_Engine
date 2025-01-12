@@ -112,6 +112,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp" />
     <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
@@ -150,6 +155,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpeningState.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpenedState.cpp" />
+    <ClCompile Include="SEED\lib\patterns\ISubject.cpp" />
+    <ClCompile Include="SEED\lib\patterns\IObserver.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
@@ -223,6 +232,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h" />
     <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
@@ -263,6 +277,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
+    <ClInclude Include="SEED\lib\patterns\ISubject.h" />
+    <ClInclude Include="SEED\lib\patterns\IObserver.h" />
     <ClInclude Include="SEED\lib\enums\LR.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />

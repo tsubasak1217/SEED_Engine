@@ -15,17 +15,15 @@ FieldEditor::FieldEditor(FieldObjectManager& manager)
     modelNames_.clear();
 }
 
-
 void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
-    modelNames_ = {"groundCube", "sphere"};
+    modelNames_ = {"groundCube", "sphere","door"};
 
     LoadFromJson(jsonPath_);
 
     LoadFieldModelTexture();
 
 }
-
 
 void FieldEditor::AddModel(const std::string& modelName){
     // ModelFieldObject を new して manager に登録

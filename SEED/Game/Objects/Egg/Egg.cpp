@@ -20,6 +20,7 @@ Egg::Egg(BaseObject* _player)
     :BaseCharacter(),
     player_(_player){
     className_ = "Egg";
+    isApplyGravity_ = false;
 }
 
 Egg::~Egg(){}
@@ -31,6 +32,8 @@ void Egg::Initialize(){
     currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
 
     JsonCoordinator::RegisterItem("Egg","weight",weight_);
+
+    isApplyGravity_ = false;
 }
 
 void Egg::Update(){

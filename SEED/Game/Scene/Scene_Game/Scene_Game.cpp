@@ -79,6 +79,12 @@ void Scene_Game::Initialize(){
     playerCorpseManager_->Initialize();
     player_->SetCorpseManager(playerCorpseManager_.get());
 
+    fieldObjectManager_->SetPlayer(player_.get());
+    // DoorProximityChecker の 初期化
+    doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
+                                                                   *fieldObjectManager_.get(),
+                                                                   *player_.get());
+
     // EggManager の 初期化
     eggManager_ = std::make_unique<EggManager>();
     eggManager_->SetPlayer(player_.get());
@@ -146,6 +152,9 @@ void Scene_Game::Update(){
     if(currentState_){
         currentState_->Update();
     }
+
+    // ドアとの距離をチェックし、近ければイベント発行
+    doorProximityChecker_->Update();
 
     fieldObjectManager_->Update();
 

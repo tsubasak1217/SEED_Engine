@@ -1,15 +1,23 @@
-// FieldObjectManager.cpp
-
 #include "FieldObjectManager.h"
 #include "CollisionManaer/CollisionManager.h"
+#include "FieldObject/Door/FieldObject_Door.h"
 
 ////////////////////////////////////////////////////////////////////////
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Update(){
     for (auto& fieldObject : fieldObjects_){
-        fieldObject->Update();
-        //fieldObject->EditCollider();
+
+        FieldObject_Door* door = dynamic_cast< FieldObject_Door* >(fieldObject.get());
+
+        // ドアの場合は、ドアの更新処理を呼び出す
+        if (door){
+            door->Update();
+        } else{
+            // 通常のオブジェクト
+            fieldObject->Update();
+        }
+
     }
 }
 

@@ -12,19 +12,21 @@
 #include <Sprite.h>
 #include <Triangle.h>
 #include "Manager/EventManager/EventManager.h"
+#include "../Game/Objects/FieldObject/Door/DoorProximityChecker.h"
 
 // camera
 #include "FollowCamera.h"
-#include "../Game/Objects/Player/Player.h"
-#include "../Game/Objects/Enemy/Enemy.h"
-#include "../Game/Manager/EnemyManager.h"
+
+//editor
 #include "../Game/Editor/EnemyEditor.h"
 
 // objects
-#include "Player/Player.h"
+#include "../Game/Objects/Player/Player.h"
+#include "../Game/Objects/Enemy/Enemy.h"
 #include "Egg/Manager/EggManager.h"
 
 // manager
+#include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Editor/FieldEditor.h"
 #include "../Game/Manager/FieldObjectManager.h"
@@ -62,4 +64,5 @@ private:
     EventManager eventManager_;
     std::unique_ptr<FieldEditor> fieldEditor_;
     std::unique_ptr<FieldObjectManager> fieldObjectManager_;
+    std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
 };

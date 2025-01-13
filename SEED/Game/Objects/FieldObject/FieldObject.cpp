@@ -11,6 +11,7 @@ FieldObject::FieldObject(const std::string& modelName){
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
     Initialize();
+    BaseObject::Update();
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -18,6 +19,7 @@ FieldObject::FieldObject(const std::string& modelName){
 ///////////////////////////////////////////////////////////////////
 void FieldObject::Initialize(){
     isApplyGravity_ = false;
+    UpdateMatrix();
 }
 
 

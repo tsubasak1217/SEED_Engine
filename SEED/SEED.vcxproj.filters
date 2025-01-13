@@ -587,10 +587,10 @@
       <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\GroundCube</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Sphere</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

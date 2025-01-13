@@ -59,7 +59,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  エディター初期化
     ////////////////////////////////////////////////////
-    
+
     fieldObjectManager_ = std::make_unique<FieldObjectManager>(eventManager_);
     fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
     fieldEditor_->Initialize();
@@ -95,7 +95,7 @@ void Scene_Game::Initialize(){
 
     // EnemyEditor の 初期化
     enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
-    
+
 
     player_->SetEggManager(eggManager_.get());
 
@@ -194,6 +194,7 @@ void Scene_Game::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
     player_->BeginFrame();
+    eggManager_->BeginFrame();
     fieldObjectManager_->BeginFrame();
 }
 
@@ -205,6 +206,7 @@ void Scene_Game::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
     player_->EndFrame();
+    eggManager_->EndFrame();
     fieldObjectManager_->EndFrame();
 }
 

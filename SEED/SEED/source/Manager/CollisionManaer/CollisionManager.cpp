@@ -45,8 +45,8 @@ void CollisionManager::Initialize(){
 /////////////////////////////////////////////////////////////////////////////////////
 void CollisionManager::Draw(){
 #ifdef _DEBUG
-    if(instance_->isDrawCollider_){
-        instance_->octree_->DrawCollider();
+    for(auto& collider : instance_->colliderList_){
+        collider.second->Draw();
     }
 #endif // _DEBUG
 }
@@ -57,11 +57,14 @@ void CollisionManager::Draw(){
 
 void CollisionManager::CheckCollision(){
 
+    // 渡されたコライダーの更新
     for(auto& collider : instance_->colliderList_){
-        collider.second->UpdateMatrix();
+        collider.second->Update();
     }
 
+    // 当たり判定
     instance_->octree_->CheckCollision();
+
 }
 
 

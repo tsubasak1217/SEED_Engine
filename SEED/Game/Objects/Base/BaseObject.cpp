@@ -43,6 +43,11 @@ void BaseObject::Update(){
 
     // モデルの更新
     model_->Update();
+
+    // コライダーの更新
+    for(auto& collider : colliders_){
+        collider->Update();
+    }
 }
 
 
@@ -82,7 +87,7 @@ void BaseObject::EndFrame(){
     EndFrameDropFlagUpdate();
 
     // コライダーの更新
-    UpdateColliders();
+    EraseCheckColliders();
 }
 
 
@@ -214,12 +219,7 @@ void BaseObject::InitColliders(ObjectType objectType){
 //////////////////////////////////////////////////////////////////////////
 // コライダーの更新
 //////////////////////////////////////////////////////////////////////////
-void BaseObject::UpdateColliders(){
-
-    // コライダーの更新
-    for(auto& collider : colliders_){
-        collider->Update();
-    }
+void BaseObject::EraseCheckColliders(){
 
     // 終了した要素の削除
     for(int i = 0; i < colliders_.size(); ++i){
@@ -228,7 +228,4 @@ void BaseObject::UpdateColliders(){
             --i;
         }
     }
-
-    // コライダーを渡す
-    HandOverColliders();
 }

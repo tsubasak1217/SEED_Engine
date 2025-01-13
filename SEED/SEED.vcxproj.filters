@@ -1026,12 +1026,6 @@
     <ClInclude Include="Game\Manager\EnemyManager.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
-      <Filter>Game\Objects\FieldObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\FieldObjectManager.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h">
       <Filter>Game\Objects\PlayerCorpse</Filter>
     </ClInclude>
@@ -1055,6 +1049,12 @@
     <ClInclude Include="SEED\lib\patterns\IObserver.h" />
     <ClInclude Include="SEED\lib\patterns\ISubject.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
+      <Filter>Game\Objects\FieldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\FieldObjectManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -33,9 +33,9 @@ void FieldEditor::AddModel(const std::string& modelName){
     auto newObj = std::make_unique<FieldObject>(modelName);
 
     // 初期値など設定
-    newObj->SetPosition({0.f, 0.f, 0.f});
+    newObj->SetTranslate({0.f, 0.f, 0.f});
     newObj->SetScale({10.f, 10.f, 10.f});
-    newObj->SetRotation({0.f, 0.f, 0.f});
+    newObj->SetRotate({0.f, 0.f, 0.f});
 
     // Managerに登録
     manager_.AddFieldObject(std::move(newObj));
@@ -49,9 +49,9 @@ void FieldEditor::AddDoor(const std::string& modelName){
     newDoor->Initialize();
 
     // ドアの位置・スケール・回転などの初期設定（必要に応じて変更）
-    newDoor->SetPosition({0.f, 0.f, 0.f});
+    newDoor->SetTranslate({0.f, 0.f, 0.f});
     newDoor->SetScale({10.f, 10.f, 10.f});
-    newDoor->SetRotation({0.f, 0.f, 0.f});
+    newDoor->SetRotate({0.f, 0.f, 0.f});
 
     // Manager に登録
     manager_.AddFieldObject(std::move(newDoor));
@@ -101,9 +101,9 @@ void FieldEditor::LoadFromJson(const std::string& filePath){
 
             // ModelFieldObject生成
             auto newObj = std::make_unique<FieldObject>(name);
-            newObj->SetPosition(position);
+            newObj->SetTranslate(position);
             newObj->SetScale(scale);
-            newObj->SetRotation(rotation);
+            newObj->SetRotate(rotation);
 
             // Managerへ登録
             manager_.AddFieldObject(std::move(newObj));
@@ -332,7 +332,7 @@ void FieldEditor::ShowImGui(){
                     pos.x += diff.x * CHUNK_MOVE;
                     pos.y += diff.y * CHUNK_MOVE;
                     pos.z += diff.z * CHUNK_MOVE;
-                    mfObj->SetPosition(pos);
+                    mfObj->SetTranslate(pos);
 
                     moveChunk = tempMove;
                 }
@@ -360,13 +360,13 @@ void FieldEditor::ShowImGui(){
                 Vector3 rot = mfObj->GetModel()->GetWorldRotate();
 
                 if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
-                    mfObj->SetPosition(pos);
+                    mfObj->SetTranslate(pos);
                 }
                 if (ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
                     mfObj->SetScale(scl);
                 }
                 if (ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
-                    mfObj->SetRotation(rot);
+                    mfObj->SetRotate(rot);
                 }
 
                 // 削除ボタン

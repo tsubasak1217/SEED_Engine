@@ -92,6 +92,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                         parentObject_->SetIsDrop(false);
                     }
 
+                    // 親の行列を更新する
+                    parentObject_->UpdateMatrix();
+
                 } else{
                     body_.center += pushBack * collisionData.pushBackRatio_A.value();
                 }
@@ -106,6 +109,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                     if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
                         collider->GetParentObject()->SetIsDrop(false);
                     }
+
+                    // 親の行列を更新する
+                    collider->GetParentObject()->UpdateMatrix();
 
                 } else{
                     aabb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());
@@ -140,6 +146,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                     parentObject_->SetIsDrop(false);
                 }
 
+                // 親の行列を更新する
+                parentObject_->UpdateMatrix();
+
             } else{
                 body_.center += pushBack * collisionData.pushBackRatio_A.value();
             }
@@ -154,6 +163,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                 if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
                     collider->GetParentObject()->SetIsDrop(false);
                 }
+
+                // 親の行列を更新する
+                collider->GetParentObject()->UpdateMatrix();
 
             } else{
                 obb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());

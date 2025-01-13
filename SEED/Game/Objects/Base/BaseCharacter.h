@@ -25,7 +25,7 @@ public:// Stateから呼び出す関数
     virtual void HandleMove(const Vector3& acceleration);
     virtual void HandleRotate(const Vector3& rotate);
 
-protected: // コライダー
+public: // コライダー
     void HandOverColliders() override;
     void InitColliders(ObjectType objectType) override;
 

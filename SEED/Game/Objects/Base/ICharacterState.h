@@ -28,7 +28,7 @@ public: // コライダー関連
     void HandOverColliders();
     void InitColliders(ObjectType objectType);
     void InitColliders(const std::string &fileName, ObjectType objectType);
-    void UpdateColliders();
+    void EraseCheckColliders();
 
 protected:
     virtual void ManageState() = 0;

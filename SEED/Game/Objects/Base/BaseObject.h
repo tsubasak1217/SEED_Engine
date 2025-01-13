@@ -70,6 +70,10 @@ public:// アクセッサ
     void SetTranslateX(float x){ model_->translate_.x = x; }
     void SetTranslateY(float y){ model_->translate_.y = y; }
     void SetTranslateZ(float z){ model_->translate_.z = z; }
+    void AddTranslate(const Vector3& addValue){ model_->translate_ += addValue; }
+
+    // マテリアル
+    void SetColor(const Vector4& color){ model_->color_ = color; }
 
     // 物理
     void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
@@ -86,7 +90,7 @@ public:// コライダー関連
 protected:
     void LoadColliders(ObjectType objectType);
     virtual void InitColliders(ObjectType objectType);
-    void UpdateColliders();
+    void EraseCheckColliders();
 
 protected:
     static uint32_t nextID_;

@@ -43,7 +43,6 @@ void BaseCharacter::Update(){
     //ジャンプ
     Jump();
 
-    HandOverColliders();
     BaseObject::Update();
 }
 
@@ -90,19 +89,25 @@ void BaseCharacter::BeginFrame(){
 // フレーム終了時の処理
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::EndFrame(){
+
+    // 基本クラスの終了処理
+    BaseObject::EndFrame();
+
+    // ジャンプフラグの管理
+    EndFrameJumpFlagUpdate();
+
     // 状態に応じた終了処理
     if(currentState_){
         currentState_->EndFrame();
     }
 
-    EndFrameJumpFlagUpdate();
-    BaseObject::EndFrame();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // フレーム終了時の落下関連の更新処理
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::EndFrameJumpFlagUpdate(){
+    // 落下フラグが降りたらジャンプフラグも降ろす
     if(!isDrop_){
         isJump_ = false;
     }

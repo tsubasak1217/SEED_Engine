@@ -5,6 +5,7 @@
 // フレーム終了時処理
 //////////////////////////////////////////////////////////////////////////
 void ICharacterState::EndFrame(){
+    EraseCheckColliders();
     ManageState();
 };
 
@@ -54,12 +55,7 @@ void ICharacterState::InitColliders(const std::string& fileName, ObjectType obje
 //////////////////////////////////////////////////////////////////////////
 // コライダーの更新
 //////////////////////////////////////////////////////////////////////////
-void ICharacterState::UpdateColliders(){
-
-    // コライダーの更新
-    for(auto& collider : colliders_){
-        collider->Update();
-    }
+void ICharacterState::EraseCheckColliders(){
 
     // 終了した要素の削除
     for(int i = 0; i < colliders_.size(); ++i){
@@ -68,7 +64,4 @@ void ICharacterState::UpdateColliders(){
             --i;
         }
     }
-
-    // コライダーを渡す
-    HandOverColliders();
 }

@@ -11,18 +11,33 @@
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////
 FieldObject_Door::FieldObject_Door(){
+    // 名前の初期化
     className_ = "FieldObject_Door";
     name_ = "door";
+    // モデルの初期化
     std::string path = "FieldObject/" + name_ + ".obj";
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
+    // 状態の初期化
     currentState_ = std::make_unique<ClosedState>();
+    // コライダー関連の初期化
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    InitColliders(ObjectType::Field);
+    // 全般の初期化
+    FieldObject::Initialize();
 }
 
 FieldObject_Door::FieldObject_Door(const std::string& modelName)
     : FieldObject(modelName){
+    // クラス名の初期化
     className_ = "FieldObject_Door";
+    // 状態の初期化
     currentState_ = std::make_unique<ClosedState>();
+    // コライダー関連の初期化
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    InitColliders(ObjectType::Field);
+    // 全般の初期化
+    FieldObject::Initialize();
 }
 
 FieldObject_Door::~FieldObject_Door() = default;

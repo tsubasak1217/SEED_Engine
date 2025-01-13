@@ -10,12 +10,14 @@ FieldObject::FieldObject(const std::string& modelName){
     std::string path = "FieldObject/" + modelName;
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
+    Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////
 // 初期化関数
 ///////////////////////////////////////////////////////////////////
 void FieldObject::Initialize(){
+    isApplyGravity_ = false;
 }
 
 

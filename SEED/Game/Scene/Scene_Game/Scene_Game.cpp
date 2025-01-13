@@ -185,6 +185,7 @@ void Scene_Game::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
     player_->BeginFrame();
+    fieldObjectManager_->BeginFrame();
 }
 
 
@@ -195,6 +196,7 @@ void Scene_Game::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
     player_->EndFrame();
+    fieldObjectManager_->EndFrame();
 }
 
 
@@ -205,4 +207,5 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
+    fieldObjectManager_->HandOverColliders();
 }

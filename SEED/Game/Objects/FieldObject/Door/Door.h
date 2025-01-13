@@ -26,7 +26,6 @@ public:
     void ChangeState(DoorState* newState);
 
     // 状態クラスからアクセスするためのメソッド
-    Model* GetModel(){ return model_.get(); }
     float GetOpenSpeed() const{ return openSpeed_; }
     float GetMaxOpenHeight() const{ return kMaxOpenHeight_; }
 

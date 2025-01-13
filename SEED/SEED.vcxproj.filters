@@ -200,6 +200,18 @@
     <Filter Include="Game\Objects\FieldObject">
       <UniqueIdentifier>{c6e361b1-2d93-48e7-a031-cdb71632d554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\Door">
+      <UniqueIdentifier>{4daaf87b-00d8-472d-91a0-a45aadd052b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Door\State">
+      <UniqueIdentifier>{eb1e381e-607c-4cc7-8899-766e9b066a32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\Lib\patterns">
+      <UniqueIdentifier>{c1d58818-e175-49ab-ac6b-281383800701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\Source\Manager\EventManager">
+      <UniqueIdentifier>{38c623a7-5abe-4af3-848d-d96aa1e80d88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -542,31 +554,31 @@
       <Filter>Game\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Door</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpeningState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\State\OpenedState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\lib\patterns\IObserver.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpeningState.cpp">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
     </ClCompile>
     <ClCompile Include="SEED\lib\patterns\ISubject.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>SEED\Lib\patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\patterns\IObserver.cpp">
+      <Filter>SEED\Lib\patterns</Filter>
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1040,20 +1052,38 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Manager\FieldObjectManager.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
-    <ClInclude Include="SEED\lib\patterns\IObserver.h" />
-    <ClInclude Include="SEED\lib\patterns\ISubject.h" />
-    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
       <Filter>Game\Objects\FieldObject</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\FieldObjectManager.h">
       <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h">
+      <Filter>Game\Objects\FieldObject\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\patterns\ISubject.h">
+      <Filter>SEED\Lib\patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\patterns\IObserver.h">
+      <Filter>SEED\Lib\patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h">
+      <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

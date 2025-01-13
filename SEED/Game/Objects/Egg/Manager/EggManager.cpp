@@ -53,6 +53,18 @@ void EggManager::Draw(){
     }
 }
 
+void EggManager::BeginFrame(){
+    for(auto& egg : eggs_){
+        egg->BeginFrame();
+    }
+}
+
+void EggManager::EndFrame(){
+    for(auto& egg : eggs_){
+        egg->EndFrame();
+    }
+}
+
 void EggManager::AddEgg(std::unique_ptr<Egg>& _egg){
     /// 最大サイズ なら Skip
     if(eggs_.size() >= maxEggsSize_){

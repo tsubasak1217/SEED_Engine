@@ -37,7 +37,6 @@ void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* cha
 
 void EggState_Thrown::Update(){
     MoveThrow();
-    ManageState();
 }
 
 void EggState_Thrown::Draw(){}

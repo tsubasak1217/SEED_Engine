@@ -20,6 +20,10 @@ public:
     void Initialize();
     void Update();
     void Draw();
+
+    void BeginFrame();
+    void EndFrame();
+
 private:
     static const uint32_t maxEggsSize_;
     std::vector<std::unique_ptr<Egg>> eggs_;

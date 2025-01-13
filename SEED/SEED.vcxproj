@@ -112,6 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
@@ -235,6 +237,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.h" />
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />

@@ -14,7 +14,7 @@ FollowCamera::~FollowCamera(){}
 void FollowCamera::Initialize(){
     // カメラのoffset初期設定
     defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
-    distance_ = 20.0f;
+    distance_ = 50.0f;
     // 角度の初期設定
     theta_ = -3.14f * 0.5f;
     phi_ = 3.14f * 0.45f;
@@ -67,9 +67,4 @@ void FollowCamera::UpdateDistance(){
     // カメラの距離を更新
     distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
     distance_ = std::clamp(distance_, 15.0f, 500.0f);
-
-    ImGui::Begin("input");
-    ImGui::Text("angleInput: %f, %f", angleInput_.Value().x, angleInput_.Value().y);
-    ImGui::Text("distanceInput: %f", distanceInput_.Value());
-    ImGui::End();
 }

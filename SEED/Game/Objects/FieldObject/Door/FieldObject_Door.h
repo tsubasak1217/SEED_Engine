@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+
 class FieldObject_Door 
     : public FieldObject, public IObserver{
 public:
@@ -30,11 +31,13 @@ public:
     float GetOpenSpeed() const{ return openSpeed_; }
     float GetMaxOpenHeight() const{ return kMaxOpenHeight_; }
 
+
 private:
     bool isOpened_ = false;  // 開閉状態のフラグ
 
+
     std::unique_ptr<DoorState> currentState_;
 
-    float openSpeed_ = 1.0f;            // 開閉速度
-    const float kMaxOpenHeight_ = 3.0f; // 最大開く高さ
+    float openSpeed_ = 8.0f;            // 開閉速度
+    const float kMaxOpenHeight_ = 10.0f; // 最大開く高さ
 };

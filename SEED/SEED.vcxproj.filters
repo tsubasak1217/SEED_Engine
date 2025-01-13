@@ -592,6 +592,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp">
       <Filter>Game\Objects\FieldObject\Sphere</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1103,6 +1106,7 @@
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h">
       <Filter>Game\Objects\FieldObject\Sphere</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

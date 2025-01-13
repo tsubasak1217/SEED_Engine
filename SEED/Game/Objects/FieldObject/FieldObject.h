@@ -15,6 +15,8 @@
 #include <string>
 #include <cstdint>
 
+class Player;
+
 class FieldObject : public BaseObject{
 public:
     FieldObject();
@@ -30,8 +32,14 @@ public:
     uint32_t GetFieldObjectType()const{ return fieldObjectType_; }
     void SetFieldObjectType(uint32_t type){ fieldObjectType_ = type; }
 
+    void SetPlayer(Player* player){ player_ = player; }
+
+
 protected:
     uint32_t fieldObjectType_;
+
+    Player* player_ = nullptr;  // プレイヤーへのポインタ
+
 
 };
 

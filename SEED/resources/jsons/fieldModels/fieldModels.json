@@ -1,28 +1,10 @@
 {
     "models": [
         {
-            "name": "groundCube.obj",
+            "name": "groundCube",
             "position": [
                 0.0,
                 0.0,
-                0.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                10.0,
-                40.0
-            ]
-        },
-        {
-            "name": "sphere.obj",
-            "position": [
-                0.0,
-                5.099998474121094,
                 0.0
             ],
             "rotation": [
@@ -34,14 +16,15 @@
                 10.0,
                 10.0,
                 10.0
-            ]
+            ],
+            "type": 0
         },
         {
-            "name": "groundCube.obj",
+            "name": "sphere",
             "position": [
                 0.0,
-                40.0,
-                30.0
+                10.0,
+                0.0
             ],
             "rotation": [
                 -0.0,
@@ -50,15 +33,16 @@
             ],
             "scale": [
                 10.0,
-                20.0,
+                10.0,
                 10.0
-            ]
+            ],
+            "type": 1
         },
         {
-            "name": "groundCube.obj",
+            "name": "door",
             "position": [
-                -20.0,
-                40.0,
+                0.0,
+                0.0,
                 30.0
             ],
             "rotation": [
@@ -70,14 +54,15 @@
                 10.0,
                 10.0,
                 10.0
-            ]
+            ],
+            "type": 2
         },
         {
-            "name": "groundCube.obj",
+            "name": "groundCube",
             "position": [
-                -20.0,
                 0.0,
-                -30.0
+                0.0,
+                20.0
             ],
             "rotation": [
                 -0.0,
@@ -88,50 +73,15 @@
                 10.0,
                 10.0,
                 10.0
-            ]
+            ],
+            "type": 0
         },
         {
-            "name": "groundCube.obj",
+            "name": "groundCube",
             "position": [
-                -20.0,
-                10.0,
-                -10.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                10.0,
-                10.0
-            ]
-        },
-        {
-            "name": "sphere.obj",
-            "position": [
-                -20.0,
                 20.0,
-                -10.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                10.0,
-                10.0
-            ]
-        },
-        {
-            "name": "groundCube.obj",
-            "position": [
-                -20.0,
                 20.0,
-                10.0
+                20.0
             ],
             "rotation": [
                 -0.0,
@@ -142,25 +92,8 @@
                 10.0,
                 10.0,
                 10.0
-            ]
-        },
-        {
-            "name": "door.obj",
-            "position": [
-                0.0,
-                0.0,
-                -30.0
             ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                9.5,
-                10.0
-            ]
+            "type": 0
         }
     ]
 }

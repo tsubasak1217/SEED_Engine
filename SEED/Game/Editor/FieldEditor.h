@@ -43,8 +43,13 @@ private:
     //===================================================================*/
     //                   private methods
     //===================================================================*/
-    void AddModel(const std::string& modelName);
-    void AddDoor(const std::string& modelName);
+    void AddModel(
+        uint32_t modelNameIndex, 
+        const Vector3& scale = {10.0f,10.0f,10.0f},
+        const Vector3& rotate = { 0.0f,0.0f,0.0f },
+        const Vector3& translate = { 0.0f,0.0f,0.0f }
+        );
+
     void LoadFromJson(const std::string& filePath);
     void SaveToJson(const std::string& filePath);
 
@@ -64,4 +69,12 @@ private:
     TextureMap textureIDs_;
 
     const std::string jsonPath_ = "resources/jsons/fieldModels/fieldModels.json";
+
+
+private:// enum
+    enum FIELDMODELNAME{
+        FIELDMODEL_GROUNDCUBE,
+        FIELDMODEL_SPHERE,
+        FIELDMODEL_DOOR,
+    };
 };

@@ -27,6 +27,11 @@ public:
 
     //--- getter / setter ---//
     Model* GetModel(){ return model_.get(); }
+    uint32_t GetFieldObjectType()const{ return fieldObjectType_; }
+    void SetFieldObjectType(uint32_t type){ fieldObjectType_ = type; }
+
+protected:
+    uint32_t fieldObjectType_;
 
 };
 

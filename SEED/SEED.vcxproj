@@ -112,11 +112,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp" />
     <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
@@ -232,11 +234,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h" />
     <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />

@@ -1,13 +1,13 @@
 #include "ClosingState.h"
 #include "ClosedState.h"
 
-#include "../Door.h"
+#include "../FieldObject_Door.h"
 
-void ClosingState::Enter([[maybe_unused]] Door* door){
+void ClosingState::Enter([[maybe_unused]] FieldObject_Door* door){
     // 開始時の処理（必要に応じて）
 }
 
-void ClosingState::Update(Door* door, float deltaTime){
+void ClosingState::Update(FieldObject_Door* door, float deltaTime){
     float& currentY = door->GetModel()->translate_.y;
     currentY -= door->GetOpenSpeed() * deltaTime;
     if (currentY <= 0.0f){
@@ -16,6 +16,6 @@ void ClosingState::Update(Door* door, float deltaTime){
     }
 }
 
-void ClosingState::Exit([[maybe_unused]] Door* door){
+void ClosingState::Exit([[maybe_unused]] FieldObject_Door* door){
     // 終了時の処理（必要に応じて）
 }

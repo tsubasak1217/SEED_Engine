@@ -212,6 +212,12 @@
     <Filter Include="SEED\Source\Manager\EventManager">
       <UniqueIdentifier>{38c623a7-5abe-4af3-848d-d96aa1e80d88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\Sphere">
+      <UniqueIdentifier>{535ee3b5-5ae7-469b-aed7-978662959f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\GroundCube">
+      <UniqueIdentifier>{b04fa183-963c-42cf-b75a-6e413c95a3cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -553,7 +559,7 @@
     <ClCompile Include="Game\Manager\FieldObjectManager.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\Door.cpp">
+    <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp">
       <Filter>Game\Objects\FieldObject\Door</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp">
@@ -579,6 +585,12 @@
     </ClCompile>
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp">
       <Filter>SEED\Source\Manager\EventManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1058,7 +1070,7 @@
     <ClInclude Include="Game\Manager\FieldObjectManager.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\Door.h">
+    <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h">
       <Filter>Game\Objects\FieldObject\Door</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h">
@@ -1084,6 +1096,12 @@
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h">
       <Filter>SEED\Source\Manager\EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.h">
+      <Filter>Game\Objects\FieldObject\GroundCube</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h">
+      <Filter>Game\Objects\FieldObject\Sphere</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

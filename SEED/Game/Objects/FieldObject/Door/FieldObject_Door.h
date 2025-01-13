@@ -5,11 +5,12 @@
 #include <memory>
 #include <string>
 
-class Door 
+class FieldObject_Door 
     : public FieldObject, public IObserver{
 public:
-    Door(const std::string& modelName);
-    virtual ~Door();
+    FieldObject_Door();
+    FieldObject_Door(const std::string& modelName);
+    ~FieldObject_Door();
 
     void Initialize() override;
     void Update() override;

@@ -11,7 +11,7 @@ enum LINE_TYPE{
 struct Line{
     Vector3 origin_;
     Vector3 end_;
-    int type_;
+    int type_ = SEGMENT;
 
     Line() = default;
     Line(const Vector3& origin, const Vector3& end, int type = SEGMENT){

@@ -199,6 +199,26 @@ void Collider_Sphere::CheckCollision(Collider* collider){
 
 }
 
+
+//////////////////////////////////////////////////////////////////
+// トンネリングを考慮しないtrue or falseの衝突判定
+//////////////////////////////////////////////////////////////////
+bool Collider_Sphere::CheckCollision(const AABB& aabb){
+    return Collision::Sphere::AABB(body_, aabb);
+}
+
+bool Collider_Sphere::CheckCollision(const OBB& obb){
+    return Collision::Sphere::OBB(body_, obb);
+}
+
+bool Collider_Sphere::CheckCollision(const Line& line){
+    return Collision::Sphere::Line(body_, line);
+}
+
+bool Collider_Sphere::CheckCollision(const Sphere& sphere){
+    return Collision::Sphere::Sphere(body_, sphere);
+}
+
 ////////////////////////////////////////////////////////////
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////

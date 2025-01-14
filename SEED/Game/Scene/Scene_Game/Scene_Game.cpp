@@ -38,10 +38,13 @@ void Scene_Game::Initialize(){
     player_ = std::make_unique<Player>();
 
     ////////////////////////////////////////////////////
-    //  ライトの方向初期化
+    //  ライトの初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetDirectionalLight()->direction_ = {-1.0f,0.0f,0.0f};
+    directionalLight_ = std::make_unique<DirectionalLight>();
+    directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
+    directionalLight_->direction_ = MyMath::Normalize({ 2.0f,1.0f,0.5f });
+    directionalLight_->intensity = 1.0f;
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -169,6 +172,9 @@ void Scene_Game::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw(){
+
+    // ライトの情報を送る
+    directionalLight_->SendData();
 
     // フィールドの描画
     fieldObjectManager_->Draw();

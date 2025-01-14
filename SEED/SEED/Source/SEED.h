@@ -141,12 +141,10 @@ public:
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
     static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
     static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
-
+    static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
-    static DirectionalLight* GetDirectionalLight(){ return DxManager::GetInstance()->directionalLight; }
-
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */

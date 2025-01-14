@@ -1,9 +1,7 @@
 #pragma once
-#include "Vector3.h"
-#include "Vector4.h"
+#include <BaseLight.h>
 
-struct DirectionalLight{
-    Vector4 color_;
+struct DirectionalLight : public BaseLight{
+    DirectionalLight();
     Vector3 direction_;
-    float intensity;
 };

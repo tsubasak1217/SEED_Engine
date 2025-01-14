@@ -93,6 +93,7 @@ VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID
     
     // Apply Transformation
     output.position = mul(skinned.position, instanceData[index].WVP);
+    output.worldPosition = mul(input.position, instanceData[index].world).xyz;
     output.texcoord = input.texcoord;
     output.normal = normalize(mul(skinned.normal, (float3x3) instanceData[index].world));
     

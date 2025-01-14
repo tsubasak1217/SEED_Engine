@@ -15,6 +15,7 @@
 #include "Sphere.h"
 #include "Capsule.h"
 #include "ColliderAnimationData.h"
+#include "CollisionManaer/CollisionData.h"
 
 // 前方宣言
 class BaseObject;
@@ -42,6 +43,10 @@ public:
     virtual void Draw();
     virtual void BeginFrame();
     virtual void CheckCollision(Collider* collider);
+    virtual bool CheckCollision(const AABB& aabb);
+    virtual bool CheckCollision(const OBB& obb);
+    virtual bool CheckCollision(const Line& line);
+    virtual bool CheckCollision(const Sphere& sphere);
     virtual void OnCollision(Collider* collider, ObjectType objectType);
 
 protected:

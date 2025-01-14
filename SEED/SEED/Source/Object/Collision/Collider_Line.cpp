@@ -44,6 +44,23 @@ void Collider_Line::BeginFrame(){
     Collider::BeginFrame();
 }
 
+
+//////////////////////////////////////////////////////////////////
+// トンネリングを考慮しないtrue or falseの衝突判定
+//////////////////////////////////////////////////////////////////
+bool Collider_Line::CheckCollision(const AABB& aabb){
+    return Collision::Line::AABB(body_, aabb);
+}
+
+bool Collider_Line::CheckCollision(const OBB& obb){
+    return Collision::Line::OBB(body_, obb);
+}
+
+
+bool Collider_Line::CheckCollision(const Sphere& sphere){
+    return Collision::Line::Sphere(body_, sphere);
+}
+
 //////////////////////////////////////////////////////////////////
 // 八分木用のAABB更新
 //////////////////////////////////////////////////////////////////

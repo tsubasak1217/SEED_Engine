@@ -12,6 +12,8 @@
 #include <Model.h>
 #include <Material.h>
 #include <Transform.h>
+#include <CameraForGPU.h>
+#include <DirectionalLight.h>
 #include "blendMode.h"
 #include "DrawLocation.h"
 
@@ -112,6 +114,9 @@ public:
     void DrawToOffscreen();
     void DrawToBackBuffer();
 
+public:
+    void AddLight(BaseLight* light);
+
 private:
 
     void InitializePrimitive();
@@ -201,6 +206,10 @@ private:// 実際に頂点情報や色などの情報が入っている変数
     // プリミティブな描画に使用するデータ
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
+private:// ライティング用のデータ
+
+    std::vector<DirectionalLight> directionalLights_;
+
 private:// Resource (すべての描画で1つにまとめている)
 
     // モデル用
@@ -214,6 +223,12 @@ private:// Resource (すべての描画で1つにまとめている)
     ComPtr<ID3D12Resource> vertexInfluenceResource_;
     ComPtr<ID3D12Resource> paletteResource_;
 
+    // カメラ用
+    ComPtr<ID3D12Resource> cameraResource_;
+
+    // LightingのResource
+    ComPtr<ID3D12Resource> directionalLightResource_;
+
     // Map用
     VertexData* mapVertexData;
     uint32_t* mapIndexData;
@@ -222,6 +237,8 @@ private:// Resource (すべての描画で1つにまとめている)
     OffsetData* mapOffsetData;
     VertexInfluence* mapVertexInfluenceData;
     WellForGPU* mapPaletteData;
+    CameraForGPU* mapCameraData;
+    DirectionalLight* mapDirectionalLightData;
 
 
 private:

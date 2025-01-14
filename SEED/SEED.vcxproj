@@ -113,10 +113,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
@@ -238,10 +241,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
+    <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
-    <ClInclude Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.h" />
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
+    <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
+    <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />

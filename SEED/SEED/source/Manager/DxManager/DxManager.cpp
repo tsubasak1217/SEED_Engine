@@ -150,15 +150,6 @@ void DxManager::Initialize(SEED* pSEED){
 
     instance_->depthStencilResource->SetName(L"depthStencilResource");
 
-    /*----------------------------------LightingのResource---------------------------------*/
-
-    instance_->lightingResource = CreateBufferResource(instance_->device.Get(), sizeof(DirectionalLight));
-    instance_->lightingResource->Map(0, nullptr, reinterpret_cast<void**>(&instance_->directionalLight));
-
-    instance_->directionalLight->color_ = MyMath::FloatColor(0xffffffff);
-    instance_->directionalLight->direction_ = { 0.0f,0.0f,1.0f };
-    instance_->directionalLight->intensity = 1.0f;
-
     /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
 
     instance_->InitializeSystemTextures();
@@ -769,6 +760,11 @@ void DxManager::DrawPolygonAll(){
     DrawGUI();
 #endif // DEBUG
 
+    //////////////////////////////////////////////////////////////////////////
+    //  カメラ・ライティングデータの書き込み
+    //////////////////////////////////////////////////////////////////////////
+
+
 
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
@@ -1050,7 +1046,6 @@ void DxManager::Release(){
     depthTextureResource.Reset();
     blurTextureResource.Reset();
     CS_ConstantBuffer.Reset();
-    lightingResource.Reset();
     delete polygonManager_;
     polygonManager_ = nullptr;
 

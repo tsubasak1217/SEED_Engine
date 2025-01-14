@@ -91,3 +91,36 @@ Vector3 BaseCamera::CalcShake(){
     Vector3 rondomVec = MyFunc::RandomVector();
     return (rondomVec * shakePower_ * t) * shakeLevel_;
 }
+
+// スクリーン座標からワールド座標に変換
+Vector3 BaseCamera::ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth){
+    Vector3 ndcSpace = {
+        (2.0f * screenPos.x) / clipRange_.x - 1.0f,
+        1.0f - (2.0f * screenPos.y) / clipRange_.y,
+        -1.0f + 2.0f * std::clamp((unNormalizedDepth/(zfar_- znear_)),0.0f,1.0f),
+    };
+
+    Matrix4x4 invViewProjection = InverseMatrix(viewProjectionMat_);
+    Vector3 worldPos = ndcSpace * invViewProjection;
+
+    return worldPos;
+}
+
+
+// znearとzfar間のレイを取得
+Line BaseCamera::GetRay(const Vector2& screenPos){
+    Vector3 ndcNear = {
+        (2.0f * screenPos.x) / clipRange_.x - 1.0f,
+        1.0f - (2.0f * screenPos.y) / clipRange_.y,
+        -1.0f,
+    };
+
+    Vector3 ndcFar = { ndcNear.x,ndcNear.y,1.0f };
+    Matrix4x4 invViewProjection = InverseMatrix(viewProjectionMat_);
+    Vector3 worldPos[2] = {
+        ndcNear * invViewProjection,
+        ndcFar * invViewProjection
+    };
+
+    return Line(worldPos[0], worldPos[1]);
+}

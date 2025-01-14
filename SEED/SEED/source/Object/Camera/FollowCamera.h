@@ -25,6 +25,7 @@ public:
 private:
 
     BaseObject* target_ = nullptr;
+    Vector3 aimPosition_;
     Vector3 defaultOffset_;
     float distance_;
     float theta_;

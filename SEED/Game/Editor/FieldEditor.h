@@ -58,12 +58,14 @@ private:
     void SaveToJson(const std::string& filePath);
     // テクスチャの読み込み
     void LoadFieldModelTexture();
+    // マウスで直接オブジェクト選択
+    int32_t SelectObjectByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
 
 private:
     //===================================================================*/
     //                   private fields
     //===================================================================*/
-    std::list<std::string> modelNames_ {};
+    std::unordered_map<std::string,uint32_t> modelNameMap_;
 
     FieldObjectManager& manager_;
 
@@ -77,7 +79,8 @@ private:
 
 private:// enum
     enum FIELDMODELNAME{
-        FIELDMODEL_GROUNDCUBE,
+        FIELDMODEL_GRASSSOIL,
+        FIELDMODEL_SOIL,
         FIELDMODEL_SPHERE,
         FIELDMODEL_DOOR,
         FIELDMODEL_START,

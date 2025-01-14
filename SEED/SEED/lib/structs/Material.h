@@ -15,6 +15,7 @@ struct Material{
     Matrix4x4 uvTransform_;
     int32_t lightingType_;
     int32_t GH_;
+    float shininess_;
 };
 
 struct MaterialData{

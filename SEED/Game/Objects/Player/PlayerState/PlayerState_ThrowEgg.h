@@ -12,14 +12,21 @@
 class PlayerState_ThrowEgg
     :public PlayerState_Move{
 public:
-    PlayerState_ThrowEgg(const std::string& stateName,BaseCharacter* player);
+    PlayerState_ThrowEgg(
+        const std::string& stateName,
+        BaseCharacter* player);
     ~PlayerState_ThrowEgg();
 
-    void Initialize(const std::string& stateName,BaseCharacter* character)override;
+    void Initialize(
+        const std::string& stateName,
+        BaseCharacter* character)override;
     void Update()override;
     void Draw()override;
 private:
     void ManageState()override;
+
+    void UpdateMovingState();
+    void ChangeAnimation();
 private:
     EggManager* eggManager_ = nullptr;
     Egg* throwEgg_ = nullptr;
@@ -32,4 +39,7 @@ private:
     float throwPower_ = 20.0f;
     //投げる卵の重さ
     float eggWeight_ = 1.0f;
+
+    bool isMoving_ = false;
+    bool preIsMoving_ = false;
 };

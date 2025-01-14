@@ -1,5 +1,6 @@
 #pragma once
-#include "Vector4.h"
+#include <Vector4.h>
+#include <Vector3.h>
 
 enum LIGHT_TYPE{
     BASE_LIGHT = 0,

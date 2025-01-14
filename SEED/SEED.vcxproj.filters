@@ -598,6 +598,9 @@
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

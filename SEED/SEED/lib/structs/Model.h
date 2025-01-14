@@ -102,6 +102,7 @@ private:
 public:
     std::vector<uint32_t> textureGH_;
     Vector4 color_;
+    float shininess_ = 50.0f;
     int32_t lightingType_;
     BlendMode blendMode_;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;

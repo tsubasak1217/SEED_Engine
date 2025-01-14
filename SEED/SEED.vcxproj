@@ -116,6 +116,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />

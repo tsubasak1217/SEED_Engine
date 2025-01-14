@@ -797,6 +797,7 @@ void PolygonManager::AddModel(Model* model){
         auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
         item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx].resize(material.size() + 1);
         material.back().color_ = model->color_;
+        material.back().shininess_ = model->shininess_;
         material.back().lightingType_ = model->lightingType_;
         material.back().uvTransform_ = model->GetUVTransform(meshIdx);
         material.back().GH_ = model->textureGH_[meshIdx];
@@ -1617,7 +1618,7 @@ void PolygonManager::AddLight(BaseLight* light){
         break;
 
     case DIRECTIONAL_LIGHT:
-        directionalLights_.emplace_back(static_cast<DirectionalLight*>(light));
+        directionalLights_.emplace_back(*static_cast<DirectionalLight*>(light));
         break;
 
     default:

@@ -208,7 +208,7 @@ private:// 実際に頂点情報や色などの情報が入っている変数
 
 private:// ライティング用のデータ
 
-    std::vector<DirectionalLight*> directionalLights_;
+    std::vector<DirectionalLight> directionalLights_;
 
 private:// Resource (すべての描画で1つにまとめている)
 

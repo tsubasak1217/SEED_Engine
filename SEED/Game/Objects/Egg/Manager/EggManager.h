@@ -21,6 +21,8 @@ public:
     void Update();
     void Draw();
 
+    void HandOverColliders();
+
     void BeginFrame();
     void EndFrame();
 

@@ -23,6 +23,8 @@ public:
 
     void Initialize()override;
     void Update()override;
+
+    void OnCollision(const BaseObject* other,ObjectType objectType) override;
 public:// ステートから呼び出す関数
     void Break();
 private:

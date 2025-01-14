@@ -33,6 +33,8 @@ void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* cha
 
     JsonCoordinator::RegisterItem("Egg","throwTime",throwTime_);
     leftTime_ = throwTime_;
+
+    pCharacter_->SetIsDrop(true);
 }
 
 void EggState_Thrown::Update(){
@@ -57,7 +59,7 @@ void EggState_Thrown::MoveThrow(){
 
 void EggState_Thrown::ManageState(){
     // 地面に ついたら(仮)
-    if(pCharacter_->GetWorldTranslate().y <= 0.0f){
+    if(!pCharacter_->GetIsDrop()){
         pCharacter_->SetTranslateY(0.0f);
         pCharacter_->ChangeState(new EggState_Break(pCharacter_));
     }

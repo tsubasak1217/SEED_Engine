@@ -44,12 +44,19 @@ void EggManager::Update(){
 
     for(auto& egg : eggs_){
         egg->Update();
+        egg->EditCollider();
     }
 }
 
 void EggManager::Draw(){
     for(auto& egg : eggs_){
         egg->Draw();
+    }
+}
+
+void EggManager::HandOverColliders(){
+    for(auto& egg : eggs_){
+        egg->HandOverColliders();
     }
 }
 

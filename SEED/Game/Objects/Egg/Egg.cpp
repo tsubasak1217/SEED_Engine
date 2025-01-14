@@ -33,11 +33,18 @@ void Egg::Initialize(){
 
     JsonCoordinator::RegisterItem("Egg","weight",weight_);
 
+    // コライダーエディターの初期化
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    LoadColliders(ObjectType::Field);
     isApplyGravity_ = false;
 }
 
 void Egg::Update(){
     BaseCharacter::Update();
+}
+
+void Egg::OnCollision(const BaseObject* other,ObjectType objectType){
+    other; objectType;
 }
 
 void Egg::Break(){

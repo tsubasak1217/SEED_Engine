@@ -37,8 +37,6 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     player_ = std::make_unique<Player>();
 
-    player_ = std::make_unique<Player>();
-
     ////////////////////////////////////////////////////
     //  ライトの方向初期化
     ////////////////////////////////////////////////////
@@ -218,5 +216,6 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
+    eggManager_->HandOverColliders();
     fieldObjectManager_->HandOverColliders();
 }

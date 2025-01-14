@@ -54,6 +54,10 @@ void PlayerState_ThrowEgg::Update(){
     PlayerState_Move::Move();
     PlayerState_Move::Rotate();
 
+    // 移動状態の更新 & アニメーションの変更
+    UpdateMovingState();
+    ChangeAnimation();
+
     throwDirection_= MyMath::Normalize(throwDirection_);
 
     // 卵 の 位置 を 更新
@@ -91,5 +95,28 @@ void PlayerState_ThrowEgg::ManageState(){
 
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
+    }
+}
+
+void PlayerState_ThrowEgg::UpdateMovingState(){
+    preIsMoving_ = isMoving_;
+    if(MyMath::LengthSq(pCharacter_->GetPrePos() - pCharacter_->GetWorldTranslate()) >= 0.0001f){
+        isMoving_ = true;
+    } else{
+        isMoving_ = false;
+    }
+}
+
+void PlayerState_ThrowEgg::ChangeAnimation(){
+    // 移動状態が変わったら
+    if(preIsMoving_ == isMoving_){
+        return;
+    }
+
+    // 動いているなら
+    if(isMoving_){
+        pCharacter_->SetAnimation("running",true);
+    } else{
+        pCharacter_->SetAnimation("idle",true);
     }
 }

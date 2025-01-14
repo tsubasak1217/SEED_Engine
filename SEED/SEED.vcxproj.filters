@@ -595,6 +595,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1107,6 +1110,12 @@
       <Filter>Game\Objects\FieldObject\Sphere</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
+    <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\BaseLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

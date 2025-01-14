@@ -104,14 +104,16 @@ void PSOManager::GenerateTemplateParameter(
         /*==================================================================================================================*/
 
         /*---------------- RootParameter ------------------*/
+        // Camera(PS_b0)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
         // material(PS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
         // transform(VS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
-        // texture(PS_t1,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-        // Lighting(PS_b0)
-        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
+        // DirectionalLights(PS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+        // texture(PS_t2,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, D3D12_SHADER_VISIBILITY_PIXEL);
 
         /*------------------ InputLayout ------------------*/
         // VBV_0
@@ -136,14 +138,16 @@ void PSOManager::GenerateTemplateParameter(
         /*================================================================================================================*/
 
         /*---------------- RootParameter ------------------*/
+        // Camera(PS_b0)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
         // material(PS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
         // transform(VS_t0,1個)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
-        // texture(PS_t1,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-        // Lighting(PS_b0)
-        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
+        // DirectionalLights(PS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+        // texture(PS_t2,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, D3D12_SHADER_VISIBILITY_PIXEL);
         // MatrixPalette(VS_t1)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 

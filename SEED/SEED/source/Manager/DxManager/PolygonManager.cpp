@@ -85,6 +85,16 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 0xffff);
     paletteResource_->SetName(L"paletteResource");
 
+    // Camera
+    cameraResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU));
+    cameraResource_->SetName(L"cameraResource");
+
+    // Lighting
+    directionalLightResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(DirectionalLight) * 0xff);
+    directionalLightResource_->SetName(L"lightingResource");
+
     // resourceのMapping
     MapOnce();
 
@@ -97,7 +107,7 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[3];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[4];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -119,6 +129,13 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[2].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
     instancingSrvDesc[2].Buffer.NumElements = 0xffff;
 
+    instancingSrvDesc[3].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[3].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[3].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[3].Buffer.FirstElement = 0;
+    instancingSrvDesc[3].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[3].Buffer.NumElements = 0xff;
+
     /*------------- Transform用 --------------*/
     instancingSrvDesc[0].Buffer.StructureByteStride = sizeof(TransformMatrix);
     ViewManager::CreateView(
@@ -127,17 +144,24 @@ void PolygonManager::InitResources(){
     );
 
     /*------------- Material用 --------------*/
-    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(Material);// マテリアルのサイズに変更
+    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(Material);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, modelMaterialResource_.Get(),
         &instancingSrvDesc[1], "instancingResource_Material"
     );
 
-    /*------------- Palette用 --------------*/
+    /*-------------- Palette用 --------------*/
     instancingSrvDesc[2].Buffer.StructureByteStride = sizeof(WellForGPU);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, paletteResource_.Get(),
         &instancingSrvDesc[2], "SkinningResource_Palette"
+    );
+
+    /*--------- DirectionalLight用 ----------*/
+    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(DirectionalLight);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, directionalLightResource_.Get(),
+        &instancingSrvDesc[3], "directionalLight"
     );
 
 }
@@ -150,6 +174,9 @@ void PolygonManager::Reset(){
     modelDrawData_.clear();
     ModelDrawData::modelSwitchIdx_Vertex.clear();
     ModelDrawData::modelSwitchIdx_Index.clear();
+
+    // ライティングの情報をリセット
+    directionalLights_.clear();
 
     // カウントのリセット
     triangleIndexCount_ = 0;
@@ -244,6 +271,8 @@ void PolygonManager::MapOnce(){
     offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapOffsetData));
     vertexInfluenceResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapVertexInfluenceData));
     paletteResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPaletteData));
+    cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapCameraData));
+    directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapDirectionalLightData));
 }
 
 
@@ -1070,6 +1099,23 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*                                ライティング・カメラ情報を書き込む                              */
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    // ライティング情報
+    std::memcpy(
+        mapDirectionalLightData,
+        directionalLights_.data(),
+        sizeof(DirectionalLight) * directionalLights_.size()
+    );
+
+    // カメラ情報
+    BaseCamera* pCamera = pDxManager_->GetCamera();
+    mapCameraData->position = pCamera->GetTranslation();
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     /*                                      頂点情報を書き込む                                      */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1308,23 +1354,26 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             }
 
             // Resourceを設定
-            pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
+            pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
 
             // SRVヒープの上のアドレスを格納するハンドル
             D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
             // マテリアルのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
             // トランスフォームのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+            // DirectionalLightのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
             // テクスチャのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
                 srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
             }
 
 
@@ -1555,4 +1604,23 @@ void PolygonManager::DrawToBackBuffer(){
     SetRenderData(DrawOrder::StaticTriangle2D);
     SetRenderData(DrawOrder::StaticQuad2D);
     SetRenderData(DrawOrder::StaticSprite);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ライトの追加
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddLight(BaseLight* light){
+    switch(light->lightType_)
+    {
+    case BASE_LIGHT:
+        break;
+
+    case DIRECTIONAL_LIGHT:
+        directionalLights_.emplace_back(static_cast<DirectionalLight*>(light));
+        break;
+
+    default:
+        break;
+    }
 }

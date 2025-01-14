@@ -245,10 +245,6 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     ComPtr<ID3D12Resource> depthStencilResource = nullptr;
     D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
-    // LightingのResource
-    ComPtr<ID3D12Resource> lightingResource = nullptr;
-    DirectionalLight* directionalLight = nullptr;
-
     // scissor矩形とviewport
     D3D12_VIEWPORT viewport{};
     D3D12_RECT scissorRect{};

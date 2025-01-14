@@ -48,9 +48,6 @@ FieldObject_Door::~FieldObject_Door() = default;
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::Initialize(){
     FieldObject::Initialize();
-    if (model_){
-        model_->translate_.y = 0.0f;
-    }
     isOpened_ = false;
     ChangeState(new ClosedState());
 }

@@ -50,9 +50,13 @@ private:
         const Vector3& translate = { 0.0f,0.0f,0.0f }
         );
 
-    void LoadFromJson(const std::string& filePath);
-    void SaveToJson(const std::string& filePath);
+    void DeploymentStartAndGoal();
 
+    // jsonファイルの読み込み
+    void LoadFromJson(const std::string& filePath);
+    // jsonファイルへの保存
+    void SaveToJson(const std::string& filePath);
+    // テクスチャの読み込み
     void LoadFieldModelTexture();
 
 private:
@@ -76,5 +80,7 @@ private:// enum
         FIELDMODEL_GROUNDCUBE,
         FIELDMODEL_SPHERE,
         FIELDMODEL_DOOR,
+        FIELDMODEL_START,
+        FIELDMODEL_GOAL,
     };
 };

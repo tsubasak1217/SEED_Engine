@@ -4,6 +4,8 @@
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GroundCube/FieldObject_GroundCube.h"
 #include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Goal/FieldObject_Goal.h"
 
 //engine
 #include "../SEED/external/imgui/imgui.h"
@@ -15,14 +17,20 @@
 #include <fstream>
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  コンストラクタ
+////////////////////////////////////////////////////////////////////////////////////////
 FieldEditor::FieldEditor(FieldObjectManager& manager)
     : manager_(manager){
     modelNames_.clear();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  初期化
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
-    modelNames_ = { "groundCube", "sphere","door" };
+    modelNames_ = { "groundCube", "sphere","door" ,"start","goal"};
 
     LoadFromJson(jsonPath_);
 
@@ -30,45 +38,76 @@ void FieldEditor::Initialize(){
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  オブジェクトの追加
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::AddModel(
     uint32_t modelNameIndex,
     const Vector3& scale,
     const Vector3& rotate,
     const Vector3& translate
 ){
-
-    // FieldObjectを空で生成
-    std::unique_ptr<FieldObject> newObj = nullptr;
-
-    // modelNameIndex によって生成するオブジェクトを変更
-    switch(modelNameIndex){
-    case FIELDMODEL_GROUNDCUBE:
-        newObj = std::make_unique<FieldObject_GroundCube>();
-        break;
-
-    case FIELDMODEL_SPHERE:
-        newObj = std::make_unique<FieldObject_Sphere>();
-        break;
-
-    case FIELDMODEL_DOOR:
-        newObj = std::make_unique<FieldObject_Door>();
-        break;
-
-    default:
-        break;
+    // スタートもしくはゴールの場合、既に存在しているかチェックし、
+    // 存在していれば新規追加をキャンセルする
+    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+        auto& objects = manager_.GetObjects();
+        for (const auto& objPtr : objects){
+            FieldObject* obj = objPtr.get();
+            if (obj && obj->GetFieldObjectType() == modelNameIndex){
+                // 既に同じタイプのオブジェクトが存在する場合、追加をキャンセル
+                return;
+            }
+        }
     }
 
-    // 初期値など設定
+    // 新規オブジェクトの生成
+    std::unique_ptr<FieldObject> newObj = nullptr;
+
+    switch (modelNameIndex){
+        case FIELDMODEL_GROUNDCUBE:
+            newObj = std::make_unique<FieldObject_GroundCube>();
+            break;
+        case FIELDMODEL_SPHERE:
+            newObj = std::make_unique<FieldObject_Sphere>();
+            break;
+        case FIELDMODEL_DOOR:
+            newObj = std::make_unique<FieldObject_Door>();
+            break;
+        case FIELDMODEL_START:
+            newObj = std::make_unique<FieldObject_Start>();
+            break;
+        case FIELDMODEL_GOAL:
+            newObj = std::make_unique<FieldObject_Goal>();
+            break;
+        default:
+            break;
+    }
+
+    if (!newObj) return;  // newObj が生成されなかった場合は何もしない
+
+    // スタートまたはゴールの場合、スケールを1/10に調整
+    Vector3 adjustedScale = scale;
+    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+        adjustedScale.x = 1.0f;
+        adjustedScale.y = 1.0f;
+        adjustedScale.z = 1.0f;
+    }
+
+    // 初期値の設定
     newObj->SetTranslate(translate);
-    newObj->SetScale(scale);
+    newObj->SetScale(adjustedScale);
     newObj->SetRotate(rotate);
     newObj->SetFieldObjectType(modelNameIndex);
+    newObj->UpdateMatrix();
 
-    // Managerに登録
+    // Manager に登録
     manager_.AddFieldObject(std::move(newObj));
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  jsonファイルの読み込み
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::LoadFromJson(const std::string& filePath){
     namespace fs = std::filesystem;
 
@@ -121,6 +160,9 @@ void FieldEditor::LoadFromJson(const std::string& filePath){
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  jsonファイルの保存
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::SaveToJson(const std::string& filePath){
     try{
         namespace fs = std::filesystem;
@@ -175,6 +217,9 @@ void FieldEditor::SaveToJson(const std::string& filePath){
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  textureの読み込み
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::LoadFieldModelTexture(){
     // resources/textures/fieldModelTextures/ 以下の階層にあるテクスチャを自動で読む
     std::vector<std::string> fileNames;
@@ -202,6 +247,9 @@ void FieldEditor::LoadFieldModelTexture(){
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//  imguiの表示
+////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
     ImGui::Begin("Field Editor");
@@ -222,12 +270,12 @@ void FieldEditor::ShowImGui(){
         if(it != textureIDs_.end()){
             // サムネテクスチャがある場合
             if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                selectedModelIndex = i;
+                AddModel(i);
             }
         } else{
             // テクスチャがない場合はボタン
             if(ImGui::Button(name.c_str(), ImVec2(64, 64))){
-                selectedModelIndex = i;
+                AddModel(i);
             }
         }
         ImGui::SameLine();
@@ -236,12 +284,6 @@ void FieldEditor::ShowImGui(){
     ImGui::NewLine();
 
     // ========== 選択したモデルを追加するボタン, Saveボタン ========== 
-    if(ImGui::Button("Add Selected Model") && selectedModelIndex >= 0){
-        // モデルの追加
-        AddModel(selectedModelIndex);
-    }
-
-    ImGui::SameLine();
 
     if(ImGui::Button("Save Models")){
         SaveToJson(jsonPath_);
@@ -316,8 +358,8 @@ void FieldEditor::ShowImGui(){
                 Vector3Int tempMove = moveChunk;
                 Vector3Int tempScale = scaleChunk;
 
-                ImGui::SliderInt3("Move (chunks)", &tempMove.x, -10, 10);
-                ImGui::SliderInt3("Scale (chunks)", &tempScale.x, 1, 10);
+                ImGui::DragInt3("Move (chunks)", &tempMove.x, 1, -10, 10);
+                ImGui::DragInt3("Scale (chunks)", &tempScale.x, 1, 1, 10);
 
                 // 変更があったら実際のPosition / Scaleに反映
                 const float CHUNK_MOVE = 10.0f;

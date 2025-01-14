@@ -1,23 +1,15 @@
 #include "FieldObjectManager.h"
 #include "CollisionManaer/CollisionManager.h"
 #include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/Start/FieldObject_Start.h"
 
 ////////////////////////////////////////////////////////////////////////
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Update(){
     for (auto& fieldObject : fieldObjects_){
-
-        FieldObject_Door* door = dynamic_cast< FieldObject_Door* >(fieldObject.get());
-
-        // ドアの場合は、ドアの更新処理を呼び出す
-        if (door){
-            door->Update();
-        } else{
             // 通常のオブジェクト
             fieldObject->Update();
-        }
-
     }
 }
 
@@ -84,4 +76,16 @@ void FieldObjectManager::HandOverColliders(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->HandOverColliders();
     }
+}
+
+Vector3 FieldObjectManager::GetStartPosition() const{
+    for (const auto& obj : fieldObjects_){
+        // FieldObject_Start 型へのキャストを試みる
+        if (auto* start = dynamic_cast< FieldObject_Start* >(obj.get())){
+            // スタートオブジェクトが見つかったら位置を返す
+            return start->GetWorldTranslate();
+        }
+    }
+    // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
+    return Vector3 {0.0f, 0.0f, 0.0f};
 }

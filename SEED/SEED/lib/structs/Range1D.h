@@ -11,4 +11,17 @@ struct Range1D{
 
     float min;
     float max;
+
+public:
+
+
+    void operator+=(float value){
+        min += value;
+        max += value;
+    }
+
+    void operator-=(float value){
+        min -= value;
+        max -= value;
+    }
 };

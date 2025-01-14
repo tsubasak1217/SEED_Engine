@@ -33,7 +33,7 @@ void EnemyEditor::ShowImGui(){
 
     if (ImGui::Button("Save Enemies")){
         // セーブ処理 (JSONなど) 
-        SaveEnemies();  // 例：エディタ内で実装していると仮定
+        SaveEnemies();  
     }
 
     ImGui::Separator();

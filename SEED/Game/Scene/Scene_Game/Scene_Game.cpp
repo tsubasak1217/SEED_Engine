@@ -76,8 +76,10 @@ void Scene_Game::Initialize(){
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
     player_->SetCorpseManager(playerCorpseManager_.get());
+    Vector3 playerStartPos = fieldObjectManager_->GetStartPosition();
+    // playerの初期位置を設定
+    player_->SetPosition({playerStartPos.x,playerStartPos.y+0.3f,playerStartPos.z});
 
-    fieldObjectManager_->SetPlayer(player_.get());
     // DoorProximityChecker の 初期化
     doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
                                                                    *fieldObjectManager_.get(),
@@ -96,6 +98,7 @@ void Scene_Game::Initialize(){
 
 
     player_->SetEggManager(eggManager_.get());
+
 
 
     fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
@@ -151,12 +154,12 @@ void Scene_Game::Update(){
         currentState_->Update();
     }
 
-    // ドアとの距離をチェックし、近ければイベント発行
-    doorProximityChecker_->Update();
-
     fieldObjectManager_->Update();
 
     fieldColliderEditor_->Edit();
+
+    // ドアとの距離をチェックし、近ければイベント発行
+    doorProximityChecker_->Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +219,7 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
+    fieldColliderEditor_->HandOverColliders();
     eggManager_->HandOverColliders();
     fieldObjectManager_->HandOverColliders();
 }

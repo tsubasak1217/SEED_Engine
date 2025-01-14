@@ -43,11 +43,6 @@ void BaseObject::Update(){
 
     // モデルの更新
     model_->Update();
-
-    // コライダーの更新
-    for(auto& collider : colliders_){
-        collider->Update();
-    }
 }
 
 
@@ -56,7 +51,6 @@ void BaseObject::Update(){
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Draw(){
-    model_->UpdateMatrix();
     model_->Draw();
 }
 

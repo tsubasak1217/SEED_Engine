@@ -35,16 +35,14 @@ void SceneManager::Initialize(){
 // 更新
 ///////////////////////////////////////////////////////////////////////////////
 void SceneManager::Update(){
-    // Colliderのリセット
-    CollisionManager::ResetColliderList();
     // シーンの更新
     pScene_->Update();
-    // シーン更新終了後にカメラを更新
-    CameraManager::Update();
     // Colliderの追加
     pScene_->HandOverColliders();
     // 当たり判定
     CollisionManager::CheckCollision();
+    // すべての更新終了後にカメラを更新
+    CameraManager::Update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,6 +57,9 @@ void SceneManager::Draw(){
 // フレーム開始処理
 ///////////////////////////////////////////////////////////////////////////////
 void SceneManager::BeginFrame(){
+    // Colliderのリセット
+    CollisionManager::ResetColliderList();
+    // シーンのフレーム開始処理
     pScene_->BeginFrame();
 }
 

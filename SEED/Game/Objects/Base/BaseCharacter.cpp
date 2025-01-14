@@ -28,12 +28,6 @@ void BaseCharacter::Initialize(){
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::Update(){
 
-    // 前フレームの座標の保存
-    prePos_ = GetWorldTranslate();
-
-    // フラグの初期化
-    isDamaged_ = false;
-
     // 状態に応じた更新処理
     if(currentState_){
         // 更新処理
@@ -82,6 +76,13 @@ void BaseCharacter::Draw(){
 //////////////////////////////////////////////////////////////////////////
 
 void BaseCharacter::BeginFrame(){
+
+    // 前フレームの座標の保存
+    prePos_ = GetWorldTranslate();
+
+    // フラグの初期化
+    isDamaged_ = false;
+
     BaseObject::BeginFrame();
 }
 

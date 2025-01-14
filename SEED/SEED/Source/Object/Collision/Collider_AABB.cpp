@@ -64,12 +64,16 @@ void Collider_AABB::CheckCollision(Collider* collider){
     if(collisionList_.find(collider->GetColliderID()) != collisionList_.end()){ return; }
 
     CollisionData collisionData;
-
+    
     switch(collider->GetColliderType()){
     case ColliderType::Sphere:
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
-        collisionData = Collision::AABB::Sphere(this,sphere);
+        if(IsMoved()){
+            collisionData = Collision::AABB::Sphere(this, sphere);
+        } else{
+            collisionData = Collision::Sphere::AABB(sphere,this);
+        }
 
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
@@ -92,7 +96,7 @@ void Collider_AABB::CheckCollision(Collider* collider){
                 parentObject_->UpdateMatrix();
 
             } else{
-                body_.center += -pushBack * collisionData.pushBackRatio_B.value();
+                translate_ += -pushBack * collisionData.pushBackRatio_B.value();
             }
 
             // 衝突したオブジェクトも押し戻す
@@ -110,7 +114,7 @@ void Collider_AABB::CheckCollision(Collider* collider){
                 collider->GetParentObject()->UpdateMatrix();
 
             } else{
-                sphere->AddCenter(pushBack * collisionData.pushBackRatio_A.value());
+                sphere->AddTranslate(pushBack * collisionData.pushBackRatio_A.value());
             }
 
             // 行列を更新する

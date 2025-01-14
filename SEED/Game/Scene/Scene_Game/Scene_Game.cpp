@@ -207,5 +207,6 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
+    fieldColliderEditor_->HandOverColliders();
     fieldObjectManager_->HandOverColliders();
 }

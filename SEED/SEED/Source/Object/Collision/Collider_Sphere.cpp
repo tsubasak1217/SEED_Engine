@@ -73,7 +73,11 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     case ColliderType::AABB:
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
-        collisionData = Collision::Sphere::AABB(this, aabb);
+        if(IsMoved()){
+            collisionData = Collision::Sphere::AABB(this, aabb);
+        } else{
+            collisionData = Collision::AABB::Sphere(aabb, this);
+        }
 
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
@@ -96,7 +100,7 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                     parentObject_->UpdateMatrix();
 
                 } else{
-                    body_.center += pushBack * collisionData.pushBackRatio_A.value();
+                    translate_ += pushBack * collisionData.pushBackRatio_A.value();
                 }
 
                 // 衝突したオブジェクトも押し戻す
@@ -114,7 +118,7 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                     collider->GetParentObject()->UpdateMatrix();
 
                 } else{
-                    aabb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());
+                    aabb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
                 }
 
 
@@ -127,7 +131,11 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     case ColliderType::OBB:
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
-        collisionData = Collision::Sphere::OBB(this, obb);
+        if(IsMoved()){
+            collisionData = Collision::Sphere::OBB(this, obb);
+        } else{
+            collisionData = Collision::OBB::Sphere(obb, this);
+        }
 
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
@@ -150,7 +158,7 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                 parentObject_->UpdateMatrix();
 
             } else{
-                body_.center += pushBack * collisionData.pushBackRatio_A.value();
+                translate_ += pushBack * collisionData.pushBackRatio_A.value();
             }
 
             // 衝突したオブジェクトも押し戻す
@@ -168,7 +176,7 @@ void Collider_Sphere::CheckCollision(Collider* collider){
                 collider->GetParentObject()->UpdateMatrix();
 
             } else{
-                obb->AddCenter(-pushBack * collisionData.pushBackRatio_B.value());
+                obb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
             }
 
 

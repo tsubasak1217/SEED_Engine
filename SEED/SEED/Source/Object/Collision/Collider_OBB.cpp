@@ -63,7 +63,11 @@ void Collider_OBB::CheckCollision(Collider* collider){
     case ColliderType::Sphere:
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
-        collisionData = Collision::OBB::Sphere(this,sphere);
+        if(IsMoved()){
+            collisionData = Collision::OBB::Sphere(this, sphere);
+        } else{
+            collisionData = Collision::Sphere::OBB(sphere, this);
+        }
 
         if(collisionData.isCollide){
             OnCollision(collider,collider->GetObjectType());
@@ -86,7 +90,7 @@ void Collider_OBB::CheckCollision(Collider* collider){
                 parentObject_->UpdateMatrix();
 
             } else{
-                body_.center += -pushBack * collisionData.pushBackRatio_B.value();
+                translate_ += -pushBack * collisionData.pushBackRatio_B.value();
             }
 
             // 衝突したオブジェクトも押し戻す
@@ -104,7 +108,7 @@ void Collider_OBB::CheckCollision(Collider* collider){
                 collider->GetParentObject()->UpdateMatrix();
 
             } else{
-                sphere->AddCenter(pushBack * collisionData.pushBackRatio_A.value());
+                sphere->AddTranslate(pushBack * collisionData.pushBackRatio_A.value());
             }
 
             // 行列を更新する

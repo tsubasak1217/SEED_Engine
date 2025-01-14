@@ -477,7 +477,7 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
 void ColliderEditor::HandOverColliders(){
     // コライダーをCollisionManagerに渡す
     for(int i = 0; i < colliders_.size(); i++){
-        colliders_[i]->Update();
+        //colliders_[i]->Update();
         CollisionManager::AddCollider(colliders_[i].get());
     }
 }

@@ -97,6 +97,7 @@ void Octree::CheckCollision(){
     for(int i = 0; i < colliders_.size(); ++i) {
         for(int j = i + 1; j < colliders_.size(); ++j) {
             colliders_[i]->CheckCollision(colliders_[j]);
+            colliders_[j]->CheckCollision(colliders_[i]);
         }
     }
 

@@ -85,6 +85,7 @@ public:// アクセッサ-------------------------------------------------------
     // トランスフォーム取得
     Vector3 GetWoarldTranslate()const{ return ExtractTranslation(worldMat_) + offset_; }
     Vector3 GetLocalTranslate()const{ return ExtractTranslation(localMat_) + offset_; }
+    void AddTranslate(const Vector3& addValue){ translate_ += addValue; }
     Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }
     Vector3 GetLocalRotate()const{ return ExtractRotation(localMat_); }
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }

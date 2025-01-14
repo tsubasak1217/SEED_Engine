@@ -11,11 +11,12 @@
 #include <Collision/Collider_Sphere.h>
 #include <Collision/Collider_Capsule.h>
 
+float separator = 0.01f;
 
 /////////////////////////////////////////////////////////////////////////
 //						重複防止のためcpp内で宣言・定義
 /////////////////////////////////////////////////////////////////////////
-void CalucPushbackRatio(const Collider* collider1, const Collider* collider2,CollisionData* data);
+void CalucPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data);
 
 bool CheckProjentionCollision(
     std::vector<Vector3> vertices1, std::vector<Vector3>vertices2,
@@ -60,7 +61,7 @@ namespace Collision{
         bool AABB(const ::OBB& obb, const ::AABB& aabb){ return Collision_AABB_OBB(aabb, obb); }
         bool Line(const ::OBB& obb, const ::Line& line){ return Collision_Line_OBB(line, obb); }
         bool Sphere(const::OBB& obb, const::Sphere& sphere){ return Collision_Sphere_OBB(sphere, obb); }
-        CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider){return CollisionData_MoveOBB_Sphere(obbCollider,sphereCollider);}
+        CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider){ return CollisionData_MoveOBB_Sphere(obbCollider, sphereCollider); }
     }
 
     namespace AABB{
@@ -68,7 +69,7 @@ namespace Collision{
         bool AABB(const ::AABB& aabb1, const ::AABB& aabb2){ return Collision_AABB_AABB(aabb1, aabb2); }
         bool Line(const ::AABB& aabb, const ::Line& line){ return Collision_Line_AABB(line, aabb); }
         bool Sphere(const ::AABB& aabb, const ::Sphere& sphere){ return Collision_Sphere_AABB(sphere, aabb); }
-        CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider){return Collision_Sphere_MoveAABB(sphereCollider, aabbCollider);}
+        CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider){ return Collision_Sphere_MoveAABB(sphereCollider, aabbCollider); }
     }
 
     namespace Line{
@@ -79,7 +80,7 @@ namespace Collision{
 
     namespace Sphere{
         bool OBB(const ::Sphere& sphere, const ::OBB& obb){ return Collision_Sphere_OBB(sphere, obb); }
-        CollisionData OBB(Collider* sphereCollider, Collider* obbCollider){return CollisionData_OBB_MoveSphere(obbCollider, sphereCollider);}
+        CollisionData OBB(Collider* sphereCollider, Collider* obbCollider){ return CollisionData_OBB_MoveSphere(obbCollider, sphereCollider); }
         bool AABB(const ::Sphere& sphere, const ::AABB& aabb){ return Collision_Sphere_AABB(sphere, aabb); }
         CollisionData AABB(Collider* sphereCollider, Collider* aabbCollider){ return Collision_MoveSphere_AABB(sphereCollider, aabbCollider); }
         bool Line(const ::Sphere& sphere, const ::Line& line){ return Collision_Sphere_Line(sphere, line); }
@@ -118,7 +119,7 @@ void CalucPushbackRatio(const Collider* collider1, const Collider* collider2, Co
     float mass1 = collider1->mass_;
     float mass2 = collider2->mass_;
     float sumMass = mass1 + mass2;
-    if(sumMass == 0.0f){sumMass = 1.0f;}
+    if(sumMass == 0.0f){ sumMass = 1.0f; }
 
     data->pushBackRatio_A = 1.0f - (mass1 / sumMass);
     data->pushBackRatio_B = 1.0f - (mass2 / sumMass);
@@ -194,7 +195,7 @@ bool CheckProjentionCollision(
             }
 
             Vector3 normalAxis = MyMath::Normalize(axis);
-            pData->collideDepth = depth + 0.01f;;
+            pData->collideDepth = depth + separator;
         }
 
         return true;
@@ -232,10 +233,18 @@ float CalcProjentionDepth(std::vector<Vector3> vertices1, std::vector<Vector3> v
 
 bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& axis, CollisionData* pData){
 
-    // 射影した範囲を取得
+    // 計算用変数
     std::vector<Vector3> vertices1 = { plane.localVertex[0],plane.localVertex[1],plane.localVertex[2],plane.localVertex[3] };
     std::vector<Vector3> vertices2 = { line.origin_,line.end_ };
     Range1D range[2];
+
+    // 平面にLineのベクトル方向の厚みを持たせる(Lineの影に完全に含まれると正しい計算ができないため)
+    Vector3 vec = MyMath::Normalize(line.end_ - line.origin_);
+    for(int i = 0; i < 4; i++){
+        vertices1.push_back(plane.localVertex[i] + vec * 100.0f);
+    }
+
+    // 射影した範囲を取得
     range[0] = GetProjectionRange(vertices1, axis);
     range[1] = GetProjectionRange(vertices2, axis);
 
@@ -252,7 +261,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
         // 衝突深度が格納されているものより浅ければ格納し直す
         float depth = sumLength - subLength;
         if(pData->collideDepth > depth){
-            pData->collideDepth = depth + 0.01f;
+            pData->collideDepth = depth + separator;
             pData->hitNormal = axis;
         }
 
@@ -634,7 +643,7 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
 
     // 法線情報が無ければ次の判定へ
     if(hitNormals.size() == 0){
-        
+
         CollisionData data[2] = {
             CollisionData_Point_OBB(line.origin_, obb),
             CollisionData_Point_OBB(line.end_, obb)
@@ -658,7 +667,7 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
             return result;
         }
 
-    
+
     } else{
         // 当たっている
         result.isCollide = true;
@@ -670,8 +679,13 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
             CalcProjectionDepth(line, *hitQuads[i], axis, &data);
             if(data.collideDepth >= 0.0f){
                 if(data.collideDepth < result.collideDepth){
-                    result.collideDepth = data.collideDepth;
-                    result.hitNormal = axis;
+                    if(MyMath::Dot(line.end_ - line.origin_, axis) < 0.0f){
+                        result.collideDepth = data.collideDepth;
+                        result.hitNormal = axis;
+                    } else{
+                        result.collideDepth = 0.0f;
+                        result.hitNormal = { 0.0f,0.0f,0.0f };
+                    }
                 }
             }
         }
@@ -721,7 +735,7 @@ CollisionData CollisionData_Point_OBB(const Vector3& point, const OBB& obb){
     else if(minDist == dzMin) result.hitNormal = { 0.0f, 0.0f, -1.0f };
     else if(minDist == dzMax) result.hitNormal = { 0.0f, 0.0f, 1.0f };
 
-    result.collideDepth = minDist; // 衝突深度を最小距離として扱う
+    result.collideDepth = minDist + separator; // 衝突深度を最小距離として扱う
     result.hitNormal.value() *= RotateMatrix(obb.rotate); // OBBの回転を考慮して法線を変換
 
     return result;
@@ -926,7 +940,7 @@ CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb){
         else if(minDist == dzMin) result.hitNormal = { 0.0f, 0.0f, -1.0f };
         else if(minDist == dzMax) result.hitNormal = { 0.0f, 0.0f, 1.0f };
 
-        result.collideDepth = minDist; // 衝突深度を最小距離として扱う
+        result.collideDepth = minDist + separator; // 衝突深度を最小距離として扱う
     } else {
         result.isCollide = false;
     }
@@ -963,7 +977,7 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
     CollisionData result;
 
     // 形状が違う場合エラー
-    if(obbCollider->GetColliderType() != ColliderType::OBB || 
+    if(obbCollider->GetColliderType() != ColliderType::OBB ||
         sphereCollider->GetColliderType() != ColliderType::Sphere){
         result.error = true;
         return result;
@@ -1046,7 +1060,7 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
     forJudgeOBB.halfSize += Vector3(maxRadius, maxRadius, maxRadius);
 
     // 線分を求める
-    Line judgeLine = { sphere[0].center,sphere[1].center};
+    Line judgeLine = { sphere[1].center,sphere[0].center };
 
     // 線分とOBBの衝突情報取得
     result = CollisionData_Line_OBB(judgeLine, forJudgeOBB);
@@ -1298,7 +1312,7 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
 
     // 球の情報を取得
     Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
-    Sphere sphere[2] = {convertedSphere->GetSphere(),convertedSphere->GetPreSphere()};
+    Sphere sphere[2] = { convertedSphere->GetSphere(),convertedSphere->GetPreSphere() };
 
     // AABBの情報を取得し、OBBに変換
     Collider_AABB* convertedAABB = dynamic_cast<Collider_AABB*>(aabbCollider);

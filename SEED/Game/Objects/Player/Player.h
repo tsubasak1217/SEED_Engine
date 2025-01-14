@@ -31,6 +31,8 @@ public: // Stateから呼び出す関数
     void HandleMove(const Vector3 &acceleration) override;
 
 public: // アクセッサ
+    void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
+
     void SetFollowCameraPtr(BaseCamera *pCamera) { pCamera_ = pCamera; }
     const BaseCamera *GetFollowCamera() const { return pCamera_; }
 

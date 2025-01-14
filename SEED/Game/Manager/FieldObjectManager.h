@@ -30,8 +30,7 @@ public:
     void HandOverColliders();
 
 public:
-    void SetPlayer(Player* player){ player_ = player; }
-    Player* GetPlayer(){ return player_; }
+    Vector3 GetStartPosition()const;
 
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 

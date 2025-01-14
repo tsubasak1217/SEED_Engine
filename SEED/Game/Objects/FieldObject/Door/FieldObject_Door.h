@@ -35,7 +35,6 @@ public:
 private:
     bool isOpened_ = false;  // 開閉状態のフラグ
 
-
     std::unique_ptr<DoorState> currentState_;
 
     float openSpeed_ = 8.0f;            // 開閉速度

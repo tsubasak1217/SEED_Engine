@@ -80,7 +80,7 @@ void Scene_Game::Initialize(){
     player_->SetCorpseManager(playerCorpseManager_.get());
     Vector3 playerStartPos = fieldObjectManager_->GetStartPosition();
     // playerの初期位置を設定
-    player_->SetPosition({playerStartPos.x,playerStartPos.y-0.1f,playerStartPos.z});
+    player_->SetPosition({playerStartPos.x,playerStartPos.y+0.3f,playerStartPos.z});
 
     // DoorProximityChecker の 初期化
     doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,

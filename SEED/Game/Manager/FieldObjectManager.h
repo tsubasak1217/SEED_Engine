@@ -9,6 +9,8 @@
 #include <vector>
 #include <memory>
 
+class Player;
+
 class FieldObjectManager{
 public:
     FieldObjectManager(ISubject& subject) : subject_(subject){}
@@ -27,9 +29,15 @@ public:
     // CollisionManagerにコライダーを渡す
     void HandOverColliders();
 
+public:
+    void SetPlayer(Player* player){ player_ = player; }
+    Player* GetPlayer(){ return player_; }
+
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 
 private:
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     ISubject& subject_;
+
+    Player* player_ = nullptr;
 };

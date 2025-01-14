@@ -34,7 +34,7 @@ FieldObject_Door::FieldObject_Door(const std::string& modelName)
     // 状態の初期化
     currentState_ = std::make_unique<ClosedState>();
     // コライダー関連の初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
@@ -84,7 +84,7 @@ void FieldObject_Door::SetIsOpened(bool isOpened){
         isOpened_ = isOpened;
         if (isOpened_){
             ChangeState(new OpeningState());
-        } else{
+        } else {
             ChangeState(new ClosingState());
         }
     }
@@ -107,8 +107,16 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 ////////////////////////////////////////////////////////////////////////
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
-void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]]void* data){
-    if (event == "ToggleDoor"){
-        SetIsOpened(!isOpened_);
+void FieldObject_Door::OnNotify(const std::string& event, void* data){
+    // data は Door* として受け取り、自分宛かどうか判定
+    FieldObject_Door* doorPtr = static_cast< FieldObject_Door* >(data);
+    if (doorPtr != this){
+        return; // 自分宛でなければ無視
+    }
+
+    if (event == "DoorShouldOpen"){
+        SetIsOpened(true);
+    } else if (event == "DoorShouldClose"){
+        SetIsOpened(false);
     }
 }

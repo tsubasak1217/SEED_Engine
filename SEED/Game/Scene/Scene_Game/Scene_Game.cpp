@@ -59,7 +59,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  エディター初期化
     ////////////////////////////////////////////////////
-    
+
     fieldObjectManager_ = std::make_unique<FieldObjectManager>(eventManager_);
     fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
     fieldEditor_->Initialize();
@@ -79,6 +79,12 @@ void Scene_Game::Initialize(){
     playerCorpseManager_->Initialize();
     player_->SetCorpseManager(playerCorpseManager_.get());
 
+    fieldObjectManager_->SetPlayer(player_.get());
+    // DoorProximityChecker の 初期化
+    doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
+                                                                   *fieldObjectManager_.get(),
+                                                                   *player_.get());
+
     // EggManager の 初期化
     eggManager_ = std::make_unique<EggManager>();
     eggManager_->SetPlayer(player_.get());
@@ -89,7 +95,7 @@ void Scene_Game::Initialize(){
 
     // EnemyEditor の 初期化
     enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
-    
+
 
     player_->SetEggManager(eggManager_.get());
 
@@ -147,6 +153,9 @@ void Scene_Game::Update(){
         currentState_->Update();
     }
 
+    // ドアとの距離をチェックし、近ければイベント発行
+    doorProximityChecker_->Update();
+
     fieldObjectManager_->Update();
 
     fieldColliderEditor_->Edit();
@@ -185,6 +194,7 @@ void Scene_Game::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
     player_->BeginFrame();
+    eggManager_->BeginFrame();
     fieldObjectManager_->BeginFrame();
 }
 
@@ -196,6 +206,7 @@ void Scene_Game::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
     player_->EndFrame();
+    eggManager_->EndFrame();
     fieldObjectManager_->EndFrame();
 }
 

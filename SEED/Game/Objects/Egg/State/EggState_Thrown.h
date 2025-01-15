@@ -2,6 +2,8 @@
 
 #include "Base/ICharacterState.h"
 
+class Egg;
+
 class EggState_Thrown :
     public ICharacterState{
 public:
@@ -21,6 +23,8 @@ protected:
     void ManageState()override;
 
 private:
+    Egg* pEgg_ = nullptr;
+
     float throwTime_;
     float leftTime_;
 

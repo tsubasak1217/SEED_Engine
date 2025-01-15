@@ -45,9 +45,11 @@ void Egg::Update(){
 
 void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
     if(objectType == ObjectType::Field){
-        if(!isJump_){
+
+        if(!isThrown_){
             return;
         }
+
         // 衝突した場所の真下に落ちる
         // XZ を固定
         SetTranslateX(prePos_.x);

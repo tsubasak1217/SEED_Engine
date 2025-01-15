@@ -36,6 +36,7 @@ private:
     Vector3 velocity_;
 
     bool isBreak_ = false;
+    bool isThrown_ = false;
 
     float weight_ = 1.0f;
 public:// アクセッサ
@@ -43,6 +44,9 @@ public:// アクセッサ
     void SetEggManager(EggManager* _eggManager){ eggManager_ = _eggManager; }
 
     float GetWeight()const{ return weight_; }
+
+    bool GetIsThrown()const{ return isThrown_; }
+    void SetIsThrown(bool _isThrown){ isThrown_ = _isThrown; }
 
     bool GetIsBreak()const{ return isBreak_; }
 

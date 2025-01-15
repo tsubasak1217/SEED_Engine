@@ -25,7 +25,7 @@ EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _directionXY
 }
 
 EggState_Thrown::~EggState_Thrown(){
-    pCharacter_->SetIsJump(false);
+    pEgg_->SetIsThrown(false);
 }
 
 void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* character){
@@ -39,8 +39,8 @@ void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* cha
     JsonCoordinator::RegisterItem("Egg","throwTime",throwTime_);
     leftTime_ = throwTime_;
 
-    pCharacter_->SetIsDrop(true);
-    pCharacter_->SetIsJump(true);
+    pEgg_ = dynamic_cast<Egg*>(pCharacter_);
+    pEgg_->SetIsThrown(true);
 }
 
 void EggState_Thrown::Update(){
@@ -51,8 +51,7 @@ void EggState_Thrown::Draw(){}
 
 const float kGravity = 9.8f;
 void EggState_Thrown::MoveThrow(){
-    Egg* pEgg = dynamic_cast<Egg*>(pCharacter_);
-    Vector3 velocity =  pEgg->GetVelocity();
+    Vector3 velocity =  pEgg_->GetVelocity();
     if(velocity.y == 0.0f){
 
         leftTime_ -= ClockManager::DeltaTime();
@@ -67,16 +66,15 @@ void EggState_Thrown::MoveThrow(){
         pCharacter_->SetTranslate(beforePos_ + parabolick3D);
     } else{
         velocity.y -= kGravity * weight_ * ClockManager::DeltaTime();
-        pEgg->SetVelocity(velocity);
-        pCharacter_->SetTranslate(pCharacter_->GetLocalTranslate() + pEgg->GetVelocity() * ClockManager::DeltaTime());
+        pEgg_->SetVelocity(velocity);
+        pCharacter_->SetTranslate(pCharacter_->GetLocalTranslate() + pEgg_->GetVelocity() * ClockManager::DeltaTime());
     }
 }
 
 void EggState_Thrown::ManageState(){
     // 地面に ついたら(仮)
     if(!pCharacter_->GetIsDrop()){
-        Egg* pEgg = dynamic_cast<Egg*>(pCharacter_);
-        pEgg->SetVelocity({0.0f,0.0f,0.0f});
+        pEgg_->SetVelocity({0.0f,0.0f,0.0f});
         pCharacter_->ChangeState(new EggState_Break(pCharacter_));
     }
 }

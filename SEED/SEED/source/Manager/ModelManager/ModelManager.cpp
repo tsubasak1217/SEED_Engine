@@ -84,7 +84,8 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // assinmpのインポート設定
     Assimp::Importer importer;
     std::string modelName = filename.substr(0, filename.find_last_of('.'));
-    std::string filePath = directoryPath + "/" + modelName + "/" + filename.substr(filename.find_last_of('/'));
+    bool npos = filename.find_last_of('/') == std::string::npos;
+    std::string filePath = directoryPath + "/" + modelName + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -272,9 +273,10 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
+    bool npos = filename.find_last_of('/') == std::string::npos;
     std::string filePath =
         directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) 
-        + "/" + filename.substr(filename.find_last_of('/'));
+        + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 

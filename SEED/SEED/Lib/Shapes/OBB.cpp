@@ -1,7 +1,7 @@
 #include "OBB.h"
 
 // OBBの頂点を取得
-std::array<Vector3, 8> OBB::GetVertex()const{
+std::array<Vector3, 8> OBB::GetVertices()const{
     std::array<Vector3, 8> vertex;
     vertex[0] = center + Vector3(-halfSize.x, halfSize.y, -halfSize.z);// 左上前
     vertex[1] = center + Vector3(halfSize.x, halfSize.y, -halfSize.z);// 右上前

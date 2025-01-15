@@ -146,7 +146,7 @@ void Scene_Game::Update(){
     currentState_->Update();
 
     player_->Update();
-    player_->EditCollider();
+    //player_->EditCollider();
 
     eggManager_->Update();
     playerCorpseManager_->Update();

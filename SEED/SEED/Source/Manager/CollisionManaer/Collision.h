@@ -46,7 +46,7 @@ namespace Collision{
     }
 
     namespace Quad{
-        //bool Line(const ::Quad& quad, const ::Line& line);
+        CollisionData Line(const ::Quad& quad, const ::Line& line);
     }
 
     namespace Capsule{

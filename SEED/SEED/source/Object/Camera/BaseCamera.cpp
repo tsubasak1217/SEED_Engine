@@ -94,16 +94,9 @@ Vector3 BaseCamera::CalcShake(){
 
 // スクリーン座標からワールド座標に変換
 Vector3 BaseCamera::ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth){
-    Vector3 ndcSpace = {
-        (2.0f * screenPos.x) / clipRange_.x - 1.0f,
-        1.0f - (2.0f * screenPos.y) / clipRange_.y,
-        -1.0f + 2.0f * std::clamp((unNormalizedDepth/(zfar_- znear_)),0.0f,1.0f),
-    };
-
-    Matrix4x4 invViewProjection = InverseMatrix(viewProjectionMat_);
-    Vector3 worldPos = ndcSpace * invViewProjection;
-
-    return worldPos;
+    Line ray = GetRay(screenPos);
+    Vector3 vec = MyMath::Normalize(ray.end_ - ray.origin_);
+    return ray.origin_ + vec * unNormalizedDepth;
 }
 
 

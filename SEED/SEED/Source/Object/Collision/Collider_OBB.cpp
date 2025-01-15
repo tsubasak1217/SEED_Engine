@@ -27,6 +27,7 @@ void Collider_OBB::UpdateMatrix(){
 
     // 本体の更新
     body_.center = local_.center * worldMat_ + offset_;
+    body_.halfSize = local_.halfSize * GetWorldScale();
     body_.rotate = ExtractRotation(worldMat_);
 
     // 八分木用のAABB更新
@@ -259,6 +260,7 @@ void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
     // ローカル座標
     local_.center = jsonData["local"]["center"];
     body_.halfSize = jsonData["local"]["halfSize"];
+    local_.halfSize = body_.halfSize;
 
     // オフセット
     offset_ = jsonData["offset"];

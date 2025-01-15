@@ -7,9 +7,9 @@
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Update(){
-    for (auto& fieldObject : fieldObjects_){
-            // 通常のオブジェクト
-            fieldObject->Update();
+    for(auto& fieldObject : fieldObjects_){
+        // 通常のオブジェクト
+        fieldObject->Update();
     }
 }
 
@@ -17,7 +17,7 @@ void FieldObjectManager::Update(){
 // 描画関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Draw(){
-    for (auto& fieldObject : fieldObjects_){
+    for(auto& fieldObject : fieldObjects_){
         fieldObject->Draw();
     }
 }
@@ -47,9 +47,9 @@ void FieldObjectManager::EndFrame(){
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::ClearAllFieldObjects(){
     // オブジェクトをクリアする前に、オブザーバー登録を解除
-    for (auto& obj : fieldObjects_){
-        IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-        if (observer){
+    for(auto& obj : fieldObjects_){
+        IObserver* observer = dynamic_cast<IObserver*>(obj.get());
+        if(observer){
             subject_.UnregisterObserver(observer);
         }
     }
@@ -61,8 +61,8 @@ void FieldObjectManager::ClearAllFieldObjects(){
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
     // オブジェクトが IObserver を実装している場合、EventManager に登録
-    IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-    if (observer){
+    IObserver* observer = dynamic_cast<IObserver*>(obj.get());
+    if(observer){
         subject_.RegisterObserver(observer);
     }
 
@@ -79,13 +79,13 @@ void FieldObjectManager::HandOverColliders(){
 }
 
 Vector3 FieldObjectManager::GetStartPosition() const{
-    for (const auto& obj : fieldObjects_){
+    for(const auto& obj : fieldObjects_){
         // FieldObject_Start 型へのキャストを試みる
-        if (auto* start = dynamic_cast< FieldObject_Start* >(obj.get())){
+        if(auto* start = dynamic_cast<FieldObject_Start*>(obj.get())){
             // スタートオブジェクトが見つかったら位置を返す
             return start->GetWorldTranslate();
         }
     }
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
-    return Vector3 {0.0f, 0.0f, 0.0f};
+    return Vector3{ 0.0f, 0.0f, 0.0f };
 }

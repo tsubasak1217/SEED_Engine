@@ -1,7 +1,7 @@
 {
     "colliders": [
         {
-            "colliderType": "AABB",
+            "colliderType": "OBB",
             "isAnimation": false,
             "isGhost": false,
             "isMovable": false,
@@ -15,9 +15,9 @@
                     "z": 0.0
                 },
                 "halfSize": {
-                    "x": 10.0,
-                    "y": 10.0,
-                    "z": 10.0
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
             "mass": 1.0,

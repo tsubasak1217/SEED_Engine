@@ -45,7 +45,7 @@ private:
     //===================================================================*/
     void AddModel(
         uint32_t modelNameIndex, 
-        const Vector3& scale = {10.0f,10.0f,10.0f},
+        const Vector3& scale = {2.5f,2.5f,2.5f},
         const Vector3& rotate = { 0.0f,0.0f,0.0f },
         const Vector3& translate = { 0.0f,0.0f,0.0f }
         );
@@ -59,21 +59,29 @@ private:
     // テクスチャの読み込み
     void LoadFieldModelTexture();
     // マウスで直接オブジェクト選択
-    int32_t SelectObjectByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
+    int32_t GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
+    // マウスで直接オブジェクト追加
+    void AddObjectByMouse(int32_t objectType);
+
 
 private:
     //===================================================================*/
     //                   private fields
     //===================================================================*/
-    std::unordered_map<std::string,uint32_t> modelNameMap_;
 
-    FieldObjectManager& manager_;
+    // パラメーター
+    const float kBlockSize = 5.0f;
+    const float kBlockScale = 2.5f;
 
+    // フラグ
     bool isEditing_ = false;
 
-    // テクスチャ管理
-    TextureMap textureIDs_;
+    // 参照
+    FieldObjectManager& manager_;
 
+    // 管理用
+    std::unordered_map<std::string,uint32_t> modelNameMap_;
+    TextureMap textureIDs_;
     const std::string jsonPath_ = "resources/jsons/fieldModels/fieldModels.json";
 
 

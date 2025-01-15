@@ -26,6 +26,7 @@
 #include <BlendMode.h>
 #include "AABB.h"
 #include "OBB.h"
+#include "Ring.h"
 
 // math
 #include <ShapeMath.h>
@@ -98,6 +99,10 @@ public:
         const Vector2& v1, const Vector2& v2, 
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
+
+    /*==========================リングの描画関数==========================*/
+
+    static void DrawRing(const Ring& ring);
 
     /*=========================デバッグ用の描画関数=======================*/
 

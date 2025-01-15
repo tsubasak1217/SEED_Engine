@@ -68,13 +68,13 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(uint32_t) * kMaxModelVertexCount);
     modelIndexResource_->SetName(L"modelIndexResource");
     modelMaterialResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxMeshCount_ * 50);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(MaterialForGPU) * kMaxMeshCount_);
     modelMaterialResource_->SetName(L"modelMaterialResource");
     modelWvpResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xfff);
     modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xfff);
     offsetResource_->SetName(L"offsetResource");
 
     // Skinning
@@ -82,7 +82,7 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexInfluence) * kMaxVerticesCountInResource_);
     vertexInfluenceResource_->SetName(L"vertexInfluenceResource");
     paletteResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 1024);
     paletteResource_->SetName(L"paletteResource");
 
     // Camera
@@ -113,21 +113,21 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[0].Buffer.FirstElement = 0;
     instancingSrvDesc[0].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[0].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[0].Buffer.NumElements = 0xfff;
 
     instancingSrvDesc[1].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[1].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[1].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[1].Buffer.FirstElement = 0;
     instancingSrvDesc[1].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[1].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[1].Buffer.NumElements = 0xfff;
 
     instancingSrvDesc[2].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[2].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[2].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[2].Buffer.FirstElement = 0;
     instancingSrvDesc[2].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[2].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[2].Buffer.NumElements = 1024;
 
     instancingSrvDesc[3].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[3].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -144,7 +144,7 @@ void PolygonManager::InitResources(){
     );
 
     /*------------- Material用 --------------*/
-    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(Material);
+    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(MaterialForGPU);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, modelMaterialResource_.Get(),
         &instancingSrvDesc[1], "instancingResource_Material"
@@ -367,7 +367,7 @@ void PolygonManager::AddTriangle(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -375,7 +375,7 @@ void PolygonManager::AddTriangle(
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -521,7 +521,7 @@ void PolygonManager::AddQuad(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -529,7 +529,7 @@ void PolygonManager::AddQuad(
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -713,7 +713,7 @@ void PolygonManager::AddSprite(
 
     // material
     drawData->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+    auto& material = drawData->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
     material.color_ = color;
     material.lightingType_ = LIGHTINGTYPE_NONE;
     material.uvTransform_ = uvTransform;
@@ -943,7 +943,7 @@ void PolygonManager::AddLine(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][0].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][0].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
@@ -951,7 +951,7 @@ void PolygonManager::AddLine(
 
     } else{
         drawData2D->materials[(int)blendMode][0].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][0].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
@@ -993,6 +993,45 @@ void PolygonManager::AddLine(
     objCountBlend_[(int)blendMode]++;
     lineCount_++;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                     リングの追加                                                         //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddRing(const Ring& ring){
+
+    //auto* modelData = 
+    //    &primitiveData_[PRIMITIVE_RING][(int)blendMode][(int)cullMode - 1]
+    //auto* drawData = isStaticDraw ?
+    //    modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get() :
+    //    modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
+
+    ring;
+
+    // 分割数と刻み幅の設定
+    //int diviceCount = 32;
+    //float radianStep = 2.0f * 3.14159265358979323846f / diviceCount;
+
+    // リングの頂点を求める
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                      円柱の追加                                                         //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddCylinder(const Cylinder& cylinder){
+    cylinder;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1055,7 +1094,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
 
     // material
     drawData->materials[(int)blendMode][0].resize(1);
-    auto& material = drawData->materials[(int)blendMode][0].back().emplace_back(Material());
+    auto& material = drawData->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
     material.color_ = { 1.0f,1.0f,1.0f,1.0f };
     material.lightingType_ = LIGHTINGTYPE_NONE;
     material.uvTransform_ = uvTransform;
@@ -1096,7 +1135,7 @@ void PolygonManager::WriteRenderData(){
     vertexCountAll = 0;
 
     // 一列に格納する用の配列
-    std::vector<Material> materialArray;
+    std::vector<MaterialForGPU> materialArray;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1245,7 +1284,7 @@ void PolygonManager::WriteRenderData(){
     std::memcpy(
         mapMaterialData,
         materialArray.data(),
-        sizeof(Material) * (int)materialArray.size()
+        sizeof(MaterialForGPU) * (int)materialArray.size()
     );
 
 }

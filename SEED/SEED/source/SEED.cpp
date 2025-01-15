@@ -225,6 +225,14 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     );
 }
 
+
+/*========================================== リング ===========================================*/
+
+void SEED::DrawRing(const Ring& ring){
+    instance_->pPolygonManager_->AddRing(ring);
+}
+
+
 ///////////////////////////////////////////////////////
 // AABB,OBBの描画関数
 ///////////////////////////////////////////////////////

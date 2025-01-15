@@ -619,6 +619,9 @@
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp">
       <Filter>Game\Objects\FieldObject\GrassSoil</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Shapes\Ring.cpp">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1150,6 +1153,12 @@
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Ring.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
+      <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

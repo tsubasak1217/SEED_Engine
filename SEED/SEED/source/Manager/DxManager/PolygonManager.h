@@ -16,6 +16,8 @@
 #include <DirectionalLight.h>
 #include "blendMode.h"
 #include "DrawLocation.h"
+#include "Ring.h"
+#include "Cylinder.h"
 
 //
 using Microsoft::WRL::ComPtr;
@@ -29,7 +31,7 @@ struct ModelDrawData{
 
     // 各種データ
     ModelData* modelData;
-    std::vector<std::vector<Material>> materials[(int32_t)BlendMode::kBlendModeCount][3];
+    std::vector<std::vector<MaterialForGPU>> materials[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<TransformMatrix>transforms[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<std::vector<OffsetData>> offsetData[(int32_t)BlendMode::kBlendModeCount][3];
     std::vector<std::vector<WellForGPU>> paletteData[(int32_t)BlendMode::kBlendModeCount][3];
@@ -71,6 +73,8 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_LINE,
         PRIMITIVE_LINE2D,
         PRIMITIVE_SPRITE,
+        //PRIMITIVE_RING,
+        //PRIMITIVE_CYLINDER,
         // 以下は解像度の変更の影響を受けない描画用
         PRIMITIVE_OFFSCREEN,
         PRIMITIVE_STATIC_TRIANGLE2D,
@@ -91,6 +95,8 @@ private:// 内部で使用する定数や列挙型
         Quad2D,
         Line2D,
         Sprite,
+        //Ring,
+        //Cylinder,
         Offscreen,
         StaticTriangle2D,
         StaticQuad2D,
@@ -160,6 +166,9 @@ public:// 頂点情報の追加に関わる関数
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
+    void AddRing(const Ring& ring);
+    void AddCylinder(const Cylinder& cylinder);
+
 private:
     void AddOffscreenResult(uint32_t GH,BlendMode blendMode);
 
@@ -176,11 +185,10 @@ private:// 描画上限や頂点数などの定数
 
     static const int32_t kMaxTriangleCount_ = 0xfff;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
-    static const int32_t kMaxModelCount_ = 1024;
     static const int32_t kMaxMeshCount_ = 0xffff;
-    static const int32_t kMaxVerticesCountInResource_ = 10240000;
+    static const int32_t kMaxVerticesCountInResource_ = 1024000;
     static const int32_t kMaxModelVertexCount = 500000;
-    static const int32_t kMaxSpriteCount = 1024;
+    static const int32_t kMaxSpriteCount = 256;
     static const int32_t kMaxLineCount_ = 51200;
 
 private:// 現在の描画数や頂点数などを格納する変数
@@ -232,7 +240,7 @@ private:// Resource (すべての描画で1つにまとめている)
     // Map用
     VertexData* mapVertexData;
     uint32_t* mapIndexData;
-    Material* mapMaterialData;
+    MaterialForGPU* mapMaterialData;
     TransformMatrix* mapTransformData;
     OffsetData* mapOffsetData;
     VertexInfluence* mapVertexInfluenceData;

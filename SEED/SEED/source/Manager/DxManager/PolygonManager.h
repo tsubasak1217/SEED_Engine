@@ -189,7 +189,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxTriangleCount_ = 0xfff;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
     static const int32_t kMaxMeshCount_ = 0xffff;
-    static const int32_t kMaxVerticesCountInResource_ = 1024000;
+    static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 500000;
     static const int32_t kMaxSpriteCount = 256;
     static const int32_t kMaxLineCount_ = 51200;

@@ -1580,7 +1580,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // 総サイズ、刻み幅の設定
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-                        vbv2->SizeInBytes = size * instanceCount;
+                        vbv2->SizeInBytes = size * item->totalDrawCount;
                     } else{
                         vbv2->SizeInBytes = size;
                     }
@@ -1644,7 +1644,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),
-                            instanceCount,
+                            item->totalDrawCount,
                             0,
                             0,
                             0

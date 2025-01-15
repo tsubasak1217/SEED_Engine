@@ -664,7 +664,13 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
                         result.collideDepth = 0.0f;
                         result.hitNormal = { 0.0f,0.0f,0.0f };
                     }
+                } else{
+                    result.collideDepth = 0.0f;
+                    result.hitNormal = { 0.0f,0.0f,0.0f };
                 }
+            } else{
+                result.collideDepth = 0.0f;
+                result.hitNormal = { 0.0f,0.0f,0.0f };
             }
         }
     }

@@ -171,9 +171,9 @@ void PolygonManager::Finalize(){}
 void PolygonManager::Reset(){
 
     // モデルの情報をリセット
-    modelDrawData_.clear();
-    ModelDrawData::modelSwitchIdx_Vertex.clear();
-    ModelDrawData::modelSwitchIdx_Index.clear();
+    for(auto& modelDrawData : modelDrawData_){
+        modelDrawData.second->totalDrawCount = 0;
+    }
 
     // ライティングの情報をリセット
     directionalLights_.clear();
@@ -338,16 +338,21 @@ void PolygonManager::AddTriangle(
         drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
     }
 
+    // indexCount
+    int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
+    int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
+    if(mesh.vertices.size() < indexCount + 3){ mesh.vertices.resize(indexCount + 3); }
     mesh.vertices.push_back(VertexData(transformed[0].ToVec4(), Vector2(0.5f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[1].ToVec4(), Vector2(1.0f, 1.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec));
     //indexResource
-    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
-    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 1);
-    mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 2);
+    if(mesh.indices.size() < indexCount + 3){ mesh.indices.resize(indexCount + 3); }
+    mesh.indices.push_back(indexCount + 0);
+    mesh.indices.push_back(indexCount + 1);
+    mesh.indices.push_back(indexCount + 2);
     // 合わせる
     mesh.vertexInfluences.resize(mesh.vertices.size());
     // materialResource
@@ -367,44 +372,52 @@ void PolygonManager::AddTriangle(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
-        material.color_ = color;
-        material.lightingType_ = lightingType;
-        material.uvTransform_ = uvTransform;
-        material.GH_ = GH;
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+        material[drawCount].color_ = color;
+        material[drawCount].lightingType_ = lightingType;
+        material[drawCount].uvTransform_ = uvTransform;
+        material[drawCount].GH_ = GH;
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
-        material.color_ = color;
-        material.lightingType_ = lightingType;
-        material.uvTransform_ = uvTransform;
-        material.GH_ = GH;
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+        material[drawCount].color_ = color;
+        material[drawCount].lightingType_ = lightingType;
+        material[drawCount].uvTransform_ = uvTransform;
+        material[drawCount].GH_ = GH;
     }
 
 
     // transform
     if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
-        transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world_ = worldMat;
+        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
     } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
-        transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
+        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world_ = worldMat;
+        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
     }
 
 
     // offsetResourceの数を更新
     if(view3D){
         auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-        offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
+        if(offsetData.size() == 0){
+            offsetData.resize(1);
+            offsetData.back().push_back(OffsetData());
+        }
         drawData3D->indexCount += 3;
     } else{
         auto& offsetData = drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-        offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
+        if(offsetData.size() == 0){
+            offsetData.resize(1);
+            offsetData.back().push_back(OffsetData());
+        }
         drawData2D->indexCount += 3;
     }
 
@@ -412,8 +425,15 @@ void PolygonManager::AddTriangle(
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticTriangle2D]++;
+        drawData2D->totalDrawCount++;
     } else{
-        view3D ? objCounts_[(int)DrawOrder::Triangle]++ : objCounts_[(int)DrawOrder::Triangle2D]++;
+        if(view3D) {
+            objCounts_[(int)DrawOrder::Triangle]++;
+            drawData3D->totalDrawCount++;
+        } else{
+            objCounts_[(int)DrawOrder::Triangle2D]++;
+            drawData2D->totalDrawCount++;
+        }
     }
 
     objCountCull_[(int)cullMode - 1]++;
@@ -485,15 +505,20 @@ void PolygonManager::AddQuad(
         drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
     }
 
+    // Count
+    int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
+    int indexCount = drawCount * 4;
     // vertexResource
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
+    if(mesh.vertices.size() < indexCount + 4){ mesh.vertices.resize(indexCount + 4); }
     mesh.vertices.push_back(VertexData(transformed[0].ToVec4(), Vector2(0.0f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[1].ToVec4(), Vector2(1.0f, 0.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec));
     mesh.vertices.push_back(VertexData(transformed[3].ToVec4(), Vector2(1.0f, 1.0f), normalVec));
 
     //indexResource
+    if(mesh.indices.size() <= drawCount * 6){ mesh.indices.resize(drawCount * 6 + 6); }
     mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 0);
     mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 1);
     mesh.indices.push_back((view3D ? drawData3D->indexCount : drawData2D->indexCount) + 3);
@@ -521,44 +546,51 @@ void PolygonManager::AddQuad(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
-        material.color_ = color;
-        material.lightingType_ = lightingType;
-        material.uvTransform_ = uvTransform;
-        material.GH_ = GH;
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+        material[drawCount].color_ = color;
+        material[drawCount].lightingType_ = lightingType;
+        material[drawCount].uvTransform_ = uvTransform;
+        material[drawCount].GH_ = GH;
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
-        material.color_ = color;
-        material.lightingType_ = lightingType;
-        material.uvTransform_ = uvTransform;
-        material.GH_ = GH;
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+        material[drawCount].color_ = color;
+        material[drawCount].lightingType_ = lightingType;
+        material[drawCount].uvTransform_ = uvTransform;
+        material[drawCount].GH_ = GH;
     }
 
 
     // transform
     if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
-        transform.world_ = worldMat;
-        transform.WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world_ = worldMat;
+        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
     } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1].emplace_back(TransformMatrix());
-        transform.world_ = IdentityMat4();
-        transform.WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
+        transform[drawCount].world_ = IdentityMat4();
+        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
     }
 
 
     // offsetResourceの数を更新
     if(view3D){
         auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-        offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
+        if(offsetData.size() == 0){
+            offsetData.resize(1);
+            offsetData.back().push_back(OffsetData());
+        }
         drawData3D->indexCount += 4;
     } else{
         auto& offsetData = drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-        offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
+        if(offsetData.size() == 0){
+            offsetData.resize(1);
+            offsetData.back().push_back(OffsetData());
+        }
         drawData2D->indexCount += 4;
     }
 
@@ -566,8 +598,15 @@ void PolygonManager::AddQuad(
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticQuad2D]++;
+        drawData2D->totalDrawCount++;
     } else{
-        view3D ? objCounts_[(int)DrawOrder::Quad]++ : objCounts_[(int)DrawOrder::Quad2D]++;
+        if(view3D) {
+            objCounts_[(int)DrawOrder::Quad]++;
+            drawData3D->totalDrawCount++;
+        } else{
+            objCounts_[(int)DrawOrder::Quad2D]++;
+            drawData2D->totalDrawCount++;
+        }
     }
 
     objCountCull_[(int)cullMode - 1]++;
@@ -669,9 +708,13 @@ void PolygonManager::AddSprite(
         v[3].z = zfar;
     }
 
+    //count
+    int drawCount = drawData->totalDrawCount;
+    int indexCount = drawCount * 4;
     // vertexResource
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
+    if(mesh.vertices.size() < indexCount + 4){ mesh.vertices.resize(indexCount + 4); }
 
     if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
         mesh.vertices.push_back(VertexData(v[0], Vector2(0.0f, 0.0f), normalVec));
@@ -741,6 +784,7 @@ void PolygonManager::AddSprite(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     spriteCount_++;
+    drawData->totalDrawCount++;
 
 }
 
@@ -843,6 +887,7 @@ void PolygonManager::AddModel(Model* model){
     objCountCull_[(int)model->cullMode - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
     modelIndexCount_++;
+    modelDrawData_[modelName]->totalDrawCount++;
 
     // モデルのスケルトンを描画
     if(model->isSkeletonVisible_){
@@ -985,8 +1030,15 @@ void PolygonManager::AddLine(
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticLine2D]++;
+        drawData2D->totalDrawCount++;
     } else{
-        view3D ? objCounts_[(int)DrawOrder::Line]++ : objCounts_[(int)DrawOrder::Line2D]++;
+        if(view3D){
+            objCounts_[(int)DrawOrder::Line]++;
+            drawData3D->totalDrawCount++;
+        } else{
+            objCounts_[(int)DrawOrder::Line2D]++;
+            drawData2D->totalDrawCount++;
+        }
     }
 
     objCountCull_[0]++;
@@ -1115,6 +1167,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     objCounts_[(int)DrawOrder::Offscreen]++;
     objCountBlend_[(int)blendMode]++;
     objCountCull_[0]++;
+    drawData->totalDrawCount++;
 }
 
 
@@ -1140,7 +1193,7 @@ void PolygonManager::WriteRenderData(){
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /*                                ライティング・カメラ情報を書き込む                              */
-    
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     // ライティング情報

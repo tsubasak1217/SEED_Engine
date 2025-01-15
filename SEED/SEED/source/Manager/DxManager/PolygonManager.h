@@ -57,6 +57,9 @@ struct ModelDrawData{
 
     // インデックス数(プリミティブ用)
     int32_t indexCount = 0;
+
+    // 描画総数
+    uint32_t totalDrawCount = 0;
 };
 
 
@@ -213,6 +216,7 @@ private:// 実際に頂点情報や色などの情報が入っている変数
     std::unordered_map<std::string, std::unique_ptr<ModelDrawData>> modelDrawData_;
     // プリミティブな描画に使用するデータ
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
+    uint32_t primitiveDrawCount_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
 private:// ライティング用のデータ
 

@@ -9,6 +9,10 @@ public:
     void Draw() override;
     void BeginFrame()override;
     void CheckCollision(Collider* collider)override;
+    bool CheckCollision(const AABB& aabb)override;
+    bool CheckCollision(const OBB& obb)override;
+    bool CheckCollision(const Line& line)override;
+    bool CheckCollision(const Sphere& sphere)override;
 
 protected:
     void UpdateBox()override;

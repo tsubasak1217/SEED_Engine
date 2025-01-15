@@ -48,7 +48,8 @@ void FollowCamera::Update(){
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
 
     // カメラの位置を設定
-    transform_.translate_ = targetPos + (offsetVec * distance_);
+    aimPosition_ = targetPos + (offsetVec * distance_);
+    transform_.translate_ += (aimPosition_ - transform_.translate_) * 0.15f * ClockManager::TimeRate();
 
     // 差分ベクトルから角度を計算
     transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos - transform_.translate_));

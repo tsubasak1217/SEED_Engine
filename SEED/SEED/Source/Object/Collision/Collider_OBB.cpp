@@ -27,6 +27,7 @@ void Collider_OBB::UpdateMatrix(){
 
     // 本体の更新
     body_.center = local_.center * worldMat_ + offset_;
+    body_.halfSize = local_.halfSize * GetWorldScale();
     body_.rotate = ExtractRotation(worldMat_);
 
     // 八分木用のAABB更新
@@ -148,6 +149,26 @@ void Collider_OBB::CheckCollision(Collider* collider){
 
 }
 
+
+//////////////////////////////////////////////////////////////////
+// トンネリングを考慮しないtrue or falseの衝突判定
+//////////////////////////////////////////////////////////////////
+bool Collider_OBB::CheckCollision(const AABB& aabb){
+    return Collision::OBB::AABB(body_, aabb);
+}
+
+bool Collider_OBB::CheckCollision(const OBB& obb){
+    return Collision::OBB::OBB(body_, obb);
+}
+
+bool Collider_OBB::CheckCollision(const Line& line){
+    return Collision::OBB::Line(body_, line);
+}
+
+bool Collider_OBB::CheckCollision(const Sphere& sphere){
+    return Collision::OBB::Sphere(body_, sphere);
+}
+
 ////////////////////////////////////////////////////////////////
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////////
@@ -239,6 +260,7 @@ void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
     // ローカル座標
     local_.center = jsonData["local"]["center"];
     body_.halfSize = jsonData["local"]["halfSize"];
+    local_.halfSize = body_.halfSize;
 
     // オフセット
     offset_ = jsonData["offset"];

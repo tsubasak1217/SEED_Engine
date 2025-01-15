@@ -26,6 +26,7 @@
 #include <BlendMode.h>
 #include "AABB.h"
 #include "OBB.h"
+#include "Ring.h"
 
 // math
 #include <ShapeMath.h>
@@ -99,6 +100,10 @@ public:
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
+    /*==========================リングの描画関数==========================*/
+
+    static void DrawRing(const Ring& ring);
+
     /*=========================デバッグ用の描画関数=======================*/
 
     // AABB, OBBの描画関数
@@ -141,12 +146,10 @@ public:
     static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
     static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
     static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
-
+    static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
-    static DirectionalLight* GetDirectionalLight(){ return DxManager::GetInstance()->directionalLight; }
-
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */

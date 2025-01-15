@@ -68,13 +68,13 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(uint32_t) * kMaxModelVertexCount);
     modelIndexResource_->SetName(L"modelIndexResource");
     modelMaterialResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(Material) * kMaxMeshCount_ * 50);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(MaterialForGPU) * kMaxMeshCount_);
     modelMaterialResource_->SetName(L"modelMaterialResource");
     modelWvpResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xfff);
     modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xfff);
     offsetResource_->SetName(L"offsetResource");
 
     // Skinning
@@ -82,8 +82,18 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexInfluence) * kMaxVerticesCountInResource_);
     vertexInfluenceResource_->SetName(L"vertexInfluenceResource");
     paletteResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 0xffff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 1024);
     paletteResource_->SetName(L"paletteResource");
+
+    // Camera
+    cameraResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU));
+    cameraResource_->SetName(L"cameraResource");
+
+    // Lighting
+    directionalLightResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(DirectionalLight) * 0xff);
+    directionalLightResource_->SetName(L"lightingResource");
 
     // resourceのMapping
     MapOnce();
@@ -97,27 +107,34 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[3];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[4];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[0].Buffer.FirstElement = 0;
     instancingSrvDesc[0].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[0].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[0].Buffer.NumElements = 0xfff;
 
     instancingSrvDesc[1].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[1].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[1].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[1].Buffer.FirstElement = 0;
     instancingSrvDesc[1].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[1].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[1].Buffer.NumElements = 0xfff;
 
     instancingSrvDesc[2].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[2].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[2].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[2].Buffer.FirstElement = 0;
     instancingSrvDesc[2].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[2].Buffer.NumElements = 0xffff;
+    instancingSrvDesc[2].Buffer.NumElements = 1024;
+
+    instancingSrvDesc[3].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[3].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[3].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[3].Buffer.FirstElement = 0;
+    instancingSrvDesc[3].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[3].Buffer.NumElements = 0xff;
 
     /*------------- Transform用 --------------*/
     instancingSrvDesc[0].Buffer.StructureByteStride = sizeof(TransformMatrix);
@@ -127,17 +144,24 @@ void PolygonManager::InitResources(){
     );
 
     /*------------- Material用 --------------*/
-    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(Material);// マテリアルのサイズに変更
+    instancingSrvDesc[1].Buffer.StructureByteStride = sizeof(MaterialForGPU);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, modelMaterialResource_.Get(),
         &instancingSrvDesc[1], "instancingResource_Material"
     );
 
-    /*------------- Palette用 --------------*/
+    /*-------------- Palette用 --------------*/
     instancingSrvDesc[2].Buffer.StructureByteStride = sizeof(WellForGPU);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, paletteResource_.Get(),
         &instancingSrvDesc[2], "SkinningResource_Palette"
+    );
+
+    /*--------- DirectionalLight用 ----------*/
+    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(DirectionalLight);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, directionalLightResource_.Get(),
+        &instancingSrvDesc[3], "directionalLight"
     );
 
 }
@@ -150,6 +174,9 @@ void PolygonManager::Reset(){
     modelDrawData_.clear();
     ModelDrawData::modelSwitchIdx_Vertex.clear();
     ModelDrawData::modelSwitchIdx_Index.clear();
+
+    // ライティングの情報をリセット
+    directionalLights_.clear();
 
     // カウントのリセット
     triangleIndexCount_ = 0;
@@ -244,6 +271,8 @@ void PolygonManager::MapOnce(){
     offsetResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapOffsetData));
     vertexInfluenceResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapVertexInfluenceData));
     paletteResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPaletteData));
+    cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapCameraData));
+    directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapDirectionalLightData));
 }
 
 
@@ -338,7 +367,7 @@ void PolygonManager::AddTriangle(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -346,7 +375,7 @@ void PolygonManager::AddTriangle(
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -492,7 +521,7 @@ void PolygonManager::AddQuad(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -500,7 +529,7 @@ void PolygonManager::AddQuad(
 
     } else{
         drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = lightingType;
         material.uvTransform_ = uvTransform;
@@ -684,7 +713,7 @@ void PolygonManager::AddSprite(
 
     // material
     drawData->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(Material());
+    auto& material = drawData->materials[(int)blendMode][(int)cullMode - 1].back().emplace_back(MaterialForGPU());
     material.color_ = color;
     material.lightingType_ = LIGHTINGTYPE_NONE;
     material.uvTransform_ = uvTransform;
@@ -768,6 +797,7 @@ void PolygonManager::AddModel(Model* model){
         auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
         item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx].resize(material.size() + 1);
         material.back().color_ = model->color_;
+        material.back().shininess_ = model->shininess_;
         material.back().lightingType_ = model->lightingType_;
         material.back().uvTransform_ = model->GetUVTransform(meshIdx);
         material.back().GH_ = model->textureGH_[meshIdx];
@@ -913,7 +943,7 @@ void PolygonManager::AddLine(
     // material
     if(view3D){
         drawData3D->materials[(int)blendMode][0].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][0].back().emplace_back(Material());
+        auto& material = drawData3D->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
@@ -921,7 +951,7 @@ void PolygonManager::AddLine(
 
     } else{
         drawData2D->materials[(int)blendMode][0].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][0].back().emplace_back(Material());
+        auto& material = drawData2D->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
         material.color_ = color;
         material.lightingType_ = LIGHTINGTYPE_NONE;
         material.uvTransform_ = IdentityMat4();
@@ -963,6 +993,45 @@ void PolygonManager::AddLine(
     objCountBlend_[(int)blendMode]++;
     lineCount_++;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                     リングの追加                                                         //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddRing(const Ring& ring){
+
+    //auto* modelData = 
+    //    &primitiveData_[PRIMITIVE_RING][(int)blendMode][(int)cullMode - 1]
+    //auto* drawData = isStaticDraw ?
+    //    modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get() :
+    //    modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
+
+    ring;
+
+    // 分割数と刻み幅の設定
+    //int diviceCount = 32;
+    //float radianStep = 2.0f * 3.14159265358979323846f / diviceCount;
+
+    // リングの頂点を求める
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                      円柱の追加                                                         //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddCylinder(const Cylinder& cylinder){
+    cylinder;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,7 +1094,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
 
     // material
     drawData->materials[(int)blendMode][0].resize(1);
-    auto& material = drawData->materials[(int)blendMode][0].back().emplace_back(Material());
+    auto& material = drawData->materials[(int)blendMode][0].back().emplace_back(MaterialForGPU());
     material.color_ = { 1.0f,1.0f,1.0f,1.0f };
     material.lightingType_ = LIGHTINGTYPE_NONE;
     material.uvTransform_ = uvTransform;
@@ -1066,7 +1135,24 @@ void PolygonManager::WriteRenderData(){
     vertexCountAll = 0;
 
     // 一列に格納する用の配列
-    std::vector<Material> materialArray;
+    std::vector<MaterialForGPU> materialArray;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    /*                                ライティング・カメラ情報を書き込む                              */
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    // ライティング情報
+    std::memcpy(
+        mapDirectionalLightData,
+        directionalLights_.data(),
+        sizeof(DirectionalLight) * directionalLights_.size()
+    );
+
+    // カメラ情報
+    BaseCamera* pCamera = pDxManager_->GetCamera();
+    mapCameraData->position = pCamera->GetTranslation();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1198,7 +1284,7 @@ void PolygonManager::WriteRenderData(){
     std::memcpy(
         mapMaterialData,
         materialArray.data(),
-        sizeof(Material) * (int)materialArray.size()
+        sizeof(MaterialForGPU) * (int)materialArray.size()
     );
 
 }
@@ -1308,23 +1394,26 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             }
 
             // Resourceを設定
-            pDxManager_->commandList->SetGraphicsRootConstantBufferView(3, pDxManager_->lightingResource->GetGPUVirtualAddress());
+            pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
 
             // SRVヒープの上のアドレスを格納するハンドル
             D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
             // マテリアルのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
             // トランスフォームのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+            // DirectionalLightのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
             // テクスチャのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
                 srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
             }
 
 
@@ -1555,4 +1644,23 @@ void PolygonManager::DrawToBackBuffer(){
     SetRenderData(DrawOrder::StaticTriangle2D);
     SetRenderData(DrawOrder::StaticQuad2D);
     SetRenderData(DrawOrder::StaticSprite);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ライトの追加
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddLight(BaseLight* light){
+    switch(light->lightType_)
+    {
+    case BASE_LIGHT:
+        break;
+
+    case DIRECTIONAL_LIGHT:
+        directionalLights_.emplace_back(*static_cast<DirectionalLight*>(light));
+        break;
+
+    default:
+        break;
+    }
 }

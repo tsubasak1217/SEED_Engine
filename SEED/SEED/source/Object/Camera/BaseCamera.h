@@ -1,6 +1,7 @@
 #pragma once
 #include "Transform.h"
 #include "Vector2.h"
+#include "Line.h"
 
 #include <stdint.h>
 
@@ -15,6 +16,9 @@ struct BaseCamera{
 
 public:
     void SetShake(float time, float power, const Vector3 level = {1.0f,1.0f,1.0f});
+    Vector3 ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth);
+    Line GetRay(const Vector2& screenPos);
+
 private:
     Vector3 CalcShake();
 

@@ -51,7 +51,10 @@ public: // アクセッサ
     float GetUnrivalledTime()const{ return unrivalledTime_; }
     // ジャンプに関連するアクセッサ
     bool GetIsJump()const{ return isJump_; }
-    void SetIsJump(bool isJump){ isJump_ = isJump; }
+    void SetIsJump(bool isJump){ 
+        isJump_ = isJump; 
+        dropSpeed_ = 0.0f;
+    }
     void SetJumpPower(float power){ jumpPower_ = power; }
 
 protected: // パラメータ

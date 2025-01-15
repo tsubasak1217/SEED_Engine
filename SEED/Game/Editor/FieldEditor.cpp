@@ -2,7 +2,8 @@
 
 // local
 #include "FieldObject/Door/FieldObject_Door.h"
-#include "FieldObject/GroundCube/FieldObject_GroundCube.h"
+#include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
+#include "FieldObject/Soil/FieldObject_Soil.h"
 #include "FieldObject/Sphere/FieldObject_Sphere.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
@@ -10,6 +11,7 @@
 //engine
 #include "../SEED/external/imgui/imgui.h"
 #include "../SEED.h"
+#include "CollisionManaer/Collision.h"
 
 //lib
 #include "JsonManager/JsonCoordinator.h"
@@ -22,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 FieldEditor::FieldEditor(FieldObjectManager& manager)
     : manager_(manager){
-    modelNames_.clear();
+    modelNameMap_.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +32,12 @@ FieldEditor::FieldEditor(FieldObjectManager& manager)
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
-    modelNames_ = { "groundCube", "sphere","door" ,"start","goal"};
+    modelNameMap_["GrassSoil"] = FIELDMODEL_GRASSSOIL;
+    modelNameMap_["Soil"] = FIELDMODEL_SOIL;
+    modelNameMap_["sphere"] = FIELDMODEL_SPHERE;
+    modelNameMap_["door"] = FIELDMODEL_DOOR;
+    modelNameMap_["start"] = FIELDMODEL_START;
+    modelNameMap_["goal"] = FIELDMODEL_GOAL;
 
     LoadFromJson(jsonPath_);
 
@@ -49,11 +56,11 @@ void FieldEditor::AddModel(
 ){
     // スタートもしくはゴールの場合、既に存在しているかチェックし、
     // 存在していれば新規追加をキャンセルする
-    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
         auto& objects = manager_.GetObjects();
-        for (const auto& objPtr : objects){
+        for(const auto& objPtr : objects){
             FieldObject* obj = objPtr.get();
-            if (obj && obj->GetFieldObjectType() == modelNameIndex){
+            if(obj && obj->GetFieldObjectType() == modelNameIndex){
                 // 既に同じタイプのオブジェクトが存在する場合、追加をキャンセル
                 return;
             }
@@ -63,31 +70,34 @@ void FieldEditor::AddModel(
     // 新規オブジェクトの生成
     std::unique_ptr<FieldObject> newObj = nullptr;
 
-    switch (modelNameIndex){
-        case FIELDMODEL_GROUNDCUBE:
-            newObj = std::make_unique<FieldObject_GroundCube>();
-            break;
-        case FIELDMODEL_SPHERE:
-            newObj = std::make_unique<FieldObject_Sphere>();
-            break;
-        case FIELDMODEL_DOOR:
-            newObj = std::make_unique<FieldObject_Door>();
-            break;
-        case FIELDMODEL_START:
-            newObj = std::make_unique<FieldObject_Start>();
-            break;
-        case FIELDMODEL_GOAL:
-            newObj = std::make_unique<FieldObject_Goal>();
-            break;
-        default:
-            break;
+    switch(modelNameIndex){
+    case FIELDMODEL_GRASSSOIL:
+        newObj = std::make_unique<FieldObject_GrassSoil>();
+        break;
+    case FIELDMODEL_SOIL:
+        newObj = std::make_unique<FieldObject_Soil>();
+        break;
+    case FIELDMODEL_SPHERE:
+        newObj = std::make_unique<FieldObject_Sphere>();
+        break;
+    case FIELDMODEL_DOOR:
+        newObj = std::make_unique<FieldObject_Door>();
+        break;
+    case FIELDMODEL_START:
+        newObj = std::make_unique<FieldObject_Start>();
+        break;
+    case FIELDMODEL_GOAL:
+        newObj = std::make_unique<FieldObject_Goal>();
+        break;
+    default:
+        break;
     }
 
-    if (!newObj) return;  // newObj が生成されなかった場合は何もしない
+    if(!newObj) return;  // newObj が生成されなかった場合は何もしない
 
     // スタートまたはゴールの場合、スケールを1/10に調整
     Vector3 adjustedScale = scale;
-    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
         adjustedScale.x = 1.0f;
         adjustedScale.y = 1.0f;
         adjustedScale.z = 1.0f;
@@ -247,6 +257,100 @@ void FieldEditor::LoadFieldModelTexture(){
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////
+//  マウスで直接オブジェクト選択(indexを取得)
+////////////////////////////////////////////////////////////////////////////////////////
+int32_t FieldEditor::GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects){
+
+    // マウスの位置を取得
+    Vector2 mousePos = Input::GetMousePosition();
+    // マウスの位置からRayを取得
+    Line ray = SEED::GetCamera()->GetRay(mousePos);
+    // 一番近いオブジェクトを探す用
+    float minDist = FLT_MAX;
+    int32_t index = -1;
+
+    // 全オブジェクトをチェック
+    for(int32_t i = 0; i < objects.size(); ++i){
+        auto* obj = objects[i].get();
+        if(!obj) continue;
+
+        // オブジェクトのコライダーを取得
+        auto& colliders = obj->GetColliders();
+        for(auto& collider : colliders){
+            // Rayと当たり判定
+            if(collider->CheckCollision(ray)){
+
+                // 距離を取得
+                float dist = MyMath::Length(collider->GetWoarldTranslate() - ray.origin_);
+
+                // もし距離が一番近い場合、そのオブジェクトを選択
+                if(dist < minDist){
+                    minDist = dist;
+                    index = i;
+                }
+            }
+        }
+    }
+
+    return index;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+//  マウスで直接オブジェクト追加
+////////////////////////////////////////////////////////////////////////////////////////
+void FieldEditor::AddObjectByMouse(int32_t objectType){
+    static Vector3 putPos = { 0.0f,0.0f,0.0f };
+    static bool isEdit = false;
+
+    // 基準位置やoffsetをリセット
+    if(Input::IsTriggerMouse(MOUSE_BUTTON::RIGHT)){
+        isEdit = true;
+    }
+
+    // 編集中でない場合は何もしない
+    if(!isEdit){ return; }
+
+    // y座標を更新
+    putPos.y += kBlockSize * Input::GetMouseWheel();
+
+    // y軸の高さのxz平面を求める
+    Quad plane;
+    plane.localVertex[0] = { -1000.0f,putPos.y, 1000.0f, };
+    plane.localVertex[1] = { 1000.0f,putPos.y, 1000.0f, };
+    plane.localVertex[2] = { -1000.0f,putPos.y,-1000.0f, };
+    plane.localVertex[3] = { 1000.0f,putPos.y,-1000.0f, };
+
+    // マウスの位置からRayを取得
+    Line ray = SEED::GetCamera()->GetRay(Input::GetMousePosition());
+
+    // RayとPlaneの当たり判定
+    CollisionData data = Collision::Quad::Line(plane, ray);
+
+    // 衝突点が追加場所
+    putPos.x = data.hitPos.value().x;
+    putPos.z = data.hitPos.value().z;
+
+    // ブロック単位に丸める
+    putPos.x = kBlockSize * int(putPos.x / kBlockSize);
+    putPos.y = kBlockSize * int(putPos.y / kBlockSize);
+    putPos.z = kBlockSize * int(putPos.z / kBlockSize);
+
+    // 追加予定場所にAABBを表示
+    AABB aabb;
+    aabb.center = putPos + Vector3(0.0f, -kBlockSize * 0.5f, 0.0f);
+    aabb.halfSize = Vector3(kBlockSize * 0.5f, kBlockSize * 0.5f, kBlockSize * 0.5f);
+    SEED::DrawAABB(aabb, { 1.0f,1.0f,0.0f,1.0f });
+
+    // マウスのボタンが離されたらオブジェクトを追加
+    if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
+        AddModel(objectType, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
+        isEdit = false;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //  imguiの表示
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -256,32 +360,38 @@ void FieldEditor::ShowImGui(){
 
     ImGui::Checkbox("isEditing", &isEditing_);
 
+    ImGui::Text("mouseWheel: %d", Input::GetMouseWheel());
+
     // 選択されているモデルのインデックス
     static int selectedModelIndex = -1;
 
     // ========== モデルサムネの一覧をボタンで並べる ========== 
     ImGui::Text("Select a Model to Add:");
     int i = 0;
-    for(auto& name : modelNames_){
+    for(auto& map : modelNameMap_){
         // テクスチャIDを探す
-        std::string imageKey = "fieldModelTextures/" + name + "Image.png";
+        std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
         auto it = textureIDs_.find(imageKey);
 
         if(it != textureIDs_.end()){
             // サムネテクスチャがある場合
             if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                AddModel(i);
+                AddModel(map.second);
             }
         } else{
             // テクスチャがない場合はボタン
-            if(ImGui::Button(name.c_str(), ImVec2(64, 64))){
-                AddModel(i);
+            if(ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
+                AddModel(map.second);
             }
         }
         ImGui::SameLine();
         i++;
     }
     ImGui::NewLine();
+
+    // ========== マウスで直接オブジェクト追加 ==========
+
+    AddObjectByMouse(FIELDMODEL_GRASSSOIL);
 
     // ========== 選択したモデルを追加するボタン, Saveボタン ========== 
 
@@ -323,7 +433,15 @@ void FieldEditor::ShowImGui(){
             }
         }
     }
+
     ImGui::EndChild();
+
+    // マウスでのオブジェクト直接選択
+    if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+            selectedObjIndex = GetObjectIndexByMouse(objects);
+        }
+    }
 
     ImGui::SameLine();
 
@@ -356,15 +474,9 @@ void FieldEditor::ShowImGui(){
                 // スライダーを表示
                 ImGui::Text("Chunk Transform");
                 Vector3Int tempMove = moveChunk;
-                Vector3Int tempScale = scaleChunk;
-
-                ImGui::DragInt3("Move (chunks)", &tempMove.x, 1, -10, 10);
-                ImGui::DragInt3("Scale (chunks)", &tempScale.x, 1, 1, 10);
+                ImGui::DragInt3("Move (chunks)", &tempMove.x, 0.1f);
 
                 // 変更があったら実際のPosition / Scaleに反映
-                const float CHUNK_MOVE = 10.0f;
-                const float CHUNK_SCALE = 10.0f;
-
                 Vector3 pos = mfObj->GetModel()->GetWorldTranslate();
                 Vector3 scl = mfObj->GetModel()->GetWorldScale();
 
@@ -375,28 +487,14 @@ void FieldEditor::ShowImGui(){
                         tempMove.y - moveChunk.y,
                         tempMove.z - moveChunk.z
                     };
-                    pos.x += diff.x * CHUNK_MOVE;
-                    pos.y += diff.y * CHUNK_MOVE;
-                    pos.z += diff.z * CHUNK_MOVE;
+                    pos.x += diff.x * kBlockSize;
+                    pos.y += diff.y * kBlockSize;
+                    pos.z += diff.z * kBlockSize;
                     mfObj->SetTranslate(pos);
 
                     moveChunk = tempMove;
                 }
 
-                // スケール
-                if(tempScale != scaleChunk){
-                    Vector3Int diff{
-                        tempScale.x - scaleChunk.x,
-                        tempScale.y - scaleChunk.y,
-                        tempScale.z - scaleChunk.z
-                    };
-                    scl.x += diff.x * CHUNK_SCALE;
-                    scl.y += diff.y * CHUNK_SCALE;
-                    scl.z += diff.z * CHUNK_SCALE;
-                    mfObj->SetScale(scl);
-
-                    scaleChunk = tempScale;
-                }
 
                 ImGui::Separator();
 
@@ -426,6 +524,7 @@ void FieldEditor::ShowImGui(){
             ImGui::Text("No Model Selected");
         }
     }
+
     ImGui::EndChild();
 
     ImGui::End();

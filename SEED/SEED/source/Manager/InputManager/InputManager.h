@@ -67,6 +67,7 @@ public:// キーの状態を返す関数
     static bool IsPressMouse(MOUSE_BUTTON button);
     static bool IsTriggerMouse(MOUSE_BUTTON button);
     static bool IsReleaseMouse(MOUSE_BUTTON button);
+    static int32_t GetMouseWheel();
     static Vector2 GetMouseVector();
     static Vector2 GetMouseDirection();
     static Vector2 GetMousePosition();

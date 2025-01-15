@@ -45,8 +45,10 @@ void CollisionManager::Initialize(){
 /////////////////////////////////////////////////////////////////////////////////////
 void CollisionManager::Draw(){
 #ifdef _DEBUG
-    for(auto& collider : instance_->colliderList_){
-        collider.second->Draw();
+    if(instance_->isDrawCollider_){
+        for(auto& collider : instance_->colliderList_){
+            collider.second->Draw();
+        }
     }
 #endif // _DEBUG
 }

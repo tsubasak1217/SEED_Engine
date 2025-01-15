@@ -95,6 +95,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)Game\Objects\Enums\;$(ProjectDir)Game\Objects\;$(ProjectDir)SEED\lib\enums\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,10 +115,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
+    <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
@@ -240,10 +245,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
+    <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
-    <ClInclude Include="Game\Objects\FieldObject\GroundCube\FieldObject_GroundCube.h" />
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
+    <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
+    <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />

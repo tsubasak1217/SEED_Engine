@@ -26,7 +26,7 @@ struct ModelNode{
 // モデルデータ構造体
 struct ModelData{
     std::vector<MeshData>meshes;
-    std::vector<MaterialData> materials;
+    std::vector<ModelMaterialLoadData> materials;
     std::unordered_map<std::string, ModelAnimation> animations;
     std::unordered_map<std::string, JointWeightData> jointWeightData;
     ModelSkeleton defaultSkeleton;

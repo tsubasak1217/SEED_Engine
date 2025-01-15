@@ -27,7 +27,7 @@ Egg::~Egg(){}
 
 void Egg::Initialize(){
     // model 読み込み
-    model_ = std::make_unique<Model>("Assets/cube.obj");
+    model_ = std::make_unique<Model>("egg.obj");
 
     currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
 
@@ -41,6 +41,7 @@ void Egg::Initialize(){
 
 void Egg::Update(){
     BaseCharacter::Update();
+    EditCollider();
 }
 
 void Egg::OnCollision(const BaseObject* other,ObjectType objectType){

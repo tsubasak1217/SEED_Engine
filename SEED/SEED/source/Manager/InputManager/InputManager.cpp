@@ -291,6 +291,11 @@ bool Input::IsReleaseMouse(MOUSE_BUTTON button){
     }
 }
 
+// マウスのホイールの回転量を取得
+int32_t Input::GetMouseWheel(){
+    return instance_->mouseState_.lZ / 120;
+}
+
 // マウスの移動量を取得
 Vector2 Input::GetMouseVector(){
     return { (float)instance_->mouseState_.lX,(float)instance_->mouseState_.lY };

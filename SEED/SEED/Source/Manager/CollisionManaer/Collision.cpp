@@ -46,6 +46,7 @@ bool Collision_Sphere_Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2);
 bool Collision_Quad_Line(const ::Quad& rectangle, const ::Line& line);
 Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line);
 bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
+CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane);
 
 CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabbCollider);
 CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabbCollider);
@@ -88,7 +89,7 @@ namespace Collision{
     }
 
     namespace Quad{
-        //bool Line(const ::Quad& rectangle, const ::Line& line){ return false; }
+        CollisionData Line(const::Quad& quad, const::Line& line){ return CollisionData_Line_Plane(line, quad); }
     }
 }
 
@@ -564,33 +565,10 @@ bool Collision_AABB_OBB(const::AABB& aabb, const::OBB& obb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 bool Collision_Line_OBB(const::Line& line, const::OBB& obb){
 
-    float longSegmrnt = (std::max)({ obb.halfSize.x * 2.0f,obb.halfSize.y * 2.0f,obb.halfSize.z * 2.0f });
-    if(MyMath::Length(line.origin_ - obb.center) > longSegmrnt){
-        if(MyMath::Length(line.end_ - obb.center) > longSegmrnt){
-            return false;
-        }
-    }
-
-
     // ローカル頂点
-    std::vector<Vector3>vertices(8);
-    vertices[0] = { -obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z };// LT
-    vertices[1] = { obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z };// RT
-    vertices[2] = { -obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z };// LB
-    vertices[3] = { obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z };// RB
-    vertices[4] = { -obb.halfSize.x,obb.halfSize.y,obb.halfSize.z };// LT
-    vertices[5] = { obb.halfSize.x,obb.halfSize.y,obb.halfSize.z };// RT
-    vertices[6] = { -obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z };// LB
-    vertices[7] = { obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z };// RB
+    std::array<Vector3, 8>vertices = obb.GetVertices();
 
-    // ワールド行列を作成
-    Matrix4x4 OBBworldMat = AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center);
-
-    // ワールド座標に変換
-    for(int32_t i = 0; i < 8; i++){
-        vertices[i] = Multiply(vertices[i], OBBworldMat);
-    }
-
+    // 平面を作成
     Quad rect[6] = {
         { vertices[0],vertices[1],vertices[2],vertices[3] },// 手前
         { vertices[5],vertices[4],vertices[7],vertices[6] },// 奥
@@ -618,7 +596,7 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
     CollisionData result;
 
     // OBBの頂点を取得
-    std::array<Vector3, 8>obbVertices = obb.GetVertex();
+    std::array<Vector3, 8>obbVertices = obb.GetVertices();
 
     // 面にする
     Quad quads[6] = {
@@ -686,6 +664,9 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
                         result.collideDepth = 0.0f;
                         result.hitNormal = { 0.0f,0.0f,0.0f };
                     }
+                } else{
+                    result.collideDepth = 0.0f;
+                    result.hitNormal = {0.0f,0.0f,0.0f};
                 }
             }
         }
@@ -1231,6 +1212,98 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
 
     // ここまで来たら衝突
     return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 線と平面の衝突判定 =======================================//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
+    CollisionData result;
+
+    // 平面の法線
+    Vector3 normal = MyMath::Normalize(MyMath::Cross(plane.localVertex[1] - plane.localVertex[0], plane.localVertex[2] - plane.localVertex[1]));
+
+    // 線分の始点から終点へのベクトル
+    Vector3 lineVec = line.end_ - line.origin_;
+
+    // 線分の始点から平面までの距離
+    float distance = MyMath::Dot(plane.localVertex[0] - line.origin_, normal);
+
+    // 線分の始点から平面までの距離と線分の方向ベクトルの内積
+    float dot = MyMath::Dot(normal, lineVec);
+
+    // 線分が平行な場合
+    if(dot == 0.0f){
+        result.isCollide = false;
+        return result;
+    }
+
+    // tを求める
+    float t = distance / dot;
+
+    // 線分の始点から終点までの距離
+    Vector3 hitPos = line.origin_ + lineVec * t;
+
+    // 三角形の各頂点から見たすべてのクロス積を計算
+    Vector3 cross[3] = {
+        MyMath::Cross(plane.localVertex[1] - plane.localVertex[0], hitPos - plane.localVertex[1]),
+        MyMath::Cross(plane.localVertex[2] - plane.localVertex[1], hitPos - plane.localVertex[2]),
+        MyMath::Cross(plane.localVertex[0] - plane.localVertex[2], hitPos - plane.localVertex[0])
+    };
+
+    // ひとつでも巻いている向きが違えばfalse
+    float triDot[3] = {
+        MyMath::Dot(cross[0], cross[1]),
+        MyMath::Dot(cross[0], cross[2]),
+        MyMath::Dot(cross[1], cross[2])
+    };
+
+    if(triDot[0] < 0.0f){ result.isCollide = false; }   
+    if(triDot[1] < 0.0f){ result.isCollide = false; }
+    if(triDot[2] < 0.0f){ result.isCollide = false; }
+
+    // 線の二点が面のどちら側にいるか
+    float pointDistance[2] = {
+        distance,
+        distance - MyMath::Dot(line.end_ - line.origin_, normal),
+    };
+
+    if(line.type_ == RAY){
+
+        if(pointDistance[0] >= 0.0f){
+            if(pointDistance[1] >= pointDistance[0]){
+                result.isCollide = false;
+            }
+        } else{
+            if(pointDistance[1] < pointDistance[0]){
+                result.isCollide = false;
+            }
+        }
+
+    } else if(line.type_ == SEGMENT){
+
+        // 二点がどちらも同じ側にいたら当たっていない
+        if(pointDistance[0] > 0.0f){
+            if(pointDistance[1] > 0.0f){
+                result.isCollide = false;
+            }
+        }
+
+        if(pointDistance[0] < 0.0f){
+            if(pointDistance[1] < 0.0f){
+                result.isCollide = false;
+            }
+        }
+
+    } else{// 無限線の場合
+        result.isCollide = true;
+    }
+
+    // 衝突点
+    result.hitPos = hitPos;
+
+    return result;
 }
 
 

@@ -84,7 +84,8 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // assinmpのインポート設定
     Assimp::Importer importer;
     std::string modelName = filename.substr(0, filename.find_last_of('.'));
-    std::string filePath = directoryPath + "/" + modelName + "/" + filename.substr(filename.find_last_of('/'));
+    bool npos = filename.find_last_of('/') == std::string::npos;
+    std::string filePath = directoryPath + "/" + modelName + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -205,13 +206,13 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName){
-    std::vector<MaterialData> materials;
+std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName){
+    std::vector<ModelMaterialLoadData> materials;
 
     // マテリアルを読み込む
     for(uint32_t materialIdx = 0; materialIdx < scene->mNumMaterials; ++materialIdx) {
         aiMaterial* material = scene->mMaterials[materialIdx];
-        MaterialData materialData;
+        ModelMaterialLoadData materialData;
 
         aiString texturePath;
         if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
@@ -227,7 +228,7 @@ std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, con
     }
 
     // メッシュごとのマテリアル割り当て
-    std::vector<MaterialData> meshMaterials;
+    std::vector<ModelMaterialLoadData> meshMaterials;
     for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
         aiMesh* mesh = scene->mMeshes[meshIdx];
         uint32_t materialIndex = mesh->mMaterialIndex;
@@ -237,7 +238,7 @@ std::vector<MaterialData> ModelManager::ParseMaterials(const aiScene* scene, con
             meshMaterials.push_back(materials[materialIndex]);
         } else {
             // マテリアルが対応していない場合はデフォルトマテリアルを割り当て
-            MaterialData defaultMaterial;
+            ModelMaterialLoadData defaultMaterial;
             defaultMaterial.textureFilePath_ = "Assets/white1x1.png";
             meshMaterials.push_back(defaultMaterial);
         }
@@ -272,9 +273,10 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
+    bool npos = filename.find_last_of('/') == std::string::npos;
     std::string filePath =
         directoryPath + "/" + filename.substr(0, filename.find_last_of('.')) 
-        + "/" + filename.substr(filename.find_last_of('/'));
+        + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 

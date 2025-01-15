@@ -8,9 +8,9 @@
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Update(){
-    for (auto& fieldObject : fieldObjects_){
-            // 通常のオブジェクト
-            fieldObject->Update();
+    for(auto& fieldObject : fieldObjects_){
+        // 通常のオブジェクト
+        fieldObject->Update();
     }
 }
 
@@ -18,7 +18,7 @@ void FieldObjectManager::Update(){
 // 描画関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::Draw(){
-    for (auto& fieldObject : fieldObjects_){
+    for(auto& fieldObject : fieldObjects_){
         fieldObject->Draw();
     }
 }
@@ -45,16 +45,14 @@ void FieldObjectManager::EndFrame(){
 // すべてのオブジェクトをクリア
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::ClearAllFieldObjects(){
-    for (auto& obj:fieldObjects_){
-        // オブジェクトが IObserver を実装している場合、EventManager に登録
-        if (dynamic_cast< FieldObject_Switch* >(obj.get()) || dynamic_cast< FieldObject_Door* >(obj.get())){
-            IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-            if (observer){
-                subject_.UnregisterObserver(observer);
-            }
+    // オブジェクトをクリアする前に、オブザーバー登録を解除
+    for(auto& obj : fieldObjects_){
+        IObserver* observer = dynamic_cast<IObserver*>(obj.get());
+        if(observer){
+            subject_.UnregisterObserver(observer);
         }
-        fieldObjects_.clear();
     }
+    fieldObjects_.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -62,11 +60,9 @@ void FieldObjectManager::ClearAllFieldObjects(){
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
     // オブジェクトが IObserver を実装している場合、EventManager に登録
-    if (dynamic_cast< FieldObject_Switch* >(obj.get()) || dynamic_cast< FieldObject_Door* >(obj.get())){
-        IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-        if (observer){
-            subject_.RegisterObserver(observer);
-        }
+    IObserver* observer = dynamic_cast<IObserver*>(obj.get());
+    if(observer){
+        subject_.RegisterObserver(observer);
     }
 
     fieldObjects_.push_back(std::move(obj));
@@ -82,13 +78,13 @@ void FieldObjectManager::HandOverColliders(){
 }
 
 Vector3 FieldObjectManager::GetStartPosition() const{
-    for (const auto& obj : fieldObjects_){
+    for(const auto& obj : fieldObjects_){
         // FieldObject_Start 型へのキャストを試みる
-        if (auto* start = dynamic_cast< FieldObject_Start* >(obj.get())){
+        if(auto* start = dynamic_cast<FieldObject_Start*>(obj.get())){
             // スタートオブジェクトが見つかったら位置を返す
             return start->GetWorldTranslate();
         }
     }
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
-    return Vector3 {0.0f, 0.0f, 0.0f};
+    return Vector3{ 0.0f, 0.0f, 0.0f };
 }

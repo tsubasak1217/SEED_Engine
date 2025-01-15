@@ -47,6 +47,9 @@ public:
     void HandOverColliders() override;
 
 private:
+    // Light
+    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+
     // Objects
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;

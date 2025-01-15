@@ -601,6 +601,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1115,6 +1118,7 @@
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

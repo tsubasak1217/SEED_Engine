@@ -4,6 +4,9 @@
 #include "State/OpenedState.h"
 #include "State/ClosedState.h"
 
+// local
+#include "../FieldObject/Switch/FieldObject_Switch.h"
+
 // lib
 #include "ClockManager.h" 
 
@@ -52,7 +55,6 @@ void FieldObject_Door::Initialize(){
     ChangeState(new ClosedState());
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
@@ -100,7 +102,6 @@ void FieldObject_Door::ChangeState(DoorState* newState){
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
@@ -115,5 +116,15 @@ void FieldObject_Door::OnNotify(const std::string& event, void* data){
         SetIsOpened(true);
     } else if (event == "DoorShouldClose"){
         SetIsOpened(false);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+// setter
+////////////////////////////////////////////////////////////////////////
+void FieldObject_Door::SetSwitch(FieldObject_Switch* pSwitch){
+    FieldObject_Switch* switchObj = pSwitch;
+    if (switchObj){
+        switchObj->RegisterObserver(this);
     }
 }

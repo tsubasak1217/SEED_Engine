@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
@@ -237,6 +238,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />

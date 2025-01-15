@@ -2,6 +2,7 @@
 #include "CollisionManaer/CollisionManager.h"
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
 
 ////////////////////////////////////////////////////////////////////////
 // 更新関数
@@ -31,7 +32,6 @@ void FieldObjectManager::BeginFrame(){
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 ////////////////////////////////////////////////////////////////////////
@@ -41,19 +41,20 @@ void FieldObjectManager::EndFrame(){
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // すべてのオブジェクトをクリア
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::ClearAllFieldObjects(){
-    // オブジェクトをクリアする前に、オブザーバー登録を解除
-    for (auto& obj : fieldObjects_){
-        IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-        if (observer){
-            subject_.UnregisterObserver(observer);
+    for (auto& obj:fieldObjects_){
+        // オブジェクトが IObserver を実装している場合、EventManager に登録
+        if (dynamic_cast< FieldObject_Switch* >(obj.get()) || dynamic_cast< FieldObject_Door* >(obj.get())){
+            IObserver* observer = dynamic_cast< IObserver* >(obj.get());
+            if (observer){
+                subject_.UnregisterObserver(observer);
+            }
         }
+        fieldObjects_.clear();
     }
-    fieldObjects_.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -61,9 +62,11 @@ void FieldObjectManager::ClearAllFieldObjects(){
 ////////////////////////////////////////////////////////////////////////
 void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
     // オブジェクトが IObserver を実装している場合、EventManager に登録
-    IObserver* observer = dynamic_cast< IObserver* >(obj.get());
-    if (observer){
-        subject_.RegisterObserver(observer);
+    if (dynamic_cast< FieldObject_Switch* >(obj.get()) || dynamic_cast< FieldObject_Door* >(obj.get())){
+        IObserver* observer = dynamic_cast< IObserver* >(obj.get());
+        if (observer){
+            subject_.RegisterObserver(observer);
+        }
     }
 
     fieldObjects_.push_back(std::move(obj));

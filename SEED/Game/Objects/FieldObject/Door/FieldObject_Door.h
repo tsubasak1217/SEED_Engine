@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+// 前方宣言
+class FieldObject_Switch;
 
 class FieldObject_Door 
     : public FieldObject, public IObserver{
@@ -31,12 +33,16 @@ public:
     float GetOpenSpeed() const{ return openSpeed_; }
     float GetMaxOpenHeight() const{ return kMaxOpenHeight_; }
 
+    // --- getter / setter --- //
+    void SetSwitch(FieldObject_Switch* pSwitch);
 
 private:
-    bool isOpened_ = false;  // 開閉状態のフラグ
+    bool isOpened_ = false;                     // 開閉状態のフラグ
 
-    std::unique_ptr<DoorState> currentState_;
+    std::unique_ptr<DoorState> currentState_;    // 現在の状態
 
-    float openSpeed_ = 8.0f;            // 開閉速度
-    const float kMaxOpenHeight_ = 10.0f; // 最大開く高さ
+    float openSpeed_ = 8.0f;                    // 開閉速度
+    const float kMaxOpenHeight_ = 10.0f;        // 最大開く高さ
+
+    FieldObject_Switch* pSwitch_ = nullptr;     // 関連するスイッチ
 };

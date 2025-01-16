@@ -10,6 +10,13 @@ class FieldObject_Switch;
 
 class FieldObject_Door
     : public FieldObject, public IObserver{
+
+    enum Door_State{
+        DOORSTATE_OPENING,
+        DOORSTATE_CLOSING,
+        DOORSTATE_OPENED,
+        DOORSTATE_CLOSED
+    };
 public:
     FieldObject_Door();
     FieldObject_Door(const std::string& modelName);
@@ -35,18 +42,14 @@ public:
 
     // --- getter / setter --- //
     void SetSwitch(FieldObject_Switch* pSwitch);
-    FieldObject_Switch* GetSwitch(){ return pSwitch_; }
-
+    bool GetHasSwitch() const{ return hasSwitch_; }
 private:
     bool isOpened_ = false;                     // 開閉状態のフラグ
-
-    std::unique_ptr<DoorState> currentState_;    // 現在の状態
-
+    bool hasSwitch_ = false;                    // スイッチを持っているかどうか
+    std::unique_ptr<DoorState> currentState_;   // 現在の状態
     float openSpeed_ = 8.0f;                    // 開閉速度
     const float kMaxOpenHeight_ = 10.0f;        // 最大開く高さ
 
-    FieldObject_Switch* pSwitch_ = nullptr;     // 関連するスイッチ
-
 public:
-    static uint32_t nextFieldObjectID_;                // 次のID
+    static uint32_t nextFieldObjectID_;         // 次のID
 };

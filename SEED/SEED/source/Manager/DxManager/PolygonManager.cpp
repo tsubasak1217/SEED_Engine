@@ -1617,6 +1617,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*///////////////////////////////////////////////////////////////////////////*/
 
+
                     D3D12_INDEX_BUFFER_VIEW* ibv = &item->ibv;
                     size = sizeof(int32_t);
 

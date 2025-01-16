@@ -34,12 +34,10 @@ public:
 
     void SetPlayer(Player* player){ player_ = player; }
 
-
 protected:
     uint32_t fieldObjectType_;
 
     Player* player_ = nullptr;  // プレイヤーへのポインタ
-
 
 };
 

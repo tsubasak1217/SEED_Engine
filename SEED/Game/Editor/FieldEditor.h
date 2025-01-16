@@ -93,5 +93,6 @@ private:// enum
         FIELDMODEL_DOOR,
         FIELDMODEL_START,
         FIELDMODEL_GOAL,
+        FIELDMODEL_SWITCH,
     };
 };

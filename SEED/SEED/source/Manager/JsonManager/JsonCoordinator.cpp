@@ -153,6 +153,11 @@ void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::
             if (ImGui::DragFloat3(key.c_str(), &v.x, 0.01f)){
                 SetValue(group, key, v);
             }
+        } else if (std::holds_alternative<bool>(value)){
+            bool val = std::get<bool>(value);
+            if (ImGui::Checkbox(key.c_str(), &val)){
+                SetValue(group, key, val);
+            }
         }
     }
 }

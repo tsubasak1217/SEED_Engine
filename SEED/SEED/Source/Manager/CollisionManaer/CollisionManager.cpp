@@ -64,8 +64,15 @@ void CollisionManager::CheckCollision(){
         collider.second->Update();
     }
 
+
     // 当たり判定
-    instance_->octree_->CheckCollision();
+    for(int i = 0; i < instance_->colliders_.size(); i++){
+        for(int j = i + 1; j < instance_->colliders_.size(); j++){
+            instance_->colliders_[i]->CheckCollision(instance_->colliders_[j]);
+        }
+    }
+   
+    //instance_->octree_->CheckCollision();
 
 }
 
@@ -77,6 +84,7 @@ void CollisionManager::CheckCollision(){
 void CollisionManager::ResetColliderList(){
     instance_->octree_->ResetColiderList();
     instance_->colliderList_.clear();
+    instance_->colliders_.clear();
 }
 
 void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
@@ -85,7 +93,8 @@ void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
 
 void CollisionManager::AddCollider(Collider* object){
     if(instance_->colliderList_.find(object->GetColliderID()) == instance_->colliderList_.end()){
-        instance_->octree_->AddCollider(object);
+        //instance_->octree_->AddCollider(object);
         instance_->colliderList_[object->GetColliderID()] = object;
+        instance_->colliders_.push_back(object);
     }
 }

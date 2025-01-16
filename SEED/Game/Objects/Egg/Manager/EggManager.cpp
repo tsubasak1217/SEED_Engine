@@ -40,6 +40,7 @@ void EggManager::Update(){
         auto& spawnedEgg = eggs_.back();
         spawnedEgg->SetEggManager(this);
         spawnedEgg->Initialize();
+        spawnedEgg->SetTranslate(player_->GetWorldTranslate());
     }
 
     for(auto& egg : eggs_){

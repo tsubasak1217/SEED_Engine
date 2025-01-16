@@ -1,5 +1,16 @@
 #include "StageManager.h"
 
+// 各ブロックのヘッダーファイル
+#include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
+#include "FieldObject/Soil/FieldObject_Soil.h"
+#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Goal/FieldObject_Goal.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
+
+
 ///////////////////////////////////////////////////////////////////////
 // コンストラクタ
 ///////////////////////////////////////////////////////////////////////
@@ -10,6 +21,8 @@ StageManager::StageManager(ISubject& subject){
         stages_[i] = std::make_unique<Stage>(subject);
         stages_[i]->SetStageNo(i);
     }
+
+    Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -20,7 +33,9 @@ StageManager::~StageManager(){}
 ///////////////////////////////////////////////////////////////////////
 // 初期化
 ///////////////////////////////////////////////////////////////////////
-void StageManager::Initialize(){}
+void StageManager::Initialize(){
+    LoadStages();
+}
 
 ///////////////////////////////////////////////////////////////////////
 // 終了処理
@@ -71,4 +86,15 @@ void StageManager::EndFrame(){
 ///////////////////////////////////////////////////////////////////////
 void StageManager::HandOverColliders(){
     stages_[currentStageNo_]->HandOverColliders();
+}
+
+///////////////////////////////////////////////////////////////////////
+// ステージの読み込み
+///////////////////////////////////////////////////////////////////////
+void StageManager::LoadStages(){
+    // ステージの読み込み
+    for(int i = 0; i < kStageCount_; i++){
+        std::string filepath = "resources/jsons/Stages/stage_" + std::to_string(i + 1) + ".json";
+        stages_[i]->LoadFromJson(filepath);
+    }
 }

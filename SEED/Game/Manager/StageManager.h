@@ -22,6 +22,9 @@ public:
     void HandOverColliders();
 
 private:
+    void LoadStages();
+
+private:
     static const int32_t kStageCount_ = 10;
     int32_t currentStageNo_ = 0;
     std::array<std::unique_ptr<Stage>, kStageCount_> stages_;

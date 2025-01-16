@@ -8,6 +8,7 @@
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //engine
 #include "../SEED/external/imgui/imgui.h"
@@ -40,89 +41,16 @@ void FieldEditor::Initialize(){
     modelNameMap_["start"] = FIELDMODEL_START;
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
     modelNameMap_["switch"] = FIELDMODEL_SWITCH;
-
-    for(int i = 0; i < manager_.GetStageCount(); i++){
-        LoadFromJson(jsonPath_ + "stage_" + std::to_string(i) + ".json");
-    }
+    modelNameMap_["viewpoint"] = FIELDMODEL_VIEWPOINT;
 
     LoadFieldModelTexture();
 
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////////////
-//  オブジェクトの追加
+//  全てのスイッチから特定のドア参照を削除する関数
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldEditor::AddModel(
-    uint32_t modelNameIndex,
-    int32_t stageNo,
-    const Vector3& scale,
-    const Vector3& rotate,
-    const Vector3& translate
-){
-    // スタートもしくはゴールの場合、既に存在しているかチェックし、
-    // 存在していれば新規追加をキャンセルする
-    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        auto& objects = manager_.GetStages()[stageNo]->GetObjects();
-        for(const auto& objPtr : objects){
-            FieldObject* obj = objPtr.get();
-            if(obj && obj->GetFieldObjectType() == modelNameIndex){
-                // 既に同じタイプのオブジェクトが存在する場合、追加をキャンセル
-                return;
-            }
-        }
-    }
-
-    // 新規オブジェクトの生成
-    std::unique_ptr<FieldObject> newObj = nullptr;
-
-    switch(modelNameIndex){
-    case FIELDMODEL_GRASSSOIL:
-        newObj = std::make_unique<FieldObject_GrassSoil>();
-        break;
-    case FIELDMODEL_SOIL:
-        newObj = std::make_unique<FieldObject_Soil>();
-        break;
-    case FIELDMODEL_SPHERE:
-        newObj = std::make_unique<FieldObject_Sphere>();
-        break;
-    case FIELDMODEL_DOOR:
-        newObj = std::make_unique<FieldObject_Door>();
-        break;
-    case FIELDMODEL_START:
-        newObj = std::make_unique<FieldObject_Start>();
-        break;
-    case FIELDMODEL_GOAL:
-        newObj = std::make_unique<FieldObject_Goal>();
-        break;
-    case FIELDMODEL_SWITCH:
-        newObj = std::make_unique<FieldObject_Switch>();
-        break;
-    default:
-        break;
-    }
-
-    if(!newObj) return;  // newObj が生成されなかった場合は何もしない
-
-    // スタートまたはゴールの場合、スケールを1/10に調整
-    Vector3 adjustedScale = scale;
-    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        adjustedScale.x = 1.0f;
-        adjustedScale.y = 1.0f;
-        adjustedScale.z = 1.0f;
-    }
-
-    // 初期値の設定
-    newObj->SetTranslate(translate);
-    newObj->SetScale(adjustedScale);
-    newObj->SetRotate(rotate);
-    newObj->SetFieldObjectType(modelNameIndex);
-    newObj->UpdateMatrix();
-
-    // Manager に登録
-    manager_.GetStages()[stageNo]->AddFieldObject(std::move(newObj));
-}
-
-
 void FieldEditor::RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, const std::vector<FieldObject_Switch*>& allSwitches) const{
     for(auto* sw : allSwitches){
         auto& associatedDoors = sw->GetAssociatedDoors();
@@ -138,102 +66,6 @@ void FieldEditor::RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, cons
             std::remove(associatedDoors.begin(), associatedDoors.end(), doorToRemove),
             associatedDoors.end()
         );
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-//  jsonファイルの読み込み
-////////////////////////////////////////////////////////////////////////////////////////
-void FieldEditor::LoadFromJson(const std::string& filePath){
-    namespace fs = std::filesystem;
-
-    if(!fs::exists(filePath)){
-        return;
-    }
-    std::ifstream file(filePath);
-    if(!file.is_open()){
-        return;
-    }
-
-    nlohmann::json jsonData;
-    file >> jsonData;
-    file.close();
-
-
-    // JSON から "stage" を読み取り
-    int32_t stageNo = 0;
-    if(jsonData.contains("stage")){ stageNo = jsonData["stage"]; }
-
-    // いったん全消去
-    manager_.GetStages()[stageNo - 1]->ClearAllFieldObjects();
-
-    // スイッチと関連ドアIDの一時保存用
-    std::vector<std::tuple<FieldObject_Switch*, std::vector<int>>> switchDoorAssociations;
-
-    // JSON から "models" 配列を読み取り
-    if(jsonData.contains("models")){
-        for(auto& modelJson : jsonData["models"]){
-            std::string name = modelJson.value("name", "default_model.obj");
-            uint32_t type = 0;
-            Vector3 position{ 0.f, 0.f, 0.f };
-            Vector3 scale{ 1.f, 1.f, 1.f };
-            Vector3 rotation{ 0.f, 0.f, 0.f };
-
-            if(modelJson.contains("position")){
-                position.x = modelJson["position"][0];
-                position.y = modelJson["position"][1];
-                position.z = modelJson["position"][2];
-            }
-            if(modelJson.contains("scale")){
-                scale.x = modelJson["scale"][0];
-                scale.y = modelJson["scale"][1];
-                scale.z = modelJson["scale"][2];
-            }
-            if(modelJson.contains("rotation")){
-                rotation.x = modelJson["rotation"][0];
-                rotation.y = modelJson["rotation"][1];
-                rotation.z = modelJson["rotation"][2];
-            }
-            if(modelJson.contains("type")){
-                type = modelJson["type"];
-            }
-
-            // 取得した情報からモデルを追加
-            AddModel(type, stageNo - 1, scale, rotation, position);
-
-            // 新規追加されたオブジェクトを取得（最後に追加されたものを想定）
-            auto& objects = manager_.GetStages()[stageNo - 1]->GetObjects();
-            if(objects.empty()) continue;
-            FieldObject* newObj = objects.back().get();
-
-            // スイッチの場合、関連ドア情報を一時保存
-            if(auto* sw = dynamic_cast<FieldObject_Switch*>(newObj)){
-                //json から associatedDoors を取得(ドアIDの配列)
-                if(modelJson.contains("associatedDoors")){
-                    std::vector<int> doorIDs = modelJson["associatedDoors"].get<std::vector<int>>();
-                    switchDoorAssociations.emplace_back(sw, doorIDs);
-                }
-            }
-        }
-    }
-
-    // 全てのモデルを生成・登録後に、スイッチとドアの関連付けを行う
-    for(auto& [sw, doorIDs] : switchDoorAssociations){
-        for(uint32_t doorID : doorIDs){
-            // manager_ から対応するドアを検索
-            std::vector<FieldObject_Door*> doors = manager_.GetStages()[stageNo - 1]->GetObjectsOfType<FieldObject_Door>();
-            for(auto& door : doors){
-                if(door){
-                    if(door->GetFieldObjectID() == doorID){
-                        // スイッチにドアを追加し、ドア側でスイッチをセット
-                        sw->AddAssociatedDoor(door);
-                        door->SetSwitch(sw);
-                        // 1つのドアにつき1回で十分と仮定
-                        break;
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -483,7 +315,8 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 
     // マウスのボタンが離されたらオブジェクトを追加
     if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
-        AddModel(objectType, edittingStageIndex, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
+        auto& stage = manager_.GetStages()[edittingStageIndex];
+        stage->AddModel(objectType, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
         isEdit = false;
     }
 }
@@ -564,12 +397,12 @@ void FieldEditor::ShowImGui(){
         if(it != textureIDs_.end()){
             // サムネテクスチャがある場合
             if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                AddModel(map.second, edittingStageIndex);
+                manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
             }
         } else{
             // テクスチャがない場合はボタン
             if(ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
-                AddModel(map.second, edittingStageIndex);
+                manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
             }
         }
         ImGui::SameLine();

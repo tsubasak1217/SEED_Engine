@@ -32,6 +32,15 @@ public:
     // CollisionManagerにコライダーを渡す
     void HandOverColliders();
 
+    // stageの読み込み
+    void LoadFromJson(const std::string& filePath);
+    void AddModel(
+        uint32_t modelNameIndex,
+        const Vector3& scale = { 2.5f,2.5f,2.5f },
+        const Vector3& rotate = { 0.0f,0.0f,0.0f },
+        const Vector3& translate = { 0.0f,0.0f,0.0f }
+    );
+
 public:
 
     Vector3 GetStartPosition()const;
@@ -40,6 +49,7 @@ public:
 
     template <typename T>
     std::vector<T*> GetObjectsOfType();
+
 private:
     int32_t stageNo_ = -1;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;

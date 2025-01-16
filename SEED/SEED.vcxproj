@@ -123,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -253,6 +254,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
+    <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />

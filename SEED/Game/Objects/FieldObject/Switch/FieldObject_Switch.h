@@ -31,14 +31,21 @@ public:
     //--- getter / setter ---//
     // ドアへのポインタを設定・取得するメソッド
     void AddAssociatedDoor(FieldObject_Door* door);
-    const std::vector<FieldObject_Door*>& GetAssociatedDoors() const;
+    std::vector<FieldObject_Door*>& GetAssociatedDoors();
+
+    std::vector<IObserver*>& GetObservers(){ return observers_; }
 
 private:
+
     std::vector<IObserver*> observers_;
+
     bool isActivated_ = false;  // スイッチの状態
     // LoadFromJson 内でスイッチの関連情報を一時保存するための構造
     std::vector<std::tuple<FieldObject_Switch*, std::vector<int>>> switchDoorAssociations;
 
     std::vector<FieldObject_Door*> associatedDoors_;    // 紐付けられたドアへのポインタ
+    
+public:
+    static uint32_t nextFieldObjectID_;  // 次のID
 };
 

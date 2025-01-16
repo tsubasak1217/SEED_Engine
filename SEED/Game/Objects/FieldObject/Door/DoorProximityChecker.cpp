@@ -30,7 +30,7 @@ void DoorProximityChecker::CheckAndNotify(){
     auto& objects = fieldObjectManager_.GetObjects();
     for (auto& obj : objects){
         FieldObject_Door* door = dynamic_cast< FieldObject_Door* >(obj.get());
-        if (!door) continue;
+        if (!door) return;
         // switcheを持っていたら終了
         if (door->GetSwitch()) return;
 

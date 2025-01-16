@@ -7,5 +7,9 @@ public:
     FieldObject_GrassSoil(const std::string& modelName);
     ~FieldObject_GrassSoil() = default;
 public:
+
     void Initialize()override;
+
+public:
+    static uint32_t nextFieldObjectID_;                // 次のID
 };

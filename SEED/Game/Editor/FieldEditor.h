@@ -5,6 +5,7 @@
 
 // local
 #include "../Manager/FieldObjectManager.h"
+#include "FieldObject/FieldObjectName.h"
 
 // lib
 #include "../SEED/lib/tensor/Vector3.h"
@@ -21,6 +22,9 @@
 
 // ImGui用のテクスチャIDなどを保持
 using TextureMap = std::unordered_map<std::string, ImTextureID>;
+
+class FieldObject_Door;
+class FieldObject_Switch;
 
 class FieldEditor{
 public:
@@ -50,8 +54,9 @@ private:
         const Vector3& translate = { 0.0f,0.0f,0.0f }
         );
 
-    void DeploymentStartAndGoal();
 
+    // 全てのスイッチから特定のドア参照を削除する関数
+    void RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, const std::vector<FieldObject_Switch*>& allSwitches) const;
     // jsonファイルの読み込み
     void LoadFromJson(const std::string& filePath);
     // jsonファイルへの保存
@@ -62,6 +67,14 @@ private:
     int32_t GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
     // マウスで直接オブジェクト追加
     void AddObjectByMouse(int32_t objectType);
+    // オブジェクトのID再割り当て
+    void ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects);
+
+private:
+    // id再割り当て
+    template <typename T>
+    void ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID = 1);
+
 
 
 private:
@@ -86,13 +99,21 @@ private:
 
 
 private:// enum
-    enum FIELDMODELNAME{
-        FIELDMODEL_GRASSSOIL,
-        FIELDMODEL_SOIL,
-        FIELDMODEL_SPHERE,
-        FIELDMODEL_DOOR,
-        FIELDMODEL_START,
-        FIELDMODEL_GOAL,
-        FIELDMODEL_SWITCH,
-    };
+    // fieldObjectName.h に移動しますた
 };
+
+////////////////////////////////////////////////////////////////////////
+//  テンプレート関数
+////////////////////////////////////////////////////////////////////////
+template <typename T>
+inline void FieldEditor::ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID){
+    uint32_t newID = startID;
+    for (auto& obj : objects){
+        if (auto typed = dynamic_cast< T* >(obj.get())){
+            typed->SetFieldObjectID(newID++);
+        }
+    }
+    // 静的カウンタを更新（Tクラスの nextFieldObjectID_ が存在することが前提）
+    T::nextFieldObjectID_ = newID;
+}
+

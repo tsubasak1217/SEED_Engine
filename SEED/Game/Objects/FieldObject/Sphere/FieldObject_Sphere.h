@@ -8,4 +8,7 @@ public:
     ~FieldObject_Sphere() = default;
 public:
     void Initialize()override;
+
+public:
+    static uint32_t nextFieldObjectID_;
 };

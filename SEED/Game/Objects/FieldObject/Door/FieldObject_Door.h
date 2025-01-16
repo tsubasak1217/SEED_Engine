@@ -13,7 +13,7 @@ class FieldObject_Door
 public:
     FieldObject_Door();
     FieldObject_Door(const std::string& modelName);
-    ~FieldObject_Door();
+    ~FieldObject_Door()override;
 
     void Initialize() override;
     void Update() override;
@@ -46,4 +46,7 @@ private:
     const float kMaxOpenHeight_ = 10.0f;        // 最大開く高さ
 
     FieldObject_Switch* pSwitch_ = nullptr;     // 関連するスイッチ
+
+public:
+    static uint32_t nextFieldObjectID_;                // 次のID
 };

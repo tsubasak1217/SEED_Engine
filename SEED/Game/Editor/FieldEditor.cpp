@@ -120,6 +120,24 @@ void FieldEditor::AddModel(
 }
 
 
+void FieldEditor::RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, const std::vector<FieldObject_Switch*>& allSwitches) const{
+    for (auto* sw : allSwitches){
+        auto& associatedDoors = sw->GetAssociatedDoors();
+        auto& observers = sw->GetObservers();
+
+        // 関連ドアから削除
+        observers.erase(
+            std::remove(observers.begin(), observers.end(), doorToRemove),
+            observers.end()
+        );
+
+        associatedDoors.erase(
+            std::remove(associatedDoors.begin(), associatedDoors.end(), doorToRemove),
+            associatedDoors.end()
+        );
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //  jsonファイルの読み込み
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +200,7 @@ void FieldEditor::LoadFromJson(const std::string& filePath){
 
             // スイッチの場合、関連ドア情報を一時保存
             if (auto* sw = dynamic_cast< FieldObject_Switch* >(newObj)){
+                //json から associatedDoors を取得(ドアIDの配列)
                 if (modelJson.contains("associatedDoors")){
                     std::vector<int> doorIDs = modelJson["associatedDoors"].get<std::vector<int>>();
                     switchDoorAssociations.emplace_back(sw, doorIDs);
@@ -194,9 +213,10 @@ void FieldEditor::LoadFromJson(const std::string& filePath){
     for (auto& [sw, doorIDs] : switchDoorAssociations){
         for (uint32_t doorID : doorIDs){
             // manager_ から対応するドアを検索
-            for (auto& obj : manager_.GetObjects()){
-                if (auto* door = dynamic_cast< FieldObject_Door* >(obj.get())){
-                    if (door->GetObjectID() == doorID){
+            std::vector<FieldObject_Door*> doors = manager_.GetObjectsOfType<FieldObject_Door>();
+            for (auto& door : doors){
+                if (door){
+                    if (door->GetFieldObjectID() == doorID){
                         // スイッチにドアを追加し、ドア側でスイッチをセット
                         sw->AddAssociatedDoor(door);
                         door->SetSwitch(sw);
@@ -255,8 +275,7 @@ void FieldEditor::SaveToJson(const std::string& filePath){
             if (auto* sw = dynamic_cast< FieldObject_Switch* >(modelObj)){
                 std::vector<int> doorIDs;
                 for (auto* door : sw->GetAssociatedDoors()){
-                    // ここでは仮に door->GetObjectID() を使用
-                    doorIDs.push_back(door->GetObjectID());
+                    doorIDs.push_back(door->GetFieldObjectID());
                 }
                 modelJson["associatedDoors"] = doorIDs;
             }
@@ -400,6 +419,38 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+//  各fieldObjectのID再割り当て
+////////////////////////////////////////////////////////////////////////////////////////
+void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects){
+    switch (removedType){
+        case FIELDMODELNAME::FIELDMODEL_GRASSSOIL:
+            ReassignIDsForType<FieldObject_GrassSoil>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_SOIL:
+            ReassignIDsForType<FieldObject_Soil>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_SPHERE:
+            ReassignIDsForType<FieldObject_Sphere>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_DOOR:
+            ReassignIDsForType<FieldObject_Door>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_START:
+            ReassignIDsForType<FieldObject_Start>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_GOAL:
+            ReassignIDsForType<FieldObject_Goal>(objects);
+            break;
+        case FIELDMODELNAME::FIELDMODEL_SWITCH:
+            ReassignIDsForType<FieldObject_Switch>(objects);
+            break;
+        default:
+            // 必要に応じてデフォルト処理を追加
+            break;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 //  imguiの表示
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::ShowImGui(){
@@ -455,8 +506,8 @@ void FieldEditor::ShowImGui(){
         for (int idx = 0; idx < ( int ) objects.size(); idx++){
             auto* mfObj = dynamic_cast< FieldObject* >(objects[idx].get());
             if (!mfObj) continue;
-
-            std::string label = mfObj->GetName() + std::to_string(idx);
+            int id = mfObj->GetFieldObjectID();
+            std::string label = mfObj->GetName() + std::to_string(id);
             bool isSelected = (selectedObjIndex == idx);
 
             if (isSelected){
@@ -562,35 +613,57 @@ void FieldEditor::ShowImGui(){
 
                 ImGui::Separator();
                 if (ImGui::Button("Remove Selected Model")){
-                    objects.erase(objects.begin() + selectedObjIndex);
-                    selectedObjIndex = -1;
+                    if (selectedObjIndex >= 0 && selectedObjIndex < objects.size()){
+                        // 削除対象オブジェクトの取得
+                        FieldObject* objToRemove = objects[selectedObjIndex].get();
+
+                        std::vector<FieldObject_Switch*> allSwitches = manager_.GetObjectsOfType<FieldObject_Switch>();
+
+                        // 削除対象オブジェクトのタイプを取得
+                        uint32_t removedType = objToRemove->GetFieldObjectType();
+
+                        // ドア型かどうかを確認
+                        if (auto* door = dynamic_cast< FieldObject_Door* >(objToRemove)){
+                            // door を全スイッチから削除
+                            RemoveDoorFromAllSwitches(door, allSwitches);
+                        }
+
+                        // Manager 側でオブジェクト削除
+                        manager_.RemoveFieldObject(objToRemove);
+
+                        selectedObjIndex = -1;
+
+                        // ID再割り当て
+                        ReassignIDsByType(removedType, objects);
+
+                    }
+                }
+            } else{
+                ImGui::Text("No Model Selected");
+            }
+        }
+        ImGui::EndChild();
+
+        // 紐付けモード中にマウスクリックでドアを選択
+        if (isAssigningDoor && Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
+            int clickedIndex = GetObjectIndexByMouse(objects);
+            if (clickedIndex >= 0){
+                auto* clickedObj = dynamic_cast< FieldObject* >(objects[clickedIndex].get());
+                if (auto* door = dynamic_cast< FieldObject_Door* >(clickedObj)){
+                    if (assigningSwitch){
+
+                        assigningSwitch->AddAssociatedDoor(door);
+
+                        // ドア側でスイッチをセットし、オブザーバー登録を行う
+                        door->SetSwitch(assigningSwitch);
+                    }
+                    isAssigningDoor = false;
+                    assigningSwitch = nullptr;
                 }
             }
-        } else{
-            ImGui::Text("No Model Selected");
         }
+
+        ImGui::End();
+    #endif // _DEBUG
     }
-    ImGui::EndChild();
-
-    // 紐付けモード中にマウスクリックでドアを選択
-    if (isAssigningDoor && Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
-        int clickedIndex = GetObjectIndexByMouse(objects);
-        if (clickedIndex >= 0){
-            auto* clickedObj = dynamic_cast< FieldObject* >(objects[clickedIndex].get());
-            if (auto* door = dynamic_cast< FieldObject_Door* >(clickedObj)){
-                if (assigningSwitch){
-
-                    assigningSwitch->AddAssociatedDoor(door);
-
-                    // ドア側でスイッチをセットし、オブザーバー登録を行う
-                    door->SetSwitch(assigningSwitch);
-                }
-                isAssigningDoor = false;
-                assigningSwitch = nullptr;
-            }
-        }
-    }
-
-    ImGui::End();
-#endif // _DEBUG
 }

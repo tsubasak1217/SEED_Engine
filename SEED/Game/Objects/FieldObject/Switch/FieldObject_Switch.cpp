@@ -2,6 +2,8 @@
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "InputManager.h"
 
+uint32_t FieldObject_Switch::nextFieldObjectID_ = 1;
+
 ////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,10 @@ FieldObject_Switch::FieldObject_Switch(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
+
+    associatedDoors_.clear();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Switch::FieldObject_Switch(const std::string& modelName) : FieldObject(modelName){
@@ -29,6 +35,9 @@ FieldObject_Switch::FieldObject_Switch(const std::string& modelName) : FieldObje
     // 全般の初期化
     FieldObject::Initialize();
 
+    associatedDoors_.clear();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -60,7 +69,9 @@ void FieldObject_Switch::UnregisterObserver(IObserver* observer){
 
 void FieldObject_Switch::Notify(const std::string& event, void* data){
     for (auto& observer : observers_){
-        observer->OnNotify(event, data);
+        if (observer){
+            observer->OnNotify(event, data);
+        }
     }
 }
 
@@ -91,6 +102,6 @@ void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
     }
 }
 
-const std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors() const{
+ std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors(){
     return associatedDoors_;
 }

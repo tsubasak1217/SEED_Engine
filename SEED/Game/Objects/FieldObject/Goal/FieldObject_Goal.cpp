@@ -1,5 +1,7 @@
 #include "FieldObject_Goal.h"
 
+uint32_t FieldObject_Goal::nextFieldObjectID_ = 1;
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //  コンストラクタ
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -15,6 +17,8 @@ FieldObject_Goal::FieldObject_Goal(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
@@ -27,6 +31,8 @@ FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

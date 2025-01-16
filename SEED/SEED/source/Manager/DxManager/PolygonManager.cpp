@@ -1541,7 +1541,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     std::memcpy(
                         mapOffsetData + meshCountAll,
                         item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
-                        sizeof(OffsetData) * instanceCount
+                        sizeof(OffsetData) * item->totalDrawCount
                     );
 
 

@@ -44,5 +44,5 @@ private:
     bool preIsMoving_ = false;
 
     // 卵を投げるとき FocusButton を 押していないと行けないか,切り替えか
-    int pressForcus_ = false;
+    bool pressForcus_ = false;
 };

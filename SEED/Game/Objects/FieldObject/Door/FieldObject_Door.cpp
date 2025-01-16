@@ -146,3 +146,11 @@ void FieldObject_Door::SetSwitch(FieldObject_Switch* pSwitch){
     }
     hasSwitch_ = true;
 }
+
+void FieldObject_Door::RemoveSwitch(FieldObject_Switch* pSwitch){
+    FieldObject_Switch* switchObj = pSwitch;
+    if (switchObj){
+        switchObj->UnregisterObserver(this);
+    }
+    hasSwitch_ = false;
+}

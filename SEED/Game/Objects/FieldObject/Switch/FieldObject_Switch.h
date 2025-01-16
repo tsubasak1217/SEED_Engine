@@ -31,6 +31,7 @@ public:
     //--- getter / setter ---//
     // ドアへのポインタを設定・取得するメソッド
     void AddAssociatedDoor(FieldObject_Door* door);
+    void RemoveAssociatedDoor(FieldObject_Door* door);
     std::vector<FieldObject_Door*>& GetAssociatedDoors();
 
     std::vector<IObserver*>& GetObservers(){ return observers_; }

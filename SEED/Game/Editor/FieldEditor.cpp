@@ -456,7 +456,6 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
 void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
     // 紐付けモード用の静的変数を追加
-    static bool isAssigningDoor = false;
     static FieldObject_Switch* assigningSwitch = nullptr;
 
     ImGui::Begin("Field Editor");
@@ -548,10 +547,7 @@ void FieldEditor::ShowImGui(){
                     ImGui::Text("Switch Settings");
 
                     // 「Assign Door」ボタンを追加
-                    if (ImGui::Button("Assign Door")){
-                        isAssigningDoor = true;
                         assigningSwitch = sw;
-                    }
 
                     // 選択されているスイッチに関連付けられた全てのドアを黄色に設定
                     for (auto* door : sw->GetAssociatedDoors()){
@@ -644,24 +640,27 @@ void FieldEditor::ShowImGui(){
         }
         ImGui::EndChild();
 
-        // 紐付けモード中にマウスクリックでドアを選択
-        if (isAssigningDoor && Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
+         // 中ボタンクリックで関連付け/解除を切り替え
+        if (Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
             int clickedIndex = GetObjectIndexByMouse(objects);
             if (clickedIndex >= 0){
                 auto* clickedObj = dynamic_cast< FieldObject* >(objects[clickedIndex].get());
                 if (auto* door = dynamic_cast< FieldObject_Door* >(clickedObj)){
-                    if (assigningSwitch){
-
-                        assigningSwitch->AddAssociatedDoor(door);
-
-                        // ドア側でスイッチをセットし、オブザーバー登録を行う
-                        door->SetSwitch(assigningSwitch);
+                    // ドアが既にスイッチを持っている場合は解除
+                    if (door->GetHasSwitch()){
+                        assigningSwitch->RemoveAssociatedDoor(door);
+                        door->RemoveSwitch(assigningSwitch);
                     }
-                    isAssigningDoor = false;
-                    assigningSwitch = nullptr;
+                    // スイッチ未設定で新たに紐付けしたい場合
+                    else if (assigningSwitch){
+                        assigningSwitch->AddAssociatedDoor(door);
+                        door->SetSwitch(assigningSwitch);
+                        assigningSwitch = nullptr;
+                    }
                 }
             }
         }
+
 
         ImGui::End();
     #endif // _DEBUG

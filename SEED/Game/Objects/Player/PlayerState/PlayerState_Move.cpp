@@ -7,6 +7,11 @@
 #include "PlayerState_Idle.h"
 #include "PlayerState_ThrowEgg.h"
 
+// Egg
+#include "Egg/Egg.h"
+// EggState
+#include "Egg/State/EggState_Thrown.h"
+
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
@@ -133,13 +138,41 @@ void PlayerState_Move::ManageState()
     }
 
     // 卵 を 投げる状態へ
-    if (Input::IsPressPadButton(PAD_BUTTON::RB))
+    if (Input::IsTriggerPadButton(PAD_BUTTON::LT))
     {
-        Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
-        if(pPlayer_->GetEggManager()->GetIsEmpty()){
+        Player *pPlayer = dynamic_cast<Player *>(pCharacter_);
+        if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
-        pCharacter_->ChangeState(new PlayerState_ThrowEgg("Player_ThrowEgg",pPlayer_));
+
+        // すでに 投げているなら return
+        Egg* pEgg = pPlayer->GetEggManager()->GetFrontEgg().get();
+        if(pEgg->GetIsThrown()){
+            return;
+        }
+
+        pCharacter_->ChangeState(new PlayerState_ThrowEgg("Player_ThrowEgg",pPlayer));
         return;
     }
+
+
+    if(Input::IsReleasePadButton(PAD_BUTTON::RT)){
+        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+        if(pPlayer->GetEggManager()->GetIsEmpty()){
+            return;
+        }
+
+        // すでに 投げているなら return
+        Egg* pEgg = pPlayer->GetEggManager()->GetFrontEgg().get();
+        if(pEgg->GetIsThrown()){
+            return;
+        }
+
+        pEgg->SetVelocity({0.0f,8.0f,0.0f});
+        // velocity で管理するため, 初期値は基本 0
+        pEgg->ChangeState(new EggState_Thrown(pEgg,{0.0f,0.0f,0.0f},0.0f,0.0f));
+
+        return;
+    }
+
 }

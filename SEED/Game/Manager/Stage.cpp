@@ -1,12 +1,20 @@
-#include "FieldObjectManager.h"
+#include "Stage.h"
 #include "CollisionManaer/CollisionManager.h"
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 
 ////////////////////////////////////////////////////////////////////////
+// コンストラクタ
+////////////////////////////////////////////////////////////////////////
+Stage::Stage(ISubject& subject, int32_t stageNo){
+    subject_ = subject;
+    stageNo_ = stageNo;
+}
+
+////////////////////////////////////////////////////////////////////////
 // 更新関数
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::Update(){
+void Stage::Update(){
     for(auto& fieldObject : fieldObjects_){
         // 通常のオブジェクト
         fieldObject->Update();
@@ -16,7 +24,7 @@ void FieldObjectManager::Update(){
 ////////////////////////////////////////////////////////////////////////
 // 描画関数
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::Draw(){
+void Stage::Draw(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->Draw();
     }
@@ -25,7 +33,7 @@ void FieldObjectManager::Draw(){
 ////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::BeginFrame(){
+void Stage::BeginFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->BeginFrame();
     }
@@ -35,7 +43,7 @@ void FieldObjectManager::BeginFrame(){
 ////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::EndFrame(){
+void Stage::EndFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->EndFrame();
     }
@@ -45,7 +53,7 @@ void FieldObjectManager::EndFrame(){
 ////////////////////////////////////////////////////////////////////////
 // すべてのオブジェクトをクリア
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::ClearAllFieldObjects(){
+void Stage::ClearAllFieldObjects(){
     // オブジェクトをクリアする前に、オブザーバー登録を解除
     for(auto& obj : fieldObjects_){
         IObserver* observer = dynamic_cast<IObserver*>(obj.get());
@@ -59,7 +67,7 @@ void FieldObjectManager::ClearAllFieldObjects(){
 ////////////////////////////////////////////////////////////////////////
 // 新しいオブジェクトを追加
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
+void Stage::AddFieldObject(std::unique_ptr<FieldObject> obj){
     // オブジェクトが IObserver を実装している場合、EventManager に登録
     IObserver* observer = dynamic_cast<IObserver*>(obj.get());
     if(observer){
@@ -72,13 +80,13 @@ void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
 ////////////////////////////////////////////////////////////////////////
 // CollisionManagerにコライダーを渡す
 ////////////////////////////////////////////////////////////////////////
-void FieldObjectManager::HandOverColliders(){
+void Stage::HandOverColliders(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->HandOverColliders();
     }
 }
 
-Vector3 FieldObjectManager::GetStartPosition() const{
+Vector3 Stage::GetStartPosition() const{
     for(const auto& obj : fieldObjects_){
         // FieldObject_Start 型へのキャストを試みる
         if(auto* start = dynamic_cast<FieldObject_Start*>(obj.get())){

@@ -61,8 +61,8 @@ void Scene_Game::Initialize(){
     //  エディター初期化
     ////////////////////////////////////////////////////
 
-    fieldObjectManager_ = std::make_unique<FieldObjectManager>(eventManager_);
-    fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
+    stages_ = std::make_unique<Stage>(eventManager_);
+    fieldEditor_ = std::make_unique<FieldEditor>(*stages_.get());
     fieldEditor_->Initialize();
 
     ////////////////////////////////////////////////////
@@ -79,14 +79,14 @@ void Scene_Game::Initialize(){
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
     player_->SetCorpseManager(playerCorpseManager_.get());
-    Vector3 playerStartPos = fieldObjectManager_->GetStartPosition();
+    Vector3 playerStartPos = stages_->GetStartPosition();
     // playerの初期位置を設定
     player_->SetPosition({playerStartPos.x,playerStartPos.y+0.3f,playerStartPos.z});
 
     // DoorProximityChecker の 初期化
-    doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
-                                                                   *fieldObjectManager_.get(),
-                                                                   *player_.get());
+    //doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
+    //                                                               *stages_.get(),
+    //                                                               *player_.get());
 
     // EggManager の 初期化
     eggManager_ = std::make_unique<EggManager>();
@@ -157,7 +157,9 @@ void Scene_Game::Update(){
         currentState_->Update();
     }
 
-    fieldObjectManager_->Update();
+    for(auto& stage : stages_){
+        stage->Update();
+    }
 
     fieldColliderEditor_->Edit();
 
@@ -177,7 +179,9 @@ void Scene_Game::Draw(){
     directionalLight_->SendData();
 
     // フィールドの描画
-    fieldObjectManager_->Draw();
+    for(auto& stage : stages_){
+        stage->Draw();
+    }
 
     // グリッドの描画
     SEED::DrawGrid();
@@ -202,7 +206,10 @@ void Scene_Game::Draw(){
 void Scene_Game::BeginFrame(){
     player_->BeginFrame();
     eggManager_->BeginFrame();
-    fieldObjectManager_->BeginFrame();
+
+    for(auto& stage : stages_){
+        stage->BeginFrame();
+    }
 }
 
 
@@ -214,7 +221,10 @@ void Scene_Game::BeginFrame(){
 void Scene_Game::EndFrame(){
     player_->EndFrame();
     eggManager_->EndFrame();
-    fieldObjectManager_->EndFrame();
+    
+    for(auto& stage : stages_){
+        stage->EndFrame();
+    }
 }
 
 
@@ -227,5 +237,8 @@ void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
     fieldColliderEditor_->HandOverColliders();
     eggManager_->HandOverColliders();
-    fieldObjectManager_->HandOverColliders();
+
+    for(auto& stage : stages_){
+        stage->HandOverColliders();
+    }
 }

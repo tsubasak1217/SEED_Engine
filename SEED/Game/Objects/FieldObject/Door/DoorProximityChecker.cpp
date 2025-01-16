@@ -6,14 +6,14 @@
 
 // engine
 #include "../../Manager/EventManager/EventManager.h"
-#include "../../Manager/FieldObjectManager.h"
+#include "../../Manager/Stage.h"
 
 //lib
 #include "../lib/Functions/myFunc/LocalFunc.h"
 
 DoorProximityChecker::DoorProximityChecker(
     EventManager& eventManager,
-    FieldObjectManager& fieldObjectManager,
+    Stage& fieldObjectManager,
     Player& player
 )
     : eventManager_(eventManager)

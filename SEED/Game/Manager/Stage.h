@@ -11,9 +11,10 @@
 
 class Player;
 
-class FieldObjectManager{
+class Stage{
 public:
-    FieldObjectManager(ISubject& subject) : subject_(subject){}
+    Stage(ISubject& subject) : subject_(subject){}
+    Stage(ISubject& subject, int32_t stageNo);
 
     void Update();
     void Draw();
@@ -31,10 +32,10 @@ public:
 
 public:
     Vector3 GetStartPosition()const;
-
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 
 private:
+    int32_t stageNo_ = -1;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     ISubject& subject_;
 

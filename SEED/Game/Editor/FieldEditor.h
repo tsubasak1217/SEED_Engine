@@ -4,7 +4,7 @@
 #include "../SEED/lib/structs/Model.h"
 
 // local
-#include "../Manager/FieldObjectManager.h"
+#include "../Manager/StageManager.h"
 
 // lib
 #include "../SEED/lib/tensor/Vector3.h"
@@ -28,7 +28,7 @@ public:
     //                   public methods
     //===================================================================*/
     FieldEditor();
-    FieldEditor(FieldObjectManager& manager);
+    FieldEditor(StageManager& manager);
     ~FieldEditor() = default;
 
     void Initialize();
@@ -45,6 +45,7 @@ private:
     //===================================================================*/
     void AddModel(
         uint32_t modelNameIndex, 
+        int32_t stageNo,
         const Vector3& scale = {2.5f,2.5f,2.5f},
         const Vector3& rotate = { 0.0f,0.0f,0.0f },
         const Vector3& translate = { 0.0f,0.0f,0.0f }
@@ -55,7 +56,8 @@ private:
     // jsonファイルの読み込み
     void LoadFromJson(const std::string& filePath);
     // jsonファイルへの保存
-    void SaveToJson(const std::string& filePath);
+    void PopupDecideOutputName();
+    void SaveToJson(const std::string& filePath,int32_t stageNo);
     // テクスチャの読み込み
     void LoadFieldModelTexture();
     // マウスで直接オブジェクト選択
@@ -77,13 +79,16 @@ private:
     bool isEditing_ = false;
 
     // 参照
-    FieldObjectManager& manager_;
+    StageManager& manager_;
 
     // 管理用
     std::unordered_map<std::string,uint32_t> modelNameMap_;
     TextureMap textureIDs_;
-    const std::string jsonPath_ = "resources/jsons/fieldModels/fieldModels.json";
+    const std::string jsonPath_ = "resources/jsons/fieldModels/";
 
+    // ステージ管理用
+    const int kMaxStage = 10;
+    int32_t edittingStageNo_ = 1;
 
 private:// enum
     enum FIELDMODELNAME{

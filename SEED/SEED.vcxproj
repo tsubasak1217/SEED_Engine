@@ -113,6 +113,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Manager\Stage.cpp" />
+    <ClCompile Include="Game\Manager\StageManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp" />
@@ -127,7 +129,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp" />
-    <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
@@ -242,6 +243,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Manager\Stage.h" />
+    <ClInclude Include="Game\Manager\StageManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
@@ -258,7 +261,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h" />
-    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />

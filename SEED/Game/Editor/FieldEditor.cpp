@@ -22,7 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //  コンストラクタ
 ////////////////////////////////////////////////////////////////////////////////////////
-FieldEditor::FieldEditor(FieldObjectManager& manager)
+FieldEditor::FieldEditor(StageManager& manager)
     : manager_(manager){
     modelNameMap_.clear();
 }
@@ -50,6 +50,7 @@ void FieldEditor::Initialize(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::AddModel(
     uint32_t modelNameIndex,
+    int32_t stageNo,
     const Vector3& scale,
     const Vector3& rotate,
     const Vector3& translate
@@ -57,7 +58,7 @@ void FieldEditor::AddModel(
     // スタートもしくはゴールの場合、既に存在しているかチェックし、
     // 存在していれば新規追加をキャンセルする
     if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        auto& objects = manager_.GetObjects();
+        auto& objects = manager_.GetStages()[edittingStageNo_]->GetObjects();
         for(const auto& objPtr : objects){
             FieldObject* obj = objPtr.get();
             if(obj && obj->GetFieldObjectType() == modelNameIndex){
@@ -111,7 +112,7 @@ void FieldEditor::AddModel(
     newObj->UpdateMatrix();
 
     // Manager に登録
-    manager_.AddFieldObject(std::move(newObj));
+    manager_.GetStages()[edittingStageNo_]->AddFieldObject(std::move(newObj));
 }
 
 
@@ -121,59 +122,134 @@ void FieldEditor::AddModel(
 void FieldEditor::LoadFromJson(const std::string& filePath){
     namespace fs = std::filesystem;
 
-    if(!fs::exists(filePath)){
-        return;
-    }
-    std::ifstream file(filePath);
-    if(!file.is_open()){
-        return;
-    }
+    for(int i = 0; i < manager_.GetStageCount(); i++){
 
-    nlohmann::json jsonData;
-    file >> jsonData;
-    file.close();
-
-    // いったん全消去
-    manager_.ClearAllFieldObjects();
-
-    // JSON から "models" 配列を読み取り
-    if(jsonData.contains("models")){
-        for(auto& modelJson : jsonData["models"]){
-            std::string name = modelJson.value("name", "default_model.obj");
-            uint32_t type = 0;
-            Vector3 position{ 0.f, 0.f, 0.f };
-            Vector3 scale{ 1.f, 1.f, 1.f };
-            Vector3 rotation{ 0.f, 0.f, 0.f };
-
-            if(modelJson.contains("position")){
-                position.x = modelJson["position"][0];
-                position.y = modelJson["position"][1];
-                position.z = modelJson["position"][2];
-            }
-            if(modelJson.contains("scale")){
-                scale.x = modelJson["scale"][0];
-                scale.y = modelJson["scale"][1];
-                scale.z = modelJson["scale"][2];
-            }
-            if(modelJson.contains("rotation")){
-                rotation.x = modelJson["rotation"][0];
-                rotation.y = modelJson["rotation"][1];
-                rotation.z = modelJson["rotation"][2];
-            }
-            if(modelJson.contains("type")){
-                type = modelJson["type"];
-            }
-
-            // 取得した情報からモデルを追加
-            AddModel(type, scale, rotation, position);
+        if(!fs::exists(filePath)){
+            return;
         }
+        std::ifstream file(filePath);
+        if(!file.is_open()){
+            return;
+        }
+
+        nlohmann::json jsonData;
+        file >> jsonData;
+        file.close();
+
+        // いったん全消去
+        manager_.GetStages()[i]->ClearAllFieldObjects();
+
+        // JSON から "models" 配列を読み取り
+        if(jsonData.contains("models")){
+            for(auto& modelJson : jsonData["models"]){
+                std::string name = modelJson.value("name", "default_model.obj");
+                uint32_t type = 0;
+                Vector3 position{ 0.f, 0.f, 0.f };
+                Vector3 scale{ 1.f, 1.f, 1.f };
+                Vector3 rotation{ 0.f, 0.f, 0.f };
+
+                if(modelJson.contains("position")){
+                    position.x = modelJson["position"][0];
+                    position.y = modelJson["position"][1];
+                    position.z = modelJson["position"][2];
+                }
+                if(modelJson.contains("scale")){
+                    scale.x = modelJson["scale"][0];
+                    scale.y = modelJson["scale"][1];
+                    scale.z = modelJson["scale"][2];
+                }
+                if(modelJson.contains("rotation")){
+                    rotation.x = modelJson["rotation"][0];
+                    rotation.y = modelJson["rotation"][1];
+                    rotation.z = modelJson["rotation"][2];
+                }
+                if(modelJson.contains("type")){
+                    type = modelJson["type"];
+                }
+
+                // 取得した情報からモデルを追加
+                AddModel(type, scale, rotation, position);
+            }
+        }
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+//  jsonファイルの名前を入力するフィールド
+////////////////////////////////////////////////////////////////////////////////////////
+void FieldEditor::PopupDecideOutputName(){
+
+    // ファイル名入力
+    ImGui::Text("Please decide stage number.");
+    ImGui::Text("stage:");
+    ImGui::SameLine();
+    // ドロップダウンで選択
+    static int stageNo = 1;
+    ImGui::Combo("##stageNo", &stageNo, 
+        "1\0"
+        "2\0"
+        "3\0"
+        "4\0"
+        "5\0"
+        "6\0"
+        "7\0"
+        "8\0"
+        "9\0"
+        "10\0\0"
+    );
+
+    // OKボタン
+    if(ImGui::Button("OK", ImVec2(120, 0))){
+        std::string fileName = jsonPath_ + "stage_" + std::to_string(stageNo + 1);
+        // ファイル名に拡張子がない場合、追加
+        if(fileName.find(".json") == std::string::npos){
+            fileName += ".json";
+        }
+
+        // もしファイルが存在していたら上書き確認
+        if(std::filesystem::exists(fileName)){
+            ImGui::OpenPopup("Overwrite?");
+        } else{
+            SaveToJson(fileName, stageNo + 1);
+            ImGui::CloseCurrentPopup();
+        }
+    }
+
+    // キャンセルボタン
+    ImGui::SameLine();
+    if(ImGui::Button("Cancel", ImVec2(120, 0))){
+        ImGui::CloseCurrentPopup();
+    }
+
+    // 上書き確認ポップアップ
+    if(ImGui::BeginPopupModal("Overwrite?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        ImGui::Text("The file already exists.");
+        ImGui::Text("Do you want to overwrite it?");
+
+        if(ImGui::Button("OK", ImVec2(120, 0))){
+            std::string fileName = jsonPath_ + "stage_" + std::to_string(stageNo + 1);
+            if(fileName.find(".json") == std::string::npos){
+                fileName += ".json";
+            }
+            SaveToJson(fileName, stageNo + 1);
+            ImGui::CloseCurrentPopup();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        
+        if(ImGui::Button("Cancel", ImVec2(120, 0))){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  jsonファイルの保存
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldEditor::SaveToJson(const std::string& filePath){
+void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
     try{
         namespace fs = std::filesystem;
         fs::path path(filePath);
@@ -184,6 +260,7 @@ void FieldEditor::SaveToJson(const std::string& filePath){
         }
 
         nlohmann::json jsonData;
+        jsonData["stage"] = stageNo;
 
         // Managerからオブジェクトを取得
         auto& objects = manager_.GetObjects();
@@ -396,7 +473,13 @@ void FieldEditor::ShowImGui(){
     // ========== 選択したモデルを追加するボタン, Saveボタン ========== 
 
     if(ImGui::Button("Save Models")){
-        SaveToJson(jsonPath_);
+        // ポップアップを出す
+        ImGui::OpenPopup("Output to Json");
+    }
+
+    if(ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        PopupDecideOutputName();
+        ImGui::EndPopup();
     }
 
     // ========== 現在のオブジェクト一覧(左) と 編集UI(右) ========== 

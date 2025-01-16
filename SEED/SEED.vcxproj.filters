@@ -565,9 +565,6 @@
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp">
       <Filter>Game\Objects\FieldObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\FieldObjectManager.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp">
       <Filter>Game\Objects\FieldObject\Door</Filter>
     </ClCompile>
@@ -621,6 +618,12 @@
     </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\StageManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\Stage.cpp">
+      <Filter>Game\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1093,12 +1096,8 @@
       <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
-    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
       <Filter>Game\Objects\FieldObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\FieldObjectManager.h">
-      <Filter>Game\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h">
       <Filter>Game\Objects\FieldObject\Door</Filter>
@@ -1159,6 +1158,12 @@
     </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
       <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\Stage.h">
+      <Filter>Game\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

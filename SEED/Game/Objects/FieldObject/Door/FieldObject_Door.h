@@ -29,19 +29,17 @@ public:
     // IObserver の実装
     void OnNotify(const std::string& event, void* data = nullptr) override;
 
-    //--- getter / setter ---//
-    bool GetIsOpened() const{ return isOpened_; }
-    void SetIsOpened(bool isOpened);
-
     // 状態変更用メソッド
     void ChangeState(DoorState* newState);
 
-    // 状態クラスからアクセスするためのメソッド
+    // --- getter / setter --- //
+    bool GetIsOpened() const{ return isOpened_; }
+    void SetIsOpened(bool isOpened);
     float GetOpenSpeed() const{ return openSpeed_; }
     float GetMaxOpenHeight() const{ return kMaxOpenHeight_; }
 
-    // --- getter / setter --- //
     void SetSwitch(FieldObject_Switch* pSwitch);
+    void RemoveSwitch(FieldObject_Switch* pSwitch);
     bool GetHasSwitch() const{ return hasSwitch_; }
 private:
     bool isOpened_ = false;                     // 開閉状態のフラグ

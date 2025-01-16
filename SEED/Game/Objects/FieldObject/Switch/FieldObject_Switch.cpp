@@ -106,6 +106,17 @@ void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
     }
 }
 
+void FieldObject_Switch::RemoveAssociatedDoor(FieldObject_Door* door){
+    auto it = std::remove_if(
+        associatedDoors_.begin(),
+        associatedDoors_.end(),
+        [door] (FieldObject_Door* existingDoor){
+            return existingDoor == door;
+        }
+    );
+    associatedDoors_.erase(it, associatedDoors_.end());
+}
+
  std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors(){
     return associatedDoors_;
 }

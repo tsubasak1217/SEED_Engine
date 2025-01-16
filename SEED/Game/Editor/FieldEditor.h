@@ -84,11 +84,11 @@ private:
     // 管理用
     std::unordered_map<std::string,uint32_t> modelNameMap_;
     TextureMap textureIDs_;
-    const std::string jsonPath_ = "resources/jsons/fieldModels/";
+    const std::string jsonPath_ = "resources/jsons/Stages/";
 
     // ステージ管理用
     const int kMaxStage = 10;
-    int32_t edittingStageNo_ = 1;
+    int32_t edittingStageIndex = 0;
 
 private:// enum
     enum FIELDMODELNAME{

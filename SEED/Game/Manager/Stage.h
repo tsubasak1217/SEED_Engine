@@ -14,7 +14,6 @@ class Player;
 class Stage{
 public:
     Stage(ISubject& subject) : subject_(subject){}
-    Stage(ISubject& subject, int32_t stageNo);
 
     void Update();
     void Draw();
@@ -31,8 +30,10 @@ public:
     void HandOverColliders();
 
 public:
+
     Vector3 GetStartPosition()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
+    void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
 
 private:
     int32_t stageNo_ = -1;

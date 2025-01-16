@@ -6,18 +6,18 @@
 
 // engine
 #include "../../Manager/EventManager/EventManager.h"
-#include "../../Manager/Stage.h"
+#include "../../Manager/StageManager.h"
 
 //lib
 #include "../lib/Functions/myFunc/LocalFunc.h"
 
 DoorProximityChecker::DoorProximityChecker(
     EventManager& eventManager,
-    Stage& fieldObjectManager,
+    StageManager& fieldObjectManager,
     Player& player
 )
     : eventManager_(eventManager)
-    , fieldObjectManager_(fieldObjectManager)
+    , stageManager_(fieldObjectManager)
     , player_(player){}
 
 void DoorProximityChecker::Update(){
@@ -27,7 +27,7 @@ void DoorProximityChecker::Update(){
 void DoorProximityChecker::CheckAndNotify(){
     Vector3 playerPos = player_.GetWorldTranslate();
 
-    auto& objects = fieldObjectManager_.GetObjects();
+    auto& objects = stageManager_.GetStages()[stageManager_.GetCurrentStageNo()]->GetObjects();
     for (auto& obj : objects){
         FieldObject_Door* door = dynamic_cast< FieldObject_Door* >(obj.get());
         if (!door) continue;

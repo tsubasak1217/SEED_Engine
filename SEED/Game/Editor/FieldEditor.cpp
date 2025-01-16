@@ -39,7 +39,9 @@ void FieldEditor::Initialize(){
     modelNameMap_["start"] = FIELDMODEL_START;
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
 
-    LoadFromJson(jsonPath_);
+    for(int i = 0; i < manager_.GetStageCount(); i++){
+        LoadFromJson(jsonPath_ + "stage_" + std::to_string(i) + ".json");
+    }
 
     LoadFieldModelTexture();
 
@@ -58,7 +60,7 @@ void FieldEditor::AddModel(
     // スタートもしくはゴールの場合、既に存在しているかチェックし、
     // 存在していれば新規追加をキャンセルする
     if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        auto& objects = manager_.GetStages()[edittingStageNo_]->GetObjects();
+        auto& objects = manager_.GetStages()[stageNo]->GetObjects();
         for(const auto& objPtr : objects){
             FieldObject* obj = objPtr.get();
             if(obj && obj->GetFieldObjectType() == modelNameIndex){
@@ -112,7 +114,7 @@ void FieldEditor::AddModel(
     newObj->UpdateMatrix();
 
     // Manager に登録
-    manager_.GetStages()[edittingStageNo_]->AddFieldObject(std::move(newObj));
+    manager_.GetStages()[stageNo]->AddFieldObject(std::move(newObj));
 }
 
 
@@ -122,54 +124,56 @@ void FieldEditor::AddModel(
 void FieldEditor::LoadFromJson(const std::string& filePath){
     namespace fs = std::filesystem;
 
-    for(int i = 0; i < manager_.GetStageCount(); i++){
+    if(!fs::exists(filePath)){
+        return;
+    }
+    std::ifstream file(filePath);
+    if(!file.is_open()){
+        return;
+    }
 
-        if(!fs::exists(filePath)){
-            return;
-        }
-        std::ifstream file(filePath);
-        if(!file.is_open()){
-            return;
-        }
+    nlohmann::json jsonData;
+    file >> jsonData;
+    file.close();
 
-        nlohmann::json jsonData;
-        file >> jsonData;
-        file.close();
 
-        // いったん全消去
-        manager_.GetStages()[i]->ClearAllFieldObjects();
+    // JSON から "stage" を読み取り
+    int32_t stageNo = 0;
+    if(jsonData.contains("stage")){ stageNo = jsonData["stage"]; }
 
-        // JSON から "models" 配列を読み取り
-        if(jsonData.contains("models")){
-            for(auto& modelJson : jsonData["models"]){
-                std::string name = modelJson.value("name", "default_model.obj");
-                uint32_t type = 0;
-                Vector3 position{ 0.f, 0.f, 0.f };
-                Vector3 scale{ 1.f, 1.f, 1.f };
-                Vector3 rotation{ 0.f, 0.f, 0.f };
+    // いったん全消去
+    manager_.GetStages()[stageNo - 1]->ClearAllFieldObjects();
 
-                if(modelJson.contains("position")){
-                    position.x = modelJson["position"][0];
-                    position.y = modelJson["position"][1];
-                    position.z = modelJson["position"][2];
-                }
-                if(modelJson.contains("scale")){
-                    scale.x = modelJson["scale"][0];
-                    scale.y = modelJson["scale"][1];
-                    scale.z = modelJson["scale"][2];
-                }
-                if(modelJson.contains("rotation")){
-                    rotation.x = modelJson["rotation"][0];
-                    rotation.y = modelJson["rotation"][1];
-                    rotation.z = modelJson["rotation"][2];
-                }
-                if(modelJson.contains("type")){
-                    type = modelJson["type"];
-                }
+    // JSON から "models" 配列を読み取り
+    if(jsonData.contains("models")){
+        for(auto& modelJson : jsonData["models"]){
+            std::string name = modelJson.value("name", "default_model.obj");
+            uint32_t type = 0;
+            Vector3 position{ 0.f, 0.f, 0.f };
+            Vector3 scale{ 1.f, 1.f, 1.f };
+            Vector3 rotation{ 0.f, 0.f, 0.f };
 
-                // 取得した情報からモデルを追加
-                AddModel(type, scale, rotation, position);
+            if(modelJson.contains("position")){
+                position.x = modelJson["position"][0];
+                position.y = modelJson["position"][1];
+                position.z = modelJson["position"][2];
             }
+            if(modelJson.contains("scale")){
+                scale.x = modelJson["scale"][0];
+                scale.y = modelJson["scale"][1];
+                scale.z = modelJson["scale"][2];
+            }
+            if(modelJson.contains("rotation")){
+                rotation.x = modelJson["rotation"][0];
+                rotation.y = modelJson["rotation"][1];
+                rotation.z = modelJson["rotation"][2];
+            }
+            if(modelJson.contains("type")){
+                type = modelJson["type"];
+            }
+
+            // 取得した情報からモデルを追加
+            AddModel(type, stageNo - 1, scale, rotation, position);
         }
     }
 }
@@ -181,27 +185,12 @@ void FieldEditor::LoadFromJson(const std::string& filePath){
 void FieldEditor::PopupDecideOutputName(){
 
     // ファイル名入力
-    ImGui::Text("Please decide stage number.");
-    ImGui::Text("stage:");
-    ImGui::SameLine();
-    // ドロップダウンで選択
-    static int stageNo = 1;
-    ImGui::Combo("##stageNo", &stageNo, 
-        "1\0"
-        "2\0"
-        "3\0"
-        "4\0"
-        "5\0"
-        "6\0"
-        "7\0"
-        "8\0"
-        "9\0"
-        "10\0\0"
-    );
+    std::string text = "Output stage_" + std::to_string(edittingStageIndex + 1) + ".json?";
+    ImGui::Text(text.c_str());
 
     // OKボタン
     if(ImGui::Button("OK", ImVec2(120, 0))){
-        std::string fileName = jsonPath_ + "stage_" + std::to_string(stageNo + 1);
+        std::string fileName = jsonPath_ + "stage_" + std::to_string(edittingStageIndex + 1);
         // ファイル名に拡張子がない場合、追加
         if(fileName.find(".json") == std::string::npos){
             fileName += ".json";
@@ -211,7 +200,11 @@ void FieldEditor::PopupDecideOutputName(){
         if(std::filesystem::exists(fileName)){
             ImGui::OpenPopup("Overwrite?");
         } else{
-            SaveToJson(fileName, stageNo + 1);
+            SaveToJson(fileName, edittingStageIndex + 1);
+
+            // 成功ログの表示
+            MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
+
             ImGui::CloseCurrentPopup();
         }
     }
@@ -228,17 +221,17 @@ void FieldEditor::PopupDecideOutputName(){
         ImGui::Text("Do you want to overwrite it?");
 
         if(ImGui::Button("OK", ImVec2(120, 0))){
-            std::string fileName = jsonPath_ + "stage_" + std::to_string(stageNo + 1);
+            std::string fileName = jsonPath_ + "stage_" + std::to_string(edittingStageIndex + 1);
             if(fileName.find(".json") == std::string::npos){
                 fileName += ".json";
             }
-            SaveToJson(fileName, stageNo + 1);
+            SaveToJson(fileName, edittingStageIndex + 1);
             ImGui::CloseCurrentPopup();
             ImGui::CloseCurrentPopup();
         }
 
         ImGui::SameLine();
-        
+
         if(ImGui::Button("Cancel", ImVec2(120, 0))){
             ImGui::CloseCurrentPopup();
         }
@@ -263,7 +256,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
         jsonData["stage"] = stageNo;
 
         // Managerからオブジェクトを取得
-        auto& objects = manager_.GetObjects();
+        auto& objects = manager_.GetStages()[stageNo - 1]->GetObjects();
         for(size_t i = 0; i < objects.size(); ++i){
             // dynamic_cast で ModelFieldObject のみ処理
             auto* modelObj = dynamic_cast<FieldObject*>(objects[i].get());
@@ -423,7 +416,7 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 
     // マウスのボタンが離されたらオブジェクトを追加
     if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
-        AddModel(objectType, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
+        AddModel(objectType, edittingStageIndex, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
         isEdit = false;
     }
 }
@@ -436,6 +429,23 @@ void FieldEditor::ShowImGui(){
     ImGui::Begin("Field Editor");
 
     ImGui::Checkbox("isEditing", &isEditing_);
+    ImGui::Text("stage:");
+    ImGui::SameLine();
+    // ドロップダウンで選択
+    if(ImGui::Combo("##stageNo##1", &edittingStageIndex,
+        "1\0"
+        "2\0"
+        "3\0"
+        "4\0"
+        "5\0"
+        "6\0"
+        "7\0"
+        "8\0"
+        "9\0"
+        "10\0\0"
+    )){
+        manager_.SetCurrentStageNo(edittingStageIndex);
+    };
 
     ImGui::Text("mouseWheel: %d", Input::GetMouseWheel());
 
@@ -453,12 +463,12 @@ void FieldEditor::ShowImGui(){
         if(it != textureIDs_.end()){
             // サムネテクスチャがある場合
             if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                AddModel(map.second);
+                AddModel(map.second, edittingStageIndex);
             }
         } else{
             // テクスチャがない場合はボタン
             if(ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
-                AddModel(map.second);
+                AddModel(map.second, edittingStageIndex);
             }
         }
         ImGui::SameLine();
@@ -472,7 +482,7 @@ void FieldEditor::ShowImGui(){
 
     // ========== 選択したモデルを追加するボタン, Saveボタン ========== 
 
-    if(ImGui::Button("Save Models")){
+    if(ImGui::Button("Output StageData")){
         // ポップアップを出す
         ImGui::OpenPopup("Output to Json");
     }
@@ -486,7 +496,7 @@ void FieldEditor::ShowImGui(){
     ImGui::Separator();
 
     // Managerから取得
-    auto& objects = manager_.GetObjects();
+    auto& objects = manager_.GetStages()[edittingStageIndex]->GetObjects();
 
     static int selectedObjIndex = -1;
     ImGui::BeginChild("ModelList", ImVec2(200, 300), true);
@@ -539,29 +549,43 @@ void FieldEditor::ShowImGui(){
 
                 // --- 1) チャンク移動/スケール用 変数 ---
                 static Vector3Int moveChunk{ 0, 0, 0 };
-                static Vector3Int scaleChunk{ 1, 1, 1 };
+                static Vector3Int stageMoveChunk{ 0, 0, 0 };
                 static int lastSelectedIndex = -1;
 
                 // 選択が変わったらmoveChunkやscaleChunkを再初期化
                 if(selectedObjIndex != lastSelectedIndex){
-                    // 現在のモデルからチャンク数を推定して再セット
-                    Vector3 curScale = mfObj->GetModel()->GetWorldScale();
-                    scaleChunk.x = (int)(curScale.x / 10.f);
-                    scaleChunk.y = (int)(curScale.y / 10.f);
-                    scaleChunk.z = (int)(curScale.z / 10.f);
 
                     moveChunk = { 0, 0, 0 };
+                    stageMoveChunk = { 0, 0, 0 };
                     lastSelectedIndex = selectedObjIndex;
                 }
 
                 // スライダーを表示
                 ImGui::Text("Chunk Transform");
                 Vector3Int tempMove = moveChunk;
+                Vector3Int tempStageMove = stageMoveChunk;
+                ImGui::DragInt3("StageMove", &tempStageMove.x, 0.1f);
                 ImGui::DragInt3("Move (chunks)", &tempMove.x, 0.1f);
 
                 // 変更があったら実際のPosition / Scaleに反映
                 Vector3 pos = mfObj->GetModel()->GetWorldTranslate();
                 Vector3 scl = mfObj->GetModel()->GetWorldScale();
+
+                // ステージ移動
+                if(tempStageMove != stageMoveChunk){
+                    Vector3 diff{
+                        float(tempStageMove.x - stageMoveChunk.x) * kBlockSize,
+                        float(tempStageMove.y - stageMoveChunk.y) * kBlockSize,
+                        float(tempStageMove.z - stageMoveChunk.z) * kBlockSize
+                    };
+
+                    for(auto& obj : objects){
+                        obj->AddTranslate(diff);
+                    }
+
+                    stageMoveChunk = tempStageMove;
+                }
+
 
                 // 移動
                 if(tempMove != moveChunk){

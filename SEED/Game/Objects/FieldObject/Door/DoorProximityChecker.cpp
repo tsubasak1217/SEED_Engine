@@ -31,6 +31,8 @@ void DoorProximityChecker::CheckAndNotify(){
     for (auto& obj : objects){
         FieldObject_Door* door = dynamic_cast< FieldObject_Door* >(obj.get());
         if (!door) continue;
+        // switcheを持っていたら終了
+        if (door->GetSwitch()) return;
 
         Vector3 doorPos = door->GetModel()->GetWorldTranslate();
         Vector3 diff = playerPos - doorPos;

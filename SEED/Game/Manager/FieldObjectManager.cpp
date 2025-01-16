@@ -11,6 +11,7 @@ void FieldObjectManager::Update(){
     for(auto& fieldObject : fieldObjects_){
         // 通常のオブジェクト
         fieldObject->Update();
+        fieldObject->EditCollider();
     }
 }
 

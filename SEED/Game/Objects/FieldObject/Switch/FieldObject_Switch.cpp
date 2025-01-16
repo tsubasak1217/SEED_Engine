@@ -1,4 +1,6 @@
 #include "FieldObject_Switch.h"
+#include "FieldObject/Door/FieldObject_Door.h"
+#include "InputManager.h"
 
 ////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -39,7 +41,9 @@ void FieldObject_Switch::Initialize(){}
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::Update(){
     //入力を検知してスイッチの状態をトグル
-
+    if (Input::IsTriggerKey(DIK_SPACE)){
+         Toggle();
+    }
     FieldObject::Update();
 }
 
@@ -61,10 +65,32 @@ void FieldObject_Switch::Notify(const std::string& event, void* data){
 }
 
 ////////////////////////////////////////////////////////////////////////
+// oncollision
+////////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::OnCollision(Collider* collider, ObjectType objectType){
+    collider;
+    objectType;
+
+    Toggle();
+
+}
+
+////////////////////////////////////////////////////////////////////////
 // スイッチの状態をトグルする
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::Toggle(){
     isActivated_ = !isActivated_;
     std::string event = isActivated_ ? "SwitchActivated" : "SwitchDeactivated";
     Notify(event);  // 登録された Observer に通知
+}
+
+void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
+    // 重複登録を防ぐ場合は確認を入れると良い
+    if (std::find(associatedDoors_.begin(), associatedDoors_.end(), door) == associatedDoors_.end()){
+        associatedDoors_.push_back(door);
+    }
+}
+
+const std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors() const{
+    return associatedDoors_;
 }

@@ -8,7 +8,7 @@
 // 前方宣言
 class FieldObject_Switch;
 
-class FieldObject_Door 
+class FieldObject_Door
     : public FieldObject, public IObserver{
 public:
     FieldObject_Door();
@@ -35,6 +35,7 @@ public:
 
     // --- getter / setter --- //
     void SetSwitch(FieldObject_Switch* pSwitch);
+    FieldObject_Switch* GetSwitch(){ return pSwitch_; }
 
 private:
     bool isOpened_ = false;                     // 開閉状態のフラグ

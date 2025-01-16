@@ -105,16 +105,11 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 ////////////////////////////////////////////////////////////////////////
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
-void FieldObject_Door::OnNotify(const std::string& event, void* data){
-    // data は Door* として受け取り、自分宛かどうか判定
-    FieldObject_Door* doorPtr = static_cast< FieldObject_Door* >(data);
-    if (doorPtr != this){
-        return; // 自分宛でなければ無視
-    }
-
-    if (event == "DoorShouldOpen"){
+void FieldObject_Door::OnNotify(const std::string& event,[[maybe_unused]] void* data){
+    // data を使用しないので無視する
+    if (event == "SwitchActivated"){
         SetIsOpened(true);
-    } else if (event == "DoorShouldClose"){
+    } else if (event == "SwitchDeactivated"){
         SetIsOpened(false);
     }
 }

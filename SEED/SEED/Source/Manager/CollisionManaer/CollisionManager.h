@@ -41,4 +41,5 @@ private:// メンバ変数------------------------------------------------------
 
     // コライダー辞書
     std::unordered_map<uint32_t, Collider*> colliderList_;
+    std::vector<Collider*>colliders_;
 };

@@ -1,5 +1,7 @@
 #include "FieldObject_Sphere.h"
 
+uint32_t FieldObject_Sphere::nextFieldObjectID_ = 1;
+
 ///////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////
@@ -16,6 +18,8 @@ FieldObject_Sphere::FieldObject_Sphere(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Sphere::FieldObject_Sphere(const std::string& modelName){
@@ -31,6 +35,8 @@ FieldObject_Sphere::FieldObject_Sphere(const std::string& modelName){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
+
+    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ///////////////////////////////////////////////////////////////////

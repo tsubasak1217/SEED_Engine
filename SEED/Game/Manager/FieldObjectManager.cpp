@@ -69,6 +69,25 @@ void FieldObjectManager::AddFieldObject(std::unique_ptr<FieldObject> obj){
     fieldObjects_.push_back(std::move(obj));
 }
 
+void FieldObjectManager::RemoveFieldObject(FieldObject* obj){
+    // オブジェクトが IObserver を実装している場合、EventManager から登録解除
+    IObserver* observer = dynamic_cast< IObserver* >(obj);
+    if (observer){
+        subject_.UnregisterObserver(observer);
+    }
+    // オブジェクトを削除
+    fieldObjects_.erase(
+        std::remove_if(
+        fieldObjects_.begin(),
+        fieldObjects_.end(),
+        [obj] (const std::unique_ptr<FieldObject>& fieldObject){
+            return fieldObject.get() == obj;
+        }
+    ),
+        fieldObjects_.end()
+    );
+}
+
 ////////////////////////////////////////////////////////////////////////
 // CollisionManagerにコライダーを渡す
 ////////////////////////////////////////////////////////////////////////
@@ -89,3 +108,4 @@ Vector3 FieldObjectManager::GetStartPosition() const{
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
     return Vector3{ 0.0f, 0.0f, 0.0f };
 }
+

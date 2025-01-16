@@ -12,4 +12,7 @@ public:
 public:
     void Initialize()override;
     void Update()override;
+
+public:
+    static uint32_t nextFieldObjectID_;
 };

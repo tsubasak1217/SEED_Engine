@@ -1167,6 +1167,7 @@
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

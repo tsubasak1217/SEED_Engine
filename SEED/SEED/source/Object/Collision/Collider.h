@@ -96,6 +96,7 @@ public:// アクセッサ-------------------------------------------------------
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
     Vector3 GetLocalScale()const{ return ExtractScale(localMat_); }
     virtual bool IsMoved();
+    const Vector3& GetCollidedPosition()const{ return collidedPosition_; }
 
     // 衝突判定八分木用
     const AABB& GetBox()const{ return coverAABB_; }
@@ -114,6 +115,7 @@ protected:// 基礎情報-------------------------------------------------------
     uint32_t colliderID_;
     bool isCollision_ = false;
     bool preIsCollision_ = false;
+    Vector3 collidedPosition_;
     Vector4 color_;
 
 protected:// 親子付け情報-----------------------------------------------------------

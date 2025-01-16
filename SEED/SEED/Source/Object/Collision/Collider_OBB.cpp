@@ -146,7 +146,9 @@ void Collider_OBB::CheckCollision(Collider* collider){
         break;
     }
     }
-
+    if(collisionData.isCollide){
+        collidedPosition_ = collider->GetWoarldTranslate();
+    }
 }
 
 

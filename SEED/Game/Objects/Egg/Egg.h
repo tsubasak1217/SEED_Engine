@@ -32,7 +32,11 @@ private:
 
     BaseObject* player_ = nullptr;
 
+    // 速度ベクトル (thrown された時に使用)
+    Vector3 velocity_;
+
     bool isBreak_ = false;
+    bool isThrown_ = false;
 
     float weight_ = 1.0f;
 public:// アクセッサ
@@ -41,5 +45,12 @@ public:// アクセッサ
 
     float GetWeight()const{ return weight_; }
 
+    bool GetIsThrown()const{ return isThrown_; }
+    void SetIsThrown(bool _isThrown){ isThrown_ = _isThrown; }
+
     bool GetIsBreak()const{ return isBreak_; }
+
+    const Vector3& GetVelocity()const{ return velocity_; }
+    void SetVelocity(const Vector3& _velocity){ velocity_ = _velocity; }
+
 };

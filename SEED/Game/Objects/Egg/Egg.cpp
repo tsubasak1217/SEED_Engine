@@ -44,8 +44,20 @@ void Egg::Update(){
     EditCollider();
 }
 
-void Egg::OnCollision(const BaseObject* other,ObjectType objectType){
-    other; objectType;
+void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
+    if(objectType == ObjectType::Field){
+
+        if(!isThrown_){
+            return;
+        }
+
+        // 衝突した場所の真下に落ちる
+        // XZ を固定
+        SetTranslateX(prePos_.x);
+        SetTranslateZ(prePos_.z);
+
+        velocity_.y = -1.0f;
+    }
 }
 
 void Egg::Break(){

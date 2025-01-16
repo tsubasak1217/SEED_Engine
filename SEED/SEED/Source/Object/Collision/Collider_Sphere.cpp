@@ -196,7 +196,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
         break;
     }
     }
-
+    if(collisionData.isCollide){
+        collidedPosition_ = collider->GetWoarldTranslate();
+    }
 }
 
 

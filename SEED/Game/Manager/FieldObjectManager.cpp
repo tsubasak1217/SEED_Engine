@@ -2,6 +2,7 @@
 #include "CollisionManaer/CollisionManager.h"
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
 
 ////////////////////////////////////////////////////////////////////////
 // 更新関数
@@ -10,6 +11,7 @@ void FieldObjectManager::Update(){
     for(auto& fieldObject : fieldObjects_){
         // 通常のオブジェクト
         fieldObject->Update();
+        fieldObject->EditCollider();
     }
 }
 
@@ -31,7 +33,6 @@ void FieldObjectManager::BeginFrame(){
     }
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 ////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,6 @@ void FieldObjectManager::EndFrame(){
         fieldObject->EndFrame();
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 // すべてのオブジェクトをクリア

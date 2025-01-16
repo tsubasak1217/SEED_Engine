@@ -203,7 +203,7 @@ void Collider_OBB::Edit(){
     // 半径
     ImGui::Text("------ HalfSie ------");
     ImGui::Indent();
-    ImGui::DragFloat3(std::string("HalfSie" + colliderID).c_str(), &body_.halfSize.x, 0.025f);
+    ImGui::DragFloat3(std::string("HalfSie" + colliderID).c_str(), &local_.halfSize.x, 0.025f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));

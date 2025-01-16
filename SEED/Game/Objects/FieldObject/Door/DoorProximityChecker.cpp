@@ -6,18 +6,18 @@
 
 // engine
 #include "../../Manager/EventManager/EventManager.h"
-#include "../../Manager/FieldObjectManager.h"
+#include "../../Manager/StageManager.h"
 
 //lib
 #include "../lib/Functions/myFunc/LocalFunc.h"
 
 DoorProximityChecker::DoorProximityChecker(
     EventManager& eventManager,
-    FieldObjectManager& fieldObjectManager,
+    StageManager& fieldObjectManager,
     Player& player
 )
     : eventManager_(eventManager)
-    , fieldObjectManager_(fieldObjectManager)
+    , stageManager_(fieldObjectManager)
     , player_(player){}
 
 void DoorProximityChecker::Update(){
@@ -27,7 +27,7 @@ void DoorProximityChecker::Update(){
 void DoorProximityChecker::CheckAndNotify(){
     Vector3 playerPos = player_.GetWorldTranslate();
 
-    std::vector<FieldObject_Door*> doors = fieldObjectManager_.GetObjectsOfType<FieldObject_Door>();
+    std::vector<FieldObject_Door*> doors = stageManager_.GetStages()[stageManager_.GetCurrentStageNo()]->GetObjectsOfType<FieldObject_Door>();
     for (auto& door : doors){
         if (!door) continue;  // ドアがnullptrならスキップ
 

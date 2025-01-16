@@ -29,7 +29,7 @@
 #include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Editor/FieldEditor.h"
-#include "../Game/Manager/FieldObjectManager.h"
+#include "../Game/Manager/StageManager.h"
 
 class Scene_Game : public Scene_Base
 {
@@ -53,7 +53,6 @@ private:
     // Objects
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
-
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
     // Enemy
@@ -66,6 +65,6 @@ private:
     // Field
     EventManager eventManager_;
     std::unique_ptr<FieldEditor> fieldEditor_;
-    std::unique_ptr<FieldObjectManager> fieldObjectManager_;
+    std::unique_ptr<StageManager> stageManager_;
     std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
 };

@@ -13,9 +13,9 @@
 
 class Player;
 
-class FieldObjectManager{
+class Stage{
 public:
-    FieldObjectManager(ISubject& subject) : subject_(subject){}
+    Stage(ISubject& subject) : subject_(subject){}
 
     void Update();
     void Draw();
@@ -33,13 +33,15 @@ public:
     void HandOverColliders();
 
 public:
-    Vector3 GetStartPosition()const;
 
+    Vector3 GetStartPosition()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
+    void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
 
     template <typename T>
     std::vector<T*> GetObjectsOfType();
 private:
+    int32_t stageNo_ = -1;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     ISubject& subject_;
 
@@ -50,7 +52,7 @@ private:
 //  テンプレート関数
 ////////////////////////////////////////////////////////////////////
 template<typename T>
-inline std::vector<T*> FieldObjectManager::GetObjectsOfType(){
+inline std::vector<T*> Stage::GetObjectsOfType(){
     std::vector<T*> result;
     for (auto& objPtr : fieldObjects_){
         if (auto* casted = dynamic_cast< T* >(objPtr.get())){

@@ -24,7 +24,7 @@ public:
     void UnregisterObserver(IObserver* observer) override;
     void Notify(const std::string& event, void* data = nullptr) override;
 
-    void OnCollision(Collider* collider, ObjectType objectType);
+    void OnCollision(const BaseObject* other, ObjectType objectType)override;
 
     void Toggle();  // スイッチの状態をトグルする
 

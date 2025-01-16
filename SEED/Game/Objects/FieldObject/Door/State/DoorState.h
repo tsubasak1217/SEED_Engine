@@ -3,6 +3,8 @@
 class FieldObject_Door;  // 前方宣言
 
 class DoorState{
+
+
 public:
     virtual ~DoorState() = default;
     virtual void Enter(FieldObject_Door* door) = 0;

@@ -133,7 +133,7 @@ void PlayerState_Move::ManageState()
     }
 
     // 卵 を 投げる状態へ
-    if (Input::IsPressPadButton(PAD_BUTTON::RB))
+    if (Input::IsTriggerPadButton(PAD_BUTTON::LT))
     {
         Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
         if(pPlayer_->GetEggManager()->GetIsEmpty()){

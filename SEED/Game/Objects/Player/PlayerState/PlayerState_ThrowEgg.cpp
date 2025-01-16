@@ -4,6 +4,7 @@
 #include "PlayerState_Idle.h"
 //eggState
 #include "Egg/State/EggState_Thrown.h"
+#include "Egg/State/EggState_Follow.h"
 #include "Egg/State/EggState_Idle.h"
 // stl
 #include <algorithm>
@@ -37,6 +38,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
     JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
+    JsonCoordinator::RegisterItem("Player","pressForcus",pressForcus_);
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(!pPlayer){
@@ -90,11 +92,32 @@ void PlayerState_ThrowEgg::Draw(){
 
 void PlayerState_ThrowEgg::ManageState(){
     // 卵 を 投げる状態へ
-    if(Input::IsReleasePadButton(PAD_BUTTON::RB)){
-        throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
-
-        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
-        return;
+    if(pressForcus_){
+        if(Input::IsPressPadButton(PAD_BUTTON::LT)){
+            if(Input::IsPressPadButton(PAD_BUTTON::RT)){
+                //投げる
+                throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
+                pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
+                return;
+            }
+        } else{
+            // もとに戻す
+            throwEgg_->ChangeState(new EggState_Follow(throwEgg_,pCharacter_));
+            pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
+            return;
+        }
+    } else{ // 切り替え
+        if(Input::IsTriggerPadButton(PAD_BUTTON::LT)){
+            // もとに戻す
+            throwEgg_->ChangeState(new EggState_Follow(throwEgg_,pCharacter_));
+            pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
+            return;
+        }
+        if(Input::IsPressPadButton(PAD_BUTTON::RT)){
+            throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
+            pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
+            return;
+        }
     }
 }
 

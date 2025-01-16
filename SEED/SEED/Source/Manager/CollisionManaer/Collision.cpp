@@ -981,13 +981,26 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
         convertedSphere->GetPreSphere()
     };
 
+    // 早期リターンチェック
+    float dist[2] = {
+        MyMath::Length(obb[1].center - sphere[0].center),
+        MyMath::Length(obb[0].center - sphere[0].center)
+    };
+
+    float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
+    float maxHalfSize = (std::max)({ obb[0].halfSize.x,obb[0].halfSize.y,obb[0].halfSize.z });
+    float extension = 1.0f;
+    float sum = maxRadius + maxHalfSize + extension;
+    if(dist[0] > sum && dist[1] > sum){
+        return result;
+    }
+
     // 移動ベクトルを計算
     Vector3 obbMove = obb[1].center - obb[0].center;
 
     // 静止拡張OBB vs 線分の当たり判定に変換
     OBB forJudgeOBB = obb[0];
     forJudgeOBB.center = obb[1].center;
-    float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
     forJudgeOBB.halfSize += Vector3(maxRadius, maxRadius, maxRadius);
 
     // 線分を求める
@@ -1035,12 +1048,25 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
         convertedSphere->GetPreSphere()
     };
 
+    // 早期リターンチェック
+    float dist[2] = {
+        MyMath::Length(obb[1].center - sphere[0].center),
+        MyMath::Length(obb[0].center - sphere[0].center)
+    };
+
+    float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
+    float maxHalfSize = (std::max)({ obb[0].halfSize.x,obb[0].halfSize.y,obb[0].halfSize.z });
+    float extension = 1.0f;
+    float sum = maxRadius + maxHalfSize + extension;
+    if(dist[0] > sum && dist[1] > sum){
+        return result;
+    }
+
     // 移動ベクトルを計算
     Vector3 sphereMove = sphere[1].center - sphere[0].center;
 
     // 静止拡張OBB vs 線分の当たり判定に変換
     OBB forJudgeOBB = obb[0];
-    float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
     forJudgeOBB.halfSize += Vector3(maxRadius, maxRadius, maxRadius);
 
     // 線分を求める

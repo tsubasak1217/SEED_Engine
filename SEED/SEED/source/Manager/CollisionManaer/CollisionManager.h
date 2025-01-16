@@ -41,5 +41,7 @@ private:// メンバ変数------------------------------------------------------
 
     // コライダー辞書
     std::unordered_map<uint32_t, Collider*> colliderList_;
-    std::vector<Collider*>colliders_;
+    // 種類ごとに分ける
+    std::vector<Collider*>fieldColliders_;
+    std::vector<Collider*>onFieldObjectColliders_;
 };

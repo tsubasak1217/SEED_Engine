@@ -66,9 +66,9 @@ void CollisionManager::CheckCollision(){
 
 
     // 当たり判定
-    for(int i = 0; i < instance_->colliders_.size(); i++){
-        for(int j = i + 1; j < instance_->colliders_.size(); j++){
-            instance_->colliders_[i]->CheckCollision(instance_->colliders_[j]);
+    for(int i = 0; i < instance_->onFieldObjectColliders_.size(); i++){
+        for(int j = 0; j < instance_->fieldColliders_.size(); j++){
+            instance_->onFieldObjectColliders_[i]->CheckCollision(instance_->fieldColliders_[j]);
         }
     }
    
@@ -84,7 +84,8 @@ void CollisionManager::CheckCollision(){
 void CollisionManager::ResetColliderList(){
     instance_->octree_->ResetColiderList();
     instance_->colliderList_.clear();
-    instance_->colliders_.clear();
+    instance_->fieldColliders_.clear();
+    instance_->onFieldObjectColliders_.clear();
 }
 
 void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
@@ -95,6 +96,15 @@ void CollisionManager::AddCollider(Collider* object){
     if(instance_->colliderList_.find(object->GetColliderID()) == instance_->colliderList_.end()){
         //instance_->octree_->AddCollider(object);
         instance_->colliderList_[object->GetColliderID()] = object;
-        instance_->colliders_.push_back(object);
+
+        // フィールドの場合
+        if((int)object->GetObjectType() & (int)ObjectType::Field){
+            instance_->fieldColliders_.push_back(object);
+
+        } // フィールド上のオブジェクトの場合(フィールドと当たり判定を取る場合)
+        else if ((int)object->GetObjectType() & (int)ObjectType::OnFieldObject)
+        {
+            instance_->onFieldObjectColliders_.push_back(object);
+        }
     }
 }

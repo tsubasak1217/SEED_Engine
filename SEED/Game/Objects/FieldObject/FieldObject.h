@@ -26,6 +26,7 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
+    void OnCollision(const BaseObject* other,ObjectType objectType)override;
 
     //--- getter / setter ---//
     Model* GetModel(){ return model_.get(); }
@@ -33,7 +34,6 @@ public:
     void SetFieldObjectType(uint32_t type){ fieldObjectType_ = type; }
 
     void SetPlayer(Player* player){ player_ = player; }
-
 
 protected:
     uint32_t fieldObjectType_;

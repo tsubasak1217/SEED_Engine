@@ -36,3 +36,7 @@ void FieldObject::Update(){
 void FieldObject::Draw(){
     BaseObject::Draw();
 }
+
+void FieldObject::OnCollision(
+    [[maybe_unused]] const BaseObject* other,
+    [[maybe_unused]] ObjectType objectType){}

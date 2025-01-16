@@ -198,7 +198,8 @@ void EnemyEditor::LoadEnemies(){
         int32_t   hp = std::get<int32_t>(*hpOpt);
 
         // 新しいEnemyを生成
-        auto newEnemy = std::make_unique<Enemy>(pEnemyManager_->GetPlayer());
+        //! TODO : Enemy Name を Editor で 編集,初期化時に Name を渡す
+        auto newEnemy = std::make_unique<Enemy>(pEnemyManager_,pEnemyManager_->GetPlayer(),"Default");
         newEnemy->SetPosition(pos);
         newEnemy->SetHP(hp);
 

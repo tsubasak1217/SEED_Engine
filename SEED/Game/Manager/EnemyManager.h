@@ -4,9 +4,11 @@
 #include "../Enemy/Enemy.h"
 
 //lib
-#include <vector>
-#include <memory>
 #include <cstdint>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 class Player;
 
@@ -28,7 +30,16 @@ public:
     void ClearAllEnemies(){ enemies_.clear(); }
     Player* GetPlayer()const{ return pPlayer_; }
 
+    const  std::vector<Vector3>* GetRoutinePoints(const std::string& routineName)const{
+        auto itr = routinePointsLibrary_.find(routineName);
+        if(itr == routinePointsLibrary_.end()){ assert(false); }
+        return &(itr->second);
+    }
 private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
+
+    // 固定移動 ポイント 
+    std::unordered_map<std::string,std::vector<Vector3>> routinePointsLibrary_;
+
     Player* pPlayer_ = nullptr;
 };

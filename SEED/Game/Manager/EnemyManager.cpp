@@ -29,7 +29,7 @@ void EnemyManager::Draw(){
 void EnemyManager::AddEnemy(){
     if (!pPlayer_){ assert(false); }
     //enemyの生成
-    auto newEnemy = std::make_unique<Enemy>(pPlayer_);
+    auto newEnemy = std::make_unique<Enemy>(this,pPlayer_,"Enemy");
     enemies_.emplace_back(std::move(newEnemy));
 }
 

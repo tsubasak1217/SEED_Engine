@@ -625,6 +625,12 @@
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1168,6 +1174,8 @@
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

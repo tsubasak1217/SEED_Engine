@@ -1,22 +1,27 @@
 #include "Enemy.h"
-#include "SEED.h"
-#include "EnemyState/EnemyState_Idle.h"
+
+//state
 #include "EnemyState/EnemyState_Down.h"
+#include "EnemyState/EnemyState_Idle.h"
+#include "EnemyState/EnemyState_RoutineMove.h"
+
+//manager
+#include "EnemyManager.h"
+
+//engine
+#include "SEED.h"
+//lib
+#include "JsonManager/JsonCoordinator.h"
 #include "ParticleManager/ParticleManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Enemy::Enemy(){
+Enemy::Enemy(EnemyManager* pManager,Player* pPlayer,const std::string& enemyName){
     className_ = "Enemy";
-    name_ = "Enemy";
-    Initialize();
-}
-
-Enemy::Enemy(Player* pPlayer){
-    className_ = "Enemy";
-    name_ = "Enemy";
+    name_ = enemyName;
     pPlayer_ = pPlayer;
+    pManager_ = pManager;
     Initialize();
 }
 
@@ -33,18 +38,22 @@ void Enemy::Initialize(){
     model_->isRotateWithQuaternion_ = false;
 
     // 状態の初期化
-    currentState_ = std::make_unique<EnemyState_Idle>("Enemy_Idle", this);
+    currentState_ = std::make_unique<EnemyState_RoutineMove>("Enemy_Idle",this);
 
     // コライダーの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
     InitColliders(ObjectType::Enemy);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
+    targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 
     // HP
     kMaxHP_ = 100;
     HP_ = kMaxHP_;
+
+    //! TODO : ユニーク ID から 読み込む
+    JsonCoordinator::RegisterItem(name_,"CanEate",canEat_);
+    JsonCoordinator::RegisterItem(name_,"ChasePlayer",cahsePlayer_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -56,7 +65,7 @@ void Enemy::Update(){
     // もし無敵時間があれば
     if(unrivalledTime_ > 0.0f){
         unrivalledTime_ -= ClockManager::DeltaTime();
-        unrivalledTime_ = std::clamp(unrivalledTime_, 0.0f, 10000.0f);
+        unrivalledTime_ = std::clamp(unrivalledTime_,0.0f,10000.0f);
     }
 
 }
@@ -76,11 +85,9 @@ void Enemy::Damage(int32_t damage){
     HP_ -= damage;
     isDamaged_ = true;
     if(HP_ <= 0){
-        ChangeState(new EnemyState_Down("Enemy_Down", this));
+        ChangeState(new EnemyState_Down("Enemy_Down",this));
     }
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////
 // コライダー関連
@@ -92,8 +99,8 @@ void Enemy::Damage(int32_t damage){
 // その他
 //////////////////////////////////////////////////////////////////////////
 float Enemy::GetDistanceToPlayer() const{
-    if(!pPlayer_){assert(false);}
-    return MyMath::Length(GetWorldTranslate(), pPlayer_->GetWorldTranslate());
+    if(!pPlayer_){ assert(false); }
+    return MyMath::Length(GetWorldTranslate(),pPlayer_->GetWorldTranslate());
 }
 
 
@@ -101,7 +108,7 @@ float Enemy::GetDistanceToPlayer() const{
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
 
-void Enemy::OnCollision(const BaseObject* other, ObjectType objectType){
+void Enemy::OnCollision(const BaseObject* other,ObjectType objectType){
 
     other;
 
@@ -118,14 +125,14 @@ void Enemy::OnCollision(const BaseObject* other, ObjectType objectType){
 
         if(preHP > (kMaxHP_ / 2) && HP_ <= (kMaxHP_ / 2)){
             // HPが半分以下になったら
-            ChangeState(new EnemyState_Down("Enemy_Down", this));
+            ChangeState(new EnemyState_Down("Enemy_Down",this));
         }
-        
+
         // 血しぶきを出す
-        ParticleManager::AddEffect("blood.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
-        ParticleManager::AddEffect("blood2.json", { 0.0f,3.0f,0.0f }, GetWorldMatPtr());
+        ParticleManager::AddEffect("blood.json",{0.0f,3.0f,0.0f},GetWorldMatPtr());
+        ParticleManager::AddEffect("blood2.json",{0.0f,3.0f,0.0f},GetWorldMatPtr());
 
         // カメラシェイクを設定する
-        SEED::SetCameraShake(0.5f, 0.5f, { 0.5f,0.5f,0.5f });
+        SEED::SetCameraShake(0.5f,0.5f,{0.5f,0.5f,0.5f});
     }
 }

@@ -113,6 +113,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
@@ -243,6 +245,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />

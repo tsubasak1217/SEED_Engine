@@ -15,7 +15,7 @@
 #include "CollisionManaer/Collision.h"
 
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 

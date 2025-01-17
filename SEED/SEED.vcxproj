@@ -178,7 +178,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp" />
+    <ClCompile Include="SEED\adapter\json\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
@@ -322,7 +322,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h" />
+    <ClInclude Include="SEED\adapter\json\JsonCoordinator.h" />
     <ClInclude Include="SEED\external\imgui\imconfig.h" />
     <ClInclude Include="SEED\external\imgui\imgui.h" />
     <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />

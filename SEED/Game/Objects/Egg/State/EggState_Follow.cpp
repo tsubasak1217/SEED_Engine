@@ -1,7 +1,7 @@
 #include "EggState_Follow.h"
 
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 
 //math
 #include "MyMath.h"

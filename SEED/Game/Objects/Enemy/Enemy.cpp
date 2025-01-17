@@ -11,7 +11,7 @@
 //engine
 #include "SEED.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 #include "ParticleManager/ParticleManager.h"
 
 //////////////////////////////////////////////////////////////////////////

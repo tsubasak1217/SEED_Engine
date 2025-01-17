@@ -418,7 +418,7 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp">
       <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp">
+    <ClCompile Include="SEED\adapter\json\JsonCoordinator.cpp">
       <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
@@ -894,7 +894,7 @@
     <ClInclude Include="SEED\lib\structs\ModelAnimation.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h">
+    <ClInclude Include="SEED\adapter\json\JsonCoordinator.h">
       <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Editor\FieldEditor.h">

@@ -4,7 +4,7 @@
 #include "../Manager/EnemyManager.h"
 
 // lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 #include "imgui.h"
 
 EnemyEditor::EnemyEditor(EnemyManager* manager)

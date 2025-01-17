@@ -4,7 +4,7 @@
 #include "../Egg.h"
 #include"Player/Player.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 
 const uint32_t EggManager::maxEggsSize_ = 10;
 

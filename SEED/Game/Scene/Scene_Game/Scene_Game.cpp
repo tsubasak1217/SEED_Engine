@@ -6,7 +6,7 @@
 #include "ParticleManager.h"
 #include "Scene_Title.h"
 #include "CameraManager/CameraManager.h"
-#include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //

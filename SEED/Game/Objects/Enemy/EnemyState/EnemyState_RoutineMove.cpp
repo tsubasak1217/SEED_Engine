@@ -9,7 +9,7 @@
 #include "EnemyManager.h"
 
 // lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 #include "ClockManager.h"
 
 EnemyState_RoutineMove::EnemyState_RoutineMove(const std::string& stateName,BaseCharacter* enemy){

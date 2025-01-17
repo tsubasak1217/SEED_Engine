@@ -6,7 +6,7 @@
 #include "Enemy/Enemy.h"
 
 // lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 #include "ClockManager.h"
 
 EnemyState_Chase::EnemyState_Chase(const std::string& stateName,BaseCharacter* enemy){

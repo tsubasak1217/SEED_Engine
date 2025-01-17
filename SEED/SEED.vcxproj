@@ -116,6 +116,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Manager\Stage.cpp" />
     <ClCompile Include="Game\Manager\StageManager.cpp" />
+    <ClCompile Include="Game\Manager\StageSelector.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
@@ -248,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Game\Manager\Stage.h" />
     <ClInclude Include="Game\Manager\StageManager.h" />
+    <ClInclude Include="Game\Manager\StageSelector.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />

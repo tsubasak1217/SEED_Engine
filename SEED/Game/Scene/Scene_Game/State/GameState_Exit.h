@@ -16,6 +16,7 @@ public:
     void Draw()override;
     void BeginFrame()override;
     void EndFrame()override;
+    void HandOverColliders()override;
 
 private:
 

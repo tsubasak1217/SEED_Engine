@@ -637,6 +637,9 @@
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Manager\StageSelector.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1182,6 +1185,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageSelector.h">
+      <Filter>Game\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

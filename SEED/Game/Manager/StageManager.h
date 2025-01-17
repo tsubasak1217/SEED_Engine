@@ -9,6 +9,7 @@ public:
     StageManager();
     StageManager(ISubject& subject);
     ~StageManager();
+    StageManager& operator =(StageManager&) = default;
 
 public:
     void Initialize();

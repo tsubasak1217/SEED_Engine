@@ -43,7 +43,7 @@ void Scene_Game::Initialize(){
 
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight_->direction_ = MyMath::Normalize({ 2.0f,1.0f,0.5f });
+    directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
     directionalLight_->intensity = 1.0f;
 
     ////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ void Scene_Game::Initialize(){
     Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
 
     // playerの初期位置を設定
-    player_->SetPosition({playerStartPos.x,playerStartPos.y+0.3f,playerStartPos.z});
+    player_->SetPosition({playerStartPos.x,playerStartPos.y + 0.3f,playerStartPos.z});
 
     // DoorProximityChecker の 初期化
     doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
@@ -107,8 +107,6 @@ void Scene_Game::Initialize(){
 
 
     player_->SetEggManager(eggManager_.get());
-
-
 
     fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 }
@@ -165,6 +163,19 @@ void Scene_Game::Update(){
 
     // フィールドの更新
     stageManager_->Update();
+    // Goal したら次のステージへ
+    if(stageManager_->IsGoalCurrentStage()){
+        stageManager_->SetNextStageNo();
+        if(stageManager_->GetCurrentStageNo() > stageManager_->GetStageCount()){
+            /// 全ステージクリア
+            // クリアシーンへ 
+        } else{
+            // 次のステージへ
+            Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
+            // 一旦瞬間移動
+            player_->SetPosition({playerStartPos.x,playerStartPos.y,playerStartPos.z});
+        }
+    }
 
     // ステージのエディター
     fieldColliderEditor_->Edit();

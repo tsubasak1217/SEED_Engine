@@ -5,6 +5,8 @@
 //local
 #include "../FieldObject/FieldObject.h"
 #include "../FieldObject/FieldObjectName.h"
+#include "FieldObject/Goal/FieldObject_Goal.h"
+#include "FieldObject/Start/FieldObject_Start.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"
@@ -15,7 +17,7 @@ class Player;
 
 class Stage{
 public:
-    Stage(ISubject& subject) : subject_(subject){}
+    Stage(ISubject& subject): subject_(subject){}
 
     void Update();
     void Draw();
@@ -36,16 +38,20 @@ public:
     void LoadFromJson(const std::string& filePath);
     void AddModel(
         uint32_t modelNameIndex,
-        const Vector3& scale = { 2.5f,2.5f,2.5f },
-        const Vector3& rotate = { 0.0f,0.0f,0.0f },
-        const Vector3& translate = { 0.0f,0.0f,0.0f }
+        const Vector3& scale = {2.5f,2.5f,2.5f},
+        const Vector3& rotate = {0.0f,0.0f,0.0f},
+        const Vector3& translate = {0.0f,0.0f,0.0f}
     );
 
 public:
-
     Vector3 GetStartPosition()const;
+
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
+
+    int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
+
+    bool isGoal()const{ return goalObject_ && goalObject_->IsGoal(); }
 
     template <typename T>
     std::vector<T*> GetObjectsOfType();
@@ -53,6 +59,11 @@ public:
 private:
     int32_t stageNo_ = -1;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
+
+    //特殊処理 をするため ポインターを個別で保持
+    FieldObject_Start* startObject_ = nullptr;
+    FieldObject_Goal* goalObject_ = nullptr;
+
     ISubject& subject_;
 
     Player* player_ = nullptr;
@@ -64,8 +75,8 @@ private:
 template<typename T>
 inline std::vector<T*> Stage::GetObjectsOfType(){
     std::vector<T*> result;
-    for (auto& objPtr : fieldObjects_){
-        if (auto* casted = dynamic_cast< T* >(objPtr.get())){
+    for(auto& objPtr : fieldObjects_){
+        if(auto* casted = dynamic_cast<T*>(objPtr.get())){
             result.push_back(casted);
         }
     }

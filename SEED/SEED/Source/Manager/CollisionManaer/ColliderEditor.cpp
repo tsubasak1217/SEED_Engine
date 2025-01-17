@@ -77,7 +77,6 @@ void ColliderEditor::Edit(){
             // コライダーの編集
             colliders_[i]->Edit();
 
-
             ImGui::Unindent();
 
             // アニメーションの編集

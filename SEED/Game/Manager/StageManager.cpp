@@ -49,7 +49,6 @@ void StageManager::Update(){
     for(auto& stage : stages_){
         stage->Update();
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////

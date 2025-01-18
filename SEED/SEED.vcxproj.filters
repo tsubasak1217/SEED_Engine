@@ -340,7 +340,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp">
@@ -798,7 +798,7 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h">
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h">
@@ -1052,9 +1052,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Base\ICharacterState.h">
       <Filter>Game\Objects\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\enums\LR.h">
-      <Filter>SEED\Lib\Enums</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
       <Filter>SEED\Lib\Shapes</Filter>

@@ -779,7 +779,7 @@ void PolygonManager::AddSprite(
         offsetData.resize(1);
         offsetData.back().push_back(OffsetData());
     }
-    drawData->indexCount += 4;
+    drawData->indexCount += 6;
 
     // カウントを更新
     if(isStaticDraw){

@@ -6,12 +6,12 @@
 #include "../Manager/StageSelector.h"
 
 // ゲームの基底ステート
-class GameState_Enter : public State_Base{
+class GameState_Select : public State_Base{
 
 public:
-    GameState_Enter() = default;
-    GameState_Enter(Scene_Base* pScene);
-    ~GameState_Enter()override;
+    GameState_Select() = default;
+    GameState_Select(Scene_Base* pScene);
+    ~GameState_Select()override;
     void Initialize()override;
     void Finalize()override;
     void Update()override;

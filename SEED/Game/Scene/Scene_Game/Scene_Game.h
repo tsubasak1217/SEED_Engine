@@ -68,4 +68,7 @@ private:
     EventManager eventManager_;
     std::unique_ptr<StageManager> stageManager_;
     std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
+
+    // Sprite
+    std::unique_ptr<Sprite> backSprite_ = nullptr;
 };

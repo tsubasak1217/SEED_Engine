@@ -165,7 +165,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
@@ -303,7 +303,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />

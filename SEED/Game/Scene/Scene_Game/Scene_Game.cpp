@@ -1,6 +1,6 @@
 #include "Scene_Game.h"
 #include <GameState_Play.h>
-#include <GameState_Enter.h>
+#include <GameState_Select.h>
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
@@ -17,7 +17,7 @@
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     Initialize();
-    ChangeState(new GameState_Enter(this));
+    ChangeState(new GameState_Select(this));
 };
 
 Scene_Game::~Scene_Game(){
@@ -74,6 +74,16 @@ void Scene_Game::Initialize(){
     // Player
     player_ = std::make_unique<Player>();
     player_->Initialize();
+
+    ////////////////////////////////////////////////////
+    // スプライトの初期化
+    ////////////////////////////////////////////////////
+
+    backSprite_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    backSprite_->size = kWindowSize;
+    backSprite_->color = MyMath::FloatColor(0,229,229,255);
+    backSprite_->drawLocation = DrawLocation::Back;
+    backSprite_->isStaticDraw = false;
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
@@ -166,6 +176,10 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
+    /*======================== スプライトの描画 =======================*/
+
+    backSprite_->Draw();
+
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトの情報を送る
@@ -175,7 +189,7 @@ void Scene_Game::Draw(){
     stageManager_->Draw();
 
     // グリッドの描画
-    SEED::DrawGrid();
+    //SEED::DrawGrid();
 
     // パーティクルの描画
     ParticleManager::Draw();

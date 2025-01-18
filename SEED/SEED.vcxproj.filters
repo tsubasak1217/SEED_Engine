@@ -640,6 +640,9 @@
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Manager\StageSelector.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -924,7 +927,7 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
-    <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
@@ -1185,6 +1188,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageSelector.h">
+      <Filter>Game\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />
   </ItemGroup>

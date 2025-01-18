@@ -117,6 +117,9 @@ void FieldEditor::PopupDecideOutputName(){
                 fileName += ".json";
             }
             SaveToJson(fileName, edittingStageIndex + 1);
+            // 成功ログの表示
+            MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
+
             ImGui::CloseCurrentPopup();
             ImGui::CloseCurrentPopup();
         }
@@ -347,6 +350,9 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
     case FIELDMODELNAME::FIELDMODEL_SWITCH:
         ReassignIDsForType<FieldObject_Switch>(objects);
         break;
+    case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
+        ReassignIDsForType<FieldObject_ViewPoint>(objects);
+        break;
     default:
         // 必要に応じてデフォルト処理を追加
         break;
@@ -405,7 +411,8 @@ void FieldEditor::ShowImGui(){
                 manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
             }
         }
-        ImGui::SameLine();
+
+        if(i % 6 != 5){ ImGui::SameLine(); }
         i++;
     }
     ImGui::NewLine();

@@ -16,8 +16,8 @@
 
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
-    ChangeState(new GameState_Play(this));
     Initialize();
+    ChangeState(new GameState_Enter(this));
 };
 
 Scene_Game::~Scene_Game(){
@@ -33,9 +33,30 @@ Scene_Game::~Scene_Game(){
 void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
-    //  モデル生成
+    // マネージャー初期化
     ////////////////////////////////////////////////////
-    player_ = std::make_unique<Player>();
+
+    // EventManager
+    stageManager_ = std::make_unique<StageManager>(eventManager_);
+
+    // PlayerCorpseManager
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
+
+    // EggManager
+    eggManager_ = std::make_unique<EggManager>();
+
+
+    ////////////////////////////////////////////////////
+    //  カメラ初期化
+    ////////////////////////////////////////////////////
+
+    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
+    SEED::GetCamera()->Update();
+
+    followCamera_ = std::make_unique<FollowCamera>();
+    CameraManager::AddCamera("follow", followCamera_.get());
+    SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -43,72 +64,49 @@ void Scene_Game::Initialize(){
 
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
+    directionalLight_->direction_ = MyMath::Normalize({ 2.0f,1.0f,0.5f });
     directionalLight_->intensity = 1.0f;
 
     ////////////////////////////////////////////////////
-    //  カメラ初期化
+    //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({0.0f,2.0f,-30.0f});
-    SEED::GetCamera()->Update();
-
-    followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow",followCamera_.get());
-    SEED::SetCamera("follow");
-
-    ////////////////////////////////////////////////////
-    // マネージャー初期化
-    ////////////////////////////////////////////////////
-
-    stageManager_ = std::make_unique<StageManager>(eventManager_);
-
-    ////////////////////////////////////////////////////
-    //  エディター初期化
-    ////////////////////////////////////////////////////
-
-    fieldEditor_ = std::make_unique<FieldEditor>(*stageManager_.get());
-    fieldEditor_->Initialize();
-
-    ////////////////////////////////////////////////////
-    //  親子付けなど
-    ////////////////////////////////////////////////////
-
-    // Player の 初期化
+    // Player
+    player_ = std::make_unique<Player>();
     player_->Initialize();
 
-    followCamera_->SetTarget(player_.get());
-    player_->SetFollowCameraPtr(followCamera_.get());
-
-    // PlayerCorpseManager の 初期化
-    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
-    playerCorpseManager_->Initialize();
-    player_->SetCorpseManager(playerCorpseManager_.get());
-    Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
-
-    // playerの初期位置を設定
-    player_->SetPosition({playerStartPos.x,playerStartPos.y + 0.3f,playerStartPos.z});
+    ////////////////////////////////////////////////////
+    //  他クラスの情報を必要とするクラスの初期化
+    ////////////////////////////////////////////////////
 
     // DoorProximityChecker の 初期化
-    doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
-                                                                   *stageManager_.get(),
-                                                                   *player_.get());
-
-    // EggManager の 初期化
-    eggManager_ = std::make_unique<EggManager>();
-    eggManager_->SetPlayer(player_.get());
-    eggManager_->Initialize();
+    doorProximityChecker_ =
+        std::make_unique<DoorProximityChecker>(
+            eventManager_,
+            *stageManager_.get(),
+            *player_.get()
+        );
 
     // EnemyManager の 初期化
     enemyManager_ = std::make_unique<EnemyManager>(player_.get());
 
-    // EnemyEditor の 初期化
-    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
 
+    /////////////////////////////////////////////////
+    //  関連付けや初期値の設定
+    /////////////////////////////////////////////////
 
+    // followCameraにplayerをセット
+    followCamera_->SetTarget(player_.get());
+
+    // playerに必要な情報をセット
+    player_->SetCorpseManager(playerCorpseManager_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
+    player_->SetPosition(StageManager::GetStartPos());
 
-    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
+    // eggManagerにplayerをセット
+    eggManager_->SetPlayer(player_.get());
+    eggManager_->Initialize();
 }
 
 void Scene_Game::Finalize(){}
@@ -126,58 +124,29 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f",ClockManager::FPS());
-    ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
-
-    fieldEditor_->ShowImGui();
-
-    if(fieldEditor_->GetIsEditing()){
-        SEED::SetCamera("debug");
-    } else{
-        SEED::SetCamera("follow");
-    }
-
-    enemyEditor_->ShowImGui();
-
 #endif
 
-    /*========================== Manager ============================*/
+    /*======================= 各状態固有の更新 ========================*/
+
+    if(currentState_){
+        currentState_->Update();
+    }
+
+    /*==================== 各オブジェクトの基本更新 =====================*/
 
     ParticleManager::Update();
-
-    /*========================= 各状態の更新 ==========================*/
-    currentState_->Update();
-
+    
     player_->Update();
-    //player_->EditCollider();
 
     eggManager_->Update();
     playerCorpseManager_->Update();
 
     enemyManager_->Update();
 
-    if(currentState_){
-        currentState_->Update();
-    }
-
     // フィールドの更新
     stageManager_->Update();
-    // Goal したら次のステージへ
-    if(stageManager_->IsGoalCurrentStage()){
-        stageManager_->SetNextStageNo();
-        if(stageManager_->GetCurrentStageNo() > stageManager_->GetStageCount()){
-            /// 全ステージクリア
-            // クリアシーンへ 
-        } else{
-            // 次のステージへ
-            Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
-            player_->ToClearStageState(playerStartPos);
-        }
-    }
-
-    // ステージのエディター
-    fieldColliderEditor_->Edit();
 
     // ドアとの距離をチェックし、近ければイベント発行
     doorProximityChecker_->Update();
@@ -190,6 +159,14 @@ void Scene_Game::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw(){
+
+    /*======================= 各状態固有の描画 ========================*/
+
+    if(currentState_){
+        currentState_->Draw();
+    }
+
+    /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトの情報を送る
     directionalLight_->SendData();
@@ -233,6 +210,11 @@ void Scene_Game::EndFrame(){
     player_->EndFrame();
     eggManager_->EndFrame();
     stageManager_->EndFrame();
+
+    // ステージが変わったらプレイヤーの位置を変更
+    if(StageManager::IsStageChanged()){
+        player_->SetPosition(StageManager::GetStartPos());
+    }
 }
 
 
@@ -243,7 +225,6 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
-    fieldColliderEditor_->HandOverColliders();
     eggManager_->HandOverColliders();
     stageManager_->HandOverColliders();
 }

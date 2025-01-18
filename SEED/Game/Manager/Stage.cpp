@@ -1,14 +1,5 @@
 #include "Stage.h"
 #include "CollisionManaer/CollisionManager.h"
-// FieldObject
-#include "FieldObject/Door/FieldObject_Door.h"
-#include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
-#include "FieldObject/Soil/FieldObject_Soil.h"
-#include "FieldObject/Sphere/FieldObject_Sphere.h"
-#include "FieldObject/Start/FieldObject_Start.h"
-#include "FieldObject/Goal/FieldObject_Goal.h"
-#include "FieldObject/Switch/FieldObject_Switch.h"
-#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //lib
 #include <nlohmann/json.hpp>
@@ -115,6 +106,19 @@ Vector3 Stage::GetStartPosition() const{
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
     return Vector3{0.0f,0.0f,0.0f};
 }
+
+FieldObject_ViewPoint* Stage::GetViewPoint() const{
+    for(const auto& obj : fieldObjects_){
+        // FieldObject_Start 型へのキャストを試みる
+        if(auto* viewPoint = dynamic_cast<FieldObject_ViewPoint*>(obj.get())){
+            // スタートオブジェクトが見つかったら位置を返す
+            return viewPoint;
+        }
+    }
+
+    return nullptr;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////

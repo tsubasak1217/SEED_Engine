@@ -65,7 +65,6 @@
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)Game\Objects\Enums\;$(ProjectDir)Game\Objects\;$(ProjectDir)SEED\lib\enums\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -116,6 +115,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Manager\Stage.cpp" />
     <ClCompile Include="Game\Manager\StageManager.cpp" />
+    <ClCompile Include="Game\Manager\StageSelector.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
@@ -249,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Game\Manager\Stage.h" />
     <ClInclude Include="Game\Manager\StageManager.h" />
+    <ClInclude Include="Game\Manager\StageSelector.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
@@ -312,7 +313,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
     <ClInclude Include="SEED\lib\patterns\ISubject.h" />
     <ClInclude Include="SEED\lib\patterns\IObserver.h" />
-    <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />

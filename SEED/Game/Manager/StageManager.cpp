@@ -10,6 +10,13 @@
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
+///////////////////////////////////////////////////////////////////////
+// 静的メンバ変数
+///////////////////////////////////////////////////////////////////////
+int32_t StageManager::currentStageNo_ = 0;
+std::array<std::unique_ptr<Stage>, StageManager::kStageCount_> StageManager::stages_;
+int32_t StageManager::preStageNo_ = 0;
+bool StageManager::isPlaying_ = false;
 
 ///////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -65,6 +72,9 @@ void StageManager::Draw(){
 // フレーム開始時の処理
 ///////////////////////////////////////////////////////////////////////
 void StageManager::BeginFrame(){
+
+    preStageNo_ = currentStageNo_;
+
     for(auto& stage : stages_){
         stage->BeginFrame();
     }
@@ -88,6 +98,14 @@ void StageManager::HandOverColliders(){
 }
 
 ///////////////////////////////////////////////////////////////////////
+// ステージを変更する
+///////////////////////////////////////////////////////////////////////
+void StageManager::StepStage(int32_t step){
+    currentStageNo_ += step;
+    currentStageNo_ = std::clamp(currentStageNo_, 0, kStageCount_ - 1);
+}
+
+///////////////////////////////////////////////////////////////////////
 // ステージの読み込み
 ///////////////////////////////////////////////////////////////////////
 void StageManager::LoadStages(){
@@ -96,4 +114,11 @@ void StageManager::LoadStages(){
         std::string filepath = "resources/jsons/Stages/stage_" + std::to_string(i + 1) + ".json";
         stages_[i]->LoadFromJson(filepath);
     }
+}
+
+///////////////////////////////////////////////////////////////////////
+// スタート地点の取得
+///////////////////////////////////////////////////////////////////////
+Vector3 StageManager::GetStartPos(){
+    return stages_[currentStageNo_]->GetStartPosition();
 }

@@ -1,5 +1,6 @@
 #include <GameState_Play.h>
 #include <Scene_Game.h>
+#include "StageManager.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -8,7 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 GameState_Play::GameState_Play(Scene_Base* pScene) : State_Base(pScene){
-
+    pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
+    Initialize();
 }
 
 GameState_Play::~GameState_Play(){}
@@ -18,7 +20,24 @@ GameState_Play::~GameState_Play(){}
 // 初期化処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::Initialize(){}
+void GameState_Play::Initialize(){
+    // FieldEditor
+    fieldEditor_ = std::make_unique<FieldEditor>(pGameScene_->Get_StageManager());
+    fieldEditor_->Initialize();
+
+    // FieldColliderEditor
+    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field", nullptr);
+
+    // EnemyEditor
+    enemyEditor_ = std::make_unique<EnemyEditor>(pGameScene_->Get_pEnemyManager());
+
+    // プレイヤーの初期位置
+    pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
+    pGameScene_->Get_pPlayer()->SetIsMovable(true);
+
+    //
+    pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -32,7 +51,25 @@ void GameState_Play::Finalize(){}
 // 更新処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::Update(){}
+void GameState_Play::Update(){
+#ifdef _DEBUG
+    // ステージのエディター
+    fieldEditor_->ShowImGui();
+
+    if(fieldEditor_->GetIsEditing()){
+        SEED::SetCamera("debug");
+    } else{
+        SEED::SetCamera("follow");
+    }
+
+    // フィールドのコライダーエディター
+    fieldColliderEditor_->Edit();
+
+    // 敵のエディター
+    enemyEditor_->ShowImGui();
+
+#endif // _DEBUG
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -54,3 +91,19 @@ void GameState_Play::BeginFrame(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::EndFrame(){}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// コライダーをCollisionManagerに渡す
+//
+////////////////////////////////////////////////////////////////////////////////////////
+void GameState_Play::HandOverColliders(){
+    fieldColliderEditor_->HandOverColliders();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// ステート管理
+//
+////////////////////////////////////////////////////////////////////////////////////////
+void GameState_Play::ManageState(){}

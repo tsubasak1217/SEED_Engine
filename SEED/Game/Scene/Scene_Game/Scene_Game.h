@@ -28,7 +28,6 @@
 // manager
 #include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
-#include "../Game/Editor/FieldEditor.h"
 #include "../Game/Manager/StageManager.h"
 
 class Scene_Game : public Scene_Base
@@ -46,25 +45,27 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
-private:
-    // Light
-    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+public:
+    StageManager* Get_pStageManager(){ return stageManager_.get(); }
+    StageManager& Get_StageManager(){ return *stageManager_; }
+    EnemyManager* Get_pEnemyManager(){ return enemyManager_.get(); }
+    EnemyManager& Get_EnemyManager(){ return *enemyManager_; }
+    FollowCamera* Get_pCamera(){ return followCamera_.get(); }
+    Player* Get_pPlayer(){ return player_.get(); }
 
-    // Objects
+private:
+    // EngineObjects
+    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+
+    // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
-    // Enemy
+    // Manager
     std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
-    std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
-
-    std::unique_ptr<ColliderEditor> fieldColliderEditor_;
-    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
-
-    // Field
     EventManager eventManager_;
-    std::unique_ptr<FieldEditor> fieldEditor_;
     std::unique_ptr<StageManager> stageManager_;
     std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
 };

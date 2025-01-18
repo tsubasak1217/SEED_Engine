@@ -1,4 +1,5 @@
 #include "FieldObject_Goal.h"
+#include "StageManager.h"
 
 uint32_t FieldObject_Goal::nextFieldObjectID_ = 1;
 
@@ -47,8 +48,14 @@ void FieldObject_Goal::Update(){
     FieldObject::Update();
 }
 
-void FieldObject_Goal::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
+
+////////////////////////////////////////////////////////////////////////////////////////
+//  衝突処理
+////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Goal::OnCollision(const BaseObject* other, ObjectType objectType){
+    other;
     if(objectType == ObjectType::Player){
-        isGoal_ = true;
+        // ゴールしたことを通知
+        StageManager::StepStage(1);
     }
 }

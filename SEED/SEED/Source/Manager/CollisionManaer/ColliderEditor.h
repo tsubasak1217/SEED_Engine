@@ -47,4 +47,6 @@ private:
     std::vector<std::unique_ptr<Collider>>colliders_;
     // ロードしたコライダーのデータ
     static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_;
+    static std::vector<std::string> colliderFileNames_;
+    int32_t selectedColliderIndex_ = 0;
 };

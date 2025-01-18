@@ -15,6 +15,7 @@ public:
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
     virtual void HandOverColliders() = 0;
+    virtual void ManageState();
 
 public:
     void ChangeScene(Scene_Base* nextScene);

@@ -17,6 +17,7 @@ public:
     void BeginFrame()override;
     void EndFrame()override;
     void HandOverColliders()override;
+    void ManageState()override;
 
 private:
 

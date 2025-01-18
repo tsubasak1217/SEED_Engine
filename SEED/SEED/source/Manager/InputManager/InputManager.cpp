@@ -503,6 +503,28 @@ Vector2 Input::GetStickValue(LR stick, uint8_t padNumber, PAD_STATE padState){
 }
 
 
+bool Input::IsTriggerStick(LR stick_LorR, DIRECTION direction, float border,uint8_t padNumber ){
+    Vector2 stickValue[2] = {
+        GetStickValue(stick_LorR, padNumber,PAD_STATE::CURRENT),
+        GetStickValue(stick_LorR, padNumber,PAD_STATE::BEFORE)
+    };
+
+    // 方向によって判定
+    switch(direction){
+    case DIRECTION::UP:
+        return stickValue[0].y >= border && stickValue[1].y < border;
+    case DIRECTION::DOWN:
+        return stickValue[0].y <= -border && stickValue[1].y > -border;
+    case DIRECTION::LEFT:
+        return stickValue[0].x <= -border && stickValue[1].x > -border;
+    case DIRECTION::RIGHT:
+        return stickValue[0].x >= border && stickValue[1].x < border;
+    default:
+        return false;
+    }
+}
+
+
 
 
 /*********************** 内部で使うやつ *********************/

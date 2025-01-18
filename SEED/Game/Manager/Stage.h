@@ -6,6 +6,16 @@
 #include "../FieldObject/FieldObject.h"
 #include "../FieldObject/FieldObjectName.h"
 
+// FieldObject
+#include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
+#include "FieldObject/Soil/FieldObject_Soil.h"
+#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Goal/FieldObject_Goal.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
+
 // lib
 #include "../lib/patterns/ISubject.h"
 #include <vector>
@@ -44,6 +54,7 @@ public:
 public:
 
     Vector3 GetStartPosition()const;
+    FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
 

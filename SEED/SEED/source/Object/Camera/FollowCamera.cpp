@@ -41,24 +41,27 @@ void FollowCamera::Update(){
     UpdateAngle();
 
     // カメラの位置を設定
-    Vector3 targetPos = Vector3(0.0f, 0.0f, 0.0f);
-    if(target_){ targetPos = target_->GetTargetPos(); }
+    if(target_){ aimTargetPos_ = target_->GetTargetPos(); }
+    targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * 0.15f * ClockManager::TimeRate();
 
     // カメラのオフセットベクトルを計算
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
 
     // カメラの位置を設定
-    aimPosition_ = targetPos + (offsetVec * distance_);
+    aimPosition_ = targetPos_ + (offsetVec * distance_);
     transform_.translate_ += (aimPosition_ - transform_.translate_) * 0.15f * ClockManager::TimeRate();
 
     // 差分ベクトルから角度を計算
-    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos - transform_.translate_));
+    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
 
 void FollowCamera::UpdateAngle(){
+
     // カメラの角度を更新
-    theta_ += -angleInput_.Value().x * rotateSpeed_ * ClockManager::TimeRate();
-    phi_ += angleInput_.Value().y * rotateSpeed_ * ClockManager::TimeRate();
+    if(isInputActive_){
+        theta_ += -angleInput_.Value().x * rotateSpeed_ * ClockManager::TimeRate();
+        phi_ += angleInput_.Value().y * rotateSpeed_ * ClockManager::TimeRate();
+    }
 
     // 角度の制限
     phi_ = std::clamp(phi_, kMinPhi_, kMaxPhi_);

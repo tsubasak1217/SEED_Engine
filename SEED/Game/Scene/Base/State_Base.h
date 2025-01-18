@@ -16,6 +16,7 @@ public:
     virtual void BeginFrame() = 0;
     virtual void EndFrame() = 0;
     virtual void HandOverColliders() = 0;
+    virtual void ManageState() = 0;
 
 protected:
     Scene_Base* pScene_ = nullptr;

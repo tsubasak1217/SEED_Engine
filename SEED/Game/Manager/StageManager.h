@@ -21,6 +21,7 @@ public:
 
 public:
     void HandOverColliders();
+    void StepStage(int32_t step);
 
 private:
     void LoadStages();
@@ -33,6 +34,7 @@ private:
 public:
     int32_t GetStageCount()const{ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
+    Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
     int32_t GetCurrentStageNo()const{ return currentStageNo_; }
     void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
 };

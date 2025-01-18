@@ -68,6 +68,7 @@ void SceneManager::BeginFrame(){
 ///////////////////////////////////////////////////////////////////////////////
 void SceneManager::EndFrame(){
     pScene_->EndFrame();
+    pScene_->ManageState();
 }
 
 

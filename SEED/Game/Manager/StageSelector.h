@@ -15,11 +15,20 @@ public:
     void BeginFrame();
     void EndFrame();
 
+private:
+    void Select();
+    void CameraUpdate();
+    void DecideStage();
+
 public:
     void SetStageManager(StageManager* stageManager){ pStageManager_ = stageManager; }
     void SetCamera(FollowCamera* camera){ pCamera_ = camera; }
+    bool GetIsDecided(){ return isDecided_; }
 
 private:
     StageManager* pStageManager_;
     FollowCamera* pCamera_;
+
+private:
+    bool isDecided_ = false;
 };

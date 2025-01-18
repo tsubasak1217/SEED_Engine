@@ -51,6 +51,7 @@ public:
     EnemyManager* Get_pEnemyManager(){ return enemyManager_.get(); }
     EnemyManager& Get_EnemyManager(){ return *enemyManager_; }
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
+    Player* Get_pPlayer(){ return player_.get(); }
 
 private:
     // EngineObjects

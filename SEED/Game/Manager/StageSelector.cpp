@@ -1,5 +1,6 @@
 #include "StageSelector.h"
 #include "InputManager/InputManager.h"
+#include "ClockManager.h"
 
 ///////////////////////////////////////////////////////////////////////////
 // 初期化処理
@@ -15,7 +16,9 @@ void StageSelector::Finalize(){}
 // 更新処理
 ///////////////////////////////////////////////////////////////////////////
 void StageSelector::Update(){
-
+    Select();
+    CameraUpdate();
+    DecideStage();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -32,3 +35,48 @@ void StageSelector::BeginFrame(){}
 // フレーム終了時の処理
 ///////////////////////////////////////////////////////////////////////////
 void StageSelector::EndFrame(){}
+
+///////////////////////////////////////////////////////////////////////////
+// ステージ選択処理
+///////////////////////////////////////////////////////////////////////////
+void StageSelector::Select(){
+
+    // スティックの入力からステージを選択
+    if(Input::IsTriggerStick(LR::LEFT, DIRECTION::RIGHT)){
+        pStageManager_->StepStage(1);
+        pCamera_->SetPhi(3.14f * 0.3f);
+        pCamera_->SetDistance(80.0f);
+    } else if(Input::IsTriggerStick(LR::LEFT, DIRECTION::LEFT)){
+        pStageManager_->StepStage(-1);
+        pCamera_->SetPhi(3.14f * 0.3f);
+        pCamera_->SetDistance(80.0f);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
+// カメラの更新
+///////////////////////////////////////////////////////////////////////////
+void StageSelector::CameraUpdate(){
+
+    static float additionTheta = 3.14f / 360.0f;
+
+    // ステージから注目点を取得
+    BaseObject* pTarget = pStageManager_->GetCurrentStage()->GetViewPoint();
+
+    // 注目点をカメラにセット
+    if(pTarget){
+        pCamera_->SetTarget(pTarget);
+    }
+
+    // カメラの角度を変更
+    pCamera_->AddTheta(additionTheta * ClockManager::TimeRate());
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ステージの決定
+///////////////////////////////////////////////////////////////////////////
+void StageSelector::DecideStage(){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
+        isDecided_ = true;
+    }
+}

@@ -638,7 +638,7 @@
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\StageSelector.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -924,7 +924,7 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
-    <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />

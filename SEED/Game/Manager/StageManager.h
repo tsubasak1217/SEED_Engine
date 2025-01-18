@@ -21,20 +21,25 @@ public:
 
 public:
     void HandOverColliders();
-    void StepStage(int32_t step);
+    static void StepStage(int32_t step);
 
 private:
     void LoadStages();
 
 private:
     static const int32_t kStageCount_ = 10;
-    int32_t currentStageNo_ = 0;
-    std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
+    static int32_t currentStageNo_;
+    static int32_t preStageNo_;
+    static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
+    static bool isPlaying_;
 
 public:
     int32_t GetStageCount()const{ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
-    int32_t GetCurrentStageNo()const{ return currentStageNo_; }
-    void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
+    static int32_t GetCurrentStageNo(){ return currentStageNo_; }
+    static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
+    static Vector3 GetStartPos();
+    static bool IsStageChanged(){ return currentStageNo_ != preStageNo_; }
+    static bool IsPlaying(){ return isPlaying_; }
 };

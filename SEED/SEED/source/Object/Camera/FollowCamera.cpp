@@ -20,7 +20,7 @@ void FollowCamera::Initialize(){
     phi_ = 3.14f * 0.45f;
     rotateSpeed_ = 0.025f;
     // 限界角度
-    kMaxPhi_ = 3.14f * 0.5f;
+    kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
     angleInput_.Value = [](){return Input::GetStickValue(LR::RIGHT); };

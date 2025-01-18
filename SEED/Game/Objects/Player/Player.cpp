@@ -94,12 +94,14 @@ void Player::Spawn(const Vector3 &pos)
 //////////////////////////////////////////////////////////////////////////
 void Player::HandleMove(const Vector3 &acceleration)
 {
-    // 移動
-    model_->translate_ += acceleration;
+    if(isMovable_){
+        // 移動
+        model_->translate_ += acceleration;
 
-    // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
-    model_->UpdateMatrix();
+        // 移動制限
+        model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+        model_->UpdateMatrix();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

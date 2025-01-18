@@ -10,9 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 GameState_Enter::GameState_Enter(Scene_Base* pScene) : State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
-    stageSelector_ = std::make_unique<StageSelector>();
-    stageSelector_->SetStageManager(pGameScene_->Get_pStageManager());
-    stageSelector_->SetCamera(pGameScene_->Get_pCamera());
+    Initialize();
 }
 
 GameState_Enter::~GameState_Enter(){}
@@ -22,7 +20,14 @@ GameState_Enter::~GameState_Enter(){}
 // 初期化処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Enter::Initialize(){}
+void GameState_Enter::Initialize(){
+    stageSelector_ = std::make_unique<StageSelector>();
+    stageSelector_->SetStageManager(pGameScene_->Get_pStageManager());
+    stageSelector_->SetCamera(pGameScene_->Get_pCamera());
+
+    // 操作フラグをfalseにしておく
+    pGameScene_->Get_pPlayer()->SetIsMovable(false);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //

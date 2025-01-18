@@ -56,6 +56,7 @@ public: // アクセッサ
         dropSpeed_ = 0.0f;
     }
     void SetJumpPower(float power){ jumpPower_ = power; }
+    void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
 
 protected: // パラメータ
     bool isAlive_ = true;
@@ -64,9 +65,10 @@ protected: // パラメータ
     bool isDamaged_ = false;
     float unrivalledTime_ = 0.0f;
 
-protected:// ジャンプ
+protected:// 移動関連
     bool isJump_ = false;
     float jumpPower_ = 120.0f / 60.0f;
+    bool isMovable_ = true;
 
 protected:// 状態管理用
     std::unique_ptr<ICharacterState> currentState_ = nullptr;

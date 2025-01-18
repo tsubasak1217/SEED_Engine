@@ -1,5 +1,6 @@
 #include <GameState_Play.h>
 #include <Scene_Game.h>
+#include "StageManager.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -31,8 +32,8 @@ void GameState_Play::Initialize(){
     enemyEditor_ = std::make_unique<EnemyEditor>(pGameScene_->Get_pEnemyManager());
 
     // プレイヤーの初期位置
-    Vector3 playerStartPos = pGameScene_->Get_pStageManager()->GetStages()[pGameScene_->Get_pStageManager()->GetCurrentStageNo()]->GetStartPosition();
-    pGameScene_->Get_pPlayer()->SetPosition({ playerStartPos.x,playerStartPos.y + 0.3f,playerStartPos.z });
+    pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
+    pGameScene_->Get_pPlayer()->SetIsMovable(true);
 
     //
     pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());

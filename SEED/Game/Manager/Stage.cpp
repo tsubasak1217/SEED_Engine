@@ -104,7 +104,7 @@ Vector3 Stage::GetStartPosition() const{
         // FieldObject_Start 型へのキャストを試みる
         if(auto* start = dynamic_cast<FieldObject_Start*>(obj.get())){
             // スタートオブジェクトが見つかったら位置を返す
-            return start->GetWorldTranslate();
+            return start->GetWorldTranslate() + Vector3(0.0f,0.3f,0.0f);
         }
     }
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す

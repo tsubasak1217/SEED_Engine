@@ -102,8 +102,7 @@ void Scene_Game::Initialize(){
     player_->SetCorpseManager(playerCorpseManager_.get());
     player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
-    Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
-    player_->SetPosition({ playerStartPos.x,playerStartPos.y + 0.3f,playerStartPos.z });
+    player_->SetPosition(StageManager::GetStartPos());
 
     // eggManagerにplayerをセット
     eggManager_->SetPlayer(player_.get());
@@ -211,6 +210,11 @@ void Scene_Game::EndFrame(){
     player_->EndFrame();
     eggManager_->EndFrame();
     stageManager_->EndFrame();
+
+    // ステージが変わったらプレイヤーの位置を変更
+    if(StageManager::IsStageChanged()){
+        player_->SetPosition(StageManager::GetStartPos());
+    }
 }
 
 

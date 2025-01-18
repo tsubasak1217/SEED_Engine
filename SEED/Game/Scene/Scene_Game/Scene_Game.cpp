@@ -172,8 +172,7 @@ void Scene_Game::Update(){
         } else{
             // 次のステージへ
             Vector3 playerStartPos = stageManager_->GetStages()[stageManager_->GetCurrentStageNo()]->GetStartPosition();
-            // 一旦瞬間移動
-            player_->SetPosition({playerStartPos.x,playerStartPos.y,playerStartPos.z});
+            player_->ToClearStageState(playerStartPos);
         }
     }
 

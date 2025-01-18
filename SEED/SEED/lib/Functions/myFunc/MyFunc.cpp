@@ -165,10 +165,39 @@ Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
     return rotate;
 }
 
-Vector2 MyFunc::CalculateParabolic(float _sin,float _speed,float _time,float _gravity){
-    return Vector2(_speed * _time,_sin * _speed * _time - 0.5f * _gravity * (_time * _time));
+Vector2 MyFunc::CalculateParabolic(float _sin,float _speed,float _gravity,float _time){
+    return Vector2(_speed * _gravity,_sin * _speed * _gravity - 0.5f * _time * (_gravity * _gravity));
 }
 
-Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float _time,float _gravity){
-    return CalculateParabolic(MyMath::Cross(Vector2(1.0f,0.0f),_direction),_speed,_time,_gravity);
+Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float _gravity,float _time){
+    return CalculateParabolic(MyMath::Cross(Vector2(1.0f,0.0f),_direction),_speed,_gravity,_time);
+}
+
+Vector3 MyFunc::CalculateInitialVelocity3D(const Vector3& start,const Vector3& end,float gravity){
+    // 水平方向の距離
+    float dx = end.x - start.x;
+    float dz = end.z - start.z;
+    float horizontalDistance = std::sqrt(dx * dx + dz * dz);
+
+    // 垂直方向の距離
+    float dy = end.y - start.y;
+
+    // 重力が0の場合は例外を投げる
+    if(gravity == 0.0f){
+        throw std::invalid_argument("Gravity must not be zero.");
+    }
+
+    // 初速度の計算
+    float speed = std::sqrt((gravity * horizontalDistance * horizontalDistance) / (2 * (horizontalDistance * std::tan(dy / horizontalDistance) - dy)));
+
+    // 角度の計算
+    float angleXY = std::atan2(dy,horizontalDistance);
+    float angleXZ = std::atan2(dz,dx);
+
+    // 初速度ベクトルの計算
+    float vx = speed * std::cos(angleXY) * std::cos(angleXZ);
+    float vy = speed * std::sin(angleXY);
+    float vz = speed * std::cos(angleXY) * std::sin(angleXZ);
+
+    return Vector3(vx,vy,vz);
 }

@@ -27,6 +27,25 @@ void GameState_Select::Initialize(){
 
     // 操作フラグをfalseにしておく
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
+
+    // spriteの初期化
+    frame_ = std::make_unique<Sprite>("SelectScene/frame.png");
+    stageName_ = std::make_unique<Sprite>("SelectScene/stageNames.png");
+
+    for(int i = 0; i < 2; i++){
+        arrow_[i] = std::make_unique<Sprite>("SelectScene/arrow_normal.png");
+        arrow_[i]->anchorPoint = { 0.5f, 0.5f };
+        arrow_[i]->translate = { 190.0f + i * 900.0f,kWindowCenter.y };
+    }
+
+    for(int i = 0; i < 3; i++){
+        collectionStars_[i] = std::make_unique<Sprite>("SelectScene/star.png");
+    }
+
+    for(int i = 0; i < 5; i++){
+        difficultyEggs_[i] = std::make_unique<Sprite>("SelectScene/egg.png");
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +71,7 @@ void GameState_Select::Update(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Draw(){
     stageSelector_->Draw();
+    frame_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

@@ -24,4 +24,11 @@ public:
 private:
     Scene_Game* pGameScene_;
     std::unique_ptr<StageSelector> stageSelector_;
+
+    // sprite
+    std::unique_ptr<Sprite> frame_ = nullptr;
+    std::unique_ptr<Sprite> stageName_ = nullptr;
+    std::unique_ptr<Sprite> arrow_[2];
+    std::unique_ptr<Sprite> collectionStars_[3];
+    std::unique_ptr<Sprite> difficultyEggs_[5];
 };

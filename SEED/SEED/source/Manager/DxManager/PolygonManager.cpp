@@ -627,8 +627,8 @@ void PolygonManager::AddQuad(
 
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
-    uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, const Vector2& anchorPoint,
-    const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
+    uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
+    const Vector2& anchorPoint,const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
     bool isStaticDraw, DrawLocation drawLocation, uint32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -722,7 +722,7 @@ void PolygonManager::AddSprite(
     if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
         mesh.vertices[indexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
         mesh.vertices[indexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
-        mesh.vertices[indexCount + 2] = VertexData(v[2], Vector2(0.0f, 1.0f), normalVec);
+        mesh.vertices[indexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
         mesh.vertices[indexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
 
     } else{// 描画範囲指定がある場合
@@ -730,6 +730,23 @@ void PolygonManager::AddSprite(
         mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / size.x, clipLT.y / size.y), normalVec);
         mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
         mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
+    }
+
+    // 反転の指定がある場合
+    if(flipX){
+        Vector2 temp[2] = { mesh.vertices[indexCount].texcoord_, mesh.vertices[indexCount + 2].texcoord_ };
+        mesh.vertices[indexCount].texcoord_.x = mesh.vertices[indexCount + 1].texcoord_.x;
+        mesh.vertices[indexCount + 1].texcoord_.x = temp[0].x;
+        mesh.vertices[indexCount + 2].texcoord_.x = mesh.vertices[indexCount + 3].texcoord_.x;
+        mesh.vertices[indexCount + 3].texcoord_.x = temp[1].x;
+    }
+
+    if(flipY){
+        Vector2 temp[2] = { mesh.vertices[indexCount].texcoord_, mesh.vertices[indexCount + 1].texcoord_ };
+        mesh.vertices[indexCount].texcoord_.y = mesh.vertices[indexCount + 2].texcoord_.y;
+        mesh.vertices[indexCount + 1].texcoord_.y = mesh.vertices[indexCount + 3].texcoord_.y;
+        mesh.vertices[indexCount + 2].texcoord_.y = temp[0].y;
+        mesh.vertices[indexCount + 3].texcoord_.y = temp[1].y;
     }
 
     //indexResource

@@ -31,13 +31,15 @@ private:
     static int32_t currentStageNo_;
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
+    static std::array<uint32_t, kStageCount_> getStarCounts_;
     static bool isPlaying_;
 
 public:
     int32_t GetStageCount()const{ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
-    Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
+    static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
+    static uint32_t GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
     static Vector3 GetStartPos();
     static bool IsStageChanged(){ return currentStageNo_ != preStageNo_; }

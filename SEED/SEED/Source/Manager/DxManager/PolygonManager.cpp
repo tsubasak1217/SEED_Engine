@@ -720,10 +720,10 @@ void PolygonManager::AddSprite(
     if(mesh.vertices.size() <= vertexCount){ mesh.vertices.resize(vertexCount + 4); }
 
     if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
-        mesh.vertices[indexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
-        mesh.vertices[indexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
-        mesh.vertices[indexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
-        mesh.vertices[indexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
+        mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
+        mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
+        mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
+        mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
 
     } else{// 描画範囲指定がある場合
         mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / size.x, clipLT.y / size.y), normalVec);
@@ -734,29 +734,29 @@ void PolygonManager::AddSprite(
 
     // 反転の指定がある場合
     if(flipX){
-        Vector2 temp[2] = { mesh.vertices[indexCount].texcoord_, mesh.vertices[indexCount + 2].texcoord_ };
-        mesh.vertices[indexCount].texcoord_.x = mesh.vertices[indexCount + 1].texcoord_.x;
-        mesh.vertices[indexCount + 1].texcoord_.x = temp[0].x;
-        mesh.vertices[indexCount + 2].texcoord_.x = mesh.vertices[indexCount + 3].texcoord_.x;
-        mesh.vertices[indexCount + 3].texcoord_.x = temp[1].x;
+        Vector2 temp[2] = { mesh.vertices[vertexCount].texcoord_, mesh.vertices[vertexCount + 2].texcoord_ };
+        mesh.vertices[vertexCount].texcoord_.x = mesh.vertices[vertexCount + 1].texcoord_.x;
+        mesh.vertices[vertexCount + 1].texcoord_.x = temp[0].x;
+        mesh.vertices[vertexCount + 2].texcoord_.x = mesh.vertices[vertexCount + 3].texcoord_.x;
+        mesh.vertices[vertexCount + 3].texcoord_.x = temp[1].x;
     }
 
     if(flipY){
-        Vector2 temp[2] = { mesh.vertices[indexCount].texcoord_, mesh.vertices[indexCount + 1].texcoord_ };
-        mesh.vertices[indexCount].texcoord_.y = mesh.vertices[indexCount + 2].texcoord_.y;
-        mesh.vertices[indexCount + 1].texcoord_.y = mesh.vertices[indexCount + 3].texcoord_.y;
-        mesh.vertices[indexCount + 2].texcoord_.y = temp[0].y;
-        mesh.vertices[indexCount + 3].texcoord_.y = temp[1].y;
+        Vector2 temp[2] = { mesh.vertices[vertexCount].texcoord_, mesh.vertices[vertexCount + 1].texcoord_ };
+        mesh.vertices[vertexCount].texcoord_.y = mesh.vertices[vertexCount + 2].texcoord_.y;
+        mesh.vertices[vertexCount + 1].texcoord_.y = mesh.vertices[vertexCount + 3].texcoord_.y;
+        mesh.vertices[vertexCount + 2].texcoord_.y = temp[0].y;
+        mesh.vertices[vertexCount + 3].texcoord_.y = temp[1].y;
     }
 
     //indexResource
     if(mesh.indices.size() <= indexCount){ mesh.indices.resize(indexCount + 6); }
-    mesh.indices[indexCount] = indexCount + 0;
-    mesh.indices[indexCount + 1] = indexCount + 1;
-    mesh.indices[indexCount + 2] = indexCount + 3;
-    mesh.indices[indexCount + 3] = indexCount + 0;
-    mesh.indices[indexCount + 4] = indexCount + 3;
-    mesh.indices[indexCount + 5] = indexCount + 2;
+    mesh.indices[indexCount] = vertexCount + 0;
+    mesh.indices[indexCount + 1] = vertexCount + 1;
+    mesh.indices[indexCount + 2] = vertexCount + 3;
+    mesh.indices[indexCount + 3] = vertexCount + 0;
+    mesh.indices[indexCount + 4] = vertexCount + 3;
+    mesh.indices[indexCount + 5] = vertexCount + 2;
 
     // materialResource
     if(modelData->materials.size() == 0){

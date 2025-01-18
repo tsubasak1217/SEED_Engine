@@ -57,12 +57,13 @@ public:
     FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
-
+    uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
 
 private:
     int32_t stageNo_ = -1;
+    uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     ISubject& subject_;
 

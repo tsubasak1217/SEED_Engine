@@ -63,10 +63,6 @@ public:
    /// <returns></returns>
     static  Vector2 CalculateParabolic(const Vector2& _direction,float speed,float _gravity,float _time);
 
-    /// <summary>
-    /// startからendに到達するための初速を計算する関数
-    /// </summary>
-    static Vector3 CalculateInitialVelocity3D(const Vector3& start,const Vector3& end,float gravity);
 };
 
 // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)

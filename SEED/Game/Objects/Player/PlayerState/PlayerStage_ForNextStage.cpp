@@ -11,6 +11,7 @@
 #include "Player/Player.h"
 // manager
 #include "Egg/Manager/EggManager.h"
+#include "StageManager.h"
 
 //engine 
 #include "SEED.h"
@@ -133,10 +134,11 @@ void PlayerStage_ForNextStage::Draw(){
 void PlayerStage_ForNextStage::ManageState(){
     if(!preIsThrow_ && isThrow_){
         egg_->SetTranslate(nextStartPos_);
-        egg_->ChangeState(new EggState_Break(egg_));
+        egg_->ChangeState(new EggState_Break(egg_,true));
     }
     // ステートが終了したら
     if(!egg_){
+
         // 操作可能にする
         pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
     }

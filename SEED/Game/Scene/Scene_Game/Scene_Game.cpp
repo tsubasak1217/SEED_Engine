@@ -239,12 +239,6 @@ void Scene_Game::EndFrame(){
         currentState_->EndFrame();
     }
 
-    // ステージが変わったらプレイヤーの位置を変更
-    if(StageManager::IsStageChanged() && stageManager_->GetPreStage()->IsGoal()){
-        //player_->SetTranslate(StageManager::GetStartPos());
-         player_->ToClearStageState(StageManager::GetStartPos());
-    }
-
     // もしstateが変わっていたら以下は処理しない
     if(isStateChanged_){ return; }
 

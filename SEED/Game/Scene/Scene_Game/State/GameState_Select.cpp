@@ -71,6 +71,11 @@ void GameState_Select::BeginFrame(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::EndFrame(){
     ManageState();
+
+    // ステージが変わったらプレイヤーの位置を初期位置に戻す
+    if(StageManager::IsStageChanged()){
+        pGameScene_->Get_pPlayer()->SetTranslate(StageManager::GetStartPos());
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

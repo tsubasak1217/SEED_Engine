@@ -7,6 +7,7 @@
 
 // manager
 #include "Egg/Manager/EggManager.h"
+#include "StageManager.h"
 //lib
 #include "JsonManager/JsonCoordinator.h"
 // 状態クラスのインクルード
@@ -95,7 +96,9 @@ void Player::ToClearStageState(const Vector3& nextStartPos){
 void Player::HandleMove(const Vector3 &acceleration)
 {
     // 移動
-    model_->translate_ += acceleration;
+    if(isMovable_){
+        model_->translate_ += acceleration;
+    }
 
     // 移動制限
     model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
@@ -108,4 +111,17 @@ void Player::HandleMove(const Vector3 &acceleration)
 void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
+
+    // ゴールに触れている状態で
+    if(objectType == ObjectType::GoalField){
+    
+        // ステージ遷移ステートへ
+        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+            if(!StageManager::IsLastStage()){
+                ToClearStageState(StageManager::GetNextStartPos());
+                //2つのステージのコライダーを渡すよう設定
+                StageManager::SetIsHandOverColliderNext(true);
+            }
+        }
+    }
 }

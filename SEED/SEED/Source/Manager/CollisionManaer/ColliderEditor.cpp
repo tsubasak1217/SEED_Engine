@@ -14,6 +14,7 @@
 ////////////////////////////////////////////////////////////
 
 std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>> ColliderEditor::colliderData_;
+std::vector<std::string> ColliderEditor::colliderFileNames_;
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
@@ -24,6 +25,14 @@ ColliderEditor::ColliderEditor(const std::string& className, BaseObject* parent)
     parentObject_ = parent;
     if(parent){
         parentMat_ = parent->GetWorldMatPtr();
+    }
+
+    // ファイルの一覧を取得
+    colliderFileNames_.clear();
+    // ファイルの一覧を取得
+    std::string path = "Resources/jsons/Colliders";
+    for(const auto& entry : std::filesystem::directory_iterator(path)){
+        colliderFileNames_.push_back(entry.path().filename().string());
     }
 }
 
@@ -229,16 +238,6 @@ void ColliderEditor::OutputOnGUI(){
 ////////////////////////////////////////////////////////////
 void ColliderEditor::InputOnGUI(){
 
-    // ファイルの一覧をドロップダウンで表示
-    static std::vector<std::string> files;
-    static int selectFile = 0;
-    files.clear();
-    // ファイルの一覧を取得
-    std::string path = "Resources/jsons/Colliders";
-    for(const auto& entry : std::filesystem::directory_iterator(path)){
-        files.push_back(entry.path().filename().string());
-    }
-
     // ファイルの一覧を表示
     if(ImGui::Button("Load Collider")){
         ImGui::OpenPopup("FileList");
@@ -247,19 +246,19 @@ void ColliderEditor::InputOnGUI(){
     // ファイルの一覧をポップアップで表示
     if(ImGui::BeginPopup("FileList")){
         int i = 0;
-        for(i = 0; i < files.size(); i++){
-            if(ImGui::Selectable(files[i].c_str(), selectFile == i, ImGuiSelectableFlags_DontClosePopups)){
-                selectFile = i;
+        for(i = 0; i < colliderFileNames_.size(); i++){
+            if(ImGui::Selectable(colliderFileNames_[i].c_str(), selectedColliderIndex_ == i, ImGuiSelectableFlags_DontClosePopups)){
+                selectedColliderIndex_ = i;
             }
         }
 
-        if(files.size()){
+        if(colliderFileNames_.size()){
 
-            ImGui::Text("Selected File : %s", files[selectFile].c_str());
+            ImGui::Text("Selected File : %s", colliderFileNames_[selectedColliderIndex_].c_str());
 
             // OKボタン
             if(ImGui::Button("OK", ImVec2(120, 0))){
-                LoadFromJson(files[selectFile]);
+                LoadFromJson(colliderFileNames_[selectedColliderIndex_]);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();

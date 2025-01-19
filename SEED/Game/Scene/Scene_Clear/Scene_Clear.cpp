@@ -55,6 +55,8 @@ void Scene_Clear::Draw(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::BeginFrame(){
+    Scene_Base::BeginFrame();
+
     if(currentState_){
         currentState_->BeginFrame();
     }

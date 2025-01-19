@@ -21,16 +21,25 @@ public:
     void SetTarget(BaseObject* target){ target_ = target; }
     void SetDistance(float distance){ distance_ = distance; }
     void SetRotateSpeed(float speed){ rotateSpeed_ = speed; }
+    void SetIsInputActive(bool isActive){ isInputActive_ = isActive; }
+    void SetTheta(float theta){ theta_ = theta; }
+    void AddTheta(float theta){ theta_ += theta; }
+    void SetPhi(float phi){ phi_ = phi; }
+    void AddPhi(float phi){ phi_ += phi; }
 
 private:
 
     BaseObject* target_ = nullptr;
+    Vector3 targetPos_;
+    Vector3 aimTargetPos_;
     Vector3 aimPosition_;
+    Vector3 aimRotate_;
     Vector3 defaultOffset_;
     float distance_;
     float theta_;
     float phi_;
     float rotateSpeed_;
+    bool isInputActive_ = true;
 
     // 限界角度
     float kMaxPhi_;

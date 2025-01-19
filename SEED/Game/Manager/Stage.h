@@ -6,6 +6,16 @@
 #include "../FieldObject/FieldObject.h"
 #include "../FieldObject/FieldObjectName.h"
 
+// FieldObject
+#include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
+#include "FieldObject/Soil/FieldObject_Soil.h"
+#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Start/FieldObject_Start.h"
+#include "FieldObject/Goal/FieldObject_Goal.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
+
 // lib
 #include "../lib/patterns/ISubject.h"
 #include <vector>
@@ -13,9 +23,9 @@
 
 class Player;
 
-class FieldObjectManager{
+class Stage{
 public:
-    FieldObjectManager(ISubject& subject) : subject_(subject){}
+    Stage(ISubject& subject) : subject_(subject){}
 
     void Update();
     void Draw();
@@ -32,14 +42,28 @@ public:
     // CollisionManagerにコライダーを渡す
     void HandOverColliders();
 
+    // stageの読み込み
+    void LoadFromJson(const std::string& filePath);
+    void AddModel(
+        uint32_t modelNameIndex,
+        const Vector3& scale = { 2.5f,2.5f,2.5f },
+        const Vector3& rotate = { 0.0f,0.0f,0.0f },
+        const Vector3& translate = { 0.0f,0.0f,0.0f }
+    );
+
 public:
+
     Vector3 GetStartPosition()const;
-
+    FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
-
+    void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
+    uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
+
 private:
+    int32_t stageNo_ = -1;
+    uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     ISubject& subject_;
 
@@ -50,7 +74,7 @@ private:
 //  テンプレート関数
 ////////////////////////////////////////////////////////////////////
 template<typename T>
-inline std::vector<T*> FieldObjectManager::GetObjectsOfType(){
+inline std::vector<T*> Stage::GetObjectsOfType(){
     std::vector<T*> result;
     for (auto& objPtr : fieldObjects_){
         if (auto* casted = dynamic_cast< T* >(objPtr.get())){

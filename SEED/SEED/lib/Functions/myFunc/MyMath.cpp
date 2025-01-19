@@ -9,74 +9,63 @@
 
 /*---------------------------- 長さを計る関数 ----------------------------*/
 
-float MyMath::Length(const Vector2& pos1, const Vector2& pos2)
-{
+float MyMath::Length(const Vector2& pos1, const Vector2& pos2){
     float xLength = (pos1.x - pos2.x);
     float yLength = (pos1.y - pos2.y);
     return std::sqrt(xLength * xLength + yLength * yLength);
 }
 
-float MyMath::Length(const Vector3& pos1, const Vector3& pos2)
-{
+float MyMath::Length(const Vector3& pos1, const Vector3& pos2){
     float xLength = (pos1.x - pos2.x);
     float yLength = (pos1.y - pos2.y);
     float zLength = (pos1.z - pos2.z);
     return std::sqrt(xLength * xLength + yLength * yLength + zLength * zLength);
 }
 
-float MyMath::Length(const Vector2& vec)
-{
+float MyMath::Length(const Vector2& vec){
     return std::sqrt(vec.x * vec.x + vec.y * vec.y);
 }
 
-float MyMath::Length(const Vector3& vec)
-{
+float MyMath::Length(const Vector3& vec){
     return std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }
 
-float MyMath::LengthSq(const Vector2& pos1,const Vector2& pos2)
-{
+float MyMath::LengthSq(const Vector2& pos1, const Vector2& pos2){
     float xLength = (pos1.x - pos2.x);
     float yLength = (pos1.y - pos2.y);
     return xLength * xLength + yLength * yLength;
 }
 
-float MyMath::LengthSq(const Vector3& pos1,const Vector3& pos2)
-{
+float MyMath::LengthSq(const Vector3& pos1, const Vector3& pos2){
     float xLength = (pos1.x - pos2.x);
     float yLength = (pos1.y - pos2.y);
     float zLength = (pos1.z - pos2.z);
     return xLength * xLength + yLength * yLength + zLength * zLength;
 }
 
-float MyMath::LengthSq(const Vector2& vec)
-{
+float MyMath::LengthSq(const Vector2& vec){
     return vec.x * vec.x + vec.y * vec.y;
 }
 
-float MyMath::LengthSq(const Vector3& vec)
-{
+float MyMath::LengthSq(const Vector3& vec){
     return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
 }
 
 /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
-Vector2 MyMath::Normalize(const Vector2& vec)
-{
+Vector2 MyMath::Normalize(const Vector2& vec){
     float length = Length(vec);
     return length != 0 ? vec / Length(vec) : Vector2(0.0f, 0.0f);
 }
 
-Vector3 MyMath::Normalize(const Vector3& vec)
-{
+Vector3 MyMath::Normalize(const Vector3& vec){
     float length = Length(vec);
     return length != 0 ? vec / Length(vec) : Vector3(0.0f, 0.0f, 0.0f);
 }
 
 
 /*- 仮: 非線形を線形に変換する関数-*/
-float MyMath::DepthToLinear(float depth, float near, float far)
-{
+float MyMath::DepthToLinear(float depth, float near, float far){
     float z = depth * 2.0f - 1.0f;
     float linearDepth = (2.0f * near * far) / (far + near - z * (far - near));
     return (linearDepth - near) / (far - near);
@@ -85,41 +74,34 @@ float MyMath::DepthToLinear(float depth, float near, float far)
 /*-------------------------- 内積を求める関数 ---------------------------*/
 
 
-float MyMath::Dot(const Vector2& a, const Vector2& b)
-{
+float MyMath::Dot(const Vector2& a, const Vector2& b){
     return (a.x * b.x) + (a.y * b.y);
 }
 
-float MyMath::Dot(const Vector3& a, const Vector3& b)
-{
+float MyMath::Dot(const Vector3& a, const Vector3& b){
     return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-float MyMath::Dot(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos)
-{
+float MyMath::Dot(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos){
     return Dot(pos2 - pos1, targetPos - pos1);
 }
 
-float MyMath::Dot(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos)
-{
+float MyMath::Dot(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos){
     return Dot(pos2 - pos1, targetPos - pos1);
 }
 
 
-float MyMath::DotNormal(const Vector2& vec1, const Vector2& vec2)
-{
+float MyMath::DotNormal(const Vector2& vec1, const Vector2& vec2){
     float length = Length(vec1);
     return length != 0.0f ? Dot(vec1, vec2) / length : 0.0f;
 }
 
-float MyMath::DotNormal(const Vector3& vec1, const Vector3& vec2)
-{
+float MyMath::DotNormal(const Vector3& vec1, const Vector3& vec2){
     float length = Length(vec1);
     return length != 0.0f ? Dot(vec1, vec2) / length : 0.0f;
 }
 
-float MyMath::DotNormal(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos)
-{
+float MyMath::DotNormal(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos){
     Vector2 lineVector = pos2 - pos1;
     Vector2 forTarget = targetPos - pos1;
     float lineLength = Length(lineVector);
@@ -128,8 +110,7 @@ float MyMath::DotNormal(const Vector2& pos1, const Vector2& pos2, const Vector2&
 }
 
 
-float MyMath::DotNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos)
-{
+float MyMath::DotNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos){
     Vector3 lineVector = pos2 - pos1;
     Vector3 forTarget = targetPos - pos1;
     float lineLength = Length(lineVector);
@@ -139,13 +120,11 @@ float MyMath::DotNormal(const Vector3& pos1, const Vector3& pos2, const Vector3&
 
 /*-------------------------- 外積を求める関数 ---------------------------*/
 
-float MyMath::Cross(const Vector2& vec1, const Vector2& vec2)
-{
+float MyMath::Cross(const Vector2& vec1, const Vector2& vec2){
     return vec1.x * vec2.y - vec1.y * vec2.x;
 }
 
-Vector3 MyMath::Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode)
-{
+Vector3 MyMath::Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode){
     if(kViewMode == kScreen) {
         return Vector3(
             -vec1.y * vec2.z - vec1.z * -vec2.y,
@@ -161,45 +140,38 @@ Vector3 MyMath::Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode)
     );
 }
 
-float MyMath::Cross(const Vector2& originPos, const Vector2& endPos, const Vector2& targetPos)
-{
+float MyMath::Cross(const Vector2& originPos, const Vector2& endPos, const Vector2& targetPos){
     float length = Length(endPos - originPos);
     return length != 0 ? Cross(endPos - originPos, targetPos - originPos) / length : 0.0f;
 }
 
 /*---------------------- 射影ベクトルを求める関数 -----------------------*/
 
-Vector2 MyMath::ProjectVec(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos)
-{
+Vector2 MyMath::ProjectVec(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos){
     Vector2 vec = pos2 - pos1;
     return vec * DotNormal(pos1, pos2, targetPos);
 }
 
-Vector3 MyMath::ProjectVec(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos)
-{
+Vector3 MyMath::ProjectVec(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos){
     Vector3 vec = pos2 - pos1;
     return vec * DotNormal(pos1, pos2, targetPos);
 }
 
-Vector2 MyMath::ProjectVec(const Vector2& vec1, const Vector2& vec2)
-{
+Vector2 MyMath::ProjectVec(const Vector2& vec1, const Vector2& vec2){
     return vec1 * DotNormal(vec1, vec2);
 }
 
-Vector3 MyMath::ProjectVec(const Vector3& vec1, const Vector3& vec2)
-{
+Vector3 MyMath::ProjectVec(const Vector3& vec1, const Vector3& vec2){
     return vec1 * DotNormal(vec1, vec2);
 }
 
 /*---------------------- 直線に対する最近傍点を求める関数 -----------------------*/
 
-Vector2 MyMath::ClosestPoint(const Vector2& seg_origin, const Vector2& seg_end, const Vector2& point)
-{
+Vector2 MyMath::ClosestPoint(const Vector2& seg_origin, const Vector2& seg_end, const Vector2& point){
     return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
 }
 
-Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, const Vector3& point)
-{
+Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, const Vector3& point){
     return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
 }
 
@@ -208,7 +180,7 @@ std::array<Vector3, 2> MyMath::ClosestPoint(const Line& l1, const Line& l2){
     // 2直線の方向ベクトル
     Vector3 dir1 = l1.end_ - l1.origin_;
     Vector3 dir2 = l2.end_ - l2.origin_;
-    
+
     // 2直線の長さ
     float length1 = Length(dir1);
     float length2 = Length(dir2);
@@ -278,17 +250,17 @@ float MyMath::Lerp(const float v1, const float v2, float t){
 }
 
 float MyMath::LerpShortAngle(float a, float b, float t){
-    const float TWO_PI = 2.0f * ( float ) std::numbers::pi; // 2π (6.283185307179586)
-    const float PI = ( float ) std::numbers::pi;            // π (3.141592653589793)
+    const float TWO_PI = 2.0f * (float)std::numbers::pi; // 2π (6.283185307179586)
+    const float PI = (float)std::numbers::pi;            // π (3.141592653589793)
 
     // 角度差分を求める
     float diff = b - a;
 
     // 角度を[-π, π]に補正する
     diff = fmod(diff, TWO_PI);
-    if (diff > PI){
+    if(diff > PI){
         diff -= TWO_PI;
-    } else if (diff < -PI){
+    } else if(diff < -PI){
         diff += TWO_PI;
     }
 
@@ -324,7 +296,7 @@ Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, co
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
 Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
 
-    if(controlPoints.size() == 0){ return{0.0f,0.0f,0.0f}; }
+    if(controlPoints.size() == 0){ return{ 0.0f,0.0f,0.0f }; }
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
 
     Vector3 result;
@@ -341,7 +313,7 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, fl
     }
 
     int size = int(tmpControlPoints.size() - 1);
-    float t2 = std::fmod(t * size,1.0f);
+    float t2 = std::fmod(t * size, 1.0f);
     int idx = int(t * size);
 
     result = CatmullRomInterpolation(
@@ -362,8 +334,8 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
 
     Vector3 result;
     std::vector<Vector3> tmpControlPoints;
-    
-    for(int i = 0; i < controlPoints.size();i++){
+
+    for(int i = 0; i < controlPoints.size(); i++){
         tmpControlPoints.push_back(*controlPoints[i]);
     }
 
@@ -435,7 +407,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
 
 
 Vector3 MyMath::TransformNormal(const Vector3& normal, const Matrix4x4& matrix){
-    Vector3 result = {0, 0, 0};
+    Vector3 result = { 0, 0, 0 };
 
     // 法線ベクトルは平行移動の影響を受けないため、上3×3の行列を使って変換する
     result.x = normal.x * matrix.m[0][0] + normal.y * matrix.m[1][0] + normal.z * matrix.m[2][0];
@@ -452,14 +424,14 @@ Vector3 MyMath::TransformNormal(const Vector3& normal, const Matrix4x4& matrix){
 
 
 // floatをuint32_tに変換する関数
-uint32_t MyMath::FloatToUint32(float value) {
+uint32_t MyMath::FloatToUint32(float value){
     uint32_t result;
     std::memcpy(&result, &value, sizeof(value));
     return result;
 }
 
 // uint32_tをfloatに変換する関数
-float MyMath::Uint32ToFloat(uint32_t value) {
+float MyMath::Uint32ToFloat(uint32_t value){
     float result;
     std::memcpy(&result, &value, sizeof(value));
     return result;
@@ -477,8 +449,7 @@ uint32_t MyMath::Blue(uint32_t color){ return (color >> 8) & 0xFF; }
 uint32_t MyMath::Alpha(uint32_t color){ return color & 0xFF; }
 
 // RGBA形式のカラーコードをグレースケールに変換する関数
-uint32_t MyMath::GrayScale(uint32_t color)
-{
+uint32_t MyMath::GrayScale(uint32_t color){
     /*
             真っ白のとき(RGB最大値のとき)が最大値の"1"だとして
           そのときRGBはそれぞれどの程度白く見えますかというのが重み
@@ -504,8 +475,7 @@ uint32_t MyMath::GrayScale(uint32_t color)
 
 
 // RGBA形式のカラーコードをVector4形式に変換する関数 (各要素は0~1に収まる)
-Vector4 MyMath::FloatColor(uint32_t color)
-{
+Vector4 MyMath::FloatColor(uint32_t color){
     float delta = 1.0f / 255.0f;
 
     Vector4 colorf = {
@@ -518,8 +488,21 @@ Vector4 MyMath::FloatColor(uint32_t color)
     return colorf;
 }
 
-uint32_t MyMath::IntColor(const Vector4& color)
-{
+Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
+    float delta = 1.0f / 255.0f;
+
+    Vector4 colorf = {
+        float(r) * delta,
+        float(g) * delta,
+        float(b) * delta,
+        float(a) * delta
+    };
+
+    return colorf;
+}
+
+// Vector4からRGBA形式のカラーコードに変換する関数
+uint32_t MyMath::IntColor(const Vector4& color){
     uint32_t red = std::clamp(int(color.x * 255.0f), 0, 255) << 24;
     uint32_t green = std::clamp(int(color.y * 255.0f), 0, 255) << 16;
     uint32_t blue = std::clamp(int(color.z * 255.0f), 0, 255) << 8;
@@ -528,8 +511,7 @@ uint32_t MyMath::IntColor(const Vector4& color)
     return red + green + blue + alpha;
 }
 
-uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha)
-{
+uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 
     // 彩度が0なので明度のみを反映
     if(s == 0.0) {

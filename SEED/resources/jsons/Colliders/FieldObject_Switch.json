@@ -3,7 +3,7 @@
         {
             "colliderType": "OBB",
             "isAnimation": false,
-            "isGhost": false,
+            "isGhost": true,
             "isMovable": false,
             "isParentRotate": true,
             "isParentScale": true,

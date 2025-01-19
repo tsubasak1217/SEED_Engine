@@ -41,7 +41,9 @@ public:
     Vector2 clipSize;
 
     // UVトランスフォーム
-    Matrix4x4 uvTransform;    
+    Matrix4x4 uvTransform;  
+    bool flipX = false;
+    bool flipY = false;
 
     // 解像度の変更を反映するかどうかの設定
     bool isStaticDraw;

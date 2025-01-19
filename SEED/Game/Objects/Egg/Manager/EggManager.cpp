@@ -28,12 +28,14 @@ void EggManager::Update(){
         return egg->GetIsBreak();
                   });
 
+#ifdef _DEBUG
     ImGui::Begin("Egg");
     JsonCoordinator::RenderGroupUI("Egg");
     if(ImGui::Button("Save")){
         JsonCoordinator::SaveGroup("Egg");
     }
     ImGui::End();
+#endif // _DEBUG
 
     if(eggs_.empty()){
         eggs_.push_back(std::make_unique<Egg>(player_));

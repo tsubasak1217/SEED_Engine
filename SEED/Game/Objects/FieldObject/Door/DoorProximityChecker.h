@@ -3,13 +3,13 @@
 // forward declaration
 class Player;
 class EventManager;
-class FieldObjectManager;
+class StageManager;
 
 class DoorProximityChecker{
 public:
     DoorProximityChecker(
         EventManager& eventManager,
-        FieldObjectManager& fieldObjectManager,
+        StageManager& fieldObjectManager,
         Player& player
     );
 
@@ -25,7 +25,7 @@ private:
 
 private:
     EventManager& eventManager_;
-    FieldObjectManager& fieldObjectManager_;
+    StageManager& stageManager_;
     Player& player_;
 
     float checkRadius_ = 20.0f; // 例: 5m以内ならドアを開く

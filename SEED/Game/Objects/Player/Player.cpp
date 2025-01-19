@@ -60,15 +60,17 @@ void Player::Initialize()
 //////////////////////////////////////////////////////////////////////////
 void Player::Update()
 {
+#ifdef _DEBUG
     ImGui::Begin("Player");
     JsonCoordinator::RenderGroupUI("Player");
     if(ImGui::Button("Save")){
         JsonCoordinator::SaveGroup("Player");
     }
     ImGui::End();
+#endif // _DEBUG
+
     BaseCharacter::Update();
 }
-
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
@@ -93,12 +95,14 @@ void Player::Spawn(const Vector3 &pos)
 //////////////////////////////////////////////////////////////////////////
 void Player::HandleMove(const Vector3 &acceleration)
 {
-    // 移動
-    model_->translate_ += acceleration;
+    if(isMovable_){
+        // 移動
+        model_->translate_ += acceleration;
 
-    // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
-    model_->UpdateMatrix();
+        // 移動制限
+        model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+        model_->UpdateMatrix();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

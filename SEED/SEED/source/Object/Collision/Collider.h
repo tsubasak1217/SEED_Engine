@@ -107,6 +107,9 @@ public:// アクセッサ-------------------------------------------------------
         return animationTime_ >= animationData_->GetDuration() && !isLoop_;
     }
 
+public:// 衝突判定を行わないリスト
+
+
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;
     ColliderType colliderType_;

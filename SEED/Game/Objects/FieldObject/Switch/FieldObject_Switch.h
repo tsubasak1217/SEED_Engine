@@ -24,13 +24,14 @@ public:
     void UnregisterObserver(IObserver* observer) override;
     void Notify(const std::string& event, void* data = nullptr) override;
 
-    void OnCollision(Collider* collider, ObjectType objectType);
+    void OnCollision(const BaseObject* other, ObjectType objectType)override;
 
     void Toggle();  // スイッチの状態をトグルする
 
     //--- getter / setter ---//
     // ドアへのポインタを設定・取得するメソッド
     void AddAssociatedDoor(FieldObject_Door* door);
+    void RemoveAssociatedDoor(FieldObject_Door* door);
     std::vector<FieldObject_Door*>& GetAssociatedDoors();
 
     std::vector<IObserver*>& GetObservers(){ return observers_; }

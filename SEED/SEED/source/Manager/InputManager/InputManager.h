@@ -18,7 +18,7 @@
 #include "Vector2.h"
 #include "PadDefinitions.h"
 #include "MouseDefinitions.h"
-#include "LR.h"
+#include "Direction.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,6 +88,12 @@ public:// キーの状態を返す関数
     static Vector2 GetStickValue(
         LR stick_LorR, uint8_t padNumber = 0,
         PAD_STATE padState = PAD_STATE::CURRENT
+    );
+
+    // スティックをトリガーとして取得
+    static bool IsTriggerStick(
+        LR stick_LorR, DIRECTION direction, float border = 0.5f,
+        uint8_t padNumber = 0
     );
 
     // スティックのデッドゾーン設定

@@ -78,11 +78,12 @@ void FieldObject_Switch::Notify(const std::string& event, void* data){
 ////////////////////////////////////////////////////////////////////////
 // oncollision
 ////////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::OnCollision(Collider* collider, ObjectType objectType){
-    collider;
-    objectType;
+void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+    // プレイヤーがスイッチに触れたらトグル
+    if (objectType == ObjectType::Player){
+        Toggle();
+    }
 
-    Toggle();
 
 }
 
@@ -95,11 +96,25 @@ void FieldObject_Switch::Toggle(){
     Notify(event);  // 登録された Observer に通知
 }
 
+////////////////////////////////////////////////////////////////////////
+// ドアへのポインタを設定・取得するメソッド
+////////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
     // 重複登録を防ぐ場合は確認を入れると良い
     if (std::find(associatedDoors_.begin(), associatedDoors_.end(), door) == associatedDoors_.end()){
         associatedDoors_.push_back(door);
     }
+}
+
+void FieldObject_Switch::RemoveAssociatedDoor(FieldObject_Door* door){
+    auto it = std::remove_if(
+        associatedDoors_.begin(),
+        associatedDoors_.end(),
+        [door] (FieldObject_Door* existingDoor){
+            return existingDoor == door;
+        }
+    );
+    associatedDoors_.erase(it, associatedDoors_.end());
 }
 
  std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors(){

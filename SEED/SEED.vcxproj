@@ -95,7 +95,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\lib\Functions\localFunc\;$(ProjectDir)Game\Scene\Scene_Game\State\;$(ProjectDir)Game\Scene\Scene_Clear\;$(ProjectDir)Game\Scene\Scene_Title\;$(ProjectDir)SEED\source\Manager\ClockManager\;$(ProjectDir)Game\Scene\Base\;$(ProjectDir)SEED\source\Manager\TextureManager\;$(ProjectDir)SEED\source\Object\;$(ProjectDir)SEED\source\Object\Camera\;$(ProjectDir)SEED\source\Manager\CameraManager\;$(ProjectDir)SEED\source\Manager\DxManager\DescriptorHeap\;$(ProjectDir)SEED\source\Manager\ParticleManager\;$(ProjectDir)SEED\source\Manager\ParticleManager\Particles\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)Game\Objects\Enums\;$(ProjectDir)Game\Objects\;$(ProjectDir)SEED\lib\enums\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,6 +112,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Manager\Stage.cpp" />
+    <ClCompile Include="Game\Manager\StageManager.cpp" />
+    <ClCompile Include="Game\Manager\StageSelector.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp" />
@@ -122,6 +124,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -130,7 +134,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp" />
-    <ClCompile Include="Game\Manager\FieldObjectManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp" />
     <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp" />
@@ -164,7 +167,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp" />
@@ -248,13 +251,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
+    <ClInclude Include="Game\Manager\Stage.h" />
+    <ClInclude Include="Game\Manager\StageManager.h" />
+    <ClInclude Include="Game\Manager\StageSelector.h" />
     <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
+    <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
@@ -265,7 +273,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h" />
-    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h" />
     <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h" />
@@ -302,7 +309,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
@@ -310,7 +317,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
     <ClInclude Include="SEED\lib\patterns\ISubject.h" />
     <ClInclude Include="SEED\lib\patterns\IObserver.h" />
-    <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />

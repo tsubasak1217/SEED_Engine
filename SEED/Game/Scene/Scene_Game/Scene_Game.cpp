@@ -1,12 +1,16 @@
 #include "Scene_Game.h"
-#include <GameState_Play.h>
-#include <GameState_Enter.h>
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
 #include "Scene_Title.h"
 #include "CameraManager/CameraManager.h"
 #include "../adapter/json/JsonCoordinator.h"
+
+// 各ステートのインクルード
+#include <GameState_Play.h>
+#include <GameState_Select.h>
+#include <GameState_Pause.h>
+#include <GameState_Exit.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -16,8 +20,8 @@
 
 Scene_Game::Scene_Game(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
-    ChangeState(new GameState_Play(this));
     Initialize();
+    ChangeState(new GameState_Select(this));
 };
 
 Scene_Game::~Scene_Game(){
@@ -33,9 +37,30 @@ Scene_Game::~Scene_Game(){
 void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
-    //  モデル生成
+    // マネージャー初期化
     ////////////////////////////////////////////////////
-    player_ = std::make_unique<Player>();
+
+    // EventManager
+    stageManager_ = std::make_unique<StageManager>(eventManager_);
+
+    // PlayerCorpseManager
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
+
+    // EggManager
+    eggManager_ = std::make_unique<EggManager>();
+
+
+    ////////////////////////////////////////////////////
+    //  カメラ初期化
+    ////////////////////////////////////////////////////
+
+    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
+    SEED::GetCamera()->Update();
+
+    followCamera_ = std::make_unique<FollowCamera>();
+    CameraManager::AddCamera("follow", followCamera_.get());
+    SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -47,64 +72,55 @@ void Scene_Game::Initialize(){
     directionalLight_->intensity = 1.0f;
 
     ////////////////////////////////////////////////////
-    //  カメラ初期化
+    //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({0.0f,2.0f,-30.0f});
-    SEED::GetCamera()->Update();
-
-    followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow",followCamera_.get());
-    SEED::SetCamera("follow");
-
-    ////////////////////////////////////////////////////
-    //  エディター初期化
-    ////////////////////////////////////////////////////
-
-    fieldObjectManager_ = std::make_unique<FieldObjectManager>(eventManager_);
-    fieldEditor_ = std::make_unique<FieldEditor>(*fieldObjectManager_.get());
-    fieldEditor_->Initialize();
-
-    ////////////////////////////////////////////////////
-    //  親子付けなど
-    ////////////////////////////////////////////////////
-
-    // Player の 初期化
+    // Player
+    player_ = std::make_unique<Player>();
     player_->Initialize();
 
-    followCamera_->SetTarget(player_.get());
-    player_->SetFollowCameraPtr(followCamera_.get());
+    ////////////////////////////////////////////////////
+    // スプライトの初期化
+    ////////////////////////////////////////////////////
 
-    // PlayerCorpseManager の 初期化
-    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
-    playerCorpseManager_->Initialize();
-    player_->SetCorpseManager(playerCorpseManager_.get());
-    Vector3 playerStartPos = fieldObjectManager_->GetStartPosition();
-    // playerの初期位置を設定
-    player_->SetPosition({playerStartPos.x,playerStartPos.y+0.3f,playerStartPos.z});
+    backSprite_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    backSprite_->size = kWindowSize;
+    backSprite_->color = MyMath::FloatColor(0,229,229,255);
+    backSprite_->drawLocation = DrawLocation::Back;
+    backSprite_->isStaticDraw = false;
+
+    ////////////////////////////////////////////////////
+    //  他クラスの情報を必要とするクラスの初期化
+    ////////////////////////////////////////////////////
 
     // DoorProximityChecker の 初期化
-    doorProximityChecker_ = std::make_unique<DoorProximityChecker>(eventManager_,
-                                                                   *fieldObjectManager_.get(),
-                                                                   *player_.get());
-
-    // EggManager の 初期化
-    eggManager_ = std::make_unique<EggManager>();
-    eggManager_->SetPlayer(player_.get());
-    eggManager_->Initialize();
+    doorProximityChecker_ =
+        std::make_unique<DoorProximityChecker>(
+            eventManager_,
+            *stageManager_.get(),
+            *player_.get()
+        );
 
     // EnemyManager の 初期化
     enemyManager_ = std::make_unique<EnemyManager>(player_.get());
 
-    // EnemyEditor の 初期化
-    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
 
+    /////////////////////////////////////////////////
+    //  関連付けや初期値の設定
+    /////////////////////////////////////////////////
 
+    // followCameraにplayerをセット
+    followCamera_->SetTarget(player_.get());
+
+    // playerに必要な情報をセット
+    player_->SetCorpseManager(playerCorpseManager_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
+    player_->SetPosition(StageManager::GetStartPos());
 
-
-
-    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
+    // eggManagerにplayerをセット
+    eggManager_->SetPlayer(player_.get());
+    eggManager_->Initialize();
 }
 
 void Scene_Game::Finalize(){}
@@ -122,44 +138,32 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f",ClockManager::FPS());
-    ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
-
-    fieldEditor_->ShowImGui();
-
-    if(fieldEditor_->GetIsEditing()){
-        SEED::SetCamera("debug");
-    } else{
-        SEED::SetCamera("follow");
-    }
-
-    enemyEditor_->ShowImGui();
-
 #endif
 
-    /*========================== Manager ============================*/
+    /*======================= 各状態固有の更新 ========================*/
+
+    if(currentState_){
+        currentState_->Update();
+    }
+
+    /*==================== 各オブジェクトの基本更新 =====================*/
+
+    // ポーズ中は以下を更新しない
+    if(isPaused_){return;}
 
     ParticleManager::Update();
-
-    /*========================= 各状態の更新 ==========================*/
-    currentState_->Update();
-
+    
     player_->Update();
-    //player_->EditCollider();
 
     eggManager_->Update();
     playerCorpseManager_->Update();
 
     enemyManager_->Update();
 
-    if(currentState_){
-        currentState_->Update();
-    }
-
-    fieldObjectManager_->Update();
-
-    fieldColliderEditor_->Edit();
+    // フィールドの更新
+    stageManager_->Update();
 
     // ドアとの距離をチェックし、近ければイベント発行
     doorProximityChecker_->Update();
@@ -173,14 +177,26 @@ void Scene_Game::Update(){
 
 void Scene_Game::Draw(){
 
+    /*======================= 各状態固有の描画 ========================*/
+
+    if(currentState_){
+        currentState_->Draw();
+    }
+
+    /*======================== スプライトの描画 =======================*/
+
+    backSprite_->Draw();
+
+    /*==================== 各オブジェクトの基本描画 =====================*/
+
     // ライトの情報を送る
     directionalLight_->SendData();
 
     // フィールドの描画
-    fieldObjectManager_->Draw();
+    stageManager_->Draw();
 
     // グリッドの描画
-    SEED::DrawGrid();
+    //SEED::DrawGrid();
 
     // パーティクルの描画
     ParticleManager::Draw();
@@ -200,9 +216,14 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
+    Scene_Base::BeginFrame();
     player_->BeginFrame();
     eggManager_->BeginFrame();
-    fieldObjectManager_->BeginFrame();
+    stageManager_->BeginFrame();
+
+    if(currentState_){
+        currentState_->BeginFrame();
+    }
 }
 
 
@@ -212,9 +233,25 @@ void Scene_Game::BeginFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
+
+    // 現在のステートがあればフレーム終了処理を行う
+    if(currentState_){
+        currentState_->EndFrame();
+    }
+
+    // ステージが変わったらプレイヤーの位置を変更
+    if(StageManager::IsStageChanged()){
+        player_->SetPosition(StageManager::GetStartPos());
+    }
+
+    // もしstateが変わっていたら以下は処理しない
+    if(isStateChanged_){ return; }
+
+    // 各オブジェクトのフレーム終了処理
     player_->EndFrame();
     eggManager_->EndFrame();
-    fieldObjectManager_->EndFrame();
+    stageManager_->EndFrame();
+
 }
 
 
@@ -225,7 +262,6 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
-    fieldColliderEditor_->HandOverColliders();
     eggManager_->HandOverColliders();
-    fieldObjectManager_->HandOverColliders();
+    stageManager_->HandOverColliders();
 }

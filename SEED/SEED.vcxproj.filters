@@ -227,6 +227,12 @@
     <Filter Include="Game\Objects\FieldObject\Soil">
       <UniqueIdentifier>{0f3cc8a6-24f5-48b7-abcf-6d3d7d522184}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\Switch">
+      <UniqueIdentifier>{54fb9e42-416f-443d-b8e2-8fc9822b1c44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\ViewPoint">
+      <UniqueIdentifier>{c655c5fe-15b8-4708-9d3d-68d23b1ff3b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -334,7 +340,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp">
@@ -565,9 +571,6 @@
     <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp">
       <Filter>Game\Objects\FieldObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\FieldObjectManager.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp">
       <Filter>Game\Objects\FieldObject\Door</Filter>
     </ClCompile>
@@ -622,8 +625,23 @@
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Manager\StageManager.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\Stage.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Game\Objects\FieldObject\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp">
+      <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\StageSelector.cpp">
+      <Filter>Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
       <Filter>ソース ファイル</Filter>
@@ -789,7 +807,7 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h">
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h">
@@ -915,7 +933,7 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
-    <ClInclude Include="SEED\lib\enums\LR.h" />
+    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
@@ -1044,9 +1062,6 @@
     <ClInclude Include="Game\Objects\Base\ICharacterState.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\lib\enums\LR.h">
-      <Filter>SEED\Lib\Enums</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
@@ -1102,12 +1117,8 @@
       <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
-    <ClInclude Include="Game\Manager\FieldObjectManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
       <Filter>Game\Objects\FieldObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\FieldObjectManager.h">
-      <Filter>Game\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h">
       <Filter>Game\Objects\FieldObject\Door</Filter>
@@ -1168,6 +1179,21 @@
     </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
       <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\Stage.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
+      <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageSelector.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />

@@ -160,7 +160,8 @@ void CreateDescriptorHeap(ID3D12Device* device, ComPtr<ID3D12DescriptorHeap>& he
     descriptorHeapDesc.NumDescriptors = numDescriptors;
     descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-    HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&heap));
+    HRESULT hr;
+    hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&heap));
     assert(SUCCEEDED(hr));
 }
 

@@ -187,6 +187,8 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.GH,
         sprite.color,
         sprite.uvTransform,
+        sprite.flipX,
+        sprite.flipY,
         sprite.anchorPoint,
         sprite.clipLT,
         sprite.clipSize,

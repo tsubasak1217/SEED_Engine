@@ -28,8 +28,7 @@
 // manager
 #include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
-#include "../Game/Editor/FieldEditor.h"
-#include "../Game/Manager/FieldObjectManager.h"
+#include "../Game/Manager/StageManager.h"
 
 class Scene_Game : public Scene_Base
 {
@@ -46,26 +45,35 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
+public:
+    StageManager* Get_pStageManager(){ return stageManager_.get(); }
+    StageManager& Get_StageManager(){ return *stageManager_; }
+    EnemyManager* Get_pEnemyManager(){ return enemyManager_.get(); }
+    EnemyManager& Get_EnemyManager(){ return *enemyManager_; }
+    FollowCamera* Get_pCamera(){ return followCamera_.get(); }
+    Player* Get_pPlayer(){ return player_.get(); }
+    void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
+
 private:
-    // Light
+
+    // flags
+    bool isPaused_ = false;
+
+    // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
-
-    // Objects
-    std::unique_ptr<Player> player_ = nullptr;
-    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
-
-    std::unique_ptr<EggManager> eggManager_ = nullptr;
-
-    // Enemy
-    std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
-    std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
-
-    std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
-    // Field
+    // GameObjects
+    std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
+    std::unique_ptr<EggManager> eggManager_ = nullptr;
+
+    // Manager
+    std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
     EventManager eventManager_;
-    std::unique_ptr<FieldEditor> fieldEditor_;
-    std::unique_ptr<FieldObjectManager> fieldObjectManager_;
+    std::unique_ptr<StageManager> stageManager_;
     std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
+
+    // Sprite
+    std::unique_ptr<Sprite> backSprite_ = nullptr;
 };

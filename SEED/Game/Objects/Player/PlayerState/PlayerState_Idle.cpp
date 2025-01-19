@@ -49,7 +49,7 @@ void PlayerState_Idle::Draw(){}
 void PlayerState_Idle::ManageState(){
 
     // ジャンプ状態へ
-    if(Input::IsPressPadButton(PAD_BUTTON::A)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
         return;
     }

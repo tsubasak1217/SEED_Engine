@@ -2,15 +2,18 @@
 #include <Scene_Game.h>
 #include "StageManager.h"
 
+// 遷移可能なステートのインクルード
+#include "GameState_Pause.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 // コンストラクタ：デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-GameState_Play::GameState_Play(Scene_Base* pScene) : State_Base(pScene){
+GameState_Play::GameState_Play(Scene_Base* pScene, bool isPlayerSetStartPos) : State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
-    Initialize();
+    Initialize(isPlayerSetStartPos);
 }
 
 GameState_Play::~GameState_Play(){}
@@ -20,7 +23,7 @@ GameState_Play::~GameState_Play(){}
 // 初期化処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::Initialize(){
+void GameState_Play::Initialize(bool isPlayerSetStartPos){
     // FieldEditor
     fieldEditor_ = std::make_unique<FieldEditor>(pGameScene_->Get_StageManager());
     fieldEditor_->Initialize();
@@ -32,10 +35,12 @@ void GameState_Play::Initialize(){
     enemyEditor_ = std::make_unique<EnemyEditor>(pGameScene_->Get_pEnemyManager());
 
     // プレイヤーの初期位置
-    pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
+    if(isPlayerSetStartPos){
+        pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
+    }
     pGameScene_->Get_pPlayer()->SetIsMovable(true);
-
-    //
+    
+    // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
 }
 
@@ -90,7 +95,9 @@ void GameState_Play::BeginFrame(){}
 // フレーム終了処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::EndFrame(){}
+void GameState_Play::EndFrame(){
+    ManageState();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -106,4 +113,10 @@ void GameState_Play::HandOverColliders(){
 // ステート管理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::ManageState(){}
+void GameState_Play::ManageState(){
+
+    // ポーズへ遷移
+    if(Input::IsTriggerPadButton(PAD_BUTTON::START)){
+        pGameScene_->ChangeState(new GameState_Pause(pScene_));
+    }
+}

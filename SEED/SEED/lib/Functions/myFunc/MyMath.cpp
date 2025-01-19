@@ -125,7 +125,7 @@ float MyMath::Cross(const Vector2& vec1, const Vector2& vec2){
 }
 
 Vector3 MyMath::Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode){
-    if(kViewMode == kScreen) {
+    if(kViewMode == kScreen){
         return Vector3(
             -vec1.y * vec2.z - vec1.z * -vec2.y,
             vec1.z * vec2.x - vec1.x * vec2.z,
@@ -188,15 +188,15 @@ std::array<Vector3, 2> MyMath::ClosestPoint(const Line& l1, const Line& l2){
     // 点が同じ場所の場合
     if(length1 == 0.0f){
         if(length2 == 0.0f){
-            return { l1.origin_, l2.origin_ };
+            return { l1.origin_,l2.origin_ };
         } else{
-            return { l1.origin_, ClosestPoint(l2.origin_, l2.end_, l1.origin_) };
+            return { l1.origin_,ClosestPoint(l2.origin_,l2.end_,l1.origin_) };
         }
     } else if(length2 == 0.0f){
         if(length1 == 0.0f){
-            return { l1.origin_, l2.origin_ };
+            return { l1.origin_,l2.origin_ };
         } else{
-            return { ClosestPoint(l1.origin_, l1.end_, l2.origin_), l2.origin_ };
+            return { ClosestPoint(l1.origin_,l1.end_,l2.origin_),l2.origin_ };
         }
     }
 
@@ -211,8 +211,8 @@ std::array<Vector3, 2> MyMath::ClosestPoint(const Line& l1, const Line& l2){
     const float EPSILON = 1e-6f;
 
     // 2直線が平行な場合
-    if(crossLength < EPSILON) {
-        return { l1.origin_, l2.origin_ };
+    if(crossLength < EPSILON){
+        return { l1.origin_,l2.origin_ };
     }
 
     // 外積の大きさを利用したスカラー値の計算
@@ -223,7 +223,7 @@ std::array<Vector3, 2> MyMath::ClosestPoint(const Line& l1, const Line& l2){
     Vector3 closest1 = l1.origin_ + dir1 * t1;
     Vector3 closest2 = l2.origin_ + dir2 * t2;
 
-    return { closest1, closest2 };
+    return { closest1,closest2 };
 }
 
 // 2直線の距離を求める関数
@@ -269,6 +269,14 @@ float MyMath::LerpShortAngle(float a, float b, float t){
 
 }
 
+Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t){
+    return Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t);
+}
+
+Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
+    return Lerp(Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t), Lerp(Lerp(p1, p2, t), Lerp(p2, p3, t), t), t);
+}
+
 Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
 }
@@ -281,7 +289,11 @@ Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
 Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
 
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
-
+    if(t <= 0.0f){
+        return p0;
+    } else if(t >= 1.0f){
+        return p3;
+    }
     float t2 = t * t;
     float t3 = t2 * t;
 
@@ -407,7 +419,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
 
 
 Vector3 MyMath::TransformNormal(const Vector3& normal, const Matrix4x4& matrix){
-    Vector3 result = { 0, 0, 0 };
+    Vector3 result = { 0,0,0 };
 
     // 法線ベクトルは平行移動の影響を受けないため、上3×3の行列を使って変換する
     result.x = normal.x * matrix.m[0][0] + normal.y * matrix.m[1][0] + normal.z * matrix.m[2][0];
@@ -501,7 +513,6 @@ Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
     return colorf;
 }
 
-// Vector4からRGBA形式のカラーコードに変換する関数
 uint32_t MyMath::IntColor(const Vector4& color){
     uint32_t red = std::clamp(int(color.x * 255.0f), 0, 255) << 24;
     uint32_t green = std::clamp(int(color.y * 255.0f), 0, 255) << 16;
@@ -514,7 +525,7 @@ uint32_t MyMath::IntColor(const Vector4& color){
 uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 
     // 彩度が0なので明度のみを反映
-    if(s == 0.0) {
+    if(s == 0.0){
         return IntColor(Vector4(v, v, v, alpha));
     }
 
@@ -526,17 +537,17 @@ uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
     float q = v * (1.0f - s * f);
     float t = v * (1.0f - s * (1.0f - f));
 
-    if(i % 6 == 0) {
+    if(i % 6 == 0){
         return  IntColor(Vector4(v, t, p, alpha));
-    } else if(i % 6 == 1) {
+    } else if(i % 6 == 1){
         return  IntColor(Vector4(q, v, p, alpha));
-    } else if(i % 6 == 2) {
+    } else if(i % 6 == 2){
         return  IntColor(Vector4(p, v, t, alpha));
-    } else if(i % 6 == 3) {
+    } else if(i % 6 == 3){
         return  IntColor(Vector4(p, q, v, alpha));
-    } else if(i % 6 == 4) {
+    } else if(i % 6 == 4){
         return  IntColor(Vector4(t, p, v, alpha));
-    } else {
+    } else{
         return  IntColor(Vector4(v, p, q, alpha));
     }
 }

@@ -52,7 +52,7 @@ public:
     /// <param name="_time">時間 (0~1)</param>
     /// <param name="_gravity">重力加速度</param>
     /// <returns></returns>
-    static Vector2 CalculateParabolic(float _sin,float _speed,float _time,float _gravity);
+    static Vector2 CalculateParabolic(float _sin,float _speed,float _gravity,float _time);
     /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算
    /// </summary>
@@ -61,7 +61,8 @@ public:
    /// <param name="_time">時間 (0~1)</param>
    /// <param name="_gravity">重力加速度</param>
    /// <returns></returns>
-    static  Vector2 CalculateParabolic(const Vector2& _direction,float speed,float _time,float _gravity);
+    static  Vector2 CalculateParabolic(const Vector2& _direction,float speed,float _gravity,float _time);
+
 };
 
 // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)

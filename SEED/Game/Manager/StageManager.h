@@ -38,6 +38,8 @@ public:
     static int32_t GetStageCount(){ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
+
+    Stage* GetPreStage(){ return stages_[preStageNo_].get(); }
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
     static uint32_t GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }

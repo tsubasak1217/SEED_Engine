@@ -637,6 +637,9 @@
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Manager\StageSelector.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>

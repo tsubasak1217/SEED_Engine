@@ -50,7 +50,7 @@ void StageSelector::Initialize(){
     }
 
     // ステージの状態に合わせて更新
-    UpdateItems();
+    UpdateItems(0);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,7 @@ void StageSelector::Finalize(){}
 void StageSelector::Update(){
     Select();
     CameraUpdate();
+    SpriteMotion();
     DecideStage();
 }
 
@@ -112,10 +113,10 @@ void StageSelector::Select(){
     // スティックの入力からステージを選択
     if(Input::IsTriggerStick(LR::LEFT, DIRECTION::RIGHT)){
         pStageManager_->StepStage(1);
-        UpdateItems();
+        UpdateItems(1);
     } else if(Input::IsTriggerStick(LR::LEFT, DIRECTION::LEFT)){
         pStageManager_->StepStage(-1);
-        UpdateItems();
+        UpdateItems(-1);
     }
 }
 
@@ -144,12 +145,18 @@ void StageSelector::DecideStage(){
 ///////////////////////////////////////////////////////////////////////////
 // アイテムの情報更新
 ///////////////////////////////////////////////////////////////////////////
-void StageSelector::UpdateItems(){
+void StageSelector::UpdateItems(int32_t step){
 
+    /*-------------------------------------*/
     // ステージ名の更新
+    /*-------------------------------------*/
     stageName_->clipLT = { 0.0f,140.0f * StageManager::GetCurrentStageNo() };
 
+    /*-------------------------------------*/
     // 集める星の更新
+    /*-------------------------------------*/
+
+    // 現在のステージの集めた星の数分、明るく表示
     for(uint32_t i = 0; i < 3; i++){
         collectionStars_[i]->color = { 0.2f,0.2f,0.2f,0.9f };
         if(i < StageManager::GetCurrentStageStarCount()){
@@ -157,7 +164,11 @@ void StageSelector::UpdateItems(){
         }
     }
 
+    /*-------------------------------------*/
     // 難易度表示の卵の更新
+    /*-------------------------------------*/
+
+    // 現在のステージの難易度分、明るく表示
     for(uint32_t i = 0; i < 5; i++){
         difficultyEggs_[i]->color = { 0.2f,0.2f,0.2f,0.9f };
         if(i < StageManager::GetCurrentStage()->GetDifficulty()){
@@ -165,6 +176,34 @@ void StageSelector::UpdateItems(){
         }
     }
 
+    /*-------------------------------------*/
+    // 矢印の表示情報更新
+    /*-------------------------------------*/
+
+    // 最初のステージの場合左を非表示
+    if(StageManager::GetCurrentStageNo() == 0){
+        arrow_[0]->color = { 0.0f,0.0f,0.0f,0.0f };
+    } else{
+        arrow_[0]->color = { 1.0f,1.0f,1.0f,1.0f };
+    }
+
+    // 最後のステージの場合右を非表示
+    if(StageManager::GetCurrentStageNo() == StageManager::GetStageCount() - 1){
+        arrow_[1]->color = { 0.0f,0.0f,0.0f,0.0f };
+    } else{
+        arrow_[1]->color = { 1.0f,1.0f,1.0f,1.0f };
+    }
+
+    // 進んだ方向の矢印を一時的に大きくする
+    if(step != 0){
+        // 矢印のスケールを変更
+        step < 0 ? arrow_[0]->scale = { 1.3f,1.3f } : arrow_[1]->scale = { 1.3f,1.3f };
+    }
+
+
+    /*-------------------------------------*/
+    // カメラの情報をセット
+    /*-------------------------------------*/
 
     // ステージから注目点を取得
     BaseObject* pTarget = pStageManager_->GetCurrentStage()->GetViewPoint();
@@ -177,4 +216,28 @@ void StageSelector::UpdateItems(){
     // カメラの初期位置をセット
     pCamera_->SetPhi(3.14f * 0.3f);
     pCamera_->SetDistance(80.0f);
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// スプライトの動き
+///////////////////////////////////////////////////////////////////////////
+void StageSelector::SpriteMotion(){
+
+    /*----------------------------------------*/
+    // 矢印の動き
+    /*----------------------------------------*/
+
+    // 矢印を左右に動かすためのsin用の角度
+    static float arrowTheta = 0.0f;
+    arrowTheta += (6.28f * 0.5f) * ClockManager::DeltaTime();// 2秒で一周
+    // 実際に動かす
+    static Vector2 basePos[2] = { arrow_[0]->translate,arrow_[1]->translate };
+    arrow_[0]->translate.x = basePos[0].x + 10.0f * sin(arrowTheta);
+    arrow_[1]->translate.x = basePos[1].x + -10.0f * sin(arrowTheta);
+    // スケールが1になるようにする
+    for(int i = 0; i < 2; i++){
+        arrow_[i]->scale.x += (1.0f - arrow_[i]->scale.x) * 0.1f * ClockManager::TimeRate();
+        arrow_[i]->scale.y += (1.0f - arrow_[i]->scale.y) * 0.1f * ClockManager::TimeRate();
+    }
 }

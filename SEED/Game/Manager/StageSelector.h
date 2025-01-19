@@ -21,7 +21,8 @@ private:
     void Select();
     void CameraUpdate();
     void DecideStage();
-    void UpdateItems();
+    void UpdateItems(int32_t step);
+    void SpriteMotion();
 
 public:
     void SetStageManager(StageManager* stageManager){ pStageManager_ = stageManager; }

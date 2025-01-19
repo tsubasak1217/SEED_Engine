@@ -21,11 +21,11 @@ class Scene_Game;
 class GameState_Play : public State_Base{
 public:
     GameState_Play() = default;
-    GameState_Play(Scene_Base* pScene);
+    GameState_Play(Scene_Base* pScene,bool isPlayerSetStartPos = true);
     ~GameState_Play();
     void Update()override;
     void Draw()override;
-    void Initialize()override;
+    void Initialize(bool isPlayerSetStartPos);
     void Finalize()override;
     void BeginFrame()override;
     void EndFrame()override;

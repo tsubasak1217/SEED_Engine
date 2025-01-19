@@ -9,8 +9,8 @@ public:
     State_Base() = default;
     State_Base(Scene_Base* pScene) : pScene_(pScene){};
     virtual ~State_Base(){};
-    virtual void Initialize() = 0;
-    virtual void Finalize() = 0;
+    virtual void Initialize(){};
+    virtual void Finalize(){};
     virtual void Update() = 0;
     virtual void Draw() = 0;
     virtual void BeginFrame() = 0;

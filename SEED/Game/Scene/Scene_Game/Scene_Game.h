@@ -52,8 +52,13 @@ public:
     EnemyManager& Get_EnemyManager(){ return *enemyManager_; }
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
     Player* Get_pPlayer(){ return player_.get(); }
+    void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
 
 private:
+
+    // flags
+    bool isPaused_ = false;
+
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;

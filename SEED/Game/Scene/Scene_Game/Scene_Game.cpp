@@ -1,12 +1,16 @@
 #include "Scene_Game.h"
-#include <GameState_Play.h>
-#include <GameState_Select.h>
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
 #include "Scene_Title.h"
 #include "CameraManager/CameraManager.h"
 #include "../SEED/source/Manager/JsonManager/JsonCoordinator.h"
+
+// 各ステートのインクルード
+#include <GameState_Play.h>
+#include <GameState_Select.h>
+#include <GameState_Pause.h>
+#include <GameState_Exit.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -146,6 +150,9 @@ void Scene_Game::Update(){
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
+    // ポーズ中は以下を更新しない
+    if(isPaused_){return;}
+
     ParticleManager::Update();
     
     player_->Update();
@@ -209,9 +216,14 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
+    Scene_Base::BeginFrame();
     player_->BeginFrame();
     eggManager_->BeginFrame();
     stageManager_->BeginFrame();
+
+    if(currentState_){
+        currentState_->BeginFrame();
+    }
 }
 
 
@@ -221,14 +233,25 @@ void Scene_Game::BeginFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
-    player_->EndFrame();
-    eggManager_->EndFrame();
-    stageManager_->EndFrame();
+
+    // 現在のステートがあればフレーム終了処理を行う
+    if(currentState_){
+        currentState_->EndFrame();
+    }
 
     // ステージが変わったらプレイヤーの位置を変更
     if(StageManager::IsStageChanged()){
         player_->SetPosition(StageManager::GetStartPos());
     }
+
+    // もしstateが変わっていたら以下は処理しない
+    if(isStateChanged_){ return; }
+
+    // 各オブジェクトのフレーム終了処理
+    player_->EndFrame();
+    eggManager_->EndFrame();
+    stageManager_->EndFrame();
+
 }
 
 

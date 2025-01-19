@@ -18,6 +18,10 @@ void Scene_Base::Draw(){
     }
 }
 
+void Scene_Base::BeginFrame(){
+    isStateChanged_ = false;
+}
+
 void Scene_Base::ManageState(){
     if(currentState_){
         currentState_->ManageState();
@@ -29,5 +33,6 @@ void Scene_Base::ChangeScene(Scene_Base* nextScene){
 }
 
 void Scene_Base::ChangeState(State_Base* nextState){
+    isStateChanged_ = true;
     currentState_.reset(nextState);
 }

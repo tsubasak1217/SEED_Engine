@@ -12,7 +12,7 @@ public:
     virtual void Finalize() = 0;
     virtual void Update() = 0;
     virtual void Draw() = 0;
-    virtual void BeginFrame() = 0;
+    virtual void BeginFrame();
     virtual void EndFrame() = 0;
     virtual void HandOverColliders() = 0;
     virtual void ManageState();
@@ -26,4 +26,5 @@ public:
 
 protected:
     std::unique_ptr<State_Base> currentState_;
+    bool isStateChanged_ = false;
 };

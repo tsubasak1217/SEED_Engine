@@ -23,8 +23,6 @@
 #include <vector>
 #include <memory>
 
-class Player;
-
 class Stage{
 public:
     Stage(ISubject& subject): subject_(subject){}
@@ -61,7 +59,12 @@ public:
     int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
 
-    bool isGoal()const{ return goalObject_ && goalObject_->IsGoal(); }
+    bool IsGoal()const{ 
+        if(goalObject_){
+            return goalObject_->isGoal_;
+        }
+        return false;
+    }
 
     template <typename T>
     std::vector<T*> GetObjectsOfType();
@@ -75,8 +78,6 @@ private:
     FieldObject_Goal* goalObject_ = nullptr;
 
     ISubject& subject_;
-
-    Player* player_ = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////

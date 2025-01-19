@@ -101,7 +101,7 @@ void Stage::HandOverColliders(){
 
 Vector3 Stage::GetStartPosition() const{
     if(startObject_){
-        startObject_->GetWorldTranslate();
+       return startObject_->GetWorldTranslate();
     }
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
     return Vector3{0.0f,0.0f,0.0f};

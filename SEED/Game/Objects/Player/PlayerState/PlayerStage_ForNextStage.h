@@ -26,6 +26,15 @@ protected:
     void ManageState()override;
 private:
     Egg* egg_ = nullptr;
+    Vector3 beforePos_;
     // 次のステージのスタート地点
     Vector3 nextStartPos_;
+
+    Vector3 ctlPoint_;
+
+    float moveTimeMax_ = 1.0f;
+    float moveTime_ = 0.0f;
+
+    bool isThrow_ = false;
+    bool preIsThrow_ = false;
 };

@@ -27,6 +27,11 @@ class FieldObject_Door;
 class FieldObject_Switch;
 
 class FieldEditor{
+    enum class EditorMode{
+        None,
+        AddFieldObject,
+        AddEnemy,
+    };
 public:
     //===================================================================*/
     //                   public methods
@@ -62,6 +67,14 @@ private:
     // オブジェクトのID再割り当て
     void ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects);
 
+    // 敵を配置するフロー用
+    void AddEnemyByMouse();
+    int32_t GetEnemyIndexByMouse(const std::vector<std::unique_ptr<Enemy>>& enemies);
+
+    // 選択関連
+    void UpdateSelectionByMouse(); // FieldObject / Enemy 両方を照合
+
+
 private:
     // id再割り当て
     template <typename T>
@@ -92,6 +105,15 @@ private:
     // ステージ管理用
     const int kMaxStage = 10;
     int32_t edittingStageIndex = 0;
+
+
+    // モード切り替え用フラグ
+    EditorMode editorMode_ = EditorMode::None;
+
+    // 選択中のもの
+    bool selectedIsEnemy_ = false;
+    int selectedObjIndex_ = -1;    // FieldObjectならここのインデックスを使う
+    int selectedEnemyIndex_ = -1;  // Enemyならここのインデックスを使う
 
 private:// enum
     // fieldObjectName.h に移動しますた

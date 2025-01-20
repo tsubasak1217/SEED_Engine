@@ -23,6 +23,7 @@ public:
     void Draw();
 
     void AddEnemy();
+    void AddEnemy(std::unique_ptr<Enemy>);
     void DeleteEnemy(uint32_t index);
 
     //--- getter / setter ---//

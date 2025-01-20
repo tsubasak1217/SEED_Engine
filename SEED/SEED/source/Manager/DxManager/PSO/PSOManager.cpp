@@ -112,8 +112,14 @@ void PSOManager::GenerateTemplateParameter(
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
         // DirectionalLights(PS_t1)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-        // texture(PS_t2,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // DirectionalLight数(PS_b1)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 1,0,1);
+        // PointLights(PS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // PointLight数(PS_b2)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2,0,1);
+        // texture(PS_t3,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 3, D3D12_SHADER_VISIBILITY_PIXEL);
 
         /*------------------ InputLayout ------------------*/
         // VBV_0
@@ -146,8 +152,14 @@ void PSOManager::GenerateTemplateParameter(
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
         // DirectionalLights(PS_t1)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-        // texture(PS_t2,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // DirectionalLight数(PS_b1)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 1,0,1);
+        // PointLights(PS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // PointLight数(PS_b2)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2,0,1);
+        // texture(PS_t3,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 3, D3D12_SHADER_VISIBILITY_PIXEL);
         // MatrixPalette(VS_t1)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 

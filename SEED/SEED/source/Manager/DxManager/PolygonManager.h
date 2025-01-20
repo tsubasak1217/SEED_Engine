@@ -14,6 +14,7 @@
 #include <Transform.h>
 #include <CameraForGPU.h>
 #include <DirectionalLight.h>
+#include <PointLight.h>
 #include "blendMode.h"
 #include "DrawLocation.h"
 #include "Ring.h"
@@ -137,8 +138,8 @@ public:// 頂点情報の追加に関わる関数
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Matrix4x4& worldMat, const Vector4& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
-        uint32_t GH, BlendMode blendMode, 
-        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,bool isStaticDraw = false,
+        uint32_t GH, BlendMode blendMode,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
@@ -147,14 +148,14 @@ public:// 頂点情報の追加に関わる関数
         const Matrix4x4& worldMat, const Vector4& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
         uint32_t GH, BlendMode blendMode,
-        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,bool isStaticDraw = false,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
     void AddSprite(
         const Vector2& size, const Matrix4x4& worldMat,
         uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-        const Vector2& anchorPoint,const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
+        const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0,
         bool isSystemDraw = false
@@ -165,7 +166,7 @@ public:// 頂点情報の追加に関わる関数
     void AddLine(
         const Vector4& v1, const Vector4& v2,
         const Matrix4x4& worldMat, const Vector4& color,
-        bool view3D, BlendMode blendMode,bool isStaticDraw = false,
+        bool view3D, BlendMode blendMode, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
@@ -173,7 +174,7 @@ public:// 頂点情報の追加に関わる関数
     void AddCylinder(const Cylinder& cylinder);
 
 private:
-    void AddOffscreenResult(uint32_t GH,BlendMode blendMode);
+    void AddOffscreenResult(uint32_t GH, BlendMode blendMode);
 
 private:
 
@@ -218,28 +219,37 @@ private:// 実際に頂点情報や色などの情報が入っている変数
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
     uint32_t primitiveDrawCount_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
 
-private:// ライティング用のデータ
+private:// ライティング用のデータ-----------------------------------------------------------------
 
     std::vector<DirectionalLight> directionalLights_;
+    std::vector<PointLight> pointLights_;
+
+    // LightingのResource
+    ComPtr<ID3D12Resource> directionalLightResource_;
+    ComPtr<ID3D12Resource> pointLightResource_;
+
+    // Map用
+    DirectionalLight* mapDirectionalLightData;
+    PointLight* mapPointLightData;
+
+private:// カメラ用のデータ-----------------------------------------------------------------
+
+    // カメラ用
+    ComPtr<ID3D12Resource> cameraResource_;
+    // Map用
+    CameraForGPU* mapCameraData;
 
 private:// Resource (すべての描画で1つにまとめている)
 
-    // モデル用
+    // モデル共通リソース
     ComPtr<ID3D12Resource> modelVertexResource_;
     ComPtr<ID3D12Resource> modelIndexResource_;
     ComPtr<ID3D12Resource> modelMaterialResource_;
     ComPtr<ID3D12Resource> modelWvpResource_;
     ComPtr<ID3D12Resource> offsetResource_;
-
-    // スキニング用
+    // スキニング用のリソース
     ComPtr<ID3D12Resource> vertexInfluenceResource_;
     ComPtr<ID3D12Resource> paletteResource_;
-
-    // カメラ用
-    ComPtr<ID3D12Resource> cameraResource_;
-
-    // LightingのResource
-    ComPtr<ID3D12Resource> directionalLightResource_;
 
     // Map用
     VertexData* mapVertexData;
@@ -249,9 +259,6 @@ private:// Resource (すべての描画で1つにまとめている)
     OffsetData* mapOffsetData;
     VertexInfluence* mapVertexInfluenceData;
     WellForGPU* mapPaletteData;
-    CameraForGPU* mapCameraData;
-    DirectionalLight* mapDirectionalLightData;
-
 
 private:
 

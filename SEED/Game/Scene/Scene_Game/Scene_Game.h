@@ -61,13 +61,15 @@ private:
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+    std::vector<std::unique_ptr<PointLight>> pointLights_;
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
-
+    std::unique_ptr<Model> ground_;
+ 
     // Manager
     std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
     EventManager eventManager_;

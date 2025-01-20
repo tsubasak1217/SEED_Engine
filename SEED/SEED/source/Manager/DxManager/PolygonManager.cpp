@@ -94,6 +94,9 @@ void PolygonManager::InitResources(){
     directionalLightResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(DirectionalLight) * 0xff);
     directionalLightResource_->SetName(L"lightingResource");
+    pointLightResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(PointLight) * 0xff);
+    pointLightResource_->SetName(L"pointLightResource");
 
     // resourceのMapping
     MapOnce();
@@ -107,7 +110,7 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[4];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[5];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -164,6 +167,13 @@ void PolygonManager::InitResources(){
         &instancingSrvDesc[3], "directionalLight"
     );
 
+    /*------------ PointLight用 --------------*/
+    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(PointLight);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, pointLightResource_.Get(),
+        &instancingSrvDesc[3], "pointLight"
+    );
+
 }
 
 void PolygonManager::Finalize(){}
@@ -180,6 +190,7 @@ void PolygonManager::Reset(){
 
     // ライティングの情報をリセット
     directionalLights_.clear();
+    pointLights_.clear();
 
     // カウントのリセット
     triangleIndexCount_ = 0;
@@ -274,6 +285,7 @@ void PolygonManager::MapOnce(){
     paletteResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPaletteData));
     cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapCameraData));
     directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapDirectionalLightData));
+    pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPointLightData));
 }
 
 
@@ -397,11 +409,13 @@ void PolygonManager::AddTriangle(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     }
 
 
@@ -572,10 +586,12 @@ void PolygonManager::AddQuad(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
         transform[drawCount].world_ = IdentityMat4();
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
     }
 
 
@@ -789,6 +805,7 @@ void PolygonManager::AddSprite(
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = IdentityMat4();
     transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][(int)cullMode - 1];
@@ -888,6 +905,7 @@ void PolygonManager::AddModel(Model* model){
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = model->GetWorldMat();
     transform[drawCount].WVP_ = wvp;
+    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(model->GetWorldMat()));
 
     //////////////////////////////////////////////////////////////////////////
     //                              offset情報の設定
@@ -1038,11 +1056,13 @@ void PolygonManager::AddLine(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][0];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
     }
 
     // offsetResourceの数を更新
@@ -1200,6 +1220,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = IdentityMat4();
     transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][0];
@@ -1242,11 +1263,17 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    // ライティング情報
+    // ライティング情報の書き込み
     std::memcpy(
         mapDirectionalLightData,
         directionalLights_.data(),
         sizeof(DirectionalLight) * directionalLights_.size()
+    );
+
+    std::memcpy(
+        mapPointLightData,
+        pointLights_.data(),
+        sizeof(PointLight) * pointLights_.size()
     );
 
     // カメラ情報
@@ -1496,6 +1523,12 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // Resourceを設定
             pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
 
+            // ライトの数を設定
+            int32_t numDirectionalLight = (int32_t)directionalLights_.size();
+            int32_t numPointLight = (int32_t)pointLights_.size();
+            pDxManager_->commandList->SetGraphicsRoot32BitConstants(4, 1, &numDirectionalLight, 0);
+            pDxManager_->commandList->SetGraphicsRoot32BitConstants(6, 1, &numPointLight, 0);
+
             // SRVヒープの上のアドレスを格納するハンドル
             D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
             // マテリアルのテーブルをセット
@@ -1507,13 +1540,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // DirectionalLightのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
             pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
+            // PointLightのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
             // テクスチャのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(7, srvHandleGPU);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
                 srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(8, srvHandleGPU);
             }
 
 
@@ -1751,13 +1787,17 @@ void PolygonManager::DrawToBackBuffer(){
 // ライトの追加
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PolygonManager::AddLight(BaseLight* light){
-    switch(light->lightType_)
+    switch(light->GetLightType())
     {
     case BASE_LIGHT:
         break;
 
     case DIRECTIONAL_LIGHT:
         directionalLights_.emplace_back(*static_cast<DirectionalLight*>(light));
+        break;
+
+    case POINT_LIGHT:
+        pointLights_.emplace_back(*static_cast<PointLight*>(light));
         break;
 
     default:

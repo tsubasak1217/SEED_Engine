@@ -71,6 +71,15 @@ void Scene_Game::Initialize(){
     directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
     directionalLight_->intensity = 1.0f;
 
+    pointLights_.clear();
+    for(int i = 0; i < 8; i++){
+        pointLights_.push_back(std::make_unique<PointLight>());
+        pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
+        pointLights_[i]->position = { MyFunc::Random(-30.0f,30.0f),20.0f,MyFunc::Random(-30.0f,30.0f) };
+        pointLights_[i]->intensity = 1.0f;
+    }
+
+
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
@@ -78,6 +87,8 @@ void Scene_Game::Initialize(){
     // Player
     player_ = std::make_unique<Player>();
     player_->Initialize();
+
+    ground_ = std::make_unique<Model>("Assets/ground.obj");
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -190,13 +201,18 @@ void Scene_Game::Draw(){
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトの情報を送る
-    directionalLight_->SendData();
+    //directionalLight_->SendData();
+
+    for(int i = 0; i < pointLights_.size(); i++){
+        pointLights_[i]->SendData();
+    }
 
     // フィールドの描画
     stageManager_->Draw();
 
     // グリッドの描画
     //SEED::DrawGrid();
+
 
     // パーティクルの描画
     ParticleManager::Draw();
@@ -208,6 +224,9 @@ void Scene_Game::Draw(){
     //すべてのenemyの描画
     enemyManager_->Draw();
     playerCorpseManager_->Draw();
+
+    // 地面の描画
+    ground_->Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

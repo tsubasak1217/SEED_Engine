@@ -646,6 +646,9 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1195,6 +1198,10 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />
+    <ClInclude Include="SEED\Lib\Structs\PointLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">
@@ -1208,6 +1215,11 @@
     <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli">
       <Filter>Resources\Shaders\ParticleShader</Filter>
     </None>
+    <None Include="Resources\Shaders\Lighting.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Material.hlsli" />
+    <None Include="Resources\Shaders\Camera.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">

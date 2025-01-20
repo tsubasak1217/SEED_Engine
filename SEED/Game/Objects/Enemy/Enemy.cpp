@@ -56,8 +56,9 @@ void Enemy::Initialize(){
     //! TODO : ユニーク ID から 読み込む
     JsonCoordinator::RegisterItem(name_,"CanEate",canEat_);
     JsonCoordinator::RegisterItem(name_,"ChasePlayer",cahsePlayer_);
+    JsonCoordinator::RegisterItem(name_, "HP", HP_);
     // ! TODO : Json で 対応する RootionePoints nameを 保存,読み込み
-    JsonCoordinator::RegisterItem(GetName(), "routineName", routineName_);
+    JsonCoordinator::RegisterItem(name_, "routineName", routineName_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -85,6 +86,10 @@ void Enemy::Draw(){
 // ImGui
 //////////////////////////////////////////////////////////////////////////
 void Enemy::ShowImGui(){
+    JsonCoordinator::RenderAdjustableItem(name_, "CanEate");
+    JsonCoordinator::RenderAdjustableItem(name_, "ChasePlayer");
+    JsonCoordinator::RenderAdjustableItem(name_, "HP");
+
     const EnemyManager* manager = GetManager(); // 敵が所属するマネージャーを取得するメソッド
 
     std::vector<std::string> routineNames = manager->GetRoutineNames();
@@ -142,10 +147,18 @@ float Enemy::GetDistanceToPlayer() const{
     return MyMath::Length(GetWorldTranslate(),pPlayer_->GetWorldTranslate());
 }
 
+void Enemy::Rename(const std::string& newName){
+    SetName(newName);
+    JsonCoordinator::RegisterItem(newName, "CanEate", canEat_);
+    JsonCoordinator::RegisterItem(newName, "ChasePlayer", cahsePlayer_);
+    JsonCoordinator::RegisterItem(newName, "HP", HP_);
+    JsonCoordinator::RegisterItem(newName, "routineName", routineName_);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
+
 
 void Enemy::OnCollision(const BaseObject* other,ObjectType objectType){
 

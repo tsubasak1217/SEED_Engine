@@ -45,6 +45,8 @@ public:
     // ルーチンポイントの取得
     const std::vector<Vector3>* GetRoutinePoints()const{ return routinePoints; }
 
+    void Rename(const std::string& newName);
+
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType)override;
 

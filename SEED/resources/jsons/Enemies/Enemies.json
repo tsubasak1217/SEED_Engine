@@ -4,12 +4,5 @@
         "y": 0.0,
         "z": 0.0
     },
-    "Enemy_0_HP": 100,
-    "Enemy_1_Position": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "Enemy_1_HP": 100,
-    "Count": 2
+    "Count": 1
 }

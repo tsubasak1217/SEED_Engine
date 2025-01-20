@@ -60,7 +60,7 @@ void EnemyEditor::ShowImGui(){
 
                 // 入力フィールドを表示
                 if (ImGui::InputText(("##EnemyName" + std::to_string(i)).c_str(), nameBuf_, IM_ARRAYSIZE(nameBuf_))){
-                    enemies[i]->SetName(std::string(nameBuf_));
+                    enemies[i]->Rename(std::string(nameBuf_));
                 }
             } else{
                 std::string label;
@@ -97,17 +97,12 @@ void EnemyEditor::ShowImGui(){
             // 例: Position, HP を編集
             auto& enemy = enemies[selectedEnemyIndex_];
             auto pos = enemy->GetWorldTranslate();
-            int32_t hp = enemy->GetHP();
 
             enemy->ShowImGui();
 
             // Position
             if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
                 enemy->SetPosition(pos);
-            }
-            // HP
-            if (ImGui::DragInt("HP", &hp, 1, 0, 100)){
-                enemy->SetHP(hp);
             }
 
             ImGui::Separator();
@@ -256,16 +251,13 @@ void EnemyEditor::SaveEnemies(){
     for (int i = 0; i < ( int ) enemies.size(); i++){
         // キー文字列
         std::string posKey = "Enemy_" + std::to_string(i) + "_Position";
-        std::string hpKey = "Enemy_" + std::to_string(i) + "_HP";
 
         // 値を取得
         auto& e = enemies[i];
         auto pos = e->GetWorldTranslate();
-        int32_t hp = e->GetHP();
 
         // SetValue
         JsonCoordinator::RegisterItem(group, posKey, pos);
-        JsonCoordinator::RegisterItem(group, hpKey, hp);
     }
     enemyCount_ = ( int ) pEnemyManager_->GetEnemies().size();
     // 敵数をセット

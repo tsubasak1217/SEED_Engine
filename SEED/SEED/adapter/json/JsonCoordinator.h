@@ -40,11 +40,11 @@ public:
     // グループ内のすべての項目をレンダリング (ImGui)
     static void RenderGroupUI(const std::string& group);
 
+    static void RenderAdjustableItem(const std::string& group, const std::string& key);
 private:
     //===================================================================*/
     //                   private function
     //===================================================================*/
-    static void RenderAdjustableItem(const std::string& group, const std::string& key);
 
     // ディレクトリ作成
     static void EnsureDirectoryExists(const std::string& path);

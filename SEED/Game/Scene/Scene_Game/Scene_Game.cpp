@@ -103,7 +103,7 @@ void Scene_Game::Initialize(){
 
     // EnemyManager の 初期化
     enemyManager_ = std::make_unique<EnemyManager>(player_.get());
-
+    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
 
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
@@ -140,6 +140,8 @@ void Scene_Game::Update(){
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
+
+    enemyEditor_->ShowImGui();
 #endif
 
     /*======================= 各状態固有の更新 ========================*/

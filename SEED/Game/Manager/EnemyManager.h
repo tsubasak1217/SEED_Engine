@@ -35,6 +35,9 @@ public:
         if(itr == routinePointsLibrary_.end()){ assert(false); }
         return &(itr->second);
     }
+
+
+    std::unordered_map<std::string, std::vector<Vector3>>& GetRoutineLibrary(){ return routinePointsLibrary_; }
 private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 

@@ -70,6 +70,7 @@ private:
 
     // Manager
     std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
+    std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
     EventManager eventManager_;
     std::unique_ptr<StageManager> stageManager_;
     std::unique_ptr<DoorProximityChecker> doorProximityChecker_;

@@ -28,7 +28,7 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
     //JsoCoordinator::RegisuterItem(enemy_->GetName(),"routineName",routineName_);
 
     // ルーチンポイントの取得
-    movePoints_ = enemy_->GetManager()->GetRoutinePoints(enemy_->GetRoutineName());
+    //movePoints_ = enemy_->GetManager()->GetRoutinePoints(enemy_->GetRoutineName());
 }
 
 void EnemyState_RoutineMove::Update(){

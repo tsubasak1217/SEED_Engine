@@ -5,6 +5,7 @@
 
 // lib
 #include "../adapter/json/JsonCoordinator.h"
+#include "../adapter/csv/CsvAdapter.h"
 #include "imgui.h"
 
 EnemyEditor::EnemyEditor(EnemyManager* manager)
@@ -12,6 +13,7 @@ EnemyEditor::EnemyEditor(EnemyManager* manager)
     // グループ名を定義
     const std::string group = "Enemies";
 
+    LoadRoutineLibrary();
     LoadEnemies();
 }
 
@@ -41,33 +43,43 @@ void EnemyEditor::ShowImGui(){
     // --------------------------------------------------------
     // 3) 左側: 敵リスト表示用Child
     // --------------------------------------------------------
-    ImGui::BeginChild("Enemy List", ImVec2(200, 300), true); // 幅200,高さ300のスクロール可能領域
+    ImGui::BeginChild("Enemy List", ImVec2(200, 300), true);
     {
         ImGui::Text("Enemies:");
-
         auto& enemies = pEnemyManager_->GetEnemies();
-        for (uint32_t i = 0; i < static_cast< int >(enemies.size()); ++i){
-            // ラベル例: "Enemy 0", "Enemy 1", ...
-            std::string label = "Enemy " + std::to_string(i);
+        for (uint32_t i = 0; i < enemies.size(); ++i){
+            bool isSelected = (selectedEnemyIndex_ == ( int ) i);
 
-            // 選択中かどうか
-            bool isSelected = (selectedEnemyIndex_ == i);
-
-            // 選択中の敵は色を変える・ハイライトするなど
             if (isSelected){
-                // 例えばテキストカラーを変更
-                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 0.f, 1.f));
-                ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.4f, 0.4f, 0.f, 1.f));
-                ImGui::Selectable(label.c_str(), true);
-                ImGui::PopStyleColor(2);
+                // 選択が変わったときのみ nameBuf_ を更新
+                if (lastSelectedIndex_ != selectedEnemyIndex_){
+                    std::string currentName = enemies[i]->GetName();
+                    std::snprintf(nameBuf_, sizeof(nameBuf_), "%s", currentName.c_str());
+                    lastSelectedIndex_ = selectedEnemyIndex_;
+                }
+
+                // 入力フィールドを表示
+                if (ImGui::InputText(("##EnemyName" + std::to_string(i)).c_str(), nameBuf_, IM_ARRAYSIZE(nameBuf_))){
+                    enemies[i]->SetName(std::string(nameBuf_));
+                }
             } else{
+                std::string label;
+                if (enemies[i]->GetName() != "enemy"){
+                    label = enemies[i]->GetName();
+                } else{
+                    label = "Enemy " + std::to_string(i);
+                }
+
                 if (ImGui::Selectable(label.c_str(), false)){
-                    selectedEnemyIndex_ = i; // クリックで選択
+                    selectedEnemyIndex_ = i;
+                    // 選択が変わったので更新フラグをセット
+                    lastSelectedIndex_ = -1;
                 }
             }
         }
     }
     ImGui::EndChild();
+
 
     // --------------------------------------------------------
     // 4) 右側: 選択中の敵を編集するUI
@@ -112,8 +124,100 @@ void EnemyEditor::ShowImGui(){
     }
     ImGui::EndChild();
 
-    // ウィンドウ終了
+    // ルーチン編集 UI の開始
+    ImGui::Separator();
+    ImGui::Text("Routine Library Editor:");
+
+    // 選択中のルーチン名を保持するための静的変数
+    static std::string selectedRoutineName;
+
+    // 左側: ルーチン一覧表示
+    ImGui::BeginChild("RoutineList", ImVec2(200, 300), true);
+    {
+        auto& library = pEnemyManager_->GetRoutineLibrary();
+        for (auto& kv : library){
+            const std::string& routineName = kv.first;
+            bool isSelected = (routineName == selectedRoutineName);
+            if (ImGui::Selectable(routineName.c_str(), isSelected)){
+                selectedRoutineName = routineName;
+            }
+        }
+    }
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    // 右側: 選択中のルーチン編集
+    ImGui::BeginChild("RoutineEditor", ImVec2(300, 300), true);
+    {
+        auto& library = pEnemyManager_->GetRoutineLibrary();
+        if (!selectedRoutineName.empty()){
+            auto it = library.find(selectedRoutineName);
+            if (it != library.end()){
+                auto& points = it->second;
+                ImGui::Text("Editing Routine: %s", selectedRoutineName.c_str());
+                ImGui::Separator();
+
+                // 各制御点を編集
+                for (size_t i = 0; i < points.size(); ++i){
+                    ImGui::PushID(( int ) i);
+                    if (ImGui::DragFloat3("Point", &points[i].x, 0.1f)){
+                        // 座標が変更されたときの処理（必要なら）
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Remove")){
+                        points.erase(points.begin() + i);
+                        ImGui::PopID();
+                        break; // 削除後にループを抜けて再描画
+                    }
+                    ImGui::PopID();
+                }
+
+                if (ImGui::Button("Add Point")){
+                    points.push_back({0,0,0});
+                }
+                ImGui::Separator();
+
+                // ルーチンの削除
+                if (ImGui::Button("Delete Routine")){
+                    library.erase(it);
+                    selectedRoutineName.clear();
+                }
+            } else{
+                ImGui::Text("Routine not found!");
+            }
+        } else{
+            ImGui::Text("No routine selected");
+        }
+    }
+    ImGui::EndChild();
+
+    // 新規ルーチン作成の UI
+    static char newRoutineBuf[64] = "";
+    ImGui::InputText("New Routine Name", newRoutineBuf, IM_ARRAYSIZE(newRoutineBuf));
+    ImGui::SameLine();
+    if (ImGui::Button("Create Routine")){
+        std::string newName = newRoutineBuf;
+        if (!newName.empty()){
+            auto& library = pEnemyManager_->GetRoutineLibrary();
+            if (library.find(newName) == library.end()){
+                library[newName] = {}; // 空の制御点リストを作成
+                selectedRoutineName = newName;
+            }
+        }
+    }
+
+    // 保存・読み込みボタン
+    if (ImGui::Button("Save Routine Library")){
+        SaveRoutineLibrary();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Load Routine Library")){
+        LoadRoutineLibrary();
+    }
+
     ImGui::End();
+
 #endif // _DEBUG
 }
 
@@ -209,4 +313,75 @@ void EnemyEditor::LoadEnemies(){
 
     // 読み込み終了後、選択インデックスをリセット
     selectedEnemyIndex_ = 0;
+}
+
+////////////////////////////////////////////////////////////////////////
+//          ルーチンライブラリのセーブ
+////////////////////////////////////////////////////////////////////////
+void EnemyEditor::SaveRoutineLibrary(){
+    // CSV に書き出すためのデータ構造を準備
+    std::vector<std::vector<std::string>> csvData;
+
+    // ヘッダ行（任意）
+    csvData.push_back({"RoutineName", "PointCount", "Points..."});
+
+    auto& library = pEnemyManager_->GetRoutineLibrary();
+    for (auto& kv : library){
+        const std::string& routineName = kv.first;
+        const auto& points = kv.second;
+
+        std::vector<std::string> row;
+        row.push_back(routineName);
+        row.push_back(std::to_string(points.size()));
+
+        for (auto& p : points){
+            row.push_back(std::to_string(p.x));
+            row.push_back(std::to_string(p.y));
+            row.push_back(std::to_string(p.z));
+        }
+        csvData.push_back(row);
+    }
+
+    // CsvAdapter のシングルトンインスタンスを取得して保存
+    CsvAdapter::GetInstance()->SaveCsv("routine_library", csvData);
+}
+
+////////////////////////////////////////////////////////////////////////
+//          ルーチンライブラリのロード
+////////////////////////////////////////////////////////////////////////
+void EnemyEditor::LoadRoutineLibrary(){
+    // CsvAdapter を使って CSV ファイルを読み込む
+    auto csvData = CsvAdapter::GetInstance()->LoadCsv("routine_library");
+    if (csvData.size() <= 1){
+        // データがない、またはヘッダのみの場合は何もしない
+        return;
+    }
+
+    auto& library = pEnemyManager_->GetRoutineLibrary();
+    library.clear();
+
+    // 先頭行はヘッダと仮定してスキップ
+    for (size_t i = 1; i < csvData.size(); ++i){
+        auto& row = csvData[i];
+        if (row.size() < 2) continue; // 必要なデータがない行はスキップ
+
+        std::string routineName = row[0];
+        int pointCount = std::stoi(row[1]);
+        std::vector<Vector3> points;
+        points.reserve(pointCount);
+
+        size_t expectedSize = 2 + 3 * pointCount;
+        if (row.size() < expectedSize) continue; // データ不足の場合はスキップ
+
+        size_t idx = 2;
+        for (int j = 0; j < pointCount; ++j){
+            Vector3 p;
+            p.x = std::stof(row[idx++]);
+            p.y = std::stof(row[idx++]);
+            p.z = std::stof(row[idx++]);
+            points.push_back(p);
+        }
+
+        library[routineName] = points;
+    }
 }

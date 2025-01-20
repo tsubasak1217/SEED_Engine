@@ -25,6 +25,9 @@ void Stage::Update(){
         fieldObject->Update();
         fieldObject->EditCollider();
     }
+
+    // 敵の更新
+    enemyManager_->Update();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -34,6 +37,9 @@ void Stage::Draw(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->Draw();
     }
+
+    // 敵の描画
+    enemyManager_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////

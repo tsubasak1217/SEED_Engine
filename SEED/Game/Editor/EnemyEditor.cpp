@@ -253,6 +253,9 @@ void EnemyEditor::SaveEnemies(){
 
     auto& enemies = em->GetEnemies();
 
+    // ステージ番号を取得
+    int stageNo = StageManager::GetCurrentStageNo();
+
     // ===== CSVで座標を保存 (従来通り) =====
     std::vector<std::vector<std::string>> csvData;
     csvData.push_back({"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
@@ -294,7 +297,9 @@ void EnemyEditor::SaveEnemies(){
     rootJson["Enemies"] = enemyArray;
 
     // ===== JSONファイル出力 =====
-    std::string filePath = "resources/jsons/enemies/enemies.json";
+    std::string filePath = "resources/jsons/enemies/stage_"
+        + std::to_string(stageNo)
+        + "_enemies.json";
     try{
         std::ofstream ofs(filePath);
         if (!ofs){
@@ -328,7 +333,10 @@ void EnemyEditor::LoadEnemies(){
     // ===== JSON読み込み =====
     nlohmann::json rootJson;
     {
-        std::string filePath = "resources/jsons/enemies/enemies.json";
+        int stageNo = StageManager::GetCurrentStageNo();
+        std::string filePath = "resources/jsons/enemies/stage_"
+            + std::to_string(stageNo)
+            + "_enemies.json";
         std::ifstream ifs(filePath);
         if (!ifs.is_open()){
             std::cerr << "Failed to open JSON file: " << filePath << std::endl;

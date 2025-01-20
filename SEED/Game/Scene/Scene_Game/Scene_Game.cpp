@@ -69,13 +69,13 @@ void Scene_Game::Initialize(){
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
     directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
-    directionalLight_->intensity = 1.0f;
+    directionalLight_->intensity = 0.3f;
 
     pointLights_.clear();
-    for(int i = 0; i < 8; i++){
+    for(int i = 0; i < 32; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
         pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
-        pointLights_[i]->position = { MyFunc::Random(-30.0f,30.0f),20.0f,MyFunc::Random(-30.0f,30.0f) };
+        pointLights_[i]->position = { MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,50.0f),MyFunc::Random(-100.0f,100.0f) };
         pointLights_[i]->intensity = 1.0f;
     }
 
@@ -201,7 +201,7 @@ void Scene_Game::Draw(){
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトの情報を送る
-    //directionalLight_->SendData();
+    directionalLight_->SendData();
 
     for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();

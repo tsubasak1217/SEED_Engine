@@ -16,6 +16,8 @@ struct PointLight {
     float intensity;
     int isLighting;
     float3 position;
+    float radius;
+    float decay;
 };
 
 
@@ -79,27 +81,33 @@ inout float3 toEye, inout float3 diffuse, inout float3 specular
     float3 lightDir = light.position - input.worldPosition;
     float distance = length(lightDir);
     lightDir = normalize(lightDir);
-
-    // 距離減衰 (標準的な減衰モデルを使用)
-    float attenuation = 1.0f / (1.0f + 0.1f * distance + 0.01f * distance * distance);
+    
+    // ライトの影響範囲外であればスキップ
+    if(distance > light.radius) {
+        return;
+    }
+    
+    // 距離減衰 (最大半径と減衰率を考慮)
+    float factor = pow(saturate(-distance / light.radius + 1.0f), light.decay);
+    float attenuation = 1.0f / (1.0f + light.decay * (distance / light.radius));
 
     // ハーフランバート
     if (material.lightingType == LightingType::HALF_LAMBERT) {
         float NdotL = dot(input.normal, lightDir);
         float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
         diffuse += material.color.rgb * textureColor.rgb *
-                       light.color.rgb * light.intensity * cos * attenuation;
+                       light.color.rgb * light.intensity * cos * attenuation * factor;
     }
     // ランバート
     else if (material.lightingType == LightingType::LAMBERT) {
         float cos = saturate(dot(input.normal, lightDir));
         diffuse += material.color.rgb * textureColor.rgb *
-                       light.color.rgb * light.intensity * cos * attenuation;
+                       light.color.rgb * light.intensity * cos * attenuation * factor;
     }
 
     // スペキュラ反射
     float3 halfVector = normalize(lightDir + toEye);
     float NdotH = saturate(dot(input.normal, halfVector));
     float specularPower = pow(NdotH, material.shinines);
-    specular += light.color.rgb * specularPower * light.intensity * attenuation;
+    specular += light.color.rgb * specularPower * light.intensity * attenuation * factor;
 }

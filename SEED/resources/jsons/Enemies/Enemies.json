@@ -1,5 +1,5 @@
 {
-    "Count": 3,
+    "Count": 4,
     "Enemies": [
         {
             "CanEat": true,
@@ -24,6 +24,14 @@
             "Index": 2,
             "Name": "Enemy3",
             "RoutineName": "newRoutine"
+        },
+        {
+            "CanEat": false,
+            "ChasePlayer": false,
+            "HP": 100,
+            "Index": 3,
+            "Name": "Enemy4",
+            "RoutineName": "NULL"
         }
     ]
 }

@@ -48,8 +48,6 @@ public:
 public:
     StageManager* Get_pStageManager(){ return stageManager_.get(); }
     StageManager& Get_StageManager(){ return *stageManager_; }
-    EnemyManager* Get_pEnemyManager(){ return enemyManager_.get(); }
-    EnemyManager& Get_EnemyManager(){ return *enemyManager_; }
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
     Player* Get_pPlayer(){ return player_.get(); }
     void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
@@ -69,7 +67,6 @@ private:
     std::unique_ptr<EggManager> eggManager_ = nullptr;
 
     // Manager
-    std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
     EventManager eventManager_;
     std::unique_ptr<StageManager> stageManager_;

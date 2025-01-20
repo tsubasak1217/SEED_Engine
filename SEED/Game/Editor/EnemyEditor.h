@@ -1,5 +1,7 @@
 #pragma once
 
+// local 
+
 // lib
 #include <string>
 #include <cstdint>
@@ -8,7 +10,7 @@ class EnemyManager;
 
 class EnemyEditor{
 public:
-    explicit EnemyEditor(EnemyManager* manager);
+    explicit EnemyEditor();
     ~EnemyEditor() = default;
 
     void ShowImGui();
@@ -22,7 +24,6 @@ private:
     void LoadRoutineLibrary();
 
 private:
-    EnemyManager* pEnemyManager_ = nullptr;
     int selectedEnemyIndex_ = 0;
     int32_t enemyCount_ = 0;
 

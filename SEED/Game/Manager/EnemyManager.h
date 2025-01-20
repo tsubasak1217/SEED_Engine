@@ -46,6 +46,9 @@ public:
         }
         return names;
     }
+
+    void SetPlayer(Player* player){ pPlayer_ = player; }
+
 private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 

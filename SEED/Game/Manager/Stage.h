@@ -8,13 +8,14 @@
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 
+#include "../Game/Manager/EnemyManager.h"
+#include "../Game/Editor/EnemyEditor.h" 
+
 // FieldObject
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
 #include "FieldObject/Soil/FieldObject_Soil.h"
 #include "FieldObject/Sphere/FieldObject_Sphere.h"
-#include "FieldObject/Start/FieldObject_Start.h"
-#include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
@@ -23,9 +24,11 @@
 #include <vector>
 #include <memory>
 
+class Player;
+
 class Stage{
 public:
-    Stage(ISubject& subject): subject_(subject){}
+    Stage(ISubject& subject);
 
     void Update();
     void Draw();
@@ -44,6 +47,7 @@ public:
 
     // stageの読み込み
     void LoadFromJson(const std::string& filePath);
+
     void AddModel(
         uint32_t modelNameIndex,
         const Vector3& scale = {2.5f,2.5f,2.5f},
@@ -69,6 +73,11 @@ public:
     uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
+    void SetPlayer(Player* pPlayer){
+        pPlayer_ = pPlayer;
+        enemyManager_->SetPlayer(pPlayer);
+    }
+    EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
 
 private:
     int32_t stageNo_ = -1;
@@ -80,6 +89,12 @@ private:
     FieldObject_Goal* goalObject_ = nullptr;
 
     ISubject& subject_;
+
+    //playerのポインタ
+    Player* pPlayer_ = nullptr;
+
+    //enemy
+    std::unique_ptr<EnemyManager> enemyManager_;
 };
 
 ////////////////////////////////////////////////////////////////////

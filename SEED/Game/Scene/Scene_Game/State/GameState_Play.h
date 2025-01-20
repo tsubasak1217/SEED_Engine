@@ -38,5 +38,4 @@ private:
 private:
     std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FieldEditor> fieldEditor_;
-    std::unique_ptr<EnemyEditor> enemyEditor_;
 };

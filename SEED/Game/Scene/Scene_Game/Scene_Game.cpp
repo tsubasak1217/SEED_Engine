@@ -78,6 +78,7 @@ void Scene_Game::Initialize(){
     // Player
     player_ = std::make_unique<Player>();
     player_->Initialize();
+    stageManager_->SetPlayer(player_.get());
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -102,8 +103,7 @@ void Scene_Game::Initialize(){
         );
 
     // EnemyManager の 初期化
-    enemyManager_ = std::make_unique<EnemyManager>(player_.get());
-    enemyEditor_ = std::make_unique<EnemyEditor>(enemyManager_.get());
+    enemyEditor_ = std::make_unique<EnemyEditor>();
 
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
@@ -162,8 +162,6 @@ void Scene_Game::Update(){
     eggManager_->Update();
     playerCorpseManager_->Update();
 
-    enemyManager_->Update();
-
     // フィールドの更新
     stageManager_->Update();
 
@@ -207,8 +205,6 @@ void Scene_Game::Draw(){
     player_->Draw();
     eggManager_->Draw();
 
-    //すべてのenemyの描画
-    enemyManager_->Draw();
     playerCorpseManager_->Draw();
 }
 

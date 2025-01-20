@@ -1,9 +1,20 @@
 #include "Stage.h"
 #include "CollisionManaer/CollisionManager.h"
 
+#include "Player/Player.h"
+
 //lib
 #include <nlohmann/json.hpp>
 #include <fstream>
+
+
+Stage::Stage(ISubject& subject) 
+    :subject_(subject){
+    // ステージの初期化
+    ClearAllFieldObjects();
+
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_);
+}
 
 ////////////////////////////////////////////////////////////////////////
 // 更新関数

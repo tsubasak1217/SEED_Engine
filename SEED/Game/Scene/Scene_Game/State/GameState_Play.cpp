@@ -31,9 +31,6 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     // FieldColliderEditor
     fieldColliderEditor_ = std::make_unique<ColliderEditor>("field", nullptr);
 
-    // EnemyEditor
-    enemyEditor_ = std::make_unique<EnemyEditor>(pGameScene_->Get_pEnemyManager());
-
     // プレイヤーの初期位置
     if(isPlayerSetStartPos){
         pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
@@ -70,8 +67,6 @@ void GameState_Play::Update(){
     // フィールドのコライダーエディター
     fieldColliderEditor_->Edit();
 
-    // 敵のエディター
-    enemyEditor_->ShowImGui();
 
 #endif // _DEBUG
 }

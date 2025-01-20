@@ -2,51 +2,64 @@
 
 // local
 #include "../Manager/EnemyManager.h"
+#include "../Manager/StageManager.h"
 
 // lib
 #include "../adapter/json/JsonCoordinator.h"
 #include "../adapter/csv/CsvAdapter.h"
 #include "imgui.h"
 
-EnemyEditor::EnemyEditor(EnemyManager* manager)
-:pEnemyManager_ (manager){
-    // グループ名を定義
-    const std::string group = "Enemies";
-
+EnemyEditor::EnemyEditor(){
+    // Editor起動時にロードするなら (任意)
     LoadRoutineLibrary();
     LoadEnemies();
 }
 
 void EnemyEditor::ShowImGui(){
 #ifdef _DEBUG
-    // ウィンドウ開始
+    //---------------------------------------------------------------------------------
+    // 1) 現在ステージと EnemyManager を取得
+    //---------------------------------------------------------------------------------
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){
+        ImGui::Begin("Enemy Editor");
+        ImGui::Text("No current stage.");
+        ImGui::End();
+        return;
+    }
+    EnemyManager* em = StageManager::GetCurrentStage()->GetEnemyManager();
+    if (!em){
+        ImGui::Begin("Enemy Editor");
+        ImGui::Text("No EnemyManager in current stage.");
+        ImGui::End();
+        return;
+    }
+
+    //---------------------------------------------------------------------------------
+    // 2) UI表示開始
+    //---------------------------------------------------------------------------------
     ImGui::Begin("Enemy Editor");
 
-    // --------------------------------------------------------
-    // 2) 上部に「Add Enemy」「Save」ボタンなどを配置
-    // --------------------------------------------------------
+    // ---- Add Enemy, Save ----
     if (ImGui::Button("Add Enemy")){
-        // 例: EnemyManager 経由で敵を追加
-        pEnemyManager_->AddEnemy();
-        // リストの最後を選択状態にする
-        selectedEnemyIndex_ = static_cast< int >(pEnemyManager_->GetEnemies().size()) - 1;
+        em->AddEnemy();
+        selectedEnemyIndex_ = static_cast< int >(em->GetEnemies().size()) - 1;
     }
     ImGui::SameLine();
-
     if (ImGui::Button("Save Enemies")){
-        // セーブ処理 (JSONなど) 
-        SaveEnemies();  
+        // JSON/CSV にセーブ
+        SaveEnemies();
     }
 
     ImGui::Separator();
 
-    // --------------------------------------------------------
-    // 3) 左側: 敵リスト表示用Child
-    // --------------------------------------------------------
+    //---------------------------------------------------------------------------------
+    // 3) 左側のエネミー一覧
+    //---------------------------------------------------------------------------------
     ImGui::BeginChild("Enemy List", ImVec2(200, 300), true);
     {
         ImGui::Text("Enemies:");
-        auto& enemies = pEnemyManager_->GetEnemies();
+        auto& enemies = em->GetEnemies();
         for (uint32_t i = 0; i < enemies.size(); ++i){
             bool isSelected = (selectedEnemyIndex_ == ( int ) i);
 
@@ -59,10 +72,12 @@ void EnemyEditor::ShowImGui(){
                 }
 
                 // 入力フィールドを表示
-                if (ImGui::InputText(("##EnemyName" + std::to_string(i)).c_str(), nameBuf_, IM_ARRAYSIZE(nameBuf_))){
+                if (ImGui::InputText(("##EnemyName" + std::to_string(i)).c_str(),
+                    nameBuf_, IM_ARRAYSIZE(nameBuf_))){
                     enemies[i]->Rename(std::string(nameBuf_));
                 }
             } else{
+                // 表示用ラベル
                 std::string label;
                 if (enemies[i]->GetName() != "enemy"){
                     label = enemies[i]->GetName();
@@ -72,7 +87,7 @@ void EnemyEditor::ShowImGui(){
 
                 if (ImGui::Selectable(label.c_str(), false)){
                     selectedEnemyIndex_ = i;
-                    // 選択が変わったので更新フラグをセット
+                    // 選択が変わったのでフラグをリセット
                     lastSelectedIndex_ = -1;
                 }
             }
@@ -80,73 +95,71 @@ void EnemyEditor::ShowImGui(){
     }
     ImGui::EndChild();
 
-
-    // --------------------------------------------------------
-    // 4) 右側: 選択中の敵を編集するUI
-    // --------------------------------------------------------
-    ImGui::SameLine(); // 同じ行に配置して左右に並べる
-
-    ImGui::BeginChild("Enemy Editor", ImVec2(250, 300), true); // 幅250,高さ300
+    //---------------------------------------------------------------------------------
+    // 4) 右側の選択中エネミー編集
+    //---------------------------------------------------------------------------------
+    ImGui::SameLine();
+    ImGui::BeginChild("Enemy Editor", ImVec2(250, 300), true);
     {
-        auto& enemies = pEnemyManager_->GetEnemies();
-        if (selectedEnemyIndex_ >= 0 && selectedEnemyIndex_ < static_cast< int >(enemies.size())){
-            // 選択中の Enemy があればパラメータ編集UIを表示
+        auto& enemies = em->GetEnemies();
+        if (selectedEnemyIndex_ >= 0 && selectedEnemyIndex_ < ( int ) enemies.size()){
             ImGui::Text("Editing Enemy %d", selectedEnemyIndex_);
             ImGui::Separator();
 
-            // 例: Position, HP を編集
             auto& enemy = enemies[selectedEnemyIndex_];
             auto pos = enemy->GetWorldTranslate();
 
+            // EnemyごとのカスタムImGui
             enemy->ShowImGui();
 
-            // Position
+            // Position調整
             if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
                 enemy->SetPosition(pos);
             }
 
             ImGui::Separator();
-            // 削除ボタン
+
+            // Removeボタン
             if (ImGui::Button("Remove Selected Enemy")){
-                pEnemyManager_->DeleteEnemy(selectedEnemyIndex_);
-                // リストが縮んだので選択インデックスを調整
-                if (selectedEnemyIndex_ >= static_cast< int >(pEnemyManager_->GetEnemies().size())){
-                    selectedEnemyIndex_ = static_cast< int >(pEnemyManager_->GetEnemies().size()) - 1;
+                em->DeleteEnemy(selectedEnemyIndex_);
+                // インデックスを調整
+                if (selectedEnemyIndex_ >= ( int ) em->GetEnemies().size()){
+                    selectedEnemyIndex_ = ( int ) em->GetEnemies().size() - 1;
                 }
             }
         } else{
-            // 敵が選ばれていない or リストが空
             ImGui::Text("No Enemy Selected");
         }
     }
     ImGui::EndChild();
 
+    //---------------------------------------------------------------------------------
+    // Editorウィンドウ終了
+    //---------------------------------------------------------------------------------
     ImGui::End();
 
-    //////////////////////////////////////////////////////////////////////////////////////////
-    // ルーチンエディタの表示
-    //////////////////////////////////////////////////////////////////////////////////////////
 
+    //---------------------------------------------------------------------------------
+    // ルーチンエディタ (同様に EnemyManager を参照)
+    //---------------------------------------------------------------------------------
     ImGui::Begin("Routine Editor");
 
-    // ルーチン編集 UI の開始
     ImGui::Separator();
     ImGui::Text("Routine Library Editor:");
 
-
-    // 選択中のルーチン名を保持するための静的変数
+    // 選択中のルーチン名を静的に保持
     static std::string selectedRoutineName;
 
-    // 新規ルーチン作成の UI
+    // 新規ルーチン作成
     static char newRoutineBuf[64] = "";
     ImGui::InputText("New Routine Name", newRoutineBuf, IM_ARRAYSIZE(newRoutineBuf));
     ImGui::SameLine();
     if (ImGui::Button("Create Routine")){
         std::string newName = newRoutineBuf;
         if (!newName.empty()){
-            auto& library = pEnemyManager_->GetRoutineLibrary();
+            auto& library = em->GetRoutineLibrary();
             if (library.find(newName) == library.end()){
-                library[newName] = {}; // 空の制御点リストを作成
+                library[newName] = {};
                 selectedRoutineName = newName;
             }
         }
@@ -161,11 +174,10 @@ void EnemyEditor::ShowImGui(){
         LoadRoutineLibrary();
     }
 
-
-    // 左側: ルーチン一覧表示
+    // 左側: ルーチン一覧
     ImGui::BeginChild("RoutineList", ImVec2(200, 300), true);
     {
-        auto& library = pEnemyManager_->GetRoutineLibrary();
+        auto& library = em->GetRoutineLibrary();
         for (auto& kv : library){
             const std::string& routineName = kv.first;
             bool isSelected = (routineName == selectedRoutineName);
@@ -178,12 +190,10 @@ void EnemyEditor::ShowImGui(){
 
     ImGui::SameLine();
 
-   
-
     // 右側: 選択中のルーチン編集
     ImGui::BeginChild("RoutineEditor", ImVec2(300, 300), true);
     {
-        auto& library = pEnemyManager_->GetRoutineLibrary();
+        auto& library = em->GetRoutineLibrary();
         if (!selectedRoutineName.empty()){
             auto it = library.find(selectedRoutineName);
             if (it != library.end()){
@@ -191,17 +201,17 @@ void EnemyEditor::ShowImGui(){
                 ImGui::Text("Editing Routine: %s", selectedRoutineName.c_str());
                 ImGui::Separator();
 
-                // 各制御点を編集
+                // 各ポイントを編集
                 for (size_t i = 0; i < points.size(); ++i){
                     ImGui::PushID(( int ) i);
                     if (ImGui::DragFloat3("Point", &points[i].x, 0.1f)){
-                        // 座標が変更されたときの処理（必要なら）
+                        // 必要なら処理
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Remove")){
                         points.erase(points.begin() + i);
                         ImGui::PopID();
-                        break; // 削除後にループを抜けて再描画
+                        break; // 再描画のためループ抜け
                     }
                     ImGui::PopID();
                 }
@@ -211,7 +221,7 @@ void EnemyEditor::ShowImGui(){
                 }
                 ImGui::Separator();
 
-                // ルーチンの削除
+                // ルーチン削除
                 if (ImGui::Button("Delete Routine")){
                     library.erase(it);
                     selectedRoutineName.clear();
@@ -225,34 +235,31 @@ void EnemyEditor::ShowImGui(){
     }
     ImGui::EndChild();
 
-   
-
-    ImGui::End();
+    ImGui::End(); // "Routine Editor" ウィンドウ終了
 
 #endif // _DEBUG
 }
 
 
 ////////////////////////////////////////////////////////////////////////
-//          json関連
+// JSON / CSV保存・読み込みなど
 ////////////////////////////////////////////////////////////////////////
 void EnemyEditor::SaveEnemies(){
-    //-----------------------------------
-    // 1) 敵一覧を取得
-    //-----------------------------------
-    auto& enemies = pEnemyManager_->GetEnemies();
+    // 現在のステージや EnemyManager を取得
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){ return; }
+    EnemyManager* em = currentStage->GetEnemyManager();
+    if (!em){ return; }
 
-    //-----------------------------------
-    // 2) CSV (座標) の作成と保存
-    //-----------------------------------
+    auto& enemies = em->GetEnemies();
+
+    // ===== CSVで座標を保存 (従来通り) =====
     std::vector<std::vector<std::string>> csvData;
     csvData.push_back({"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
 
     for (int i = 0; i < ( int ) enemies.size(); ++i){
         auto& e = enemies[i];
         auto pos = e->GetWorldTranslate();
-
-        // CSV 行を作成してpush_back
         csvData.push_back({
             std::to_string(i),
             e->GetName(),
@@ -261,24 +268,16 @@ void EnemyEditor::SaveEnemies(){
             std::to_string(pos.z)
                           });
     }
-    // CSV保存
     CsvAdapter::GetInstance()->SaveCsv("enemies_position", csvData);
 
-    //-----------------------------------
-    // 3) JSON の作成
-    //-----------------------------------
+    // ===== JSONの作成 =====
     nlohmann::json rootJson;
-    // 敵数を記録
-    rootJson["Count"] = static_cast< int >(enemies.size());
+    rootJson["Count"] = ( int ) enemies.size();
 
-    // 敵情報の配列
     nlohmann::json enemyArray = nlohmann::json::array();
-
     for (int i = 0; i < ( int ) enemies.size(); ++i){
         auto& e = enemies[i];
         if (!e) continue;
-
-        // 1体分の Enemy 情報を json オブジェクトに詰める
         nlohmann::json enemyObj;
         enemyObj["Index"] = i;
         enemyObj["Name"] = e->GetName();
@@ -286,50 +285,47 @@ void EnemyEditor::SaveEnemies(){
         enemyObj["CanEat"] = e->GetCanEat();
         enemyObj["ChasePlayer"] = e->GetChasePlayer();
         enemyObj["RoutineName"] = e->GetRoutineName();
-
-        // 必要に応じて、座標情報も JSON に入れるなら
-        // enemyObj["PosX"] = pos.x; など書いても構いません。
-        // (今は CSV に保存しているので省略)
+        // 座標をJSONにも入れるなら
+        // auto pos = e->GetWorldTranslate();
+        // enemyObj["PosX"] = pos.x; ...
 
         enemyArray.push_back(enemyObj);
     }
-
-    // ルートに配列をセット
     rootJson["Enemies"] = enemyArray;
 
-    //-----------------------------------
-    // 4) JSON ファイルとして出力
-    //-----------------------------------
-    // Enemies/Enemies.json のようなパスに保存するなら適宜調整
+    // ===== JSONファイル出力 =====
     std::string filePath = "resources/jsons/enemies/enemies.json";
     try{
         std::ofstream ofs(filePath);
         if (!ofs){
-            // ファイルが開けなかった場合のエラー処理
             std::cerr << "Failed to open file for writing: " << filePath << std::endl;
             return;
         }
-        // インデント4で整形
         ofs << rootJson.dump(4) << std::endl;
         ofs.close();
     } catch (const std::exception& e){
         std::cerr << "Exception while saving JSON: " << e.what() << std::endl;
     }
 
-    // （オマケ）編集用のメンバ変数にも敵数を保存
-    enemyCount_ = static_cast< int >(enemies.size());
+    // 敵数をメンバ変数に記録(オマケ)
+    enemyCount_ = ( int ) enemies.size();
 }
 
-
 void EnemyEditor::LoadEnemies(){
-    // ※ CSV 側の読み込みは従来どおり（位置情報用）
+    // 現在ステージや EnemyManager を取得
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){ return; }
+    EnemyManager* em = currentStage->GetEnemyManager();
+    if (!em){ return; }
+
+    // ===== CSV読み込み =====
     auto csvData = CsvAdapter::GetInstance()->LoadCsv("enemies_position");
     if (csvData.size() <= 1){
         // 空なら何もしない
         return;
     }
 
-    // JSON ファイルを読み込む (Enemies/Enemies.json 等)
+    // ===== JSON読み込み =====
     nlohmann::json rootJson;
     {
         std::string filePath = "resources/jsons/enemies/enemies.json";
@@ -347,89 +343,82 @@ void EnemyEditor::LoadEnemies(){
         ifs.close();
     }
 
-    // まず古い敵を全削除
-    pEnemyManager_->ClearAllEnemies();
+    // まず全削除
+    em->ClearAllEnemies();
 
-    // JSON から "Count" を取得 (無ければ終了)
+    // "Count"
     if (!rootJson.contains("Count")){
         std::cerr << "JSON has no 'Count' field." << std::endl;
         return;
     }
     int count = rootJson["Count"].get<int>();
 
-    // "Enemies" 配列もチェック
     if (!rootJson.contains("Enemies") || !rootJson["Enemies"].is_array()){
         std::cerr << "JSON has no 'Enemies' array." << std::endl;
         return;
     }
     auto enemyArray = rootJson["Enemies"];
 
-    // CSV は行1以降にデータがあるので i=1 からループ
+    // ===== CSVの行1以降を走査 =====
     for (size_t i = 1; i < csvData.size(); ++i){
         auto& row = csvData[i];
         if (row.size() < 5){
-            continue; // 不正行はスキップ
+            continue;
         }
-        // CSV カラムをパース
         int index = std::stoi(row[0]);
         std::string eName = row[1];
         float px = std::stof(row[2]);
         float py = std::stof(row[3]);
         float pz = std::stof(row[4]);
 
-        // 新しい Enemy を生成
+        // 新しい Enemy
         auto newEnemy = std::make_unique<Enemy>(
-            pEnemyManager_,
-            pEnemyManager_->GetPlayer(),
+            em,        // EnemyManager*
+            em->GetPlayer(), // 必要なら
             eName
         );
-        // 位置だけは CSV で管理しているのでセット
+        // CSVの位置をセット
         newEnemy->SetPosition({px, py, pz});
 
-        // JSON から他パラメータ(HP, canEat 等)を取得
-        // index < count && index < enemyArray.size() なら
+        // JSONから他のパラメータをセット
         if (index < count && index < ( int ) enemyArray.size()){
             auto& eJson = enemyArray[index];
-            // is_object() かどうか等のチェックをしておくと安全
             if (eJson.is_object()){
-                // HP (無ければデフォルト100)
                 int hp = eJson.value("HP", 100);
                 newEnemy->SetHP(hp);
 
-                // canEat
                 bool canEat = eJson.value("CanEat", false);
                 newEnemy->SetCanEat(canEat);
 
-                // chasePlayer
                 bool chasePlayer = eJson.value("ChasePlayer", false);
                 newEnemy->SetChasePlayer(chasePlayer);
 
-                // routineName
                 std::string routineName = eJson.value("RoutineName", "NULL");
                 newEnemy->SetRoutineName(routineName);
             }
         }
 
-        // Manager に追加
-        pEnemyManager_->GetEnemies().push_back(std::move(newEnemy));
+        em->GetEnemies().push_back(std::move(newEnemy));
     }
 
-    // 敵が一体以上いるなら最初の敵を選択
-    selectedEnemyIndex_ = (pEnemyManager_->GetEnemies().empty()) ? -1 : 0;
+    selectedEnemyIndex_ = (em->GetEnemies().empty()) ? -1 : 0;
 }
 
-
 ////////////////////////////////////////////////////////////////////////
-//          ルーチンライブラリのセーブ
+// ルーチンライブラリ セーブ/ロード
 ////////////////////////////////////////////////////////////////////////
 void EnemyEditor::SaveRoutineLibrary(){
-    // CSV に書き出すためのデータ構造を準備
-    std::vector<std::vector<std::string>> csvData;
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){ return; }
+    EnemyManager* em = currentStage->GetEnemyManager();
+    if (!em){ return; }
 
-    // ヘッダ行（任意）
+    auto& library = em->GetRoutineLibrary();
+
+    // CSV化
+    std::vector<std::vector<std::string>> csvData;
     csvData.push_back({"RoutineName", "PointCount", "Points..."});
 
-    auto& library = pEnemyManager_->GetRoutineLibrary();
     for (auto& kv : library){
         const std::string& routineName = kv.first;
         const auto& points = kv.second;
@@ -446,28 +435,27 @@ void EnemyEditor::SaveRoutineLibrary(){
         csvData.push_back(row);
     }
 
-    // CsvAdapter のシングルトンインスタンスを取得して保存
     CsvAdapter::GetInstance()->SaveCsv("routine_library", csvData);
 }
 
-////////////////////////////////////////////////////////////////////////
-//          ルーチンライブラリのロード
-////////////////////////////////////////////////////////////////////////
 void EnemyEditor::LoadRoutineLibrary(){
-    // CsvAdapter を使って CSV ファイルを読み込む
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){ return; }
+    EnemyManager* em = currentStage->GetEnemyManager();
+    if (!em){ return; }
+
+    auto& library = em->GetRoutineLibrary();
+
     auto csvData = CsvAdapter::GetInstance()->LoadCsv("routine_library");
     if (csvData.size() <= 1){
-        // データがない、またはヘッダのみの場合は何もしない
         return;
     }
 
-    auto& library = pEnemyManager_->GetRoutineLibrary();
     library.clear();
 
-    // 先頭行はヘッダと仮定してスキップ
     for (size_t i = 1; i < csvData.size(); ++i){
         auto& row = csvData[i];
-        if (row.size() < 2) continue; // 必要なデータがない行はスキップ
+        if (row.size() < 2) continue;
 
         std::string routineName = row[0];
         int pointCount = std::stoi(row[1]);
@@ -475,7 +463,7 @@ void EnemyEditor::LoadRoutineLibrary(){
         points.reserve(pointCount);
 
         size_t expectedSize = 2 + 3 * pointCount;
-        if (row.size() < expectedSize) continue; // データ不足の場合はスキップ
+        if (row.size() < expectedSize) continue;
 
         size_t idx = 2;
         for (int j = 0; j < pointCount; ++j){

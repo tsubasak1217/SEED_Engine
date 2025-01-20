@@ -1,8 +1,29 @@
 {
-    "Enemy_0_Position": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "Count": 1
+    "Count": 3,
+    "Enemies": [
+        {
+            "CanEat": true,
+            "ChasePlayer": true,
+            "HP": 145,
+            "Index": 0,
+            "Name": "Enemy",
+            "RoutineName": "test"
+        },
+        {
+            "CanEat": true,
+            "ChasePlayer": false,
+            "HP": 78,
+            "Index": 1,
+            "Name": "Enemy2",
+            "RoutineName": "newRoutine"
+        },
+        {
+            "CanEat": false,
+            "ChasePlayer": true,
+            "HP": 100,
+            "Index": 2,
+            "Name": "Enemy3",
+            "RoutineName": "newRoutine"
+        }
+    ]
 }

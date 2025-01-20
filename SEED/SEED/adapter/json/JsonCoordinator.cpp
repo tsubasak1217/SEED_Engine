@@ -187,3 +187,9 @@ void JsonCoordinator::RenderGroupUI(const std::string& group){
         RenderAdjustableItem(group, key);
     }
 }
+
+void JsonCoordinator::ClearGroup(const std::string& group){
+    if (s_groupData_.count(group)){
+        s_groupData_.erase(group);
+    }
+}

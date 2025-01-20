@@ -24,6 +24,12 @@ public:
 
     void ShowImGui();
 
+    // 新規追加: 敵データを JSON に登録するメソッド
+    void RegisterDataToJson(const std::string& group, int index);
+    void LoadDataFromJson(const std::string& group, int index);
+    void SaveData();
+    void LoadData();
+
 protected:
     void Damage(int32_t damage)override;
 
@@ -46,6 +52,12 @@ public:
     const std::vector<Vector3>* GetRoutinePoints()const{ return routinePoints; }
 
     void Rename(const std::string& newName);
+
+    //--- setter ---//
+    //追伸 : この setter は、EnemyEditor でのみ使用するすみません
+    void SetCanEat(bool canEat){ canEat_ = canEat; }
+    void SetChasePlayer(bool chase){ cahsePlayer_ = chase; }
+    void SetRoutineName(const std::string& routineName){ routineName_ = routineName; }
 
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType)override;

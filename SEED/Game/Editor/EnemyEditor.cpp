@@ -237,91 +237,187 @@ void EnemyEditor::ShowImGui(){
 //          json関連
 ////////////////////////////////////////////////////////////////////////
 void EnemyEditor::SaveEnemies(){
-    // グループ名を定義
-    const std::string group = "Enemies";
-
-    // 1) まず現在のグループ情報をメモリに展開(ファイルが無ければ新規作成)
-    JsonCoordinator::LoadGroup(group);
-
-    // 2) 敵の一覧を取得
-    
+    //-----------------------------------
+    // 1) 敵一覧を取得
+    //-----------------------------------
     auto& enemies = pEnemyManager_->GetEnemies();
-   
-    // 敵の情報を1体ずつ書き込む
-    for (int i = 0; i < ( int ) enemies.size(); i++){
-        // キー文字列
-        std::string posKey = "Enemy_" + std::to_string(i) + "_Position";
 
-        // 値を取得
+    //-----------------------------------
+    // 2) CSV (座標) の作成と保存
+    //-----------------------------------
+    std::vector<std::vector<std::string>> csvData;
+    csvData.push_back({"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
+
+    for (int i = 0; i < ( int ) enemies.size(); ++i){
         auto& e = enemies[i];
         auto pos = e->GetWorldTranslate();
 
-        // SetValue
-        JsonCoordinator::RegisterItem(group, posKey, pos);
+        // CSV 行を作成してpush_back
+        csvData.push_back({
+            std::to_string(i),
+            e->GetName(),
+            std::to_string(pos.x),
+            std::to_string(pos.y),
+            std::to_string(pos.z)
+                          });
     }
-    enemyCount_ = ( int ) pEnemyManager_->GetEnemies().size();
-    // 敵数をセット
-    const std::string countKey = "Count";
-    JsonCoordinator::RegisterItem(group, countKey, enemyCount_);
+    // CSV保存
+    CsvAdapter::GetInstance()->SaveCsv("enemies_position", csvData);
 
-    // 3) SaveGroup でファイルに保存
-    JsonCoordinator::SaveGroup(group);
+    //-----------------------------------
+    // 3) JSON の作成
+    //-----------------------------------
+    nlohmann::json rootJson;
+    // 敵数を記録
+    rootJson["Count"] = static_cast< int >(enemies.size());
+
+    // 敵情報の配列
+    nlohmann::json enemyArray = nlohmann::json::array();
+
+    for (int i = 0; i < ( int ) enemies.size(); ++i){
+        auto& e = enemies[i];
+        if (!e) continue;
+
+        // 1体分の Enemy 情報を json オブジェクトに詰める
+        nlohmann::json enemyObj;
+        enemyObj["Index"] = i;
+        enemyObj["Name"] = e->GetName();
+        enemyObj["HP"] = e->GetHP();
+        enemyObj["CanEat"] = e->GetCanEat();
+        enemyObj["ChasePlayer"] = e->GetChasePlayer();
+        enemyObj["RoutineName"] = e->GetRoutineName();
+
+        // 必要に応じて、座標情報も JSON に入れるなら
+        // enemyObj["PosX"] = pos.x; など書いても構いません。
+        // (今は CSV に保存しているので省略)
+
+        enemyArray.push_back(enemyObj);
+    }
+
+    // ルートに配列をセット
+    rootJson["Enemies"] = enemyArray;
+
+    //-----------------------------------
+    // 4) JSON ファイルとして出力
+    //-----------------------------------
+    // Enemies/Enemies.json のようなパスに保存するなら適宜調整
+    std::string filePath = "resources/jsons/enemies/enemies.json";
+    try{
+        std::ofstream ofs(filePath);
+        if (!ofs){
+            // ファイルが開けなかった場合のエラー処理
+            std::cerr << "Failed to open file for writing: " << filePath << std::endl;
+            return;
+        }
+        // インデント4で整形
+        ofs << rootJson.dump(4) << std::endl;
+        ofs.close();
+    } catch (const std::exception& e){
+        std::cerr << "Exception while saving JSON: " << e.what() << std::endl;
+    }
+
+    // （オマケ）編集用のメンバ変数にも敵数を保存
+    enemyCount_ = static_cast< int >(enemies.size());
 }
 
-//-----------------------------------------------------
-// (重要) エディタ内でロード機能を実装
-//-----------------------------------------------------
+
 void EnemyEditor::LoadEnemies(){
-    const std::string group = "Enemies";
-
-    // 1) グループを読み込む (ファイルが無い場合は false)
-    if (!JsonCoordinator::LoadGroup(group)){
-        // ファイルがない(初回など)は何もしないか、新規生成する
+    // ※ CSV 側の読み込みは従来どおり（位置情報用）
+    auto csvData = CsvAdapter::GetInstance()->LoadCsv("enemies_position");
+    if (csvData.size() <= 1){
+        // 空なら何もしない
         return;
     }
 
-    // 2) "Count" (敵の数)を取得
-    auto countOpt = JsonCoordinator::GetValue(group, "Count");
-    if (!countOpt){
-        // 無ければ何もしない
-        return;
+    // JSON ファイルを読み込む (Enemies/Enemies.json 等)
+    nlohmann::json rootJson;
+    {
+        std::string filePath = "resources/jsons/enemies/enemies.json";
+        std::ifstream ifs(filePath);
+        if (!ifs.is_open()){
+            std::cerr << "Failed to open JSON file: " << filePath << std::endl;
+            return;
+        }
+        try{
+            ifs >> rootJson; // パース
+        } catch (const std::exception& e){
+            std::cerr << "Exception while reading JSON: " << e.what() << std::endl;
+            return;
+        }
+        ifs.close();
     }
-    int count = std::get<int>(*countOpt);
 
-    // 3) いったん既存の敵を全部消すかどうかは好み
+    // まず古い敵を全削除
     pEnemyManager_->ClearAllEnemies();
 
-    // 4) 敵を数だけ復元
-    for (int i = 0; i < count; i++){
-        std::string posKey = "Enemy_" + std::to_string(i) + "_Position";
-        std::string hpKey = "Enemy_" + std::to_string(i) + "_HP";
+    // JSON から "Count" を取得 (無ければ終了)
+    if (!rootJson.contains("Count")){
+        std::cerr << "JSON has no 'Count' field." << std::endl;
+        return;
+    }
+    int count = rootJson["Count"].get<int>();
 
-        // キーから値を取得
-        auto posOpt = JsonCoordinator::GetValue(group, posKey);
-        auto hpOpt = JsonCoordinator::GetValue(group, hpKey);
+    // "Enemies" 配列もチェック
+    if (!rootJson.contains("Enemies") || !rootJson["Enemies"].is_array()){
+        std::cerr << "JSON has no 'Enemies' array." << std::endl;
+        return;
+    }
+    auto enemyArray = rootJson["Enemies"];
 
-        // どちらかが存在しない場合はスキップ
-        if (!posOpt || !hpOpt){
-            continue;
+    // CSV は行1以降にデータがあるので i=1 からループ
+    for (size_t i = 1; i < csvData.size(); ++i){
+        auto& row = csvData[i];
+        if (row.size() < 5){
+            continue; // 不正行はスキップ
+        }
+        // CSV カラムをパース
+        int index = std::stoi(row[0]);
+        std::string eName = row[1];
+        float px = std::stof(row[2]);
+        float py = std::stof(row[3]);
+        float pz = std::stof(row[4]);
+
+        // 新しい Enemy を生成
+        auto newEnemy = std::make_unique<Enemy>(
+            pEnemyManager_,
+            pEnemyManager_->GetPlayer(),
+            eName
+        );
+        // 位置だけは CSV で管理しているのでセット
+        newEnemy->SetPosition({px, py, pz});
+
+        // JSON から他パラメータ(HP, canEat 等)を取得
+        // index < count && index < enemyArray.size() なら
+        if (index < count && index < ( int ) enemyArray.size()){
+            auto& eJson = enemyArray[index];
+            // is_object() かどうか等のチェックをしておくと安全
+            if (eJson.is_object()){
+                // HP (無ければデフォルト100)
+                int hp = eJson.value("HP", 100);
+                newEnemy->SetHP(hp);
+
+                // canEat
+                bool canEat = eJson.value("CanEat", false);
+                newEnemy->SetCanEat(canEat);
+
+                // chasePlayer
+                bool chasePlayer = eJson.value("ChasePlayer", false);
+                newEnemy->SetChasePlayer(chasePlayer);
+
+                // routineName
+                std::string routineName = eJson.value("RoutineName", "NULL");
+                newEnemy->SetRoutineName(routineName);
+            }
         }
 
-        // 値を取り出す
-        Vector3 pos = std::get<Vector3>(*posOpt);
-        int32_t   hp = std::get<int32_t>(*hpOpt);
-
-        // 新しいEnemyを生成
-        //! TODO : Enemy Name を Editor で 編集,初期化時に Name を渡す
-        auto newEnemy = std::make_unique<Enemy>(pEnemyManager_,pEnemyManager_->GetPlayer(),"Default");
-        newEnemy->SetPosition(pos);
-        newEnemy->SetHP(hp);
-
-        // EnemyManagerに追加
+        // Manager に追加
         pEnemyManager_->GetEnemies().push_back(std::move(newEnemy));
     }
 
-    // 読み込み終了後、選択インデックスをリセット
-    selectedEnemyIndex_ = 0;
+    // 敵が一体以上いるなら最初の敵を選択
+    selectedEnemyIndex_ = (pEnemyManager_->GetEnemies().empty()) ? -1 : 0;
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 //          ルーチンライブラリのセーブ

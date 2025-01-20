@@ -52,13 +52,6 @@ void Enemy::Initialize(){
     // HP
     kMaxHP_ = 100;
     HP_ = kMaxHP_;
-
-    //! TODO : ユニーク ID から 読み込む
-    JsonCoordinator::RegisterItem(name_,"CanEate",canEat_);
-    JsonCoordinator::RegisterItem(name_,"ChasePlayer",cahsePlayer_);
-    JsonCoordinator::RegisterItem(name_, "HP", HP_);
-    // ! TODO : Json で 対応する RootionePoints nameを 保存,読み込み
-    JsonCoordinator::RegisterItem(name_, "routineName", routineName_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,41 +79,92 @@ void Enemy::Draw(){
 // ImGui
 //////////////////////////////////////////////////////////////////////////
 void Enemy::ShowImGui(){
-    JsonCoordinator::RenderAdjustableItem(name_, "CanEate");
-    JsonCoordinator::RenderAdjustableItem(name_, "ChasePlayer");
-    JsonCoordinator::RenderAdjustableItem(name_, "HP");
+    // HP
+    ImGui::DragInt("HP", &HP_, 1.0f);
 
-    const EnemyManager* manager = GetManager(); // 敵が所属するマネージャーを取得するメソッド
+    // canEat
+    ImGui::Checkbox("CanEat", &canEat_);
 
+    // chasePlayer
+    ImGui::Checkbox("Chase Player", &cahsePlayer_);
+
+    // ルーチン選択用のコンボ (今のままでもOK)
+    const EnemyManager* manager = GetManager();
     std::vector<std::string> routineNames = manager->GetRoutineNames();
 
-    // 2. 現在のルーチン名を取得し、インデックスを特定
-    std::string currentRoutine = GetRoutineName();
+    // 現在の routineName_ をインデックス化
     int currentIndex = 0;
     for (size_t i = 0; i < routineNames.size(); ++i){
-        if (routineNames[i] == currentRoutine){
+        if (routineNames[i] == routineName_){
             currentIndex = static_cast< int >(i);
             break;
         }
     }
 
-    // 3. ImGui Combo 用にルーチン名の C文字列配列を作成
+    // コンボ表示
     std::vector<const char*> routineNamesCStr;
     routineNamesCStr.reserve(routineNames.size());
-    for (const auto& name : routineNames){
-        routineNamesCStr.push_back(name.c_str());
+    for (auto& rName : routineNames){
+        routineNamesCStr.push_back(rName.c_str());
     }
 
-    // 4. Combo ウィジェットの表示と選択処理
-    if (ImGui::Combo("Select Routine", &currentIndex, routineNamesCStr.data(), static_cast< int >(routineNamesCStr.size()))){
-        // 選択が変更された場合の処理
-        const std::string& selectedRoutine = routineNames[currentIndex];
-        routineName_ = selectedRoutine;
-
-        // ルーチン変更に基づく処理
-         routinePoints = manager->GetRoutinePoints(selectedRoutine);
+    if (ImGui::Combo("Select Routine", &currentIndex,
+        routineNamesCStr.data(),
+        static_cast< int >(routineNamesCStr.size()))){
+        // 選択変更されたら更新
+        routineName_ = routineNames[currentIndex];
+        routinePoints = manager->GetRoutinePoints(routineName_);
     }
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// データのセーブ
+//////////////////////////////////////////////////////////////////////////
+void Enemy::RegisterDataToJson(const std::string& group, int index){
+    // インデックスを利用して各キーを生成し、自身のデータを登録
+    std::string baseKey = "Enemy_" + std::to_string(index) + "_";
+
+    JsonCoordinator::RegisterItem(group, baseKey + "Name", name_);
+    JsonCoordinator::RegisterItem(group, baseKey + "HP", HP_);
+    JsonCoordinator::RegisterItem(group, baseKey + "CanEat", canEat_);
+    JsonCoordinator::RegisterItem(group, baseKey + "ChasePlayer", cahsePlayer_);
+    JsonCoordinator::RegisterItem(group, baseKey + "RoutineName", routineName_);
+}
+
+void Enemy::LoadDataFromJson(const std::string& group, int index){
+    std::string baseKey = "Enemy_" + std::to_string(index) + "_";
+
+    // HP
+    if (auto hpOpt = JsonCoordinator::GetValue(group, baseKey + "HP")){
+        HP_ = std::get<int>(*hpOpt);
+    }
+    // canEat
+    if (auto eatOpt = JsonCoordinator::GetValue(group, baseKey + "CanEat")){
+        canEat_ = std::get<bool>(*eatOpt);
+    }
+    // chasePlayer
+    if (auto chaseOpt = JsonCoordinator::GetValue(group, baseKey + "ChasePlayer")){
+        cahsePlayer_ = std::get<bool>(*chaseOpt);
+    }
+    // routineName
+    if (auto rOpt = JsonCoordinator::GetValue(group, baseKey + "RoutineName")){
+        routineName_ = std::get<std::string>(*rOpt);
+    }
+}
+
+void Enemy::SaveData(){
+    // グループは「Enemies」で統一
+    const std::string groupName = "Enemies";
+
+    JsonCoordinator::SaveGroup(groupName);
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+// データのロード
+//////////////////////////////////////////////////////////////////////////
+void Enemy::LoadData(){}
 
 //////////////////////////////////////////////////////////////////////////
 // ダメージ処置

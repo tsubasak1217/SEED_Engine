@@ -38,6 +38,14 @@ public:
 
 
     std::unordered_map<std::string, std::vector<Vector3>>& GetRoutineLibrary(){ return routinePointsLibrary_; }
+
+    std::vector<std::string> GetRoutineNames()const{
+        std::vector<std::string> names;
+        for (auto& kv : routinePointsLibrary_){
+            names.push_back(kv.first);
+        }
+        return names;
+    }
 private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 

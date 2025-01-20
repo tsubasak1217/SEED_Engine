@@ -2,6 +2,7 @@
 
 //lib
 #include <fstream>
+#include <filesystem>
 #include <sstream>
 #include <iostream>
 
@@ -13,6 +14,11 @@ CsvAdapter* CsvAdapter::GetInstance(){
 void CsvAdapter::SaveCsv(const std::string& fileName,
                          const std::vector<std::vector<std::string>>& data){
     std::string path = directoryPath_ + fileName + ".csv";
+    // ディレクトリが存在しなければ作成
+    std::filesystem::path dir(directoryPath_);
+    if (!std::filesystem::exists(dir)){
+        std::filesystem::create_directories(dir);
+    }
     std::ofstream ofs(path);
     if (!ofs){
         std::cerr << "[CsvAdapter] Failed to open file for writing: " << path << std::endl;

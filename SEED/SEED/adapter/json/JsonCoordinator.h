@@ -12,7 +12,7 @@
 #include "Vector3.h"
 
 using json = nlohmann::ordered_json;
-using AdjustableValue = std::variant<int, float, Vector3,bool>;
+using AdjustableValue = std::variant<int, float, Vector3,bool,std::string>;
 
 class JsonCoordinator{
 public:
@@ -91,6 +91,8 @@ inline void from_json(const json& j, AdjustableValue& value){
         value = j.get<Vector3>();
     } else if (j.is_boolean()){
         value = j.get<bool>();
+    } else if (j.is_string()){
+        value = j.get<std::string>();
     }
 }
 

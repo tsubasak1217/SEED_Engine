@@ -22,6 +22,8 @@ public:
     void Update() override;
     void Draw() override;
 
+    void ShowImGui();
+
 protected:
     void Damage(int32_t damage)override;
 
@@ -40,6 +42,8 @@ public:
     bool GetChasePlayer()const{ return cahsePlayer_; }
 
     const std::string& GetRoutineName()const{ return routineName_; }
+    // ルーチンポイントの取得
+    const std::vector<Vector3>* GetRoutinePoints()const{ return routinePoints; }
 
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType)override;
@@ -52,6 +56,8 @@ private:
 
     bool canEat_ = false;
     bool cahsePlayer_ = false;
+
+    const std::vector<Vector3>* routinePoints;
 
 private:
     int32_t HP_;

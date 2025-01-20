@@ -159,8 +159,20 @@ void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::
                 SetValue(group, key, val);
             }
         }
+        else if (std::holds_alternative<std::string>(value)){
+            // 現在の文字列値を取得
+            std::string strVal = std::get<std::string>(value);
+            // バッファサイズは適宜調整
+            char buffer[256];
+            std::snprintf(buffer, sizeof(buffer), "%s", strVal.c_str());
+            if (ImGui::InputText(key.c_str(), buffer, IM_ARRAYSIZE(buffer))){
+                // 入力が変更された場合、値を更新
+                SetValue(group, key, std::string(buffer));
+            }
+        }
     }
 }
+
 
 //-------------------------------------------------------------------
 // グループ内のすべての項目をレンダリング

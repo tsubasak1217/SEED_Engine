@@ -24,11 +24,8 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
 
     JsonCoordinator::RegisterItem(enemy_->GetName(),"sensingDistance",sensingDistance_);
     JsonCoordinator::RegisterItem(enemy_->GetName(),"speed",speed_);
-    //! TODO : Json で 対応する RootionePoints nameを 保存,読み込み
-    //JsoCoordinator::RegisuterItem(enemy_->GetName(),"routineName",routineName_);
-
-    // ルーチンポイントの取得
-    //movePoints_ = enemy_->GetManager()->GetRoutinePoints(enemy_->GetRoutineName());
+    //ルーチンポイントの取得
+    movePoints_ = enemy_->GetRoutinePoints();
 }
 
 void EnemyState_RoutineMove::Update(){

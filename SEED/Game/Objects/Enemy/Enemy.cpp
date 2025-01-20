@@ -23,6 +23,8 @@ Enemy::Enemy(EnemyManager* pManager,Player* pPlayer,const std::string& enemyName
     pPlayer_ = pPlayer;
     pManager_ = pManager;
     Initialize();
+
+
 }
 
 Enemy::~Enemy(){}
@@ -54,6 +56,8 @@ void Enemy::Initialize(){
     //! TODO : ユニーク ID から 読み込む
     JsonCoordinator::RegisterItem(name_,"CanEate",canEat_);
     JsonCoordinator::RegisterItem(name_,"ChasePlayer",cahsePlayer_);
+    // ! TODO : Json で 対応する RootionePoints nameを 保存,読み込み
+    JsonCoordinator::RegisterItem(GetName(), "routineName", routineName_);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,6 +81,41 @@ void Enemy::Draw(){
     BaseCharacter::Draw();
 }
 
+//////////////////////////////////////////////////////////////////////////
+// ImGui
+//////////////////////////////////////////////////////////////////////////
+void Enemy::ShowImGui(){
+    const EnemyManager* manager = GetManager(); // 敵が所属するマネージャーを取得するメソッド
+
+    std::vector<std::string> routineNames = manager->GetRoutineNames();
+
+    // 2. 現在のルーチン名を取得し、インデックスを特定
+    std::string currentRoutine = GetRoutineName();
+    int currentIndex = 0;
+    for (size_t i = 0; i < routineNames.size(); ++i){
+        if (routineNames[i] == currentRoutine){
+            currentIndex = static_cast< int >(i);
+            break;
+        }
+    }
+
+    // 3. ImGui Combo 用にルーチン名の C文字列配列を作成
+    std::vector<const char*> routineNamesCStr;
+    routineNamesCStr.reserve(routineNames.size());
+    for (const auto& name : routineNames){
+        routineNamesCStr.push_back(name.c_str());
+    }
+
+    // 4. Combo ウィジェットの表示と選択処理
+    if (ImGui::Combo("Select Routine", &currentIndex, routineNamesCStr.data(), static_cast< int >(routineNamesCStr.size()))){
+        // 選択が変更された場合の処理
+        const std::string& selectedRoutine = routineNames[currentIndex];
+        routineName_ = selectedRoutine;
+
+        // ルーチン変更に基づく処理
+         routinePoints = manager->GetRoutinePoints(selectedRoutine);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // ダメージ処置

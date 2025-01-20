@@ -99,6 +99,8 @@ void EnemyEditor::ShowImGui(){
             auto pos = enemy->GetWorldTranslate();
             int32_t hp = enemy->GetHP();
 
+            enemy->ShowImGui();
+
             // Position
             if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
                 enemy->SetPosition(pos);
@@ -124,12 +126,46 @@ void EnemyEditor::ShowImGui(){
     }
     ImGui::EndChild();
 
+    ImGui::End();
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // ルーチンエディタの表示
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    ImGui::Begin("Routine Editor");
+
     // ルーチン編集 UI の開始
     ImGui::Separator();
     ImGui::Text("Routine Library Editor:");
 
+
     // 選択中のルーチン名を保持するための静的変数
     static std::string selectedRoutineName;
+
+    // 新規ルーチン作成の UI
+    static char newRoutineBuf[64] = "";
+    ImGui::InputText("New Routine Name", newRoutineBuf, IM_ARRAYSIZE(newRoutineBuf));
+    ImGui::SameLine();
+    if (ImGui::Button("Create Routine")){
+        std::string newName = newRoutineBuf;
+        if (!newName.empty()){
+            auto& library = pEnemyManager_->GetRoutineLibrary();
+            if (library.find(newName) == library.end()){
+                library[newName] = {}; // 空の制御点リストを作成
+                selectedRoutineName = newName;
+            }
+        }
+    }
+
+    // 保存・読み込みボタン
+    if (ImGui::Button("Save Routine Library")){
+        SaveRoutineLibrary();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Load Routine Library")){
+        LoadRoutineLibrary();
+    }
+
 
     // 左側: ルーチン一覧表示
     ImGui::BeginChild("RoutineList", ImVec2(200, 300), true);
@@ -146,6 +182,8 @@ void EnemyEditor::ShowImGui(){
     ImGui::EndChild();
 
     ImGui::SameLine();
+
+   
 
     // 右側: 選択中のルーチン編集
     ImGui::BeginChild("RoutineEditor", ImVec2(300, 300), true);
@@ -192,29 +230,7 @@ void EnemyEditor::ShowImGui(){
     }
     ImGui::EndChild();
 
-    // 新規ルーチン作成の UI
-    static char newRoutineBuf[64] = "";
-    ImGui::InputText("New Routine Name", newRoutineBuf, IM_ARRAYSIZE(newRoutineBuf));
-    ImGui::SameLine();
-    if (ImGui::Button("Create Routine")){
-        std::string newName = newRoutineBuf;
-        if (!newName.empty()){
-            auto& library = pEnemyManager_->GetRoutineLibrary();
-            if (library.find(newName) == library.end()){
-                library[newName] = {}; // 空の制御点リストを作成
-                selectedRoutineName = newName;
-            }
-        }
-    }
-
-    // 保存・読み込みボタン
-    if (ImGui::Button("Save Routine Library")){
-        SaveRoutineLibrary();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Load Routine Library")){
-        LoadRoutineLibrary();
-    }
+   
 
     ImGui::End();
 

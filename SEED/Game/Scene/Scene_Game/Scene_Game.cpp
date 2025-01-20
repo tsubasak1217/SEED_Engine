@@ -55,11 +55,11 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ 0.0f,2.0f,-30.0f });
+    SEED::GetCamera()->SetTranslation({0.0f,2.0f,-30.0f});
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow", followCamera_.get());
+    CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ void Scene_Game::Initialize(){
 
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight_->direction_ = MyMath::Normalize({ 2.0f,1.0f,0.5f });
+    directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
     directionalLight_->intensity = 1.0f;
 
     ////////////////////////////////////////////////////
@@ -96,9 +96,9 @@ void Scene_Game::Initialize(){
     // DoorProximityChecker の 初期化
     doorProximityChecker_ =
         std::make_unique<DoorProximityChecker>(
-            eventManager_,
-            *stageManager_.get(),
-            *player_.get()
+        eventManager_,
+        *stageManager_.get(),
+        *player_.get()
         );
 
     // EnemyManager の 初期化
@@ -138,7 +138,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
     ImGui::End();
 
     enemyEditor_->ShowImGui();
@@ -156,7 +156,7 @@ void Scene_Game::Update(){
     if(isPaused_){return;}
 
     ParticleManager::Update();
-    
+
     player_->Update();
 
     eggManager_->Update();
@@ -239,11 +239,6 @@ void Scene_Game::EndFrame(){
     // 現在のステートがあればフレーム終了処理を行う
     if(currentState_){
         currentState_->EndFrame();
-    }
-
-    // ステージが変わったらプレイヤーの位置を変更
-    if(StageManager::IsStageChanged()){
-        player_->SetPosition(StageManager::GetStartPos());
     }
 
     // もしstateが変わっていたら以下は処理しない

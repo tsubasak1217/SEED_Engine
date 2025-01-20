@@ -7,6 +7,7 @@
 
 // manager
 #include "Egg/Manager/EggManager.h"
+#include "StageManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 
@@ -15,22 +16,21 @@
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
 #include "PlayerState/PlayerState_Spawn.h"
+#include "PlayerState/PlayerStage_ForNextStage.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter()
-{
+Player::Player(): BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
 
 }
 
-Player::~Player() {}
+Player::~Player(){}
 
-void Player::Initialize()
-{
+void Player::Initialize(){
 
     // 属性の決定
     objectType_ = ObjectType::Player;
@@ -44,13 +44,13 @@ void Player::Initialize()
     InitColliders(ObjectType::Player);
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f, 3.0f, 0.0f);
+    targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
 
     JsonCoordinator::LoadGroup("Player");
 }
@@ -58,8 +58,7 @@ void Player::Initialize()
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Update()
-{
+void Player::Update(){
 #ifdef _DEBUG
     ImGui::Begin("Player");
     JsonCoordinator::RenderGroupUI("Player");
@@ -74,16 +73,18 @@ void Player::Update()
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Draw()
-{
+void Player::Draw(){
     BaseCharacter::Draw();
 }
 
-void Player::Spawn(const Vector3 &pos)
-{
+void Player::Spawn(const Vector3& pos){
     PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this);
     state->SetSpawnPos(pos);
     ChangeState(state);
+}
+
+void Player::ToClearStageState(const Vector3& nextStartPos){
+    ChangeState(new PlayerStage_ForNextStage(nextStartPos,this));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -95,21 +96,33 @@ void Player::Spawn(const Vector3 &pos)
 //////////////////////////////////////////////////////////////////////////
 void Player::HandleMove(const Vector3 &acceleration)
 {
+    // 移動
     if(isMovable_){
-        // 移動
         model_->translate_ += acceleration;
-
-        // 移動制限
-        model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
-        model_->UpdateMatrix();
     }
+
+    // 移動制限
+    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+    model_->UpdateMatrix();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject *other, ObjectType objectType)
-{
+void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
+
+    // ゴールに触れている状態で
+    if(objectType == ObjectType::GoalField){
+    
+        // ステージ遷移ステートへ
+        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+            if(!StageManager::IsLastStage()){
+                ToClearStageState(StageManager::GetNextStartPos());
+                //2つのステージのコライダーを渡すよう設定
+                StageManager::SetIsHandOverColliderNext(true);
+            }
+        }
+    }
 }

@@ -33,15 +33,21 @@ private:
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
     static std::array<uint32_t, kStageCount_> getStarCounts_;
     static bool isPlaying_;
+    static bool isHandOverColliderNext_;
 
 public:
     static int32_t GetStageCount(){ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
+    Stage* GetPreStage(){ return stages_[preStageNo_].get(); }
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
     static uint32_t GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
     static Vector3 GetStartPos();
+    static Vector3 GetNextStartPos();
     static bool IsStageChanged(){ return currentStageNo_ != preStageNo_; }
     static bool IsPlaying(){ return isPlaying_; }
+    static bool IsLastStage(){ return currentStageNo_ == kStageCount_ - 1; }
+    static bool IsHandOverColliderNext(){ return isHandOverColliderNext_; }
+    static void SetIsHandOverColliderNext(bool isHandOverColliderNext){ isHandOverColliderNext_ = isHandOverColliderNext; }
 };

@@ -116,6 +116,9 @@ public:
     static float Lerp(const float v1, const float v2, float t);
     static float LerpShortAngle(float a, float b, float t);
 
+    static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,float t);
+    static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);
+
     //スプライン補完をする関数
     static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
     //スプライン補完を使用して位置を設定する関数

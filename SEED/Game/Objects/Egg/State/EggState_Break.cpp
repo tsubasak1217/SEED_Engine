@@ -2,14 +2,16 @@
 
 //object
 #include "../Egg.h"
+#include "StageManager.h"
 
 //manager
 #include "ClockManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 
-EggState_Break::EggState_Break(BaseCharacter* character){
+EggState_Break::EggState_Break(BaseCharacter* character, bool breakToNextStage){
     Initialize("Break",character);
+    breakToNextStage_ = breakToNextStage;
 }
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
@@ -33,6 +35,13 @@ void EggState_Break::ManageState(){
         Egg* egg = dynamic_cast<Egg*>(pCharacter_);
         if(egg){
             egg->Break();
+
+            if(breakToNextStage_){
+                // 次のステージに進める
+                StageManager::StepStage(1);
+                StageManager::SetIsHandOverColliderNext(false);
+                breakToNextStage_ = false;
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ std::array<std::unique_ptr<Stage>, StageManager::kStageCount_> StageManager::sta
 std::array<uint32_t, StageManager::kStageCount_> StageManager::getStarCounts_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
+bool StageManager::isHandOverColliderNext_ = false;
 
 ///////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -28,6 +29,7 @@ StageManager::StageManager(ISubject& subject){
     for(int i = 0; i < kStageCount_; i++){
         stages_[i] = std::make_unique<Stage>(subject);
         stages_[i]->SetStageNo(i);
+        
     }
 
     Initialize();
@@ -57,7 +59,6 @@ void StageManager::Update(){
     for(auto& stage : stages_){
         stage->Update();
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -97,6 +98,11 @@ void StageManager::EndFrame(){
 ///////////////////////////////////////////////////////////////////////
 void StageManager::HandOverColliders(){
     stages_[currentStageNo_]->HandOverColliders();
+
+    // 卵を投げているときはプレイヤーがいない次のステージのコライダーも渡す
+    if(isHandOverColliderNext_){
+        stages_[std::clamp(currentStageNo_ + 1, 0, kStageCount_ - 1)]->HandOverColliders();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -123,4 +129,8 @@ void StageManager::LoadStages(){
 ///////////////////////////////////////////////////////////////////////
 Vector3 StageManager::GetStartPos(){
     return stages_[currentStageNo_]->GetStartPosition();
+}
+
+Vector3 StageManager::GetNextStartPos(){
+    return stages_[std::clamp(currentStageNo_ + 1,0,kStageCount_ - 1)]->GetStartPosition();
 }

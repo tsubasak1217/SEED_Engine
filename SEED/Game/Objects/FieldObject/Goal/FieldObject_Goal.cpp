@@ -14,8 +14,8 @@ FieldObject_Goal::FieldObject_Goal(){
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
     // コライダー関連の初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    InitColliders(ObjectType::GoalField);
     // 全般の初期化
     FieldObject::Initialize();
 
@@ -28,8 +28,8 @@ FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
     className_ = "FieldObject_Goal";
     name_ = "goal";
     // コライダー関連の初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    InitColliders(ObjectType::GoalField);
     // 全般の初期化
     FieldObject::Initialize();
 
@@ -39,7 +39,9 @@ FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
 ////////////////////////////////////////////////////////////////////////////////////////
 //  初期化関数
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Goal::Initialize(){}
+void FieldObject_Goal::Initialize(){
+    isGoal_ = false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  更新関数
@@ -52,10 +54,10 @@ void FieldObject_Goal::Update(){
 ////////////////////////////////////////////////////////////////////////////////////////
 //  衝突処理
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Goal::OnCollision(const BaseObject* other, ObjectType objectType){
+void FieldObject_Goal::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
         // ゴールしたことを通知
-        StageManager::StepStage(1);
+        isGoal_ = true;
     }
 }

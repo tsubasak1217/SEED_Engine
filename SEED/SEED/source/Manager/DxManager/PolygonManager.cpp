@@ -74,7 +74,7 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xfff);
     modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xfff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
     offsetResource_->SetName(L"offsetResource");
 
     // Skinning
@@ -94,6 +94,12 @@ void PolygonManager::InitResources(){
     directionalLightResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(DirectionalLight) * 0xff);
     directionalLightResource_->SetName(L"lightingResource");
+    pointLightResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(PointLight) * 0xff);
+    pointLightResource_->SetName(L"pointLightResource");
+    spotLightResource_ =
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(SpotLight) * 0xff);
+    spotLightResource_->SetName(L"spotLightResource");
 
     // resourceのMapping
     MapOnce();
@@ -107,7 +113,7 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[4];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[6];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -135,6 +141,20 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[3].Buffer.FirstElement = 0;
     instancingSrvDesc[3].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
     instancingSrvDesc[3].Buffer.NumElements = 0xff;
+
+    instancingSrvDesc[4].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[4].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[4].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[4].Buffer.FirstElement = 0;
+    instancingSrvDesc[4].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[4].Buffer.NumElements = 0xff;
+
+    instancingSrvDesc[5].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[5].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[5].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[5].Buffer.FirstElement = 0;
+    instancingSrvDesc[5].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[5].Buffer.NumElements = 0xff;
 
     /*------------- Transform用 --------------*/
     instancingSrvDesc[0].Buffer.StructureByteStride = sizeof(TransformMatrix);
@@ -164,6 +184,20 @@ void PolygonManager::InitResources(){
         &instancingSrvDesc[3], "directionalLight"
     );
 
+    /*------------ PointLight用 --------------*/
+    instancingSrvDesc[4].Buffer.StructureByteStride = sizeof(PointLight);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, pointLightResource_.Get(),
+        &instancingSrvDesc[4], "pointLight"
+    );
+
+    /*------------ SpotLight用 --------------*/
+    instancingSrvDesc[5].Buffer.StructureByteStride = sizeof(SpotLight);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, spotLightResource_.Get(),
+        &instancingSrvDesc[5], "spotLight"
+    );
+
 }
 
 void PolygonManager::Finalize(){}
@@ -180,6 +214,8 @@ void PolygonManager::Reset(){
 
     // ライティングの情報をリセット
     directionalLights_.clear();
+    pointLights_.clear();
+    spotLights_.clear();
 
     // カウントのリセット
     triangleIndexCount_ = 0;
@@ -274,6 +310,8 @@ void PolygonManager::MapOnce(){
     paletteResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPaletteData));
     cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapCameraData));
     directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapDirectionalLightData));
+    pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPointLightData));
+    spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapSpotLightData));
 }
 
 
@@ -332,12 +370,25 @@ void PolygonManager::AddTriangle(
     auto* modelData = view3D ?
         &primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
-    auto* drawData3D = modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
-    auto* drawData2D = modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
+
     if(isStaticDraw){
         modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
-        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
     }
+
+    static std::string drawDataName[2];
+    drawDataName[0].clear();
+    drawDataName[0].reserve(128);
+    drawDataName[0] += "ENGINE_DRAW_TRIANGLE";
+    drawDataName[0] += blendName[(int)blendMode];
+    drawDataName[0] += cullName[0];
+    drawDataName[1].clear();
+    drawDataName[1].reserve(128);
+    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TRIANGLE2D" : "ENGINE_DRAW_TRIANGLE2D";
+    drawDataName[1] += blendName[(int)blendMode];
+    drawDataName[1] += cullName[(int)cullMode - 1];
+
+    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
+    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // indexCount
     int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
@@ -397,29 +448,24 @@ void PolygonManager::AddTriangle(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     }
 
 
     // offsetResourceの数を更新
-    if(view3D){
-        auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData3D->indexCount += 3;
-    } else{
-        auto& offsetData = drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData2D->indexCount += 3;
+    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][(int)cullMode - 1] : drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
+    if(offsetData.size() == 0){
+        offsetData.resize(1);
+    }
+
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
     }
 
 
@@ -440,6 +486,8 @@ void PolygonManager::AddTriangle(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
+    view3D ? drawData3D->indexCount += 3 : drawData2D->indexCount += 3;
+    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
 }
 
 
@@ -499,12 +547,25 @@ void PolygonManager::AddQuad(
     auto* modelData = view3D ?
         &primitiveData_[PRIMITIVE_QUAD][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_QUAD2D][(int)blendMode][(int)cullMode - 1];
-    auto* drawData3D = modelDrawData_["ENGINE_DRAW_QUAD" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
-    auto* drawData2D = modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
+
     if(isStaticDraw){
         modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][(int)blendMode][(int)cullMode - 1];
-        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
     }
+
+    static std::string drawDataName[2];
+    drawDataName[0].clear();
+    drawDataName[0].reserve(128);
+    drawDataName[0] += "ENGINE_DRAW_QUAD";
+    drawDataName[0] += blendName[(int)blendMode];
+    drawDataName[0] += cullName[0];
+    drawDataName[1].clear();
+    drawDataName[1].reserve(128);
+    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+    drawDataName[1] += blendName[(int)blendMode];
+    drawDataName[1] += cullName[(int)cullMode - 1];
+
+    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
+    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // Count
     int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
@@ -572,48 +633,41 @@ void PolygonManager::AddQuad(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
         transform[drawCount].world_ = IdentityMat4();
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
     }
 
 
     // offsetResourceの数を更新
-    if(view3D){
-        auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData3D->indexCount += 4;
-    } else{
-        auto& offsetData = drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData2D->indexCount += 4;
+    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][(int)cullMode - 1] : drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
+    if(offsetData.size() == 0){
+        offsetData.resize(1);
     }
 
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
+    }
 
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticQuad2D]++;
-        drawData2D->totalDrawCount++;
     } else{
         if(view3D) {
             objCounts_[(int)DrawOrder::Quad]++;
-            drawData3D->totalDrawCount++;
         } else{
             objCounts_[(int)DrawOrder::Quad2D]++;
-            drawData2D->totalDrawCount++;
         }
     }
 
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     quadIndexCount_++;
+    view3D ? drawData3D->indexCount += 6 : drawData2D->indexCount += 6;
+    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
 }
 
 
@@ -628,7 +682,7 @@ void PolygonManager::AddQuad(
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-    const Vector2& anchorPoint,const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
+    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
     bool isStaticDraw, DrawLocation drawLocation, uint32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -698,9 +752,14 @@ void PolygonManager::AddSprite(
     auto* modelData = isStaticDraw ?
         &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_SPRITE][(int)blendMode][(int)cullMode - 1];
-    auto* drawData = isStaticDraw ?
-        modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get() :
-        modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
+
+    static std::string drawDataName;
+    drawDataName.clear();
+    drawDataName.reserve(128);
+    drawDataName += isStaticDraw ? "ENGINE_DRAW_STATIC_SPRITE" : "ENGINE_DRAW_SPRITE";
+    drawDataName += blendName[(int)blendMode];
+    drawDataName += cullName[(int)cullMode - 1];
+    auto* drawData = modelDrawData_[drawDataName].get();
 
     // 背面描画の場合はzFarに設定
     if(drawLocation == DrawLocation::Back && !isStaticDraw){
@@ -789,14 +848,18 @@ void PolygonManager::AddSprite(
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = IdentityMat4();
     transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][(int)cullMode - 1];
     if(offsetData.size() == 0){
         offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
     }
-    drawData->indexCount += 6;
+
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
+    }
+
 
     // カウントを更新
     if(isStaticDraw){
@@ -809,6 +872,7 @@ void PolygonManager::AddSprite(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     spriteCount_++;
+    drawData->indexCount += 6;
     drawData->totalDrawCount++;
 
 }
@@ -827,13 +891,17 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     // モデルの名前の決定
     //////////////////////////////////////////////////////////////////////////
-    std::string modelName = model->modelName_;
+    static std::string modelName;
+    modelName.clear();
+    modelName.reserve(64);
+    modelName = model->modelName_;
+
     if(model->isAnimation_){
         // アニメーションしているモデルは別のデータとして扱う
-        modelName += std::string("_Skinning");
+        modelName += "_Skinning";
     } else if(model->isParticle_){
         // パーティクルは別のデータとして扱う
-        modelName += std::string("_Particle");
+        modelName += "_Particle";
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -888,6 +956,7 @@ void PolygonManager::AddModel(Model* model){
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = model->GetWorldMat();
     transform[drawCount].WVP_ = wvp;
+    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(model->GetWorldMat()));
 
     //////////////////////////////////////////////////////////////////////////
     //                              offset情報の設定
@@ -984,12 +1053,25 @@ void PolygonManager::AddLine(
     auto* modelData = view3D ?
         &primitiveData_[PRIMITIVE_LINE][(int)blendMode][0] :
         &primitiveData_[PRIMITIVE_LINE2D][(int)blendMode][0];
-    auto* drawData3D = modelDrawData_["ENGINE_DRAW_LINE" + blendName[(int)blendMode] + cullName[0]].get();
-    auto* drawData2D = modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[(int)blendMode] + cullName[0]].get();
+
     if(isStaticDraw){
         modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][(int)blendMode][0];
-        drawData2D = modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[(int)blendMode] + cullName[0]].get();
     }
+
+    static std::string drawDataName[2];
+    drawDataName[0].clear();
+    drawDataName[0].reserve(128);
+    drawDataName[0] += "ENGINE_DRAW_LINE";
+    drawDataName[0] += blendName[(int)blendMode];
+    drawDataName[0] += cullName[0];
+    drawDataName[1].clear();
+    drawDataName[1].reserve(128);
+    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_LINE2D" : "ENGINE_DRAW_LINE2D";
+    drawDataName[1] += blendName[(int)blendMode];
+    drawDataName[1] += cullName[0];
+
+    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
+    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // Count
     int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
@@ -1024,12 +1106,13 @@ void PolygonManager::AddLine(
 
     // material
     auto& material = view3D ? drawData3D->materials[(int)blendMode][0] : drawData2D->materials[(int)blendMode][0];
+    static int GH = TextureManager::LoadTexture("Assets/white1x1.png");
     material.resize(1);
     if(material[0].size() <= drawCount){ material[0].resize(drawCount + 1); }
     material[0][drawCount].color_ = color;
     material[0][drawCount].lightingType_ = LIGHTINGTYPE_NONE;
     material[0][drawCount].uvTransform_ = IdentityMat4();
-    material[0][drawCount].GH_ = TextureManager::LoadTexture("Assets/white1x1.png");
+    material[0][drawCount].GH_ = GH;
 
 
     // transform
@@ -1038,47 +1121,42 @@ void PolygonManager::AddLine(
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][0];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = worldMat;
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
     }
 
     // offsetResourceの数を更新
-    if(view3D){
-        auto& offsetData = drawData3D->offsetData[(int)blendMode][0];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData3D->indexCount += 2;
-    } else{
-        auto& offsetData = drawData2D->offsetData[(int)blendMode][0];
-        if(offsetData.size() == 0){
-            offsetData.resize(1);
-            offsetData.back().push_back(OffsetData());
-        }
-        drawData2D->indexCount += 2;
+    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][0] : drawData2D->offsetData[(int)blendMode][0];
+    if(offsetData.size() == 0){
+        offsetData.resize(1);
     }
+
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
+    }
+
 
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticLine2D]++;
-        drawData2D->totalDrawCount++;
     } else{
         if(view3D){
             objCounts_[(int)DrawOrder::Line]++;
-            drawData3D->totalDrawCount++;
         } else{
             objCounts_[(int)DrawOrder::Line2D]++;
-            drawData2D->totalDrawCount++;
         }
     }
 
     objCountCull_[0]++;
     objCountBlend_[(int)blendMode]++;
     lineCount_++;
+    view3D ? drawData3D->indexCount += 2 : drawData2D->indexCount += 2;
+    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
 }
 
 
@@ -1148,7 +1226,14 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     ///////////////////////////////////////////////////////////////////
 
     auto* modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][(int)blendMode][0];
-    auto* drawData = modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[(int)blendMode] + cullName[0]].get();
+
+    static std::string drawDataName;
+    drawDataName.clear();
+    drawDataName.reserve(128);
+    drawDataName += "ENGINE_DRAW_OFFSCREEN";
+    drawDataName += blendName[(int)blendMode];
+    drawDataName += cullName[0];
+    auto* drawData = modelDrawData_[drawDataName].get();
 
     // Count
     int drawCount = drawData->totalDrawCount;
@@ -1200,19 +1285,23 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = IdentityMat4();
     transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData[(int)blendMode][0];
     if(offsetData.size() == 0){
         offsetData.resize(1);
-        offsetData.back().push_back(OffsetData());
+    }
+
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
     }
 
     // カウントを更新
-    drawData->indexCount += 6;
     objCounts_[(int)DrawOrder::Offscreen]++;
     objCountBlend_[(int)blendMode]++;
     objCountCull_[0]++;
+    drawData->indexCount += 6;
     drawData->totalDrawCount++;
 }
 
@@ -1242,11 +1331,23 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    // ライティング情報
+    // ライティング情報の書き込み
     std::memcpy(
         mapDirectionalLightData,
         directionalLights_.data(),
         sizeof(DirectionalLight) * directionalLights_.size()
+    );
+
+    std::memcpy(
+        mapPointLightData,
+        pointLights_.data(),
+        sizeof(PointLight) * pointLights_.size()
+    );
+
+    std::memcpy(
+        mapSpotLightData,
+        spotLights_.data(),
+        sizeof(SpotLight) * spotLights_.size()
     );
 
     // カメラ情報
@@ -1496,6 +1597,14 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // Resourceを設定
             pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
 
+            // ライトの数を設定
+            int32_t numDirectionalLight = (int32_t)directionalLights_.size();
+            int32_t numPointLight = (int32_t)pointLights_.size();
+            int32_t numSpotLight = (int32_t)spotLights_.size();
+            pDxManager_->commandList->SetGraphicsRoot32BitConstants(6, 1, &numDirectionalLight, 0);
+            pDxManager_->commandList->SetGraphicsRoot32BitConstants(7, 1, &numPointLight, 0);
+            pDxManager_->commandList->SetGraphicsRoot32BitConstants(8, 1, &numSpotLight, 0);
+
             // SRVヒープの上のアドレスを格納するハンドル
             D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
             // マテリアルのテーブルをセット
@@ -1507,13 +1616,19 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // DirectionalLightのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
             pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
+            // PointLightのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+            // SpotLightのテーブルをセット
+            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
             // テクスチャのテーブルをセット
             srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, srvHandleGPU);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
                 srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, srvHandleGPU);
             }
 
 
@@ -1555,12 +1670,12 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         offset.primitiveInterval = instanceInterval;
                     }
 
-                    std::memcpy(
+
+                    std::memmove(
                         mapOffsetData + meshCountAll,
                         item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
                         sizeof(OffsetData) * instanceCount
                     );
-
 
                     /*///////////////////////////////////////////////////////////////////////////*/
 
@@ -1751,13 +1866,21 @@ void PolygonManager::DrawToBackBuffer(){
 // ライトの追加
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PolygonManager::AddLight(BaseLight* light){
-    switch(light->lightType_)
+    switch(light->GetLightType())
     {
     case BASE_LIGHT:
         break;
 
     case DIRECTIONAL_LIGHT:
         directionalLights_.emplace_back(*static_cast<DirectionalLight*>(light));
+        break;
+
+    case POINT_LIGHT:
+        pointLights_.emplace_back(*static_cast<PointLight*>(light));
+        break;
+
+    case SPOT_LIGHT:
+        spotLights_.emplace_back(*static_cast<SpotLight*>(light));
         break;
 
     default:

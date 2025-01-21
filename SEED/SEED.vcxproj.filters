@@ -646,16 +646,10 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
+    <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1204,15 +1198,11 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
-    <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
-    <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />
+    <ClInclude Include="SEED\Lib\Structs\PointLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">
@@ -1226,6 +1216,11 @@
     <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli">
       <Filter>Resources\Shaders\ParticleShader</Filter>
     </None>
+    <None Include="Resources\Shaders\Lighting.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Material.hlsli" />
+    <None Include="Resources\Shaders\Camera.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">

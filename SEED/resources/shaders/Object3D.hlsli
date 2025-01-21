@@ -1,4 +1,5 @@
-﻿struct VertexShaderOutput
+﻿#pragma once
+struct VertexShaderOutput
 {
     float4 position : SV_POSITION;
     float2 texcoord : TEXCOORD0;
@@ -7,11 +8,12 @@
     uint instanceID : Index0;
 };
 
-struct LightingType
-{
-    static const int NONE = 0;
-    static const int LAMBERT = 1;
-    static const int HALF_LAMBERT = 2;
+struct PixelShaderOutput {
+    float4 color : SV_TARGET0;
+};
+
+struct Int {
+    int value;
 };
 
 /*- 仮: 非線形を線形に変換する関数-*/

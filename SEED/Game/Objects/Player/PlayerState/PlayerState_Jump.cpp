@@ -21,6 +21,7 @@ void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* pl
     // Jsonから値を取得
     JsonCoordinator::RegisterItem("Player","jumpPower",jumpPower_);
     JsonCoordinator::RegisterItem("Player","hoveringTime",hoveringTime_);
+    JsonCoordinator::RegisterItem("Player","jumpHoveringAccel",jumpHoveringAccel_);
 
     // ジャンプの初期化
     pCharacter_->SetIsJump(true);
@@ -69,16 +70,20 @@ void PlayerState_Jump::Hovering(){
     switch(hoveringState_){
         case HoveringState::MoveUp:
             if(pCharacter_->GetDropSpeed() > jumpPower_){
-                pCharacter_->SetIsJump(false);
                 hoveringState_ = HoveringState::Hovering;
+
             }
             break;
         case HoveringState::Hovering:
             hoveringTime_ -= ClockManager::DeltaTime();
 
-            pCharacter_->SetIsDrop(false);
-            if(hoveringTime_ <= 0.0f){
+            pCharacter_->SetJumpPower(jumpHoveringAccel_);
+
+            pCharacter_->SetIsApplyGravity(false);
+            if(!Input::GetInstance()->IsPressPadButton(PAD_BUTTON::A) || hoveringTime_ <= 0.0f){
                 hoveringState_ = HoveringState::MoveDown;
+
+                pCharacter_->SetIsApplyGravity(true);
             }
             break;
         case HoveringState::MoveDown:

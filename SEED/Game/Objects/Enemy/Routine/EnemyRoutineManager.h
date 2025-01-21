@@ -1,11 +1,9 @@
 #pragma once
 
-// lib
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include "Vector3.h"
-#include "../adapter/csv/CsvAdapter.h"  // 汎用CSVクラスを使う
 
 using RoutineLibrary = std::unordered_map<std::string, std::vector<Vector3>>;
 
@@ -14,15 +12,18 @@ public:
     EnemyRoutineManager() = default;
     ~EnemyRoutineManager() = default;
 
-    // CSV 保存
-    void Save(const std::string& fileName, const RoutineLibrary& library);
+    // ルーチンの追加・削除
+    void AddRoutine(const std::string& name, const std::vector<Vector3>& points);
+    void DeleteRoutine(const std::string& name);
 
-    // CSV 読み込み
-    void Load(const std::string& fileName, RoutineLibrary& library);
+    // ルーチンの取得
+    const std::vector<Vector3>* GetRoutinePoints(const std::string& name) const;
+    std::vector<std::string> GetRoutineNames() const;
 
-    // CsvAdapter を外部から注入する場合
-    void SetCsvAdapter(CsvAdapter* adapter){ pCsvAdapter_ = adapter; }
+    // 保存・読み込み
+    void SaveRoutines(uint32_t stageNum) const;
+    void LoadRoutines(uint32_t stageNum);
 
 private:
-    CsvAdapter* pCsvAdapter_ = nullptr;
+    RoutineLibrary routines_;
 };

@@ -25,11 +25,12 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
     JsonCoordinator::RegisterItem(enemy_->GetName(),"sensingDistance",sensingDistance_);
     JsonCoordinator::RegisterItem(enemy_->GetName(),"speed",speed_);
     //ルーチンポイントの取得
-    movePoints_ = enemy_->GetRoutinePoints();
+    movePoints_ = &enemy_->GetRoutinePoints();
+    speed_ = 1.0f;
 }
 
 void EnemyState_RoutineMove::Update(){
-    if(!movePoints_){ return; }
+    if(!movePoints_||movePoints_->size()<1){ return; }
     // ルーチンポイントを巡回
     if(MyMath::Length(enemy_->GetWorldTranslate(),(*movePoints_)[currentMovePointIndex_]) < 0.001f){
         currentMovePointIndex_++;

@@ -429,6 +429,7 @@ void FieldEditor::ShowImGui(){
     //----------------------------------------
     // [2] モードに応じた処理分岐
     //----------------------------------------
+
     switch(editorMode_){
     case EditorMode::AddFieldObject:
         // 既存のフィールドオブジェクト追加処理
@@ -752,9 +753,8 @@ void FieldEditor::AddEnemyByMouse(){
         if(enemyManager){
             // 新規敵を追加
             const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
-            std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, newEnemyName);
+           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, enemyManager->GetPlayer(), newEnemyName);
             newEnemy->SetPosition(putPos);
-
             enemyManager->AddEnemy(std::move(newEnemy));
         }
         isPlacing = false;

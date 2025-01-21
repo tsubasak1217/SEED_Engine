@@ -11,7 +11,6 @@
 
 EnemyEditor::EnemyEditor(){
     // Editor起動時にロードするなら (任意)
-    LoadRoutineLibrary();
     LoadEnemies();
 }
 
@@ -140,12 +139,20 @@ void EnemyEditor::ShowImGui(){
 
 
     //---------------------------------------------------------------------------------
-    // ルーチンエディタ (同様に EnemyManager を参照)
+    // ルーチンエディタ
     //---------------------------------------------------------------------------------
     ImGui::Begin("Routine Editor");
 
     ImGui::Separator();
     ImGui::Text("Routine Library Editor:");
+
+    // EnemyRoutineManager を取得
+    EnemyRoutineManager* routineManager = em->GetRoutineManager();
+    if (!routineManager){
+        ImGui::Text("No Routine Manager available.");
+        ImGui::End();
+        return;
+    }
 
     // 選択中のルーチン名を静的に保持
     static std::string selectedRoutineName;
@@ -157,29 +164,30 @@ void EnemyEditor::ShowImGui(){
     if (ImGui::Button("Create Routine")){
         std::string newName = newRoutineBuf;
         if (!newName.empty()){
-            auto& library = em->GetRoutineLibrary();
-            if (library.find(newName) == library.end()){
-                library[newName] = {};
+            const auto* existingRoutine = routineManager->GetRoutinePoints(newName);
+            if (!existingRoutine){
+                routineManager->AddRoutine(newName, {});
                 selectedRoutineName = newName;
             }
         }
     }
 
+    uint32_t currentStageNum = StageManager::GetCurrentStageNo();
+
     // 保存・読み込みボタン
     if (ImGui::Button("Save Routine Library")){
-        SaveRoutineLibrary();
+        routineManager->SaveRoutines(currentStageNum);
     }
     ImGui::SameLine();
     if (ImGui::Button("Load Routine Library")){
-        LoadRoutineLibrary();
+        routineManager->LoadRoutines(currentStageNum);
     }
 
     // 左側: ルーチン一覧
     ImGui::BeginChild("RoutineList", ImVec2(200, 300), true);
     {
-        auto& library = em->GetRoutineLibrary();
-        for (auto& kv : library){
-            const std::string& routineName = kv.first;
+        auto routineNames = routineManager->GetRoutineNames();
+        for (const auto& routineName : routineNames){
             bool isSelected = (routineName == selectedRoutineName);
             if (ImGui::Selectable(routineName.c_str(), isSelected)){
                 selectedRoutineName = routineName;
@@ -193,37 +201,37 @@ void EnemyEditor::ShowImGui(){
     // 右側: 選択中のルーチン編集
     ImGui::BeginChild("RoutineEditor", ImVec2(300, 300), true);
     {
-        auto& library = em->GetRoutineLibrary();
         if (!selectedRoutineName.empty()){
-            auto it = library.find(selectedRoutineName);
-            if (it != library.end()){
-                auto& points = it->second;
+            const auto* points = routineManager->GetRoutinePoints(selectedRoutineName);
+            if (points){
                 ImGui::Text("Editing Routine: %s", selectedRoutineName.c_str());
                 ImGui::Separator();
 
-                // 各ポイントを編集
-                for (size_t i = 0; i < points.size(); ++i){
-                    ImGui::PushID(( int ) i);
-                    if (ImGui::DragFloat3("Point", &points[i].x, 0.1f)){
-                        // 必要なら処理
+                auto editablePoints = *points;
+                for (size_t i = 0; i < editablePoints.size(); ++i){
+                    ImGui::PushID(static_cast< int >(i));
+                    if (ImGui::DragFloat3("Point", &editablePoints[i].x, 0.1f)){
+                        routineManager->AddRoutine(selectedRoutineName, editablePoints);
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Remove")){
-                        points.erase(points.begin() + i);
+                        editablePoints.erase(editablePoints.begin() + i);
+                        routineManager->AddRoutine(selectedRoutineName, editablePoints);
                         ImGui::PopID();
-                        break; // 再描画のためループ抜け
+                        break; // 再描画のためループを抜ける
                     }
                     ImGui::PopID();
                 }
 
                 if (ImGui::Button("Add Point")){
-                    points.push_back({0,0,0});
+                    editablePoints.push_back({0, 0, 0});
+                    routineManager->AddRoutine(selectedRoutineName, editablePoints);
                 }
                 ImGui::Separator();
 
                 // ルーチン削除
                 if (ImGui::Button("Delete Routine")){
-                    library.erase(it);
+                    routineManager->DeleteRoutine(selectedRoutineName);
                     selectedRoutineName.clear();
                 }
             } else{
@@ -412,76 +420,3 @@ void EnemyEditor::LoadEnemies(){
     selectedEnemyIndex_ = (em->GetEnemies().empty()) ? -1 : 0;
 }
 
-////////////////////////////////////////////////////////////////////////
-// ルーチンライブラリ セーブ/ロード
-////////////////////////////////////////////////////////////////////////
-void EnemyEditor::SaveRoutineLibrary(){
-    Stage* currentStage = StageManager::GetCurrentStage();
-    if (!currentStage){ return; }
-    EnemyManager* em = currentStage->GetEnemyManager();
-    if (!em){ return; }
-
-    auto& library = em->GetRoutineLibrary();
-
-    // CSV化
-    std::vector<std::vector<std::string>> csvData;
-    csvData.push_back({"RoutineName", "PointCount", "Points..."});
-
-    for (auto& kv : library){
-        const std::string& routineName = kv.first;
-        const auto& points = kv.second;
-
-        std::vector<std::string> row;
-        row.push_back(routineName);
-        row.push_back(std::to_string(points.size()));
-
-        for (auto& p : points){
-            row.push_back(std::to_string(p.x));
-            row.push_back(std::to_string(p.y));
-            row.push_back(std::to_string(p.z));
-        }
-        csvData.push_back(row);
-    }
-
-    CsvAdapter::GetInstance()->SaveCsv("routine_library", csvData);
-}
-
-void EnemyEditor::LoadRoutineLibrary(){
-    Stage* currentStage = StageManager::GetCurrentStage();
-    if (!currentStage){ return; }
-    EnemyManager* em = currentStage->GetEnemyManager();
-    if (!em){ return; }
-
-    auto& library = em->GetRoutineLibrary();
-
-    auto csvData = CsvAdapter::GetInstance()->LoadCsv("routine_library");
-    if (csvData.size() <= 1){
-        return;
-    }
-
-    library.clear();
-
-    for (size_t i = 1; i < csvData.size(); ++i){
-        auto& row = csvData[i];
-        if (row.size() < 2) continue;
-
-        std::string routineName = row[0];
-        int pointCount = std::stoi(row[1]);
-        std::vector<Vector3> points;
-        points.reserve(pointCount);
-
-        size_t expectedSize = 2 + 3 * pointCount;
-        if (row.size() < expectedSize) continue;
-
-        size_t idx = 2;
-        for (int j = 0; j < pointCount; ++j){
-            Vector3 p;
-            p.x = std::stof(row[idx++]);
-            p.y = std::stof(row[idx++]);
-            p.z = std::stof(row[idx++]);
-            points.push_back(p);
-        }
-
-        library[routineName] = points;
-    }
-}

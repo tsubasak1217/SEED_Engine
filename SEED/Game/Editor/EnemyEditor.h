@@ -20,9 +20,6 @@ private:
     void SaveEnemies();
     void LoadEnemies();
 
-    void SaveRoutineLibrary();
-    void LoadRoutineLibrary();
-
 private:
     int selectedEnemyIndex_ = 0;
     int32_t enemyCount_ = 0;

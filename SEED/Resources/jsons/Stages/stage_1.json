@@ -2606,7 +2606,7 @@
             "type": 0
         },
         {
-            "name": "goal",
+            "name": "viewPoint",
             "position": [
                 -20.0,
                 15.0,
@@ -2618,11 +2618,11 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                2.5,
+                2.5,
+                2.5
             ],
-            "type": 5
+            "type": 7
         },
         {
             "name": "GrassSoil",
@@ -3825,6 +3825,25 @@
             "name": "GrassSoil",
             "position": [
                 10.0,
+                0.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "name": "GrassSoil",
+            "position": [
+                20.0,
                 5.0,
                 -250.0
             ],

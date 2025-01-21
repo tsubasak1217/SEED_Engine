@@ -18,10 +18,10 @@ EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-    leftTime_ = breakTime_;
-
     JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
     JsonCoordinator::RegisterItem("Egg","BreakTimeFactor",timeFactor_);
+
+    leftTime_ = breakTime_;
 }
 
 void EggState_Break::Update(){

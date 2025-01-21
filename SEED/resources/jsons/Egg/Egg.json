@@ -5,8 +5,8 @@
         "z": -2.490000009536743
     },
     "followSensitivity": 0.3199999928474426,
-    "BreakTime": 0.029999999329447746,
+    "BreakTime": 3.0,
     "weight": 4.800000190734863,
     "throwTime": 0.6399999856948853,
-    "BreakTimeFactor": 1.899999976158142
+    "BreakTimeFactor": 3.0
 }

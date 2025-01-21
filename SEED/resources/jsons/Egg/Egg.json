@@ -7,5 +7,6 @@
     "followSensitivity": 0.3199999928474426,
     "BreakTime": 0.029999999329447746,
     "weight": 4.800000190734863,
-    "throwTime": 0.6399999856948853
+    "throwTime": 0.6399999856948853,
+    "BreakTimeFactor": 1.899999976158142
 }

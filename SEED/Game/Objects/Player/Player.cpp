@@ -36,7 +36,7 @@ void Player::Initialize(){
     objectType_ = ObjectType::Player;
 
     // モデルの初期化
-    model_ = std::make_unique<Model>("Assets/man.gltf");
+    model_ = std::make_unique<Model>("dinosaur.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 

@@ -36,6 +36,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     ICharacterState::Initialize(stateName,character);
 
     JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
+    JsonCoordinator::RegisterItem("Player","MoveSpeedOnThrowAim",moveSpeed_);
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
     JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
     JsonCoordinator::RegisterItem("Player","pressForcus",pressForcus_);

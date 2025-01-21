@@ -20,9 +20,9 @@ void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* pl
 
     // Jsonから値を取得
     JsonCoordinator::RegisterItem("Player","jumpPower",jumpPower_);
+    JsonCoordinator::RegisterItem("Player","MoveSpeedOnJump",moveSpeed_);
     JsonCoordinator::RegisterItem("Player","hoveringTime",hoveringTime_);
     JsonCoordinator::RegisterItem("Player","jumpHoveringAccel",jumpHoveringAccel_);
-
     // ジャンプの初期化
     pCharacter_->SetIsJump(true);
     pCharacter_->SetJumpPower(jumpPower_);

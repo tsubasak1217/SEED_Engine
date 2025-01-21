@@ -75,6 +75,9 @@ void Collider_OBB::CheckCollision(Collider* collider){
             collider->OnCollision(this,objectType_);
             Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
 
+            // どちらかがすり抜け可能なら押し戻しを行わない
+            if(isGhost_ or collider->isGhost_){ break; }
+
             // 押し戻し
             if(parentObject_){
                 // 法線 * 押し戻す割合

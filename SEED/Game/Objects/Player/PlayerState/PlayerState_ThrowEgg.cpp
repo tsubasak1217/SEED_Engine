@@ -39,7 +39,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
     JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
     JsonCoordinator::RegisterItem("Player","pressForcus",pressForcus_);
-    
+
     // EggManagerを取得するために Player をダウンキャスト
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(!pPlayer){
@@ -145,6 +145,13 @@ void PlayerState_ThrowEgg::UpdateMovingState(){
 }
 
 void PlayerState_ThrowEgg::ChangeAnimation(){
+    if(!isFirstAnimationEnd_){
+        isFirstAnimationEnd_ = pCharacter_->GetIsEndAnimation();
+        if(isFirstAnimationEnd_){
+            pCharacter_->SetAnimation("handUpIdle",true);
+        }
+    }
+
     // 移動状態が変わったら
     if(preIsMoving_ == isMoving_){
         return;
@@ -152,8 +159,10 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
 
     // 動いているなら
     if(isMoving_){
-        pCharacter_->SetAnimation("running",true);
+        isFirstAnimationEnd_ = true;
+        pCharacter_->SetAnimation("handUpRunning",true);
     } else{
-        pCharacter_->SetAnimation("idle",true);
+        isFirstAnimationEnd_ = true;
+        pCharacter_->SetAnimation("handUpIdle",true);
     }
 }

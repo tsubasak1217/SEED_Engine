@@ -287,7 +287,7 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
     if(!isEdit){ return; }
 
     // y座標を更新
-    putPos.y += kBlockSize * Input::GetMouseWheel();
+    putPos.y -= kBlockSize * Input::GetMouseWheel();
 
     // y軸の高さのxz平面を求める
     Quad plane;

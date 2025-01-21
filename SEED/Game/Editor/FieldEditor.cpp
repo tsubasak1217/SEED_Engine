@@ -45,6 +45,7 @@ void FieldEditor::Initialize(){
 
     LoadFieldModelTexture();
 
+    edittingStageIndex = StageManager::GetCurrentStageNo();
 }
 
 
@@ -368,6 +369,9 @@ void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
     static FieldObject_Switch* assigningSwitch = nullptr;
 
+
+    edittingStageIndex = StageManager::GetCurrentStageNo();
+
     ImGui::Begin("Field Editor");
 
     //----------------------------------------
@@ -382,7 +386,7 @@ void FieldEditor::ShowImGui(){
         ImGui::SameLine();
         ImGui::Text("Stage:");
         ImGui::SameLine();
-        if (ImGui::Combo("##stageNo##1", &edittingStageIndex,
+        if(ImGui::Combo("##stageNo##1", &edittingStageIndex,
             "1\0"
             "2\0"
             "3\0"
@@ -393,28 +397,27 @@ void FieldEditor::ShowImGui(){
             "8\0"
             "9\0"
             "10\0\0"
-            )){
+        )){
             manager_.SetCurrentStageNo(edittingStageIndex);
         }
 
         // モード切り替え用 ラジオボタン
         ImGui::Text("Editor Mode:");
         ImGui::SameLine();
-        if (ImGui::RadioButton("Add FieldObject", editorMode_ == EditorMode::AddFieldObject)){
+        if(ImGui::RadioButton("Add FieldObject", editorMode_ == EditorMode::AddFieldObject)){
             editorMode_ = EditorMode::AddFieldObject;
         }
         ImGui::SameLine();
-        if (ImGui::RadioButton("Add Enemy", editorMode_ == EditorMode::AddEnemy)){
+        if(ImGui::RadioButton("Add Enemy", editorMode_ == EditorMode::AddEnemy)){
             editorMode_ = EditorMode::AddEnemy;
         }
 
         ImGui::SameLine();
-        ImGui::Text("mouseWheel: %d", Input::GetMouseWheel());
 
-        if (ImGui::Button("Output StageData")){
+        if(ImGui::Button("Output StageData")){
             ImGui::OpenPopup("Output to Json");
         }
-        if (ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        if(ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
             PopupDecideOutputName();
             ImGui::EndPopup();
         }
@@ -426,17 +429,17 @@ void FieldEditor::ShowImGui(){
     //----------------------------------------
     // [2] モードに応じた処理分岐
     //----------------------------------------
-    switch (editorMode_){
-        case EditorMode::AddFieldObject:
-            // 既存のフィールドオブジェクト追加処理
-            AddObjectByMouse(FIELDMODEL_GRASSSOIL);
-            break;
-        case EditorMode::AddEnemy:
-            // 敵配置処理を呼び出す
-            AddEnemyByMouse();
-            break;
-        default:
-            break;
+    switch(editorMode_){
+    case EditorMode::AddFieldObject:
+        // 既存のフィールドオブジェクト追加処理
+        AddObjectByMouse(selectItemIdxOnGUI_);
+        break;
+    case EditorMode::AddEnemy:
+        // 敵配置処理を呼び出す
+        AddEnemyByMouse();
+        break;
+    default:
+        break;
     }
 
     //----------------------------------------
@@ -447,27 +450,36 @@ void FieldEditor::ShowImGui(){
         ImGui::Separator();
 
         ImGui::Text("Select a Model to Add:");
+        static std::string selectedModelName = "GrassSoil";
         int i = 0;
-        for (auto& map : modelNameMap_){
+        for(auto& map : modelNameMap_){
             std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
             auto it = textureIDs_.find(imageKey);
 
-            if (it != textureIDs_.end()){
-                if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                    manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
+            // ボタンの表示(追加するアイテムインデックスを選択)
+            if(it != textureIDs_.end()){
+                if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
+                    selectItemIdxOnGUI_ = map.second;
+                    selectedModelName = map.first;
                 }
             } else{
-                if (ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
-                    manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
+                if(ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
+                    selectItemIdxOnGUI_ = map.second;
+                    selectedModelName = map.first;
                 }
             }
 
-            if (i % 6 != 5){ ImGui::SameLine(); }
+            if(i % 6 != 5){ ImGui::SameLine(); }
+
+
             i++;
         }
+
         ImGui::NewLine();
 
-        //AddObjectByMouse(FIELDMODEL_GRASSSOIL);
+        // 選択しているアイテム名の表示
+        ImGui::Text("Selected: %s", selectedModelName.c_str());
+
     }
 
     ImGui::Separator();
@@ -490,9 +502,9 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Model List:");
         ImGui::Separator();
 
-        for (int idx = 0; idx < ( int ) objects.size(); idx++){
-            auto* mfObj = dynamic_cast< FieldObject* >(objects[idx].get());
-            if (!mfObj) continue;
+        for(int idx = 0; idx < (int)objects.size(); idx++){
+            auto* mfObj = dynamic_cast<FieldObject*>(objects[idx].get());
+            if(!mfObj) continue;
             int id = mfObj->GetFieldObjectID();
 
             // リスト表示用ラベル
@@ -500,26 +512,26 @@ void FieldEditor::ShowImGui(){
             bool isSelected = (selectedObjIndex == idx);
 
             // 選択されている場合は色を変える
-            if (isSelected){
-                mfObj->SetColor({1.f, 0.f, 0.f, 1.f});
+            if(isSelected){
+                mfObj->SetColor({ 1.f, 0.f, 0.f, 1.f });
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 0.f, 1.f));
                 ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.4f, 0.4f, 0.f, 1.f));
-                if (ImGui::Selectable(label.c_str(), true)){
+                if(ImGui::Selectable(label.c_str(), true)){
                     // 特に何もせず
                 }
                 ImGui::PopStyleColor(2);
             } else{
-                mfObj->SetColor({1.f, 1.f, 1.f, 1.f});
-                if (ImGui::Selectable(label.c_str(), false)){
+                mfObj->SetColor({ 1.f, 1.f, 1.f, 1.f });
+                if(ImGui::Selectable(label.c_str(), false)){
                     selectedObjIndex = idx;
                 }
             }
         }
 
         // 左クリックで直接オブジェクトを選択
-        if (Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
             // ImGuiウィンドウ上をクリックした場合を除外
-            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
+            if(!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
                 selectedObjIndex = GetObjectIndexByMouse(objects);
             }
         }
@@ -534,35 +546,35 @@ void FieldEditor::ShowImGui(){
     //-------------------------
     ImGui::BeginChild("ModelEditor", ImVec2(0, 0), true);
     {
-        if (selectedObjIndex >= 0 && selectedObjIndex < ( int ) objects.size()){
-            auto* mfObj = dynamic_cast< FieldObject* >(objects[selectedObjIndex].get());
-            if (mfObj){
+        if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
+            auto* mfObj = dynamic_cast<FieldObject*>(objects[selectedObjIndex].get());
+            if(mfObj){
                 ImGui::Text("Editing Model (Index=%d)", selectedObjIndex);
                 ImGui::Separator();
 
                 // [A] スイッチの場合の設定
-                if (auto* sw = dynamic_cast< FieldObject_Switch* >(mfObj)){
+                if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
                     ImGui::Text("Switch Settings");
                     ImGui::Separator();
                     // 「ドア割り当て」モード開始
                     assigningSwitch = sw;
 
                     // すでに関連付けられているドアを黄色にする
-                    for (auto* door : sw->GetAssociatedDoors()){
-                        door->SetColor({1.f, 1.f, 0.f, 1.f});
+                    for(auto* door : sw->GetAssociatedDoors()){
+                        door->SetColor({ 1.f, 1.f, 0.f, 1.f });
                     }
                 }
 
                 // [B] チャンク移動/スケール
                 {
-                    static Vector3Int moveChunk {0, 0, 0};
-                    static Vector3Int stageMoveChunk {0, 0, 0};
+                    static Vector3Int moveChunk{ 0, 0, 0 };
+                    static Vector3Int stageMoveChunk{ 0, 0, 0 };
                     static int lastSelectedIndex = -1;
 
                     // オブジェクトが変わったら値を初期化
-                    if (selectedObjIndex != lastSelectedIndex){
-                        moveChunk = {0, 0, 0};
-                        stageMoveChunk = {0, 0, 0};
+                    if(selectedObjIndex != lastSelectedIndex){
+                        moveChunk = { 0, 0, 0 };
+                        stageMoveChunk = { 0, 0, 0 };
                         lastSelectedIndex = selectedObjIndex;
                     }
 
@@ -577,22 +589,22 @@ void FieldEditor::ShowImGui(){
                     Vector3 scl = mfObj->GetModel()->GetWorldScale();
 
                     // ステージ全体移動
-                    if (tempStageMove != stageMoveChunk){
-                        Vector3 diff {
+                    if(tempStageMove != stageMoveChunk){
+                        Vector3 diff{
                             float(tempStageMove.x - stageMoveChunk.x) * kBlockSize,
                             float(tempStageMove.y - stageMoveChunk.y) * kBlockSize,
                             float(tempStageMove.z - stageMoveChunk.z) * kBlockSize
                         };
                         // 全オブジェクトを移動
-                        for (auto& obj : objects){
+                        for(auto& obj : objects){
                             obj->AddTranslate(diff);
                         }
                         stageMoveChunk = tempStageMove;
                     }
 
                     // 単体移動
-                    if (tempMove != moveChunk){
-                        Vector3Int diff {
+                    if(tempMove != moveChunk){
+                        Vector3Int diff{
                             tempMove.x - moveChunk.x,
                             tempMove.y - moveChunk.y,
                             tempMove.z - moveChunk.z
@@ -613,13 +625,13 @@ void FieldEditor::ShowImGui(){
                     Vector3 scl = mfObj->GetModel()->GetWorldScale();
                     Vector3 rot = mfObj->GetModel()->GetWorldRotate();
 
-                    if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
+                    if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
                         mfObj->SetTranslate(pos);
                     }
-                    if (ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
+                    if(ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
                         mfObj->SetScale(scl);
                     }
-                    if (ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
+                    if(ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
                         mfObj->SetRotate(rot);
                     }
                 }
@@ -627,8 +639,8 @@ void FieldEditor::ShowImGui(){
                 ImGui::Separator();
 
                 // [D] オブジェクト削除
-                if (ImGui::Button("Remove Selected Model")){
-                    if (selectedObjIndex >= 0 && selectedObjIndex < ( int ) objects.size()){
+                if(ImGui::Button("Remove Selected Model")){
+                    if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
                         FieldObject* objToRemove = objects[selectedObjIndex].get();
 
                         // スイッチに紐づいたドアを外す
@@ -638,7 +650,7 @@ void FieldEditor::ShowImGui(){
                         uint32_t removedType = objToRemove->GetFieldObjectType();
 
                         // ドア型なら、関連スイッチから削除
-                        if (auto* door = dynamic_cast< FieldObject_Door* >(objToRemove)){
+                        if(auto* door = dynamic_cast<FieldObject_Door*>(objToRemove)){
                             RemoveDoorFromAllSwitches(door, allSwitches);
                         }
 
@@ -666,18 +678,18 @@ void FieldEditor::ShowImGui(){
     //----------------------------------------
     // [4] 中ボタンクリックでスイッチとドアを関連付け/解除
     //----------------------------------------
-    if (Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
+    if(Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
         int clickedIndex = GetObjectIndexByMouse(objects);
-        if (clickedIndex >= 0){
-            auto* clickedObj = dynamic_cast< FieldObject* >(objects[clickedIndex].get());
-            if (auto* door = dynamic_cast< FieldObject_Door* >(clickedObj)){
+        if(clickedIndex >= 0){
+            auto* clickedObj = dynamic_cast<FieldObject*>(objects[clickedIndex].get());
+            if(auto* door = dynamic_cast<FieldObject_Door*>(clickedObj)){
                 // ドアが既にスイッチを持っている場合 = 解除
-                if (door->GetHasSwitch()){
+                if(door->GetHasSwitch()){
                     assigningSwitch->RemoveAssociatedDoor(door);
                     door->RemoveSwitch(assigningSwitch);
                 }
                 // 未設定なら紐付け
-                else if (assigningSwitch){
+                else if(assigningSwitch){
                     assigningSwitch->AddAssociatedDoor(door);
                     door->SetSwitch(assigningSwitch);
                     assigningSwitch = nullptr;
@@ -698,29 +710,29 @@ void FieldEditor::ShowImGui(){
 //  敵を配置するフロー用
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::AddEnemyByMouse(){
-    static Vector3 putPos = {0, 0, 0};
+    static Vector3 putPos = { 0, 0, 0 };
     static bool isPlacing = false;
 
     // 右クリックが押された瞬間に「配置開始」
-    if (Input::IsTriggerMouse(MOUSE_BUTTON::RIGHT)){
+    if(Input::IsTriggerMouse(MOUSE_BUTTON::RIGHT)){
         isPlacing = true;
     }
-    if (!isPlacing){ return; }
+    if(!isPlacing){ return; }
 
     // マウスホイールで高さ(Y座標)を変えるなど
-    putPos.y += kBlockSize * Input::GetMouseWheel();
+    putPos.y -= kBlockSize * Input::GetMouseWheel();
 
     // y = putPos.y の平面との交点をとる
     Quad plane;
-    plane.localVertex[0] = {-1000.0f, putPos.y,  1000.0f};
-    plane.localVertex[1] = {1000.0f, putPos.y,  1000.0f};
-    plane.localVertex[2] = {-1000.0f, putPos.y, -1000.0f};
-    plane.localVertex[3] = {1000.0f, putPos.y, -1000.0f};
+    plane.localVertex[0] = { -1000.0f, putPos.y,  1000.0f };
+    plane.localVertex[1] = { 1000.0f, putPos.y,  1000.0f };
+    plane.localVertex[2] = { -1000.0f, putPos.y, -1000.0f };
+    plane.localVertex[3] = { 1000.0f, putPos.y, -1000.0f };
 
     // レイを取得
     Line ray = SEED::GetCamera()->GetRay(Input::GetMousePosition());
     CollisionData data = Collision::Quad::Line(plane, ray);
-    if (data.hitPos.has_value()){
+    if(data.hitPos.has_value()){
         Vector3 hitPos = data.hitPos.value();
         putPos.x = kBlockSize * int(hitPos.x / kBlockSize);
         putPos.z = kBlockSize * int(hitPos.z / kBlockSize);
@@ -730,17 +742,17 @@ void FieldEditor::AddEnemyByMouse(){
     AABB aabb;
     aabb.center = putPos + Vector3(0.0f, kBlockSize * 0.5f, 0.0f);
     aabb.halfSize = Vector3(kBlockSize * 0.5f, kBlockSize * 0.5f, kBlockSize * 0.5f);
-    SEED::DrawAABB(aabb, {1.f, 0.f, 0.f, 1.f}); // デバッグ描画(任意)
+    SEED::DrawAABB(aabb, { 1.f, 0.f, 0.f, 1.f }); // デバッグ描画(任意)
 
     // 右クリックが離されたら確定
-    if (Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
+    if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
         // 現在ステージの EnemyManager を取得
         auto* currentStage = manager_.GetStages()[edittingStageIndex].get();
         auto* enemyManager = currentStage->GetEnemyManager();
-        if (enemyManager){
+        if(enemyManager){
             // 新規敵を追加
             const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
-           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, newEnemyName);
+            std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, newEnemyName);
             newEnemy->SetPosition(putPos);
 
             enemyManager->AddEnemy(std::move(newEnemy));
@@ -754,22 +766,22 @@ int32_t FieldEditor::GetEnemyIndexByMouse(const std::vector<std::unique_ptr<Enem
     float minDist = FLT_MAX;
     int32_t index = -1;
 
-    for (int32_t i = 0; i < ( int32_t ) enemies.size(); i++){
+    for(int32_t i = 0; i < (int32_t)enemies.size(); i++){
         Enemy* e = enemies[i].get();
-        if (!e) continue;
+        if(!e) continue;
 
         // 敵のコリジョン判定があるなら同様に
         // ここでは簡易的に「敵の当たり判定用AABB or Sphere」を持っている想定
         auto& colliders = e->GetColliders();
-        for (auto& collider : colliders){
+        for(auto& collider : colliders){
             // Rayと当たり判定
-            if (collider->CheckCollision(ray)){
+            if(collider->CheckCollision(ray)){
 
                 // 距離を取得
                 float dist = MyMath::Length(collider->GetWoarldTranslate() - ray.origin_);
 
                 // もし距離が一番近い場合、そのオブジェクトを選択
-                if (dist < minDist){
+                if(dist < minDist){
                     minDist = dist;
                     index = i;
                 }
@@ -781,10 +793,10 @@ int32_t FieldEditor::GetEnemyIndexByMouse(const std::vector<std::unique_ptr<Enem
 
 void FieldEditor::UpdateSelectionByMouse(){
     // 左クリックで選択処理
-    if (!Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+    if(!Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
         return;
     }
-    if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
+    if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
         // もしUI上のボタンをクリックしたなら、3D選択処理はしない
         return;
     }
@@ -793,7 +805,7 @@ void FieldEditor::UpdateSelectionByMouse(){
     auto& objects = manager_.GetStages()[edittingStageIndex]->GetObjects();
     int objIdx = GetObjectIndexByMouse(objects);
     float distObj = -1.f;
-    if (objIdx >= 0){
+    if(objIdx >= 0){
         FieldObject* obj = objects[objIdx].get();
         // 何らかの方法でフィールドオブジェクトまでの距離を出す
         distObj = MyMath::Length(obj->GetModel()->GetWorldTranslate() - SEED::GetCamera()->GetTranslation());
@@ -804,16 +816,16 @@ void FieldEditor::UpdateSelectionByMouse(){
     auto* em = stage->GetEnemyManager();
     float distEnemy = -1.f;
     int eneIdx = -1;
-    if (em){
+    if(em){
         eneIdx = GetEnemyIndexByMouse(em->GetEnemies());
-        if (eneIdx >= 0){
+        if(eneIdx >= 0){
             auto& e = em->GetEnemies()[eneIdx];
             distEnemy = MyMath::Length(e->GetWorldTranslate() - SEED::GetCamera()->GetTranslation());
         }
     }
 
     // 3) どちらも -1 (未ヒット) なら選択解除
-    if (objIdx < 0 && eneIdx < 0){
+    if(objIdx < 0 && eneIdx < 0){
         selectedObjIndex_ = -1;
         selectedEnemyIndex_ = -1;
         selectedIsEnemy_ = false;
@@ -821,8 +833,8 @@ void FieldEditor::UpdateSelectionByMouse(){
     }
 
     // 4) どっちが近いか比較
-    if (objIdx >= 0 && eneIdx >= 0){
-        if (distObj < distEnemy){
+    if(objIdx >= 0 && eneIdx >= 0){
+        if(distObj < distEnemy){
             // FieldObject が近い
             selectedObjIndex_ = objIdx;
             selectedIsEnemy_ = false;
@@ -833,7 +845,7 @@ void FieldEditor::UpdateSelectionByMouse(){
             selectedIsEnemy_ = true;
             selectedObjIndex_ = -1;
         }
-    } else if (objIdx >= 0){
+    } else if(objIdx >= 0){
         // 敵はヒットせず FieldObject だけヒット
         selectedObjIndex_ = objIdx;
         selectedIsEnemy_ = false;

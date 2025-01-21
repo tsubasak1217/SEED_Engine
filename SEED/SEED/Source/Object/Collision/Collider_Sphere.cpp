@@ -82,49 +82,53 @@ void Collider_Sphere::CheckCollision(Collider* collider){
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
-                Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
 
-                // 衝突した場合は押し戻す
-                if(parentObject_){
-                    // 法線 * 押し戻す割合
-                    parentObject_->AddWorldTranslate(
-                        pushBack * collisionData.pushBackRatio_A.value()
-                    );
+            // どちらかがすり抜け可能なら押し戻しを行わない
+            if(isGhost_ or collider->isGhost_){ break; }
 
-                    // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                    if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                        parentObject_->SetIsDrop(false);
-                    }
 
-                    // 親の行列を更新する
-                    parentObject_->UpdateMatrix();
+            // 衝突した場合は押し戻す
+            if(parentObject_){
+                // 法線 * 押し戻す割合
+                parentObject_->AddWorldTranslate(
+                    pushBack * collisionData.pushBackRatio_A.value()
+                );
 
-                } else{
-                    translate_ += pushBack * collisionData.pushBackRatio_A.value();
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    parentObject_->SetIsDrop(false);
                 }
 
-                // 衝突したオブジェクトも押し戻す
-                if(collider->GetParentObject()){
-                    collider->GetParentObject()->AddWorldTranslate(
-                        -pushBack * collisionData.pushBackRatio_B.value()
-                    );
+                // 親の行列を更新する
+                parentObject_->UpdateMatrix();
 
-                    // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                    if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                        collider->GetParentObject()->SetIsDrop(false);
-                    }
+            } else{
+                translate_ += pushBack * collisionData.pushBackRatio_A.value();
+            }
 
-                    // 親の行列を更新する
-                    collider->GetParentObject()->UpdateMatrix();
+            // 衝突したオブジェクトも押し戻す
+            if(collider->GetParentObject()){
+                collider->GetParentObject()->AddWorldTranslate(
+                    -pushBack * collisionData.pushBackRatio_B.value()
+                );
 
-                } else{
-                    aabb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
+                // ある程度平らな面に衝突した場合は落下フラグをオフにする
+                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+                    collider->GetParentObject()->SetIsDrop(false);
                 }
 
+                // 親の行列を更新する
+                collider->GetParentObject()->UpdateMatrix();
 
-                // 行列を更新する
-                UpdateMatrix();
-                aabb->UpdateMatrix();
+            } else{
+                aabb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
+            }
+
+
+            // 行列を更新する
+            UpdateMatrix();
+            aabb->UpdateMatrix();
         }
         break;
     }
@@ -140,9 +144,13 @@ void Collider_Sphere::CheckCollision(Collider* collider){
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
-            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
+            // どちらかがすり抜け可能なら押し戻しを行わない
+            if(isGhost_ or collider->isGhost_){ break; }
 
             // 衝突した場合は押し戻す
+            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
             if(parentObject_){
                 // 法線 * 押し戻す割合
                 parentObject_->AddWorldTranslate(

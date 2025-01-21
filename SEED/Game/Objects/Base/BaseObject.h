@@ -107,7 +107,8 @@ protected:// 物理
     bool isApplyGravity_ = true;
     bool isDrop_ = false;
     float dropSpeed_ = 0.0f;
-
+public:
+    float GetDropSpeed()const{ return dropSpeed_; }
 protected:
     Vector3 targetOffset_;
 

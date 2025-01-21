@@ -213,7 +213,7 @@ void Scene_Game::Draw(){
 
     for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();
-        SEED::DrawLight(pointLights_[i].get());
+        //SEED::DrawLight(pointLights_[i].get());
     }
 
     for(int i = 0; i < spotLights_.size(); i++){

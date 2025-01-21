@@ -4,11 +4,11 @@
         "y": 3.509999990463257,
         "z": 0.0
     },
-    "throwPower": 25.360000610351563,
+    "throwPower": 22.0,
     "throwDirection": {
         "x": 0.0,
         "y": 1.0,
-        "z": 1.0
+        "z": 0.0
     },
     "moveSpeed": 15.0,
     "lerpRate": 0.25,
@@ -17,6 +17,6 @@
     "jumpPower": 2.0,
     "hoveringTime": 0.5899999737739563,
     "jumpHoveringAccel": 0.12999999523162842,
-    "MoveSpeedOnThrowAim": 12.0,
-    "MoveSpeedOnJump": 13.0
+    "MoveSpeedOnThrowAim": 11.979999542236328,
+    "MoveSpeedOnJump": 10.0
 }

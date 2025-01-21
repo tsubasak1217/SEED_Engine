@@ -15,5 +15,6 @@
     "isLerpRotate": true,
     "pressForcus": false,
     "jumpPower": 1.1699999570846558,
-    "hoveringTime": 0.5899999737739563
+    "hoveringTime": 0.5899999737739563,
+    "jumpHoveringAccel": 0.12999999523162842
 }

@@ -25,6 +25,7 @@ private:
 
 private:
     float jumpPower_ = 0.f;
+    float jumpHoveringAccel_ = 0.f;
 
     HoveringState hoveringState_ = HoveringState::MoveUp;
     

@@ -5,15 +5,22 @@
 enum LIGHT_TYPE{
     BASE_LIGHT = 0,
     DIRECTIONAL_LIGHT,
+    POINT_LIGHT,
+    SPOT_LIGHT
 };
 
 
 struct BaseLight{
-    int32_t lightType_;
-    Vector4 color_;
-    float intensity;
-    bool isLighting_ = true;
-
+public:
     // polygonManagerに渡すための関数
     void SendData();
+    int32_t GetLightType()const{ return lightType_; }
+
+protected:
+    int32_t lightType_;
+
+public:
+    Vector4 color_;
+    float intensity;
+    bool isLighting_ = true;;
 };

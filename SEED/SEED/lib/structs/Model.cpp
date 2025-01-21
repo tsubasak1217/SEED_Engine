@@ -19,28 +19,28 @@ void Model::Initialize(const std::string& filename){
     ModelManager::LoadModel(modelName_);
     auto modelData = ModelManager::GetModelData(modelName_);
 
-    scale_ = { 1.0f,1.0f,1.0f };
-    rotate_ = { 0.0f,0.0f,0.0f };
-    translate_ = { 0.0f,0.0f,0.0f };
+    scale_ = {1.0f,1.0f,1.0f};
+    rotate_ = {0.0f,0.0f,0.0f};
+    translate_ = {0.0f,0.0f,0.0f};
     worldMat_ = IdentityMat4();
 
     // マテリアルの数だけ初期化
     for(int i = 0; i < modelData->materials.size(); i++){
 
         uv_scale_.push_back(modelData->materials[i].UV_scale_);
-        uv_rotate_.push_back({ 0.0f,0.0f,0.0f });
+        uv_rotate_.push_back({0.0f,0.0f,0.0f});
         uv_translate_.push_back(
             modelData->materials[i].UV_offset_ +
             modelData->materials[i].UV_translate_
         );
 
-        uvTransform_.push_back(AffineMatrix(uv_scale_.back(), uv_rotate_.back(), uv_translate_.back()));
+        uvTransform_.push_back(AffineMatrix(uv_scale_.back(),uv_rotate_.back(),uv_translate_.back()));
         textureGH_.push_back(
             TextureManager::LoadTexture(modelData->materials[i].textureFilePath_)
         );
     }
 
-    color_ = { 1.0f,1.0f,1.0f,1.0f };
+    color_ = {1.0f,1.0f,1.0f,1.0f};
     lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
 
 
@@ -63,9 +63,9 @@ void Model::Update(){
 
         // ループするかどうかで処理を変える
         if(isAnimationLoop_){
-            animationTime_ = std::fmod(totalAnimationTime_, animationDuration_);
+            animationTime_ = std::fmod(totalAnimationTime_,animationDuration_);
         } else{
-            animationTime_ = std::clamp(totalAnimationTime_, 0.0f, animationDuration_);
+            animationTime_ = std::clamp(totalAnimationTime_,0.0f,animationDuration_);
         }
 
         animationLoopCount_ = int32_t(totalAnimationTime_ / animationDuration_);
@@ -84,16 +84,16 @@ void Model::UpdateMatrix(){
 
     // ローカル変換行列の更新
     if(isRotateWithQuaternion_){
-        localMat_ = AffineMatrix(scale_, rotateQuat_, translate_);
+        localMat_ = AffineMatrix(scale_,rotateQuat_,translate_);
         rotate_ = Quaternion::ToEuler(rotateQuat_);// 切り替えても大丈夫なように同期させておく
     } else{
-        localMat_ = AffineMatrix(scale_, rotate_, translate_);
+        localMat_ = AffineMatrix(scale_,rotate_,translate_);
         rotateQuat_ = Quaternion::ToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
 
     // ワールド変換行列を求める
     if(parent_){
-        worldMat_ = Multiply(localMat_, parent_->worldMat_);
+        worldMat_ = Multiply(localMat_,parent_->worldMat_);
     } else{
         worldMat_ = localMat_;
     }
@@ -101,12 +101,12 @@ void Model::UpdateMatrix(){
 
     // UV変換行列の更新
     for(int i = 0; i < uvTransform_.size(); i++){
-        uvTransform_[i] = AffineMatrix(uv_scale_[i], uv_rotate_[i], uv_translate_[i]);
+        uvTransform_[i] = AffineMatrix(uv_scale_[i],uv_rotate_[i],uv_translate_[i]);
     }
 
     // 親のワールド変換行列を掛ける
     if(parent_){
-        worldMat_ = Multiply(worldMat_, parent_->worldMat_);
+        worldMat_ = Multiply(worldMat_,parent_->worldMat_);
     }
 }
 
@@ -128,13 +128,13 @@ void Model::Draw(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // アニメーション開始(インデックスから)
-void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
+void Model::StartAnimation(int32_t animationIndex,bool loop,float speedRate){
 
     // アニメーションがない場合は処理しない
     if(!hasAnimation_){ return; }
     auto& animations = ModelManager::GetModelData(modelName_)->animations;
     // 範囲外例外処理
-    if(animations.size() - 1 < animationIndex) { assert(false); }
+    if(animations.size() - 1 < animationIndex){ assert(false); }
 
     // 切り替える前にスケルトンの状態を保持
     if(!preSkeleton_){
@@ -153,7 +153,7 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
 
         // アニメーション補間
         progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
-        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_,0.0f,1.0f);
 
         // 補間後のスケルトンを設定
         preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
@@ -185,15 +185,15 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
 }
 
 // アニメーション開始(アニメーション名から)
-void Model::StartAnimation(const std::string& animationName, bool loop, float speedRate){
+void Model::StartAnimation(const std::string& animationName,bool loop,float speedRate){
 
     // アニメーションがない場合は処理しない
     if(!hasAnimation_){ return; }
 
     // アニメーション名が存在するか確認
-    if(ModelManager::GetModelData(modelName_)->animations.find(animationName)
-        == ModelManager::GetModelData(modelName_)->animations.end())
-    {
+    auto& animations = ModelManager::GetModelData(modelName_)->animations;
+    auto itr = animations.find(animationName);
+    if(itr == animations.end()){
         assert(false);// 存在しないのでアサート
     }
 
@@ -214,7 +214,7 @@ void Model::StartAnimation(const std::string& animationName, bool loop, float sp
 
         // アニメーション補間
         progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
-        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+        progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_,0.0f,1.0f);
 
         // 補間後のスケルトンを設定
         preSkeleton_.reset(new ModelSkeleton(ModelManager::InterpolateSkeleton(
@@ -258,7 +258,7 @@ void Model::EndAnimation(){
 void Model::UpdatePalette(){
 
     // アニメーションしない場合は更新しない
-    if(!isAnimation_ or !hasAnimation_) { return; }
+    if(!isAnimation_ or !hasAnimation_){ return; }
 
     // アニメーション適用後のスケルトンを取得
     const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
@@ -273,7 +273,7 @@ void Model::UpdatePalette(){
 
             // 補間の進捗度(t)
             progressOfAnimLerp_ = animLerpTime_ / kAnimLerpTime_;
-            progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_, 0.0f, 1.0f);
+            progressOfAnimLerp_ = std::clamp(progressOfAnimLerp_,0.0f,1.0f);
 
             // 補間後のスケルトンを取得
             const ModelSkeleton& lerpedSkeleton = ModelManager::InterpolateSkeleton(

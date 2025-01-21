@@ -31,6 +31,9 @@ private:
     EggManager* eggManager_ = nullptr;
     Egg* throwEgg_ = nullptr;
 
+    // 最初のアニメーションがloopしないから 他の アニメーションに 切り替えるためのフラグ
+    bool isFirstAnimationEnd_ = false;
+
     // 投げる卵のオフセット
     Vector3 eggOffset_ = {0.0f,0.0f,5.0f};
     // 投げる方向のオフセット

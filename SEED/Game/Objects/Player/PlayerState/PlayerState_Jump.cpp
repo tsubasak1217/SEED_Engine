@@ -1,19 +1,28 @@
 #include "PlayerState_Jump.h"
+//other state
 #include "PlayerState_Idle.h"
+
+//lib
+#include "../adapter/json/JsonCoordinator.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Jump::PlayerState_Jump(const std::string& stateName, BaseCharacter* player){
-    Initialize(stateName, player);
-    pCharacter_->SetAnimation("jump", true);
+PlayerState_Jump::PlayerState_Jump(const std::string& stateName,BaseCharacter* player){
+    Initialize(stateName,player);
+    pCharacter_->SetAnimation("jump",true);
 }
 
 PlayerState_Jump::~PlayerState_Jump(){}
 
-void PlayerState_Jump::Initialize(const std::string& stateName, BaseCharacter* player){
-    ICharacterState::Initialize(stateName, player);
+void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* player){
+    ICharacterState::Initialize(stateName,player);
 
+    // Jsonから値を取得
+    JsonCoordinator::RegisterItem("Player","jumpPower",jumpPower_);
+    JsonCoordinator::RegisterItem("Player","MoveSpeedOnJump",moveSpeed_);
+    JsonCoordinator::RegisterItem("Player","hoveringTime",hoveringTime_);
+    JsonCoordinator::RegisterItem("Player","jumpHoveringAccel",jumpHoveringAccel_);
     // ジャンプの初期化
     pCharacter_->SetIsJump(true);
     pCharacter_->SetJumpPower(jumpPower_);
@@ -25,7 +34,7 @@ void PlayerState_Jump::Initialize(const std::string& stateName, BaseCharacter* p
 void PlayerState_Jump::Update(){
 
     // ジャンプ処理
-    Jump();
+    Hovering();
 
     // 移動処理(ジャンプしながらも動ける)
     Move();
@@ -46,6 +55,9 @@ void PlayerState_Jump::Draw(){}
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::ManageState(){
     // 着地
+    if(hoveringState_ == HoveringState::Hovering){
+        return;
+    }
     if(!pCharacter_->GetIsJump() or !pCharacter_->GetIsDrop()){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
     }
@@ -54,6 +66,29 @@ void PlayerState_Jump::ManageState(){
 //////////////////////////////////////////////////////////////////////////
 // ジャンプ処理
 //////////////////////////////////////////////////////////////////////////
-void PlayerState_Jump::Jump(){
+void PlayerState_Jump::Hovering(){
+    switch(hoveringState_){
+        case HoveringState::MoveUp:
+            if(pCharacter_->GetDropSpeed() > jumpPower_){
+                hoveringState_ = HoveringState::Hovering;
 
+            }
+            break;
+        case HoveringState::Hovering:
+            hoveringTime_ -= ClockManager::DeltaTime();
+
+            pCharacter_->SetJumpPower(jumpHoveringAccel_);
+
+            pCharacter_->SetIsApplyGravity(false);
+            if(!Input::GetInstance()->IsPressPadButton(PAD_BUTTON::A) || hoveringTime_ <= 0.0f){
+                hoveringState_ = HoveringState::MoveDown;
+
+                pCharacter_->SetIsApplyGravity(true);
+            }
+            break;
+        case HoveringState::MoveDown:
+            break;
+        default:
+            break;
+    }
 }

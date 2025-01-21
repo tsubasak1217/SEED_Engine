@@ -36,19 +36,26 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     ICharacterState::Initialize(stateName,character);
 
     JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
+    JsonCoordinator::RegisterItem("Player","MoveSpeedOnThrowAim",moveSpeed_);
     JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
     JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
     JsonCoordinator::RegisterItem("Player","pressForcus",pressForcus_);
 
+    // EggManagerを取得するために Player をダウンキャスト
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(!pPlayer){
         assert(false);
     }
+    // EggManagerを取得
     eggManager_ = pPlayer->GetEggManager();
-
+    // 投げる卵を取得
     throwEgg_ = eggManager_->GetFrontEgg().get();
     throwEgg_->ChangeState(new EggState_Idle(throwEgg_));
+    // 投げる卵の重さを取得
     eggWeight_ = dynamic_cast<Egg*>(throwEgg_)->GetWeight();
+
+    //Playerの Animation を aim に変更
+    pPlayer->SetAnimation("aim",false);
 }
 
 void PlayerState_ThrowEgg::Update(){
@@ -98,22 +105,30 @@ void PlayerState_ThrowEgg::ManageState(){
                 //投げる
                 throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
                 pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
+
+                //Playerの Animation を throw に変更
+                pCharacter_->SetAnimation("throw",false);
+
                 return;
             }
         } else{
-            // もとに戻す
+            // キャンセル
             throwEgg_->ChangeState(new EggState_Follow(throwEgg_,pCharacter_));
             pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
             return;
         }
     } else{ // 切り替え
         if(Input::IsTriggerPadButton(PAD_BUTTON::LT)){
-            // もとに戻す
+            // キャンセル
             throwEgg_->ChangeState(new EggState_Follow(throwEgg_,pCharacter_));
             pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
             return;
         }
+        // 投げる
         if(Input::IsPressPadButton(PAD_BUTTON::RT)){
+            //Playerの Animation を throw に変更
+            pCharacter_->SetAnimation("throw",false);
+
             throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,throwDirection_,pCharacter_->GetWorldRotate().y,throwPower_));
             pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
             return;
@@ -131,6 +146,13 @@ void PlayerState_ThrowEgg::UpdateMovingState(){
 }
 
 void PlayerState_ThrowEgg::ChangeAnimation(){
+    if(!isFirstAnimationEnd_){
+        isFirstAnimationEnd_ = pCharacter_->GetIsEndAnimation();
+        if(isFirstAnimationEnd_){
+            pCharacter_->SetAnimation("handUpIdle",true);
+        }
+    }
+
     // 移動状態が変わったら
     if(preIsMoving_ == isMoving_){
         return;
@@ -138,8 +160,10 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
 
     // 動いているなら
     if(isMoving_){
-        pCharacter_->SetAnimation("running",true);
+        isFirstAnimationEnd_ = true;
+        pCharacter_->SetAnimation("handUpRunning",true);
     } else{
-        pCharacter_->SetAnimation("idle",true);
+        isFirstAnimationEnd_ = true;
+        pCharacter_->SetAnimation("handUpIdle",true);
     }
 }

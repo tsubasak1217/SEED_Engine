@@ -79,8 +79,6 @@ private:
     template <typename T>
     void ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID = 1);
 
-
-
 private:
     //===================================================================*/
     //                   private fields
@@ -113,6 +111,7 @@ private:
     bool selectedIsEnemy_ = false;
     int selectedObjIndex_ = -1;    // FieldObjectならここのインデックスを使う
     int selectedEnemyIndex_ = -1;  // Enemyならここのインデックスを使う
+    uint32_t selectItemIdxOnGUI_ = FIELDMODEL_GRASSSOIL; // 選択中のアイテムのインデックス
 
 private:// enum
     // fieldObjectName.h に移動しますた

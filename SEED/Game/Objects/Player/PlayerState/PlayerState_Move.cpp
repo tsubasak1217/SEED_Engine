@@ -6,6 +6,8 @@
 #include "PlayerState_Jump.h"
 #include "PlayerState_Idle.h"
 #include "PlayerState_ThrowEgg.h"
+//lib
+#include "../adapter/json/JsonCoordinator.h"
 
 // Egg
 #include "Egg/Egg.h"
@@ -26,6 +28,11 @@ PlayerState_Move::~PlayerState_Move() {}
 void PlayerState_Move::Initialize(const std::string &stateName, BaseCharacter *player)
 {
     ICharacterState::Initialize(stateName, player);
+
+    // Jsonから値を取得
+    JsonCoordinator::RegisterItem("Player","moveSpeed",moveSpeed_);
+    JsonCoordinator::RegisterItem("Player","lerpRate",lerpRate_);
+    JsonCoordinator::RegisterItem("Player","isLerpRotate",isLerpRotate_);
 }
 
 //////////////////////////////////////////////////////////////////////////

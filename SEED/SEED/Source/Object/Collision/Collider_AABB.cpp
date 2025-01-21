@@ -78,48 +78,9 @@ void Collider_AABB::CheckCollision(Collider* collider){
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
-            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
 
-            // 衝突した場合は押し戻す
-            if(parentObject_){
-                // 法線 * 押し戻す割合
-                parentObject_->AddWorldTranslate(
-                    -pushBack * collisionData.pushBackRatio_B.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    parentObject_->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                parentObject_->UpdateMatrix();
-
-            } else{
-                translate_ += -pushBack * collisionData.pushBackRatio_B.value();
-            }
-
-            // 衝突したオブジェクトも押し戻す
-            if(collider->GetParentObject()){
-                collider->GetParentObject()->AddWorldTranslate(
-                    pushBack * collisionData.pushBackRatio_A.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    collider->GetParentObject()->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                collider->GetParentObject()->UpdateMatrix();
-
-            } else{
-                sphere->AddTranslate(pushBack * collisionData.pushBackRatio_A.value());
-            }
-
-            // 行列を更新する
-            UpdateMatrix();
-            sphere->UpdateMatrix();
+            // 押し戻しを行う
+            PushBack(this, collider, collisionData);
         }
 
         break;
@@ -200,7 +161,21 @@ bool Collider_AABB::CheckCollision(const Sphere& sphere){
 // 八分木用のAABB更新
 //////////////////////////////////////////////////////////////////
 void Collider_AABB::UpdateBox(){
-    coverAABB_ = body_;
+
+    Vector3 min = {
+        (std::min)(body_.center.x - body_.halfSize.x, preBody_.center.x - preBody_.halfSize.x),
+        (std::min)(body_.center.y - body_.halfSize.y, preBody_.center.y - preBody_.halfSize.y),
+        (std::min)(body_.center.z - body_.halfSize.z, preBody_.center.z - preBody_.halfSize.z)
+    };
+
+    Vector3 max = {
+        (std::max)(body_.center.x + body_.halfSize.x, preBody_.center.x + preBody_.halfSize.x),
+        (std::max)(body_.center.y + body_.halfSize.y, preBody_.center.y + preBody_.halfSize.y),
+        (std::max)(body_.center.z + body_.halfSize.z, preBody_.center.z + preBody_.halfSize.z)
+    };
+
+    coverAABB_.halfSize = (max - min) * 0.5f;
+    coverAABB_.center = min + coverAABB_.halfSize;
 }
 
 

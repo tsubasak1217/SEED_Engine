@@ -44,4 +44,5 @@ private:// メンバ変数------------------------------------------------------
     // 種類ごとに分ける
     std::vector<Collider*>fieldColliders_;
     std::vector<Collider*>onFieldObjectColliders_;
+    std::vector<Collider*>editorColliders_;
 };

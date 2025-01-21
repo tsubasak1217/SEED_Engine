@@ -64,9 +64,15 @@ void Collider_Sphere::CheckCollision(Collider* collider){
     case ColliderType::Sphere:
     {
         Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
-        if(Collision::Sphere::Sphere(body_, sphere->GetSphere())){
+        collisionData = Collision::Sphere::Sphere(this, sphere);
+
+        // 衝突した場合
+        if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
+
+            // 押し戻しを行う
+            PushBack(this, collider, collisionData);
         }
         break;
     }
@@ -82,53 +88,9 @@ void Collider_Sphere::CheckCollision(Collider* collider){
         if(collisionData.isCollide){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
-            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
 
-            // どちらかがすり抜け可能なら押し戻しを行わない
-            if(isGhost_ or collider->isGhost_){ break; }
-
-
-            // 衝突した場合は押し戻す
-            if(parentObject_){
-                // 法線 * 押し戻す割合
-                parentObject_->AddWorldTranslate(
-                    pushBack * collisionData.pushBackRatio_A.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    parentObject_->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                parentObject_->UpdateMatrix();
-
-            } else{
-                translate_ += pushBack * collisionData.pushBackRatio_A.value();
-            }
-
-            // 衝突したオブジェクトも押し戻す
-            if(collider->GetParentObject()){
-                collider->GetParentObject()->AddWorldTranslate(
-                    -pushBack * collisionData.pushBackRatio_B.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    collider->GetParentObject()->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                collider->GetParentObject()->UpdateMatrix();
-
-            } else{
-                aabb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
-            }
-
-
-            // 行列を更新する
-            UpdateMatrix();
-            aabb->UpdateMatrix();
+            // 押し戻しを行う
+            PushBack(this, collider, collisionData);
         }
         break;
     }
@@ -145,52 +107,8 @@ void Collider_Sphere::CheckCollision(Collider* collider){
             OnCollision(collider, collider->GetObjectType());
             collider->OnCollision(this, objectType_);
 
-            // どちらかがすり抜け可能なら押し戻しを行わない
-            if(isGhost_ or collider->isGhost_){ break; }
-
-            // 衝突した場合は押し戻す
-            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
-
-            if(parentObject_){
-                // 法線 * 押し戻す割合
-                parentObject_->AddWorldTranslate(
-                    pushBack * collisionData.pushBackRatio_A.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    parentObject_->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                parentObject_->UpdateMatrix();
-
-            } else{
-                translate_ += pushBack * collisionData.pushBackRatio_A.value();
-            }
-
-            // 衝突したオブジェクトも押し戻す
-            if(collider->GetParentObject()){
-                collider->GetParentObject()->AddWorldTranslate(
-                    -pushBack * collisionData.pushBackRatio_B.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    collider->GetParentObject()->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                collider->GetParentObject()->UpdateMatrix();
-
-            } else{
-                obb->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
-            }
-
-
-            // 行列を更新する
-            UpdateMatrix();
-            obb->UpdateMatrix();
+            // 押し戻しを行う
+            PushBack(this, collider, collisionData);
         }
         break;
     }
@@ -233,8 +151,13 @@ bool Collider_Sphere::CheckCollision(const Sphere& sphere){
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////
 void Collider_Sphere::UpdateBox(){
-    coverAABB_.center = body_.center;
-    coverAABB_.halfSize = Vector3(body_.radius, body_.radius, body_.radius);
+
+    AABB aabb[2] = {
+        AABB(body_.center,{body_.radius,body_.radius,body_.radius}),
+        AABB(preBody_.center,{preBody_.radius,preBody_.radius,preBody_.radius})
+    };
+
+    coverAABB_ = MaxAABB(aabb[0], aabb[1]);
 }
 
 

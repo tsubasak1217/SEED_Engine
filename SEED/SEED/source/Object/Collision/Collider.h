@@ -51,6 +51,11 @@ public:
 
 protected:
     virtual void UpdateBox();
+    void PushBack(Collider* collider1,Collider* collider2, CollisionData collisionData);
+    bool CanSkipPushBack(ObjectType objectType);
+public:
+    void AddSkipPushBackType(ObjectType objectType);
+    void RemoveSkipPushBackType(ObjectType objectType);
 
 public:// 編集用関数--------------------------------------------------------------
     virtual void Edit();
@@ -107,13 +112,13 @@ public:// アクセッサ-------------------------------------------------------
         return animationTime_ >= animationData_->GetDuration() && !isLoop_;
     }
 
-public:// 衝突判定を行わないリスト
-
+private:// 衝突判定を行わないリスト
+    std::unordered_set<ObjectType> skipPushBackTypes_;
 
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;
     ColliderType colliderType_;
-    ObjectType objectType_ = ObjectType::None;
+    ObjectType objectType_ = ObjectType::Editor;
     static uint32_t nextID_;
     uint32_t colliderID_;
     bool isCollision_ = false;

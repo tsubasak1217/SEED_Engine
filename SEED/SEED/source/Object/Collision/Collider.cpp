@@ -200,6 +200,90 @@ void Collider::OnCollision(Collider* collider,ObjectType objectType){
 
 void Collider::UpdateBox(){}
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     押し戻ししないオブジェクトの確認・追加・削除関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collider::CanSkipPushBack(ObjectType objectType){
+    if(skipPushBackTypes_.find(objectType) != skipPushBackTypes_.end()){
+        return true;
+    }
+
+    return false;
+}
+
+void Collider::AddSkipPushBackType(ObjectType objectType){
+    if(skipPushBackTypes_.find(objectType) == skipPushBackTypes_.end()){
+        skipPushBackTypes_.insert(objectType);
+    }
+}
+
+void Collider::RemoveSkipPushBackType(ObjectType objectType){
+    if(skipPushBackTypes_.find(objectType) != skipPushBackTypes_.end()){
+        skipPushBackTypes_.erase(objectType);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//     衝突時の押し戻し関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Collider::PushBack(Collider* collider1, Collider* collider2, CollisionData collisionData){
+
+    // どちらかがすり抜け可能なら押し戻しを行わない
+    if(collider1->isGhost_ or collider2->isGhost_){ return; }
+
+    // どちらかが押し戻しをスキップするオブジェクトなら押し戻しを行わない
+    if(collider1->CanSkipPushBack(collider2->GetObjectType()) or collider2->CanSkipPushBack(collider1->GetObjectType())){ return; }
+
+    BaseObject* parent[2] = { collider1->GetParentObject(),collider2->GetParentObject() };
+    Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
+
+    // 衝突した場合は押し戻す
+    if(parent[0]){
+        // 法線 * 押し戻す割合
+        parent[0]->AddWorldTranslate(
+            pushBack * collisionData.pushBackRatio_A.value()
+        );
+
+        // ある程度平らな面に衝突した場合は落下フラグをオフにする
+        if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+            parent[0]->SetIsDrop(false);
+        }
+
+        // 親の行列を更新する
+        parent[0]->UpdateMatrix();
+
+    } else{
+        collider1->AddTranslate(pushBack * collisionData.pushBackRatio_A.value());
+    }
+
+    // 衝突したオブジェクトも押し戻す
+    if(parent[1]){
+        parent[1]->AddWorldTranslate(
+            -pushBack * collisionData.pushBackRatio_B.value()
+        );
+
+        // ある程度平らな面に衝突した場合は落下フラグをオフにする
+        if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
+            parent[1]->SetIsDrop(false);
+        }
+
+        // 親の行列を更新する
+        parent[1]->UpdateMatrix();
+
+    } else{
+        collider2->AddTranslate(-pushBack * collisionData.pushBackRatio_B.value());
+    }
+
+    // 行列を更新する
+    collider1->UpdateMatrix();
+    collider2->UpdateMatrix();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //     ImGuiでの編集関数

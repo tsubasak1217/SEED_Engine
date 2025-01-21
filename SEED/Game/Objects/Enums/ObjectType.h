@@ -2,7 +2,7 @@
 #include <cstdint>
 
 enum class ObjectType : int32_t{
-    None = 0,
+    Editor = 0,
     Field = 0b1,
     OnFieldObject = 0b1 << 1,
     Friendly = 0b1 << 2,
@@ -12,6 +12,7 @@ enum class ObjectType : int32_t{
     Goal = 0b1 << 6,
     // 組み合わせ
     Player = OnFieldObject | Friendly,
+    Egg = OnFieldObject | Friendly,
     Enemy = OnFieldObject | NonFriendly,
     PlayerAttack = Friendly | Attack,
     EnemyAttack = NonFriendly | Attack,

@@ -28,7 +28,7 @@ void BaseObject::Initialize(){
     model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
     // コライダーの初期化
-    InitColliders(ObjectType::None);
+    InitColliders(ObjectType::Editor);
 }
 
 
@@ -184,7 +184,6 @@ void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////
 // コライダーの読み込み
 //////////////////////////////////////////////////////////////////////////
@@ -223,3 +222,4 @@ void BaseObject::EraseCheckColliders(){
         }
     }
 }
+

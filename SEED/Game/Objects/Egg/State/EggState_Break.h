@@ -18,6 +18,9 @@ private:
     BaseCharacter* deadPlayer_ = nullptr;
     bool breakToNextStage_ = false;
 
+    // 倍速係数
+    float timeFactor_ = 2.0f;
+
     float breakTime_ = 1.0f;
     float leftTime_ = 0.0f;
 };

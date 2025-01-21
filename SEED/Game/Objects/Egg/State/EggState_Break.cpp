@@ -9,9 +9,10 @@
 //lib
 #include "JsonManager/JsonCoordinator.h"
 
-EggState_Break::EggState_Break(BaseCharacter* character, bool breakToNextStage){
+EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
     Initialize("Break",character);
     breakToNextStage_ = breakToNextStage;
+
 }
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
@@ -20,10 +21,15 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
     leftTime_ = breakTime_;
 
     JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
+    JsonCoordinator::RegisterItem("Egg","BreakTimeFactor",timeFactor_);
 }
 
 void EggState_Break::Update(){
-    leftTime_ -= ClockManager::DeltaTime();
+    if(Input::GetInstance()->IsPressPadButton(PAD_BUTTON::X)){
+        leftTime_ -= ClockManager::DeltaTime() * timeFactor_;
+    } else{
+        leftTime_ -= ClockManager::DeltaTime();
+    }
 
     ManageState();
 }

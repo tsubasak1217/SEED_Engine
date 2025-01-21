@@ -424,7 +424,7 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp">
       <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Manager\JsonManager\JsonCoordinator.cpp">
+    <ClCompile Include="SEED\adapter\json\JsonCoordinator.cpp">
       <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
@@ -645,6 +645,18 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -909,7 +921,7 @@
     <ClInclude Include="SEED\lib\structs\ModelAnimation.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\source\Manager\JsonManager\JsonCoordinator.h">
+    <ClInclude Include="SEED\adapter\json\JsonCoordinator.h">
       <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Editor\FieldEditor.h">
@@ -1183,9 +1195,6 @@
     <ClInclude Include="Game\Manager\Stage.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h">
-      <Filter>Game\Objects\FieldObject\Switch</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
     </ClInclude>
@@ -1195,6 +1204,15 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
+    <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
+    <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

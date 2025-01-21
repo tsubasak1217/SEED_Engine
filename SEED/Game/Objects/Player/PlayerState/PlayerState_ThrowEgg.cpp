@@ -18,7 +18,7 @@
 #include "../Player/Player.h"
 #include "Egg/Egg.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 
 // math
 #include "Matrix4x4.h"

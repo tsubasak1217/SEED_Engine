@@ -7,7 +7,7 @@
 //manager
 #include "ClockManager.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character, bool breakToNextStage){
     Initialize("Break",character);

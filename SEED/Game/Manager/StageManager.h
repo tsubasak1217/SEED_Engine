@@ -4,6 +4,8 @@
 #include "../../SEED/Lib/patterns/ISubject.h"
 #include "../Manager/Stage.h"
 
+class Player;
+
 class StageManager{
 public:
     StageManager();
@@ -35,7 +37,11 @@ private:
     static bool isPlaying_;
     static bool isHandOverColliderNext_;
 
+    // playerのポインタ
+    Player* pPlayer_;
+
 public:
+    void SetPlayer(Player* pPlayer);
     static int32_t GetStageCount(){ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }

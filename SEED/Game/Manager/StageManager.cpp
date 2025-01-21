@@ -124,6 +124,14 @@ void StageManager::LoadStages(){
     }
 }
 
+void StageManager::SetPlayer(Player* pPlayer){ 
+    pPlayer_ = pPlayer; 
+
+    for (int i = 0; i < kStageCount_; i++){
+        stages_[i]->SetPlayer(pPlayer);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////
 // スタート地点の取得
 ///////////////////////////////////////////////////////////////////////

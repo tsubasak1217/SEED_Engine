@@ -10,7 +10,7 @@
 //manager
 #include "ClockManager.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
 // math
 #include <cmath>
 #include "MyMath.h"

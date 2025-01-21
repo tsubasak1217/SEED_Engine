@@ -9,7 +9,8 @@
 #include "Egg/Manager/EggManager.h"
 #include "StageManager.h"
 //lib
-#include "JsonManager/JsonCoordinator.h"
+#include "../adapter/json/JsonCoordinator.h"
+
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
 #include "PlayerState/PlayerState_Jump.h"

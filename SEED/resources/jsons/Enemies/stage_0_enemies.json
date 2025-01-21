@@ -1,0 +1,13 @@
+{
+    "Count": 1,
+    "Enemies": [
+        {
+            "CanEat": false,
+            "ChasePlayer": false,
+            "HP": 100,
+            "Index": 0,
+            "Name": "Enemy3",
+            "RoutineName": "NULL"
+        }
+    ]
+}

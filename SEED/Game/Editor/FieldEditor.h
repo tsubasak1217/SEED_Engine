@@ -79,8 +79,6 @@ private:
     template <typename T>
     void ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID = 1);
 
-
-
 private:
     //===================================================================*/
     //                   private fields

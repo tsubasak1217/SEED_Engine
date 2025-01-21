@@ -28,7 +28,6 @@ class FieldObject_Switch;
 
 class FieldEditor{
     enum class EditorMode{
-        None,
         AddFieldObject,
         AddEnemy,
     };
@@ -108,7 +107,7 @@ private:
 
 
     // モード切り替え用フラグ
-    EditorMode editorMode_ = EditorMode::None;
+    EditorMode editorMode_ = EditorMode::AddFieldObject;
 
     // 選択中のもの
     bool selectedIsEnemy_ = false;

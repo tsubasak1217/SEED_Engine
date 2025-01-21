@@ -29,7 +29,8 @@ void EnemyManager::Draw(){
 void EnemyManager::AddEnemy(){
     if (!pPlayer_){ assert(false); }
     //enemyの生成
-    auto newEnemy = std::make_unique<Enemy>(this,pPlayer_,"Enemy");
+    const std::string enemyName = "Enemy" + std::to_string(( int ) enemies_.size());
+    auto newEnemy = std::make_unique<Enemy>(this,pPlayer_, enemyName);
     enemies_.emplace_back(std::move(newEnemy));
 }
 

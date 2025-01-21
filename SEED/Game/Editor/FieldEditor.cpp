@@ -399,9 +399,6 @@ void FieldEditor::ShowImGui(){
 
         // モード切り替え用 ラジオボタン
         ImGui::Text("Editor Mode:");
-        if (ImGui::RadioButton("None", editorMode_ == EditorMode::None)){
-            editorMode_ = EditorMode::None;
-        }
         ImGui::SameLine();
         if (ImGui::RadioButton("Add FieldObject", editorMode_ == EditorMode::AddFieldObject)){
             editorMode_ = EditorMode::AddFieldObject;
@@ -470,7 +467,7 @@ void FieldEditor::ShowImGui(){
         }
         ImGui::NewLine();
 
-        AddObjectByMouse(FIELDMODEL_GRASSSOIL);
+        //AddObjectByMouse(FIELDMODEL_GRASSSOIL);
     }
 
     ImGui::Separator();
@@ -731,7 +728,7 @@ void FieldEditor::AddEnemyByMouse(){
 
     // AABBでガイドを描くなど
     AABB aabb;
-    aabb.center = putPos + Vector3(0.0f, -kBlockSize * 0.5f, 0.0f);
+    aabb.center = putPos + Vector3(0.0f, kBlockSize * 0.5f, 0.0f);
     aabb.halfSize = Vector3(kBlockSize * 0.5f, kBlockSize * 0.5f, kBlockSize * 0.5f);
     SEED::DrawAABB(aabb, {1.f, 0.f, 0.f, 1.f}); // デバッグ描画(任意)
 
@@ -742,8 +739,10 @@ void FieldEditor::AddEnemyByMouse(){
         auto* enemyManager = currentStage->GetEnemyManager();
         if (enemyManager){
             // 新規敵を追加
-            std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, "Enemy");
+            const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
+           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, newEnemyName);
             newEnemy->SetPosition(putPos);
+
             enemyManager->AddEnemy(std::move(newEnemy));
         }
         isPlacing = false;

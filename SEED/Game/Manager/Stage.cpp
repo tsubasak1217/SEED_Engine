@@ -112,6 +112,8 @@ void Stage::HandOverColliders(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->HandOverColliders();
     }
+
+    enemyManager_->HandOverColliders();
 }
 
 

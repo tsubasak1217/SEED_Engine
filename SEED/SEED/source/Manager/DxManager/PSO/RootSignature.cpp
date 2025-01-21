@@ -36,7 +36,8 @@ void RootSignature::AddParameter(
     D3D12_ROOT_PARAMETER_TYPE type,
     D3D12_SHADER_VISIBILITY visibility,
     UINT shaderRegister,
-    UINT registerSpace
+    UINT registerSpace,
+    UINT num32BitValues
 ){
     if(parameterCount < parameters.size()) {
         // パラメーターの追加
@@ -44,6 +45,8 @@ void RootSignature::AddParameter(
         parameters[parameterCount].ShaderVisibility = visibility;
         parameters[parameterCount].Descriptor.ShaderRegister = shaderRegister;
         parameters[parameterCount].Descriptor.RegisterSpace = registerSpace;
+        parameters[parameterCount].Constants.Num32BitValues = num32BitValues;
+        parameters[parameterCount].Constants.ShaderRegister = shaderRegister;
         parameterCount++;
 
         // descにパラメーター情報設定

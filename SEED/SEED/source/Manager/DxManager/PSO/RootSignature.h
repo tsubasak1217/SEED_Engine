@@ -8,9 +8,10 @@ struct RootSignature{
     RootSignature();
     void AddParameter(
         D3D12_ROOT_PARAMETER_TYPE type,
-        D3D12_SHADER_VISIBILITY visibility, 
-        UINT shaderRegister, 
-        UINT registerSpace = 0
+        D3D12_SHADER_VISIBILITY visibility,
+        UINT shaderRegister,
+        UINT registerSpace = 0,
+        UINT num32BitValues = 0
     );
 
     void AddDescriptorTable(

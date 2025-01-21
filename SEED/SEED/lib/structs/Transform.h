@@ -30,4 +30,5 @@ struct QuaternionTransform{
 struct TransformMatrix {
     Matrix4x4 WVP_;
     Matrix4x4 world_;
+    Matrix4x4 worldInverseTranspose_;
 };

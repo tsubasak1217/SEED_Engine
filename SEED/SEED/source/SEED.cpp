@@ -477,6 +477,60 @@ void SEED::DrawSpline(const std::vector<Vector3>& points,uint32_t subdivision, c
 }
 
 
+/////////////////////////////////////////////////////////////
+// ライトのデバッグ用描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawLight(const BaseLight* light){
+
+    switch(light->GetLightType()){
+
+    case LIGHT_TYPE::DIRECTIONAL_LIGHT:
+    {
+        DirectionalLight* directionalLight = (DirectionalLight*)light;
+
+        // 必要な情報を用意
+        Vector2 screenPos = { 50.0f,50.0f };
+        Vector3 screenPos3D = GetCamera()->ToWorldPosition(screenPos, 1.0f);
+        Vector3 direction = MyMath::Normalize(directionalLight->direction_);
+        float dot = MyMath::Dot(direction, -GetCamera()->GetNormal());
+
+        // スクリーン上で最長20.0fの線を描画
+        Matrix4x4 vpVp = GetCamera()->GetVpVp();
+        Vector3 transformedPos[2] = {
+            screenPos3D * vpVp,
+            (screenPos3D + direction) * vpVp
+        };
+
+        Vector2 screenDirection =
+            MyMath::Normalize(
+                Vector2(transformedPos[1].x, transformedPos[1].y) - Vector2(transformedPos[0].x, transformedPos[0].y)
+            );
+
+        // ライトの方向を描画
+        Vector2 end = screenPos + (screenDirection * 40.0f) * (1.0f - fabsf(dot));
+        DrawLine2D(screenPos, end, light->color_);
+
+        break;
+    }
+    case LIGHT_TYPE::POINT_LIGHT:
+    {
+        PointLight* pointLight = (PointLight*)light;
+        DrawSphere(pointLight->position, 1.0f, 6, light->color_);
+        break;
+    }
+    case LIGHT_TYPE::SPOT_LIGHT:
+    {
+        SpotLight* spotLight = (SpotLight*)light;
+        DrawSphere(spotLight->position, 1.0f, 6, light->color_);
+        DrawLine(spotLight->position, spotLight->position + spotLight->direction * spotLight->distance, light->color_);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
 /*                                                その他細かい関数                                                  */

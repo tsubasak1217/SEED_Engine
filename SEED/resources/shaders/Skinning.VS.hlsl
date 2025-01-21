@@ -5,6 +5,7 @@
 struct TransformationMatrix {
     float4x4 WVP;
     float4x4 world;
+    float4x4 worldInverseTranspose;
 };
 
 /////////////////////////////////////// Skinning //////////////////////////////////////////////
@@ -95,7 +96,7 @@ VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID
     output.position = mul(skinned.position, instanceData[index].WVP);
     output.worldPosition = mul(input.position, instanceData[index].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(skinned.normal, (float3x3) instanceData[index].world));
+    output.normal = normalize(mul(skinned.normal, (float3x3) instanceData[index].worldInverseTranspose));
     
     // Caluculate MaterialID
     if (input.interval == 0) {// model

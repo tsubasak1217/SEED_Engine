@@ -844,7 +844,7 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
         }
 
         // 最大値が0の場合、逆行列は求められない
-        assert(fabs(sweep[maxIdx][col]) > 0);
+        if(fabs(sweep[maxIdx][col]) == 0){ return IdentityMat4(); }
 
         // 見つかった場合、その要素が見つかった行と今の行の要素を入れ替える
         if(col != maxIdx) {

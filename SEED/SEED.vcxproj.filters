@@ -649,6 +649,9 @@
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1202,6 +1205,7 @@
     <ClInclude Include="SEED\Lib\Structs\PointLight.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

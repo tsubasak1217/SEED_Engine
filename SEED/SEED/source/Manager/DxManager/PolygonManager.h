@@ -15,6 +15,7 @@
 #include <CameraForGPU.h>
 #include <DirectionalLight.h>
 #include <PointLight.h>
+#include <SpotLight.h>
 #include "blendMode.h"
 #include "DrawLocation.h"
 #include "Ring.h"
@@ -221,16 +222,20 @@ private:// 実際に頂点情報や色などの情報が入っている変数
 
 private:// ライティング用のデータ-----------------------------------------------------------------
 
+    // データを格納するための変数
     std::vector<DirectionalLight> directionalLights_;
     std::vector<PointLight> pointLights_;
+    std::vector<SpotLight> spotLights_;
 
     // LightingのResource
     ComPtr<ID3D12Resource> directionalLightResource_;
     ComPtr<ID3D12Resource> pointLightResource_;
+    ComPtr<ID3D12Resource> spotLightResource_;
 
     // Map用
     DirectionalLight* mapDirectionalLightData;
     PointLight* mapPointLightData;
+    SpotLight* mapSpotLightData;
 
 private:// カメラ用のデータ-----------------------------------------------------------------
 

@@ -122,6 +122,8 @@ public:
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
     // スプライン曲線の描画
     static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
+    // ライトのデバッグ用描画
+    static void DrawLight(const BaseLight* light);
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                その他細かい関数                                   */

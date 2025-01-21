@@ -72,13 +72,20 @@ void Scene_Game::Initialize(){
     directionalLight_->intensity = 0.3f;
 
     pointLights_.clear();
-    for(int i = 0; i < 32; i++){
+    for(int i = 0; i < 10; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
         pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         pointLights_[i]->position = { MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,50.0f),MyFunc::Random(-100.0f,100.0f) };
         pointLights_[i]->intensity = 1.0f;
     }
 
+    spotLights_.clear();
+    for(int i = 0; i < 1; i++){
+        spotLights_.push_back(std::make_unique<SpotLight>());
+        spotLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
+        spotLights_[i]->position = { 0.0f,20.0f,0.0f };
+        spotLights_[i]->intensity = 1.0f;
+    }
 
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
@@ -202,9 +209,30 @@ void Scene_Game::Draw(){
 
     // ライトの情報を送る
     directionalLight_->SendData();
+    SEED::DrawLight(directionalLight_.get());
 
     for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();
+        SEED::DrawLight(pointLights_[i].get());
+    }
+
+    for(int i = 0; i < spotLights_.size(); i++){
+
+    #ifdef _DEBUG
+        ImGui::Begin("spotLight");
+        ImGui::DragFloat3("position", &spotLights_[i]->position.x, 0.1f);
+        ImGui::DragFloat3("direction", &spotLights_[i]->direction.x, 0.01f);
+        ImGui::DragFloat("distance", &spotLights_[i]->distance, 0.1f);
+        ImGui::ColorEdit4("color", &spotLights_[i]->color_.x);
+        ImGui::DragFloat("intensity", &spotLights_[i]->intensity, 0.1f);
+        ImGui::DragFloat("decay", &spotLights_[i]->decay, 0.1f);
+        ImGui::SliderFloat("cosAngle", &spotLights_[i]->cosAngle, 0.0f,1.0f);
+        ImGui::SliderFloat("cosFallofStart", &spotLights_[i]->cosFallofStart, 0.0f, 1.0f);
+        ImGui::End();
+    #endif // _DEBUG
+
+        spotLights_[i]->SendData();
+        SEED::DrawLight(spotLights_[i].get());
     }
 
     // フィールドの描画

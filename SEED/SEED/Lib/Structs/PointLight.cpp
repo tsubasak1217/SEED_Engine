@@ -1,4 +1,5 @@
 #include "PointLight.h"
+#include "SEED.h"
 
 PointLight::PointLight(){
     lightType_ = POINT_LIGHT;

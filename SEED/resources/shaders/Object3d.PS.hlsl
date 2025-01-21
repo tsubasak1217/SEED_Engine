@@ -9,11 +9,13 @@ ConstantBuffer<Camera> gCamera : register(b0);
 StructuredBuffer<Material> gMaterial : register(t0, space0);
 // light
 StructuredBuffer<DirectionalLight> gDirectionalLight : register(t1, space0);
-ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 StructuredBuffer<PointLight> gPointLight : register(t2, space0);
+StructuredBuffer<SpotLight> gSpotLight : register(t3, space0);
+ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 ConstantBuffer<Int> gPointLightCount : register(b2);
+ConstantBuffer<Int> gSpotLightCount : register(b3);
 // texture
-Texture2D<float4> gTexture[128] : register(t3, space0);
+Texture2D<float4> gTexture[128] : register(t4, space0);
 SamplerState gSampler : register(s0);
 
 
@@ -48,6 +50,11 @@ PixelShaderOutput main(VertexShaderOutput input) {
             CalcPointLight(gPointLight[j], gMaterial[input.instanceID], textureColor.rgb, input, toEye, diffuse, specular);
         }
     
+        // スポットライトの計算
+        for(int k = 0; k < gSpotLightCount.value; k++) {
+            CalcSpotLight(gSpotLight[k], gMaterial[input.instanceID], textureColor.rgb, input, toEye, diffuse, specular);
+        }
+        
         output.color.rgb = diffuse + specular;
         output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
     

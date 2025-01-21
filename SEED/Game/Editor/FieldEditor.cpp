@@ -430,6 +430,38 @@ void FieldEditor::ShowImGui(){
         case EditorMode::AddFieldObject:
             // 既存のフィールドオブジェクト追加処理
             AddObjectByMouse(FIELDMODEL_GRASSSOIL);
+
+            //----------------------------------------
+   // [3] フィールドオブジェクト 追加パネル
+   //----------------------------------------
+            {
+                ImGui::Text("Add FieldObject");
+                ImGui::Separator();
+
+                ImGui::Text("Select a Model to Add:");
+                int i = 0;
+                for (auto& map : modelNameMap_){
+                    std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
+                    auto it = textureIDs_.find(imageKey);
+
+                    if (it != textureIDs_.end()){
+                        if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
+                            manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
+                        }
+                    } else{
+                        if (ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
+                            manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
+                        }
+                    }
+
+                    if (i % 6 != 5){ ImGui::SameLine(); }
+                    i++;
+                }
+                ImGui::NewLine();
+
+                //AddObjectByMouse(FIELDMODEL_GRASSSOIL);
+            }
+
             break;
         case EditorMode::AddEnemy:
             // 敵配置処理を呼び出す
@@ -439,36 +471,7 @@ void FieldEditor::ShowImGui(){
             break;
     }
 
-    //----------------------------------------
-    // [3] フィールドオブジェクト 追加パネル
-    //----------------------------------------
-    {
-        ImGui::Text("Add FieldObject");
-        ImGui::Separator();
-
-        ImGui::Text("Select a Model to Add:");
-        int i = 0;
-        for (auto& map : modelNameMap_){
-            std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
-            auto it = textureIDs_.find(imageKey);
-
-            if (it != textureIDs_.end()){
-                if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                    manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
-                }
-            } else{
-                if (ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
-                    manager_.GetStages()[edittingStageIndex]->AddModel(map.second);
-                }
-            }
-
-            if (i % 6 != 5){ ImGui::SameLine(); }
-            i++;
-        }
-        ImGui::NewLine();
-
-        //AddObjectByMouse(FIELDMODEL_GRASSSOIL);
-    }
+   
 
     ImGui::Separator();
     ImGui::Spacing();
@@ -740,9 +743,8 @@ void FieldEditor::AddEnemyByMouse(){
         if (enemyManager){
             // 新規敵を追加
             const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
-           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, nullptr, newEnemyName);
+           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, enemyManager->GetPlayer(), newEnemyName);
             newEnemy->SetPosition(putPos);
-
             enemyManager->AddEnemy(std::move(newEnemy));
         }
         isPlacing = false;

@@ -1,94 +1,105 @@
 #include "EnemyRoutineManager.h"
+#include "../adapter/json/JsonCoordinator.h"
+#include "../adapter/csv/CsvAdapter.h"
+#include <fstream>
 #include <iostream>
 
-void EnemyRoutineManager::Save(const std::string& fileName, const RoutineLibrary& library){
-    if (!pCsvAdapter_){
-        std::cerr << "[EnemyRoutineManager] CsvAdapter is null!" << std::endl;
-        return;
+////////////////////////////////////////////////////////////////////////
+// CSV 保存
+////////////////////////////////////////////////////////////////////////
+void EnemyRoutineManager::AddRoutine(const std::string& name, const std::vector<Vector3>& points){
+    routines_[name] = points;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// ルーチンの削除
+////////////////////////////////////////////////////////////////////////
+void EnemyRoutineManager::DeleteRoutine(const std::string& name){
+    routines_.erase(name);
+}
+
+////////////////////////////////////////////////////////////////////////
+// ルーチンポイントの取得
+////////////////////////////////////////////////////////////////////////
+const std::vector<Vector3>* EnemyRoutineManager::GetRoutinePoints(const std::string& name) const{
+    auto it = routines_.find(name);
+    if (it != routines_.end()){
+        return &(it->second);
     }
+    return nullptr;
+}
 
-    // CSVに書き込むための 2次元文字列配列を作る
+////////////////////////////////////////////////////////////////////////
+// ルーチン名の取得
+////////////////////////////////////////////////////////////////////////
+std::vector<std::string> EnemyRoutineManager::GetRoutineNames() const{
+    std::vector<std::string> names;
+    for (const auto& pair : routines_){
+        names.push_back(pair.first);
+    }
+    return names;
+}
+
+////////////////////////////////////////////////////////////////////////
+// 保存
+////////////////////////////////////////////////////////////////////////
+void EnemyRoutineManager::SaveRoutines(uint32_t stageNum) const{
     std::vector<std::vector<std::string>> csvData;
+    csvData.push_back({"RoutineName", "PointCount", "Points..."});
 
-    // 1行目: ヘッダ (任意)
-    csvData.push_back({"RoutineName", "PointCount"});
-
-    // ライブラリの各要素を1行に
-    for (auto& kv : library){
-        const std::string& routineName = kv.first;
+    for (const auto& kv : routines_){
+        const std::string& name = kv.first;
         const auto& points = kv.second;
 
-        // 1行分の文字列を格納するベクタ
         std::vector<std::string> row;
-        row.push_back(routineName);
+        row.push_back(name);
         row.push_back(std::to_string(points.size()));
 
-        // points から (x,y,z) を続けて文字列化
-        for (auto& p : points){
-            row.push_back(std::to_string(p.x));
-            row.push_back(std::to_string(p.y));
-            row.push_back(std::to_string(p.z));
+        for (const auto& point : points){
+            row.push_back(std::to_string(point.x));
+            row.push_back(std::to_string(point.y));
+            row.push_back(std::to_string(point.z));
         }
-
         csvData.push_back(row);
     }
 
-    // CsvAdapter で保存
-    pCsvAdapter_->SaveCsv(fileName, csvData);
+    //ステージごとに保存
+    const std::string fileName = "stage" + std::to_string(stageNum) + "_routineLibrary";
+
+    CsvAdapter::GetInstance()->SaveCsv(fileName, csvData);
 }
 
-void EnemyRoutineManager::Load(const std::string& fileName, RoutineLibrary& library){
-    if (!pCsvAdapter_){
-        std::cerr << "[RoutineLibraryManager] CsvAdapter is null!" << std::endl;
-        return;
-    }
+////////////////////////////////////////////////////////////////////////
+// 読み込み
+////////////////////////////////////////////////////////////////////////
+void EnemyRoutineManager::LoadRoutines(uint32_t stageNum){
+    //ステージごとに保存
+    const std::string fileName = "stage" + std::to_string(stageNum) + "_routineLibrary";
+    auto csvData = CsvAdapter::GetInstance()->LoadCsv(fileName);
+    if (csvData.size() <= 1) return;
 
-    // CSV -> 2次元文字列配列
-    auto csvData = pCsvAdapter_->LoadCsv(fileName);
-    if (csvData.empty()){
-        return; // 何も無い
-    }
+    routines_.clear();
 
-    // 1行目はヘッダと想定 => 2行目以降を処理
-    bool isHeaderSkipped = false;
-    for (auto& row : csvData){
-        // 先頭行をスキップ
-        if (!isHeaderSkipped){
-            isHeaderSkipped = true;
-            continue;
-        }
-        if (row.size() < 2){
-            // RoutineName, PointCount が無い
-            continue;
-        }
+    for (size_t i = 1; i < csvData.size(); ++i){
+        const auto& row = csvData[i];
+        if (row.size() < 2) continue;
 
-        // 1列目: ルーチン名
-        std::string routineName = row[0];
-        // 2列目: ポイント数
+        std::string name = row[0];
         int pointCount = std::stoi(row[1]);
-
-        // pointCount が 0 なら空
-        // それ以上なら (x,y,z) * pointCount = 3 * pointCount 個必要
-        size_t requiredSize = 2 + (3 * ( size_t ) pointCount);
-        if (row.size() < requiredSize){
-            // データ不足
-            continue;
-        }
-
         std::vector<Vector3> points;
         points.reserve(pointCount);
 
-        // row[2] 以降に x,y,z が並んでいる
         size_t idx = 2;
-        for (int i = 0; i < pointCount; ++i){
-            Vector3 p;
-            p.x = std::stof(row[idx++]);
-            p.y = std::stof(row[idx++]);
-            p.z = std::stof(row[idx++]);
-            points.push_back(p);
+        for (int j = 0; j < pointCount; ++j){
+            if (idx + 2 >= row.size()) break;
+            Vector3 point;
+            point.x = std::stof(row[idx++]);
+            point.y = std::stof(row[idx++]);
+            point.z = std::stof(row[idx++]);
+            points.push_back(point);
         }
 
-        // ライブラリに上書き(または新規追加)
-        library[routineName] = points;
+        routines_[name] = points;
     }
 }

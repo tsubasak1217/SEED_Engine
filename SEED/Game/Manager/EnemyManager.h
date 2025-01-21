@@ -2,7 +2,7 @@
 
 // local
 #include "../Enemy/Enemy.h"
-
+#include "../Enemy/Routine/EnemyRoutineManager.h"
 //lib
 #include <cstdint>
 #include <memory>
@@ -25,28 +25,24 @@ public:
     void AddEnemy();
     void AddEnemy(std::unique_ptr<Enemy>);
     void DeleteEnemy(uint32_t index);
-
+    void HandOverColliders();
     //--- getter / setter ---//
     std::vector<std::unique_ptr<Enemy>>& GetEnemies(){ return enemies_; }
     void ClearAllEnemies(){ enemies_.clear(); }
     Player* GetPlayer()const{ return pPlayer_; }
 
+    // ルーチンの取得
     const  std::vector<Vector3>* GetRoutinePoints(const std::string& routineName)const{
-        auto itr = routinePointsLibrary_.find(routineName);
-        if(itr == routinePointsLibrary_.end()){ assert(false); }
-        return &(itr->second);
+        return routineManager_.GetRoutinePoints(routineName);
     }
 
-
-    std::unordered_map<std::string, std::vector<Vector3>>& GetRoutineLibrary(){ return routinePointsLibrary_; }
-
+    // ルーチン名の取得
     std::vector<std::string> GetRoutineNames()const{
-        std::vector<std::string> names;
-        for (auto& kv : routinePointsLibrary_){
-            names.push_back(kv.first);
-        }
-        return names;
+        return routineManager_.GetRoutineNames();
     }
+
+    // ルーチン管理
+    EnemyRoutineManager* GetRoutineManager(){ return &routineManager_; }
 
     void SetPlayer(Player* player){ pPlayer_ = player; }
 
@@ -54,7 +50,7 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 
     // 固定移動 ポイント 
-    std::unordered_map<std::string,std::vector<Vector3>> routinePointsLibrary_;
+    EnemyRoutineManager routineManager_;
 
     Player* pPlayer_ = nullptr;
 };

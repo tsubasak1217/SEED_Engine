@@ -6,7 +6,7 @@
             "ChasePlayer": false,
             "HP": 100,
             "Index": 0,
-            "Name": "Enemy3",
+            "Name": "enemy0",
             "RoutineName": "NULL"
         }
     ]

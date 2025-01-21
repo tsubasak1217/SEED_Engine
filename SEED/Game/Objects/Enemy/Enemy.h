@@ -49,7 +49,9 @@ public:
 
     const std::string& GetRoutineName()const{ return routineName_; }
     // ルーチンポイントの取得
-    const std::vector<Vector3>* GetRoutinePoints()const{ return routinePoints; }
+    const std::vector<Vector3>& GetRoutinePoints() const{
+        return routinePoints_;
+    }
 
     void Rename(const std::string& newName);
 
@@ -58,6 +60,11 @@ public:
     void SetCanEat(bool canEat){ canEat_ = canEat; }
     void SetChasePlayer(bool chase){ cahsePlayer_ = chase; }
     void SetRoutineName(const std::string& routineName){ routineName_ = routineName; }
+    // ルーチンポイントの設定
+    void SetRoutinePoints(const std::vector<Vector3>& points){
+        routinePoints_ = points;
+    }
+
 
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType)override;
@@ -71,7 +78,7 @@ private:
     bool canEat_ = false;
     bool cahsePlayer_ = false;
 
-    const std::vector<Vector3>* routinePoints;
+    std::vector<Vector3> routinePoints_;
 
 private:
     int32_t HP_;

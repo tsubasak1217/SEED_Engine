@@ -60,6 +60,8 @@ void Enemy::Initialize(){
 void Enemy::Update(){
     BaseCharacter::Update();
 
+    EditCollider();
+
     // もし無敵時間があれば
     if(unrivalledTime_ > 0.0f){
         unrivalledTime_ -= ClockManager::DeltaTime();
@@ -113,8 +115,20 @@ void Enemy::ShowImGui(){
         static_cast< int >(routineNamesCStr.size()))){
         // 選択変更されたら更新
         routineName_ = routineNames[currentIndex];
-        routinePoints = manager->GetRoutinePoints(routineName_);
+        const auto* points = manager->GetRoutinePoints(routineName_);
+        if (points){
+            SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
+        }
     }
+
+    //状態遷移
+    if (ImGui::Button("Change State_Idle")){
+        ChangeState(new EnemyState_Idle("Enemy_Idle", this));
+    }
+    if(ImGui::Button("change State_RoutineMove")){
+        ChangeState(new EnemyState_RoutineMove("Enemy_RoutineMove", this));
+    }
+
 }
 
 

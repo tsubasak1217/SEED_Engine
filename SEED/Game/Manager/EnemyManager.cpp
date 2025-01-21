@@ -47,3 +47,9 @@ void EnemyManager::DeleteEnemy(uint32_t index){
         enemies_.erase(enemies_.begin() + index);
     }
 }
+
+void EnemyManager::HandOverColliders(){
+    for (auto& enemy:enemies_){
+        enemy->HandOverColliders();
+    }
+}

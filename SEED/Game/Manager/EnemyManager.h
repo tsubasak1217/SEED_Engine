@@ -26,6 +26,7 @@ public:
     void AddEnemy(std::unique_ptr<Enemy>);
     void DeleteEnemy(uint32_t index);
     void HandOverColliders();
+
     //--- getter / setter ---//
     std::vector<std::unique_ptr<Enemy>>& GetEnemies(){ return enemies_; }
     void ClearAllEnemies(){ enemies_.clear(); }

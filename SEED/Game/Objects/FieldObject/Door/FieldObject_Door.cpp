@@ -29,7 +29,7 @@ FieldObject_Door::FieldObject_Door(){
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::Field);
     // 全般の初期化
-    FieldObject::Initialize();
+    Initialize();
 
     fieldObjectID_ = nextFieldObjectID_++;
 }
@@ -44,7 +44,7 @@ FieldObject_Door::FieldObject_Door(const std::string& modelName)
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::Field);
     // 全般の初期化
-    FieldObject::Initialize();
+    Initialize();
 
     fieldObjectID_ = nextFieldObjectID_++;
 }

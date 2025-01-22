@@ -10,8 +10,8 @@ void ClosingState::Enter([[maybe_unused]] FieldObject_Door* door){
 void ClosingState::Update(FieldObject_Door* door, float deltaTime){
     float& currentY = door->GetModel()->translate_.y;
     currentY -= door->GetOpenSpeed() * deltaTime;
-    if (currentY <= 0.0f){
-        currentY = 0.0f;
+    if (currentY <= door->GetClosedPosY()){
+        currentY = door->GetClosedPosY();
         door->ChangeState(new ClosedState());
     }
 }

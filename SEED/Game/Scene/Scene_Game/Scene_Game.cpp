@@ -72,7 +72,7 @@ void Scene_Game::Initialize(){
     directionalLight_->intensity = 1.0f;
 
     pointLights_.clear();
-    for(int i = 0; i < 120; i++){
+    for(int i = 0; i < 0; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
         pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         pointLights_[i]->position = { MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,50.0f),MyFunc::Random(-100.0f,100.0f) };

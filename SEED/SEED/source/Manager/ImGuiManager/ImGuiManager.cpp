@@ -25,10 +25,10 @@ void ImGuiManager::Initialize(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
-    ImGui_ImplWin32_Init(WindowManager::GetHWND(SEED::GetInstance()->windowTitle_));
+    ImGui_ImplWin32_Init(WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_));
     ImGui_ImplDX12_Init(
         DxManager::GetInstance()->device.Get(),
-        DxManager::GetInstance()->swapChainDesc.BufferCount,
+        2,
         DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),

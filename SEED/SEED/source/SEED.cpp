@@ -17,6 +17,7 @@
 
 SEED* SEED::instance_ = nullptr;
 std::wstring SEED::windowTitle_ = L"SEED";
+std::wstring SEED::systemWindowTitle_ = L"SEED::System";
 uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
 
 
@@ -47,12 +48,12 @@ SEED* SEED::GetInstance(){
 void SEED::Initialize(int clientWidth, int clientHeight){
 
     GetInstance();
-    instance_->windowTitle_ = instance_->windowTitle_;
     instance_->kClientWidth_ = clientWidth;
     instance_->kClientHeight_ = clientHeight;
 
     // メインウインドウの作成
-    WindowManager::Create(instance_->windowTitle_, clientWidth, clientHeight);
+    WindowManager::Create(windowTitle_, clientWidth, clientHeight);
+    WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight,WindowManager::GetHWND(windowTitle_));
 
     // 各マネージャの初期化
     ClockManager::Initialize();

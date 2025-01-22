@@ -166,6 +166,7 @@ public:// ウインドウに関する変数
     int kClientWidth_;
     int kClientHeight_;
     static std::wstring windowTitle_;
+    static std::wstring systemWindowTitle_;
     static uint32_t windowBackColor_;
 
 private:// 外部を参照するためのポインタ変数

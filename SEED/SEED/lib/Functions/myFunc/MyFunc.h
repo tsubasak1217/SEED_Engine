@@ -44,16 +44,7 @@ public:
     template <typename T>
     static int32_t ToBack(std::map<std::string,T>& myMap,const std::string& token);
 
-    /// <summary>
-    /// ある時間 t(0~1) での放物線の位置を計算
-    /// </summary>
-    /// <param name="_sin">sin(theta)</param>
-    /// <param name="_speed">初速</param>
-    /// <param name="_time">時間 (0~1)</param>
-    /// <param name="_gravity">重力加速度</param>
-    /// <returns></returns>
-    static Vector2 CalculateParabolic(float _sin,float _speed,float _gravity,float _time);
-    /// <summary>
+   /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算
    /// </summary>
    /// <param name="_direction">飛ぶ方向</param>

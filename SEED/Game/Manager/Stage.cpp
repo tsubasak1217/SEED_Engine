@@ -246,13 +246,12 @@ void Stage::AddModel(
     const Vector3& rotate,
     const Vector3& translate
 ){
-
     // スタートもしくはゴールの場合、既に存在しているかチェックし、
     // 存在していれば新規追加をキャンセルする
-    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        for(const auto& objPtr : fieldObjects_){
+    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+        for (const auto& objPtr : fieldObjects_){
             FieldObject* obj = objPtr.get();
-            if(obj && obj->GetFieldObjectType() == modelNameIndex){
+            if (obj && obj->GetFieldObjectType() == modelNameIndex){
                 // 既に同じタイプのオブジェクトが存在する場合、追加をキャンセル
                 return;
             }
@@ -262,7 +261,7 @@ void Stage::AddModel(
     // 新規オブジェクトの生成
     std::unique_ptr<FieldObject> newObj = nullptr;
 
-    switch(modelNameIndex){
+    switch (modelNameIndex){
         case FIELDMODEL_GRASSSOIL:
             newObj = std::make_unique<FieldObject_GrassSoil>();
             break;
@@ -278,12 +277,12 @@ void Stage::AddModel(
         case FIELDMODEL_START:
             newObj = std::make_unique<FieldObject_Start>();
             // start を 保持
-            startObject_ = dynamic_cast<FieldObject_Start*>(newObj.get());
+            startObject_ = dynamic_cast< FieldObject_Start* >(newObj.get());
             break;
         case FIELDMODEL_GOAL:
             newObj = std::make_unique<FieldObject_Goal>();
             // goal を 保持
-            goalObject_ = dynamic_cast<FieldObject_Goal*>(newObj.get());
+            goalObject_ = dynamic_cast< FieldObject_Goal* >(newObj.get());
             break;
         case FIELDMODEL_SWITCH:
             newObj = std::make_unique<FieldObject_Switch>();
@@ -295,11 +294,11 @@ void Stage::AddModel(
             break;
     }
 
-    if(!newObj) return;  // newObj が生成されなかった場合は何もしない
+    if (!newObj) return;  // newObj が生成されなかった場合は何もしない
 
-    // スタートまたはゴールの場合、スケールを1/10に調整
+    // スタートまたはゴールの場合、スケールを 1 に固定（あるいは別途調整）
     Vector3 adjustedScale = scale;
-    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
         adjustedScale.x = 1.0f;
         adjustedScale.y = 1.0f;
         adjustedScale.z = 1.0f;
@@ -310,7 +309,17 @@ void Stage::AddModel(
     newObj->SetScale(adjustedScale);
     newObj->SetRotate(rotate);
     newObj->SetFieldObjectType(modelNameIndex);
+
+    // いったん行列更新
     newObj->UpdateMatrix();
+
+    // ◆ドアの場合のみ、「初期Y」を覚えてもらう
+    if (modelNameIndex == FIELDMODEL_DOOR){
+        auto doorObj = dynamic_cast< FieldObject_Door* >(newObj.get());
+        if (doorObj){
+            doorObj->SetClosedPosY(translate.y);
+        }
+    }
 
     // Manager に登録
     AddFieldObject(std::move(newObj));

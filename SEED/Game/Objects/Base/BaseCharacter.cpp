@@ -174,6 +174,6 @@ void BaseCharacter::Damage(int32_t damage){
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::Jump(){
     if(isJump_){
-        AddWorldTranslate(Vector3(0.0f, 1.0f, 0.0f) * jumpPower_);
+        AddWorldTranslate(Vector3(0.0f, 1.0f, 0.0f) * jumpPower_ * ClockManager::TimeRate());
     }
 }

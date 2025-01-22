@@ -233,6 +233,9 @@
     <Filter Include="Game\Objects\FieldObject\ViewPoint">
       <UniqueIdentifier>{c655c5fe-15b8-4708-9d3d-68d23b1ff3b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Enemy\Routine">
+      <UniqueIdentifier>{afd4fd13-842c-4401-8716-bb5084a1ddd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -637,9 +640,6 @@
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp">
       <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Manager\StageSelector.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
@@ -649,8 +649,23 @@
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
+    <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
+      <Filter>Game\Objects\Enemy\Routine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -936,7 +951,6 @@
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
-    <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
@@ -1198,11 +1212,34 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />
     <ClInclude Include="SEED\Lib\Structs\PointLight.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
+    <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
+    <ClInclude Include="SEED\Lib\Structs\SpotLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\enums\Direction.h">
+      <Filter>SEED\Lib\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h">
+      <Filter>Game\Objects\Enemy\Routine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h">
+      <Filter>Game\Objects\FieldObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h">
+      <Filter>Game\Objects\FieldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">
@@ -1219,8 +1256,12 @@
     <None Include="Resources\Shaders\Lighting.hlsli">
       <Filter>Resources\Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\Material.hlsli" />
-    <None Include="Resources\Shaders\Camera.hlsli" />
+    <None Include="Resources\Shaders\Material.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Camera.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">

@@ -107,7 +107,7 @@ void BaseObject::EditCollider(){
 // 落下処理
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Drop(){
-    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_);
+    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_ * ClockManager::TimeRate());
 }
 
 // フレーム終了時の落下更新処理

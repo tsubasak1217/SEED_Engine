@@ -36,7 +36,7 @@ void DxManager::Initialize(SEED* pSEED){
     /*------------ デバッグレイヤーの有効化 ---------------*/
 
 #ifdef _DEBUG
-    //instance_->CreateDebugLayer();
+    instance_->CreateDebugLayer();
 #endif
 
     /* --------------  Deviceの生成 -------------------- */
@@ -49,7 +49,7 @@ void DxManager::Initialize(SEED* pSEED){
     /*---------- デバッグレイヤーでエラーが出た場合止める ----------*/
 
 #ifdef _DEBUG
-    //instance_->CheckDebugLayer();
+    instance_->CheckDebugLayer();
 #endif
 
 

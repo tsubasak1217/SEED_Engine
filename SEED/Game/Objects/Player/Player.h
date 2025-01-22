@@ -13,6 +13,7 @@ class IPlayerState;
 // manager
 class PlayerCorpseManager;
 class EggManager;
+class PredationRange;
 
 class Player : public BaseCharacter{
 public:
@@ -42,12 +43,16 @@ public: // アクセッサ
     EggManager* GetEggManager(){ return eggManager_; }
     void SetEggManager(EggManager* eggManager){ eggManager_ = eggManager; }
 
+    PredationRange* GetPredationRange(){ return PredationRange_; }
+    void SetPredationRange(PredationRange* PredationRange){ PredationRange_ = PredationRange; }
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 
 private: // フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;
 
+    PredationRange* PredationRange_ = nullptr;
     PlayerCorpseManager* corpseManager_ = nullptr;
     EggManager* eggManager_ = nullptr;
+
 };

@@ -26,6 +26,7 @@
 #include "Egg/Manager/EggManager.h"
 
 // manager
+#include "Player/PredationRange/PredationRange.h"
 #include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Manager/StageManager.h"
@@ -65,6 +66,7 @@ private:
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<PredationRange> predationRange_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;

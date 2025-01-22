@@ -68,6 +68,7 @@ void PlayerState_ThrowEgg::Update(){
     ChangeAnimation();
 
     throwDirection_= MyMath::Normalize(throwDirection_);
+    JsonCoordinator::SetValue("Player","throwDirection",throwDirection_);
 
     // 卵 の 位置 を 更新
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));

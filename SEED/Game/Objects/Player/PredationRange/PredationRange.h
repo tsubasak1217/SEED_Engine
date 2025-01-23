@@ -32,8 +32,16 @@ private:
     float range_ = 0.f;
     float rangeY_ = 0.f;
 
+    float catchAngle_ = 0.f;
+
     Player* player_ = nullptr;
     std::list<PreyInfomation> preyList_;
+public:
+    void SetRange(float range){ range_ = range; }
+    void SetRangeY(float rangeY){ rangeY_ = rangeY; }
+    float GetRange() const{ return range_; }
+    float GetRangeY() const{ return rangeY_; }
+    const std::list<PreyInfomation>& GetPreyList() const{ return preyList_; }
 };
 
 struct PreyInfomation{

@@ -50,10 +50,6 @@ void Scene_Game::Initialize(){
     // EggManager
     eggManager_ = std::make_unique<EggManager>();
 
-    // PredationRange (実質Manager)
-    predationRange_ = std::make_unique<PredationRange>();
-
-
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
@@ -138,10 +134,6 @@ void Scene_Game::Initialize(){
     player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
     player_->SetPosition(StageManager::GetStartPos());
-    player_->SetPredationRange(predationRange_.get());
-
-    //predationRange に player をセット
-    predationRange_->Initialize(player_.get());
 
     // eggManagerにplayerをセット
     eggManager_->SetPlayer(player_.get());
@@ -181,8 +173,6 @@ void Scene_Game::Update(){
     if(isPaused_){ return; }
 
     ParticleManager::Update();
-
-    predationRange_->Update(enemyManager_.get());
 
     player_->Update();
 

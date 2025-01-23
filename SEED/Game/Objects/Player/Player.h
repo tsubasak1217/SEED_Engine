@@ -2,6 +2,9 @@
 
 // parent
 #include "Base/BaseCharacter.h"
+///stl
+// pointer
+#include <memory>
 // container
 #include <list>
 #include <vector>
@@ -13,9 +16,11 @@ class IPlayerState;
 // manager
 class PlayerCorpseManager;
 class EggManager;
+class EnemyManager;
 class PredationRange;
 
-class Player : public BaseCharacter{
+class Player
+    : public BaseCharacter{
 public:
     Player();
     ~Player();
@@ -31,6 +36,8 @@ private:
 public: // Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration) override;
 
+    bool CanEatEnemy();
+
 public: // アクセッサ
     void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
 
@@ -40,19 +47,25 @@ public: // アクセッサ
     PlayerCorpseManager* GetCorpseManager(){ return corpseManager_; }
     void SetCorpseManager(PlayerCorpseManager* corpseManager){ corpseManager_ = corpseManager; }
 
+    EnemyManager* GetEnemyManager(){ return enemyManager_; }
+    void SetEnemyManager(EnemyManager* enemyManager){ enemyManager_ = enemyManager; }
+
     EggManager* GetEggManager(){ return eggManager_; }
     void SetEggManager(EggManager* eggManager){ eggManager_ = eggManager; }
 
-    PredationRange* GetPredationRange(){ return PredationRange_; }
-    void SetPredationRange(PredationRange* PredationRange){ PredationRange_ = PredationRange; }
+    PredationRange* GetPredationRange(){ return predationRange_.get(); }
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 
 private: // フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;
-
-    PredationRange* PredationRange_ = nullptr;
+    // 死体の管理(外部から設定) 死体を追加するために所持
     PlayerCorpseManager* corpseManager_ = nullptr;
+    // 卵の管理(外部から設定) 卵を追加&投げるために所持
     EggManager* eggManager_ = nullptr;
+    // 敵の管理(外部から設定) 敵を捕食するために所持
+    EnemyManager* enemyManager_ = nullptr;
+    // 捕食可能範囲 兼 捕食可能オブジェクトの検索,管理
+    std::unique_ptr<PredationRange> predationRange_ = nullptr;
 
 };

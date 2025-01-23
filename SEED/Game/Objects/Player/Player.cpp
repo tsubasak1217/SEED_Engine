@@ -7,6 +7,7 @@
 
 // manager
 #include "Egg/Manager/EggManager.h"
+#include "Player/PredationRange/PredationRange.h"
 #include "StageManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
@@ -53,6 +54,10 @@ void Player::Initialize(){
     currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
 
     JsonCoordinator::LoadGroup("Player");
+
+    // 捕食可能範囲の初期化
+    predationRange_ = std::make_unique<PredationRange>();
+    predationRange_->Initialize(this);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -67,6 +72,10 @@ void Player::Update(){
     }
     ImGui::End();
 #endif // _DEBUG
+
+    if(enemyManager_){
+        predationRange_->Update(enemyManager_);
+    }
 
     BaseCharacter::Update();
 }
@@ -94,16 +103,19 @@ void Player::ToClearStageState(const Vector3& nextStartPos){
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
 //////////////////////////////////////////////////////////////////////////
-void Player::HandleMove(const Vector3 &acceleration)
-{
+void Player::HandleMove(const Vector3& acceleration){
     // 移動
     if(isMovable_){
         model_->translate_ += acceleration;
     }
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
     model_->UpdateMatrix();
+}
+
+bool Player::CanEatEnemy(){
+    return !predationRange_->GetPreyList().empty();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -115,7 +127,7 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
 
     // ゴールに触れている状態で
     if(objectType == ObjectType::GoalField){
-    
+
         // ステージ遷移ステートへ
         if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
             if(!StageManager::IsLastStage()){

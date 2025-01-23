@@ -22,6 +22,7 @@ void PredationRange::Initialize(Player* player){
     // jsonから範囲を読み込む
     JsonCoordinator::RegisterItem("Player","PredationRange",range_);
     JsonCoordinator::RegisterItem("Player","PredationRangeY",rangeY_);
+    JsonCoordinator::RegisterItem("Player","PredationCatchAngle",catchAngle_);
 }
 
 void PredationRange::Update(EnemyManager* _enemyManager){
@@ -34,7 +35,11 @@ void PredationRange::Update(EnemyManager* _enemyManager){
 
     // 範囲内の敵を探す
     Vector3 playerPos = player_->GetWorldTranslate();
+    Vector3 playerDirection = Vector3(0.0f,0.0f,1.0f) * RotateYMatrix(player_->GetWorldRotate().y);
+    playerDirection = MyMath::Normalize(playerDirection);
+
     Vector3 diffP2E;
+    Vector3 directionP2E;
     for(auto& enemy : enemies){
         // 捕食不可能な敵は無視
         if(!enemy->GetCanEat()){
@@ -42,6 +47,12 @@ void PredationRange::Update(EnemyManager* _enemyManager){
         }
         diffP2E = enemy->GetWorldTranslate() - playerPos;
         if(MyMath::LengthSq(diffP2E) < range_ * range_){
+            directionP2E = MyMath::Normalize(diffP2E);
+
+            // 許容範囲外の敵は無視
+            if(MyMath::Cross(Vector2(playerDirection.x,playerDirection.z),Vector2(directionP2E.x,directionP2E.z)) > catchAngle_){
+                break;
+            }
             preyList_.push_back({enemy.get(),diffP2E});
         }
     }
@@ -51,13 +62,12 @@ void PredationRange::Update(EnemyManager* _enemyManager){
     }
 
     // 距離が近い順にソート
-    std::sort(preyList_.begin(),preyList_.end(),[](const PreyInfomation& a,const PreyInfomation& b){
+    preyList_.sort([](const PreyInfomation& a,const PreyInfomation& b){
         return MyMath::LengthSq(a.diff) < MyMath::LengthSq(b.diff);
-              });
+                   });
 
     // 範囲内の敵のうち、Y軸方向の範囲内の敵を残す
-    auto it = std::remove_if(preyList_.begin(),preyList_.end(),[this](const PreyInfomation& prey){
+    std::erase_if(preyList_,[this](const PreyInfomation& prey){
         return std::abs(prey.diff.y) > rangeY_;
-                             });
-    preyList_.erase(it,preyList_.end());
+                  });
 }

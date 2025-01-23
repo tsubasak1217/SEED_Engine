@@ -1,12 +1,17 @@
 #pragma once
 
+// parent
 #include "Base/ICharacterState.h"
+
+//stl
+//pointer
+#include <functional>
 
 class Enemy;
 class PlayerState_Eat
     : public ICharacterState{
 public:
-    PlayerState_Eat(Enemy* _enemy,BaseCharacter* player);
+    PlayerState_Eat(BaseCharacter* player);
     ~PlayerState_Eat()override;
     void Update()override;
     void Draw()override;
@@ -16,6 +21,21 @@ protected:
     // ステート管理
     void ManageState()override;
 
+    void RotateForEnemy();
+    void EatEnemy();
+    void SpawnEgg();
 private:
-    Enemy* enemy = nullptr;
+    // アニメーションごとにステートを分ける
+    std::function<void()> currentUpdate_ = nullptr;
+
+    Enemy* enemy_ = nullptr;
+
+    float rotateTime_ = 0.f;
+    float interpolationRotateY_;
+
+    float eatTime_ = 0.f;
+
+    float spawnEggTime_ = 0.f;
+
+    float currentTime_;
 };

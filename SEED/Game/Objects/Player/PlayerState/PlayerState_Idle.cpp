@@ -3,6 +3,7 @@
 #include "PlayerState_Jump.h"
 #include "PlayerState_Move.h"
 #include "PlayerState_ThrowEgg.h"
+#include "PlayerState_Eat.h"
 
 #include "Egg/Egg.h"
 // EggState
@@ -61,8 +62,8 @@ void PlayerState_Idle::ManageState(){
     }
 
     // 卵 を 投げる状態へ
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     if(Input::IsTriggerPadButton(PAD_BUTTON::LT)){
-        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -78,7 +79,6 @@ void PlayerState_Idle::ManageState(){
     }
 
     if(Input::IsReleasePadButton(PAD_BUTTON::RT)){
-        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -95,4 +95,13 @@ void PlayerState_Idle::ManageState(){
 
         return;
     }
+
+    // 捕食
+    if(Input::IsReleasePadButton(PAD_BUTTON::B)){
+        if(pPlayer->CanEatEnemy()){
+            pCharacter_->ChangeState(new PlayerState_Eat(pCharacter_));
+            return;
+        }
+    }
 }
+

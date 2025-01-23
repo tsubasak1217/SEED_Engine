@@ -32,6 +32,7 @@ private:
 
     Player* player_ = nullptr;
 public:
+    Player* GetPlayer()const{ return player_; }
     void SetPlayer(Player* _player){ player_ = _player; }
 
     /// <summary>

@@ -113,6 +113,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
+    <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp" />
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp" />
     <ClCompile Include="Game\Manager\Stage.cpp" />
     <ClCompile Include="Game\Manager\StageManager.cpp" />
@@ -254,6 +256,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
+    <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />

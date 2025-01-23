@@ -96,7 +96,8 @@ void Scene_Game::Initialize(){
     player_->Initialize();
     stageManager_->SetPlayer(player_.get());
 
-    ground_ = std::make_unique<Model>("Assets/ground.obj");
+    ground_ = std::make_unique<Model>("skydome.obj");
+    ground_->lightingType_ = LIGHTINGTYPE_NONE;
 
     ////////////////////////////////////////////////////
     // スプライトの初期化

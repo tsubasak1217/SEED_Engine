@@ -7,7 +7,7 @@
             "HP": 100,
             "Index": 0,
             "Name": "enemy0",
-            "RoutineName": "stage1_routine"
+            "RoutineName": "firstEnemyRoutine"
         },
         {
             "CanEat": false,
@@ -15,7 +15,7 @@
             "HP": 100,
             "Index": 1,
             "Name": "enemy1",
-            "RoutineName": "aa"
+            "RoutineName": "secondEnemyRoutine"
         }
     ]
 }

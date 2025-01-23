@@ -25,16 +25,10 @@ private:
     void LoadEnemies();
 
 private:
-    //---　マウスによるルーチンポイント追加
     void AddRoutinePointByMouse();
-
-    //オブジェクトのインデックスを取得
-    Vector3 GetObjectPositionByMouse(const std::vector<std::unique_ptr<FieldObject>>& objects);
-    int32_t GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
 
 private:
     int selectedEnemyIndex_ = 0;
-    int32_t enemyCount_ = 0;
 
     char nameBuf_[128] = "";        // 選択中の敵の名前編集用バッファ
     int lastSelectedIndex_ = -1;    // 最後に選択された敵のインデックス

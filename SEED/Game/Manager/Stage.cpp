@@ -3,17 +3,21 @@
 
 #include "Player/Player.h"
 
+#include "StageManager.h"
+
 //lib
 #include <nlohmann/json.hpp>
 #include <fstream>
 
 
-Stage::Stage(ISubject& subject) 
+Stage::Stage(ISubject& subject, uint32_t stageNo)
     :subject_(subject){
     // ステージの初期化
     ClearAllFieldObjects();
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_);
+    stageNo_ = stageNo;
+
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_);
 }
 
 ////////////////////////////////////////////////////////////////////////

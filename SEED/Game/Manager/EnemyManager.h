@@ -15,7 +15,7 @@ class Player;
 class EnemyManager{
 public:
     EnemyManager();
-    EnemyManager(Player* player);
+    EnemyManager(Player* player,uint32_t stageNo);
     ~EnemyManager() = default;
 
     void Initialize();
@@ -26,6 +26,10 @@ public:
     void AddEnemy(std::unique_ptr<Enemy>);
     void DeleteEnemy(uint32_t index);
     void HandOverColliders();
+
+    //--- 保存 読み込み ---//
+    void SaveEnemies();
+    void LoadEnemies();
 
     //--- getter / setter ---//
     std::vector<std::unique_ptr<Enemy>>& GetEnemies(){ return enemies_; }
@@ -54,4 +58,8 @@ private:
     EnemyRoutineManager routineManager_;
 
     Player* pPlayer_ = nullptr;
+
+    int32_t enemyCount_ = 0;
+
+    int32_t stageNo_ = 0;
 };

@@ -106,15 +106,19 @@ std::array<Vector3, 2> LineClosestPoints(const Line& l1, const Line& l2){
         return { l1.origin_,l2.origin_ };
     }
 
-    // 外積の大きさを利用したスカラー値の計算
-    float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), cross) / (crossLength * crossLength);
-    float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), cross) / (crossLength * crossLength);
+    // 最近傍点を計算
+    float crossLengthSq = crossLength * crossLength;
+    float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), cross) / crossLengthSq;
+    float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), cross) / crossLengthSq;
 
-    // 交点を計算
+    // t1, t2 を [0, 1] に制限
+    t1 = std::clamp(t1, 0.0f, 1.0f);
+    t2 = std::clamp(t2, 0.0f, 1.0f);
+
     Vector3 closest1 = l1.origin_ + dir1 * t1;
     Vector3 closest2 = l2.origin_ + dir2 * t2;
 
-    return { closest1,closest2 };
+    return { closest1, closest2 };
 }
 
 // 2直線の距離を求める関数

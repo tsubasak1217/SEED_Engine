@@ -5,6 +5,7 @@
 #include <Range1D.h>
 #include <Line.h>
 #include <ShapeMath.h>
+#include "InputManager.h"
 
 // 各形状のコライダーをインクルード
 #include <Collision/Collider_AABB.h>
@@ -18,7 +19,7 @@ float separator = 0.01f;
 /////////////////////////////////////////////////////////////////////////
 //						重複防止のためcpp内で宣言・定義
 /////////////////////////////////////////////////////////////////////////
-void CalucPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data);
+void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data);
 
 bool CheckProjentionCollision(
     std::vector<Vector3> vertices1, std::vector<Vector3>vertices2,
@@ -113,7 +114,7 @@ namespace Collision{
 //======================================= 質量比を求める関数 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CalucPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data){
+void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data){
 
     // もしどちらかが押し戻ししない設定なら終了
     if(collider1->isGhost_ or collider2->isGhost_){
@@ -1026,7 +1027,7 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
     }
 
     // 押し戻し割合を求めるため、質量比を求める
-    CalucPushbackRatio(sphereCollider, obbCollider, &result);
+    CalcPushbackRatio(sphereCollider, obbCollider, &result);
 
     return result;
 }
@@ -1097,7 +1098,7 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
     }
 
     // 押し戻し割合を求めるため、質量比を求める
-    CalucPushbackRatio(sphereCollider, obbCollider, &result);
+    CalcPushbackRatio(sphereCollider, obbCollider, &result);
 
     return result;
 }
@@ -1193,7 +1194,7 @@ CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Col
     }
     
     // 押し戻し割合を求めるため、質量比を求める
-    CalucPushbackRatio(sphereCollider1, sphereCollider2, &result);
+    CalcPushbackRatio(sphereCollider1, sphereCollider2, &result);
 
     return result;
 }
@@ -1444,11 +1445,12 @@ CollisionData CollisionData_Capsule_Capusle(const::Capsule& capsule1, const::Cap
     float sumRadius = capsule1.radius + capsule2.radius;
 
     // 最近傍点同士の距離が半径の和よりも短ければ衝突している
-    if(dist <= sumRadius){
+    if(dist < sumRadius){
         result.isCollide = true;
         result.hitPos = (closest[0] + closest[1]) * 0.5f;
         result.hitNormal = MyMath::Normalize(closest[0] - closest[1]);
         result.collideDepth = sumRadius - dist;
+
     } else{
         return result;
     }
@@ -1551,7 +1553,7 @@ CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabb
     if(collisionData.isCollide == false){ return collisionData; }
 
     // 押し戻し割合を求めるため、質量比を求める
-    CalucPushbackRatio(sphereCollider, aabbCollider, &collisionData);
+    CalcPushbackRatio(sphereCollider, aabbCollider, &collisionData);
 
     return collisionData;
 }
@@ -1597,7 +1599,7 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
     if(collisionData.isCollide == false){ return collisionData; }
 
     // 押し戻し割合を求めるため、質量比を求める
-    CalucPushbackRatio(sphereCollider, aabbCollider, &collisionData);
+    CalcPushbackRatio(sphereCollider, aabbCollider, &collisionData);
 
     return collisionData;
 }

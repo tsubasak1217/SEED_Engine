@@ -168,11 +168,31 @@ Vector3 MyMath::ProjectVec(const Vector3& vec1, const Vector3& vec2){
 /*---------------------- 直線に対する最近傍点を求める関数 -----------------------*/
 
 Vector2 MyMath::ClosestPoint(const Vector2& seg_origin, const Vector2& seg_end, const Vector2& point){
-    return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
+    float len = Length(seg_end - seg_origin);
+    Vector2 proj = ProjectVec(seg_origin, seg_end, point);
+    float projLen = Length(proj);
+
+    if(projLen > len){
+        return seg_end;
+    } else if(projLen < 0){
+        return seg_origin;
+    }
+
+    return seg_origin + proj;
 }
 
 Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, const Vector3& point){
-    return seg_origin + ProjectVec(point - seg_origin, seg_end - seg_origin);
+    float len = Length(seg_end - seg_origin);
+    Vector3 proj = ProjectVec(seg_origin, seg_end, point);
+    float projLen = Length(proj);
+
+    if(projLen > len){
+        return seg_end;
+    } else if(projLen < 0){
+        return seg_origin;
+    }
+
+    return seg_origin + proj;
 }
 
 

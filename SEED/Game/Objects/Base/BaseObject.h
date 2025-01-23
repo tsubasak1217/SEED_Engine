@@ -27,9 +27,8 @@ public:
     void EditCollider();
 
 protected:
-    void Drop();
     void EndFrameDropFlagUpdate();
-
+    void MoveByVelocity();
 public:// アクセッサ
 
     // 基礎情報
@@ -39,12 +38,12 @@ public:// アクセッサ
     void SetName(const std::string& name){ name_ = name; }
 
     // トランスフォーム
-    Vector3 GetLocalTranslate() const{ return model_->translate_; }
+    const Vector3& GetLocalTranslate() const{ return model_->translate_; }
     Vector3 GetWorldTranslate() const{ return model_->GetWorldTranslate(); }
     void AddWorldTranslate(const Vector3& addValue);
-    Vector3 GetLocalRotate() const{ return model_->rotate_; }
+    const Vector3& GetLocalRotate() const{ return model_->rotate_; }
     Vector3 GetWorldRotate() const{ return model_->GetWorldRotate(); }
-    Vector3 GetLocalScale() const{ return model_->scale_; }
+    const Vector3& GetLocalScale() const{ return model_->scale_; }
     Vector3 GetWorldScale() const{ return model_->GetWorldScale(); }
     Matrix4x4 GetLocalMat() const{ return model_->GetLocalMat(); }
     Matrix4x4 GetWorldMat() const{ return model_->GetWorldMat(); }
@@ -81,11 +80,22 @@ public:// アクセッサ
     void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
     bool GetIsDrop()const{ return isDrop_; }
 
+    // 重さ
+    float GetWeight()const{ return weight_; }
+    void SetWeight(float weight){ weight_ = weight; }
+
+    // 速度
+    Vector3 GetVelocity()const{ return velocity_; }
+    void SetVelocity(const Vector3& velocity){ velocity_ = velocity; }
+    void SetVelocityX(float x){ velocity_.x = x; }
+    void SetVelocityY(float y){ velocity_.y = y; }
+    void SetVelocityZ(float z){ velocity_.z = z; }
+
 public:// コライダー関連
     void AddCollider(Collider* collider);
     void ResetCollider();
     virtual void HandOverColliders();
-    virtual void OnCollision(const BaseObject* other, ObjectType objectType);
+    virtual void OnCollision(const BaseObject* other,ObjectType objectType);
     std::vector<std::unique_ptr<Collider>>& GetColliders(){ return colliders_; }
     //virtual void SyncPrepos();
 
@@ -107,9 +117,10 @@ protected:// 衝突判定用
 protected:// 物理
     bool isApplyGravity_ = true;
     bool isDrop_ = false;
-    float dropSpeed_ = 0.0f;
-public:
-    float GetDropSpeed()const{ return dropSpeed_; }
+    // 重さ
+    float weight_ = 1.f;
+    Vector3 velocity_ = {0.f,0.f,0.f};
+
 protected:
     Vector3 targetOffset_;
 

@@ -219,6 +219,13 @@ void EnemyEditor::ShowImGui(){
                         break;
                     }
                     ImGui::PopID();
+
+                    //routinePointの可視化
+                    //routinPointの可視化
+                    Sphere s;
+                    s.radius = 0.1f;
+                    s.center = editablePoints[i];
+                    SEED::DrawSphere(s.center, s.radius, 8, {1, 1, 1, 1});
                 }
 
                 if (ImGui::Button("Add Point")){
@@ -227,7 +234,7 @@ void EnemyEditor::ShowImGui(){
                 }
 
                 // マウスでポイント追加
-                    AddRoutinePointByMouse();
+                AddRoutinePointByMouse();
 
                 ImGui::Separator();
 
@@ -236,6 +243,7 @@ void EnemyEditor::ShowImGui(){
                     routineManager->DeleteRoutine(selectedRoutineName);
                     selectedRoutineName.clear();
                 }
+
             } else{
                 ImGui::Text("Routine not found!");
             }
@@ -256,171 +264,24 @@ void EnemyEditor::ShowImGui(){
 // JSON / CSV保存・読み込みなど
 ////////////////////////////////////////////////////////////////////////
 void EnemyEditor::SaveEnemies(){
-    // 現在のステージや EnemyManager を取得
     Stage* currentStage = StageManager::GetCurrentStage();
     if (!currentStage){ return; }
     EnemyManager* em = currentStage->GetEnemyManager();
     if (!em){ return; }
 
-    auto& enemies = em->GetEnemies();
-
-    // ステージ番号を取得
-    int stageNo = StageManager::GetCurrentStageNo();
-
-    // ===== CSVで座標を保存 (従来通り) =====
-    std::vector<std::vector<std::string>> csvData;
-    csvData.push_back({"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
-
-    for (int i = 0; i < ( int ) enemies.size(); ++i){
-        auto& e = enemies[i];
-        auto pos = e->GetWorldTranslate();
-        csvData.push_back({
-            std::to_string(i),
-            e->GetName(),
-            std::to_string(pos.x),
-            std::to_string(pos.y),
-            std::to_string(pos.z)
-                          });
-    }
-    CsvAdapter::GetInstance()->SaveCsv("enemies_position", csvData);
-
-    // ===== JSONの作成 =====
-    nlohmann::json rootJson;
-    rootJson["Count"] = ( int ) enemies.size();
-
-    nlohmann::json enemyArray = nlohmann::json::array();
-    for (int i = 0; i < ( int ) enemies.size(); ++i){
-        auto& e = enemies[i];
-        if (!e) continue;
-        nlohmann::json enemyObj;
-        enemyObj["Index"] = i;
-        enemyObj["Name"] = e->GetName();
-        enemyObj["HP"] = e->GetHP();
-        enemyObj["CanEat"] = e->GetCanEat();
-        enemyObj["ChasePlayer"] = e->GetChasePlayer();
-        enemyObj["RoutineName"] = e->GetRoutineName();
-        // 座標をJSONにも入れるなら
-        // auto pos = e->GetWorldTranslate();
-        // enemyObj["PosX"] = pos.x; ...
-
-        enemyArray.push_back(enemyObj);
-    }
-    rootJson["Enemies"] = enemyArray;
-
-    // ===== JSONファイル出力 =====
-    std::string filePath = "resources/jsons/enemies/stage_"
-        + std::to_string(stageNo)
-        + "_enemies.json";
-    try{
-        std::ofstream ofs(filePath);
-        if (!ofs){
-            std::cerr << "Failed to open file for writing: " << filePath << std::endl;
-            return;
-        }
-        ofs << rootJson.dump(4) << std::endl;
-        ofs.close();
-    } catch (const std::exception& e){
-        std::cerr << "Exception while saving JSON: " << e.what() << std::endl;
-    }
-
-    // 敵数をメンバ変数に記録(オマケ)
-    enemyCount_ = ( int ) enemies.size();
+    em->SaveEnemies();
 }
 
 void EnemyEditor::LoadEnemies(){
-    // 現在ステージや EnemyManager を取得
     Stage* currentStage = StageManager::GetCurrentStage();
     if (!currentStage){ return; }
     EnemyManager* em = currentStage->GetEnemyManager();
     if (!em){ return; }
 
-    // ===== CSV読み込み =====
-    auto csvData = CsvAdapter::GetInstance()->LoadCsv("enemies_position");
-    if (csvData.size() <= 1){
-        // 空なら何もしない
-        return;
-    }
+    em->LoadEnemies();
 
-    // ===== JSON読み込み =====
-    nlohmann::json rootJson;
-    {
-        int stageNo = StageManager::GetCurrentStageNo();
-        std::string filePath = "resources/jsons/enemies/stage_"
-            + std::to_string(stageNo)
-            + "_enemies.json";
-        std::ifstream ifs(filePath);
-        if (!ifs.is_open()){
-            std::cerr << "Failed to open JSON file: " << filePath << std::endl;
-            return;
-        }
-        try{
-            ifs >> rootJson; // パース
-        } catch (const std::exception& e){
-            std::cerr << "Exception while reading JSON: " << e.what() << std::endl;
-            return;
-        }
-        ifs.close();
-    }
-
-    // まず全削除
-    em->ClearAllEnemies();
-
-    // "Count"
-    if (!rootJson.contains("Count")){
-        std::cerr << "JSON has no 'Count' field." << std::endl;
-        return;
-    }
-    int count = rootJson["Count"].get<int>();
-
-    if (!rootJson.contains("Enemies") || !rootJson["Enemies"].is_array()){
-        std::cerr << "JSON has no 'Enemies' array." << std::endl;
-        return;
-    }
-    auto enemyArray = rootJson["Enemies"];
-
-    // ===== CSVの行1以降を走査 =====
-    for (size_t i = 1; i < csvData.size(); ++i){
-        auto& row = csvData[i];
-        if (row.size() < 5){
-            continue;
-        }
-        int index = std::stoi(row[0]);
-        std::string eName = row[1];
-        float px = std::stof(row[2]);
-        float py = std::stof(row[3]);
-        float pz = std::stof(row[4]);
-
-        // 新しい Enemy
-        auto newEnemy = std::make_unique<Enemy>(
-            em,        // EnemyManager*
-            em->GetPlayer(), // 必要なら
-            eName
-        );
-        // CSVの位置をセット
-        newEnemy->SetPosition({px, py, pz});
-
-        // JSONから他のパラメータをセット
-        if (index < count && index < ( int ) enemyArray.size()){
-            auto& eJson = enemyArray[index];
-            if (eJson.is_object()){
-                int hp = eJson.value("HP", 100);
-                newEnemy->SetHP(hp);
-
-                bool canEat = eJson.value("CanEat", false);
-                newEnemy->SetCanEat(canEat);
-
-                bool chasePlayer = eJson.value("ChasePlayer", false);
-                newEnemy->SetChasePlayer(chasePlayer);
-
-                std::string routineName = eJson.value("RoutineName", "NULL");
-                newEnemy->SetRoutineName(routineName);
-            }
-        }
-
-        em->GetEnemies().push_back(std::move(newEnemy));
-    }
-
-    selectedEnemyIndex_ = (em->GetEnemies().empty()) ? -1 : 0;
+    // 必要に応じて、選択された敵のインデックスをリセットまたは更新
+    selectedEnemyIndex_ = em->GetEnemies().empty() ? -1 : 0;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -485,38 +346,3 @@ void EnemyEditor::AddRoutinePointByMouse(){
    
 }
 
-int32_t EnemyEditor::GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects){
-
-    // マウスの位置を取得
-    Vector2 mousePos = Input::GetMousePosition();
-    // マウスの位置からRayを取得
-    Line ray = SEED::GetCamera()->GetRay(mousePos);
-    // 一番近いオブジェクトを探す用
-    float minDist = FLT_MAX;
-    int32_t index = -1;
-
-    // 全オブジェクトをチェック
-    for (int32_t i = 0; i < objects.size(); ++i){
-        auto* obj = objects[i].get();
-        if (!obj) continue;
-
-        // オブジェクトのコライダーを取得
-        auto& colliders = obj->GetColliders();
-        for (auto& collider : colliders){
-            // Rayと当たり判定
-            if (collider->CheckCollision(ray)){
-
-                // 距離を取得
-                float dist = MyMath::Length(collider->GetWoarldTranslate() - ray.origin_);
-
-                // もし距離が一番近い場合、そのオブジェクトを選択
-                if (dist < minDist){
-                    minDist = dist;
-                    index = i;
-                }
-            }
-        }
-    }
-
-    return index;
-}

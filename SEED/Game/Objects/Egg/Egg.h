@@ -28,8 +28,9 @@ public:
 public:// ステートから呼び出す関数
     void Break();
 private:
+    // 管理主
     EggManager* eggManager_ = nullptr;
-
+    // 追従先
     BaseObject* player_ = nullptr;
 
     // 速度ベクトル (thrown された時に使用)
@@ -41,6 +42,8 @@ private:
     float weight_ = 1.0f;
 public:// アクセッサ
     void SetPlayer(BaseObject* _player){ player_ = _player; }
+
+    EggManager* GetEggManager()const{ return eggManager_; }
     void SetEggManager(EggManager* _eggManager){ eggManager_ = _eggManager; }
 
     float GetWeight()const{ return weight_; }

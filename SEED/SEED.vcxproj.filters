@@ -670,6 +670,24 @@
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
       <Filter>SEED\adapter</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">

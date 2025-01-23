@@ -11,7 +11,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-GameState_Play::GameState_Play(Scene_Base* pScene, bool isPlayerSetStartPos) : State_Base(pScene){
+GameState_Play::GameState_Play(Scene_Base* pScene,bool isPlayerSetStartPos): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize(isPlayerSetStartPos);
 }
@@ -29,14 +29,20 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     fieldEditor_->Initialize();
 
     // FieldColliderEditor
-    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field", nullptr);
+    fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 
     // プレイヤーの初期位置
     if(isPlayerSetStartPos){
         pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
     }
     pGameScene_->Get_pPlayer()->SetIsMovable(true);
-    
+
+    // プレイヤーにステージの敵情報を渡す
+    {
+        EnemyManager* enemyManager = pGameScene_->Get_StageManager().GetCurrentStage()->GetEnemyManager();
+        pGameScene_->Get_pPlayer()->SetEnemyManager(enemyManager);
+    }
+
     // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
 }

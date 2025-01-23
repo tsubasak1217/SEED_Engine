@@ -6,6 +6,7 @@
 #include "PlayerState_Jump.h"
 #include "PlayerState_Idle.h"
 #include "PlayerState_ThrowEgg.h"
+#include "PlayerState_Eat.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 
@@ -133,8 +134,10 @@ void PlayerState_Move::ManageState()
     // ジャンプ状態へ
     if (Input::IsTriggerPadButton(PAD_BUTTON::A))
     {
-        pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump", pCharacter_));
-        return;
+        if(!pCharacter_->GetIsDrop()){
+            pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
+            return;
+        }
     }
 
     // アイドル状態へ
@@ -145,9 +148,9 @@ void PlayerState_Move::ManageState()
     }
 
     // 卵 を 投げる状態へ
+        Player *pPlayer = dynamic_cast<Player *>(pCharacter_);
     if (Input::IsTriggerPadButton(PAD_BUTTON::LT))
     {
-        Player *pPlayer = dynamic_cast<Player *>(pCharacter_);
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -162,9 +165,7 @@ void PlayerState_Move::ManageState()
         return;
     }
 
-
     if(Input::IsReleasePadButton(PAD_BUTTON::RT)){
-        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -182,4 +183,12 @@ void PlayerState_Move::ManageState()
         return;
     }
 
+    // 捕食状態へ
+     // 捕食
+    if(Input::IsReleasePadButton(PAD_BUTTON::B)){
+        if(pPlayer->CanEatEnemy()){
+            pCharacter_->ChangeState(new PlayerState_Eat(pCharacter_));
+            return;
+        }
+    }
 }

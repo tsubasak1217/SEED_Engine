@@ -53,7 +53,7 @@ void SEED::Initialize(int clientWidth, int clientHeight){
 
     // メインウインドウの作成
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
-    WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight,WindowManager::GetHWND(windowTitle_));
+    WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
 
     // 各マネージャの初期化
     ClockManager::Initialize();

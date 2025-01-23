@@ -1671,7 +1671,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     std::memmove(
                         mapOffsetData + meshCountAll,
                         item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
-                        sizeof(OffsetData)* item->offsetData[blendIdx][cullModeIdx][meshIdx].size()
+                        sizeof(OffsetData)* item->totalDrawCount[blendIdx][cullModeIdx]
                     );
 
                     /*///////////////////////////////////////////////////////////////////////////*/
@@ -1770,6 +1770,11 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     /*/////////////////////////////////////////////////////////////////*/
 
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
+
+                        if(drawOrder == DrawOrder::Particle){
+                            int a = 0;
+                            a = a;
+                        }
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),

@@ -133,6 +133,7 @@ void Collider_AABB::CheckCollision(Collider* collider){
     }
     if(collisionData.isCollide){
         collidedPosition_ = collider->GetWoarldTranslate();
+        collisionList_.insert(collider->GetColliderID());
     }
 }
 

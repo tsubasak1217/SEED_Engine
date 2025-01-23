@@ -36,6 +36,12 @@ void Egg::Initialize(){
     // コライダーエディターの初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
     LoadColliders(ObjectType::Egg);
+    for(auto& collider : colliders_){
+        collider->AddSkipPushBackType(ObjectType::Egg);
+        collider->AddSkipPushBackType(ObjectType::Editor);
+        collider->AddSkipPushBackType(ObjectType::Enemy);
+        collider->AddSkipPushBackType(ObjectType::Player);
+    }
     isApplyGravity_ = false;
 }
 

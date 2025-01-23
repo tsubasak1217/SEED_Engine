@@ -97,6 +97,7 @@ public:// コライダー関連
     virtual void HandOverColliders();
     virtual void OnCollision(const BaseObject* other,ObjectType objectType);
     std::vector<std::unique_ptr<Collider>>& GetColliders(){ return colliders_; }
+    //virtual void SyncPrepos();
 
 protected:
     void LoadColliders(ObjectType objectType);

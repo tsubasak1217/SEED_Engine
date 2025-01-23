@@ -219,6 +219,13 @@ void EnemyEditor::ShowImGui(){
                         break;
                     }
                     ImGui::PopID();
+
+                    //routinePointの可視化
+                    //routinPointの可視化
+                    Sphere s;
+                    s.radius = 0.1f;
+                    s.center = editablePoints[i];
+                    SEED::DrawSphere(s.center, s.radius, 8, {1, 1, 1, 1});
                 }
 
                 if (ImGui::Button("Add Point")){
@@ -236,6 +243,10 @@ void EnemyEditor::ShowImGui(){
                     routineManager->DeleteRoutine(selectedRoutineName);
                     selectedRoutineName.clear();
                 }
+
+                
+
+
             } else{
                 ImGui::Text("Routine not found!");
             }

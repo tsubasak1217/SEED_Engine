@@ -4,19 +4,19 @@
         "y": 3.509999990463257,
         "z": 0.0
     },
-    "throwPower": 28.059999465942383,
+    "throwPower": 38.0,
     "throwDirection": {
-        "x": 0.0,
-        "y": 1.0,
-        "z": 1.0
+        "x": 0.3469375967979431,
+        "y": 0.9378882646560669,
+        "z": 0.0
     },
-    "moveSpeed": 30.0,
+    "moveSpeed": 15.0,
     "lerpRate": 0.25,
     "isLerpRotate": true,
     "pressForcus": false,
-    "jumpPower": 1.1699999570846558,
+    "jumpPower": 1.5,
     "hoveringTime": 0.5899999737739563,
-    "jumpHoveringAccel": 0.12999999523162842,
-    "MoveSpeedOnThrowAim": 12.0,
-    "MoveSpeedOnJump": 15.0
+    "jumpHoveringAccel": 0.05000000074505806,
+    "MoveSpeedOnThrowAim": 11.979999542236328,
+    "MoveSpeedOnJump": 8.0
 }

@@ -17,6 +17,7 @@ class FieldObject_Door
         DOORSTATE_OPENED,
         DOORSTATE_CLOSED
     };
+
 public:
     FieldObject_Door();
     FieldObject_Door(const std::string& modelName);
@@ -50,9 +51,9 @@ private:
     bool hasSwitch_ = false;                    // スイッチを持っているかどうか
     std::unique_ptr<DoorState> currentState_;   // 現在の状態
     float openSpeed_ = 8.0f;                    // 開閉速度
-    const float kMaxOpenHeight_ =5.0f;        // 最大開く高さ
+    const float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
 
-    float closedPosY_ = 0.0f;                  // 閉じた後のy座標
+    float closedPosY_ = 0.0f;                   // 閉じた後のy座標
 
 public:
     static uint32_t nextFieldObjectID_;         // 次のID

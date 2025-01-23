@@ -126,7 +126,7 @@ void BaseObject::EndFrameDropFlagUpdate(){
             return;
         }
 
-        dropSpeed_ += Physics::kGravity / 60.0f;
+        dropSpeed_ += (Physics::kGravity / 60.0f) * ClockManager::TimeRate();
     }
 }
 

@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <Range1D.h>
+#include <Line.h>
+#include <ShapeMath.h>
 
 // 各形状のコライダーをインクルード
 #include <Collision/Collider_AABB.h>
@@ -43,6 +45,7 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
 bool Collision_Sphere_AABB(const ::Sphere& sphere, const ::AABB& aabb);
 bool Collision_Sphere_Line(const ::Sphere& sphere, const ::Line& line);
 bool Collision_Sphere_Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2);
+CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Collider* sphereCollider2);
 bool Collision_Quad_Line(const ::Quad& rectangle, const ::Line& line);
 Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line);
 bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
@@ -50,6 +53,8 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane);
 
 CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabbCollider);
 CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabbCollider);
+CollisionData CollisionData_Capsule_Capusle(const ::Capsule& capsule1, const ::Capsule& capsule2);
+CollisionData CollisionData_Capsule_Sphere(const ::Capsule& capsule, const ::Sphere& sphere);
 
 /////////////////////////////////////////////////////////////////////////
 //						名前空間内の関数の定義
@@ -86,6 +91,7 @@ namespace Collision{
         CollisionData AABB(Collider* sphereCollider, Collider* aabbCollider){ return Collision_MoveSphere_AABB(sphereCollider, aabbCollider); }
         bool Line(const ::Sphere& sphere, const ::Line& line){ return Collision_Sphere_Line(sphere, line); }
         bool Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2){ return Collision_Sphere_Sphere(sphere1, sphere2); }
+        CollisionData Sphere(Collider* sphere1Collider, Collider* sphere2Collider){ return CollisionData_MoveSphere_MoveSphere(sphere1Collider, sphere2Collider); }
     }
 
     namespace Quad{
@@ -967,6 +973,11 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
         return result;
     }
 
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB_AABB(obbCollider->GetBox(), sphereCollider->GetBox()) == false){
+        return result;
+    }
+
     // OBBの情報を取得
     Collider_OBB* convertedOBB = dynamic_cast<Collider_OBB*>(obbCollider);
     OBB obb[2] = {
@@ -1031,6 +1042,11 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
     if(obbCollider->GetColliderType() != ColliderType::OBB ||
         sphereCollider->GetColliderType() != ColliderType::Sphere){
         result.error = true;
+        return result;
+    }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB_AABB(obbCollider->GetBox(), sphereCollider->GetBox()) == false){
         return result;
     }
 
@@ -1123,6 +1139,63 @@ bool Collision_Sphere_Sphere(const::Sphere& sphere1, const::Sphere& sphere2){
     float distance = MyMath::Length(sphere1.center - sphere2.center);
     float sumRadius = sphere1.radius + sphere2.radius;
     return distance <= sumRadius;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+//===================================== 動いてる球同士の衝突判定 =======================================//
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Collider* sphereCollider2){
+
+    CollisionData result;
+
+    // 形状が違う場合エラー
+    if(sphereCollider1->GetColliderType() != ColliderType::Sphere or
+        sphereCollider2->GetColliderType() != ColliderType::Sphere){
+        return result;
+    }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB_AABB(sphereCollider1->GetBox(), sphereCollider2->GetBox()) == false){
+        return result;
+    }
+
+    // 球の情報を取得
+    Collider_Sphere* convertedSphere1 = dynamic_cast<Collider_Sphere*>(sphereCollider1);
+    Collider_Sphere* convertedSphere2 = dynamic_cast<Collider_Sphere*>(sphereCollider2);
+
+    Sphere sphere1[2] = {
+        convertedSphere1->GetSphere(),
+        convertedSphere1->GetPreSphere()
+    };
+
+    Sphere sphere2[2] = {
+        convertedSphere2->GetSphere(),
+        convertedSphere2->GetPreSphere()
+    };
+
+    // MaxRadiusを求める
+    float maxRadius[2] = {
+        (std::max)(sphere1[0].radius, sphere1[1].radius),
+        (std::max)(sphere2[0].radius, sphere2[1].radius)
+    };
+
+    // カプセルeにする
+    Capsule capsule[2] = {
+        { sphere1[0].center, sphere1[1].center, maxRadius[0] },
+        { sphere2[0].center, sphere2[1].center, maxRadius[1] }
+    };
+
+    // カプセル同士の衝突判定
+    result = CollisionData_Capsule_Capusle(capsule[0], capsule[1]);
+
+    if(!result.isCollide){
+        return result;
+    }
+    
+    // 押し戻し割合を求めるため、質量比を求める
+    CalucPushbackRatio(sphereCollider1, sphereCollider2, &result);
+
+    return result;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1288,7 +1361,7 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
         MyMath::Dot(cross[1], cross[2])
     };
 
-    if(triDot[0] < 0.0f){ result.isCollide = false; }   
+    if(triDot[0] < 0.0f){ result.isCollide = false; }
     if(triDot[1] < 0.0f){ result.isCollide = false; }
     if(triDot[2] < 0.0f){ result.isCollide = false; }
 
@@ -1348,11 +1421,91 @@ bool Collision::Capsule::Capsule(const::Capsule& capsule1, const::Capsule& capsu
     };
 
     // 線分同士の最短距離を取得
-    float closestDistance = MyMath::LineDistance(line[0], line[1]);
+    float closestDistance = LineDistance(line[0], line[1]);
 
     // カプセルの半径の和よりも短ければ衝突している
     return closestDistance <= capsule1.radius + capsule2.radius;
 }
+
+
+// 
+CollisionData CollisionData_Capsule_Capusle(const::Capsule& capsule1, const::Capsule& capsule2){
+
+    CollisionData result;
+
+    // ラインの作成
+    Line l1 = { capsule1.origin, capsule1.end };
+    Line l2 = { capsule2.origin, capsule2.end };
+
+    // 線分同士の最近傍点を二か所求める
+    std::array<Vector3, 2> closest = LineClosestPoints(l1, l2);
+
+    float dist = MyMath::Length(closest[0] - closest[1]);
+    float sumRadius = capsule1.radius + capsule2.radius;
+
+    // 最近傍点同士の距離が半径の和よりも短ければ衝突している
+    if(dist <= sumRadius){
+        result.isCollide = true;
+        result.hitPos = (closest[0] + closest[1]) * 0.5f;
+        result.hitNormal = MyMath::Normalize(closest[0] - closest[1]);
+        result.collideDepth = sumRadius - dist;
+    } else{
+        return result;
+    }
+
+    return result;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//==================================== カプセルと球の衝突判定 =======================================//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Sphere& sphere){
+    CollisionData result;
+
+    // カプセルの始点から終点へのベクトル
+    Vector3 capsuleVec = capsule.end - capsule.origin;
+
+    // カプセルの始点から球までのベクトル
+    Vector3 capsuleToSphere = sphere.center - capsule.origin;
+
+    // カプセルの始点から球までの距離
+    float t = MyMath::Dot(capsuleToSphere, capsuleVec) / MyMath::Length(capsuleVec);
+
+    // 線分の始点から最近点までのベクトル
+    Vector3 closestPoint = capsule.origin + capsuleVec * t;
+
+    // 最近点から球までのベクトル
+    Vector3 closestToSphere = sphere.center - closestPoint;
+
+    // 最近点から球までの距離
+    float distance = MyMath::Length(closestToSphere);
+
+    // 最近点がカプセルの始点側にある場合
+    if(t < 0.0f){
+        distance = MyMath::Length(sphere.center - capsule.origin);
+        closestPoint = capsule.origin;
+        closestToSphere = sphere.center - capsule.origin;
+    }
+
+    // 最近点がカプセルの終点側にある場合
+    if(t > MyMath::Length(capsuleVec)){
+        distance = MyMath::Length(sphere.center - capsule.end);
+        closestPoint = capsule.end;
+        closestToSphere = sphere.center - capsule.end;
+    }
+
+    // 衝突している場合
+    if(distance <= sphere.radius + capsule.radius){
+        result.isCollide = true;
+        result.hitPos = closestPoint;
+        result.hitNormal = MyMath::Normalize(closestToSphere);
+        result.collideDepth = distance - (sphere.radius + capsule.radius);
+    }
+
+    return result;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1367,6 +1520,11 @@ CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabb
     if(sphereCollider->GetColliderType() != ColliderType::Sphere){ collisionData.error = true; }
     if(aabbCollider->GetColliderType() != ColliderType::AABB){ collisionData.error = true; }
     if(collisionData.error){ return collisionData; }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB_AABB(aabbCollider->GetBox(), sphereCollider->GetBox()) == false){
+        return collisionData;
+    }
 
     // 球の情報を取得
     Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
@@ -1411,6 +1569,11 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
     if(sphereCollider->GetColliderType() != ColliderType::Sphere){ collisionData.error = true; }
     if(aabbCollider->GetColliderType() != ColliderType::AABB){ collisionData.error = true; }
     if(collisionData.error){ return collisionData; }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB_AABB(aabbCollider->GetBox(), sphereCollider->GetBox()) == false){
+        return collisionData;
+    }
 
     // 球の情報を取得
     Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);

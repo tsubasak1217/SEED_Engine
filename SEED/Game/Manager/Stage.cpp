@@ -23,7 +23,6 @@ void Stage::Update(){
     for(auto& fieldObject : fieldObjects_){
         // 通常のオブジェクト
         fieldObject->Update();
-        fieldObject->EditCollider();
     }
 
     // 敵の更新

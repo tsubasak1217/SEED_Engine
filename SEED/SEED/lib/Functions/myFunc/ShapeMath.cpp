@@ -1,4 +1,5 @@
 #include "ShapeMath.h"
+#include "MyMath.h"
 
 //---------------------- 正三角形 -------------------------
 
@@ -34,13 +35,14 @@ Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color){
     );
 }
 
-Quad MakeEqualQuad(float radius, const Vector4& color)
-{
+//---------------------- 正四角形 -------------------------
+
+Quad MakeEqualQuad(float radius, const Vector4& color){
     return Quad(
-        { -radius, radius ,0.0f},
+        { -radius, radius ,0.0f },
         { radius, radius,0.0f },
-        { -radius, -radius ,0.0f},
-        { radius, -radius,0.0f},
+        { -radius, -radius ,0.0f },
+        { radius, -radius,0.0f },
         { 1.0f,1.0f,1.0f },
         { 0.0f,0.0f,0.0f },
         { 0.0f,0.0f,0.0f },
@@ -53,11 +55,101 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
     return Quad2D(
         { -radius, -radius },
         { radius, -radius },
-        { -radius, radius},
-        { radius, radius},
+        { -radius, radius },
+        { radius, radius },
         { 1.0f,1.0f },
         0.0f,
         { 0.0f,0.0f },
         color
     );
+}
+
+//-------------- 線分同士の最近傍点を求める関数 ---------------
+
+
+std::array<Vector3, 2> LineClosestPoints(const Line& l1, const Line& l2){
+    // 2直線の方向ベクトル
+    Vector3 dir1 = l1.end_ - l1.origin_;
+    Vector3 dir2 = l2.end_ - l2.origin_;
+
+    // 2直線の長さ
+    float length1 = MyMath::Length(dir1);
+    float length2 = MyMath::Length(dir2);
+
+    // 点が同じ場所の場合
+    if(length1 == 0.0f){
+        if(length2 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { l1.origin_,MyMath::ClosestPoint(l2.origin_,l2.end_,l1.origin_) };
+        }
+    } else if(length2 == 0.0f){
+        if(length1 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { MyMath::ClosestPoint(l1.origin_,l1.end_,l2.origin_),l2.origin_ };
+        }
+    }
+
+    // 2直線の始点間のベクトル
+    Vector3 originVec = l2.origin_ - l1.origin_;
+
+    // 2直線の方向ベクトルの外積
+    Vector3 cross = MyMath::Cross(dir1, dir2);
+    float crossLength = MyMath::Length(cross);
+
+    // 許容誤差
+    const float EPSILON = 1e-6f;
+
+    // 2直線が平行な場合
+    if(crossLength < EPSILON){
+        return { l1.origin_,l2.origin_ };
+    }
+
+    // 外積の大きさを利用したスカラー値の計算
+    float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), cross) / (crossLength * crossLength);
+    float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), cross) / (crossLength * crossLength);
+
+    // 交点を計算
+    Vector3 closest1 = l1.origin_ + dir1 * t1;
+    Vector3 closest2 = l2.origin_ + dir2 * t2;
+
+    return { closest1,closest2 };
+}
+
+// 2直線の距離を求める関数
+float LineDistance(const Line& l1, const Line& l2){
+    std::array<Vector3, 2> closest = LineClosestPoints(l1, l2);
+    return MyMath::Length(closest[1] - closest[0]);
+}
+
+
+//------------------- 最大AABBを求める関数 ------------------
+AABB MaxAABB(const AABB& aabb1, const AABB& aabb2){
+
+    Vector3 min[2] = {
+        aabb1.center - aabb1.halfSize,
+        aabb2.center - aabb2.halfSize
+    };
+
+    Vector3 max[2] = {
+        aabb1.center + aabb1.halfSize,
+        aabb2.center + aabb2.halfSize
+    };
+
+    Vector3 mostMin = {
+        (std::min)(min[0].x, min[1].x),
+        (std::min)(min[0].y, min[1].y),
+        (std::min)(min[0].z, min[1].z)
+    };
+
+    Vector3 mostMax = {
+        (std::max)(max[0].x, max[1].x),
+        (std::max)(max[0].y, max[1].y),
+        (std::max)(max[0].z, max[1].z)
+    };
+
+    Vector3 halfSize = (mostMax - mostMin) * 0.5f;
+
+    return AABB(mostMin + halfSize, halfSize);
 }

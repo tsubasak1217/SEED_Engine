@@ -71,7 +71,7 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(MaterialForGPU) * kMaxMeshCount_);
     modelMaterialResource_->SetName(L"modelMaterialResource");
     modelWvpResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xfff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xffff);
     modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
@@ -119,14 +119,14 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[0].Buffer.FirstElement = 0;
     instancingSrvDesc[0].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[0].Buffer.NumElements = 0xfff;
+    instancingSrvDesc[0].Buffer.NumElements = 0xffff;
 
     instancingSrvDesc[1].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[1].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[1].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[1].Buffer.FirstElement = 0;
     instancingSrvDesc[1].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[1].Buffer.NumElements = 0xfff;
+    instancingSrvDesc[1].Buffer.NumElements = 0xffff;
 
     instancingSrvDesc[2].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[2].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -206,10 +206,10 @@ void PolygonManager::Reset(){
 
     // モデルの情報をリセット
     for(auto& modelDrawData : modelDrawData_){
-        modelDrawData.second->totalDrawCount = 0;
         modelDrawData.second->indexCount = 0;
         modelDrawData.second->modelSwitchIdx_Index.clear();
         modelDrawData.second->modelSwitchIdx_Vertex.clear();
+        std::memset(modelDrawData.second->totalDrawCount, 0, sizeof(modelDrawData.second->totalDrawCount));
     }
 
     // ライティングの情報をリセット
@@ -391,7 +391,7 @@ void PolygonManager::AddTriangle(
     auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // indexCount
-    int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
+    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
     int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
@@ -472,14 +472,11 @@ void PolygonManager::AddTriangle(
     // カウントを更新
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticTriangle2D]++;
-        drawData2D->totalDrawCount++;
     } else{
         if(view3D) {
             objCounts_[(int)DrawOrder::Triangle]++;
-            drawData3D->totalDrawCount++;
         } else{
             objCounts_[(int)DrawOrder::Triangle2D]++;
-            drawData2D->totalDrawCount++;
         }
     }
 
@@ -487,7 +484,7 @@ void PolygonManager::AddTriangle(
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
     view3D ? drawData3D->indexCount += 3 : drawData2D->indexCount += 3;
-    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
+    view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++ : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
 }
 
 
@@ -568,7 +565,7 @@ void PolygonManager::AddQuad(
     auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // Count
-    int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
+    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
     // vertexResource
@@ -667,7 +664,7 @@ void PolygonManager::AddQuad(
     objCountBlend_[(int)blendMode]++;
     quadIndexCount_++;
     view3D ? drawData3D->indexCount += 6 : drawData2D->indexCount += 6;
-    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
+    view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++ : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
 }
 
 
@@ -770,7 +767,7 @@ void PolygonManager::AddSprite(
     }
 
     //count
-    int drawCount = drawData->totalDrawCount;
+    int drawCount = drawData->totalDrawCount[(int)blendMode][(int)cullMode - 1];
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
     // vertexResource
@@ -873,7 +870,7 @@ void PolygonManager::AddSprite(
     objCountBlend_[(int)blendMode]++;
     spriteCount_++;
     drawData->indexCount += 6;
-    drawData->totalDrawCount++;
+    drawData->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
 
 }
 
@@ -924,7 +921,7 @@ void PolygonManager::AddModel(Model* model){
     int meshSize = (int)modelDrawData_[modelName]->modelData->meshes.size();
 
     // count
-    int drawCount = modelDrawData_[modelName]->totalDrawCount;
+    int drawCount = modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1];
 
     /////////////////////////////////////////////////////////////////////////
     //                          materialResourceの設定
@@ -986,7 +983,7 @@ void PolygonManager::AddModel(Model* model){
 
     objCountCull_[(int)model->cullMode - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
-    modelDrawData_[modelName]->totalDrawCount++;
+    modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode -1]++;
     modelIndexCount_++;
 
     // モデルのスケルトンを描画
@@ -1074,7 +1071,7 @@ void PolygonManager::AddLine(
     auto* drawData2D = modelDrawData_[drawDataName[1]].get();
 
     // Count
-    int drawCount = (view3D ? drawData3D->totalDrawCount : drawData2D->totalDrawCount);
+    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][0] : drawData2D->totalDrawCount[(int)blendMode][0]);
     int vertexCount = drawCount * 2;
     int indexCount = drawCount * 2;
 
@@ -1156,7 +1153,7 @@ void PolygonManager::AddLine(
     objCountBlend_[(int)blendMode]++;
     lineCount_++;
     view3D ? drawData3D->indexCount += 2 : drawData2D->indexCount += 2;
-    view3D ? drawData3D->totalDrawCount++ : drawData2D->totalDrawCount++;
+    view3D ? drawData3D->totalDrawCount[(int)blendMode][0]++ : drawData2D->totalDrawCount[(int)blendMode][0]++;
 }
 
 
@@ -1236,7 +1233,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     auto* drawData = modelDrawData_[drawDataName].get();
 
     // Count
-    int drawCount = drawData->totalDrawCount;
+    int drawCount = drawData->totalDrawCount[(int)blendMode][0];
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
 
@@ -1302,7 +1299,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     objCountBlend_[(int)blendMode]++;
     objCountCull_[0]++;
     drawData->indexCount += 6;
-    drawData->totalDrawCount++;
+    drawData->totalDrawCount[(int)blendMode][0]++;
 }
 
 
@@ -1674,7 +1671,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     std::memmove(
                         mapOffsetData + meshCountAll,
                         item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
-                        sizeof(OffsetData) * instanceCount
+                        sizeof(OffsetData)* item->offsetData[blendIdx][cullModeIdx][meshIdx].size()
                     );
 
                     /*///////////////////////////////////////////////////////////////////////////*/
@@ -1712,7 +1709,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // 総サイズ、刻み幅の設定
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-                        vbv2->SizeInBytes = size * item->totalDrawCount;
+                        vbv2->SizeInBytes = size * item->totalDrawCount[blendIdx][cullModeIdx];
                     } else{
                         vbv2->SizeInBytes = size;
                     }
@@ -1776,7 +1773,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),
-                            item->totalDrawCount,
+                            item->totalDrawCount[blendIdx][cullModeIdx],
                             0,
                             0,
                             0

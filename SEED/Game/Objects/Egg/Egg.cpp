@@ -35,7 +35,7 @@ void Egg::Initialize(){
 
     // コライダーエディターの初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
-    LoadColliders(ObjectType::OnFieldObject);
+    LoadColliders(ObjectType::Egg);
     isApplyGravity_ = false;
 }
 

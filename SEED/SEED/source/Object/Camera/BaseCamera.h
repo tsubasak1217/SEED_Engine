@@ -17,6 +17,7 @@ struct BaseCamera{
 public:
     void SetShake(float time, float power, const Vector3 level = {1.0f,1.0f,1.0f});
     Vector3 ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth);
+    Vector2 ToScreenPosition(const Vector3& worldPos);
     Line GetRay(const Vector2& screenPos);
 
 private:

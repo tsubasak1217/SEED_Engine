@@ -28,7 +28,7 @@ void BaseObject::Initialize(){
     model_ = std::make_unique<Model>("Assets/suzanne.obj");
     model_->UpdateMatrix();
     // コライダーの初期化
-    InitColliders(ObjectType::None);
+    InitColliders(ObjectType::Editor);
 }
 
 
@@ -107,7 +107,7 @@ void BaseObject::EditCollider(){
 // 落下処理
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Drop(){
-    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_);
+    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_ * ClockManager::TimeRate());
 }
 
 // フレーム終了時の落下更新処理
@@ -126,7 +126,7 @@ void BaseObject::EndFrameDropFlagUpdate(){
             return;
         }
 
-        dropSpeed_ += Physics::kGravity * ClockManager::DeltaTime();
+        dropSpeed_ += (Physics::kGravity / 60.0f) * ClockManager::TimeRate();
     }
 }
 
@@ -184,7 +184,6 @@ void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////
 // コライダーの読み込み
 //////////////////////////////////////////////////////////////////////////
@@ -223,3 +222,4 @@ void BaseObject::EraseCheckColliders(){
         }
     }
 }
+

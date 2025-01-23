@@ -25,10 +25,10 @@ void ImGuiManager::Initialize(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
-    ImGui_ImplWin32_Init(WindowManager::GetHWND(SEED::GetInstance()->windowTitle_));
+    ImGui_ImplWin32_Init(WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_));
     ImGui_ImplDX12_Init(
         DxManager::GetInstance()->device.Get(),
-        DxManager::GetInstance()->swapChainDesc.BufferCount,
+        2,
         DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
         ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),
@@ -55,15 +55,25 @@ void ImGuiManager::Draw(){
 
 void ImGuiManager::PreDraw(){
 #ifdef _DEBUG
+
     // ImGuiフレーム開始
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
     // マウス座標の補正
-    ImVec2 mousePos = ImGui::GetIO().MousePos;
-    ImGui::GetIO().MousePos.x *= 1.0f / WindowManager::GetWindowScale(SEED::GetInstance()->windowTitle_).x;
-    ImGui::GetIO().MousePos.y *= 1.0f / WindowManager::GetWindowScale(SEED::GetInstance()->windowTitle_).y;
+    ImGuiIO& io = ImGui::GetIO();
+
+    if(GetForegroundWindow() == WindowManager::GetHWND(SEED::systemWindowTitle_)) {
+        // マウス位置を更新
+        POINT mousePos;
+        GetCursorPos(&mousePos);
+        ScreenToClient(WindowManager::GetHWND(SEED::systemWindowTitle_), &mousePos);
+        io.MousePos = ImVec2(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+    } else {
+        // 非アクティブなウィンドウではマウス入力を無効化
+        io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
+    }
 
 #endif
 }

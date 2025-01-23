@@ -61,7 +61,7 @@ struct ModelDrawData{
     int32_t indexCount = 0;
 
     // 描画総数
-    uint32_t totalDrawCount = 0;
+    uint32_t totalDrawCount[(int32_t)BlendMode::kBlendModeCount][3];
 };
 
 
@@ -194,7 +194,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 5000000;
     static const int32_t kMaxSpriteCount = 256;
-    static const int32_t kMaxLineCount_ = 51200;
+    static const int32_t kMaxLineCount_ = 512000;
 
 private:// 現在の描画数や頂点数などを格納する変数
 

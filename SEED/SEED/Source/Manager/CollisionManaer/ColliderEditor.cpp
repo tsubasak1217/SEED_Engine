@@ -169,6 +169,7 @@ void ColliderEditor::AddColliderOnGUI(){
         // 行列に親子付け
         colliders_.back()->SetParentObject(parentObject_);
         colliders_.back()->SetParentMatrix(parentMat_);
+        colliders_.back()->objectType_ = ObjectType::Editor;
         colliders_.back()->isEdit_ = true;
     }
 

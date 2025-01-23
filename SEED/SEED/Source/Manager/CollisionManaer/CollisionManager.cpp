@@ -65,13 +65,39 @@ void CollisionManager::CheckCollision(){
     }
 
 
-    // 当たり判定
+    // 当たり判定(フィールド vs フィールド上のもの)
     for(int i = 0; i < instance_->onFieldObjectColliders_.size(); i++){
         for(int j = 0; j < instance_->fieldColliders_.size(); j++){
             instance_->onFieldObjectColliders_[i]->CheckCollision(instance_->fieldColliders_[j]);
         }
     }
+
+    // 当たり判定(フィールド上のもの同士)
+    for(int i = 0; i < instance_->onFieldObjectColliders_.size(); i++){
+        for(int j = i + 1; j < instance_->onFieldObjectColliders_.size(); j++){
+            instance_->onFieldObjectColliders_[i]->CheckCollision(instance_->onFieldObjectColliders_[j]);
+        }
+    }
    
+    // エディターのコライダーはすべてと当たり判定を取る
+    for(int i = 0; i < instance_->editorColliders_.size(); i++){
+        for(int j = 0; j < instance_->onFieldObjectColliders_.size(); j++){
+            instance_->editorColliders_[i]->CheckCollision(instance_->onFieldObjectColliders_[j]);
+        }
+    }
+
+    for(int i = 0; i < instance_->editorColliders_.size(); i++){
+        for(int j = 0; j < instance_->fieldColliders_.size(); j++){
+            instance_->editorColliders_[i]->CheckCollision(instance_->fieldColliders_[j]);
+        }
+    }
+
+    for(int i = 0; i < instance_->editorColliders_.size(); i++){
+        for(int j = i + 1; j < instance_->editorColliders_.size(); j++){
+            instance_->editorColliders_[i]->CheckCollision(instance_->editorColliders_[j]);
+        }
+    }
+
     //instance_->octree_->CheckCollision();
 
 }
@@ -86,6 +112,7 @@ void CollisionManager::ResetColliderList(){
     instance_->colliderList_.clear();
     instance_->fieldColliders_.clear();
     instance_->onFieldObjectColliders_.clear();
+    instance_->editorColliders_.clear();
 }
 
 void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
@@ -105,6 +132,8 @@ void CollisionManager::AddCollider(Collider* object){
         else if ((int)object->GetObjectType() & (int)ObjectType::OnFieldObject)
         {
             instance_->onFieldObjectColliders_.push_back(object);
+        } else{
+            instance_->editorColliders_.push_back(object);
         }
     }
 }

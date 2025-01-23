@@ -210,7 +210,6 @@ void Scene_Game::Draw(){
 
     // ライトの情報を送る
     directionalLight_->SendData();
-    SEED::DrawLight(directionalLight_.get());
 
     for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();

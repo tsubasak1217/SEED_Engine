@@ -15,6 +15,8 @@ public:
     void Update();
     void Draw();
 
+    void BeginFrame();
+    void EndFrame();
 private:
     std::vector<std::unique_ptr<PlayerCorpse>> playerCorpses_;
 

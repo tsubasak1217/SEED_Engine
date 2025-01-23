@@ -1,0 +1,21 @@
+{
+    "colliders": [
+        {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "colliderType": "Sphere",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": true,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "mass": 1.0,
+            "miu": 0.0,
+            "radius": 1.0
+        }
+    ]
+}

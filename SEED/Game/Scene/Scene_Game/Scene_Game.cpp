@@ -71,7 +71,7 @@ void Scene_Game::Initialize(){
     directionalLight_->intensity = 1.0f;
 
     pointLights_.clear();
-    for(int i = 0; i < 0; i++){
+   /* for(int i = 0; i < 0; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
         pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         pointLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,50.0f),MyFunc::Random(-100.0f,100.0f)};
@@ -84,7 +84,7 @@ void Scene_Game::Initialize(){
         spotLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         spotLights_[i]->position = {0.0f,20.0f,0.0f};
         spotLights_[i]->intensity = 1.0f;
-    }
+    }*/
 
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
@@ -262,6 +262,8 @@ void Scene_Game::Draw(){
 void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
     player_->BeginFrame();
+    playerCorpseManager_->BeginFrame();
+
     eggManager_->BeginFrame();
     stageManager_->BeginFrame();
 
@@ -288,6 +290,7 @@ void Scene_Game::EndFrame(){
 
     // 各オブジェクトのフレーム終了処理
     player_->EndFrame();
+    playerCorpseManager_->EndFrame();
     eggManager_->EndFrame();
     stageManager_->EndFrame();
 

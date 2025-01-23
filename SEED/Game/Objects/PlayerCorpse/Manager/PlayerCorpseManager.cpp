@@ -13,12 +13,25 @@ void PlayerCorpseManager::Initialize(){
 void PlayerCorpseManager::Update(){
     for(auto& corpse : playerCorpses_){
         corpse->Update();
+        corpse->EditCollider();
     }
 }
 
 void PlayerCorpseManager::Draw(){
     for(auto& corpse : playerCorpses_){
         corpse->Draw();
+    }
+}
+
+void PlayerCorpseManager::BeginFrame(){
+    for(auto& corpse : playerCorpses_){
+        corpse->BeginFrame();
+    }
+}
+
+void PlayerCorpseManager::EndFrame(){
+    for(auto& corpse : playerCorpses_){
+        corpse->EndFrame();
     }
 }
 

@@ -71,7 +71,7 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(MaterialForGPU) * kMaxMeshCount_);
     modelMaterialResource_->SetName(L"modelMaterialResource");
     modelWvpResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xfff);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(TransformMatrix) * 0xffff);
     modelWvpResource_->SetName(L"modelWvpResource");
     offsetResource_ =
         CreateBufferResource(pDxManager_->device.Get(), sizeof(OffsetData) * 0xffff);
@@ -119,14 +119,14 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[0].Buffer.FirstElement = 0;
     instancingSrvDesc[0].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[0].Buffer.NumElements = 0xfff;
+    instancingSrvDesc[0].Buffer.NumElements = 0xffff;
 
     instancingSrvDesc[1].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[1].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[1].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[1].Buffer.FirstElement = 0;
     instancingSrvDesc[1].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[1].Buffer.NumElements = 0xfff;
+    instancingSrvDesc[1].Buffer.NumElements = 0xffff;
 
     instancingSrvDesc[2].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[2].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

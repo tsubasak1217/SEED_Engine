@@ -71,7 +71,7 @@ void Scene_Game::Initialize(){
     directionalLight_->intensity = 1.0f;
 
     pointLights_.clear();
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 0; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
         pointLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         pointLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,50.0f),MyFunc::Random(-100.0f,100.0f)};
@@ -79,7 +79,7 @@ void Scene_Game::Initialize(){
     }
 
     spotLights_.clear();
-    for(int i = 0; i < 1; i++){
+    for(int i = 0; i < 0; i++){
         spotLights_.push_back(std::make_unique<SpotLight>());
         spotLights_[i]->color_ = MyMath::FloatColor(0xffffffff);
         spotLights_[i]->position = {0.0f,20.0f,0.0f};
@@ -300,6 +300,11 @@ void Scene_Game::EndFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
+
+    if(currentState_){
+        currentState_->HandOverColliders();
+    }
+
     player_->HandOverColliders();
     eggManager_->HandOverColliders();
     stageManager_->HandOverColliders();

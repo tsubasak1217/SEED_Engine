@@ -165,10 +165,8 @@ Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
     return rotate;
 }
 
-Vector2 MyFunc::CalculateParabolic(float _sin,float _speed,float _gravity,float _time){
-    return Vector2(_speed * _gravity,_sin * _speed * _gravity - 0.5f * _time * (_gravity * _gravity));
-}
-
-Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float _gravity,float _time){
-    return CalculateParabolic(MyMath::Cross(Vector2(1.0f,0.0f),_direction),_speed,_gravity,_time);
+Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float _time,float _gravity){
+    float x = _direction.x * _speed * _time;
+    float y = _direction.y * _speed * _time - 0.5f * _gravity * _time * _time;
+    return Vector2(x,y);
 }

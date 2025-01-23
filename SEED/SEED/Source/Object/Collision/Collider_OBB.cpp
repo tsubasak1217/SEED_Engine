@@ -73,51 +73,9 @@ void Collider_OBB::CheckCollision(Collider* collider){
         if(collisionData.isCollide){
             OnCollision(collider,collider->GetObjectType());
             collider->OnCollision(this,objectType_);
-            Vector3 pushBack = collisionData.hitNormal.value() * collisionData.collideDepth.value();
 
-            // どちらかがすり抜け可能なら押し戻しを行わない
-            if(isGhost_ or collider->isGhost_){ break; }
-
-            // 押し戻し
-            if(parentObject_){
-                // 法線 * 押し戻す割合
-                parentObject_->AddWorldTranslate(
-                    -pushBack * collisionData.pushBackRatio_B.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    parentObject_->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                parentObject_->UpdateMatrix();
-
-            } else{
-                translate_ += -pushBack * collisionData.pushBackRatio_B.value();
-            }
-
-            // 衝突したオブジェクトも押し戻す
-            if(collider->GetParentObject()){
-                collider->GetParentObject()->AddWorldTranslate(
-                    pushBack * collisionData.pushBackRatio_A.value()
-                );
-
-                // ある程度平らな面に衝突した場合は落下フラグをオフにする
-                if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-                    collider->GetParentObject()->SetIsDrop(false);
-                }
-
-                // 親の行列を更新する
-                collider->GetParentObject()->UpdateMatrix();
-
-            } else{
-                sphere->AddTranslate(pushBack * collisionData.pushBackRatio_A.value());
-            }
-
-            // 行列を更新する
-            UpdateMatrix();
-            sphere->UpdateMatrix();
+            // 押し戻しを行う
+            PushBack(this, collider, collisionData);
         }
         break;
     }
@@ -178,9 +136,21 @@ bool Collider_OBB::CheckCollision(const Sphere& sphere){
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////////
 void Collider_OBB::UpdateBox(){
-    coverAABB_.center = body_.center;
-    float maxLen = (std::max)({ body_.halfSize.x, body_.halfSize.y, body_.halfSize.z });
-    coverAABB_.halfSize = Vector3(maxLen, maxLen, maxLen);
+    
+    AABB aabb[2];
+
+    float maxLen[2] = {
+        (std::max)({body_.halfSize.x, body_.halfSize.y, body_.halfSize.z}),
+        (std::max)({preBody_.halfSize.x, preBody_.halfSize.y, preBody_.halfSize.z})
+    };
+    
+    aabb[0].center = body_.center;
+    aabb[0].halfSize = { maxLen[0],maxLen[0],maxLen[0] };
+
+    aabb[1].center = preBody_.center;
+    aabb[1].halfSize = { maxLen[1],maxLen[1],maxLen[1] };
+
+    coverAABB_ = MaxAABB(aabb[0], aabb[1]);
 }
 
 ////////////////////////////////////////////////////////////////

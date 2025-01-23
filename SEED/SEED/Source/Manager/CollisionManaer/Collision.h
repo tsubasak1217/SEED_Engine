@@ -43,6 +43,7 @@ namespace Collision{
         CollisionData AABB(Collider* sphereCollider, Collider* aabbCollider);
         bool Line(const ::Sphere& sphere, const ::Line& line);
         bool Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2);
+        CollisionData Sphere(Collider* sphereCollider1, Collider* sphereCollider2);
     }
 
     namespace Quad{

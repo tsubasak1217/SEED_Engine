@@ -67,8 +67,17 @@ void PlayerState_ThrowEgg::Update(){
     UpdateMovingState();
     ChangeAnimation();
 
-    throwDirection_= MyMath::Normalize(throwDirection_);
+#ifdef _DEBUG
+    // throwDirection_の値を取得
+    auto throwDirectionOpt = JsonCoordinator::GetValue("Player","throwDirection");
+    if(throwDirectionOpt.has_value()){
+        throwDirection_ = std::get<Vector3>(*throwDirectionOpt);
+    }
+    throwDirection_ = MyMath::Normalize(throwDirection_);
+    // 正規化した値を セット
     JsonCoordinator::SetValue("Player","throwDirection",throwDirection_);
+#endif // _DEBUG
+
 
     // 卵 の 位置 を 更新
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));

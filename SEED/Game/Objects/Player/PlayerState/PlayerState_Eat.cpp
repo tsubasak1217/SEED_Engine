@@ -7,8 +7,10 @@
 ///local
 //object
 #include "Enemy/Enemy.h"
+#include "Egg/Egg.h"
 // manager
 #include "ClockManager.h"
+#include "Egg/Manager/EggManager.h"
 #include "Player/PredationRange/PredationRange.h"
 //math
 #include "MatrixFunc.h"
@@ -42,11 +44,11 @@ void PlayerState_Eat::Initialize(const std::string& stateName,BaseCharacter* pla
         Vector3 direction = enemy_->GetWorldTranslate() - pCharacter_->GetWorldTranslate();
         interpolationRotateY_ = atan2f(direction.x,direction.z);
     }
+
+    currentUpdate_ = [this](){RotateForEnemy(); };
 }
 
-void PlayerState_Eat::ManageState(){
-    pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
-}
+void PlayerState_Eat::ManageState(){}
 
 void PlayerState_Eat::RotateForEnemy(){
     float t = currentTime_ / rotateTime_;
@@ -78,7 +80,15 @@ void PlayerState_Eat::SpawnEgg(){
     // なんかアニメーションが流れる
 
     if(t >= 1.0f){
+        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+        // 卵を生成
+        {
+            std::unique_ptr<Egg> spawnedEgg = std::make_unique<Egg>(pPlayer);
+            spawnedEgg->SetTranslate(pPlayer->GetWorldTranslate());
+            pPlayer->GetEggManager()->AddEgg(spawnedEgg);
+        }
+
         // ステートを変更
-        ManageState();
+        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
     }
 }

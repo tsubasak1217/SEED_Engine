@@ -20,7 +20,7 @@ void PredationRange::Initialize(Player* player){
     player_ = player;
 
     // jsonから範囲を読み込む
-    JsonCoordinator::RegisterItem("Player","PredationRange",range_);
+    JsonCoordinator::RegisterItem("Player","PredationRangeXZ",rangeXZ_);
     JsonCoordinator::RegisterItem("Player","PredationRangeY",rangeY_);
     JsonCoordinator::RegisterItem("Player","PredationCatchAngle",catchAngle_);
 }
@@ -46,11 +46,11 @@ void PredationRange::Update(EnemyManager* _enemyManager){
             break;
         }
         diffP2E = enemy->GetWorldTranslate() - playerPos;
-        if(MyMath::LengthSq(diffP2E) < range_ * range_){
+        if(MyMath::LengthSq({diffP2E.x,diffP2E.z}) < rangeXZ_ * rangeXZ_){
             directionP2E = MyMath::Normalize(diffP2E);
 
             // 許容範囲外の敵は無視
-            if(MyMath::Cross(Vector2(playerDirection.x,playerDirection.z),Vector2(directionP2E.x,directionP2E.z)) > catchAngle_){
+            if(MyMath::Cross(Vector2(playerDirection.x,playerDirection.z),Vector2(directionP2E.x,directionP2E.z)) > static_cast<float>(catchAngle_)){
                 break;
             }
             preyList_.push_back({enemy.get(),diffP2E});

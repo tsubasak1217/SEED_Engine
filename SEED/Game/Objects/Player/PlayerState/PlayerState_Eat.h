@@ -30,12 +30,12 @@ private:
 
     Enemy* enemy_ = nullptr;
 
-    float rotateTime_ = 0.f;
+    float rotateTime_ = 0.06f;
     float interpolationRotateY_;
 
-    float eatTime_ = 0.f;
+    float eatTime_ = 0.1f;
 
-    float spawnEggTime_ = 0.f;
+    float spawnEggTime_ = 0.01f;
 
     float currentTime_;
 };

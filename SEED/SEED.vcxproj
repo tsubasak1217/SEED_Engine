@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp" />
@@ -255,6 +256,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
     <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
     <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />

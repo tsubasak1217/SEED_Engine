@@ -5,6 +5,9 @@
 
 #include "StageManager.h"
 
+// fieldObject
+#include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
+
 //lib
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -292,6 +295,9 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_VIEWPOINT:
             newObj = std::make_unique<FieldObject_ViewPoint>();
+            break;
+        case FIELDMODEL_MOVEFLOOR:
+            newObj = std::make_unique<FieldObject_MoveFloor>();
             break;
         default:
             break;

@@ -8,6 +8,7 @@
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //engine
@@ -42,6 +43,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
     modelNameMap_["switch"] = FIELDMODEL_SWITCH;
     modelNameMap_["viewpoint"] = FIELDMODEL_VIEWPOINT;
+    modelNameMap_["moveFloor"] = FIELDMODEL_MOVEFLOOR;
 
     LoadFieldModelTexture();
 
@@ -353,6 +355,9 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
         break;
     case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
         ReassignIDsForType<FieldObject_ViewPoint>(objects);
+        break;
+    case FIELDMODELNAME::FIELDMODEL_MOVEFLOOR:
+        ReassignIDsForType<FieldObject_MoveFloor>(objects);
         break;
     default:
         // 必要に応じてデフォルト処理を追加

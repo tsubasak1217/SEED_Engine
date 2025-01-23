@@ -688,6 +688,9 @@
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1263,6 +1266,9 @@
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h">
       <Filter>SEED\adapter</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
+    <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
+    <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

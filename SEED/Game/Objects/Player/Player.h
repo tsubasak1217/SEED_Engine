@@ -54,6 +54,9 @@ public: // アクセッサ
     void SetEggManager(EggManager* eggManager){ eggManager_ = eggManager; }
 
     PredationRange* GetPredationRange(){ return predationRange_.get(); }
+
+    // 禁忌
+    void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 

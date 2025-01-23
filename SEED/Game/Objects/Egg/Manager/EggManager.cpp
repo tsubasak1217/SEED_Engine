@@ -58,9 +58,9 @@ void EggManager::Draw(){
 }
 
 void EggManager::HandOverColliders(){
-    for(auto& egg : eggs_){
-        egg->HandOverColliders();
-    }
+    //for(auto& egg : eggs_){
+    //    egg->HandOverColliders();
+    //}
 }
 
 void EggManager::BeginFrame(){

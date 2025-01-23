@@ -54,10 +54,10 @@ void PlayerState_Jump::Draw(){}
 // ステート管理
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::ManageState(){
-    // 着地
     if(hoveringState_ == HoveringState::Hovering){
         return;
     }
+    // 着地
     if(!pCharacter_->GetIsJump() or !pCharacter_->GetIsDrop()){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
     }

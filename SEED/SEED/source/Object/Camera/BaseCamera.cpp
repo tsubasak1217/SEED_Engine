@@ -99,6 +99,12 @@ Vector3 BaseCamera::ToWorldPosition(const Vector2& screenPos, float unNormalized
     return ray.origin_ + vec * unNormalizedDepth;
 }
 
+// ワールド座標からスクリーン座標に変換
+Vector2 BaseCamera::ToScreenPosition(const Vector3& worldPos){
+    Vector3 transformed = worldPos * vpVp_;
+    return { transformed.x, transformed.y };
+}
+
 
 // znearとzfar間のレイを取得
 Line BaseCamera::GetRay(const Vector2& screenPos){

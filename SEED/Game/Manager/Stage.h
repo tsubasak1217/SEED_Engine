@@ -60,6 +60,9 @@ public:
     FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 
+    FieldObject* GetSelectedObject()const{ return selectedObject_; }
+    void SetSelectedObject(FieldObject* obj){ selectedObject_ = obj; }
+
     int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
 
@@ -83,6 +86,8 @@ private:
     int32_t stageNo_ = -1;
     uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
+
+    FieldObject* selectedObject_ = nullptr;
 
     //特殊処理 をするため ポインターを個別で保持
     FieldObject_Start* startObject_ = nullptr;

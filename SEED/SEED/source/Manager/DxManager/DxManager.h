@@ -8,7 +8,7 @@
 
 #pragma comment (lib,"gdiplus.lib")
 
-// mine
+// local
 #include <DxFunc.h>
 #include <PSO/Pipeline.h>
 #include <PSO/RootSignature.h>
@@ -78,9 +78,6 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
 
     // SwapChain,ダブルバッファリングに関わる関数
     void CreateRenderTargets();
-    void GetSwapChainResources();
-    void CreateAllDescriptorHeap();
-    void CheckDescriptorSize();
     void CreateRTV();
 
     // 
@@ -178,15 +175,8 @@ private:/*======================== DirectXの設定に必要な変数 ==========
 
     /*====================== レンダーターゲット関係 ========================*/
 
-    // SwapChain、ダブルバッファリングに必要な変数
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-    ComPtr<IDXGISwapChain4> swapChain = nullptr;
-    ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
-    uint32_t backBufferIndex;
     // オフスクリーン用
     ComPtr<ID3D12Resource> offScreenResource = nullptr;
-    // RTV用
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2]{};
     D3D12_CPU_DESCRIPTOR_HANDLE offScreenHandle;
     // その他
     Vector4 clearColor;

@@ -95,7 +95,8 @@ void Scene_Game::Initialize(){
     player_->Initialize();
     stageManager_->SetPlayer(player_.get());
 
-    ground_ = std::make_unique<Model>("Assets/ground.obj");
+    ground_ = std::make_unique<Model>("skydome.obj");
+    ground_->lightingType_ = LIGHTINGTYPE_NONE;
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -208,11 +209,10 @@ void Scene_Game::Draw(){
 
     // ライトの情報を送る
     directionalLight_->SendData();
-    SEED::DrawLight(directionalLight_.get());
 
     for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();
-        SEED::DrawLight(pointLights_[i].get());
+        //SEED::DrawLight(pointLights_[i].get());
     }
 
     for(int i = 0; i < spotLights_.size(); i++){

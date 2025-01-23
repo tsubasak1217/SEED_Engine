@@ -61,7 +61,7 @@ struct ModelDrawData{
     int32_t indexCount = 0;
 
     // 描画総数
-    uint32_t totalDrawCount = 0;
+    uint32_t totalDrawCount[(int32_t)BlendMode::kBlendModeCount][3];
 };
 
 

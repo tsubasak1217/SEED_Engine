@@ -17,6 +17,7 @@ class FieldObject_Door
         DOORSTATE_OPENED,
         DOORSTATE_CLOSED
     };
+
 public:
     FieldObject_Door();
     FieldObject_Door(const std::string& modelName);
@@ -36,17 +37,23 @@ public:
     bool GetIsOpened() const{ return isOpened_; }
     void SetIsOpened(bool isOpened);
     float GetOpenSpeed() const{ return openSpeed_; }
-    float GetMaxOpenHeight() const{ return kMaxOpenHeight_; }
+    float GetMaxOpenHeight() const{ return closedPosY_ + kMaxOpenHeight_; }
 
     void SetSwitch(FieldObject_Switch* pSwitch);
     void RemoveSwitch(FieldObject_Switch* pSwitch);
     bool GetHasSwitch() const{ return hasSwitch_; }
+
+    void SetClosedPosY(float posY){ closedPosY_ = posY-kMaxOpenHeight_; }
+    float GetClosedPosY() const{ return closedPosY_; }
+
 private:
     bool isOpened_ = false;                     // 開閉状態のフラグ
     bool hasSwitch_ = false;                    // スイッチを持っているかどうか
     std::unique_ptr<DoorState> currentState_;   // 現在の状態
     float openSpeed_ = 8.0f;                    // 開閉速度
-    const float kMaxOpenHeight_ = 10.0f;        // 最大開く高さ
+    const float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
+
+    float closedPosY_ = 0.0f;                   // 閉じた後のy座標
 
 public:
     static uint32_t nextFieldObjectID_;         // 次のID

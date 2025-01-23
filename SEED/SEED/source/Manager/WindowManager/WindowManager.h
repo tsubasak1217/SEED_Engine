@@ -4,6 +4,8 @@
 #include <cassert>
 #include <unordered_map>
 #include <string>
+#include <d3dx12.h>
+#include <d3d12.h>
 
 class SEED;
 
@@ -20,9 +22,9 @@ private:
 
 public:// 基本的な関数
     static WindowManager* GetInstance();
-    ~WindowManager() = default;
+    ~WindowManager();
     static void Initialize(HINSTANCE hInstance, int nCmdShow);
-    static void Create(const std::wstring& windowName,int32_t width,int32_t height);
+    static void Create(const std::wstring& windowName,int32_t width,int32_t height, HWND parentHandle = nullptr);
     static void Finalize();
     static void Update();
 
@@ -43,25 +45,37 @@ public:// アクセッサ
         return instance_->hInstance_;
     }
 
-    const WindowInfo& GetWindowInfo(const std::wstring& windowName){
-        if(windowInfomations_.find(windowName) == windowInfomations_.end()){assert(0);}
-        return windowInfomations_[windowName];
+    static WindowInfo* GetWindow(const std::wstring& windowName){
+        if(instance_->windowList_.find(windowName) == instance_->windowList_.end()){assert(0);}
+        return instance_->windowList_[windowName].get();
     };
 
     static HWND GetHWND(const std::wstring& windowName){
-        return instance_->GetWindowInfo(windowName).GetWindowHandle();
+        return instance_->GetWindow(windowName)->GetWindowHandle();
     }
 
     static Vector2 GetCurrentWindowSize(const std::wstring& windowName){
-        return instance_->GetWindowInfo(windowName).GetCurrentWindowSize();
+        return instance_->GetWindow(windowName)->GetCurrentWindowSize();
     }
 
     static Vector2 GetOriginalWindowSize(const std::wstring& windowName){
-        return instance_->GetWindowInfo(windowName).GetOriginalWindowSize();
+        return instance_->GetWindow(windowName)->GetOriginalWindowSize();
     }
 
     static Vector2 GetWindowScale(const std::wstring& windowName){
-        return instance_->GetWindowInfo(windowName).GetWindowScale();
+        return instance_->GetWindow(windowName)->GetWindowScale();
+    }
+
+    static ID3D12Resource* GetBackBuffer(const std::wstring& windowName){
+        return instance_->GetWindow(windowName)->GetBackBuffer();
+    }
+
+    static const D3D12_CPU_DESCRIPTOR_HANDLE& GetRtvHandle(const std::wstring& windowName){
+        return instance_->GetWindow(windowName)->GetRtvHandle();
+    }
+
+    static void Present(const std::wstring& windowName, UINT syncInterval, UINT flags){
+        instance_->GetWindow(windowName)->Present(syncInterval, flags);
     }
 
 private:
@@ -69,5 +83,5 @@ private:
     int nCmdShow_;
     MSG msg;
 
-    std::unordered_map<std::wstring, WindowInfo>windowInfomations_;
+    std::unordered_map<std::wstring, std::unique_ptr<WindowInfo>>windowList_;
 };

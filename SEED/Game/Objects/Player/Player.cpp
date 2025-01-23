@@ -57,7 +57,10 @@ void Player::Initialize(){
     // 状態の初期化
     currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
 
+    // Json ファイルからの読み込み
     JsonCoordinator::LoadGroup("Player");
+
+    JsonCoordinator::RegisterItem("Player","Weight",weight_);
 
     // 捕食可能範囲の初期化
     predationRange_ = std::make_unique<PredationRange>();

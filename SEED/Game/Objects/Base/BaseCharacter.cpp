@@ -34,9 +34,6 @@ void BaseCharacter::Update(){
         currentState_->Update();
     }
 
-    //ジャンプ
-    Jump();
-
     BaseObject::Update();
 }
 
@@ -166,14 +163,4 @@ void BaseCharacter::Damage(int32_t damage){
     }
 
     isDamaged_ = true;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// ジャンプ処理
-//////////////////////////////////////////////////////////////////////////
-void BaseCharacter::Jump(){
-    if(isJump_){
-        AddWorldTranslate(Vector3(0.0f, 1.0f, 0.0f) * jumpPower_ * ClockManager::TimeRate());
-    }
 }

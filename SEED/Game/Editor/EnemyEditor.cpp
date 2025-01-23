@@ -3,6 +3,7 @@
 // local
 #include "../Manager/EnemyManager.h"
 #include "../Manager/StageManager.h"
+#include "../SEED.h"
 
 // lib
 #include "../adapter/json/JsonCoordinator.h"
@@ -154,9 +155,6 @@ void EnemyEditor::ShowImGui(){
         return;
     }
 
-    // 選択中のルーチン名を静的に保持
-    static std::string selectedRoutineName;
-
     // 新規ルーチン作成
     static char newRoutineBuf[64] = "";
     ImGui::InputText("New Routine Name", newRoutineBuf, IM_ARRAYSIZE(newRoutineBuf));
@@ -218,7 +216,7 @@ void EnemyEditor::ShowImGui(){
                         editablePoints.erase(editablePoints.begin() + i);
                         routineManager->AddRoutine(selectedRoutineName, editablePoints);
                         ImGui::PopID();
-                        break; // 再描画のためループを抜ける
+                        break;
                     }
                     ImGui::PopID();
                 }
@@ -227,6 +225,10 @@ void EnemyEditor::ShowImGui(){
                     editablePoints.push_back({0, 0, 0});
                     routineManager->AddRoutine(selectedRoutineName, editablePoints);
                 }
+
+                // マウスでポイント追加
+                    AddRoutinePointByMouse();
+
                 ImGui::Separator();
 
                 // ルーチン削除
@@ -242,6 +244,7 @@ void EnemyEditor::ShowImGui(){
         }
     }
     ImGui::EndChild();
+
 
     ImGui::End(); // "Routine Editor" ウィンドウ終了
 
@@ -420,3 +423,100 @@ void EnemyEditor::LoadEnemies(){
     selectedEnemyIndex_ = (em->GetEnemies().empty()) ? -1 : 0;
 }
 
+////////////////////////////////////////////////////////////////////////
+// マウスによるルーチンポイント追加
+////////////////////////////////////////////////////////////////////////
+void EnemyEditor::AddRoutinePointByMouse(){
+    // 現在のステージとルーチンマネージャを取得
+    Stage* currentStage = StageManager::GetCurrentStage();
+    if (!currentStage){
+        std::cerr << "No current stage available." << std::endl;
+        return;
+    }
+
+    EnemyManager* em = currentStage->GetEnemyManager();
+    if (!em){
+        std::cerr << "No EnemyManager available in the current stage." << std::endl;
+        return;
+    }
+
+    EnemyRoutineManager* routineManager = em->GetRoutineManager();
+    if (!routineManager){
+        std::cerr << "No RoutineManager available." << std::endl;
+        return;
+    }
+
+    if (selectedRoutineName.empty()){
+        std::cerr << "No routine selected for adding points." << std::endl;
+        return;
+    }
+
+    // ImGuiウィンドウ上をクリックした場合を除外
+    Vector3 pointPosition {};
+
+    //選択されたオブジェクトの座標に置く、
+    if (currentStage->GetSelectedObject()){
+        FieldObject* selectedObject = currentStage->GetSelectedObject();
+
+        pointPosition = {selectedObject->GetWorldTranslate().x,
+                     selectedObject->GetWorldTranslate().y,
+                     selectedObject->GetWorldTranslate().z
+        };
+    }
+
+    if (pointPosition == Vector3 {0.0f, 0.0f, 0.0f}){
+        std::cerr << "No valid object selected under the mouse position." << std::endl;
+        return;
+    }
+
+    if (Input::IsTriggerKey(DIK_SPACE)){
+        // ルーチンポイントとして追加
+        auto* points = routineManager->GetRoutinePoints(selectedRoutineName);
+        if (points){
+            std::vector<Vector3> editablePoints = *points; // 現在のポイントを取得
+            editablePoints.push_back(pointPosition);       // 新しいポイントを追加
+            routineManager->AddRoutine(selectedRoutineName, editablePoints); // 更新
+            std::cout << "Point added to routine: " << selectedRoutineName << " at "
+                << pointPosition.x << ", " << pointPosition.y << ", " << pointPosition.z << std::endl;
+        } else{
+            std::cerr << "Failed to retrieve routine points for: " << selectedRoutineName << std::endl;
+        }
+    }
+   
+}
+
+int32_t EnemyEditor::GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects){
+
+    // マウスの位置を取得
+    Vector2 mousePos = Input::GetMousePosition();
+    // マウスの位置からRayを取得
+    Line ray = SEED::GetCamera()->GetRay(mousePos);
+    // 一番近いオブジェクトを探す用
+    float minDist = FLT_MAX;
+    int32_t index = -1;
+
+    // 全オブジェクトをチェック
+    for (int32_t i = 0; i < objects.size(); ++i){
+        auto* obj = objects[i].get();
+        if (!obj) continue;
+
+        // オブジェクトのコライダーを取得
+        auto& colliders = obj->GetColliders();
+        for (auto& collider : colliders){
+            // Rayと当たり判定
+            if (collider->CheckCollision(ray)){
+
+                // 距離を取得
+                float dist = MyMath::Length(collider->GetWoarldTranslate() - ray.origin_);
+
+                // もし距離が一番近い場合、そのオブジェクトを選択
+                if (dist < minDist){
+                    minDist = dist;
+                    index = i;
+                }
+            }
+        }
+    }
+
+    return index;
+}

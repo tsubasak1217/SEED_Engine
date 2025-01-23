@@ -534,6 +534,7 @@ void FieldEditor::ShowImGui(){
             // ImGuiウィンドウ上をクリックした場合を除外
             if(!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
                 selectedObjIndex = GetObjectIndexByMouse(objects);
+                
             }
         }
     }
@@ -552,6 +553,10 @@ void FieldEditor::ShowImGui(){
             if(mfObj){
                 ImGui::Text("Editing Model (Index=%d)", selectedObjIndex);
                 ImGui::Separator();
+
+                //選択されているオブジェクトを設定
+                Stage* stage = manager_.GetStages()[edittingStageIndex].get();
+                stage->SetSelectedObject(mfObj);
 
                 // [A] スイッチの場合の設定
                 if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
@@ -640,7 +645,7 @@ void FieldEditor::ShowImGui(){
                 ImGui::Separator();
 
                 // [D] オブジェクト削除
-                if(ImGui::Button("Remove Selected Model")){
+                if(ImGui::Button("Remove Selected Model")||Input::IsTriggerKey(DIK_ESCAPE)){
                     if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
                         FieldObject* objToRemove = objects[selectedObjIndex].get();
 
@@ -857,3 +862,5 @@ void FieldEditor::UpdateSelectionByMouse(){
         selectedObjIndex_ = -1;
     }
 }
+
+

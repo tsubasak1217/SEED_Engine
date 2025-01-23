@@ -2,12 +2,12 @@
     "Count": 1,
     "Enemies": [
         {
-            "CanEat": true,
+            "CanEat": false,
             "ChasePlayer": false,
-            "HP": 76,
+            "HP": 100,
             "Index": 0,
             "Name": "enemy0",
-            "RoutineName": "testRoutine"
+            "RoutineName": "NULL"
         }
     ]
 }

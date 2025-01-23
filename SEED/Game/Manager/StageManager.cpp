@@ -27,9 +27,7 @@ StageManager::StageManager(){}
 
 StageManager::StageManager(ISubject& subject){
     for(int i = 0; i < kStageCount_; i++){
-        stages_[i] = std::make_unique<Stage>(subject);
-        stages_[i]->SetStageNo(i);
-        
+        stages_[i] = std::make_unique<Stage>(subject,i);
     }
 
     Initialize();

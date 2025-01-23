@@ -28,7 +28,7 @@ class Player;
 
 class Stage{
 public:
-    Stage(ISubject& subject);
+    Stage(ISubject& subject,uint32_t stageNo);
 
     void Update();
     void Draw();

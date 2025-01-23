@@ -19,6 +19,7 @@ public:
     Enemy(EnemyManager* pManager,Player* pPlayer,const std::string& enemyName);
     ~Enemy();
     void Initialize() override;
+    void InitializeRoutine();
     void Update() override;
     void Draw() override;
 

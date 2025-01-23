@@ -9,6 +9,7 @@ using RoutineLibrary = std::unordered_map<std::string, std::vector<Vector3>>;
 
 class EnemyRoutineManager{
 public:
+    EnemyRoutineManager(uint32_t stageNum);
     EnemyRoutineManager() = default;
     ~EnemyRoutineManager() = default;
 

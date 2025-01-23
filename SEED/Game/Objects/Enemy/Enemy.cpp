@@ -23,8 +23,6 @@ Enemy::Enemy(EnemyManager* pManager,Player* pPlayer,const std::string& enemyName
     pPlayer_ = pPlayer;
     pManager_ = pManager;
     Initialize();
-
-
 }
 
 Enemy::~Enemy(){}
@@ -49,9 +47,14 @@ void Enemy::Initialize(){
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 
-    // HP
-    kMaxHP_ = 100;
-    HP_ = kMaxHP_;
+}
+
+void Enemy::InitializeRoutine(){
+    const EnemyManager* manager = GetManager();
+    const auto* points = manager->GetRoutinePoints(routineName_);
+    if (points){
+        SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -90,7 +93,7 @@ void Enemy::ShowImGui(){
     // chasePlayer
     ImGui::Checkbox("Chase Player", &cahsePlayer_);
 
-    // ルーチン選択用のコンボ (今のままでもOK)
+    // ルーチン選択用のコンボ
     const EnemyManager* manager = GetManager();
     std::vector<std::string> routineNames = manager->GetRoutineNames();
 
@@ -144,6 +147,10 @@ void Enemy::RegisterDataToJson(const std::string& group, int index){
     JsonCoordinator::RegisterItem(group, baseKey + "CanEat", canEat_);
     JsonCoordinator::RegisterItem(group, baseKey + "ChasePlayer", cahsePlayer_);
     JsonCoordinator::RegisterItem(group, baseKey + "RoutineName", routineName_);
+
+
+    // jsonを読み込んだ時に、ルーチン名に対応するポイントを取得するために登録
+    
 }
 
 void Enemy::LoadDataFromJson(const std::string& group, int index){
@@ -165,6 +172,8 @@ void Enemy::LoadDataFromJson(const std::string& group, int index){
     if (auto rOpt = JsonCoordinator::GetValue(group, baseKey + "RoutineName")){
         routineName_ = std::get<std::string>(*rOpt);
     }
+
+   
 }
 
 void Enemy::SaveData(){

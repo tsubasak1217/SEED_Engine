@@ -35,6 +35,12 @@ WindowManager* WindowManager::GetInstance(){
     return instance_;
 }
 
+WindowManager::~WindowManager(){
+    Finalize();
+    delete instance_;
+    instance_ = nullptr;
+}
+
 void WindowManager::Initialize(HINSTANCE hInstance, int nCmdShow){
     GetInstance();
     instance_->hInstance_ = hInstance;
@@ -42,7 +48,11 @@ void WindowManager::Initialize(HINSTANCE hInstance, int nCmdShow){
 }
 
 
-void WindowManager::Finalize(){}
+void WindowManager::Finalize(){
+    for(auto& windowInfo : instance_->windowList_){
+        windowInfo.second->Finalize();
+    }
+}
 
 void WindowManager::InitializeGDI(){
 
@@ -62,7 +72,7 @@ int WindowManager::ProcessMessage(){
 //                             ウィンドウを新しく作成
 ///////////////////////////////////////////////////////////////////////////////////
 
-void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_t height){
+void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_t height,HWND parentHandle){
 
 
     /*--------------------- クライアント領域の決定 -----------------*/
@@ -73,7 +83,7 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
     /*-------------------- ウインドウクラスの登録 -------------------*/
 
     WNDCLASS wc{};// 空のウインドウクラス
-    int32_t windowCount = (int32_t)instance_->windowInfomations_.size();
+    int32_t windowCount = (int32_t)instance_->windowList_.size();
     std::wstring szAppName = windowName + std::to_wstring(windowCount);// ウィンドウクラスの名前
 
     // ウインドウクラスの中身を記述
@@ -86,7 +96,7 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
 
     /*-------------------- ウィンドウの生成 -------------------------*/
 
-    instance_->windowInfomations_[windowName] = WindowInfo(CreateWindow(
+    instance_->windowList_[windowName] = std::make_unique<WindowInfo>(CreateWindow(
         szAppName.c_str(),
         windowName.c_str(),
         WS_OVERLAPPEDWINDOW,
@@ -95,21 +105,22 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
         //ウィンドウ幅と高さ
         rect.right - rect.left,
         rect.bottom - rect.top,
-        nullptr,
+        parentHandle,
         nullptr,
         wc.hInstance,
         nullptr
-    ));
+    ), windowName
+    );
 
     // ウインドウハンドルが取得できなかった場合アサート
-    if(!instance_->windowInfomations_[windowName].GetWindowHandle()) { assert(0); }
+    if(!instance_->windowList_[windowName]->GetWindowHandle()) { assert(0); }
 
 
     // ウインドウの表示
-    ShowWindow(instance_->windowInfomations_[windowName].GetWindowHandle(), instance_->nCmdShow_);
+    ShowWindow(instance_->windowList_[windowName]->GetWindowHandle(), instance_->nCmdShow_);
 
     // ウインドウの更新
-    UpdateWindow(instance_->windowInfomations_[windowName].GetWindowHandle());
+    UpdateWindow(instance_->windowList_[windowName]->GetWindowHandle());
 }
 
 
@@ -128,8 +139,8 @@ void WindowManager::Update(){
     }
 
     // ウインドウ情報の更新
-    for(auto& windowInfo : instance_->windowInfomations_){
-        windowInfo.second.Update();
+    for(auto& windowInfo : instance_->windowList_){
+        windowInfo.second->Update();
     }
 }
 

@@ -3,6 +3,7 @@
 #include <Environment.h>
 #include <MyMath.h>
 #include <CS_Buffers.h>
+#include <thread>
 #include "InputManager.h"
 #include "PSO/PSOManager.h"
 
@@ -70,27 +71,6 @@ void DxManager::Initialize(SEED* pSEED){
     // SwapChain ~ 画面を複数用意し、表示されていない画面で描画を同時進行で行う
     instance_->CreateRenderTargets();
 
-    /*--------------- SwapChain から Resourceを引っ張ってくる ---------------*/
-
-    // 【 Resource 】 ~ GPUのメモリ上にあるデータのうち、描画や表示に関わるものの総称。
-    // 画面そのものもResourceなので、ここで取得
-    instance_->GetSwapChainResources();
-
-    /*---------------------- ディスクリプタヒープの作成 ----------------------*/
-
-    /*
-       【 View 】 ~ Resourceに対してどのような処理を行うのかをまとめたもの。Resourceを操作するにはViewが必要。
-       【 Descriptor 】~ Viewを格納する場所。
-
-        Viewの作成    : CPU
-        Viewの置き場所 : CPU (descriptor)
-        Viewの実行    : GPU (CPU上のdescriptorを参照できる)
-    */
-
-    instance_->CreateAllDescriptorHeap();
-
-    // ディスクリプタのサイズを確認
-    instance_->CheckDescriptorSize();
 
     /*----------------------------- RTVの作成 -----------------------------*/
 
@@ -333,27 +313,10 @@ void DxManager::CreateCommanders(){
 }
 
 void DxManager::CreateRenderTargets(){
-    // 画面の縦横幅
-    swapChainDesc.Width = pSEED_->kClientWidth_;
-    swapChainDesc.Height = pSEED_->kClientHeight_;
-    // 色の形式
-    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    // マルチサンプルしない
-    swapChainDesc.SampleDesc.Count = 1;
-    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // 描画のターゲットとして利用する
-    swapChainDesc.BufferCount = 2; // ダブルバッファ
-    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // モニタに写したら中身を破棄
-    // コマンドキュー、ウィンドウハンドル、設定を渡して生成する
-    hr = dxgiFactory->CreateSwapChainForHwnd(
-        commandQueue.Get(),
-        WindowManager::GetHWND(SEED::GetInstance()->windowTitle_),
-        &swapChainDesc,
-        nullptr, nullptr,
-        reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf())
-    );
 
-    // 生成失敗したらアサート
-    assert(SUCCEEDED(hr));
+    // swapChainの作成
+    WindowManager::GetWindow(pSEED_->windowTitle_)->CreateSwapChain(dxgiFactory.Get(), commandQueue.Get());
+    WindowManager::GetWindow(pSEED_->systemWindowTitle_)->CreateSwapChain(dxgiFactory.Get(), commandQueue.Get());
 
     // offScreen用のレンダーターゲットを作成
     offScreenResource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
@@ -362,23 +325,6 @@ void DxManager::CreateRenderTargets(){
     offScreenResource.Get()->SetName(L"offScreenResource");
 }
 
-void DxManager::GetSwapChainResources(){
-    // SwapChain から Resourceを引っ張ってくる
-    // うまく取得できなければ起動できない
-    hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
-    assert(SUCCEEDED(hr));
-    hr = swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainResources[1]));
-    assert(SUCCEEDED(hr));
-
-}
-
-void DxManager::CreateAllDescriptorHeap(){
-
-}
-
-void DxManager::CheckDescriptorSize(){
-
-}
 
 void DxManager::CreateRTV(){
     // RTVの設定
@@ -387,13 +333,9 @@ void DxManager::CreateRTV(){
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャとして書き込むように設定
 
     // RTVを作成
-    ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[0].Get(), &rtvDesc, "doubleBuffer_0");// ダブルバッファ用
-    ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[1].Get(), &rtvDesc, "doubleBuffer_1");// ダブルバッファ用
     ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.Get(), &rtvDesc, "offScreen_0");// オフスクリーン用
 
     // ハンドル取得
-    rtvHandles[0] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_0");
-    rtvHandles[1] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "doubleBuffer_1");
     offScreenHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
 }
 
@@ -723,14 +665,18 @@ void DxManager::PreDraw(){
     // フレームの初めに前フレームの値を保存
     SavePreVariable();
 
-    /*------- これから書き込むバックバッファのインデックスを取得--------*/
-
-    backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-
     /*--------------- TransitionBarrierを張る処理----------------*/
 
     // RTVを実行するために表示されていない後ろの画面(バックバッファ)の状態を描画状態に遷移させる
-    TransitionResourceState(swapChainResources[backBufferIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    TransitionResourceState(
+        WindowManager::GetBackBuffer(pSEED_->windowTitle_),
+        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET
+    );
+
+    TransitionResourceState(
+        WindowManager::GetBackBuffer(pSEED_->systemWindowTitle_),
+        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET
+    );
 
     /*----------画面、深度情報のクリア、DSVとRTVの結び直し-----------*/
 
@@ -816,13 +762,18 @@ void DxManager::DrawPolygonAll(){
 
     /*--------------- 切り替え ---------------*/
     commandList->OMSetRenderTargets(
-        1, &rtvHandles[backBufferIndex],
+        1, &WindowManager::GetRtvHandle(pSEED_->windowTitle_),
         false, &dsvHandle
     );
 
     /*----------バックバッファをクリアする----------*/
     commandList->ClearRenderTargetView(
-        rtvHandles[backBufferIndex],
+        WindowManager::GetRtvHandle(pSEED_->windowTitle_),
+        &clearColor.x, 0, nullptr
+    );
+
+    commandList->ClearRenderTargetView(
+        WindowManager::GetRtvHandle(pSEED_->systemWindowTitle_),
         &clearColor.x, 0, nullptr
     );
 
@@ -887,6 +838,11 @@ void DxManager::DrawPolygonAll(){
         D3D12_RESOURCE_STATE_UNORDERED_ACCESS
     );
 
+    /*---------- メインゲーム画面 -> ImGui用のSystem画面に描画を切り替え----------*/
+    commandList->OMSetRenderTargets(
+        1, &WindowManager::GetRtvHandle(pSEED_->systemWindowTitle_),
+        false, nullptr
+    );
 }
 
 void DxManager::DrawGUI(){
@@ -906,10 +862,11 @@ void DxManager::DrawGUI(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DxManager::PostDraw(){
-    // 画面に描く処理はすべて終わり、 画面に映すので、状態を遷移
-    // 今回はRenderTargetからPresent にする
-    TransitionResourceState(swapChainResources[backBufferIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
+    // 画面に描く処理はすべて終わり、 画面に映すので、状態を遷移 ----------------------
+    // 今回はRenderTargetからPresent にする
+    TransitionResourceState(WindowManager::GetBackBuffer(pSEED_->windowTitle_), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+    TransitionResourceState(WindowManager::GetBackBuffer(pSEED_->systemWindowTitle_), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
     /*----------------------------------------------------------*/
 
@@ -922,7 +879,8 @@ void DxManager::PostDraw(){
     commandQueue->ExecuteCommandLists(1, commandLists);
 
     // GPUとOSに画面の交換を行うよう通知する
-    swapChain->Present(1, 0);
+    WindowManager::Present(pSEED_->windowTitle_,0,0);
+    WindowManager::Present(pSEED_->systemWindowTitle_, 0, 0);
 
     /*---------------------- CPUとGPUの同期 ----------------------*/
 
@@ -1040,7 +998,7 @@ void DxManager::Release(){
     // リソース
     for(auto& textureRs : textureResource){ textureRs.Reset(); }
     for(auto& intermediateRs : intermediateResource){ intermediateRs.Reset(); }
-    for(auto& swapChainRTV : swapChainResources){ swapChainRTV.Reset(); }
+    WindowManager::Finalize();
     offScreenResource.Reset();
     depthStencilResource.Reset();
     depthTextureResource.Reset();
@@ -1074,9 +1032,6 @@ void DxManager::Release(){
     dxcCompiler.Reset();
     dxcUtils.Reset();
     includeHandler.Reset();
-
-    // スワップチェイン
-    swapChain.Reset();
 
     // フェンス
     CloseHandle(instance_->fenceEvent);

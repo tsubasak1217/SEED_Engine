@@ -100,6 +100,7 @@ void EnemyManager::SaveEnemies(){
         enemyObj["CanEat"] = e->GetCanEat();
         enemyObj["ChasePlayer"] = e->GetChasePlayer();
         enemyObj["RoutineName"] = e->GetRoutineName();
+        enemyObj["moveSpeed"] = e->GetMoveSpeed();
         // 座標をJSONにも入れるなら
         // auto pos = e->GetWorldTranslate();
         // enemyObj["PosX"] = pos.x; ...
@@ -208,6 +209,9 @@ void EnemyManager::LoadEnemies(){
 
                 bool chasePlayer = eJson.value("ChasePlayer", false);
                 newEnemy->SetChasePlayer(chasePlayer);
+
+                float moveSpeed = eJson.value("moveSpeed", 1.0f);
+                newEnemy->SetMoveSpeed(moveSpeed);
 
                 std::string routineName = eJson.value("RoutineName", "NULL");
                 newEnemy->SetRoutineName(routineName);

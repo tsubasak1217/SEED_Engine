@@ -93,6 +93,9 @@ void Enemy::ShowImGui(){
     // chasePlayer
     ImGui::Checkbox("Chase Player", &cahsePlayer_);
 
+    // moveSpeed
+    ImGui::DragFloat("Move Speed", &speed_, 0.1f);
+
     // ルーチン選択用のコンボ
     const EnemyManager* manager = GetManager();
     std::vector<std::string> routineNames = manager->GetRoutineNames();

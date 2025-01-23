@@ -1,6 +1,4 @@
 #include "EnemyManager.h"
-#include "Sprite.h"
-#include "SEED.h"
 
 EnemyManager::EnemyManager(){
     enemies_.clear();
@@ -20,13 +18,8 @@ void EnemyManager::Update(){
 }
 
 void EnemyManager::Draw(){
-    Sprite sprite("Assets/white1x1.png");
-    sprite.size = { 30,30 };
-    sprite.anchorPoint = { 0.5f,0.5f };
     for (auto& enemy : enemies_){
         enemy->Draw();
-        sprite.translate = SEED::GetCamera()->ToScreenPosition(enemy->GetWorldTranslate());
-        SEED::DrawSprite(sprite);
     }
 }
 

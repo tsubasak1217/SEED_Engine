@@ -39,8 +39,11 @@ void PlayerState_Spawn::ManageState(){
         pCorpse->SetManager(pPlayer->GetCorpseManager());
         pCorpse->SetTranslate(pCharacter_->GetWorldTranslate());
         pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+
+        // 移動
+        pCharacter_->SetTranslate(spawnPos_);
+        pPlayer->SetPrePos(spawnPos_);
     }
 
-    pCharacter_->SetTranslate(spawnPos_);
     pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
 }

@@ -26,6 +26,7 @@
 #include "Egg/Manager/EggManager.h"
 
 // manager
+#include "Player/PredationRange/PredationRange.h"
 #include "../Game/Manager/EnemyManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Manager/StageManager.h"

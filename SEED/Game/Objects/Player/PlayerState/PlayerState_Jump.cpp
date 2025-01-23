@@ -69,9 +69,8 @@ void PlayerState_Jump::ManageState(){
 void PlayerState_Jump::Hovering(){
     switch(hoveringState_){
         case HoveringState::MoveUp:
-            if(pCharacter_->GetDropSpeed() > jumpPower_){
+            if(pCharacter_->GetVelocity().y < 0.0f){
                 hoveringState_ = HoveringState::Hovering;
-
             }
             break;
         case HoveringState::Hovering:

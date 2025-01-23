@@ -6,6 +6,7 @@
 
 //manager
 #include "ClockManager.h"
+#include "Egg/Manager/EggManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 
@@ -47,6 +48,12 @@ void EggState_Break::ManageState(){
                 StageManager::StepStage(1);
                 StageManager::SetIsHandOverColliderNext(false);
                 breakToNextStage_ = false;
+
+                {   // プレイヤーに次のステージの敵情報を渡す
+                    EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
+                    Player* player = egg->GetEggManager()->GetPlayer();
+                    player->SetEnemyManager(enemyManager);
+                }
             }
         }
     }

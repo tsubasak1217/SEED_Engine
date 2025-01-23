@@ -14,9 +14,13 @@
     "lerpRate": 0.25,
     "isLerpRotate": true,
     "pressForcus": false,
-    "jumpPower": 1.5,
+    "jumpPower": 27.18000030517578,
     "hoveringTime": 0.5899999737739563,
-    "jumpHoveringAccel": 0.05000000074505806,
+    "jumpHoveringAccel": 0.0,
     "MoveSpeedOnThrowAim": 11.979999542236328,
-    "MoveSpeedOnJump": 8.0
+    "MoveSpeedOnJump": 8.0,
+    "PredationRangeXZ": 7.570000171661377,
+    "PredationRangeY": 9.430000305175781,
+    "PredationCatchAngle": 0.7400000095367432,
+    "Weight": 8.899999618530273
 }

@@ -37,10 +37,7 @@ void BaseObject::Initialize(){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::Update(){
-
-    // 落下処理
-    Drop();
-
+    MoveByVelocity();
     // モデルの更新
     model_->Update();
 }
@@ -92,8 +89,6 @@ void BaseObject::UpdateMatrix(){
     model_->UpdateMatrix();
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////
 // コライダーの編集
 //////////////////////////////////////////////////////////////////////////
@@ -103,13 +98,6 @@ void BaseObject::EditCollider(){
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 落下処理
-//////////////////////////////////////////////////////////////////////////
-void BaseObject::Drop(){
-    AddWorldTranslate(Vector3(0.0f, -1.0f, 0.0f) * dropSpeed_ * ClockManager::TimeRate());
-}
-
 // フレーム終了時の落下更新処理
 void BaseObject::EndFrameDropFlagUpdate(){
     // 落下フラグの更新
@@ -117,17 +105,19 @@ void BaseObject::EndFrameDropFlagUpdate(){
         isDrop_ = false;
     }
 
+    float downAccel = 0.0f;
     // 終了時の落下フラグに応じた処理
-    if(!isDrop_){
-        dropSpeed_ = 0.0f;
+    if(isDrop_ && isApplyGravity_){
+        downAccel = -Physics::kGravity * weight_ * ClockManager::DeltaTime();
     } else{
-        if(!isApplyGravity_){
-            dropSpeed_ = 0.0f;
-            return;
-        }
-
-        dropSpeed_ += (Physics::kGravity / 60.0f) * ClockManager::TimeRate();
+        velocity_.y = 0.0f;
     }
+    velocity_.y += downAccel;
+
+}
+
+void BaseObject::MoveByVelocity(){
+    model_->translate_ += velocity_ * ClockManager::DeltaTime();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -178,7 +168,7 @@ void BaseObject::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
+void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
 }
@@ -189,7 +179,7 @@ void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::LoadColliders(ObjectType objectType){
     // コライダーの読み込み
-    ColliderEditor::LoadColliders(className_ + ".json", this, &colliders_);
+    ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
 
     // オブジェクトの属性を取得
     for(auto& collider : colliders_){

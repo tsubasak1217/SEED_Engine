@@ -31,7 +31,6 @@ public: // コライダー
 
 protected:
     virtual void Damage(int32_t damage);
-    virtual void Jump();
 
 public: // アクセッサ
     const Vector3 &GetPrePos() const { return prePos_; }
@@ -53,9 +52,9 @@ public: // アクセッサ
     bool GetIsJump()const{ return isJump_; }
     void SetIsJump(bool isJump){ 
         isJump_ = isJump; 
-        dropSpeed_ = 0.0f;
+        velocity_.y = 0.0f;
     }
-    void SetJumpPower(float power){ jumpPower_ = power; }
+    void SetJumpPower(float power){ velocity_.y = power; }
     void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
 
 protected: // パラメータ
@@ -67,7 +66,6 @@ protected: // パラメータ
 
 protected:// 移動関連
     bool isJump_ = false;
-    float jumpPower_ = 120.0f / 60.0f;
     bool isMovable_ = true;
 
 protected:// 状態管理用

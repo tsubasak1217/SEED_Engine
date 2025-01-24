@@ -14,8 +14,8 @@ class Player;
 
 class EnemyManager{
 public:
-    EnemyManager();
-    EnemyManager(Player* player,uint32_t stageNo);
+    EnemyManager() = default;
+    EnemyManager(Player* player,uint32_t stageNo,RoutineManager& routineManager);
     ~EnemyManager() = default;
 
     void Initialize();
@@ -55,7 +55,7 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 
     // 固定移動 ポイント 
-    RoutineManager routineManager_;
+    RoutineManager& routineManager_;
 
     Player* pPlayer_ = nullptr;
 

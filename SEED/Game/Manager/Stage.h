@@ -82,6 +82,8 @@ public:
         enemyManager_->SetPlayer(pPlayer);
     }
     EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
+    // RoutineManagerのゲッターを追加
+    RoutineManager& GetRoutineManager(){ return routineManager_; }
 
 private:
     int32_t stageNo_ = -1;
@@ -103,6 +105,7 @@ private:
     std::unique_ptr<EnemyManager> enemyManager_;
 
     //routine
+    RoutineManager routineManager_;
 };
 
 ////////////////////////////////////////////////////////////////////

@@ -2,13 +2,9 @@
 
 #include "../adapter/csv/CsvAdapter.h"
 
-EnemyManager::EnemyManager(){
+EnemyManager::EnemyManager(Player* player, uint32_t stageNo,RoutineManager& routineManager)
+:pPlayer_(player),stageNo_(stageNo),routineManager_(routineManager){
     enemies_.clear();
-}
-
-EnemyManager::EnemyManager(Player* player, uint32_t stageNo)
-:pPlayer_(player),stageNo_(stageNo){
-    routineManager_.LoadRoutines(stageNo);
 }
 
 
@@ -67,7 +63,7 @@ void EnemyManager::HandOverColliders(){
 //      enemyの保存
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void EnemyManager::SaveEnemies(){
-    // ===== CSVで座標を保存 (従来通り) =====
+    // CSVでの保存
     std::vector<std::vector<std::string>> csvData;
     csvData.emplace_back(std::vector<std::string>{"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
 
@@ -85,7 +81,7 @@ void EnemyManager::SaveEnemies(){
     }
     CsvAdapter::GetInstance()->SaveCsv("enemies_position", csvData);
 
-    // ===== JSONの作成 =====
+    // JSONでの保存
     nlohmann::json rootJson;
     rootJson["Count"] = static_cast< int >(enemies_.size());
 
@@ -101,17 +97,13 @@ void EnemyManager::SaveEnemies(){
         enemyObj["ChasePlayer"] = e->GetChasePlayer();
         enemyObj["RoutineName"] = e->GetRoutineName();
         enemyObj["moveSpeed"] = e->GetMoveSpeed();
-        // 座標をJSONにも入れるなら
-        // auto pos = e->GetWorldTranslate();
-        // enemyObj["PosX"] = pos.x; ...
+        // 必要に応じて他の属性も追加
         enemyArray.push_back(enemyObj);
     }
     rootJson["Enemies"] = enemyArray;
 
-    // ===== JSONファイル出力 =====
-    std::string filePath = "resources/jsons/enemies/stage_"
-        + std::to_string(stageNo_)
-        + "_enemies.json";
+    // JSONファイルの出力
+    std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
     try{
         std::ofstream ofs(filePath);
         if (!ofs){
@@ -124,28 +116,25 @@ void EnemyManager::SaveEnemies(){
         std::cerr << "Exception while saving JSON: " << e.what() << std::endl;
     }
 
-    // 敵数をメンバ変数に記録
+    // 敵数を記録
     enemyCount_ = static_cast< int >(enemies_.size());
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      enemyの読み込み
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void EnemyManager::LoadEnemies(){
-    // ===== CSV読み込み =====
+    // CSVの読み込み
     auto csvData = CsvAdapter::GetInstance()->LoadCsv("enemies_position");
     if (csvData.size() <= 1){
         // 空なら何もしない
         return;
     }
 
-    // ===== JSON読み込み =====
+    // JSONの読み込み
     nlohmann::json rootJson;
     {
-        std::string filePath = "resources/jsons/enemies/stage_"
-            + std::to_string(stageNo_)
-            + "_enemies.json";
+        std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
         std::ifstream ifs(filePath);
         if (!ifs.is_open()){
             std::cerr << "Failed to open JSON file: " << filePath << std::endl;
@@ -160,10 +149,10 @@ void EnemyManager::LoadEnemies(){
         ifs.close();
     }
 
-    // まず全削除
+    // 既存の敵を全削除
     ClearAllEnemies();
 
-    // "Count"
+    // "Count"の取得
     if (!rootJson.contains("Count")){
         std::cerr << "JSON has no 'Count' field." << std::endl;
         return;
@@ -176,7 +165,7 @@ void EnemyManager::LoadEnemies(){
     }
     auto enemyArray = rootJson["Enemies"];
 
-    // ===== CSVの行1以降を走査 =====
+    // CSVの行1以降を走査
     for (size_t i = 1; i < csvData.size(); ++i){
         auto& row = csvData[i];
         if (row.size() < 5){
@@ -188,13 +177,13 @@ void EnemyManager::LoadEnemies(){
         float py = std::stof(row[3]);
         float pz = std::stof(row[4]);
 
-        // 新しい Enemy
+        // 新しい Enemyの生成
         auto newEnemy = std::make_unique<Enemy>(
             this,        // EnemyManager*
             pPlayer_,    // Player*
             eName
         );
-        // CSVの位置をセット
+        // CSVから位置をセット
         newEnemy->SetPosition({px, py, pz});
 
         // JSONから他のパラメータをセット
@@ -217,11 +206,13 @@ void EnemyManager::LoadEnemies(){
                 newEnemy->SetRoutineName(routineName);
             }
         }
+
+        // RoutineManagerを使用してルーチンを初期化
         newEnemy->InitializeRoutine();
+
         newEnemy->UpdateMatrix();
         enemies_.emplace_back(std::move(newEnemy));
     }
-
 
     enemyCount_ = static_cast< int >(enemies_.size());
 }

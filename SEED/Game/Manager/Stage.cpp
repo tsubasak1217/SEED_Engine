@@ -20,7 +20,9 @@ Stage::Stage(ISubject& subject, uint32_t stageNo)
 
     stageNo_ = stageNo;
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_);
+    routineManager_.LoadRoutines(stageNo);
+
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
 }
 
 ////////////////////////////////////////////////////////////////////////

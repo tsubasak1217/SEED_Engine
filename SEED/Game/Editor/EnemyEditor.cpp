@@ -147,8 +147,8 @@ void EnemyEditor::ShowImGui(){
     ImGui::Separator();
     ImGui::Text("Routine Library Editor:");
 
-    // EnemyRoutineManager を取得
-    EnemyRoutineManager* routineManager = em->GetRoutineManager();
+    // RoutineManager を取得
+    RoutineManager* routineManager = em->GetRoutineManager();
     if (!routineManager){
         ImGui::Text("No Routine Manager available.");
         ImGui::End();
@@ -301,7 +301,7 @@ void EnemyEditor::AddRoutinePointByMouse(){
         return;
     }
 
-    EnemyRoutineManager* routineManager = em->GetRoutineManager();
+    RoutineManager* routineManager = em->GetRoutineManager();
     if (!routineManager){
         std::cerr << "No RoutineManager available." << std::endl;
         return;

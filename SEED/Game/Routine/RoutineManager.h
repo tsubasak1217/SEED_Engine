@@ -7,11 +7,11 @@
 
 using RoutineLibrary = std::unordered_map<std::string, std::vector<Vector3>>;
 
-class EnemyRoutineManager{
+class RoutineManager{
 public:
-    EnemyRoutineManager(uint32_t stageNum);
-    EnemyRoutineManager() = default;
-    ~EnemyRoutineManager() = default;
+    RoutineManager(uint32_t stageNum);
+    RoutineManager() = default;
+    ~RoutineManager() = default;
 
     // ルーチンの追加・削除
     void AddRoutine(const std::string& name, const std::vector<Vector3>& points);

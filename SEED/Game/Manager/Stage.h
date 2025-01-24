@@ -7,6 +7,7 @@
 #include "../FieldObject/FieldObjectName.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
+#include "../Routine/RoutineManager.h"
 
 #include "../Game/Manager/EnemyManager.h"
 #include "../Game/Editor/EnemyEditor.h" 
@@ -100,6 +101,8 @@ private:
 
     //enemy
     std::unique_ptr<EnemyManager> enemyManager_;
+
+    //routine
 };
 
 ////////////////////////////////////////////////////////////////////

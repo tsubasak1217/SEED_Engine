@@ -12,6 +12,7 @@ enum class ObjectType : int32_t{
     Goal = 0b1 << 6,
     // 組み合わせ
     Player = OnFieldObject | Friendly,
+    PlayerCorpse = OnFieldObject | Friendly,
     Egg = OnFieldObject | Friendly,
     Enemy = OnFieldObject | NonFriendly,
     PlayerAttack = Friendly | Attack,

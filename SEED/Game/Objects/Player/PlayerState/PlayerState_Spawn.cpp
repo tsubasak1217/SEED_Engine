@@ -43,6 +43,7 @@ void PlayerState_Spawn::ManageState(){
         // 移動
         pCharacter_->SetTranslate(spawnPos_);
         pPlayer->SetPrePos(spawnPos_);
+        pCharacter_->DiscardPreCollider();
     }
 
     pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));

@@ -127,6 +127,7 @@ void ParticleManager::Update(){
     ////////////////////////////////////////////
     // パーティクルの更新
     ////////////////////////////////////////////
+
     for(auto& particle : instance_->particles_){
         particle->Update();
     }

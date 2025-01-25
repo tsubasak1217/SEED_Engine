@@ -918,16 +918,16 @@ void PolygonManager::AddModel(Model* model){
 
     // サイズ確保
     auto& item = modelDrawData_[modelName];
-    int meshSize = (int)modelDrawData_[modelName]->modelData->meshes.size();
+    int meshSize = (int)item->modelData->meshes.size();
 
     // count
-    int drawCount = modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1];
+    int drawCount = item->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1];
 
     /////////////////////////////////////////////////////////////////////////
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
-    modelDrawData_[modelName]->materials[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
+    item->materials[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
 
         auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];

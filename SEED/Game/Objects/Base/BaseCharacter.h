@@ -28,6 +28,7 @@ public:// Stateから呼び出す関数
 public: // コライダー
     void HandOverColliders() override;
     void InitColliders(ObjectType objectType) override;
+    void DiscardPreCollider() override;
 
 protected:
     virtual void Damage(int32_t damage);

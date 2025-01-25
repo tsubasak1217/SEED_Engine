@@ -13,6 +13,7 @@ protected:
     void UpdateBox()override;
 
 public:
+    void DiscardPreCollider()override;
     void Edit()override;
     nlohmann::json GetJsonData()override;
     void LoadFromJson(const nlohmann::json& jsonData)override;

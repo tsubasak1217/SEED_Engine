@@ -61,6 +61,7 @@ void CollisionManager::CheckCollision(){
 
     // 渡されたコライダーの更新
     for(auto& collider : instance_->colliderList_){
+        collider.second->BeginFrame();
         collider.second->Update();
     }
 

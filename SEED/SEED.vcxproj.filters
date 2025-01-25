@@ -700,6 +700,9 @@
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\GraphicalUserInterface.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1281,6 +1284,7 @@
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
+    <ClInclude Include="Game\UI\GraphicalUserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

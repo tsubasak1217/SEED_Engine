@@ -2,6 +2,8 @@
 #include "Scene_Base.h"
 #include <memory>
 
+#include "../UI/GraphicalUserInterface.h"
+
 class Scene_Title : public Scene_Base{
 public:
     Scene_Title(SceneManager* pSceneManager);
@@ -15,5 +17,7 @@ public:
     void HandOverColliders()override;
 
 private:
-
+    std::unique_ptr<GUI> titleLogo_;
+    std::unique_ptr<GUI> toNextButton;
+    std::unique_ptr<GUI> toExitButton;
 };

@@ -257,6 +257,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
+    <ClCompile Include="Game\UI\GraphicalUserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
@@ -441,6 +442,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
+    <ClInclude Include="Game\UI\GraphicalUserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />

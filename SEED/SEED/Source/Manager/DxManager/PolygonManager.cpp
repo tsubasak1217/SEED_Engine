@@ -82,7 +82,7 @@ void PolygonManager::InitResources(){
         CreateBufferResource(pDxManager_->device.Get(), sizeof(VertexInfluence) * kMaxVerticesCountInResource_);
     vertexInfluenceResource_->SetName(L"vertexInfluenceResource");
     paletteResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 1024);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(WellForGPU) * 0xffff);
     paletteResource_->SetName(L"paletteResource");
 
     // Camera
@@ -133,7 +133,7 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[2].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[2].Buffer.FirstElement = 0;
     instancingSrvDesc[2].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[2].Buffer.NumElements = 1024;
+    instancingSrvDesc[2].Buffer.NumElements = 0xffff;
 
     instancingSrvDesc[3].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[3].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -885,6 +885,8 @@ void PolygonManager::AddSprite(
 
 void PolygonManager::AddModel(Model* model){
 
+    if (!model) { return; }
+
     //////////////////////////////////////////////////////////////////////////
     // モデルの名前の決定
     //////////////////////////////////////////////////////////////////////////
@@ -892,6 +894,7 @@ void PolygonManager::AddModel(Model* model){
     modelName.clear();
     modelName.reserve(64);
     modelName = model->modelName_;
+    if(modelName == ""){return;}
 
     if(model->isAnimation_){
         // アニメーションしているモデルは別のデータとして扱う
@@ -933,7 +936,7 @@ void PolygonManager::AddModel(Model* model){
         auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
         if(material.size() <= drawCount){ material.resize(drawCount + 1); }
 
-        material[drawCount].color_ = model->color_;
+        material[drawCount].color_ = model->color_ * model->meshColor_[meshIdx];
         material[drawCount].shininess_ = model->shininess_;
         material[drawCount].lightingType_ = model->lightingType_;
         material[drawCount].uvTransform_ = model->GetUVTransform(meshIdx);

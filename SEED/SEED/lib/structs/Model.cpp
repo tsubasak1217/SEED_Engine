@@ -27,6 +27,7 @@ void Model::Initialize(const std::string& filename){
     // マテリアルの数だけ初期化
     for(int i = 0; i < modelData->materials.size(); i++){
 
+        meshColor_.push_back(modelData->materials[i].color_);
         uv_scale_.push_back(modelData->materials[i].UV_scale_);
         uv_rotate_.push_back({0.0f,0.0f,0.0f});
         uv_translate_.push_back(
@@ -40,7 +41,7 @@ void Model::Initialize(const std::string& filename){
         );
     }
 
-    color_ = {1.0f,1.0f,1.0f,1.0f};
+    color_ = { 1.0f,1.0f,1.0f,1.0f };
     lightingType_ = LIGHTINGTYPE_HALF_LAMBERT;
 
 

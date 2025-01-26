@@ -161,6 +161,6 @@ public:
     static uint32_t IntColor(const Vector4& color);
 
     // HSVをRGBに変換する関数
-    static uint32_t HSV_to_RGB(float h, float s, float v, float alpha);
-    static uint32_t HSV_to_RGB(Vector4 HSVA_color);
+    static Vector4 HSV_to_RGB(float h, float s, float v, float alpha);
+    static Vector4 HSV_to_RGB(Vector4 HSVA_color);
 };

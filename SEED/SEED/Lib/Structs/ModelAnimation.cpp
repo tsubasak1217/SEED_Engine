@@ -14,7 +14,7 @@ Vector3 CalcMomentValue(const std::vector<KeyframeVec3>& keyFrames, float time){
     if(time >= keyFrames[keyFrames.size() - 1].time){ return keyFrames[keyFrames.size() - 1].value; }
 
     // キーフレーム間の値を計算
-    for(uint32_t i = 0; i < keyFrames.size() - 1; ++i) {
+    for(uint32_t i = 0; i < keyFrames.size(); ++i) {
         if(time >= keyFrames[i].time && time <= keyFrames[i + 1].time) {
             float t = (time - keyFrames[i].time) / (keyFrames[i + 1].time - keyFrames[i].time);
             result = MyMath::Lerp(keyFrames[i].value, keyFrames[i + 1].value, t);
@@ -36,7 +36,7 @@ Quaternion CalcMomentValue(const std::vector<KeyframeQuaternion>& keyFrames, flo
     if(time >= keyFrames[keyFrames.size() - 1].time){ return keyFrames[keyFrames.size() - 1].value; }
 
     // キーフレーム間の値を計算
-    for(uint32_t i = 0; i < keyFrames.size() - 1; ++i) {
+    for(uint32_t i = 0; i < keyFrames.size(); ++i) {
         if(time >= keyFrames[i].time && time <= keyFrames[i + 1].time) {
             float t = (time - keyFrames[i].time) / (keyFrames[i + 1].time - keyFrames[i].time);
             result = Quaternion::Slerp(keyFrames[i].value, keyFrames[i + 1].value, t);

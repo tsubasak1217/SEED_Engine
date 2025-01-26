@@ -5,7 +5,6 @@
 
 TitleState_Main::TitleState_Main(Scene_Title* _host)
     :ITitleState(_host){}
-    :ITitleState(_host){}
 
 TitleState_Main::~TitleState_Main(){}
 

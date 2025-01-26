@@ -6,31 +6,32 @@
 // local
 #include "Sprite.h"
 // state
-class UiState;
+#include "State/IUiState.h"
 
 class UI
 {
 public:
     UI(const std::string &_name);
-    ~UI();
+    virtual ~UI();
 
-    void Initialize(const std::string &_filePath);
-    void Update();
-    void Draw();
-    void Finalize();
+    virtual void Initialize(const std::string &_filePath);
+    virtual void Update();
+    virtual void Draw();
+    virtual void Finalize();
 
-    void BeginFrame();
-    void EndFrame();
+    virtual void BeginFrame();
+    virtual void EndFrame();
 
-private:
+protected:
     std::string name_;
     std::unique_ptr<Sprite> sprite_;
-    std::unique_ptr<UiState> state_;
+
+    std::unique_ptr<IUiState> state_;
 
 public:
     Sprite *GetSprite() { return sprite_.get(); }
 
-    void SetState(std::unique_ptr<UiState> _state) { state_ = std::move(_state); }
+    void SetState(std::unique_ptr<IUiState> _state) { state_ = std::move(_state); }
 };
 
 using ui = UI;

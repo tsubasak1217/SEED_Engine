@@ -8,8 +8,6 @@
 #include "State_Base.h"
 //host
 class Scene_Title;
-#include "Scene_Title.h"
-
 
 class ITitleState
     : public State_Base{

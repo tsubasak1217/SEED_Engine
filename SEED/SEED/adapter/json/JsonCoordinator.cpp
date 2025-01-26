@@ -11,7 +11,7 @@ std::string JsonCoordinator::s_baseDirectory_ = "Resources/jsons/";
 void JsonCoordinator::EnsureDirectoryExists(const std::string& path){
     try{
         std::filesystem::create_directories(std::filesystem::path(path).parent_path());
-    } catch (const std::exception& e){
+    } catch(const std::exception& e){
         std::cerr << "Error creating directory: " << e.what() << std::endl;
         throw;
     }
@@ -20,14 +20,14 @@ void JsonCoordinator::EnsureDirectoryExists(const std::string& path){
 //-------------------------------------------------------------------
 // ファイルパス生成 (必要に応じてカスタマイズ)
 //-------------------------------------------------------------------
-std::string JsonCoordinator::MakeFilePath(const std::string& group, std::optional<std::string> directoryPath){
+std::string JsonCoordinator::MakeFilePath(const std::string& group,std::optional<std::string> directoryPath){
     std::string baseDirectory;
 
     // directoryPath が指定されている場合
-    if (directoryPath.has_value()){
+    if(directoryPath.has_value()){
         std::filesystem::path customPath = directoryPath.value();
         // フルパスかどうかを確認
-        if (customPath.is_absolute()){
+        if(customPath.is_absolute()){
             baseDirectory = customPath.string(); // フルパスならそのまま使用
         } else{
             // 相対パスの場合は s_baseDirectory_ を基準に結合
@@ -45,14 +45,14 @@ std::string JsonCoordinator::MakeFilePath(const std::string& group, std::optiona
 //-------------------------------------------------------------------
 // 値を設定
 //-------------------------------------------------------------------
-bool JsonCoordinator::SetValue(const std::string& group, const std::string& key, AdjustableValue value){
-    if (!s_groupData_.count(group) || !s_groupData_[group].contains(key)){
+bool JsonCoordinator::SetValue(const std::string& group,const std::string& key,AdjustableValue value){
+    if(!s_groupData_.count(group) || !s_groupData_[group].contains(key)){
         return false;
     }
 
     s_groupData_[group][key] = value;
 
-    if (s_bindings_.count(group) && s_bindings_[group].count(key)){
+    if(s_bindings_.count(group) && s_bindings_[group].count(key)){
         s_bindings_[group][key](value);
     }
     return true;
@@ -61,8 +61,8 @@ bool JsonCoordinator::SetValue(const std::string& group, const std::string& key,
 //-------------------------------------------------------------------
 // 値を取得
 //-------------------------------------------------------------------
-std::optional<AdjustableValue> JsonCoordinator::GetValue(const std::string& group, const std::string& key){
-    if (s_groupData_.count(group) && s_groupData_[group].contains(key)){
+std::optional<AdjustableValue> JsonCoordinator::GetValue(const std::string& group,const std::string& key){
+    if(s_groupData_.count(group) && s_groupData_[group].contains(key)){
         return s_groupData_[group][key].get<AdjustableValue>();
     }
     return std::nullopt;
@@ -71,23 +71,23 @@ std::optional<AdjustableValue> JsonCoordinator::GetValue(const std::string& grou
 //-------------------------------------------------------------------
 // グループだけを保存（ファイル分割方式）
 //-------------------------------------------------------------------
-bool JsonCoordinator::SaveGroup(const std::string& group, std::optional<std::string> directoryPath){
-    if (!s_groupData_.count(group)){
+bool JsonCoordinator::SaveGroup(const std::string& group,std::optional<std::string> directoryPath){
+    if(!s_groupData_.count(group)){
         return false;
     }
 
-    std::string path = MakeFilePath(group, directoryPath);
+    std::string path = MakeFilePath(group,directoryPath);
     EnsureDirectoryExists(path);
 
     try{
         std::ofstream ofs(path);
-        if (!ofs.is_open()){
+        if(!ofs.is_open()){
             return false;
         }
 
         ofs << s_groupData_[group].dump(4);
         ofs.close();
-    } catch (const std::exception& e){
+    } catch(const std::exception& e){
         std::cerr << "Error saving group: " << e.what() << std::endl;
         return false;
     }
@@ -98,17 +98,17 @@ bool JsonCoordinator::SaveGroup(const std::string& group, std::optional<std::str
 //-------------------------------------------------------------------
 // グループだけをロード（ファイル分割方式）
 //-------------------------------------------------------------------
-bool JsonCoordinator::LoadGroup(const std::string& group, std::optional<std::string> directoryPath){
-    std::string path = MakeFilePath(group, directoryPath);
+bool JsonCoordinator::LoadGroup(const std::string& group,std::optional<std::string> directoryPath){
+    std::string path = MakeFilePath(group,directoryPath);
 
-    if (!std::filesystem::exists(path)){
-        SaveGroup(group, directoryPath); // 新規保存
+    if(!std::filesystem::exists(path)){
+        SaveGroup(group,directoryPath); // 新規保存
         return false;
     }
 
     try{
         std::ifstream ifs(path);
-        if (!ifs.is_open()){
+        if(!ifs.is_open()){
             return false;
         }
 
@@ -118,12 +118,12 @@ bool JsonCoordinator::LoadGroup(const std::string& group, std::optional<std::str
 
         s_groupData_[group] = j;
 
-        for (auto&& [key, val] : j.items()){
-            if (s_bindings_.count(group) && s_bindings_[group].count(key)){
+        for(auto&& [key,val] : j.items()){
+            if(s_bindings_.count(group) && s_bindings_[group].count(key)){
                 s_bindings_[group][key](val.get<AdjustableValue>());
             }
         }
-    } catch (const std::exception& e){
+    } catch(const std::exception& e){
         std::cerr << "Error loading group: " << e.what() << std::endl;
         return false;
     }
@@ -134,40 +134,44 @@ bool JsonCoordinator::LoadGroup(const std::string& group, std::optional<std::str
 //-------------------------------------------------------------------
 // グループ内アイテムをImGuiでレンダリング
 //-------------------------------------------------------------------
-void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::string& key){
-    if (auto opt = GetValue(group, key)){
+void JsonCoordinator::RenderAdjustableItem(const std::string& group,const std::string& key){
+    if(auto opt = GetValue(group,key)){
         auto& value = *opt;
 
-        if (std::holds_alternative<int>(value)){
+        if(std::holds_alternative<int>(value)){
             int val = std::get<int>(value);
-            if (ImGui::InputInt(key.c_str(), &val)){
-                SetValue(group, key, val);
+            if(ImGui::InputInt(key.c_str(),&val)){
+                SetValue(group,key,val);
             }
-        } else if (std::holds_alternative<float>(value)){
+        } else if(std::holds_alternative<float>(value)){
             float val = std::get<float>(value);
-            if (ImGui::DragFloat(key.c_str(), &val, 0.01f)){
-                SetValue(group, key, val);
+            if(ImGui::DragFloat(key.c_str(),&val,0.01f)){
+                SetValue(group,key,val);
             }
-        } else if (std::holds_alternative<Vector3>(value)){
+        } else if(std::holds_alternative<Vector2>(value)){
+            Vector2 v = std::get<Vector2>(value);
+            if(ImGui::DragFloat2(key.c_str(),&v.x,0.01f)){
+                SetValue(group,key,v);
+            }
+        } else if(std::holds_alternative<Vector3>(value)){
             Vector3 v = std::get<Vector3>(value);
-            if (ImGui::DragFloat3(key.c_str(), &v.x, 0.01f)){
-                SetValue(group, key, v);
+            if(ImGui::DragFloat3(key.c_str(),&v.x,0.01f)){
+                SetValue(group,key,v);
             }
-        } else if (std::holds_alternative<bool>(value)){
+        } else if(std::holds_alternative<bool>(value)){
             bool val = std::get<bool>(value);
-            if (ImGui::Checkbox(key.c_str(), &val)){
-                SetValue(group, key, val);
+            if(ImGui::Checkbox(key.c_str(),&val)){
+                SetValue(group,key,val);
             }
-        }
-        else if (std::holds_alternative<std::string>(value)){
+        } else if(std::holds_alternative<std::string>(value)){
             // 現在の文字列値を取得
             std::string strVal = std::get<std::string>(value);
             // バッファサイズは適宜調整
             char buffer[256];
-            std::snprintf(buffer, sizeof(buffer), "%s", strVal.c_str());
-            if (ImGui::InputText(key.c_str(), buffer, IM_ARRAYSIZE(buffer))){
+            std::snprintf(buffer,sizeof(buffer),"%s",strVal.c_str());
+            if(ImGui::InputText(key.c_str(),buffer,IM_ARRAYSIZE(buffer))){
                 // 入力が変更された場合、値を更新
-                SetValue(group, key, std::string(buffer));
+                SetValue(group,key,std::string(buffer));
             }
         }
     }
@@ -178,18 +182,18 @@ void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::
 // グループ内のすべての項目をレンダリング
 //-------------------------------------------------------------------
 void JsonCoordinator::RenderGroupUI(const std::string& group){
-    if (!s_groupData_.count(group)){
-        ImGui::Text("No data for group: %s", group.c_str());
+    if(!s_groupData_.count(group)){
+        ImGui::Text("No data for group: %s",group.c_str());
         return;
     }
 
-    for (auto&& [key, val] : s_groupData_[group].items()){
-        RenderAdjustableItem(group, key);
+    for(auto&& [key,val] : s_groupData_[group].items()){
+        RenderAdjustableItem(group,key);
     }
 }
 
 void JsonCoordinator::ClearGroup(const std::string& group){
-    if (s_groupData_.count(group)){
+    if(s_groupData_.count(group)){
         s_groupData_.erase(group);
     }
 }

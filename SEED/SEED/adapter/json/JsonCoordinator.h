@@ -1,18 +1,21 @@
 #pragma once
 
-#include <string>
-#include <variant>
+
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
+#include <filesystem>
+#include <fstream>
 #include <functional>
+#include <json.hpp>
 #include <optional>
 #include <stdexcept>
-#include <fstream>
-#include <filesystem>
+#include <string>
 #include <unordered_map>
-#include <json.hpp>
-#include "Vector3.h"
+#include <variant>
 
 using json = nlohmann::ordered_json;
-using AdjustableValue = std::variant<int, float, Vector3,bool,std::string>;
+using AdjustableValue = std::variant<int,float,Vector2,Vector3,Vector4,bool,std::string>;
 
 class JsonCoordinator{
 public:
@@ -22,20 +25,20 @@ public:
 
     // 項目を登録してバインド
     template <typename T>
-    static bool RegisterItem(const std::string& group, const std::string& key, T& target);
+    static bool RegisterItem(const std::string& group,const std::string& key,T& target);
 
     // 値を設定
-    static bool SetValue(const std::string& group, const std::string& key, AdjustableValue value);
+    static bool SetValue(const std::string& group,const std::string& key,AdjustableValue value);
 
     // 値を取得
-    static std::optional<AdjustableValue> GetValue(const std::string& group, const std::string& key);
+    static std::optional<AdjustableValue> GetValue(const std::string& group,const std::string& key);
 
 
     // グループのみ保存 (ファイル分割方式)
-    static bool SaveGroup(const std::string& group, std::optional<std::string> directoryPath = std::nullopt);
+    static bool SaveGroup(const std::string& group,std::optional<std::string> directoryPath = std::nullopt);
 
     // グループのみロード (ファイル分割方式)
-    static bool LoadGroup(const std::string& group, std::optional<std::string> directoryPath = std::nullopt);
+    static bool LoadGroup(const std::string& group,std::optional<std::string> directoryPath = std::nullopt);
 
     // グループ内のすべての項目をレンダリング (ImGui)
     static void RenderGroupUI(const std::string& group);
@@ -47,25 +50,25 @@ private:
     //===================================================================*/
     //                   private function
     //===================================================================*/
-    static void RenderAdjustableItem(const std::string& group, const std::string& key);
+    static void RenderAdjustableItem(const std::string& group,const std::string& key);
 
     // ディレクトリ作成
     static void EnsureDirectoryExists(const std::string& path);
 
 
     // グループ -> JSON ファイル名を作る（適宜カスタマイズ）
-    static std::string MakeFilePath(const std::string& group, std::optional<std::string> directoryPath = std::nullopt);
+    static std::string MakeFilePath(const std::string& group,std::optional<std::string> directoryPath = std::nullopt);
 
 private:
     //===================================================================*/
     //                   private variable
     //===================================================================*/
     // グループごとに独立した JSON データを保管
-    static inline std::unordered_map<std::string, json> s_groupData_;
+    static inline std::unordered_map<std::string,json> s_groupData_;
 
     // バインディング: グループ -> (キー -> コールバック)
     static inline std::unordered_map<std::string,
-        std::unordered_map<std::string, std::function<void(const AdjustableValue&)>>>
+        std::unordered_map<std::string,std::function<void(const AdjustableValue&)>>>
         s_bindings_;
 
     // ベースパスなど
@@ -78,51 +81,62 @@ private:
 
 // AdjustableValue を JSON 形式に変換
 //-------------------------------------------------------------------
-inline void to_json(json& j, const AdjustableValue& value){
-    std::visit([&] (auto&& arg){ j = arg; }, value);
+inline void to_json(json& j,const AdjustableValue& value){
+    std::visit([&](auto&& arg){ j = arg; },value);
 }
 
 //-------------------------------------------------------------------
 // JSON から AdjustableValue に変換
 //-------------------------------------------------------------------
-inline void from_json(const json& j, AdjustableValue& value){
-    if (j.is_number_integer()){
-        value = j.get<int>();
+inline void from_json(const nlohmann::ordered_json& j, AdjustableValue& val){
+    using namespace nlohmann;
+
+    // まず型判別
+    if (j.is_boolean()){
+        val = j.get<bool>();
+    } else if (j.is_number_integer()){
+        val = j.get<int>();
     } else if (j.is_number_float()){
-        value = j.get<float>();
-    } else if (j.is_object()){
-        value = j.get<Vector3>();
-    } else if (j.is_boolean()){
-        value = j.get<bool>();
+        val = j.get<float>();
     } else if (j.is_string()){
-        value = j.get<std::string>();
-    }
+        val = j.get<std::string>();
+    } else if (j.is_object()){
+        // 要素数で Vector2 or Vector3 or Vector4 を判別
+        size_t size = j.size();
+        if (size == 2){
+            val = j.get<Vector2>();
+        } else if (size == 3){
+            val = j.get<Vector3>();
+        } else if(size == 4){
+            val = j.get<Vector4>();
+        }
+    } 
 }
 
 //-------------------------------------------------------------------
 // RegisterItem (テンプレート)
 //-------------------------------------------------------------------
 template <typename T>
-bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& key, T& target){
+bool JsonCoordinator::RegisterItem(const std::string& group,const std::string& key,T& target){
     // まだグループが存在しなければ空の json を確保
-    if (!s_groupData_.count(group)){
+    if(!s_groupData_.count(group)){
         s_groupData_[group] = json::object();
     }
 
     // すでにバインディングがあれば、JSON → target の同期だけ
-    if (s_bindings_[group].count(key) > 0){
+    if(s_bindings_[group].count(key) > 0){
         auto existingVal = s_groupData_[group][key].get<AdjustableValue>();
-        if (auto valPtr = std::get_if<T>(&existingVal)){
+        if(auto valPtr = std::get_if<T>(&existingVal)){
             target = *valPtr;
         }
         return true;
     }
 
     // まだバインディングが無い場合は、「JSON にキーがあるか」をチェック
-    if (s_groupData_[group].contains(key)){
+    if(s_groupData_[group].contains(key)){
         // JSON 側にキーがあれば、JSON → target
         auto existingVal = s_groupData_[group][key].get<AdjustableValue>();
-        if (auto valPtr = std::get_if<T>(&existingVal)){
+        if(auto valPtr = std::get_if<T>(&existingVal)){
             target = *valPtr;
         }
         // もし型が違う場合は、何らかのログを出すか変換ロジックを入れるなど検討
@@ -132,8 +146,8 @@ bool JsonCoordinator::RegisterItem(const std::string& group, const std::string& 
     }
 
     // バインディング登録（target のポインタをコピーキャプチャ）
-    s_bindings_[group][key] = [targetPtr = &target] (const AdjustableValue& value){
-        if (auto valPtr = std::get_if<T>(&value)){
+    s_bindings_[group][key] = [targetPtr = &target](const AdjustableValue& value){
+        if(auto valPtr = std::get_if<T>(&value)){
             *targetPtr = *valPtr;
         }
         };

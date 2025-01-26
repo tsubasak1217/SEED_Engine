@@ -688,6 +688,24 @@
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\ButtonUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\UI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1263,6 +1281,15 @@
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h">
       <Filter>SEED\adapter</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
+    <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
+    <ClInclude Include="Game\UI\State\IUiState.h" />
+    <ClInclude Include="Game\UI\ButtonUI.h" />
+    <ClInclude Include="Game\UI\UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

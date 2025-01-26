@@ -188,7 +188,6 @@ void Scene_Game::Update() {
 
     // ドアとの距離をチェックし、近ければイベント発行
     doorProximityChecker_->Update();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -205,6 +204,10 @@ void Scene_Game::Draw() {
         currentState_->Draw();
     }
 
+    /*======================== スプライトの描画 =======================*/
+
+    backSprite_->Draw();
+
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトの情報を送る
@@ -212,17 +215,46 @@ void Scene_Game::Draw() {
 
     for (int i = 0; i < pointLights_.size(); i++) {
         pointLights_[i]->SendData();
-        SEED::DrawLight(pointLights_[i].get());
+        //SEED::DrawLight(pointLights_[i].get());
     }
 
     for (int i = 0; i < spotLights_.size(); i++) {
+
+    #ifdef _DEBUG
+        ImGui::Begin("spotLight");
+        ImGui::DragFloat3("position", &spotLights_[i]->position.x, 0.1f);
+        ImGui::DragFloat3("direction", &spotLights_[i]->direction.x, 0.01f);
+        ImGui::DragFloat("distance", &spotLights_[i]->distance, 0.1f);
+        ImGui::ColorEdit4("color", &spotLights_[i]->color_.x);
+        ImGui::DragFloat("intensity", &spotLights_[i]->intensity, 0.1f);
+        ImGui::DragFloat("decay", &spotLights_[i]->decay, 0.1f);
+        ImGui::SliderFloat("cosAngle", &spotLights_[i]->cosAngle, 0.0f, 1.0f);
+        ImGui::SliderFloat("cosFallofStart", &spotLights_[i]->cosFallofStart, 0.0f, 1.0f);
+        ImGui::End();
+    #endif // _DEBUG
+
         spotLights_[i]->SendData();
         SEED::DrawLight(spotLights_[i].get());
     }
 
-    // 地面
-    ground_->Draw();
+    // フィールドの描画
+    stageManager_->Draw();
 
+    // グリッドの描画
+    //SEED::DrawGrid();
+
+
+    // パーティクルの描画
+    ParticleManager::Draw();
+
+    // プレイヤーの描画
+    player_->Draw();
+    eggManager_->Draw();
+
+    playerCorpseManager_->Draw();
+
+    // 地面の描画
+    ground_->Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -62,20 +62,13 @@ private:
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
     std::vector<std::unique_ptr<PointLight>> pointLights_;
     std::vector<std::unique_ptr<SpotLight>> spotLights_;
-    std::vector<float> pointLightColor_h_;
-    std::vector<float> spotLightColor_h_;
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
-    bool isPointLightActive_ = true;
-    bool isSpotLightActive_ = true;
-    bool isUseDebugCamera_ = true;
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;
-    std::unique_ptr<Model> sphere_;
-    std::vector<std::unique_ptr<Model>> man_;
  
     // Manager
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
@@ -86,12 +79,4 @@ private:
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;
 
-
-    // testModels
-    std::vector<std::unique_ptr<Model>> test_AnimationNode_;
-    std::vector<std::unique_ptr<Model>> test_AnimationNodeMisc_;
-    std::vector<std::unique_ptr<Model>> test_AnimationSkin_;
-    std::vector<std::unique_ptr<Model>> test_MeshPrimitives_;
-    std::vector<std::unique_ptr<Model>> test_MaterialAlphaBlend_;
-    std::vector<std::unique_ptr<Model>> test_TextureSampler_;
 };

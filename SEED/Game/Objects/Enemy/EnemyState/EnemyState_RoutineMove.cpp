@@ -28,17 +28,36 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
 }
 
 void EnemyState_RoutineMove::Update(){
-    if(!movePoints_||movePoints_->size()<1){ return; }
-    // ルーチンポイントを巡回
-    if(MyMath::Length(enemy_->GetWorldTranslate(),(*movePoints_)[currentMovePointIndex_]) < 0.001f){
-        currentMovePointIndex_++;
-        currentMovePointIndex_ = currentMovePointIndex_ % movePoints_->size();
+    if (!movePoints_ || movePoints_->size() < 1){ return; }
+
+    Vector3 currentPos = enemy_->GetWorldTranslate();
+    Vector3 targetPos = (*movePoints_)[currentMovePointIndex_];
+    Vector3 direction = targetPos - currentPos;
+    float distanceToTarget = MyMath::Length(direction);
+
+    if (distanceToTarget < 0.001f){
+        // ターゲットポイントにほぼ到達したと判断
+        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % movePoints_->size();
+        return; // 次のフレームで新しいポイントに向かって移動
     }
-    // ルーチンポイントに向かって移動
-    Vector3 moveVec = MyMath::Normalize((*movePoints_)[currentMovePointIndex_] - enemy_->GetWorldTranslate());
-    enemy_->SetTranslate(enemy_->GetWorldTranslate() + moveVec * enemy_->GetMoveSpeed() * ClockManager::DeltaTime());
+
+    // 正規化された移動方向
+    Vector3 moveDir = MyMath::Normalize(direction);
+    // 1フレームあたりの移動量
+    float moveStep = enemy_->GetMoveSpeed() * ClockManager::DeltaTime();
+
+    if (moveStep >= distanceToTarget){
+        // 移動ステップがターゲットまでの距離以上の場合、ターゲットに直接移動
+        enemy_->SetTranslate(targetPos);
+        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % movePoints_->size();
+    } else{
+        // 通常通り移動
+        enemy_->SetTranslate(currentPos + moveDir * moveStep);
+    }
+
     ManageState();
 }
+
 
 void EnemyState_RoutineMove::Draw(){}
 

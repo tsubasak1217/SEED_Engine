@@ -661,9 +661,6 @@
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
-      <Filter>Game\Objects\Enemy\Routine</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
       <Filter>Game\Objects\Enemy\EnemyState</Filter>
     </ClCompile>
@@ -706,9 +703,6 @@
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\ButtonUI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\UI\UI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -744,6 +738,21 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp">
       <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Routine\RoutineManager.cpp">
+      <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1014,8 +1023,6 @@
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
-    <ClInclude Include="Game\Objects\Egg\Egg.h" />
-    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h" />
@@ -1024,28 +1031,10 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
-    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h" />
-    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h" />
-    <ClInclude Include="Game\Scene\Base\Scene_Base.h" />
-    <ClInclude Include="Game\Scene\Base\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h" />
-    <ClInclude Include="SEED\lib\patterns\ISubject.h" />
-    <ClInclude Include="SEED\lib\patterns\IObserver.h" />
-    <ClInclude Include="SEED\lib\enums\Direction.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
@@ -1053,88 +1042,9 @@
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
     <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\adapter\json\JsonCoordinator.h" />
-    <ClInclude Include="SEED\external\imgui\imconfig.h" />
-    <ClInclude Include="SEED\external\imgui\imgui.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_internal.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_textedit.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_truetype.h" />
-    <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\DxFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\Easing.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MatrixFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MyFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MyMath.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\ShapeMath.h" />
-    <ClInclude Include="SEED\lib\includes\includes.h" />
-    <ClInclude Include="SEED\lib\includes\include_matrixes.h" />
-    <ClInclude Include="SEED\lib\includes\include_shapes.h" />
-    <ClInclude Include="SEED\lib\includes\include_tensors.h" />
-    <ClInclude Include="SEED\lib\includes\include_useful.h" />
-    <ClInclude Include="SEED\lib\includes\include_vectors.h" />
-    <ClInclude Include="SEED\lib\shapes\AABB.h" />
-    <ClInclude Include="SEED\lib\shapes\OBB.h" />
-    <ClInclude Include="SEED\lib\shapes\Quad.h" />
-    <ClInclude Include="SEED\lib\shapes\Triangle.h" />
-    <ClInclude Include="SEED\lib\structs\AccelerarionField.h" />
-    <ClInclude Include="SEED\lib\structs\blendMode.h" />
-    <ClInclude Include="SEED\lib\structs\CS_Buffers.h" />
-    <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
-    <ClInclude Include="SEED\lib\structs\DrawLocation.h" />
-    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
-    <ClInclude Include="SEED\lib\structs\OffsetData.h" />
-    <ClInclude Include="SEED\lib\structs\Material.h" />
-    <ClInclude Include="SEED\lib\structs\Model.h" />
-    <ClInclude Include="SEED\lib\structs\ModelData.h" />
     <ClInclude Include="SEED\lib\structs\Range1D.h" />
     <ClInclude Include="SEED\lib\structs\Range2D.h" />
     <ClInclude Include="SEED\lib\structs\Range3D.h" />
-    <ClInclude Include="SEED\lib\structs\Sprite.h" />
-    <ClInclude Include="SEED\lib\structs\Transform.h" />
-    <ClInclude Include="SEED\lib\structs\VertexData.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix2x2.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix3x3.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix4x4.h" />
-    <ClInclude Include="SEED\lib\tensor\Quaternion.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector2.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector3.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector4.h" />
-    <ClInclude Include="SEED\source\Manager\AudioManager\AudioManager.h" />
-    <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h" />
-    <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h" />
-    <ClInclude Include="SEED\source\Manager\ClockManager\ClockManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_DSV.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_RTV.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptoeHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h" />
-    <ClInclude Include="SEED\source\Manager\ImGuiManager\ImGuiManager.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\InputManager.h" />
-    <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h" />
-    <ClInclude Include="SEED\source\Manager\ModelManager\ModelManager.h" />
-    <ClInclude Include="SEED\source\Manager\ParticleManager\Emitter.h" />
-    <ClInclude Include="SEED\source\Manager\ParticleManager\ParticleManager.h" />
-    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h" />
-    <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h" />
-    <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
-    <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
-    <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
-    <ClInclude Include="SEED\source\Object\Camera\BaseCamera.h" />
-    <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h" />
     <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h" />
@@ -1145,13 +1055,281 @@
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="SEED\source\SEED.h" />
+    <ClInclude Include="Game\Objects\Base\BaseObject.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\BaseCharacter.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Collision\Collider.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\Egg.h">
+      <Filter>Game\Objects\Egg</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h">
+      <Filter>Game\Objects\Egg\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h">
+      <Filter>Game\Objects\Egg\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enums\ObjectType.h">
+      <Filter>Game\Objects\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Octree.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h">
+      <Filter>SEED\Source\Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Base\ICharacterState.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Sphere.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Line.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range1D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range2D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\Range3D.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\structs\BitSet.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h">
+      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
+      <Filter>SEED\Lib\Functions\localFunc</Filter>
+    </ClInclude>
+    <ClInclude Include="Environment\Physics.h">
+      <Filter>Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\EnemyEditor.h">
+      <Filter>Game\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\EnemyManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h">
+      <Filter>Game\Objects\PlayerCorpse</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
+      <Filter>SEED\Source\Manager\InputManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
+      <Filter>Game\Objects\FieldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h">
+      <Filter>Game\Objects\FieldObject\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h">
+      <Filter>Game\Objects\FieldObject\Door\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\patterns\ISubject.h">
+      <Filter>SEED\Lib\patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\patterns\IObserver.h">
+      <Filter>SEED\Lib\patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h">
+      <Filter>SEED\Source\Manager\EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h">
+      <Filter>Game\Objects\FieldObject\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\BaseLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h">
+      <Filter>Game\Objects\FieldObject\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h">
+      <Filter>Game\Objects\FieldObject\Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h">
+      <Filter>Game\Objects\FieldObject\Start</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h">
+      <Filter>Game\Objects\FieldObject\Soil</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h">
+      <Filter>Game\Objects\FieldObject\GrassSoil</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Ring.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
+      <Filter>SEED\Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageManager.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\Stage.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
+      <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\StageSelector.h">
+      <Filter>Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
+      <Filter>Game\Scene\Scene_Game\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\PointLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Structs\SpotLight.h">
+      <Filter>SEED\Lib\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\lib\enums\Direction.h">
+      <Filter>SEED\Lib\Enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h">
+      <Filter>Game\Objects\FieldObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h">
+      <Filter>Game\Objects\FieldObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h">
+      <Filter>Game\Objects\Enemy\EnemyState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h">
+      <Filter>Game\Objects\Player\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\adapter\csv\CsvAdapter.h">
+      <Filter>SEED\adapter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
+    <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
     <ClInclude Include="Game\UI\State\IUiState.h" />
-    <ClInclude Include="Game\UI\ButtonUI.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.h">
       <Filter>Game\Objects\FieldObject\EventArea</Filter>
@@ -1186,6 +1364,13 @@
     <ClInclude Include="Game\GameSystem.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
+    <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
+    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
+    <ClInclude Include="Game\Routine\RoutineManager.h">
+      <Filter>Game\Objects\Enemy\Routine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">
@@ -1193,13 +1378,40 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Camera.hlsli" />
-    <None Include="Resources\Shaders\Lighting.hlsli" />
-    <None Include="Resources\Shaders\Material.hlsli" />
-    <None Include="resources\shaders\Object3D.hlsli" />
-    <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli" />
+    <None Include="resources\shaders\Object3D.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\Lighting.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Material.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\Camera.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt" />
+    <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Object3d.VS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Blur.CS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.PS.hlsl">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

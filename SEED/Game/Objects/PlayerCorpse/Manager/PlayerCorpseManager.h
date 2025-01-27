@@ -22,5 +22,7 @@ private:
 
 public:
     void AddPlayerCorpse(std::unique_ptr<PlayerCorpse>& addCorpse);
+
+    void RemoveAll();
 };
 

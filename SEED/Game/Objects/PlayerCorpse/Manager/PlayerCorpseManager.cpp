@@ -11,6 +11,10 @@ void PlayerCorpseManager::Initialize(){
 }
 
 void PlayerCorpseManager::Update(){
+    std::erase_if(playerCorpses_,[](std::unique_ptr<PlayerCorpse>& corpse){
+        return !corpse->GetIsAlive();
+                  });
+
     for(auto& corpse : playerCorpses_){
         corpse->Update();
         corpse->EditCollider();
@@ -37,4 +41,8 @@ void PlayerCorpseManager::EndFrame(){
 
 void PlayerCorpseManager::AddPlayerCorpse(std::unique_ptr<PlayerCorpse>& addCorpse){
     playerCorpses_.push_back(std::move(addCorpse));
+}
+
+void PlayerCorpseManager::RemoveAll(){
+    playerCorpses_.clear();
 }

@@ -25,4 +25,9 @@ void PlayerCorpse::Initialize(){
 void PlayerCorpse::Update(){
     BaseObject::Update();
     EditCollider();
+
+    // 地面ではなく,y==0に落下したら削除
+    if(this->GetWorldTranslate().y <= 0.0f){
+        isAlive_ = false;
+    }
 }

@@ -24,8 +24,7 @@ EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _directionXY
     Initialize("Thrown",_egg);
 }
 
-EggState_Thrown::~EggState_Thrown(){
-}
+EggState_Thrown::~EggState_Thrown(){}
 
 void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
@@ -71,6 +70,12 @@ void EggState_Thrown::MoveThrow(){
 }
 
 void EggState_Thrown::ManageState(){
+
+    // 地面ではなく,y==0に落下したら削除
+    if(pCharacter_->GetWorldTranslate().y <= 0.0f){
+        pCharacter_->SetIsAlive(false);
+        return;
+    }
     // 地面に ついたら(仮)
     if(!pCharacter_->GetIsDrop()){
         pEgg_->SetVelocity({0.0f,0.0f,0.0f});

@@ -26,7 +26,7 @@ void EggManager::Initialize(){
 void EggManager::Update(){
 
     std::erase_if(eggs_,[](std::unique_ptr<Egg>& egg){
-        return egg->GetIsBreak();
+        return egg->GetIsBreak() || !egg->GetIsAlive();
                   });
 
     if(eggs_.empty()){

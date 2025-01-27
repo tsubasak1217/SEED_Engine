@@ -26,7 +26,6 @@ Player::Player(): BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
-
 }
 
 Player::~Player(){}
@@ -65,6 +64,8 @@ void Player::Initialize(){
     // 捕食可能範囲の初期化
     predationRange_ = std::make_unique<PredationRange>();
     predationRange_->Initialize(this);
+
+    lastPosOnGround_ = GetWorldTranslate();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,16 @@ void Player::Update(){
 //////////////////////////////////////////////////////////////////////////
 void Player::Draw(){
     BaseCharacter::Draw();
+}
+
+void Player::EndFrame(){
+    BaseCharacter::EndFrame();
+    if(GetWorldTranslate().y <= 0.0f){
+        SetTranslate(lastPosOnGround_);
+    }
+    if(!isDrop_){
+        lastPosOnGround_ = GetLocalTranslate();
+    }
 }
 
 void Player::Spawn(const Vector3& pos){

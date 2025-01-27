@@ -19,6 +19,7 @@ void UI::Initialize(const std::string& _filePath){
     JsonCoordinator::LoadGroup(name_);
     // Jsonに 登録
     JsonCoordinator::RegisterItem(name_,"Size",sprite_->size);
+    JsonCoordinator::RegisterItem(name_,"Scale",sprite_->scale);
     JsonCoordinator::RegisterItem(name_,"Rotate",sprite_->rotate);
     JsonCoordinator::RegisterItem(name_,"Translate",sprite_->translate);
     JsonCoordinator::RegisterItem(name_,"AnchorPoint",sprite_->anchorPoint);

@@ -10,6 +10,7 @@
 #include "State/ITitleState.h"
 //object
 #include "../UI/UI.h"
+#include "Model.h"
 
 class Scene_Title : public Scene_Base{
 public:
@@ -32,5 +33,7 @@ private:
     //============= UI =============//
     std::unique_ptr<UI> titleLogo_    = nullptr;
     std::unique_ptr<UI> toNextButton_ = nullptr;
-    std::unique_ptr<UI> toExitButton_ = nullptr;
+
+    //============= PlayerModel =============//
+    std::unique_ptr<Model> playerModel_ = nullptr;
 };

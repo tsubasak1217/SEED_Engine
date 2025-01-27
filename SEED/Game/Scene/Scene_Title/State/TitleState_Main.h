@@ -2,6 +2,8 @@
 
 #include "ITitleState.h"
 
+class Input;
+
 class TitleState_Main
     : public ITitleState{
 public:
@@ -17,5 +19,6 @@ public:
     void EndFrame()override;
     void HandOverColliders()override;
     void ManageState()override;
+private:
+   const Input* input_ = nullptr;
 };
-

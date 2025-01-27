@@ -700,10 +700,10 @@
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\ButtonUI.cpp">
+    <ClCompile Include="Game\UI\UI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\UI.cpp">
+    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1288,8 +1288,8 @@
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
     <ClInclude Include="Game\UI\State\IUiState.h" />
-    <ClInclude Include="Game\UI\ButtonUI.h" />
     <ClInclude Include="Game\UI\UI.h" />
+    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

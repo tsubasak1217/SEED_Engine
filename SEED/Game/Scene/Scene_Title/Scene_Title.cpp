@@ -3,6 +3,8 @@
 ///local
 //lib
 #include "InputManager/InputManager.h"
+//external
+#include "../adapter/json/JsonCoordinator.h"
 
 //other scene
 #include "Scene_Game.h"
@@ -42,8 +44,17 @@ void Scene_Title::Initialize(){
     toNextButton_ = std::make_unique<UI>("toNextButton_");
     toNextButton_->Initialize("Assets/monsterBall.png");
 
-    toExitButton_ = std::make_unique<UI>("toExitButton_");
-    toExitButton_->Initialize("Assets/uvChecker.png");
+    //===================== PlayerModel =====================//
+    playerModel_ = std::make_unique<Model>("dinosaur.gltf");
+    playerModel_->isRotateWithQuaternion_ = false;
+    playerModel_->StartAnimation("handUpRunning",true);
+
+    // gameSceneとは分ける
+    JsonCoordinator::LoadGroup("TitlePlayerModel");
+    JsonCoordinator::RegisterItem("TitlePlayerModel","Rotate",playerModel_->rotate_);
+    JsonCoordinator::RegisterItem("TitlePlayerModel","Translate",playerModel_->translate_);
+    playerModel_->UpdateMatrix();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +70,6 @@ void Scene_Title::Finalize(){
     //===================== UI =====================//
     titleLogo_->Finalize();
     toNextButton_->Finalize();
-    toExitButton_->Finalize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +86,6 @@ void Scene_Title::Update(){
     //===================== UI =====================//
     titleLogo_->Update();
     toNextButton_->Update();
-    toExitButton_->Update();
 }
 
 
@@ -93,7 +102,6 @@ void Scene_Title::Draw(){
     //===================== UI =====================//
     titleLogo_->Draw();
     toNextButton_->Draw();
-    toExitButton_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +118,6 @@ void Scene_Title::BeginFrame(){
     //===================== UI =====================//
     titleLogo_->BeginFrame();
     toNextButton_->BeginFrame();
-    toExitButton_->BeginFrame();
 }
 
 
@@ -127,9 +134,7 @@ void Scene_Title::EndFrame(){
     //===================== UI =====================//
     titleLogo_->EndFrame();
     toNextButton_->EndFrame();
-    toExitButton_->EndFrame();
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //

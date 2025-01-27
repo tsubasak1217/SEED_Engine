@@ -116,7 +116,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp" />
-    <ClCompile Include="Game\UI\ButtonUI.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp" />
     <ClCompile Include="Game\Manager\Stage.cpp" />
@@ -259,13 +258,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
+    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
     <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
-    <ClInclude Include="Game\UI\ButtonUI.h" />
     <ClInclude Include="Game\UI\State\IUiState.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
@@ -446,6 +445,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
+    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />

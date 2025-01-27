@@ -245,6 +245,10 @@ Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
 }
 
+Vector4 MyMath::Lerp(const Vector4& v1,const Vector4& v2,float t){
+    return v1 + (v2 - v1) * t;
+}
+
 //================================================================
 //                      スプライン補間の関数
 //================================================================

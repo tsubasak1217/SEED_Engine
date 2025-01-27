@@ -26,7 +26,7 @@ struct Vector4 final{
 
     //================== ADD ====================//
 
-    Vector4 operator+(const Vector4& value){
+    Vector4 operator+(const Vector4& value) const {
         return { x + value.x,y + value.y,z + value.z,w + value.w };
     }
 
@@ -40,7 +40,7 @@ struct Vector4 final{
 
     //================== SUB ====================//
 
-    Vector4 operator-(const Vector4& value){
+    Vector4 operator-(const Vector4& value) const {
         return { x - value.x,y - value.y,z - value.z,w - value.w };
     }
 
@@ -53,11 +53,11 @@ struct Vector4 final{
 
     //================== MUL ====================//
 
-    Vector4 operator*(const Vector4& value){
+    Vector4 operator*(const Vector4& value) const {
         return { x * value.x,y * value.y,z * value.z,w * value.w };
     }
 
-    Vector4 operator*(float value){
+    Vector4 operator*(float value) const {
         return { x * value,y * value,z * value,w * value };
     }
 

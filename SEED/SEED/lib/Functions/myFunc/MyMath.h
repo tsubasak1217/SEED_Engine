@@ -7,6 +7,7 @@
 #include <numeric>
 #include <algorithm>
 #include "Line.h"
+#include "Vector4.h"
 
 const float kDeltaTime = 0.016f;
 
@@ -24,9 +25,9 @@ public:
     /*---------------------------- 長さを計る関数 ----------------------------*/
 
     // 2点間の距離を計算する関数 (2D)
-    static float Length(const Vector2& pos1, const Vector2& pos2);
+    static float Length(const Vector2& pos1,const Vector2& pos2);
     // 2点間の距離を計算する関数 (3D)
-    static float Length(const Vector3& pos1, const Vector3& pos2);
+    static float Length(const Vector3& pos1,const Vector3& pos2);
     // ベクトルの長さを返す関数 (2D)
     static float Length(const Vector2& vec);
     // ベクトルの長さを返す関数 (3D)
@@ -49,53 +50,53 @@ public:
     static Vector3 Normalize(const Vector3& vec);
 
     /*- 仮: 非線形を線形に変換する関数-*/
-    static float DepthToLinear(float depth, float near, float far);
+    static float DepthToLinear(float depth,float near,float far);
 
     /*-------------------------- 内積を求める関数 ---------------------------*/
 
     // 2ベクトルの内積を求める関数 (2D)
-    static float Dot(const Vector2& vec1, const Vector2& vec2);
+    static float Dot(const Vector2& vec1,const Vector2& vec2);
     // 2ベクトルの内積を求める関数 (3D)
-    static float Dot(const Vector3& vec1, const Vector3& vec2);
+    static float Dot(const Vector3& vec1,const Vector3& vec2);
     // 3点の座標を指定して内積を求める関数 (2D)
-    static float Dot(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos);
+    static float Dot(const Vector2& pos1,const Vector2& pos2,const Vector2& targetPos);
     // 3点の座標を指定して内積を求める関数 (3D)
-    static float Dot(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos);
+    static float Dot(const Vector3& pos1,const Vector3& pos2,const Vector3& targetPos);
     // 2ベクトルの内積を求める関数 (長さで正規化する) (2D)
-    static float DotNormal(const Vector2& vec1, const Vector2& vec2);
+    static float DotNormal(const Vector2& vec1,const Vector2& vec2);
     // 2ベクトルの内積を求める関数 (長さで正規化する) (3D)
-    static float DotNormal(const Vector3& vec1, const Vector3& vec2);
+    static float DotNormal(const Vector3& vec1,const Vector3& vec2);
     // 3点の座標を指定して内積を求める関数 (長さで正規化する) (2D)
-    static float DotNormal(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos);
+    static float DotNormal(const Vector2& pos1,const Vector2& pos2,const Vector2& targetPos);
     // 3点の座標を指定して内積を求める関数 (長さで正規化する) (3D)
-    static float DotNormal(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos);
+    static float DotNormal(const Vector3& pos1,const Vector3& pos2,const Vector3& targetPos);
 
     /*-------------------------- 外積を求める関数 ---------------------------*/
 
     // 2ベクトルの外積を求める関数 (2D)
-    static float Cross(const Vector2& vec1, const Vector2& vec2);
+    static float Cross(const Vector2& vec1,const Vector2& vec2);
     // 2ベクトルの外積を求める関数 (3D)
-    static Vector3 Cross(const Vector3& vec1, const Vector3& vec2, bool kViewMode = kWorld);
+    static Vector3 Cross(const Vector3& vec1,const Vector3& vec2,bool kViewMode = kWorld);
     // 3点の座標を指定して外積を求める関数 (長さで正規化する) (2D)
-    static float Cross(const Vector2& originPos, const Vector2& endPos, const Vector2& targetPos);
+    static float Cross(const Vector2& originPos,const Vector2& endPos,const Vector2& targetPos);
 
     /*----------------------- 射影ベクトルを求める関数 -----------------------*/
 
     // 3点の座標を指定して射影ベクトルを求める関数 (2D)
-    static Vector2 ProjectVec(const Vector2& pos1, const Vector2& pos2, const Vector2& targetPos);
+    static Vector2 ProjectVec(const Vector2& pos1,const Vector2& pos2,const Vector2& targetPos);
     // 3点の座標を指定して射影ベクトルを求める関数 (3D)
-    static Vector3 ProjectVec(const Vector3& pos1, const Vector3& pos2, const Vector3& targetPos);
+    static Vector3 ProjectVec(const Vector3& pos1,const Vector3& pos2,const Vector3& targetPos);
     // 2ベクトルから射影ベクトルを求める関数 (2D)
-    static Vector2 ProjectVec(const Vector2& vec1, const Vector2& vec2);
+    static Vector2 ProjectVec(const Vector2& vec1,const Vector2& vec2);
     // 2ベクトルから射影ベクトルを求める関数 (3D)
-    static Vector3 ProjectVec(const Vector3& vec1, const Vector3& vec2);
+    static Vector3 ProjectVec(const Vector3& vec1,const Vector3& vec2);
 
     /*-------------------- 線への最近傍点を求めるを求める関数 ------------------*/
 
     // 直線への最近傍点を求める関数 (2D)
-    static Vector2 ClosestPoint(const Vector2& seg_origin, const Vector2& seg_end, const Vector2& point);
+    static Vector2 ClosestPoint(const Vector2& seg_origin,const Vector2& seg_end,const Vector2& point);
     // 直線への最近傍点を求める関数 (3D)
-    static Vector3 ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, const Vector3& point);
+    static Vector3 ClosestPoint(const Vector3& seg_origin,const Vector3& seg_end,const Vector3& point);
 
     //================================================================
     //                      個人用な便利関数
@@ -109,22 +110,23 @@ public:
     static float Deg2Rad(float deg);
 
     /*-------------------- 線形補完をする関数 ------------------*/
-    static Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
-    static float Lerp(const float v1, const float v2, float t);
-    static float LerpShortAngle(float a, float b, float t);
+    static Vector3 Lerp(const Vector3& v1,const Vector3& v2,float t);
+    static Vector4 Lerp(const Vector4& v1,const Vector4& v2,float t);
+    static float Lerp(const float v1,const float v2,float t);
+    static float LerpShortAngle(float a,float b,float t);
 
     static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,float t);
     static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);
 
     //スプライン補完をする関数
-    static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
+    static Vector3 CatmullRomInterpolation(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);
     //スプライン補完を使用して位置を設定する関数
-    static Vector3 CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t);
-    static Vector3 CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t);
+    static Vector3 CatmullRomPosition(const std::vector<Vector3>& controlPoints,float t);
+    static Vector3 CatmullRomPosition(const std::vector<Vector3*>& controlPoints,float t);
     // 制御点を等間隔に修正する関数
     static void ToConstantControlPoints(std::vector<Vector3>* pControlPoints);
 
-    static Vector3 TransformNormal(const Vector3& normal, const Matrix4x4& matrix);
+    static Vector3 TransformNormal(const Vector3& normal,const Matrix4x4& matrix);
 
     //================================================================
     //                      型変換の関数
@@ -156,7 +158,7 @@ public:
 
     // カラーコードからVector4に変換する関数 (0~1に収められる)
     static Vector4 FloatColor(uint32_t color);
-    static Vector4 FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a);
+    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a);
     // Vector4からカラーコードに変換する関数
     static uint32_t IntColor(const Vector4& color);
 

@@ -2,6 +2,9 @@
 
 #include "ITitleState.h"
 
+//object
+class UI;
+
 class TitleState_Out
     : public ITitleState{
 public:
@@ -17,4 +20,6 @@ public:
     void EndFrame()override;
     void HandOverColliders()override;
     void ManageState()override;
+private:
+    std::unique_ptr<UI> fadeOutScreen_;
 };

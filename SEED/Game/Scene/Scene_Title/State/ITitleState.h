@@ -21,7 +21,7 @@ public:
     void Finalize(){};
 
     void BeginFrame() = 0;
-    void EndFrame() = 0;
+    void EndFrame();
 
     void HandOverColliders() = 0;
     void ManageState() = 0;

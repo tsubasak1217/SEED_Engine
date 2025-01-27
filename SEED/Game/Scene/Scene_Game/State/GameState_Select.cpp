@@ -74,7 +74,10 @@ void GameState_Select::EndFrame(){
 
     // ステージが変わったらプレイヤーの位置を初期位置に戻す
     if(StageManager::IsStageChanged()){
+        pGameScene_->Get_pPlayer()->SetVelocityY(0.0f);
+        pGameScene_->Get_pPlayer()->DiscardPreCollider();
         pGameScene_->Get_pPlayer()->SetTranslate(StageManager::GetStartPos());
+        pGameScene_->Get_pPlayer()->UpdateMatrix();
     }
 }
 

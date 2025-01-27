@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include <thread>
 #include "Scene_Base.h"
 #include "Scene_Game/Scene_Game.h"
 #include "Scene_Title/Scene_Title.h"

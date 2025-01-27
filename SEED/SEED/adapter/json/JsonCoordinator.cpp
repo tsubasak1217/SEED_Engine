@@ -134,48 +134,79 @@ bool JsonCoordinator::LoadGroup(const std::string& group,std::optional<std::stri
 //-------------------------------------------------------------------
 // グループ内アイテムをImGuiでレンダリング
 //-------------------------------------------------------------------
-void JsonCoordinator::RenderAdjustableItem(const std::string& group,const std::string& key){
-    if(auto opt = GetValue(group,key)){
+void JsonCoordinator::RenderAdjustableItem(const std::string& group, const std::string& key){
+    if (auto opt = GetValue(group, key)){
         auto& value = *opt;
 
-        if(std::holds_alternative<int>(value)){
-            int val = std::get<int>(value);
-            if(ImGui::InputInt(key.c_str(),&val)){
-                SetValue(group,key,val);
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // std::visitを使用して型ごとの処理を分岐
+        // 各型に応じたImGui入力を表示し、値が変更された場合はSetValueを呼び出す
+        //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        std::visit([&] (auto&& val){
+            using T = std::decay_t<decltype(val)>;
+
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // int型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if constexpr (std::is_same_v<T, int>){
+                if (ImGui::InputInt(key.c_str(), &val)){
+                    SetValue(group, key, val);
+                }
             }
-        } else if(std::holds_alternative<float>(value)){
-            float val = std::get<float>(value);
-            if(ImGui::DragFloat(key.c_str(),&val,0.01f)){
-                SetValue(group,key,val);
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // float型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, float>){
+                if (ImGui::DragFloat(key.c_str(), &val, 0.01f)){
+                    SetValue(group, key, val);
+                }
             }
-        } else if(std::holds_alternative<Vector2>(value)){
-            Vector2 v = std::get<Vector2>(value);
-            if(ImGui::DragFloat2(key.c_str(),&v.x,0.01f)){
-                SetValue(group,key,v);
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // Vector2型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, Vector2>){
+                if (ImGui::DragFloat2(key.c_str(), &val.x, 0.01f)){
+                    SetValue(group, key, val);
+                }
             }
-        } else if(std::holds_alternative<Vector3>(value)){
-            Vector3 v = std::get<Vector3>(value);
-            if(ImGui::DragFloat3(key.c_str(),&v.x,0.01f)){
-                SetValue(group,key,v);
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // Vector3型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, Vector3>){
+                if (ImGui::DragFloat3(key.c_str(), &val.x, 0.01f)){
+                    SetValue(group, key, val);
+                }
             }
-        } else if(std::holds_alternative<bool>(value)){
-            bool val = std::get<bool>(value);
-            if(ImGui::Checkbox(key.c_str(),&val)){
-                SetValue(group,key,val);
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // Vector4型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, Vector4>){
+                if (ImGui::DragFloat4(key.c_str(), &val.x, 0.01f)){
+                    SetValue(group, key, val);
+                }
             }
-        } else if(std::holds_alternative<std::string>(value)){
-            // 現在の文字列値を取得
-            std::string strVal = std::get<std::string>(value);
-            // バッファサイズは適宜調整
-            char buffer[256];
-            std::snprintf(buffer,sizeof(buffer),"%s",strVal.c_str());
-            if(ImGui::InputText(key.c_str(),buffer,IM_ARRAYSIZE(buffer))){
-                // 入力が変更された場合、値を更新
-                SetValue(group,key,std::string(buffer));
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // bool型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, bool>){
+                if (ImGui::Checkbox(key.c_str(), &val)){
+                    SetValue(group, key, val);
+                }
             }
-        }
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            // std::string型の処理
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            else if constexpr (std::is_same_v<T, std::string>){
+                char buffer[256];
+                std::snprintf(buffer, sizeof(buffer), "%s", val.c_str());
+                if (ImGui::InputText(key.c_str(), buffer, IM_ARRAYSIZE(buffer))){
+                    SetValue(group, key, std::string(buffer));
+                }
+            }
+                   }, value);
     }
 }
+
 
 
 //-------------------------------------------------------------------

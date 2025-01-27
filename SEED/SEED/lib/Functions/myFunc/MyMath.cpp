@@ -490,11 +490,11 @@ uint32_t MyMath::IntColor(const Vector4& color){
     return red + green + blue + alpha;
 }
 
-uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
+Vector4 MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 
     // 彩度が0なので明度のみを反映
     if(s == 0.0){
-        return IntColor(Vector4(v, v, v, alpha));
+        return Vector4(v, v, v, alpha);
     }
 
     h *= 6.0;
@@ -506,21 +506,21 @@ uint32_t MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
     float t = v * (1.0f - s * (1.0f - f));
 
     if(i % 6 == 0){
-        return  IntColor(Vector4(v, t, p, alpha));
+        return  Vector4(v, t, p, alpha);
     } else if(i % 6 == 1){
-        return  IntColor(Vector4(q, v, p, alpha));
+        return  Vector4(q, v, p, alpha);
     } else if(i % 6 == 2){
-        return  IntColor(Vector4(p, v, t, alpha));
+        return  Vector4(p, v, t, alpha);
     } else if(i % 6 == 3){
-        return  IntColor(Vector4(p, q, v, alpha));
+        return  Vector4(p, q, v, alpha);
     } else if(i % 6 == 4){
-        return  IntColor(Vector4(t, p, v, alpha));
+        return  Vector4(t, p, v, alpha);
     } else{
-        return  IntColor(Vector4(v, p, q, alpha));
+        return  Vector4(v, p, q, alpha);
     }
 }
 
 
-uint32_t MyMath::HSV_to_RGB(Vector4 HSVA_color){
+Vector4 MyMath::HSV_to_RGB(Vector4 HSVA_color){
     return HSV_to_RGB(HSVA_color.x, HSVA_color.y, HSVA_color.z, HSVA_color.w);
 }

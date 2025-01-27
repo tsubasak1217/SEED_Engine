@@ -155,6 +155,15 @@ void BaseCharacter::InitColliders(ObjectType objectType){
     }
 }
 
+// 前フレームのコライダーの破棄
+void BaseCharacter::DiscardPreCollider(){
+    BaseObject::DiscardPreCollider();
+    // state固有のコライダーの破棄
+    if(currentState_){
+        currentState_->DiscardPreCollider();
+    }
+}
+
 // ダメージを受ける処理
 void BaseCharacter::Damage(int32_t damage){
     HP_ -= damage;

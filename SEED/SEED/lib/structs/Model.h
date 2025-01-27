@@ -101,10 +101,11 @@ private:
 
 public:
     std::vector<uint32_t> textureGH_;
-    Vector4 color_;
+    std::vector<Vector4> meshColor_;// 各メッシュごとの色
+    Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色
     float shininess_ = 50.0f;
     int32_t lightingType_;
-    BlendMode blendMode_;
+    BlendMode blendMode_ = BlendMode::NORMAL;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;

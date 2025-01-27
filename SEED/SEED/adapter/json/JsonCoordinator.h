@@ -3,6 +3,7 @@
 
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -14,7 +15,7 @@
 #include <variant>
 
 using json = nlohmann::ordered_json;
-using AdjustableValue = std::variant<int,float,Vector2,Vector3,bool,std::string>;
+using AdjustableValue = std::variant<int,float,Vector2,Vector3,Vector4,bool,std::string>;
 
 class JsonCoordinator{
 public:
@@ -87,23 +88,29 @@ inline void to_json(json& j,const AdjustableValue& value){
 //-------------------------------------------------------------------
 // JSON から AdjustableValue に変換
 //-------------------------------------------------------------------
-inline void from_json(const json& j,AdjustableValue& value){
-    if(j.is_number_integer()){
-        value = j.get<int>();
-    } else if(j.is_number_float()){
-        value = j.get<float>();
-    } else if(j.is_object()){
-        size_t objectSize = j.object().size();
-        if(objectSize == 2){
-            value = j.get<Vector2>();
-        } else if(objectSize == 3){
-            value = j.get<Vector3>();
+inline void from_json(const nlohmann::ordered_json& j, AdjustableValue& val){
+    using namespace nlohmann;
+
+    // まず型判別
+    if (j.is_boolean()){
+        val = j.get<bool>();
+    } else if (j.is_number_integer()){
+        val = j.get<int>();
+    } else if (j.is_number_float()){
+        val = j.get<float>();
+    } else if (j.is_string()){
+        val = j.get<std::string>();
+    } else if (j.is_object()){
+        // 要素数で Vector2 or Vector3 or Vector4 を判別
+        size_t size = j.size();
+        if (size == 2){
+            val = j.get<Vector2>();
+        } else if (size == 3){
+            val = j.get<Vector3>();
+        } else if(size == 4){
+            val = j.get<Vector4>();
         }
-    } else if(j.is_boolean()){
-        value = j.get<bool>();
-    } else if(j.is_string()){
-        value = j.get<std::string>();
-    }
+    } 
 }
 
 //-------------------------------------------------------------------

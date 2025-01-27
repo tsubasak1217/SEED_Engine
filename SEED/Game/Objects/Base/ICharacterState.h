@@ -29,6 +29,7 @@ public: // コライダー関連
     void InitColliders(ObjectType objectType);
     void InitColliders(const std::string &fileName, ObjectType objectType);
     void EraseCheckColliders();
+    void DiscardPreCollider();
 
 protected:
     virtual void ManageState() = 0;

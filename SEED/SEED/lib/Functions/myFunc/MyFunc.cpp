@@ -1,5 +1,6 @@
 #include "MyFunc.h"
 #include "MyMath.h"
+#include "Quaternion.h"
 
 // staticメンバーの定義
 std::random_device MyFunc::rd;
@@ -80,6 +81,23 @@ Vector2 MyFunc::RandomVector2(){
     float y = std::sin(theta);
 
     return {x,y};
+}
+
+//----------------- ランダムな色を返す関数 -----------------//
+Vector4 MyFunc::RandomColor() {
+    return { Random(0.0f,1.0f),Random(0.0f,1.0f),Random(0.0f,1.0f),1.0f };
+}
+
+//----------------- ランダムな方向を返す関数 -----------------//
+Vector3 MyFunc::RandomDirection(const Vector3& baseDirection, float angle) {
+    // ランダムなthetaとphiの範囲
+    float theta = MyFunc::Random(-angle, angle); // -angle ~ angle
+    float phi = MyFunc::Random(-angle / 2.0f, angle / 2.0f); // -angle/2 ~ angle/2
+    // 球座標から直交座標への変換
+    float x = std::sin(phi) * std::cos(theta);
+    float y = std::sin(phi) * std::sin(theta);
+    float z = std::cos(phi);
+    return baseDirection * Quaternion::DirectionToDirection({ 1.0f,0.0f,0.0f }, { x,y,z });
 }
 
 //----------------- thetaとphiからベクトルを生成する関数 -----------------//

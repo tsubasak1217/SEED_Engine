@@ -107,7 +107,7 @@ void BaseObject::EndFrameDropFlagUpdate(){
 
     // 終了時の落下フラグに応じた処理
     if(isDrop_ && isApplyGravity_){
-        float downAccel = -Physics::kGravity * weight_ * ClockManager::DeltaTime();
+        float downAccel = -Physics::kGravity * ClockManager::DeltaTime();
         velocity_.y += downAccel;
     } 
 }
@@ -167,6 +167,15 @@ void BaseObject::HandOverColliders(){
 void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// 前フレームのコライダーの破棄
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::DiscardPreCollider(){
+    for(auto& collider : colliders_){
+        collider->DiscardPreCollider();
+    }
 }
 
 

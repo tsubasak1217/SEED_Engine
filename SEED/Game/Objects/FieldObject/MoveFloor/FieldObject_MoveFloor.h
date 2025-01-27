@@ -22,6 +22,7 @@ public:
     void Initialize() override;
     void Update() override;
     void InitializeRoutine();       //< ルーチンの初期化
+    void HandOverColliders()override;
     //ImGui
     void ShowImGui() override;
 

@@ -87,10 +87,16 @@ void FieldObject_Switch::Update(){
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::ShowImGui(){
     ImGui::Text("SwitchType");
-    ImGui::RadioButton("Trigger", ( int* ) &switchType_, ( int ) SwitchType::TYPE_TRIGGER);
-    ImGui::SameLine();
-    ImGui::RadioButton("Held", ( int* ) &switchType_, ( int ) SwitchType::TYPE_HELD);
-    ImGui::Separator();
+
+    // チェックボックスの状態を判定
+    bool isHeld = (switchType_ == SwitchType::TYPE_HELD);
+
+    // チェックボックスの描画
+    if (ImGui::Checkbox("Held", &isHeld)){
+        // チェックボックスの状態が変更されたらSwitchTypeを更新
+        switchType_ = isHeld ? SwitchType::TYPE_HELD : SwitchType::TYPE_TRIGGER;
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////

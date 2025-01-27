@@ -2,7 +2,7 @@
 
 // local
 #include "../Enemy/Enemy.h"
-#include "../Enemy/Routine/EnemyRoutineManager.h"
+#include "../Routine/RoutineManager.h"
 //lib
 #include <cstdint>
 #include <memory>
@@ -14,8 +14,8 @@ class Player;
 
 class EnemyManager{
 public:
-    EnemyManager();
-    EnemyManager(Player* player,uint32_t stageNo);
+    EnemyManager() = default;
+    EnemyManager(Player* player,uint32_t stageNo,RoutineManager& routineManager);
     ~EnemyManager() = default;
 
     void Initialize();
@@ -47,7 +47,7 @@ public:
     }
 
     // ルーチン管理
-    EnemyRoutineManager* GetRoutineManager(){ return &routineManager_; }
+    RoutineManager* GetRoutineManager(){ return &routineManager_; }
 
     void SetPlayer(Player* player){ pPlayer_ = player; }
 
@@ -55,7 +55,7 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies_;
 
     // 固定移動 ポイント 
-    EnemyRoutineManager routineManager_;
+    RoutineManager& routineManager_;
 
     Player* pPlayer_ = nullptr;
 

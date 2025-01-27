@@ -112,7 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp" />
+    <ClCompile Include="Game\Routine\RoutineManager.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp" />
@@ -261,7 +262,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
+    <ClInclude Include="Game\Routine\RoutineManager.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
     <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />

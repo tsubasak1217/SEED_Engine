@@ -1,17 +1,17 @@
-#include "EnemyRoutineManager.h"
+#include "RoutineManager.h"
 #include "../adapter/json/JsonCoordinator.h"
 #include "../adapter/csv/CsvAdapter.h"
 #include <fstream>
 #include <iostream>
 
-EnemyRoutineManager::EnemyRoutineManager(uint32_t stageNum){
+RoutineManager::RoutineManager(uint32_t stageNum){
     LoadRoutines(stageNum);
 }
 
 ////////////////////////////////////////////////////////////////////////
 // CSV 保存
 ////////////////////////////////////////////////////////////////////////
-void EnemyRoutineManager::AddRoutine(const std::string& name, const std::vector<Vector3>& points){
+void RoutineManager::AddRoutine(const std::string& name, const std::vector<Vector3>& points){
     routines_[name] = points;
 }
 
@@ -19,14 +19,14 @@ void EnemyRoutineManager::AddRoutine(const std::string& name, const std::vector<
 ////////////////////////////////////////////////////////////////////////
 // ルーチンの削除
 ////////////////////////////////////////////////////////////////////////
-void EnemyRoutineManager::DeleteRoutine(const std::string& name){
+void RoutineManager::DeleteRoutine(const std::string& name){
     routines_.erase(name);
 }
 
 ////////////////////////////////////////////////////////////////////////
 // ルーチンポイントの取得
 ////////////////////////////////////////////////////////////////////////
-const std::vector<Vector3>* EnemyRoutineManager::GetRoutinePoints(const std::string& name) const{
+const std::vector<Vector3>* RoutineManager::GetRoutinePoints(const std::string& name) const{
     auto it = routines_.find(name);
     if (it != routines_.end()){
         return &(it->second);
@@ -37,7 +37,7 @@ const std::vector<Vector3>* EnemyRoutineManager::GetRoutinePoints(const std::str
 ////////////////////////////////////////////////////////////////////////
 // ルーチン名の取得
 ////////////////////////////////////////////////////////////////////////
-std::vector<std::string> EnemyRoutineManager::GetRoutineNames() const{
+std::vector<std::string> RoutineManager::GetRoutineNames() const{
     std::vector<std::string> names;
     for (const auto& pair : routines_){
         names.push_back(pair.first);
@@ -48,7 +48,7 @@ std::vector<std::string> EnemyRoutineManager::GetRoutineNames() const{
 ////////////////////////////////////////////////////////////////////////
 // 保存
 ////////////////////////////////////////////////////////////////////////
-void EnemyRoutineManager::SaveRoutines(uint32_t stageNum) const{
+void RoutineManager::SaveRoutines(uint32_t stageNum) const{
     std::vector<std::vector<std::string>> csvData;
     csvData.push_back({"RoutineName", "PointCount", "Points..."});
 
@@ -77,7 +77,7 @@ void EnemyRoutineManager::SaveRoutines(uint32_t stageNum) const{
 ////////////////////////////////////////////////////////////////////////
 // 読み込み
 ////////////////////////////////////////////////////////////////////////
-void EnemyRoutineManager::LoadRoutines(uint32_t stageNum){
+void RoutineManager::LoadRoutines(uint32_t stageNum){
     //ステージごとに保存
     const std::string fileName = "stage" + std::to_string(stageNum) + "_routineLibrary";
     auto csvData = CsvAdapter::GetInstance()->LoadCsv(fileName);

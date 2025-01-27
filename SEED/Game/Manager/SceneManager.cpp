@@ -30,7 +30,7 @@ SceneManager::~SceneManager(){
 void SceneManager::Initialize(){
     instance_ = GetInstance();
 
-    pScene_.reset(new Scene_Title(instance_));
+    pScene_.reset(new Scene_Game(instance_));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -38,9 +38,6 @@ private:
     Vector2 uiPos_;
     Vector2 numberUiOffset_ = {0.0f,0.0f};
 
-    Vector2 min_ = {80.0f,80.0f};
-    Vector2 max_ = {1200.0f,640.0f};
-
     float duration_ = 0.f;
     float* leftTime_ = nullptr;
 

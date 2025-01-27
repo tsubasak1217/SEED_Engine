@@ -9,11 +9,11 @@
 // object
 #include "Egg/Egg.h"
 #include "Player/Player.h"
+//camera
+#include "FollowCamera.h"
 // manager
 #include "Egg/Manager/EggManager.h"
 #include "StageManager.h"
-// camera
-#include "FollowCamera.h"
 //engine 
 #include "SEED.h"
 
@@ -82,9 +82,7 @@ void PlayerStage_ForNextStage::Update(){
             t
         ));
         isThrow_  = t >= 1.0f;
-    }
-    // ステート管理
-    ManageState();
+    } 
 
 }
 
@@ -108,16 +106,5 @@ void PlayerStage_ForNextStage::ManageState(){
     if(!preIsThrow_ && isThrow_){
         egg_->SetTranslate(nextStartPos_);
         egg_->ChangeState(new EggState_Break(egg_,true));
-    }
-    // ステートが終了したら
-    if(egg_->GetIsBreak()){
-        {
-            // カメラのターゲットをPlayerに変更
-            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-            FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
-            pFollowCamera->SetTarget(pPlayer);
-        }
-        // 操作可能にする
-        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
     }
 }

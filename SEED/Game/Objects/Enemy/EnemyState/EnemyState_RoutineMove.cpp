@@ -35,12 +35,6 @@ void EnemyState_RoutineMove::Update(){
     Vector3 direction = targetPos - currentPos;
     float distanceToTarget = MyMath::Length(direction);
 
-    if (distanceToTarget < 0.001f){
-        // ターゲットポイントにほぼ到達したと判断
-        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % movePoints_->size();
-        return; // 次のフレームで新しいポイントに向かって移動
-    }
-
     // 正規化された移動方向
     Vector3 moveDir = MyMath::Normalize(direction);
     // 1フレームあたりの移動量
@@ -55,8 +49,18 @@ void EnemyState_RoutineMove::Update(){
         enemy_->SetTranslate(currentPos + moveDir * moveStep);
     }
 
+    // 移動後に距離を再チェック
+    currentPos = enemy_->GetWorldTranslate();
+    targetPos = (*movePoints_)[currentMovePointIndex_];
+    distanceToTarget = MyMath::Length(currentPos, targetPos);
+
+    if (distanceToTarget < 0.01f){
+        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % movePoints_->size();
+    }
+
     ManageState();
 }
+
 
 
 void EnemyState_RoutineMove::Draw(){}

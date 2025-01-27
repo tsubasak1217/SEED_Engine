@@ -28,5 +28,5 @@ private:
     const  std::vector<Vector3>* movePoints_ = nullptr;
     int currentMovePointIndex_ = 0;
 
-    float sensingDistance_ = 0.0f;
+    float sensingDistance_ = 10.0f;
 };

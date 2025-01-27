@@ -21,6 +21,6 @@ protected:
 private:
     Enemy* enemy_  = nullptr;
 
-    float sensingDistance_ = 0.0f;
-    float speed_ = 0.0f;
+    float sensingDistance_ = 10.0f;
+    float speed_ = 3.0f;
 };

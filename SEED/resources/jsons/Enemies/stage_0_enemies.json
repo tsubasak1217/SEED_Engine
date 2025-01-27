@@ -3,7 +3,7 @@
     "Enemies": [
         {
             "CanEat": false,
-            "ChasePlayer": false,
+            "ChasePlayer": true,
             "HP": 100,
             "Index": 0,
             "Name": "enemy0",

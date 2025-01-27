@@ -4,6 +4,9 @@
 #include "ClockManager.h"
 #include "../adapter/json/JsonCoordinator.h"
 
+// local
+#include "../FieldObject/Switch/FieldObject_Switch.h"
+
 /////////////////////////////////////////////////////////////////////////
 // static変数宣言
 /////////////////////////////////////////////////////////////////////////
@@ -55,7 +58,9 @@ void FieldObject_MoveFloor::Initialize(){
 // 更新関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Update(){
-    Move();
+    if (!hasSwitch_ || (hasSwitch_ && isSwitchActive_)){
+        Move();
+    }
     FieldObject::Update();
 }
 
@@ -94,6 +99,17 @@ void FieldObject_MoveFloor::ShowImGui(){
         if (points){
             SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
         }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Observerの関数
+/////////////////////////////////////////////////////////////////////////
+void FieldObject_MoveFloor::OnNotify(const std::string& event, [[maybe_unused]] void* data){
+    if (event == "SwitchActivated"){
+        isSwitchActive_ = true;
+    } else if (event == "SwitchDeactivated"){
+        isSwitchActive_ = false;
     }
 }
 
@@ -147,4 +163,28 @@ void FieldObject_MoveFloor::Move(){
         currentMovePointIndex_ = (currentMovePointIndex_ + 1) % routinePoints_.size();
     }
 
+}
+
+/* public =============================================================*/
+
+/////////////////////////////////////////////////////////////////////////
+// getter
+/////////////////////////////////////////////////////////////////////////
+void FieldObject_MoveFloor::SetSwitch(FieldObject_Switch* pSwitch){
+    FieldObject_Switch* switchObj = pSwitch;
+    if (switchObj){
+        switchObj->RegisterObserver(this);
+    }
+    hasSwitch_ = true;
+}
+
+/////////////////////////////////////////////////////////////////////////
+// setter
+/////////////////////////////////////////////////////////////////////////
+void FieldObject_MoveFloor::RemoveSwitch(FieldObject_Switch* pSwitch){
+    FieldObject_Switch* switchObj = pSwitch;
+    if (switchObj){
+        switchObj->UnregisterObserver(this);
+    }
+    hasSwitch_ = false;
 }

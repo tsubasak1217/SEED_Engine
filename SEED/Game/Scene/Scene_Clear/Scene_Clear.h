@@ -4,7 +4,7 @@
 
 class Scene_Clear : public Scene_Base{
 public:
-    Scene_Clear(SceneManager* pSceneManager);
+    Scene_Clear();
     ~Scene_Clear()override;
     void Initialize()override;
     void Finalize()override;

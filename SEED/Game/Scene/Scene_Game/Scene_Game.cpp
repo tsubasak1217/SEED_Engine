@@ -2,7 +2,6 @@
 #include <SEED.h>
 #include "Environment.h"
 #include "ParticleManager.h"
-#include "Scene_Title.h"
 #include "CameraManager/CameraManager.h"
 #include "../adapter/json/JsonCoordinator.h"
 
@@ -19,8 +18,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game(SceneManager* pSceneManager) {
-    pSceneManager_ = pSceneManager;
+Scene_Game::Scene_Game() {
     Initialize();
     ChangeState(new GameState_Enter(this));
 };
@@ -176,6 +174,10 @@ void Scene_Game::Update() {
         currentState_->Update();
     }
 
+    if (currentEventState_) {
+        currentEventState_->Update();
+    }
+
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     // ポーズ中は以下を更新しない
@@ -202,6 +204,17 @@ void Scene_Game::Update() {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw() {
+
+    /*======================= 各状態固有の描画 ========================*/
+
+    if (currentState_) {
+        currentState_->Draw();
+    }
+
+    if (currentEventState_) {
+        currentEventState_->Draw();
+    }
+
     /*======================== スプライトの描画 =======================*/
 
     backSprite_->Draw();
@@ -258,6 +271,10 @@ void Scene_Game::Draw() {
 
     if(currentState_){
         currentState_->Draw();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 }
 

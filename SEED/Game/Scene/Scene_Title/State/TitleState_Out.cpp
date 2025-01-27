@@ -56,7 +56,4 @@ void TitleState_Out::EndFrame(){
 void TitleState_Out::HandOverColliders(){}
 
 void TitleState_Out::ManageState(){
-    if(fadeOutScreen_->GetColor().w >= 1.f){
-        host_->ChangeScene(new Scene_Game(host_->pSceneManager_));
-    }
 }

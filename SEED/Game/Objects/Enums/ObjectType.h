@@ -10,6 +10,8 @@ enum class ObjectType : int32_t{
     Attack = 0b1 << 4,
     Start = 0b1 << 5,
     Goal = 0b1 << 6,
+    Area = 0b1 << 7,
+    Event = 0b1 << 8,
     // 組み合わせ
     Player = OnFieldObject | Friendly,
     PlayerCorpse = OnFieldObject | Friendly,
@@ -19,4 +21,5 @@ enum class ObjectType : int32_t{
     EnemyAttack = NonFriendly | Attack,
     StartField = Field | Start,
     GoalField = Field | Goal,
+    EventArea = Field | Area | Event,
 };

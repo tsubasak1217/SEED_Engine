@@ -35,8 +35,7 @@ class Scene_Game : public Scene_Base
 {
 
 public:
-    Scene_Game() = default;
-    Scene_Game(SceneManager *pSceneManager);
+    Scene_Game();
     ~Scene_Game() override;
     void Initialize() override;
     void Finalize() override;

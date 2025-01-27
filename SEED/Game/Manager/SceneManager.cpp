@@ -90,3 +90,7 @@ SceneManager* SceneManager::GetInstance(){
 void SceneManager::ChangeScene(Scene_Base* newScene){
     pScene_.reset(newScene);
 }
+
+void SceneManager::ChangeScene(std::unique_ptr<Scene_Base> newScene){
+    pScene_ = std::move(newScene);
+}

@@ -23,6 +23,7 @@ void UI::Initialize(const std::string& _filePath){
     JsonCoordinator::RegisterItem(name_,"Rotate",sprite_->rotate);
     JsonCoordinator::RegisterItem(name_,"Translate",sprite_->translate);
     JsonCoordinator::RegisterItem(name_,"AnchorPoint",sprite_->anchorPoint);
+    JsonCoordinator::RegisterItem(name_,"Color",sprite_->color);
 }
 
 void UI::Update(){
@@ -48,34 +49,6 @@ void UI::BeginFrame(){
         JsonCoordinator::SaveGroup(name_);
     }
     ImGui::End();
-
-    // Sizeの値を取得
-    auto spriteSize = JsonCoordinator::GetValue(name_,"Size");
-    if(spriteSize.has_value()){
-        if(auto value = std::get_if<Vector2>(&*spriteSize)){
-            sprite_->size = *value;
-        }
-    }
-    // Rotateの値を取得
-    auto spriteRotate = JsonCoordinator::GetValue(name_,"Rotate");
-    if(spriteRotate.has_value()){
-        if(auto value = std::get_if<float>(&*spriteRotate)){
-            sprite_->rotate = *value;
-        }
-    }
-    auto spriteTranslate = JsonCoordinator::GetValue(name_,"Translate");
-    if(spriteTranslate.has_value()){
-        if(auto value = std::get_if<Vector2>(&*spriteTranslate)){
-            sprite_->translate = *value;
-        }
-    }
-    auto spriteAnchorPoint = JsonCoordinator::GetValue(name_,"AnchorPoint");
-    if(spriteAnchorPoint.has_value()){
-        if(auto value = std::get_if<Vector2>(&*spriteAnchorPoint)){
-            sprite_->anchorPoint = *value;
-        }
-    }
-
 #endif // _DEBUG
 }
 

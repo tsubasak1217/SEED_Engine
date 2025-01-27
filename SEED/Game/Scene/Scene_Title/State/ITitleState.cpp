@@ -4,7 +4,7 @@
 #include "Scene_Title.h"
 
 ITitleState::ITitleState(Scene_Title* host):
-    host_(host){}
+    State_Base(host),host_(host){}
 
 ITitleState::~ITitleState(){}
 

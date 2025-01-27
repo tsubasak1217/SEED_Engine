@@ -27,13 +27,13 @@ public:
     void HandOverColliders() override;
 
 private:
-    //============= state =============//
-    std::unique_ptr<ITitleState> currentState_ = nullptr;
-
     //============= UI =============//
     std::unique_ptr<UI> titleLogo_    = nullptr;
     std::unique_ptr<UI> toNextButton_ = nullptr;
 
     //============= PlayerModel =============//
     std::unique_ptr<Model> playerModel_ = nullptr;
+public:
+    UI* GetTitleLogo() const{ return titleLogo_.get(); }
+    UI* GetToNextButton() const{ return toNextButton_.get(); }
 };

@@ -21,5 +21,5 @@ public:
     void HandOverColliders()override;
     void ManageState()override;
 private:
-    std::unique_ptr<UI> whiteScreen_;
+    std::unique_ptr<UI> fadeOutScreen_;
 };

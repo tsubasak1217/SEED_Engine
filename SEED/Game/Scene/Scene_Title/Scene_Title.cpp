@@ -54,7 +54,6 @@ void Scene_Title::Initialize(){
     JsonCoordinator::RegisterItem("TitlePlayerModel","Rotate",playerModel_->rotate_);
     JsonCoordinator::RegisterItem("TitlePlayerModel","Translate",playerModel_->translate_);
     playerModel_->UpdateMatrix();
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +85,9 @@ void Scene_Title::Update(){
     //===================== UI =====================//
     titleLogo_->Update();
     toNextButton_->Update();
+
+    //===================== PlayerModel =====================//
+    playerModel_->Update();
 }
 
 
@@ -95,13 +97,15 @@ void Scene_Title::Update(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Draw(){
+    //===================== UI =====================//
+    titleLogo_->Draw();
+    toNextButton_->Draw();
     //===================== state =====================//
     if(currentState_){
         currentState_->Draw();
     }
-    //===================== UI =====================//
-    titleLogo_->Draw();
-    toNextButton_->Draw();
+    //===================== PlayerModel =====================//
+    playerModel_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,6 +122,15 @@ void Scene_Title::BeginFrame(){
     //===================== UI =====================//
     titleLogo_->BeginFrame();
     toNextButton_->BeginFrame();
+    //===================== Json =====================//
+#ifdef _DEBUG
+    ImGui::Begin("TitlePlayerModel");
+    JsonCoordinator::RenderGroupUI("TitlePlayerModel");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("TitlePlayerModel");
+    }
+    ImGui::End();
+#endif // _DEBUG
 }
 
 
@@ -127,13 +140,13 @@ void Scene_Title::BeginFrame(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::EndFrame(){
+    //===================== UI =====================//
+    titleLogo_->EndFrame();
+    toNextButton_->EndFrame();
     //===================== state =====================//
     if(currentState_){
         currentState_->EndFrame();
     }
-    //===================== UI =====================//
-    titleLogo_->EndFrame();
-    toNextButton_->EndFrame();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

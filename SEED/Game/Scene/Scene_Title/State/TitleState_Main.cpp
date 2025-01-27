@@ -7,7 +7,9 @@
 #include "TitleState_Out.h"
 
 TitleState_Main::TitleState_Main(Scene_Title* _host)
-    :ITitleState(_host){}
+    :ITitleState(_host){
+    Initialize();
+}
 
 TitleState_Main::~TitleState_Main(){}
 
@@ -15,8 +17,7 @@ void TitleState_Main::Initialize(){
     input_ = Input::GetInstance();
 }
 
-void TitleState_Main::Update(){
-}
+void TitleState_Main::Update(){}
 
 void TitleState_Main::Draw(){}
 
@@ -31,7 +32,7 @@ void TitleState_Main::EndFrame(){
 void TitleState_Main::HandOverColliders(){}
 
 void TitleState_Main::ManageState(){
-    if(input_->IsPressAnyKey()){
+    if(input_->IsPressAnyPadButton()){
         host_->ChangeState(new TitleState_Out(host_));
         return;
     }

@@ -26,7 +26,7 @@ private:
 
 public:
     static void ChangeScene(Scene_Base* newScene);
-
+    static void ChangeScene(std::unique_ptr<Scene_Base> newScene);
 private:
     static std::unique_ptr<Scene_Base> pScene_;
 };

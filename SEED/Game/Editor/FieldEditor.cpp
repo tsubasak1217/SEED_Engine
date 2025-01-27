@@ -188,6 +188,12 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                 modelJson["associatedDoors"] = doorIDs;
             }
 
+            //移動する床の場合、ルーチン名を保存
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(modelObj)){
+                modelJson["routineName"] = moveFloor->GetRoutineName();
+                modelJson["moveSpeed"] = moveFloor->GetMoveSpeed();
+            }
+
             jsonData["models"].push_back(modelJson);
         }
 

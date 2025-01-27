@@ -220,6 +220,15 @@ void Stage::LoadFromJson(const std::string& filePath){
                     switchDoorAssociations.emplace_back(sw,doorIDs);
                 }
             }
+            // 移動する床の場合、ルーチン名を設定
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(newObj)){
+                if (modelJson.contains("routineName")){
+                    moveFloor->SetRoutineName(modelJson["routineName"]);
+                }
+                if (modelJson.contains("moveSpeed")){
+                    moveFloor->SetMoveSpeed(modelJson["moveSpeed"]);
+                }
+            }
         }
     }
 

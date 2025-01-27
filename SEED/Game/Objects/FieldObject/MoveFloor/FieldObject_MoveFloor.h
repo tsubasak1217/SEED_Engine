@@ -59,6 +59,7 @@ public:
     std::vector<std::string> GetRoutineNames()const{
         return routineManager_.GetRoutineNames();
     }
+    const std::string& GetRoutineName()const{ return routineName_; }
     const  std::vector<Vector3>* GetRoutinePoints(const std::string& routineName)const{
         return routineManager_.GetRoutinePoints(routineName);
     }

@@ -4,6 +4,9 @@
 #include "../Egg.h"
 #include "StageManager.h"
 
+//uiState
+#include "../UI/State/EggUiState_Timer.h"
+
 //manager
 #include "ClockManager.h"
 #include "Egg/Manager/EggManager.h"
@@ -13,7 +16,10 @@
 EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
     Initialize("Break",character);
     breakToNextStage_ = breakToNextStage;
+}
 
+EggState_Break::~EggState_Break(){
+    timerUi_->Finalize();
 }
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
@@ -23,19 +29,42 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
     JsonCoordinator::RegisterItem("Egg","BreakTimeFactor",timeFactor_);
 
     leftTime_ = breakTime_;
+
+    //==================== UI ====================//
+    timerUi_ = std::make_unique<UI>("EggTimerUI");
+    timerUi_->Initialize("SelectScene/egg.png");
+
+    Egg* egg = dynamic_cast<Egg*>(pCharacter_);
+    auto eggUiState = std::make_unique<EggUiState_Timer>(
+        timerUi_.get(),
+        egg,
+        "BreakTimeTimer",
+        breakTime_,
+        &leftTime_
+    );
+    eggUiState->Initialize();
+    timerUi_->SetState(std::move(eggUiState));
 }
 
 void EggState_Break::Update(){
+    timerUi_->BeginFrame();
+
     if(Input::GetInstance()->IsPressPadButton(PAD_BUTTON::X)){
         leftTime_ -= ClockManager::DeltaTime() * timeFactor_;
     } else{
         leftTime_ -= ClockManager::DeltaTime();
     }
 
+    timerUi_->Update();
+
     ManageState();
+
+    timerUi_->EndFrame();
 }
 
-void EggState_Break::Draw(){}
+void EggState_Break::Draw(){
+    timerUi_->Draw();
+}
 
 void EggState_Break::ManageState(){
     if(leftTime_ <= 0.0f){

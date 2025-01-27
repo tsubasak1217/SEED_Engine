@@ -1,12 +1,16 @@
 #pragma once
 
+//parent
 #include "Base/ICharacterState.h"
+
+//object
+#include "../UI/UI.h"
 
 class EggState_Break :
     public ICharacterState{
 public:
     EggState_Break(BaseCharacter* character,bool breakToNextStage = false);
-    ~EggState_Break() = default;
+    ~EggState_Break();
 
     void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update() override;
@@ -16,6 +20,9 @@ protected:
 
 private:
     BaseCharacter* deadPlayer_ = nullptr;
+
+    std::unique_ptr<UI> timerUi_ = nullptr;
+
     bool breakToNextStage_ = false;
 
     // 倍速係数

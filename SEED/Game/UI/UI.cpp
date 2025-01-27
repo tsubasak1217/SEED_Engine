@@ -33,10 +33,10 @@ void UI::Update(){
 }
 
 void UI::Draw(){
+    sprite_->Draw();
     if(state_){
         state_->Draw();
     }
-    sprite_->Draw();
 }
 
 void UI::Finalize(){}

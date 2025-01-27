@@ -5,6 +5,9 @@
 
 #include "StageManager.h"
 
+// fieldObject
+#include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
+
 //lib
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -17,7 +20,9 @@ Stage::Stage(ISubject& subject, uint32_t stageNo)
 
     stageNo_ = stageNo;
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_);
+    routineManager_.LoadRoutines(stageNo);
+
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -215,6 +220,15 @@ void Stage::LoadFromJson(const std::string& filePath){
                     switchDoorAssociations.emplace_back(sw,doorIDs);
                 }
             }
+            // 移動する床の場合、ルーチン名を設定
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(newObj)){
+                if (modelJson.contains("routineName")){
+                    moveFloor->SetRoutineName(modelJson["routineName"]);
+                }
+                if (modelJson.contains("moveSpeed")){
+                    moveFloor->SetMoveSpeed(modelJson["moveSpeed"]);
+                }
+            }
         }
     }
 
@@ -293,6 +307,9 @@ void Stage::AddModel(
         case FIELDMODEL_VIEWPOINT:
             newObj = std::make_unique<FieldObject_ViewPoint>();
             break;
+        case FIELDMODEL_MOVEFLOOR:
+            newObj = std::make_unique<FieldObject_MoveFloor>(routineManager_);
+            break;
         default:
             break;
     }
@@ -322,7 +339,16 @@ void Stage::AddModel(
         if (doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
+    } 
+    // ◆動く床の場合ルーチンマネージャを渡す
+    else if (modelNameIndex == FIELDMODEL_MOVEFLOOR){
+        auto moveFloorObj = dynamic_cast< FieldObject_MoveFloor* >(newObj.get());
+        if (moveFloorObj){
+            moveFloorObj->InitializeRoutine();
+        }
     }
+
+
 
     // Manager に登録
     AddFieldObject(std::move(newObj));

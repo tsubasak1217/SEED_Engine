@@ -27,6 +27,8 @@ public:
     void Update()override;
     void Draw()override;
 
+    virtual void ShowImGui(){};
+
     //--- getter / setter ---//
     Model* GetModel(){ return model_.get(); }
     uint32_t GetFieldObjectType()const{ return fieldObjectType_; }

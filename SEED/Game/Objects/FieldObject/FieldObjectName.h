@@ -1,12 +1,13 @@
 #pragma once
 
 enum FIELDMODELNAME{
-    FIELDMODEL_GRASSSOIL,
-    FIELDMODEL_SOIL,
-    FIELDMODEL_SPHERE,
-    FIELDMODEL_DOOR,
-    FIELDMODEL_START,
-    FIELDMODEL_GOAL,
-    FIELDMODEL_SWITCH,
-    FIELDMODEL_VIEWPOINT,
+    FIELDMODEL_GRASSSOIL,       //< 草地
+    FIELDMODEL_SOIL,            //< 土
+    FIELDMODEL_SPHERE,          //< 球
+    FIELDMODEL_DOOR,            //< ドア
+    FIELDMODEL_START,           //< スタート地点
+    FIELDMODEL_GOAL,            //< ゴール地点
+    FIELDMODEL_SWITCH,          //< スイッチ
+    FIELDMODEL_VIEWPOINT,       //< 視点
+    FIELDMODEL_MOVEFLOOR,       //< 移動床
 };

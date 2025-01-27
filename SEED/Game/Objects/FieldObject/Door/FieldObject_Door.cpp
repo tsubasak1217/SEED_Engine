@@ -51,7 +51,6 @@ FieldObject_Door::FieldObject_Door(const std::string& modelName)
 
 FieldObject_Door::~FieldObject_Door() = default;
 
-
 ////////////////////////////////////////////////////////////////////////
 // 初期化関数
 ////////////////////////////////////////////////////////////////////////
@@ -73,7 +72,6 @@ void FieldObject_Door::Update(){
     FieldObject::Update();
 }
 
-
 ////////////////////////////////////////////////////////////////////////
 // 描画関数
 ////////////////////////////////////////////////////////////////////////
@@ -81,6 +79,12 @@ void FieldObject_Door::Draw(){
     FieldObject::Draw();
 }
 
+void FieldObject_Door::ShowImGui(){
+    const char* hasSwitchStr = hasSwitch_ ? "true" : "false";
+    ImGui::Text("has switch:%s", hasSwitchStr);
+    ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
+    ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
+}
 
 ////////////////////////////////////////////////////////////////////////
 // getter / setter
@@ -133,8 +137,6 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
         }
     }
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////
 // setter

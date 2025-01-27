@@ -7,6 +7,7 @@
 #include "../FieldObject/FieldObjectName.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
+#include "../Routine/RoutineManager.h"
 
 #include "../Game/Manager/EnemyManager.h"
 #include "../Game/Editor/EnemyEditor.h" 
@@ -81,6 +82,8 @@ public:
         enemyManager_->SetPlayer(pPlayer);
     }
     EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
+    // RoutineManagerのゲッターを追加
+    RoutineManager& GetRoutineManager(){ return routineManager_; }
 
 private:
     int32_t stageNo_ = -1;
@@ -100,6 +103,9 @@ private:
 
     //enemy
     std::unique_ptr<EnemyManager> enemyManager_;
+
+    //routine
+    RoutineManager routineManager_;
 };
 
 ////////////////////////////////////////////////////////////////////

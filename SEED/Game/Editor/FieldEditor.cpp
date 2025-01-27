@@ -8,6 +8,7 @@
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
+#include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //engine
@@ -42,6 +43,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
     modelNameMap_["switch"] = FIELDMODEL_SWITCH;
     modelNameMap_["viewpoint"] = FIELDMODEL_VIEWPOINT;
+    modelNameMap_["moveFloor"] = FIELDMODEL_MOVEFLOOR;
 
     LoadFieldModelTexture();
 
@@ -184,6 +186,12 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                     doorIDs.push_back(door->GetFieldObjectID());
                 }
                 modelJson["associatedDoors"] = doorIDs;
+            }
+
+            //移動する床の場合、ルーチン名を保存
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(modelObj)){
+                modelJson["routineName"] = moveFloor->GetRoutineName();
+                modelJson["moveSpeed"] = moveFloor->GetMoveSpeed();
             }
 
             jsonData["models"].push_back(modelJson);
@@ -354,13 +362,14 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
     case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
         ReassignIDsForType<FieldObject_ViewPoint>(objects);
         break;
+    case FIELDMODELNAME::FIELDMODEL_MOVEFLOOR:
+        ReassignIDsForType<FieldObject_MoveFloor>(objects);
+        break;
     default:
         // 必要に応じてデフォルト処理を追加
         break;
     }
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  imguiの表示
@@ -557,6 +566,7 @@ void FieldEditor::ShowImGui(){
                 //選択されているオブジェクトを設定
                 Stage* stage = manager_.GetStages()[edittingStageIndex].get();
                 stage->SetSelectedObject(mfObj);
+                mfObj->ShowImGui();
 
                 // [A] スイッチの場合の設定
                 if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
@@ -709,8 +719,6 @@ void FieldEditor::ShowImGui(){
 
 #endif // _DEBUG
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  敵を配置するフロー用

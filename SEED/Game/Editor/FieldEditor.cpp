@@ -581,19 +581,22 @@ void FieldEditor::ShowImGui(){
 
                 //選択されているオブジェクトを設定
                 Stage* stage = manager_.GetStages()[edittingStageIndex].get();
-                stage->SetSelectedObject(mfObj);
                 mfObj->ShowImGui();
 
                 // [A] スイッチの場合の設定
                 if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
-                    ImGui::Text("Switch Settings");
-                    ImGui::Separator();
+                     stage->SetSelectedObject(mfObj);
                     // 「ドア割り当て」モード開始
                     assigningSwitch = sw;
 
                     // すでに関連付けられているドアを黄色にする
                     for(auto* door : sw->GetAssociatedDoors()){
                         door->SetColor({ 1.f, 1.f, 0.f, 1.f });
+                    }
+
+                    // 関連付けされている動く床を黄色くする
+                    for (auto* moveFloor : sw->GetAssociatedMoveFloors()){
+                        moveFloor->SetColor({1.f, 1.f, 0.f, 1.f});
                     }
                 }
 
@@ -762,6 +765,8 @@ void FieldEditor::ShowImGui(){
         int clickedIndex = GetObjectIndexByMouse(objects);
         if(clickedIndex >= 0){
             auto* clickedObj = dynamic_cast<FieldObject*>(objects[clickedIndex].get());
+           
+            // ドアをクリックした場合
             if(auto* door = dynamic_cast<FieldObject_Door*>(clickedObj)){
                 // ドアが既にスイッチを持っている場合 = 解除
                 if(door->GetHasSwitch()){
@@ -772,6 +777,21 @@ void FieldEditor::ShowImGui(){
                 else if(assigningSwitch){
                     assigningSwitch->AddAssociatedDoor(door);
                     door->SetSwitch(assigningSwitch);
+                    assigningSwitch = nullptr;
+                }
+            }
+
+            //動く床をクリックした場合
+            else if (auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(clickedObj)){
+                //動く床がすでにスイッチを持っている場合解除
+                if (moveFloor->GetHasSwitch()){
+                    assigningSwitch->RemoveAssociatedMoveFloor(moveFloor);
+                    moveFloor->RemoveSwitch(assigningSwitch);
+                }
+                //未設定なら紐付け
+                else if (assigningSwitch){
+                    assigningSwitch->AddAssociatedMoveFloor(moveFloor);
+                    moveFloor->SetSwitch(assigningSwitch);
                     assigningSwitch = nullptr;
                 }
             }

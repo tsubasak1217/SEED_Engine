@@ -36,18 +36,11 @@ void EggUiState_Timer::Initialize(){
 
     //=================== Json ===================//
     JsonCoordinator::RegisterItem("EggLeftTimeNumberUI","Offset",numberUiOffset_);
+
+    leftTimeNumber_->SetTranslate(leftTimeNumber_->GetTranslate() + numberUiOffset_);
 }
 
 void EggUiState_Timer::Update(){
-    //=================== 座標の計算,更新 ===================//
-    uiPos_ = CameraManager::GetActiveCamera()->ToScreenPosition(egg_->GetWorldTranslate());
-
-    uiPos_.x = std::clamp(uiPos_.x,min_.x,max_.x);
-    uiPos_.y = std::clamp(uiPos_.y,min_.y,max_.y);
-
-    ui_->SetTranslate(uiPos_);
-    leftTimeNumber_->SetTranslate(uiPos_ + numberUiOffset_);
-
     //=================== 残り時間に対応した数字を表示 ===================//
     leftTimeNumber_->SetClipLTX(numberUiSize_.x * int(*leftTime_));
 

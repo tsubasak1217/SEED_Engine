@@ -7,6 +7,8 @@
 //uiState
 #include "../UI/State/EggUiState_Timer.h"
 
+//camera
+#include "FollowCamera.h"
 //manager
 #include "ClockManager.h"
 #include "Egg/Manager/EggManager.h"
@@ -78,11 +80,20 @@ void EggState_Break::ManageState(){
                 StageManager::SetIsHandOverColliderNext(false);
                 breakToNextStage_ = false;
 
-                {   // プレイヤーに次のステージの敵情報を渡す
-                    EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
-                    Player* player = egg->GetEggManager()->GetPlayer();
-                    player->SetEnemyManager(enemyManager);
+                { // Playerを必要とする処理
+                    Player* pPlayer = egg->GetEggManager()->GetPlayer();
+                    {   // プレイヤーに次のステージの敵情報を渡す
+                        EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
+                        pPlayer->SetEnemyManager(enemyManager);
+                    }
+
+                    {
+                        // カメラのターゲットをPlayerに変更
+                        FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+                        pFollowCamera->SetTarget(pPlayer);
+                    }
                 }
+
             }
         }
     }

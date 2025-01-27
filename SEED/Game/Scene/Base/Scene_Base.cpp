@@ -32,6 +32,10 @@ void Scene_Base::ChangeScene(Scene_Base* nextScene){
     pSceneManager_->ChangeScene(nextScene);
 }
 
+void Scene_Base::ChangeScene(std::unique_ptr<Scene_Base> nextScene){
+    pSceneManager_->ChangeScene(std::move(nextScene));
+}
+
 void Scene_Base::ChangeState(State_Base* nextState){
     isStateChanged_ = true;
     currentState_.reset(nextState);

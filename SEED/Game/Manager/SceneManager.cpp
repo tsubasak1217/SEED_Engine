@@ -17,7 +17,6 @@ std::unique_ptr<Scene_Base> SceneManager::pScene_ = nullptr;
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////////////////
 SceneManager::SceneManager(){
-    pScene_.reset(new Scene_Title(instance_));
 }
 
 SceneManager::~SceneManager(){
@@ -30,6 +29,8 @@ SceneManager::~SceneManager(){
 ///////////////////////////////////////////////////////////////////////////////
 void SceneManager::Initialize(){
     instance_ = GetInstance();
+
+    pScene_.reset(new Scene_Title(instance_));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -19,6 +19,7 @@ public:
 
 public:
     void ChangeScene(Scene_Base* nextScene);
+    void ChangeScene(std::unique_ptr<Scene_Base> nextScene);
     void ChangeState(State_Base* nextState);
 
 public:

@@ -11,6 +11,7 @@
 #include <GameState_Select.h>
 #include <GameState_Pause.h>
 #include <GameState_Exit.h>
+#include <GameState_Enter.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -21,7 +22,7 @@
 Scene_Game::Scene_Game(SceneManager* pSceneManager) {
     pSceneManager_ = pSceneManager;
     Initialize();
-    ChangeState(new GameState_Select(this));
+    ChangeState(new GameState_Enter(this));
 };
 
 Scene_Game::~Scene_Game() {
@@ -129,19 +130,18 @@ void Scene_Game::Initialize() {
     //  関連付けや初期値の設定
     /////////////////////////////////////////////////
 
-    // followCameraにplayerをセット
-    followCamera_->SetTarget(player_.get());
+    // followCameraにStageをセット
+    followCamera_->SetTarget(stageManager_->GetCurrentStage()->GetViewPoint());
 
     // playerに必要な情報をセット
     player_->SetCorpseManager(playerCorpseManager_.get());
-    player_->SetFollowCameraPtr(followCamera_.get());
+    //player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
     player_->SetPosition(StageManager::GetStartPos());
 
     // eggManagerにplayerをセット
     eggManager_->SetPlayer(player_.get());
     eggManager_->Initialize();
-
 }
 
 void Scene_Game::Finalize() {}
@@ -197,13 +197,6 @@ void Scene_Game::Update() {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw() {
-
-    /*======================= 各状態固有の描画 ========================*/
-
-    if (currentState_) {
-        currentState_->Draw();
-    }
-
     /*======================== スプライトの描画 =======================*/
 
     backSprite_->Draw();
@@ -255,6 +248,12 @@ void Scene_Game::Draw() {
 
     // 地面の描画
     ground_->Draw();
+
+    /*======================= 各状態固有の描画 ========================*/
+
+    if(currentState_){
+        currentState_->Draw();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

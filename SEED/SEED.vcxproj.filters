@@ -706,6 +706,12 @@
     <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\lib\thread\Thread.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1290,6 +1296,8 @@
     <ClInclude Include="Game\UI\State\IUiState.h" />
     <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
+    <ClInclude Include="SEED\lib\thread\Thread.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -23,6 +23,7 @@ Scene_Title::Scene_Title(SceneManager* pSceneManager){
     pSceneManager_ = pSceneManager;
     Initialize();
     SEED::SetCamera("main");
+    nextScene_ = std::make_unique<Scene_Game>(pSceneManager_);
 }
 
 Scene_Title::~Scene_Title(){}
@@ -54,6 +55,7 @@ void Scene_Title::Initialize(){
     JsonCoordinator::RegisterItem("TitlePlayerModel","Rotate",playerModel_->rotate_);
     JsonCoordinator::RegisterItem("TitlePlayerModel","Translate",playerModel_->translate_);
     playerModel_->UpdateMatrix();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,3 +157,7 @@ void Scene_Title::EndFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::HandOverColliders(){}
+
+void Scene_Title::ToNextScene(){
+    ChangeScene(std::move(nextScene_));
+}

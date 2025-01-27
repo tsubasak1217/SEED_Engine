@@ -56,7 +56,7 @@ public:
 
     void Rename(const std::string& newName);
 
-    //--- setter ---//
+    //--- setter !調整項目 ---//
     //追伸 : この setter は、EnemyEditor でのみ使用するすみません
     void SetCanEat(bool canEat){ canEat_ = canEat; }
     void SetChasePlayer(bool chase){ cahsePlayer_ = chase; }
@@ -66,6 +66,8 @@ public:
         routinePoints_ = points;
     }
 
+    void SetMoveSpeed(float speed){ speed_ = speed; }
+    float GetMoveSpeed()const{ return speed_; }
 
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType)override;
@@ -80,6 +82,8 @@ private:
     bool cahsePlayer_ = false;
 
     std::vector<Vector3> routinePoints_;
+
+    float speed_ = 1.0f;
 
 private:
     int32_t HP_;

@@ -23,10 +23,8 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
     ICharacterState::Initialize(stateName,enemy_);
 
     JsonCoordinator::RegisterItem(enemy_->GetName(),"sensingDistance",sensingDistance_);
-    JsonCoordinator::RegisterItem(enemy_->GetName(),"speed",speed_);
     //ルーチンポイントの取得
     movePoints_ = &enemy_->GetRoutinePoints();
-    speed_ = 1.0f;
 }
 
 void EnemyState_RoutineMove::Update(){
@@ -38,7 +36,7 @@ void EnemyState_RoutineMove::Update(){
     }
     // ルーチンポイントに向かって移動
     Vector3 moveVec = MyMath::Normalize((*movePoints_)[currentMovePointIndex_] - enemy_->GetWorldTranslate());
-    enemy_->SetTranslate(enemy_->GetWorldTranslate() + moveVec * speed_ * ClockManager::DeltaTime());
+    enemy_->SetTranslate(enemy_->GetWorldTranslate() + moveVec * enemy_->GetMoveSpeed() * ClockManager::DeltaTime());
     ManageState();
 }
 

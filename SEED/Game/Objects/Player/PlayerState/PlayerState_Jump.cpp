@@ -13,7 +13,11 @@ PlayerState_Jump::PlayerState_Jump(const std::string& stateName,BaseCharacter* p
     pCharacter_->SetAnimation("jump",true);
 }
 
-PlayerState_Jump::~PlayerState_Jump(){}
+PlayerState_Jump::~PlayerState_Jump(){
+    pCharacter_->SetIsJump(false);
+    pCharacter_->SetIsApplyGravity(true);
+    pCharacter_->SetJumpPower(0.0f);
+}
 
 void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* player){
     ICharacterState::Initialize(stateName,player);

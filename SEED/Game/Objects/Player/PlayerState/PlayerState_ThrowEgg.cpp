@@ -50,6 +50,7 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     eggManager_ = pPlayer->GetEggManager();
     // 投げる卵を取得
     throwEgg_ = eggManager_->GetFrontEgg().get();
+    
     throwEgg_->ChangeState(new EggState_Idle(throwEgg_));
     // 投げる卵の重さを取得
     eggWeight_ = dynamic_cast<Egg*>(throwEgg_)->GetWeight();

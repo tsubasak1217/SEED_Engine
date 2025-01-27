@@ -142,6 +142,11 @@ void Scene_Game::Initialize() {
     // eggManagerにplayerをセット
     eggManager_->SetPlayer(player_.get());
     eggManager_->Initialize();
+
+
+    //! 読み込みの DeltaTime が 膨大になりすぎるため,ここで 更新して 仮対処 とする
+    ClockManager::EndFrame();
+    ClockManager::BeginFrame();
 }
 
 void Scene_Game::Finalize() {}

@@ -13,8 +13,6 @@ class Scene_Game;
 //object
 #include "../UI/UI.h"
 #include "Model.h"
-//lib
-#include "../lib/thread/Thread.h"
 
 class Scene_Title 
     : public Scene_Base{
@@ -39,12 +37,7 @@ private:
 
     //============= PlayerModel =============//
     std::unique_ptr<Model> playerModel_ = nullptr;
-
-    //============= nextScene =============//
-    std::unique_ptr<Scene_Game> nextScene_ = nullptr;
-    
 public:
-    void ToNextScene();
 
     UI* GetTitleLogo() const{ return titleLogo_.get(); }
     UI* GetToNextButton() const{ return toNextButton_.get(); }

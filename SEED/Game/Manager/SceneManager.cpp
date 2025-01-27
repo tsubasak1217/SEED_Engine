@@ -2,7 +2,7 @@
 #include <thread>
 #include "Scene_Base.h"
 #include "Scene_Game/Scene_Game.h"
-#include "Scene_Game/Scene_Game.h"
+#include "Scene_Title/Scene_Title.h"
 #include "Scene_Clear/Scene_Clear.h"
 #include "CollisionManaer/CollisionManager.h"
 #include "CollisionManaer/ColliderEditor.h"

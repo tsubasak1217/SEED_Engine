@@ -113,7 +113,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp" />
     <ClCompile Include="Game\Routine\RoutineManager.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
@@ -265,7 +264,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
-    <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
     <ClInclude Include="Game\Routine\RoutineManager.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />

@@ -158,6 +158,7 @@
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
     <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp" />
+    <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
@@ -347,6 +348,7 @@
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
+    <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

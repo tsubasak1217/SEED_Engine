@@ -8,11 +8,15 @@
 ///local
 //state
 #include "State/ITitleState.h"
+//Scene
+class Scene_Game;
 //object
 #include "../UI/UI.h"
 #include "Model.h"
 
-class Scene_Title : public Scene_Base{
+class Scene_Title 
+    : public Scene_Base{
+    friend class LoadNextSceneThread;
 public:
     Scene_Title(SceneManager* pSceneManager);
     ~Scene_Title() override;
@@ -34,6 +38,7 @@ private:
     //============= PlayerModel =============//
     std::unique_ptr<Model> playerModel_ = nullptr;
 public:
+
     UI* GetTitleLogo() const{ return titleLogo_.get(); }
     UI* GetToNextButton() const{ return toNextButton_.get(); }
 };

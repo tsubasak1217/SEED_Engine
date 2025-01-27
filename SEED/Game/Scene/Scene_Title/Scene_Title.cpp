@@ -54,6 +54,7 @@ void Scene_Title::Initialize(){
     JsonCoordinator::RegisterItem("TitlePlayerModel","Rotate",playerModel_->rotate_);
     JsonCoordinator::RegisterItem("TitlePlayerModel","Translate",playerModel_->translate_);
     playerModel_->UpdateMatrix();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

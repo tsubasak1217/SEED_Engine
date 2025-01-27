@@ -32,6 +32,8 @@ private:
     float totalTime_ = 0.0f;
     float timeRate_ = 1.0f;
     float fps_;
+    bool isStop_ = false;
+    bool isRestartNow_ = false;
     static const float kFrameTime_;
 
 
@@ -44,4 +46,9 @@ public:
     static float TimeRate(){ return instance_->timeRate_; }
     static float TotalTime(){ return instance_->totalTime_; }
     static float FPS(){ return instance_->fps_; }
+    static void Stop(){ instance_->isStop_ = true; }
+    static void Restart(){
+        instance_->isRestartNow_ = true;
+        instance_->isStop_ = false;
+    }
 };

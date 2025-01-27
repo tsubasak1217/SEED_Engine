@@ -176,6 +176,9 @@ void Scene_Game::Update() {
 
     if (currentEventState_) {
         currentEventState_->Update();
+        player_->SetIsMovable(false);
+    } else{
+        player_->SetIsMovable(true);
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/

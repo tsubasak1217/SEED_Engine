@@ -146,6 +146,18 @@ Vector3 Stage::GetStartPosition() const{
     return Vector3{ 0.0f,0.0f,0.0f };
 }
 
+// ゴールオブジェクトを取得
+FieldObject_Goal* Stage::GetGoalObject() const{
+    for(const auto& obj : fieldObjects_){
+        // FieldObject_Goal 型へのキャストを試みる
+        if(auto* goal = dynamic_cast<FieldObject_Goal*>(obj.get())){
+            // ゴールオブジェクトが見つかったら返す
+            return goal;
+        }
+    }
+    return nullptr;
+}
+
 FieldObject_ViewPoint* Stage::GetViewPoint() const{
     for(const auto& obj : fieldObjects_){
         // FieldObject_Start 型へのキャストを試みる

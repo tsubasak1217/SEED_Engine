@@ -60,6 +60,7 @@ public:
 
 public:
     Vector3 GetStartPosition()const;
+    FieldObject_Goal* GetGoalObject()const;
     FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 

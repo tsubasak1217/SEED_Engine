@@ -98,6 +98,11 @@ void GameState_Select::ManageState(){
 
     // ステージが決定されたらプレイステートに遷移
     if(stageSelector_->GetIsDecided()){
+        // ステージをリセット
+        int stageNo = pGameScene_->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
+        std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
+        pGameScene_->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath);
+        // 遷移
         pGameScene_->ChangeState(new GameState_Play(pGameScene_));
     }
 }

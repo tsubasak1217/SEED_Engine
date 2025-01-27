@@ -55,6 +55,7 @@ public: // アクセッサ
     bool IsJumpable(){ return jumpAllowableTime_ > 0.0f; }
     void SetJumpPower(float power){ jumpPower_ = power; }
     void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
+    bool GetIsMovable()const{ return isMovable_; }
 
 protected: // パラメータ
     bool isAlive_ = true;

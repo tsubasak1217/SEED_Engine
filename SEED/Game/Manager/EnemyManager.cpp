@@ -185,7 +185,6 @@ void EnemyManager::LoadEnemies(){
         );
         // CSVから位置をセット
         newEnemy->SetPosition({px, py, pz});
-
         // JSONから他のパラメータをセット
         if (index < count && index < static_cast< int >(enemyArray.size())){
             auto& eJson = enemyArray[index];

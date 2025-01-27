@@ -79,6 +79,13 @@ void FieldObject_Door::Draw(){
     FieldObject::Draw();
 }
 
+void FieldObject_Door::ShowImGui(){
+    const char* hasSwitchStr = hasSwitch_ ? "true" : "false";
+    ImGui::Text("has switch:%s", hasSwitchStr);
+    ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
+    ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
+}
+
 ////////////////////////////////////////////////////////////////////////
 // getter / setter
 ////////////////////////////////////////////////////////////////////////

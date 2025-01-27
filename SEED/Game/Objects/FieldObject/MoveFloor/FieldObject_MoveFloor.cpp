@@ -12,7 +12,8 @@ uint32_t FieldObject_MoveFloor::nextFieldObjectID_ = 1;
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-FieldObject_MoveFloor::FieldObject_MoveFloor(){
+FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager):
+routineManager_(routineManager){
     // 名前の初期化
     className_ = "FieldObject_MoveFloor";
     name_ = "moveFloor";
@@ -25,8 +26,8 @@ FieldObject_MoveFloor::FieldObject_MoveFloor(){
     fieldObjectID_ = nextFieldObjectID_++;
 }
 
-FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName)
-    : FieldObject(modelName){
+FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName, RoutineManager& routineManager):
+    FieldObject(modelName),routineManager_(routineManager){
     // クラス名の初期化
     className_ = "FieldObject_MoveFloor";
     // コライダー関連の初期化
@@ -58,9 +59,50 @@ void FieldObject_MoveFloor::Update(){
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::ShowImGui(){
     ImGui::DragFloat("MoveSpeed", &moveSpeed_, 0.01f);
+
+    // ルーチン選択用のコンボ
+    
+    std::vector<std::string> routineNames = routineManager_.GetRoutineNames();
+
+    // 現在の routineName_ をインデックス化
+    int currentIndex = 0;
+    for (size_t i = 0; i < routineNames.size(); ++i){
+        if (routineNames[i] == routineName_){
+            currentIndex = static_cast< int >(i);
+            break;
+        }
+    }
+
+    // コンボ表示
+    std::vector<const char*> routineNamesCStr;
+    routineNamesCStr.reserve(routineNames.size());
+    for (auto& rName : routineNames){
+        routineNamesCStr.push_back(rName.c_str());
+    }
+
+    if (ImGui::Combo("Select Routine", &currentIndex,
+        routineNamesCStr.data(),
+        static_cast< int >(routineNamesCStr.size()))){
+        // 選択変更されたら更新
+        routineName_ = routineNames[currentIndex];
+        const auto* points = routineManager_.GetRoutinePoints(routineName_);
+        if (points){
+            SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
+        }
+    }
 }
 
 /* private =============================================================*/
+
+/////////////////////////////////////////////////////////////////////////
+// ルーチンの初期化
+/////////////////////////////////////////////////////////////////////////
+void FieldObject_MoveFloor::InitializeRoutine(){
+    const auto* points = routineManager_.GetRoutinePoints(routineName_);
+    if (points){
+        SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////
 // 移動関数

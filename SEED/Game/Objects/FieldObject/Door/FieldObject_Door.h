@@ -27,6 +27,8 @@ public:
     void Update() override;
     void Draw() override;
 
+    void ShowImGui() override;
+
     // IObserver の実装
     void OnNotify(const std::string& event, void* data = nullptr) override;
 

@@ -299,7 +299,7 @@ void Stage::AddModel(
             newObj = std::make_unique<FieldObject_ViewPoint>();
             break;
         case FIELDMODEL_MOVEFLOOR:
-            newObj = std::make_unique<FieldObject_MoveFloor>();
+            newObj = std::make_unique<FieldObject_MoveFloor>(routineManager_);
             break;
         default:
             break;
@@ -330,7 +330,16 @@ void Stage::AddModel(
         if (doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
+    } 
+    // ◆動く床の場合ルーチンマネージャを渡す
+    else if (modelNameIndex == FIELDMODEL_MOVEFLOOR){
+        auto moveFloorObj = dynamic_cast< FieldObject_MoveFloor* >(newObj.get());
+        if (moveFloorObj){
+            moveFloorObj->InitializeRoutine();
+        }
     }
+
+
 
     // Manager に登録
     AddFieldObject(std::move(newObj));

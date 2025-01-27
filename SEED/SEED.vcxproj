@@ -141,7 +141,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
-    <ClCompile Include="SEED\lib\thread\Thread.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
@@ -297,7 +296,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
     <ClInclude Include="SEED\Lib\Structs\PointLight.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
-    <ClInclude Include="SEED\lib\thread\Thread.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />

@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include <thread>
 #include "Scene_Base.h"
 #include "Scene_Game/Scene_Game.h"
 #include "Scene_Title/Scene_Title.h"
@@ -16,7 +17,7 @@ std::unique_ptr<Scene_Base> SceneManager::pScene_ = nullptr;
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////////////////
 SceneManager::SceneManager(){
-    pScene_.reset(new Scene_Game(instance_));
+    pScene_.reset(new Scene_Title(instance_));
 }
 
 SceneManager::~SceneManager(){

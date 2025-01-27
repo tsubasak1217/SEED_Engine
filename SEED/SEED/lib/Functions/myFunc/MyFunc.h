@@ -30,6 +30,12 @@ public:
     static Vector3 RandomVector();
     static Vector2 RandomVector2();
 
+    // ランダムな色
+    static Vector4 RandomColor();
+
+    // ランダムな方向(基準方向と許容角度から)
+    static Vector3 RandomDirection(const Vector3& baseDirection, float angle);
+
     // thetaとphiからベクトルを生成する関数
     static Vector3 CreateVector(float theta,float phi);
 

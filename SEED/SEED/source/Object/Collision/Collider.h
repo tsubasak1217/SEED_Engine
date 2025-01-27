@@ -56,6 +56,7 @@ protected:
 public:
     void AddSkipPushBackType(ObjectType objectType);
     void RemoveSkipPushBackType(ObjectType objectType);
+    virtual void DiscardPreCollider();
 
 public:// 編集用関数--------------------------------------------------------------
     virtual void Edit();

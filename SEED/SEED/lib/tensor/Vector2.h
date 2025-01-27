@@ -135,3 +135,12 @@ inline void from_json(const nlohmann::json& j, Vector2& vec){
     vec.x = j.at("x").get<float>();
     vec.y = j.at("y").get<float>();
 }
+
+inline void to_json(nlohmann::ordered_json& j,const Vector2& vec){
+    j = {{"x",vec.x},{"y",vec.y}};
+}
+
+inline void from_json(const nlohmann::ordered_json& j,Vector2& v){
+    v.x = j.at("x").get<float>();
+    v.y = j.at("y").get<float>();
+}

@@ -325,6 +325,10 @@ Vector2 Input::GetMousePosition(){
     return result * adjustScale;
 }
 
+Vector2 Input::GetPreMousePosition() {
+    return GetMousePosition() - GetMouseVector();
+}
+
 
 
 //---------------------------------- ゲームパッド --------------------------------------//

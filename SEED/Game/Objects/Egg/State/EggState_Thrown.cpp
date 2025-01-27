@@ -25,7 +25,6 @@ EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _directionXY
 }
 
 EggState_Thrown::~EggState_Thrown(){
-    pEgg_->SetIsThrown(false);
 }
 
 void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* character){

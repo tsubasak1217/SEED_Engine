@@ -33,4 +33,5 @@ struct ModelMaterialLoadData{
     Vector3 UV_scale_;
     Vector3 UV_offset_;
     Vector3 UV_translate_;
+    Vector4 color_;
 };

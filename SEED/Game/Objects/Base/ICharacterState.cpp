@@ -65,3 +65,12 @@ void ICharacterState::EraseCheckColliders(){
         }
     }
 }
+
+//////////////////////////////////////////////////////////////////////////
+// の管理
+//////////////////////////////////////////////////////////////////////////
+void ICharacterState::DiscardPreCollider(){
+    for(auto& collider : colliders_){
+        collider->DiscardPreCollider();
+    }
+}

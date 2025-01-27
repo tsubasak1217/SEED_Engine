@@ -18,25 +18,25 @@
 
 Egg::Egg(BaseObject* _player)
     :BaseCharacter(),
-    player_(_player){
+    player_(_player) {
     className_ = "Egg";
     isApplyGravity_ = false;
 }
 
-Egg::~Egg(){}
+Egg::~Egg() {}
 
-void Egg::Initialize(){
+void Egg::Initialize() {
     // model 読み込み
     model_ = std::make_unique<Model>("egg.obj");
 
-    currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
+    currentState_ = std::make_unique<EggState_Follow>(this, this->player_);
 
-    JsonCoordinator::RegisterItem("Egg","weight",weight_);
+    JsonCoordinator::RegisterItem("Egg", "weight", weight_);
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     LoadColliders(ObjectType::Egg);
-    for(auto& collider : colliders_){
+    for (auto& collider : colliders_) {
         collider->AddSkipPushBackType(ObjectType::Egg);
         collider->AddSkipPushBackType(ObjectType::Editor);
         collider->AddSkipPushBackType(ObjectType::Enemy);
@@ -45,15 +45,15 @@ void Egg::Initialize(){
     isApplyGravity_ = false;
 }
 
-void Egg::Update(){
+void Egg::Update() {
     BaseCharacter::Update();
     EditCollider();
 }
 
-void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
-    if(objectType == ObjectType::Field){
+void Egg::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType) {
+    if (objectType == ObjectType::Field) {
 
-        if(!isThrown_){
+        if (!isThrown_) {
             return;
         }
 
@@ -66,11 +66,13 @@ void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType object
     }
 }
 
-void Egg::Break(){
+void Egg::Break() {
     //Player を spawn させる
     Player* player = dynamic_cast<Player*>(player_);
-    if(player_){
-        player->Spawn(this->GetWorldTranslate());
+    if (player_) {
+        Vector3 spawnPos = this->GetWorldTranslate();
+        spawnPos.y += 1.0f;
+        player->Spawn(spawnPos);
     }
 
     isBreak_ = true;

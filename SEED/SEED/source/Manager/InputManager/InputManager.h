@@ -71,6 +71,7 @@ public:// キーの状態を返す関数
     static Vector2 GetMouseVector();
     static Vector2 GetMouseDirection();
     static Vector2 GetMousePosition();
+    static Vector2 GetPreMousePosition();
 
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);

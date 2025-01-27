@@ -78,4 +78,5 @@ private:
 
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;
+
 };

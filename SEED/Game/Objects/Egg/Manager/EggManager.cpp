@@ -24,18 +24,10 @@ void EggManager::Initialize(){
 }
 
 void EggManager::Update(){
+
     std::erase_if(eggs_,[](std::unique_ptr<Egg>& egg){
         return egg->GetIsBreak();
                   });
-
-#ifdef _DEBUG
-    ImGui::Begin("Egg");
-    JsonCoordinator::RenderGroupUI("Egg");
-    if(ImGui::Button("Save")){
-        JsonCoordinator::SaveGroup("Egg");
-    }
-    ImGui::End();
-#endif // _DEBUG
 
     if(eggs_.empty()){
         eggs_.push_back(std::make_unique<Egg>(player_));
@@ -64,6 +56,15 @@ void EggManager::HandOverColliders(){
 }
 
 void EggManager::BeginFrame(){
+#ifdef _DEBUG
+    ImGui::Begin("Egg");
+    JsonCoordinator::RenderGroupUI("Egg");
+    if(ImGui::Button("Save")){
+        JsonCoordinator::SaveGroup("Egg");
+    }
+    ImGui::End();
+#endif // _DEBUG
+
     for(auto& egg : eggs_){
         egg->BeginFrame();
     }

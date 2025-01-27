@@ -43,6 +43,7 @@ public: // アクセッサ
 
     void SetFollowCameraPtr(BaseCamera* pCamera){ pCamera_ = pCamera; }
     const BaseCamera* GetFollowCamera() const{ return pCamera_; }
+    BaseCamera* GetFollowCamera(){ return pCamera_; }
 
     PlayerCorpseManager* GetCorpseManager(){ return corpseManager_; }
     void SetCorpseManager(PlayerCorpseManager* corpseManager){ corpseManager_ = corpseManager; }

@@ -135,7 +135,7 @@ void Scene_Game::Initialize() {
 
     // playerに必要な情報をセット
     player_->SetCorpseManager(playerCorpseManager_.get());
-    //player_->SetFollowCameraPtr(followCamera_.get());
+    player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
     player_->SetPosition(StageManager::GetStartPos());
 

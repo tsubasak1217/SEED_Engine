@@ -12,46 +12,14 @@
 // manager
 #include "Egg/Manager/EggManager.h"
 #include "StageManager.h"
-
+// camera
+#include "FollowCamera.h"
 //engine 
 #include "SEED.h"
 
 // math & misc
 #include "MyMath.h"
 #include "MyFunc.h"
-
-float CalclateParabolicInitialDirection(
-    float _xLength,
-    float _yHeight,
-    float _gravity,
-    float _initialSpeed){
-    // 参考サイト
-    // https://bibunsekibun.wordpress.com/2015/04/16/%E6%94%BE%E7%89%A9%E7%B7%9A%E3%81%A7%E7%9B%AE%E6%A8%99%E3%81%AB%E5%BD%93%E3%81%A6%E3%82%8B%E8%A7%92%E5%BA%A6%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B/
-
-    // 届くかどうかを調べる
-    // tan^2θ - x/p tanθ + y/p + 1 = 0
-    // から tanθ について 二次方程式を解く
-    // a = 1
-    float b = -1.0f * (2.0f * _initialSpeed * _initialSpeed * _xLength) / (_gravity * _xLength * _xLength);
-    float c = 1.0f * (2.0f * _initialSpeed * _initialSpeed * _yHeight) / (_gravity * _xLength * _xLength);
-
-    float D = b * b - 4 * c;
-    // 届く
-    if(D >= 0.0f){
-        float sprtD = std::sqrt(D);
-        float tanTheta1 = (-1.0f * b + sprtD) * 0.5f;
-        float tanTheta2 = (-1.0f * b - std::sqrt(D)) * 0.5f;
-
-        float theta = (std::min)(tanTheta1,tanTheta2);
-
-        // 放物線は XY の平面上にあるので、Z軸回転は不要
-        // そして 放物線は YZ平面で 使用するので x軸回転 に Thetaを適応
-        return theta;
-    }
-
-    // 届かない
-    return 0.0f;
-}
 
 PlayerStage_ForNextStage::PlayerStage_ForNextStage(
     const Vector3& nextStartPos,
@@ -91,6 +59,11 @@ void PlayerStage_ForNextStage::Initialize(
     ctlPoint_ = beforePos_ + diff * 0.25f;
     ctlPoint_.y = heigherPoint + 20.0f;
 
+    // カメラのターゲットを卵に変更
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+    FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+    pFollowCamera->SetTarget(egg_);
+
 }
 
 void PlayerStage_ForNextStage::Update(){
@@ -100,7 +73,7 @@ void PlayerStage_ForNextStage::Update(){
         moveTime_ += ClockManager::DeltaTime();
         float t = moveTime_ / moveTimeMax_;
         // 卵を投げる
-       
+
         egg_->SetTranslate(
             MyMath::Bezier(
             beforePos_,
@@ -137,8 +110,13 @@ void PlayerStage_ForNextStage::ManageState(){
         egg_->ChangeState(new EggState_Break(egg_,true));
     }
     // ステートが終了したら
-    if(!egg_){
-
+    if(egg_->GetIsBreak()){
+        {
+            // カメラのターゲットをPlayerに変更
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+            pFollowCamera->SetTarget(pPlayer);
+        }
         // 操作可能にする
         pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
     }

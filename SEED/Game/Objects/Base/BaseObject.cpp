@@ -108,8 +108,11 @@ void BaseObject::EndFrameDropFlagUpdate(){
     // 終了時の落下フラグに応じた処理
     if(isDrop_ && isApplyGravity_){
         float downAccel = -Physics::kGravity* weight_ * ClockManager::DeltaTime();
-        velocity_.y += downAccel;
-    } 
+        dropSpeed_ += downAccel;
+    } else{
+        dropSpeed_ = 0.0f;
+        velocity_.y = 0.0f;
+    }
 }
 
 void BaseObject::MoveByVelocity(){

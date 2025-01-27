@@ -51,11 +51,9 @@ public: // アクセッサ
     float GetUnrivalledTime()const{ return unrivalledTime_; }
     // ジャンプに関連するアクセッサ
     bool GetIsJump()const{ return isJump_; }
-    void SetIsJump(bool isJump){ 
-        isJump_ = isJump; 
-        velocity_.y = 0.0f;
-    }
-    void SetJumpPower(float power){ velocity_.y = power; }
+    void SetIsJump(bool isJump){ isJump_ = isJump; }
+    bool IsJumpable(){ return jumpAllowableTime_ > 0.0f; }
+    void SetJumpPower(float power){ jumpPower_ = power; }
     void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
 
 protected: // パラメータ
@@ -67,6 +65,8 @@ protected: // パラメータ
 
 protected:// 移動関連
     bool isJump_ = false;
+    float jumpPower_ = 0.0f;
+    float jumpAllowableTime_ = 0.0f;
     bool isMovable_ = true;
 
 protected:// 状態管理用

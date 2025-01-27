@@ -117,6 +117,7 @@ protected:// 衝突判定用
 protected:// 物理
     bool isApplyGravity_ = true;
     bool isDrop_ = false;
+    float dropSpeed_ = 0.f;
     // 重さ
     float weight_ = 1.f;
     Vector3 velocity_ = {0.f,0.f,0.f};

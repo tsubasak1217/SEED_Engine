@@ -228,6 +228,7 @@ void Stage::LoadFromJson(const std::string& filePath){
                 if (modelJson.contains("moveSpeed")){
                     moveFloor->SetMoveSpeed(modelJson["moveSpeed"]);
                 }
+                moveFloor->InitializeRoutine();
             }
         }
     }
@@ -340,16 +341,6 @@ void Stage::AddModel(
             doorObj->SetClosedPosY(translate.y);
         }
     } 
-    // ◆動く床の場合ルーチンマネージャを渡す
-    else if (modelNameIndex == FIELDMODEL_MOVEFLOOR){
-        auto moveFloorObj = dynamic_cast< FieldObject_MoveFloor* >(newObj.get());
-        if (moveFloorObj){
-            moveFloorObj->InitializeRoutine();
-        }
-    }
-
-
-
     // Manager に登録
     AddFieldObject(std::move(newObj));
 }

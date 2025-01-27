@@ -12,8 +12,8 @@ uint32_t FieldObject_MoveFloor::nextFieldObjectID_ = 1;
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager):
-routineManager_(routineManager){
+FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager) :
+    routineManager_(routineManager){
     // 名前の初期化
     className_ = "FieldObject_MoveFloor";
     name_ = "moveFloor";
@@ -31,8 +31,8 @@ routineManager_(routineManager){
     fieldObjectID_ = nextFieldObjectID_++;
 }
 
-FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName, RoutineManager& routineManager):
-    FieldObject(modelName),routineManager_(routineManager){
+FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName, RoutineManager& routineManager) :
+    FieldObject(modelName), routineManager_(routineManager){
     // クラス名の初期化
     className_ = "FieldObject_MoveFloor";
     // コライダー関連の初期化
@@ -66,7 +66,7 @@ void FieldObject_MoveFloor::ShowImGui(){
     ImGui::DragFloat("MoveSpeed", &moveSpeed_, 0.01f);
 
     // ルーチン選択用のコンボ
-    
+
     std::vector<std::string> routineNames = routineManager_.GetRoutineNames();
 
     // 現在の routineName_ をインデックス化
@@ -119,12 +119,32 @@ void FieldObject_MoveFloor::HandOverColliders(){
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Move(){
     if (routinePoints_.size() < 1){ return; }
-    // ルーチンポイントを巡回
-    if (MyMath::Length(model_->translate_, routinePoints_[currentMovePointIndex_]) < 0.001f){
-        currentMovePointIndex_++;
-        currentMovePointIndex_ = currentMovePointIndex_ % routinePoints_.size();
+    Vector3 currentPos = GetWorldTranslate();
+    Vector3 targetPos = (routinePoints_)[currentMovePointIndex_];
+    Vector3 direction = targetPos - currentPos;
+    float distanceToTarget = MyMath::Length(direction);
+
+    // 正規化された移動方向
+    Vector3 moveDir = MyMath::Normalize(direction);
+    // 1フレームあたりの移動量
+    float moveStep = moveSpeed_ * ClockManager::DeltaTime();
+
+    if (moveStep >= distanceToTarget){
+        // 移動ステップがターゲットまでの距離以上の場合、ターゲットに直接移動
+        model_->translate_ = targetPos;
+        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % routinePoints_.size();
+    } else{
+        // 通常通り移動
+        model_->translate_ = model_->translate_ + moveDir * moveStep;
     }
-    // ルーチンポイントに向かって移動
-    Vector3 moveVec = MyMath::Normalize(routinePoints_[currentMovePointIndex_] - model_->translate_);
-    model_->translate_ = model_->translate_ + moveVec * moveSpeed_ * ClockManager::DeltaTime();
+
+    // 移動後に距離を再チェック
+    currentPos = GetWorldTranslate();
+    targetPos = (routinePoints_)[currentMovePointIndex_];
+    distanceToTarget = MyMath::Length(currentPos, targetPos);
+
+    if (distanceToTarget < 0.01f){
+        currentMovePointIndex_ = (currentMovePointIndex_ + 1) % routinePoints_.size();
+    }
+
 }

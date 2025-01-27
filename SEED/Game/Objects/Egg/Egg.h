@@ -38,8 +38,6 @@ private:
 
     bool isBreak_ = false;
     bool isThrown_ = false;
-
-    float weight_ = 1.0f;
 public:// アクセッサ
     void SetPlayer(BaseObject* _player){ player_ = _player; }
 

@@ -13,7 +13,7 @@
 
 class Scene_Title : public Scene_Base{
 public:
-    Scene_Title(SceneManager* pSceneManager);
+    Scene_Title();
     ~Scene_Title() override;
 
     void Initialize() override;

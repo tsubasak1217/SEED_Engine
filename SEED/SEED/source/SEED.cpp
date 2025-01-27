@@ -6,7 +6,7 @@
 #include <ShapeMath.h>
 #include <includes.h>
 #include <Environment.h>
-#include <SceneManager.h>
+#include <SceneManager/SceneManager.h>
 #include <CollisionManaer/CollisionManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,15 +43,26 @@ SEED* SEED::GetInstance(){
     return instance_;
 }
 
+/*------------------------ 更新処理 ---------------------------*/
+void SEED::Update() {
+
+}
+
+/*------------------------ 初期化処理 ---------------------------*/
+void SEED::Draw() {
+
+}
+
 /*------------------------ 初期化処理 ---------------------------*/
 
-void SEED::Initialize(int clientWidth, int clientHeight){
+void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, int nCmdShow){
 
     GetInstance();
     instance_->kClientWidth_ = clientWidth;
     instance_->kClientHeight_ = clientHeight;
 
     // メインウインドウの作成
+    WindowManager::Initialize(hInstance, nCmdShow);
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
     WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
 
@@ -101,7 +112,6 @@ void SEED::BeginFrame(){
     // imgui,directXのフレーム開始時処理
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
-
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/

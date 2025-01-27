@@ -1,6 +1,6 @@
 #include "Stage.h"
 #include "CollisionManaer/CollisionManager.h"
-
+#include "EventState/EventFunctionTable.h"
 #include "Player/Player.h"
 
 #include "StageManager.h"
@@ -17,7 +17,7 @@ Stage::Stage(ISubject& subject, uint32_t stageNo)
 
     stageNo_ = stageNo;
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_);
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_, stageNo_);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,18 @@ void Stage::EndFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->EndFrame();
     }
+
+    // 削除依頼のあるオブジェクトを削除
+    fieldObjects_.erase(
+        std::remove_if(
+            fieldObjects_.begin(),
+            fieldObjects_.end(),
+            [](const std::unique_ptr<FieldObject>& fieldObject){
+                return fieldObject->GetRemoveFlag();
+            }
+        ),
+        fieldObjects_.end()
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -99,12 +111,12 @@ void Stage::RemoveFieldObject(FieldObject* obj){
     // オブジェクトを削除
     fieldObjects_.erase(
         std::remove_if(
-        fieldObjects_.begin(),
-        fieldObjects_.end(),
-        [obj](const std::unique_ptr<FieldObject>& fieldObject){
-            return fieldObject.get() == obj;
-        }
-    ),
+            fieldObjects_.begin(),
+            fieldObjects_.end(),
+            [obj](const std::unique_ptr<FieldObject>& fieldObject){
+                return fieldObject.get() == obj;
+            }
+        ),
         fieldObjects_.end()
     );
 }
@@ -126,7 +138,7 @@ Vector3 Stage::GetStartPosition() const{
         return startObject_->GetWorldTranslate() + Vector3{ 0.0f,1.0f,0.0f };
     }
     // スタートオブジェクトが見つからなかった場合のデフォルト値を返す
-    return Vector3{0.0f,0.0f,0.0f};
+    return Vector3{ 0.0f,0.0f,0.0f };
 }
 
 FieldObject_ViewPoint* Stage::GetViewPoint() const{
@@ -170,16 +182,16 @@ void Stage::LoadFromJson(const std::string& filePath){
     ClearAllFieldObjects();
 
     // スイッチと関連ドアIDの一時保存用
-    std::vector<std::tuple<FieldObject_Switch*,std::vector<int>>> switchDoorAssociations;
+    std::vector<std::tuple<FieldObject_Switch*, std::vector<int>>> switchDoorAssociations;
 
     // JSON から "models" 配列を読み取り
     if(jsonData.contains("models")){
         for(auto& modelJson : jsonData["models"]){
-            std::string name = modelJson.value("name","default_model.obj");
+            std::string name = modelJson.value("name", "default_model.obj");
             uint32_t type = 0;
-            Vector3 position{0.f,0.f,0.f};
-            Vector3 scale{1.f,1.f,1.f};
-            Vector3 rotation{0.f,0.f,0.f};
+            Vector3 position{ 0.f,0.f,0.f };
+            Vector3 scale{ 1.f,1.f,1.f };
+            Vector3 rotation{ 0.f,0.f,0.f };
 
             if(modelJson.contains("position")){
                 position.x = modelJson["position"][0];
@@ -201,7 +213,7 @@ void Stage::LoadFromJson(const std::string& filePath){
             }
 
             // 取得した情報からモデルを追加
-            AddModel(type,scale,rotation,position);
+            AddModel(type, modelJson, scale, rotation, position);
 
             // 新規追加されたオブジェクトを取得（最後に追加されたものを想定
             if(fieldObjects_.empty()) continue;
@@ -212,14 +224,14 @@ void Stage::LoadFromJson(const std::string& filePath){
                 //json から associatedDoors を取得(ドアIDの配列)
                 if(modelJson.contains("associatedDoors")){
                     std::vector<int> doorIDs = modelJson["associatedDoors"].get<std::vector<int>>();
-                    switchDoorAssociations.emplace_back(sw,doorIDs);
+                    switchDoorAssociations.emplace_back(sw, doorIDs);
                 }
             }
         }
     }
 
     // 全てのモデルを生成・登録後に、スイッチとドアの関連付けを行う
-    for(auto& [sw,doorIDs] : switchDoorAssociations){
+    for(auto& [sw, doorIDs] : switchDoorAssociations){
         for(uint32_t doorID : doorIDs){
             // manager_ から対応するドアを検索
             std::vector<FieldObject_Door*> doors = GetObjectsOfType<FieldObject_Door>();
@@ -245,16 +257,17 @@ void Stage::LoadFromJson(const std::string& filePath){
 ////////////////////////////////////////////////////////////////////////
 void Stage::AddModel(
     uint32_t modelNameIndex,
+    const nlohmann::json& json,
     const Vector3& scale,
     const Vector3& rotate,
     const Vector3& translate
 ){
     // スタートもしくはゴールの場合、既に存在しているかチェックし、
     // 存在していれば新規追加をキャンセルする
-    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
-        for (const auto& objPtr : fieldObjects_){
+    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+        for(const auto& objPtr : fieldObjects_){
             FieldObject* obj = objPtr.get();
-            if (obj && obj->GetFieldObjectType() == modelNameIndex){
+            if(obj && obj->GetFieldObjectType() == modelNameIndex){
                 // 既に同じタイプのオブジェクトが存在する場合、追加をキャンセル
                 return;
             }
@@ -264,44 +277,58 @@ void Stage::AddModel(
     // 新規オブジェクトの生成
     std::unique_ptr<FieldObject> newObj = nullptr;
 
-    switch (modelNameIndex){
-        case FIELDMODEL_GRASSSOIL:
-            newObj = std::make_unique<FieldObject_GrassSoil>();
-            break;
-        case FIELDMODEL_SOIL:
-            newObj = std::make_unique<FieldObject_Soil>();
-            break;
-        case FIELDMODEL_SPHERE:
-            newObj = std::make_unique<FieldObject_Sphere>();
-            break;
-        case FIELDMODEL_DOOR:
-            newObj = std::make_unique<FieldObject_Door>();
-            break;
-        case FIELDMODEL_START:
-            newObj = std::make_unique<FieldObject_Start>();
-            // start を 保持
-            startObject_ = dynamic_cast< FieldObject_Start* >(newObj.get());
-            break;
-        case FIELDMODEL_GOAL:
-            newObj = std::make_unique<FieldObject_Goal>();
-            // goal を 保持
-            goalObject_ = dynamic_cast< FieldObject_Goal* >(newObj.get());
-            break;
-        case FIELDMODEL_SWITCH:
-            newObj = std::make_unique<FieldObject_Switch>();
-            break;
-        case FIELDMODEL_VIEWPOINT:
-            newObj = std::make_unique<FieldObject_ViewPoint>();
-            break;
-        default:
-            break;
+    switch(modelNameIndex){
+    case FIELDMODEL_GRASSSOIL:
+        newObj = std::make_unique<FieldObject_GrassSoil>();
+        break;
+    case FIELDMODEL_SOIL:
+        newObj = std::make_unique<FieldObject_Soil>();
+        break;
+    case FIELDMODEL_SPHERE:
+        newObj = std::make_unique<FieldObject_Sphere>();
+        break;
+    case FIELDMODEL_DOOR:
+        newObj = std::make_unique<FieldObject_Door>();
+        break;
+    case FIELDMODEL_START:
+        newObj = std::make_unique<FieldObject_Start>();
+        // start を 保持
+        startObject_ = dynamic_cast<FieldObject_Start*>(newObj.get());
+        break;
+    case FIELDMODEL_GOAL:
+        newObj = std::make_unique<FieldObject_Goal>();
+        // goal を 保持
+        goalObject_ = dynamic_cast<FieldObject_Goal*>(newObj.get());
+        break;
+    case FIELDMODEL_SWITCH:
+        newObj = std::make_unique<FieldObject_Switch>();
+        break;
+    case FIELDMODEL_VIEWPOINT:
+        newObj = std::make_unique<FieldObject_ViewPoint>();
+        break;
+    case FIELDMODEL_EVENTAREA:
+        newObj = std::make_unique<FieldObject_EventArea>();
+        if(json.contains("eventFunctionKey")){
+            FieldObject_EventArea* eventArea = dynamic_cast<FieldObject_EventArea*>(newObj.get());
+            eventArea->SetEvent(EventFunctionTable::tableMap_[json["eventFunctionKey"]]);
+            eventArea->SetEventName(json["eventFunctionKey"]);
+        }
+
+        if(json.contains("isOnceEvent")){
+            FieldObject_EventArea* eventArea = dynamic_cast<FieldObject_EventArea*>(newObj.get());
+            eventArea->isOnceEvent_ = json["isOnceEvent"];
+        }
+
+        break;
+    default:
+        break;
     }
 
-    if (!newObj) return;  // newObj が生成されなかった場合は何もしない
+    if(!newObj) return;  // newObj が生成されなかった場合は何もしない
 
     // スタートまたはゴールの場合、スケールを 1 に固定（あるいは別途調整）
     Vector3 adjustedScale = scale;
-    if (modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
+    if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
         adjustedScale.x = 1.0f;
         adjustedScale.y = 1.0f;
         adjustedScale.z = 1.0f;
@@ -317,9 +344,9 @@ void Stage::AddModel(
     newObj->UpdateMatrix();
 
     // ◆ドアの場合のみ、「初期Y」を覚えてもらう
-    if (modelNameIndex == FIELDMODEL_DOOR){
-        auto doorObj = dynamic_cast< FieldObject_Door* >(newObj.get());
-        if (doorObj){
+    if(modelNameIndex == FIELDMODEL_DOOR){
+        auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
+        if(doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
     }

@@ -4,9 +4,6 @@
 //lib
 #include "InputManager/InputManager.h"
 
-//other scene
-#include "Scene_Game.h"
-
 //state
 #include "State/TitleState_Enter.h"
 #include "State/TitleState_Main.h"
@@ -17,8 +14,7 @@
 // コンストラクタ・デストラクタ
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-Scene_Title::Scene_Title(SceneManager* pSceneManager){
-    pSceneManager_ = pSceneManager;
+Scene_Title::Scene_Title(){
     Initialize();
     SEED::SetCamera("main");
 }

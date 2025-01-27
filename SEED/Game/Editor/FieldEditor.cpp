@@ -9,6 +9,10 @@
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
+#include "FieldObject/EventArea/FieldObject_EventArea.h"
+
+// other
+#include "EventState/EventFunctionTable.h"
 
 //engine
 #include "../SEED/external/imgui/imgui.h"
@@ -42,6 +46,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
     modelNameMap_["switch"] = FIELDMODEL_SWITCH;
     modelNameMap_["viewpoint"] = FIELDMODEL_VIEWPOINT;
+    modelNameMap_["eventArea"] = FIELDMODEL_EVENTAREA;
 
     LoadFieldModelTexture();
 
@@ -184,6 +189,12 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                     doorIDs.push_back(door->GetFieldObjectID());
                 }
                 modelJson["associatedDoors"] = doorIDs;
+            }
+
+            // イベントエリアの場合、関連付けられた関数のキーの名前、一度のみかどうかのフラグを保存
+            if(auto* eventArea = dynamic_cast<FieldObject_EventArea*>(modelObj)){
+                modelJson["eventFunctionKey"] = eventArea->GetEventName();
+                modelJson["isOnceEvent"] = eventArea->isOnceEvent_;
             }
 
             jsonData["models"].push_back(modelJson);
@@ -354,6 +365,9 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
     case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
         ReassignIDsForType<FieldObject_ViewPoint>(objects);
         break;
+    case FIELDMODELNAME::FIELDMODEL_EVENTAREA:
+        ReassignIDsForType<FieldObject_EventArea>(objects);
+        break;
     default:
         // 必要に応じてデフォルト処理を追加
         break;
@@ -491,6 +505,8 @@ void FieldEditor::ShowImGui(){
     //----------------------------------------
     auto& objects = manager_.GetStages()[edittingStageIndex]->GetObjects();
     static int selectedObjIndex = -1;
+    static int prevSelectedObjIndex = -1;
+    prevSelectedObjIndex = selectedObjIndex;
 
     // 2カラムレイアウト開始
     ImGui::Columns(2, "2cols", true);
@@ -642,7 +658,55 @@ void FieldEditor::ShowImGui(){
                     }
                 }
 
+
+
+                // イベントエリアの場合、イベント内容を設定
+                if (auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)) {
+                    ImGui::Separator();
+                    ImGui::Text("EventArea Settings");
+                    ImGui::Separator();
+                    
+                    // EventFunctionTableの関数名をドロップダウンで表示・選択(unordered_map)
+                    static int selectedEventIndex = 0;
+                    static std::vector<std::string> eventNames;
+                    if(eventNames.empty()){
+                        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+                            eventNames.push_back(name);
+                        }
+                    }
+
+                    std::string currentEventName;
+                    if(eventArea->GetEventName() != ""){
+                        currentEventName = eventArea->GetEventName();
+                    } else{
+                        currentEventName = "none";
+                    }
+
+                    // ドロップダウンリストを作成
+                    if(ImGui::BeginCombo("Select Event", currentEventName.c_str())){
+                        for(int i = 0; i < eventNames.size(); ++i){
+                            bool isSelected = (selectedEventIndex == i);
+                            if(ImGui::Selectable(eventNames[i].c_str(), isSelected)){
+                                selectedEventIndex = i;  // 選択されたイベントのインデックスを更新
+                                eventArea->SetEvent(EventFunctionTable::tableMap_[eventNames[i]]);
+                                eventArea->SetEventName(eventNames[i]);
+                            }
+
+                            if(isSelected){
+                                ImGui::SetItemDefaultFocus();
+                            }
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    // 一度のみのイベントかどうかのフラグ
+                    ImGui::Checkbox("Is Once Event", &eventArea->isOnceEvent_);
+
+                }
+
                 ImGui::Separator();
+
+
 
                 // [D] オブジェクト削除
                 if(ImGui::Button("Remove Selected Model")||Input::IsTriggerKey(DIK_ESCAPE)){

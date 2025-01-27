@@ -239,6 +239,15 @@
     <Filter Include="SEED\adapter">
       <UniqueIdentifier>{5b8a9c73-826a-4330-8487-68e834390ba8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\EventArea">
+      <UniqueIdentifier>{ac1423ec-a856-43b5-98c5-c44da2553d36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\Scene_Game\State\EventState">
+      <UniqueIdentifier>{5efc4e42-c7db-485c-91aa-5ad63e434aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SEED\Source\Manager\SceneManager">
+      <UniqueIdentifier>{074a2122-47c7-4f09-8b00-acd39d2c95eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -282,9 +291,6 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp">
       <Filter>Game\Scene\Scene_Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\SceneManager.cpp">
-      <Filter>Game\Manager</Filter>
     </ClCompile>
     <ClCompile Include="SEED\lib\structs\Model.cpp">
       <Filter>SEED\Lib\Structs</Filter>
@@ -706,6 +712,39 @@
     <ClCompile Include="Game\UI\UI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.cpp">
+      <Filter>Game\Objects\FieldObject\EventArea</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp">
+      <Filter>SEED\Source\Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\SceneFactory.cpp">
+      <Filter>SEED\Source\Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\SceneRegister.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameSystem.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -806,9 +845,6 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h">
       <Filter>Game\Scene\Scene_Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\SceneManager.h">
-      <Filter>Game\Manager</Filter>
     </ClInclude>
     <ClInclude Include="SEED\lib\structs\ModelData.h">
       <Filter>SEED\Lib\Structs</Filter>
@@ -1290,6 +1326,39 @@
     <ClInclude Include="Game\UI\State\IUiState.h" />
     <ClInclude Include="Game\UI\ButtonUI.h" />
     <ClInclude Include="Game\UI\UI.h" />
+    <ClInclude Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.h">
+      <Filter>Game\Objects\FieldObject\EventArea</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.h">
+      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h">
+      <Filter>SEED\Source\Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\SceneFactory.h">
+      <Filter>SEED\Source\Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\SceneRegister.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameSystem.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

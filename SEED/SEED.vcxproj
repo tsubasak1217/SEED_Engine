@@ -112,9 +112,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp" />
     <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp" />
+    <ClCompile Include="Game\Scene\SceneFactory.cpp" />
+    <ClCompile Include="Game\Scene\SceneRegister.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp" />
     <ClCompile Include="Game\UI\ButtonUI.cpp" />
     <ClCompile Include="Game\UI\UI.cpp" />
@@ -152,7 +162,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Editor\EnemyEditor.cpp" />
     <ClCompile Include="Game\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
-    <ClCompile Include="Game\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
@@ -240,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\ParticleManager\ParticleManager.cpp" />
     <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.cpp" />
     <ClCompile Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.cpp" />
+    <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
@@ -261,9 +271,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.h" />
+    <ClInclude Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
     <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
+    <ClInclude Include="Game\Scene\SceneFactory.h" />
+    <ClInclude Include="Game\Scene\SceneRegister.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
     <ClInclude Include="Game\UI\ButtonUI.h" />
     <ClInclude Include="Game\UI\State\IUiState.h" />
@@ -307,7 +327,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
-    <ClInclude Include="Game\Manager\SceneManager.h" />
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
@@ -427,6 +446,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\ParticleManager\ParticleManager.h" />
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\BaseParticle.h" />
     <ClInclude Include="SEED\source\Manager\ParticleManager\Particles\RadialParticle.h" />
+    <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h" />
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />

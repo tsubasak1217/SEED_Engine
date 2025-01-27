@@ -34,10 +34,12 @@ public:
     void SetFieldObjectType(uint32_t type){ fieldObjectType_ = type; }
     void SetFieldObjectID(uint32_t id){ fieldObjectID_ = id; }
     void SetPlayer(Player* player){ player_ = player; }
+    bool GetRemoveFlag()const { return removeFlag_; }
 
 protected:
     uint32_t fieldObjectType_;
     uint32_t fieldObjectID_ = 0;
+    bool removeFlag_ = false;
 
     Player* player_ = nullptr;  // プレイヤーへのポインタ
 

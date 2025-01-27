@@ -1,6 +1,7 @@
 // FieldObject_Switch.cpp
 #include "FieldObject_Switch.h"
 #include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/Switch/FieldObject_Switch.h"
 #include "InputManager.h"
 
 uint32_t FieldObject_Switch::nextFieldObjectID_ = 1;
@@ -8,7 +9,6 @@ uint32_t FieldObject_Switch::nextFieldObjectID_ = 1;
 ////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////
-
 FieldObject_Switch::FieldObject_Switch()
     : switchType_(SwitchType::TYPE_TRIGGER){ // デフォルトを Trigger に設定
     // 名前の初期化
@@ -47,7 +47,6 @@ FieldObject_Switch::FieldObject_Switch(const std::string& modelName, SwitchType 
 ////////////////////////////////////////////////////////////////////
 // 初期化関数
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::Initialize(){
     // 追加の初期化が必要な場合はここに記述
 }
@@ -55,7 +54,6 @@ void FieldObject_Switch::Initialize(){
 ////////////////////////////////////////////////////////////////////
 // 更新関数
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::Update(){
     if (switchType_ == SwitchType::TYPE_TRIGGER){
         // Trigger タイプの処理
@@ -102,7 +100,6 @@ void FieldObject_Switch::ShowImGui(){
 ////////////////////////////////////////////////////////////////////
 // Observer 用関数
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::RegisterObserver(IObserver* observer){
     observers_.push_back(observer);
 }
@@ -122,7 +119,6 @@ void FieldObject_Switch::Notify(const std::string& event, void* data){
 ////////////////////////////////////////////////////////////////////
 // Collision 用関数
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
     if (objectType != ObjectType::Player){
         return;
@@ -134,7 +130,6 @@ void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, O
 ////////////////////////////////////////////////////////////////////
 // Toggle 関数
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::Toggle(){
     isActivated_ = !isActivated_;
     std::string event = isActivated_ ? "SwitchActivated" : "SwitchDeactivated";
@@ -144,7 +139,6 @@ void FieldObject_Switch::Toggle(){
 ////////////////////////////////////////////////////////////////////
 // ドアへのポインタを設定・取得するメソッド
 ////////////////////////////////////////////////////////////////////
-
 void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
     // 重複登録を防ぐ
     if (std::find(associatedDoors_.begin(), associatedDoors_.end(), door) == associatedDoors_.end()){
@@ -165,4 +159,29 @@ void FieldObject_Switch::RemoveAssociatedDoor(FieldObject_Door* door){
 
 std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors(){
     return associatedDoors_;
+}
+
+////////////////////////////////////////////////////////////////////
+// 移動する床へのポインタを設定・取得するメソッド
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::AddAssociatedMoveFloor(FieldObject_MoveFloor* moveFloor){
+    // 重複登録を防ぐ
+    if (std::find(associatedMoveFloors_.begin(), associatedMoveFloors_.end(), moveFloor) == associatedMoveFloors_.end()){
+        associatedMoveFloors_.push_back(moveFloor);
+    }
+}
+
+void FieldObject_Switch::RemoveAssociatedMoveFloor(FieldObject_MoveFloor* moveFloor){
+    auto it = std::remove_if(
+        associatedMoveFloors_.begin(),
+        associatedMoveFloors_.end(),
+        [moveFloor] (FieldObject_MoveFloor* existingMoveFloor){
+            return existingMoveFloor == moveFloor;
+        }
+    );
+    associatedMoveFloors_.erase(it, associatedMoveFloors_.end());
+}
+
+std::vector<FieldObject_MoveFloor*>& FieldObject_Switch::GetAssociatedMoveFloors(){
+    return associatedMoveFloors_;
 }

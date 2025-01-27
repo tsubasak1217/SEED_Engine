@@ -3,11 +3,16 @@
 #include "../FieldObject.h"
 #include "../game/Routine/RoutineManager.h"
 
+#include "../lib/patterns/IObserver.h"
+
 #include <memory>
 #include <string>
 
+// 前方宣言
+class FieldObject_Switch;
+
 class FieldObject_MoveFloor
-    :public FieldObject{
+    :public FieldObject,public IObserver{
 public:
     //===================================================================*/
     //                    public function
@@ -26,6 +31,8 @@ public:
     //ImGui
     void ShowImGui() override;
 
+    void OnNotify(const std::string& event, void* data = nullptr) override;
+
 private:
     //===================================================================*/
     //                   private function
@@ -43,6 +50,11 @@ private:
 
     //routineの参照
     RoutineManager& routineManager_;
+
+    // --- switch variable --- //
+    bool hasSwitch_ = false;                    //< スイッチを持っているかどうか
+    bool isSwitchActive_ = false;               //< スイッチの状態を追跡する新しいフラグ
+
 public:
     //===================================================================*/
     //                   public variable
@@ -66,5 +78,8 @@ public:
     }
     float GetMoveSpeed()const{ return moveSpeed_; }
 
+    void SetSwitch(FieldObject_Switch* pSwitch);
+    void RemoveSwitch(FieldObject_Switch* pSwitch);
+    bool GetHasSwitch()const{ return hasSwitch_; }
 #pragma endregion
 };

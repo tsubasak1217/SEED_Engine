@@ -15,8 +15,6 @@ void EnemyManager::Update(){
     for(auto& enemy : enemies_){
         enemy->Update();
     }
-
-   
 }
 
 void EnemyManager::Draw(){

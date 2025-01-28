@@ -15,6 +15,7 @@
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
+#include "../PlayerInput/PlayerInput.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
     Initialize("Break",character);
@@ -52,7 +53,7 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
 void EggState_Break::Update(){
     timerUi_->BeginFrame();
 
-    if(Input::GetInstance()->IsPressPadButton(PAD_BUTTON::X)){
+    if(PlayerInput::CharacterMove::FastForwardEggTimer()){
         leftTime_ -= ClockManager::DeltaTime() * timeFactor_;
     } else{
         leftTime_ -= ClockManager::DeltaTime();

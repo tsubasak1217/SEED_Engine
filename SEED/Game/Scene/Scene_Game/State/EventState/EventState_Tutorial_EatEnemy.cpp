@@ -1,5 +1,8 @@
 #include "EventState_Tutorial_EatEnemy.h"
 
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 EventState_Tutorial_EatEnemy::EventState_Tutorial_EatEnemy(){
 }
 
@@ -45,7 +48,7 @@ void EventState_Tutorial_EatEnemy::Update(){
             alpha2 = std::clamp((time_ - 1.0f) / 1.0f, 0.0f, 1.0f);
         }
 
-        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+        if(PlayerInput::Tutorial::StepText()){
             if(time_ > 2.0f){
 
                 textStep_++;

@@ -8,13 +8,16 @@
 #include "GameState_Exit.h"
 #include "GameState_Play.h"
 
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 // コンストラクタ：デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-GameState_Pause::GameState_Pause(Scene_Base* pScene) : State_Base(pScene){
+GameState_Pause::GameState_Pause(Scene_Base* pScene): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     pGameScene_->SetIsPaused(true);
     Initialize();
@@ -36,24 +39,24 @@ void GameState_Pause::Initialize(){
     };
 
     for(int i = 0; i < 3; i++){
-        pauseMenuItems_[i] = std::make_unique<std::pair<Sprite, Sprite>>();
+        pauseMenuItems_[i] = std::make_unique<std::pair<Sprite,Sprite>>();
         pauseMenuItems_[i]->first = Sprite("Pause/pauseMenuItems.png");
-        pauseMenuItems_[i]->first.clipLT = { 0.0f,94.0f * i };
-        pauseMenuItems_[i]->first.clipSize = { 616.0f,94.0f };
-        pauseMenuItems_[i]->first.anchorPoint = { 0.5f,0.5f };
+        pauseMenuItems_[i]->first.clipLT = {0.0f,94.0f * i};
+        pauseMenuItems_[i]->first.clipSize = {616.0f,94.0f};
+        pauseMenuItems_[i]->first.anchorPoint = {0.5f,0.5f};
 
         pauseMenuItems_[i]->second = Sprite("Assets/white1x1.png");
-        pauseMenuItems_[i]->second.size = { 616.0f,94.0f };
+        pauseMenuItems_[i]->second.size = {616.0f,94.0f};
         pauseMenuItems_[i]->second.color = colors[i];
-        pauseMenuItems_[i]->second.anchorPoint = { 0.5f,0.5f };
+        pauseMenuItems_[i]->second.anchorPoint = {0.5f,0.5f};
 
-        pauseMenuItems_[i]->first.translate = { -380.0f,((float)kWindowSizeY * 0.25f) * (i + 1) };
-        pauseMenuItems_[i]->second.translate = { -380.0f,((float)kWindowSizeY * 0.25f) * (i + 1) };
+        pauseMenuItems_[i]->first.translate = {-380.0f,((float)kWindowSizeY * 0.25f) * (i + 1)};
+        pauseMenuItems_[i]->second.translate = {-380.0f,((float)kWindowSizeY * 0.25f) * (i + 1)};
     }
 
     backSprite_ = std::make_unique<Sprite>("Assets/white1x1.png");
     backSprite_->size = kWindowSize;
-    backSprite_->color = { 0.0f,0.0f,0.0f,0.0f };
+    backSprite_->color = {0.0f,0.0f,0.0f,0.0f};
 
     UpdateItems();
 }
@@ -74,11 +77,10 @@ void GameState_Pause::Update(){
 
     // 項目の選択
     if(!isExitPause_){
-        if(Input::IsTriggerStick(LR::LEFT, DIRECTION::DOWN)){
-            selectIndex_ = std::clamp(selectIndex_ + 1, 0, 2);
-            UpdateItems();
-        } else if(Input::IsTriggerStick(LR::LEFT, DIRECTION::UP)){
-            selectIndex_ = std::clamp(selectIndex_ - 1, 0, 2);
+        int step = int(PlayerInput::Pause::subItemIndex()) - int(PlayerInput::Pause::addItemIndex());
+
+        if(step != 0){
+            selectIndex_ = std::clamp(selectIndex_ + step,0,2);
             UpdateItems();
         }
     }
@@ -87,11 +89,11 @@ void GameState_Pause::Update(){
     UIMotion();
 
     // ポーズ画面を抜けるフラグを立てる
-    if(Input::IsTriggerPadButton(PAD_BUTTON::B | PAD_BUTTON::A)){
+    if(PlayerInput::Pause::ExecuteItem()){
         isExitPause_ = true;
     }
 
-    if(Input::IsTriggerPadButton(PAD_BUTTON::START)){
+    if(PlayerInput::Pause::Exit()){
         isExitPause_ = true;
         closeOrder_ = true;
     }
@@ -159,7 +161,7 @@ void GameState_Pause::ManageState(){
         pGameScene_->SetIsPaused(false);
 
         if(closeOrder_){
-            pScene_->ChangeState(new GameState_Play(pScene_, false));
+            pScene_->ChangeState(new GameState_Play(pScene_,false));
             return;
         }
 
@@ -169,7 +171,7 @@ void GameState_Pause::ManageState(){
             int stageNo = pGameScene->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
             std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
             pGameScene->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath);
-            pScene_->ChangeState(new GameState_Play(pScene_, true));
+            pScene_->ChangeState(new GameState_Play(pScene_,true));
             return;
 
         } else if(selectIndex_ == PAUSE_ITEM_TO_SELECT){
@@ -177,7 +179,7 @@ void GameState_Pause::ManageState(){
             return;
 
         } else if(selectIndex_ == PAUSE_ITEM_CLOSE){
-            pScene_->ChangeState(new GameState_Play(pScene_, false));
+            pScene_->ChangeState(new GameState_Play(pScene_,false));
             return;
         }
     }
@@ -244,10 +246,10 @@ void GameState_Pause::UpdateItems(){
     // 選択項目だけを明るくする
     for(int i = 0; i < 3; i++){
         if(i == selectIndex_){
-            pauseMenuItems_[i]->first.color = { 1.0f,1.0f,1.0f,1.0f };
+            pauseMenuItems_[i]->first.color = {1.0f,1.0f,1.0f,1.0f};
             pauseMenuItems_[i]->second.color.w = 1.0f;
         } else{
-            pauseMenuItems_[i]->first.color = { 0.2f,0.2f,0.2f,1.0f };
+            pauseMenuItems_[i]->first.color = {0.2f,0.2f,0.2f,1.0f};
             pauseMenuItems_[i]->second.color.w = 0.2f;
         }
     }
@@ -262,7 +264,7 @@ void GameState_Pause::UpdateItems(){
 void GameState_Pause::UIMotion(){
 
     float aimTheta = (-3.14f * 0.05f);
-    Vector2 aimScale = { 1.15f,1.15f };
+    Vector2 aimScale = {1.15f,1.15f};
     for(int i = 0; i < 3; i++){
         if(i == selectIndex_){
             pauseMenuItems_[i]->second.rotate += (aimTheta - pauseMenuItems_[i]->second.rotate) * 0.1f * ClockManager::TimeRate();
@@ -270,8 +272,8 @@ void GameState_Pause::UIMotion(){
             pauseMenuItems_[i]->second.scale += (aimScale - pauseMenuItems_[i]->second.scale) * 0.1f * ClockManager::TimeRate();
         } else{
             pauseMenuItems_[i]->second.rotate += (0.0f - pauseMenuItems_[i]->second.rotate) * 0.1f * ClockManager::TimeRate();
-            pauseMenuItems_[i]->first.scale += (Vector2{ 1.0f,1.0f } - pauseMenuItems_[i]->first.scale) * 0.1f * ClockManager::TimeRate();
-            pauseMenuItems_[i]->second.scale += (Vector2{ 1.0f,1.0f } - pauseMenuItems_[i]->second.scale) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->first.scale += (Vector2{1.0f,1.0f} - pauseMenuItems_[i]->first.scale) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->second.scale += (Vector2{1.0f,1.0f} - pauseMenuItems_[i]->second.scale) * 0.1f * ClockManager::TimeRate();
         }
     }
 }

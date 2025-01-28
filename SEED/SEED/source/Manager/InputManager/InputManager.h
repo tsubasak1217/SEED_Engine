@@ -79,6 +79,7 @@ public:// キーの状態を返す関数
     static bool IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsPressAnyPadButton(uint8_t padNumber = 0);
     static bool IsTriggerAnyPadButton(uint8_t padNumber = 0);
+    static bool IsConnectedPad(uint8_t padNumber = 0);
 
     // 左右トリガーの値を0.0 ~ 1.0で取得
     static float GetLRTriggerValue(

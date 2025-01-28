@@ -673,9 +673,6 @@
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
       <Filter>SEED\adapter</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\Routine\EnemyRoutineManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -753,6 +750,9 @@
     </ClCompile>
     <ClCompile Include="Game\Routine\RoutineManager.cpp">
       <Filter>Game\Objects\Enemy\Routine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PlayerInput\PlayerInput.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1371,6 +1371,7 @@
     <ClInclude Include="Game\Routine\RoutineManager.h">
       <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClInclude>
+    <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

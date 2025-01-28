@@ -1,6 +1,9 @@
 #include "EventState_Tutorial_Goal.h"
 #include "Scene_Game.h"
 
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 EventState_Tutorial_Goal::EventState_Tutorial_Goal(){
 }
 
@@ -46,7 +49,7 @@ void EventState_Tutorial_Goal::Update(){
             alpha2 = std::clamp((time_ - 1.0f) / 1.0f, 0.0f, 1.0f);
         }
 
-        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+        if(PlayerInput::Tutorial::StepText()){
             if(time_ > 2.0f){
 
                 textStep_++;

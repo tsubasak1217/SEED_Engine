@@ -21,7 +21,7 @@ void PlayerCorpse::Initialize(){
 
     SetIsApplyGravity(true);
 
-    
+    weight_ = 4.f;
 }
 
 void PlayerCorpse::Update(){

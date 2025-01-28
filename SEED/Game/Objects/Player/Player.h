@@ -60,6 +60,7 @@ public: // アクセッサ
 
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }
+    void SetLastOnGroundPos(const Vector3& _newLastPosOnGround){ lastPosOnGround_ = _newLastPosOnGround; }
 public:
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 

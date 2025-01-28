@@ -89,6 +89,10 @@ void EggState_Break::ManageState(){
                         pPlayer->SetEnemyManager(enemyManager);
                     }
 
+                    { //! 次のステージへの遷移失敗することがあるので 仮対処
+                        pPlayer->SetPosition(StageManager::GetStartPos());
+                    }
+
                     { //前ステージの死体を消す
                         PlayerCorpseManager* pCorpseManager = pPlayer->GetCorpseManager();
                         pCorpseManager->RemoveAll();

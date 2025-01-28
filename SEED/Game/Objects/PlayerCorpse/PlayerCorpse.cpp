@@ -20,6 +20,8 @@ void PlayerCorpse::Initialize(){
     }
 
     SetIsApplyGravity(true);
+
+    
 }
 
 void PlayerCorpse::Update(){

@@ -11,6 +11,7 @@
 #include "StageManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
+#include "../PlayerInput/PlayerInput.h"
 
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
@@ -150,7 +151,7 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     if(objectType == ObjectType::GoalField){
 
         // ステージ遷移ステートへ
-        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+        if(PlayerInput::CharacterMove::GoNextStage()){
             if(!StageManager::IsLastStage()){
                 ToClearStageState(StageManager::GetNextStartPos());
                 //2つのステージのコライダーを渡すよう設定

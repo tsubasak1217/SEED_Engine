@@ -4,6 +4,7 @@
 
 //lib
 #include "../adapter/json/JsonCoordinator.h"
+#include "../PlayerInput/PlayerInput.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -44,7 +45,7 @@ void PlayerState_Jump::Update(){
     Move();
 
     // 回転処理
-    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
+    if(MyMath::LengthSq(PlayerInput::CharacterMove::GetCharacterMoveDirection())){
         Rotate();
     }
 }
@@ -83,7 +84,7 @@ void PlayerState_Jump::Hovering(){
             pCharacter_->SetJumpPower(jumpHoveringAccel_);
 
             pCharacter_->SetIsApplyGravity(false);
-            if(!Input::GetInstance()->IsPressPadButton(PAD_BUTTON::A) || hoveringTime_ <= 0.0f){
+            if(!PlayerInput::CharacterMove::Hovering() || hoveringTime_ <= 0.0f){
                 hoveringState_ = HoveringState::MoveDown;
 
                 pCharacter_->SetIsApplyGravity(true);

@@ -5,9 +5,14 @@
 #include "PlayerState_ThrowEgg.h"
 #include "PlayerState_Eat.h"
 
+
+///local
+//object
 #include "Egg/Egg.h"
 // EggState
 #include "Egg/State/EggState_Thrown.h"
+//lib
+#include "../PlayerInput/PlayerInput.h"
 
 // 状態を表されている主
 #include "Player/Player.h"
@@ -52,7 +57,7 @@ void PlayerState_Idle::ManageState(){
     if(!pCharacter_->GetIsMovable()){ return; }
 
     // ジャンプ状態へ
-    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
+    if(PlayerInput::CharacterMove::Jump()){
         if(pCharacter_->IsJumpable()){
             pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
             return;
@@ -60,14 +65,14 @@ void PlayerState_Idle::ManageState(){
     }
 
     // 移動
-    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
+    if(MyMath::LengthSq(PlayerInput::CharacterMove::GetCharacterMoveDirection())){
         pCharacter_->ChangeState(new PlayerState_Move("Player_Move",pCharacter_));
         return;
     }
 
     // 卵 を 投げる状態へ
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    if(Input::IsTriggerPadButton(PAD_BUTTON::LT)){
+    if(PlayerInput::CharacterMove::FocusEggInput()){
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -82,7 +87,7 @@ void PlayerState_Idle::ManageState(){
         return;
     }
 
-    if(Input::IsReleasePadButton(PAD_BUTTON::RT)){
+    if(PlayerInput::CharacterMove::ThrowEgg()){
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -101,7 +106,7 @@ void PlayerState_Idle::ManageState(){
     }
 
     // 捕食
-    if(Input::IsReleasePadButton(PAD_BUTTON::B)){
+    if(PlayerInput::CharacterMove::Eat()){
         if(pPlayer->CanEatEnemy()){
             pCharacter_->ChangeState(new PlayerState_Eat(pCharacter_));
             return;

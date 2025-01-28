@@ -188,13 +188,13 @@ void Scene_Game::Update() {
 
     ParticleManager::Update();
 
+    // フィールドの更新
+    stageManager_->Update();
+
     player_->Update();
 
     eggManager_->Update();
     playerCorpseManager_->Update();
-
-    // フィールドの更新
-    stageManager_->Update();
 
     // ドアとの距離をチェックし、近ければイベント発行
     doorProximityChecker_->Update();

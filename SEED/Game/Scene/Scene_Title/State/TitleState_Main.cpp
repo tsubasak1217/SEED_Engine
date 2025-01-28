@@ -6,6 +6,9 @@
 //othersState
 #include "TitleState_Out.h"
 
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 TitleState_Main::TitleState_Main(Scene_Title* _host)
     :ITitleState(_host){
     Initialize();
@@ -32,7 +35,7 @@ void TitleState_Main::EndFrame(){
 void TitleState_Main::HandOverColliders(){}
 
 void TitleState_Main::ManageState(){
-    if(input_->IsPressAnyPadButton()){
+    if(PlayerInput::TitleScene::IsStartGame()){
         host_->ChangeState(new TitleState_Out(host_));
         return;
     }

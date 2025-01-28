@@ -27,11 +27,14 @@ void PredationRange::Initialize(Player* player){
 
 void PredationRange::Update(EnemyManager* _enemyManager){
     auto& enemies = _enemyManager->GetEnemies();
+
+    if(!preyList_.empty()){
+        preyList_.clear();
+    }
+
     if(enemies.empty()){
         return;
     }
-
-    preyList_.clear();
 
     // 範囲内の敵を探す
     Vector3 playerPos = player_->GetWorldTranslate();
@@ -43,7 +46,7 @@ void PredationRange::Update(EnemyManager* _enemyManager){
     for(auto& enemy : enemies){
         // 捕食不可能な敵は無視
         if(!enemy->GetCanEat()){
-            break;
+            continue;
         }
         diffP2E = enemy->GetWorldTranslate() - playerPos;
         if(MyMath::LengthSq({diffP2E.x,diffP2E.z}) < rangeXZ_ * rangeXZ_){
@@ -51,7 +54,7 @@ void PredationRange::Update(EnemyManager* _enemyManager){
 
             // 許容範囲外の敵は無視
             if(MyMath::Cross(Vector2(playerDirection.x,playerDirection.z),Vector2(directionP2E.x,directionP2E.z)) > static_cast<float>(catchAngle_)){
-                break;
+                continue;
             }
             preyList_.push_back({enemy.get(),diffP2E});
         }

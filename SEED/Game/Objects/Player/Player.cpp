@@ -98,6 +98,9 @@ void Player::EndFrame(){
     BaseCharacter::EndFrame();
     if(GetWorldTranslate().y <= 0.0f){
         SetTranslate(lastPosOnGround_);
+        for(auto& collider : this->GetColliders()){
+            collider->DiscardPreCollider();
+        }
     }
     if(!isDrop_){
         lastPosOnGround_ = GetLocalTranslate();

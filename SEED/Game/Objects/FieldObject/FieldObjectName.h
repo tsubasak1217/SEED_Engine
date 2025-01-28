@@ -3,7 +3,7 @@
 enum FIELDMODELNAME{
     FIELDMODEL_GRASSSOIL,       //< 草地
     FIELDMODEL_SOIL,            //< 土
-    FIELDMODEL_SPHERE,          //< 球
+    FIELDMODEL_STAR,          //< 球
     FIELDMODEL_DOOR,            //< ドア
     FIELDMODEL_START,           //< スタート地点
     FIELDMODEL_GOAL,            //< ゴール地点

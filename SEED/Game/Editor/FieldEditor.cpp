@@ -4,7 +4,7 @@
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
 #include "FieldObject/Soil/FieldObject_Soil.h"
-#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Star/FieldObject_Star.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
@@ -41,7 +41,7 @@ void FieldEditor::Initialize(){
     // 利用可能なモデル名を設定
     modelNameMap_["GrassSoil"] = FIELDMODEL_GRASSSOIL;
     modelNameMap_["Soil"] = FIELDMODEL_SOIL;
-    modelNameMap_["sphere"] = FIELDMODEL_SPHERE;
+    modelNameMap_["star"] = FIELDMODEL_STAR;
     modelNameMap_["door"] = FIELDMODEL_DOOR;
     modelNameMap_["start"] = FIELDMODEL_START;
     modelNameMap_["goal"] = FIELDMODEL_GOAL;
@@ -355,8 +355,8 @@ void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::uniqu
     case FIELDMODELNAME::FIELDMODEL_SOIL:
         ReassignIDsForType<FieldObject_Soil>(objects);
         break;
-    case FIELDMODELNAME::FIELDMODEL_SPHERE:
-        ReassignIDsForType<FieldObject_Sphere>(objects);
+    case FIELDMODELNAME::FIELDMODEL_STAR:
+        ReassignIDsForType<FieldObject_Star>(objects);
         break;
     case FIELDMODELNAME::FIELDMODEL_DOOR:
         ReassignIDsForType<FieldObject_Door>(objects);

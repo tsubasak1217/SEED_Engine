@@ -114,6 +114,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\PlayerInput\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Star\FieldObject_Star.cpp" />
     <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp" />
@@ -143,7 +144,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
@@ -277,6 +277,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
     <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
@@ -307,7 +308,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h" />
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />

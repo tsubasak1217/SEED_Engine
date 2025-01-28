@@ -610,9 +610,6 @@
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp">
       <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.cpp">
-      <Filter>Game\Objects\FieldObject\Sphere</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
@@ -751,7 +748,7 @@
     <ClCompile Include="Game\Routine\RoutineManager.cpp">
       <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClCompile>
-    <ClCompile Include="Game\PlayerInput\PlayerInput.cpp">
+    <ClCompile Include="Game\Objects\FieldObject\Star\FieldObject_Star.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1248,9 +1245,6 @@
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h">
       <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Sphere\FieldObject_Sphere.h">
-      <Filter>Game\Objects\FieldObject\Sphere</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
@@ -1371,7 +1365,7 @@
     <ClInclude Include="Game\Routine\RoutineManager.h">
       <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

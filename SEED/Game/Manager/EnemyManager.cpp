@@ -16,10 +16,7 @@ void EnemyManager::Update(){
         enemy->Update();
     }
 
-    //死亡した敵を削除
-    std::erase_if(enemies_,[](const std::unique_ptr<Enemy>& enemy){
-        return !enemy->GetIsAlive();
-                  });
+   
 }
 
 void EnemyManager::Draw(){
@@ -57,6 +54,13 @@ void EnemyManager::HandOverColliders(){
     for(auto& enemy : enemies_){
         enemy->HandOverColliders();
     }
+}
+
+void EnemyManager::EndFrame(){
+    //死亡した敵を削除
+    std::erase_if(enemies_, [] (const std::unique_ptr<Enemy>& enemy){
+        return !enemy->GetIsAlive();
+                  });
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

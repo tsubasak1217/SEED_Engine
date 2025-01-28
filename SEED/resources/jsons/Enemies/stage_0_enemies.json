@@ -2,7 +2,7 @@
     "Count": 2,
     "Enemies": [
         {
-            "CanEat": false,
+            "CanEat": true,
             "ChasePlayer": true,
             "HP": 100,
             "Index": 0,
@@ -11,7 +11,7 @@
             "moveSpeed": 4.400000095367432
         },
         {
-            "CanEat": false,
+            "CanEat": true,
             "ChasePlayer": false,
             "HP": 0,
             "Index": 1,

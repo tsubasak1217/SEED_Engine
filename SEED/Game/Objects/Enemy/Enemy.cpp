@@ -33,7 +33,7 @@ void Enemy::Initialize(){
     objectType_ = ObjectType::Enemy;
 
     // モデルの初期化
-    model_ = std::make_unique<Model>("Assets/zombie.gltf");
+    model_ = std::make_unique<Model>("enemy.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 

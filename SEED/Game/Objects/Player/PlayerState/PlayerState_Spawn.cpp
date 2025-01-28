@@ -44,6 +44,10 @@ void PlayerState_Spawn::ManageState(){
         pCharacter_->SetTranslate(spawnPos_);
         pPlayer->SetPrePos(spawnPos_);
         pCharacter_->DiscardPreCollider();
+
+        for(auto& collider: pPlayer->GetColliders()){
+            collider->DiscardPreCollider();
+        }
     }
 
     pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));

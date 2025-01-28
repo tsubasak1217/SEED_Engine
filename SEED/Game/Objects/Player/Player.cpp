@@ -5,6 +5,9 @@
 #include "ImGuiManager.h"
 #include "InputManager.h"
 
+//object
+#include "Egg/Egg.h"
+
 // manager
 #include "Egg/Manager/EggManager.h"
 #include "Player/PredationRange/PredationRange.h"
@@ -98,7 +101,7 @@ void Player::Draw(){
 void Player::EndFrame(){
     BaseCharacter::EndFrame();
     if(GetWorldTranslate().y <= 0.0f){
-        SetTranslate(lastPosOnGround_);
+        SetTranslate(StageManager::GetStartPos());
         for(auto& collider : this->GetColliders()){
             collider->DiscardPreCollider();
         }
@@ -152,10 +155,14 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
 
         // ステージ遷移ステートへ
         if(PlayerInput::CharacterMove::GoNextStage()){
-            if(!StageManager::IsLastStage()){
-                ToClearStageState(StageManager::GetNextStartPos());
-                //2つのステージのコライダーを渡すよう設定
-                StageManager::SetIsHandOverColliderNext(true);
+            // 現在のステートが PlayerStage_ForNextStage でない場合のみ 許可
+            PlayerStage_ForNextStage* state = dynamic_cast<PlayerStage_ForNextStage*>(currentState_.get());
+            if(!state){
+                if(!StageManager::IsLastStage()){
+                    ToClearStageState(StageManager::GetNextStartPos());
+                    //2つのステージのコライダーを渡すよう設定
+                    StageManager::SetIsHandOverColliderNext(true);
+                }
             }
         }
     }

@@ -39,7 +39,9 @@ void UI::Draw(){
     }
 }
 
-void UI::Finalize(){}
+void UI::Finalize(){
+
+}
 
 void UI::BeginFrame(){
 #ifdef _DEBUG

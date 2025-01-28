@@ -26,6 +26,7 @@ public:
     void AddTheta(float theta){ theta_ += theta; }
     void SetPhi(float phi){ phi_ = phi; }
     void AddPhi(float phi){ phi_ += phi; }
+    void SetInterpolationRate(float rate){ interpolationRate_ = rate; }
 
 private:
 
@@ -44,6 +45,9 @@ private:
     // 限界角度
     float kMaxPhi_;
     float kMinPhi_;
+
+    // 補間割合
+    float interpolationRate_ = 0.15f;
 
     // 入力ハンドラ
 public:/*外部からキーコンフィグ設定可能にするためpublic*/

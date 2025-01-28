@@ -339,7 +339,7 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
     // マウスのボタンが離されたらオブジェクトを追加
     if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
         auto& stage = manager_.GetStages()[edittingStageIndex];
-        stage->AddModel(objectType, { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
+        stage->AddModel(objectType, nlohmann::json(), {kBlockScale, kBlockScale, kBlockScale}, {0.0f,0.0f,0.0f}, putPos);
         isEdit = false;
     }
 }

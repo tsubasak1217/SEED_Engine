@@ -10,8 +10,9 @@ EventState_Tutorial_Goal::EventState_Tutorial_Goal(Scene_Base* pScene)
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
 
-    // ゴールに注目する
+    // ゴールに注目し、補間を遅く設定
     pCamera_->SetTarget(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetGoalObject());
+    pCamera_->SetInterpolationRate(0.05f);
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
@@ -75,8 +76,9 @@ void EventState_Tutorial_Goal::Update(){
     // テキストの進行が終了したら
     if(textStep_ >= textStepMax_){
         if(time_ < 0.0f){
-            // カメラのターゲットをプレイヤーに戻し終了
+            // カメラのターゲットと補間速度をプレイヤーに戻し終了
             pCamera_->SetTarget(pPlayer_);
+            pCamera_->SetInterpolationRate(0.15f);
             pGameScene_->EndEvent();
         }
     }

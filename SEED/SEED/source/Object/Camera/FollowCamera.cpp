@@ -42,14 +42,14 @@ void FollowCamera::Update(){
 
     // カメラの位置を設定
     if(target_){ aimTargetPos_ = target_->GetTargetPos(); }
-    targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * 0.15f * ClockManager::TimeRate();
+    targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * interpolationRate_ * ClockManager::TimeRate();
 
     // カメラのオフセットベクトルを計算
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
 
     // カメラの位置を設定
     aimPosition_ = targetPos_ + (offsetVec * distance_);
-    transform_.translate_ += (aimPosition_ - transform_.translate_) * 0.15f * ClockManager::TimeRate();
+    transform_.translate_ += (aimPosition_ - transform_.translate_) * interpolationRate_ * ClockManager::TimeRate();
 
     // 差分ベクトルから角度を計算
     transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));

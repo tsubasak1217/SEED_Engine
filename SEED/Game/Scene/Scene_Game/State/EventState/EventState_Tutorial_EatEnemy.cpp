@@ -12,6 +12,7 @@ EventState_Tutorial_EatEnemy::EventState_Tutorial_EatEnemy(Scene_Base* pScene)
 
     // 敵に注目する
     pCamera_->SetTarget(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetEnemyManager()->GetEnemy(0));
+    pCamera_->SetInterpolationRate(0.05f);
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
@@ -74,8 +75,9 @@ void EventState_Tutorial_EatEnemy::Update(){
     // テキストの進行が終了したら
     if(textStep_ >= textStepMax_){
         if(time_ < 0.0f){
-            // カメラのターゲットをプレイヤーに戻し終了
+            // カメラのターゲットと補間速度をプレイヤーに戻し終了
             pCamera_->SetTarget(pPlayer_);
+            pCamera_->SetInterpolationRate(0.15f);
             pGameScene_->EndEvent();
         }
     }

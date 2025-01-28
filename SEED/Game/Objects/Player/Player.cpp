@@ -158,4 +158,11 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
             }
         }
     }
+
+    // 敵に触れている状態
+    if(objectType == ObjectType::Enemy){
+        DiscardPreCollider();
+        SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
+        UpdateMatrix();
+    }
 }

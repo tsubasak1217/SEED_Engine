@@ -27,11 +27,14 @@ void PredationRange::Initialize(Player* player){
 
 void PredationRange::Update(EnemyManager* _enemyManager){
     auto& enemies = _enemyManager->GetEnemies();
+
+    if(!preyList_.empty()){
+        preyList_.clear();
+    }
+
     if(enemies.empty()){
         return;
     }
-
-    preyList_.clear();
 
     // 範囲内の敵を探す
     Vector3 playerPos = player_->GetWorldTranslate();

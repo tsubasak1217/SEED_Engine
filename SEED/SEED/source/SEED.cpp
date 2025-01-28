@@ -61,10 +61,12 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     instance_->kClientWidth_ = clientWidth;
     instance_->kClientHeight_ = clientHeight;
 
-    // メインウインドウの作成
+    // ウインドウの作成
     WindowManager::Initialize(hInstance, nCmdShow);
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
+#ifdef _DEBUG
     WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
+#endif // _DEBUG
 
     // 各マネージャの初期化
     ClockManager::Initialize();

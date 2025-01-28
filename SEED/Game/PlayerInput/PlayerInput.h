@@ -147,7 +147,7 @@ namespace PlayerInput{
         }
         inline  bool subStageNum(){
             if(Input::IsConnectedPad(0)){
-                return Input::IsTriggerStick(LR::LEFT,DIRECTION::RIGHT) || Input::IsTriggerPadButton(PAD_BUTTON::LEFT | PAD_BUTTON::LB | PAD_BUTTON::LT);
+                return Input::IsTriggerStick(LR::LEFT,DIRECTION::LEFT) || Input::IsTriggerPadButton(PAD_BUTTON::LEFT | PAD_BUTTON::LB | PAD_BUTTON::LT);
             }
             return Input::IsTriggerKey(DIK_A) || Input::IsTriggerKey(DIK_LEFT) || Input::IsTriggerKey(DIK_Q);
         }
@@ -191,7 +191,7 @@ namespace PlayerInput{
     namespace Tutorial{
         inline  bool StepText(){
             if(Input::IsConnectedPad(0)){
-                return Input::IsPressPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
+                return Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
             }
             return Input::IsTriggerKey(DIK_SPACE) || Input::IsTriggerKey(DIK_RETURN);
         }

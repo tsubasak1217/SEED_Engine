@@ -314,8 +314,8 @@ void Stage::AddModel(
     case FIELDMODEL_SOIL:
         newObj = std::make_unique<FieldObject_Soil>();
         break;
-    case FIELDMODEL_SPHERE:
-        newObj = std::make_unique<FieldObject_Sphere>();
+    case FIELDMODEL_STAR:
+        newObj = std::make_unique<FieldObject_Star>();
         break;
     case FIELDMODEL_DOOR:
         newObj = std::make_unique<FieldObject_Door>();

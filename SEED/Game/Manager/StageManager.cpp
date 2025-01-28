@@ -4,7 +4,7 @@
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
 #include "FieldObject/Soil/FieldObject_Soil.h"
-#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Star/FieldObject_Star.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"

@@ -16,7 +16,7 @@
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
 #include "FieldObject/Soil/FieldObject_Soil.h"
-#include "FieldObject/Sphere/FieldObject_Sphere.h"
+#include "FieldObject/Star/FieldObject_Star.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"

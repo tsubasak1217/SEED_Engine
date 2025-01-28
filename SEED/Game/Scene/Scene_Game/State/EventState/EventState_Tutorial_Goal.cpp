@@ -1,0 +1,89 @@
+#include "EventState_Tutorial_Goal.h"
+#include "Scene_Game.h"
+
+EventState_Tutorial_Goal::EventState_Tutorial_Goal(){
+}
+
+EventState_Tutorial_Goal::EventState_Tutorial_Goal(Scene_Base* pScene)
+    : EventState_Base(pScene){
+    pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
+    pCamera_ = pGameScene_->Get_pCamera();
+    pPlayer_ = pGameScene_->Get_pPlayer();
+
+    // ゴールに注目する
+    pCamera_->SetTarget(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetGoalObject());
+
+    // テキストの初期化
+    textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
+    textFieldSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
+
+    textSprite_ = std::make_unique<Sprite>("Tutorials/tutorialText.png");
+    textSprite_->anchorPoint = { 0.5f,0.5f };
+    textSprite_->clipSize = { 1000.0f,63.0f };
+    textSprite_->translate = { 640.0f,600.0f };
+    textSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
+
+}
+
+EventState_Tutorial_Goal::~EventState_Tutorial_Goal(){
+}
+
+void EventState_Tutorial_Goal::Initialize(){
+}
+
+void EventState_Tutorial_Goal::Update(){
+
+    static float alpha = 0.0f;
+    static float alpha2 = 0.0f;
+
+    // テキストを進める処理
+    if(textStep_ < textStepMax_){
+        time_ += ClockManager::DeltaTime();
+        alpha = std::clamp((time_ - 1.0f) / 1.0f, 0.0f, 1.0f);
+
+        if(textStep_ == 0){
+            alpha2 = std::clamp((time_ - 1.0f) / 1.0f, 0.0f, 1.0f);
+        }
+
+        if(Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B)){
+            if(time_ > 2.0f){
+
+                textStep_++;
+                time_ = 1.0f;
+
+            } else{
+                time_ = 2.0f;
+            }
+        }
+
+    } else{
+
+        time_ -= 0.5f * ClockManager::DeltaTime();
+        alpha = std::clamp(time_ / 2.0f, 0.0f, 1.0f);
+        alpha2 = std::clamp(time_ / 2.0f, 0.0f, 1.0f);
+
+    }
+
+    // テキストの透明度の更新
+    textSprite_->color.w = alpha;
+    textFieldSprite_->color.w = alpha2;
+
+    // テキストの切り抜き位置の更新
+    textSprite_->clipLT.y = 63.0f * std::clamp(textStep_, 0, textStepMax_ - 1);
+
+
+    // テキストの進行が終了したら
+    if(textStep_ >= textStepMax_){
+        if(time_ < 0.0f){
+            // カメラのターゲットをプレイヤーに戻し終了
+            pCamera_->SetTarget(pPlayer_);
+            pGameScene_->EndEvent();
+        }
+    }
+
+}
+
+void EventState_Tutorial_Goal::Draw(){
+    textFieldSprite_->Draw();
+    textSprite_->Draw();
+}

@@ -1,26 +1,22 @@
 #include <SEED.h>
+#include <../Game/GameSystem.h>
 #include <Environment.h>
-#include <SceneManager.h>
 #include <WindowManager.h>
 
 static LeakChecker leakChecker;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-    WindowManager::Initialize(hInstance, nCmdShow);
-    SEED::Initialize(kWindowSizeX, kWindowSizeY);
+    SEED::Initialize(kWindowSizeX, kWindowSizeY, hInstance, nCmdShow);
+    GameSystem::Initialize();
 
     while(WindowManager::ProcessMessage() != WM_QUIT){
         SEED::BeginFrame();
-        SceneManager::BeginFrame();
-
-        SceneManager::Update();
-        SceneManager::Draw();
-
-        SceneManager::EndFrame();
+        GameSystem::Run();
         SEED::EndFrame();
     }
 
+    GameSystem::Finalize();
     SEED::Finalize();
 
     return 0;

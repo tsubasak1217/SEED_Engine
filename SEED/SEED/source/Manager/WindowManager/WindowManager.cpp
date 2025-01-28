@@ -157,6 +157,7 @@ LRESULT CALLBACK WindowProc(
     }
 
     switch(uMsg) {
+
     case WM_DESTROY:
 
         // メインのウィンドウが破棄されたらアプリケーションを終了
@@ -166,6 +167,13 @@ LRESULT CALLBACK WindowProc(
         return 0;
 
     default:
+
+        if(uMsg == WM_NCLBUTTONDOWN){
+            ClockManager::GetInstance()->Stop();
+        }/*else{
+            ClockManager::GetInstance()->Restart();
+        }*/
+
         // 標準のメッセージ処理を行う
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }

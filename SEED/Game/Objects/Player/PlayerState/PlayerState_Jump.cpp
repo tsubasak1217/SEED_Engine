@@ -62,7 +62,7 @@ void PlayerState_Jump::ManageState(){
         return;
     }
     // 着地
-    if(!pCharacter_->GetIsJump() or !pCharacter_->GetIsDrop()){
+    if(!pCharacter_->GetIsJump() && !pCharacter_->GetIsDrop()){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
     }
 }

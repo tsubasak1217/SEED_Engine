@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-BaseCharacter::BaseCharacter(): BaseObject(){
+BaseCharacter::BaseCharacter() : BaseObject(){
     name_ = "unnamed";
     Initialize();
 }
@@ -34,7 +34,12 @@ void BaseCharacter::Update(){
         currentState_->Update();
     }
 
-    BaseObject::Update();
+    // velocityの更新
+    velocity_.y = jumpPower_ + dropSpeed_;
+    MoveByVelocity();
+
+    // モデルの更新
+    model_->Update();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -94,6 +99,7 @@ void BaseCharacter::EndFrame(){
     // ジャンプフラグの管理
     EndFrameJumpFlagUpdate();
 
+
     // 状態に応じた終了処理
     if(currentState_){
         currentState_->EndFrame();
@@ -105,9 +111,20 @@ void BaseCharacter::EndFrame(){
 // フレーム終了時の落下関連の更新処理
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::EndFrameJumpFlagUpdate(){
-    // 落下フラグが降りたらジャンプフラグも降ろす
+
+    // ジャンプの許容時間
+    static const float kJumpAllowableTime = 0.1f;
+
     if(!isDrop_){
         isJump_ = false;
+        jumpPower_ = 0.0f;
+        jumpAllowableTime_ = kJumpAllowableTime;
+    } else{
+        jumpAllowableTime_ -= ClockManager::DeltaTime();
+    }
+
+    if(isJump_){
+        isDrop_ = true;
     }
 }
 

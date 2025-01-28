@@ -49,9 +49,11 @@ private:
 
 public:
     ~SEED();
-    static void Initialize(int clientWidth, int clientHeight);
+    static void Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, int nCmdShow);
     static void Finalize();
     static SEED* GetInstance();
+    static void Update();
+    static void Draw();
     static void BeginFrame();
     static void EndFrame();
 

@@ -10,4 +10,5 @@ enum FIELDMODELNAME{
     FIELDMODEL_SWITCH,          //< スイッチ
     FIELDMODEL_VIEWPOINT,       //< 視点
     FIELDMODEL_MOVEFLOOR,       //< 移動床
+	FIELDMODEL_EVENTAREA        //< イベントエリア
 };

@@ -35,6 +35,7 @@ public:
     std::vector<std::unique_ptr<Enemy>>& GetEnemies(){ return enemies_; }
     void ClearAllEnemies(){ enemies_.clear(); }
     Player* GetPlayer()const{ return pPlayer_; }
+    Enemy* GetEnemy(uint32_t index)const{ return enemies_[index].get(); }
 
     // ルーチンの取得
     const  std::vector<Vector3>* GetRoutinePoints(const std::string& routineName)const{

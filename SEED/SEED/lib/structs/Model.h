@@ -8,11 +8,8 @@
 #include "Vector3.h"
 #include "Matrix4x4.h"
 #include "DxFunc.h"
-#include "VertexData.h"
 #include "Material.h"
 #include "blendMode.h"
-
-#include <string>
 
 class Model{
 

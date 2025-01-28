@@ -19,6 +19,7 @@
 #include "FieldObject/Sphere/FieldObject_Sphere.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
+#include "FieldObject/EventArea/FieldObject_EventArea.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"
@@ -51,6 +52,7 @@ public:
 
     void AddModel(
         uint32_t modelNameIndex,
+        const nlohmann::json& json,
         const Vector3& scale = {2.5f,2.5f,2.5f},
         const Vector3& rotate = {0.0f,0.0f,0.0f},
         const Vector3& translate = {0.0f,0.0f,0.0f}
@@ -58,6 +60,7 @@ public:
 
 public:
     Vector3 GetStartPosition()const;
+    FieldObject_Goal* GetGoalObject()const;
     FieldObject_ViewPoint* GetViewPoint()const;
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 

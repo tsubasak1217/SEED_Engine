@@ -30,6 +30,8 @@ void TextureManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void TextureManager::StartUpLoad(){
+    LoadTexture("Tutorials/tutorialText.png");
+    LoadTexture("Tutorials/textField.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filename){

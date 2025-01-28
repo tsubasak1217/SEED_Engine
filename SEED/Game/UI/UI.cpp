@@ -16,14 +16,14 @@ void UI::Initialize(const std::string& _filePath){
     sprite_ = std::make_unique<Sprite>(_filePath);
 
     // Jsonから読み込み
-    JsonCoordinator::LoadGroup(name_);
+    //JsonCoordinator::LoadGroup(name_);
     // Jsonに 登録
-    JsonCoordinator::RegisterItem(name_,"Size",sprite_->size);
-    JsonCoordinator::RegisterItem(name_,"Scale",sprite_->scale);
-    JsonCoordinator::RegisterItem(name_,"Rotate",sprite_->rotate);
-    JsonCoordinator::RegisterItem(name_,"Translate",sprite_->translate);
-    JsonCoordinator::RegisterItem(name_,"AnchorPoint",sprite_->anchorPoint);
-    JsonCoordinator::RegisterItem(name_,"Color",sprite_->color);
+    //JsonCoordinator::RegisterItem(name_,"Size",sprite_->size);
+    //JsonCoordinator::RegisterItem(name_,"Scale",sprite_->scale);
+    //JsonCoordinator::RegisterItem(name_,"Rotate",sprite_->rotate);
+    //JsonCoordinator::RegisterItem(name_,"Translate",sprite_->translate);
+    //JsonCoordinator::RegisterItem(name_,"AnchorPoint",sprite_->anchorPoint);
+    //JsonCoordinator::RegisterItem(name_,"Color",sprite_->color);
 }
 
 void UI::Update(){

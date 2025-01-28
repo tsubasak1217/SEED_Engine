@@ -6,5 +6,6 @@
 #include "Scene_Clear.h"
 
 void SceneRegister::RegisterScenes() {
+    SceneManager::Register("Title", []() {return new Scene_Title(); });
     SceneManager::Register("Game", []() {return new Scene_Game(); });
 }

@@ -77,7 +77,7 @@ void GameState_Pause::Update(){
 
     // 項目の選択
     if(!isExitPause_){
-        int step = int(PlayerInput::Pause::addItemIndex()) - int(PlayerInput::Pause::subItemIndex());
+        int step = int(PlayerInput::Pause::subItemIndex()) - int(PlayerInput::Pause::addItemIndex());
 
         if(step != 0){
             selectIndex_ = std::clamp(selectIndex_ + step,0,2);

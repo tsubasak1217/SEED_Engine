@@ -5,6 +5,9 @@
 #include "ClockManager.h"
 #include "ImGuiManager.h"
 
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 FollowCamera::FollowCamera(){
     Initialize();
 }
@@ -13,7 +16,7 @@ FollowCamera::~FollowCamera(){}
 
 void FollowCamera::Initialize(){
     // カメラのoffset初期設定
-    defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
+    defaultOffset_ = MyMath::Normalize(Vector3(0.0f,2.0f,-5.0f));
     distance_ = 50.0f;
     // 角度の初期設定
     theta_ = -3.14f * 0.5f;
@@ -23,10 +26,10 @@ void FollowCamera::Initialize(){
     kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
-    angleInput_.Value = [](){return Input::GetStickValue(LR::RIGHT); };
+    angleInput_.Value = [](){return PlayerInput::Camera::GetCameraDirection(); };
     distanceInput_.Value = [](){
-        return Input::GetLRTriggerValue(LR::LEFT) - Input::GetLRTriggerValue(LR::RIGHT);
-    };
+        return PlayerInput::Camera::GetCameraDistance();
+        };
 
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
@@ -45,7 +48,7 @@ void FollowCamera::Update(){
     targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * 0.15f * ClockManager::TimeRate();
 
     // カメラのオフセットベクトルを計算
-    Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
+    Vector3 offsetVec = MyFunc::CreateVector(theta_,phi_);
 
     // カメラの位置を設定
     aimPosition_ = targetPos_ + (offsetVec * distance_);
@@ -64,11 +67,11 @@ void FollowCamera::UpdateAngle(){
     }
 
     // 角度の制限
-    phi_ = std::clamp(phi_, kMinPhi_, kMaxPhi_);
+    phi_ = std::clamp(phi_,kMinPhi_,kMaxPhi_);
 }
 
 void FollowCamera::UpdateDistance(){
     // カメラの距離を更新
     //distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
-    distance_ = std::clamp(distance_, 15.0f, 500.0f);
+    distance_ = std::clamp(distance_,15.0f,500.0f);
 }

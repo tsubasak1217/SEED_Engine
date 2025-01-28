@@ -82,7 +82,7 @@ void PlayerState_Move::DecideStickVelocity()
         pCharacter_->SetAnimationSpeedRate(1.0f);
     }
 
-    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime());
+    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime();
 }
 
 //////////////////////////////////////////////////////////////////////////

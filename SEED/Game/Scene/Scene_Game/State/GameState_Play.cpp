@@ -5,6 +5,9 @@
 // 遷移可能なステートのインクルード
 #include "GameState_Pause.h"
 
+// lib
+#include "../PlayerInput/PlayerInput.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 // コンストラクタ：デストラクタ
@@ -123,7 +126,7 @@ void GameState_Play::HandOverColliders(){
 void GameState_Play::ManageState(){
 
     // ポーズへ遷移
-    if(Input::IsTriggerPadButton(PAD_BUTTON::START)){
+    if(PlayerInput::Pause::Pause()){
         pGameScene_->ChangeState(new GameState_Pause(pScene_));
     }
 }

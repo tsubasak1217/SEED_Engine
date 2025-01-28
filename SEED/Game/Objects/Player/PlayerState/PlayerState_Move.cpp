@@ -9,6 +9,7 @@
 #include "PlayerState_Eat.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
+#include "../PlayerInput/PlayerInput.h"
 
 // Egg
 #include "Egg/Egg.h"
@@ -68,7 +69,7 @@ void PlayerState_Move::DecideStickVelocity()
 {
 
     // スティックの入力を取得
-    stickDirection_ = Input::GetStickValue(LR::LEFT);
+    stickDirection_ = PlayerInput::CharacterMove::GetCharacterMoveDirection();
 
     // カメラの回転を考慮して補正
     Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
@@ -77,19 +78,11 @@ void PlayerState_Move::DecideStickVelocity()
         stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
     }
 
-    // ダッシュ
-    bool isDash = Input::IsPressPadButton(PAD_BUTTON::Y);
-
-    if (isDash)
-    {
-        pCharacter_->SetAnimationSpeedRate(3.0f);
-    }
-    else
     {
         pCharacter_->SetAnimationSpeedRate(1.0f);
     }
 
-    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime() * (1.0f + (isDash * 2.0f));
+    acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -101,7 +94,7 @@ void PlayerState_Move::Rotate()
     moveVec_ = pCharacter_->GetWorldTranslate() - pCharacter_->GetPrePos();
 
     // 移動ベクトルから回転を求める
-    if (MyMath::Length(moveVec_) > 0.0f)
+    if (MyMath::LengthSq(moveVec_) > 0.0f)
     {
         Vector3 rotateVec_ = MyFunc::CalcRotateVec(moveVec_);
         rotateVec_.x = 0.0f;
@@ -128,12 +121,12 @@ void PlayerState_Move::Rotate()
 //////////////////////////////////////////////////////////////////////////
 // ステート管理
 //////////////////////////////////////////////////////////////////////////
-void PlayerState_Move::ManageState()
-{
+void PlayerState_Move::ManageState(){
+
+    if(!pCharacter_->GetIsMovable()){ return; }
 
     // ジャンプ状態へ
-    if (Input::IsTriggerPadButton(PAD_BUTTON::A))
-    {
+    if(PlayerInput::CharacterMove::Jump()){
         if(pCharacter_->IsJumpable()){
             pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
             return;
@@ -141,16 +134,14 @@ void PlayerState_Move::ManageState()
     }
 
     // アイドル状態へ
-    if (MyMath::Length(moveVec_) == 0.0f)
-    {
-        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle", pCharacter_));
+    if(MyMath::LengthSq(moveVec_) == 0.0f){
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }
 
     // 卵 を 投げる状態へ
-        Player *pPlayer = dynamic_cast<Player *>(pCharacter_);
-    if (Input::IsTriggerPadButton(PAD_BUTTON::LT))
-    {
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+    if(PlayerInput::CharacterMove::FocusEggInput()){
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -165,7 +156,7 @@ void PlayerState_Move::ManageState()
         return;
     }
 
-    if(Input::IsReleasePadButton(PAD_BUTTON::RT)){
+    if(PlayerInput::CharacterMove::ThrowEgg()){
         if(pPlayer->GetEggManager()->GetIsEmpty()){
             return;
         }
@@ -183,9 +174,8 @@ void PlayerState_Move::ManageState()
         return;
     }
 
-    // 捕食状態へ
-     // 捕食
-    if(Input::IsReleasePadButton(PAD_BUTTON::B)){
+    // 捕食
+    if(PlayerInput::CharacterMove::Eat()){
         if(pPlayer->CanEatEnemy()){
             pCharacter_->ChangeState(new PlayerState_Eat(pCharacter_));
             return;

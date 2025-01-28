@@ -12,6 +12,9 @@
 #include "ClockManager.h"
 #include "Egg/Manager/EggManager.h"
 #include "Player/PredationRange/PredationRange.h"
+//lib
+#include "../PlayerInput/PlayerInput.h"
+
 //math
 #include "MatrixFunc.h"
 #include "MyMath.h"

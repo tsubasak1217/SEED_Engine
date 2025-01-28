@@ -16,7 +16,7 @@ EnemyState_Walk::~EnemyState_Walk(){}
 
 void EnemyState_Walk::Initialize(const std::string& stateName, BaseCharacter* player){
     ICharacterState::Initialize(stateName, player);
-    pCharacter_->SetAnimation("walk", true);
+    pCharacter_->SetAnimation("running", true);
 }
 
 //////////////////////////////////////////////////////////////////////////

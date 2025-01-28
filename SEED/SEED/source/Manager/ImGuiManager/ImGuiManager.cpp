@@ -25,7 +25,12 @@ void ImGuiManager::Initialize(){
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
-    ImGui_ImplWin32_Init(WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_));
+    HWND hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
+#ifdef _DEBUG
+    hwnd = WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_);
+#endif // _DEBUG
+
+    ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX12_Init(
         DxManager::GetInstance()->device.Get(),
         2,

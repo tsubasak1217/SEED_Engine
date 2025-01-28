@@ -147,7 +147,7 @@ namespace PlayerInput{
         }
         inline  bool subStageNum(){
             if(Input::IsConnectedPad(0)){
-                return Input::IsTriggerStick(LR::LEFT,DIRECTION::RIGHT) || Input::IsTriggerPadButton(PAD_BUTTON::LEFT | PAD_BUTTON::LB | PAD_BUTTON::LT);
+                return Input::IsTriggerStick(LR::LEFT,DIRECTION::LEFT) || Input::IsTriggerPadButton(PAD_BUTTON::LEFT | PAD_BUTTON::LB | PAD_BUTTON::LT);
             }
             return Input::IsTriggerKey(DIK_A) || Input::IsTriggerKey(DIK_LEFT) || Input::IsTriggerKey(DIK_Q);
         }

@@ -95,6 +95,7 @@ void Scene_Game::Initialize() {
     player_ = std::make_unique<Player>();
     player_->Initialize();
     stageManager_->SetPlayer(player_.get());
+    stageManager_->Initialize();    //< stageの読み込み(playerをセットしてから
 
     ground_ = std::make_unique<Model>("skydome.obj");
     ground_->lightingType_ = LIGHTINGTYPE_NONE;

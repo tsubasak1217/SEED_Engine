@@ -29,14 +29,6 @@ void EggManager::Update(){
         return egg->GetIsBreak() || !egg->GetIsAlive();
                   });
 
-    if(eggs_.empty()){
-        eggs_.push_back(std::make_unique<Egg>(player_));
-        auto& spawnedEgg = eggs_.back();
-        spawnedEgg->SetEggManager(this);
-        spawnedEgg->Initialize();
-        spawnedEgg->SetTranslate(player_->GetWorldTranslate());
-    }
-
     for(auto& egg : eggs_){
         egg->Update();
         egg->EditCollider();

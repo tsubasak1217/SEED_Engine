@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-BaseCharacter::BaseCharacter() : BaseObject(){
+BaseCharacter::BaseCharacter(): BaseObject(){
     name_ = "unnamed";
     Initialize();
 }
@@ -56,10 +56,10 @@ void BaseCharacter::Draw(){
     BaseObject::Draw();
 
     Quad q = Quad(
-        Vector3(-3.0f, 0.01f, 3.0f),
-        Vector3(3.0f, 0.01f, 3.0f),
-        Vector3(-3.0f, 0.01f, -3.0f),
-        Vector3(3.0f, 0.01f, -3.0f)
+        Vector3(-3.0f,0.01f,3.0f),
+        Vector3(3.0f,0.01f,3.0f),
+        Vector3(-3.0f,0.01f,-3.0f),
+        Vector3(3.0f,0.01f,-3.0f)
     );
 
     q.GH = TextureManager::LoadTexture("ParticleTextures/particle.png");

@@ -74,14 +74,14 @@ void PlayerState_Jump::ManageState(){
 void PlayerState_Jump::Hovering(){
     switch(hoveringState_){
         case HoveringState::MoveUp:
-            if(pCharacter_->GetVelocity().y < 0.0f){
+            if(pCharacter_->GetJumpPower() - pCharacter_->GetDropSpeed() < 0.0f){
                 hoveringState_ = HoveringState::Hovering;
             }
             break;
         case HoveringState::Hovering:
             hoveringTime_ -= ClockManager::DeltaTime();
 
-            pCharacter_->SetJumpPower(jumpHoveringAccel_);
+            pCharacter_->SetJumpPower(pCharacter_->GetJumpPower() + jumpHoveringAccel_);
 
             pCharacter_->SetIsApplyGravity(false);
             if(!PlayerInput::CharacterMove::Hovering() || hoveringTime_ <= 0.0f){

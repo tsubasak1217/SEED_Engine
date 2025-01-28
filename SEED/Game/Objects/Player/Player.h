@@ -28,6 +28,8 @@ public:
     void Update() override;
     void Draw() override;
 
+    void EndFrame() override;
+
     void Spawn(const Vector3& pos);
 
     void ToClearStageState(const Vector3& nextStartPos);
@@ -72,4 +74,6 @@ private: // フォローカメラ、ターゲット用
     // 捕食可能範囲 兼 捕食可能オブジェクトの検索,管理
     std::unique_ptr<PredationRange> predationRange_ = nullptr;
 
+    // 最後に地面についていた位置
+    Vector3 lastPosOnGround_;
 };

@@ -14,11 +14,15 @@ public:
     void Update() override;
 
 private:
-private:
+    bool isAlive_ = true;
+
     //member
     PlayerCorpseManager* manager_ = nullptr;
 public:
     //accessor
     void SetManager(PlayerCorpseManager* manager){ manager_ = manager; }
     PlayerCorpseManager* GetManager(){ return manager_; }
+
+    bool GetIsAlive(){ return isAlive_; }
+    void SetIsAlive(bool isAlive){ isAlive_ = isAlive; }
 };

@@ -12,6 +12,7 @@
 //manager
 #include "ClockManager.h"
 #include "Egg/Manager/EggManager.h"
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 
@@ -85,6 +86,11 @@ void EggState_Break::ManageState(){
                     {   // プレイヤーに次のステージの敵情報を渡す
                         EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
                         pPlayer->SetEnemyManager(enemyManager);
+                    }
+
+                    { //前ステージの死体を消す
+                        PlayerCorpseManager* pCorpseManager = pPlayer->GetCorpseManager();
+                        pCorpseManager->RemoveAll();
                     }
 
                     {

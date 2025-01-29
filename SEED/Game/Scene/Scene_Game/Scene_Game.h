@@ -21,15 +21,16 @@
 #include "../Game/Editor/EnemyEditor.h"
 
 // objects
-#include "../Game/Objects/Player/Player.h"
-#include "../Game/Objects/Enemy/Enemy.h"
 #include "Egg/Manager/EggManager.h"
+#include "Enemy/Enemy.h"
+#include "Player/Player.h"
+#include "Shadow/Shadow.h"
 
 // manager
-#include "Player/PredationRange/PredationRange.h"
 #include "../Game/Manager/EnemyManager.h"
-#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Manager/StageManager.h"
+#include "Player/PredationRange/PredationRange.h"
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
 class Scene_Game : public Scene_Base
 {
@@ -65,6 +66,7 @@ private:
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<Shadow> playerShadow_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;

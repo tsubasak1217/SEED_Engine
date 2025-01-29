@@ -273,6 +273,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
     <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp" />
+    <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\GameSystem.h" />
@@ -474,6 +475,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
+    <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />

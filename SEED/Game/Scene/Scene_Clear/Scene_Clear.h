@@ -10,6 +10,7 @@ public:
     void Finalize()override;
     void Update()override;
     void Draw()override;
+    void EndFrame()override;
 
 private:
 

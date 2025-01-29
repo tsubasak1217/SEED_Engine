@@ -5,6 +5,7 @@
 #include "Environment.h"
 #include "ParticleManager.h"
 #include "Scene_Title.h"
+#include "Scene_Clear.h"
 #include "SceneManager.h"
 #include "CameraManager/CameraManager.h"
 
@@ -98,11 +99,6 @@ void Scene_Game::Finalize(){}
 
 void Scene_Game::Update(){
 
-    if(isClear_){
-        pSceneManager_->ChangeScene(new Scene_Title(pSceneManager_));
-        return;
-    }
-
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
@@ -172,6 +168,11 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
+
+    if(isClear_){
+        pSceneManager_->ChangeScene(new Scene_Clear(pSceneManager_));
+        return;
+    }
 
     player_->EndFrame();
 

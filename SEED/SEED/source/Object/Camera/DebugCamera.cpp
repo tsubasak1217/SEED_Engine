@@ -41,5 +41,5 @@ void DebugCamera::Move(){
 
     // トランスフォームの更新
     transform_.rotate_ += rotateValue * ClockManager::TimeRate();
-    transform_.translate_ += velocity * ClockManager::DeltaTime();
+    transform_.translate_ += velocity * ClockManager::ScaledDeltaTime();
 }

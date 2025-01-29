@@ -17,9 +17,6 @@ void Scene_Title::Finalize(){}
 void Scene_Title::Update(){
     //currentState_->Update();
 
-    if(Input::IsTriggerPadButton(PAD_BUTTON::B)){
-        pSceneManager_->ChangeScene(new Scene_Game(pSceneManager_));
-    }
 }
 
 void Scene_Title::Draw(){
@@ -31,4 +28,8 @@ void Scene_Title::Draw(){
 
 }
 
-void Scene_Title::EndFrame(){}
+void Scene_Title::EndFrame(){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::B)){
+        pSceneManager_->ChangeScene(new Scene_Game(pSceneManager_));
+    }
+}

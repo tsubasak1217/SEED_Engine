@@ -54,6 +54,9 @@ void ClockManager::EndFrame(){
     // FPSを計算
     instance_->fps_ = 1.0f / instance_->deltaTime_;
 
+    // ヒットストップ処理
+    instance_->HitStop();
+
     // 60 FPS でループを回すための待機
     std::this_thread::sleep_for(std::chrono::duration<float>(kFrameTime_) - elapsedTime);
 }
@@ -71,10 +74,36 @@ ClockManager* ClockManager::GetInstance(){
     return instance_;
 }
 
+void ClockManager::HitStop(){
+
+    if(isHitStop_){
+        hitStopTime_ -= deltaTime_;
+        if(hitStopTime_ <= 0.0f){
+            isHitStop_ = false;
+            timeScale_ = 1.0f;
+            return;
+        }
+
+        float t = 1.0f - (hitStopTime_ / kHitStopTime_);
+        float difScale = 1.0f - hitStopEntryTimeScale_;
+
+        timeScale_ = hitStopEntryTimeScale_ + difScale * t;
+    }
+}
+
 /////////////////////////////////////////////////
 //      その他関数
 /////////////////////////////////////////////////
 
 void ClockManager::AddNewCount(const std::string& name){
     name;
+}
+
+// ヒットストップ
+void ClockManager::SetHitStop(float timeScale, float length){
+    instance_->isHitStop_ = true;
+    instance_->kHitStopTime_ = length;
+    instance_->hitStopTime_ = length;
+    instance_->hitStopEntryTimeScale_ = timeScale;
+    instance_->timeScale_ = timeScale;
 }

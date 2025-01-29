@@ -59,7 +59,7 @@ void Model::Update(){
 
     // アニメーションの更新
     if(isAnimation_){
-        totalAnimationTime_ += ClockManager::DeltaTime() * animationSpeedRate_;
+        totalAnimationTime_ += ClockManager::ScaledDeltaTime() * animationSpeedRate_;
 
         // ループするかどうかで処理を変える
         if(isAnimationLoop_){
@@ -283,7 +283,7 @@ void Model::UpdatePalette(){
             );
 
             // 補間時間を加算
-            animLerpTime_ += ClockManager::DeltaTime();
+            animLerpTime_ += ClockManager::ScaledDeltaTime();
 
             // スキニング用のパレットの更新
             const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;

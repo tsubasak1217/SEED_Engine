@@ -113,6 +113,8 @@ void Enemy::OnCollision(const BaseObject* other, ObjectType objectType){
         // 無敵時間中はダメージを受けない
         if(unrivalledTime_ > 0.0f){ return; }
 
+        // ヒットストップ
+        ClockManager::SetHitStop(0.2f, 0.5f);
 
         // プレイヤーにダメージを与える
         int32_t preHP = HP_;

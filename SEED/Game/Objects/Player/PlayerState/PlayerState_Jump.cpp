@@ -58,7 +58,7 @@ void PlayerState_Jump::ManageState(){
 void PlayerState_Jump::Jump(){
 
     // 落下速度を加算
-    jumpVelocity_ += gravity_ * (isJump_ * isDrop_) * ClockManager::DeltaTime();
+    jumpVelocity_ += gravity_ * (isJump_ * isDrop_) * ClockManager::ScaledDeltaTime();
     pCharacter_->HandleMove(Vector3(0.0f, jumpVelocity_, 0.0f));
 
     // ジャンプ終了処理

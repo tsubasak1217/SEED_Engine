@@ -26,7 +26,7 @@ void PlayerState_Attack::Initialize(const std::string& stateName, BaseCharacter*
 
 void PlayerState_Attack::Update(){
     // コンボ時間を減らす
-    attackTime_ -= ClockManager::DeltaTime();
+    attackTime_ -= ClockManager::ScaledDeltaTime();
 
     // コンボ処理
     Combo();

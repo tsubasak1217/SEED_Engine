@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <State_Base.h>
-#include <EventState/EventState_Base.h>
+#include <Event_Base.h>
 
 class Scene_Base{
 public:
@@ -19,11 +19,11 @@ public:
 public:
     void ChangeScene(const std::string& nextSceneName);
     void ChangeState(State_Base* nextState);
-    void CauseEvent(EventState_Base* nextEventState);
-    void EndEvent() { currentEventState_ = nullptr; };
+    void CauseEvent(Event_Base* nextEventState);
+    void EndEvent() { currentEvent_ = nullptr; };
 
 protected:
     std::unique_ptr<State_Base> currentState_;
-    std::unique_ptr<EventState_Base> currentEventState_;
+    std::unique_ptr<Event_Base> currentEvent_;
     bool isStateChanged_ = false;
 };

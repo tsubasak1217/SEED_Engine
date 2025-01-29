@@ -3,10 +3,6 @@
 #include "InputManager.h"
 #include "ImGuiManager.h"
 #include "ClockManager.h"
-#include "ImGuiManager.h"
-
-//lib
-#include "../PlayerInput/PlayerInput.h"
 
 FollowCamera::FollowCamera(){
     Initialize();
@@ -26,10 +22,8 @@ void FollowCamera::Initialize(){
     kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
-    angleInput_.Value = [](){return PlayerInput::Camera::GetCameraDirection(); };
-    distanceInput_.Value = [](){
-        return PlayerInput::Camera::GetCameraDistance();
-        };
+    angleInput_.Value = [](){ return Input::GetStickValue(LR::RIGHT); };
+    distanceInput_.Value = [](){ return Input::GetLRTriggerValue(LR::LEFT) - Input::GetLRTriggerValue(LR::RIGHT);};
 
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
@@ -72,6 +66,6 @@ void FollowCamera::UpdateAngle(){
 
 void FollowCamera::UpdateDistance(){
     // カメラの距離を更新
-    //distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
+    distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
     distance_ = std::clamp(distance_,15.0f,500.0f);
 }

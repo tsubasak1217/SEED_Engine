@@ -8,8 +8,8 @@ void Scene_Base::Update(){
         currentState_->Update();
     }
 
-    if (currentEventState_) {
-        currentEventState_->Update();
+    if (currentEvent_) {
+        currentEvent_->Update();
     }
 }
 
@@ -18,13 +18,17 @@ void Scene_Base::Draw(){
         currentState_->Draw();
     }
 
-    if (currentEventState_) {
-        currentEventState_->Draw();
+    if (currentEvent_) {
+        currentEvent_->Draw();
     }
 }
 
 void Scene_Base::BeginFrame(){
     isStateChanged_ = false;
+
+    if(currentState_){
+        currentState_->BeginFrame();
+    }
 }
 
 void Scene_Base::ManageState(){
@@ -42,6 +46,6 @@ void Scene_Base::ChangeState(State_Base* nextState){
     currentState_.reset(nextState);
 }
 
-void Scene_Base::CauseEvent(EventState_Base* nextEventState) {
-    currentEventState_.reset(nextEventState);
+void Scene_Base::CauseEvent(Event_Base* nextEventState) {
+    currentEvent_.reset(nextEventState);
 }

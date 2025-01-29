@@ -2,10 +2,6 @@
 //other state
 #include "PlayerState_Idle.h"
 
-//lib
-#include "../adapter/json/JsonCoordinator.h"
-#include "../PlayerInput/PlayerInput.h"
-
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
@@ -23,11 +19,6 @@ PlayerState_Jump::~PlayerState_Jump(){
 void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* player){
     ICharacterState::Initialize(stateName,player);
 
-    // Jsonから値を取得
-    JsonCoordinator::RegisterItem("Player","jumpPower",jumpPower_);
-    JsonCoordinator::RegisterItem("Player","MoveSpeedOnJump",moveSpeed_);
-    JsonCoordinator::RegisterItem("Player","hoveringTime",hoveringTime_);
-    JsonCoordinator::RegisterItem("Player","jumpHoveringAccel",jumpHoveringAccel_);
     // ジャンプの初期化
     pCharacter_->SetIsJump(true);
     pCharacter_->SetJumpPower(jumpPower_);
@@ -38,14 +29,11 @@ void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* pl
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::Update(){
 
-    // ジャンプ処理
-    Hovering();
-
     // 移動処理(ジャンプしながらも動ける)
     Move();
 
     // 回転処理
-    if(MyMath::LengthSq(PlayerInput::CharacterMove::GetCharacterMoveDirection())){
+    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
         Rotate();
     }
 }
@@ -59,40 +47,8 @@ void PlayerState_Jump::Draw(){}
 // ステート管理
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Jump::ManageState(){
-    if(hoveringState_ == HoveringState::Hovering){
-        return;
-    }
     // 着地
     if(!pCharacter_->GetIsJump() && !pCharacter_->GetIsDrop()){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// ジャンプ処理
-//////////////////////////////////////////////////////////////////////////
-void PlayerState_Jump::Hovering(){
-    switch(hoveringState_){
-        case HoveringState::MoveUp:
-            if(pCharacter_->GetJumpPower() - pCharacter_->GetDropSpeed() < 0.0f){
-                hoveringState_ = HoveringState::Hovering;
-            }
-            break;
-        case HoveringState::Hovering:
-            hoveringTime_ -= ClockManager::DeltaTime();
-
-            pCharacter_->SetJumpPower(pCharacter_->GetJumpPower() + jumpHoveringAccel_);
-
-            pCharacter_->SetIsApplyGravity(false);
-            if(!PlayerInput::CharacterMove::Hovering() || hoveringTime_ <= 0.0f){
-                hoveringState_ = HoveringState::MoveDown;
-
-                pCharacter_->SetIsApplyGravity(true);
-            }
-            break;
-        case HoveringState::MoveDown:
-            break;
-        default:
-            break;
     }
 }

@@ -21,9 +21,6 @@ protected:
     void ManageState()override;
 
 private:
-    void Hovering();
-
-private:
     float jumpPower_ = 0.f;
     float jumpHoveringAccel_ = 0.f;
 

@@ -1,20 +1,10 @@
 #include "PlayerState_Idle.h"
+
 // 状態クラスのインクルード
 #include "PlayerState_Jump.h"
 #include "PlayerState_Move.h"
-#include "PlayerState_ThrowEgg.h"
-#include "PlayerState_Eat.h"
 
-
-///local
-//object
-#include "Egg/Egg.h"
-// EggState
-#include "Egg/State/EggState_Thrown.h"
-//lib
-#include "../PlayerInput/PlayerInput.h"
-
-// 状態を表されている主
+// 主
 #include "Player/Player.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +47,7 @@ void PlayerState_Idle::ManageState(){
     if(!pCharacter_->GetIsMovable()){ return; }
 
     // ジャンプ状態へ
-    if(PlayerInput::CharacterMove::Jump()){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         if(pCharacter_->IsJumpable()){
             pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
             return;
@@ -65,52 +55,9 @@ void PlayerState_Idle::ManageState(){
     }
 
     // 移動
-    if(MyMath::LengthSq(PlayerInput::CharacterMove::GetCharacterMoveDirection())){
+    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
         pCharacter_->ChangeState(new PlayerState_Move("Player_Move",pCharacter_));
         return;
-    }
-
-    // 卵 を 投げる状態へ
-    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    if(PlayerInput::CharacterMove::FocusEggInput()){
-        if(pPlayer->GetEggManager()->GetIsEmpty()){
-            return;
-        }
-
-        // すでに 投げているなら return
-        Egg* pEgg = pPlayer->GetEggManager()->GetFrontEgg().get();
-        if(pEgg->GetIsThrown()){
-            return;
-        }
-
-        pCharacter_->ChangeState(new PlayerState_ThrowEgg("Player_ThrowEgg",pPlayer));
-        return;
-    }
-
-    if(PlayerInput::CharacterMove::ThrowEgg()){
-        if(pPlayer->GetEggManager()->GetIsEmpty()){
-            return;
-        }
-
-        // すでに 投げているなら return
-        Egg* pEgg = pPlayer->GetEggManager()->GetFrontEgg().get();
-        if(pEgg->GetIsThrown()){
-            return;
-        }
-
-        pEgg->SetVelocity({0.0f,8.0f,0.0f});
-        // velocity で管理するため, 初期値は基本 0
-        pEgg->ChangeState(new EggState_Thrown(pEgg,{0.0f,0.0f,0.0f},0.0f,0.0f));
-
-        return;
-    }
-
-    // 捕食
-    if(PlayerInput::CharacterMove::Eat()){
-        if(pPlayer->CanEatEnemy()){
-            pCharacter_->ChangeState(new PlayerState_Eat(pCharacter_));
-            return;
-        }
     }
 }
 

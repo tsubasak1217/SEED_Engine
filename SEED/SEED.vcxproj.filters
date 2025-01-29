@@ -53,17 +53,11 @@
     <Filter Include="Game\Objects\Player">
       <UniqueIdentifier>{4ba38caf-3e34-43eb-b4f6-07776279e18c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Enemy">
-      <UniqueIdentifier>{5e14fa05-798f-4971-a494-a891dda949ee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Objects\Player\PlayerState">
       <UniqueIdentifier>{58141efe-cfce-4632-bc4a-7a8cc4c19937}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects\Base">
       <UniqueIdentifier>{95e56dfb-2540-4c4a-9c28-a968ecc95466}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Enemy\EnemyState">
-      <UniqueIdentifier>{1fa401b3-4c70-4469-bd5d-5c08dede308c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{f0d5f36b-c9e2-4434-bca4-8189c4f6846d}</UniqueIdentifier>
@@ -182,66 +176,6 @@
     <Filter Include="SEED\Lib\Tensor">
       <UniqueIdentifier>{6a0a6c9f-120a-4aff-a000-81856815ed71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Egg">
-      <UniqueIdentifier>{cca3f840-70e4-4111-af48-f4d32131feb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Egg\Manager">
-      <UniqueIdentifier>{bebf6711-ebc2-4d7c-a23b-8c2a9dbb78c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Egg\State">
-      <UniqueIdentifier>{f4902676-ede7-467e-9d5d-54b4d020b536}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\PlayerCorpse">
-      <UniqueIdentifier>{89adef21-cdad-452f-b8f2-852a452abbe0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\PlayerCorpse\Manager">
-      <UniqueIdentifier>{ecff6474-2377-4d49-9096-32d484106cf5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject">
-      <UniqueIdentifier>{c6e361b1-2d93-48e7-a031-cdb71632d554}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Door">
-      <UniqueIdentifier>{4daaf87b-00d8-472d-91a0-a45aadd052b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Door\State">
-      <UniqueIdentifier>{eb1e381e-607c-4cc7-8899-766e9b066a32}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SEED\Lib\patterns">
-      <UniqueIdentifier>{c1d58818-e175-49ab-ac6b-281383800701}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SEED\Source\Manager\EventManager">
-      <UniqueIdentifier>{38c623a7-5abe-4af3-848d-d96aa1e80d88}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Sphere">
-      <UniqueIdentifier>{535ee3b5-5ae7-469b-aed7-978662959f09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Goal">
-      <UniqueIdentifier>{6bc4d655-799a-4bd7-9689-40900c91a743}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Start">
-      <UniqueIdentifier>{be9ae51a-8052-4a14-a59c-87c1c8e1d5c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\GrassSoil">
-      <UniqueIdentifier>{b04fa183-963c-42cf-b75a-6e413c95a3cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Soil">
-      <UniqueIdentifier>{0f3cc8a6-24f5-48b7-abcf-6d3d7d522184}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\Switch">
-      <UniqueIdentifier>{54fb9e42-416f-443d-b8e2-8fc9822b1c44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\ViewPoint">
-      <UniqueIdentifier>{c655c5fe-15b8-4708-9d3d-68d23b1ff3b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Enemy\Routine">
-      <UniqueIdentifier>{afd4fd13-842c-4401-8716-bb5084a1ddd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SEED\adapter">
-      <UniqueIdentifier>{5b8a9c73-826a-4330-8487-68e834390ba8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\FieldObject\EventArea">
-      <UniqueIdentifier>{ac1423ec-a856-43b5-98c5-c44da2553d36}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Scene\Scene_Game\State\EventState">
       <UniqueIdentifier>{5efc4e42-c7db-485c-91aa-5ad63e434aaf}</UniqueIdentifier>
     </Filter>
@@ -349,15 +283,6 @@
     <ClCompile Include="SEED\lib\shapes\Triangle.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Exit.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp">
       <Filter>SEED\Source\Manager\ClockManager</Filter>
     </ClCompile>
@@ -436,12 +361,6 @@
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp">
       <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\adapter\json\JsonCoordinator.cpp">
-      <Filter>SEED\Source\Manager\JsonManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Editor\FieldEditor.cpp">
-      <Filter>Game\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
@@ -468,9 +387,6 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp">
       <Filter>Game\Objects\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
-      <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp">
       <Filter>ソース ファイル</Filter>
@@ -502,48 +418,6 @@
     <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
       <Filter>SEED\Source\Object\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.cpp">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\Egg.cpp">
-      <Filter>Game\Objects\Egg</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp">
-      <Filter>Game\Objects\Egg\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Break.cpp">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Follow.cpp">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Idle.cpp">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
@@ -559,18 +433,6 @@
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\EnemyManager.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Editor\EnemyEditor.cpp">
-      <Filter>Game\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\PlayerCorpse\PlayerCorpse.cpp">
-      <Filter>Game\Objects\PlayerCorpse</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.cpp">
-      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClCompile>
@@ -580,77 +442,14 @@
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp">
       <Filter>SEED\Lib\Functions\localFunc</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp">
-      <Filter>Game\Objects\FieldObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\FieldObject_Door.cpp">
-      <Filter>Game\Objects\FieldObject\Door</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\DoorState.cpp">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpenedState.cpp">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\State\OpeningState.cpp">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\lib\patterns\ISubject.cpp">
-      <Filter>SEED\Lib\patterns</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\lib\patterns\IObserver.cpp">
-      <Filter>SEED\Lib\patterns</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp">
-      <Filter>SEED\Source\Manager\EventManager</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp">
-      <Filter>Game\Objects\FieldObject\Door</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.cpp">
-      <Filter>Game\Objects\FieldObject\Goal</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp">
-      <Filter>Game\Objects\FieldObject\Start</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp">
-      <Filter>Game\Objects\FieldObject\Soil</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp">
-      <Filter>Game\Objects\FieldObject\GrassSoil</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\StageManager.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\Stage.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.cpp">
-      <Filter>Game\Objects\FieldObject\Switch</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp">
-      <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\StageSelector.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
@@ -658,18 +457,6 @@
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.cpp">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
-      <Filter>SEED\adapter</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -678,33 +465,6 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Eat.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PredationRange\PredationRange.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\UI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.cpp">
-      <Filter>Game\Objects\FieldObject\EventArea</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp">
       <Filter>SEED\Source\Manager\SceneManager</Filter>
@@ -718,37 +478,7 @@
     <ClCompile Include="Game\GameSystem.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Routine\RoutineManager.cpp">
-      <Filter>Game\Objects\Enemy\Routine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\FieldObject\Star\FieldObject_Star.cpp">
+    <ClCompile Include="Game\Scene\Base\Event_Base.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -903,15 +633,6 @@
     <ClInclude Include="SEED\lib\structs\Sprite.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Exit.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h">
       <Filter>SEED\lib\functions\localFunc</Filter>
     </ClInclude>
@@ -1011,22 +732,9 @@
     <ClInclude Include="SEED\lib\structs\ModelAnimation.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\adapter\json\JsonCoordinator.h">
-      <Filter>SEED\Source\Manager\JsonManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Editor\FieldEditor.h">
-      <Filter>Game\Editor</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Damaged.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Down.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Idle.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_StandUp.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h" />
@@ -1085,16 +793,10 @@
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
       <Filter>SEED\Source\Object\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Jump.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Move.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Spawn.h">
       <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Idle.h">
@@ -1117,24 +819,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Walk.h">
       <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\Egg.h">
-      <Filter>Game\Objects\Egg</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h">
-      <Filter>Game\Objects\Egg\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Break.h">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Follow.h">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Idle.h">
-      <Filter>Game\Objects\Egg\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Egg\State\EggState_Thrown.h">
-      <Filter>Game\Objects\Egg\State</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
@@ -1187,23 +871,11 @@
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\PlayerCorpse\Manager\PlayerCorpseManager.h">
-      <Filter>Game\Objects\PlayerCorpse\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h">
       <Filter>SEED\Lib\Functions\localFunc</Filter>
     </ClInclude>
     <ClInclude Include="Environment\Physics.h">
       <Filter>Environment</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Editor\EnemyEditor.h">
-      <Filter>Game\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\EnemyManager.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\PlayerCorpse\PlayerCorpse.h">
-      <Filter>Game\Objects\PlayerCorpse</Filter>
     </ClInclude>
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h">
       <Filter>SEED\Source\Manager\InputManager</Filter>
@@ -1214,57 +886,14 @@
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h">
       <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObject.h">
       <Filter>Game\Objects\FieldObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\FieldObject_Door.h">
-      <Filter>Game\Objects\FieldObject\Door</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\DoorState.h">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpeningState.h">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\State\OpenedState.h">
-      <Filter>Game\Objects\FieldObject\Door\State</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\patterns\ISubject.h">
-      <Filter>SEED\Lib\patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\lib\patterns\IObserver.h">
-      <Filter>SEED\Lib\patterns</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h">
-      <Filter>SEED\Source\Manager\EventManager</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h">
       <Filter>SEED\Lib\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h">
-      <Filter>Game\Objects\FieldObject\Door</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Goal\FieldObject_Goal.h">
-      <Filter>Game\Objects\FieldObject\Goal</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h">
-      <Filter>Game\Objects\FieldObject\Start</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h">
-      <Filter>Game\Objects\FieldObject\Soil</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h">
-      <Filter>Game\Objects\FieldObject\GrassSoil</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h">
       <Filter>SEED\Source\Manager\CollisionManager</Filter>
@@ -1275,21 +904,6 @@
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\StageManager.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\Stage.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h">
-      <Filter>Game\Objects\FieldObject\ViewPoint</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\StageSelector.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\PointLight.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
@@ -1298,53 +912,6 @@
     </ClInclude>
     <ClInclude Include="SEED\lib\enums\Direction.h">
       <Filter>SEED\Lib\Enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h">
-      <Filter>Game\Objects\FieldObject\Switch</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h">
-      <Filter>Game\Objects\FieldObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h">
-      <Filter>Game\Objects\Enemy\EnemyState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h">
-      <Filter>Game\Objects\Player\PlayerState</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\adapter\csv\CsvAdapter.h">
-      <Filter>SEED\adapter</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_Eat.h" />
-    <ClInclude Include="Game\Objects\Player\PredationRange\PredationRange.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
-    <ClInclude Include="Game\UI\State\IUiState.h" />
-    <ClInclude Include="Game\UI\UI.h" />
-    <ClInclude Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.h">
-      <Filter>Game\Objects\FieldObject\EventArea</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventFunctionTable.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Base.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_CollectStar.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_EatEnemy.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.h">
-      <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h">
       <Filter>SEED\Source\Manager\SceneManager</Filter>
@@ -1358,14 +925,9 @@
     <ClInclude Include="Game\GameSystem.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
-    <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
-    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
-    <ClInclude Include="Game\Routine\RoutineManager.h">
-      <Filter>Game\Objects\Enemy\Routine</Filter>
+    <ClInclude Include="Game\Scene\Base\Event_Base.h">
+      <Filter>Game\Scene\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

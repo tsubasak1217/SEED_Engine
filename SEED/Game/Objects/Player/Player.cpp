@@ -84,11 +84,6 @@ void Player::Update(){
     }
     ImGui::End();
 #endif // _DEBUG
-
-    if(enemyManager_){
-        predationRange_->Update(enemyManager_);
-    }
-
     BaseCharacter::Update();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -140,7 +135,15 @@ void Player::HandleMove(const Vector3& acceleration){
 }
 
 bool Player::CanEatEnemy(){
-    return !predationRange_->GetPreyList().empty();
+    if(!enemyManager_){
+        return false;
+    }
+    predationRange_->Update(enemyManager_);
+
+    if(predationRange_->GetPreyList().empty()){
+        return false;
+    }
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////

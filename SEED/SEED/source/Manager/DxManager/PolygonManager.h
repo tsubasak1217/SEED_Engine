@@ -69,7 +69,7 @@ class PolygonManager{
 
 private:// 内部で使用する定数や列挙型
 
-    static const int kPrimitiveVariation = 12;
+    static const int kPrimitiveVariation = 13;
     enum PRIMITIVE_TYPE : BYTE{
         PRIMITIVE_TRIANGLE = 0,
         PRIMITIVE_TRIANGLE2D,
@@ -78,6 +78,7 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_LINE,
         PRIMITIVE_LINE2D,
         PRIMITIVE_SPRITE,
+        PRIMITIVE_BACKSPRITE,
         //PRIMITIVE_RING,
         //PRIMITIVE_CYLINDER,
         // 以下は解像度の変更の影響を受けない描画用
@@ -100,6 +101,7 @@ private:// 内部で使用する定数や列挙型
         Quad2D,
         Line2D,
         Sprite,
+        BackSprite,
         //Ring,
         //Cylinder,
         Offscreen,

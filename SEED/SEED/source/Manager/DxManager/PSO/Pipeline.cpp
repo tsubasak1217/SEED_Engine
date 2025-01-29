@@ -36,28 +36,30 @@ void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CUL
     // ブレンドモードに応じた設定
     if(blendMode == BlendMode::NORMAL){
         bDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
         bDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+        bDesc.AlphaToCoverageEnable = FALSE;
+        bDesc.IndependentBlendEnable = FALSE;
 
     } else if(blendMode == BlendMode::ADD){
         bDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
         bDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 
     } else if(blendMode == BlendMode::SUBTRACT){
         bDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
         bDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
 
     } else if(blendMode == BlendMode::MULTIPLY){
         bDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
         bDesc.RenderTarget[0].DestBlend = D3D12_BLEND_SRC_COLOR;
+        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 
     } else if(blendMode == BlendMode::SCREEN){
         bDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
-        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
         bDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+        bDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 
     } else{
         bDesc.RenderTarget[0].BlendEnable = FALSE;
@@ -65,8 +67,8 @@ void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CUL
 
     // アルファチャンネルのブレンド
     bDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;  // アルファ値はそのまま
+    bDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO; 
     bDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
-    bDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;  // アルファ値に影響しない
 
     blendDesc_ = bDesc;
 

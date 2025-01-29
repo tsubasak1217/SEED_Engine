@@ -25,7 +25,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);
     
      // 入力が透明の場合は棄却
-    if (textureColor.a == 0.0f) {
+    if (textureColor.a <= 1e-5f) {
         discard;
     }
     
@@ -66,7 +66,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
     
     
     // 出力が透明の場合は棄却
-    if (output.color.a == 0.0f) {
+    if (output.color.a <= 1e-5f) {
         discard;
     }
     

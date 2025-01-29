@@ -181,7 +181,8 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                             modelObj->GetModel()->GetWorldScale().z }},
                 {"rotation", { modelObj->GetModel()->GetWorldRotate().x,
                                modelObj->GetModel()->GetWorldRotate().y,
-                               modelObj->GetModel()->GetWorldRotate().z }}
+                               modelObj->GetModel()->GetWorldRotate().z }},
+                {"fieldObjectID", modelObj->GetFieldObjectID() }
             };
 
             // スイッチの場合、関連付けられたドアのIDを保存

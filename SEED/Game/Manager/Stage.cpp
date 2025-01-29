@@ -238,7 +238,9 @@ void Stage::LoadFromJson(const std::string& filePath){
             // 新規追加されたオブジェクトを取得（最後に追加されたものを想定
             if(fieldObjects_.empty()) continue;
             FieldObject* newObj = fieldObjects_.back().get();
-
+            if (modelJson.contains("objectID")){
+                newObj->SetFieldObjectID(modelJson["objectID"]);
+            }
             // スイッチの場合、関連ドア情報を一時保存
             if(auto* sw = dynamic_cast<FieldObject_Switch*>(newObj)){
                 //json から associatedDoors を取得(ドアIDの配列)

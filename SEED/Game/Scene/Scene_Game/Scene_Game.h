@@ -68,6 +68,7 @@ private:
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;
+    std::unique_ptr<Model> cylinderWall_[3];
  
     // Manager
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;

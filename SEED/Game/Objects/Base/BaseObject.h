@@ -78,6 +78,7 @@ public:// アクセッサ
     void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
     bool GetIsApplyGravity()const{ return isApplyGravity_; }
     void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
+    float GetDropSpeed()const{ return dropSpeed_; }
     bool GetIsDrop()const{ return isDrop_; }
 
     // 重さ

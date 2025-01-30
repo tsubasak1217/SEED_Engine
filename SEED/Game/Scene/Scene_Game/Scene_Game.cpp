@@ -105,11 +105,29 @@ void Scene_Game::Initialize(){
         cylinderWall_[i]->blendMode_ = BlendMode::NORMAL;
         cylinderWall_[i]->color_.w = 1.0f;
         i != 0 ? cylinderWall_[i]->color_.w = cylinderWall_[i - 1]->color_.w * 0.3f : 1.0f;
-        cylinderWall_[i]->translate_ = {0.0f,-50.0f,0.0f};
-        cylinderWall_[i]->scale_ = {500.0f + (150.0f * i),350.0f + (100.0f * i),500.0f + (150.0f * i)};
+        cylinderWall_[i]->translate_ = { 0.0f,-783.0f,0.0f };
+        cylinderWall_[i]->scale_ = { 2000.0f + (300.0f * i),658.0f + (200.0f * i),2000.0f + (300.0f * i) };
+        cylinderWall_[i]->rotate_.y = MyFunc::Random(0.0f, 6.28f);
         cylinderWall_[i]->isRotateWithQuaternion_ = false;
+        cylinderWall_[i]->uv_scale_[0] = Vector3(3.0f, 1.0f, 1.0f);
         cylinderWall_[i]->UpdateMatrix();
     }
+
+    // 下の雲
+    underCloud_ = std::make_unique<Quad>(
+        Vector3( -1.0f,0.0f,1.0f ),
+        Vector3( 1.0f,0.0f,1.0f ),
+        Vector3( -1.0f,0.0f,-1.0f ),
+        Vector3( 1.0f,0.0f,-1.0f )
+    );
+
+    underCloud_->translate = { 0.0f,-595.0f,0.0f };
+    underCloud_->scale = { 2000.0f,1.0f,2000.0f };
+    underCloud_->GH = TextureManager::LoadTexture("cloud2.png");
+    underCloud_->blendMode = BlendMode::NORMAL;
+    underCloud_->lightingType = LIGHTINGTYPE_NONE;
+    underCloud_->color = { 1.0f,1.0f,1.0f,0.3f };
+
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -117,7 +135,7 @@ void Scene_Game::Initialize(){
 
     backSprite_ = std::make_unique<Sprite>("Assets/white1x1.png");
     backSprite_->size = kWindowSize;
-    backSprite_->color = MyMath::FloatColor(0,160,232,255);
+    backSprite_->color = MyMath::FloatColor(14, 78, 231, 255);
     backSprite_->drawLocation = DrawLocation::Back;
     backSprite_->isStaticDraw = false;
 
@@ -174,9 +192,9 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::ColorEdit4("backSpriteColor", &backSprite_->color.x);
     ImGui::End();
-
     enemyEditor_->ShowImGui();
 #endif
 
@@ -210,12 +228,16 @@ void Scene_Game::Update(){
 
     // 雲の回転
     for(int i = 2; i >= 0; i--){
-        float addRotate = (3.14f * 0.005f) * ClockManager::DeltaTime();
+        float addRotate = (3.14f * 0.002f)* ClockManager::DeltaTime();
         addRotate *= 1.0f - (0.3f * i);
         i % 2 == 1 ? addRotate *= -1.0f : addRotate;
         cylinderWall_[i]->rotate_.y += addRotate;
         cylinderWall_[i]->Update();
     }
+
+    // 下の雲のスクロール
+    cloudUV_translate_ += Vector3(-1.0f, 0.0f,1.0f) * 0.01f * ClockManager::DeltaTime();
+    underCloud_->uvTransform = AffineMatrix({ 5.0f,5.0f,1.0f }, { 0.0f,0.0f,0.0f }, cloudUV_translate_);
 
     // ドアとの距離をチェックし、近ければイベント発行
     doorProximityChecker_->Update();
@@ -275,10 +297,6 @@ void Scene_Game::Draw(){
     // フィールドの描画
     stageManager_->Draw();
 
-    // グリッドの描画
-    //SEED::DrawGrid();
-
-
     // パーティクルの描画
     ParticleManager::Draw();
 
@@ -292,6 +310,8 @@ void Scene_Game::Draw(){
     for(int i = 2; i >= 0; i--){
         cylinderWall_[i]->Draw();
     }
+
+    SEED::DrawQuad(*underCloud_.get());
 
     /*======================= 各状態固有の描画 ========================*/
 

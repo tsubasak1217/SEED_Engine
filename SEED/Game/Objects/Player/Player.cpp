@@ -55,7 +55,7 @@ void Player::Initialize(){
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f,3.0f,0.0f);
+    targetOffset_ = Vector3(0.0f,7.0f,0.0f);
 
     // 状態の初期化
     currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);

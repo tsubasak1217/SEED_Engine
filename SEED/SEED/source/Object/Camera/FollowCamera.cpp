@@ -17,7 +17,7 @@ FollowCamera::~FollowCamera(){}
 void FollowCamera::Initialize(){
     // カメラのoffset初期設定
     defaultOffset_ = MyMath::Normalize(Vector3(0.0f,2.0f,-5.0f));
-    distance_ = 50.0f;
+    distance_ = 10.0f;
     // 角度の初期設定
     theta_ = -3.14f * 0.5f;
     phi_ = 3.14f * 0.45f;

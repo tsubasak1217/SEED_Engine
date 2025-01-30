@@ -32,8 +32,7 @@
 #include "Player/PredationRange/PredationRange.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
-class Scene_Game : public Scene_Base
-{
+class Scene_Game : public Scene_Base{
 
 public:
     Scene_Game();
@@ -81,5 +80,6 @@ private:
 
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;
+
 
 };

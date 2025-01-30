@@ -11,10 +11,10 @@
 //Scene
 class Scene_Game;
 //object
-#include "../UI/UI.h"
+#include "Sprite.h"
 #include "Model.h"
 
-class Scene_Title 
+class Scene_Title
     : public Scene_Base{
     friend class LoadNextSceneThread;
 public:
@@ -31,14 +31,12 @@ public:
     void HandOverColliders() override;
 
 private:
-    //============= UI =============//
-    std::unique_ptr<UI> titleLogo_    = nullptr;
-    std::unique_ptr<UI> toNextButton_ = nullptr;
-
     //============= PlayerModel =============//
     std::unique_ptr<Model> playerModel_ = nullptr;
-public:
 
-    UI* GetTitleLogo() const{ return titleLogo_.get(); }
-    UI* GetToNextButton() const{ return toNextButton_.get(); }
+    //============= UI =============//
+    std::unique_ptr<Sprite> titleLogo_ = nullptr;
+    std::unique_ptr<Sprite> howToStartUI_ = nullptr; // "Press Any Button" 的なやつ
+
+public:
 };

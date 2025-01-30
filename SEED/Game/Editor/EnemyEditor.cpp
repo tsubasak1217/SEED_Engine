@@ -297,16 +297,27 @@ void EnemyEditor::AddRoutinePointByMouse(){
     // ImGuiウィンドウ上をクリックした場合を除外
     Vector3 pointPosition {};
 
-    //選択されたオブジェクトの座標に置く、
-    if (currentStage->GetSelectedObject()){
-        FieldObject* selectedObject = currentStage->GetSelectedObject();
+    // 選択されたオブジェクトのGUIDを取得
+    std::string selectedGUID = currentStage->GetSelectedObjectGUID();
+    if (!selectedGUID.empty()){
+        FieldObject* selectedObject = currentStage->GetFieldObjectByGUID(selectedGUID);
 
-        pointPosition = {selectedObject->GetWorldTranslate().x,
-                     selectedObject->GetWorldTranslate().y,
-                     selectedObject->GetWorldTranslate().z
-        };
+        if (selectedObject){
+            // オブジェクトが存在する場合のみ座標を取得
+            pointPosition = {
+                selectedObject->GetWorldTranslate().x,
+                selectedObject->GetWorldTranslate().y,
+                selectedObject->GetWorldTranslate().z
+            };
+        } else{
+            // 選択GUIDが存在するが、オブジェクトが見つからない場合
+            std::cerr << "Selected object with GUID " << selectedGUID << " does not exist." << std::endl;
+            currentStage->SetSelectedObjectGUID(""); // 選択をクリア
+            return;
+        }
     }
 
+    // (0,0,0) は無効なポイントとして扱う
     if (pointPosition == Vector3 {0.0f, 0.0f, 0.0f}){
         std::cerr << "No valid object selected under the mouse position." << std::endl;
         return;

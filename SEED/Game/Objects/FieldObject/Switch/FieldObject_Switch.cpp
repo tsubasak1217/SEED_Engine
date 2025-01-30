@@ -4,8 +4,6 @@
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "InputManager.h"
 
-uint32_t FieldObject_Switch::nextFieldObjectID_ = 1;
-
 ////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////
@@ -25,8 +23,6 @@ FieldObject_Switch::FieldObject_Switch()
     FieldObject::Initialize();
 
     associatedDoors_.clear();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Switch::FieldObject_Switch(const std::string& modelName, SwitchType type)
@@ -40,8 +36,6 @@ FieldObject_Switch::FieldObject_Switch(const std::string& modelName, SwitchType 
     FieldObject::Initialize();
 
     associatedDoors_.clear();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////

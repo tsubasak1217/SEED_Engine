@@ -697,9 +697,6 @@
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\UI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.cpp">
       <Filter>Game\Objects\FieldObject\EventArea</Filter>
     </ClCompile>
@@ -733,16 +730,10 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp">
       <Filter>Game\Scene\Scene_Game\State\EventState</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Routine\RoutineManager.cpp">
@@ -755,6 +746,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\EggTimerUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1329,8 +1323,6 @@
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
-    <ClInclude Include="Game\UI\State\IUiState.h" />
-    <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="Game\Objects\FieldObject\EventArea\FieldObject_EventArea.h">
       <Filter>Game\Objects\FieldObject\EventArea</Filter>
     </ClInclude>
@@ -1364,16 +1356,15 @@
     <ClInclude Include="Game\GameSystem.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
-    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
     <ClInclude Include="Game\Routine\RoutineManager.h">
       <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
     <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
+    <ClInclude Include="Game\UI\EggTimerUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

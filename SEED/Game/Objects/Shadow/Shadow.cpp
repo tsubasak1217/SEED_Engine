@@ -19,11 +19,11 @@ Shadow::~Shadow(){}
 void Shadow::Initialize(){
     model_ = std::make_unique<Model>("shadowPlane.obj");
     model_->translate_ = host_->GetWorldTranslate();
-    model_->scale_ = {3.5f,3.5f,3.5f};
+    model_->scale_ = {1.5f,1.5f,1.5f};
     model_->blendMode_ = BlendMode::NORMAL;
 }
 
-static const Vector3 blockSize = {.7f,.7f,.7f};
+static const Vector3 blockSize = {2.5f,2.5,2.5};
 
 void Shadow::Update(Stage* currentStage){
     if(currentStage->GetObjects().empty()){

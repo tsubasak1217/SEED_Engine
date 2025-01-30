@@ -35,7 +35,6 @@ void Model::Initialize(const std::string& filename){
             modelData->materials[i].UV_translate_
         );
 
-        uvTransform_.push_back(AffineMatrix(uv_scale_.back(),uv_rotate_.back(),uv_translate_.back()));
         textureGH_.push_back(
             TextureManager::LoadTexture(modelData->materials[i].textureFilePath_)
         );
@@ -97,14 +96,6 @@ void Model::UpdateMatrix(){
         worldMat_ = Multiply(localMat_,parent_->worldMat_);
     } else{
         worldMat_ = localMat_;
-    }
-
-
-    // UV変換行列の更新
-    for(int i = 0; i < uvTransform_.size(); i++){
-        if(uv_scale_[i] != Vector3(1.0f, 1.0f, 1.0f) && uv_rotate_[i] != Vector3(0.0f, 0.0f, 0.0f) && uv_translate_[i] != Vector3(0.0f, 0.0f, 0.0f)){
-            uvTransform_[i] = AffineMatrix(uv_scale_[i], uv_rotate_[i], uv_translate_[i]);
-        }
     }
 
     // 親のワールド変換行列を掛ける

@@ -158,9 +158,10 @@ public:
 
     // カラーコードからVector4に変換する関数 (0~1に収められる)
     static Vector4 FloatColor(uint32_t color);
-    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a);
+    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a = 255);
     // Vector4からカラーコードに変換する関数
     static uint32_t IntColor(const Vector4& color);
+    static uint32_t IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 255);
 
     // HSVをRGBに変換する関数
     static Vector4 HSV_to_RGB(float h, float s, float v, float alpha);

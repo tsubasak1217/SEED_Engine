@@ -216,7 +216,7 @@ void StageSelector::UpdateItems(int32_t step){
 
     // カメラの初期位置をセット
     pCamera_->SetPhi(3.14f * 0.3f);
-    pCamera_->SetDistance(80.0f);
+    pCamera_->SetDistance(50.0f);
 }
 
 

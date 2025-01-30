@@ -22,7 +22,6 @@ public:
 private:
     //--- 新規追加: セーブ/ロード機能 ---
     void SaveEnemies();
-    void LoadEnemies();
 
 private:
     void AddRoutinePointByMouse();

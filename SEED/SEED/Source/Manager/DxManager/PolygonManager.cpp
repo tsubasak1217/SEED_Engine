@@ -243,6 +243,7 @@ void PolygonManager::InitializePrimitive(){
             modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
             modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
             modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
+            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
             modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
 
             // 解像度に影響しない描画
@@ -279,6 +280,7 @@ void PolygonManager::InitializePrimitive(){
             modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE2D][blendIdx][cullIdx];
             modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][blendIdx][cullIdx];
             modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx][cullIdx];
+            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_BACKSPRITE][blendIdx][cullIdx];
             modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_SPRITE][blendIdx][cullIdx];
             modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][blendIdx][cullIdx];
 
@@ -293,6 +295,7 @@ void PolygonManager::InitializePrimitive(){
             modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Line2D;
             modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticLine2D;
             modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Sprite;
+            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::BackSprite;
             modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
             modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
         }
@@ -554,7 +557,7 @@ void PolygonManager::AddQuad(
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_QUAD";
     drawDataName[0] += blendName[(int)blendMode];
-    drawDataName[0] += cullName[0];
+    drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
     drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
@@ -579,12 +582,12 @@ void PolygonManager::AddQuad(
 
     //indexResource
     if(mesh.indices.size() <= indexCount){ mesh.indices.resize(indexCount + 6); }
-    mesh.indices[indexCount] = indexCount;
-    mesh.indices[indexCount + 1] = indexCount + 1;
-    mesh.indices[indexCount + 2] = indexCount + 3;
-    mesh.indices[indexCount + 3] = indexCount + 0;
-    mesh.indices[indexCount + 4] = indexCount + 3;
-    mesh.indices[indexCount + 5] = indexCount + 2;
+    mesh.indices[indexCount] = vertexCount;
+    mesh.indices[indexCount + 1] = vertexCount + 1;
+    mesh.indices[indexCount + 2] = vertexCount + 3;
+    mesh.indices[indexCount + 3] = vertexCount + 0;
+    mesh.indices[indexCount + 4] = vertexCount + 3;
+    mesh.indices[indexCount + 5] = vertexCount + 2;
 
     // materialResource
     if(modelData->materials.size() == 0){
@@ -633,6 +636,7 @@ void PolygonManager::AddQuad(
         transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
     } else{
         auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world_ = IdentityMat4();
         transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose_ = IdentityMat4();
@@ -750,10 +754,15 @@ void PolygonManager::AddSprite(
         &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_SPRITE][(int)blendMode][(int)cullMode - 1];
 
+    // 背景描画の場合は背景用のモデルデータを使用
+    modelData = drawLocation == DrawLocation::Back ?
+        &primitiveData_[PRIMITIVE_BACKSPRITE][(int)blendMode][(int)cullMode - 1] : modelData;
+
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
     drawDataName += isStaticDraw ? "ENGINE_DRAW_STATIC_SPRITE" : "ENGINE_DRAW_SPRITE";
+    drawLocation == DrawLocation::Back ? drawDataName = "ENGINE_DRAW_BACKSPRITE" : drawDataName;
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
     auto* drawData = modelDrawData_[drawDataName].get();
@@ -862,7 +871,11 @@ void PolygonManager::AddSprite(
     if(isStaticDraw){
         objCounts_[(int)DrawOrder::StaticSprite]++;
     } else{
-        objCounts_[(int)DrawOrder::Sprite]++;
+        if(drawLocation == DrawLocation::Back){
+            objCounts_[(int)DrawOrder::BackSprite]++;
+        } else{
+            objCounts_[(int)DrawOrder::Sprite]++;
+        }
     }
 
 
@@ -1517,7 +1530,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
         instanceInterval = 3;
 
     } else if(
-        drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or
+        drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or drawOrder == DrawOrder::BackSprite or
         drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D or drawOrder == DrawOrder::Offscreen)
     {
         instanceInterval = 4;
@@ -1653,9 +1666,9 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     continue;
                 }
 
+
                 // オフセットなどを計算し書き込み・描画を行う
                 for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
-
 
                     /*--------------------------------------*/
                     //      オフセット情報を書き込む
@@ -1774,11 +1787,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
-                        if(drawOrder == DrawOrder::Particle){
-                            int a = 0;
-                            a = a;
-                        }
-
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),
                             item->totalDrawCount[blendIdx][cullModeIdx],
@@ -1829,23 +1837,25 @@ void PolygonManager::DrawToOffscreen(){
 
     // オフスクリーンの描画依頼をここで出しておく
     if(isActivePostEffect_){
-        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
         //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
     } else{
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NONE);
     }
 
     // Resourceに情報を書き込む
     WriteRenderData();
 
+    // 背景描画
+    SetRenderData(DrawOrder::BackSprite);
+
     // 3D
     SetRenderData(DrawOrder::Line);
+    SetRenderData(DrawOrder::Quad);
+    SetRenderData(DrawOrder::Triangle);
+    SetRenderData(DrawOrder::Particle);
     SetRenderData(DrawOrder::Model);
     SetRenderData(DrawOrder::AnimationModel);
-    SetRenderData(DrawOrder::Triangle);
-    SetRenderData(DrawOrder::Quad);
-    SetRenderData(DrawOrder::Particle);
-    //SetRenderData(DrawOrder::Sprite);
 
     // 2D
     SetRenderData(DrawOrder::Line2D);

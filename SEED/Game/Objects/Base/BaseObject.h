@@ -26,6 +26,8 @@ public:
     void UpdateMatrix();
     void EditCollider();
 
+    void SetCollidable(bool _collidable);
+
 protected:
     void EndFrameDropFlagUpdate();
     void MoveByVelocity();
@@ -78,6 +80,7 @@ public:// アクセッサ
     void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
     bool GetIsApplyGravity()const{ return isApplyGravity_; }
     void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
+    float GetDropSpeed()const{ return dropSpeed_; }
     bool GetIsDrop()const{ return isDrop_; }
 
     // 重さ
@@ -113,6 +116,7 @@ protected:
 
 protected:// 衝突判定用
     std::vector<std::unique_ptr<Collider>> colliders_;
+    bool isHandOverColliders_ = true;
 
 protected:// 物理
     bool isApplyGravity_ = true;

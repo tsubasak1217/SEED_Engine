@@ -18,7 +18,7 @@
 SEED* SEED::instance_ = nullptr;
 std::wstring SEED::windowTitle_ = L"SEED";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
-uint32_t SEED::windowBackColor_ = 0x070707ff;//0x47ada3ff;
+uint32_t SEED::windowBackColor_ = 0x000000ff;//yMath::IntColor(0,160,232,255);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,13 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
 
     // 起動時読み込み
     instance_->StartUpLoad();
+
+    // offscreenの画面のアルファ値を1にするためのcolor{0,0,0,1}のスプライトを作成
+    instance_->offscreenWrapper_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    instance_->offscreenWrapper_->size = { (float)clientWidth,(float)clientHeight };
+    instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 1);
+    instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
+    instance_->offscreenWrapper_->isStaticDraw = false;
 }
 
 /*------------------------- 終了処理 ---------------------------*/
@@ -119,6 +126,9 @@ void SEED::BeginFrame(){
 /*----------------------- フレーム終了処理 ----------------------*/
 
 void SEED::EndFrame(){
+    // offscreenの画面のアルファ値を1にするため、color{0,0,01}のスプライトを表示
+    instance_->offscreenWrapper_->Draw();
+
     // 描画
     DxManager::GetInstance()->DrawPolygonAll();
     ImGuiManager::PostDraw();

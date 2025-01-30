@@ -490,6 +490,14 @@ uint32_t MyMath::IntColor(const Vector4& color){
     return red + green + blue + alpha;
 }
 
+uint32_t MyMath::IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
+    uint32_t red = std::clamp((int)r, 0, 255) << 24;
+    uint32_t green = std::clamp((int)g, 0, 255) << 16;
+    uint32_t blue = std::clamp((int)b, 0, 255) << 8;
+    uint32_t alpha = std::clamp((int)a, 0, 255);
+    return red + green + blue + alpha;
+}
+
 Vector4 MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 
     // 彩度が0なので明度のみを反映

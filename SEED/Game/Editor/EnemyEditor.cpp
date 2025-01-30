@@ -11,8 +11,6 @@
 #include "imgui.h"
 
 EnemyEditor::EnemyEditor(){
-    // Editor起動時にロードするなら (任意)
-    LoadEnemies();
 }
 
 void EnemyEditor::ShowImGui(){
@@ -41,10 +39,6 @@ void EnemyEditor::ShowImGui(){
     ImGui::Begin("Enemy Editor");
 
     // ---- Add Enemy, Save ----
-    if (ImGui::Button("Add Enemy")){
-        em->AddEnemy();
-        selectedEnemyIndex_ = static_cast< int >(em->GetEnemies().size()) - 1;
-    }
     ImGui::SameLine();
     if (ImGui::Button("Save Enemies")){
         // JSON/CSV にセーブ
@@ -272,18 +266,6 @@ void EnemyEditor::SaveEnemies(){
     em->SaveEnemies();
 }
 
-void EnemyEditor::LoadEnemies(){
-    Stage* currentStage = StageManager::GetCurrentStage();
-    if (!currentStage){ return; }
-    EnemyManager* em = currentStage->GetEnemyManager();
-    if (!em){ return; }
-
-    em->LoadEnemies();
-
-    // 必要に応じて、選択された敵のインデックスをリセットまたは更新
-    selectedEnemyIndex_ = em->GetEnemies().empty() ? -1 : 0;
-}
-
 ////////////////////////////////////////////////////////////////////////
 // マウスによるルーチンポイント追加
 ////////////////////////////////////////////////////////////////////////
@@ -343,6 +325,5 @@ void EnemyEditor::AddRoutinePointByMouse(){
             std::cerr << "Failed to retrieve routine points for: " << selectedRoutineName << std::endl;
         }
     }
-   
 }
 

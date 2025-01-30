@@ -56,7 +56,7 @@ public:// アクセッサ
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
 
     // マテリアル
-    Matrix4x4 GetUVTransform(int index)const{ return uvTransform_[index]; }
+    Matrix4x4 GetUVTransform(int index)const{ return AffineMatrix(uv_scale_[index],uv_rotate_[index],uv_translate_[index]); }
 
     // アニメーション
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
@@ -107,9 +107,6 @@ public:
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;
     std::vector<Vector3> uv_translate_;
-
-private:
-    std::vector<Matrix4x4> uvTransform_;
 
 
     // --------------------- アニメーションパラメータ ---------------------//

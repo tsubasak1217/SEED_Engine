@@ -20,7 +20,7 @@ void BaseCamera::Initialize(){
     projectionMode_ = PERSPECTIVE;
     clipRange_ = kWindowSize;
     znear_ = 0.1f;
-    zfar_ = 1000.0f;
+    zfar_ = 1500.0f;
     fov_ = 0.45f;
     UpdateMatrix();
 }

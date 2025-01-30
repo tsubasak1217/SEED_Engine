@@ -53,10 +53,9 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
 void EggState_Break::Update(){
     timerUi_->BeginFrame();
 
+    // ボタン押したら 即孵化
     if(PlayerInput::CharacterMove::FastForwardEggTimer()){
-        leftTime_ -= ClockManager::DeltaTime() * timeFactor_;
-    } else{
-        leftTime_ -= ClockManager::DeltaTime();
+        leftTime_ = 0.f;
     }
 
     timerUi_->Update();

@@ -162,7 +162,8 @@ public:
 private:// インスタンス
     static SEED* instance_;
 
-private:// 監視用変数
+private:
+    std::unique_ptr<Sprite> offscreenWrapper_;
 
 public:// ウインドウに関する変数
     int kClientWidth_;

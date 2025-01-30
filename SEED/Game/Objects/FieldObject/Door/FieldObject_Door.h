@@ -45,7 +45,7 @@ public:
     void RemoveSwitch(FieldObject_Switch* pSwitch);
     bool GetHasSwitch() const{ return hasSwitch_; }
 
-    void SetClosedPosY(float posY){ closedPosY_ = posY-kMaxOpenHeight_; }
+    void SetClosedPosY(float posY){ closedPosY_ = posY; }
     float GetClosedPosY() const{ return closedPosY_; }
 
 private:

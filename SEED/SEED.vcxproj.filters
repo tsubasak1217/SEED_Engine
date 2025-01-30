@@ -751,6 +751,12 @@
     <ClCompile Include="Game\Objects\FieldObject\Star\FieldObject_Star.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayerInput\PlayerInput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Shadow\Shadow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1366,6 +1372,8 @@
       <Filter>Game\Objects\Enemy\Routine</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
+    <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -6,8 +6,7 @@
 
 class ICharacterState;
 
-class BaseCharacter : public BaseObject
-{
+class BaseCharacter : public BaseObject{
 public:
     BaseCharacter();
     ~BaseCharacter();
@@ -34,14 +33,14 @@ protected:
     virtual void Damage(int32_t damage);
 
 public: // アクセッサ
-    const Vector3 &GetPrePos() const { return prePos_; }
-    void SetTranslate(const Vector3 &pos) { model_->translate_ = pos; }
+    const Vector3& GetPrePos() const{ return prePos_; }
+    void SetTranslate(const Vector3& pos){ model_->translate_ = pos; }
     // アニメーション関連
-    void SetAnimation(const std::string &animName, bool loop) { model_->StartAnimation(animName, loop); }
-    void SetAnimation(int32_t animIdx, bool loop) { model_->StartAnimation(animIdx, loop); }
-    void SetAnimationSpeedRate(float rate) { model_->SetAnimationSpeedRate(rate); }
-    float GetAnimationDuration() const { return model_->GetAnimationDuration(); }
-    bool GetIsEndAnimation() const { return model_->GetIsEndAnimation(); }
+    void SetAnimation(const std::string& animName,bool loop){ model_->StartAnimation(animName,loop); }
+    void SetAnimation(int32_t animIdx,bool loop){ model_->StartAnimation(animIdx,loop); }
+    void SetAnimationSpeedRate(float rate){ model_->SetAnimationSpeedRate(rate); }
+    float GetAnimationDuration() const{ return model_->GetAnimationDuration(); }
+    bool GetIsEndAnimation() const{ return model_->GetIsEndAnimation(); }
     // HPに関連するアクセッサ
     bool GetIsDamaged()const{ return isDamaged_; }
     bool GetIsAlive()const{ return isAlive_; }
@@ -53,6 +52,7 @@ public: // アクセッサ
     bool GetIsJump()const{ return isJump_; }
     void SetIsJump(bool isJump){ isJump_ = isJump; }
     bool IsJumpable(){ return jumpAllowableTime_ > 0.0f; }
+    float GetJumpPower()const{ return jumpPower_; }
     void SetJumpPower(float power){ jumpPower_ = power; }
     void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
     bool GetIsMovable()const{ return isMovable_; }

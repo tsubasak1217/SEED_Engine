@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-BaseCharacter::BaseCharacter() : BaseObject(){
+BaseCharacter::BaseCharacter(): BaseObject(){
     name_ = "unnamed";
     Initialize();
 }
@@ -54,23 +54,6 @@ void BaseCharacter::Draw(){
 
     // 基本モデルの描画
     BaseObject::Draw();
-
-    Quad q = Quad(
-        Vector3(-3.0f, 0.01f, 3.0f),
-        Vector3(3.0f, 0.01f, 3.0f),
-        Vector3(-3.0f, 0.01f, -3.0f),
-        Vector3(3.0f, 0.01f, -3.0f)
-    );
-
-    q.GH = TextureManager::LoadTexture("ParticleTextures/particle.png");
-    q.blendMode = BlendMode::SUBTRACT;
-
-    for(int i = 0; i < 4; i++){
-        q.localVertex[i] += GetWorldTranslate();
-        q.localVertex[i].y = 0.01f;
-    }
-
-    SEED::DrawQuad(q);
 }
 
 //////////////////////////////////////////////////////////////////////////

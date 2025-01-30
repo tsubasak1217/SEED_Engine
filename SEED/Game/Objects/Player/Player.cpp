@@ -55,7 +55,7 @@ void Player::Initialize(){
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f,3.0f,0.0f);
+    targetOffset_ = Vector3(0.0f,7.0f,0.0f);
 
     // 状態の初期化
     currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
@@ -70,6 +70,10 @@ void Player::Initialize(){
     predationRange_->Initialize(this);
 
     lastPosOnGround_ = GetWorldTranslate();
+
+    // shadow
+    shadow_ = std::make_unique<Shadow>(this);
+    shadow_->Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,17 +88,15 @@ void Player::Update(){
     }
     ImGui::End();
 #endif // _DEBUG
-
-    if(enemyManager_){
-        predationRange_->Update(enemyManager_);
-    }
-
     BaseCharacter::Update();
+
+    shadow_->Update(StageManager::GetCurrentStage());
 }
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
 void Player::Draw(){
+    shadow_->Draw();
     BaseCharacter::Draw();
 }
 
@@ -140,7 +142,15 @@ void Player::HandleMove(const Vector3& acceleration){
 }
 
 bool Player::CanEatEnemy(){
-    return !predationRange_->GetPreyList().empty();
+    if(!enemyManager_){
+        return false;
+    }
+    predationRange_->Update(enemyManager_);
+
+    if(predationRange_->GetPreyList().empty()){
+        return false;
+    }
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -21,15 +21,16 @@
 #include "../Game/Editor/EnemyEditor.h"
 
 // objects
-#include "../Game/Objects/Player/Player.h"
-#include "../Game/Objects/Enemy/Enemy.h"
 #include "Egg/Manager/EggManager.h"
+#include "Enemy/Enemy.h"
+#include "Player/Player.h"
+#include "Shadow/Shadow.h"
 
 // manager
-#include "Player/PredationRange/PredationRange.h"
 #include "../Game/Manager/EnemyManager.h"
-#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "../Game/Manager/StageManager.h"
+#include "Player/PredationRange/PredationRange.h"
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
 class Scene_Game : public Scene_Base
 {
@@ -68,7 +69,10 @@ private:
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;
- 
+    std::unique_ptr<Model> cylinderWall_[3];
+    std::unique_ptr<Quad> underCloud_;
+    Vector3 cloudUV_translate_;
+
     // Manager
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
     EventManager eventManager_;

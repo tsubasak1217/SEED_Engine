@@ -66,7 +66,6 @@ private:
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
-    std::unique_ptr<Shadow> playerShadow_ = nullptr;
     std::unique_ptr<PlayerCorpseManager> playerCorpseManager_ = nullptr;
     std::unique_ptr<EggManager> eggManager_ = nullptr;
     std::unique_ptr<Model> ground_;

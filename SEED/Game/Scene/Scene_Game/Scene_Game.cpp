@@ -111,9 +111,6 @@ void Scene_Game::Initialize(){
         cylinderWall_[i]->UpdateMatrix();
     }
 
-    playerShadow_ = std::make_unique<Shadow>(player_.get());
-    playerShadow_->Initialize();
-
     ////////////////////////////////////////////////////
     // スプライトの初期化
     ////////////////////////////////////////////////////
@@ -207,8 +204,7 @@ void Scene_Game::Update(){
     stageManager_->Update();
 
     player_->Update();
-    playerShadow_->Update(stageManager_->GetCurrentStage());
-
+    
     eggManager_->Update();
     playerCorpseManager_->Update();
 
@@ -288,7 +284,6 @@ void Scene_Game::Draw(){
 
     // プレイヤーの描画
     player_->Draw();
-    playerShadow_->Draw();
     eggManager_->Draw();
 
     playerCorpseManager_->Draw();

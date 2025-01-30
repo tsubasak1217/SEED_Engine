@@ -1,7 +1,5 @@
 #include "FieldObject_Star.h"
 
-uint32_t FieldObject_Star::nextFieldObjectID_ = 1;
-
 ///////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////
@@ -22,8 +20,6 @@ FieldObject_Star::FieldObject_Star(){
     light_->color_ = { 1.0f,1.0f,0.5f,1.0f };
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Star::FieldObject_Star(const std::string& modelName){
@@ -43,8 +39,6 @@ FieldObject_Star::FieldObject_Star(const std::string& modelName){
     light_->color_ = { 1.0f,1.0f,0.5f,1.0f };
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ///////////////////////////////////////////////////////////////////

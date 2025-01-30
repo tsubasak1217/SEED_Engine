@@ -62,3 +62,24 @@ Vector3 TransformVector(const Vector3& vector, const Matrix4x4& matrix){
 float LengthSquared(const Vector3& v){
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
+
+std::string GenerateGUID(){
+    uint64_t high = MyFunc::RandomU64(); // 上位64ビット
+    uint64_t low = MyFunc::RandomU64(); // 下位64ビット
+
+    // "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式にする
+    std::ostringstream oss;
+    oss << std::hex << std::nouppercase
+        << std::setw(8) << std::setfill('0') << static_cast< unsigned int >((high >> 32) & 0xffffffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((high >> 16) & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >(high & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((low >> 48) & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((low >> 32) & 0xffff)
+        << std::setw(8) << std::setfill('0') << static_cast< unsigned int >(low & 0xffffffff);
+
+    return oss.str();
+}

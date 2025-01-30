@@ -9,7 +9,4 @@ public:
 public:
 
     void Initialize()override;
-
-public:
-    static uint32_t nextFieldObjectID_;                // 次のID
 };

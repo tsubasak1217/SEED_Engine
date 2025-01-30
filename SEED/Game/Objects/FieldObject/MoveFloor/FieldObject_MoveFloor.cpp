@@ -8,11 +8,6 @@
 #include "../FieldObject/Switch/FieldObject_Switch.h"
 
 /////////////////////////////////////////////////////////////////////////
-// static変数宣言
-/////////////////////////////////////////////////////////////////////////
-uint32_t FieldObject_MoveFloor::nextFieldObjectID_ = 1;
-
-/////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
 FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager) :
@@ -31,7 +26,6 @@ FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager) :
 
     // 全般の初期化
     Initialize();
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName, RoutineManager& routineManager) :
@@ -44,7 +38,6 @@ FieldObject_MoveFloor::FieldObject_MoveFloor(const std::string& modelName, Routi
     // 全般の初期化
     Initialize();
 
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 /////////////////////////////////////////////////////////////////////////

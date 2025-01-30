@@ -58,7 +58,7 @@ void FieldObject_Door::Initialize(){
     FieldObject::Initialize();
     isOpened_ = false;
     hasSwitch_ = false;
-    ChangeState(new ClosedState());
+    ChangeState(new ClosingState());
 }
 
 ////////////////////////////////////////////////////////////////////////

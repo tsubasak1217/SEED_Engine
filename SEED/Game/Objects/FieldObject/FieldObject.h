@@ -32,16 +32,18 @@ public:
     //--- getter / setter ---//
     Model* GetModel(){ return model_.get(); }
     uint32_t GetFieldObjectType()const{ return fieldObjectType_; }
-    uint32_t GetFieldObjectID()const{ return fieldObjectID_; }
     void SetFieldObjectType(uint32_t type){ fieldObjectType_ = type; }
-    void SetFieldObjectID(uint32_t id){ fieldObjectID_ = id; }
     void SetPlayer(Player* player){ player_ = player; }
     bool GetRemoveFlag()const { return removeFlag_; }
 
+    const std::string& GetGUID()const{ return guid_; }
+    void SetGUID(const std::string& newGUID){ guid_ = newGUID; }
+
 protected:
     uint32_t fieldObjectType_;
-    uint32_t fieldObjectID_ = 0;
     bool removeFlag_ = false;
+
+    std::string guid_;
 
     Player* player_ = nullptr;  // プレイヤーへのポインタ
 

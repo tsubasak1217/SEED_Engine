@@ -98,8 +98,4 @@ private:
     // 衝突状態を追跡する変数
     bool isColliding_ = false;            // 現在衝突しているか
     bool wasCollidingLastFrame_ = false;  // 前フレームで衝突していたか
-
-public:
-    // 次のID
-    static uint32_t nextFieldObjectID_;
 };

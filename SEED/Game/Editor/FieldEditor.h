@@ -73,14 +73,6 @@ private:
     // 選択関連
     void UpdateSelectionByMouse(); // FieldObject / Enemy 両方を照合
 
-
-
-
-private:
-    // id再割り当て
-    template <typename T>
-    void ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID = 1);
-
 private:
     //===================================================================*/
     //                   private fields
@@ -123,15 +115,5 @@ private:// enum
 ////////////////////////////////////////////////////////////////////////
 //  テンプレート関数
 ////////////////////////////////////////////////////////////////////////
-template <typename T>
-inline void FieldEditor::ReassignIDsForType(std::vector<std::unique_ptr<FieldObject>>& objects, uint32_t startID){
-    uint32_t newID = startID;
-    for (auto& obj : objects){
-        if (auto typed = dynamic_cast< T* >(obj.get())){
-            typed->SetFieldObjectID(newID++);
-        }
-    }
-    // 静的カウンタを更新（Tクラスの nextFieldObjectID_ が存在することが前提）
-    T::nextFieldObjectID_ = newID;
-}
+
 

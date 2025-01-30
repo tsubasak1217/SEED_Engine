@@ -56,7 +56,4 @@ private:
     const float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
 
     float closedPosY_ = 0.0f;                   // 閉じた後のy座標
-
-public:
-    static uint32_t nextFieldObjectID_;         // 次のID
 };

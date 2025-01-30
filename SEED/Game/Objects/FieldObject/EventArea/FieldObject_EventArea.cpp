@@ -1,8 +1,6 @@
 #include "FieldObject_EventArea.h"
 #include <../GameSystem.h>
 
-uint32_t FieldObject_EventArea::nextFieldObjectID_ = 1;
-
 /////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 /////////////////////////////////////////////////////////////////////
@@ -21,8 +19,6 @@ FieldObject_EventArea::FieldObject_EventArea() {
     InitColliders(ObjectType::EventArea);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_EventArea::FieldObject_EventArea(const std::string& modelName) {
@@ -39,8 +35,6 @@ FieldObject_EventArea::FieldObject_EventArea(const std::string& modelName) {
     InitColliders(ObjectType::EventArea);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 

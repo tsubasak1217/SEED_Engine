@@ -26,6 +26,9 @@ public:
     static Vector2 Random(const Vector2& min,const Vector2& max);
     static Vector2 Random(const Range2D& range);
 
+    // 64ビットの乱数を返す関数
+    static uint64_t RandomU64();
+
     // ランダムな方向を返す関数
     static Vector3 RandomVector();
     static Vector2 RandomVector2();

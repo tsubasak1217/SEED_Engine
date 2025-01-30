@@ -27,12 +27,18 @@
 #include "MyMath.h"
 #include "MyFunc.h"
 
+//////////////////////////////////////////////////////////////////
+// コンストラクタ・デストラクタ
+//////////////////////////////////////////////////////////////////
 PlayerState_ThrowEgg::PlayerState_ThrowEgg(const std::string& stateName, BaseCharacter* player){
     Initialize(stateName, player);
 }
 
 PlayerState_ThrowEgg::~PlayerState_ThrowEgg(){}
 
+//////////////////////////////////////////////////////////////////
+// 初期化
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::Initialize(const std::string& stateName, BaseCharacter* character){
     ICharacterState::Initialize(stateName, character);
 
@@ -55,19 +61,31 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName, BaseCharacte
     // 投げる卵の重さを取得
     eggWeight_ = dynamic_cast<Egg*>(throwEgg_)->GetWeight();
     // 狙う関連
-    aimRadius_ = 25.0f;
-    aimPos_ = Vector3(0.0f, 0.0f, 0.0f);
+    aimRadius_ = 32.0f;
+    aimPos_ = Vector3(0.0f, 0.0f, 10.0f);
+    aimPos_ *= RotateYMatrix(pCharacter_->GetWorldRotate().y);
+    sphere_ = std::make_unique<Model>("Assets/Sphere.obj");
+    sphere_->color_ = { 0.3f,1.0f,0.3f,0.5f };
+    sphere_->scale_ = { 0.3f,0.3f,0.3f };
+    sphere_->blendMode_ = BlendMode::ADD;
+    sphere_->UpdateMatrix();
     aimModel_ = std::make_unique<Model>("Egg.obj");
     aimModel_->color_ = { 1.0f,1.0f,0.0f,0.3f };
     throwSimulationEgg_ = std::make_unique<BaseObject>("Egg.obj");
     throwSimulationEgg_->InitColliders("Egg.json", ObjectType::Egg);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Egg);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Player);
+    throwSimulationEgg_->AddSkipPushBackType(ObjectType::Enemy);
+    throwSimulationEgg_->AddSkipPushBackType(ObjectType::EventArea);
 
     //Playerの Animation を aim に変更
     pPlayer->SetAnimation("aim", false);
 }
 
+
+//////////////////////////////////////////////////////////////////
+// 更新
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::Update(){
 
     // 移動状態の更新 & アニメーションの変更
@@ -77,6 +95,7 @@ void PlayerState_ThrowEgg::Update(){
     // 狙う
     Aim();
     SimulateThrowEgg();
+    UpdateCoontrolPoints();
 
 #ifdef _DEBUG
     // throwDirection_の値を取得
@@ -89,38 +108,39 @@ void PlayerState_ThrowEgg::Update(){
     JsonCoordinator::SetValue("Player", "throwDirection", throwDirection_);
 #endif // _DEBUG
 
-
     // 卵 の 位置 を 更新
     throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));
     throwEgg_->HandleRotate(pCharacter_->GetWorldRotate());
 
 }
 
+
+//////////////////////////////////////////////////////////////////
+// 投げる卵の軌跡を描画
+//////////////////////////////////////////////////////////////////
 constexpr float timePerSegment = 0.1f / 32.0f;
 void PlayerState_ThrowEgg::Draw(){
 
-    controlPoints_[0] = throwEgg_->GetWorldTranslate();
-    controlPoints_[2] = aimModel_->GetWorldTranslate();
-    Vector3 dif = controlPoints_[2] - controlPoints_[0];// 卵から狙うモデルへのベクトル
-    float length = MyMath::Length(dif);// 卵から狙うモデルまでの距離
-    float leftLength = aimRadius_ - length;// 残りの長さ(高さに変換する分)
-    controlPoints_[1] = (controlPoints_[0] + dif * 0.5f) + Vector3(0.0f, leftLength, 0.0f);
-
-    // ベジェ曲線の描画
-    SEED::DrawBezier(controlPoints_[0], controlPoints_[1], controlPoints_[2], 32, { 0.3f,1.0f,0.3f,1.0f });
+    // 軌跡の描画
+    DrawLocus(12);
 
     // 狙うモデルの描画
     aimModel_->Draw();
     throwSimulationEgg_->Draw();
 }
 
+//////////////////////////////////////////////////////////////////
 // コライダーを渡す
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::HandOverColliders(){
     ICharacterState::HandOverColliders();
     // 卵のコライダーを渡す
-    throwEgg_->HandOverColliders();
+    throwSimulationEgg_->HandOverColliders();
 }
 
+//////////////////////////////////////////////////////////////////
+// ステート管理
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::ManageState(){
     // キャンセル
     if(PlayerInput::CharacterMove::CancelFocusEgg(pressForcus_)){
@@ -140,6 +160,10 @@ void PlayerState_ThrowEgg::ManageState(){
     }
 }
 
+
+//////////////////////////////////////////////////////////////////
+// 移動状態の更新
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::UpdateMovingState(){
     preIsMoving_ = isMoving_;
     if(MyMath::LengthSq(pCharacter_->GetPrePos() - pCharacter_->GetWorldTranslate()) >= 0.0001f){
@@ -149,6 +173,9 @@ void PlayerState_ThrowEgg::UpdateMovingState(){
     }
 }
 
+//////////////////////////////////////////////////////////////////
+// アニメーションの変更
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::ChangeAnimation(){
     if(!isFirstAnimationEnd_){
         isFirstAnimationEnd_ = pCharacter_->GetIsEndAnimation();
@@ -172,7 +199,9 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
     }
 }
 
+//////////////////////////////////////////////////////////////////
 // 狙う
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::Aim(){
     static float targetMoveSpeed = 24.0f;
 
@@ -187,8 +216,8 @@ void PlayerState_ThrowEgg::Aim(){
         aimPos_ += Vector3(moveVec.x, 0.0f, moveVec.y) * targetMoveSpeed * ClockManager::DeltaTime();
 
         // 範囲内に収める
-        if(MyMath::Length(aimPos_) > aimRadius_){
-            aimPos_ = MyMath::Normalize(aimPos_) * aimRadius_;
+        if(MyMath::Length(aimPos_) > aimRadius_ * 0.7f){
+            aimPos_ = MyMath::Normalize(aimPos_) * aimRadius_ * 0.7f;
         }
 
         // キャラクターの向きを狙う方向に向ける
@@ -198,19 +227,14 @@ void PlayerState_ThrowEgg::Aim(){
 
     }
 
-
     // 狙うモデルの位置を更新
     aimModel_->translate_ = pCharacter_->GetWorldTranslate() + aimPos_;
     aimModel_->UpdateMatrix();
-
-    ImGui::Begin("Aim");
-    ImGui::Text("aimPos_ : %f %f %f", aimPos_.x, aimPos_.y, aimPos_.z);
-    ImGui::Text("charaTrans : %f %f %f", pCharacter_->GetWorldTranslate().x, pCharacter_->GetWorldTranslate().y, pCharacter_->GetWorldTranslate().z);
-    ImGui::Text("aimModelTrans : %f %f %f", aimModel_->translate_.x, aimModel_->translate_.y, aimModel_->translate_.z);
-    ImGui::DragFloat("aimSpeed", &targetMoveSpeed, 0.1f, 0.0f, 100.0f);
-    ImGui::End();
 }
 
+//////////////////////////////////////////////////////////////////
+// 卵を投げるシミュレーション
+//////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::SimulateThrowEgg(){
 
     static float kSimulateTime = 1.0f;
@@ -234,6 +258,31 @@ void PlayerState_ThrowEgg::SimulateThrowEgg(){
     }
 }
 
-/*
-  std::string unti = "unti by aoi";
-*/
+//////////////////////////////////////////////////////////////////
+// 制御点の更新
+//////////////////////////////////////////////////////////////////
+void PlayerState_ThrowEgg::UpdateCoontrolPoints(){
+    controlPoints_[0] = throwEgg_->GetWorldTranslate();
+    controlPoints_[2] = aimModel_->GetWorldTranslate();
+    Vector3 dif = controlPoints_[2] - controlPoints_[0];// 卵から狙うモデルへのベクトル
+    float length = MyMath::Length(dif);// 卵から狙うモデルまでの距離
+    float leftLength = aimRadius_ - length;// 残りの長さ(高さに変換する分)
+    controlPoints_[1] = (controlPoints_[0] + dif * 0.5f) + Vector3(0.0f, leftLength, 0.0f);
+}
+
+//////////////////////////////////////////////////////////////////
+// 軌跡の描画
+//////////////////////////////////////////////////////////////////
+void PlayerState_ThrowEgg::DrawLocus(uint32_t subdivision){
+
+    float interval = 1.0f / subdivision;
+    float t = 0.0f;
+
+    while(t <= 1.0f){
+        Vector3 pos = MyMath::Bezier(controlPoints_[0], controlPoints_[1], controlPoints_[2], t);
+        sphere_->translate_ = pos;
+        sphere_->UpdateMatrix();
+        sphere_->Draw();
+        t += interval;
+    }
+}

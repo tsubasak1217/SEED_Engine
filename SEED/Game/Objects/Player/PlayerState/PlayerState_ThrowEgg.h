@@ -29,6 +29,8 @@ private:
     void ChangeAnimation();
     void Aim();
     void SimulateThrowEgg();
+    void UpdateCoontrolPoints();
+    void DrawLocus(uint32_t subdivision);
 
 private:
     EggManager* eggManager_ = nullptr;
@@ -49,6 +51,7 @@ private:
     float aimRadius_;
     Vector3 aimPos_;
     std::unique_ptr<Model> aimModel_;
+    std::unique_ptr<Model> sphere_;
     std::unique_ptr<BaseObject> throwSimulationEgg_;
     std::array<Vector3, 3> controlPoints_;
     float simulateTime_;

@@ -37,6 +37,7 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     // プレイヤーの初期位置
     if(isPlayerSetStartPos){
         pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
+        pGameScene_->Get_pPlayer()->SetIsDrop(false);
     }
     pGameScene_->Get_pPlayer()->SetIsMovable(true);
 

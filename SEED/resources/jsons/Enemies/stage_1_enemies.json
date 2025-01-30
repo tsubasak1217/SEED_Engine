@@ -4,10 +4,11 @@
         {
             "CanEat": false,
             "ChasePlayer": false,
-            "HP": 100,
+            "HP": 0,
             "Index": 0,
             "Name": "enemy0",
-            "RoutineName": "NULL"
+            "RoutineName": "NULL",
+            "moveSpeed": 1.0
         }
     ]
 }

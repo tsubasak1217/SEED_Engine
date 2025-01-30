@@ -4,9 +4,6 @@
 #include "../Egg.h"
 #include "StageManager.h"
 
-//uiState
-#include "../UI/State/EggUiState_Timer.h"
-
 //camera
 #include "FollowCamera.h"
 //manager
@@ -22,47 +19,31 @@ EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
     breakToNextStage_ = breakToNextStage;
 }
 
-EggState_Break::~EggState_Break(){
-    timerUi_->Finalize();
-}
+EggState_Break::~EggState_Break(){}
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
     JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
-    JsonCoordinator::RegisterItem("Egg","BreakTimeFactor",timeFactor_);
 
     leftTime_ = breakTime_;
 
     //==================== UI ====================//
-    timerUi_ = std::make_unique<UI>("EggTimerUI");
-    timerUi_->Initialize("SelectScene/egg.png");
+    timerUi_ = std::make_unique<EggTimerUI>();
+    timerUi_->Initialize();
 
-    Egg* egg = dynamic_cast<Egg*>(pCharacter_);
-    auto eggUiState = std::make_unique<EggUiState_Timer>(
-        timerUi_.get(),
-        egg,
-        "BreakTimeTimer",
-        breakTime_,
-        &leftTime_
-    );
-    eggUiState->Initialize();
-    timerUi_->SetState(std::move(eggUiState));
 }
 
 void EggState_Break::Update(){
-    timerUi_->BeginFrame();
-
+    leftTime_ -= ClockManager::DeltaTime();
     // ボタン押したら 即孵化
     if(PlayerInput::CharacterMove::FastForwardEggTimer()){
         leftTime_ = 0.f;
     }
 
-    timerUi_->Update();
+    timerUi_->Update(leftTime_);
 
     ManageState();
-
-    timerUi_->EndFrame();
 }
 
 void EggState_Break::Draw(){
@@ -103,7 +84,6 @@ void EggState_Break::ManageState(){
                         pFollowCamera->SetTarget(pPlayer);
                     }
                 }
-
             }
         }
     }

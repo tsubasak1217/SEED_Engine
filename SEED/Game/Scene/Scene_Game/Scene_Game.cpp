@@ -20,7 +20,7 @@
 
 Scene_Game::Scene_Game(){
     Initialize();
-    ChangeState(new GameState_Enter(this));
+    ChangeState(new GameState_Select(this));
 };
 
 Scene_Game::~Scene_Game(){

@@ -42,10 +42,6 @@ void Scene_Game::Initialize(){
     // EventManager
     stageManager_ = std::make_unique<StageManager>(eventManager_);
 
-    // PlayerCorpseManager
-    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
-    playerCorpseManager_->Initialize();
-
     // EggManager
     eggManager_ = std::make_unique<EggManager>();
 
@@ -163,7 +159,7 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(stageManager_->GetCurrentStage()->GetViewPoint());
 
     // playerに必要な情報をセット
-    player_->SetCorpseManager(playerCorpseManager_.get());
+    player_->SetCorpseManager(stageManager_->GetCurrentStage()->GetPlayerCorpseManager());
     player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
     player_->SetPosition(StageManager::GetStartPos());
@@ -225,7 +221,6 @@ void Scene_Game::Update(){
     player_->Update();
     
     eggManager_->Update();
-    playerCorpseManager_->Update();
 
     // 雲の回転
     for(int i = 2; i >= 0; i--){
@@ -305,8 +300,6 @@ void Scene_Game::Draw(){
     player_->Draw();
     eggManager_->Draw();
 
-    playerCorpseManager_->Draw();
-
     // 雲の描画
     for(int i = 2; i >= 0; i--){
         cylinderWall_[i]->Draw();
@@ -333,8 +326,6 @@ void Scene_Game::Draw(){
 void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
     player_->BeginFrame();
-    playerCorpseManager_->BeginFrame();
-
     eggManager_->BeginFrame();
     stageManager_->BeginFrame();
 
@@ -361,7 +352,6 @@ void Scene_Game::EndFrame(){
 
     // 各オブジェクトのフレーム終了処理
     player_->EndFrame();
-    playerCorpseManager_->EndFrame();
     eggManager_->EndFrame();
     stageManager_->EndFrame();
 

@@ -6,13 +6,16 @@ PlayerCorpse::PlayerCorpse(){
 
 PlayerCorpse::~PlayerCorpse(){}
 
+//////////////////////////////////////////////////////////////////////////
+// 初期化
+//////////////////////////////////////////////////////////////////////////
 void PlayerCorpse::Initialize(){
     model_ = std::make_unique<Model>("dinosaur_corpse.obj");
     model_->UpdateMatrix();
 
     // コライダーエディターの初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
-    LoadColliders(ObjectType::PlayerCorpse);
+    InitColliders(ObjectType::PlayerCorpse);
     for(auto& collider : colliders_){
         collider->AddSkipPushBackType(ObjectType::Egg);
         collider->AddSkipPushBackType(ObjectType::Editor);
@@ -24,6 +27,9 @@ void PlayerCorpse::Initialize(){
     weight_ = 4.f;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// 更新処理
+//////////////////////////////////////////////////////////////////////////
 void PlayerCorpse::Update(){
     BaseObject::Update();
     EditCollider();

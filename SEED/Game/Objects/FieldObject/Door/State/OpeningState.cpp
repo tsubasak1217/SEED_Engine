@@ -8,7 +8,7 @@ void OpeningState::Enter([[maybe_unused]] FieldObject_Door* door){
 
 void OpeningState::Update(FieldObject_Door* door, float deltaTime){
     float& currentY = door->GetModel()->translate_.y;
-    currentY += door->GetOpenSpeed() * deltaTime;
+    currentY += door->GetOpenSpeed() * deltaTime;   // 上がっていく
     if (currentY >= door->GetMaxOpenHeight()){
         currentY = door->GetMaxOpenHeight();
         door->ChangeState(new OpenedState());

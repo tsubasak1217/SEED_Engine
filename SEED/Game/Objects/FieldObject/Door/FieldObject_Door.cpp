@@ -10,8 +10,6 @@
 // lib
 #include "ClockManager.h" 
 
-uint32_t FieldObject_Door::nextFieldObjectID_ = 1;
-
 ////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////
@@ -30,8 +28,6 @@ FieldObject_Door::FieldObject_Door(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Door::FieldObject_Door(const std::string& modelName)
@@ -45,8 +41,6 @@ FieldObject_Door::FieldObject_Door(const std::string& modelName)
     InitColliders(ObjectType::Field);
     // 全般の初期化
     Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Door::~FieldObject_Door() = default;
@@ -58,7 +52,7 @@ void FieldObject_Door::Initialize(){
     FieldObject::Initialize();
     isOpened_ = false;
     hasSwitch_ = false;
-    ChangeState(new ClosedState());
+    ChangeState(new ClosingState());
 }
 
 ////////////////////////////////////////////////////////////////////////

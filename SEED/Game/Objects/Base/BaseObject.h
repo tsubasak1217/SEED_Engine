@@ -27,6 +27,8 @@ public:
     void UpdateMatrix();
     void EditCollider();
 
+    void SetCollidable(bool _collidable);
+
 protected:
     void EndFrameDropFlagUpdate();
     void MoveByVelocity();
@@ -122,6 +124,7 @@ protected:// 衝突判定用
     std::vector<std::unique_ptr<Collider>> colliders_;
     bool isCollide_ = false;
     bool preIsCollide_ = false;
+    bool isHandOverColliders_ = true;
 
 protected:// 物理
     bool isApplyGravity_ = true;

@@ -8,6 +8,4 @@ public:
     ~FieldObject_Soil() = default;
 public:
     void Initialize()override;
-public:
-    static uint32_t nextFieldObjectID_;
 };

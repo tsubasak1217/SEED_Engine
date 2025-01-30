@@ -19,7 +19,6 @@ FieldObject_Start::FieldObject_Start(){ // 名前の初期化
     // 全般の初期化
     FieldObject::Initialize();
 
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Start::FieldObject_Start(const std::string& modelName)
@@ -33,7 +32,6 @@ FieldObject_Start::FieldObject_Start(const std::string& modelName)
     // 全般の初期化
     FieldObject::Initialize();
 
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////////

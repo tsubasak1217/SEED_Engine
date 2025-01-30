@@ -6,8 +6,11 @@
 // others State
 #include "TitleState_Main.h"
 
-//uiState
-#include "../UI/State/UiState_LerpColor.h"
+/// lib
+#include "ClockManager.h"
+
+//math
+#include "Easing.h"
 
 TitleState_Enter::TitleState_Enter(Scene_Title* _host)
     : ITitleState(_host){
@@ -18,35 +21,23 @@ TitleState_Enter::~TitleState_Enter(){}
 
 void TitleState_Enter::Initialize(){
     //============================== whiteScreen ==============================//
-    fadeInScreen_ = std::make_unique<UI>("fadeInScreen");
-    fadeInScreen_->Initialize("Assets/white1x1.png");
-    fadeInScreen_->SetSize({1280.f,720.f});
-
-    // state
-    {
-        std::unique_ptr<UiState_LerpColor> lerpColor = std::make_unique<UiState_LerpColor>(fadeInScreen_.get(),"TitleEnter");
-        fadeInScreen_->SetState(std::move(lerpColor));
-    }
+    whiteScreen_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    whiteScreen_->size = {1280.f,720.f};
 }
 
 void TitleState_Enter::Update(){
-    fadeInScreen_->Update();
+    fadeTimer_ += ClockManager::DeltaTime();
+
+    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
 }
 
-void TitleState_Enter::Draw(){
-    fadeInScreen_->Draw();
-}
+void TitleState_Enter::Draw(){}
 
-void TitleState_Enter::Finalize(){
-    fadeInScreen_->Finalize();
-}
+void TitleState_Enter::Finalize(){}
 
-void TitleState_Enter::BeginFrame(){
-    fadeInScreen_->BeginFrame();
-}
+void TitleState_Enter::BeginFrame(){}
 
 void TitleState_Enter::EndFrame(){
-    fadeInScreen_->EndFrame();
 
     ITitleState::EndFrame();
 }
@@ -54,7 +45,7 @@ void TitleState_Enter::EndFrame(){
 void TitleState_Enter::HandOverColliders(){}
 
 void TitleState_Enter::ManageState(){
-    if(fadeInScreen_->GetColor().w <= 0.f){
+    if(fadeTimer_ >= fadeTime_){
         host_->ChangeState(new TitleState_Main(host_));
     }
 }

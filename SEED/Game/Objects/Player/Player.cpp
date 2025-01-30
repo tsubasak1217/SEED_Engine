@@ -70,6 +70,10 @@ void Player::Initialize(){
     predationRange_->Initialize(this);
 
     lastPosOnGround_ = GetWorldTranslate();
+
+    // shadow
+    shadow_ = std::make_unique<Shadow>(this);
+    shadow_->Initialize();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -85,11 +89,14 @@ void Player::Update(){
     ImGui::End();
 #endif // _DEBUG
     BaseCharacter::Update();
+
+    shadow_->Update(StageManager::GetCurrentStage());
 }
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
 void Player::Draw(){
+    shadow_->Draw();
     BaseCharacter::Draw();
 }
 

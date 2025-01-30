@@ -7,8 +7,6 @@ EnemyManager::EnemyManager(Player* player, uint32_t stageNo,RoutineManager& rout
     enemies_.clear();
 }
 
-
-
 void EnemyManager::Initialize(){}
 
 void EnemyManager::Update(){
@@ -81,7 +79,9 @@ void EnemyManager::SaveEnemies(){
                 std::to_string(pos.z)
         });
     }
-    CsvAdapter::GetInstance()->SaveCsv("enemies_position", csvData);
+
+    std::string csvPath = "enemies_position_" + std::to_string(stageNo_);
+    CsvAdapter::GetInstance()->SaveCsv(csvPath, csvData);
 
     // JSONでの保存
     nlohmann::json rootJson;
@@ -127,7 +127,8 @@ void EnemyManager::SaveEnemies(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void EnemyManager::LoadEnemies(){
     // CSVの読み込み
-    auto csvData = CsvAdapter::GetInstance()->LoadCsv("enemies_position");
+    std::string csvPath = "enemies_position_" + std::to_string(stageNo_);
+    auto csvData = CsvAdapter::GetInstance()->LoadCsv(csvPath);
     if (csvData.size() <= 1){
         // 空なら何もしない
         return;

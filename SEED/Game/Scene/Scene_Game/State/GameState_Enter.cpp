@@ -3,8 +3,8 @@
 // others State
 #include "GameState_Select.h"
 
-//uiState
-#include "../UI/State/UiState_LerpColor.h"
+// math
+#include "Easing.h"
 
 GameState_Enter::GameState_Enter(Scene_Base* _host)
     : State_Base(_host){
@@ -15,42 +15,29 @@ GameState_Enter::~GameState_Enter(){}
 
 void GameState_Enter::Initialize(){
     //============================== whiteScreen ==============================//
-    fadeInScreen_ = std::make_unique<UI>("fadeInScreen");
-    fadeInScreen_->Initialize("Assets/white1x1.png");
-    fadeInScreen_->SetSize({1280.f,720.f});
-
-    // state
-    {
-        std::unique_ptr<UiState_LerpColor> lerpColor = std::make_unique<UiState_LerpColor>(fadeInScreen_.get(),"GameScene_Enter");
-        fadeInScreen_->SetState(std::move(lerpColor));
-    }
+    whiteScreen_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    whiteScreen_->size = {1280.f,720.f};
 }
 
 void GameState_Enter::Update(){
-    fadeInScreen_->Update();
+    fadeTimer_ += ClockManager::DeltaTime();
+
+    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
     ManageState();
 }
 
-void GameState_Enter::Draw(){
-    fadeInScreen_->Draw();
-}
+void GameState_Enter::Draw(){}
 
-void GameState_Enter::Finalize(){
-    fadeInScreen_->Finalize();
-}
+void GameState_Enter::Finalize(){}
 
-void GameState_Enter::BeginFrame(){
-    fadeInScreen_->BeginFrame();
-}
+void GameState_Enter::BeginFrame(){}
 
-void GameState_Enter::EndFrame(){
-    fadeInScreen_->EndFrame();
-}
+void GameState_Enter::EndFrame(){}
 
 void GameState_Enter::HandOverColliders(){}
 
 void GameState_Enter::ManageState(){
-    if(fadeInScreen_->GetColor().w <= 0.f){
+    if(fadeTimer_ >= fadeTime_){
         pScene_->ChangeState(new GameState_Select(pScene_));
     }
 }

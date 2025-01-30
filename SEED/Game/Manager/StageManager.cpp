@@ -30,7 +30,6 @@ StageManager::StageManager(ISubject& subject){
         stages_[i] = std::make_unique<Stage>(subject,i);
     }
 
-    Initialize();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -119,6 +118,9 @@ void StageManager::LoadStages(){
     for(int i = 0; i < kStageCount_; i++){
         std::string filepath = "resources/jsons/Stages/stage_" + std::to_string(i + 1) + ".json";
         stages_[i]->LoadFromJson(filepath);
+
+        // 敵の読み込み
+        stages_[i]->GetEnemyManager()->LoadEnemies();
     }
 }
 

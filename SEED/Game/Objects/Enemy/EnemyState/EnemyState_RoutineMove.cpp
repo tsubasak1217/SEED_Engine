@@ -7,7 +7,7 @@
 #include "Enemy/Enemy.h"
 // manager
 #include "EnemyManager.h"
-
+#include "ClockManager.h"
 // lib
 #include "../adapter/json/JsonCoordinator.h"
 #include "ClockManager.h"
@@ -48,6 +48,19 @@ void EnemyState_RoutineMove::Update(){
         // 通常通り移動
         enemy_->SetTranslate(currentPos + moveDir * moveStep);
     }
+
+    float yaw = std::atan2(moveDir.x, moveDir.z);
+    float pitch = std::atan(moveDir.y);
+    float roll = 0.0f;
+
+    Vector3 targetEuler = Vector3(pitch, yaw, roll);
+
+    // 現在のEuler角との補間
+    Vector3 currentEuler = enemy_->GetWorldRotate();
+    Vector3 newEuler = MyMath::Lerp(currentEuler, targetEuler, 2.0f * ClockManager::DeltaTime());
+
+    enemy_->SetRotate(newEuler);
+
 
     // 移動後に距離を再チェック
     currentPos = enemy_->GetWorldTranslate();

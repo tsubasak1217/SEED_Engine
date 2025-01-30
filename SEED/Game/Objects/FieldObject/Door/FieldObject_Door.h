@@ -45,7 +45,7 @@ public:
     void RemoveSwitch(FieldObject_Switch* pSwitch);
     bool GetHasSwitch() const{ return hasSwitch_; }
 
-    void SetClosedPosY(float posY){ closedPosY_ = posY-kMaxOpenHeight_; }
+    void SetClosedPosY(float posY){ closedPosY_ = posY; }
     float GetClosedPosY() const{ return closedPosY_; }
 
 private:
@@ -56,7 +56,4 @@ private:
     const float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
 
     float closedPosY_ = 0.0f;                   // 閉じた後のy座標
-
-public:
-    static uint32_t nextFieldObjectID_;         // 次のID
 };

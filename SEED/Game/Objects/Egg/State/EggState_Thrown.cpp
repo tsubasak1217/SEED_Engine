@@ -39,6 +39,8 @@ void EggState_Thrown::Initialize(const std::string& stateName,BaseCharacter* cha
 
     pEgg_ = dynamic_cast<Egg*>(pCharacter_);
     pEgg_->SetIsThrown(true);
+    // 当たり判定を取るように
+    pEgg_->SetCollidable(true);
 }
 
 void EggState_Thrown::Update(){

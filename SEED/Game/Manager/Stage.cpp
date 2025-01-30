@@ -47,7 +47,7 @@ void Stage::Draw(){
     }
 
     // 敵の描画
-    enemyManager_->Draw();
+   enemyManager_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -181,100 +181,190 @@ FieldObject_ViewPoint* Stage::GetViewPoint() const{
 void Stage::LoadFromJson(const std::string& filePath){
     namespace fs = std::filesystem;
 
-    if(!fs::exists(filePath)){
+    if (!fs::exists(filePath)){
+        std::cerr << "Error: File does not exist: " << filePath << std::endl;
         return;
     }
     std::ifstream file(filePath);
-    if(!file.is_open()){
+    if (!file.is_open()){
+        std::cerr << "Error: Failed to open file: " << filePath << std::endl;
         return;
     }
 
     nlohmann::json jsonData;
-    file >> jsonData;
+    try{
+        file >> jsonData;
+    } catch (const nlohmann::json::parse_error& e){
+        std::cerr << "JSON Parse Error: " << e.what() << std::endl;
+        file.close();
+        return;
+    }
     file.close();
-
 
     // JSON から "stage" を読み取り
     int32_t stageNo = 0;
-    if(jsonData.contains("stage")){ stageNo = jsonData["stage"]; }
+    if (jsonData.contains("stage")){
+        if (jsonData["stage"].is_number_integer()){
+            stageNo = jsonData["stage"].get<int32_t>();
+        } else{
+            std::cerr << "Warning: 'stage' is not an integer. Using default value 0." << std::endl;
+        }
+    }
 
     // いったん全消去
     ClearAllFieldObjects();
 
     // スイッチと関連ドアIDの一時保存用
-    std::vector<std::tuple<FieldObject_Switch*, std::vector<int>>> switchDoorAssociations;
+    std::vector<std::tuple<FieldObject_Switch*, std::vector<std::string>>> switchDoorAssociations;
 
     // JSON から "models" 配列を読み取り
-    if(jsonData.contains("models")){
-        for(auto& modelJson : jsonData["models"]){
+    if (jsonData.contains("models") && jsonData["models"].is_array()){
+        for (auto& modelJson : jsonData["models"]){
+            // 必要なフィールドの型チェック
             std::string name = modelJson.value("name", "default_model.obj");
             uint32_t type = 0;
-            Vector3 position{ 0.f,0.f,0.f };
-            Vector3 scale{ 1.f,1.f,1.f };
-            Vector3 rotation{ 0.f,0.f,0.f };
+            Vector3 position {0.f,0.f,0.f};
+            Vector3 scale {1.f,1.f,1.f};
+            Vector3 rotation {0.f,0.f,0.f};
 
-            if(modelJson.contains("position")){
-                position.x = modelJson["position"][0];
-                position.y = modelJson["position"][1];
-                position.z = modelJson["position"][2];
+            // position
+            if (modelJson.contains("position") && modelJson["position"].is_array() && modelJson["position"].size() >= 3){
+                try{
+                    position.x = modelJson["position"][0].get<float>();
+                    position.y = modelJson["position"][1].get<float>();
+                    position.z = modelJson["position"][2].get<float>();
+                } catch (const nlohmann::json::type_error& e){
+                    std::cerr << "Type Error in 'position': " << e.what() << std::endl;
+                }
             }
-            if(modelJson.contains("scale")){
-                scale.x = modelJson["scale"][0];
-                scale.y = modelJson["scale"][1];
-                scale.z = modelJson["scale"][2];
+
+            // scale
+            if (modelJson.contains("scale") && modelJson["scale"].is_array() && modelJson["scale"].size() >= 3){
+                try{
+                    scale.x = modelJson["scale"][0].get<float>();
+                    scale.y = modelJson["scale"][1].get<float>();
+                    scale.z = modelJson["scale"][2].get<float>();
+                } catch (const nlohmann::json::type_error& e){
+                    std::cerr << "Type Error in 'scale': " << e.what() << std::endl;
+                }
             }
-            if(modelJson.contains("rotation")){
-                rotation.x = modelJson["rotation"][0];
-                rotation.y = modelJson["rotation"][1];
-                rotation.z = modelJson["rotation"][2];
+
+            // rotation
+            if (modelJson.contains("rotation") && modelJson["rotation"].is_array() && modelJson["rotation"].size() >= 3){
+                try{
+                    rotation.x = modelJson["rotation"][0].get<float>();
+                    rotation.y = modelJson["rotation"][1].get<float>();
+                    rotation.z = modelJson["rotation"][2].get<float>();
+                } catch (const nlohmann::json::type_error& e){
+                    std::cerr << "Type Error in 'rotation': " << e.what() << std::endl;
+                }
             }
-            if(modelJson.contains("type")){
-                type = modelJson["type"];
+
+            // type
+            if (modelJson.contains("type")){
+                if (modelJson["type"].is_number_integer()){
+                    type = modelJson["type"].get<uint32_t>();
+                } else{
+                    std::cerr << "Warning: 'type' is not an integer. Using default value 0." << std::endl;
+                }
             }
 
             // 取得した情報からモデルを追加
             AddModel(type, modelJson, scale, rotation, position);
 
-            // 新規追加されたオブジェクトを取得（最後に追加されたものを想定
-            if(fieldObjects_.empty()) continue;
+            // 新規追加されたオブジェクトを取得（最後に追加されたものを想定）
+            if (fieldObjects_.empty()){
+                std::cerr << "Warning: fieldObjects_ is empty after AddModel." << std::endl;
+                continue;
+            }
             FieldObject* newObj = fieldObjects_.back().get();
 
+            // objectID の処理
+            if (modelJson.contains("fieldObjectID")){
+                if (modelJson["fieldObjectID"].is_string()){
+                    try{
+                        std::string guid = modelJson["fieldObjectID"].get<std::string>();
+                        newObj->SetGUID(guid);
+                    } catch (const nlohmann::json::type_error& e){
+                        std::cerr << "Type Error when setting 'objectID': " << e.what() << std::endl;
+                    }
+                } else{
+                    std::cerr << "Warning: 'objectID' is not a string. Skipping SetGUID." << std::endl;
+                }
+            }
+
             // スイッチの場合、関連ドア情報を一時保存
-            if(auto* sw = dynamic_cast<FieldObject_Switch*>(newObj)){
-                //json から associatedDoors を取得(ドアIDの配列)
-                if(modelJson.contains("associatedDoors")){
-                    std::vector<int> doorIDs = modelJson["associatedDoors"].get<std::vector<int>>();
-                    switchDoorAssociations.emplace_back(sw, doorIDs);
+            if (auto* sw = dynamic_cast< FieldObject_Switch* >(newObj)){
+                if (modelJson.contains("associatedDoors")){
+                    if (modelJson["associatedDoors"].is_array()){
+                        std::vector<std::string> doorIDs;
+                        bool valid = true;
+                        for (auto& doorID : modelJson["associatedDoors"]){
+                            if (doorID.is_string()){
+                                doorIDs.emplace_back(doorID.get<std::string>());
+                            } else{
+                                std::cerr << "Warning: 'associatedDoors' contains non-string element. Skipping this doorID." << std::endl;
+                                valid = false;
+                                break;
+                            }
+                        }
+                        if (valid){
+                            switchDoorAssociations.emplace_back(sw, doorIDs);
+                        }
+                    } else{
+                        std::cerr << "Warning: 'associatedDoors' is not an array. Skipping associatedDoors." << std::endl;
+                    }
                 }
             }
             // 移動する床の場合、ルーチン名を設定
             else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(newObj)){
                 if (modelJson.contains("routineName")){
-                    moveFloor->SetRoutineName(modelJson["routineName"]);
+                    if (modelJson["routineName"].is_string()){
+                        try{
+                            moveFloor->SetRoutineName(modelJson["routineName"].get<std::string>());
+                        } catch (const nlohmann::json::type_error& e){
+                            std::cerr << "Type Error when setting 'routineName': " << e.what() << std::endl;
+                        }
+                    } else{
+                        std::cerr << "Warning: 'routineName' is not a string. Skipping SetRoutineName." << std::endl;
+                    }
                 }
                 if (modelJson.contains("moveSpeed")){
-                    moveFloor->SetMoveSpeed(modelJson["moveSpeed"]);
+                    if (modelJson["moveSpeed"].is_number()){
+                        try{
+                            moveFloor->SetMoveSpeed(modelJson["moveSpeed"].get<float>());
+                        } catch (const nlohmann::json::type_error& e){
+                            std::cerr << "Type Error when setting 'moveSpeed': " << e.what() << std::endl;
+                        }
+                    } else{
+                        std::cerr << "Warning: 'moveSpeed' is not a number. Skipping SetMoveSpeed." << std::endl;
+                    }
                 }
                 moveFloor->InitializeRoutine();
             }
         }
+    } else{
+        std::cerr << "Warning: 'models' key is missing or not an array in JSON data." << std::endl;
     }
 
     // 全てのモデルを生成・登録後に、スイッチとドアの関連付けを行う
-    for(auto& [sw, doorIDs] : switchDoorAssociations){
-        for(uint32_t doorID : doorIDs){
+    for (auto& [sw, doorIDs] : switchDoorAssociations){
+        for (const std::string& doorID : doorIDs){
             // manager_ から対応するドアを検索
             std::vector<FieldObject_Door*> doors = GetObjectsOfType<FieldObject_Door>();
-            for(auto& door : doors){
-                if(door){
-                    if(door->GetFieldObjectID() == doorID){
-                        // スイッチにドアを追加し、ドア側でスイッチをセット
-                        sw->AddAssociatedDoor(door);
-                        door->SetSwitch(sw);
-                        // 1つのドアにつき1回で十分と仮定
-                        break;
-                    }
+            bool doorFound = false;
+            for (auto& door : doors){
+                if (door && door->GetGUID() == doorID){
+                    // スイッチにドアを追加し、ドア側でスイッチをセット
+                    sw->AddAssociatedDoor(door);
+                    door->SetSwitch(sw);
+                    // 1つのドアにつき1回で十分と仮定
+                    doorFound = true;
+                    break;
                 }
+            }
+            if (!doorFound){
+                std::cerr << "Warning: Door with GUID '" << doorID << "' not found." << std::endl;
             }
         }
     }
@@ -379,7 +469,7 @@ void Stage::AddModel(
     // ◆ドアの場合のみ、「初期Y」を覚えてもらう
     if(modelNameIndex == FIELDMODEL_DOOR){
         auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
-        if(doorObj){
+        if (doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
     } 

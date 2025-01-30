@@ -12,3 +12,5 @@ Vector3 MatrixToEulerAngles(const Matrix4x4& rotationMatrix);
 Vector3 TransformVector(const Vector3& vector, const Matrix4x4& matrix);
 
 float LengthSquared(const Vector3& v);
+
+std::string GenerateGUID();

@@ -1,8 +1,5 @@
 #include "FieldObject_ViewPoint.h"
 
-// static変数の初期化
-uint32_t FieldObject_ViewPoint::nextFieldObjectID_ = 1;
-
 ////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 ////////////////////////////////////////////////////////////////////////
@@ -18,8 +15,6 @@ FieldObject_ViewPoint::FieldObject_ViewPoint(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////////

@@ -43,6 +43,7 @@ void Egg::Initialize(){
         collider->AddSkipPushBackType(ObjectType::Enemy);
         collider->AddSkipPushBackType(ObjectType::Player);
     }
+    SetCollidable(false);
     isApplyGravity_ = false;
 
     // shadow

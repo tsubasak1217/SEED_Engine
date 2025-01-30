@@ -98,6 +98,10 @@ void BaseObject::EditCollider(){
     }
 }
 
+void BaseObject::SetCollidable(bool _collidable){
+    isHandOverColliders_ = _collidable;
+}
+
 // フレーム終了時の落下更新処理
 void BaseObject::EndFrameDropFlagUpdate(){
     // 落下フラグの更新
@@ -108,8 +112,8 @@ void BaseObject::EndFrameDropFlagUpdate(){
     // 終了時の落下フラグに応じた処理
     if(isDrop_ && isApplyGravity_){
         float downAccel = -Physics::kGravity * weight_ * ClockManager::DeltaTime();
-        dropSpeed_ += downAccel ;
-        velocity_.y = dropSpeed_ ;
+        dropSpeed_ += downAccel;
+        velocity_.y = dropSpeed_;
     } else{
         dropSpeed_ = 0.0f;
         velocity_.y = 0.0f;
@@ -157,7 +161,9 @@ void BaseObject::ResetCollider(){
 // コライダーをCollisionManagerに渡す
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::HandOverColliders(){
-
+    if(!isHandOverColliders_){
+        return;
+    }
     // キャラクターの基本コライダーを渡す
     for(auto& collider : colliders_){
         CollisionManager::AddCollider(collider.get());

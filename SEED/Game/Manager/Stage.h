@@ -67,17 +67,27 @@ public:
 
     FieldObject* GetSelectedObject()const{ return selectedObject_; }
     void SetSelectedObject(FieldObject* obj){ selectedObject_ = obj; }
-
+    // 指定されたGUIDのオブジェクトを取得
+    FieldObject* GetFieldObjectByGUID(const std::string& guid) const{
+        for (const auto& objPtr : fieldObjects_){
+            if (objPtr->GetGUID() == guid){
+                return objPtr.get();
+            }
+        }
+        return nullptr;
+    }
+    // 選択オブジェクトのGUIDを設定
+    void SetSelectedObjectGUID(const std::string& guid){ selectedObjectGUID_ = guid; }
+    // 選択オブジェクトのGUIDを取得
+    const std::string& GetSelectedObjectGUID() const{ return selectedObjectGUID_; }
     int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
-
     bool IsGoal()const{ 
         if(goalObject_){
             return goalObject_->isGoal_;
         }
         return false;
     }
-
     uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
@@ -95,6 +105,7 @@ private:
     int32_t stageNo_ = -1;
     uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
+    std::string selectedObjectGUID_;
 
     FieldObject* selectedObject_ = nullptr;
 

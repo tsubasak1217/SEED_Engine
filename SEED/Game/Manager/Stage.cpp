@@ -47,7 +47,7 @@ void Stage::Draw(){
     }
 
     // 敵の描画
-    enemyManager_->Draw();
+   enemyManager_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -238,7 +238,9 @@ void Stage::LoadFromJson(const std::string& filePath){
             // 新規追加されたオブジェクトを取得（最後に追加されたものを想定
             if(fieldObjects_.empty()) continue;
             FieldObject* newObj = fieldObjects_.back().get();
-
+            if (modelJson.contains("objectID")){
+                newObj->SetFieldObjectID(modelJson["objectID"]);
+            }
             // スイッチの場合、関連ドア情報を一時保存
             if(auto* sw = dynamic_cast<FieldObject_Switch*>(newObj)){
                 //json から associatedDoors を取得(ドアIDの配列)
@@ -379,7 +381,7 @@ void Stage::AddModel(
     // ◆ドアの場合のみ、「初期Y」を覚えてもらう
     if(modelNameIndex == FIELDMODEL_DOOR){
         auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
-        if(doorObj){
+        if (doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
     } 

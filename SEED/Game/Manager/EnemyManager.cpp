@@ -7,8 +7,6 @@ EnemyManager::EnemyManager(Player* player, uint32_t stageNo,RoutineManager& rout
     enemies_.clear();
 }
 
-
-
 void EnemyManager::Initialize(){}
 
 void EnemyManager::Update(){

@@ -26,6 +26,19 @@ void EnemyState_Chase::Update(){
     if(!enemy_->GetTargetPlayer()){ return; }
     Vector3 moveVec = MyMath::Normalize(enemy_->GetTargetPlayer()->GetWorldTranslate() - enemy_->GetWorldTranslate());
     enemy_->SetTranslate(enemy_->GetWorldTranslate() + moveVec * speed_ * ClockManager::DeltaTime());
+
+    float yaw = std::atan2(moveVec.x, moveVec.z);
+    float pitch = std::atan(moveVec.y);
+    float roll = 0.0f;
+
+    Vector3 targetEuler = Vector3(pitch, yaw, roll);
+
+    // 現在のEuler角との補間
+    Vector3 currentEuler = enemy_->GetWorldRotate();
+    Vector3 newEuler = MyMath::Lerp(currentEuler, targetEuler, 2.0f * ClockManager::DeltaTime());
+
+    enemy_->SetRotate(newEuler);
+
     ManageState();
 }
 

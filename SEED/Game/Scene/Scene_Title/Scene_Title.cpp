@@ -34,11 +34,11 @@ void Scene_Title::Initialize(){
     currentState_->Initialize();
 
     //===================== UI =====================//
-    titleLogo_ = std::make_unique<UI>("titleLogo");
-    titleLogo_->Initialize("Assets/checkerBoard.png");
+    titleLogo_ = std::make_unique<Sprite>("checkerBoard.png");
+    titleLogo_->translate = {780.f,360.f};
 
-    toNextButton_ = std::make_unique<UI>("toNextButton_");
-    toNextButton_->Initialize("Assets/monsterBall.png");
+    howToStartUI_ = std::make_unique<Sprite>("monsterBall.png");
+    howToStartUI_->translate = {640.f,680.f};
 
     //===================== PlayerModel =====================//
     playerModel_ = std::make_unique<Model>("dinosaur.gltf");
@@ -63,9 +63,6 @@ void Scene_Title::Finalize(){
     if(currentState_){
         currentState_->Finalize();
     }
-    //===================== UI =====================//
-    titleLogo_->Finalize();
-    toNextButton_->Finalize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,10 +76,6 @@ void Scene_Title::Update(){
         currentState_->Update();
     }
 
-    //===================== UI =====================//
-    titleLogo_->Update();
-    toNextButton_->Update();
-
     //===================== PlayerModel =====================//
     playerModel_->Update();
 }
@@ -94,9 +87,6 @@ void Scene_Title::Update(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Draw(){
-    //===================== UI =====================//
-    titleLogo_->Draw();
-    toNextButton_->Draw();
     //===================== state =====================//
     if(currentState_){
         currentState_->Draw();
@@ -116,9 +106,6 @@ void Scene_Title::BeginFrame(){
     if(currentState_){
         currentState_->BeginFrame();
     }
-    //===================== UI =====================//
-    titleLogo_->BeginFrame();
-    toNextButton_->BeginFrame();
     //===================== Json =====================//
 #ifdef _DEBUG
     ImGui::Begin("TitlePlayerModel");
@@ -137,9 +124,6 @@ void Scene_Title::BeginFrame(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::EndFrame(){
-    //===================== UI =====================//
-    titleLogo_->EndFrame();
-    toNextButton_->EndFrame();
     //===================== state =====================//
     if(currentState_){
         currentState_->EndFrame();

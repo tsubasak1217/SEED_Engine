@@ -112,10 +112,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\UI\EggTimerUI.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Star\FieldObject_Star.cpp" />
-    <ClCompile Include="Game\UI\State\EggUiState_Timer.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Enter.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.cpp" />
     <ClCompile Include="Game\Routine\RoutineManager.cpp" />
@@ -131,7 +131,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp" />
-    <ClCompile Include="Game\UI\UI.cpp" />
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp" />
     <ClCompile Include="Game\Manager\Stage.cpp" />
     <ClCompile Include="Game\Manager\StageManager.cpp" />
@@ -272,14 +271,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Out.cpp" />
-    <ClCompile Include="Game\UI\State\UiState_LerpColor.cpp" />
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
     <ClInclude Include="Game\Objects\FieldObject\Star\FieldObject_Star.h" />
-    <ClInclude Include="Game\UI\State\EggUiState_Timer.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Enter.h" />
     <ClInclude Include="Game\Objects\FieldObject\MoveFloor\FieldObject_MoveFloor.h" />
     <ClInclude Include="Game\Routine\RoutineManager.h" />
@@ -295,8 +293,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
-    <ClInclude Include="Game\UI\State\IUiState.h" />
-    <ClInclude Include="Game\UI\UI.h" />
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />
@@ -474,7 +470,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Out.h" />
-    <ClInclude Include="Game\UI\State\UiState_LerpColor.h" />
     <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
   </ItemGroup>
   <ItemGroup>

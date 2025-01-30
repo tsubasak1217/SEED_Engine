@@ -21,5 +21,9 @@ public:
     void HandOverColliders()override;
     void ManageState()override;
 private:
-    std::unique_ptr<UI> fadeInScreen_ = nullptr;
+    // フェード用
+    std::unique_ptr<Sprite> whiteScreen_ = nullptr;
+
+    float fadeTime_ = 0.6f;
+    float fadeTimer_ = 0.f;
 };

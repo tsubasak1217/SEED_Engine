@@ -18,12 +18,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game() {
+Scene_Game::Scene_Game(){
     Initialize();
     ChangeState(new GameState_Enter(this));
 };
 
-Scene_Game::~Scene_Game() {
+Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
 }
 
@@ -33,7 +33,7 @@ Scene_Game::~Scene_Game() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize() {
+void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
     // マネージャー初期化
@@ -53,12 +53,12 @@ void Scene_Game::Initialize() {
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ -191.6f,46.8f,-185.8f });
-    SEED::GetCamera()->SetRotation({ 0.15173f,0.7807f,0.0f });
+    SEED::GetCamera()->SetTranslation({-191.6f,46.8f,-185.8f});
+    SEED::GetCamera()->SetRotation({0.15173f,0.7807f,0.0f});
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
-    CameraManager::AddCamera("follow", followCamera_.get());
+    CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
 
     ////////////////////////////////////////////////////
@@ -67,24 +67,24 @@ void Scene_Game::Initialize() {
 
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight_->direction_ = MyMath::Normalize({ 2.0f,1.0f,0.5f });
+    directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
     directionalLight_->intensity = 1.0f;
 
     pointLights_.clear();
-    for (int i = 0; i < 32; i++) {
+    for(int i = 0; i < 32; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
-        pointLights_[i]->color_ = { 1.0f,1.0f,1.0f,1.0f };
-        pointLights_[i]->position = { MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,15.0f),MyFunc::Random(-100.0f,100.0f) };
+        pointLights_[i]->color_ = {1.0f,1.0f,1.0f,1.0f};
+        pointLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,15.0f),MyFunc::Random(-100.0f,100.0f)};
         pointLights_[i]->intensity = 1.0f;
     }
 
     spotLights_.clear();
-    for (int i = 0; i < 0; i++) {
+    for(int i = 0; i < 0; i++){
         spotLights_.push_back(std::make_unique<SpotLight>());
-        spotLights_[i]->color_ = { 1.0f,1.0f,1.0f,1.0f };
-        spotLights_[i]->position = { MyFunc::Random(-100.0f,100.0f),15.0f,MyFunc::Random(-100.0f,100.0f) };
+        spotLights_[i]->color_ = {1.0f,1.0f,1.0f,1.0f};
+        spotLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),15.0f,MyFunc::Random(-100.0f,100.0f)};
         spotLights_[i]->intensity = 1.0f;
-        spotLights_[i]->direction = MyFunc::RandomDirection({ 0.0f,-1.0f,0.0f }, 3.14f * 0.5f);
+        spotLights_[i]->direction = MyFunc::RandomDirection({0.0f,-1.0f,0.0f},3.14f * 0.5f);
     }
 
     ////////////////////////////////////////////////////
@@ -146,9 +146,9 @@ void Scene_Game::Initialize() {
     // DoorProximityChecker の 初期化
     doorProximityChecker_ =
         std::make_unique<DoorProximityChecker>(
-            eventManager_,
-            *stageManager_.get(),
-            *player_.get()
+        eventManager_,
+        *stageManager_.get(),
+        *player_.get()
         );
 
     // EnemyManager の 初期化
@@ -177,7 +177,7 @@ void Scene_Game::Initialize() {
     ClockManager::BeginFrame();
 }
 
-void Scene_Game::Finalize() {}
+void Scene_Game::Finalize(){}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -185,7 +185,7 @@ void Scene_Game::Finalize() {}
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update() {
+void Scene_Game::Update(){
 
     /*========================== ImGui =============================*/
 
@@ -200,11 +200,11 @@ void Scene_Game::Update() {
 
     /*======================= 各状態固有の更新 ========================*/
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Update();
     }
 
-    if (currentEventState_) {
+    if(currentEventState_){
         currentEventState_->Update();
         player_->SetIsMovable(false);
     } else{
@@ -214,7 +214,7 @@ void Scene_Game::Update() {
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     // ポーズ中は以下を更新しない
-    if (isPaused_) { return; }
+    if(isPaused_){ return; }
 
     ParticleManager::Update();
 
@@ -222,7 +222,7 @@ void Scene_Game::Update() {
     stageManager_->Update();
 
     player_->Update();
-
+    
     eggManager_->Update();
     playerCorpseManager_->Update();
 
@@ -249,15 +249,15 @@ void Scene_Game::Update() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw() {
+void Scene_Game::Draw(){
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Draw();
     }
 
-    if (currentEventState_) {
+    if(currentEventState_){
         currentEventState_->Draw();
     }
 
@@ -270,23 +270,23 @@ void Scene_Game::Draw() {
     // ライトの情報を送る
     directionalLight_->SendData();
 
-    for (int i = 0; i < pointLights_.size(); i++) {
+    for(int i = 0; i < pointLights_.size(); i++){
         pointLights_[i]->SendData();
         //SEED::DrawLight(pointLights_[i].get());
     }
 
-    for (int i = 0; i < spotLights_.size(); i++) {
+    for(int i = 0; i < spotLights_.size(); i++){
 
     #ifdef _DEBUG
         ImGui::Begin("spotLight");
-        ImGui::DragFloat3("position", &spotLights_[i]->position.x, 0.1f);
-        ImGui::DragFloat3("direction", &spotLights_[i]->direction.x, 0.01f);
-        ImGui::DragFloat("distance", &spotLights_[i]->distance, 0.1f);
-        ImGui::ColorEdit4("color", &spotLights_[i]->color_.x);
-        ImGui::DragFloat("intensity", &spotLights_[i]->intensity, 0.1f);
-        ImGui::DragFloat("decay", &spotLights_[i]->decay, 0.1f);
-        ImGui::SliderFloat("cosAngle", &spotLights_[i]->cosAngle, 0.0f, 1.0f);
-        ImGui::SliderFloat("cosFallofStart", &spotLights_[i]->cosFallofStart, 0.0f, 1.0f);
+        ImGui::DragFloat3("position",&spotLights_[i]->position.x,0.1f);
+        ImGui::DragFloat3("direction",&spotLights_[i]->direction.x,0.01f);
+        ImGui::DragFloat("distance",&spotLights_[i]->distance,0.1f);
+        ImGui::ColorEdit4("color",&spotLights_[i]->color_.x);
+        ImGui::DragFloat("intensity",&spotLights_[i]->intensity,0.1f);
+        ImGui::DragFloat("decay",&spotLights_[i]->decay,0.1f);
+        ImGui::SliderFloat("cosAngle",&spotLights_[i]->cosAngle,0.0f,1.0f);
+        ImGui::SliderFloat("cosFallofStart",&spotLights_[i]->cosFallofStart,0.0f,1.0f);
         ImGui::End();
     #endif // _DEBUG
 
@@ -329,7 +329,7 @@ void Scene_Game::Draw() {
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame() {
+void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
     player_->BeginFrame();
     playerCorpseManager_->BeginFrame();
@@ -337,7 +337,7 @@ void Scene_Game::BeginFrame() {
     eggManager_->BeginFrame();
     stageManager_->BeginFrame();
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->BeginFrame();
     }
 }
@@ -348,15 +348,15 @@ void Scene_Game::BeginFrame() {
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame() {
+void Scene_Game::EndFrame(){
 
     // 現在のステートがあればフレーム終了処理を行う
-    if (currentState_) {
+    if(currentState_){
         currentState_->EndFrame();
     }
 
     // もしstateが変わっていたら以下は処理しない
-    if (isStateChanged_) { return; }
+    if(isStateChanged_){ return; }
 
     // 各オブジェクトのフレーム終了処理
     player_->EndFrame();
@@ -372,9 +372,9 @@ void Scene_Game::EndFrame() {
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::HandOverColliders() {
+void Scene_Game::HandOverColliders(){
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->HandOverColliders();
     }
 

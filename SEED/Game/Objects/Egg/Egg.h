@@ -2,6 +2,7 @@
 
 
 #include "../Base/BaseCharacter.h"
+#include "Shadow/Shadow.h"
 
 #include "Vector3.h"
 
@@ -23,6 +24,7 @@ public:
 
     void Initialize()override;
     void Update()override;
+    void Draw()override;
 
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 public:// ステートから呼び出す関数
@@ -32,6 +34,8 @@ private:
     EggManager* eggManager_ = nullptr;
     // 追従先
     BaseObject* player_ = nullptr;
+
+    std::unique_ptr<Shadow> shadow_ = nullptr;
 
     // 速度ベクトル (thrown された時に使用)
     Vector3 velocity_;

@@ -15,6 +15,7 @@
 // Manager
 #include "../adapter/json/JsonCoordinator.h"
 #include "Manager/EggManager.h"
+#include "StageManager.h"
 
 Egg::Egg(BaseObject* _player)
     :BaseCharacter(),
@@ -43,11 +44,25 @@ void Egg::Initialize(){
         collider->AddSkipPushBackType(ObjectType::Player);
     }
     isApplyGravity_ = false;
+
+    // shadow
+    shadow_ = std::make_unique<Shadow>(this);
+    shadow_->Initialize();
 }
 
 void Egg::Update(){
     BaseCharacter::Update();
     EditCollider();
+
+    //! TODO : Stage の 取得方法
+    shadow_->Update(StageManager::GetCurrentStage());
+
+}
+
+void Egg::Draw(){
+    shadow_->Draw();
+
+    BaseCharacter::Draw();
 }
 
 void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){

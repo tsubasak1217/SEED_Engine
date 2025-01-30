@@ -11,6 +11,7 @@
 // object
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
+#include "Shadow/Shadow.h"
 // state
 class IPlayerState;
 // manager
@@ -74,6 +75,8 @@ private: // フォローカメラ、ターゲット用
     EnemyManager* enemyManager_ = nullptr;
     // 捕食可能範囲 兼 捕食可能オブジェクトの検索,管理
     std::unique_ptr<PredationRange> predationRange_ = nullptr;
+
+    std::unique_ptr<Shadow> shadow_ = nullptr;
 
     // 最後に地面についていた位置
     Vector3 lastPosOnGround_;

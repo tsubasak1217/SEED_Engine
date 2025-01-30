@@ -17,6 +17,14 @@ BaseObject::BaseObject(){
     Initialize();
 }
 
+BaseObject::BaseObject(const std::string& modelFilePath){
+    objectID_ = nextID_++;
+    className_ = "BaseObject";
+    name_ = "BaseObject";
+    model_ = std::make_unique<Model>(modelFilePath);
+    model_->UpdateMatrix();
+}
+
 BaseObject::~BaseObject(){}
 
 
@@ -158,6 +166,10 @@ void BaseObject::ResetCollider(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::HandOverColliders(){
 
+    // 衝突情報の保存・初期化
+    preIsCollide_ = isCollide_;
+    isCollide_ = false;
+
     // キャラクターの基本コライダーを渡す
     for(auto& collider : colliders_){
         CollisionManager::AddCollider(collider.get());
@@ -169,6 +181,7 @@ void BaseObject::HandOverColliders(){
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
 void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
+    isCollide_ = true;
     other;
     objectType;
 }
@@ -179,6 +192,15 @@ void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
 void BaseObject::DiscardPreCollider(){
     for(auto& collider : colliders_){
         collider->DiscardPreCollider();
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// コライダーの判定スキップリストの追加
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::AddSkipPushBackType(ObjectType skipType){
+    for(auto& collider : colliders_){
+        collider->AddSkipPushBackType(skipType);
     }
 }
 
@@ -196,6 +218,15 @@ void BaseObject::LoadColliders(ObjectType objectType){
     }
 }
 
+void BaseObject::LoadColliders(const std::string& fileName, ObjectType objectType){
+    // コライダーの読み込み
+    ColliderEditor::LoadColliders(fileName, this, &colliders_);
+    // オブジェクトの属性を取得
+    for(auto& collider : colliders_){
+        collider->SetObjectType(objectType);
+    }
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -204,6 +235,11 @@ void BaseObject::LoadColliders(ObjectType objectType){
 void BaseObject::InitColliders(ObjectType objectType){
     colliders_.clear();
     LoadColliders(objectType);
+}
+
+void BaseObject::InitColliders(const std::string& fileName, ObjectType objectType){
+    colliders_.clear();
+    LoadColliders(fileName, objectType);
 }
 
 

@@ -15,6 +15,7 @@
 class BaseObject{
 public:
     BaseObject();
+    BaseObject(const std::string& modelFilePath);
     virtual ~BaseObject();
     virtual void Initialize();
     virtual void Update();
@@ -98,10 +99,15 @@ public:// コライダー関連
     virtual void HandOverColliders();
     virtual void OnCollision(const BaseObject* other,ObjectType objectType);
     std::vector<std::unique_ptr<Collider>>& GetColliders(){ return colliders_; }
+    void InitColliders(const std::string& fileName, ObjectType objectType);
     virtual void DiscardPreCollider();
+    virtual void AddSkipPushBackType(ObjectType skipType);
+    bool GetIsCollide()const{ return isCollide_; }
+    bool GetIsCollideEnter()const{ return isCollide_ && !preIsCollide_; }
 
 protected:
     void LoadColliders(ObjectType objectType);
+    void LoadColliders(const std::string& fileName, ObjectType objectType);
     virtual void InitColliders(ObjectType objectType);
     void EraseCheckColliders();
 
@@ -114,6 +120,8 @@ protected:
 
 protected:// 衝突判定用
     std::vector<std::unique_ptr<Collider>> colliders_;
+    bool isCollide_ = false;
+    bool preIsCollide_ = false;
 
 protected:// 物理
     bool isApplyGravity_ = true;

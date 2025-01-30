@@ -153,7 +153,6 @@ void Enemy::RegisterDataToJson(const std::string& group, int index){
 
 
     // jsonを読み込んだ時に、ルーチン名に対応するポイントを取得するために登録
-    
 }
 
 void Enemy::LoadDataFromJson(const std::string& group, int index){

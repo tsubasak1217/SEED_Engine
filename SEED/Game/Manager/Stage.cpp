@@ -23,6 +23,9 @@ Stage::Stage(ISubject& subject, uint32_t stageNo)
     routineManager_.LoadRoutines(stageNo);
 
     enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
+
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -36,6 +39,9 @@ void Stage::Update(){
 
     // 敵の更新
     enemyManager_->Update();
+
+    // プレイヤーの死体の更新
+    playerCorpseManager_->Update();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -48,6 +54,9 @@ void Stage::Draw(){
 
     // 敵の描画
    enemyManager_->Draw();
+
+   // プレイヤーの死体の描画
+   playerCorpseManager_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -57,6 +66,8 @@ void Stage::BeginFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->BeginFrame();
     }
+
+    playerCorpseManager_->BeginFrame();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -81,6 +92,9 @@ void Stage::EndFrame(){
 
     // 敵のフレーム終了処理
     enemyManager_->EndFrame();
+
+    // プレイヤーの死体のフレーム終了処理
+    playerCorpseManager_->EndFrame();
 }
 
 ////////////////////////////////////////////////////////////////////////

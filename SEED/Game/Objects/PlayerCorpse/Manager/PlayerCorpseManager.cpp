@@ -27,6 +27,12 @@ void PlayerCorpseManager::Draw(){
     }
 }
 
+void PlayerCorpseManager::HandOverColliders(){
+    for (auto& corpse : playerCorpses_){
+        corpse->HandOverColliders();
+    }
+}
+
 void PlayerCorpseManager::BeginFrame(){
     for(auto& corpse : playerCorpses_){
         corpse->BeginFrame();

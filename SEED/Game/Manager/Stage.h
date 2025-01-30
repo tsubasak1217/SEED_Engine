@@ -8,6 +8,7 @@
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "../Routine/RoutineManager.h"
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
 #include "../Game/Manager/EnemyManager.h"
 #include "../Game/Editor/EnemyEditor.h" 
@@ -87,6 +88,8 @@ public:
     EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
     // RoutineManagerのゲッターを追加
     RoutineManager& GetRoutineManager(){ return routineManager_; }
+    // PlayerCorpseManagerのゲッターを追加
+    PlayerCorpseManager* GetPlayerCorpseManager(){ return playerCorpseManager_.get(); }
 
 private:
     int32_t stageNo_ = -1;
@@ -103,6 +106,8 @@ private:
 
     //playerのポインタ
     Player* pPlayer_ = nullptr;
+    //playerの死体
+    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_;
 
     //enemy
     std::unique_ptr<EnemyManager> enemyManager_;

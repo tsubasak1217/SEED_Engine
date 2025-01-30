@@ -1,7 +1,5 @@
 #include "FieldObject_GrassSoil.h"
 
-uint32_t FieldObject_GrassSoil::nextFieldObjectID_ = 1;
-
 /////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 /////////////////////////////////////////////////////////////////////
@@ -18,8 +16,6 @@ FieldObject_GrassSoil::FieldObject_GrassSoil(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_GrassSoil::FieldObject_GrassSoil(const std::string& modelName){
@@ -35,8 +31,6 @@ FieldObject_GrassSoil::FieldObject_GrassSoil(const std::string& modelName){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 

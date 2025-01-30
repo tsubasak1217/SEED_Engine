@@ -15,5 +15,4 @@ public:
 
 public:
     std::unique_ptr<PointLight> light_;
-    static uint32_t nextFieldObjectID_;
 };

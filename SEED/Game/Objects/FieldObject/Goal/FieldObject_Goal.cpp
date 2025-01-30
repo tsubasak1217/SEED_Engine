@@ -2,8 +2,6 @@
 #include "StageManager.h"
 #include "SEED.h"
 
-uint32_t FieldObject_Goal::nextFieldObjectID_ = 1;
-
 ////////////////////////////////////////////////////////////////////////////////////////
 //  コンストラクタ
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -22,8 +20,6 @@ FieldObject_Goal::FieldObject_Goal(){
     goalUI_->anchorPoint = Vector2(0.5f, 0.5f);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
@@ -39,8 +35,6 @@ FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
     goalUI_->anchorPoint = Vector2(0.5f, 0.5f);
     // 全般の初期化
     FieldObject::Initialize();
-
-    fieldObjectID_ = nextFieldObjectID_++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

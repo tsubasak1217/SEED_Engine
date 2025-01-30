@@ -182,14 +182,14 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                 {"rotation", { modelObj->GetModel()->GetWorldRotate().x,
                                modelObj->GetModel()->GetWorldRotate().y,
                                modelObj->GetModel()->GetWorldRotate().z }},
-                {"fieldObjectID", modelObj->GetFieldObjectID() }
+                {"fieldObjectID", modelObj->GetGUID() }
             };
 
             // スイッチの場合、関連付けられたドアのIDを保存
             if(auto* sw = dynamic_cast<FieldObject_Switch*>(modelObj)){
-                std::vector<int> doorIDs;
+                std::vector<std::string> doorIDs;
                 for(auto* door : sw->GetAssociatedDoors()){
-                    doorIDs.push_back(door->GetFieldObjectID());
+                    doorIDs.push_back(door->GetGUID());
                 }
                 modelJson["associatedDoors"] = doorIDs;
             }
@@ -348,43 +348,43 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 ////////////////////////////////////////////////////////////////////////////////////////
 //  各fieldObjectのID再割り当て
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects){
-    switch(removedType){
-    case FIELDMODELNAME::FIELDMODEL_GRASSSOIL:
-        ReassignIDsForType<FieldObject_GrassSoil>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_SOIL:
-        ReassignIDsForType<FieldObject_Soil>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_STAR:
-        ReassignIDsForType<FieldObject_Star>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_DOOR:
-        ReassignIDsForType<FieldObject_Door>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_START:
-        ReassignIDsForType<FieldObject_Start>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_GOAL:
-        ReassignIDsForType<FieldObject_Goal>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_SWITCH:
-        ReassignIDsForType<FieldObject_Switch>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
-        ReassignIDsForType<FieldObject_ViewPoint>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_MOVEFLOOR:
-        ReassignIDsForType<FieldObject_MoveFloor>(objects);
-        break;
-    case FIELDMODELNAME::FIELDMODEL_EVENTAREA:
-        ReassignIDsForType<FieldObject_EventArea>(objects);
-        break;
-    default:
-        // 必要に応じてデフォルト処理を追加
-        break;
-    }
-}
+//void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects){
+//    switch(removedType){
+//    case FIELDMODELNAME::FIELDMODEL_GRASSSOIL:
+//        ReassignIDsForType<FieldObject_GrassSoil>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_SOIL:
+//        ReassignIDsForType<FieldObject_Soil>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_STAR:
+//        ReassignIDsForType<FieldObject_Star>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_DOOR:
+//        ReassignIDsForType<FieldObject_Door>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_START:
+//        ReassignIDsForType<FieldObject_Start>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_GOAL:
+//        ReassignIDsForType<FieldObject_Goal>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_SWITCH:
+//        ReassignIDsForType<FieldObject_Switch>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
+//        ReassignIDsForType<FieldObject_ViewPoint>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_MOVEFLOOR:
+//        ReassignIDsForType<FieldObject_MoveFloor>(objects);
+//        break;
+//    case FIELDMODELNAME::FIELDMODEL_EVENTAREA:
+//        ReassignIDsForType<FieldObject_EventArea>(objects);
+//        break;
+//    default:
+//        // 必要に応じてデフォルト処理を追加
+//        break;
+//    }
+//}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  imguiの表示
@@ -532,10 +532,12 @@ void FieldEditor::ShowImGui(){
         for(int idx = 0; idx < (int)objects.size(); idx++){
             auto* mfObj = dynamic_cast<FieldObject*>(objects[idx].get());
             if(!mfObj) continue;
-            int id = mfObj->GetFieldObjectID();
+            std::string id = mfObj->GetGUID();
 
             // リスト表示用ラベル
-            std::string label = mfObj->GetName() + std::to_string(id);
+            std::string label = mfObj->GetName() + " " +
+                (id.length() >= 4 ? id.substr(0, 4) : id);
+
             bool isSelected = (selectedObjIndex == idx);
 
             // 選択されている場合は色を変える
@@ -672,8 +674,6 @@ void FieldEditor::ShowImGui(){
                     }
                 }
 
-
-
                 // イベントエリアの場合、イベント内容を設定
                 if (auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)) {
                     ImGui::Separator();
@@ -720,8 +720,6 @@ void FieldEditor::ShowImGui(){
 
                 ImGui::Separator();
 
-
-
                 // [D] オブジェクト削除
                 if(ImGui::Button("Remove Selected Model")||Input::IsTriggerKey(DIK_ESCAPE)){
                     if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
@@ -731,8 +729,6 @@ void FieldEditor::ShowImGui(){
                         std::vector<FieldObject_Switch*> allSwitches =
                             manager_.GetStages()[edittingStageIndex]->GetObjectsOfType<FieldObject_Switch>();
 
-                        uint32_t removedType = objToRemove->GetFieldObjectType();
-
                         // ドア型なら、関連スイッチから削除
                         if(auto* door = dynamic_cast<FieldObject_Door*>(objToRemove)){
                             RemoveDoorFromAllSwitches(door, allSwitches);
@@ -740,9 +736,6 @@ void FieldEditor::ShowImGui(){
 
                         // Manager 側でオブジェクト削除
                         manager_.GetStages()[edittingStageIndex]->RemoveFieldObject(objToRemove);
-
-                        // ID 再割り当て
-                        ReassignIDsByType(removedType, objects);
 
                         selectedObjIndex = -1;
                     }

@@ -28,6 +28,4 @@ private:
 
 public:
     bool isOnceEvent_ = false;
-    static uint32_t nextFieldObjectID_;
-
 };

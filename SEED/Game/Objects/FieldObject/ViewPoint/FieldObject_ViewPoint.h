@@ -12,6 +12,4 @@ public:
     void Update()override;
     void Draw()override;
 
-public:
-    static uint32_t nextFieldObjectID_;
 };

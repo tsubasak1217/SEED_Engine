@@ -19,7 +19,6 @@ public:
     void ShowImGui()override{}
 
 public:
-    static uint32_t nextFieldObjectID_;
     bool isGoal_ = false;
 private:
     std::unique_ptr<Sprite> goalUI_;

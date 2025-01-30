@@ -3210,7 +3210,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.848454713821411,
+                1.40297532081604,
                 0.0
             ],
             "scale": [
@@ -3724,7 +3724,7 @@
             "fieldObjectID": 518,
             "name": "GrassSoil",
             "position": [
-                10.0,
+                5.0,
                 10.0,
                 -225.0
             ],
@@ -3744,26 +3744,6 @@
             "fieldObjectID": 519,
             "name": "GrassSoil",
             "position": [
-                5.0,
-                10.0,
-                -225.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": 520,
-            "name": "GrassSoil",
-            "position": [
                 10.0,
                 10.0,
                 -220.0
@@ -3781,10 +3761,30 @@
             "type": 0
         },
         {
-            "fieldObjectID": 521,
+            "fieldObjectID": 520,
             "name": "GrassSoil",
             "position": [
                 5.0,
+                10.0,
+                -215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": 521,
+            "name": "GrassSoil",
+            "position": [
+                10.0,
                 10.0,
                 -215.0
             ],
@@ -3805,8 +3805,8 @@
             "name": "GrassSoil",
             "position": [
                 10.0,
-                10.0,
-                -215.0
+                5.0,
+                -230.0
             ],
             "rotation": [
                 -0.0,
@@ -3824,7 +3824,7 @@
             "fieldObjectID": 523,
             "name": "GrassSoil",
             "position": [
-                10.0,
+                5.0,
                 5.0,
                 -230.0
             ],
@@ -3844,9 +3844,9 @@
             "fieldObjectID": 524,
             "name": "GrassSoil",
             "position": [
+                10.0,
                 5.0,
-                5.0,
-                -230.0
+                -235.0
             ],
             "rotation": [
                 -0.0,
@@ -3864,7 +3864,7 @@
             "fieldObjectID": 525,
             "name": "GrassSoil",
             "position": [
-                10.0,
+                5.0,
                 5.0,
                 -235.0
             ],
@@ -3886,7 +3886,7 @@
             "position": [
                 5.0,
                 5.0,
-                -235.0
+                -240.0
             ],
             "rotation": [
                 -0.0,
@@ -3904,7 +3904,7 @@
             "fieldObjectID": 527,
             "name": "GrassSoil",
             "position": [
-                5.0,
+                0.0,
                 5.0,
                 -240.0
             ],
@@ -3926,7 +3926,7 @@
             "position": [
                 0.0,
                 5.0,
-                -240.0
+                -245.0
             ],
             "rotation": [
                 -0.0,
@@ -3944,7 +3944,7 @@
             "fieldObjectID": 529,
             "name": "GrassSoil",
             "position": [
-                0.0,
+                5.0,
                 5.0,
                 -245.0
             ],
@@ -3964,9 +3964,9 @@
             "fieldObjectID": 530,
             "name": "GrassSoil",
             "position": [
+                0.0,
                 5.0,
-                5.0,
-                -245.0
+                -250.0
             ],
             "rotation": [
                 -0.0,
@@ -3984,7 +3984,7 @@
             "fieldObjectID": 531,
             "name": "GrassSoil",
             "position": [
-                0.0,
+                -5.0,
                 5.0,
                 -250.0
             ],
@@ -4006,7 +4006,7 @@
             "position": [
                 -5.0,
                 5.0,
-                -250.0
+                -255.0
             ],
             "rotation": [
                 -0.0,
@@ -4024,7 +4024,7 @@
             "fieldObjectID": 533,
             "name": "GrassSoil",
             "position": [
-                -5.0,
+                0.0,
                 5.0,
                 -255.0
             ],
@@ -4044,9 +4044,9 @@
             "fieldObjectID": 534,
             "name": "GrassSoil",
             "position": [
-                0.0,
                 5.0,
-                -255.0
+                5.0,
+                -250.0
             ],
             "rotation": [
                 -0.0,
@@ -4066,26 +4066,6 @@
             "position": [
                 5.0,
                 5.0,
-                -250.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": 536,
-            "name": "GrassSoil",
-            "position": [
-                5.0,
-                5.0,
                 -255.0
             ],
             "rotation": [
@@ -4101,7 +4081,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 537,
+            "fieldObjectID": 536,
             "name": "GrassSoil",
             "position": [
                 -5.0,
@@ -4121,7 +4101,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 538,
+            "fieldObjectID": 537,
             "name": "GrassSoil",
             "position": [
                 10.0,
@@ -4401,7 +4381,7 @@
             "type": 1
         },
         {
-            "fieldObjectID": 539,
+            "fieldObjectID": 538,
             "name": "GrassSoil",
             "position": [
                 10.0,
@@ -4421,7 +4401,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 540,
+            "fieldObjectID": 539,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4441,7 +4421,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 541,
+            "fieldObjectID": 540,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4461,7 +4441,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 542,
+            "fieldObjectID": 541,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4481,7 +4461,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 543,
+            "fieldObjectID": 542,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4501,7 +4481,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 544,
+            "fieldObjectID": 543,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4581,7 +4561,7 @@
             "type": 1
         },
         {
-            "fieldObjectID": 545,
+            "fieldObjectID": 544,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4601,7 +4581,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 546,
+            "fieldObjectID": 545,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4621,7 +4601,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 547,
+            "fieldObjectID": 546,
             "name": "GrassSoil",
             "position": [
                 10.0,
@@ -4641,7 +4621,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 548,
+            "fieldObjectID": 547,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4661,7 +4641,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 549,
+            "fieldObjectID": 548,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4681,7 +4661,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 550,
+            "fieldObjectID": 549,
             "name": "GrassSoil",
             "position": [
                 15.0,
@@ -4701,7 +4681,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 551,
+            "fieldObjectID": 550,
             "name": "GrassSoil",
             "position": [
                 20.0,
@@ -4721,7 +4701,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 552,
+            "fieldObjectID": 551,
             "name": "GrassSoil",
             "position": [
                 20.0,
@@ -4750,7 +4730,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.848454713821411,
+                1.40297532081604,
                 0.0
             ],
             "scale": [
@@ -4761,7 +4741,7 @@
             "type": 2
         },
         {
-            "fieldObjectID": 553,
+            "fieldObjectID": 552,
             "name": "GrassSoil",
             "position": [
                 0.0,
@@ -4781,7 +4761,7 @@
             "type": 0
         },
         {
-            "fieldObjectID": 554,
+            "fieldObjectID": 553,
             "name": "GrassSoil",
             "position": [
                 5.0,
@@ -4810,19 +4790,19 @@
             ],
             "rotation": [
                 -0.0,
-                -2.657780885696411,
+                1.59358811378479,
                 0.0
             ],
             "scale": [
-                2.500000238418579,
                 2.5,
-                2.500000238418579
+                2.5,
+                2.5
             ],
             "type": 2
         },
         {
             "eventFunctionKey": "Tutorial_CollictStar",
-            "fieldObjectID": 6,
+            "fieldObjectID": 4,
             "isOnceEvent": true,
             "name": "EventArea",
             "position": [
@@ -4844,7 +4824,7 @@
         },
         {
             "eventFunctionKey": "Tutorial_EatEnemy",
-            "fieldObjectID": 7,
+            "fieldObjectID": 5,
             "isOnceEvent": true,
             "name": "EventArea",
             "position": [
@@ -4866,7 +4846,7 @@
         },
         {
             "associatedDoors": [
-                6
+                3
             ],
             "fieldObjectID": 4,
             "name": "switch",
@@ -4888,12 +4868,92 @@
             "type": 6
         },
         {
-            "fieldObjectID": 6,
+            "fieldObjectID": 554,
+            "name": "GrassSoil",
+            "position": [
+                10.0,
+                10.0,
+                -225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": 1,
             "name": "door",
             "position": [
                 10.0,
+                15.0,
+                -220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "fieldObjectID": 2,
+            "name": "door",
+            "position": [
                 5.0,
-                -250.0
+                16.125722885131836,
+                -225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "fieldObjectID": 555,
+            "name": "GrassSoil",
+            "position": [
+                515.0,
+                0.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": 3,
+            "name": "door",
+            "position": [
+                5.0,
+                10.0,
+                -230.0
             ],
             "rotation": [
                 -0.0,

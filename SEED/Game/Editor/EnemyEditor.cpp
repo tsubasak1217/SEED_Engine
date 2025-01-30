@@ -325,6 +325,5 @@ void EnemyEditor::AddRoutinePointByMouse(){
             std::cerr << "Failed to retrieve routine points for: " << selectedRoutineName << std::endl;
         }
     }
-   
 }
 

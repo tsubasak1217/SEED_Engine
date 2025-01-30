@@ -381,7 +381,7 @@ void Stage::AddModel(
     // ◆ドアの場合のみ、「初期Y」を覚えてもらう
     if(modelNameIndex == FIELDMODEL_DOOR){
         auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
-        if(doorObj){
+        if (doorObj){
             doorObj->SetClosedPosY(translate.y);
         }
     } 

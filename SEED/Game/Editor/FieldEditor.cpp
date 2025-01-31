@@ -845,7 +845,7 @@ void FieldEditor::AddEnemyByMouse(){
             // 新規敵を追加
             const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
            std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, enemyManager->GetPlayer(), newEnemyName);
-            newEnemy->SetPosition(putPos);
+            newEnemy->SetTranslate(putPos);
             enemyManager->AddEnemy(std::move(newEnemy));
         }
         isPlacing = false;

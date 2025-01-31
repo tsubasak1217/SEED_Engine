@@ -463,9 +463,6 @@
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_Jump.cpp">
       <Filter>Game\Objects\Player\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Base\BaseObject.cpp">
-      <Filter>Game\Objects\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp">
       <Filter>Game\Objects\Base</Filter>
     </ClCompile>
@@ -751,6 +748,9 @@
     <ClCompile Include="Game\UI\EggTimerUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\BaseObject.cpp">
+      <Filter>Game\Objects\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1018,7 +1018,6 @@
       <Filter>Game\Editor</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
-    <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Attack.h" />
@@ -1365,6 +1364,9 @@
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
     <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />
+    <ClInclude Include="Game\Objects\Base\BaseObject.h">
+      <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -108,7 +108,7 @@ void EnemyEditor::ShowImGui(){
 
             // Position調整
             if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
-                enemy->SetPosition(pos);
+                enemy->SetTranslate(pos);
             }
 
             ImGui::Separator();

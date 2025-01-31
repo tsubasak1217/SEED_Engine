@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\UI\EggTimerUI.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\PlayerInput\PlayerInput.cpp" />
@@ -165,7 +166,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Manager\EnemyManager.cpp" />
     <ClCompile Include="Game\Editor\FieldEditor.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
-    <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
     <ClCompile Include="Game\Objects\Egg\Egg.cpp" />
     <ClCompile Include="Game\Objects\Egg\Manager\EggManager.cpp" />
@@ -274,6 +274,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
@@ -332,7 +333,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Editor\FieldEditor.h" />
     <ClInclude Include="Game\Objects\Base\BaseCharacter.h" />
-    <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\Base\ICharacterState.h" />
     <ClInclude Include="Game\Objects\Egg\Egg.h" />
     <ClInclude Include="Game\Objects\Egg\Manager\EggManager.h" />

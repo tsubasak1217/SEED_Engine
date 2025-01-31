@@ -113,7 +113,9 @@ void GameState_Goal::RotateYGoalForNextStage(){
         return;
     }
 
-    pGoal_->SetRotateY(pGoal_->GetWorldRotate().y + goalRotateSpeedBySecond_);
+    pGoal_->SetRotateY(pGoal_->GetWorldRotate().y +
+                       goalRotateSpeedBySecond_ *
+                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
@@ -145,7 +147,9 @@ void GameState_Goal::RotateXGoalForNextStage(){
         return;
     }
 
-    pGoal_->SetRotateX(pGoal_->GetWorldRotate().x + goalRotateSpeedBySecond_);
+    pGoal_->SetRotateX(pGoal_->GetWorldRotate().x +
+                       goalRotateSpeedBySecond_ *
+                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
 }
 
 void GameState_Goal::GoalAnimation(){

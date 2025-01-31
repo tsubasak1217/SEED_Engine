@@ -53,7 +53,7 @@ private:
     Vector3 goalPosition_;
     Vector3 nextStartPosition_;
     // goal回転関係
-    float goalRotateSpeed_ = 0.3f;
+    float goalRotateSpeed_ = 0.7f;
     float goalRotateSpeedBySecond_ = 0.0f;
 
     // 卵を投げる関係

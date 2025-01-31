@@ -1,9 +1,11 @@
 #include <GameState_Play.h>
-#include <Scene_Game.h>
+
 #include "StageManager.h"
+#include <Scene_Game.h>
 
 // 遷移可能なステートのインクルード
 #include "GameState_Pause.h"
+#include "GameState_Goal.h"
 
 // lib
 #include "../PlayerInput/PlayerInput.h"
@@ -129,5 +131,17 @@ void GameState_Play::ManageState(){
     // ポーズへ遷移
     if(PlayerInput::Pause::Pause()){
         pGameScene_->ChangeState(new GameState_Pause(pScene_));
+        return;
+    }
+
+    // ゴールへ遷移
+    if(StageManager::GetCurrentStage()->IsGoal()){
+        if(!StageManager::IsLastStage()){
+            //2つのステージのコライダーを渡すよう設定
+            StageManager::SetIsHandOverColliderNext(true);
+
+            pScene_->ChangeState(new GameState_Goal(pScene_));
+            return;
+        }
     }
 }

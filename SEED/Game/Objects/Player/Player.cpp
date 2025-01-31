@@ -160,6 +160,7 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
 
+    /* 
     // ゴールに触れている状態で
     if(objectType == ObjectType::GoalField){
 
@@ -176,6 +177,7 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
             }
         }
     }
+    */
 
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){

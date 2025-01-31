@@ -33,6 +33,9 @@ class Stage{
 public:
     Stage(ISubject& subject,uint32_t stageNo);
 
+    // 卵の取得数など,ステータスの初期化(ステージを遷移したときなどに呼ぶ)
+    void InitializeStatus(const std::string& _jsonFilePath);
+
     void Update();
     void Draw();
     void BeginFrame();
@@ -59,6 +62,7 @@ public:
         const Vector3& translate = {0.0f,0.0f,0.0f}
     );
 
+    void UpdateStarCount();
 public:
     Vector3 GetStartPosition()const;
     FieldObject_Goal* GetGoalObject()const;
@@ -66,23 +70,23 @@ public:
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 
     FieldObject* GetSelectedObject()const{ return selectedObject_; }
-    void SetSelectedObject(FieldObject* obj){ selectedObject_ = obj; }
+    void SetSelectedObject(FieldObject * obj){ selectedObject_ = obj; }
     // 指定されたGUIDのオブジェクトを取得
-    FieldObject* GetFieldObjectByGUID(const std::string& guid) const{
-        for (const auto& objPtr : fieldObjects_){
-            if (objPtr->GetGUID() == guid){
+    FieldObject* GetFieldObjectByGUID(const std::string & guid) const{
+        for(const auto& objPtr : fieldObjects_){
+            if(objPtr->GetGUID() == guid){
                 return objPtr.get();
             }
         }
         return nullptr;
     }
     // 選択オブジェクトのGUIDを設定
-    void SetSelectedObjectGUID(const std::string& guid){ selectedObjectGUID_ = guid; }
+    void SetSelectedObjectGUID(const std::string & guid){ selectedObjectGUID_ = guid; }
     // 選択オブジェクトのGUIDを取得
     const std::string& GetSelectedObjectGUID() const{ return selectedObjectGUID_; }
     int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
-    bool IsGoal()const{ 
+    bool IsGoal()const{
         if(goalObject_){
             return goalObject_->isGoal_;
         }
@@ -91,7 +95,7 @@ public:
     uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
-    void SetPlayer(Player* pPlayer){
+    void SetPlayer(Player * pPlayer){
         pPlayer_ = pPlayer;
         enemyManager_->SetPlayer(pPlayer);
     }
@@ -101,17 +105,28 @@ public:
     // PlayerCorpseManagerのゲッターを追加
     PlayerCorpseManager* GetPlayerCorpseManager(){ return playerCorpseManager_.get(); }
 
+    /// <summary>
+    /// 現在の取得した星の数
+    /// </summary>
+    /// <returns></returns>
+    uint32_t GetCurrentStarCount()const{ return currentStarCount_; }
+
 private:
     int32_t stageNo_ = -1;
     uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     std::string selectedObjectGUID_;
 
-    FieldObject* selectedObject_ = nullptr;
+    // 現在の取得した星の数
+    uint32_t currentStarCount_ = 0;
+    // ハイスコア
+    // uint32_t heightStarCount_ = 0; <- StageManager::getStarCounts_ があったので削除
 
+    FieldObject* selectedObject_ = nullptr;
     //特殊処理 をするため ポインターを個別で保持
     FieldObject_Start* startObject_ = nullptr;
     FieldObject_Goal* goalObject_ = nullptr;
+    std::vector<FieldObject_Star*> starObjects_;
 
     ISubject& subject_;
 
@@ -125,18 +140,18 @@ private:
 
     //routine
     RoutineManager routineManager_;
-};
+    };
 
-////////////////////////////////////////////////////////////////////
-//  テンプレート関数
-////////////////////////////////////////////////////////////////////
-template<typename T>
-inline std::vector<T*> Stage::GetObjectsOfType(){
-    std::vector<T*> result;
-    for(auto& objPtr : fieldObjects_){
-        if(auto* casted = dynamic_cast<T*>(objPtr.get())){
-            result.push_back(casted);
+    ////////////////////////////////////////////////////////////////////
+    //  テンプレート関数
+    ////////////////////////////////////////////////////////////////////
+    template<typename T>
+    inline std::vector<T*> Stage::GetObjectsOfType(){
+        std::vector<T*> result;
+        for(auto& objPtr : fieldObjects_){
+            if(auto* casted = dynamic_cast<T*>(objPtr.get())){
+                result.push_back(casted);
+            }
         }
+        return result;
     }
-    return result;
-}

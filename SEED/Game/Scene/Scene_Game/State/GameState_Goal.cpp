@@ -36,6 +36,19 @@ void GameState_Goal::Initialize(){
     FollowCamera* pFollowCamera = dynamic_cast<FollowCamera*>(pPlayer_->GetFollowCamera());
     pFollowCamera->SetTarget(pGoal_);
 
+    // Stage
+    {
+        StageManager* pStageManager = pGameScene_->Get_pStageManager();
+        // 現在のステージの星の数を更新
+        pStageManager->UpdateStarContOnCurrentStage();
+
+        // StageCount は 0から始まるので +1,次のステージの初期化をしたいから +1 (合計 +2)
+        uint32_t stageNo = pStageManager->GetCurrentStageNo() + 2;
+        std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
+        // 次のステージの初期化
+        pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus(filePath);
+    }
+
     // 次のスタート地点
     nextStartPosition_ = pGameScene_->Get_pStageManager()->GetNextStartPos();
 
@@ -50,9 +63,9 @@ void GameState_Goal::Initialize(){
             eggManager->AddEgg(newEgg);
         }
         pEgg_ = eggManager->GetFrontEgg().get();
-    }
 
-    ThrowEggForNextStageInitialize();
+        ThrowEggForNextStageInitialize();
+    }
 
     // update
     currentUpdate_ = [this](){ RotateYGoalForNextStage(); };

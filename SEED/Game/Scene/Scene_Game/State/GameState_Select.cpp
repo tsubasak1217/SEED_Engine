@@ -101,7 +101,9 @@ void GameState_Select::ManageState(){
         // ステージをリセット
         int stageNo = pGameScene_->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
         std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
-        pGameScene_->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath);
+        // pGameScene_->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath); <- InitializeStatus を追加したのでコメントアウト
+        pGameScene_->Get_pStageManager()->GetCurrentStage()->InitializeStatus(filePath);
+
         // 遷移
         pGameScene_->ChangeState(new GameState_Play(pGameScene_));
     }

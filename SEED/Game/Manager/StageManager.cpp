@@ -14,8 +14,8 @@
 // 静的メンバ変数
 ///////////////////////////////////////////////////////////////////////
 int32_t StageManager::currentStageNo_ = 0;
-std::array<std::unique_ptr<Stage>, StageManager::kStageCount_> StageManager::stages_;
-std::array<uint32_t, StageManager::kStageCount_> StageManager::getStarCounts_;
+std::array<std::unique_ptr<Stage>,StageManager::kStageCount_> StageManager::stages_;
+std::array<uint32_t,StageManager::kStageCount_> StageManager::getStarCounts_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
 bool StageManager::isHandOverColliderNext_ = false;
@@ -29,7 +29,6 @@ StageManager::StageManager(ISubject& subject){
     for(int i = 0; i < kStageCount_; i++){
         stages_[i] = std::make_unique<Stage>(subject,i);
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -90,6 +89,13 @@ void StageManager::EndFrame(){
     }
 }
 
+void StageManager::UpdateStarCont(uint32_t _stageNo){
+    // 現在のステージのみ 星の取得数を更新
+    stages_[_stageNo]->UpdateStarCount();
+    // 星の最大取得数を 更新
+    getStarCounts_[_stageNo] = (std::max)(stages_[_stageNo]->GetCurrentStarCount(),getStarCounts_[_stageNo]);
+}
+
 ///////////////////////////////////////////////////////////////////////
 // コライダーを渡す
 ///////////////////////////////////////////////////////////////////////
@@ -98,7 +104,7 @@ void StageManager::HandOverColliders(){
 
     // 卵を投げているときはプレイヤーがいない次のステージのコライダーも渡す
     if(isHandOverColliderNext_){
-        stages_[std::clamp(currentStageNo_ + 1, 0, kStageCount_ - 1)]->HandOverColliders();
+        stages_[std::clamp(currentStageNo_ + 1,0,kStageCount_ - 1)]->HandOverColliders();
     }
 }
 
@@ -107,7 +113,7 @@ void StageManager::HandOverColliders(){
 ///////////////////////////////////////////////////////////////////////
 void StageManager::StepStage(int32_t step){
     currentStageNo_ += step;
-    currentStageNo_ = std::clamp(currentStageNo_, 0, kStageCount_ - 1);
+    currentStageNo_ = std::clamp(currentStageNo_,0,kStageCount_ - 1);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -124,10 +130,10 @@ void StageManager::LoadStages(){
     }
 }
 
-void StageManager::SetPlayer(Player* pPlayer){ 
-    pPlayer_ = pPlayer; 
+void StageManager::SetPlayer(Player* pPlayer){
+    pPlayer_ = pPlayer;
 
-    for (int i = 0; i < kStageCount_; i++){
+    for(int i = 0; i < kStageCount_; i++){
         stages_[i]->SetPlayer(pPlayer);
     }
 }

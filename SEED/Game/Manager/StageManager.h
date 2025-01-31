@@ -21,6 +21,13 @@ public:
     void BeginFrame();
     void EndFrame();
 
+    /// <summary>
+    /// 星の数を更新(現在のステージで取得した星の数が今までで一番多いければ,記録する)
+    /// </summary>
+    void UpdateStarCont(uint32_t stage);
+    void UpdateStarContOnCurrentStage(){
+        UpdateStarCont(StageManager::GetCurrentStageNo());
+    }
 public:
     void HandOverColliders();
     static void StepStage(int32_t step);
@@ -48,6 +55,7 @@ public:
     Stage* GetPreStage(){ return stages_[preStageNo_].get(); }
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
     static uint32_t GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
+    static void GetCurrentStageStarCount(uint32_t starCount){ getStarCounts_[currentStageNo_] = starCount; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
     static Vector3 GetStartPos();
     static Vector3 GetNextStartPos();

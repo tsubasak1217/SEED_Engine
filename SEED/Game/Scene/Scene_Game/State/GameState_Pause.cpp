@@ -168,9 +168,12 @@ void GameState_Pause::ManageState(){
         Scene_Game* pGameScene = dynamic_cast<Scene_Game*>(pScene_);
 
         if(selectIndex_ == PAUSE_ITEM_RESET){
-            int stageNo = pGameScene->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
+            Stage* pCurrentStage = pGameScene->Get_pStageManager()->GetCurrentStage();
+            int stageNo = pCurrentStage->GetStageNo() + 1;
             std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
-            pGameScene->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath);
+
+            // pCurrentStage->LoadFromJson(filePath); <- InitializeStatus を追加したのでコメントアウト
+            pCurrentStage->InitializeStatus(filePath);
             pScene_->ChangeState(new GameState_Play(pScene_,true));
             return;
 

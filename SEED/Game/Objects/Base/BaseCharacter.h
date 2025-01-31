@@ -28,6 +28,7 @@ public: // コライダー
     void HandOverColliders() override;
     void InitColliders(ObjectType objectType) override;
     void DiscardPreCollider() override;
+    void AddSkipPushBackType(ObjectType skipType)override;
 
 protected:
     virtual void Damage(int32_t damage);

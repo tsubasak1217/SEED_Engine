@@ -164,6 +164,15 @@ void BaseCharacter::DiscardPreCollider(){
     }
 }
 
+
+// コライダーの判定スキップリストの追加
+void BaseCharacter::AddSkipPushBackType(ObjectType skipType){
+    BaseObject::AddSkipPushBackType(skipType);
+    if(currentState_){
+        currentState_->AddSkipPushBackType(skipType);
+    }
+}
+
 // ダメージを受ける処理
 void BaseCharacter::Damage(int32_t damage){
     HP_ -= damage;

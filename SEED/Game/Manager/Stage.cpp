@@ -23,6 +23,9 @@ Stage::Stage(ISubject& subject, uint32_t stageNo)
     routineManager_.LoadRoutines(stageNo);
 
     enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
+
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -36,6 +39,9 @@ void Stage::Update(){
 
     // 敵の更新
     enemyManager_->Update();
+
+    // プレイヤーの死体の更新
+    playerCorpseManager_->Update();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -48,6 +54,9 @@ void Stage::Draw(){
 
     // 敵の描画
    enemyManager_->Draw();
+
+   // プレイヤーの死体の描画
+   playerCorpseManager_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -57,6 +66,8 @@ void Stage::BeginFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->BeginFrame();
     }
+
+    playerCorpseManager_->BeginFrame();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -81,6 +92,9 @@ void Stage::EndFrame(){
 
     // 敵のフレーム終了処理
     enemyManager_->EndFrame();
+
+    // プレイヤーの死体のフレーム終了処理
+    playerCorpseManager_->EndFrame();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -110,23 +124,18 @@ void Stage::AddFieldObject(std::unique_ptr<FieldObject> obj){
     fieldObjects_.push_back(std::move(obj));
 }
 
-void Stage::RemoveFieldObject(FieldObject* obj){
-    // オブジェクトが IObserver を実装している場合、EventManager から登録解除
-    IObserver* observer = dynamic_cast<IObserver*>(obj);
-    if(observer){
-        subject_.UnregisterObserver(observer);
+void Stage::RemoveFieldObject(FieldObject* objToRemove){
+    auto it = std::remove_if(fieldObjects_.begin(), fieldObjects_.end(),
+                             [&] (const std::unique_ptr<FieldObject>& objPtr){
+                                 return objPtr.get() == objToRemove;
+                             });
+    if (it != fieldObjects_.end()){
+        // 選択オブジェクトが削除対象の場合、選択をクリア
+        if (selectedObjectGUID_ == objToRemove->GetGUID()){
+            selectedObjectGUID_.clear();
+        }
+        fieldObjects_.erase(it, fieldObjects_.end());
     }
-    // オブジェクトを削除
-    fieldObjects_.erase(
-        std::remove_if(
-            fieldObjects_.begin(),
-            fieldObjects_.end(),
-            [obj](const std::unique_ptr<FieldObject>& fieldObject){
-                return fieldObject.get() == obj;
-            }
-        ),
-        fieldObjects_.end()
-    );
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -172,8 +181,6 @@ FieldObject_ViewPoint* Stage::GetViewPoint() const{
 
     return nullptr;
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////
 // stageの読み込み

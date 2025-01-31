@@ -17,11 +17,11 @@
 #include "MatrixFunc.h"
 #include "MyFunc.h"
 
-EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& _directionXY,float _rotateY,float _speed)
-    :directionXY_(_directionXY),
-    speed_(_speed),
-    rotateY_(_rotateY){
+EggState_Thrown::EggState_Thrown(BaseCharacter* _egg,const Vector3& p1, const Vector3& p2, const Vector3& p3){
     Initialize("Thrown",_egg);
+    controlPoints_[0] = p1;
+    controlPoints_[1] = p2;
+    controlPoints_[2] = p3;
 }
 
 EggState_Thrown::~EggState_Thrown(){}
@@ -55,15 +55,11 @@ void EggState_Thrown::MoveThrow(){
     if(velocity.y == 0.0f){
 
         leftTime_ -= ClockManager::DeltaTime();
+        float t = throwTime_ - leftTime_;
 
-        // xy 平面の放物線の位置を計算
-        Vector2 parabolicXY = MyFunc::CalculateParabolic(Vector2(directionXY_.x,directionXY_.y),speed_,1.0f - (leftTime_ / throwTime_),kGravity * weight_);
+        // 位置の更新
+        pCharacter_->SetTranslate(MyMath::Bezier(controlPoints_[0], controlPoints_[1], controlPoints_[2],t));
 
-        // XY 平面を 3次元に変換
-        Vector3 parabolick3D = Vector3(0.0f,parabolicXY.y,parabolicXY.x) * RotateYMatrix(rotateY_);
-
-        // 移動
-        pCharacter_->SetTranslate(beforePos_ + parabolick3D);
     } else{
         velocity.y -= kGravity * weight_ * ClockManager::DeltaTime();
         pEgg_->SetVelocity(velocity);

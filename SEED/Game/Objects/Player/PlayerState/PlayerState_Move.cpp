@@ -156,24 +156,6 @@ void PlayerState_Move::ManageState(){
         return;
     }
 
-    if(PlayerInput::CharacterMove::ThrowEgg()){
-        if(pPlayer->GetEggManager()->GetIsEmpty()){
-            return;
-        }
-
-        // すでに 投げているなら return
-        Egg* pEgg = pPlayer->GetEggManager()->GetFrontEgg().get();
-        if(pEgg->GetIsThrown()){
-            return;
-        }
-
-        pEgg->SetVelocity({0.0f,8.0f,0.0f});
-        // velocity で管理するため, 初期値は基本 0
-        pEgg->ChangeState(new EggState_Thrown(pEgg,{0.0f,0.0f,0.0f},0.0f,0.0f));
-
-        return;
-    }
-
     // 捕食
     if(PlayerInput::CharacterMove::Eat()){
         if(pPlayer->CanEatEnemy()){

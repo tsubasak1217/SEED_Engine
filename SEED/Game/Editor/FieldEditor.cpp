@@ -562,7 +562,6 @@ void FieldEditor::ShowImGui(){
             // ImGuiウィンドウ上をクリックした場合を除外
             if(!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
                 selectedObjIndex = GetObjectIndexByMouse(objects);
-                
             }
         }
     }
@@ -585,10 +584,13 @@ void FieldEditor::ShowImGui(){
                 //選択されているオブジェクトを設定
                 Stage* stage = manager_.GetStages()[edittingStageIndex].get();
                 mfObj->ShowImGui();
+                stage->SetSelectedObject(mfObj);
+
+                stage->SetSelectedObjectGUID(mfObj->GetGUID());
 
                 // [A] スイッチの場合の設定
                 if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
-                     stage->SetSelectedObject(mfObj);
+                     
                     // 「ドア割り当て」モード開始
                     assigningSwitch = sw;
 

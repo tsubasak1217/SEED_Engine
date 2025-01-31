@@ -60,7 +60,16 @@ namespace PlayerInput{
             }
             return Input::IsTriggerKey(DIK_Q);
         }
-
+        inline Vector2 Aim(){
+            if(Input::IsConnectedPad(0)){
+                return Input::GetStickValue(LR::LEFT);
+            }
+            Vector2 keyDirection = {
+                float(Input::IsPressKey(DIK_D)) - float(Input::IsPressKey(DIK_A)), //x
+                float(Input::IsPressKey(DIK_W)) - float(Input::IsPressKey(DIK_S))  //z
+            };
+            return MyMath::Normalize(keyDirection);
+        }
         inline bool ThrowEgg(){
             if(Input::IsConnectedPad(0)){
                 return Input::IsTriggerPadButton(PAD_BUTTON::RT);

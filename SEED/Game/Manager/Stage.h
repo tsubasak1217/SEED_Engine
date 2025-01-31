@@ -8,6 +8,7 @@
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
 #include "../Routine/RoutineManager.h"
+#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
 #include "../Game/Manager/EnemyManager.h"
 #include "../Game/Editor/EnemyEditor.h" 
@@ -66,17 +67,27 @@ public:
 
     FieldObject* GetSelectedObject()const{ return selectedObject_; }
     void SetSelectedObject(FieldObject* obj){ selectedObject_ = obj; }
-
+    // 指定されたGUIDのオブジェクトを取得
+    FieldObject* GetFieldObjectByGUID(const std::string& guid) const{
+        for (const auto& objPtr : fieldObjects_){
+            if (objPtr->GetGUID() == guid){
+                return objPtr.get();
+            }
+        }
+        return nullptr;
+    }
+    // 選択オブジェクトのGUIDを設定
+    void SetSelectedObjectGUID(const std::string& guid){ selectedObjectGUID_ = guid; }
+    // 選択オブジェクトのGUIDを取得
+    const std::string& GetSelectedObjectGUID() const{ return selectedObjectGUID_; }
     int GetStageNo()const{ return stageNo_; }
     void SetStageNo(int32_t stageNo){ stageNo_ = stageNo; }
-
     bool IsGoal()const{ 
         if(goalObject_){
             return goalObject_->isGoal_;
         }
         return false;
     }
-
     uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
@@ -87,11 +98,14 @@ public:
     EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
     // RoutineManagerのゲッターを追加
     RoutineManager& GetRoutineManager(){ return routineManager_; }
+    // PlayerCorpseManagerのゲッターを追加
+    PlayerCorpseManager* GetPlayerCorpseManager(){ return playerCorpseManager_.get(); }
 
 private:
     int32_t stageNo_ = -1;
     uint32_t difficulty_ = 0;
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
+    std::string selectedObjectGUID_;
 
     FieldObject* selectedObject_ = nullptr;
 
@@ -103,6 +117,8 @@ private:
 
     //playerのポインタ
     Player* pPlayer_ = nullptr;
+    //playerの死体
+    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_;
 
     //enemy
     std::unique_ptr<EnemyManager> enemyManager_;

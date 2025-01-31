@@ -179,6 +179,9 @@ bool Collider::CheckCollision(const Sphere& sphere){
 
 void Collider::OnCollision(Collider* collider,ObjectType objectType){
 
+    // 当たり判定をスキップするオブジェクトなら衝突判定を行わない
+    if(CanSkipPushBack(objectType)){ return; }
+
     // 衝突フラグを立てる
     isCollision_ = true;
     // 赤色に変更

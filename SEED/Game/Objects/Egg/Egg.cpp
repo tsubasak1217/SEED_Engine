@@ -67,6 +67,8 @@ void Egg::Draw(){
 }
 
 void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
+    BaseObject::OnCollision(other, objectType);
+
     if(objectType == ObjectType::Field){
 
         if(!isThrown_){

@@ -25,11 +25,12 @@ public:
     virtual void Initialize(const std::string &stateName, BaseCharacter *character);
 
 public: // コライダー関連
-    void HandOverColliders();
+    virtual void HandOverColliders();
     void InitColliders(ObjectType objectType);
     void InitColliders(const std::string &fileName, ObjectType objectType);
     void EraseCheckColliders();
     void DiscardPreCollider();
+    void AddSkipPushBackType(ObjectType skipType);
 
 protected:
     virtual void ManageState() = 0;

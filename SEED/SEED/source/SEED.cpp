@@ -454,6 +454,23 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
     }
 }
 
+void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color){
+    // ベジェ曲線の描画
+    Vector3 previous = p1;
+    for(uint32_t i = 1; i <= subdivision; i++){
+
+        // 現在の位置を求める
+        float t = float(i) / subdivision;
+        Vector3 current = MyMath::Bezier(p1, p2, p3, t);
+
+        // 線を描画
+        DrawLine(previous, current, color);
+
+        // 現在の点を保存
+        previous = current;
+    }
+}
+
 
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画

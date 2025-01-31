@@ -122,6 +122,8 @@ public:
     static void DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // デバッグ用のグリッド描画関数
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
+    // ベジェ曲線の描画
+    static void DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // スプライン曲線の描画
     static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
     // ライトのデバッグ用描画

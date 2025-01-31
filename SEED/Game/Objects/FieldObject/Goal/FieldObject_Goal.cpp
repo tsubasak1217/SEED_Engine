@@ -2,6 +2,9 @@
 #include "StageManager.h"
 #include "SEED.h"
 
+//input
+#include "../PlayerInput/PlayerInput.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //  コンストラクタ
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -9,7 +12,7 @@ FieldObject_Goal::FieldObject_Goal(){
     className_ = "FieldObject_Goal";
     name_ = "goal";
     // モデルの初期化
-    std::string path = "FieldObject/" + name_ + ".obj";
+    std::string path = "FieldObject/" + name_ + ".gltf";
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
     // コライダー関連の初期化
@@ -17,7 +20,7 @@ FieldObject_Goal::FieldObject_Goal(){
     InitColliders(ObjectType::GoalField);
     // UIの初期化
     goalUI_ = std::make_unique<Sprite>("GameUI/A.png");
-    goalUI_->anchorPoint = Vector2(0.5f, 0.5f);
+    goalUI_->anchorPoint = Vector2(0.5f,0.5f);
     // 全般の初期化
     FieldObject::Initialize();
 }
@@ -32,7 +35,7 @@ FieldObject_Goal::FieldObject_Goal(const std::string& modelName)
     InitColliders(ObjectType::GoalField);
     // UIの初期化
     goalUI_ = std::make_unique<Sprite>("GameUI/A.png");
-    goalUI_->anchorPoint = Vector2(0.5f, 0.5f);
+    goalUI_->anchorPoint = Vector2(0.5f,0.5f);
     // 全般の初期化
     FieldObject::Initialize();
 }
@@ -66,6 +69,13 @@ void FieldObject_Goal::Draw(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+//  フレーム開始処理
+////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Goal::BeginFrame(){
+    isGoal_ = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 //  フレーム終了処理
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldObject_Goal::EndFrame(){
@@ -76,7 +86,7 @@ void FieldObject_Goal::EndFrame(){
         playerTouchTime_ -= ClockManager::DeltaTime();
     }
 
-    playerTouchTime_ = std::clamp(playerTouchTime_, 0.0f, 1.0f);
+    playerTouchTime_ = std::clamp(playerTouchTime_,0.0f,1.0f);
 }
 
 
@@ -86,8 +96,10 @@ void FieldObject_Goal::EndFrame(){
 void FieldObject_Goal::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
-        // ゴールしたことを通知
-        isGoal_ = true;
+        if(PlayerInput::CharacterMove::GoNextStage()){
+            // ゴールしたことを通知
+            isGoal_ = true;
+        }
 
         // プレイヤーが触れたことを記録
         isTouchedPlayer_ = true;

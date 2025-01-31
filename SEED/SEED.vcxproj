@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp" />
     <ClCompile Include="Game\UI\EggTimerUI.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\PlayerInput\PlayerInput.cpp" />
@@ -131,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\ITitleState.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp" />
     <ClCompile Include="SEED\adapter\csv\CsvAdapter.cpp" />
     <ClCompile Include="Game\Manager\Stage.cpp" />
     <ClCompile Include="Game\Manager\StageManager.cpp" />
@@ -274,6 +276,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\PlayerInput\PlayerInput.h" />
@@ -293,6 +296,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Goal.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowEgg.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\ITitleState.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
     <ClInclude Include="SEED\adapter\csv\CsvAdapter.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_Chase.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyState\EnemyState_RoutineMove.h" />

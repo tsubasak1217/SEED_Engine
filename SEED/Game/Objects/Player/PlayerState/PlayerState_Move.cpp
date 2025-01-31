@@ -93,6 +93,14 @@ void PlayerState_Move::Rotate()
     // 移動ベクトルを求める
     moveVec_ = pCharacter_->GetWorldTranslate() - pCharacter_->GetPrePos();
 
+    // 親オブジェクトがある場合は親の移動分を引く
+    if(pCharacter_->GetParent()){
+        Vector3 parentWorldPos = pCharacter_->GetParent()->GetWorldTranslate();
+        Vector3 parentPreWorldPos = pCharacter_->GetParent()->GetPrePos();
+        Vector3 parentMoveVec = parentWorldPos - parentPreWorldPos;
+        moveVec_ -= parentMoveVec;
+    }
+
     // 移動ベクトルから回転を求める
     if (MyMath::LengthSq(moveVec_) > 0.0f)
     {

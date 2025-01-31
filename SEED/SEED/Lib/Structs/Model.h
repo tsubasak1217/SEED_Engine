@@ -77,8 +77,12 @@ public:
 
     // 名前
     std::string modelName_;
-    const Model* parent_ = nullptr;// 親のポインタ
 
+    // 親子付け
+    const Model* parent_ = nullptr;// 親のポインタ
+    bool isParentRotate_ = true;
+    bool isParentScale_ = true;
+    bool isParentTranslate_ = true;
 
     // ----------------------- トランスフォーム情報 -----------------------//
 

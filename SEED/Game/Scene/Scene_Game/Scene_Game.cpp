@@ -63,7 +63,7 @@ void Scene_Game::Initialize(){
 
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
-    directionalLight_->direction_ = MyMath::Normalize({2.0f,1.0f,0.5f});
+    directionalLight_->direction_ = MyMath::Normalize({1.0f,-1.0f,0.5f});
     directionalLight_->intensity = 1.0f;
 
     pointLights_.clear();

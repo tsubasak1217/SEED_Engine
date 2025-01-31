@@ -1853,9 +1853,9 @@ void PolygonManager::DrawToOffscreen(){
     SetRenderData(DrawOrder::Line);
     SetRenderData(DrawOrder::Quad);
     SetRenderData(DrawOrder::Triangle);
-    SetRenderData(DrawOrder::Particle);
     SetRenderData(DrawOrder::Model);
     SetRenderData(DrawOrder::AnimationModel);
+    SetRenderData(DrawOrder::Particle);
 
     // 2D
     SetRenderData(DrawOrder::Line2D);

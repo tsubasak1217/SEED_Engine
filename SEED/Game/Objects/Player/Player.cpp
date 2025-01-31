@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player(): BaseCharacter(){
+Player::Player() : BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
@@ -43,6 +43,7 @@ void Player::Initialize(){
     model_ = std::make_unique<Model>("dinosaur.gltf");
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
+    model_->isParentScale_ = false;
 
     // コライダーの初期化
     InitColliders(ObjectType::Player);
@@ -52,18 +53,18 @@ void Player::Initialize(){
     }
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f,7.0f,0.0f);
+    targetOffset_ = Vector3(0.0f, 7.0f, 0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
 
     // Json ファイルからの読み込み
     JsonCoordinator::LoadGroup("Player");
 
-    JsonCoordinator::RegisterItem("Player","Weight",weight_);
+    JsonCoordinator::RegisterItem("Player", "Weight", weight_);
 
     // 捕食可能範囲の初期化
     predationRange_ = std::make_unique<PredationRange>();
@@ -88,6 +89,7 @@ void Player::Update(){
     }
     ImGui::End();
 #endif // _DEBUG
+
     BaseCharacter::Update();
 
     shadow_->Update(StageManager::GetCurrentStage());
@@ -100,6 +102,37 @@ void Player::Draw(){
     BaseCharacter::Draw();
 }
 
+//////////////////////////////////////////////////////////////////////////
+// フレーム開始時処理
+//////////////////////////////////////////////////////////////////////////
+void Player::BeginFrame(){
+    
+    // 落下中かつジャンプ可能でないとき or ジャンプ時
+    if((isDrop_ && !IsJumpable()) or isJump_){
+
+        // 親がいれば
+        if(GetParent()){
+            // 親子付けを解除
+            parent_ = nullptr;
+            model_->parent_ = nullptr;
+            // ワールド基準のトランスフォームに変換
+            SetTranslate(GetWorldTranslate());
+            SetRotate(GetWorldRotate());
+            SetScale(GetWorldScale());
+            UpdateMatrix();
+        }
+    }
+
+    BaseCharacter::BeginFrame();
+
+    ImGui::Begin("Player");
+    ImGui::Text("dropSpeed_ : %f", dropSpeed_);
+    ImGui::End();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// フレーム終了時処理
+//////////////////////////////////////////////////////////////////////////
 void Player::EndFrame(){
     BaseCharacter::EndFrame();
     if(GetWorldTranslate().y <= 0.0f){
@@ -114,13 +147,13 @@ void Player::EndFrame(){
 }
 
 void Player::Spawn(const Vector3& pos){
-    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this);
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this);
     state->SetSpawnPos(pos);
     ChangeState(state);
 }
 
 void Player::ToClearStageState(const Vector3& nextStartPos){
-    ChangeState(new PlayerStage_ForNextStage(nextStartPos,this));
+    ChangeState(new PlayerStage_ForNextStage(nextStartPos, this));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -137,7 +170,7 @@ void Player::HandleMove(const Vector3& acceleration){
     }
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
+    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
     model_->UpdateMatrix();
 }
 
@@ -156,12 +189,13 @@ bool Player::CanEatEnemy(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other,ObjectType objectType){
+void Player::OnCollision(const BaseObject* other, ObjectType objectType){
     other;
     objectType;
 
-    /* 
-    // ゴールに触れている状態で
+    BaseObject::OnCollision(other, objectType);
+
+    /*// ゴールに触れている状態で
     if(objectType == ObjectType::GoalField){
 
         // ステージ遷移ステートへ
@@ -176,8 +210,23 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
                 }
             }
         }
+    }*/
+
+    // 移動床に触れている状態
+    if((int32_t)objectType & (int32_t)ObjectType::Move){
+        if(!IsJumpable()){
+            // 親子付けを行い移動床基準のトランスフォームに変換
+            SetParent(other);
+
+            Vector3 preTranslate = GetWorldTranslate();
+            Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+            Vector3 localTranslate = preTranslate * invParentMat;
+            SetTranslate(localTranslate);
+            UpdateMatrix();
+            Vector3 newTranslate = GetWorldTranslate();
+            isStop_ = true;
+        }
     }
-    */
 
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){

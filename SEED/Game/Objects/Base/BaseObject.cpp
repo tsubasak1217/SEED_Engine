@@ -69,6 +69,9 @@ void BaseObject::BeginFrame(){
     // 落下フラグの初期化
     isDrop_ = true;
 
+    // 座標の保存
+    prePos_ = GetWorldTranslate();
+
     // コライダーの開始処理
     for(auto& collider : colliders_){
         collider->BeginFrame();
@@ -137,7 +140,7 @@ void BaseObject::MoveByVelocity(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::AddWorldTranslate(const Vector3& addValue){
     if(GetParent() != nullptr){
-        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(GetParent()->GetWorldRotate()));
         Vector3 localAddValue = addValue * invParentMat;
         model_->translate_ += localAddValue;
     } else{
@@ -187,7 +190,7 @@ void BaseObject::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
+void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
     isCollide_ = true;
     other;
     objectType;
@@ -217,7 +220,7 @@ void BaseObject::AddSkipPushBackType(ObjectType skipType){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::LoadColliders(ObjectType objectType){
     // コライダーの読み込み
-    ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
+    ColliderEditor::LoadColliders(className_ + ".json", this, &colliders_);
 
     // オブジェクトの属性を取得
     for(auto& collider : colliders_){

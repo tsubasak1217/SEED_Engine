@@ -34,6 +34,8 @@ void GameSystem::Initialize() {
 // ゲームの終了処理
 /////////////////////////////////////////////////////////////////
 void GameSystem::Finalize() {
+    instance_->pScene_->Finalize();
+    instance_->pScene_.reset();
 }
 
 

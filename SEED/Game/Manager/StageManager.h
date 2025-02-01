@@ -40,7 +40,7 @@ private:
     static int32_t currentStageNo_;
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
-    static std::array<uint32_t, kStageCount_> getStarCounts_;
+    static std::array<int, kStageCount_> getStarCounts_;
     static bool isPlaying_;
     static bool isHandOverColliderNext_;
 
@@ -55,8 +55,8 @@ public:
     static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }
     Stage* GetPreStage(){ return stages_[preStageNo_].get(); }
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
-    static uint32_t GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
-    static void GetCurrentStageStarCount(uint32_t starCount){ getStarCounts_[currentStageNo_] = starCount; }
+    static int GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
+    static void GetCurrentStageStarCount(int starCount){ getStarCounts_[currentStageNo_] = starCount; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
     static Vector3 GetStartPos();
     static Vector3 GetNextStartPos();

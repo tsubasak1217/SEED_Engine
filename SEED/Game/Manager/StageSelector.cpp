@@ -158,7 +158,7 @@ void StageSelector::UpdateItems(int32_t step){
     /*-------------------------------------*/
 
     // 現在のステージの集めた星の数分、明るく表示
-    for(uint32_t i = 0; i < 3; i++){
+    for(int32_t i = 0; i < 3; i++){
         collectionStars_[i]->color = {0.2f,0.2f,0.2f,0.9f};
         if(i < StageManager::GetCurrentStageStarCount()){
             collectionStars_[i]->color = {1.0f,1.0f,1.0f,1.0f};

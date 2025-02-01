@@ -10,12 +10,15 @@
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
+//lib
+#include "../adapter/json/JsonCoordinator.h"
+
 ///////////////////////////////////////////////////////////////////////
 // 静的メンバ変数
 ///////////////////////////////////////////////////////////////////////
 int32_t StageManager::currentStageNo_ = 0;
 std::array<std::unique_ptr<Stage>,StageManager::kStageCount_> StageManager::stages_;
-std::array<uint32_t,StageManager::kStageCount_> StageManager::getStarCounts_;
+std::array<int,StageManager::kStageCount_> StageManager::getStarCounts_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
 bool StageManager::isHandOverColliderNext_ = false;
@@ -41,12 +44,20 @@ StageManager::~StageManager(){}
 ///////////////////////////////////////////////////////////////////////
 void StageManager::Initialize(){
     LoadStages();
+
+    JsonCoordinator::LoadGroup("UserStarCount");
+    for(int i = 0; i < getStarCounts_.size(); ++i){
+        JsonCoordinator::RegisterItem("UserStarCount","Stage_" + std::to_string(i),getStarCounts_[i]);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
 // 終了処理
 ///////////////////////////////////////////////////////////////////////
-void StageManager::Finalize(){}
+void StageManager::Finalize(){
+    //星の獲得状況を保存
+    JsonCoordinator::SaveGroup("UserStarCount");
+}
 
 ///////////////////////////////////////////////////////////////////////
 // 更新

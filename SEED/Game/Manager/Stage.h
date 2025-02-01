@@ -109,7 +109,7 @@ public:
     /// 現在の取得した星の数
     /// </summary>
     /// <returns></returns>
-    uint32_t GetCurrentStarCount()const{ return currentStarCount_; }
+    int32_t GetCurrentStarCount()const{ return currentStarCount_; }
 
 private:
     int32_t stageNo_ = -1;

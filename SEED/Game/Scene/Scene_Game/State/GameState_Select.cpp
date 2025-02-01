@@ -22,6 +22,9 @@ GameState_Select::~GameState_Select(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Initialize(){
 
+    // イベントシーンがあれば終了
+    pGameScene_->EndEvent();
+
     // ステージセレクターを生成
     stageSelector_ = std::make_unique<StageSelector>(pGameScene_->Get_pStageManager(), pGameScene_->Get_pCamera());
 

@@ -32,6 +32,8 @@ EventState_Tutorial_EatEnemy::EventState_Tutorial_EatEnemy(Scene_Base* pScene)
 
 EventState_Tutorial_EatEnemy::~EventState_Tutorial_EatEnemy(){
     pPlayer_->SetIsMovable(true);
+    pCamera_->SetTarget(pPlayer_);
+    pCamera_->SetInterpolationRate(0.075f);
 }
 
 void EventState_Tutorial_EatEnemy::Initialize(){

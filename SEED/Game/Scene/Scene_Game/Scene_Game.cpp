@@ -204,7 +204,9 @@ void Scene_Game::Update(){
     }
 
     if(currentEventState_){
-        currentEventState_->Update();
+        if(!isPaused_){
+            currentEventState_->Update();
+        }
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
@@ -248,12 +250,14 @@ void Scene_Game::Draw(){
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if(currentState_){
-        currentState_->Draw();
+    if(currentEventState_){
+        if(!isPaused_){
+            currentEventState_->Draw();
+        }
     }
 
-    if(currentEventState_){
-        currentEventState_->Draw();
+    if(currentState_){
+        currentState_->Draw();
     }
 
     /*======================== スプライトの描画 =======================*/

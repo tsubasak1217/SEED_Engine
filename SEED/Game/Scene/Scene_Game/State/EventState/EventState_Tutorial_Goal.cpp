@@ -32,6 +32,8 @@ EventState_Tutorial_Goal::EventState_Tutorial_Goal(Scene_Base* pScene)
 
 EventState_Tutorial_Goal::~EventState_Tutorial_Goal(){
     pPlayer_->SetIsMovable(true);
+    pCamera_->SetTarget(pPlayer_);
+    pCamera_->SetInterpolationRate(0.075f);
 }
 
 void EventState_Tutorial_Goal::Initialize(){

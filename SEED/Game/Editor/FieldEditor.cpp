@@ -192,6 +192,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                     doorIDs.push_back(door->GetGUID());
                 }
                 modelJson["associatedDoors"] = doorIDs;
+                modelJson["requiredWeight"] = sw->GetRequiredWeight();
             }
 
             //移動する床の場合、ルーチン名を保存
@@ -612,6 +613,10 @@ void FieldEditor::ShowImGui(){
                     for (auto* moveFloor : sw->GetAssociatedMoveFloors()){
                         moveFloor->SetColor({1.f, 1.f, 0.f, 1.f});
                     }
+
+                    // 必要重量の設定
+                    ImGui::SliderInt("Required Weight", sw->GetRequiredWeightPtr(), 1, 3);
+                    ImGui::Separator();
                 }
 
                 // [B] チャンク移動/スケール

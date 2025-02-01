@@ -26,6 +26,10 @@ public:
     void BeginFrame();
     void EndFrame();
 
+    /// <summary>
+    /// 卵の数を初期化(ステージ開始時等で使用)
+    /// </summary>
+    void InitializeEggCount();
 private:
     static const uint32_t maxEggsSize_;
     std::vector<std::unique_ptr<Egg>> eggs_;
@@ -53,9 +57,11 @@ public:
     /// <returns></returns>
     std::unique_ptr<Egg>& GetFrontEgg();
 
+    std::unique_ptr<Egg>& GetBackEgg();
+
     /// <summary>
     /// 卵が空かどうか
     /// </summary>
     /// <returns>空なら true</returns>
-    bool GetIsEmpty()const{ return eggs_.empty(); }
+    bool GetIsEmpty()const;
 };

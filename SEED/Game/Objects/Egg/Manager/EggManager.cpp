@@ -15,11 +15,6 @@ EggManager::~EggManager(){}
 void EggManager::Initialize(){
     eggs_.reserve(maxEggsSize_);
 
-    eggs_.push_back(std::make_unique<Egg>(player_));
-    auto& spawnedEgg = eggs_.back();
-    spawnedEgg->SetEggManager(this);
-    spawnedEgg->Initialize();
-
     JsonCoordinator::LoadGroup("Egg");
 }
 
@@ -57,14 +52,6 @@ void EggManager::BeginFrame(){
     ImGui::End();
 #endif // _DEBUG
 
-    if(eggs_.empty()){
-        eggs_.push_back(std::make_unique<Egg>(player_));
-        auto& spawnedEgg = eggs_.back();
-        spawnedEgg->SetEggManager(this);
-        spawnedEgg->Initialize();
-        spawnedEgg->SetTranslate(player_->GetWorldTranslate());
-    }
-
     for(auto& egg : eggs_){
         egg->BeginFrame();
     }
@@ -74,6 +61,17 @@ void EggManager::EndFrame(){
     for(auto& egg : eggs_){
         egg->EndFrame();
     }
+}
+
+void EggManager::InitializeEggCount(){
+    if(!eggs_.empty()){
+        eggs_.clear();
+    }
+
+    auto newEgg = std::make_unique<Egg>(player_);
+    newEgg->SetEggManager(this);
+    newEgg->Initialize();
+    eggs_.push_back(std::move(newEgg));
 }
 
 void EggManager::AddEgg(std::unique_ptr<Egg>& _egg){
@@ -96,4 +94,12 @@ void EggManager::RemoveEgg(Egg* _egg){
 
 std::unique_ptr<Egg>& EggManager::GetFrontEgg(){
     return eggs_.front();
+}
+
+std::unique_ptr<Egg>& EggManager::GetBackEgg(){
+    return eggs_.back();
+}
+
+bool EggManager::GetIsEmpty() const{
+    return eggs_.empty();
 }

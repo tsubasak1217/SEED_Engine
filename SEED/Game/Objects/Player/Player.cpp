@@ -125,9 +125,11 @@ void Player::BeginFrame(){
 
     BaseCharacter::BeginFrame();
 
+#ifdef _DEBUG
     ImGui::Begin("Player");
     ImGui::Text("dropSpeed_ : %f",dropSpeed_);
     ImGui::End();
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -167,6 +169,9 @@ void Player::GameOver(){
         DiscardPreCollider();
         SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
         UpdateMatrix();
+    }
+    { // ステートの初期化
+        currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
     }
 }
 

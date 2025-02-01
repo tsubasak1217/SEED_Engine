@@ -88,6 +88,7 @@ void PlayerState_Eat::SpawnEgg(){
         // 卵を生成
         {
             std::unique_ptr<Egg> spawnedEgg = std::make_unique<Egg>(pPlayer);
+            spawnedEgg->SetEggManager(pPlayer->GetEggManager());
             spawnedEgg->Initialize();
             spawnedEgg->SetTranslate(pPlayer->GetWorldTranslate());
             pPlayer->GetEggManager()->AddEgg(spawnedEgg);

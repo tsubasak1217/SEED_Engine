@@ -207,13 +207,16 @@ void Scene_Game::Update(){
     各 コンストラクタ,デストラクタで 条件を 管理
     Player::GameOverが Stageを読み直す処理をしているため
     SelectState で GameOverしないために isMobavle でも 管理しているため,ここで 更新すると不都合が生じるため移動
-
-    if(currentEventState_){
+     if(currentEventState_){
         currentEventState_->Update();
         player_->SetIsMovable(false);
     } else{
         player_->SetIsMovable(true);
-    }*/
+    }
+    */
+    if(currentEventState_){
+        currentEventState_->Update();
+    }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 

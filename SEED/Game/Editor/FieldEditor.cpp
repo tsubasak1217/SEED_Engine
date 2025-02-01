@@ -405,7 +405,16 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Stage Settings");
         ImGui::Separator();
 
-        ImGui::Checkbox("isEditing", &isEditing_);
+        if(ImGui::Checkbox("isEditing", &isEditing_)){
+            SEED::SetCamera("debug");
+            SEED::GetCamera()->SetTranslation(manager_.GetPlayerPtr()->GetWorldTranslate());
+        }
+
+        if(isEditing_){
+            manager_.GetPlayerPtr()->SetIsMovable(false);
+        } else{
+            manager_.GetPlayerPtr()->SetIsMovable(true);
+        }
 
         ImGui::SameLine();
         ImGui::Text("Stage:");
@@ -608,12 +617,14 @@ void FieldEditor::ShowImGui(){
                 // [B] チャンク移動/スケール
                 {
                     static Vector3Int moveChunk{ 0, 0, 0 };
+                    static Vector3Int scaleChunk{ 0, 0, 0 };
                     static Vector3Int stageMoveChunk{ 0, 0, 0 };
                     static int lastSelectedIndex = -1;
 
                     // オブジェクトが変わったら値を初期化
                     if(selectedObjIndex != lastSelectedIndex){
                         moveChunk = { 0, 0, 0 };
+                        scaleChunk = { 0, 0, 0 };
                         stageMoveChunk = { 0, 0, 0 };
                         lastSelectedIndex = selectedObjIndex;
                     }
@@ -622,8 +633,32 @@ void FieldEditor::ShowImGui(){
                     ImGui::Separator();
                     Vector3Int tempMove = moveChunk;
                     Vector3Int tempStageMove = stageMoveChunk;
+                    Vector3Int tempScale = scaleChunk;
+
+                    // imguiでの編集
                     ImGui::DragInt3("StageMove", &tempStageMove.x, 0.1f);
                     ImGui::DragInt3("Move (chunks)", &tempMove.x, 0.1f);
+                    ImGui::DragInt3("Scale (chunks)", &tempScale.x, 0.02f);
+
+                    // キーボードからの編集
+                    static int editItemIndex = 0;
+                    Vector3Int input = {
+                        Input::IsTriggerKey(DIK_D) - Input::IsTriggerKey(DIK_A),
+                        Input::IsTriggerKey(DIK_Q) - Input::IsTriggerKey(DIK_E),
+                        Input::IsTriggerKey(DIK_W) - Input::IsTriggerKey(DIK_S)
+                    };
+
+                    if(Input::IsTriggerKey(DIK_1)){
+                        editItemIndex = 0;
+                    } else if(Input::IsTriggerKey(DIK_2)){
+                        editItemIndex = 1;
+                    }
+
+                    if(editItemIndex == 0){
+                        tempMove += input;
+                    } else if(editItemIndex == 1){
+                        tempScale += input;
+                    }
 
                     Vector3 pos = mfObj->GetModel()->GetWorldTranslate();
                     Vector3 scl = mfObj->GetModel()->GetWorldScale();
@@ -656,6 +691,21 @@ void FieldEditor::ShowImGui(){
 
                         moveChunk = tempMove;
                     }
+
+                    // スケール変更
+                    if(tempScale != scaleChunk){
+                        Vector3Int diff{
+                            tempScale.x - scaleChunk.x,
+                            tempScale.y - scaleChunk.y,
+                            tempScale.z - scaleChunk.z
+                        };
+                        scl.x += diff.x * kBlockSize;
+                        scl.y += diff.y * kBlockSize;
+                        scl.z += diff.z * kBlockSize;
+                        mfObj->SetScale(scl);
+                        scaleChunk = tempScale;
+                    }
+
                     ImGui::Separator();
                 }
 

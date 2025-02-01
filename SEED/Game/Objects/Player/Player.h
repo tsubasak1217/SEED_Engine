@@ -32,7 +32,7 @@ public:
     void EndFrame() override;
 
     void Spawn(const Vector3& pos);
-
+    void UpdateScaleByGrowLevel();
     void ToClearStageState(const Vector3& nextStartPos);
 private:
 
@@ -59,6 +59,9 @@ public: // アクセッサ
 
     PredationRange* GetPredationRange(){ return predationRange_.get(); }
 
+    void StepGrowLevel(int32_t step){ growLevel_ += step; }
+    void SetGrowLevel(int32_t level){ growLevel_ = level; }
+
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }
     void SetLastOnGroundPos(const Vector3& _newLastPosOnGround){ lastPosOnGround_ = _newLastPosOnGround; }
@@ -80,6 +83,9 @@ private: // フォローカメラ、ターゲット用
 
     // 最後に地面についていた位置
     Vector3 lastPosOnGround_;
+
+    // 成長のレベル
+    int32_t growLevel_ = 1;
 
     bool isStop_ = false;
 };

@@ -15,6 +15,7 @@
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 #include "../PlayerInput/PlayerInput.h"
+#include "Easing.h"
 
 // 状態クラスのインクルード
 #include "PlayerState/PlayerState_Idle.h"
@@ -90,9 +91,19 @@ void Player::Update(){
     ImGui::End();
 #endif // _DEBUG
 
+    UpdateScaleByGrowLevel();
     BaseCharacter::Update();
 
     shadow_->Update(StageManager::GetCurrentStage());
+
+    // 無敵時間中の色変更
+    if(unrivalledTime_ > 0.0f){
+        float sin = sinf(ClockManager::TotalTime() * (3.14f * 2.5f));
+        model_->color_ = { 1.0f,0.5f,0.5f,1.0f };
+        model_->color_.w = 0.5f + (0.5f * sin);
+    } else{
+        model_->color_ = { 1.0f,1.0f,1.0f,1.0f };
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
@@ -106,7 +117,7 @@ void Player::Draw(){
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
 void Player::BeginFrame(){
-    
+
     // 落下中かつジャンプ可能でないとき or ジャンプ時
     if((isDrop_ && !IsJumpable()) or isJump_){
 
@@ -148,8 +159,43 @@ void Player::EndFrame(){
 
 void Player::Spawn(const Vector3& pos){
     PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this);
+    growLevel_ = 1;
     state->SetSpawnPos(pos);
     ChangeState(state);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// プレイヤーの成長レベルによってスケールを変更
+//////////////////////////////////////////////////////////////////////////
+void Player::UpdateScaleByGrowLevel(){
+    static float aimScale = 1.0f;
+    static float preScale = 1.0f;
+    static int preGrowLevel = 1;
+    static float growUpTime = 1.0f;
+    static float kGrowUpTime = 1.0f;
+
+    // 成長レベルが変わったら
+    if(preGrowLevel != growLevel_){
+        // 時間を初期化して目標スケールを変更する
+        growUpTime = 0.0f;
+        aimScale = 1.0f + (0.75f * (growLevel_ - 1));
+        preScale = GetWorldScale().x;
+        preGrowLevel = growLevel_;
+    }
+
+    // 時間がまだ残っている場合
+    if(growUpTime < 1.0f){
+
+        // 媒介変数を計算
+        float t = EaseOutBounce(growUpTime / kGrowUpTime);
+
+        // スケールを変更
+        float scale = preScale + (aimScale - preScale) * t;
+        SetScale(Vector3(scale, scale, scale));
+
+        // 時間を加算
+        growUpTime = std::clamp(growUpTime + ClockManager::DeltaTime(), 0.0f, kGrowUpTime);
+    }
 }
 
 void Player::ToClearStageState(const Vector3& nextStartPos){
@@ -192,25 +238,9 @@ bool Player::CanEatEnemy(){
 void Player::OnCollision(const BaseObject* other, ObjectType objectType){
     other;
     objectType;
+    static float kUnrriValledTime = 3.0f;
 
     BaseObject::OnCollision(other, objectType);
-
-    /*// ゴールに触れている状態で
-    if(objectType == ObjectType::GoalField){
-
-        // ステージ遷移ステートへ
-        if(PlayerInput::CharacterMove::GoNextStage()){
-            // 現在のステートが PlayerStage_ForNextStage でない場合のみ 許可
-            PlayerStage_ForNextStage* state = dynamic_cast<PlayerStage_ForNextStage*>(currentState_.get());
-            if(!state){
-                if(!StageManager::IsLastStage()){
-                    ToClearStageState(StageManager::GetNextStartPos());
-                    //2つのステージのコライダーを渡すよう設定
-                    StageManager::SetIsHandOverColliderNext(true);
-                }
-            }
-        }
-    }*/
 
     // 移動床に触れている状態
     if((int32_t)objectType & (int32_t)ObjectType::Move){
@@ -230,8 +260,21 @@ void Player::OnCollision(const BaseObject* other, ObjectType objectType){
 
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){
-        DiscardPreCollider();
-        SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
-        UpdateMatrix();
+
+        if(unrivalledTime_ <= 0.0f){
+
+            // 成長レベルが最低の場合、死亡
+            if(growLevel_ <= 1){
+                DiscardPreCollider();
+                SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
+                UpdateMatrix();
+            } else{
+                // 小さくなる
+                StepGrowLevel(-1);
+            }
+
+            // 無敵時間を設定
+            unrivalledTime_ = kUnrriValledTime;
+        }
     }
 }

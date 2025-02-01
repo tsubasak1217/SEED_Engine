@@ -68,6 +68,11 @@ void BaseCharacter::BeginFrame(){
     // フラグの初期化
     isDamaged_ = false;
 
+    // 無敵時間の更新
+    if(unrivalledTime_ > 0.0f){
+        unrivalledTime_ -= ClockManager::DeltaTime();
+    }
+
     BaseObject::BeginFrame();
 }
 

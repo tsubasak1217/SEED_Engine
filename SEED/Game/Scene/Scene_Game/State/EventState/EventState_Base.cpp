@@ -10,6 +10,7 @@ EventState_Base::EventState_Base(Scene_Base* pScene) {
 }
 
 EventState_Base::~EventState_Base() {
+    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

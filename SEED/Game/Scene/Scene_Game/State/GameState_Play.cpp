@@ -80,13 +80,6 @@ void GameState_Play::Update(){
     // フィールドのコライダーエディター
     fieldColliderEditor_->Edit();
 
-    // プレイヤーの移動を有効・無効に
-    if(fieldEditor_->GetIsEditing()){
-        pGameScene_->Get_pPlayer()->SetIsMovable(false);
-    } else{
-        pGameScene_->Get_pPlayer()->SetIsMovable(true);
-    }
-
 #endif // _DEBUG
 }
 

@@ -278,6 +278,7 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
             Vector3 preTranslate = GetWorldTranslate();
             Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
             Vector3 localTranslate = preTranslate * invParentMat;
+            localTranslate *= ExtractScale(GetParent()->GetWorldMat());
             SetTranslate(localTranslate);
             UpdateMatrix();
             Vector3 newTranslate = GetWorldTranslate();

@@ -35,6 +35,7 @@ public:
 
     void ToClearStageState(const Vector3& nextStartPos);
 private:
+    void GameOver();
 
 public: // Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration) override;
@@ -59,6 +60,9 @@ public: // アクセッサ
 
     PredationRange* GetPredationRange(){ return predationRange_.get(); }
 
+    bool GetIsGameOver()const{ return isGameOver_; }
+    void SetIsGameOver(bool isGameOver){ isGameOver_ = isGameOver; }
+
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }
     void SetLastOnGroundPos(const Vector3& _newLastPosOnGround){ lastPosOnGround_ = _newLastPosOnGround; }
@@ -82,4 +86,5 @@ private: // フォローカメラ、ターゲット用
     Vector3 lastPosOnGround_;
 
     bool isStop_ = false;
+    bool isGameOver_ = false;
 };

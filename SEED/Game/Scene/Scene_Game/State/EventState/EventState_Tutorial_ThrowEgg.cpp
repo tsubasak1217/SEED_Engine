@@ -9,6 +9,7 @@ EventState_Tutorial_ThrowEgg::EventState_Tutorial_ThrowEgg(Scene_Base* pScene)
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
+    pPlayer_->SetIsMovable(false);
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
@@ -22,10 +23,15 @@ EventState_Tutorial_ThrowEgg::EventState_Tutorial_ThrowEgg(Scene_Base* pScene)
     textSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
 }
 
+EventState_Tutorial_ThrowEgg::~EventState_Tutorial_ThrowEgg(){
+    pPlayer_->SetIsMovable(true);
+}
+
 void EventState_Tutorial_ThrowEgg::Initialize(){
 }
 
 void EventState_Tutorial_ThrowEgg::Update(){
+
     static float alpha = 0.0f;
     static float alpha2 = 0.0f;
 

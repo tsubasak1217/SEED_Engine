@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter(){
+Player::Player(): BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
@@ -53,18 +53,18 @@ void Player::Initialize(){
     }
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f, 7.0f, 0.0f);
+    targetOffset_ = Vector3(0.0f,7.0f,0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
 
     // Json ファイルからの読み込み
     JsonCoordinator::LoadGroup("Player");
 
-    JsonCoordinator::RegisterItem("Player", "Weight", weight_);
+    JsonCoordinator::RegisterItem("Player","Weight",weight_);
 
     // 捕食可能範囲の初期化
     predationRange_ = std::make_unique<PredationRange>();
@@ -106,7 +106,7 @@ void Player::Draw(){
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
 void Player::BeginFrame(){
-    
+
     // 落下中かつジャンプ可能でないとき or ジャンプ時
     if((isDrop_ && !IsJumpable()) or isJump_){
 
@@ -126,7 +126,7 @@ void Player::BeginFrame(){
     BaseCharacter::BeginFrame();
 
     ImGui::Begin("Player");
-    ImGui::Text("dropSpeed_ : %f", dropSpeed_);
+    ImGui::Text("dropSpeed_ : %f",dropSpeed_);
     ImGui::End();
 }
 
@@ -136,24 +136,42 @@ void Player::BeginFrame(){
 void Player::EndFrame(){
     BaseCharacter::EndFrame();
     if(GetWorldTranslate().y <= 0.0f){
-        SetTranslate(StageManager::GetStartPos());
-        for(auto& collider : this->GetColliders()){
-            collider->DiscardPreCollider();
-        }
+        isGameOver_ = true;
     }
     if(!isDrop_){
         lastPosOnGround_ = GetLocalTranslate();
     }
+
+    if(isMovable_){
+        if(isGameOver_){
+            GameOver();
+            isGameOver_ = false;
+        }
+    } else{
+        //isMovable_ が false なら isGameOver_ は false にする
+        isGameOver_ = false;
+    }
 }
 
 void Player::Spawn(const Vector3& pos){
-    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this);
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this);
     state->SetSpawnPos(pos);
     ChangeState(state);
 }
 
+void Player::GameOver(){
+    { // ステージの初期化
+        StageManager::GetCurrentStage()->InitializeStatus();
+    }
+    { // プレイヤーを初期地点に戻す
+        DiscardPreCollider();
+        SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
+        UpdateMatrix();
+    }
+}
+
 void Player::ToClearStageState(const Vector3& nextStartPos){
-    ChangeState(new PlayerStage_ForNextStage(nextStartPos, this));
+    ChangeState(new PlayerStage_ForNextStage(nextStartPos,this));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -170,7 +188,7 @@ void Player::HandleMove(const Vector3& acceleration){
     }
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
     model_->UpdateMatrix();
 }
 
@@ -189,11 +207,11 @@ bool Player::CanEatEnemy(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other, ObjectType objectType){
+void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
 
-    BaseObject::OnCollision(other, objectType);
+    BaseObject::OnCollision(other,objectType);
 
     /*// ゴールに触れている状態で
     if(objectType == ObjectType::GoalField){
@@ -230,8 +248,6 @@ void Player::OnCollision(const BaseObject* other, ObjectType objectType){
 
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){
-        DiscardPreCollider();
-        SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
-        UpdateMatrix();
+        isGameOver_ = true;
     }
 }

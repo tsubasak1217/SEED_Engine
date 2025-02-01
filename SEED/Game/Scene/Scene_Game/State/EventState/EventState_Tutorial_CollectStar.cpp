@@ -10,6 +10,7 @@ EventState_Tutorial_CollectStar::EventState_Tutorial_CollectStar(Scene_Base* pSc
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
+    pPlayer_->SetIsMovable(false);
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
@@ -21,6 +22,10 @@ EventState_Tutorial_CollectStar::EventState_Tutorial_CollectStar(Scene_Base* pSc
     textSprite_->clipLT.y = spriteClipHeightOffset_;
     textSprite_->translate = {640.0f,600.0f};
     textSprite_->color = {1.0f,1.0f,1.0f,0.0f};
+}
+
+EventState_Tutorial_CollectStar::~EventState_Tutorial_CollectStar(){
+    pPlayer_->SetIsMovable(true);
 }
 
 void EventState_Tutorial_CollectStar::Initialize(){}

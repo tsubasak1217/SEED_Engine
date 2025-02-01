@@ -27,6 +27,23 @@ Stage::Stage(ISubject& subject,uint32_t stageNo)
     playerCorpseManager_->Initialize();
 }
 
+void Stage::InitializeStatus(){
+    //======================== オブジェクトの初期化 ========================//
+    // 特殊オブジェクトを nullptr に初期化
+    startObject_ = nullptr;
+    goalObject_ = nullptr;
+    starObjects_.clear();
+
+    std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    // Jsonから読み込み
+    LoadFromJson(filePath);
+
+    enemyManager_->LoadEnemies();
+
+    //======================== その他 ========================//
+    currentStarCount_ = 0;
+}
+
 void Stage::InitializeStatus(const std::string& _jsonFilePath){
     //======================== オブジェクトの初期化 ========================//
     // 特殊オブジェクトを nullptr に初期化
@@ -37,9 +54,10 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     // Jsonから読み込み
     LoadFromJson(_jsonFilePath);
 
+    enemyManager_->LoadEnemies();
+
     //======================== その他 ========================//
     currentStarCount_ = 0;
-
 }
 
 ////////////////////////////////////////////////////////////////////////

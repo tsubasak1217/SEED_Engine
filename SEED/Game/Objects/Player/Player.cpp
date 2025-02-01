@@ -27,7 +27,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player() : BaseCharacter(){
+Player::Player(): BaseCharacter(){
     className_ = "Player";
     name_ = "Player";
     Initialize();
@@ -54,18 +54,18 @@ void Player::Initialize(){
     }
 
     // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
 
     // ターゲットになる際の注目点のオフセット
-    targetOffset_ = Vector3(0.0f, 7.0f, 0.0f);
+    targetOffset_ = Vector3(0.0f,7.0f,0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle", this);
+    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
 
     // Json ファイルからの読み込み
     JsonCoordinator::LoadGroup("Player");
 
-    JsonCoordinator::RegisterItem("Player", "Weight", weight_);
+    JsonCoordinator::RegisterItem("Player","Weight",weight_);
 
     // 捕食可能範囲の初期化
     predationRange_ = std::make_unique<PredationRange>();
@@ -136,9 +136,11 @@ void Player::BeginFrame(){
 
     BaseCharacter::BeginFrame();
 
+#ifdef _DEBUG
     ImGui::Begin("Player");
-    ImGui::Text("dropSpeed_ : %f", dropSpeed_);
+    ImGui::Text("dropSpeed_ : %f",dropSpeed_);
     ImGui::End();
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -147,13 +149,20 @@ void Player::BeginFrame(){
 void Player::EndFrame(){
     BaseCharacter::EndFrame();
     if(GetWorldTranslate().y <= 0.0f){
-        SetTranslate(StageManager::GetStartPos());
-        for(auto& collider : this->GetColliders()){
-            collider->DiscardPreCollider();
-        }
+        isGameOver_ = true;
     }
     if(!isDrop_){
         lastPosOnGround_ = GetLocalTranslate();
+    }
+
+    if(isMovable_){
+        if(isGameOver_){
+            GameOver();
+            isGameOver_ = false;
+        }
+    } else{
+        //isMovable_ が false なら isGameOver_ は false にする
+        isGameOver_ = false;
     }
 }
 
@@ -162,6 +171,24 @@ void Player::Spawn(const Vector3& pos){
     growLevel_ = 1;
     state->SetSpawnPos(pos);
     ChangeState(state);
+}
+
+void Player::GameOver(){
+    { // ステージの初期化
+        StageManager::GetCurrentStage()->InitializeStatus();
+    }
+    { // プレイヤーを初期地点に戻す
+        DiscardPreCollider();
+        SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
+        UpdateMatrix();
+    }
+    {
+     growLevel_ = 1;
+    }
+    
+    { // ステートの初期化
+        currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -199,7 +226,7 @@ void Player::UpdateScaleByGrowLevel(){
 }
 
 void Player::ToClearStageState(const Vector3& nextStartPos){
-    ChangeState(new PlayerStage_ForNextStage(nextStartPos, this));
+    ChangeState(new PlayerStage_ForNextStage(nextStartPos,this));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -216,7 +243,7 @@ void Player::HandleMove(const Vector3& acceleration){
     }
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y, 0.0f, 10000.0f);
+    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
     model_->UpdateMatrix();
 }
 
@@ -235,12 +262,12 @@ bool Player::CanEatEnemy(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other, ObjectType objectType){
+void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     other;
     objectType;
     static float kUnrriValledTime = 3.0f;
 
-    BaseObject::OnCollision(other, objectType);
+    BaseObject::OnCollision(other,objectType);
 
     // 移動床に触れている状態
     if((int32_t)objectType & (int32_t)ObjectType::Move){
@@ -260,19 +287,14 @@ void Player::OnCollision(const BaseObject* other, ObjectType objectType){
 
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){
-
         if(unrivalledTime_ <= 0.0f){
-
             // 成長レベルが最低の場合、死亡
             if(growLevel_ <= 1){
-                DiscardPreCollider();
-                SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
-                UpdateMatrix();
+              isGameOver_ = true;
             } else{
                 // 小さくなる
                 StepGrowLevel(-1);
             }
-
             // 無敵時間を設定
             unrivalledTime_ = kUnrriValledTime;
         }

@@ -12,6 +12,7 @@ EventState_Tutorial_EatEnemy::EventState_Tutorial_EatEnemy(Scene_Base* pScene)
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
+    pPlayer_->SetIsMovable(false);
 
     // 敵に注目する
     pCamera_->SetTarget(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetEnemyManager()->GetEnemy(0));
@@ -30,6 +31,7 @@ EventState_Tutorial_EatEnemy::EventState_Tutorial_EatEnemy(Scene_Base* pScene)
 }
 
 EventState_Tutorial_EatEnemy::~EventState_Tutorial_EatEnemy(){
+    pPlayer_->SetIsMovable(true);
 }
 
 void EventState_Tutorial_EatEnemy::Initialize(){

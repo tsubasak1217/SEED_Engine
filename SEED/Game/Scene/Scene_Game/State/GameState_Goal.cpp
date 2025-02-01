@@ -42,11 +42,8 @@ void GameState_Goal::Initialize(){
         // 現在のステージの星の数を更新
         pStageManager->UpdateStarContOnCurrentStage();
 
-        // StageCount は 0から始まるので +1,次のステージの初期化をしたいから +1 (合計 +2)
-        uint32_t stageNo = pStageManager->GetCurrentStageNo() + 2;
-        std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
         // 次のステージの初期化
-        pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus(filePath);
+        pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
     }
 
     // 次のスタート地点

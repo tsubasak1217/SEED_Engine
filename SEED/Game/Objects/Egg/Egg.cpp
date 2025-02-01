@@ -30,7 +30,13 @@ void Egg::Initialize(){
     // model 読み込み
     model_ = std::make_unique<Model>("egg.obj");
 
-    currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
+    // 卵がないなら Player に 追従する, あるなら 最後尾の卵に追従する
+    if(eggManager_->GetIsEmpty()){
+        currentState_ = std::make_unique<EggState_Follow>(this,this->player_);
+    } else{
+        currentState_ = std::make_unique<EggState_Follow>(this,eggManager_->GetBackEgg().get());
+    }
+
 
     JsonCoordinator::RegisterItem("Egg","weight",weight_);
 
@@ -61,13 +67,14 @@ void Egg::Update(){
 }
 
 void Egg::Draw(){
+
     shadow_->Draw();
 
     BaseCharacter::Draw();
 }
 
 void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
-    BaseObject::OnCollision(other, objectType);
+    BaseObject::OnCollision(other,objectType);
 
     if(objectType == ObjectType::Field){
 

@@ -6,7 +6,7 @@ class EventState_Tutorial_CollectStar : public EventState_Base {
 public:
     EventState_Tutorial_CollectStar();
     EventState_Tutorial_CollectStar(Scene_Base* pScene);
-    ~EventState_Tutorial_CollectStar() = default;
+    ~EventState_Tutorial_CollectStar();
     void Initialize()override;
     void Update()override;
     void Draw()override;

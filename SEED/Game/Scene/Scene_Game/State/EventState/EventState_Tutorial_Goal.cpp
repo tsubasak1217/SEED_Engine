@@ -12,6 +12,7 @@ EventState_Tutorial_Goal::EventState_Tutorial_Goal(Scene_Base* pScene)
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
+    pPlayer_->SetIsMovable(false);
 
     // ゴールに注目し、補間を遅く設定
     pCamera_->SetTarget(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetGoalObject());
@@ -30,6 +31,7 @@ EventState_Tutorial_Goal::EventState_Tutorial_Goal(Scene_Base* pScene)
 }
 
 EventState_Tutorial_Goal::~EventState_Tutorial_Goal(){
+    pPlayer_->SetIsMovable(true);
 }
 
 void EventState_Tutorial_Goal::Initialize(){

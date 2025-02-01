@@ -35,6 +35,7 @@ public:
     void UpdateScaleByGrowLevel();
     void ToClearStageState(const Vector3& nextStartPos);
 private:
+    void GameOver();
 
 public: // Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration) override;
@@ -59,6 +60,9 @@ public: // アクセッサ
 
     PredationRange* GetPredationRange(){ return predationRange_.get(); }
 
+    bool GetIsGameOver()const{ return isGameOver_; }
+    void SetIsGameOver(bool isGameOver){ isGameOver_ = isGameOver; }
+      
     void StepGrowLevel(int32_t step){ growLevel_ += step; }
     void SetGrowLevel(int32_t level){ growLevel_ = level; }
 
@@ -88,4 +92,5 @@ private: // フォローカメラ、ターゲット用
     int32_t growLevel_ = 1;
 
     bool isStop_ = false;
+    bool isGameOver_ = false;
 };

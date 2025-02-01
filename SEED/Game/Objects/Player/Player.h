@@ -28,7 +28,7 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
-
+    void BeginFrame() override;
     void EndFrame() override;
 
     void Spawn(const Vector3& pos);
@@ -80,4 +80,6 @@ private: // フォローカメラ、ターゲット用
 
     // 最後に地面についていた位置
     Vector3 lastPosOnGround_;
+
+    bool isStop_ = false;
 };

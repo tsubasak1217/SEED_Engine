@@ -41,7 +41,6 @@ public:
 
     const EnemyManager* GetManager()const{ return pManager_; }
 
-    void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
     int32_t GetHP()const{ return HP_; }
     void SetHP(int32_t hp){ HP_ = hp; }
 

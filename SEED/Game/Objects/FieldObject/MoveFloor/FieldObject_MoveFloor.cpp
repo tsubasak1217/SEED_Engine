@@ -22,7 +22,7 @@ FieldObject_MoveFloor::FieldObject_MoveFloor(RoutineManager& routineManager) :
 
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    InitColliders(ObjectType::MoveFloor);
 
     // 全般の初期化
     Initialize();

@@ -91,16 +91,42 @@ void Model::UpdateMatrix(){
         rotateQuat_ = Quaternion::ToQuaternion(rotate_);// 切り替えても大丈夫なように同期させておく
     }
 
-    // ワールド変換行列を求める
+    // ワールド行列の更新
     if(parent_){
-        worldMat_ = Multiply(localMat_,parent_->worldMat_);
+
+        Matrix4x4 parentMat = parent_->worldMat_;
+
+        if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
+            worldMat_ = localMat_ * (parentMat);
+            return;
+        } else{
+
+            Matrix4x4 cancelMat = IdentityMat4();
+
+            // 親の行列から取り出した要素を打ち消す行列を作成
+            if(!isParentScale_){
+                Vector3 inverseScale = Vector3(1.0f, 1.0f, 1.0f) / ExtractScale(parentMat);
+                cancelMat = cancelMat * ScaleMatrix(inverseScale);
+            }
+
+            if(!isParentRotate_){
+                Vector3 inverseRotate = ExtractRotation(parentMat) * -1.0f;
+                cancelMat = cancelMat * RotateMatrix(inverseRotate);
+            }
+
+            if(!isParentTranslate_){
+                Vector3 inverseTranslate = ExtractTranslation(parentMat) * -1.0f;
+                cancelMat = cancelMat * TranslateMatrix(inverseTranslate);
+            }
+
+            Matrix4x4 canceledMat = cancelMat * parentMat;
+            //worldMat_ = (localMat_ * parentMat) * cancelMat;
+            worldMat_ = localMat_ * canceledMat;
+
+        }
+
     } else{
         worldMat_ = localMat_;
-    }
-
-    // 親のワールド変換行列を掛ける
-    if(parent_){
-        worldMat_ = Multiply(worldMat_,parent_->worldMat_);
     }
 }
 

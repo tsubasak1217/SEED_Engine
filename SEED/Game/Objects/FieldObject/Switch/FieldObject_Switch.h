@@ -32,6 +32,13 @@ public:
 
     // 更新関数
     void Update() override;
+    // 描画関数
+    void Draw() override;
+
+    // 開始時処理
+    void BeginFrame() override;
+    // 終了時処理
+    void EndFrame() override;
 
     // ImGui表示関数
     void ShowImGui() override;
@@ -76,6 +83,12 @@ public:
     // Observerのリストを取得
     std::vector<IObserver*>& GetObservers(){ return observers_; }
 
+    // 必要な重量
+    void SetRequiredWeight(int weight){ requiredWeight_ = weight; }
+    int GetRequiredWeight()const{ return requiredWeight_; }    
+    int* GetRequiredWeightPtr(){ return &requiredWeight_; }
+
+
 private:
     // Observerリスト
     std::vector<IObserver*> observers_;
@@ -98,4 +111,8 @@ private:
     // 衝突状態を追跡する変数
     bool isColliding_ = false;            // 現在衝突しているか
     bool wasCollidingLastFrame_ = false;  // 前フレームで衝突していたか
+
+    // 押すのに必要な重量
+    int requiredWeight_;// 管理しやすくするためにint型で管理
+    float currentWeight_;// 触れているオブジェクトの総重量はfloat型で管理
 };

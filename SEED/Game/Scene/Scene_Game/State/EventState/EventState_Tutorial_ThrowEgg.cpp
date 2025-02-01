@@ -74,6 +74,7 @@ void EventState_Tutorial_ThrowEgg::Update(){
     // テキストの進行が終了したら
     if(textStep_ >= textStepMax_){
         if(time_ < 0.0f){
+            pGameScene_->Get_pPlayer()->SetIsMovable(true);
             pGameScene_->EndEvent();
         }
     }

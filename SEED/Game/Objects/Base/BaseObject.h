@@ -177,4 +177,15 @@ protected:
     float weight_ = 1.f;
     Vector3 velocity_ = { 0.f,0.f,0.f };
 
+    ////////////////////////////////////////////////////////////////////////////
+    // 後で消す↓
+    ////////////////////////////////////////////////////////////////////////////
+
+protected:// スイッチを押すためのパラメータ(めんどいのでここに追加する、すまん)---------------
+    float switchPushWeight_ = 1.0f;
+
+public:
+    // スイッチを押すためのパラメータ
+    void SetSwitchPushWeight(float weight){ switchPushWeight_ = weight; }
+    float GetSwitchPushWeight()const{ return switchPushWeight_; }
 };

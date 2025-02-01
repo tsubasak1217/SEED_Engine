@@ -51,7 +51,7 @@ public:
 
 protected:
     virtual void UpdateBox();
-    void PushBack(Collider* collider1,Collider* collider2, CollisionData collisionData);
+    void PushBack(Collider* collider1, Collider* collider2, CollisionData collisionData);
     bool CanSkipPushBack(ObjectType objectType);
 public:
     void AddSkipPushBackType(ObjectType objectType);
@@ -160,4 +160,5 @@ protected:// コライダーが動く場合のアニメーションデータ----
     bool isLoop_ = false;
     bool isEditorLoop_ = true;
     bool isEdit_ = false;
+
 };

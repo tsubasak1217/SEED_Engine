@@ -84,6 +84,7 @@ void EventState_Tutorial_Goal::Update(){
             // カメラのターゲットと補間速度をプレイヤーに戻し終了
             pCamera_->SetTarget(pPlayer_);
             pCamera_->SetInterpolationRate(0.15f);
+            pGameScene_->Get_pPlayer()->SetIsMovable(true);
             pGameScene_->EndEvent();
         }
     }

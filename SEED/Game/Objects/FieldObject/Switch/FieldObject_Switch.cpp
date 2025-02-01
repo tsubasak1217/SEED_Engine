@@ -49,28 +49,85 @@ void FieldObject_Switch::Initialize(){
 // 更新関数
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::Update(){
-    if (switchType_ == SwitchType::TYPE_TRIGGER){
+
+    FieldObject::Update();
+}
+
+////////////////////////////////////////////////////////////////////
+// 描画関数
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::Draw(){
+
+    // 重さに応じてマテリアルを変更
+    int leftrequiredWeight = std::clamp(int((float)requiredWeight_ - currentWeight_),0,100);
+
+    // 重さに応じて色を変更
+    switch(leftrequiredWeight){
+    case 0:// 緑
+        model_->color_ = { 0.0f,1.0f,0.0f,1.0f };
+        break;
+    case 1:// 黄
+        model_->color_ = { 1.0f,1.0f,0.0f,1.0f };
+        break;
+
+    case 2:// オレンジ
+        model_->color_ = { 1.0f,0.5f,0.0f,1.0f };
+        break;
+
+    default:// 赤
+        model_->color_ = { 1.0f,0.0f,0.0f,1.0f };
+        break;
+    }
+
+    FieldObject::Draw();
+}
+
+////////////////////////////////////////////////////////////////////
+// 開始時のフレーム処理
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::BeginFrame(){
+    FieldObject::BeginFrame();
+
+    ///////////////////////////////////////////////////////
+    // 初期化前にフラグに応じて処理を行う
+    ///////////////////////////////////////////////////////
+    if(switchType_ == SwitchType::TYPE_TRIGGER){
         // Trigger タイプの処理
-        if (isColliding_ && !wasCollidingLastFrame_){
+        if(isColliding_ && !wasCollidingLastFrame_){
             Toggle();
         }
-    } else if (switchType_ == SwitchType::TYPE_HELD){
+    } else if(switchType_ == SwitchType::TYPE_HELD){
         // Held タイプの処理
-        if (isColliding_ && !isActivated_){
+        if(isColliding_ && !isActivated_){
             isActivated_ = true;
             Notify("SwitchActivated");
-        } else if (!isColliding_ && isActivated_){
+        } else if(!isColliding_ && isActivated_){
             isActivated_ = false;
             Notify("SwitchDeactivated");
         }
     }
 
+    ///////////////////////////////////////////////////////
+    // 開始時の初期化
+    ///////////////////////////////////////////////////////
     // 前フレームの衝突状態を更新
     wasCollidingLastFrame_ = isColliding_;
     // 現在の衝突状態をリセット
     isColliding_ = false;
+    currentWeight_ = 0.0f;
+    model_->color_ = { 1.0f,1.0f,1.0f,1.0f };
+}
 
-    FieldObject::Update();
+////////////////////////////////////////////////////////////////////
+// 終了時のフレーム処理
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::EndFrame(){
+    FieldObject::EndFrame();
+
+    // 必要重量を満たしていればスイッチをオンにする
+    if((int)currentWeight_ >= requiredWeight_){
+        isColliding_ = true;
+    }
 }
 
 
@@ -84,7 +141,7 @@ void FieldObject_Switch::ShowImGui(){
     bool isHeld = (switchType_ == SwitchType::TYPE_HELD);
 
     // チェックボックスの描画
-    if (ImGui::Checkbox("Held", &isHeld)){
+    if(ImGui::Checkbox("Held", &isHeld)){
         // チェックボックスの状態が変更されたらSwitchTypeを更新
         switchType_ = isHeld ? SwitchType::TYPE_HELD : SwitchType::TYPE_TRIGGER;
     }
@@ -103,8 +160,8 @@ void FieldObject_Switch::UnregisterObserver(IObserver* observer){
 }
 
 void FieldObject_Switch::Notify(const std::string& event, void* data){
-    for (auto& observer : observers_){
-        if (observer){
+    for(auto& observer : observers_){
+        if(observer){
             observer->OnNotify(event, data);
         }
     }
@@ -114,11 +171,11 @@ void FieldObject_Switch::Notify(const std::string& event, void* data){
 // Collision 用関数
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
-    if (objectType != ObjectType::Player){
-        return;
+    // 重さを加算
+    if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse){
+        currentWeight_ += other->GetSwitchPushWeight();
     }
 
-    isColliding_ = true;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -135,7 +192,7 @@ void FieldObject_Switch::Toggle(){
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::AddAssociatedDoor(FieldObject_Door* door){
     // 重複登録を防ぐ
-    if (std::find(associatedDoors_.begin(), associatedDoors_.end(), door) == associatedDoors_.end()){
+    if(std::find(associatedDoors_.begin(), associatedDoors_.end(), door) == associatedDoors_.end()){
         associatedDoors_.push_back(door);
     }
 }
@@ -144,7 +201,7 @@ void FieldObject_Switch::RemoveAssociatedDoor(FieldObject_Door* door){
     auto it = std::remove_if(
         associatedDoors_.begin(),
         associatedDoors_.end(),
-        [door] (FieldObject_Door* existingDoor){
+        [door](FieldObject_Door* existingDoor){
             return existingDoor == door;
         }
     );
@@ -160,7 +217,7 @@ std::vector<FieldObject_Door*>& FieldObject_Switch::GetAssociatedDoors(){
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::AddAssociatedMoveFloor(FieldObject_MoveFloor* moveFloor){
     // 重複登録を防ぐ
-    if (std::find(associatedMoveFloors_.begin(), associatedMoveFloors_.end(), moveFloor) == associatedMoveFloors_.end()){
+    if(std::find(associatedMoveFloors_.begin(), associatedMoveFloors_.end(), moveFloor) == associatedMoveFloors_.end()){
         associatedMoveFloors_.push_back(moveFloor);
     }
 }
@@ -169,7 +226,7 @@ void FieldObject_Switch::RemoveAssociatedMoveFloor(FieldObject_MoveFloor* moveFl
     auto it = std::remove_if(
         associatedMoveFloors_.begin(),
         associatedMoveFloors_.end(),
-        [moveFloor] (FieldObject_MoveFloor* existingMoveFloor){
+        [moveFloor](FieldObject_MoveFloor* existingMoveFloor){
             return existingMoveFloor == moveFloor;
         }
     );

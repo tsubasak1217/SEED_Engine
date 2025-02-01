@@ -348,6 +348,13 @@ void Stage::LoadFromJson(const std::string& filePath){
                         std::cerr << "Warning: 'associatedDoors' is not an array. Skipping associatedDoors." << std::endl;
                     }
                 }
+
+                // 要求重量の設定
+                if(modelJson.contains("requiredWeight")){
+                    sw->SetRequiredWeight(modelJson["requiredWeight"].get<int>());
+                } else{
+                    sw->SetRequiredWeight(1);
+                }
             }
             // 移動する床の場合、ルーチン名を設定
             else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(newObj)){

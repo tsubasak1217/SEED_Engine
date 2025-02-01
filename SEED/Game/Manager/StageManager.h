@@ -49,6 +49,7 @@ private:
 
 public:
     void SetPlayer(Player* pPlayer);
+    Player* GetPlayerPtr(){ return pPlayer_; }
     static int32_t GetStageCount(){ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     static Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }

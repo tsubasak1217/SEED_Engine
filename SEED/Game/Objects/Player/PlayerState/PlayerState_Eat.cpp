@@ -40,6 +40,8 @@ void PlayerState_Eat::Initialize(const std::string& stateName,BaseCharacter* pla
         Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         // 捕食対象リストの先頭を取得(一番近い敵)
         enemy_ = pPlayer->GetPredationRange()->GetPreyList().front().enemy;
+        // プレイヤーの成長レベルを上げる
+        pPlayer->StepGrowLevel(1);
     }
 
     {

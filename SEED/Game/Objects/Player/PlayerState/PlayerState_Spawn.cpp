@@ -9,10 +9,10 @@
 #include "Egg/Egg.h"
 #include "Player/Player.h"
 #include "PlayerCorpse/PlayerCorpse.h"
+// camera
+#include "Camera/FollowCamera.h"
 //manager
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
-
-//manager
 #include "ClockManager.h"
 
 PlayerState_Spawn::PlayerState_Spawn(){}
@@ -63,6 +63,10 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
         egg_->ChangeState(new EggState_Idle(egg_));
     }
+
+    // カメラのターゲットをplayerに
+    FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+    pCamera->SetTarget(pPlayer);
 }
 
 void PlayerState_Spawn::Update(){}

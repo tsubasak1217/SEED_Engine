@@ -1,12 +1,14 @@
 #include "Scene_Clear.h"
 
+//states
+#include "State/ClearState_Enter.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 // コンストラクタ・デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-Scene_Clear::Scene_Clear(){
-}
+Scene_Clear::Scene_Clear(){}
 
 Scene_Clear::~Scene_Clear(){}
 
@@ -16,7 +18,25 @@ Scene_Clear::~Scene_Clear(){}
 // 初期化
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Clear::Initialize(){}
+void Scene_Clear::Initialize(){
+    //=========================== dinosaur =======================//
+    dinosaur_ = std::make_unique<Model>();
+    dinosaur_ = std::make_unique<Model>("dinosaur.gltf");
+    dinosaur_->UpdateMatrix();
+    dinosaur_->isRotateWithQuaternion_ = false;
+    dinosaur_->isParentScale_ = false;
+
+    //=========================== egg ===========================//
+    egg_ = std::make_unique<Model>();
+    egg_ = std::make_unique<Model>("egg.gltf");
+    egg_->UpdateMatrix();
+    egg_->isRotateWithQuaternion_ = false;
+    egg_->isParentScale_ = false;
+
+    //=========================== state =========================//
+    currentState_ = std::make_unique<ClearState_Enter>(this);
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -31,6 +51,11 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
+    //=========================== Object =======================//
+    dinosaur_->Update();
+    egg_->Update();
+
+    //=========================== State =======================//
     if(currentState_){
         currentState_->Update();
     }
@@ -42,6 +67,11 @@ void Scene_Clear::Update(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Draw(){
+    //=========================== Object =======================//
+    dinosaur_->Draw();
+    egg_->Draw();
+
+    //=========================== State =======================//
     if(currentState_){
         currentState_->Draw();
     }

@@ -45,9 +45,12 @@ StageManager::~StageManager(){}
 void StageManager::Initialize(){
     LoadStages();
 
-    JsonCoordinator::LoadGroup("UserStarCount");
+    JsonCoordinator::LoadGroup("UserProgress");
+    std::string stageLabel;
     for(int i = 0; i < getStarCounts_.size(); ++i){
-        JsonCoordinator::RegisterItem("UserStarCount","Stage_" + std::to_string(i),getStarCounts_[i]);
+        stageLabel = "Stage" + std::to_string(i);
+        JsonCoordinator::RegisterItem("UserProgress",stageLabel + "_ClearState",clearStatus_[i]);
+        JsonCoordinator::RegisterItem("UserProgress",stageLabel + "_StarCount",getStarCounts_[i]);
     }
 }
 
@@ -56,7 +59,7 @@ void StageManager::Initialize(){
 ///////////////////////////////////////////////////////////////////////
 void StageManager::Finalize(){
     //星の獲得状況を保存
-    JsonCoordinator::SaveGroup("UserStarCount");
+    JsonCoordinator::SaveGroup("UserProgress");
 }
 
 ///////////////////////////////////////////////////////////////////////

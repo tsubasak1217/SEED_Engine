@@ -1,15 +1,11 @@
 #pragma once
 #include "State_Base.h"
 
-//objec
-#include "Sprite.h"
+class Input;
 
-class GameState_Enter
-    : public State_Base{
+class ClearState_Main :
+    public State_Base{
 public:
-    GameState_Enter(Scene_Base* _host);
-    ~GameState_Enter();
-
     void Initialize()override;
     void Update()override;
     void Draw()override;
@@ -20,8 +16,4 @@ public:
     void HandOverColliders()override;
     void ManageState()override;
 private:
-    // フェード用
-    std::unique_ptr<Sprite> whiteScreen_ = nullptr;
-    float fadeTime_ = 0.6f;
-    float fadeTimer_ = 0.f;
 };

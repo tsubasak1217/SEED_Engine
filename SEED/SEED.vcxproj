@@ -112,6 +112,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Main.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Out.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Out.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Enter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp" />
     <ClCompile Include="Game\UI\EggTimerUI.cpp" />
@@ -276,6 +280,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Enter.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />

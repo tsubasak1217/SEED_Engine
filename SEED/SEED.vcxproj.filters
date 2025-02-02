@@ -751,6 +751,24 @@
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp">
       <Filter>Game\Objects\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Enter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Out.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Out.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1367,6 +1385,12 @@
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Enter.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

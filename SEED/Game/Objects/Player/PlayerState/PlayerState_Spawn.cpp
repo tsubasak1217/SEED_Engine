@@ -22,6 +22,8 @@ PlayerState_Spawn::~PlayerState_Spawn(){}
 
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
+
+    pCharacter_->SetAnimation("born",false);
 }
 
 void PlayerState_Spawn::Update(){
@@ -31,8 +33,7 @@ void PlayerState_Spawn::Update(){
 void PlayerState_Spawn::Draw(){}
 
 void PlayerState_Spawn::ManageState(){
-    // 死体を 置く
-    {
+    if(pCharacter_->GetIsEndAnimation()){
         Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
         pCorpse->Initialize();
@@ -44,11 +45,8 @@ void PlayerState_Spawn::ManageState(){
         pCharacter_->SetTranslate(spawnPos_);
         pPlayer->SetPrePos(spawnPos_);
         pCharacter_->DiscardPreCollider();
+        pPlayer->UpdateMatrix();
 
-        for(auto& collider: pPlayer->GetColliders()){
-            collider->DiscardPreCollider();
-        }
+        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
     }
-
-    pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
 }

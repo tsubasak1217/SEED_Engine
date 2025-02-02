@@ -53,13 +53,12 @@ void GameState_Goal::Initialize(){
     {
         EggManager* eggManager = pPlayer_->GetEggManager();
 
-        // 卵がないなら生成
-        if(eggManager->GetIsEmpty()){
-            std::unique_ptr<Egg> newEgg = std::make_unique<Egg>(pPlayer_);
-            newEgg->Initialize();
-            eggManager->AddEgg(newEgg);
-        }
+        eggManager->InitializeEggCount();
+
         pEgg_ = eggManager->GetFrontEgg().get();
+        pEgg_->DiscardPreCollider();
+        pEgg_->SetTranslate(pPlayer_->GetWorldTranslate());
+        pEgg_->UpdateMatrix();
 
         ThrowEggForNextStageInitialize();
     }
@@ -90,6 +89,7 @@ void GameState_Goal::ManageState(){
         pEgg_->ChangeState(new EggState_Break(pEgg_,true));
     }
     if(pEgg_->GetIsBreak()){
+        pPlayer_->GetEggManager()->InitializeEggCount();
         pScene_->ChangeState(new GameState_Play(pScene_));
     }
 }

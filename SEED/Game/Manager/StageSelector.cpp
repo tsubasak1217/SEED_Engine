@@ -13,6 +13,7 @@
 StageSelector::StageSelector(StageManager* stageManager,FollowCamera* camera){
     pStageManager_ = stageManager;
     pCamera_ = camera;
+    pCamera_->SetInterpolationRate(0.075f);
     Initialize();
 }
 

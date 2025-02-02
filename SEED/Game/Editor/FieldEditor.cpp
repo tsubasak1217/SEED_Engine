@@ -196,7 +196,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
             }
 
             //移動する床の場合、ルーチン名を保存
-            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(modelObj)){
+            else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(modelObj)){
                 modelJson["routineName"] = moveFloor->GetRoutineName();
                 modelJson["moveSpeed"] = moveFloor->GetMoveSpeed();
             }
@@ -341,7 +341,7 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
     // マウスのボタンが離されたらオブジェクトを追加
     if(Input::IsReleaseMouse(MOUSE_BUTTON::RIGHT)){
         auto& stage = manager_.GetStages()[edittingStageIndex];
-        stage->AddModel(objectType, nlohmann::json(), {kBlockScale, kBlockScale, kBlockScale}, {0.0f,0.0f,0.0f}, putPos);
+        stage->AddModel(objectType, nlohmann::json(), { kBlockScale, kBlockScale, kBlockScale }, { 0.0f,0.0f,0.0f }, putPos);
         isEdit = false;
     }
 }
@@ -409,12 +409,12 @@ void FieldEditor::ShowImGui(){
         if(ImGui::Checkbox("isEditing", &isEditing_)){
             SEED::SetCamera("debug");
             SEED::GetCamera()->SetTranslation(manager_.GetPlayerPtr()->GetWorldTranslate());
-        }
 
-        if(isEditing_){
-            manager_.GetPlayerPtr()->SetIsMovable(false);
-        } else{
-            manager_.GetPlayerPtr()->SetIsMovable(true);
+            if(isEditing_){
+                manager_.GetPlayerPtr()->SetIsMovable(false);
+            } else{
+                manager_.GetPlayerPtr()->SetIsMovable(true);
+            }
         }
 
         ImGui::SameLine();
@@ -600,7 +600,7 @@ void FieldEditor::ShowImGui(){
 
                 // [A] スイッチの場合の設定
                 if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
-                     
+
                     // 「ドア割り当て」モード開始
                     assigningSwitch = sw;
 
@@ -610,8 +610,8 @@ void FieldEditor::ShowImGui(){
                     }
 
                     // 関連付けされている動く床を黄色くする
-                    for (auto* moveFloor : sw->GetAssociatedMoveFloors()){
-                        moveFloor->SetColor({1.f, 1.f, 0.f, 1.f});
+                    for(auto* moveFloor : sw->GetAssociatedMoveFloors()){
+                        moveFloor->SetColor({ 1.f, 1.f, 0.f, 1.f });
                     }
 
                     // 必要重量の設定
@@ -732,11 +732,11 @@ void FieldEditor::ShowImGui(){
                 }
 
                 // イベントエリアの場合、イベント内容を設定
-                if (auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)) {
+                if(auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)){
                     ImGui::Separator();
                     ImGui::Text("EventArea Settings");
                     ImGui::Separator();
-                    
+
                     // EventFunctionTableの関数名をドロップダウンで表示・選択(unordered_map)
                     static int selectedEventIndex = 0;
                     static std::vector<std::string> eventNames;
@@ -778,7 +778,7 @@ void FieldEditor::ShowImGui(){
                 ImGui::Separator();
 
                 // [D] オブジェクト削除
-                if(ImGui::Button("Remove Selected Model")||Input::IsTriggerKey(DIK_ESCAPE)){
+                if(ImGui::Button("Remove Selected Model") || Input::IsTriggerKey(DIK_ESCAPE)){
                     if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
                         FieldObject* objToRemove = objects[selectedObjIndex].get();
 
@@ -816,7 +816,7 @@ void FieldEditor::ShowImGui(){
         int clickedIndex = GetObjectIndexByMouse(objects);
         if(clickedIndex >= 0){
             auto* clickedObj = dynamic_cast<FieldObject*>(objects[clickedIndex].get());
-           
+
             // ドアをクリックした場合
             if(auto* door = dynamic_cast<FieldObject_Door*>(clickedObj)){
                 // ドアが既にスイッチを持っている場合 = 解除
@@ -833,14 +833,14 @@ void FieldEditor::ShowImGui(){
             }
 
             //動く床をクリックした場合
-            else if (auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(clickedObj)){
+            else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(clickedObj)){
                 //動く床がすでにスイッチを持っている場合解除
-                if (moveFloor->GetHasSwitch()){
+                if(moveFloor->GetHasSwitch()){
                     assigningSwitch->RemoveAssociatedMoveFloor(moveFloor);
                     moveFloor->RemoveSwitch(assigningSwitch);
                 }
                 //未設定なら紐付け
-                else if (assigningSwitch){
+                else if(assigningSwitch){
                     assigningSwitch->AddAssociatedMoveFloor(moveFloor);
                     moveFloor->SetSwitch(assigningSwitch);
                     assigningSwitch = nullptr;
@@ -901,7 +901,7 @@ void FieldEditor::AddEnemyByMouse(){
         if(enemyManager){
             // 新規敵を追加
             const std::string newEnemyName = "enemy" + std::to_string(enemyManager->GetEnemies().size());
-           std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, enemyManager->GetPlayer(), newEnemyName);
+            std::unique_ptr<Enemy> newEnemy = std::make_unique<Enemy>(enemyManager, enemyManager->GetPlayer(), newEnemyName);
             newEnemy->SetTranslate(putPos);
             enemyManager->AddEnemy(std::move(newEnemy));
         }

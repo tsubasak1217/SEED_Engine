@@ -9,7 +9,7 @@
 class EggState_Break :
     public ICharacterState{
 public:
-    EggState_Break(BaseCharacter* character,bool breakToNextStage = false);
+    EggState_Break(BaseCharacter* character);
     ~EggState_Break();
 
     void Initialize(const std::string& stateName,BaseCharacter* character)override;
@@ -22,8 +22,6 @@ private:
     BaseCharacter* deadPlayer_ = nullptr;
 
     std::unique_ptr<EggTimerUI> timerUi_ = nullptr;
-
-    bool breakToNextStage_ = false;
 
     float breakTime_ = 1.0f;
     float leftTime_ = 0.0f;

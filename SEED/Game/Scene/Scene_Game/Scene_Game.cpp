@@ -203,17 +203,10 @@ void Scene_Game::Update(){
         currentState_->Update();
     }
 
-    /*
-    各 コンストラクタ,デストラクタで 条件を 管理
-    Player::GameOverが Stageを読み直す処理をしているため
-    SelectState で GameOverしないために isMobavle でも 管理しているため,ここで 更新すると不都合が生じるため移動
-     if(currentEventState_){
-        currentEventState_->Update();
-        player_->SetIsMovable(false);
-    }
-    */
     if(currentEventState_){
-        currentEventState_->Update();
+        if(!isPaused_){
+            currentEventState_->Update();
+        }
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
@@ -257,12 +250,14 @@ void Scene_Game::Draw(){
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if(currentState_){
-        currentState_->Draw();
+    if(currentEventState_){
+        if(!isPaused_){
+            currentEventState_->Draw();
+        }
     }
 
-    if(currentEventState_){
-        currentEventState_->Draw();
+    if(currentState_){
+        currentState_->Draw();
     }
 
     /*======================== スプライトの描画 =======================*/

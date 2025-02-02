@@ -105,6 +105,6 @@ void PlayerStage_ForNextStage::Draw(){
 void PlayerStage_ForNextStage::ManageState(){
     if(!preIsThrow_ && isThrow_){
         egg_->SetTranslate(nextStartPos_);
-        egg_->ChangeState(new EggState_Break(egg_,true));
+        egg_->ChangeState(new EggState_Break(egg_));
     }
 }

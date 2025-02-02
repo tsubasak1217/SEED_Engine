@@ -16,6 +16,7 @@
 class IPlayerState;
 // manager
 class PlayerCorpseManager;
+class Egg;
 class EggManager;
 class EnemyManager;
 class PredationRange;
@@ -31,7 +32,7 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
 
-    void Spawn(const Vector3& pos);
+    void Spawn(Egg* _egg);
     void UpdateScaleByGrowLevel();
     void ToClearStageState(const Vector3& nextStartPos);
 private:

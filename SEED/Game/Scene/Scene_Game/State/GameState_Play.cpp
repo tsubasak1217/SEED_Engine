@@ -52,6 +52,9 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
 
     // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
+
+    // イベントシーンがあれば終了
+    pGameScene_->EndEvent();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -79,13 +82,6 @@ void GameState_Play::Update(){
 
     // フィールドのコライダーエディター
     fieldColliderEditor_->Edit();
-
-    // プレイヤーの移動を有効・無効に
-    if(fieldEditor_->GetIsEditing()){
-        pGameScene_->Get_pPlayer()->SetIsMovable(false);
-    } else{
-        pGameScene_->Get_pPlayer()->SetIsMovable(true);
-    }
 
 #endif // _DEBUG
 }

@@ -99,12 +99,29 @@ void FieldObject_MoveFloor::ShowImGui(){
 // Observerの関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    if (event == "SwitchActivated"){
+    // Switch や Lever からの Activated/Deactivated を捕まえて床を動かす
+    // イベントが違うなら無視
+    if (event != "SwitchActivated" && event != "SwitchDeactivated"
+        && event != "LeverActivated" && event != "LeverDeactivated"){
+        return;
+    }
+
+     if (data != nullptr){
+         if (data != static_cast<void*>(this)){
+             return; // 自分へのイベントじゃなければ無視
+         }
+     }
+
+    // Activated イベントなら動作開始
+    if (event == "SwitchActivated" || event == "LeverActivated"){
         isSwitchActive_ = true;
-    } else if (event == "SwitchDeactivated"){
+    }
+    // Deactivated イベントなら動作停止
+    else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
         isSwitchActive_ = false;
     }
 }
+
 
 /* private =============================================================*/
 

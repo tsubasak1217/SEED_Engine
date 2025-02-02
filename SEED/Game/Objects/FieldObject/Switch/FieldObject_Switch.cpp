@@ -29,8 +29,6 @@ FieldObject_Switch::FieldObject_Switch(){
 // 描画前処理
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::BeginFrame(){
-    // 基底クラスの BeginFrame() を呼ぶ（重さをリセット＆判定などを行う）
-    FieldObject_Activator::BeginFrame();
 
     // 「重さにより押されている（= isColliding_）場合に起動、そうでなければ停止」
     if (isColliding_ && !isActivated_){
@@ -42,4 +40,6 @@ void FieldObject_Switch::BeginFrame(){
         isActivated_ = false;
         Notify("SwitchDeactivated");
     }
+    // 基底クラスの BeginFrame() を呼ぶ（重さをリセット＆判定などを行う）
+    FieldObject_Activator::BeginFrame();
 }

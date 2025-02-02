@@ -111,21 +111,28 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    // SwitchActivated・SwitchDeactivated イベントの場合、データがあるなら自分自身か確認
-    if ((event == "SwitchActivated" || event == "SwitchDeactivated") && data != nullptr){
+    // もし「SwitchActivated」「SwitchDeactivated」「LeverActivated」「LeverDeactivated」以外のイベントなら無視
+    // （複数のイベントを扱う可能性があるなら下記条件は自由に変更）
+    if (event != "SwitchActivated" && event != "SwitchDeactivated"
+        && event != "LeverActivated" && event != "LeverDeactivated"){
+        return;
+    }
+
+    if (data != nullptr){
         if (data != static_cast< void* >(this)){
-            return; // データがあり、自分自身でない場合は無視
+            // ドア自身に向けたイベントでなければ無視
+            return;
         }
     }
 
-    // ドアが完全に閉じている状態かどうかを確認して開く操作を行う
-    if (event == "SwitchActivated"){
+    // ドアが完全に閉じている状態（ClosedState）なら開く
+    if (event == "SwitchActivated" || event == "LeverActivated"){
         if (dynamic_cast< ClosedState* >(currentState_.get())){
             SetIsOpened(true);
         }
     }
-    // ドアが完全に開いている状態かどうかを確認して閉じる操作を行う
-    else if (event == "SwitchDeactivated"){
+    // ドアが完全に開いている状態（OpenedState）なら閉じる
+    else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
         if (dynamic_cast< OpenedState* >(currentState_.get())){
             SetIsOpened(false);
         }

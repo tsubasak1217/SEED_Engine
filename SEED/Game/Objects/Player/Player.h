@@ -65,6 +65,7 @@ public: // アクセッサ
       
     void StepGrowLevel(int32_t step){ growLevel_ += step; }
     void SetGrowLevel(int32_t level){ growLevel_ = level; }
+    int32_t GetGrowLevel()const{ return growLevel_; }
 
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }

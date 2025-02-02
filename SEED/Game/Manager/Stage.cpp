@@ -61,6 +61,11 @@ void Stage::Update(){
     for(auto& fieldObject : fieldObjects_){
         // 通常のオブジェクト
         fieldObject->Update();
+
+        // woodだったらコライダーを編集
+        if(FieldObject_Wood* wood = dynamic_cast<FieldObject_Wood*>(fieldObject.get())){
+            fieldObject->EditCollider();
+        }
     }
 
     // 敵の更新
@@ -485,6 +490,62 @@ void Stage::AddModel(
             }
 
             break;
+
+        case FIELDMODEL_POINTLIGHT:
+            newObj = std::make_unique<FieldObject_PointLight>();
+
+            if(json.contains("color")){
+                FieldObject_PointLight* pointLight = dynamic_cast<FieldObject_PointLight*>(newObj.get());
+                pointLight->pointLight_->color_ = json["color"];
+            }
+
+            if(json.contains("intensity")){
+                FieldObject_PointLight* pointLight = dynamic_cast<FieldObject_PointLight*>(newObj.get());
+                pointLight->pointLight_->intensity = json["intensity"];
+            }
+
+            if(json.contains("radius")){
+                FieldObject_PointLight* pointLight = dynamic_cast<FieldObject_PointLight*>(newObj.get());
+                pointLight->pointLight_->radius = json["radius"];
+            }
+
+            if(json.contains("decay")){
+                FieldObject_PointLight* pointLight = dynamic_cast<FieldObject_PointLight*>(newObj.get());
+                pointLight->pointLight_->decay = json["decay"];
+            }
+
+            break;
+
+        case FIELD_MODEL_PLANT:
+            newObj = std::make_unique<FieldObject_Plant>();
+            if(json.contains("isBloomFlower")){
+                FieldObject_Plant* plant = dynamic_cast<FieldObject_Plant*>(newObj.get());
+                plant->isBloomFlower_ = json["isBloomFlower"];
+            }
+            if(json.contains("flowerVolume")){
+                FieldObject_Plant* plant = dynamic_cast<FieldObject_Plant*>(newObj.get());
+                plant->flowerVolume_ = json["flowerVolume"];
+            }
+            if(json.contains("flowerColor")){
+                FieldObject_Plant* plant = dynamic_cast<FieldObject_Plant*>(newObj.get());
+                plant->flowerColor_ = json["flowerColor"];
+            }
+            break;
+
+        case FIELDMODEL_WOOD:
+            newObj = std::make_unique<FieldObject_Wood>();
+
+            if(json.contains("leafColor")){
+                FieldObject_Wood* wood = dynamic_cast<FieldObject_Wood*>(newObj.get());
+                wood->leafColor_ = json["leafColor"];
+            }
+
+            break;
+
+        case FIELDMODEL_FENCE:
+            newObj = std::make_unique<FieldObject_Fence>();
+            break;
+
         default:
             break;
     }

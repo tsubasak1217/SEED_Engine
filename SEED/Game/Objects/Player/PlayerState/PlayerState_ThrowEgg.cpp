@@ -109,7 +109,8 @@ void PlayerState_ThrowEgg::Update(){
 #endif // _DEBUG
 
     // 卵 の 位置 を 更新
-    throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + (eggOffset_ * RotateYMatrix(pCharacter_->GetWorldRotate().y)));
+    Vector3 offset = (eggOffset_ * pCharacter_->GetWorldScale()) * RotateYMatrix(pCharacter_->GetWorldRotate().y);
+    throwEgg_->SetTranslate(pCharacter_->GetWorldTranslate() + offset);
     throwEgg_->HandleRotate(pCharacter_->GetWorldRotate());
 
 }
@@ -204,6 +205,10 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
 //////////////////////////////////////////////////////////////////
 void PlayerState_ThrowEgg::Aim(){
     static float targetMoveSpeed = 24.0f;
+
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+    int32_t growLevel = pPlayer->GetGrowLevel() - 1;
+    aimRadius_ = 32.0f + (8.0f * growLevel);
 
     if(PlayerInput::CharacterMove::Aim() != Vector2(0.0f, 0.0f)){
         Vector2 moveVec = PlayerInput::CharacterMove::Aim();

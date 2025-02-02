@@ -12,4 +12,6 @@ public:
     void Update()override;
     void Draw()override;
 
+public:
+    float distance_ = 50.0f;
 };

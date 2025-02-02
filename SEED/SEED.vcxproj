@@ -113,6 +113,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp" />
     <ClCompile Include="Game\UI\EggTimerUI.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
@@ -277,6 +281,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />
+    <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\GameSystem.h" />

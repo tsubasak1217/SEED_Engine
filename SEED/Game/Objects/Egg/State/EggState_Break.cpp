@@ -14,9 +14,8 @@
 #include "../adapter/json/JsonCoordinator.h"
 #include "../PlayerInput/PlayerInput.h"
 
-EggState_Break::EggState_Break(BaseCharacter* character,bool breakToNextStage){
+EggState_Break::EggState_Break(BaseCharacter* character){
     Initialize("Break",character);
-    breakToNextStage_ = breakToNextStage;
 }
 
 EggState_Break::~EggState_Break(){}
@@ -54,37 +53,7 @@ void EggState_Break::ManageState(){
     if(leftTime_ <= 0.0f){
         Egg* egg = dynamic_cast<Egg*>(pCharacter_);
         if(egg){
-            egg->Break();
-
-            if(breakToNextStage_){
-                // 次のステージに進める
-                StageManager::StepStage(1);
-                StageManager::SetIsHandOverColliderNext(false);
-                breakToNextStage_ = false;
-
-                { // Playerを必要とする処理
-                    Player* pPlayer = egg->GetEggManager()->GetPlayer();
-                    {   // プレイヤーに次のステージの敵情報を渡す
-                        EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
-                        pPlayer->SetEnemyManager(enemyManager);
-                    }
-
-                    { //! 次のステージへの遷移失敗することがあるので 仮対処
-                        pPlayer->SetPosition(StageManager::GetStartPos());
-                    }
-
-                    { //前ステージの死体を消す
-                        PlayerCorpseManager* pCorpseManager = pPlayer->GetCorpseManager();
-                        pCorpseManager->RemoveAll();
-                    }
-
-                    {
-                        // カメラのターゲットをPlayerに変更
-                        FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
-                        pFollowCamera->SetTarget(pPlayer);
-                    }
-                }
-            }
+            egg->SpawnPlayer();
         }
     }
 }

@@ -86,11 +86,40 @@ void GameState_Goal::HandOverColliders(){}
 void GameState_Goal::ManageState(){
     if(!preIsThrow_ && isThrow_){
         pEgg_->SetTranslate(nextStartPosition_);
-        pEgg_->ChangeState(new EggState_Break(pEgg_,true));
+        pEgg_->ChangeState(new EggState_Break(pEgg_));
     }
     if(pEgg_->GetIsBreak()){
         pPlayer_->GetEggManager()->InitializeEggCount();
+
+        SetUpNextStage();
+
         pScene_->ChangeState(new GameState_Play(pScene_));
+    }
+}
+
+void GameState_Goal::SetUpNextStage(){
+    // 次のステージに進める
+    StageManager::StepStage(1);
+    StageManager::SetIsHandOverColliderNext(false);
+
+    {   // プレイヤーに次のステージの敵情報を渡す
+        EnemyManager* enemyManager = StageManager::GetCurrentStage()->GetEnemyManager();
+        pPlayer_->SetEnemyManager(enemyManager);
+    }
+
+    { //! 次のステージへの遷移失敗することがあるので 仮対処
+        pPlayer_->SetPosition(StageManager::GetStartPos());
+    }
+
+    { //前ステージの死体を消す
+        PlayerCorpseManager* pCorpseManager = pPlayer_->GetCorpseManager();
+        pCorpseManager->RemoveAll();
+    }
+
+    {
+        // カメラのターゲットをPlayerに変更
+        FollowCamera* pFollowCamera =  dynamic_cast<FollowCamera*>(pPlayer_->GetFollowCamera());
+        pFollowCamera->SetTarget(pPlayer_);
     }
 }
 

@@ -31,6 +31,9 @@ public:
     void ManageState()override;
 
 private:
+    void SetUpNextStage();
+
+private:
     std::function<void()> currentUpdate_;
 
     // 次のステージの方向にゴールを回転させる

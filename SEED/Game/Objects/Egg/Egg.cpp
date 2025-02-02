@@ -37,7 +37,6 @@ void Egg::Initialize(){
         currentState_ = std::make_unique<EggState_Follow>(this,eggManager_->GetBackEgg().get());
     }
 
-
     JsonCoordinator::RegisterItem("Egg","weight",weight_);
 
     // コライダーエディターの初期化
@@ -91,14 +90,10 @@ void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType object
     }
 }
 
-void Egg::Break(){
+void Egg::SpawnPlayer(){
     //Player を spawn させる
     Player* player = dynamic_cast<Player*>(player_);
     if(player_){
-        Vector3 spawnPos = this->GetWorldTranslate();
-        spawnPos.y += 1.0f;
-        player->Spawn(spawnPos);
+        player->Spawn(this);
     }
-
-    isBreak_ = true;
 }

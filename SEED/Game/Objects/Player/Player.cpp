@@ -166,10 +166,9 @@ void Player::EndFrame(){
     }
 }
 
-void Player::Spawn(const Vector3& pos){
-    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this);
+void Player::Spawn(Egg* _egg){
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this,_egg);
     growLevel_ = 1;
-    state->SetSpawnPos(pos);
     ChangeState(state);
 }
 

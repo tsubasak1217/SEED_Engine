@@ -28,7 +28,7 @@ public:
 
     void OnCollision(const BaseObject* other,ObjectType objectType) override;
 public:// ステートから呼び出す関数
-    void Break();
+    void SpawnPlayer();
 private:
     // 管理主
     EggManager* eggManager_ = nullptr;
@@ -54,6 +54,7 @@ public:// アクセッサ
     void SetIsThrown(bool _isThrown){ isThrown_ = _isThrown; }
 
     bool GetIsBreak()const{ return isBreak_; }
+    void Break(){ isBreak_ = true; }
 
     const Vector3& GetVelocity()const{ return velocity_; }
     void SetVelocity(const Vector3& _velocity){ velocity_ = _velocity; }

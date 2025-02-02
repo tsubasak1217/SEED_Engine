@@ -751,6 +751,18 @@
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp">
       <Filter>Game\Objects\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1367,6 +1379,10 @@
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

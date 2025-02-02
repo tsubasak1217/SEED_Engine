@@ -63,29 +63,29 @@ void PlayerState_Eat::RotateForEnemy(){
 
     if(t >= 1.0f){
         currentTime_ = 0.f;
+        pCharacter_->SetAnimation("eat",false);
         currentUpdate_ = [this](){EatEnemy(); };
     }
 }
 
 void PlayerState_Eat::EatEnemy(){
-    float t = currentTime_ / eatTime_;
     // なんかアニメーションが流れる
-    if(t >= 1.0f){
+    if(pCharacter_->GetIsEndAnimation()){
         currentTime_ = 0.f;
-        currentUpdate_ = [this](){SpawnEgg(); };
+        pCharacter_->SetAnimation("swallow",false);
 
         // 敵を削除
         enemy_->SetIsAlive(false);
         // ここ 以降で enemy_ にアクセスしないように
         enemy_ = nullptr;
+
+        currentUpdate_ = [this](){SpawnEgg(); };
+        return;
     }
 }
 
 void PlayerState_Eat::SpawnEgg(){
-    float t = currentTime_ / spawnEggTime_;
-    // なんかアニメーションが流れる
-
-    if(t >= 1.0f){
+    if(pCharacter_->GetIsEndAnimation()){
         Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         // 卵を生成
         {

@@ -5,7 +5,7 @@
 #include "State/ClosedState.h"
 
 // local
-#include "../FieldObject/Switch/FieldObject_Switch.h"
+#include "../FieldObject/Activator/FieldObject_Activator.h"
 
 // lib
 #include "ClockManager.h" 
@@ -51,7 +51,7 @@ FieldObject_Door::~FieldObject_Door() = default;
 void FieldObject_Door::Initialize(){
     FieldObject::Initialize();
     isOpened_ = false;
-    hasSwitch_ = false;
+    hasActivator_ = false;
     ChangeState(new ClosingState());
 }
 
@@ -74,7 +74,7 @@ void FieldObject_Door::Draw(){
 }
 
 void FieldObject_Door::ShowImGui(){
-    const char* hasSwitchStr = hasSwitch_ ? "true" : "false";
+    const char* hasSwitchStr = hasActivator_ ? "true" : "false";
     ImGui::Text("has switch:%s", hasSwitchStr);
     ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
     ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
@@ -94,6 +94,7 @@ void FieldObject_Door::SetIsOpened(bool isOpened){
     }
 }
 
+
 ////////////////////////////////////////////////////////////////////////
 // 状態変更用メソッド
 ////////////////////////////////////////////////////////////////////////
@@ -111,8 +112,6 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    // もし「SwitchActivated」「SwitchDeactivated」「LeverActivated」「LeverDeactivated」以外のイベントなら無視
-    // （複数のイベントを扱う可能性があるなら下記条件は自由に変更）
     if (event != "SwitchActivated" && event != "SwitchDeactivated"
         && event != "LeverActivated" && event != "LeverDeactivated"){
         return;
@@ -142,18 +141,18 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
 ////////////////////////////////////////////////////////////////////////
 // setter
 ////////////////////////////////////////////////////////////////////////
-void FieldObject_Door::SetSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->RegisterObserver(this);
+void FieldObject_Door::SetActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->RegisterObserver(this);
     }
-    hasSwitch_ = true;
+    hasActivator_ = true;
 }
 
-void FieldObject_Door::RemoveSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->UnregisterObserver(this);
+void FieldObject_Door::RemoveActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->UnregisterObserver(this);
     }
-    hasSwitch_ = false;
+    hasActivator_ = false;
 }

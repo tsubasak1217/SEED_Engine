@@ -8,7 +8,7 @@ FieldObject_Lever::FieldObject_Lever(){
     // クラス名を設定
     className_ = "FieldObject_Lever";
     // インスタンス名を設定
-    name_ = "switch";
+    name_ = "lever";
 
     // モデルの初期化
     std::string path = "FieldObject/" + name_ + ".obj";
@@ -52,7 +52,7 @@ void FieldObject_Lever::OnCollision([[maybe_unused]]const BaseObject* other, Obj
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void FieldObject_Lever::EndFrame(){
     // レバーに触れている & Aボタンが押された瞬間ならトグルする
-    if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::A)){
+    if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::B)){
         Toggle();
     }
 

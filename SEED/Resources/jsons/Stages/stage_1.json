@@ -930,7 +930,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.9620527029037476,
+                2.9196043014526367,
                 0.0
             ],
             "scale": [
@@ -1045,7 +1045,7 @@
             "name": "goal",
             "position": [
                 -20.0,
-                19.0,
+                21.0,
                 -130.0
             ],
             "rotation": [
@@ -1270,7 +1270,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.9620527029037476,
+                2.9196043014526367,
                 0.0
             ],
             "scale": [
@@ -1290,7 +1290,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.7716230154037476,
+                3.1101560592651367,
                 0.0
             ],
             "scale": [
@@ -2425,6 +2425,101 @@
                 2.5
             ],
             "type": 1
+        },
+        {
+            "associatedDoors": [
+                "2acbc596-1a7d-a7b0-4d64-cf210b9f75d7"
+            ],
+            "associatedFloors": [
+                "239aa87c-7810-fe16-0b13-e78a1455234a"
+            ],
+            "fieldObjectID": "57e25921-2b21-750f-7c05-7e03786a37c5",
+            "name": "lever",
+            "position": [
+                0.0,
+                10.0,
+                -255.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 10
+        },
+        {
+            "fieldObjectID": "2acbc596-1a7d-a7b0-4d64-cf210b9f75d7",
+            "name": "door",
+            "position": [
+                0.0,
+                15.0,
+                -215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "fieldObjectID": "239aa87c-7810-fe16-0b13-e78a1455234a",
+            "moveSpeed": 1.5700000524520874,
+            "name": "moveFloor",
+            "position": [
+                5.0,
+                10.275789260864258,
+                -198.6316680908203
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "routineName": "moveFloorRoutine",
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 8
+        },
+        {
+            "associatedDoors": [
+                "2acbc596-1a7d-a7b0-4d64-cf210b9f75d7"
+            ],
+            "associatedFloors": [
+                "239aa87c-7810-fe16-0b13-e78a1455234a"
+            ],
+            "fieldObjectID": "43c85e8f-1aba-d698-6ba2-02ae2e0d25e3",
+            "name": "switch",
+            "position": [
+                5.0,
+                10.0,
+                -245.0
+            ],
+            "requiredWeight": 10,
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
         }
     ],
     "stage": 1

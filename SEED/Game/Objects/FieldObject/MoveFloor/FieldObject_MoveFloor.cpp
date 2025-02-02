@@ -5,7 +5,7 @@
 #include "../adapter/json/JsonCoordinator.h"
 
 // local
-#include "../FieldObject/Switch/FieldObject_Switch.h"
+#include "../FieldObject/Activator/FieldObject_Activator.h"
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -51,7 +51,7 @@ void FieldObject_MoveFloor::Initialize(){
 // 更新関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Update(){
-    if (!hasSwitch_ || (hasSwitch_ && isSwitchActive_)){
+    if (!hasActivator_ || (hasActivator_ && isSwitchActive_)){
         Move();
     }
     FieldObject::Update();
@@ -175,26 +175,24 @@ void FieldObject_MoveFloor::Move(){
 
 }
 
+
 /* public =============================================================*/
 
 /////////////////////////////////////////////////////////////////////////
 // getter
 /////////////////////////////////////////////////////////////////////////
-void FieldObject_MoveFloor::SetSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->RegisterObserver(this);
+void FieldObject_MoveFloor::SetActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->RegisterObserver(this);
     }
-    hasSwitch_ = true;
+    hasActivator_ = true;
 }
 
-/////////////////////////////////////////////////////////////////////////
-// setter
-/////////////////////////////////////////////////////////////////////////
-void FieldObject_MoveFloor::RemoveSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->UnregisterObserver(this);
+void FieldObject_MoveFloor::RemoveActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->UnregisterObserver(this);
     }
-    hasSwitch_ = false;
+    hasActivator_ = false;
 }

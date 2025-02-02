@@ -9,7 +9,7 @@
 #include <string>
 
 // 前方宣言
-class FieldObject_Switch;
+class FieldObject_Activator;
 
 class FieldObject_MoveFloor
     :public FieldObject,public IObserver{
@@ -52,7 +52,7 @@ private:
     RoutineManager& routineManager_;
 
     // --- switch variable --- //
-    bool hasSwitch_ = false;                    //< スイッチを持っているかどうか
+    bool hasActivator_ = false;                    //< スイッチを持っているかどうか
     bool isSwitchActive_ = false;               //< スイッチの状態を追跡する新しいフラグ
 
 public:
@@ -77,8 +77,8 @@ public:
     }
     float GetMoveSpeed()const{ return moveSpeed_; }
 
-    void SetSwitch(FieldObject_Switch* pSwitch);
-    void RemoveSwitch(FieldObject_Switch* pSwitch);
-    bool GetHasSwitch()const{ return hasSwitch_; }
+    void SetActivator(FieldObject_Activator* pActivator);
+    void RemoveActivator(FieldObject_Activator* pActivator);
+    bool GetHasActivator()const{ return hasActivator_; }
 #pragma endregion
 };

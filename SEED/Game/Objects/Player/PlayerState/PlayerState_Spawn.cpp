@@ -12,8 +12,12 @@
 // camera
 #include "Camera/FollowCamera.h"
 //manager
+#include "ParticleManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "ClockManager.h"
+
+/// math
+#include "MyMath.h"
 
 PlayerState_Spawn::PlayerState_Spawn(){}
 
@@ -27,14 +31,9 @@ PlayerState_Spawn::~PlayerState_Spawn(){}
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-    // 死体を作成
-    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
-    pCorpse->Initialize();
-    pCorpse->SetManager(pPlayer->GetCorpseManager());
-    pCorpse->SetTranslate(pCharacter_->GetWorldTranslate());
-    pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+    deadPos_ = pCharacter_->GetWorldTranslate();
 
+    Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate();
     pCharacter_->ReleaseParent();// 親子付けを解除
@@ -45,9 +44,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
     // 移動不可にする
     pPlayer->SetIsMovable(false);
 
-    // アニメーションの設定
-    pCharacter_->SetAnimation("born",false);
-
+    // egg
     {
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
@@ -59,16 +56,29 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
         egg_->SetRotate(eggBeforeRotate);
         egg_->SetTranslate(eggBeforeTranslate);
 
-        egg_->SetAnimation("born",false);
         egg_->InitColliders(ObjectType::Egg);
 
         egg_->ChangeState(new EggState_Idle(egg_));
     }
 
-    // カメラのターゲットをplayerに
-    FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
-    pCamera->SetTarget(pPlayer);
+    // ghost
+    {
+        ghostObject_ = std::make_unique<BaseObject>("dinosaur_ghost.obj");
+        ghostObject_->SetTranslate(deadPos_);
 
+        ghostObject_->SetRotateWithQuaternion(false);
+        const Vector3 diffP2Spawn = spawnPos_ - deadPos_;
+        float ghostRotateY = atan2f(diffP2Spawn.x,diffP2Spawn.z);
+        ghostObject_->SetRotate({0.f,ghostRotateY,0.f});
+        ghostObject_->UpdateMatrix();
+
+        FollowCamera* pFollowCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+        pFollowCamera->SetTarget(ghostObject_.get());
+    }
+
+    // effect
+    ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},ghostObject_->GetWorldMatPtr());
+  
     // 卵が親子付けされていたらplayerも親子付け
     if(egg_->GetParent()){
         Vector3 preTranslate = pCharacter_->GetWorldTranslate();
@@ -81,18 +91,56 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
     }
 }
 
-void PlayerState_Spawn::Update(){}
+void PlayerState_Spawn::Update(){
+    if(!movedGhost_){
+        elapsedTime_ += ClockManager::DeltaTime();
+        elapsedTime_ = (std::min)(elapsedTime_,ghostMoveTime_);
 
-void PlayerState_Spawn::Draw(){}
+        {// moving ghost
+            const float t = elapsedTime_ / ghostMoveTime_;
+            ghostObject_->SetTranslate(MyMath::Lerp(deadPos_,spawnPos_,t));
+        }
+        ghostObject_->Update();
+    }
+
+}
+
+void PlayerState_Spawn::Draw(){
+    if(!movedGhost_){
+        ghostObject_->Draw();
+    }
+}
 
 void PlayerState_Spawn::ManageState(){
-    if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
+    if(movedGhost_){
+        if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
 
-        // ここで,移動可能にする
-        pCharacter_->SetIsMovable(true);
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            // カメラのターゲットをplayerに
+            FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+            pCamera->SetTarget(pPlayer);
+            // ここで,移動可能にする
+            pCharacter_->SetIsMovable(true);
 
-        // たまごを消す
-        egg_->Break();
-        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
+            // たまごを消す
+            egg_->Break();
+            pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
+        }
+    } else{
+        if(elapsedTime_ >= ghostMoveTime_){
+            // アニメーションを流す
+            egg_->SetAnimation("born",false);
+            pCharacter_->SetAnimation("born",false);
+
+            // 死体を作成
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
+            pCorpse->Initialize();
+            pCorpse->SetManager(pPlayer->GetCorpseManager());
+            pCorpse->SetTranslate(deadPos_);
+            pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+
+            movedGhost_ = true;
+        }
     }
 }

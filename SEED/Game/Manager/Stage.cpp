@@ -400,10 +400,6 @@ void Stage::LoadFromJson(const std::string& filePath){
                     // Activator 側に door を登録
                     activator->AddAssociatedDoor(door);
                     door->SetActivator(activator);
-                    // Door 側のメソッドを呼ぶなら: door->SetActivator(activator); 
-                    //  ただし複数アクティベータを想定する場合は不要 or 
-                    //  Door が RegisterObserver(this) されるなら door->SetActivator(activator);
-                    //   など設計次第
                 }
             }
         }

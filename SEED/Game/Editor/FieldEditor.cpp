@@ -86,55 +86,64 @@ void FieldEditor::RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, cons
 //  jsonファイルの名前を入力するフィールド
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::PopupDecideOutputName(){
-    std::string outputText;
-    std::string fileName;
 
-    // タイトルステージの場合
-    if (edittingStageIndex == 0){
-        outputText = "Output title_stage.json?";
-        fileName = jsonPath_ + "title_stage.json";
-    } else{
-        outputText = "Output stage_" + std::to_string(edittingStageIndex) + ".json?";
-        fileName = jsonPath_ + "stage_" + std::to_string(edittingStageIndex) + ".json";
-    }
-    ImGui::Text(outputText.c_str());
+    // ファイル名入力
+    std::string text = "Output stage_" + std::to_string(edittingStageIndex + 1) + ".json?";
+    ImGui::Text(text.c_str());
 
     // OKボタン
-    if (ImGui::Button("OK", ImVec2(120, 0))){
+    if(ImGui::Button("OK", ImVec2(120, 0))){
+        std::string fileName = jsonPath_ + "stage_" + std::to_string(edittingStageIndex + 1);
+        // ファイル名に拡張子がない場合、追加
+        if(fileName.find(".json") == std::string::npos){
+            fileName += ".json";
+        }
+
         // もしファイルが存在していたら上書き確認
-        if (std::filesystem::exists(fileName)){
+        if(std::filesystem::exists(fileName)){
             ImGui::OpenPopup("Overwrite?");
         } else{
-            SaveToJson(fileName, edittingStageIndex);
+            SaveToJson(fileName, edittingStageIndex + 1);
+
+            // 成功ログの表示
             MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
+
             ImGui::CloseCurrentPopup();
         }
     }
 
     // キャンセルボタン
     ImGui::SameLine();
-    if (ImGui::Button("Cancel", ImVec2(120, 0))){
+    if(ImGui::Button("Cancel", ImVec2(120, 0))){
         ImGui::CloseCurrentPopup();
     }
 
     // 上書き確認ポップアップ
-    if (ImGui::BeginPopupModal("Overwrite?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+    if(ImGui::BeginPopupModal("Overwrite?", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
         ImGui::Text("The file already exists.");
         ImGui::Text("Do you want to overwrite it?");
-        if (ImGui::Button("OK", ImVec2(120, 0))){
-            SaveToJson(fileName, edittingStageIndex);
+
+        if(ImGui::Button("OK", ImVec2(120, 0))){
+            std::string fileName = jsonPath_ + "stage_" + std::to_string(edittingStageIndex + 1);
+            if(fileName.find(".json") == std::string::npos){
+                fileName += ".json";
+            }
+            SaveToJson(fileName, edittingStageIndex + 1);
+            // 成功ログの表示
             MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
+
             ImGui::CloseCurrentPopup();
             ImGui::CloseCurrentPopup();
         }
+
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0))){
+
+        if(ImGui::Button("Cancel", ImVec2(120, 0))){
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  jsonファイルの保存
@@ -153,7 +162,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
         jsonData["stage"] = stageNo;
 
         // Managerからオブジェクトを取得
-        auto& objects = manager_.GetStages()[stageNo]->GetObjects();
+        auto& objects = manager_.GetStages()[stageNo - 1]->GetObjects();
 
         for (size_t i = 0; i < objects.size(); ++i){
             // フィールドオブジェクト以外は除外
@@ -424,7 +433,6 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Stage:");
         ImGui::SameLine();
         if (ImGui::Combo("##stageNo##1", &edittingStageIndex,
-            "Title\0"  // インデックス0としてタイトルステージを表示
             "1\0"
             "2\0"
             "3\0"

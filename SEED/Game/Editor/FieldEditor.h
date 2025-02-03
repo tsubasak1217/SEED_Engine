@@ -94,7 +94,7 @@ private:
     const std::string jsonPath_ = "resources/jsons/Stages/";
 
     // ステージ管理用
-    const int kMaxStage = 11;
+    const int kMaxStage = 10;
     int32_t edittingStageIndex = 0;
 
 

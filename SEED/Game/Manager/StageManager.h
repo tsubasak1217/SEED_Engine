@@ -33,13 +33,11 @@ public:
     void HandOverColliders();
     static void StepStage(int32_t step);
 
-public: //title
-
 private:
     void LoadStages();
 
 private:
-    static const int32_t kStageCount_ = 11;
+    static const int32_t kStageCount_ = 10;
     static int32_t currentStageNo_;
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
@@ -49,7 +47,6 @@ private:
 
     // playerのポインタ
     Player* pPlayer_;
-
 
 public:
     void SetPlayer(Player* pPlayer);

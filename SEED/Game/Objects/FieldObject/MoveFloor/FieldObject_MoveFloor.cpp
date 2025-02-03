@@ -51,7 +51,7 @@ void FieldObject_MoveFloor::Initialize(){
 // 更新関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Update(){
-    if (!hasActivator_ || (hasActivator_ && isSwitchActive_)){
+    if (hasActivator_ && isSwitchActive_){
         Move();
     }
     FieldObject::Update();

@@ -12,8 +12,12 @@
 // camera
 #include "Camera/FollowCamera.h"
 //manager
+#include "ParticleManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "ClockManager.h"
+
+/// math
+#include "MyMath.h"
 
 PlayerState_Spawn::PlayerState_Spawn(){}
 
@@ -27,28 +31,38 @@ PlayerState_Spawn::~PlayerState_Spawn(){}
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-    // 死体を作成
+    deadPos_ = pCharacter_->GetWorldTranslate();
+
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
-    pCorpse->Initialize();
-    pCorpse->SetManager(pPlayer->GetCorpseManager());
-    pCorpse->SetTranslate(pCharacter_->GetWorldTranslate());
-    pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
 
     // とりあえず,ここで 移動
-    spawnPos_ = egg_->GetWorldTranslate();
+    spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
     pCharacter_->ReleaseParent();// 親子付けを解除
     pCharacter_->SetTranslate(spawnPos_);
-
+    pCharacter_->SetScale({0.1f,0.1f,0.1f}); // 見えないようにするために
     pCharacter_->DiscardPreCollider();
     pPlayer->UpdateMatrix();
+
+    // 重力を適応しない,当たり判定を取らない
+    pCharacter_->SetIsApplyGravity(false);
+    pCharacter_->SetCollidable(false);
+
     // 移動不可にする
     pPlayer->SetIsMovable(false);
 
-    // アニメーションの設定
-    pCharacter_->SetAnimation("born",false);
-
+    // egg
     {
+        // 卵が親子付けされていたらplayerも親子付け
+        if(egg_->GetParent()){
+            Vector3 preTranslate = pCharacter_->GetWorldTranslate();
+            Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
+            Vector3 localTranslate = preTranslate * invParentMat;
+            localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
+            pCharacter_->SetTranslate(localTranslate);
+            pCharacter_->SetParent(egg_->GetParent());
+            pCharacter_->UpdateMatrix();
+        }
+
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
@@ -59,40 +73,90 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
         egg_->SetRotate(eggBeforeRotate);
         egg_->SetTranslate(eggBeforeTranslate);
 
-        egg_->SetAnimation("born",false);
         egg_->InitColliders(ObjectType::Egg);
 
         egg_->ChangeState(new EggState_Idle(egg_));
     }
 
-    // カメラのターゲットをplayerに
-    FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
-    pCamera->SetTarget(pPlayer);
+    // ghost
+    {
+        ghostObject_ = std::make_unique<BaseObject>("dinosaur_ghost.obj");
+        ghostObject_->SetTranslate(deadPos_);
 
-    // 卵が親子付けされていたらplayerも親子付け
-    if(egg_->GetParent()){
-        Vector3 preTranslate = pCharacter_->GetWorldTranslate();
-        Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
-        Vector3 localTranslate = preTranslate * invParentMat;
-        localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
-        pCharacter_->SetTranslate(localTranslate);
-        pCharacter_->SetParent(egg_->GetParent());
-        pCharacter_->UpdateMatrix();
+        ghostObject_->SetRotateWithQuaternion(false);
+        const Vector3 diffP2Spawn = spawnPos_ - deadPos_;
+        float ghostRotateY = atan2f(diffP2Spawn.x,diffP2Spawn.z);
+        ghostObject_->SetRotate({0.f,ghostRotateY,0.f});
+        ghostObject_->UpdateMatrix();
+
+        FollowCamera* pFollowCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+        pFollowCamera->SetTarget(ghostObject_.get());
+    }
+
+    // effect
+    ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},ghostObject_->GetWorldMatPtr());
+}
+
+void PlayerState_Spawn::Update(){
+    if(!movedGhost_){
+        elapsedTime_ += ClockManager::DeltaTime();
+        elapsedTime_ = (std::min)(elapsedTime_,ghostMoveTime_);
+
+        {// moving ghost
+            const float t = elapsedTime_ / ghostMoveTime_;
+            ghostObject_->SetTranslate(MyMath::Lerp(deadPos_,spawnPos_,t));
+        }
+        ghostObject_->Update();
+    }
+
+}
+
+void PlayerState_Spawn::Draw(){
+    if(!movedGhost_){
+        ghostObject_->Draw();
     }
 }
 
-void PlayerState_Spawn::Update(){}
-
-void PlayerState_Spawn::Draw(){}
-
 void PlayerState_Spawn::ManageState(){
-    if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
+    if(movedGhost_){
+        if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
 
-        // ここで,移動可能にする
-        pCharacter_->SetIsMovable(true);
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            // カメラのターゲットをplayerに
+            FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+            pCamera->SetTarget(pPlayer);
 
-        // たまごを消す
-        egg_->Break();
-        pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
+            
+
+            // ここで,移動可能にする
+            pCharacter_->SetIsMovable(true);
+
+            // たまごを消す
+            egg_->Break();
+            pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
+        }
+    } else{
+        if(elapsedTime_ >= ghostMoveTime_){
+            // アニメーションを流す
+            egg_->SetAnimation("born",false);
+            pCharacter_->SetAnimation("born",false);
+
+            // 重力を適応,当たり判定を取るように
+            pCharacter_->SetIsApplyGravity(true);
+            pCharacter_->SetCollidable(true);
+
+            // scale を戻す
+            pCharacter_->SetScale({1.f,1.f,1.f});
+
+            // 死体を作成
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
+            pCorpse->Initialize();
+            pCorpse->SetManager(pPlayer->GetCorpseManager());
+            pCorpse->SetTranslate(deadPos_);
+            pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+
+            movedGhost_ = true;
+        }
     }
 }

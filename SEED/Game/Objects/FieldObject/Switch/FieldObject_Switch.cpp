@@ -52,17 +52,15 @@ void FieldObject_Switch::Draw(){
 ////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 ////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::BeginFrame(){
-
-    // 「重さにより押されている（= isColliding_）場合に起動、そうでなければ停止」
+void FieldObject_Switch::Update(){
     if (isColliding_ && !isActivated_){
-        // 押されていて、かつまだ起動していなければ起動する
+        // 乗っている状態で、まだ起動状態でなければ
         isActivated_ = true;
-        Notify("SwitchActivated");
+        Notify("SwitchActivated", this);
     } else if (!isColliding_ && isActivated_){
-        // 押されておらず、かつ現在起動しているなら停止する
+        // 何も乗っていない状態で、現在起動状態であれば
         isActivated_ = false;
-        Notify("SwitchDeactivated");
+        Notify("SwitchDeactivated", this);
     }
     // 基底クラスの BeginFrame() を呼ぶ（重さをリセット＆判定などを行う）
     FieldObject_Activator::BeginFrame();

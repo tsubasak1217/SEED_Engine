@@ -506,30 +506,41 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Select a Model to Add:");
         static std::string selectedModelName = "GrassSoil";
         int i = 0;
-        for (auto& map : modelNameMap_){
-            std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
+        for (const auto& entry : modelNameMap_){
+            // エントリからキーと値を取得
+            const std::string& modelName = entry.first;
+            const int modelIndex = entry.second;
+
+            // テクスチャキーの生成
+            const std::string imageKey = "fieldModelTextures/" + modelName + "Image.png";
+
+            // テクスチャIDの検索
             auto it = textureIDs_.find(imageKey);
 
-            // ボタンの表示(追加するアイテムインデックスを選択)
-            if (it != textureIDs_.end()){
+            // テクスチャIDが存在し、有効なものであるかチェック（nullptrチェックなど）
+            if (it != textureIDs_.end() && it->second != nullptr){
                 if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                    selectItemIdxOnGUI_ = map.second;
-                    selectedModelName = map.first;
+                    selectItemIdxOnGUI_ = modelIndex;
+                    selectedModelName = modelName;
                 }
             } else{
-                if (ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
-                    selectItemIdxOnGUI_ = map.second;
-                    selectedModelName = map.first;
+                if (ImGui::Button(modelName.c_str(), ImVec2(64, 64))){
+                    selectItemIdxOnGUI_ = modelIndex;
+                    selectedModelName = modelName;
                 }
             }
 
-            if (i % 6 != 5){ ImGui::SameLine(); }
-            i++;
+            // 6個毎に改行
+            if (i % 6 != 5){
+                ImGui::SameLine();
+            }
+            ++i;
         }
 
         ImGui::NewLine();
         ImGui::Text("Selected: %s", selectedModelName.c_str());
     }
+
 
     ImGui::Separator();
     ImGui::Spacing();

@@ -118,24 +118,11 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
         return;
     }
 
-    if (data != nullptr){
-        if (data != static_cast< void* >(this)){
-            // ドア自身に向けたイベントでなければ無視
-            return;
-        }
-    }
-
-    // ドアが完全に閉じている状態（ClosedState）なら開く
+    // 対象のイベントのみ処理する
     if (event == "SwitchActivated" || event == "LeverActivated"){
-        if (dynamic_cast< ClosedState* >(currentState_.get())){
-            SetIsOpened(true);
-        }
-    }
-    // ドアが完全に開いている状態（OpenedState）なら閉じる
-    else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
-        if (dynamic_cast< OpenedState* >(currentState_.get())){
-            SetIsOpened(false);
-        }
+        SetIsOpened(true);  // 常に開く
+    } else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
+        SetIsOpened(false); // 常に閉じる
     }
 }
 

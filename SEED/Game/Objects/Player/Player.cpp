@@ -50,7 +50,6 @@ void Player::Initialize(){
     // コライダーの初期化
     InitColliders(ObjectType::Player);
     for(auto& collider : colliders_){
-        collider->AddSkipPushBackType(ObjectType::Player);
         collider->AddSkipPushBackType(ObjectType::Egg);
     }
 

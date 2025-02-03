@@ -192,6 +192,7 @@ void Stage::HandOverColliders(){
     }
 
     enemyManager_->HandOverColliders();
+    playerCorpseManager_->HandOverColliders();
 }
 
 

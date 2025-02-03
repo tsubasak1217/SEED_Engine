@@ -304,15 +304,15 @@ void FieldEditor::LoadFieldModelTexture(){
     }
 
     // テクスチャの読み込み
-    for(const auto& fileName : fileNames){
+    //for(const auto& fileName : fileNames){
 
-        // テクスチャの読み込み
-        int handle = TextureManager::LoadTexture(fileName);
+    //    // テクスチャの読み込み
+    //    int handle = TextureManager::LoadTexture(fileName);
 
-        // GPUハンドルを取得
-        textureIDs_[fileName] =
-            (ImTextureID)ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
-    }
+    //    // GPUハンドルを取得
+    //    textureIDs_[fileName] =
+    //        (ImTextureID)ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
+    //}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -515,20 +515,20 @@ void FieldEditor::ShowImGui(){
             const std::string imageKey = "fieldModelTextures/" + modelName + "Image.png";
 
             // テクスチャIDの検索
-            auto it = textureIDs_.find(imageKey);
+            //auto it = textureIDs_.find(imageKey);
 
             // テクスチャIDが存在し、有効なものであるかチェック（nullptrチェックなど）
-            if (it != textureIDs_.end() && it->second != nullptr){
-                if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
-                    selectItemIdxOnGUI_ = modelIndex;
-                    selectedModelName = modelName;
-                }
-            } else{
+            //if (it != textureIDs_.end() && it->second != nullptr){
+            //    if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
+            //        selectItemIdxOnGUI_ = modelIndex;
+            //        selectedModelName = modelName;
+            //    }
+            //} else{
                 if (ImGui::Button(modelName.c_str(), ImVec2(64, 64))){
                     selectItemIdxOnGUI_ = modelIndex;
                     selectedModelName = modelName;
                 }
-            }
+            //}
 
             // 6個毎に改行
             if (i % 6 != 5){

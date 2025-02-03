@@ -17,6 +17,12 @@ void FieldObject_Activator::Initialize(){
 // Update
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void FieldObject_Activator::Update(){
+
+    // 前フレームでの衝突状態を記録し、本フレームの衝突判定用フラグを初期化
+    wasCollidingLastFrame_ = isColliding_;
+    isColliding_ = false;
+    currentWeight_ = 0.0f;
+
     // 親クラス (FieldObject) の更新を呼ぶ
     FieldObject::Update();
 }
@@ -45,11 +51,6 @@ void FieldObject_Activator::Draw(){
 void FieldObject_Activator::BeginFrame(){
     // 親クラス (FieldObject) の BeginFrame を呼ぶ
     FieldObject::BeginFrame();
-
-    // 前フレームでの衝突状態を記録し、本フレームの衝突判定用フラグを初期化
-    wasCollidingLastFrame_ = isColliding_;
-    isColliding_ = false;
-    currentWeight_ = 0.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +112,6 @@ void FieldObject_Activator::OnCollision(const BaseObject* other, ObjectType obje
     // スイッチ等で使用する重さを加算する
     //  ※レバーはこの機能を使わない想定
     if (objectType == ObjectType::Player ||
-        objectType == ObjectType::Egg ||
         objectType == ObjectType::PlayerCorpse){
         currentWeight_ += other->GetSwitchPushWeight();
         isColliding_ = true;

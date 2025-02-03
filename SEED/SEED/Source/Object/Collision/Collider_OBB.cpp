@@ -92,10 +92,27 @@ void Collider_OBB::CheckCollision(Collider* collider){
     case ColliderType::OBB:
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
-        if(Collision::OBB::OBB(body_, obb->GetOBB())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+
+        // 動き方に応じて処理を分ける
+        if(IsMoved()){
+            if(obb->IsMoved()){
+                collisionData = Collision::MoveOBB::MoveOBB(this, obb);
+            } else{
+                collisionData = Collision::MoveOBB::OBB(this, obb);
+            }
+        } else{
+            if(obb->IsMoved()){
+                collisionData = Collision::OBB::MoveOBB(this, obb);
+            } else{
+                collisionData = Collision::OBB::OBB(this, obb);
+            }
         }
+
+        // 押し戻しを行う
+        if(collisionData.isCollide){
+            PushBack(this, collider, collisionData);
+        }
+
         break;
     }
     case ColliderType::Line:

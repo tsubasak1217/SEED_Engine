@@ -25,6 +25,8 @@
 #include "FieldObject/Plant/FieldObject_Plant.h"
 #include "FieldObject/Wood/FieldObject_Wood.h"
 #include "FieldObject/Fence/FieldObject_Fence.h"
+#include "FieldObject/Tile/FieldObject_Tile.h"
+#include "FieldObject/Box/FieldObject_Box.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"

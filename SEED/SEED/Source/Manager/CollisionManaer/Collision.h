@@ -16,10 +16,17 @@ namespace Collision{
 
     namespace OBB{
         bool OBB(const ::OBB& obb1, const ::OBB& obb2);
+        CollisionData OBB(Collider* obbCollider1, Collider* obbCollider2);
+        CollisionData MoveOBB(Collider* obbCollider1, Collider* obbCollider2);
         bool AABB(const ::OBB& obb, const ::AABB& aabb);
         bool Line(const ::OBB& obb, const ::Line& line);
         bool Sphere(const ::OBB& obb, const ::Sphere& sphere);
         CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider);
+    }
+
+    namespace MoveOBB{
+        CollisionData OBB(Collider* obbCollider1, Collider* obbCollider2);
+        CollisionData MoveOBB(Collider* obbCollider1, Collider* obbCollider2);
     }
 
     namespace AABB{

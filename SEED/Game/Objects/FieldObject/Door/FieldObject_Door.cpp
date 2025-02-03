@@ -78,6 +78,7 @@ void FieldObject_Door::ShowImGui(){
     ImGui::Text("has switch:%s", hasSwitchStr);
     ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
     ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
+    ImGui::DragFloat("MaxOpenHeight", &kMaxOpenHeight_, 0.01f,-100.0f,-5.0f);
 }
 
 ////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,10 @@ public:
     bool GetIsOpened() const{ return isOpened_; }
     void SetIsOpened(bool isOpened);
     float GetOpenSpeed() const{ return openSpeed_; }
+    void SetOpenSpeed(float speed){ openSpeed_ = speed; }
     float GetMaxOpenHeight() const{ return closedPosY_ + kMaxOpenHeight_; }
+    float GetOpenHeight() const{ return kMaxOpenHeight_; }
+    void SetOpenHeight(float height){ kMaxOpenHeight_ = height; }
 
     void SetActivator(FieldObject_Activator* pActivator);
     void RemoveActivator(FieldObject_Activator* pActivator);
@@ -53,7 +56,7 @@ private:
     bool hasActivator_ = false;                    // スイッチを持っているかどうか
     std::unique_ptr<DoorState> currentState_;   // 現在の状態
     float openSpeed_ = 8.0f;                    // 開閉速度
-    const float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
+    float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
 
     float closedPosY_ = 0.0f;                   // 閉じた後のy座標
 };

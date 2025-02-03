@@ -135,6 +135,10 @@ void Player::BeginFrame(){
         }
     }
 
+    // スイッチ用の重量の更新
+    switchPushWeight_ = 1.0f + (1.00f * (growLevel_ - 1));
+
+
     BaseCharacter::BeginFrame();
 
 #ifdef _DEBUG

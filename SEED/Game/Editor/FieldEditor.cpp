@@ -55,6 +55,8 @@ void FieldEditor::Initialize(){
     modelNameMap_["wood"] = FIELDMODEL_WOOD;
     modelNameMap_["fence"] = FIELDMODEL_FENCE;
     modelNameMap_["lever"] = FIELDMODEL_LEVER;
+    modelNameMap_["tile"] = FIELDMODEL_TILE;
+    modelNameMap_["box"] = FIELDMODEL_BOX;
 
     LoadFieldModelTexture();
 
@@ -233,6 +235,13 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
             else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(modelObj)){
                 modelJson["routineName"] = moveFloor->GetRoutineName();
                 modelJson["moveSpeed"] = moveFloor->GetMoveSpeed();
+            }
+
+            // ドアの場合
+            else if(auto* door = dynamic_cast<FieldObject_Door*>(modelObj)){
+                modelJson["openSpeed"] = door->GetOpenSpeed();
+                modelJson["openHeight"] = door->GetOpenHeight();
+                modelJson["closedPosY"] = door->GetClosedPosY();
             }
 
             // イベントエリアの場合

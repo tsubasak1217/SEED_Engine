@@ -413,7 +413,7 @@ void Stage::LoadFromJson(const std::string& filePath){
             for(auto* mf : floors){
                 if(mf && mf->GetGUID() == floorID){
                     activator->AddAssociatedMoveFloor(mf);
-                    // mf->SetActivator(activator);
+                    mf->SetActivator(activator);
                 }
             }
         }
@@ -461,6 +461,21 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_DOOR:
             newObj = std::make_unique<FieldObject_Door>();
+
+            if(json.contains("openSpeed")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetOpenSpeed(json["openSpeed"]);
+            }
+
+            if(json.contains("openHeight")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetOpenHeight(json["openHeight"]);
+            }
+
+            if(json.contains("closedPosY")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetClosedPosY(json["closedPosY"]);
+            }
             break;
         case FIELDMODEL_START:
             newObj = std::make_unique<FieldObject_Start>();
@@ -552,6 +567,14 @@ void Stage::AddModel(
 
         case FIELDMODEL_FENCE:
             newObj = std::make_unique<FieldObject_Fence>();
+            break;
+
+        case FIELDMODEL_TILE:
+            newObj = std::make_unique<FieldObject_Tile>();
+            break;
+
+        case FIELDMODEL_BOX:
+            newObj = std::make_unique<FieldObject_Box>();
             break;
 
         default:

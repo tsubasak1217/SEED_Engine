@@ -260,6 +260,12 @@
     <Filter Include="Game\Objects\FieldObject\Fence">
       <UniqueIdentifier>{3aeea757-29b7-425a-b621-792c43bb2727}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\Tile">
+      <UniqueIdentifier>{4b38b7a3-75c9-46e8-9393-2a660c94e361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Box">
+      <UniqueIdentifier>{b26183e3-0f95-4dc9-9f29-58d9ca5deb86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -792,6 +798,12 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp">
       <Filter>Game\Objects\FieldObject\Fence</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.cpp">
+      <Filter>Game\Objects\FieldObject\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1408,6 +1420,20 @@
     <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />
+    <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.h">
+      <Filter>Game\Objects\FieldObject\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Box\FieldObject_Box.h">
+      <Filter>Game\Objects\FieldObject\Box</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

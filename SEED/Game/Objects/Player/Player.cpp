@@ -282,7 +282,6 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
             SetTranslate(localTranslate);
             UpdateMatrix();
             Vector3 newTranslate = GetWorldTranslate();
-            isStop_ = true;
         }
     }
 

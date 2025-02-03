@@ -32,9 +32,6 @@ float CalcProjentionDepth(
 Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis);
 bool CalcProjectionDepth(const ::Line& line, const Quad& plane, const Vector3& axis, CollisionData* pData = nullptr);
 bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2);
-CollisionData CollisionData_OBB_OBB(Collider* obbCollider1, Collider* obbCollider2);
-CollisionData CollisionData_MoveOBB_OBB(Collider* obbCollider1, Collider* obbCollider2);
-CollisionData CollisionData_MoveOBB_MoveOBB(Collider* obbCollider1, Collider* obbCollider2);
 bool Collision_AABB_OBB(const ::AABB& aabb, const ::OBB& obb);
 bool Collision_Line_OBB(const ::Line& line, const ::OBB& obb);
 CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb);
@@ -68,17 +65,10 @@ namespace Collision{
 
     namespace OBB{
         bool OBB(const ::OBB& obb1, const ::OBB& obb2){ return Collision_OBB_OBB(obb1, obb2); }
-        CollisionData OBB(Collider* obbCollider1, Collider* obbCollider2){ return CollisionData_OBB_OBB(obbCollider1, obbCollider2); }
-        CollisionData MoveOBB(Collider* obbCollider1, Collider* obbCollider2){ return  CollisionData_MoveOBB_MoveOBB(obbCollider2, obbCollider1); }
         bool AABB(const ::OBB& obb, const ::AABB& aabb){ return Collision_AABB_OBB(aabb, obb); }
         bool Line(const ::OBB& obb, const ::Line& line){ return Collision_Line_OBB(line, obb); }
         bool Sphere(const::OBB& obb, const::Sphere& sphere){ return Collision_Sphere_OBB(sphere, obb); }
         CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider){ return CollisionData_MoveOBB_Sphere(obbCollider, sphereCollider); }
-    }
-
-    namespace MoveOBB{
-        CollisionData OBB(Collider* obbCollider1, Collider* obbCollider2){return CollisionData_MoveOBB_OBB(obbCollider1, obbCollider2);}
-        CollisionData MoveOBB(Collider* obbCollider1, Collider* obbCollider2){return CollisionData_MoveOBB_MoveOBB(obbCollider1, obbCollider2);}
     }
 
     namespace AABB{
@@ -562,90 +552,6 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
 
     // すべての分離軸で接触していたらtrue
     return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-//======================================= 静止OBB同士の衝突判定 ======================================//
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_OBB_OBB(Collider* obbCollider1, Collider* obbCollider2){
-    obbCollider1;
-    obbCollider2;
-    return CollisionData();
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-//======================================= OBBと移動OBBの衝突判定 ======================================//
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_MoveOBB_OBB(Collider* obbCollider1, Collider* obbCollider2){
-    CollisionData result;
-
-    // 形状が違う場合エラー
-    if(obbCollider1->GetColliderType() != ColliderType::OBB ||
-        obbCollider2->GetColliderType() != ColliderType::OBB){
-        result.error = true;
-        return result;
-    }
-
-    // 最大AABBが衝突していなけ得れば当たっていない
-    if(Collision_AABB_AABB(obbCollider1->GetBox(), obbCollider2->GetBox()) == false){
-        return result;
-    }
-
-    // OBBの情報を取得
-    Collider_OBB* convertedOBB = dynamic_cast<Collider_OBB*>(obbCollider1);
-    OBB moveObb[2] = {
-        convertedOBB->GetOBB(),
-        convertedOBB->GetPreOBB()
-    };
-
-    OBB staticOBB = dynamic_cast<Collider_OBB*>(obbCollider2)->GetOBB();
-
-
-    // 移動ベクトルを計算
-    Vector3 obbMove = moveObb[1].center - moveObb[0].center;
-
-    // 静止OBB vs 8線分の当たり判定に変換
-    std::array<Vector3, 8>vertices;
-    vertices = moveObb[0].GetVertices();
-    
-    // 線分とOBBの衝突情報取得
-    float minDepth = result.collideDepth.value();
-    for(int i = 0; i < 8; i++){
-        Line line = { vertices[i],vertices[i] + obbMove };
-        line.type_ = SEGMENT;
-        CollisionData data = CollisionData_Line_OBB(line, staticOBB);
-        // 衝突している場合
-        if(data.isCollide){
-            float depth = data.collideDepth.value();
-            // めり込み深度が小さい方を採用
-            if(depth < minDepth){
-                result.collideDepth = data.collideDepth;
-                result.hitNormal = data.hitNormal;
-                result.isCollide = true;
-            }
-        }
-    }
-
-    // 衝突していない場合
-    if(result.isCollide == false){
-        return result;
-    }
-
-    // 押し戻し割合を求めるため、質量比を求める
-    CalcPushbackRatio(obbCollider1, obbCollider2, &result);
-
-    return result;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-//======================================= 移動OBB同士の衝突判定 ======================================//
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_MoveOBB_MoveOBB(Collider* obbCollider1, Collider* obbCollider2){
-    obbCollider1;
-    obbCollider2;
-    return CollisionData();
 }
 
 

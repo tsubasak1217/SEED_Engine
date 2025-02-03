@@ -149,7 +149,7 @@ void Player::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////
 void Player::EndFrame(){
     BaseCharacter::EndFrame();
-    if(GetWorldTranslate().y <= 0.0f){
+    if(GetWorldTranslate().y <= -25.0f){
         isGameOver_ = true;
     }
     if(!isDrop_){

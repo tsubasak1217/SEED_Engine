@@ -10,6 +10,7 @@ class EggState_Break :
     public ICharacterState{
 public:
     EggState_Break(BaseCharacter* character);
+    EggState_Break(BaseCharacter* character,float _breakTime);
     ~EggState_Break();
 
     void Initialize(const std::string& stateName,BaseCharacter* character)override;

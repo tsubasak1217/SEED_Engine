@@ -15,6 +15,14 @@
 #include "../PlayerInput/PlayerInput.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character){
+    JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
+
+    Initialize("Break",character);
+}
+
+EggState_Break::EggState_Break(BaseCharacter* character,float _breakTime){
+    breakTime_ = _breakTime;
+
     Initialize("Break",character);
 }
 
@@ -22,9 +30,6 @@ EggState_Break::~EggState_Break(){}
 
 void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
-
-    JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
-
     leftTime_ = breakTime_;
 
     //==================== UI ====================//

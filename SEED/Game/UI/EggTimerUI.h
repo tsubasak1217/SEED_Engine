@@ -2,6 +2,7 @@
 
 ///stl
 #include <memory>
+#include <array>
 
 ///local
 #include "Sprite.h"
@@ -17,5 +18,9 @@ public:
 
 private:
     std::unique_ptr<Sprite> backEggUI_;
-    std::unique_ptr<Sprite> leftTimeUI_;
+
+    // 2桁まで
+    std::array<std::unique_ptr<Sprite>,2> leftTimeUI_;
+    
+    bool isDoubleDigit_ = true;
 };

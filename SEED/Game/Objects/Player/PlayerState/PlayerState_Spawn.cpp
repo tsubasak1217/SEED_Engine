@@ -33,14 +33,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     deadPos_ = pCharacter_->GetWorldTranslate();
 
-    // 死体を作成
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
-    pCorpse->Initialize();
-    pCorpse->SetManager(pPlayer->GetCorpseManager());
-    pCorpse->SetTranslate(deadPos_);
-    pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
-
     // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate();
     pCharacter_->SetTranslate(spawnPos_);
@@ -69,26 +62,21 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // ghost
     {
-        ghostObject_ = std::make_unique<BaseObject>("dinosaur_ghost.gltf");
-        ghostObject_->Initialize();
+        ghostObject_ = std::make_unique<BaseObject>("dinosaur_ghost.obj");
         ghostObject_->SetTranslate(deadPos_);
 
         ghostObject_->SetRotateWithQuaternion(false);
         const Vector3 diffP2Spawn = spawnPos_ - deadPos_;
         float ghostRotateY = atan2f(diffP2Spawn.x,diffP2Spawn.z);
-        float ghostRotateX = atan2f(diffP2Spawn.z,diffP2Spawn.y);
-        ghostObject_->SetRotate({ghostRotateX,ghostRotateY,0.f});
+        ghostObject_->SetRotate({0.f,ghostRotateY,0.f});
+        ghostObject_->UpdateMatrix();
 
         FollowCamera* pFollowCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
         pFollowCamera->SetTarget(ghostObject_.get());
     }
 
     // effect
-    ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},pCharacter_->GetWorldMatPtr());
-
-    // カメラのターゲットをplayerに
-    FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
-    pCamera->SetTarget(pPlayer);
+    ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},ghostObject_->GetWorldMatPtr());
 }
 
 void PlayerState_Spawn::Update(){
@@ -100,6 +88,7 @@ void PlayerState_Spawn::Update(){
             const float t = elapsedTime_ / ghostMoveTime_;
             ghostObject_->SetTranslate(MyMath::Lerp(deadPos_,spawnPos_,t));
         }
+        ghostObject_->Update();
     }
 
 }
@@ -114,6 +103,10 @@ void PlayerState_Spawn::ManageState(){
     if(movedGhost_){
         if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
 
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            // カメラのターゲットをplayerに
+            FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
+            pCamera->SetTarget(pPlayer);
             // ここで,移動可能にする
             pCharacter_->SetIsMovable(true);
 
@@ -122,10 +115,18 @@ void PlayerState_Spawn::ManageState(){
             pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
         }
     } else{
-        if(elapsedTime_ >= elapsedTime_){
+        if(elapsedTime_ >= ghostMoveTime_){
             // アニメーションを流す
             egg_->SetAnimation("born",false);
             pCharacter_->SetAnimation("born",false);
+
+            // 死体を作成
+            Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+            std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
+            pCorpse->Initialize();
+            pCorpse->SetManager(pPlayer->GetCorpseManager());
+            pCorpse->SetTranslate(deadPos_);
+            pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
 
             movedGhost_ = true;
         }

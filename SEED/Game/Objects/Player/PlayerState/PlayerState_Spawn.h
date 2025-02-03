@@ -24,6 +24,8 @@ protected:
     virtual void ManageState()override;
 
 private:
+
+private:
     Egg* egg_ = nullptr;
 
     bool movedGhost_ = false;

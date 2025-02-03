@@ -1,18 +1,18 @@
 #include "Shadow.h"
 
-///stl
-//algorithm
+/// stl
+// algorithm
 #include <algorithm>
 
-//lcoal
-//stage
+/// local
+// stage
 #include "../Manager/Stage.h"
 
-//math
+// math
 #include "MyMath.h"
 
 Shadow::Shadow(BaseObject* _host)
-    :host_(_host){}
+    : host_(_host){}
 
 Shadow::~Shadow(){}
 
@@ -40,9 +40,12 @@ void Shadow::Update(Stage* currentStage){
     Vector3 objectTranslate;
     Vector2 objectTranslateXZ;
     Vector2 nearestPos;
+    Vector3 objectSize;
     for(auto& object : currentStage->GetObjects()){
         objectTranslate = object->GetWorldTranslate();
-        //ホストより上にあるオブジェクトは スキップ
+        // オブジェクトのスケールを考慮してサイズを計算
+        objectSize = blockSize * object->GetWorldScale();
+        // ホストより上にあるオブジェクトは スキップ
         if(hostPos.y - objectTranslate.y <= -0.3f){
             continue;
         }
@@ -50,11 +53,10 @@ void Shadow::Update(Stage* currentStage){
 
         // XZ 平面で 当たり判定
         nearestPos = {
-            std::clamp(hostPosXZ.x,objectTranslateXZ.x - blockSize.x,objectTranslateXZ.x + blockSize.x),
-            std::clamp(hostPosXZ.y,objectTranslateXZ.y - blockSize.y,objectTranslateXZ.y + blockSize.y)
-        };
+            std::clamp(hostPosXZ.x,objectTranslateXZ.x - objectSize.x,objectTranslateXZ.x + objectSize.x),
+            std::clamp(hostPosXZ.y,objectTranslateXZ.y - objectSize.z,objectTranslateXZ.y + objectSize.z)};
 
-        if(MyMath::LengthSq(nearestPos - hostPosXZ) <= 0.001f/*仮決め*/){
+        if(MyMath::LengthSq(nearestPos - hostPosXZ) <= 0.001f /*仮決め*/){
             // 範囲内なら
             // 一番高さが近いオブジェクトの位置を取得
             model_->translate_.y = (std::max)(model_->translate_.y,objectTranslate.y + 0.1f);

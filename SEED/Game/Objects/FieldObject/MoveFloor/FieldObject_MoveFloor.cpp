@@ -106,12 +106,6 @@ void FieldObject_MoveFloor::OnNotify(const std::string& event, [[maybe_unused]] 
         return;
     }
 
-     if (data != nullptr){
-         if (data != static_cast<void*>(this)){
-             return; // 自分へのイベントじゃなければ無視
-         }
-     }
-
     // Activated イベントなら動作開始
     if (event == "SwitchActivated" || event == "LeverActivated"){
         isSwitchActive_ = true;

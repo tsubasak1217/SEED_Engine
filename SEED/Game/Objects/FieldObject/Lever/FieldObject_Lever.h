@@ -1,12 +1,7 @@
 #pragma once
 #include "../Activator/FieldObject_Activator.h"
+#include "Sprite.h"
 
-/**
- * @brief レバーオブジェクト
- *
- * 重さ判定は無視し、触れている（=プレイヤー等と衝突している）状態のときに
- * ゲームパッドボタン（例：Aボタン）を押すとトグル動作を行う。
- */
 class FieldObject_Lever 
     : public FieldObject_Activator{
 public:
@@ -19,11 +14,15 @@ public:
     virtual void EndFrame() override;
     // 衝突時の処理（重さは扱わない）
     virtual void OnCollision(const BaseObject* other, ObjectType objectType) override;
-
+    void DrawHud() override;
 private:
     // レバーをトグルする関数
     void Toggle();
 
+    void UpdateHud();
+
     // レバーに触れているかどうか
     bool isTouched_ = false;
+
+    std::unique_ptr<Sprite> hud_;
 };

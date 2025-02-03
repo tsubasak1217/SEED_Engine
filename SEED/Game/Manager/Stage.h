@@ -39,6 +39,7 @@ public:
 
     void Update();
     void Draw();
+    void DrawHUD();
     void BeginFrame();
     void EndFrame();
 

@@ -1,5 +1,6 @@
 #include "FieldObject_Lever.h"
 #include "InputManager.h"
+#include "SEED.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -23,6 +24,8 @@ FieldObject_Lever::FieldObject_Lever(){
     //objectのClear
     associatedDoors_.clear();
     associatedMoveFloors_.clear();
+    hud_ = std::make_unique<Sprite>("GameUI/A.png");
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,17 +37,29 @@ void FieldObject_Lever::BeginFrame(){
 
     // レバーに触れたかどうかのフラグをリセット
     isTouched_ = false;
+    UpdateHud();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OnCollision
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Lever::OnCollision([[maybe_unused]]const BaseObject* other, ObjectType objectType){
+void FieldObject_Lever::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
     if (objectType == ObjectType::Player ||
         objectType == ObjectType::Egg ||
         objectType == ObjectType::PlayerCorpse){
         isTouched_ = true;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui表示
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::DrawHud(){
+    if (isTouched_){
+        hud_->Draw();
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,4 +86,10 @@ void FieldObject_Lever::Toggle(){
 
     // Observer に通知
     Notify(event);
+}
+
+void FieldObject_Lever::UpdateHud(){
+    Vector2 screenPos = SEED::GetCamera()->ToScreenPosition(GetWorldTranslate() + Vector3(0.0f, 3.0f, 0.0f));;
+
+    hud_->translate = screenPos;
 }

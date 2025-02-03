@@ -52,7 +52,7 @@ void FieldObject_Switch::Draw(){
 ////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 ////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::Update(){
+void FieldObject_Switch::BeginFrame(){
     if (isColliding_ && !isActivated_){
         // 乗っている状態で、まだ起動状態でなければ
         isActivated_ = true;

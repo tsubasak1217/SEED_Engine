@@ -2,9 +2,10 @@
 
 //hostObject
 #include "Scene_Base.h"
+#include "Scene_Clear.h"
 
 // others State
-//#include "ClearState_Main.h"
+#include "ClearState_Main.h"
 
 //lib
 #include "ClockManager.h"
@@ -44,6 +45,6 @@ void ClearState_Enter::HandOverColliders(){}
 
 void ClearState_Enter::ManageState(){
     if(fadeTimer_ >= fadeTime_){
-        //pScene_->ChangeState(new ClearState_Main(pScene_));
+        pScene_->ChangeState(new ClearState_Main(dynamic_cast<Scene_Clear*>(pScene_)));
     }
 }

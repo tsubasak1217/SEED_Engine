@@ -19,6 +19,7 @@
 int32_t StageManager::currentStageNo_ = 0;
 std::array<std::unique_ptr<Stage>,StageManager::kStageCount_> StageManager::stages_;
 std::array<int,StageManager::kStageCount_> StageManager::getStarCounts_;
+std::array<bool,StageManager::kStageCount_> StageManager::clearStatus_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
 bool StageManager::isHandOverColliderNext_ = false;

@@ -8,7 +8,9 @@
 // コンストラクタ・デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-Scene_Clear::Scene_Clear(){}
+Scene_Clear::Scene_Clear(){
+    Initialize();
+}
 
 Scene_Clear::~Scene_Clear(){}
 
@@ -21,17 +23,25 @@ Scene_Clear::~Scene_Clear(){}
 void Scene_Clear::Initialize(){
     //=========================== dinosaur =======================//
     dinosaur_ = std::make_unique<Model>();
-    dinosaur_ = std::make_unique<Model>("dinosaur.gltf");
-    dinosaur_->UpdateMatrix();
+    dinosaur_ = std::make_unique<Model>("clear_breakEgg.gltf");
+    dinosaur_->StartAnimation("breakEgg",false);
+
+    // transform Initialize
+    dinosaur_->rotate_.y = 3.141592f;
+    dinosaur_->translate_ = {0.0f,-1.2f,10.0f};
+
     dinosaur_->isRotateWithQuaternion_ = false;
     dinosaur_->isParentScale_ = false;
+    dinosaur_->UpdateMatrix();
 
-    //=========================== egg ===========================//
-    egg_ = std::make_unique<Model>();
-    egg_ = std::make_unique<Model>("egg.gltf");
-    egg_->UpdateMatrix();
-    egg_->isRotateWithQuaternion_ = false;
-    egg_->isParentScale_ = false;
+    // 先に読み込んでおく
+    ModelManager::LoadModel("clear_dance.gltf");
+
+    //=========================== light =========================//
+    directionalLight_ = std::make_unique<DirectionalLight>();
+    directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
+    directionalLight_->direction_ = MyMath::Normalize({1.0f,-1.0f,0.5f});
+    directionalLight_->intensity = 1.0f;
 
     //=========================== state =========================//
     currentState_ = std::make_unique<ClearState_Enter>(this);
@@ -51,14 +61,20 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
-    //=========================== Object =======================//
-    dinosaur_->Update();
-    egg_->Update();
+    ImGui::Begin("dinosaur");
+    ImGui::DragFloat3("scale",&dinosaur_->scale_.x,0.01f);
+    ImGui::DragFloat3("rotate",&dinosaur_->rotate_.x,0.01f);
+    ImGui::DragFloat3("translate",&dinosaur_->translate_.x,0.01f);
+    ImGui::End();
 
     //=========================== State =======================//
     if(currentState_){
         currentState_->Update();
     }
+
+    //=========================== light =======================//
+    directionalLight_->SendData();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +85,6 @@ void Scene_Clear::Update(){
 void Scene_Clear::Draw(){
     //=========================== Object =======================//
     dinosaur_->Draw();
-    egg_->Draw();
 
     //=========================== State =======================//
     if(currentState_){

@@ -7,6 +7,9 @@
 #include <memory>
 
 ///local
+//light
+#include "DirectionalLight.h"
+//objects
 #include "Model.h"
 
 class Scene_Clear 
@@ -23,9 +26,11 @@ public:
     void HandOverColliders()override;
 
 private:
+    // EngineObjects
+    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+
+    // model
     std::unique_ptr<Model> dinosaur_;
-    std::unique_ptr<Model> egg_;
 public:
     Model* GetDinosaur(){ return dinosaur_.get(); };
-    Model* GetEgg(){ return egg_.get(); };
-};
+ };

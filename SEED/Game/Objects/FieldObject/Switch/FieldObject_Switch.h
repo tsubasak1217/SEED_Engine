@@ -7,6 +7,6 @@ public:
     virtual ~FieldObject_Switch() = default;
 
     // フレーム開始時に重量判定を行い、起動／停止を決定する
-    virtual void BeginFrame() override;
+    void Update() override;
     // Observerのリストを取得
 };

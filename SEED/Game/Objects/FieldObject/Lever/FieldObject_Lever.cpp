@@ -1,0 +1,95 @@
+#include "FieldObject_Lever.h"
+#include "InputManager.h"
+#include "SEED.h"
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// コンストラクタ
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+FieldObject_Lever::FieldObject_Lever(){
+    // クラス名を設定
+    className_ = "FieldObject_Lever";
+    // インスタンス名を設定
+    name_ = "lever";
+
+    // モデルの初期化
+    std::string path = "FieldObject/" + name_ + ".obj";
+    model_ = std::make_unique<Model>(path);
+    model_->isRotateWithQuaternion_ = false;
+    // コライダー関連の初期化
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
+    InitColliders(ObjectType::Field);
+    // 全般の初期化
+    FieldObject::Initialize();
+
+    //objectのClear
+    associatedDoors_.clear();
+    associatedMoveFloors_.clear();
+    hud_ = std::make_unique<Sprite>("GameUI/A.png");
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BeginFrame
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::BeginFrame(){
+    // 基底クラスの BeginFrame() を呼ぶが、重さは無視するので結果は使わない
+    FieldObject_Activator::BeginFrame();
+
+    // レバーに触れたかどうかのフラグをリセット
+    isTouched_ = false;
+    UpdateHud();
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// OnCollision
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+    if (objectType == ObjectType::Player ||
+        objectType == ObjectType::Egg ||
+        objectType == ObjectType::PlayerCorpse){
+        isTouched_ = true;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui表示
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::DrawHud(){
+    if (isTouched_){
+        hud_->Draw();
+    }
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EndFrame
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::EndFrame(){
+    // レバーに触れている & Aボタンが押された瞬間ならトグルする
+    if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::B)){
+        Toggle();
+    }
+
+    FieldObject::EndFrame();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Toggle
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void FieldObject_Lever::Toggle(){
+    // アクティブ状態を反転
+    isActivated_ = !isActivated_;
+
+    // イベント名を設定
+    std::string event = isActivated_ ? "LeverActivated" : "LeverDeactivated";
+
+    // Observer に通知
+    Notify(event);
+}
+
+void FieldObject_Lever::UpdateHud(){
+    Vector2 screenPos = SEED::GetCamera()->ToScreenPosition(GetWorldTranslate() + Vector3(0.0f, 3.0f, 0.0f));;
+
+    hud_->translate = screenPos;
+}

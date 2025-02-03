@@ -112,6 +112,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.cpp" />
@@ -280,6 +282,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
     <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />

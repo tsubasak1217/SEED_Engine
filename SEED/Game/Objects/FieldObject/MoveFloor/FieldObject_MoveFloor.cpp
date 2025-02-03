@@ -5,7 +5,7 @@
 #include "../adapter/json/JsonCoordinator.h"
 
 // local
-#include "../FieldObject/Switch/FieldObject_Switch.h"
+#include "../FieldObject/Activator/FieldObject_Activator.h"
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -51,7 +51,7 @@ void FieldObject_MoveFloor::Initialize(){
 // 更新関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Update(){
-    if (!hasSwitch_ || (hasSwitch_ && isSwitchActive_)){
+    if (!hasActivator_ || (hasActivator_ && isSwitchActive_)){
         Move();
     }
     FieldObject::Update();
@@ -99,12 +99,29 @@ void FieldObject_MoveFloor::ShowImGui(){
 // Observerの関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    if (event == "SwitchActivated"){
+    // Switch や Lever からの Activated/Deactivated を捕まえて床を動かす
+    // イベントが違うなら無視
+    if (event != "SwitchActivated" && event != "SwitchDeactivated"
+        && event != "LeverActivated" && event != "LeverDeactivated"){
+        return;
+    }
+
+     if (data != nullptr){
+         if (data != static_cast<void*>(this)){
+             return; // 自分へのイベントじゃなければ無視
+         }
+     }
+
+    // Activated イベントなら動作開始
+    if (event == "SwitchActivated" || event == "LeverActivated"){
         isSwitchActive_ = true;
-    } else if (event == "SwitchDeactivated"){
+    }
+    // Deactivated イベントなら動作停止
+    else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
         isSwitchActive_ = false;
     }
 }
+
 
 /* private =============================================================*/
 
@@ -158,26 +175,24 @@ void FieldObject_MoveFloor::Move(){
 
 }
 
+
 /* public =============================================================*/
 
 /////////////////////////////////////////////////////////////////////////
 // getter
 /////////////////////////////////////////////////////////////////////////
-void FieldObject_MoveFloor::SetSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->RegisterObserver(this);
+void FieldObject_MoveFloor::SetActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->RegisterObserver(this);
     }
-    hasSwitch_ = true;
+    hasActivator_ = true;
 }
 
-/////////////////////////////////////////////////////////////////////////
-// setter
-/////////////////////////////////////////////////////////////////////////
-void FieldObject_MoveFloor::RemoveSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->UnregisterObserver(this);
+void FieldObject_MoveFloor::RemoveActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->UnregisterObserver(this);
     }
-    hasSwitch_ = false;
+    hasActivator_ = false;
 }

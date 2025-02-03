@@ -11,6 +11,7 @@
 #include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"
+#include "FieldObject/Lever/FieldObject_Lever.h"
 
 // other
 #include "EventState/EventFunctionTable.h"
@@ -53,12 +54,12 @@ void FieldEditor::Initialize(){
     modelNameMap_["plant"] = FIELD_MODEL_PLANT;
     modelNameMap_["wood"] = FIELDMODEL_WOOD;
     modelNameMap_["fence"] = FIELDMODEL_FENCE;
+    modelNameMap_["lever"] = FIELDMODEL_LEVER;
 
     LoadFieldModelTexture();
 
     edittingStageIndex = StageManager::GetCurrentStageNo();
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  全てのスイッチから特定のドア参照を削除する関数
@@ -80,7 +81,6 @@ void FieldEditor::RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, cons
         );
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  jsonファイルの名前を入力するフィールド
@@ -154,7 +154,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
         fs::path path(filePath);
         auto directory = path.parent_path();
 
-        if(!directory.empty() && !fs::exists(directory)){
+        if (!directory.empty() && !fs::exists(directory)){
             fs::create_directories(directory);
         }
 
@@ -163,50 +163,80 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
 
         // Managerからオブジェクトを取得
         auto& objects = manager_.GetStages()[stageNo - 1]->GetObjects();
-        for(size_t i = 0; i < objects.size(); ++i){
-            // dynamic_cast で ModelFieldObject のみ処理
-            auto* modelObj = dynamic_cast<FieldObject*>(objects[i].get());
-            if(!modelObj) continue;
 
+        for (size_t i = 0; i < objects.size(); ++i){
+            // フィールドオブジェクト以外は除外
+            auto* modelObj = dynamic_cast< FieldObject* >(objects[i].get());
+            if (!modelObj) continue;
+
+            // 基本情報の取得
             std::string modelName = modelObj->GetName();
             const std::string prefix = "assets/";
-            if(modelName.rfind(prefix, 0) == 0){
+            if (modelName.rfind(prefix, 0) == 0){
                 modelName = modelName.substr(prefix.size());
             }
 
             nlohmann::json modelJson = {
                 {"name", modelName},
                 {"type", modelObj->GetFieldObjectType()},
-                {"position", { modelObj->GetModel()->GetWorldTranslate().x,
-                               modelObj->GetModel()->GetWorldTranslate().y,
-                               modelObj->GetModel()->GetWorldTranslate().z }},
-                {"scale", { modelObj->GetModel()->GetWorldScale().x,
-                            modelObj->GetModel()->GetWorldScale().y,
-                            modelObj->GetModel()->GetWorldScale().z }},
-                {"rotation", { modelObj->GetModel()->GetWorldRotate().x,
-                               modelObj->GetModel()->GetWorldRotate().y,
-                               modelObj->GetModel()->GetWorldRotate().z }},
-                {"fieldObjectID", modelObj->GetGUID() }
+                {"position", {
+                    modelObj->GetModel()->GetWorldTranslate().x,
+                    modelObj->GetModel()->GetWorldTranslate().y,
+                    modelObj->GetModel()->GetWorldTranslate().z
+                }},
+                {"scale", {
+                    modelObj->GetModel()->GetWorldScale().x,
+                    modelObj->GetModel()->GetWorldScale().y,
+                    modelObj->GetModel()->GetWorldScale().z
+                }},
+                {"rotation", {
+                    modelObj->GetModel()->GetWorldRotate().x,
+                    modelObj->GetModel()->GetWorldRotate().y,
+                    modelObj->GetModel()->GetWorldRotate().z
+                }},
+                {"fieldObjectID", modelObj->GetGUID()}
             };
 
-            // スイッチの場合、関連付けられたドアのIDを保存
-            if(auto* sw = dynamic_cast<FieldObject_Switch*>(modelObj)){
-                std::vector<std::string> doorIDs;
-                for(auto* door : sw->GetAssociatedDoors()){
-                    doorIDs.push_back(door->GetGUID());
+            //===========================================================
+            // ★★ (A) Activator 共通の処理 (Switch/Lever など)
+            //===========================================================
+            if (auto* activator = dynamic_cast< FieldObject_Activator* >(modelObj)){
+                // 1) まず紐付いているドアのGUIDを保存
+                {
+                    std::vector<std::string> doorIDs;
+                    for (auto* door : activator->GetAssociatedDoors()){
+                        doorIDs.push_back(door->GetGUID());
+                    }
+                    modelJson["associatedDoors"] = doorIDs;
                 }
-                modelJson["associatedDoors"] = doorIDs;
-                modelJson["requiredWeight"] = sw->GetRequiredWeight();
+
+                // 2) 紐付いている「動く床」のGUIDも保存
+                {
+                    std::vector<std::string> floorIDs;
+                    for (auto* floor : activator->GetAssociatedMoveFloors()){
+                        floorIDs.push_back(floor->GetGUID());
+                    }
+                    modelJson["associatedFloors"] = floorIDs;
+                }
+
+                // 3) スイッチ特有の「必要重量」を保存
+                if (auto* sw = dynamic_cast< FieldObject_Switch* >(activator)){
+                    modelJson["requiredWeight"] = sw->GetRequiredWeight();
+                }
+                // レバー特有項目があればここで書き出す…(今回は例略)
             }
 
-            //移動する床の場合、ルーチン名を保存
-            else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(modelObj)){
+            //===========================================================
+            // ★★ (B) MoveFloor特有・EventArea特有 等の処理
+            //===========================================================
+            // 移動する床の場合
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(modelObj)){
                 modelJson["routineName"] = moveFloor->GetRoutineName();
                 modelJson["moveSpeed"] = moveFloor->GetMoveSpeed();
             }
 
-            // イベントエリアの場合、関連付けられた関数のキーの名前、一度のみかどうかのフラグを保存
-            if(auto* eventArea = dynamic_cast<FieldObject_EventArea*>(modelObj)){
+            // イベントエリアの場合
+            if (auto* eventArea = dynamic_cast< FieldObject_EventArea* >(modelObj)){
                 modelJson["eventFunctionKey"] = eventArea->GetEventName();
                 modelJson["isOnceEvent"] = eventArea->isOnceEvent_;
             }
@@ -236,14 +266,15 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
 
         // JSONファイルに書き込み
         std::ofstream outFile(filePath);
-        if(outFile.is_open()){
-            outFile << jsonData.dump(4);
+        if (outFile.is_open()){
+            outFile << jsonData.dump(4); // 整形して書き出し
             outFile.close();
         }
-    } catch([[maybe_unused]] const std::exception& e){
+    } catch ([[maybe_unused]] const std::exception& e){
         // エラー処理
     }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  textureの読み込み
@@ -274,7 +305,6 @@ void FieldEditor::LoadFieldModelTexture(){
             (ImTextureID)ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  マウスで直接オブジェクト選択(indexを取得)
@@ -314,7 +344,6 @@ int32_t FieldEditor::GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObje
 
     return index;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  マウスで直接オブジェクト追加
@@ -371,53 +400,12 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-//  各fieldObjectのID再割り当て
-////////////////////////////////////////////////////////////////////////////////////////
-//void FieldEditor::ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects){
-//    switch(removedType){
-//    case FIELDMODELNAME::FIELDMODEL_GRASSSOIL:
-//        ReassignIDsForType<FieldObject_GrassSoil>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_SOIL:
-//        ReassignIDsForType<FieldObject_Soil>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_STAR:
-//        ReassignIDsForType<FieldObject_Star>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_DOOR:
-//        ReassignIDsForType<FieldObject_Door>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_START:
-//        ReassignIDsForType<FieldObject_Start>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_GOAL:
-//        ReassignIDsForType<FieldObject_Goal>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_SWITCH:
-//        ReassignIDsForType<FieldObject_Switch>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_VIEWPOINT:
-//        ReassignIDsForType<FieldObject_ViewPoint>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_MOVEFLOOR:
-//        ReassignIDsForType<FieldObject_MoveFloor>(objects);
-//        break;
-//    case FIELDMODELNAME::FIELDMODEL_EVENTAREA:
-//        ReassignIDsForType<FieldObject_EventArea>(objects);
-//        break;
-//    default:
-//        // 必要に応じてデフォルト処理を追加
-//        break;
-//    }
-//}
-
-////////////////////////////////////////////////////////////////////////////////////////
 //  imguiの表示
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
-    static FieldObject_Switch* assigningSwitch = nullptr;
 
+    static FieldObject_Activator* assigningActivator = nullptr;
 
     edittingStageIndex = StageManager::GetCurrentStageNo();
 
@@ -430,11 +418,11 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Stage Settings");
         ImGui::Separator();
 
-        if(ImGui::Checkbox("isEditing", &isEditing_)){
+        if (ImGui::Checkbox("isEditing", &isEditing_)){
             SEED::SetCamera("debug");
             SEED::GetCamera()->SetTranslation(manager_.GetPlayerPtr()->GetWorldTranslate());
 
-            if(isEditing_){
+            if (isEditing_){
                 manager_.GetPlayerPtr()->SetIsMovable(false);
             } else{
                 manager_.GetPlayerPtr()->SetIsMovable(true);
@@ -444,7 +432,7 @@ void FieldEditor::ShowImGui(){
         ImGui::SameLine();
         ImGui::Text("Stage:");
         ImGui::SameLine();
-        if(ImGui::Combo("##stageNo##1", &edittingStageIndex,
+        if (ImGui::Combo("##stageNo##1", &edittingStageIndex,
             "1\0"
             "2\0"
             "3\0"
@@ -455,27 +443,26 @@ void FieldEditor::ShowImGui(){
             "8\0"
             "9\0"
             "10\0\0"
-        )){
+            )){
             manager_.SetCurrentStageNo(edittingStageIndex);
         }
 
         // モード切り替え用 ラジオボタン
         ImGui::Text("Editor Mode:");
         ImGui::SameLine();
-        if(ImGui::RadioButton("Add FieldObject", editorMode_ == EditorMode::AddFieldObject)){
+        if (ImGui::RadioButton("Add FieldObject", editorMode_ == EditorMode::AddFieldObject)){
             editorMode_ = EditorMode::AddFieldObject;
         }
         ImGui::SameLine();
-        if(ImGui::RadioButton("Add Enemy", editorMode_ == EditorMode::AddEnemy)){
+        if (ImGui::RadioButton("Add Enemy", editorMode_ == EditorMode::AddEnemy)){
             editorMode_ = EditorMode::AddEnemy;
         }
 
         ImGui::SameLine();
-
-        if(ImGui::Button("Output StageData")){
+        if (ImGui::Button("Output StageData")){
             ImGui::OpenPopup("Output to Json");
         }
-        if(ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+        if (ImGui::BeginPopupModal("Output to Json", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
             PopupDecideOutputName();
             ImGui::EndPopup();
         }
@@ -487,18 +474,17 @@ void FieldEditor::ShowImGui(){
     //----------------------------------------
     // [2] モードに応じた処理分岐
     //----------------------------------------
-
-    switch(editorMode_){
-    case EditorMode::AddFieldObject:
-        // 既存のフィールドオブジェクト追加処理
-        AddObjectByMouse(selectItemIdxOnGUI_);
-        break;
-    case EditorMode::AddEnemy:
-        // 敵配置処理を呼び出す
-        AddEnemyByMouse();
-        break;
-    default:
-        break;
+    switch (editorMode_){
+        case EditorMode::AddFieldObject:
+            // 既存のフィールドオブジェクト追加処理
+            AddObjectByMouse(selectItemIdxOnGUI_);
+            break;
+        case EditorMode::AddEnemy:
+            // 敵配置処理を呼び出す
+            AddEnemyByMouse();
+            break;
+        default:
+            break;
     }
 
     //----------------------------------------
@@ -511,34 +497,29 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Select a Model to Add:");
         static std::string selectedModelName = "GrassSoil";
         int i = 0;
-        for(auto& map : modelNameMap_){
+        for (auto& map : modelNameMap_){
             std::string imageKey = "fieldModelTextures/" + map.first + "Image.png";
             auto it = textureIDs_.find(imageKey);
 
             // ボタンの表示(追加するアイテムインデックスを選択)
-            if(it != textureIDs_.end()){
-                if(ImGui::ImageButton(it->second, ImVec2(64, 64))){
+            if (it != textureIDs_.end()){
+                if (ImGui::ImageButton(it->second, ImVec2(64, 64))){
                     selectItemIdxOnGUI_ = map.second;
                     selectedModelName = map.first;
                 }
             } else{
-                if(ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
+                if (ImGui::Button(map.first.c_str(), ImVec2(64, 64))){
                     selectItemIdxOnGUI_ = map.second;
                     selectedModelName = map.first;
                 }
             }
 
-            if(i % 6 != 5){ ImGui::SameLine(); }
-
-
+            if (i % 6 != 5){ ImGui::SameLine(); }
             i++;
         }
 
         ImGui::NewLine();
-
-        // 選択しているアイテム名の表示
         ImGui::Text("Selected: %s", selectedModelName.c_str());
-
     }
 
     ImGui::Separator();
@@ -563,9 +544,9 @@ void FieldEditor::ShowImGui(){
         ImGui::Text("Model List:");
         ImGui::Separator();
 
-        for(int idx = 0; idx < (int)objects.size(); idx++){
-            auto* mfObj = dynamic_cast<FieldObject*>(objects[idx].get());
-            if(!mfObj) continue;
+        for (int idx = 0; idx < ( int ) objects.size(); idx++){
+            auto* mfObj = dynamic_cast< FieldObject* >(objects[idx].get());
+            if (!mfObj) continue;
             std::string id = mfObj->GetGUID();
 
             // リスト表示用ラベル
@@ -575,26 +556,26 @@ void FieldEditor::ShowImGui(){
             bool isSelected = (selectedObjIndex == idx);
 
             // 選択されている場合は色を変える
-            if(isSelected){
-                mfObj->SetColor({ 1.f, 0.f, 0.f, 1.f });
+            if (isSelected){
+                mfObj->SetColor({1.f, 0.f, 0.f, 1.f});
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 0.f, 1.f));
                 ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.4f, 0.4f, 0.f, 1.f));
-                if(ImGui::Selectable(label.c_str(), true)){
-                    // 特に何もせず
+                if (ImGui::Selectable(label.c_str(), true)){
+                    // 特に何もしない
                 }
                 ImGui::PopStyleColor(2);
             } else{
-                mfObj->SetColor({ 1.f, 1.f, 1.f, 1.f });
-                if(ImGui::Selectable(label.c_str(), false)){
+                mfObj->SetColor({1.f, 1.f, 1.f, 1.f});
+                if (ImGui::Selectable(label.c_str(), false)){
                     selectedObjIndex = idx;
                 }
             }
         }
 
         // 左クリックで直接オブジェクトを選択
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if (Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
             // ImGuiウィンドウ上をクリックした場合を除外
-            if(!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)){
                 selectedObjIndex = GetObjectIndexByMouse(objects);
             }
         }
@@ -609,9 +590,9 @@ void FieldEditor::ShowImGui(){
     //-------------------------
     ImGui::BeginChild("ModelEditor", ImVec2(0, 0), true);
     {
-        if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
-            auto* mfObj = dynamic_cast<FieldObject*>(objects[selectedObjIndex].get());
-            if(mfObj){
+        if (selectedObjIndex >= 0 && selectedObjIndex < ( int ) objects.size()){
+            auto* mfObj = dynamic_cast< FieldObject* >(objects[selectedObjIndex].get());
+            if (mfObj){
                 ImGui::Text("Editing Model (Index=%d)", selectedObjIndex);
                 ImGui::Separator();
 
@@ -619,28 +600,46 @@ void FieldEditor::ShowImGui(){
                 Stage* stage = manager_.GetStages()[edittingStageIndex].get();
                 mfObj->ShowImGui();
                 stage->SetSelectedObject(mfObj);
-
                 stage->SetSelectedObjectGUID(mfObj->GetGUID());
 
-                // [A] スイッチの場合の設定
-                if(auto* sw = dynamic_cast<FieldObject_Switch*>(mfObj)){
+                //=====================================================
+                // [A] スイッチ or レバー の場合の設定
+                //=====================================================
+                // スイッチかレバーか判定
+                if (auto* sw = dynamic_cast< FieldObject_Switch* >(mfObj)){
+                    // いま選択しているのがスイッチであれば、assigningActivator をスイッチに
+                    assigningActivator = sw;
 
-                    // 「ドア割り当て」モード開始
-                    assigningSwitch = sw;
-
-                    // すでに関連付けられているドアを黄色にする
-                    for(auto* door : sw->GetAssociatedDoors()){
-                        door->SetColor({ 1.f, 1.f, 0.f, 1.f });
+                    // スイッチに紐付いているドア・床をハイライト
+                    for (auto* door : sw->GetAssociatedDoors()){
+                        door->SetColor({1.f, 1.f, 0.f, 1.f});
+                    }
+                    for (auto* moveFloor : sw->GetAssociatedMoveFloors()){
+                        moveFloor->SetColor({1.f, 1.f, 0.f, 1.f});
                     }
 
-                    // 関連付けされている動く床を黄色くする
-                    for(auto* moveFloor : sw->GetAssociatedMoveFloors()){
-                        moveFloor->SetColor({ 1.f, 1.f, 0.f, 1.f });
-                    }
-
-                    // 必要重量の設定
+                    // 必要重量の設定スライダー
                     ImGui::SliderInt("Required Weight", sw->GetRequiredWeightPtr(), 1, 3);
                     ImGui::Separator();
+
+                } else if (auto* lever = dynamic_cast< FieldObject_Lever* >(mfObj)){
+                    // いま選択しているのがレバーであれば、assigningActivator をレバーに
+                    assigningActivator = lever;
+
+                    // レバーに紐付いているドア・床をハイライト
+                    for (auto* door : lever->GetAssociatedDoors()){
+                        door->SetColor({1.f, 1.f, 0.f, 1.f});
+                    }
+                    for (auto* moveFloor : lever->GetAssociatedMoveFloors()){
+                        moveFloor->SetColor({1.f, 1.f, 0.f, 1.f});
+                    }
+
+                    // レバーは重さ不要なので、何もスライダーは表示しない
+                    ImGui::Separator();
+                } else{
+                    // それ以外のオブジェクトなら、
+                    // Activator をリセット（別のものを再選択できるようにする）
+                    assigningActivator = nullptr;
                 }
 
                 // ポイントライトの場合の設定
@@ -676,16 +675,16 @@ void FieldEditor::ShowImGui(){
 
                 // [B] チャンク移動/スケール
                 {
-                    static Vector3Int moveChunk{ 0, 0, 0 };
-                    static Vector3Int scaleChunk{ 0, 0, 0 };
-                    static Vector3Int stageMoveChunk{ 0, 0, 0 };
+                    static Vector3Int moveChunk {0, 0, 0};
+                    static Vector3Int scaleChunk {0, 0, 0};
+                    static Vector3Int stageMoveChunk {0, 0, 0};
                     static int lastSelectedIndex = -1;
 
                     // オブジェクトが変わったら値を初期化
-                    if(selectedObjIndex != lastSelectedIndex){
-                        moveChunk = { 0, 0, 0 };
-                        scaleChunk = { 0, 0, 0 };
-                        stageMoveChunk = { 0, 0, 0 };
+                    if (selectedObjIndex != lastSelectedIndex){
+                        moveChunk = {0, 0, 0};
+                        scaleChunk = {0, 0, 0};
+                        stageMoveChunk = {0, 0, 0};
                         lastSelectedIndex = selectedObjIndex;
                     }
 
@@ -708,9 +707,9 @@ void FieldEditor::ShowImGui(){
                         Input::IsTriggerKey(DIK_W) - Input::IsTriggerKey(DIK_S)
                     };
 
-                    if(Input::IsTriggerKey(DIK_1)){
+                    if (Input::IsTriggerKey(DIK_1)){
                         editItemIndex = 0;
-                    } else if(Input::IsTriggerKey(DIK_2)){
+                    } else if (Input::IsTriggerKey(DIK_2)){
                         editItemIndex = 1;
                     } else if(Input::IsTriggerKey(DIK_3)){
                         editItemIndex = 2;
@@ -744,22 +743,22 @@ void FieldEditor::ShowImGui(){
                     Vector3 scl = mfObj->GetModel()->GetWorldScale();
 
                     // ステージ全体移動
-                    if(tempStageMove != stageMoveChunk){
-                        Vector3 diff{
+                    if (tempStageMove != stageMoveChunk){
+                        Vector3 diff {
                             float(tempStageMove.x - stageMoveChunk.x) * kBlockSize,
                             float(tempStageMove.y - stageMoveChunk.y) * kBlockSize,
                             float(tempStageMove.z - stageMoveChunk.z) * kBlockSize
                         };
                         // 全オブジェクトを移動
-                        for(auto& obj : objects){
+                        for (auto& obj : objects){
                             obj->AddTranslate(diff);
                         }
                         stageMoveChunk = tempStageMove;
                     }
 
                     // 単体移動
-                    if(tempMove != moveChunk){
-                        Vector3Int diff{
+                    if (tempMove != moveChunk){
+                        Vector3Int diff {
                             tempMove.x - moveChunk.x,
                             tempMove.y - moveChunk.y,
                             tempMove.z - moveChunk.z
@@ -773,8 +772,8 @@ void FieldEditor::ShowImGui(){
                     }
 
                     // スケール変更
-                    if(tempScale != scaleChunk){
-                        Vector3Int diff{
+                    if (tempScale != scaleChunk){
+                        Vector3Int diff {
                             tempScale.x - scaleChunk.x,
                             tempScale.y - scaleChunk.y,
                             tempScale.z - scaleChunk.z
@@ -789,86 +788,82 @@ void FieldEditor::ShowImGui(){
                     ImGui::Separator();
                 }
 
+                //=====================================================
                 // [C] Position / Scale / Rotation の個別編集
+                //=====================================================
                 {
                     Vector3 pos = mfObj->GetModel()->GetWorldTranslate();
                     Vector3 scl = mfObj->GetModel()->GetWorldScale();
                     Vector3 rot = mfObj->GetModel()->GetWorldRotate();
 
-                    if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
+                    if (ImGui::DragFloat3("Position", &pos.x, 0.1f)){
                         mfObj->SetTranslate(pos);
                     }
-                    if(ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
+                    if (ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
                         mfObj->SetScale(scl);
                     }
-                    if(ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
+                    if (ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
                         mfObj->SetRotate(rot);
                     }
                 }
 
-                // イベントエリアの場合、イベント内容を設定
-                if(auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)){
+                // イベントエリアの場合、イベント内容を設定	// イベントエリア等の編集があればここに追加...
+                if (auto* eventArea = dynamic_cast< FieldObject_EventArea* >(mfObj)){
                     ImGui::Separator();
-                    ImGui::Text("EventArea Settings");
+                    ImGui::Text("EventArea Settings");	ImGui::Separator();
                     ImGui::Separator();
-
-                    // EventFunctionTableの関数名をドロップダウンで表示・選択(unordered_map)
+                    // EventFunctionTableの関数名をドロップダウンで表示・選択(unordered_map)	//=====================================================
                     static int selectedEventIndex = 0;
                     static std::vector<std::string> eventNames;
-                    if(eventNames.empty()){
-                        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+                    if (eventNames.empty()){
+                        for (const auto& [name, func] : EventFunctionTable::tableMap_){
                             eventNames.push_back(name);
                         }
                     }
-
                     std::string currentEventName;
-                    if(eventArea->GetEventName() != ""){
+                    if (eventArea->GetEventName() != ""){
                         currentEventName = eventArea->GetEventName();
                     } else{
                         currentEventName = "none";
                     }
-
-                    // ドロップダウンリストを作成
-                    if(ImGui::BeginCombo("Select Event", currentEventName.c_str())){
-                        for(int i = 0; i < eventNames.size(); ++i){
+                    // ドロップダウンリストを作成	
+                    if (ImGui::BeginCombo("Select Event", currentEventName.c_str())){
+                        for (int i = 0; i < eventNames.size(); ++i){
                             bool isSelected = (selectedEventIndex == i);
-                            if(ImGui::Selectable(eventNames[i].c_str(), isSelected)){
-                                selectedEventIndex = i;  // 選択されたイベントのインデックスを更新
+                            if (ImGui::Selectable(eventNames[i].c_str(), isSelected)){
+                                selectedEventIndex = i;  // 選択されたイベントのインデックスを更新	// [D] オブジェクト削除
                                 eventArea->SetEvent(EventFunctionTable::tableMap_[eventNames[i]]);
                                 eventArea->SetEventName(eventNames[i]);
                             }
-
-                            if(isSelected){
+                            if (isSelected){
                                 ImGui::SetItemDefaultFocus();
                             }
                         }
                         ImGui::EndCombo();
                     }
-
-                    // 一度のみのイベントかどうかのフラグ
+                    // 一度のみのイベントかどうかのフラグ	
                     ImGui::Checkbox("Is Once Event", &eventArea->isOnceEvent_);
-
                 }
-
                 ImGui::Separator();
 
+                //=====================================================
                 // [D] オブジェクト削除
-                if(ImGui::Button("Remove Selected Model") || Input::IsTriggerKey(DIK_ESCAPE)){
-                    if(selectedObjIndex >= 0 && selectedObjIndex < (int)objects.size()){
+                //=====================================================
+                if (ImGui::Button("Remove Selected Model") || Input::IsTriggerKey(DIK_ESCAPE)){
+                    if (selectedObjIndex >= 0 && selectedObjIndex < ( int ) objects.size()){
                         FieldObject* objToRemove = objects[selectedObjIndex].get();
 
-                        // スイッチに紐づいたドアを外す
+                        // スイッチに紐づいたドアを外す (既存処理)
                         std::vector<FieldObject_Switch*> allSwitches =
                             manager_.GetStages()[edittingStageIndex]->GetObjectsOfType<FieldObject_Switch>();
 
                         // ドア型なら、関連スイッチから削除
-                        if(auto* door = dynamic_cast<FieldObject_Door*>(objToRemove)){
+                        if (auto* door = dynamic_cast< FieldObject_Door* >(objToRemove)){
                             RemoveDoorFromAllSwitches(door, allSwitches);
                         }
 
                         // Manager 側でオブジェクト削除
                         manager_.GetStages()[edittingStageIndex]->RemoveFieldObject(objToRemove);
-
                         selectedObjIndex = -1;
                     }
                 }
@@ -885,40 +880,43 @@ void FieldEditor::ShowImGui(){
     ImGui::Columns(1);
 
     //----------------------------------------
-    // [4] 中ボタンクリックでスイッチとドアを関連付け/解除
+    // [4] 中ボタンクリックでアクティベータとドア/床を関連付け
     //----------------------------------------
-    if(Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
+    if (Input::IsTriggerMouse(MOUSE_BUTTON::MIDDLE)){
         int clickedIndex = GetObjectIndexByMouse(objects);
-        if(clickedIndex >= 0){
-            auto* clickedObj = dynamic_cast<FieldObject*>(objects[clickedIndex].get());
+        if (clickedIndex >= 0){
+            auto* clickedObj = dynamic_cast< FieldObject* >(objects[clickedIndex].get());
 
-            // ドアをクリックした場合
-            if(auto* door = dynamic_cast<FieldObject_Door*>(clickedObj)){
-                // ドアが既にスイッチを持っている場合 = 解除
-                if(door->GetHasSwitch()){
-                    assigningSwitch->RemoveAssociatedDoor(door);
-                    door->RemoveSwitch(assigningSwitch);
+            // もしドアをクリックした場合
+            if (auto* door = dynamic_cast< FieldObject_Door* >(clickedObj)){
+
+                // すでにドアにActivatorがあるなら解除
+                if (door->GetHasActivator()){
+                    assigningActivator->RemoveAssociatedDoor(door);
+                    door->RemoveActivator(assigningActivator);
                 }
-                // 未設定なら紐付け
-                else if(assigningSwitch){
-                    assigningSwitch->AddAssociatedDoor(door);
-                    door->SetSwitch(assigningSwitch);
-                    assigningSwitch = nullptr;
+                // 未設定で、かつassigningActivatorがあれば紐付け
+                else if (assigningActivator){
+                    assigningActivator->AddAssociatedDoor(door);
+                    door->SetActivator(assigningActivator);
+                    assigningActivator = nullptr;
                 }
             }
 
-            //動く床をクリックした場合
-            else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(clickedObj)){
-                //動く床がすでにスイッチを持っている場合解除
-                if(moveFloor->GetHasSwitch()){
-                    assigningSwitch->RemoveAssociatedMoveFloor(moveFloor);
-                    moveFloor->RemoveSwitch(assigningSwitch);
+            // もし動く床をクリックした場合
+            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(clickedObj)){
+
+                // すでに床にActivatorがあるなら解除
+                if (moveFloor->GetHasActivator()){
+                    assigningActivator->RemoveAssociatedMoveFloor(moveFloor);
+                    moveFloor->RemoveActivator(assigningActivator);
                 }
-                //未設定なら紐付け
-                else if(assigningSwitch){
-                    assigningSwitch->AddAssociatedMoveFloor(moveFloor);
-                    moveFloor->SetSwitch(assigningSwitch);
-                    assigningSwitch = nullptr;
+
+                // 未設定で、かつassigningActivatorがあれば紐付け
+                else if (assigningActivator){
+                    assigningActivator->AddAssociatedMoveFloor(moveFloor);
+                    moveFloor->SetActivator(assigningActivator);
+                    assigningActivator = nullptr;
                 }
             }
         }
@@ -929,6 +927,7 @@ void FieldEditor::ShowImGui(){
 
 #endif // _DEBUG
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //  敵を配置するフロー用

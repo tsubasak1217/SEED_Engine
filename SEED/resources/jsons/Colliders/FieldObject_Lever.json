@@ -1,0 +1,32 @@
+{
+    "colliders": [
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": true,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": 0.0,
+                    "y": -2.1,
+                    "z": 0.0
+                },
+                "halfSize": {
+                    "x": 0.8,
+                    "y": 0.38,
+                    "z": 0.8
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    ]
+}

@@ -769,6 +769,18 @@
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.cpp">
       <Filter>Game\Objects\FieldObject\PointLight</Filter>
     </ClCompile>
@@ -1396,20 +1408,6 @@
     <ClInclude Include="Game\UI\EggTimerUI.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
-    <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h">
-      <Filter>Game\Objects\FieldObject\PointLight</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h">
-      <Filter>Game\Objects\FieldObject\Plant</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h">
-      <Filter>Game\Objects\FieldObject\Wood</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h">
-      <Filter>Game\Objects\FieldObject\Fence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

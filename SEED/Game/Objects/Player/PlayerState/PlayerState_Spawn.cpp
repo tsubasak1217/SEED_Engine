@@ -34,18 +34,35 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
     deadPos_ = pCharacter_->GetWorldTranslate();
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+
     // とりあえず,ここで 移動
-    spawnPos_ = egg_->GetWorldTranslate();
+    spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
     pCharacter_->ReleaseParent();// 親子付けを解除
     pCharacter_->SetTranslate(spawnPos_);
-
+    pCharacter_->SetScale({0.1f,0.1f,0.1f}); // 見えないようにするために
     pCharacter_->DiscardPreCollider();
     pPlayer->UpdateMatrix();
+
+    // 重力を適応しない,当たり判定を取らない
+    pCharacter_->SetIsApplyGravity(false);
+    pCharacter_->SetCollidable(false);
+
     // 移動不可にする
     pPlayer->SetIsMovable(false);
 
     // egg
     {
+        // 卵が親子付けされていたらplayerも親子付け
+        if(egg_->GetParent()){
+            Vector3 preTranslate = pCharacter_->GetWorldTranslate();
+            Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
+            Vector3 localTranslate = preTranslate * invParentMat;
+            localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
+            pCharacter_->SetTranslate(localTranslate);
+            pCharacter_->SetParent(egg_->GetParent());
+            pCharacter_->UpdateMatrix();
+        }
+
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
@@ -78,17 +95,6 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // effect
     ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},ghostObject_->GetWorldMatPtr());
-  
-    // 卵が親子付けされていたらplayerも親子付け
-    if(egg_->GetParent()){
-        Vector3 preTranslate = pCharacter_->GetWorldTranslate();
-        Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
-        Vector3 localTranslate = preTranslate * invParentMat;
-        localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
-        pCharacter_->SetTranslate(localTranslate);
-        pCharacter_->SetParent(egg_->GetParent());
-        pCharacter_->UpdateMatrix();
-    }
 }
 
 void PlayerState_Spawn::Update(){
@@ -119,6 +125,9 @@ void PlayerState_Spawn::ManageState(){
             // カメラのターゲットをplayerに
             FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
             pCamera->SetTarget(pPlayer);
+
+            
+
             // ここで,移動可能にする
             pCharacter_->SetIsMovable(true);
 
@@ -131,6 +140,13 @@ void PlayerState_Spawn::ManageState(){
             // アニメーションを流す
             egg_->SetAnimation("born",false);
             pCharacter_->SetAnimation("born",false);
+
+            // 重力を適応,当たり判定を取るように
+            pCharacter_->SetIsApplyGravity(true);
+            pCharacter_->SetCollidable(true);
+
+            // scale を戻す
+            pCharacter_->SetScale({1.f,1.f,1.f});
 
             // 死体を作成
             Player* pPlayer = dynamic_cast<Player*>(pCharacter_);

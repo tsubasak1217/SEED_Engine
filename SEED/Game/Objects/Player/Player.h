@@ -16,6 +16,7 @@
 class IPlayerState;
 // manager
 class PlayerCorpseManager;
+class Egg;
 class EggManager;
 class EnemyManager;
 class PredationRange;
@@ -31,7 +32,7 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
 
-    void Spawn(const Vector3& pos);
+    void Spawn(Egg* _egg);
     void UpdateScaleByGrowLevel();
     void ToClearStageState(const Vector3& nextStartPos);
 private:
@@ -65,6 +66,7 @@ public: // アクセッサ
       
     void StepGrowLevel(int32_t step){ growLevel_ += step; }
     void SetGrowLevel(int32_t level){ growLevel_ = level; }
+    int32_t GetGrowLevel()const{ return growLevel_; }
 
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }

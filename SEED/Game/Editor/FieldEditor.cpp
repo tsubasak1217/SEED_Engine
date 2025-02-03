@@ -50,6 +50,10 @@ void FieldEditor::Initialize(){
     modelNameMap_["viewpoint"] = FIELDMODEL_VIEWPOINT;
     modelNameMap_["moveFloor"] = FIELDMODEL_MOVEFLOOR;
     modelNameMap_["eventArea"] = FIELDMODEL_EVENTAREA;
+    modelNameMap_["pointLight"] = FIELDMODEL_POINTLIGHT;
+    modelNameMap_["plant"] = FIELD_MODEL_PLANT;
+    modelNameMap_["wood"] = FIELDMODEL_WOOD;
+    modelNameMap_["fence"] = FIELDMODEL_FENCE;
     modelNameMap_["lever"] = FIELDMODEL_LEVER;
 
     LoadFieldModelTexture();
@@ -237,7 +241,26 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                 modelJson["isOnceEvent"] = eventArea->isOnceEvent_;
             }
 
-            // JSON配列に追加
+            // ポイントライトの場合の処理
+            if(auto* pointLight = dynamic_cast<FieldObject_PointLight*>(modelObj)){
+                modelJson["intensity"] = pointLight->pointLight_->intensity;
+                modelJson["radius"] = pointLight->pointLight_->radius;
+                modelJson["color"] = pointLight->pointLight_->color_;
+                modelJson["decay"] = pointLight->pointLight_->decay;
+            }
+
+            // 植物の場合の処理
+            if(auto* plant = dynamic_cast<FieldObject_Plant*>(modelObj)){
+                modelJson["isBloomFlower"] = plant->isBloomFlower_;
+                modelJson["flowerVolume"] = plant->flowerVolume_;
+                modelJson["flowerColor"] = plant->flowerColor_;
+            }
+
+            // 木の場合の処理
+            if(auto* wood = dynamic_cast<FieldObject_Wood*>(modelObj)){
+                modelJson["leafColor"] = wood->leafColor_;
+            }
+
             jsonData["models"].push_back(modelJson);
         }
 
@@ -619,9 +642,38 @@ void FieldEditor::ShowImGui(){
                     assigningActivator = nullptr;
                 }
 
-                //=====================================================
-                // [B] チャンク移動/スケール（既存処理）
-                //=====================================================
+                // ポイントライトの場合の設定
+                if(auto* pointLight = dynamic_cast<FieldObject_PointLight*>(mfObj)){
+                    ImGui::Text("PointLight Settings");
+                    ImGui::Separator();
+                    ImGui::ColorEdit3("color", &pointLight->pointLight_->color_.x);
+                    ImGui::DragFloat("intensity", &pointLight->pointLight_->intensity, 0.2f, 0.0f, 100.0f);
+                    ImGui::DragFloat("radius", &pointLight->pointLight_->radius, 0.05f, 0.0f, 100.0f);
+                    ImGui::DragFloat("decay", &pointLight->pointLight_->decay, 0.05f, 0.0f, 100.0f);
+                    ImGui::Separator();
+                }
+
+                // 植物の場合の設定
+                if(auto* plant = dynamic_cast<FieldObject_Plant*>(mfObj)){
+                    ImGui::Text("Plant Settings");
+                    ImGui::Separator();
+                    ImGui::Checkbox("Bloom Flower", &plant->isBloomFlower_);
+                    if(plant->isBloomFlower_){
+                        ImGui::ColorEdit4("Flower Color", &plant->flowerColor_.x);
+                        ImGui::SliderInt("Flower Volume", &plant->flowerVolume_, 1, 30);
+                    }
+                    ImGui::Separator();
+                }
+
+                // 木の場合の設定
+                if(auto* wood = dynamic_cast<FieldObject_Wood*>(mfObj)){
+                    ImGui::Text("Wood Settings");
+                    ImGui::Separator();
+                    ImGui::ColorEdit4("leafColor", &wood->leafColor_.x);
+                    ImGui::Separator();
+                }
+
+                // [B] チャンク移動/スケール
                 {
                     static Vector3Int moveChunk {0, 0, 0};
                     static Vector3Int scaleChunk {0, 0, 0};
@@ -659,12 +711,32 @@ void FieldEditor::ShowImGui(){
                         editItemIndex = 0;
                     } else if (Input::IsTriggerKey(DIK_2)){
                         editItemIndex = 1;
+                    } else if(Input::IsTriggerKey(DIK_3)){
+                        editItemIndex = 2;
                     }
 
-                    if (editItemIndex == 0){
-                        tempMove += input;
-                    } else if (editItemIndex == 1){
-                        tempScale += input;
+                    if(!Input::IsPressKey(DIK_LSHIFT)){
+                        if(editItemIndex == 0){
+                            tempMove += input;
+                        } else if(editItemIndex == 1){
+                            tempScale += input;
+                        } else if(editItemIndex == 2){
+                            mfObj->SetRotate(mfObj->GetLocalRotate() + (Vector3(0.0f, (float)input.x, 0.0f) * 3.14159f * 0.25f));
+                        }
+                    } else{
+                        Vector3 inputFloat = {
+                            float(input.x),
+                            float(input.y),
+                            float(input.z)
+                        };
+
+                        if(editItemIndex == 0){
+                            mfObj->AddTranslate(inputFloat * 0.5f);
+                        } else if(editItemIndex == 1){
+                            mfObj->SetScale(mfObj->GetLocalScale() + (inputFloat * 0.1f));
+                        } else if(editItemIndex == 2){
+                            mfObj->SetRotate(mfObj->GetLocalRotate() + (Vector3(0.0f,inputFloat.x,0.0f) * 0.1f));
+                        }
                     }
 
                     Vector3 pos = mfObj->GetModel()->GetWorldTranslate();

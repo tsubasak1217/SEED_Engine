@@ -64,15 +64,24 @@ void Scene_Game::Initialize(){
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
     directionalLight_->direction_ = MyMath::Normalize({1.0f,-1.0f,0.5f});
-    directionalLight_->intensity = 1.0f;
+    directionalLight_->intensity = 0.3f;
 
     pointLights_.clear();
-    for(int i = 0; i < 32; i++){
+    for(int i = 0; i < 2; i++){
         pointLights_.push_back(std::make_unique<PointLight>());
-        pointLights_[i]->color_ = {1.0f,1.0f,1.0f,1.0f};
-        pointLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),MyFunc::Random(2.0f,15.0f),MyFunc::Random(-100.0f,100.0f)};
-        pointLights_[i]->intensity = 1.0f;
     }
+
+    // 手描きしますすまん
+    pointLights_[0]->color_ = MyMath::FloatColor(255,240,129,255);
+    pointLights_[0]->position = { 0.0f,932.0f,0.0f };
+    pointLights_[0]->intensity = 127.0f;
+    pointLights_[0]->radius = 1101.0f;
+    pointLights_[0]->decay = 2.1f;
+    pointLights_[1]->color_ = MyMath::FloatColor(170, 131, 231, 255);
+    pointLights_[1]->position = { 0.0f,-823.0f,0.0f };
+    pointLights_[1]->intensity = 89.0f;
+    pointLights_[1]->radius = 1009.0f;
+    pointLights_[1]->decay = 1.7f;
 
     spotLights_.clear();
     for(int i = 0; i < 0; i++){
@@ -193,6 +202,18 @@ void Scene_Game::Update(){
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
     ImGui::ColorEdit4("backSpriteColor",&backSprite_->color.x);
+    ImGui::Text("pointLight");
+    for(int i = 0; i < pointLights_.size(); i++){
+        std::string headerName = "pointLight" + std::to_string(i);
+        if(ImGui::CollapsingHeader(headerName.c_str())){
+            ImGui::DragFloat3("position", &pointLights_[i]->position.x, 1.0f);
+            ImGui::ColorEdit4("color", &pointLights_[i]->color_.x);
+            ImGui::DragFloat("intensity", &pointLights_[i]->intensity, 0.1f, 0.0f);
+            ImGui::DragFloat("radius", &pointLights_[i]->radius, 0.1f, 0.0f);
+            ImGui::DragFloat("decay", &pointLights_[i]->decay, 0.1f, 0.0f);
+        }
+        SEED::DrawLight(pointLights_[i].get());
+    }
     ImGui::End();
     enemyEditor_->ShowImGui();
 #endif

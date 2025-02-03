@@ -23,6 +23,7 @@
 #include "PlayerState/PlayerState_Move.h"
 #include "PlayerState/PlayerState_Spawn.h"
 #include "PlayerState/PlayerStage_ForNextStage.h"
+#include "PlayerState/PlayerState_Eat.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -166,10 +167,9 @@ void Player::EndFrame(){
     }
 }
 
-void Player::Spawn(const Vector3& pos){
-    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this);
+void Player::Spawn(Egg* _egg){
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this,_egg);
     growLevel_ = 1;
-    state->SetSpawnPos(pos);
     ChangeState(state);
 }
 
@@ -289,15 +289,20 @@ void Player::OnCollision(const BaseObject* other,ObjectType objectType){
     // 敵に触れている状態
     if(objectType == ObjectType::Enemy){
         if(unrivalledTime_ <= 0.0f){
-            // 成長レベルが最低の場合、死亡
-            if(growLevel_ <= 1){
-              isGameOver_ = true;
-            } else{
-                // 小さくなる
-                StepGrowLevel(-1);
+            PlayerState_Eat* state = dynamic_cast<PlayerState_Eat*>(currentState_.get());
+
+            // 食べていない場合
+            if(!state){
+                // 成長レベルが最低の場合、死亡
+                if(growLevel_ <= 1){
+                    isGameOver_ = true;
+                } else{
+                    // 小さくなる
+                    StepGrowLevel(-1);
+                }
+                // 無敵時間を設定
+                unrivalledTime_ = kUnrriValledTime;
             }
-            // 無敵時間を設定
-            unrivalledTime_ = kUnrriValledTime;
         }
     }
 }

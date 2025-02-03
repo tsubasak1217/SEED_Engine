@@ -3,12 +3,12 @@
     "Enemies": [
         {
             "CanEat": true,
-            "ChasePlayer": true,
-            "HP": 100,
+            "ChasePlayer": false,
+            "HP": 0,
             "Index": 0,
             "Name": "enemy0",
-            "RoutineName": "firstEnemyRoutine",
-            "moveSpeed": 4.400000095367432
+            "RoutineName": "stage1_enemy0",
+            "moveSpeed": 2.5999999046325684
         }
     ]
 }

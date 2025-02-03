@@ -20,7 +20,7 @@ protected:
     int32_t lightType_;
 
 public:
-    Vector4 color_;
+    Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
     float intensity;
     bool isLighting_ = true;;
 };

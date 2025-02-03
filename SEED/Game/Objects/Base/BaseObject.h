@@ -73,6 +73,11 @@ public:
     const Model* GetParentModel() const{ return model_->parent_; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
+    /*------ Model -------*/
+    const Model* GetModel() const{ return model_.get(); }
+    void ChangeModel(const std::string& modelFilePath){ model_ = std::make_unique<Model>(modelFilePath); }
+    void ChangeModel(std::unique_ptr<Model> model){ model_ = std::move(model); }
+
     //=====================================
     // トランスフォーム
     //=====================================

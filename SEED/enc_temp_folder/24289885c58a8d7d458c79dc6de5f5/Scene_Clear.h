@@ -42,13 +42,13 @@ private:
         std::array<bool,128> particleActiveStatus_;
         std::array<float,128> particleDropSpeed_;
 
-        Vector3 min_ = {-10.f,6.77f,15.f};
-        Vector3 max_ = {10.f,11.9f,20.f};
+        Vector3 min_;
+        Vector3 max_;
 
-        int emitValueMin_ = 3;
-        int emitValueMax_ = 6;
+        int emitValueMin_;
+        int emitValueMax_;
 
-        float emitCoolTime_ = .3f;
+        float emitCoolTime_ = .0f;
         float leftCoolTime_ = .0f;
     };
     std::unique_ptr<CorpseEmitter> corpseEmitter_ = nullptr;

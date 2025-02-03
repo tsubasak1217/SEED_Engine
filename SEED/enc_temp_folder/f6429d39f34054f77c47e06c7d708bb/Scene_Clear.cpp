@@ -188,7 +188,7 @@ void Scene_Clear::UpdateCorpseParticles(){
         }
         corpseEmitter_->particleDropSpeed_[i] += 9.8f * 3.1f/*重さ分*/ * ClockManager::DeltaTime();
 
-        corpseEmitter_->particles_[i]->translate_.y -= corpseEmitter_->particleDropSpeed_[i] * ClockManager::DeltaTime();
+        corpseEmitter_->particles_[i]->translate_.y -= corpseEmitter_->particleDropSpeed_[i];
         corpseEmitter_->particles_[i]->UpdateMatrix();
 
         if(corpseEmitter_->particles_[i]->translate_.y <= -20.f){

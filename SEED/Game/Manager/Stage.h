@@ -21,6 +21,10 @@
 #include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"
+#include "FieldObject/PointLight/FieldObject_PointLight.h"
+#include "FieldObject/Plant/FieldObject_Plant.h"
+#include "FieldObject/Wood/FieldObject_Wood.h"
+#include "FieldObject/Fence/FieldObject_Fence.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"
@@ -39,6 +43,7 @@ public:
 
     void Update();
     void Draw();
+    void DrawHUD();
     void BeginFrame();
     void EndFrame();
 

@@ -81,6 +81,12 @@ void StageManager::Draw(){
     }
 }
 
+void StageManager::DrawHUD(){
+    for (auto& stage : stages_){
+        stage->DrawHUD();
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////
 // フレーム開始時の処理

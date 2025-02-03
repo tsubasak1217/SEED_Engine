@@ -248,6 +248,18 @@
     <Filter Include="SEED\Source\Manager\SceneManager">
       <UniqueIdentifier>{074a2122-47c7-4f09-8b00-acd39d2c95eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\PointLight">
+      <UniqueIdentifier>{b7296781-52f6-477e-b48b-76dec298c675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Plant">
+      <UniqueIdentifier>{78521c72-366a-4fcf-bf90-7ac50b7c0888}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Wood">
+      <UniqueIdentifier>{7b164a1d-f7a9-4b4f-8ba4-aa7820b96970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Fence">
+      <UniqueIdentifier>{3aeea757-29b7-425a-b621-792c43bb2727}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -754,9 +766,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
+   
     <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Enter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -768,6 +778,32 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Main.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    
+    <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    
+    <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.cpp">
+      <Filter>Game\Objects\FieldObject\PointLight</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.cpp">
+      <Filter>Game\Objects\FieldObject\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.cpp">
+      <Filter>Game\Objects\FieldObject\Wood</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp">
+      <Filter>Game\Objects\FieldObject\Fence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

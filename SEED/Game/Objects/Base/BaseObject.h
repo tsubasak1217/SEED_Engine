@@ -71,6 +71,7 @@ public:
     }
     const BaseObject* GetParent() const{ return parent_; }
     const Model* GetParentModel() const{ return model_->parent_; }
+    void ReleaseParent(){ parent_ = nullptr; model_->parent_ = nullptr; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
     /*------ Model -------*/

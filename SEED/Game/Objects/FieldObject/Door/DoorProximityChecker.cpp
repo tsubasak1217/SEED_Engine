@@ -32,7 +32,7 @@ void DoorProximityChecker::CheckAndNotify(){
         if (!door) continue;  // ドアがnullptrならスキップ
 
         // スイッチを持っているドアはプレイヤーの距離による開閉対象外にする
-        if (door->GetHasSwitch()){
+        if (door->GetHasActivator()){
             continue;
         }
 

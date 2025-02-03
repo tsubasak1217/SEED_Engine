@@ -86,7 +86,7 @@ void GameState_Goal::HandOverColliders(){}
 void GameState_Goal::ManageState(){
     if(!preIsThrow_ && isThrow_){
         pEgg_->SetTranslate(nextStartPosition_);
-        pEgg_->ChangeState(new EggState_Break(pEgg_));
+        pEgg_->ChangeState(new EggState_Break(pEgg_,3.0f));
     }
     if(pEgg_->GetIsBreak()){
         pPlayer_->GetEggManager()->InitializeEggCount();

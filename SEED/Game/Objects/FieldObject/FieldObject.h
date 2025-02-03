@@ -26,7 +26,7 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
-
+    virtual void DrawHud(){}
     virtual void ShowImGui(){};
 
     //--- getter / setter ---//

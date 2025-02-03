@@ -5,7 +5,7 @@
 #include "State/ClosedState.h"
 
 // local
-#include "../FieldObject/Switch/FieldObject_Switch.h"
+#include "../FieldObject/Activator/FieldObject_Activator.h"
 
 // lib
 #include "ClockManager.h" 
@@ -51,7 +51,7 @@ FieldObject_Door::~FieldObject_Door() = default;
 void FieldObject_Door::Initialize(){
     FieldObject::Initialize();
     isOpened_ = false;
-    hasSwitch_ = false;
+    hasActivator_ = false;
     ChangeState(new ClosingState());
 }
 
@@ -74,7 +74,7 @@ void FieldObject_Door::Draw(){
 }
 
 void FieldObject_Door::ShowImGui(){
-    const char* hasSwitchStr = hasSwitch_ ? "true" : "false";
+    const char* hasSwitchStr = hasActivator_ ? "true" : "false";
     ImGui::Text("has switch:%s", hasSwitchStr);
     ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
     ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
@@ -94,6 +94,7 @@ void FieldObject_Door::SetIsOpened(bool isOpened){
     }
 }
 
+
 ////////////////////////////////////////////////////////////////////////
 // 状態変更用メソッド
 ////////////////////////////////////////////////////////////////////////
@@ -111,42 +112,34 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    // SwitchActivated・SwitchDeactivated イベントの場合、データがあるなら自分自身か確認
-    if ((event == "SwitchActivated" || event == "SwitchDeactivated") && data != nullptr){
-        if (data != static_cast< void* >(this)){
-            return; // データがあり、自分自身でない場合は無視
-        }
+    if (event != "SwitchActivated" && event != "SwitchDeactivated"
+        && event != "LeverActivated" && event != "LeverDeactivated"){
+        return;
     }
 
-    // ドアが完全に閉じている状態かどうかを確認して開く操作を行う
-    if (event == "SwitchActivated"){
-        if (dynamic_cast< ClosedState* >(currentState_.get())){
-            SetIsOpened(true);
-        }
-    }
-    // ドアが完全に開いている状態かどうかを確認して閉じる操作を行う
-    else if (event == "SwitchDeactivated"){
-        if (dynamic_cast< OpenedState* >(currentState_.get())){
-            SetIsOpened(false);
-        }
+    // 対象のイベントのみ処理する
+    if (event == "SwitchActivated" || event == "LeverActivated"){
+        SetIsOpened(true);  // 常に開く
+    } else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
+        SetIsOpened(false); // 常に閉じる
     }
 }
 
 ////////////////////////////////////////////////////////////////////////
 // setter
 ////////////////////////////////////////////////////////////////////////
-void FieldObject_Door::SetSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->RegisterObserver(this);
+void FieldObject_Door::SetActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->RegisterObserver(this);
     }
-    hasSwitch_ = true;
+    hasActivator_ = true;
 }
 
-void FieldObject_Door::RemoveSwitch(FieldObject_Switch* pSwitch){
-    FieldObject_Switch* switchObj = pSwitch;
-    if (switchObj){
-        switchObj->UnregisterObserver(this);
+void FieldObject_Door::RemoveActivator(FieldObject_Activator* pActivator){
+    FieldObject_Activator* activator = pActivator;
+    if (activator){
+        activator->UnregisterObserver(this);
     }
-    hasSwitch_ = false;
+    hasActivator_ = false;
 }

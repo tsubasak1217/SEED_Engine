@@ -3,6 +3,9 @@
 #include "EventState/EventFunctionTable.h"
 #include "Player/Player.h"
 
+// PlayerState
+#include "Player/PlayerState/PlayerState_Idle.h"
+
 #include "StageManager.h"
 
 // fieldObject
@@ -48,6 +51,9 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     enemyManager_->LoadEnemies();
 
     // player
+    {
+        pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
+    }
     { //卵の所持状況を初期化
         pPlayer_->GetEggManager()->InitializeEggCount();
     }
@@ -93,7 +99,7 @@ void Stage::Draw(){
 }
 
 void Stage::DrawHUD(){
-    for (auto& fieldObject : fieldObjects_){
+    for(auto& fieldObject : fieldObjects_){
         fieldObject->DrawHud();
     }
 }
@@ -227,12 +233,12 @@ FieldObject_ViewPoint* Stage::GetViewPoint() const{
 void Stage::LoadFromJson(const std::string& filePath){
     namespace fs = std::filesystem;
 
-    if (!fs::exists(filePath)){
+    if(!fs::exists(filePath)){
         std::cerr << "Error: File does not exist: " << filePath << std::endl;
         return;
     }
     std::ifstream file(filePath);
-    if (!file.is_open()){
+    if(!file.is_open()){
         std::cerr << "Error: Failed to open file: " << filePath << std::endl;
         return;
     }
@@ -240,7 +246,7 @@ void Stage::LoadFromJson(const std::string& filePath){
     nlohmann::json jsonData;
     try{
         file >> jsonData;
-    } catch (const nlohmann::json::parse_error& e){
+    } catch(const nlohmann::json::parse_error& e){
         std::cerr << "JSON Parse Error: " << e.what() << std::endl;
         file.close();
         return;
@@ -249,8 +255,8 @@ void Stage::LoadFromJson(const std::string& filePath){
 
     // JSON から "stage" を読み取り (ステージ番号など)
     int32_t stageNo = 0;
-    if (jsonData.contains("stage")){
-        if (jsonData["stage"].is_number_integer()){
+    if(jsonData.contains("stage")){
+        if(jsonData["stage"].is_number_integer()){
             stageNo = jsonData["stage"].get<int32_t>();
         } else{
             std::cerr << "Warning: 'stage' is not an integer. Using default 0." << std::endl;
@@ -272,39 +278,39 @@ void Stage::LoadFromJson(const std::string& filePath){
     std::vector<ActivatorAssoc> activatorAssociations;
 
     // JSON から "models" 配列を読み取り
-    if (jsonData.contains("models") && jsonData["models"].is_array()){
-        for (auto& modelJson : jsonData["models"]){
+    if(jsonData.contains("models") && jsonData["models"].is_array()){
+        for(auto& modelJson : jsonData["models"]){
             // 各フィールド読み取り
-            std::string name = modelJson.value("name", "default_model.obj");
-            uint32_t type = modelJson.value("type", 0U);
+            std::string name = modelJson.value("name","default_model.obj");
+            uint32_t type = modelJson.value("type",0U);
 
             // ポジション / スケール / 回転
-            Vector3 position {0.f,0.f,0.f};
-            Vector3 scale {1.f,1.f,1.f};
-            Vector3 rotation {0.f,0.f,0.f};
+            Vector3 position{0.f,0.f,0.f};
+            Vector3 scale{1.f,1.f,1.f};
+            Vector3 rotation{0.f,0.f,0.f};
 
             // position
-            if (modelJson.contains("position") && modelJson["position"].is_array()){
+            if(modelJson.contains("position") && modelJson["position"].is_array()){
                 auto arr = modelJson["position"];
-                if (arr.size() >= 3){
+                if(arr.size() >= 3){
                     position.x = arr[0].get<float>();
                     position.y = arr[1].get<float>();
                     position.z = arr[2].get<float>();
                 }
             }
             // scale
-            if (modelJson.contains("scale") && modelJson["scale"].is_array()){
+            if(modelJson.contains("scale") && modelJson["scale"].is_array()){
                 auto arr = modelJson["scale"];
-                if (arr.size() >= 3){
+                if(arr.size() >= 3){
                     scale.x = arr[0].get<float>();
                     scale.y = arr[1].get<float>();
                     scale.z = arr[2].get<float>();
                 }
             }
             // rotation
-            if (modelJson.contains("rotation") && modelJson["rotation"].is_array()){
+            if(modelJson.contains("rotation") && modelJson["rotation"].is_array()){
                 auto arr = modelJson["rotation"];
-                if (arr.size() >= 3){
+                if(arr.size() >= 3){
                     rotation.x = arr[0].get<float>();
                     rotation.y = arr[1].get<float>();
                     rotation.z = arr[2].get<float>();
@@ -312,8 +318,8 @@ void Stage::LoadFromJson(const std::string& filePath){
             }
 
             // モデルを生成してステージに追加
-            AddModel(type, modelJson, scale, rotation, position);
-            if (fieldObjects_.empty()){
+            AddModel(type,modelJson,scale,rotation,position);
+            if(fieldObjects_.empty()){
                 std::cerr << "Warning: fieldObjects_ is empty after AddModel." << std::endl;
                 continue;
             }
@@ -321,7 +327,7 @@ void Stage::LoadFromJson(const std::string& filePath){
             FieldObject* newObj = fieldObjects_.back().get();
 
             // GUIDの設定
-            if (modelJson.contains("fieldObjectID") && modelJson["fieldObjectID"].is_string()){
+            if(modelJson.contains("fieldObjectID") && modelJson["fieldObjectID"].is_string()){
                 std::string guid = modelJson["fieldObjectID"].get<std::string>();
                 newObj->SetGUID(guid);
             }
@@ -329,30 +335,30 @@ void Stage::LoadFromJson(const std::string& filePath){
             //===========================================================
             // ★★ (B) Activatorの場合 → ドア/床との紐付け情報を一時保存
             //===========================================================
-            if (auto* activator = dynamic_cast< FieldObject_Activator* >(newObj)){
+            if(auto* activator = dynamic_cast<FieldObject_Activator*>(newObj)){
                 ActivatorAssoc assoc;
                 assoc.activator = activator;
 
                 // associatedDoors
-                if (modelJson.contains("associatedDoors") && modelJson["associatedDoors"].is_array()){
-                    for (auto& doorID : modelJson["associatedDoors"]){
-                        if (doorID.is_string()){
+                if(modelJson.contains("associatedDoors") && modelJson["associatedDoors"].is_array()){
+                    for(auto& doorID : modelJson["associatedDoors"]){
+                        if(doorID.is_string()){
                             assoc.doorIDs.push_back(doorID.get<std::string>());
                         }
                     }
                 }
                 // associatedFloors
-                if (modelJson.contains("associatedFloors") && modelJson["associatedFloors"].is_array()){
-                    for (auto& floorID : modelJson["associatedFloors"]){
-                        if (floorID.is_string()){
+                if(modelJson.contains("associatedFloors") && modelJson["associatedFloors"].is_array()){
+                    for(auto& floorID : modelJson["associatedFloors"]){
+                        if(floorID.is_string()){
                             assoc.floorIDs.push_back(floorID.get<std::string>());
                         }
                     }
                 }
 
                 // Switch なら「必要重量」を読み込む
-                if (auto* sw = dynamic_cast< FieldObject_Switch* >(activator)){
-                    if (modelJson.contains("requiredWeight")){
+                if(auto* sw = dynamic_cast<FieldObject_Switch*>(activator)){
+                    if(modelJson.contains("requiredWeight")){
                         sw->SetRequiredWeight(modelJson["requiredWeight"].get<int>());
                     } else{
                         sw->SetRequiredWeight(1);
@@ -367,11 +373,11 @@ void Stage::LoadFromJson(const std::string& filePath){
             //===========================================================
             // ★★ (C) MoveFloor
             //===========================================================
-            else if (auto* moveFloor = dynamic_cast< FieldObject_MoveFloor* >(newObj)){
-                if (modelJson.contains("routineName") && modelJson["routineName"].is_string()){
+            else if(auto* moveFloor = dynamic_cast<FieldObject_MoveFloor*>(newObj)){
+                if(modelJson.contains("routineName") && modelJson["routineName"].is_string()){
                     moveFloor->SetRoutineName(modelJson["routineName"].get<std::string>());
                 }
-                if (modelJson.contains("moveSpeed") && modelJson["moveSpeed"].is_number()){
+                if(modelJson.contains("moveSpeed") && modelJson["moveSpeed"].is_number()){
                     moveFloor->SetMoveSpeed(modelJson["moveSpeed"].get<float>());
                 }
                 moveFloor->InitializeRoutine();
@@ -384,13 +390,13 @@ void Stage::LoadFromJson(const std::string& filePath){
     //===============================================================
     // (D) Activator と Door/MoveFloor を再リンク
     //===============================================================
-    for (auto& assoc : activatorAssociations){
+    for(auto& assoc : activatorAssociations){
         auto* activator = assoc.activator;
         // 1) Door を GUID で探してリンク
-        for (const auto& doorID : assoc.doorIDs){
+        for(const auto& doorID : assoc.doorIDs){
             auto doors = GetObjectsOfType<FieldObject_Door>();
-            for (auto* door : doors){
-                if (door && door->GetGUID() == doorID){
+            for(auto* door : doors){
+                if(door && door->GetGUID() == doorID){
                     // Activator 側に door を登録
                     activator->AddAssociatedDoor(door);
                     door->SetActivator(activator);
@@ -402,10 +408,10 @@ void Stage::LoadFromJson(const std::string& filePath){
             }
         }
         // 2) MoveFloor を GUID で探してリンク
-        for (const auto& floorID : assoc.floorIDs){
+        for(const auto& floorID : assoc.floorIDs){
             auto floors = GetObjectsOfType<FieldObject_MoveFloor>();
-            for (auto* mf : floors){
-                if (mf && mf->GetGUID() == floorID){
+            for(auto* mf : floors){
+                if(mf && mf->GetGUID() == floorID){
                     activator->AddAssociatedMoveFloor(mf);
                     // mf->SetActivator(activator);
                 }

@@ -93,6 +93,5 @@ private: // フォローカメラ、ターゲット用
     // 成長のレベル
     int32_t growLevel_ = 1;
 
-    bool isStop_ = false;
     bool isGameOver_ = false;
 };

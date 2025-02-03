@@ -36,6 +36,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate();
+    pCharacter_->ReleaseParent();// 親子付けを解除
     pCharacter_->SetTranslate(spawnPos_);
 
     pCharacter_->DiscardPreCollider();
@@ -77,6 +78,17 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // effect
     ParticleManager::AddEffect("SoulTrajectory.json",{0.f,0.f,0.f},ghostObject_->GetWorldMatPtr());
+  
+    // 卵が親子付けされていたらplayerも親子付け
+    if(egg_->GetParent()){
+        Vector3 preTranslate = pCharacter_->GetWorldTranslate();
+        Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
+        Vector3 localTranslate = preTranslate * invParentMat;
+        localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
+        pCharacter_->SetTranslate(localTranslate);
+        pCharacter_->SetParent(egg_->GetParent());
+        pCharacter_->UpdateMatrix();
+    }
 }
 
 void PlayerState_Spawn::Update(){

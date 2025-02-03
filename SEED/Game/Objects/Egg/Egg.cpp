@@ -29,6 +29,7 @@ Egg::~Egg(){}
 void Egg::Initialize(){
     // model 読み込み
     model_ = std::make_unique<Model>("egg.obj");
+    model_->isParentScale_ = false;
 
     // 卵がないなら Player に 追従する, あるなら 最後尾の卵に追従する
     if(eggManager_->GetIsEmpty()){
@@ -87,6 +88,21 @@ void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType object
         SetTranslateZ(prePos_.z);
 
         velocity_.y = -MyMath::Length(this->GetWorldTranslate() - prePos_);
+    }
+
+    // 移動床に触れている状態
+    if((int32_t)objectType & (int32_t)ObjectType::Move){
+        if(!IsJumpable()){
+            // 親子付けを行い移動床基準のトランスフォームに変換
+            SetParent(other);
+
+            Vector3 preTranslate = GetWorldTranslate();
+            Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+            Vector3 localTranslate = preTranslate * invParentMat;
+            localTranslate *= ExtractScale(GetParent()->GetWorldMat());
+            SetTranslate(localTranslate);
+            UpdateMatrix();
+        }
     }
 }
 

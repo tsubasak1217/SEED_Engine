@@ -39,6 +39,8 @@ public:
     Player* GetPlayer()const{ return player_; }
     void SetPlayer(Player* _player){ player_ = _player; }
 
+    std::vector<std::unique_ptr<Egg>>& GetEggs(){ return eggs_; }
+
     /// <summary>
     /// 卵を増やす
     /// </summary>

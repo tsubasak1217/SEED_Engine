@@ -18,6 +18,7 @@
 ///////////////////////////////////////////////////////////////////////
 int32_t StageManager::currentStageNo_ = 0;
 std::array<std::unique_ptr<Stage>,StageManager::kStageCount_> StageManager::stages_;
+std::unique_ptr<Stage> StageManager::titleStage_;
 std::array<int,StageManager::kStageCount_> StageManager::getStarCounts_;
 std::array<bool,StageManager::kStageCount_> StageManager::clearStatus_;
 int32_t StageManager::preStageNo_ = 0;
@@ -33,6 +34,7 @@ StageManager::StageManager(ISubject& subject){
     for(int i = 0; i < kStageCount_; i++){
         stages_[i] = std::make_unique<Stage>(subject,i);
     }
+    titleStage_ = std::make_unique<Stage>(subject);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -45,6 +47,7 @@ StageManager::~StageManager(){}
 ///////////////////////////////////////////////////////////////////////
 void StageManager::Initialize(){
     LoadStages();
+    LoadTitleStage();
 
     JsonCoordinator::LoadGroup("UserProgress");
     std::string stageLabel;
@@ -151,12 +154,19 @@ void StageManager::LoadStages(){
     }
 }
 
+void StageManager::LoadTitleStage(){
+    std::string filepath = "resources/jsons/Stages/stage_title.json";
+    titleStage_->LoadFromJson(filepath);
+}
+
 void StageManager::SetPlayer(Player* pPlayer){
     pPlayer_ = pPlayer;
 
     for(int i = 0; i < kStageCount_; i++){
         stages_[i]->SetPlayer(pPlayer);
     }
+
+    titleStage_->SetPlayer(pPlayer);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -168,4 +178,8 @@ Vector3 StageManager::GetStartPos(){
 
 Vector3 StageManager::GetNextStartPos(){
     return stages_[std::clamp(currentStageNo_ + 1,0,kStageCount_ - 1)]->GetStartPosition();
+}
+
+Vector3 StageManager::GetTitleStartPos(){
+    return titleStage_->GetStartPosition();
 }

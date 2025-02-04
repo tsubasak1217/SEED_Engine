@@ -31,6 +31,20 @@ Stage::Stage(ISubject& subject,uint32_t stageNo)
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
 }
+Stage::Stage(ISubject& subject) :subject_(subject){
+    // ステージの初期化
+    ClearAllFieldObjects();
+
+    //タイトル用に作成したため0
+    stageNo_ = 0;
+
+    routineManager_.LoadRoutines(stageNo_);
+
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_, stageNo_, routineManager_);
+
+    playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
+    playerCorpseManager_->Initialize();
+}
 
 void Stage::InitializeStatus(){
     std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
@@ -55,6 +69,13 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
         pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
     }
+
+    { // 死体削除
+        if(!playerCorpseManager_->GetIsEmpty()){
+            playerCorpseManager_->RemoveAll();
+        }
+    }
+
     { //卵の所持状況を初期化
         pPlayer_->GetEggManager()->InitializeEggCount();
     }
@@ -195,7 +216,6 @@ void Stage::HandOverColliders(){
     enemyManager_->HandOverColliders();
     playerCorpseManager_->HandOverColliders();
 }
-
 
 Vector3 Stage::GetStartPosition() const{
     if(startObject_){
@@ -417,8 +437,6 @@ void Stage::LoadFromJson(const std::string& filePath){
         }
     }
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////
 // 新しいオブジェクトを追加

@@ -358,7 +358,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.442387580871582,
+                1.660070538520813,
                 0.0
             ],
             "scale": [
@@ -1465,7 +1465,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.208745241165161,
+                1.893682599067688,
                 0.0
             ],
             "scale": [
@@ -1661,7 +1661,87 @@
             "type": 0
         },
         {
-            "fieldObjectID": "61e5aa04-45c0-22ab-7f0b-76c1551903eb",
+            "fieldObjectID": "3a0a6c45-6e2d-0625-0d6c-61370cd62c53",
+            "name": "Star",
+            "position": [
+                205.0,
+                62.5,
+                130.0
+            ],
+            "rotation": [
+                -0.0,
+                1.300420880317688,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 2
+        },
+        {
+            "fieldObjectID": "1cc62ab2-70c5-5c76-7e82-14f63a8d29a1",
+            "name": "Soil",
+            "position": [
+                200.0,
+                60.0,
+                130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "3edce8bd-7397-c2ec-1dec-e4b469fead8f",
+            "name": "Soil",
+            "position": [
+                205.0,
+                55.0,
+                130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "25f8392c-3f91-e393-5cf7-f4072742ee84",
+            "name": "Soil",
+            "position": [
+                210.0,
+                55.0,
+                130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "094e9437-62dc-2aa4-7633-b7235d35d713",
             "name": "Soil",
             "position": [
                 205.0,
@@ -1674,31 +1754,51 @@
                 0.0
             ],
             "scale": [
-                7.5,
-                7.5,
+                2.5,
+                2.5,
                 7.5
             ],
             "type": 1
         },
         {
-            "fieldObjectID": "3a0a6c45-6e2d-0625-0d6c-61370cd62c53",
-            "name": "Star",
+            "fieldObjectID": "6eac023b-53d5-c2bb-259d-5d0678e21714",
+            "name": "Soil",
             "position": [
-                205.0,
-                62.5,
+                210.0,
+                60.0,
                 130.0
             ],
             "rotation": [
                 -0.0,
-                -2.802009344100952,
+                0.0,
                 0.0
             ],
             "scale": [
                 2.5,
                 2.5,
-                2.5
+                7.5
             ],
-            "type": 2
+            "type": 1
+        },
+        {
+            "fieldObjectID": "177c7060-2fa7-9caa-3716-02f2601f1db3",
+            "name": "Soil",
+            "position": [
+                200.0,
+                55.0,
+                130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 1
         }
     ],
     "stage": 4

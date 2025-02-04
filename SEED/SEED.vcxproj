@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Title.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp" />
@@ -289,7 +290,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Title.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />

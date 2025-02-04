@@ -112,6 +112,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Title.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp" />
@@ -161,7 +164,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -289,6 +291,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Title.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
@@ -339,7 +344,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />

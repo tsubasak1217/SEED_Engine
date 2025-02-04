@@ -47,8 +47,7 @@ void PlayerState_Eat::Initialize(const std::string& stateName,BaseCharacter* pla
     {
         // 捕食対象の方向を向く
         Vector3 direction = enemy_->GetWorldTranslate() - pCharacter_->GetWorldTranslate();
-        interpolationRotateY_ = atan2f(direction.x,direction.z);
-
+        interpolationRotateY_ = atan2f(direction.z,direction.x);
     }
 
     currentUpdate_ = [this](){RotateForEnemy(); };

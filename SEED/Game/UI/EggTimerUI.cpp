@@ -12,8 +12,8 @@ void EggTimerUI::Initialize(){
     for(auto& timeUI : leftTimeUI_){
         timeUI = std::make_unique<Sprite>("GameUI/numbers.png");
         timeUI->scale = {2.f,2.f};
-        timeUI->translate = {1180.f,620.f};
-
+        timeUI->translate = {1155.f,559.f};
+        timeUI->color = {0.6f,0.6f,0.6f,1.f};
         timeUI->clipSize = {32.f,32.f};
         timeUI->clipLT = {0.f,0.f};
     }
@@ -35,7 +35,6 @@ void EggTimerUI::Update(float _leftTime){
         leftTimeInt[0] = (int(_leftTime) - leftTimeInt[1]) / 10;
 
         for(size_t i = 0; i < 2; i++){
-            leftTimeUI_[i]->color.w = EaseInQuart(cosf(_leftTime));
             leftTimeUI_[i]->clipLT.x = float(int(leftTimeUI_[i]->clipSize.x) * leftTimeInt[i]);
         }
     } else{

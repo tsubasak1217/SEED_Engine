@@ -118,9 +118,13 @@ void SEED::BeginFrame(){
     // 全入力情報を格納
     Input::GetAllInput();
 
+    // Audioのフレーム開始処理
+    AudioManager::BeginFrame();
+
     // imgui,directXのフレーム開始時処理
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
+
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/

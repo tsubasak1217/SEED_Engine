@@ -1,4 +1,5 @@
 #include "AudioManager.h"
+#include <InputManager/InputManager.h>
 #include "DxFunc.h"
 #include <cassert>
 
@@ -51,6 +52,8 @@ void AudioManager::Initialize(){
     StartUpLoad();
 }
 
+
+
 HRESULT AudioManager::InitializeMediaFoundation(){
     HRESULT hr = MFStartup(MF_VERSION);
     if(FAILED(hr)) {
@@ -58,6 +61,28 @@ HRESULT AudioManager::InitializeMediaFoundation(){
     }
     return S_OK;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 
+//                              フレーム開始時の処理
+// 
+/////////////////////////////////////////////////////////////////////////////////////
+void AudioManager::BeginFrame(){
+    // システムボリュームの設定
+    if(Input::IsPressKey(DIK_V) && Input::IsPressKey(DIK_O) && Input::IsPressKey(DIK_L)){
+    
+        if(Input::IsTriggerKey(DIK_UP)){
+            systemVolumeRate_ += 0.1f;
+        }
+
+        if(Input::IsTriggerKey(DIK_DOWN)){
+            systemVolumeRate_ -= 0.1f;
+        }
+
+        systemVolumeRate_ = (std::max)(systemVolumeRate_, 0.0f);
+    }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 

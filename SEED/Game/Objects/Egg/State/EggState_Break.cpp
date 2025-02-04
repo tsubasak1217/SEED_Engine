@@ -13,6 +13,8 @@
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 #include "../PlayerInput/PlayerInput.h"
+//math
+#include "Easing.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character){
     JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
@@ -36,6 +38,10 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
     timerUi_ = std::make_unique<EggTimerUI>();
     timerUi_->Initialize();
 
+    timeSkipButtonUI_ = std::make_unique<Sprite>("GameUI/A.png");
+    timeSkipButtonUI_->anchorPoint = Vector2(0.5f,0.5f);
+    timeSkipButtonUI_->translate = timerUi_->GetUIPos();
+    timeSkipButtonUI_->translate.x -= timerUi_->GetUISize().x * 0.5f + timeSkipButtonUI_->size.x * 0.5f;
 }
 
 void EggState_Break::Update(){
@@ -46,12 +52,14 @@ void EggState_Break::Update(){
     }
 
     timerUi_->Update(leftTime_);
+    ButtonUISinAnimation();
 
     ManageState();
 }
 
 void EggState_Break::Draw(){
     timerUi_->Draw();
+    timeSkipButtonUI_->Draw();
 }
 
 void EggState_Break::ManageState(){
@@ -61,4 +69,9 @@ void EggState_Break::ManageState(){
             egg->SpawnPlayer();
         }
     }
+}
+
+void EggState_Break::ButtonUISinAnimation(){
+
+    timeSkipButtonUI_->color.w = EaseInQuart(cosf(leftTime_));
 }

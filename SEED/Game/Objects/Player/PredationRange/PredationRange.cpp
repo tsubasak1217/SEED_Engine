@@ -1,15 +1,16 @@
 #include "PredationRange.h"
 
-//object
+// object
 #include "Player/Player.h"
 #include "Enemy/Enemy.h"
-//manager
+#include "Sprite.h"
+// manager
 #include "../Manager/EnemyManager.h"
 
-//lib
+// lib
 #include "../adapter/json/JsonCoordinator.h"
 
-//math
+// math
 #include "MyMath.h"
 
 PredationRange::PredationRange(){}
@@ -18,6 +19,9 @@ PredationRange::~PredationRange(){}
 
 void PredationRange::Initialize(Player* player){
     player_ = player;
+
+    buttonUI_ = std::make_unique<Sprite>("GameUI/A.png");
+    buttonUI_->anchorPoint = Vector2(0.5f,0.5f);
 
     // jsonから範囲を読み込む
     JsonCoordinator::RegisterItem("Player","PredationRangeXZ",rangeXZ_);
@@ -65,12 +69,23 @@ void PredationRange::Update(EnemyManager* _enemyManager){
     }
 
     // 距離が近い順にソート
-    preyList_.sort([](const PreyInfomation& a,const PreyInfomation& b){
-        return MyMath::LengthSq(a.diff) < MyMath::LengthSq(b.diff);
-                   });
+    preyList_.sort([](const PreyInfomation& a,const PreyInfomation& b){ return MyMath::LengthSq(a.diff) < MyMath::LengthSq(b.diff); });
 
     // 範囲内の敵のうち、Y軸方向の範囲内の敵を残す
-    std::erase_if(preyList_,[this](const PreyInfomation& prey){
-        return std::abs(prey.diff.y) > rangeY_;
-                  });
+    std::erase_if(preyList_,[this](const PreyInfomation& prey){ return std::abs(prey.diff.y) > rangeY_; });
+}
+
+void PredationRange::Draw(){
+    if(preyList_.empty()){
+        return;
+    }
+    auto& targetEnemy_ = preyList_.front();
+
+    if(targetEnemy_.enemy == nullptr){
+        return;
+    }
+
+    buttonUI_->translate = player_->GetFollowCamera()->ToScreenPosition(targetEnemy_.enemy->GetWorldTranslate());
+    buttonUI_->translate.y += 10.f;
+    buttonUI_->Draw();
 }

@@ -19,10 +19,13 @@ public:
 protected:
     void ManageState() override;
 
+    void ButtonUISinAnimation();
 private:
     BaseCharacter* deadPlayer_ = nullptr;
 
-    std::unique_ptr<EggTimerUI> timerUi_ = nullptr;
+    std::unique_ptr<EggTimerUI> timerUi_  = nullptr;
+    // 即孵化ボタンUI
+    std::unique_ptr<Sprite> timeSkipButtonUI_= nullptr;
 
     float breakTime_ = 1.0f;
     float leftTime_ = 0.0f;

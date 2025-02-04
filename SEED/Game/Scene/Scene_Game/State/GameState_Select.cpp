@@ -8,7 +8,7 @@
 // コンストラクタ：デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-GameState_Select::GameState_Select(Scene_Base* pScene) : State_Base(pScene){
+GameState_Select::GameState_Select(Scene_Base* pScene): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize();
 }
@@ -26,7 +26,7 @@ void GameState_Select::Initialize(){
     pGameScene_->EndEvent();
 
     // ステージセレクターを生成
-    stageSelector_ = std::make_unique<StageSelector>(pGameScene_->Get_pStageManager(), pGameScene_->Get_pCamera());
+    stageSelector_ = std::make_unique<StageSelector>(pGameScene_->Get_pStageManager(),pGameScene_->Get_pCamera());
 
     // 操作フラグをfalseにしておく
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
@@ -64,8 +64,7 @@ void GameState_Select::Draw(){
 // フレーム開始処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Select::BeginFrame(){
-}
+void GameState_Select::BeginFrame(){}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -106,6 +105,7 @@ void GameState_Select::ManageState(){
         std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
         // pGameScene_->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath); <- InitializeStatus を追加したのでコメントアウト
         pGameScene_->Get_pStageManager()->GetCurrentStage()->InitializeStatus(filePath);
+        pGameScene_->Get_pPlayer()->SetCorpseManager(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetPlayerCorpseManager());
 
         // 遷移
         pGameScene_->ChangeState(new GameState_Play(pGameScene_));

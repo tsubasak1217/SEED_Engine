@@ -168,7 +168,6 @@ void Scene_Game::Initialize(){
     followCamera_->SetTarget(stageManager_->GetCurrentStage()->GetViewPoint());
 
     // playerに必要な情報をセット
-    player_->SetCorpseManager(stageManager_->GetCurrentStage()->GetPlayerCorpseManager());
     player_->SetFollowCameraPtr(followCamera_.get());
     player_->SetEggManager(eggManager_.get());
     player_->SetPosition(StageManager::GetStartPos());

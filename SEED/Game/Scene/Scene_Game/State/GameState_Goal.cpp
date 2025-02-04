@@ -105,9 +105,10 @@ void GameState_Goal::SetUpNextStage(){
         pPlayer_->SetEnemyManager(enemyManager);
     }
 
-    { //前ステージの死体を消す
-        PlayerCorpseManager* pCorpseManager = pPlayer_->GetCorpseManager();
-        pCorpseManager->RemoveAll();
+    // 次のステージの死体を渡す
+    {
+        PlayerCorpseManager* pCorpseManager = StageManager::GetCurrentStage()->GetPlayerCorpseManager();
+        pPlayer_->SetCorpseManager(pCorpseManager);
     }
 
     {

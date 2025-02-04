@@ -55,6 +55,13 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
         pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
     }
+
+    { // 死体削除
+        if(!playerCorpseManager_->GetIsEmpty()){
+            playerCorpseManager_->RemoveAll();
+        }
+    }
+
     { //卵の所持状況を初期化
         pPlayer_->GetEggManager()->InitializeEggCount();
     }

@@ -21,6 +21,7 @@ Egg::Egg(BaseObject* _player)
     :BaseCharacter(),
     player_(_player){
     className_ = "Egg";
+    objectType_ = ObjectType::Egg;
     isApplyGravity_ = false;
 }
 
@@ -63,7 +64,6 @@ void Egg::Update(){
 
     //! TODO : Stage の 取得方法
     shadow_->Update(StageManager::GetCurrentStage());
-
 }
 
 void Egg::Draw(){

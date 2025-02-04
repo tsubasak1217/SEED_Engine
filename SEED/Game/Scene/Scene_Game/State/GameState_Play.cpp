@@ -37,21 +37,31 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 
     // プレイヤーの初期位置
+    Player* pPlayer = pGameScene_->Get_pPlayer();
     if(isPlayerSetStartPos){
-        pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetStartPos());
-        pGameScene_->Get_pPlayer()->SetIsDrop(false);
-        pGameScene_->Get_pPlayer()->SetGrowLevel(1);
+        pPlayer->SetPosition(StageManager::GetStartPos());
+        pPlayer->SetTranslateY(pPlayer->GetWorldTranslate().y + 1.f);
+        pPlayer->SetIsDrop(false);
+        pPlayer->SetGrowLevel(1);
     }
-    pGameScene_->Get_pPlayer()->SetIsMovable(true);
+    pPlayer->SetIsMovable(true);
 
     // プレイヤーにステージの敵情報を渡す
     {
         EnemyManager* enemyManager = pGameScene_->Get_StageManager().GetCurrentStage()->GetEnemyManager();
-        pGameScene_->Get_pPlayer()->SetEnemyManager(enemyManager);
+        pPlayer->SetEnemyManager(enemyManager);
+    }
+
+    // プレイヤーにそのステージの死体Managerを渡す
+    {
+        if(!pPlayer->GetCorpseManager()->GetIsEmpty()){
+            pPlayer->GetCorpseManager()->RemoveAll();
+        }
+        pPlayer->SetCorpseManager(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetPlayerCorpseManager());
     }
 
     // カメラのターゲット
-    pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
+    pGameScene_->Get_pCamera()->SetTarget(pPlayer);
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();

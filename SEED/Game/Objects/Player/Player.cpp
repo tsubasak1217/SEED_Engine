@@ -186,7 +186,7 @@ void Player::GameOver(){
         UpdateMatrix();
     }
     {
-     growLevel_ = 1;
+        growLevel_ = 1;
     }
     
     { // ステートの初期化

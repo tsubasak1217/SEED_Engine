@@ -4,6 +4,7 @@
 #include "ParticleManager.h"
 #include "CameraManager/CameraManager.h"
 #include "../adapter/json/JsonCoordinator.h"
+#include "AudioManager.h"
 
 // 各ステートのインクルード
 #include <GameState_Play.h>
@@ -25,6 +26,7 @@ Scene_Game::Scene_Game(){
 
 Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
+    AudioManager::EndAudio(bgmPath_);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -73,12 +75,12 @@ void Scene_Game::Initialize(){
 
     // 手描きしますすまん
     pointLights_[0]->color_ = MyMath::FloatColor(255,240,129,255);
-    pointLights_[0]->position = { 0.0f,932.0f,0.0f };
+    pointLights_[0]->position = {0.0f,932.0f,0.0f};
     pointLights_[0]->intensity = 127.0f;
     pointLights_[0]->radius = 1101.0f;
     pointLights_[0]->decay = 2.1f;
-    pointLights_[1]->color_ = MyMath::FloatColor(170, 131, 231, 255);
-    pointLights_[1]->position = { 0.0f,-823.0f,0.0f };
+    pointLights_[1]->color_ = MyMath::FloatColor(170,131,231,255);
+    pointLights_[1]->position = {0.0f,-823.0f,0.0f};
     pointLights_[1]->intensity = 89.0f;
     pointLights_[1]->radius = 1009.0f;
     pointLights_[1]->decay = 1.7f;
@@ -146,6 +148,12 @@ void Scene_Game::Initialize(){
     backSprite_->isStaticDraw = false;
 
     ////////////////////////////////////////////////////
+    // Audio の 初期化
+    ////////////////////////////////////////////////////
+    AudioManager::LoadAudio(bgmPath_);
+    AudioManager::PlayAudio(bgmPath_,true,currentBgmVolume_);
+
+    ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
     ////////////////////////////////////////////////////
 
@@ -205,11 +213,11 @@ void Scene_Game::Update(){
     for(int i = 0; i < pointLights_.size(); i++){
         std::string headerName = "pointLight" + std::to_string(i);
         if(ImGui::CollapsingHeader(headerName.c_str())){
-            ImGui::DragFloat3("position", &pointLights_[i]->position.x, 1.0f);
-            ImGui::ColorEdit4("color", &pointLights_[i]->color_.x);
-            ImGui::DragFloat("intensity", &pointLights_[i]->intensity, 0.1f, 0.0f);
-            ImGui::DragFloat("radius", &pointLights_[i]->radius, 0.1f, 0.0f);
-            ImGui::DragFloat("decay", &pointLights_[i]->decay, 0.1f, 0.0f);
+            ImGui::DragFloat3("position",&pointLights_[i]->position.x,1.0f);
+            ImGui::ColorEdit4("color",&pointLights_[i]->color_.x);
+            ImGui::DragFloat("intensity",&pointLights_[i]->intensity,0.1f,0.0f);
+            ImGui::DragFloat("radius",&pointLights_[i]->radius,0.1f,0.0f);
+            ImGui::DragFloat("decay",&pointLights_[i]->decay,0.1f,0.0f);
         }
         SEED::DrawLight(pointLights_[i].get());
     }
@@ -231,8 +239,12 @@ void Scene_Game::Update(){
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
+    BGMUpdate();
+
     // ポーズ中は以下を更新しない
-    if(isPaused_){ return; }
+    if(isPaused_){
+        return;
+    }
 
     ParticleManager::Update();
 
@@ -396,4 +408,20 @@ void Scene_Game::HandOverColliders(){
     player_->HandOverColliders();
     eggManager_->HandOverColliders();
     stageManager_->HandOverColliders();
+}
+
+void Scene_Game::BGMUpdate(){
+    if(ImGui::Begin("BGM")){
+        ImGui::SliderFloat("Volume_OnNormal",&bgmVolume_[0],0.f,1.f);
+        ImGui::SliderFloat("Volume_OnPause",&bgmVolume_[1],0.f,1.f);
+        ImGui::SliderFloat("Volume_InterpolateRate",&bgmVolumeInterpolateRate_,0.f,1.f);
+    }
+    ImGui::End();
+
+    float prevBgmVolume = currentBgmVolume_;
+    currentBgmVolume_ = MyMath::Lerp(currentBgmVolume_,bgmVolume_[int(isPaused_)],bgmVolumeInterpolateRate_);
+
+    if(currentBgmVolume_ != prevBgmVolume){
+        AudioManager::SetAudioVolume(bgmPath_,currentBgmVolume_);
+    }
 }

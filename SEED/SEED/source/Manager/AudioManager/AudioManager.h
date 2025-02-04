@@ -98,7 +98,7 @@ private:
     static AudioManager* instance_;
     ComPtr<IXAudio2> xAudio2_;
     IXAudio2MasteringVoice* masteringVoice_;
-
+    static float systemVolumeRate_;
 private:
     std::unordered_map<std::string, SoundData>audios_;
     std::unordered_map<std::string, IXAudio2SourceVoice*>sourceVoices_;

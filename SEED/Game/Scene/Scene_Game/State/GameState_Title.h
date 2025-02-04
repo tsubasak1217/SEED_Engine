@@ -30,5 +30,10 @@ private:
 
     Stage* stage_;
 
+    Vector3 cameraOffset_;
+    Vector3 cameraRotate_;
+
+    Vector3 playerRotate_;
+
 };
 

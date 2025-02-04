@@ -61,6 +61,19 @@ void GameState_Goal::Initialize(){
         ThrowEggForNextStageInitialize();
     }
 
+    //targetAngle
+    {
+        // ゴールの回転Y軸
+        Vector2 diffXZ = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
+
+        targetAngleY_ = atan2f(diffXZ.x,diffXZ.y);
+
+        // ゴールの回転X軸
+        Vector3 diff = bezierCtlPoint_ - goalPosition_;
+
+        targetAngleX_ = atan2f(diff.y,MyMath::Length({diff.x,diff.z}));
+    }
+
     // update
     currentUpdate_ = [this](){ RotateYGoalForNextStage(); };
 }
@@ -121,13 +134,8 @@ void GameState_Goal::SetUpNextStage(){
 const float tau = std::numbers::pi_v<float> *2.f;
 
 void GameState_Goal::RotateYGoalForNextStage(){
-    // ゴールの回転Y軸
-    Vector2 diffXZ = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
-    diffXZ = MyMath::Normalize(diffXZ);
-    float targetAngle = atan2f(diffXZ.x,diffXZ.y);
-
     // 角度差を求める
-    float diff = pGoal_->GetWorldRotate().y - targetAngle;
+    float diff = pGoal_->GetWorldRotate().y - targetAngleY_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
 
@@ -146,7 +154,7 @@ void GameState_Goal::RotateYGoalForNextStage(){
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
-        pGoal_->SetRotateY(targetAngle);
+        pGoal_->SetRotateY(targetAngleY_);
         currentUpdate_ = [this](){ RotateXGoalForNextStage(); };
         return;
     }
@@ -154,13 +162,8 @@ void GameState_Goal::RotateYGoalForNextStage(){
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
-    // ゴールの回転Y軸
-    Vector2 diffXZ = Vector2(bezierCtlPoint_.y,bezierCtlPoint_.z) - Vector2(goalPosition_.y,goalPosition_.z);
-    diffXZ = MyMath::Normalize(diffXZ);
-    float targetAngle = atan2f(diffXZ.y,diffXZ.x);
-
-    // 角度差を求める
-    float diff = pGoal_->GetWorldRotate().x - targetAngle;
+     // 角度差を求める
+    float diff = pGoal_->GetWorldRotate().x - targetAngleX_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
 
@@ -179,7 +182,7 @@ void GameState_Goal::RotateXGoalForNextStage(){
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
-        pGoal_->SetRotateX(targetAngle);
+        pGoal_->SetRotateX(targetAngleX_);
 
         pGoal_->GetModel()->StartAnimation("fire",false);
         currentUpdate_ = [this](){ GoalAnimation(); };

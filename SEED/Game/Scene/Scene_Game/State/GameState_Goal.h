@@ -62,6 +62,8 @@ private:
     // 卵を投げる関係
     float moveTime_ = 0.0f;
     float moveTimeMax_ = 0.6f;
+    float targetAngleY_ = 0.f;
+    float targetAngleX_ = 0.f;
 
     Vector3 bezierCtlPoint_;
 

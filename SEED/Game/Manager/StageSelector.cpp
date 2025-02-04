@@ -21,6 +21,7 @@ StageSelector::StageSelector(StageManager* stageManager,FollowCamera* camera){
 // 初期化処理
 ///////////////////////////////////////////////////////////////////////////
 void StageSelector::Initialize(){
+    SEED::SetCamera("follow");
 
     // フレーム
     frame_ = std::make_unique<Sprite>("SelectScene/frame.png");
@@ -54,6 +55,7 @@ void StageSelector::Initialize(){
 
     // ステージの状態に合わせて更新
     UpdateItems(0);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

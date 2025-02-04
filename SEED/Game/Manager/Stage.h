@@ -38,6 +38,8 @@ class Player;
 class Stage{
 public:
     Stage(ISubject& subject,uint32_t stageNo);
+    Stage(ISubject& subject);
+
 
     // 卵の取得数など,ステータスの初期化(ステージを遷移したときなどに呼ぶ)
     void InitializeStatus();

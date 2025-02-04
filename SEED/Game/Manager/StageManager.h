@@ -36,6 +36,8 @@ public:
 private:
     void LoadStages();
 
+    void LoadTitleStage();
+
 private:
     static const int32_t kStageCount_ = 10;
     static int32_t currentStageNo_;
@@ -48,6 +50,9 @@ private:
 
     // playerのポインタ
     Player* pPlayer_;
+
+    // title
+    static std::unique_ptr<Stage> titleStage_;
 
 public:
     void SetPlayer(Player* pPlayer);
@@ -70,4 +75,8 @@ public:
     static bool IsLastStage(){ return currentStageNo_ == kStageCount_ - 1; }
     static bool IsHandOverColliderNext(){ return isHandOverColliderNext_; }
     static void SetIsHandOverColliderNext(bool isHandOverColliderNext){ isHandOverColliderNext_ = isHandOverColliderNext; }
+
+    // title
+    static Stage* GetTitleStage(){ return titleStage_.get(); }
+    static Vector3 GetTitleStartPos();
 };

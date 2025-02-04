@@ -781,6 +781,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp">
       <Filter>Game\Objects\FieldObject\Fence</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Title.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.cpp">
       <Filter>Game\Objects\FieldObject\Tile</Filter>
     </ClCompile>
@@ -1433,6 +1436,7 @@
     <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Title.h" />
     <ClInclude Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.h">
       <Filter>Game\Objects\FieldObject\Tile</Filter>
     </ClInclude>

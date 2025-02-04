@@ -8,6 +8,7 @@
 // 各ステートのインクルード
 #include <GameState_Play.h>
 #include <GameState_Select.h>
+#include <GameState_Title.h>
 #include <GameState_Pause.h>
 #include <GameState_Exit.h>
 #include <GameState_Enter.h>
@@ -20,7 +21,7 @@
 
 Scene_Game::Scene_Game(){
     Initialize();
-    ChangeState(new GameState_Select(this));
+    ChangeState(new GameState_Title(this));
 };
 
 Scene_Game::~Scene_Game(){

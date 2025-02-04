@@ -27,7 +27,7 @@ private:
     void UpdateItems();
     void UIMotion();
 
-private:
+protected:
     Scene_Game* pGameScene_;
     int32_t selectIndex_;
 

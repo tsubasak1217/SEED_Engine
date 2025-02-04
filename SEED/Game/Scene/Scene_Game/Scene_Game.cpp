@@ -9,7 +9,7 @@
 #include <GameState_Play.h>
 #include <GameState_Select.h>
 #include <GameState_Title.h>
-#include <GameState_Pause.h>
+#include <Pause/GameState_Pause.h>
 #include <GameState_Exit.h>
 #include <GameState_Enter.h>
 

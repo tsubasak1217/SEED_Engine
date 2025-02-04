@@ -4,7 +4,7 @@
 #include <Scene_Game.h>
 
 // 遷移可能なステートのインクルード
-#include "GameState_Pause.h"
+#include "Pause/GameState_PauseForPlay.h"
 #include "GameState_Goal.h"
 
 // lib
@@ -137,7 +137,7 @@ void GameState_Play::ManageState(){
 
     // ポーズへ遷移
     if(PlayerInput::Pause::Pause()){
-        pGameScene_->ChangeState(new GameState_Pause(pScene_));
+        pGameScene_->ChangeState(new GameState_PauseForPlay(pScene_));
         return;
     }
 

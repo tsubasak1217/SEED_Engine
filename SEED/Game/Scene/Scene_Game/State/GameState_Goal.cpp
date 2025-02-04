@@ -27,14 +27,11 @@ GameState_Goal::~GameState_Goal(){}
 void GameState_Goal::Initialize(){
     // player
     pPlayer_ = pGameScene_->Get_pPlayer();
+    pPlayer_->SetIsMovable(false);
     pPlayer_->ChangeState(new PlayerState_ForcedIdle(pPlayer_));
     // goal
     pGoal_ = pGameScene_->Get_pStageManager()->GetCurrentStage()->GetGoalObject();
     goalPosition_ = pGoal_->GetWorldTranslate();
-
-    // カメラのターゲットをゴール に 変更
-    FollowCamera* pFollowCamera = dynamic_cast<FollowCamera*>(pPlayer_->GetFollowCamera());
-    pFollowCamera->SetTarget(pGoal_);
 
     // Stage
     {
@@ -57,7 +54,8 @@ void GameState_Goal::Initialize(){
 
         pEgg_ = eggManager->GetFrontEgg().get();
         pEgg_->DiscardPreCollider();
-        pEgg_->SetTranslate(pPlayer_->GetWorldTranslate());
+        pEgg_->SetTranslate(goalPosition_);
+        pEgg_->SetScale({0.f,0.f,0.f});
         pEgg_->UpdateMatrix();
 
         ThrowEggForNextStageInitialize();
@@ -107,10 +105,6 @@ void GameState_Goal::SetUpNextStage(){
         pPlayer_->SetEnemyManager(enemyManager);
     }
 
-    { //! 次のステージへの遷移失敗することがあるので 仮対処
-        pPlayer_->SetPosition(StageManager::GetStartPos());
-    }
-
     { //前ステージの死体を消す
         PlayerCorpseManager* pCorpseManager = pPlayer_->GetCorpseManager();
         pCorpseManager->RemoveAll();
@@ -144,6 +138,10 @@ void GameState_Goal::RotateYGoalForNextStage(){
         diff += std::numbers::pi_v<float>;
     }
 
+    pGoal_->SetRotateY(pGoal_->GetWorldRotate().y +
+                       goalRotateSpeedBySecond_ *
+                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
+
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
@@ -152,9 +150,6 @@ void GameState_Goal::RotateYGoalForNextStage(){
         return;
     }
 
-    pGoal_->SetRotateY(pGoal_->GetWorldRotate().y +
-                       goalRotateSpeedBySecond_ *
-                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
@@ -176,6 +171,10 @@ void GameState_Goal::RotateXGoalForNextStage(){
         diff += std::numbers::pi_v<float>;
     }
 
+    pGoal_->SetRotateX(pGoal_->GetWorldRotate().x +
+                       goalRotateSpeedBySecond_ *
+                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
+
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
@@ -185,15 +184,12 @@ void GameState_Goal::RotateXGoalForNextStage(){
         currentUpdate_ = [this](){ GoalAnimation(); };
         return;
     }
-
-    pGoal_->SetRotateX(pGoal_->GetWorldRotate().x +
-                       goalRotateSpeedBySecond_ *
-                       (diff < 0 ? 1.0f : -1.0f));// 回転方向
 }
 
 void GameState_Goal::GoalAnimation(){
     // 大砲のアニメーション
     if(pGoal_->GetModel()->GetIsEndAnimation()){
+        pEgg_->SetScale({1.f,1.f,1.f});
         currentUpdate_ = [this](){ ThrowEggForNextStage(); };
     }
 }

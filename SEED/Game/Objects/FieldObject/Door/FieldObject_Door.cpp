@@ -10,6 +10,10 @@
 // lib
 #include "ClockManager.h" 
 
+// engine
+#include "CameraManager.h"
+#include "FollowCamera.h"
+
 ////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////
@@ -28,6 +32,10 @@ FieldObject_Door::FieldObject_Door(){
     InitColliders(ObjectType::Field);
     // 全般の初期化
     Initialize();
+
+    // カメラ用のターゲットを生成
+    cameraTarget_ = std::make_unique<BaseObject>();
+    cameraTarget_->Initialize();
 }
 
 FieldObject_Door::FieldObject_Door(const std::string& modelName)
@@ -79,6 +87,8 @@ void FieldObject_Door::ShowImGui(){
     ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
     ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
     ImGui::DragFloat("MaxOpenHeight", &kMaxOpenHeight_, 0.01f,-100.0f,-5.0f);
+
+    ImGui::Checkbox("CameraView", &shouldPerformCameraView_);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -94,7 +104,6 @@ void FieldObject_Door::SetIsOpened(bool isOpened){
         }
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 // 状態変更用メソッド
@@ -116,6 +125,20 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
     if (event != "SwitchActivated" && event != "SwitchDeactivated"
         && event != "LeverActivated" && event != "LeverDeactivated"){
         return;
+    }
+
+    // もしカメラ演出を行う必要があるなら
+    if (shouldPerformCameraView_){
+        // ドアの現在位置に合わせてカメラターゲットを更新
+        cameraTarget_->SetTranslate(GetWorldTranslate());
+        cameraTarget_->UpdateMatrix();
+
+        // 例：グローバルなカメラマネージャからフォローカメラを取得
+        FollowCamera* followCamera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera());
+        if (followCamera){
+            followCamera->SetTarget(cameraTarget_.get());
+            shouldPerformCameraView_ = false;
+        }
     }
 
     // 対象のイベントのみ処理する

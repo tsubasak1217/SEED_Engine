@@ -52,11 +52,13 @@ public:
     float GetClosedPosY() const{ return closedPosY_; }
 
 private:
-    bool isOpened_ = false;                     // 開閉状態のフラグ
-    bool hasActivator_ = false;                    // スイッチを持っているかどうか
-    std::unique_ptr<DoorState> currentState_;   // 現在の状態
-    float openSpeed_ = 8.0f;                    // 開閉速度
-    float kMaxOpenHeight_ =5.0f;          // 最大開く高さ
+    bool shouldPerformCameraView_ = false;      //< カメラ演出を行うかどうか
+    bool isOpened_ = false;                     //< 開閉状態のフラグ
+    bool hasActivator_ = false;                 //< スイッチを持っているかどうか
+    std::unique_ptr<DoorState> currentState_;   //< 現在の状態
+    float openSpeed_ = 8.0f;                    //< 開閉速度
+    float kMaxOpenHeight_ =5.0f;                //< 最大開く高さ
+    float closedPosY_ = 0.0f;                   //< 閉じた後のy座標
 
-    float closedPosY_ = 0.0f;                   // 閉じた後のy座標
+    std::unique_ptr<BaseObject> cameraTarget_ = nullptr;        //< カメラ移動ターゲット
 };

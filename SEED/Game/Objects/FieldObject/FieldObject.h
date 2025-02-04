@@ -42,10 +42,10 @@ public:
 protected:
     uint32_t fieldObjectType_;
     bool removeFlag_ = false;
-
     std::string guid_;
-
     Player* player_ = nullptr;  // プレイヤーへのポインタ
 
+    // カメラが来る位置
+    Vector3 cameraPosition_ = {0.0f,0.0f,0.0f};
 };
 

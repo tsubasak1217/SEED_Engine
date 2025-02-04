@@ -793,6 +793,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp">
       <Filter>Game\Objects\FieldObject\Fence</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Title.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1409,6 +1412,15 @@
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />
+    <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Title.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

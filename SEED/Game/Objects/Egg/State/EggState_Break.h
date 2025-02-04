@@ -16,10 +16,10 @@ public:
     void Initialize(const std::string& stateName,BaseCharacter* character)override;
     void Update() override;
     void Draw() override;
+
 protected:
     void ManageState() override;
 
-    void ButtonUISinAnimation();
 private:
     BaseCharacter* deadPlayer_ = nullptr;
 

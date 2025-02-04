@@ -35,6 +35,9 @@ public:
 private:
     Scene_Game* pGameScene_;
 
+    // sprite
+    std::unique_ptr<Sprite> pauseButton = nullptr;
+
 private:
     std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FieldEditor> fieldEditor_;

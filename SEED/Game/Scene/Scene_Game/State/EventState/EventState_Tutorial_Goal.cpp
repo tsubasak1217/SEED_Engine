@@ -40,6 +40,7 @@ void EventState_Tutorial_Goal::Initialize(){
 }
 
 void EventState_Tutorial_Goal::Update(){
+    EventState_Base::Update();
 
     static float alpha = 0.0f;
     static float alpha2 = 0.0f;

@@ -26,7 +26,12 @@ PlayerState_Spawn::PlayerState_Spawn(const std::string& stateName,BaseCharacter*
     Initialize(stateName,player);
 }
 
-PlayerState_Spawn::~PlayerState_Spawn(){}
+PlayerState_Spawn::~PlayerState_Spawn(){
+    // 重力を適応しない,当たり判定を取らない
+    pCharacter_->SetIsApplyGravity(true);
+    pCharacter_->SetCollidable(true);
+
+}
 
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);

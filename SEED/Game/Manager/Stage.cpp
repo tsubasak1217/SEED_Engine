@@ -52,6 +52,7 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     // player
     {
+        pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
     }
     { //卵の所持状況を初期化

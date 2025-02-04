@@ -260,6 +260,12 @@
     <Filter Include="Game\Objects\FieldObject\Fence">
       <UniqueIdentifier>{3aeea757-29b7-425a-b621-792c43bb2727}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\Tile">
+      <UniqueIdentifier>{4b38b7a3-75c9-46e8-9393-2a660c94e361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Box">
+      <UniqueIdentifier>{b26183e3-0f95-4dc9-9f29-58d9ca5deb86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -454,12 +460,6 @@
     <ClCompile Include="Game\Editor\FieldEditor.cpp">
       <Filter>Game\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\source\Object\Collision\Collider.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Player\Player.cpp">
       <Filter>Game\Objects\Player</Filter>
     </ClCompile>
@@ -489,27 +489,6 @@
     </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
       <Filter>SEED\Lib\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
-      <Filter>SEED\Source\Object\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ThrowEgg.cpp">
       <Filter>Game\Objects\Player\PlayerState</Filter>
@@ -552,9 +531,6 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Egg\State\EggState_Thrown.cpp">
       <Filter>Game\Objects\Egg\State</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp">
       <Filter>SEED\Source\Object\Collision</Filter>
@@ -804,6 +780,42 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp">
       <Filter>Game\Objects\FieldObject\Fence</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.cpp">
+      <Filter>Game\Objects\FieldObject\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\CollisionManager.cpp">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_OBB.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Object\Collision\Collider.cpp">
+      <Filter>SEED\Source\Object\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1090,21 +1102,11 @@
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
-    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
     <ClInclude Include="SEED\lib\structs\Range1D.h" />
     <ClInclude Include="SEED\lib\structs\Range2D.h" />
     <ClInclude Include="SEED\lib\structs\Range3D.h" />
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h" />
-    <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
@@ -1319,9 +1321,6 @@
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h">
       <Filter>Game\Objects\FieldObject\GrassSoil</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h">
-      <Filter>SEED\Source\Manager\CollisionManager</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Ring.h">
       <Filter>SEED\Lib\Shapes</Filter>
     </ClInclude>
@@ -1421,12 +1420,58 @@
     <ClInclude Include="Game\Objects\Base\BaseObject.h">
       <Filter>Game\Objects\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />
+    <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.h">
+      <Filter>Game\Objects\FieldObject\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Box\FieldObject_Box.h">
+      <Filter>Game\Objects\FieldObject\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionManager.h">
+      <Filter>SEED\Source\Manager\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_OBB.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
+      <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

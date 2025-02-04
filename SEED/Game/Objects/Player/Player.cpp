@@ -50,7 +50,6 @@ void Player::Initialize(){
     // コライダーの初期化
     InitColliders(ObjectType::Player);
     for(auto& collider : colliders_){
-        collider->AddSkipPushBackType(ObjectType::Player);
         collider->AddSkipPushBackType(ObjectType::Egg);
     }
 
@@ -134,6 +133,10 @@ void Player::BeginFrame(){
             UpdateMatrix();
         }
     }
+
+    // スイッチ用の重量の更新
+    switchPushWeight_ = 1.0f + (1.00f * (growLevel_ - 1));
+
 
     BaseCharacter::BeginFrame();
 

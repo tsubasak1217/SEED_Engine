@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Main.cpp" />
@@ -122,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp" />
     <ClCompile Include="Game\UI\EggTimerUI.cpp" />
@@ -164,6 +166,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManaer\CollisionManager.cpp" />
     <ClCompile Include="SEED\source\Manager\EventManager\EventManager.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosedState.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Door\State\ClosingState.cpp" />
@@ -212,8 +216,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
-    <ClCompile Include="SEED\Source\Manager\CollisionManaer\Collision.cpp" />
-    <ClCompile Include="SEED\source\Manager\CollisionManaer\CollisionManager.cpp" />
     <ClCompile Include="SEED\adapter\json\JsonCoordinator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
@@ -270,7 +272,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Object\Camera\BaseCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\DebugCamera.cpp" />
     <ClCompile Include="SEED\source\Object\Camera\FollowCamera.cpp" />
-    <ClCompile Include="SEED\source\Object\Collision\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_AABB.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Capsule.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Line.cpp" />
@@ -278,7 +281,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Plane.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp" />
-    <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Enter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\State\TitleState_Main.cpp" />
@@ -290,12 +292,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Enter.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Box\FieldObject_Box.h" />
     <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
     <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.h" />
     <ClInclude Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.h" />
     <ClInclude Include="Game\Objects\FieldObject\PointLight\FieldObject_PointLight.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Tile\FieldObject_Tile.h" />
     <ClInclude Include="Game\Objects\FieldObject\Wood\FieldObject_Wood.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Goal.h" />
     <ClInclude Include="Game\UI\EggTimerUI.h" />
@@ -340,7 +344,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
     <ClInclude Include="SEED\Lib\Structs\PointLight.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionData.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManaer\CollisionManager.h" />
     <ClInclude Include="SEED\source\Manager\EventManager\EventManager.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosedState.h" />
     <ClInclude Include="Game\Objects\FieldObject\Door\State\ClosingState.h" />
@@ -395,8 +401,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManaer\ColliderEditor.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManaer\Collision.h" />
-    <ClInclude Include="SEED\source\Manager\CollisionManaer\CollisionManager.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\InputHangler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
@@ -481,7 +485,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Object\Camera\BaseCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\source\Object\Camera\FollowCamera.h" />
-    <ClInclude Include="SEED\source\Object\Collision\Collider.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\Collider.h" />
+    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_AABB.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Capsule.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Line.h" />
@@ -489,7 +494,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Plane.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
-    <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h" />
     <ClInclude Include="SEED\source\SEED.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Enter.h" />
     <ClInclude Include="Game\Scene\Scene_Title\State\TitleState_Main.h" />

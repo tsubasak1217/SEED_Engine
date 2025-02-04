@@ -11,6 +11,7 @@ PlayerCorpse::~PlayerCorpse(){}
 //////////////////////////////////////////////////////////////////////////
 void PlayerCorpse::Initialize(){
     model_ = std::make_unique<Model>("dinosaur_corpse.obj");
+    model_->isParentScale_ = false;
     model_->UpdateMatrix();
 
     // コライダーエディターの初期化
@@ -19,12 +20,18 @@ void PlayerCorpse::Initialize(){
     for(auto& collider : colliders_){
         collider->AddSkipPushBackType(ObjectType::Egg);
         collider->AddSkipPushBackType(ObjectType::Editor);
-        collider->AddSkipPushBackType(ObjectType::Player);
+        collider->AddSkipPushBackType(ObjectType::Enemy);
     }
 
     SetIsApplyGravity(true);
 
     weight_ = 4.f;
+}
+
+void PlayerCorpse::Initialize(const Vector3& scale){
+    Initialize();
+    SetScale(scale);
+    UpdateMatrix();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -37,5 +44,8 @@ void PlayerCorpse::Update(){
     // 地面ではなく,y==0に落下したら削除
     if(this->GetWorldTranslate().y <= 0.0f){
         isAlive_ = false;
+    } else{
+        HandOverColliders();
     }
+
 }

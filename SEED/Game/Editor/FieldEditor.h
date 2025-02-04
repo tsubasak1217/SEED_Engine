@@ -20,9 +20,6 @@
 #include <cstdint>
 #include <unordered_map>
 
-// ImGui用のテクスチャIDなどを保持
-using TextureMap = std::unordered_map<std::string, ImTextureID>;
-
 class FieldObject_Door;
 class FieldObject_Switch;
 
@@ -90,7 +87,6 @@ private:
 
     // 管理用
     std::unordered_map<std::string,uint32_t> modelNameMap_;
-    TextureMap textureIDs_;
     const std::string jsonPath_ = "resources/jsons/Stages/";
 
     // ステージ管理用

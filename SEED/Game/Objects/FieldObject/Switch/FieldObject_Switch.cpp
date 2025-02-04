@@ -26,9 +26,33 @@ FieldObject_Switch::FieldObject_Switch(){
 }
 
 ////////////////////////////////////////////////////////////////////
-// 更新処理
+// 描画関数
 ////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::Update(){
+void FieldObject_Switch::Draw(){
+    // 重さに応じてマテリアルを変更
+    int leftrequiredWeight = std::clamp(int((float)requiredWeight_ - currentWeight_), 0, 100);
+    // 重さに応じて色を変更
+    switch(leftrequiredWeight){
+    case 0:// 緑
+        model_->color_ = { 0.0f,1.0f,0.0f,1.0f };
+        break;
+    case 1:// 黄
+        model_->color_ = { 1.0f,1.0f,0.0f,1.0f };
+        break;
+    case 2:// オレンジ
+        model_->color_ = { 1.0f,0.5f,0.0f,1.0f };
+        break;
+    default:// 赤
+        model_->color_ = { 1.0f,0.0f,0.0f,1.0f };
+        break;
+    }
+    FieldObject::Draw();
+}
+
+////////////////////////////////////////////////////////////////////
+// フレーム開始時処理
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::BeginFrame(){
     if (isColliding_ && !isActivated_){
         // 乗っている状態で、まだ起動状態でなければ
         isActivated_ = true;
@@ -38,6 +62,28 @@ void FieldObject_Switch::Update(){
         isActivated_ = false;
         Notify("SwitchDeactivated", this);
     }
+    // 基底クラスの BeginFrame() を呼ぶ（重さをリセット＆判定などを行う）
+    FieldObject_Activator::BeginFrame();
+}
 
-    FieldObject_Activator::Update();
+////////////////////////////////////////////////////////////////////
+// フレーム終了時処理
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::EndFrame(){
+    FieldObject::EndFrame();
+    // 必要重量を満たしていればスイッチをオンにする
+    if((int)currentWeight_ >= requiredWeight_){
+        isColliding_ = true;
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+// 衝突時処理
+////////////////////////////////////////////////////////////////////
+void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+    // 重さを加算
+    if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse){
+        currentWeight_ += other->GetSwitchPushWeight();
+    }
+
 }

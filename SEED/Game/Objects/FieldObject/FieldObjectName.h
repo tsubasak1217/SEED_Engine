@@ -16,5 +16,6 @@ enum FIELDMODELNAME{
     FIELDMODEL_WOOD,            //< 木
     FIELDMODEL_FENCE,           //< フェンス
     FIELDMODEL_LEVER,           //< レバー
-
+    FIELDMODEL_TILE,            //< タイル
+    FIELDMODEL_BOX,             //< 箱
 };

@@ -44,7 +44,7 @@ void Enemy::Initialize(){
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
     InitColliders(ObjectType::Enemy);
     AddSkipPushBackType(ObjectType::Enemy);
-
+    
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 

@@ -101,8 +101,16 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
         egg_->ChangeState(new EggState_Idle(egg_));
 
-        auto& frontEgg = pPlayer->GetEggManager()->GetFrontEgg();
-        frontEgg->ChangeState(new EggState_Follow(frontEgg.get(),ghostObject_.get()));
+        /*
+        投げる卵は 後ろから取得するため
+        前方の卵と一致すれば
+        それ以外の卵は存在しないことになる
+        */
+        if(egg_ != pPlayer->GetEggManager()->GetFrontEgg().get()){
+            playerHasManyEggs_ = true;
+            auto& frontEgg = pPlayer->GetEggManager()->GetFrontEgg();
+            frontEgg->ChangeState(new EggState_Follow(frontEgg.get(),ghostObject_.get()));
+        }
     }
 
     // effect
@@ -143,9 +151,10 @@ void PlayerState_Spawn::ManageState(){
             // たまごを消す
             egg_->Break();
 
-            //
-            auto& frontEgg = pPlayer->GetEggManager()->GetFrontEgg();
-            frontEgg->ChangeState(new EggState_Follow(frontEgg.get(),pPlayer));
+            if(playerHasManyEggs_){
+                auto& frontEgg = pPlayer->GetEggManager()->GetFrontEgg();
+                frontEgg->ChangeState(new EggState_Follow(frontEgg.get(),pPlayer));
+            }
 
             pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
         }

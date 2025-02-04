@@ -157,7 +157,7 @@ void GameState_Goal::RotateXGoalForNextStage(){
     // ゴールの回転Y軸
     Vector2 diffXZ = Vector2(bezierCtlPoint_.y,bezierCtlPoint_.z) - Vector2(goalPosition_.y,goalPosition_.z);
     diffXZ = MyMath::Normalize(diffXZ);
-    float targetAngle = atan2f(diffXZ.x,diffXZ.y);
+    float targetAngle = atan2f(diffXZ.y,diffXZ.x);
 
     // 角度差を求める
     float diff = pGoal_->GetWorldRotate().x - targetAngle;

@@ -39,7 +39,8 @@ private:
     float elapsedTime_ = 0.0f;
 
     bool spawnCorpse_ = false;
-
+    // 投げられた卵以外の卵があるか
+    bool playerHasManyEggs_ = false;
 public:
     void SetSpawnPos(const Vector3& _spawnPos){ spawnPos_ = _spawnPos; }
     const Vector3& GetSpawnPos()const{ return spawnPos_; }

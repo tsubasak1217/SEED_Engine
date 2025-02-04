@@ -4,6 +4,8 @@
 
 // static変数初期化
 AudioManager* AudioManager::instance_ = nullptr;
+float AudioManager::systemVolumeRate_ = 1.f;
+
 const std::string AudioManager::directoryPath_ = "resources/audios/";
 
 // デストラクタ
@@ -130,7 +132,7 @@ void AudioManager::PlayAudio(const std::string& filename, bool loop, float volum
     assert(instance_->audios_.find(filename) != instance_->audios_.end());
 
     // 再生
-    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume);
+    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume * systemVolumeRate_);
 
     // 再生フラグを立てる
     instance_->isPlaying_[filename] = true;
@@ -206,7 +208,7 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
-    instance_->sourceVoices_[filename]->SetVolume(volume);
+    instance_->sourceVoices_[filename]->SetVolume(volume * systemVolumeRate_);
 }
 
 

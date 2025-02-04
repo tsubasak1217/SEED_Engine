@@ -115,6 +115,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\FieldObject\Box\FieldObject_Box.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Main.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Out.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Out.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Enter.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Fence\FieldObject_Fence.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Plant\FieldObject_Plant.cpp" />
@@ -284,6 +288,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Main.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Out.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_Enter.h" />
     <ClInclude Include="Game\Objects\FieldObject\Box\FieldObject_Box.h" />
     <ClInclude Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.h" />
     <ClInclude Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.h" />

@@ -70,6 +70,7 @@ public:
 public:// 初期化に関する関数
 
     static void Initialize();
+    static void BeginFrame();
     static void StartUpLoad();
     HRESULT InitializeMediaFoundation();
 

@@ -21,6 +21,10 @@ private:
 
     // 2桁まで
     std::array<std::unique_ptr<Sprite>,2> leftTimeUI_;
-    
+
     bool isDoubleDigit_ = true;
+
+public:
+    Vector2 GetUIPos()const{ return backEggUI_->translate; }
+    Vector2 GetUISize()const{ return backEggUI_->size; }
 };

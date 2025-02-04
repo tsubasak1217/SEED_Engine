@@ -634,9 +634,6 @@
     <ClCompile Include="Game\Manager\StageSelector.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_Pause.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
@@ -821,6 +818,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1345,9 +1345,6 @@
     <ClInclude Include="Game\Manager\StageSelector.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_Pause.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\PointLight.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
@@ -1481,6 +1478,7 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

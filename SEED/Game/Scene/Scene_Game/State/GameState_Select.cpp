@@ -2,6 +2,12 @@
 #include "GameState_Play.h"
 #include "Scene_Game.h"
 
+// 遷移可能なステートのインクルード
+#include "Pause/GameState_PauseForSelect.h"
+
+// lib
+#include "../PlayerInput/PlayerInput.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -97,6 +103,12 @@ void GameState_Select::HandOverColliders(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::ManageState(){
+
+    // ポーズへ遷移
+    if (PlayerInput::Pause::Pause()){
+        pGameScene_->ChangeState(new GameState_PauseForSelect(pScene_));
+        return;
+    }
 
     // ステージが決定されたらプレイステートに遷移
     if(stageSelector_->GetIsDecided()){

@@ -114,7 +114,7 @@ void GameState_PauseBase::EnterPause(){
     backSprite_->color.w = 0.8f * (1.0f - t);
 
     // 左から右に項目をスライドイン
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < (int)pauseMenuItems_.size(); i++){
         pauseMenuItems_[i]->first.translate.x = -380.0f + (760.0f * ease);
         pauseMenuItems_[i]->second.translate.x = -380.0f + (760.0f * ease);
     }
@@ -140,8 +140,47 @@ void GameState_PauseBase::ExitPause(){
     backSprite_->color.w = 0.8f * t;
 
     // 右から左に項目をスライドアウト
-    for (int i = 0; i < 3; i++){
+    for (int i = 0; i < (int)pauseMenuItems_.size(); i++){
         pauseMenuItems_[i]->first.translate.x = 380.0f - (760.0f * ease);
         pauseMenuItems_[i]->second.translate.x = 380.0f - (760.0f * ease);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// ポーズ画面の項目の更新
+//
+////////////////////////////////////////////////////////////////////////////////////////
+void GameState_PauseBase::UpdateItems(){
+    // 選択項目だけを明るくする
+    for (int i = 0; i < ( int ) pauseMenuItems_.size(); i++){
+        if (i == selectIndex_){
+            pauseMenuItems_[i]->first.color = {1.0f,1.0f,1.0f,1.0f};
+            pauseMenuItems_[i]->second.color.w = 1.0f;
+        } else{
+            pauseMenuItems_[i]->first.color = {0.2f,0.2f,0.2f,1.0f};
+            pauseMenuItems_[i]->second.color.w = 0.2f;
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// UIの動き
+//
+////////////////////////////////////////////////////////////////////////////////////////
+void GameState_PauseBase::UIMotion(){
+    float aimTheta = (-3.14f * 0.05f);
+    Vector2 aimScale = {1.15f,1.15f};
+    for (int i = 0; i < ( int ) pauseMenuItems_.size(); i++){
+        if (i == selectIndex_){
+            pauseMenuItems_[i]->second.rotate += (aimTheta - pauseMenuItems_[i]->second.rotate) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->first.scale += (aimScale - pauseMenuItems_[i]->first.scale) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->second.scale += (aimScale - pauseMenuItems_[i]->second.scale) * 0.1f * ClockManager::TimeRate();
+        } else{
+            pauseMenuItems_[i]->second.rotate += (0.0f - pauseMenuItems_[i]->second.rotate) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->first.scale += (Vector2 {1.0f,1.0f} - pauseMenuItems_[i]->first.scale) * 0.1f * ClockManager::TimeRate();
+            pauseMenuItems_[i]->second.scale += (Vector2 {1.0f,1.0f} - pauseMenuItems_[i]->second.scale) * 0.1f * ClockManager::TimeRate();
+        }
     }
 }

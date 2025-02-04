@@ -3,12 +3,12 @@
 // 基底クラス
 #include "GameState_PauseBase.h"
 
-class GameState_PauseForPlay:public GameState_PauseBase{
+class GameState_PauseForSelect:public GameState_PauseBase{
 
 public:
-    GameState_PauseForPlay() = default;
-    GameState_PauseForPlay(Scene_Base* pScene);
-    ~GameState_PauseForPlay()override = default;
+    GameState_PauseForSelect() = default;
+    GameState_PauseForSelect(Scene_Base* pScene);
+    ~GameState_PauseForSelect()override = default;
     void Initialize()override;
     void Update()override;
     void Draw()override;
@@ -18,12 +18,10 @@ public:
     void ManageState()override;
 
 private:
-
-private:
     enum PAUSE_ITEM{
-        PAUSE_ITEM_RESET = 0,
-        PAUSE_ITEM_TO_SELECT,
-        PAUSE_ITEM_CLOSE,
+        PAUSE_ITEM_BACKTITLE = 0,    //< タイトルに戻る
+        PAUSE_ITEM_CLOSE,            //< ポーズを終了
     };
+
 };
 

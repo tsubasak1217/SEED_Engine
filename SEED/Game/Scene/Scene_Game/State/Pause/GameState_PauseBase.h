@@ -28,9 +28,10 @@ protected:
     void EnterPause();
     void ExitPause();
 
+private:
     // ポーズ画面の項目の更新
-    virtual void UpdateItems() = 0;
-    virtual void UIMotion() = 0;
+    void UpdateItems();
+    void UIMotion();
 
 protected:
     Scene_Game* pGameScene_;

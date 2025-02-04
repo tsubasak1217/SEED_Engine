@@ -23,7 +23,7 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
     ICharacterState::Initialize(stateName,enemy_);
 
     JsonCoordinator::RegisterItem(enemy_->GetName(),"sensingDistance",sensingDistance_);
-    sensingDistance_ = 10.0f;
+    sensingDistance_ = 15.0f;
     //ルーチンポイントの取得
     movePoints_ = &enemy_->GetRoutinePoints();
 }

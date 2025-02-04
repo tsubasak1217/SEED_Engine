@@ -66,8 +66,16 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     // player
     {
+        pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
     }
+
+    { // 死体削除
+        if(!playerCorpseManager_->GetIsEmpty()){
+            playerCorpseManager_->RemoveAll();
+        }
+    }
+
     { //卵の所持状況を初期化
         pPlayer_->GetEggManager()->InitializeEggCount();
     }
@@ -206,6 +214,7 @@ void Stage::HandOverColliders(){
     }
 
     enemyManager_->HandOverColliders();
+    playerCorpseManager_->HandOverColliders();
 }
 
 Vector3 Stage::GetStartPosition() const{
@@ -413,10 +422,6 @@ void Stage::LoadFromJson(const std::string& filePath){
                     // Activator 側に door を登録
                     activator->AddAssociatedDoor(door);
                     door->SetActivator(activator);
-                    // Door 側のメソッドを呼ぶなら: door->SetActivator(activator); 
-                    //  ただし複数アクティベータを想定する場合は不要 or 
-                    //  Door が RegisterObserver(this) されるなら door->SetActivator(activator);
-                    //   など設計次第
                 }
             }
         }
@@ -426,7 +431,7 @@ void Stage::LoadFromJson(const std::string& filePath){
             for(auto* mf : floors){
                 if(mf && mf->GetGUID() == floorID){
                     activator->AddAssociatedMoveFloor(mf);
-                    // mf->SetActivator(activator);
+                    mf->SetActivator(activator);
                 }
             }
         }
@@ -472,6 +477,21 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_DOOR:
             newObj = std::make_unique<FieldObject_Door>();
+
+            if(json.contains("openSpeed")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetOpenSpeed(json["openSpeed"]);
+            }
+
+            if(json.contains("openHeight")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetOpenHeight(json["openHeight"]);
+            }
+
+            if(json.contains("closedPosY")){
+                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
+                door->SetClosedPosY(json["closedPosY"]);
+            }
             break;
         case FIELDMODEL_START:
             newObj = std::make_unique<FieldObject_Start>();
@@ -565,6 +585,14 @@ void Stage::AddModel(
             newObj = std::make_unique<FieldObject_Fence>();
             break;
 
+        case FIELDMODEL_TILE:
+            newObj = std::make_unique<FieldObject_Tile>();
+            break;
+
+        case FIELDMODEL_BOX:
+            newObj = std::make_unique<FieldObject_Box>();
+            break;
+
         default:
             break;
     }
@@ -593,11 +621,6 @@ void Stage::AddModel(
         auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
         if(doorObj){
             doorObj->SetClosedPosY(translate.y);
-        }
-    } else if(modelNameIndex == FIELDMODEL_GOAL){ // ゴールの場合、Y座標を上にずらす
-        auto goalObj = dynamic_cast<FieldObject_Goal*>(newObj.get());
-        if(goalObj){
-            goalObj->SetTranslateY(goalObj->GetLocalTranslate().y + 1.0f);
         }
     }
     // Manager に登録

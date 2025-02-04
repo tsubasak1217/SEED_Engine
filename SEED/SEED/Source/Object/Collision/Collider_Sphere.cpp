@@ -27,9 +27,9 @@ void Collider_Sphere::UpdateMatrix(){
     Collider::UpdateMatrix();
     // 本体の更新
     body_.center = local_.center * worldMat_ + offset_;
-
-    if(parentMat_){
-        Vector3 parentScale = ExtractScale(*parentMat_);
+    
+    if(parentObject_){
+        Vector3 parentScale = parentObject_->GetWorldScale();
         float averageScale = (parentScale.x + parentScale.y + parentScale.z) / 3.0f;
         body_.radius = local_.radius * averageScale;
     }

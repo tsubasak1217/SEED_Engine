@@ -30,6 +30,7 @@ public:
 public:// ステートから呼び出す関数
     void SpawnPlayer();
 private:
+private:
     // 管理主
     EggManager* eggManager_ = nullptr;
     // 追従先

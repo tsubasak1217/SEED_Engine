@@ -2,7 +2,7 @@
 #include "State_Base.h"
 
 //objec
-#include "../UI/UI.h"
+#include "Sprite.h"
 
 class GameState_Enter
     : public State_Base{

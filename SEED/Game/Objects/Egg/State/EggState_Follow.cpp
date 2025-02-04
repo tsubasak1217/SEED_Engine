@@ -29,8 +29,13 @@ void EggState_Follow::Draw(){}
 void EggState_Follow::MoveFollow(){
     // プレイヤーの位置を取得
     Vector3 followTargetPos = followTarget_->GetWorldTranslate();
+
+    // tartget と egg の差分ベクトルから回転を計算
+    Vector3 diff = followTargetPos - pCharacter_->GetWorldTranslate();
+    float angle = atan2f(diff.x,diff.z);
+
     // プレイヤーの位置にオフセットを加算
-    followTargetPos += followOffset_ * RotateYMatrix(followTarget_->GetWorldRotate().y);
+    followTargetPos += followOffset_ * RotateYMatrix(angle);
     // エッグの位置を取得
     Vector3 eggPos = pCharacter_->GetWorldTranslate();
 

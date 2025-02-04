@@ -17,6 +17,7 @@ public:
     void Initialize(const std::string& stateName,BaseCharacter* enemy)override;
     void Update()override;
     void Draw()override;
+    void EndFrame()override;
 
 protected:
     // ステート管理

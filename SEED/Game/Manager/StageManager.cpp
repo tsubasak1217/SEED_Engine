@@ -20,6 +20,7 @@ int32_t StageManager::currentStageNo_ = 0;
 std::array<std::unique_ptr<Stage>,StageManager::kStageCount_> StageManager::stages_;
 std::unique_ptr<Stage> StageManager::titleStage_;
 std::array<int,StageManager::kStageCount_> StageManager::getStarCounts_;
+std::array<bool,StageManager::kStageCount_> StageManager::clearStatus_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
 bool StageManager::isHandOverColliderNext_ = false;
@@ -48,9 +49,12 @@ void StageManager::Initialize(){
     LoadStages();
     LoadTitleStage();
 
-    JsonCoordinator::LoadGroup("UserStarCount");
+    JsonCoordinator::LoadGroup("UserProgress");
+    std::string stageLabel;
     for(int i = 0; i < getStarCounts_.size(); ++i){
-        JsonCoordinator::RegisterItem("UserStarCount","Stage_" + std::to_string(i),getStarCounts_[i]);
+        stageLabel = "Stage" + std::to_string(i);
+        JsonCoordinator::RegisterItem("UserProgress",stageLabel + "_ClearState",clearStatus_[i]);
+        JsonCoordinator::RegisterItem("UserProgress",stageLabel + "_StarCount",getStarCounts_[i]);
     }
 }
 
@@ -59,7 +63,7 @@ void StageManager::Initialize(){
 ///////////////////////////////////////////////////////////////////////
 void StageManager::Finalize(){
     //星の獲得状況を保存
-    JsonCoordinator::SaveGroup("UserStarCount");
+    JsonCoordinator::SaveGroup("UserProgress");
 }
 
 ///////////////////////////////////////////////////////////////////////

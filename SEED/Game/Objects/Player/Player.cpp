@@ -50,7 +50,6 @@ void Player::Initialize(){
     // コライダーの初期化
     InitColliders(ObjectType::Player);
     for(auto& collider : colliders_){
-        collider->AddSkipPushBackType(ObjectType::Player);
         collider->AddSkipPushBackType(ObjectType::Egg);
     }
 
@@ -135,6 +134,10 @@ void Player::BeginFrame(){
         }
     }
 
+    // スイッチ用の重量の更新
+    switchPushWeight_ = 1.0f + (1.00f * (growLevel_ - 1));
+
+
     BaseCharacter::BeginFrame();
 
 #ifdef _DEBUG
@@ -183,7 +186,7 @@ void Player::GameOver(){
         UpdateMatrix();
     }
     {
-     growLevel_ = 1;
+        growLevel_ = 1;
     }
     
     { // ステートの初期化

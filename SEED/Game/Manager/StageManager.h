@@ -44,6 +44,7 @@ private:
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
     static std::array<int, kStageCount_> getStarCounts_;
+    static std::array<bool,kStageCount_> clearStatus_; // ステージのクリア状態
     static bool isPlaying_;
     static bool isHandOverColliderNext_;
 
@@ -63,6 +64,9 @@ public:
     static int32_t GetCurrentStageNo(){ return currentStageNo_; }
     static int GetCurrentStageStarCount(){ return getStarCounts_[currentStageNo_]; }
     static void GetCurrentStageStarCount(int starCount){ getStarCounts_[currentStageNo_] = starCount; }
+    static bool GetIsClear(int32_t stageNo){ return clearStatus_[stageNo]; }
+    static void SetIsClear(int32_t stageNo,bool isClear){ clearStatus_[stageNo] = isClear; }
+    static void StageClear(int32_t stageNo){ clearStatus_[stageNo] = true; }
     static void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
     static Vector3 GetStartPos();
     static Vector3 GetNextStartPos();

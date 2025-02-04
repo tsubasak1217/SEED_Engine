@@ -2,8 +2,8 @@
 
 #include "../adapter/csv/CsvAdapter.h"
 
-EnemyManager::EnemyManager(Player* player, uint32_t stageNo,RoutineManager& routineManager)
-:pPlayer_(player),stageNo_(stageNo),routineManager_(routineManager){
+EnemyManager::EnemyManager(Player* player, uint32_t stageNo, RoutineManager& routineManager)
+    :pPlayer_(player), stageNo_(stageNo), routineManager_(routineManager){
     enemies_.clear();
 }
 
@@ -28,7 +28,7 @@ void EnemyManager::AddEnemy(){
     if(!pPlayer_){ assert(false); }
     //enemyの生成
     const std::string enemyName = "Enemy" + std::to_string((int)enemies_.size());
-    auto newEnemy = std::make_unique<Enemy>(this,pPlayer_,enemyName);
+    auto newEnemy = std::make_unique<Enemy>(this, pPlayer_, enemyName);
     enemies_.emplace_back(std::move(newEnemy));
 }
 
@@ -54,9 +54,14 @@ void EnemyManager::HandOverColliders(){
 
 void EnemyManager::EndFrame(){
     //死亡した敵を削除
-    std::erase_if(enemies_, [] (const std::unique_ptr<Enemy>& enemy){
+    std::erase_if(enemies_, [](const std::unique_ptr<Enemy>& enemy){
         return !enemy->GetIsAlive();
-                  });
+        });
+
+    // 各敵のEndFrame処理
+    for(auto& enemy : enemies_){
+        enemy->EndFrame();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,9 +72,9 @@ void EnemyManager::SaveEnemies(){
     std::vector<std::vector<std::string>> csvData;
     csvData.emplace_back(std::vector<std::string>{"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
 
-    for (size_t i = 0; i < enemies_.size(); ++i){
+    for(size_t i = 0; i < enemies_.size(); ++i){
         auto& e = enemies_[i];
-        if (!e) continue;
+        if(!e) continue;
         auto pos = e->GetWorldTranslate();
         csvData.emplace_back(std::vector<std::string>{
             std::to_string(i),
@@ -85,14 +90,14 @@ void EnemyManager::SaveEnemies(){
 
     // JSONでの保存
     nlohmann::json rootJson;
-    rootJson["Count"] = static_cast< int >(enemies_.size());
+    rootJson["Count"] = static_cast<int>(enemies_.size());
 
     nlohmann::json enemyArray = nlohmann::json::array();
-    for (size_t i = 0; i < enemies_.size(); ++i){
+    for(size_t i = 0; i < enemies_.size(); ++i){
         auto& e = enemies_[i];
-        if (!e) continue;
+        if(!e) continue;
         nlohmann::json enemyObj;
-        enemyObj["Index"] = static_cast< int >(i);
+        enemyObj["Index"] = static_cast<int>(i);
         enemyObj["Name"] = e->GetName();
         enemyObj["HP"] = e->GetHP();
         enemyObj["CanEat"] = e->GetCanEat();
@@ -108,18 +113,18 @@ void EnemyManager::SaveEnemies(){
     std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
     try{
         std::ofstream ofs(filePath);
-        if (!ofs){
+        if(!ofs){
             std::cerr << "Failed to open file for writing: " << filePath << std::endl;
             return;
         }
         ofs << rootJson.dump(4) << std::endl;
         ofs.close();
-    } catch (const std::exception& e){
+    } catch(const std::exception& e){
         std::cerr << "Exception while saving JSON: " << e.what() << std::endl;
     }
 
     // 敵数を記録
-    enemyCount_ = static_cast< int >(enemies_.size());
+    enemyCount_ = static_cast<int>(enemies_.size());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +134,7 @@ void EnemyManager::LoadEnemies(){
     // CSVの読み込み
     std::string csvPath = "enemies_position_" + std::to_string(stageNo_);
     auto csvData = CsvAdapter::GetInstance()->LoadCsv(csvPath);
-    if (csvData.size() <= 1){
+    if(csvData.size() <= 1){
         // 空なら何もしない
         return;
     }
@@ -139,13 +144,13 @@ void EnemyManager::LoadEnemies(){
     {
         std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
         std::ifstream ifs(filePath);
-        if (!ifs.is_open()){
+        if(!ifs.is_open()){
             std::cerr << "Failed to open JSON file: " << filePath << std::endl;
             return;
         }
         try{
             ifs >> rootJson; // パース
-        } catch (const std::exception& e){
+        } catch(const std::exception& e){
             std::cerr << "Exception while reading JSON: " << e.what() << std::endl;
             return;
         }
@@ -156,22 +161,22 @@ void EnemyManager::LoadEnemies(){
     ClearAllEnemies();
 
     // "Count"の取得
-    if (!rootJson.contains("Count")){
+    if(!rootJson.contains("Count")){
         std::cerr << "JSON has no 'Count' field." << std::endl;
         return;
     }
     int count = rootJson["Count"].get<int>();
 
-    if (!rootJson.contains("Enemies") || !rootJson["Enemies"].is_array()){
+    if(!rootJson.contains("Enemies") || !rootJson["Enemies"].is_array()){
         std::cerr << "JSON has no 'Enemies' array." << std::endl;
         return;
     }
     auto enemyArray = rootJson["Enemies"];
 
     // CSVの行1以降を走査
-    for (size_t i = 1; i < csvData.size(); ++i){
+    for(size_t i = 1; i < csvData.size(); ++i){
         auto& row = csvData[i];
-        if (row.size() < 5){
+        if(row.size() < 5){
             continue;
         }
         int index = std::stoi(row[0]);
@@ -187,11 +192,11 @@ void EnemyManager::LoadEnemies(){
             eName
         );
         // CSVから位置をセット
-        newEnemy->SetTranslate({px, py, pz});
+        newEnemy->SetTranslate({ px, py, pz });
         // JSONから他のパラメータをセット
-        if (index < count && index < static_cast< int >(enemyArray.size())){
+        if(index < count && index < static_cast<int>(enemyArray.size())){
             auto& eJson = enemyArray[index];
-            if (eJson.is_object()){
+            if(eJson.is_object()){
                 int hp = eJson.value("HP", 100);
                 newEnemy->SetHP(hp);
 
@@ -216,5 +221,5 @@ void EnemyManager::LoadEnemies(){
         enemies_.emplace_back(std::move(newEnemy));
     }
 
-    enemyCount_ = static_cast< int >(enemies_.size());
+    enemyCount_ = static_cast<int>(enemies_.size());
 }

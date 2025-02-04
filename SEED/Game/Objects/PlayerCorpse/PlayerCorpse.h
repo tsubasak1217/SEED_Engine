@@ -11,6 +11,7 @@ public:
     ~PlayerCorpse();
 
     void Initialize() override;
+    void Initialize(const Vector3& scale);
     void Update() override;
 
 private:

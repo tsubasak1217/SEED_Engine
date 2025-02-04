@@ -51,7 +51,7 @@ void FieldObject_MoveFloor::Initialize(){
 // 更新関数
 /////////////////////////////////////////////////////////////////////////
 void FieldObject_MoveFloor::Update(){
-    if (hasActivator_ && isSwitchActive_){
+    if (!hasActivator_||(hasActivator_ && isSwitchActive_)){
         Move();
     }
     FieldObject::Update();
@@ -105,12 +105,6 @@ void FieldObject_MoveFloor::OnNotify(const std::string& event, [[maybe_unused]] 
         && event != "LeverActivated" && event != "LeverDeactivated"){
         return;
     }
-
-     if (data != nullptr){
-         if (data != static_cast<void*>(this)){
-             return; // 自分へのイベントじゃなければ無視
-         }
-     }
 
     // Activated イベントなら動作開始
     if (event == "SwitchActivated" || event == "LeverActivated"){

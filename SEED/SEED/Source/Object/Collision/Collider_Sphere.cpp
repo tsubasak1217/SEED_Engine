@@ -27,6 +27,13 @@ void Collider_Sphere::UpdateMatrix(){
     Collider::UpdateMatrix();
     // 本体の更新
     body_.center = local_.center * worldMat_ + offset_;
+    
+    if(parentObject_){
+        Vector3 parentScale = parentObject_->GetWorldScale();
+        float averageScale = (parentScale.x + parentScale.y + parentScale.z) / 3.0f;
+        body_.radius = local_.radius * averageScale;
+    }
+
     // 八分木用のAABB更新
     UpdateBox();
 
@@ -242,6 +249,7 @@ void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
 
     // 球の情報
     local_.center = jsonData["center"];
+    local_.radius = jsonData["radius"];
     body_.radius = jsonData["radius"];
 
     // 行列の更新

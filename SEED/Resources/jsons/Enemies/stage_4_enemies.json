@@ -1,0 +1,14 @@
+{
+    "Count": 1,
+    "Enemies": [
+        {
+            "CanEat": false,
+            "ChasePlayer": true,
+            "HP": 0,
+            "Index": 0,
+            "Name": "enemy0",
+            "RoutineName": "NULL",
+            "moveSpeed": 4.599999904632568
+        }
+    ]
+}

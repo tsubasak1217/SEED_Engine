@@ -23,11 +23,13 @@ void EnemyState_RoutineMove::Initialize(const std::string& stateName,BaseCharact
     ICharacterState::Initialize(stateName,enemy_);
 
     JsonCoordinator::RegisterItem(enemy_->GetName(),"sensingDistance",sensingDistance_);
+    sensingDistance_ = 10.0f;
     //ルーチンポイントの取得
     movePoints_ = &enemy_->GetRoutinePoints();
 }
 
 void EnemyState_RoutineMove::Update(){
+
     if (!movePoints_ || movePoints_->size() < 1){ return; }
 
     Vector3 currentPos = enemy_->GetWorldTranslate();
@@ -70,13 +72,15 @@ void EnemyState_RoutineMove::Update(){
     if (distanceToTarget < 0.01f){
         currentMovePointIndex_ = (currentMovePointIndex_ + 1) % movePoints_->size();
     }
-
-    ManageState();
 }
 
 
 
 void EnemyState_RoutineMove::Draw(){}
+
+void EnemyState_RoutineMove::EndFrame(){
+    ICharacterState::EndFrame();
+}
 
 void EnemyState_RoutineMove::ManageState(){
     if(enemy_->GetDistanceToPlayer() < sensingDistance_){

@@ -4,11 +4,11 @@
 //objec
 #include "Sprite.h"
 
-class GameState_Enter
+class ClearState_Enter
     : public State_Base{
 public:
-    GameState_Enter(Scene_Base* _host);
-    ~GameState_Enter();
+    ClearState_Enter(Scene_Base* _host);
+    ~ClearState_Enter();
 
     void Initialize()override;
     void Update()override;

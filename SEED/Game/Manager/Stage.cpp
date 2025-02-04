@@ -52,6 +52,7 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     // player
     {
+        pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
     }
     { //卵の所持状況を初期化
@@ -602,11 +603,6 @@ void Stage::AddModel(
         auto doorObj = dynamic_cast<FieldObject_Door*>(newObj.get());
         if(doorObj){
             doorObj->SetClosedPosY(translate.y);
-        }
-    } else if(modelNameIndex == FIELDMODEL_GOAL){ // ゴールの場合、Y座標を上にずらす
-        auto goalObj = dynamic_cast<FieldObject_Goal*>(newObj.get());
-        if(goalObj){
-            goalObj->SetTranslateY(goalObj->GetLocalTranslate().y + 1.0f);
         }
     }
     // Manager に登録

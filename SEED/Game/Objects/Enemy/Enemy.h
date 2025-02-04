@@ -22,6 +22,7 @@ public:
     void InitializeRoutine();
     void Update() override;
     void Draw() override;
+    void EndFrame() override;
 
     void ShowImGui();
 

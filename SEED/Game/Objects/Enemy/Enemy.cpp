@@ -43,9 +43,13 @@ void Enemy::Initialize(){
     // コライダーの初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
     InitColliders(ObjectType::Enemy);
-
+    AddSkipPushBackType(ObjectType::Enemy);
+    
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f,3.0f,0.0f);
+
+    // スイッチを押すための重さ
+    switchPushWeight_ = 1.0f;
 
 }
 
@@ -78,6 +82,13 @@ void Enemy::Update(){
 //////////////////////////////////////////////////////////////////////////
 void Enemy::Draw(){
     BaseCharacter::Draw();
+}
+
+//////////////////////////////////////////////////////////////////////////
+// エンドフレーム処理
+//////////////////////////////////////////////////////////////////////////
+void Enemy::EndFrame(){
+    BaseCharacter::EndFrame();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -213,7 +224,9 @@ void Enemy::Damage(int32_t damage){
 //////////////////////////////////////////////////////////////////////////
 float Enemy::GetDistanceToPlayer() const{
     if(!pPlayer_){ assert(false); }
-    return MyMath::Length(GetWorldTranslate(),pPlayer_->GetWorldTranslate());
+    Vector3 playerPos = pPlayer_->GetWorldTranslate();
+    Vector3 enemyPos = GetWorldTranslate();
+    return MyMath::Length(playerPos - enemyPos);
 }
 
 void Enemy::Rename(const std::string& newName){

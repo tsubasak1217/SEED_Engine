@@ -82,7 +82,8 @@ void FieldObject_Switch::EndFrame(){
 ////////////////////////////////////////////////////////////////////
 void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
     // 重さを加算
-    if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse){
+    if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse
+        or objectType == ObjectType::Enemy){
         currentWeight_ += other->GetSwitchPushWeight();
     }
 

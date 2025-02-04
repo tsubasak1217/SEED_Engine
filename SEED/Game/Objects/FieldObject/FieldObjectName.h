@@ -18,4 +18,5 @@ enum FIELDMODELNAME{
     FIELDMODEL_LEVER,           //< レバー
     FIELDMODEL_TILE,            //< タイル
     FIELDMODEL_BOX,             //< 箱
+    FIELDMODEL_CHIKUWA,         //< チクワ
 };

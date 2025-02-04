@@ -266,6 +266,12 @@
     <Filter Include="Game\Objects\FieldObject\Box">
       <UniqueIdentifier>{b26183e3-0f95-4dc9-9f29-58d9ca5deb86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\FieldObject\NewFilter1">
+      <UniqueIdentifier>{b37470cf-6014-4da1-bf00-8aa86dd4b63a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\FieldObject\Chikuwa">
+      <UniqueIdentifier>{a4d5c7b1-82a4-4b5c-9644-9a10c11f5874}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -742,7 +748,6 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-   
     <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_Enter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -758,14 +763,12 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Goal.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    
     <ClCompile Include="Game\Objects\FieldObject\Activator\FieldObject_Activator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Lever\FieldObject_Lever.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerState_ForcedIdle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -816,6 +819,9 @@
     </ClCompile>
     <ClCompile Include="SEED\Source\Object\Collision\Collider.cpp">
       <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.cpp">
+      <Filter>Game\Objects\FieldObject\Chikuwa</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1471,6 +1477,9 @@
     </ClInclude>
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
       <Filter>SEED\Source\Object\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h">
+      <Filter>Game\Objects\FieldObject\Chikuwa</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

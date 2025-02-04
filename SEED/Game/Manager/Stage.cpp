@@ -575,6 +575,10 @@ void Stage::AddModel(
             newObj = std::make_unique<FieldObject_Box>();
             break;
 
+        case FIELDMODEL_CHIKUWA:
+            newObj = std::make_unique<FieldObject_Chikuwa>();
+            break;
+
         default:
             break;
     }

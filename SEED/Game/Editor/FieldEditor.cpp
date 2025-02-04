@@ -57,6 +57,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["lever"] = FIELDMODEL_LEVER;
     modelNameMap_["tile"] = FIELDMODEL_TILE;
     modelNameMap_["box"] = FIELDMODEL_BOX;
+    modelNameMap_["chikuwa"] = FIELDMODEL_CHIKUWA;
 
     LoadFieldModelTexture();
 

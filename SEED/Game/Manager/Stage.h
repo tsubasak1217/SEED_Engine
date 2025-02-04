@@ -27,6 +27,7 @@
 #include "FieldObject/Fence/FieldObject_Fence.h"
 #include "FieldObject/Tile/FieldObject_Tile.h"
 #include "FieldObject/Box/FieldObject_Box.h"
+#include "FieldObject/Chikuwa/FieldObject_Chikuwa.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"

@@ -32,7 +32,7 @@
 #include "Player/PredationRange/PredationRange.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 
-class Scene_Game 
+class Scene_Game
     : public Scene_Base{
 
 public:
@@ -52,6 +52,8 @@ public:
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
     Player* Get_pPlayer(){ return player_.get(); }
     void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
+private:
+    void BGMUpdate();
 
 private:
 
@@ -81,5 +83,9 @@ private:
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;
 
-
+    float currentBgmVolume_ = 0.3f;
+    float bgmVolumeInterpolateRate_ = 0.348f;
+    //[0] = Game , [1] = Pause
+    std::array<float,2> bgmVolume_ = {0.2f,0.104f};
+    const std::string bgmPath_ = "Scene_Game/rararacpp.wav";
 };

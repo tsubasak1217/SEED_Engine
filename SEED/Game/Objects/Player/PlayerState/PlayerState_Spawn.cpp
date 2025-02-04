@@ -45,18 +45,14 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
-    pCharacter_->SetTranslate(spawnPos_);
-    pCharacter_->ReleaseParent();// 親子付けを解除
-    pCharacter_->SetScale({0.1f,0.1f,0.1f}); // 見えないようにするために
-    pCharacter_->DiscardPreCollider();
-    pPlayer->UpdateMatrix();
-
-    // 重力を適応しない,当たり判定を取らない
-    pCharacter_->SetIsApplyGravity(false);
-    pCharacter_->SetCollidable(false);
 
     // 移動不可にする
     pPlayer->SetIsMovable(false);
+
+    pCharacter_->SetIsJump(false);
+    pCharacter_->SetIsDrop(false);
+    pCharacter_->SetJumpPower(0.f);
+    pCharacter_->SetDropSpeed(0.f);
 
     // ghost
     {
@@ -82,7 +78,6 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
             Vector3 localTranslate = preTranslate * invParentMat;
             localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
             pCharacter_->SetTranslate(localTranslate);
-            pCharacter_->SetTranslateY(localTranslate.y + 1.f);
             pCharacter_->SetParent(egg_->GetParent());
             pCharacter_->UpdateMatrix();
         }
@@ -145,8 +140,13 @@ void PlayerState_Spawn::ManageState(){
             FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
             pCamera->SetTarget(pPlayer);
 
+
             // ここで,移動可能にする
             pCharacter_->SetIsMovable(true);
+
+            // 重力を適応,当たり判定を取るように
+            pCharacter_->SetIsApplyGravity(true);
+            pCharacter_->SetCollidable(true);
 
             // たまごを消す
             egg_->Break();
@@ -164,12 +164,29 @@ void PlayerState_Spawn::ManageState(){
             egg_->SetAnimation("born",false);
             pCharacter_->SetAnimation("born",false);
 
-            // 重力を適応,当たり判定を取るように
-            pCharacter_->SetIsApplyGravity(true);
-            pCharacter_->SetCollidable(true);
+            // 移動
+             // 卵が親子付けされていたらplayerも親子付け
+            pCharacter_->ReleaseParent();// 親子付けを解除
+            if(egg_->GetParent()){
+                Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
+                Vector3 localTranslate = spawnPos_ * invParentMat;
+                localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
+                pCharacter_->SetTranslate(localTranslate);
+                pCharacter_->SetParent(egg_->GetParent());
+            } else{
+                pCharacter_->SetTranslate(spawnPos_);
+            }
 
-            // scale を戻す
-            pCharacter_->SetScale({1.f,1.f,1.f});
+            pCharacter_->SetTranslateY(pCharacter_->GetLocalTranslate().y + 0.2f);
+
+            pCharacter_->UpdateMatrix();
+            for(auto& collider : pCharacter_->GetColliders()){
+                collider->Update();
+            }
+
+            // 重力を適応,当たり判定を取らないように
+            pCharacter_->SetIsApplyGravity(false);
+            pCharacter_->SetCollidable(false);
 
             // 死体を作成
             if(spawnCorpse_){

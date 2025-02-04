@@ -40,13 +40,13 @@ protected:
     /*-------- コライダー関連 --------*/
 public:
     virtual void HandOverColliders();
-    virtual void OnCollision(const BaseObject* other, ObjectType objectType);
-    void InitColliders(const std::string& fileName, ObjectType objectType);
+    virtual void OnCollision(const BaseObject* other,ObjectType objectType);
+    void InitColliders(const std::string& fileName,ObjectType objectType);
     virtual void DiscardPreCollider();
     void ResetCollider();
 protected:
     void LoadColliders(ObjectType objectType);
-    void LoadColliders(const std::string& fileName, ObjectType objectType);
+    void LoadColliders(const std::string& fileName,ObjectType objectType);
     virtual void InitColliders(ObjectType objectType);
     void EraseCheckColliders();
 
@@ -128,6 +128,7 @@ public:
     bool GetIsApplyGravity()const{ return isApplyGravity_; }
     void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
     float GetDropSpeed()const{ return dropSpeed_; }
+    void SetDropSpeed(float _dropSpeed){ dropSpeed_ = _dropSpeed; }
     bool GetIsDrop()const{ return isDrop_; }
 
     /*------- 重さ ------*/
@@ -181,7 +182,7 @@ protected:
     bool isDrop_ = false;
     float dropSpeed_ = 0.f;
     float weight_ = 1.f;
-    Vector3 velocity_ = { 0.f,0.f,0.f };
+    Vector3 velocity_ = {0.f,0.f,0.f};
 
     ////////////////////////////////////////////////////////////////////////////
     // 後で消す↓

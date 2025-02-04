@@ -640,9 +640,6 @@
     <ClCompile Include="Game\Manager\StageSelector.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
@@ -822,6 +819,15 @@
     </ClCompile>
     <ClCompile Include="SEED\Source\Object\Collision\Collider.cpp">
       <Filter>SEED\Source\Object\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.cpp">
       <Filter>Game\Objects\FieldObject\Chikuwa</Filter>
@@ -1348,9 +1354,6 @@
     <ClInclude Include="Game\Manager\StageSelector.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\PointLight.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
@@ -1482,6 +1485,9 @@
     <ClInclude Include="SEED\Source\Object\Collision\ColliderAnimationData.h">
       <Filter>SEED\Source\Object\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

@@ -79,6 +79,7 @@ void EventState_Tutorial_CollectStar::Update(){
 }
 
 void EventState_Tutorial_CollectStar::Draw(){
+    EventState_Base::Draw();
     textFieldSprite_->Draw();
     textSprite_->Draw();
 }

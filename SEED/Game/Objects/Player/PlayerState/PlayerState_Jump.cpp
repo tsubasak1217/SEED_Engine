@@ -3,6 +3,7 @@
 #include "PlayerState_Idle.h"
 
 //lib
+#include "AudioManager.h"
 #include "../adapter/json/JsonCoordinator.h"
 #include "../PlayerInput/PlayerInput.h"
 
@@ -31,6 +32,9 @@ void PlayerState_Jump::Initialize(const std::string& stateName,BaseCharacter* pl
     // ジャンプの初期化
     pCharacter_->SetIsJump(true);
     pCharacter_->SetJumpPower(jumpPower_);
+
+    //Sound
+    AudioManager::PlayAudio("SE/dinosaur_jump.wav",false,0.8f);
 }
 
 //////////////////////////////////////////////////////////////////////////

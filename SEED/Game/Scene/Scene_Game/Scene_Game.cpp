@@ -27,7 +27,7 @@ Scene_Game::Scene_Game(){
 
 Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
-    AudioManager::EndAudio(bgmPath_);
+    AudioManager::EndAudio(currentBGM);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -151,8 +151,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     // Audio の 初期化
     ////////////////////////////////////////////////////
-    AudioManager::LoadAudio(bgmPath_);
-    AudioManager::PlayAudio(bgmPath_,true,currentBgmVolume_);
+    AudioManager::PlayAudio(currentBGM,true,currentBgmVolume_);
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
@@ -435,6 +434,6 @@ void Scene_Game::BGMUpdate(){
     currentBgmVolume_ = MyMath::Lerp(currentBgmVolume_,bgmVolume_[int(isPaused_)],bgmVolumeInterpolateRate_);
 
     if(currentBgmVolume_ != prevBgmVolume){
-        AudioManager::SetAudioVolume(bgmPath_,currentBgmVolume_);
+        AudioManager::SetAudioVolume(currentBGM,currentBgmVolume_);
     }
 }

@@ -835,6 +835,10 @@
     <ClCompile Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.cpp">
       <Filter>Game\Objects\FieldObject\Chikuwa</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\SwitchWeightUI.cpp">
+    <ClCompile Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -1494,6 +1498,8 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
+    <ClInclude Include="Game\UI\SwitchWeightUI.h" />
     <ClInclude Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.h">
       <Filter>Game\Objects\FieldObject\SaveArea</Filter>
     </ClInclude>

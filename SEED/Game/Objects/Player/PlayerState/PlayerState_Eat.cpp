@@ -12,6 +12,7 @@
 #include "ClockManager.h"
 #include "Egg/Manager/EggManager.h"
 #include "Player/PredationRange/PredationRange.h"
+#include "AudioManager.h"
 //lib
 #include "../PlayerInput/PlayerInput.h"
 
@@ -40,14 +41,12 @@ void PlayerState_Eat::Initialize(const std::string& stateName,BaseCharacter* pla
         Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
         // 捕食対象リストの先頭を取得(一番近い敵)
         enemy_ = pPlayer->GetPredationRange()->GetPreyList().front().enemy;
-        // プレイヤーの成長レベルを上げる
-        pPlayer->StepGrowLevel(1);
     }
 
     {
         // 捕食対象の方向を向く
         Vector3 direction = enemy_->GetWorldTranslate() - pCharacter_->GetWorldTranslate();
-        interpolationRotateY_ = atan2f(direction.z,direction.x);
+        interpolationRotateY_ = atan2f(direction.x,direction.z);
     }
 
     currentUpdate_ = [this](){RotateForEnemy(); };
@@ -62,7 +61,11 @@ void PlayerState_Eat::RotateForEnemy(){
 
     if(t >= 1.0f){
         currentTime_ = 0.f;
+        // アニメーションを流す
         pCharacter_->SetAnimation("eat",false);
+        //Sound
+        AudioManager::PlayAudio("SE/dinosaur_eat.wav",false,0.8f);
+
         currentUpdate_ = [this](){EatEnemy(); };
     }
 }
@@ -77,6 +80,12 @@ void PlayerState_Eat::EatEnemy(){
         enemy_->SetIsAlive(false);
         // ここ 以降で enemy_ にアクセスしないように
         enemy_ = nullptr;
+
+        Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+        // プレイヤーの成長レベルを上げる
+        pPlayer->StepGrowLevel(1);
+        //Sound
+        AudioManager::PlayAudio("SE/dinosaur_grow.wav",false,0.6f);
 
         currentUpdate_ = [this](){SpawnEgg(); };
         return;

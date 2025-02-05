@@ -69,6 +69,9 @@ void FieldObject_Lever::EndFrame(){
     // レバーに触れている & Aボタンが押された瞬間ならトグルする
     if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::B)){
         Toggle();
+
+        // SE再生
+        AudioManager::PlayAudio("SE/switch.wav",false,0.7f);
     }
 
     FieldObject::EndFrame();

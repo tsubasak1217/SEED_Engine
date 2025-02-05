@@ -11,6 +11,7 @@
 #include "Scene_Game/State/GameState_Play.h"
 // lib
 #include <ClockManager.h>
+#include "AudioManager.h"
 
 // math
 #include "MyMath.h"
@@ -162,7 +163,7 @@ void GameState_Goal::RotateYGoalForNextStage(){
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
-     // 角度差を求める
+    // 角度差を求める
     float diff = pGoal_->GetWorldRotate().x - targetAngleX_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
@@ -184,15 +185,20 @@ void GameState_Goal::RotateXGoalForNextStage(){
     if(std::abs(diff) < goalRotateSpeedBySecond_){
         pGoal_->SetRotateX(targetAngleX_);
 
+        // 大砲のアニメーション
         pGoal_->GetModel()->StartAnimation("fire",false);
+        //Sound
+        AudioManager::PlayAudio("SE/goal.wav",false,0.65f);
         currentUpdate_ = [this](){ GoalAnimation(); };
         return;
     }
 }
 
 void GameState_Goal::GoalAnimation(){
-    // 大砲のアニメーション
-    if(pGoal_->GetModel()->GetIsEndAnimation()){
+    // goalアニメーションが終わるまで待つと違和感があるので,時間で管理する
+    leftGoalAnimationTime_ += ClockManager::DeltaTime();
+
+    if(leftGoalAnimationTime_ >= goalAnimationTime_){
         pEgg_->SetScale({1.f,1.f,1.f});
         currentUpdate_ = [this](){ ThrowEggForNextStage(); };
     }

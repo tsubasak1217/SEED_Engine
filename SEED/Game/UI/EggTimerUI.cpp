@@ -12,7 +12,7 @@ void EggTimerUI::Initialize(){
     for(auto& timeUI : leftTimeUI_){
         timeUI = std::make_unique<Sprite>("GameUI/numbers.png");
         timeUI->scale = {2.f,2.f};
-        timeUI->translate = {1155.f,559.f};
+        timeUI->translate = {1158.f,564.f};
         timeUI->color = {0.6f,0.6f,0.6f,1.f};
         timeUI->clipSize = {32.f,32.f};
         timeUI->clipLT = {0.f,0.f};

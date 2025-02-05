@@ -87,5 +87,7 @@ private:
     float bgmVolumeInterpolateRate_ = 0.348f;
     //[0] = Game , [1] = Pause
     std::array<float,2> bgmVolume_ = {0.2f,0.104f};
-    const std::string bgmPath_ = "Scene_Game/rararacpp.wav";
+    const std::string titleBGM = "BGM/Title.wav";
+    const std::string gamePlayBGM = "Scene_Game/rararacpp.wav";
+    const std::string& currentBGM = titleBGM;
 };

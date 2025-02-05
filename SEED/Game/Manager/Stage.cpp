@@ -31,7 +31,7 @@ Stage::Stage(ISubject& subject,uint32_t stageNo)
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
 }
-Stage::Stage(ISubject& subject) :subject_(subject){
+Stage::Stage(ISubject& subject):subject_(subject){
     // ステージの初期化
     ClearAllFieldObjects();
 
@@ -40,7 +40,7 @@ Stage::Stage(ISubject& subject) :subject_(subject){
 
     routineManager_.LoadRoutines(stageNo_);
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_, stageNo_, routineManager_);
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
 
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
@@ -57,6 +57,7 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     startObject_ = nullptr;
     goalObject_ = nullptr;
     starObjects_.clear();
+    currentStarSoundVolume_ = 0.0f;
 
     // Jsonから読み込み
     LoadFromJson(_jsonFilePath);
@@ -603,6 +604,8 @@ void Stage::AddModel(
 
     if(!newObj) return;  // newObj が生成されなかった場合は何もしない
 
+    newObj->SetPlayer(pPlayer_);
+
     // スタートまたはゴールの場合、スケールを 1 に固定（あるいは別途調整）
     Vector3 adjustedScale = scale;
     if(modelNameIndex == FIELDMODEL_START || modelNameIndex == FIELDMODEL_GOAL){
@@ -629,6 +632,27 @@ void Stage::AddModel(
     }
     // Manager に登録
     AddFieldObject(std::move(newObj));
+}
+
+void Stage::StarSEUpdate(){
+    float nearestDistancePlayerToStar = 100.f;
+    for(auto& object : fieldObjects_){
+        FieldObject_Star* starObject = dynamic_cast<FieldObject_Star*>(object.get());
+        if(!starObject){
+            continue;
+        }
+        float distancePlayerToStar = MyMath::Length(pPlayer_->GetWorldTranslate() - starObject->GetWorldTranslate());
+        nearestDistancePlayerToStar = (std::min)(nearestDistancePlayerToStar,distancePlayerToStar);
+        float t = nearestDistancePlayerToStar / distanceToPlayStarSound_;
+        // 一定以上離れているなら再生しない
+        if(t >= 1.f){
+            currentStarSoundVolume_ = 0.f;
+        } else{
+            // 遠いほど音量を下げる
+            currentStarSoundVolume_ = minStarSoundVolume_ + (maxStarSoundVolume_ - minStarSoundVolume_) * (1.f - t);
+        }
+        AudioManager::SetAudioVolume(starSoundFileName_,currentStarSoundVolume_);
+    }
 }
 
 void Stage::UpdateStarCount(){

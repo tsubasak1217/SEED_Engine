@@ -1,6 +1,8 @@
 #pragma once
 #include "../Activator/FieldObject_Activator.h"
 
+#include "../UI/SwitchWeightUI.h"
+
 class FieldObject_Switch : public FieldObject_Activator{
 public:
     FieldObject_Switch();
@@ -13,4 +15,9 @@ public:
     
     // 衝突時の処理
     void OnCollision(const BaseObject* other, ObjectType objectType) override;
+
+private:
+    // 重さに応じたUI
+    std::unique_ptr<SwitchWeightUI> weightUI_;
+    bool drawingUI_ = false;
 };

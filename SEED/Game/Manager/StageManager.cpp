@@ -49,6 +49,8 @@ void StageManager::Initialize(){
     LoadStages();
     LoadTitleStage();
 
+    AudioManager::PlayAudio("SE/star.wav",true,0.f);
+
     JsonCoordinator::LoadGroup("UserProgress");
     std::string stageLabel;
     for(int i = 0; i < getStarCounts_.size(); ++i){
@@ -85,7 +87,7 @@ void StageManager::Draw(){
 }
 
 void StageManager::DrawHUD(){
-    for (auto& stage : stages_){
+    for(auto& stage : stages_){
         stage->DrawHUD();
     }
 }
@@ -111,6 +113,8 @@ void StageManager::EndFrame(){
     for(auto& stage : stages_){
         stage->EndFrame();
     }
+
+    stages_[currentStageNo_]->StarSEUpdate();
 }
 
 void StageManager::UpdateStarCont(uint32_t _stageNo){

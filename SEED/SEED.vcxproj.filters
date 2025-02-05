@@ -832,6 +832,9 @@
     <ClCompile Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.cpp">
       <Filter>Game\Objects\FieldObject\Chikuwa</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\SwitchWeightUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\lib\includes\include_matrixes.h">
@@ -1488,6 +1491,8 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
+    <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
+    <ClInclude Include="Game\UI\SwitchWeightUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt">

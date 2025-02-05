@@ -73,6 +73,8 @@ public:
         const Vector3& translate = {0.0f,0.0f,0.0f}
     );
 
+    void StarSEUpdate();
+
     void UpdateStarCount();
 public:
     Vector3 GetStartPosition()const;
@@ -81,9 +83,9 @@ public:
     std::vector<std::unique_ptr<FieldObject>>& GetObjects(){ return fieldObjects_; }
 
     FieldObject* GetSelectedObject()const{ return selectedObject_; }
-    void SetSelectedObject(FieldObject * obj){ selectedObject_ = obj; }
+    void SetSelectedObject(FieldObject* obj){ selectedObject_ = obj; }
     // 指定されたGUIDのオブジェクトを取得
-    FieldObject* GetFieldObjectByGUID(const std::string & guid) const{
+    FieldObject* GetFieldObjectByGUID(const std::string& guid) const{
         for(const auto& objPtr : fieldObjects_){
             if(objPtr->GetGUID() == guid){
                 return objPtr.get();
@@ -92,7 +94,7 @@ public:
         return nullptr;
     }
     // 選択オブジェクトのGUIDを設定
-    void SetSelectedObjectGUID(const std::string & guid){ selectedObjectGUID_ = guid; }
+    void SetSelectedObjectGUID(const std::string& guid){ selectedObjectGUID_ = guid; }
     // 選択オブジェクトのGUIDを取得
     const std::string& GetSelectedObjectGUID() const{ return selectedObjectGUID_; }
     int GetStageNo()const{ return stageNo_; }
@@ -106,7 +108,7 @@ public:
     uint32_t GetDifficulty()const{ return difficulty_; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
-    void SetPlayer(Player * pPlayer){
+    void SetPlayer(Player* pPlayer){
         pPlayer_ = pPlayer;
         enemyManager_->SetPlayer(pPlayer);
     }
@@ -139,6 +141,13 @@ private:
     FieldObject_Goal* goalObject_ = nullptr;
     std::vector<FieldObject_Star*> starObjects_;
 
+    //star Sound
+    const std::string& starSoundFileName_ = "SE/star.wav";
+    float distanceToPlayStarSound_ = 15.f;
+    float minStarSoundVolume_ = 0.0f;
+    float maxStarSoundVolume_ = 0.6f;
+    float currentStarSoundVolume_ = .0f;
+
     ISubject& subject_;
 
     //playerのポインタ
@@ -151,18 +160,18 @@ private:
 
     //routine
     RoutineManager routineManager_;
-    };
+};
 
-    ////////////////////////////////////////////////////////////////////
-    //  テンプレート関数
-    ////////////////////////////////////////////////////////////////////
-    template<typename T>
-    inline std::vector<T*> Stage::GetObjectsOfType(){
-        std::vector<T*> result;
-        for(auto& objPtr : fieldObjects_){
-            if(auto* casted = dynamic_cast<T*>(objPtr.get())){
-                result.push_back(casted);
-            }
+////////////////////////////////////////////////////////////////////
+//  テンプレート関数
+////////////////////////////////////////////////////////////////////
+template<typename T>
+inline std::vector<T*> Stage::GetObjectsOfType(){
+    std::vector<T*> result;
+    for(auto& objPtr : fieldObjects_){
+        if(auto* casted = dynamic_cast<T*>(objPtr.get())){
+            result.push_back(casted);
         }
-        return result;
     }
+    return result;
+}

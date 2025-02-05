@@ -10,8 +10,8 @@
 // コンストラクタ：デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-GameState_Title::GameState_Title(Scene_Base* pScene) : State_Base(pScene){
-    pGameScene_ = dynamic_cast< Scene_Game* >(pScene);
+GameState_Title::GameState_Title(Scene_Base* pScene): State_Base(pScene){
+    pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize();
 
 
@@ -42,12 +42,16 @@ void GameState_Title::Initialize(){
 
     const std::string groupName = "title";
     JsonCoordinator::LoadGroup(groupName);
-    JsonCoordinator::RegisterItem(groupName, "cameraPos",cameraOffset_);
-    JsonCoordinator::RegisterItem(groupName, "cameraRotate",cameraRotate_);
-    JsonCoordinator::RegisterItem(groupName, "playerRotate", playerRotate_);
+    JsonCoordinator::RegisterItem(groupName,"cameraPos",cameraOffset_);
+    JsonCoordinator::RegisterItem(groupName,"cameraRotate",cameraRotate_);
+    JsonCoordinator::RegisterItem(groupName,"playerRotate",playerRotate_);
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
+
+    titleLogo_ = std::make_unique<Sprite>("Title/TitleLogo.png");
+    titleLogo_->anchorPoint = {0.5f,0.5f};
+    titleLogo_->translate = {1090.f,190.f};
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -66,7 +70,7 @@ void GameState_Title::Update(){
 
 #ifdef _DEBUG
     ImGui::Begin("title");
-    if (ImGui::Button("save")){
+    if(ImGui::Button("save")){
         JsonCoordinator::SaveGroup("title");
     }
 
@@ -90,6 +94,8 @@ void GameState_Title::Update(){
 void GameState_Title::Draw(){
     // タイトル画面の描画処理
     StageManager::GetTitleStage()->Draw();
+
+    titleLogo_->Draw();
 
 }
 
@@ -124,7 +130,7 @@ void GameState_Title::HandOverColliders(){}
 void GameState_Title::ManageState(){
     // タイトル画面のステート管理
     // 遷移
-    if (Input::IsTriggerPadButton(PAD_BUTTON::A)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         pGameScene_->ChangeState(new GameState_Select(pGameScene_));
     }
 }

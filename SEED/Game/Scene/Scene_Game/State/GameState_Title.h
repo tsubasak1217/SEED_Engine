@@ -35,5 +35,6 @@ private:
 
     Vector3 playerRotate_;
 
-};
+    std::unique_ptr<Sprite> titleLogo_ = nullptr;
 
+};

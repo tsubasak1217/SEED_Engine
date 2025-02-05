@@ -80,6 +80,9 @@ void Scene_Clear::Initialize(){
         //corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
     }
 
+    //=========================== clearText =======================//
+    clearText_ = std::make_unique<Sprite>("ClearText/ClearText.png");
+
     //=========================== light =========================//
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->color_ = MyMath::FloatColor(0xffffffff);
@@ -123,6 +126,11 @@ void Scene_Clear::Update(){
 
     corpsesPile_->Update();
 
+    //=========================== Text =======================//
+    sinAnimationTime_ += ClockManager::DeltaTime();
+    sinAnimationTime_ = fmod(sinAnimationTime_,3.141592f * 2.f);
+    clearText_->color.w = sinf(sinAnimationTime_);
+
     //=========================== State =======================//
     if(currentState_){
         currentState_->Update();
@@ -145,6 +153,8 @@ void Scene_Clear::Draw(){
     eggBottom_->Draw();
 
     corpsesPile_->Draw();
+
+    clearText_->Draw();
 
     for(int i = 0; i < corpseEmitter_->particles_.size(); i++){
         if(!corpseEmitter_->particleActiveStatus_[i]){

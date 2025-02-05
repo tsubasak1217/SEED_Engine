@@ -4,7 +4,8 @@
 // module
 #include "ImGuiManager.h"
 #include "InputManager.h"
-
+#include "CameraManager.h"
+#include "FollowCamera.h"
 //object
 #include "Egg/Egg.h"
 

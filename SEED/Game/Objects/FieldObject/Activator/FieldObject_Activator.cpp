@@ -1,5 +1,9 @@
 #include "FieldObject_Activator.h"
 #include "../FieldObject.h"
+
+#include "FieldObject/Door/FieldObject_Door.h"
+#include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
+
 #include <algorithm>
 #include <string>
 #include <imgui.h> // ImGui を使用する場合のヘッダ

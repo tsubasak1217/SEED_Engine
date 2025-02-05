@@ -28,11 +28,10 @@ Scene_Clear::~Scene_Clear(){}
 void Scene_Clear::Initialize(){
     //=========================== dinosaur =======================//
     dinosaur_ = std::make_unique<Model>("clear_breakEgg.gltf");
-    dinosaur_->StartAnimation("breakEgg",false);
 
     // transform Initialize
     dinosaur_->rotate_.y = 3.141592f;
-    dinosaur_->translate_ = {0.0f,-1.2f,10.0f};
+    dinosaur_->translate_ = {0.0f,-1.910f,10.0f};
 
     dinosaur_->isRotateWithQuaternion_ = false;
     dinosaur_->isParentScale_ = false;
@@ -43,10 +42,9 @@ void Scene_Clear::Initialize(){
 
     //=========================== eggTop =======================//
     eggTop_ = std::make_unique<Model>("eggTop_breakEgg.gltf");
-    eggTop_->StartAnimation("breakEgg",false);
     // transform Initialize
     eggTop_->rotate_.y = 3.141592f;
-    eggTop_->translate_ = {0.0f,-1.2f,10.0f};
+    eggTop_->translate_ = {0.0f,-1.910f,10.0f};
 
     eggTop_->isRotateWithQuaternion_ = false;
     eggTop_->isParentScale_ = false;
@@ -57,10 +55,9 @@ void Scene_Clear::Initialize(){
 
     //=========================== eggBottom =======================//
     eggBottom_ = std::make_unique<Model>("eggBottom_breakEgg.gltf");
-    eggBottom_->StartAnimation("breakEgg",false);
     // transform Initialize
     eggBottom_->rotate_.y = 3.141592f;
-    eggBottom_->translate_ = {0.0f,-1.2f,10.0f};
+    eggBottom_->translate_ = {0.0f,-1.910f,10.0f};
 
     eggBottom_->isRotateWithQuaternion_ = false;
     eggBottom_->isParentScale_ = false;
@@ -69,13 +66,18 @@ void Scene_Clear::Initialize(){
     // 先に読み込んでおく
     ModelManager::LoadModel("eggBottom_dance.gltf");
 
+    //=========================== corpsePile =======================//
+    corpsesPile_ = std::make_unique<Model>("corpsesPile.obj");
+    corpsesPile_->isRotateWithQuaternion_ = false;
+    eggBottom_->rotate_.y = 3.141592f;
+
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();
     for(auto& corpseModel : corpseEmitter_->particles_){
         corpseModel  = std::make_unique<Model>();
         corpseModel->Initialize("dinosaur_corpse.obj");
         corpseModel->isRotateWithQuaternion_ = false;
-        corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
+        //corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
     }
 
     //=========================== light =========================//
@@ -106,8 +108,20 @@ void Scene_Clear::Update(){
     ImGui::DragFloat3("rotate",&dinosaur_->rotate_.x,0.01f);
     ImGui::DragFloat3("translate",&dinosaur_->translate_.x,0.01f);
     ImGui::End();
+    ImGui::Begin("CorpsesPile");
+    ImGui::DragFloat3("scale",&corpsesPile_->scale_.x,0.01f);
+    ImGui::DragFloat3("rotate",&corpsesPile_->rotate_.x,0.01f);
+    ImGui::DragFloat3("translate",&corpsesPile_->translate_.x,0.01f);
+    ImGui::End();
 
     UpdateCorpseParticles();
+
+    //=========================== Object =======================//
+    dinosaur_->Update();
+    eggTop_->Update();
+    eggBottom_->Update();
+
+    corpsesPile_->Update();
 
     //=========================== State =======================//
     if(currentState_){
@@ -129,6 +143,8 @@ void Scene_Clear::Draw(){
     dinosaur_->Draw();
     eggTop_->Draw();
     eggBottom_->Draw();
+
+    corpsesPile_->Draw();
 
     for(int i = 0; i < corpseEmitter_->particles_.size(); i++){
         if(!corpseEmitter_->particleActiveStatus_[i]){

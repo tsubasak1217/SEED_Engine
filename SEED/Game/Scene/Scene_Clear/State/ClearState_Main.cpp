@@ -16,13 +16,12 @@ ClearState_Main::ClearState_Main(Scene_Clear* scene)
 ClearState_Main::~ClearState_Main(){}
 
 void ClearState_Main::Initialize(){
+    pClearScene_->GetCorpsesPile()->StartAnimation("breakEgg",false);
+    pClearScene_->GetEggTop()->StartAnimation("eggTop",false);
+    pClearScene_->GetEggBottom()->StartAnimation("eggBottom",false);
 }
 
 void ClearState_Main::Update(){
-    pClearScene_->GetDinosaur()->Update();
-    pClearScene_->GetEggTop()->Update();
-    pClearScene_->GetEggBottom()->Update();
-
     if(!isBreakEgg_){
         if(pClearScene_->GetDinosaur()->GetIsEndAnimation()){
             isBreakEgg_ = true;
@@ -59,7 +58,7 @@ void ClearState_Main::ChangeModel(){
 
         // transform Initialize
         dinoModel->rotate_.y = 3.141592f;
-        dinoModel->translate_ = {0.0f,-1.2f,10.0f};
+        dinoModel->translate_ = {0.0f,-1.910f,10.0f};
 
         dinoModel->isRotateWithQuaternion_ = false;
         dinoModel->isParentScale_ = false;
@@ -73,7 +72,7 @@ void ClearState_Main::ChangeModel(){
         eggTopModel->StartAnimation("danceTop",true);
         // transform Initialize
         eggTopModel->rotate_.y = 3.141592f;
-        eggTopModel->translate_ = {0.0f,-1.2f,10.0f};
+        eggTopModel->translate_ = {0.0f,-1.910f,10.0f};
 
         eggTopModel->isRotateWithQuaternion_ = false;
         eggTopModel->isParentScale_ = false;
@@ -84,10 +83,10 @@ void ClearState_Main::ChangeModel(){
     //=========================== eggBottom  =======================//
     {
         std::unique_ptr<Model> eggBottomModel = std::make_unique<Model>("eggBottom_dance.gltf");
-        eggBottomModel->StartAnimation("dance",true);
+        eggBottomModel->StartAnimation("danceButtom",true);
         // transform Initialize
         eggBottomModel->rotate_.y = 3.141592f;
-        eggBottomModel->translate_ = {0.0f,-1.2f,10.0f};
+        eggBottomModel->translate_ = {0.0f,-1.910f,10.0f};
 
         eggBottomModel->isRotateWithQuaternion_ = false;
         eggBottomModel->isParentScale_ = false;

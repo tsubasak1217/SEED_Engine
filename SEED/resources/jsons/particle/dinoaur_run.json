@@ -25,12 +25,12 @@
             "emitRange": [
                 0.10000000149011612,
                 0.10000000149011612,
-                0.30000000149011612
+                0.10000000149011612
             ],
             "emitType": 0,
             "gravity": -9.800000190734863,
             "interval": 0.5600000023841858,
-            "isActive": true,
+            "isActive": false,
             "isBillboard": true,
             "isUseGravity": false,
             "isUseRotate": false,
@@ -39,11 +39,11 @@
                 1.0,
                 3.0
             ],
-            "numEmitEvery": 3,
+            "numEmitEvery": 1,
             "particleType": 0,
             "radiusRange": [
-                0.7,
-              2.200000023841858
+                1.2999999523162842,
+                2.5799999237060547
             ],
             "rotateSpeedRange": [
                 0.0,

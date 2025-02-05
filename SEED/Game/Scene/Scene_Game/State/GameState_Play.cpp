@@ -64,6 +64,7 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
 
     // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pPlayer);
+    pGameScene_->Get_pCamera()->Reset();
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();

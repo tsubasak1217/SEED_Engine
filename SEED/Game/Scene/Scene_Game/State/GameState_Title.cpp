@@ -17,6 +17,7 @@ GameState_Title::GameState_Title(Scene_Base* pScene): State_Base(pScene){
 
 GameState_Title::~GameState_Title(){
     pGameScene_->Get_pStageManager()->SetIsTitle(false);
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

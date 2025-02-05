@@ -45,6 +45,7 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
         pPlayer->SetPosition(StageManager::GetStartPos());
         pPlayer->SetTranslateY(pPlayer->GetWorldTranslate().y + 1.f);
         pPlayer->SetIsDrop(false);
+        pPlayer->SetIsApplyGravity(true);
         pPlayer->SetGrowLevel(1);
     }
     pPlayer->SetIsMovable(true);

@@ -1,7 +1,7 @@
 #include "GameState_Enter.h"
 
 // others State
-#include "GameState_Select.h"
+#include "GameState_Title.h"
 
 // math
 #include "Easing.h"
@@ -23,6 +23,8 @@ void GameState_Enter::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
     whiteScreen_->color.w = 1.f - EaseInQuad(fadeTimer_ / fadeTime_);
+    currentBgmVolume_ = MyMath::Lerp(0.f,maxBGMVolume_,fadeTimer_ / fadeTime_);
+    AudioManager::SetAudioVolume("BGM/title.wav",currentBgmVolume_);
 }
 
 void GameState_Enter::Draw(){
@@ -41,6 +43,6 @@ void GameState_Enter::HandOverColliders(){}
 
 void GameState_Enter::ManageState(){
     if(fadeTimer_ >= fadeTime_){
-        pScene_->ChangeState(new GameState_Select(pScene_));
+        pScene_->ChangeState(new GameState_Title(pScene_));
     }
 }

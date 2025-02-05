@@ -24,7 +24,7 @@ FieldObject_Lever::FieldObject_Lever(){
     //objectのClear
     associatedDoors_.clear();
     associatedMoveFloors_.clear();
-    hud_ = std::make_unique<Sprite>("GameUI/A.png");
+    hud_ = std::make_unique<Sprite>("GameUI/B.png");
 
 }
 

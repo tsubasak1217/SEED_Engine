@@ -34,6 +34,8 @@ private:
     Vector3 cameraRotate_;
     Vector3 playerRotate_;
 
+    std::unique_ptr<Sprite> titleLogo_ = nullptr;
+
     // FadeIn用のメンバー変数
     std::unique_ptr<Sprite> fade_;
     bool fadeInStarted_ = true;

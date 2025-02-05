@@ -11,6 +11,9 @@
 #include <State_Base.h>
 #include <Scene_Base.h>
 
+// engine
+#include "Sprite.h"
+
 // editor
 #include "../Game/Editor/FieldEditor.h"
 #include "CollisionManaer/ColliderEditor.h"
@@ -44,4 +47,6 @@ private:
 private:
     std::unique_ptr<ColliderEditor> fieldColliderEditor_;
     std::unique_ptr<FieldEditor> fieldEditor_;
+
+private:
 };

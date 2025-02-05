@@ -53,6 +53,7 @@ private:
     Player* pPlayer_;
 
     // title
+    static bool isTitle_;
     static std::unique_ptr<Stage> titleStage_;
 
 public:
@@ -91,4 +92,6 @@ public:
     // title
     static Stage* GetTitleStage(){ return titleStage_.get(); }
     static Vector3 GetTitleStartPos();
+    static bool IsTitle(){ return isTitle_; }
+    static void SetIsTitle(bool isTitle){ isTitle_ = isTitle; }
 };

@@ -13,7 +13,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear(){
     SEED::SetCamera("main");
-    CameraManager::GetActiveCamera()->SetTranslation({0.f,0.f,-10.f});
+    CameraManager::GetActiveCamera()->SetTranslation({2.f,3.f,-10.f});
+    CameraManager::GetActiveCamera()->SetRotation({0.f,0.1f,0.f});
     Initialize();
 }
 
@@ -31,7 +32,7 @@ void Scene_Clear::Initialize(){
 
     // transform Initialize
     dinosaur_->rotate_.y = 3.141592f;
-    dinosaur_->translate_ = {0.0f,-1.910f,10.0f};
+    dinosaur_->translate_ = {4.56f,-1.910f,10.0f};
 
     dinosaur_->isRotateWithQuaternion_ = false;
     dinosaur_->isParentScale_ = false;
@@ -44,7 +45,7 @@ void Scene_Clear::Initialize(){
     eggTop_ = std::make_unique<Model>("eggTop_breakEgg.gltf");
     // transform Initialize
     eggTop_->rotate_.y = 3.141592f;
-    eggTop_->translate_ = {0.0f,-1.910f,10.0f};
+    eggTop_->translate_ = {4.56f,-1.910f,10.0f};
 
     eggTop_->isRotateWithQuaternion_ = false;
     eggTop_->isParentScale_ = false;
@@ -57,7 +58,7 @@ void Scene_Clear::Initialize(){
     eggBottom_ = std::make_unique<Model>("eggBottom_breakEgg.gltf");
     // transform Initialize
     eggBottom_->rotate_.y = 3.141592f;
-    eggBottom_->translate_ = {0.0f,-1.910f,10.0f};
+    eggBottom_->translate_ = {4.56f,-1.910f,10.0f};
 
     eggBottom_->isRotateWithQuaternion_ = false;
     eggBottom_->isParentScale_ = false;
@@ -69,7 +70,7 @@ void Scene_Clear::Initialize(){
     //=========================== corpsePile =======================//
     corpsesPile_ = std::make_unique<Model>("corpsesPile.obj");
     corpsesPile_->isRotateWithQuaternion_ = false;
-    corpsesPile_->translate_ = {-0.160f,-5.41f,8.99f};
+    corpsesPile_->translate_ = {4.36f,-5.41f,9.12f};
 
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();
@@ -79,6 +80,9 @@ void Scene_Clear::Initialize(){
         corpseModel->isRotateWithQuaternion_ = false;
         //corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
     }
+
+    //=========================== clearText =======================//
+    clearText_ = std::make_unique<Sprite>("ClearText/ClearText.png");
 
     //=========================== light =========================//
     directionalLight_ = std::make_unique<DirectionalLight>();
@@ -123,6 +127,11 @@ void Scene_Clear::Update(){
 
     corpsesPile_->Update();
 
+    //=========================== Text =======================//
+    sinAnimationTime_ += ClockManager::DeltaTime();
+    sinAnimationTime_ = fmod(sinAnimationTime_,3.141592f * 2.f);
+    clearText_->color.w = sinf(sinAnimationTime_);
+
     //=========================== State =======================//
     if(currentState_){
         currentState_->Update();
@@ -145,6 +154,8 @@ void Scene_Clear::Draw(){
     eggBottom_->Draw();
 
     corpsesPile_->Draw();
+
+    clearText_->Draw();
 
     for(int i = 0; i < corpseEmitter_->particles_.size(); i++){
         if(!corpseEmitter_->particleActiveStatus_[i]){

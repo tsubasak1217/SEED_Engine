@@ -10,13 +10,13 @@
 // コンストラクタ：デストラクタ
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-GameState_Title::GameState_Title(Scene_Base* pScene) : State_Base(pScene){
-    pGameScene_ = dynamic_cast< Scene_Game* >(pScene);
+GameState_Title::GameState_Title(Scene_Base* pScene): State_Base(pScene){
+    pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize();
 }
 
 GameState_Title::~GameState_Title(){
-    pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
+    pGameScene_->Get_pStageManager()->SetIsTitle(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,17 @@ GameState_Title::~GameState_Title(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::Initialize(){
+    // タイトルステージの初期化
+    pGameScene_->Get_pStageManager()->SetIsTitle(true);
     pGameScene_->Get_pStageManager()->GetTitleStage()->InitializeStatus(std::string("resources/jsons/Stages/stage_title.json"));
-
+    pGameScene_->Get_pStageManager()->SetCurrentStageNo(0);
+    
     // 操作フラグをfalseにしておく
     Vector3 initializePlayerPos = StageManager::GetTitleStartPos();
     pGameScene_->Get_pPlayer()->SetPosition(initializePlayerPos);
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+
 
     // カメラの初期位置
     SEED::SetCamera("main");
@@ -48,6 +52,10 @@ void GameState_Title::Initialize(){
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
 
+    titleLogo_ = std::make_unique<Sprite>("Title/TitleLogo.png");
+    titleLogo_->anchorPoint = {0.5f,0.5f};
+    titleLogo_->translate = {1090.f,190.f};
+  
     // FadeIn用のフェードスプライトの初期化
     fade_ = std::make_unique<Sprite>("SelectScene/fade.png");
     fade_->anchorPoint = Vector2(0.0f, 0.0f);
@@ -73,7 +81,7 @@ void GameState_Title::Update(){
 
 #ifdef _DEBUG
     ImGui::Begin("title");
-    if (ImGui::Button("save")){
+    if(ImGui::Button("save")){
         JsonCoordinator::SaveGroup("title");
     }
     JsonCoordinator::RenderGroupUI("title");
@@ -81,6 +89,7 @@ void GameState_Title::Update(){
 #endif // _DEBUG
 
     StageManager::GetTitleStage()->Update();
+    StageManager::GetTitleStage()->HandOverColliders();
     Vector3 cameraPos = pGameScene_->Get_pPlayer()->GetWorldTranslate() + cameraOffset_;
     SEED::GetCamera()->SetTranslation(cameraPos);
     SEED::GetCamera()->SetRotation(cameraRotate_);
@@ -104,6 +113,8 @@ void GameState_Title::Update(){
 void GameState_Title::Draw(){
     // タイトル画面の描画処理
     StageManager::GetTitleStage()->Draw();
+
+    titleLogo_->Draw();
 
     // フェードイン効果の描画（フェードが完了していればアルファが0なので描画しても影響なし）
     fade_->Draw();

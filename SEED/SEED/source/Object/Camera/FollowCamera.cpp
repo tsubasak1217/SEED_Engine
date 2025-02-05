@@ -3,9 +3,7 @@
 #include "InputManager.h"
 #include "ImGuiManager.h"
 #include "ClockManager.h"
-#include "ImGuiManager.h"
-
-//lib
+// lib
 #include "../PlayerInput/PlayerInput.h"
 
 FollowCamera::FollowCamera(){
@@ -15,8 +13,8 @@ FollowCamera::FollowCamera(){
 FollowCamera::~FollowCamera(){}
 
 void FollowCamera::Initialize(){
-    // カメラのoffset初期設定
-    defaultOffset_ = MyMath::Normalize(Vector3(0.0f,2.0f,-5.0f));
+    // カメラのオフセット初期設定
+    defaultOffset_ = MyMath::Normalize(Vector3(0.0f, 2.0f, -5.0f));
     distance_ = 10.0f;
     // 角度の初期設定
     theta_ = -3.14f * 0.5f;
@@ -26,52 +24,59 @@ void FollowCamera::Initialize(){
     kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
-    angleInput_.Value = [](){return PlayerInput::Camera::GetCameraDirection(); };
-    distanceInput_.Value = [](){
-        return PlayerInput::Camera::GetCameraDistance();
-        };
+    angleInput_.Value = [] (){ return PlayerInput::Camera::GetCameraDirection(); };
+    distanceInput_.Value = [] (){ return PlayerInput::Camera::GetCameraDistance(); };
 
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
 }
 
 void FollowCamera::Update(){
+    // 通常モードの更新処理
 
     // カメラ距離の更新
     UpdateDistance();
-
-    // カメラの角度を更新
+    // カメラ角度の更新
     UpdateAngle();
 
-    // カメラの位置を設定
-    if(target_){ aimTargetPos_ = target_->GetTargetPos(); }
+    // 追従対象の更新（target_ が設定されていれば）
+    if (target_){
+        aimTargetPos_ = target_->GetTargetPos();
+    }
+    // 現在の注視点へ補間
     targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * interpolationRate_ * ClockManager::TimeRate();
 
     // カメラのオフセットベクトルを計算
-    Vector3 offsetVec = MyFunc::CreateVector(theta_,phi_);
-
-    // カメラの位置を設定
+    Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
+    // 目標カメラ位置の算出
     aimPosition_ = targetPos_ + (offsetVec * distance_);
+    // カメラ位置を補間更新
     transform_.translate_ += (aimPosition_ - transform_.translate_) * interpolationRate_ * ClockManager::TimeRate();
 
-    // 差分ベクトルから角度を計算
+    // 注視点とカメラ位置から回転（向き）を計算
     transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
 
 void FollowCamera::UpdateAngle(){
-
-    // カメラの角度を更新
-    if(isInputActive_){
+    // 入力が有効な場合のみ角度を更新
+    if (isInputActive_){
         theta_ += -angleInput_.Value().x * rotateSpeed_ * ClockManager::TimeRate();
         phi_ += angleInput_.Value().y * rotateSpeed_ * ClockManager::TimeRate();
     }
-
-    // 角度の制限
-    phi_ = std::clamp(phi_,kMinPhi_,kMaxPhi_);
+    // phi の制限
+    phi_ = std::clamp(phi_, kMinPhi_, kMaxPhi_);
 }
 
 void FollowCamera::UpdateDistance(){
-    // カメラの距離を更新
-    //distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
-    distance_ = std::clamp(distance_,15.0f,500.0f);
+    // ※必要に応じて distanceInput_ による更新を有効にしてください
+    // distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
+    distance_ = std::clamp(distance_, 15.0f, 500.0f);
 }
+
+void FollowCamera::SetTarget(BaseObject* target){
+    // 前のターゲットを保存
+    preTarget_ = target_;
+    // 新しいターゲットを設定
+    target_ = target;
+}
+

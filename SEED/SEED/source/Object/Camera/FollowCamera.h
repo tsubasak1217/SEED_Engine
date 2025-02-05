@@ -9,16 +9,17 @@ struct FollowCamera : public BaseCamera{
 
 public:
     FollowCamera();
-    ~FollowCamera()override;
-    void Initialize()override;
-    void Update()override;
+    ~FollowCamera() override;
+    void Initialize() override;
+    void Update() override;
 
 private:
     void UpdateAngle();
     void UpdateDistance();
 
 public:
-    void SetTarget(BaseObject* target){ target_ = target; }
+    void SetTarget(BaseObject* target);
+    BaseObject* GetPreTarget()const{ return preTarget_; }
     void SetDistance(float distance){ distance_ = distance; }
     void SetRotateSpeed(float speed){ rotateSpeed_ = speed; }
     void SetIsInputActive(bool isActive){ isInputActive_ = isActive; }
@@ -27,10 +28,12 @@ public:
     void SetPhi(float phi){ phi_ = phi; }
     void AddPhi(float phi){ phi_ += phi; }
     void SetInterpolationRate(float rate){ interpolationRate_ = rate; }
+    void SetisViewingObject(bool isViewingObject){ isViewingObject_ = isViewingObject; }
+    bool GetIsViewingObject()const{ return isViewingObject_; }
 
 private:
-
     BaseObject* target_ = nullptr;
+    BaseObject* preTarget_ = nullptr;
     Vector3 targetPos_;
     Vector3 aimTargetPos_;
     Vector3 aimPosition_;
@@ -42,15 +45,17 @@ private:
     float rotateSpeed_;
     bool isInputActive_ = true;
 
+    bool isViewingObject_ = false;
+
     // 限界角度
     float kMaxPhi_;
     float kMinPhi_;
 
-    // 補間割合
+    // 補間割合（通常モード）
     float interpolationRate_ = 0.15f;
 
-    // 入力ハンドラ
-public:/*外部からキーコンフィグ設定可能にするためpublic*/
+    // 入力ハンドラ（外部からキーコンフィグ設定可能にするため public）
+public:
     InputHandler<Vector2> angleInput_;
     InputHandler<float> distanceInput_;
 };

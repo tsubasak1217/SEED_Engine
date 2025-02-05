@@ -19,6 +19,8 @@
 GameState_Play::GameState_Play(Scene_Base* pScene,bool isPlayerSetStartPos): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize(isPlayerSetStartPos);
+
+
 }
 
 GameState_Play::~GameState_Play(){}

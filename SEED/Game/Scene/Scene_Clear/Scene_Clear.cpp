@@ -107,6 +107,8 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
+    
+
     UpdateCorpseParticles();
 
     //=========================== Object =======================//
@@ -192,14 +194,7 @@ void Scene_Clear::EndFrame(){
 void Scene_Clear::HandOverColliders(){}
 
 void Scene_Clear::UpdateCorpseParticles(){
-    ImGui::Begin("CorpseEmitter");
-    ImGui::DragFloat3("min",&corpseEmitter_->min_.x,0.01f);
-    ImGui::DragFloat3("max",&corpseEmitter_->max_.x,0.01f);
-
-    ImGui::DragFloat("EmitCoolTime",&corpseEmitter_->emitCoolTime_,0.01f);
-    ImGui::DragInt("EmitValueMin",&corpseEmitter_->emitValueMin_);
-    ImGui::DragInt("EmitValueMax",&corpseEmitter_->emitValueMax_);
-    ImGui::End();
+   
 
     // spawn
     if(corpseEmitter_->leftCoolTime_ <= 0.f){

@@ -69,7 +69,7 @@ void Scene_Clear::Initialize(){
     //=========================== corpsePile =======================//
     corpsesPile_ = std::make_unique<Model>("corpsesPile.obj");
     corpsesPile_->isRotateWithQuaternion_ = false;
-    eggBottom_->rotate_.y = 3.141592f;
+    corpsesPile_->translate_ = {-0.160f,-5.41f,8.99f};
 
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();

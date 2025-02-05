@@ -1,0 +1,1514 @@
+{
+    "models": [
+        {
+            "fieldObjectID": "6765cbb8-564e-7355-6f21-085b4fdd3f2d",
+            "name": "start",
+            "position": [
+                295.0,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "type": 4
+        },
+        {
+            "fieldObjectID": "6d078357-6eb0-f761-0fa4-3975178c0a08",
+            "name": "viewPoint",
+            "position": [
+                295.0,
+                90.0,
+                -150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 7
+        },
+        {
+            "fieldObjectID": "69a2d114-4cb0-0c21-0793-eaf57b5fe03b",
+            "name": "GrassSoil",
+            "position": [
+                295.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                17.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "14201a72-0790-5a2e-0440-203f5a622a41",
+            "name": "GrassSoil",
+            "position": [
+                295.0,
+                90.0,
+                -200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                17.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7b97df63-0eb2-c7c0-68b3-1ac869377724",
+            "name": "GrassSoil",
+            "position": [
+                280.0,
+                85.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "5c9b2de6-332e-eac8-2075-d15e629f0021",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                85.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "63a008c4-68a2-9c50-304a-2e066cb55dc1",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1dce846f-75f4-8883-6f9d-ebf533b81dca",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "556eeac5-1985-04ca-350e-d67a7038d069",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "39beb57a-2ea7-f48c-3d79-4f11768f868f",
+            "name": "GrassSoil",
+            "position": [
+                285.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7ba45248-225d-96da-2fd7-192a491c741e",
+            "name": "GrassSoil",
+            "position": [
+                280.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1704bfb1-7568-9e48-6736-7bfe3d1a29c0",
+            "name": "GrassSoil",
+            "position": [
+                285.0,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "associatedDoors": [
+                "3f39474f-1c2e-d0fe-5145-61c819fdfe2c"
+            ],
+            "associatedFloors": [],
+            "fieldObjectID": "73fc023b-1244-e49b-5c4f-7e705a9a6420",
+            "name": "switch",
+            "position": [
+                295.0,
+                90.0,
+                -185.0
+            ],
+            "requiredWeight": 1,
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
+        },
+        {
+            "associatedDoors": [
+                "273e79f2-6403-092f-14cc-ff9a4e67fa12"
+            ],
+            "associatedFloors": [],
+            "fieldObjectID": "2c74ee14-1669-4fd9-6b10-2d8e29bfd488",
+            "name": "switch",
+            "position": [
+                305.0,
+                90.0,
+                -185.0
+            ],
+            "requiredWeight": 1,
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
+        },
+        {
+            "associatedDoors": [
+                "2b6d4e68-6ba3-c917-1422-5a3e56405e47"
+            ],
+            "associatedFloors": [],
+            "fieldObjectID": "6b2c926c-5318-fabd-3577-d92737bd35cf",
+            "name": "switch",
+            "position": [
+                285.0,
+                90.0,
+                -185.0
+            ],
+            "requiredWeight": 1,
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
+        },
+        {
+            "fieldObjectID": "63d6c9b4-75fe-eeb4-1347-dfcd0f21a3bc",
+            "name": "tile",
+            "position": [
+                310.0,
+                105.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "43608ea4-6df4-76c3-2ef8-4e374fbfbcd4",
+            "name": "tile",
+            "position": [
+                280.0,
+                105.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "6145c35b-65ec-b04c-15c9-18994dcb017c",
+            "name": "tile",
+            "position": [
+                310.0,
+                110.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "2f0d8076-23e1-f8d3-7e1f-47f206a6caf8",
+            "name": "tile",
+            "position": [
+                280.0,
+                110.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "03a1e727-616d-73c6-0371-7f277968db95",
+            "name": "tile",
+            "position": [
+                295.0,
+                110.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "3aa4ff95-4779-8aae-3995-4edc3de75885",
+            "name": "GrassSoil",
+            "position": [
+                295.0,
+                90.0,
+                -250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                17.5,
+                2.5,
+                42.5
+            ],
+            "type": 0
+        },
+        {
+            "closedPosY": 90.0,
+            "fieldObjectID": "3f39474f-1c2e-d0fe-5145-61c819fdfe2c",
+            "name": "door",
+            "openHeight": 15.0,
+            "openSpeed": 32.0,
+            "position": [
+                295.0,
+                90.0,
+                -210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "closedPosY": 90.0,
+            "fieldObjectID": "273e79f2-6403-092f-14cc-ff9a4e67fa12",
+            "name": "door",
+            "openHeight": 15.0,
+            "openSpeed": 32.0,
+            "position": [
+                295.0,
+                90.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "fieldObjectID": "4d3d2011-33e7-1f0d-7dd3-bd623d941b3a",
+            "name": "tile",
+            "position": [
+                280.0,
+                105.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "42c6d757-1d3a-fd53-51e6-4dab4ddf660f",
+            "name": "tile",
+            "position": [
+                310.0,
+                105.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "504711f4-51f3-c5e6-4665-f33852e9ac39",
+            "name": "tile",
+            "position": [
+                295.0,
+                110.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "2f35fe94-1139-9bf7-3d99-4ea408021f95",
+            "name": "tile",
+            "position": [
+                280.0,
+                110.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "57f11c44-746a-7279-3fff-974b64f81c9e",
+            "name": "tile",
+            "position": [
+                310.0,
+                110.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "690ca462-424a-2b30-4025-3e8c51234f0f",
+            "name": "tile",
+            "position": [
+                310.0,
+                105.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "0c6ecae6-2a63-6c18-3840-66cb0acc695e",
+            "name": "tile",
+            "position": [
+                280.0,
+                105.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "1d943828-1d70-5f3b-70a4-c9b22c3bdca0",
+            "name": "tile",
+            "position": [
+                280.0,
+                110.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "58c77aa3-3306-315f-1f5f-9b9443c0de66",
+            "name": "tile",
+            "position": [
+                310.0,
+                110.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "65702da0-5c3e-152b-58ff-6e8e2d7f315b",
+            "name": "tile",
+            "position": [
+                295.0,
+                110.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "closedPosY": 95.0,
+            "fieldObjectID": "2b6d4e68-6ba3-c917-1422-5a3e56405e47",
+            "name": "door",
+            "openHeight": 15.0,
+            "openSpeed": 32.0,
+            "position": [
+                295.0,
+                90.0,
+                -260.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 3
+        },
+        {
+            "associatedDoors": [],
+            "associatedFloors": [],
+            "fieldObjectID": "4086bfaf-2435-30e6-1258-850d213ce521",
+            "name": "lever",
+            "position": [
+                295.0,
+                95.0,
+                -280.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 14
+        },
+        {
+            "fieldObjectID": "17363728-23d6-3090-756e-7a8a71912788",
+            "name": "Star",
+            "position": [
+                295.0,
+                95.0,
+                -285.0
+            ],
+            "rotation": [
+                -0.0,
+                0.9900608658790588,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 2
+        },
+        {
+            "fieldObjectID": "5774b95f-1047-9da5-6d10-e26a0696282a",
+            "name": "tile",
+            "position": [
+                300.0,
+                85.0,
+                -140.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "14e3febe-4109-61fe-1851-2b945979f6fb",
+            "name": "tile",
+            "position": [
+                295.0,
+                85.0,
+                -140.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "35a326bb-10fb-bbc3-181a-87fe252cfbc6",
+            "name": "tile",
+            "position": [
+                290.0,
+                85.0,
+                -140.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "7fb55bb7-4c7c-8a65-605e-cb2b5232729c",
+            "name": "tile",
+            "position": [
+                305.0,
+                85.0,
+                -140.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "4c87bdfb-023d-bbf9-4dd1-e5ce7db1313a",
+            "name": "tile",
+            "position": [
+                305.0,
+                85.0,
+                -135.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "43bf6124-151f-6c85-62cf-7ae8711b45a9",
+            "name": "tile",
+            "position": [
+                305.0,
+                85.0,
+                -130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "1287bc40-7abe-5e87-2410-01a23bf1ad10",
+            "name": "tile",
+            "position": [
+                285.0,
+                85.0,
+                -140.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "3baf1456-68e7-3111-3314-45a835bb22f2",
+            "name": "tile",
+            "position": [
+                285.0,
+                85.0,
+                -130.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "1499ab88-479c-63ca-242b-41bd5eb37580",
+            "name": "tile",
+            "position": [
+                285.0,
+                85.0,
+                -135.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "0876c0e8-0960-1629-364d-7cb96ecae976",
+            "name": "tile",
+            "position": [
+                285.0,
+                85.0,
+                -125.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "3d97c6df-43dc-b547-1836-901d6d27e947",
+            "name": "tile",
+            "position": [
+                305.0,
+                85.0,
+                -125.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "0ea9a8cc-0036-b4b1-0d9d-0b662c2a3de2",
+            "name": "tile",
+            "position": [
+                305.0,
+                85.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "56472dcd-7ee4-ecbd-3032-e5d06a93dd57",
+            "name": "tile",
+            "position": [
+                300.0,
+                85.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "665e0650-5aeb-6c5a-75ce-3f5235517a4e",
+            "name": "tile",
+            "position": [
+                295.0,
+                85.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "7bde3934-634d-5c99-14f3-c77510e62528",
+            "name": "tile",
+            "position": [
+                290.0,
+                85.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "13dd5201-4401-64c4-661e-a40d5fd78c74",
+            "name": "tile",
+            "position": [
+                285.0,
+                85.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "505c5236-6a2f-3610-7b21-c03a681edbd9",
+            "name": "Chikuwa",
+            "position": [
+                295.0,
+                85.0,
+                -155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "6e7e341a-149b-eaec-67dd-cce74597a2af",
+            "name": "Chikuwa",
+            "position": [
+                295.0,
+                85.0,
+                -150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "6dba8e63-133c-1f1c-2101-e64a7c070fd9",
+            "name": "Chikuwa",
+            "position": [
+                295.0,
+                85.0,
+                -145.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "0dc870b2-2282-61c7-2137-ef6d0763e216",
+            "name": "tile",
+            "position": [
+                300.0,
+                90.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "329a2f36-78b6-1564-4bb6-44d4192b7e39",
+            "name": "tile",
+            "position": [
+                295.0,
+                95.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "23d94258-0ff9-5798-37f0-3d371db33629",
+            "name": "tile",
+            "position": [
+                290.0,
+                100.0,
+                -120.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "2e761c22-2c23-2dbd-2dc0-f85a02366083",
+            "name": "tile",
+            "position": [
+                275.0,
+                100.0,
+                -195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "50a7f34a-281e-f126-3d0d-350f755c2211",
+            "name": "tile",
+            "position": [
+                275.0,
+                100.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "7ac78ffb-2967-93cd-0a0a-080631edcfd4",
+            "name": "tile",
+            "position": [
+                275.0,
+                105.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                12.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "799be0e6-7df9-327f-580d-fa4b52d9930a",
+            "name": "tile",
+            "position": [
+                255.0,
+                100.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "3520d5f2-6057-c2da-23c2-b38e2a76e621",
+            "name": "tile",
+            "position": [
+                255.0,
+                100.0,
+                -195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "0e8d9903-44ad-f625-78ea-e3f32db39e51",
+            "name": "tile",
+            "position": [
+                255.0,
+                105.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                12.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "22c00229-4ee0-f4d7-48e6-514d7e315c03",
+            "name": "tile",
+            "position": [
+                265.0,
+                105.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "046d8a7d-5532-dcab-06c2-a45d6314b02e",
+            "name": "tile",
+            "position": [
+                265.0,
+                105.0,
+                -195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "213b0b46-61de-d090-7b2a-83133d8a2fbe",
+            "name": "tile",
+            "position": [
+                265.0,
+                85.0,
+                -175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "002fa146-1bd0-3156-0505-b4ea63f72a2f",
+            "name": "tile",
+            "position": [
+                255.0,
+                85.0,
+                -180.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "505a6573-5841-3675-7760-1f5903ca8711",
+            "name": "tile",
+            "position": [
+                255.0,
+                85.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "0d6520ba-2107-1444-50d6-b0345831c64b",
+            "name": "tile",
+            "position": [
+                255.0,
+                85.0,
+                -190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "55cf5b10-7146-3180-2078-63ba7b2b95a4",
+            "name": "tile",
+            "position": [
+                265.0,
+                85.0,
+                -195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "7028c6a7-0d51-6662-04a4-24ac0aa9b1b9",
+            "name": "tile",
+            "position": [
+                265.0,
+                85.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "2fcf0404-6f4c-eb35-0df5-caa47671673a",
+            "name": "Star",
+            "position": [
+                265.0,
+                90.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                1.122385025024414,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 2
+        },
+        {
+            "closedPosY": 85.0,
+            "fieldObjectID": "15c5ce31-00d2-68f6-3bf6-e32f06ad8ddb",
+            "name": "door",
+            "openHeight": 5.0,
+            "openSpeed": 8.0,
+            "position": [
+                275.0,
+                85.0,
+                -185.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                7.5,
+                2.5
+            ],
+            "type": 3
+        }
+    ],
+    "stage": 6
+}

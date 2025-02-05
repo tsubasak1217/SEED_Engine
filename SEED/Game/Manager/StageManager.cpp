@@ -24,6 +24,7 @@ std::array<bool,StageManager::kStageCount_> StageManager::clearStatus_;
 int32_t StageManager::preStageNo_ = 0;
 bool StageManager::isPlaying_ = false;
 bool StageManager::isHandOverColliderNext_ = false;
+std::array<int, StageManager::kStageCount_> StageManager::difficulties_ = { 1,2,3,3,4,4 };
 
 ///////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -155,6 +156,9 @@ void StageManager::LoadStages(){
 
         // 敵の読み込み
         stages_[i]->GetEnemyManager()->LoadEnemies();
+
+        // 難易度の設定
+        stages_[i]->SetDifficulty(difficulties_[i]);
     }
 }
 

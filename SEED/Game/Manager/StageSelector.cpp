@@ -173,9 +173,10 @@ void StageSelector::UpdateItems(int32_t step){
     /*-------------------------------------*/
 
     // 現在のステージの難易度分、明るく表示
-    for(uint32_t i = 0; i < 5; i++){
+    for(int32_t i = 0; i < 5; i++){
         difficultyEggs_[i]->color = {0.2f,0.2f,0.2f,0.9f};
-        if(i < StageManager::GetCurrentStage()->GetDifficulty()){
+        if(i < (int)StageManager::GetCurrentStage()->GetDifficulty()){
+            i = std::clamp(i, 0, 4);
             difficultyEggs_[i]->color = {1.0f,1.0f,1.0f,1.0f};
         }
     }

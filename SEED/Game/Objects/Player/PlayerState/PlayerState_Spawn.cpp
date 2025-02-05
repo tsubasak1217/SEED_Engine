@@ -102,6 +102,10 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 }
 
 void PlayerState_Spawn::Update(){
+
+    pCharacter_->SetIsDrop(false);
+    pCharacter_->SetDropSpeed(0.0f);
+
     if(!movedGhost_){
         elapsedTime_ += ClockManager::DeltaTime();
         elapsedTime_ = (std::min)(elapsedTime_,ghostMoveTime_);

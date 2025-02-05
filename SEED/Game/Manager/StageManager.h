@@ -39,12 +39,13 @@ private:
     void LoadTitleStage();
 
 private:
-    static const int32_t kStageCount_ = 10;
+    static const int32_t kStageCount_ = 6;
     static int32_t currentStageNo_;
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;
     static std::array<int, kStageCount_> getStarCounts_;
     static std::array<bool,kStageCount_> clearStatus_; // ステージのクリア状態
+    static std::array<int, kStageCount_> difficulties_;
     static bool isPlaying_;
     static bool isHandOverColliderNext_;
 

@@ -244,6 +244,7 @@ void Scene_Game::Update(){
 
     // ポーズ中は以下を更新しない
     if(isPaused_){
+        player_->SetIsDrop(false);
         return;
     }
 

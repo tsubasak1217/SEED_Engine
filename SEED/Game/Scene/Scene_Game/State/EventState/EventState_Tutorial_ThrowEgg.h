@@ -7,6 +7,4 @@ public:
     EventState_Tutorial_ThrowEgg();
     EventState_Tutorial_ThrowEgg(Scene_Base* pScene);
     ~EventState_Tutorial_ThrowEgg();
-    void Update()override;
-    void Draw()override;
 };

@@ -204,5 +204,12 @@ namespace PlayerInput{
             }
             return Input::IsTriggerKey(DIK_SPACE) || Input::IsTriggerKey(DIK_RETURN);
         }
+
+        inline bool SkipTutorial(){
+            if(Input::IsConnectedPad(0)){
+                return Input::IsTriggerPadButton(PAD_BUTTON::X);
+            }
+            return Input::IsTriggerKey(DIK_ESCAPE);
+        }
     }
 };

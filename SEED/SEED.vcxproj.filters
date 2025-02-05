@@ -190,6 +190,9 @@
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
     <ClCompile Include="Game\UI\SwitchWeightUI.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Base.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Corpse.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Switch.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowLength.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
@@ -410,6 +413,9 @@
     <ClInclude Include="Game\Objects\Shadow\Shadow.h" />
     <ClInclude Include="Game\UI\SwitchWeightUI.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Base.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Corpse.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Switch.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowLength.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

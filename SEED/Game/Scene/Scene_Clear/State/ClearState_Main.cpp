@@ -24,7 +24,7 @@ void ClearState_Main::Update(){
     if(!isBreakEgg_){
         if(pDinoModel_->GetIsAnimation()){
             isBreakEgg_ = true;
-           // ChangeModel();
+            ChangeModel();
         }
     }
 }
@@ -48,13 +48,20 @@ void ClearState_Main::ManageState(){
 }
 
 void ClearState_Main::ChangeModel(){
-    pDinoModel_->Initialize("clear_dance.gltf");
-    pDinoModel_->StartAnimation("dance",true);
-    // transform Initialize
-    pDinoModel_->rotate_.y = 3.141592f;
-    pDinoModel_->translate_ = {0.0f,-1.2f,10.0f};
+    // モデル作り直し
 
-    pDinoModel_->isRotateWithQuaternion_ = false;
-    pDinoModel_->isParentScale_ = false;
-    pDinoModel_->UpdateMatrix();
+    //=========================== dinosaur =======================//
+    std::unique_ptr<Model> dinoModel = std::make_unique<Model>("clear_dance.gltf");
+    dinoModel->StartAnimation("dance",true);
+
+    // transform Initialize
+    dinoModel->rotate_.y = 3.141592f;
+    dinoModel->translate_ = {0.0f,-1.2f,10.0f};
+
+    dinoModel->isRotateWithQuaternion_ = false;
+    dinoModel->isParentScale_ = false;
+    dinoModel->UpdateMatrix();
+    pClearScene_->SetDinosaur(std::move(dinoModel));
+
+    pDinoModel_ = pClearScene_->GetDinosaur();
 }

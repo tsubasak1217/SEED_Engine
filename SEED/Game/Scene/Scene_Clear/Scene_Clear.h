@@ -56,4 +56,5 @@ private:
 
 public:
     Model* GetDinosaur(){ return dinosaur_.get(); };
+    void SetDinosaur(std::unique_ptr<Model> model){ dinosaur_ = std::move(model); };
 };

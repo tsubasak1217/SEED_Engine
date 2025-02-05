@@ -43,7 +43,6 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
 
-    // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
 
     // 移動不可にする
@@ -71,6 +70,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // egg
     {
+        egg_->UpdateMatrix();
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
@@ -80,6 +80,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
         egg_->SetScale(eggBeforeScale);
         egg_->SetRotate(eggBeforeRotate);
         egg_->SetTranslate(eggBeforeTranslate);
+        egg_->UpdateMatrix();
 
         egg_->InitColliders(ObjectType::Egg);
 

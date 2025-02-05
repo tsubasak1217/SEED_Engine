@@ -87,6 +87,7 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     {
         pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
+        pPlayer_->SetEnemyManager(enemyManager_.get());
     }
 
     { // 死体削除
@@ -152,6 +153,8 @@ void Stage::BeginFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->BeginFrame();
     }
+
+    enemyManager_->BeginFrame();
 
     playerCorpseManager_->BeginFrame();
 }

@@ -121,6 +121,7 @@ void AudioManager::StartUpLoad(){
     LoadAudio("SE/door.wav");
     LoadAudio("SE/laver.wav");
     LoadAudio("SE/star.wav");
+    LoadAudio("SE/star_shine.wav");
     LoadAudio("SE/switch.wav");
 }
 

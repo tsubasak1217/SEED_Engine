@@ -49,7 +49,7 @@ void StageManager::Initialize(){
     LoadStages();
     LoadTitleStage();
 
-    AudioManager::PlayAudio("SE/star.wav",true,0.f);
+    AudioManager::PlayAudio("SE/star_shine.wav",true,0.f);
 
     JsonCoordinator::LoadGroup("UserProgress");
     std::string stageLabel;
@@ -182,6 +182,15 @@ Vector3 StageManager::GetStartPos(){
 
 Vector3 StageManager::GetNextStartPos(){
     return stages_[std::clamp(currentStageNo_ + 1,0,kStageCount_ - 1)]->GetStartPosition();
+}
+
+bool StageManager::GetIsClearAllGoal(){
+    for(bool clearStatus : clearStatus_){
+        if(!clearStatus){
+            return false;
+        }
+    }
+    return true;
 }
 
 Vector3 StageManager::GetTitleStartPos(){

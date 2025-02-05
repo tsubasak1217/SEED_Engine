@@ -28,6 +28,7 @@ public:
     void DeleteEnemy(uint32_t index);
     void HandOverColliders();
 
+    void BeginFrame();
     void EndFrame();
 
     //--- 保存 読み込み ---//

@@ -52,12 +52,14 @@ void EnemyManager::HandOverColliders(){
     }
 }
 
-void EnemyManager::EndFrame(){
+void EnemyManager::BeginFrame(){
     //死亡した敵を削除
-    std::erase_if(enemies_, [](const std::unique_ptr<Enemy>& enemy){
+    std::erase_if(enemies_,[](const std::unique_ptr<Enemy>& enemy){
         return !enemy->GetIsAlive();
-        });
+                  });
+}
 
+void EnemyManager::EndFrame(){
     // 各敵のEndFrame処理
     for(auto& enemy : enemies_){
         enemy->EndFrame();

@@ -82,13 +82,13 @@ void PredationRange::Draw(){
     if(preyList_.empty()){
         return;
     }
-    auto& targetEnemy_ = preyList_.front();
+    auto& targetEnemy_ = preyList_.front().enemy;
 
-    if(targetEnemy_.enemy == nullptr){
+    if(!targetEnemy_){
         return;
     }
 
-    buttonUI_->translate = player_->GetFollowCamera()->ToScreenPosition(targetEnemy_.enemy->GetWorldTranslate());
+    buttonUI_->translate = player_->GetFollowCamera()->ToScreenPosition(targetEnemy_->GetWorldTranslate());
     buttonUI_->translate.y += 10.f;
     buttonUI_->Draw();
 }

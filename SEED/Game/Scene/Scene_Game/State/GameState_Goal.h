@@ -58,7 +58,7 @@ private:
     // goal回転関係
     float goalRotateSpeed_ = 0.7f;
     float goalRotateSpeedBySecond_ = 0.0f;
-    
+
     // goalアニメーションが終わるまで待つと違和感があるので,時間で管理する
     float goalAnimationTime_ = 0.6f;
     float leftGoalAnimationTime_ = 0.0f;
@@ -73,4 +73,6 @@ private:
 
     bool isThrow_ = false;
     bool preIsThrow_ = false;
+
+    bool isClearAll_ = false;
 };

@@ -28,21 +28,25 @@ void ClearState_Out::Initialize(){
 void ClearState_Out::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
-    whiteScreen_->color.w = 1.0f - EaseInQuad(fadeTimer_ / fadeTime_);
+    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
 }
 
-void ClearState_Out::Draw(){}
+void ClearState_Out::Draw(){
+    whiteScreen_->Draw();
+}
 
 void ClearState_Out::Finalize(){}
 
 void ClearState_Out::BeginFrame(){}
 
-void ClearState_Out::EndFrame(){}
+void ClearState_Out::EndFrame(){
+    ManageState();
+}
 
 void ClearState_Out::HandOverColliders(){}
 
 void ClearState_Out::ManageState(){
     if(fadeTimer_ >= fadeTime_){
-        pScene_->ChangeScene("Title");
+        pScene_->ChangeScene("Game");
     }
 }

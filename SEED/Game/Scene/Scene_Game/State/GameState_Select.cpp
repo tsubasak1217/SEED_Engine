@@ -29,6 +29,9 @@ GameState_Select::~GameState_Select(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Initialize(){
 
+    // ステージをリセット
+    StageManager::SetCurrentStageNo(0);
+
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
 

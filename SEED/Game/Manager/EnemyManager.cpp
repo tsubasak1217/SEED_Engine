@@ -256,6 +256,7 @@ void EnemyManager::LoadEnemies(bool isSaveData){
         newEnemy->InitializeRoutine();
 
         newEnemy->UpdateMatrix();
+        newEnemy->InitializeModel();
         enemies_.emplace_back(std::move(newEnemy));
     }
 

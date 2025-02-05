@@ -65,6 +65,27 @@ void Enemy::InitializeRoutine(){
     }
 }
 
+void Enemy::InitializeModel(){
+    // canEatによるモデルの変更
+    if(!canEat_){
+        model_->UpdateMatrix();
+        Vector3 beforeScale = model_->scale_;
+        Vector3 beforeRotate = model_->rotate_;
+        Vector3 beforeTranslate = model_->translate_;
+        const Model* parent = model_->parent_;
+
+        model_ = std::make_unique<Model>("enemy_spike.gltf");
+        model_->scale_ = beforeScale;
+        model_->rotate_ = beforeRotate;
+        model_->translate_ = beforeTranslate;
+        model_->parent_ = parent;
+        model_->UpdateMatrix();
+
+        InitColliders(ObjectType::Enemy);
+        AddSkipPushBackType(ObjectType::Enemy);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
@@ -165,8 +186,6 @@ void Enemy::RegisterDataToJson(const std::string& group,int index){
     JsonCoordinator::RegisterItem(group,baseKey + "CanEat",canEat_);
     JsonCoordinator::RegisterItem(group,baseKey + "ChasePlayer",cahsePlayer_);
     JsonCoordinator::RegisterItem(group,baseKey + "RoutineName",routineName_);
-
-
     // jsonを読み込んだ時に、ルーチン名に対応するポイントを取得するために登録
 }
 
@@ -192,7 +211,18 @@ void Enemy::LoadDataFromJson(const std::string& group,int index){
 
     // canEatによるモデルの変更
     if(!canEat_){
+        model_->UpdateMatrix();
+        Vector3 beforeScale = model_->scale_;
+        Vector3 beforeRotate = model_->rotate_;
+        Vector3 beforeTranslate = model_->translate_;
+        const Model* parent = model_->parent_;
+
         model_ = std::make_unique<Model>("enemy_spike.gltf");
+        model_->scale_ = beforeScale;
+        model_->rotate_ = beforeRotate;
+        model_->translate_ = beforeTranslate;
+        model_->parent_ = parent;
+        model_->UpdateMatrix();
     }
 
 

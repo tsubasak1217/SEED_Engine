@@ -111,6 +111,8 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
+
+#ifdef _DEBUG
     ImGui::Begin("dinosaur");
     ImGui::DragFloat3("scale",&dinosaur_->scale_.x,0.01f);
     ImGui::DragFloat3("rotate",&dinosaur_->rotate_.x,0.01f);
@@ -121,6 +123,7 @@ void Scene_Clear::Update(){
     ImGui::DragFloat3("rotate",&corpsesPile_->rotate_.x,0.01f);
     ImGui::DragFloat3("translate",&corpsesPile_->translate_.x,0.01f);
     ImGui::End();
+#endif // _DEBUG
 
     UpdateCorpseParticles();
 
@@ -207,6 +210,8 @@ void Scene_Clear::EndFrame(){
 void Scene_Clear::HandOverColliders(){}
 
 void Scene_Clear::UpdateCorpseParticles(){
+
+#ifdef _DEBUG
     ImGui::Begin("CorpseEmitter");
     ImGui::DragFloat3("min",&corpseEmitter_->min_.x,0.01f);
     ImGui::DragFloat3("max",&corpseEmitter_->max_.x,0.01f);
@@ -215,6 +220,7 @@ void Scene_Clear::UpdateCorpseParticles(){
     ImGui::DragInt("EmitValueMin",&corpseEmitter_->emitValueMin_);
     ImGui::DragInt("EmitValueMax",&corpseEmitter_->emitValueMax_);
     ImGui::End();
+#endif // _DEBUG
 
     // spawn
     if(corpseEmitter_->leftCoolTime_ <= 0.f){

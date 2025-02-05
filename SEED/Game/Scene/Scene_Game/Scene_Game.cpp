@@ -186,6 +186,7 @@ void Scene_Game::Initialize(){
     // パーティクルの初期化
     ParticleManager::DeleteAll();
     ParticleManager::AddEffect("underParticle.json", {0.0f,0.0f,0.0f});
+    ParticleManager::AddEffect("cherry.json", { 0.0f,0.0f,0.0f });
 }
 
 void Scene_Game::Finalize(){
@@ -397,6 +398,10 @@ void Scene_Game::EndFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
+
+    if(GameState_Title* state = dynamic_cast<GameState_Title*>(currentState_.get())){
+        return;// タイトル画面ではコライダーを渡さない
+    }
 
     if(currentState_){
         currentState_->HandOverColliders();

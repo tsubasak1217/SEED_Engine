@@ -188,8 +188,8 @@ void GameState_Play::ManageState(){
             pScene_->ChangeState(new GameState_Goal(pScene_));
             return;
         } else{
-            // 最後のステージならセレクトに戻る 全てクリアしていたら,ClearSceneへ
-            if(StageManager::GetIsClearAllGoal()){
+            // 最後のステージならセレクトに戻る 最後以外全てクリアしていたら,ClearSceneへ
+            if(StageManager::GetIsClearExceptLastStage()){
                 pScene_->ChangeState(new GameState_Goal(pScene_));
             } else{
                 pScene_->ChangeState(new GameState_Select(pScene_));

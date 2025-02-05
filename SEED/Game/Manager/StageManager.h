@@ -79,6 +79,7 @@ public:
     static void SetIsHandOverColliderNext(bool isHandOverColliderNext){ isHandOverColliderNext_ = isHandOverColliderNext; }
 
     static bool GetIsClearAllGoal();
+    static bool GetIsClearExceptLastStage();
 
     static void ResetStageStatus(){
         for(auto& clear : clearStatus_){

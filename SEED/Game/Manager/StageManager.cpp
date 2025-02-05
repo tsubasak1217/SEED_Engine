@@ -201,6 +201,15 @@ bool StageManager::GetIsClearAllGoal(){
     return true;
 }
 
+bool StageManager::GetIsClearExceptLastStage(){
+    for(int i = 0; i < kStageCount_ - 1; i++){
+        if(!clearStatus_[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
 Vector3 StageManager::GetTitleStartPos(){
     return titleStage_->GetStartPosition();
 }

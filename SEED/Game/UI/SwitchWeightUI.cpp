@@ -8,12 +8,12 @@ SwitchWeightUI::SwitchWeightUI(FieldObject_Switch* _host):host_(_host){}
 
 SwitchWeightUI::~SwitchWeightUI(){}
 
-const float whightUIOffsetY = 10.f;
+const float whightUIOffsetY = 6.f;
 void SwitchWeightUI::Initialize(){
     //=================== UIの初期化 ===================//
     //------------------- 1桁目 -----------------------//
     weightUI_[0] = std::make_unique<Sprite>("GameUI/num.png");
-    weightUI_[0]->scale = {1.f,1.f};
+    weightUI_[0]->scale = {0.75f,0.75f};
     weightUI_[0]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate());
     weightUI_[0]->translate.y += whightUIOffsetY;
     weightUI_[0]->color = MyMath::FloatColor(0x173b4cff);
@@ -24,9 +24,8 @@ void SwitchWeightUI::Initialize(){
     if(host_->GetWeight() >= 10){
         isDoubleDigit_ = true;
         weightUI_[1] = std::make_unique<Sprite>("GameUI/num.png");
-        weightUI_[1]->scale = {2.f,2.f};
-        weightUI_[1]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate());
-        weightUI_[1]->translate.y += whightUIOffsetY;
+        weightUI_[1]->scale = {0.9f,0.9f};
+        weightUI_[1]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate() + Vector3(0.0f, whightUIOffsetY,0.0f));
         weightUI_[1]->color = MyMath::FloatColor(0x173b4cff);
         weightUI_[1]->clipSize = {39.f,56.f};
         weightUI_[1]->clipLT = {0.f,0.f};
@@ -38,10 +37,9 @@ void SwitchWeightUI::Initialize(){
     }
 
     //===================== Back 
-    back_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    back_ = std::make_unique<Sprite>("GameUI/numFrame.png");
     back_->anchorPoint = {0.5f,0.5f};
-    back_->color ={1.f,1.f,1.f,0.6f};
-    back_->size = {76.f,76.f};
+    back_->size = {62.f,62.f};
 }
 
 void SwitchWeightUI::Update(){

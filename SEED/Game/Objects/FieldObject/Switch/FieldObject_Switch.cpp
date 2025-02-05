@@ -41,16 +41,13 @@ void FieldObject_Switch::Draw(){
     // 重さに応じて色を変更
     switch(leftrequiredWeight){
     case 0:// 緑
-        model_->color_ = { 0.0f,1.0f,0.0f,1.0f };
+        model_->color_ = { 1.0f,0.0f,0.0f,1.0f };
         break;
     case 1:// 黄
-        model_->color_ = { 1.0f,1.0f,0.0f,1.0f };
         break;
     case 2:// オレンジ
-        model_->color_ = { 1.0f,0.5f,0.0f,1.0f };
         break;
     default:// 赤
-        model_->color_ = { 1.0f,0.0f,0.0f,1.0f };
         break;
     }
     FieldObject::Draw();

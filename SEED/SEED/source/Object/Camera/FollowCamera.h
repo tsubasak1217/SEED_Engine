@@ -13,7 +13,7 @@ public:
     void Initialize() override;
     void Update() override;
 
-    void Reset();
+    void Reset(const Vector3& pos);
 
 private:
     void UpdateAngle();

@@ -58,6 +58,7 @@ void Scene_Game::Initialize(){
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
+    followCamera_->SetFov(0.65f);
     CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
 

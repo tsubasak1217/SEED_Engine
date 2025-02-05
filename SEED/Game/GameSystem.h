@@ -25,6 +25,7 @@ private:
     void Draw();
     void BeginFrame();
     void EndFrame();
+    void DrawGUI();
 
 public:
     static Scene_Base* GetScene(){ return instance_->pScene_.get(); }
@@ -32,6 +33,6 @@ public:
 private:
     static std::unique_ptr<GameSystem>instance_;
     std::unique_ptr<Scene_Base> pScene_;
-
+    float resolutionRate_ = 1.0f;
 
 };

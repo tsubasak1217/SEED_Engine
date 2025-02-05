@@ -150,8 +150,8 @@ void Player::BeginFrame(){
 #ifdef _DEBUG
     ImGui::Begin("Player");
     ImGui::Text("dropSpeed_ : %f",dropSpeed_);
-    ImGui::Text("isApplyGravity_ : %d", isApplyGravity_);
-    ImGui::Text("isDrop_ : %d", isDrop_);
+    ImGui::Text("isApplyGravity_ : %d",isApplyGravity_);
+    ImGui::Text("isDrop_ : %d",isDrop_);
     ImGui::End();
 #endif
 }
@@ -168,15 +168,9 @@ void Player::EndFrame(){
         lastPosOnGround_ = GetLocalTranslate();
     }
 
-    if(isMovable_){
-        if(isGameOver_){
-            GameOver();
-            isGameOver_ = false;
-        }
-    } else{
-        //isMovable_ が false なら isGameOver_ は false にする
-        isGameOver_ = false;
-    }
+    if(isGameOver_){
+        SetAnimation("dead",false);
+    } 
 }
 
 void Player::Spawn(Egg* _egg){
@@ -201,6 +195,8 @@ void Player::GameOver(){
     { // ステートの初期化
         currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
     }
+
+    isGameOver_ = false;
 }
 
 //////////////////////////////////////////////////////////////////////////

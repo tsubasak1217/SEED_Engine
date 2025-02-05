@@ -13,9 +13,10 @@ FieldObject_Switch::FieldObject_Switch(){
     className_ = "FieldObject_Switch";
     name_ = "switch";
     // モデルの初期化
-    std::string path = "FieldObject/" + name_ + ".obj";
+    std::string path = "FieldObject/" + name_ + ".gltf";
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
+    model_->StartAnimation(1, false);
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::Area);
@@ -89,6 +90,10 @@ void FieldObject_Switch::EndFrame(){
     // 必要重量を満たしていればスイッチをオンにする
     if((int)currentWeight_ >= requiredWeight_){
         isColliding_ = true;
+        model_->StartAnimation(1, false);
+    } else{
+        isColliding_ = false;
+        model_->StartAnimation(0, false);
     }
 
     drawingUI_ = false;

@@ -5,7 +5,7 @@
             "name": "start",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -250.0
             ],
             "rotation": [
@@ -26,7 +26,7 @@
             "name": "viewPoint",
             "position": [
                 5.0,
-                25.0,
+                45.0,
                 -180.0
             ],
             "rotation": [
@@ -46,7 +46,7 @@
             "name": "GrassSoil",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -170.0
             ],
             "rotation": [
@@ -66,7 +66,7 @@
             "name": "GrassSoil",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -165.0
             ],
             "rotation": [
@@ -86,7 +86,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -155.0
             ],
             "rotation": [
@@ -106,7 +106,7 @@
             "name": "GrassSoil",
             "position": [
                 0.0,
-                5.0,
+                25.0,
                 -155.0
             ],
             "rotation": [
@@ -126,7 +126,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -146,7 +146,7 @@
             "name": "GrassSoil",
             "position": [
                 20.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -166,7 +166,7 @@
             "name": "GrassSoil",
             "position": [
                 25.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -186,7 +186,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -180.0
             ],
             "rotation": [
@@ -206,7 +206,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -170.0
             ],
             "rotation": [
@@ -226,7 +226,7 @@
             "name": "Soil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -246,7 +246,7 @@
             "name": "Soil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -266,7 +266,7 @@
             "name": "Soil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -286,7 +286,7 @@
             "name": "Soil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -306,7 +306,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -326,7 +326,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -346,7 +346,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -366,7 +366,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -386,7 +386,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -406,7 +406,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -426,7 +426,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -446,7 +446,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -466,7 +466,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -486,7 +486,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -506,7 +506,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -526,7 +526,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -546,7 +546,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                10.0,
+                30.0,
                 -140.0
             ],
             "rotation": [
@@ -566,7 +566,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                10.0,
+                30.0,
                 -135.0
             ],
             "rotation": [
@@ -586,7 +586,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                10.0,
+                30.0,
                 -130.0
             ],
             "rotation": [
@@ -606,7 +606,7 @@
             "name": "Soil",
             "position": [
                 -15.0,
-                10.0,
+                30.0,
                 -125.0
             ],
             "rotation": [
@@ -626,7 +626,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                10.0,
+                30.0,
                 -140.0
             ],
             "rotation": [
@@ -646,7 +646,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                10.0,
+                30.0,
                 -125.0
             ],
             "rotation": [
@@ -666,7 +666,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                10.0,
+                30.0,
                 -135.0
             ],
             "rotation": [
@@ -686,7 +686,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                10.0,
+                30.0,
                 -140.0
             ],
             "rotation": [
@@ -706,7 +706,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                10.0,
+                30.0,
                 -130.0
             ],
             "rotation": [
@@ -726,7 +726,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                10.0,
+                30.0,
                 -140.0
             ],
             "rotation": [
@@ -746,7 +746,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                10.0,
+                30.0,
                 -135.0
             ],
             "rotation": [
@@ -766,7 +766,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                10.0,
+                30.0,
                 -125.0
             ],
             "rotation": [
@@ -786,7 +786,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                10.0,
+                30.0,
                 -130.0
             ],
             "rotation": [
@@ -806,7 +806,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                15.0,
+                35.0,
                 -140.0
             ],
             "rotation": [
@@ -826,7 +826,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                15.0,
+                35.0,
                 -135.0
             ],
             "rotation": [
@@ -846,7 +846,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                15.0,
+                35.0,
                 -125.0
             ],
             "rotation": [
@@ -866,7 +866,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                15.0,
+                35.0,
                 -130.0
             ],
             "rotation": [
@@ -886,12 +886,12 @@
             "name": "Star",
             "position": [
                 -34.865997314453125,
-                7.170999526977539,
+                27.17099952697754,
                 -140.031005859375
             ],
             "rotation": [
                 -0.0,
-                0.1714300662279129,
+                -0.8457993268966675,
                 0.0
             ],
             "scale": [
@@ -906,7 +906,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -926,7 +926,7 @@
             "name": "GrassSoil",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -946,7 +946,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -966,7 +966,7 @@
             "name": "GrassSoil",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -986,7 +986,7 @@
             "name": "GrassSoil",
             "position": [
                 -30.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -1006,7 +1006,7 @@
             "name": "goal",
             "position": [
                 -20.0,
-                15.5,
+                35.5,
                 -130.0
             ],
             "rotation": [
@@ -1026,7 +1026,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -200.0
             ],
             "rotation": [
@@ -1046,7 +1046,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                10.0,
+                30.0,
                 -220.0
             ],
             "rotation": [
@@ -1066,7 +1066,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -235.0
             ],
             "rotation": [
@@ -1086,7 +1086,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -240.0
             ],
             "rotation": [
@@ -1106,7 +1106,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -250.0
             ],
             "rotation": [
@@ -1126,7 +1126,7 @@
             "name": "Soil",
             "position": [
                 -25.0,
-                10.0,
+                30.0,
                 -140.0
             ],
             "rotation": [
@@ -1146,7 +1146,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -245.0
             ],
             "rotation": [
@@ -1166,7 +1166,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -250.0
             ],
             "rotation": [
@@ -1186,7 +1186,7 @@
             "name": "GrassSoil",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -190.0
             ],
             "rotation": [
@@ -1206,7 +1206,7 @@
             "name": "GrassSoil",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -195.0
             ],
             "rotation": [
@@ -1226,12 +1226,12 @@
             "name": "Star",
             "position": [
                 -20.05936050415039,
-                6.098461151123047,
+                26.098461151123047,
                 -135.0166015625
             ],
             "rotation": [
                 -0.0,
-                0.1714300662279129,
+                -0.8457993268966675,
                 0.0
             ],
             "scale": [
@@ -1246,12 +1246,12 @@
             "name": "Star",
             "position": [
                 35.0,
-                6.599999904632568,
+                26.600000381469727,
                 -155.0
             ],
             "rotation": [
                 -0.0,
-                0.36159273982048035,
+                -0.6556748151779175,
                 0.0
             ],
             "scale": [
@@ -1266,7 +1266,7 @@
             "name": "GrassSoil",
             "position": [
                 510.0,
-                0.0,
+                20.0,
                 190.0
             ],
             "rotation": [
@@ -1286,7 +1286,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -220.0
             ],
             "rotation": [
@@ -1302,33 +1302,11 @@
             "type": 1
         },
         {
-            "eventFunctionKey": "Tutorial_Goal",
-            "fieldObjectID": "0e00f9fc-688d-ce6d-6afd-e39836e9497c",
-            "isOnceEvent": true,
-            "name": "EventArea",
-            "position": [
-                5.0,
-                20.0,
-                -235.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                7.5,
-                7.5
-            ],
-            "type": 9
-        },
-        {
             "fieldObjectID": "57131b94-53a2-d422-6988-d82a077de14d",
             "name": "GrassSoil",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -180.0
             ],
             "rotation": [
@@ -1350,7 +1328,7 @@
             "name": "EventArea",
             "position": [
                 10.0,
-                20.0,
+                40.0,
                 -180.0
             ],
             "rotation": [
@@ -1370,7 +1348,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -175.0
             ],
             "rotation": [
@@ -1390,7 +1368,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -170.0
             ],
             "rotation": [
@@ -1410,7 +1388,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                0.0,
+                20.0,
                 -180.0
             ],
             "rotation": [
@@ -1430,7 +1408,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                0.0,
+                20.0,
                 -185.0
             ],
             "rotation": [
@@ -1450,7 +1428,7 @@
             "name": "GrassSoil",
             "position": [
                 25.0,
-                0.0,
+                20.0,
                 -190.0
             ],
             "rotation": [
@@ -1470,7 +1448,7 @@
             "name": "GrassSoil",
             "position": [
                 20.0,
-                0.0,
+                20.0,
                 -195.0
             ],
             "rotation": [
@@ -1490,7 +1468,7 @@
             "name": "GrassSoil",
             "position": [
                 15.0,
-                0.0,
+                20.0,
                 -205.0
             ],
             "rotation": [
@@ -1512,7 +1490,7 @@
             "name": "EventArea",
             "position": [
                 -20.0,
-                20.0,
+                40.0,
                 -130.0
             ],
             "rotation": [
@@ -1532,7 +1510,7 @@
             "name": "GrassSoil",
             "position": [
                 20.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -1552,7 +1530,7 @@
             "name": "GrassSoil",
             "position": [
                 -15.0,
-                0.0,
+                20.0,
                 -150.0
             ],
             "rotation": [
@@ -1572,7 +1550,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                0.0,
+                20.0,
                 -150.0
             ],
             "rotation": [
@@ -1592,7 +1570,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -155.0
             ],
             "rotation": [
@@ -1612,7 +1590,7 @@
             "name": "GrassSoil",
             "position": [
                 15.0,
-                0.0,
+                20.0,
                 -165.0
             ],
             "rotation": [
@@ -1632,7 +1610,7 @@
             "name": "GrassSoil",
             "position": [
                 20.0,
-                0.0,
+                20.0,
                 -165.0
             ],
             "rotation": [
@@ -1652,7 +1630,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -165.0
             ],
             "rotation": [
@@ -1672,7 +1650,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -170.0
             ],
             "rotation": [
@@ -1692,7 +1670,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                0.0,
+                20.0,
                 -170.0
             ],
             "rotation": [
@@ -1712,7 +1690,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -170.0
             ],
             "rotation": [
@@ -1732,7 +1710,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                0.0,
+                20.0,
                 -140.0
             ],
             "rotation": [
@@ -1752,7 +1730,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -140.0
             ],
             "rotation": [
@@ -1772,7 +1750,7 @@
             "name": "GrassSoil",
             "position": [
                 -20.0,
-                10.0,
+                30.0,
                 -145.0
             ],
             "rotation": [
@@ -1792,7 +1770,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -1812,7 +1790,7 @@
             "name": "Soil",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -1832,7 +1810,7 @@
             "name": "GrassSoil",
             "position": [
                 -30.0,
-                10.0,
+                30.0,
                 -135.0
             ],
             "rotation": [
@@ -1852,7 +1830,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -160.0
             ],
             "rotation": [
@@ -1872,7 +1850,7 @@
             "name": "GrassSoil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -165.0
             ],
             "rotation": [
@@ -1892,7 +1870,7 @@
             "name": "GrassSoil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -160.0
             ],
             "rotation": [
@@ -1912,7 +1890,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -165.0
             ],
             "rotation": [
@@ -1932,7 +1910,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -160.0
             ],
             "rotation": [
@@ -1952,7 +1930,7 @@
             "name": "GrassSoil",
             "position": [
                 10.0,
-                5.0,
+                25.0,
                 -165.0
             ],
             "rotation": [
@@ -1972,7 +1950,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                0.0,
+                20.0,
                 -155.0
             ],
             "rotation": [
@@ -1992,7 +1970,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -150.0
             ],
             "rotation": [
@@ -2012,7 +1990,7 @@
             "name": "GrassSoil",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -2032,7 +2010,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -2052,7 +2030,7 @@
             "name": "GrassSoil",
             "position": [
                 25.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -2072,7 +2050,7 @@
             "name": "GrassSoil",
             "position": [
                 25.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -2092,7 +2070,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -155.0
             ],
             "rotation": [
@@ -2112,7 +2090,7 @@
             "name": "GrassSoil",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -2132,7 +2110,7 @@
             "name": "GrassSoil",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -2152,7 +2130,7 @@
             "name": "GrassSoil",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -2172,7 +2150,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -140.0
             ],
             "rotation": [
@@ -2192,7 +2170,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                0.0,
+                20.0,
                 -145.0
             ],
             "rotation": [
@@ -2212,7 +2190,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                0.0,
+                20.0,
                 -150.0
             ],
             "rotation": [
@@ -2232,7 +2210,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -2252,7 +2230,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -2272,7 +2250,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -2292,7 +2270,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                10.0,
+                30.0,
                 -145.0
             ],
             "rotation": [
@@ -2312,7 +2290,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -2332,7 +2310,7 @@
             "name": "Soil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -2352,7 +2330,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -2372,7 +2350,7 @@
             "name": "Soil",
             "position": [
                 -30.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -2398,7 +2376,7 @@
             "name": "Wood",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -245.0
             ],
             "rotation": [
@@ -2426,7 +2404,7 @@
             "name": "Plant",
             "position": [
                 0.0,
-                5.0,
+                25.0,
                 -255.0
             ],
             "rotation": [
@@ -2454,7 +2432,7 @@
             "name": "Plant",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -250.0
             ],
             "rotation": [
@@ -2480,7 +2458,7 @@
             "name": "Wood",
             "position": [
                 25.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -2500,7 +2478,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -215.0
             ],
             "rotation": [
@@ -2520,7 +2498,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -225.0
             ],
             "rotation": [
@@ -2540,7 +2518,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                0.0,
+                20.0,
                 -180.0
             ],
             "rotation": [
@@ -2560,7 +2538,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -5.0,
+                15.0,
                 -180.0
             ],
             "rotation": [
@@ -2580,7 +2558,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -10.0,
+                10.0,
                 -180.0
             ],
             "rotation": [
@@ -2600,7 +2578,7 @@
             "name": "Soil",
             "position": [
                 20.0,
-                -10.0,
+                10.0,
                 -180.0
             ],
             "rotation": [
@@ -2620,7 +2598,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -15.0,
+                5.0,
                 -180.0
             ],
             "rotation": [
@@ -2640,7 +2618,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -25.0,
+                -5.0,
                 -180.0
             ],
             "rotation": [
@@ -2660,7 +2638,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                -10.0,
+                10.0,
                 -180.0
             ],
             "rotation": [
@@ -2680,7 +2658,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -15.0,
+                5.0,
                 -180.0
             ],
             "rotation": [
@@ -2700,7 +2678,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                -5.0,
+                15.0,
                 -180.0
             ],
             "rotation": [
@@ -2720,7 +2698,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -5.0,
+                15.0,
                 -180.0
             ],
             "rotation": [
@@ -2740,7 +2718,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -5.0,
+                15.0,
                 -185.0
             ],
             "rotation": [
@@ -2760,7 +2738,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                -5.0,
+                15.0,
                 -185.0
             ],
             "rotation": [
@@ -2780,7 +2758,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                0.0,
+                20.0,
                 -190.0
             ],
             "rotation": [
@@ -2800,7 +2778,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -195.0
             ],
             "rotation": [
@@ -2820,7 +2798,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                0.0,
+                20.0,
                 -205.0
             ],
             "rotation": [
@@ -2840,7 +2818,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -210.0
             ],
             "rotation": [
@@ -2860,7 +2838,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                0.0,
+                20.0,
                 -245.0
             ],
             "rotation": [
@@ -2880,7 +2858,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                -5.0,
+                15.0,
                 -245.0
             ],
             "rotation": [
@@ -2900,7 +2878,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                0.0,
+                20.0,
                 -230.0
             ],
             "rotation": [
@@ -2920,7 +2898,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -5.0,
+                15.0,
                 -225.0
             ],
             "rotation": [
@@ -2940,7 +2918,7 @@
             "name": "Soil",
             "position": [
                 0.0,
-                -15.0,
+                5.0,
                 -245.0
             ],
             "rotation": [
@@ -2960,7 +2938,7 @@
             "name": "Soil",
             "position": [
                 25.0,
-                -10.0,
+                10.0,
                 -135.0
             ],
             "rotation": [
@@ -2980,7 +2958,7 @@
             "name": "Soil",
             "position": [
                 35.0,
-                -5.0,
+                15.0,
                 -165.0
             ],
             "rotation": [
@@ -3000,7 +2978,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -5.0,
+                15.0,
                 -210.0
             ],
             "rotation": [
@@ -3020,7 +2998,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -5.0,
+                15.0,
                 -215.0
             ],
             "rotation": [
@@ -3040,7 +3018,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -5.0,
+                15.0,
                 -200.0
             ],
             "rotation": [
@@ -3060,7 +3038,7 @@
             "name": "Soil",
             "position": [
                 5.0,
-                -15.0,
+                5.0,
                 -200.0
             ],
             "rotation": [
@@ -3080,7 +3058,7 @@
             "name": "Soil",
             "position": [
                 10.0,
-                -35.0,
+                -15.0,
                 -180.0
             ],
             "rotation": [
@@ -3100,7 +3078,7 @@
             "name": "Soil",
             "position": [
                 15.0,
-                -30.0,
+                -10.0,
                 -205.0
             ],
             "rotation": [
@@ -3120,7 +3098,7 @@
             "name": "Fence",
             "position": [
                 -15.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3140,7 +3118,7 @@
             "name": "Fence",
             "position": [
                 -20.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3160,7 +3138,7 @@
             "name": "Fence",
             "position": [
                 -25.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3180,7 +3158,7 @@
             "name": "Fence",
             "position": [
                 -30.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3200,7 +3178,7 @@
             "name": "GrassSoil",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3220,7 +3198,7 @@
             "name": "GrassSoil",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3240,7 +3218,7 @@
             "name": "Fence",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3260,7 +3238,7 @@
             "name": "Fence",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3280,7 +3258,7 @@
             "name": "GrassSoil",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -3300,7 +3278,7 @@
             "name": "GrassSoil",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3320,7 +3298,7 @@
             "name": "GrassSoil",
             "position": [
                 -40.0,
-                10.0,
+                30.0,
                 -145.0
             ],
             "rotation": [
@@ -3340,7 +3318,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3360,7 +3338,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3380,7 +3358,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -3400,7 +3378,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -3420,7 +3398,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -130.0
             ],
             "rotation": [
@@ -3440,7 +3418,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -3460,7 +3438,7 @@
             "name": "Fence",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3488,7 +3466,7 @@
             "name": "Plant",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3516,7 +3494,7 @@
             "name": "Plant",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3544,7 +3522,7 @@
             "name": "Plant",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -3572,7 +3550,7 @@
             "name": "Plant",
             "position": [
                 -40.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -3600,7 +3578,7 @@
             "name": "Plant",
             "position": [
                 -35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3620,7 +3598,7 @@
             "name": "Fence",
             "position": [
                 -10.0,
-                5.0,
+                25.0,
                 -250.0
             ],
             "rotation": [
@@ -3640,7 +3618,7 @@
             "name": "Fence",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -240.0
             ],
             "rotation": [
@@ -3660,7 +3638,7 @@
             "name": "Fence",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -240.0
             ],
             "rotation": [
@@ -3680,7 +3658,7 @@
             "name": "GrassSoil",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -260.0
             ],
             "rotation": [
@@ -3700,7 +3678,7 @@
             "name": "GrassSoil",
             "position": [
                 0.0,
-                5.0,
+                25.0,
                 -260.0
             ],
             "rotation": [
@@ -3720,7 +3698,7 @@
             "name": "GrassSoil",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -255.0
             ],
             "rotation": [
@@ -3740,7 +3718,7 @@
             "name": "Fence",
             "position": [
                 -5.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3760,7 +3738,7 @@
             "name": "Fence",
             "position": [
                 0.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3780,7 +3758,7 @@
             "name": "Fence",
             "position": [
                 5.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3800,7 +3778,7 @@
             "name": "Fence",
             "position": [
                 10.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3820,7 +3798,7 @@
             "name": "Fence",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -3840,7 +3818,7 @@
             "name": "Fence",
             "position": [
                 20.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -3860,7 +3838,7 @@
             "name": "Fence",
             "position": [
                 20.0,
-                5.0,
+                25.0,
                 -125.0
             ],
             "rotation": [
@@ -3880,7 +3858,7 @@
             "name": "Fence",
             "position": [
                 15.0,
-                5.0,
+                25.0,
                 -120.0
             ],
             "rotation": [
@@ -3900,7 +3878,7 @@
             "name": "Fence",
             "position": [
                 10.0,
-                5.0,
+                25.0,
                 -115.0
             ],
             "rotation": [
@@ -3920,7 +3898,7 @@
             "name": "Fence",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -3940,7 +3918,7 @@
             "name": "Fence",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -3960,7 +3938,7 @@
             "name": "Fence",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -145.0
             ],
             "rotation": [
@@ -3980,7 +3958,7 @@
             "name": "Fence",
             "position": [
                 35.0,
-                5.0,
+                25.0,
                 -140.0
             ],
             "rotation": [
@@ -4000,7 +3978,7 @@
             "name": "Fence",
             "position": [
                 30.0,
-                5.0,
+                25.0,
                 -135.0
             ],
             "rotation": [
@@ -4020,7 +3998,7 @@
             "name": "SaveArea",
             "position": [
                 15.0,
-                20.0,
+                40.0,
                 -170.0
             ],
             "rotation": [
@@ -4034,6 +4012,28 @@
                 2.5
             ],
             "type": 18
+        },
+        {
+            "eventFunctionKey": "Tutorial_Goal",
+            "fieldObjectID": "3a535f2a-76eb-020a-5593-6c263c50fcba",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                5.0,
+                40.0,
+                -235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                7.5,
+                7.5
+            ],
+            "type": 9
         }
     ],
     "stage": 1

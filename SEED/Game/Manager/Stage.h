@@ -143,7 +143,7 @@ private:
     std::vector<FieldObject_Star*> starObjects_;
 
     //star Sound
-    const std::string& starSoundFileName_ = "SE/star.wav";
+    const std::string& starSoundFileName_ = "SE/star_shine.wav";
     float distanceToPlayStarSound_ = 15.f;
     float minStarSoundVolume_ = 0.0f;
     float maxStarSoundVolume_ = 0.6f;

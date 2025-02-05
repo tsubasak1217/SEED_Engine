@@ -96,13 +96,17 @@ void Player::Update(){
 
     shadow_->Update(StageManager::GetCurrentStage());
 
+    if(enemyManager_){
+        predationRange_->Update(enemyManager_);
+    }
+
     // 無敵時間中の色変更
     if(unrivalledTime_ > 0.0f){
         float sin = sinf(ClockManager::TotalTime() * (3.14f * 2.5f));
-        model_->color_ = { 1.0f,0.5f,0.5f,1.0f };
+        model_->color_ = {1.0f,0.5f,0.5f,1.0f};
         model_->color_.w = 0.5f + (0.5f * sin);
     } else{
-        model_->color_ = { 1.0f,1.0f,1.0f,1.0f };
+        model_->color_ = {1.0f,1.0f,1.0f,1.0f};
     }
 }
 //////////////////////////////////////////////////////////////////////////
@@ -111,6 +115,8 @@ void Player::Update(){
 void Player::Draw(){
     shadow_->Draw();
     BaseCharacter::Draw();
+
+    predationRange_->Draw();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -171,7 +177,7 @@ void Player::EndFrame(){
 }
 
 void Player::Spawn(Egg* _egg){
-    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn", this,_egg);
+    PlayerState_Spawn* state = new PlayerState_Spawn("Player_Spawn",this,_egg);
     growLevel_ = 1;
     ChangeState(state);
 }
@@ -188,7 +194,7 @@ void Player::GameOver(){
     { // ステージの初期化
         StageManager::GetCurrentStage()->InitializeStatus(true);
     }
-    
+
     { // ステートの初期化
         currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
     }
@@ -221,10 +227,10 @@ void Player::UpdateScaleByGrowLevel(){
 
         // スケールを変更
         float scale = preScale + (aimScale - preScale) * t;
-        SetScale(Vector3(scale, scale, scale));
+        SetScale(Vector3(scale,scale,scale));
 
         // 時間を加算
-        growUpTime = std::clamp(growUpTime + ClockManager::DeltaTime(), 0.0f, kGrowUpTime);
+        growUpTime = std::clamp(growUpTime + ClockManager::DeltaTime(),0.0f,kGrowUpTime);
     }
 }
 
@@ -269,7 +275,7 @@ const nlohmann::json& Player::GetJsonData(){
     static nlohmann::json json;
     json["GrowLevel"] = growLevel_;
     json["Weight"] = weight_;
-    
+
     // BaseObjectの情報と結合して出力
     json.update(BaseCharacter::GetJsonData());
     return json;

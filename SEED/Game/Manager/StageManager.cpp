@@ -49,7 +49,7 @@ void StageManager::Initialize(){
     LoadStages();
     LoadTitleStage();
 
-    AudioManager::PlayAudio("SE/star.wav",true,0.f);
+    AudioManager::PlayAudio("SE/star_shine.wav",true,0.f);
 
     JsonCoordinator::LoadGroup("UserProgress");
     std::string stageLabel;

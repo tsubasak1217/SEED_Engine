@@ -20,7 +20,7 @@ PredationRange::~PredationRange(){}
 void PredationRange::Initialize(Player* player){
     player_ = player;
 
-    buttonUI_ = std::make_unique<Sprite>("GameUI/A.png");
+    buttonUI_ = std::make_unique<Sprite>("GameUI/B.png");
     buttonUI_->anchorPoint = Vector2(0.5f,0.5f);
 
     // jsonから範囲を読み込む

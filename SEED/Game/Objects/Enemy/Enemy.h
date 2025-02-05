@@ -20,6 +20,7 @@ public:
     ~Enemy();
     void Initialize() override;
     void InitializeRoutine();
+    void InitializeModel();
     void Update() override;
     void Draw() override;
     void EndFrame() override;

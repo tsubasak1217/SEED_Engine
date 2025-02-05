@@ -107,6 +107,7 @@ public:
         return false;
     }
     uint32_t GetDifficulty()const{ return difficulty_; }
+    void SetDifficulty(uint32_t difficulty){ difficulty_ = difficulty; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
     void SetPlayer(Player* pPlayer){

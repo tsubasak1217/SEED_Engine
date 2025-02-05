@@ -43,7 +43,6 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
 
-    // とりあえず,ここで 移動
     spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
 
     // 移動不可にする
@@ -71,15 +70,22 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // egg
     {
+        egg_->UpdateMatrix();
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
+        const BaseObject* beforeParent = egg_->GetParent();
 
         egg_->ChangeModel("egg_born.gltf");
 
         egg_->SetScale(eggBeforeScale);
         egg_->SetRotate(eggBeforeRotate);
         egg_->SetTranslate(eggBeforeTranslate);
+        egg_->UpdateMatrix();
+
+        if(beforeParent){
+            egg_->SetParent(beforeParent);
+        }
 
         egg_->InitColliders(ObjectType::Egg);
 
@@ -102,6 +108,10 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 }
 
 void PlayerState_Spawn::Update(){
+
+    pCharacter_->SetIsDrop(false);
+    pCharacter_->SetDropSpeed(0.0f);
+
     if(!movedGhost_){
         elapsedTime_ += ClockManager::DeltaTime();
         elapsedTime_ = (std::min)(elapsedTime_,ghostMoveTime_);

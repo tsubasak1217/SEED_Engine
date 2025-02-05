@@ -2,6 +2,7 @@
 #include "InputManager/InputManager.h"
 #include "ClockManager.h"
 #include "Environment.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //lib
 #include "../PlayerInput/PlayerInput.h"
@@ -15,6 +16,10 @@ StageSelector::StageSelector(StageManager* stageManager,FollowCamera* camera){
     pCamera_ = camera;
     pCamera_->SetInterpolationRate(0.075f);
     Initialize();
+}
+
+StageSelector::~StageSelector(){
+    pCamera_->SetDistance(50.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -173,9 +178,10 @@ void StageSelector::UpdateItems(int32_t step){
     /*-------------------------------------*/
 
     // 現在のステージの難易度分、明るく表示
-    for(uint32_t i = 0; i < 5; i++){
+    for(int32_t i = 0; i < 5; i++){
         difficultyEggs_[i]->color = {0.2f,0.2f,0.2f,0.9f};
-        if(i < StageManager::GetCurrentStage()->GetDifficulty()){
+        if(i < (int)StageManager::GetCurrentStage()->GetDifficulty()){
+            i = std::clamp(i, 0, 4);
             difficultyEggs_[i]->color = {1.0f,1.0f,1.0f,1.0f};
         }
     }
@@ -215,11 +221,13 @@ void StageSelector::UpdateItems(int32_t step){
     // 注目点をカメラにセット
     if(pTarget){
         pCamera_->SetTarget(pTarget);
+        if(FieldObject_ViewPoint* pViewPoint = dynamic_cast<FieldObject_ViewPoint*>(pTarget)){
+            pCamera_->SetDistance(pViewPoint->distance_);
+        }
     }
 
     // カメラの初期位置をセット
     pCamera_->SetPhi(3.14f * 0.3f);
-    pCamera_->SetDistance(50.0f);
 }
 
 

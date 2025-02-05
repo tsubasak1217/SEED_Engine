@@ -1,0 +1,50 @@
+{
+    "Count": 5,
+    "Enemies": [
+        {
+            "CanEat": true,
+            "ChasePlayer": true,
+            "HP": 0,
+            "Index": 0,
+            "Name": "enemy1",
+            "RoutineName": "NULL",
+            "moveSpeed": 6.0
+        },
+        {
+            "CanEat": true,
+            "ChasePlayer": false,
+            "HP": 0,
+            "Index": 1,
+            "Name": "enemy2",
+            "RoutineName": "stage6_enemyFrontDoor",
+            "moveSpeed": 3.0
+        },
+        {
+            "CanEat": true,
+            "ChasePlayer": false,
+            "HP": 0,
+            "Index": 2,
+            "Name": "3",
+            "RoutineName": "stage6_enemy1",
+            "moveSpeed": 5.0
+        },
+        {
+            "CanEat": true,
+            "ChasePlayer": false,
+            "HP": 0,
+            "Index": 3,
+            "Name": "4",
+            "RoutineName": "NULL",
+            "moveSpeed": 1.0
+        },
+        {
+            "CanEat": true,
+            "ChasePlayer": false,
+            "HP": 0,
+            "Index": 4,
+            "Name": "enemy4",
+            "RoutineName": "last",
+            "moveSpeed": 3.0
+        }
+    ]
+}

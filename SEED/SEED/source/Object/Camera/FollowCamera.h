@@ -13,6 +13,8 @@ public:
     void Initialize() override;
     void Update() override;
 
+    void Reset();
+
 private:
     void UpdateAngle();
     void UpdateDistance();

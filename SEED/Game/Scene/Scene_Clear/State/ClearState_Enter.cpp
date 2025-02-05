@@ -30,6 +30,8 @@ void ClearState_Enter::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
     whiteScreen_->color.w = 1.f - EaseInQuad(fadeTimer_ / fadeTime_);
+    currentBgmVolume_ = MyMath::Lerp(0.f,maxBGMVolume_,fadeTimer_ / fadeTime_);
+    AudioManager::SetAudioVolume("BGM/clear.wav",currentBgmVolume_);
 }
 
 void ClearState_Enter::Draw(){

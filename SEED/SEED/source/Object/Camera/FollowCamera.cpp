@@ -57,6 +57,16 @@ void FollowCamera::Update(){
     transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
 
+void FollowCamera::Reset(){
+    if (target_){
+        targetPos_ = target_->GetWorldTranslate();
+        transform_.rotate_.y = target_->GetWorldRotate().y;
+    }
+    //追従対象からのオフセット
+    Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
+    transform_.translate_ = targetPos_ + (offsetVec * distance_);
+}
+
 void FollowCamera::UpdateAngle(){
     // 入力が有効な場合のみ角度を更新
     if (isInputActive_){

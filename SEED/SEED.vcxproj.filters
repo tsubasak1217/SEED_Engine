@@ -60,7 +60,6 @@
     <ClCompile Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\Start\FieldObject_Start.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\Door\DoorProximityChecker.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
@@ -246,7 +245,6 @@
     <ClInclude Include="Game\Objects\FieldObject\GrassSoil\FieldObject_GrassSoil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Soil\FieldObject_Soil.h" />
     <ClInclude Include="Game\Objects\FieldObject\Start\FieldObject_Start.h" />
-    <ClInclude Include="Game\Objects\FieldObject\Door\DoorProximityChecker.h" />
     <ClInclude Include="Game\Objects\FieldObject\Switch\FieldObject_Switch.h" />
     <ClInclude Include="Game\Objects\FieldObject\ViewPoint\FieldObject_ViewPoint.h" />
     <ClInclude Include="Game\Objects\Player\PlayerState\PlayerStage_ForNextStage.h" />

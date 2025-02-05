@@ -56,6 +56,11 @@ void GameState_Title::Initialize(){
     titleLogo_ = std::make_unique<Sprite>("Title/TitleLogo.png");
     titleLogo_->anchorPoint = {0.5f,0.5f};
     titleLogo_->translate = {1090.f,190.f};
+
+    pressKey_ = std::make_unique<Sprite>("GameUI/A.png");
+    pressKey_->anchorPoint = { 0.5f,0.5f };
+    pressKey_->translate = { 640.f, 630.f };
+    pressKey_->scale = { 1.2f,1.2f };
   
     // FadeIn用のフェードスプライトの初期化
     fade_ = std::make_unique<Sprite>("SelectScene/fade.png");
@@ -112,10 +117,17 @@ void GameState_Title::Update(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::Draw(){
+
+    static float time = 0.0f;
+    time += ClockManager::DeltaTime();
+    float sin = std::sinf(time * 2.0f);
+    pressKey_->color.w = 0.5f + (0.5f * sin);
+
     // タイトル画面の描画処理
     StageManager::GetTitleStage()->Draw();
 
     titleLogo_->Draw();
+    pressKey_->Draw();
 
     // フェードイン効果の描画（フェードが完了していればアルファが0なので描画しても影響なし）
     fade_->Draw();

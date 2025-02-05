@@ -182,6 +182,10 @@ void Scene_Game::Initialize(){
     //! 読み込みの DeltaTime が 膨大になりすぎるため,ここで 更新して 仮対処 とする
     ClockManager::EndFrame();
     ClockManager::BeginFrame();
+
+    // パーティクルの初期化
+    ParticleManager::DeleteAll();
+    ParticleManager::AddEffect("underParticle.json", {0.0f,0.0f,0.0f});
 }
 
 void Scene_Game::Finalize(){

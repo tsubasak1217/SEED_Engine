@@ -35,6 +35,7 @@ private:
     Vector3 playerRotate_;
 
     std::unique_ptr<Sprite> titleLogo_ = nullptr;
+    std::unique_ptr<Sprite> pressKey_ = nullptr;
 
     // FadeIn用のメンバー変数
     std::unique_ptr<Sprite> fade_;

@@ -72,11 +72,12 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter
     aimModel_ = std::make_unique<Model>("Egg.obj");
     aimModel_->color_ = {1.0f,1.0f,0.0f,0.3f};
     throwSimulationEgg_ = std::make_unique<BaseObject>("Egg.obj");
-    throwSimulationEgg_->InitColliders("Egg.json",ObjectType::Egg);
+    throwSimulationEgg_->InitColliders("Egg.json",ObjectType::OnFieldObject);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Egg);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Player);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Enemy);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::EventArea);
+    throwSimulationEgg_->AddSkipPushBackType(ObjectType::Area);
 
     //Playerの Animation を aim に変更
     pPlayer->SetAnimation("aim",false);

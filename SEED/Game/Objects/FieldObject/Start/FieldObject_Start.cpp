@@ -44,3 +44,9 @@ void FieldObject_Start::Update(){
     FieldObject::Update();
 }
 
+void FieldObject_Start::Draw(){
+#ifdef _DEBUG
+    FieldObject::Draw();
+#endif
+}
+

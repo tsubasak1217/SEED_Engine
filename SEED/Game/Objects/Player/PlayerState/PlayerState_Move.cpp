@@ -39,7 +39,6 @@ void PlayerState_Move::Initialize(const std::string &stateName, BaseCharacter *p
     JsonCoordinator::RegisterItem("Player","lerpRate",lerpRate_);
     JsonCoordinator::RegisterItem("Player","isLerpRotate",isLerpRotate_);
     // effect
-    ParticleManager::AddEffect("dinosaur_run.json", { 0.f,0.f,0.f }, pCharacter_->GetWorldMatPtr());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -51,6 +50,9 @@ void PlayerState_Move::Update()
     Move();
     // 回転処理
     Rotate();
+
+    //particle
+    EmitParticle();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -128,6 +130,14 @@ void PlayerState_Move::Rotate()
         {
             pCharacter_->HandleRotate(rotateVec_);
         }
+    }
+}
+
+void PlayerState_Move::EmitParticle(){
+leftEmitTime_ -= ClockManager::DeltaTime();
+    if(leftEmitTime_ <= 0.f){
+       leftEmitTime_ = emitTime_;
+       ParticleManager::AddEffect("dinosaur_run.json",{0.f,0.f,-.4f},pCharacter_->GetWorldMatPtr());
     }
 }
 

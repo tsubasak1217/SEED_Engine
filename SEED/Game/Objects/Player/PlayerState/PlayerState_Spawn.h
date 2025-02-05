@@ -33,6 +33,8 @@ private:
     Vector3 deadPos_;
     Vector3 spawnPos_;
 
+    Vector3 beforePlayerScale_;
+
     std::unique_ptr<BaseObject> ghostObject_ = nullptr;
 
     float ghostMoveTime_ = 1.f;

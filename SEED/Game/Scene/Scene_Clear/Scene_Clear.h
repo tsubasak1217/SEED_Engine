@@ -40,6 +40,9 @@ private:
 
     std::unique_ptr<Model> corpsesPile_;
 
+    std::unique_ptr<Sprite> clearText_ = nullptr;
+    float sinAnimationTime_;
+
     //================== Emitter ==================//
     struct CorpseEmitter{
         std::array<std::unique_ptr<Model>,128> particles_;

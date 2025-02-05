@@ -15,6 +15,7 @@
 // lib
 #include <ClockManager.h>
 #include "AudioManager.h"
+#include "ParticleManager.h"
 
 // math
 #include "MyMath.h"
@@ -106,6 +107,7 @@ void GameState_Goal::ManageState(){
     if(!preIsThrow_ && isThrow_){
         pEgg_->SetTranslate(nextStartPosition_);
         pEgg_->ChangeState(new EggState_Break(pEgg_,3.0f));
+        return;
     }
     if(pEgg_->GetIsBreak()){
         pPlayer_->GetEggManager()->InitializeEggCount();
@@ -113,9 +115,11 @@ void GameState_Goal::ManageState(){
         SetUpNextStage();
 
         pScene_->ChangeState(new GameState_Play(pScene_));
+        return;
     }
     if(isClearAll_){
         pGameScene_->ChangeState(new GameState_Out(pScene_));
+        return;
     }
 }
 
@@ -209,6 +213,9 @@ void GameState_Goal::GoalAnimation(){
     leftGoalAnimationTime_ += ClockManager::DeltaTime();
 
     if(leftGoalAnimationTime_ >= goalAnimationTime_){
+        //particle
+        ParticleManager::AddEffect("cannon_fire.json",{0.f,0.f,-.4f},pGoal_->GetWorldMatPtr());
+        // 卵を見えるように
         pEgg_->SetScale({1.f,1.f,1.f});
         currentUpdate_ = [this](){ ThrowEggForNextStage(); };
     }

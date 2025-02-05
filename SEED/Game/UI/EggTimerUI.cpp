@@ -10,11 +10,12 @@ EggTimerUI::~EggTimerUI(){}
 void EggTimerUI::Initialize(){
     //=================== UIの初期化 ===================//
     for(auto& timeUI : leftTimeUI_){
-        timeUI = std::make_unique<Sprite>("GameUI/numbers.png");
-        timeUI->scale = {2.f,2.f};
-        timeUI->translate = {1158.f,564.f};
-        timeUI->color = {0.6f,0.6f,0.6f,1.f};
-        timeUI->clipSize = {32.f,32.f};
+        timeUI = std::make_unique<Sprite>("GameUI/num.png");
+        timeUI->scale = {1.2f,1.2f};
+        timeUI->anchorPoint = { 0.5f,0.5f };
+        timeUI->translate = {1158.f,572.f};
+        timeUI->color = MyMath::FloatColor(0x173b4cff);
+        timeUI->clipSize = {39.f,56.f};
         timeUI->clipLT = {0.f,0.f};
     }
     // 1桁目 .. [0]

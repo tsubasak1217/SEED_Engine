@@ -214,7 +214,7 @@ void PlayerState_ThrowEgg::Aim(){
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     int32_t growLevel = pPlayer->GetGrowLevel() - 1;
-    aimRadius_ = 32.0f + (8.0f * growLevel);
+    aimRadius_ = 32.0f + (16.0f * growLevel);
 
     if(PlayerInput::CharacterMove::Aim() != Vector2(0.0f,0.0f)){
         Vector2 moveVec = PlayerInput::CharacterMove::Aim();

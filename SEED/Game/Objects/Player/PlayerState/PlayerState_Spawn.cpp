@@ -17,6 +17,7 @@
 #include "Egg/Manager/EggManager.h"
 #include "PlayerCorpse/Manager/PlayerCorpseManager.h"
 #include "ClockManager.h"
+#include "AudioManager.h"
 
 /// math
 #include "MyMath.h"
@@ -33,7 +34,6 @@ PlayerState_Spawn::~PlayerState_Spawn(){
     // 重力を適応しない,当たり判定を取らない
     pCharacter_->SetIsApplyGravity(true);
     pCharacter_->SetCollidable(true);
-
 }
 
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
@@ -71,17 +71,6 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
     // egg
     {
-        // 卵が親子付けされていたらplayerも親子付け
-        if(egg_->GetParent()){
-            Vector3 preTranslate = pCharacter_->GetWorldTranslate();
-            Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
-            Vector3 localTranslate = preTranslate * invParentMat;
-            localTranslate *= ExtractScale(egg_->GetParent()->GetWorldMat());
-            pCharacter_->SetTranslate(localTranslate);
-            pCharacter_->SetParent(egg_->GetParent());
-            pCharacter_->UpdateMatrix();
-        }
-
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
@@ -163,6 +152,9 @@ void PlayerState_Spawn::ManageState(){
             // アニメーションを流す
             egg_->SetAnimation("born",false);
             pCharacter_->SetAnimation("born",false);
+
+            //Sound
+            AudioManager::PlayAudio("SE/dinosaur_born.wav",false,0.7f);
 
             // 移動
              // 卵が親子付けされていたらplayerも親子付け

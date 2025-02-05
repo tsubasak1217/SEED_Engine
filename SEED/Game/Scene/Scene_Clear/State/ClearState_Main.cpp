@@ -70,7 +70,7 @@ void ClearState_Main::ChangeModel(){
     //=========================== eggTop  =======================//
     {
         std::unique_ptr<Model> eggTopModel = std::make_unique<Model>("eggTop_dance.gltf");
-        eggTopModel->StartAnimation("dance",true);
+        eggTopModel->StartAnimation("danceTop",true);
         // transform Initialize
         eggTopModel->rotate_.y = 3.141592f;
         eggTopModel->translate_ = {0.0f,-1.2f,10.0f};

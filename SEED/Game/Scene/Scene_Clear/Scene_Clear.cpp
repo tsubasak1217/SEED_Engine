@@ -12,6 +12,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear(){
+    SEED::SetCamera("main");
+    CameraManager::GetActiveCamera()->SetTranslation({0.f,0.f,-10.f});
     Initialize();
 }
 

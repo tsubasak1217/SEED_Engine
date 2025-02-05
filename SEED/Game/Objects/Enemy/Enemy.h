@@ -70,7 +70,7 @@ public:
     float GetMoveSpeed()const{ return speed_; }
 
 public:
-    void OnCollision(const BaseObject* other,ObjectType objectType)override;
+    void OnCollision(BaseObject* other,ObjectType objectType)override;
 
 private:
     Player* pPlayer_ = nullptr;

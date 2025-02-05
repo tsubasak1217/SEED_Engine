@@ -410,6 +410,16 @@ void Scene_Game::HandOverColliders(){
     stageManager_->HandOverColliders();
 }
 
+
+// 禁忌
+FieldEditor* Scene_Game::GetFieldEditor(){
+    if(GameState_Play* state = dynamic_cast<GameState_Play*>(currentState_.get())){
+        return state->GetFieldEditor();
+    }
+
+    return nullptr;
+}
+
 void Scene_Game::BGMUpdate(){
 #ifdef _DEBUG
     if(ImGui::Begin("BGM")){

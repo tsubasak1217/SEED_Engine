@@ -44,7 +44,8 @@ void FieldObject_Lever::BeginFrame(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OnCollision
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Lever::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+void FieldObject_Lever::OnCollision(BaseObject* other,ObjectType objectType){
+    other;
     if (objectType == ObjectType::Player ||
         objectType == ObjectType::Egg ||
         objectType == ObjectType::PlayerCorpse){

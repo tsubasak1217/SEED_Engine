@@ -13,6 +13,7 @@
 class Player;
 
 class EnemyManager{
+    friend class FieldObject_SaveArea;
 public:
     EnemyManager() = default;
     EnemyManager(Player* player,uint32_t stageNo,RoutineManager& routineManager);
@@ -30,8 +31,8 @@ public:
     void EndFrame();
 
     //--- 保存 読み込み ---//
-    void SaveEnemies();
-    void LoadEnemies();
+    void SaveEnemies(bool isSaveData = false);
+    void LoadEnemies(bool isSaveData = false);
 
     //--- getter / setter ---//
     std::vector<std::unique_ptr<Enemy>>& GetEnemies(){ return enemies_; }

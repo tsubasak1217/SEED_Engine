@@ -129,6 +129,7 @@ void Stage::Update(){
     //カメラがオブジェクトをviewしているモードの時はプレイヤーを動かさない
     if (FollowCamera* camera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera())){
         if (camera->GetIsViewingObject()){
+            camera->SetPhi(MyMath::Deg2Rad(80.0f));
             pPlayer_->SetIsMovable(false);
         } else{
             if(!GameSystem::GetScene()->HasEvent()){

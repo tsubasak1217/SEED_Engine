@@ -13,6 +13,8 @@
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
 #include "Shadow/Shadow.h"
+#include "Sprite.h"
+
 // state
 class IPlayerState;
 // manager
@@ -99,4 +101,6 @@ private: // フォローカメラ、ターゲット用
     int32_t growLevel_ = 1;
 
     bool isGameOver_ = false;
+
+    std::unique_ptr<Sprite> fade_;
 };

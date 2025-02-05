@@ -107,6 +107,17 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
+    ImGui::Begin("dinosaur");
+    ImGui::DragFloat3("scale",&dinosaur_->scale_.x,0.01f);
+    ImGui::DragFloat3("rotate",&dinosaur_->rotate_.x,0.01f);
+    ImGui::DragFloat3("translate",&dinosaur_->translate_.x,0.01f);
+    ImGui::End();
+    ImGui::Begin("CorpsesPile");
+    ImGui::DragFloat3("scale",&corpsesPile_->scale_.x,0.01f);
+    ImGui::DragFloat3("rotate",&corpsesPile_->rotate_.x,0.01f);
+    ImGui::DragFloat3("translate",&corpsesPile_->translate_.x,0.01f);
+    ImGui::End();
+
     UpdateCorpseParticles();
 
     //=========================== Object =======================//

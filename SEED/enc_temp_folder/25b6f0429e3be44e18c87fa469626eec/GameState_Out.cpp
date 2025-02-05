@@ -31,7 +31,7 @@ void GameState_Out::Update(){
     whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
 
     currentBgmVolume_ = MyMath::Lerp(0.f,maxBGMVolume_,fadeTimer_ / fadeTime_);
-    AudioManager::SetAudioVolume("BGM/Title.wav",currentBgmVolume_);
+    AudioManager::SetAudioVolume("BGM/title.wav",currentBgmVolume_);
 }
 
 void GameState_Out::Draw(){

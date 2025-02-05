@@ -15,46 +15,46 @@
             ],
             "colors": [
                 [
-                    0.7254902124404907,
-                    0.6901960968971252,
-                    0.0784313753247261,
+                    1.0,
+                    1.0,
+                    1.0,
                     1.0
                 ]
             ],
             "directionRange": 1.0,
             "emitRange": [
-                1.7999999523162842,
-                1.600000023841858,
-                1.7999999523162842
+                10.0,
+                10.0,
+                10.0
             ],
             "emitType": 1,
             "gravity": -9.800000190734863,
-            "interval": 0.10000000149011612,
+            "interval": 0.23999999463558197,
             "isActive": true,
             "isBillboard": true,
             "isUseGravity": false,
             "isUseRotate": false,
             "kMaxEmitCount": 1,
             "lifeTimeRange": [
-                1.899999976158142,
-                3.200000047683716
+                1.0,
+                3.0
             ],
             "numEmitEvery": 1,
             "particleType": 0,
             "radiusRange": [
-                1.6799999475479126,
-                3.619999885559082
+                0.699999988079071,
+                1.2999999523162842
             ],
             "rotateSpeedRange": [
                 0.0,
                 1.0
             ],
             "speedRange": [
-                1.8200000524520874,
-                2.359999895095825
+                0.10000000149011612,
+                1.0
             ],
             "textureHandles": [
-                "ParticleTextures/particle.png"
+                "ParticleTextures/shine.png"
             ]
         }
     ]

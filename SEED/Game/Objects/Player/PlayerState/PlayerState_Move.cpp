@@ -16,6 +16,9 @@
 // EggState
 #include "Egg/State/EggState_Thrown.h"
 
+// Manager
+#include "ParticleManager.h"
+
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
@@ -35,6 +38,8 @@ void PlayerState_Move::Initialize(const std::string &stateName, BaseCharacter *p
     JsonCoordinator::RegisterItem("Player","moveSpeed",moveSpeed_);
     JsonCoordinator::RegisterItem("Player","lerpRate",lerpRate_);
     JsonCoordinator::RegisterItem("Player","isLerpRotate",isLerpRotate_);
+    // effect
+    ParticleManager::AddEffect("dinosaur_run.json", { 0.f,0.f,0.f }, pCharacter_->GetWorldMatPtr());
 }
 
 //////////////////////////////////////////////////////////////////////////

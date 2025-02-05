@@ -17,10 +17,6 @@ EventState_Base::~EventState_Base(){
 // 初期化
 ///////////////////////////////////////////////////////////////////////////////////////
 void EventState_Base::Initialize(){
-
-    skipButtonUI_ = std::make_unique<Sprite>("GameUI/skip.png");
-    skipButtonUI_->anchorPoint = {0.5f,0.5f};
-    skipButtonUI_->translate = {1114.f,50.f};
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -32,5 +28,4 @@ void EventState_Base::Update(){}
 // 描画関数
 ///////////////////////////////////////////////////////////////////////////////////////
 void EventState_Base::Draw(){
-    skipButtonUI_->Draw();
 }

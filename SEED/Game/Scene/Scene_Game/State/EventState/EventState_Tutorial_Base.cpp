@@ -3,6 +3,7 @@
 //static変数の初期化
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textFieldSprite_;
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textSprite_;
+std::unique_ptr<Sprite> EventState_Tutorial_Base::skipButtonUI_;
 
 
 EventState_Tutorial_Base::EventState_Tutorial_Base(){
@@ -40,6 +41,11 @@ void EventState_Tutorial_Base::Initialize(Scene_Base* pScene){
     textSprite_->translate = { 640.0f,600.0f };
     textSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
     textSprite_->isStaticDraw = false;
+
+    // skipButtonUI
+    skipButtonUI_ = std::make_unique<Sprite>("GameUI/skip.png");
+    skipButtonUI_->anchorPoint = {0.5f,0.5f};
+    skipButtonUI_->translate = {1114.f,50.f};
 
     //
     kTime_ = 1.0f;
@@ -115,4 +121,5 @@ void EventState_Tutorial_Base::Update(){
 void EventState_Tutorial_Base::Draw(){
     textFieldSprite_->Draw();
     textSprite_->Draw();
+    skipButtonUI_->Draw();
 }

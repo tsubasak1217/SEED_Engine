@@ -74,6 +74,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
         Vector3 eggBeforeScale = egg_->GetLocalScale();
         Vector3 eggBeforeRotate = egg_->GetLocalRotate();
         Vector3 eggBeforeTranslate = egg_->GetLocalTranslate();
+        const BaseObject* beforeParent = egg_->GetParent();
 
         egg_->ChangeModel("egg_born.gltf");
 
@@ -81,6 +82,10 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
         egg_->SetRotate(eggBeforeRotate);
         egg_->SetTranslate(eggBeforeTranslate);
         egg_->UpdateMatrix();
+
+        if(beforeParent){
+            egg_->SetParent(beforeParent);
+        }
 
         egg_->InitColliders(ObjectType::Egg);
 

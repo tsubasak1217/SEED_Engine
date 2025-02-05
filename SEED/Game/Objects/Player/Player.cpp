@@ -150,6 +150,8 @@ void Player::BeginFrame(){
 #ifdef _DEBUG
     ImGui::Begin("Player");
     ImGui::Text("dropSpeed_ : %f",dropSpeed_);
+    ImGui::Text("isApplyGravity_ : %d", isApplyGravity_);
+    ImGui::Text("isDrop_ : %d", isDrop_);
     ImGui::End();
 #endif
 }

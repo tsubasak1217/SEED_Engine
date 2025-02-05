@@ -29,6 +29,10 @@ void ClearState_Out::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
     whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
+
+    if(AudioManager::IsPlayingAudio("BGM/clear.wav")){
+        AudioManager::SetAudioVolume("BGM/clear.wav",MyMath::Lerp(0.f,0.5f,1.f - (fadeTimer_ / fadeTime_)));
+    }
 }
 
 void ClearState_Out::Draw(){
@@ -48,5 +52,6 @@ void ClearState_Out::HandOverColliders(){}
 void ClearState_Out::ManageState(){
     if(fadeTimer_ >= fadeTime_){
         pScene_->ChangeScene("Game");
+        AudioManager::EndAudio("BGM/clear.wav");
     }
 }

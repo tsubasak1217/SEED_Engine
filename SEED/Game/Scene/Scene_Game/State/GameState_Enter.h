@@ -24,4 +24,7 @@ private:
     std::unique_ptr<Sprite> whiteScreen_ = nullptr;
     float fadeTime_ = 0.6f;
     float fadeTimer_ = 0.f;
+
+    float maxBGMVolume_ = 0.1f;
+    float currentBgmVolume_ = 0.f;
 };

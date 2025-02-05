@@ -92,6 +92,10 @@ void Scene_Clear::Initialize(){
 
     //=========================== state =========================//
     currentState_ = std::make_unique<ClearState_Enter>(this);
+
+    //=========================== Audio =========================//
+    AudioManager::LoadAudio("BGM/clear.wav");
+    AudioManager::PlayAudio("BGM/clear.wav",true,0.f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

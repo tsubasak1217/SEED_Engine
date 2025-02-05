@@ -23,4 +23,7 @@ private:
 
     float fadeTimer_ = 0.f;
     float fadeTime_ = 0.6f;
+
+    float maxBGMVolume_ = 0.2f;
+    float currentBgmVolume_ = 0.f;
 };

@@ -123,6 +123,10 @@ void AudioManager::StartUpLoad(){
     LoadAudio("SE/star.wav");
     LoadAudio("SE/star_shine.wav");
     LoadAudio("SE/switch.wav");
+    LoadAudio("SE/walk.mp3");
+    LoadAudio("SE/select.mp3");
+    LoadAudio("SE/stageSelect.mp3");
+    LoadAudio("SE/hit.mp3");
 }
 
 

@@ -86,7 +86,7 @@ private:
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;
 
-    float currentBgmVolume_ = 0.3f;
+    float currentBgmVolume_ = 0.1f;
     float bgmVolumeInterpolateRate_ = 0.348f;
     //[0] = Game , [1] = Pause
     std::array<float,2> bgmVolume_ = {0.2f,0.104f};

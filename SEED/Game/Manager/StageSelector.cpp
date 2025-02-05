@@ -126,6 +126,7 @@ void StageSelector::Select(){
     if(step != 0){
         pStageManager_->StepStage(step);
         UpdateItems(step);
+        AudioManager::PlayAudio("SE/stageSelect.mp3", false, 0.5f);
     }
 }
 

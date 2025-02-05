@@ -43,6 +43,7 @@ void GameState_PauseBase::Update(){
         if (step != 0){
             selectIndex_ = std::clamp(selectIndex_ + step, 0, 2);
             UpdateItems();
+            AudioManager::PlayAudio("SE/select.mp3", false, 0.7f);
         }
     }
 

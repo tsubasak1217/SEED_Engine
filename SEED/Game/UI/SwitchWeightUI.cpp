@@ -1,5 +1,6 @@
 #include "SwitchWeightUI.h"
 
+
 #include "CameraManager.h"
 #include "FieldObject/Switch/FieldObject_Switch.h"
 
@@ -9,45 +10,68 @@ SwitchWeightUI::~SwitchWeightUI(){}
 
 const float whightUIOffsetY = 10.f;
 void SwitchWeightUI::Initialize(){
-    float hostWheight = host_->GetWeight();
     //=================== UIの初期化 ===================//
-    weightUI_[0] = std::make_unique<Sprite>("GameUI/numbers.png");
-    weightUI_[0]->scale = {2.f,2.f};
+    //------------------- 1桁目 -----------------------//
+    weightUI_[0] = std::make_unique<Sprite>("GameUI/num.png");
+    weightUI_[0]->scale = {1.f,1.f};
     weightUI_[0]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate());
     weightUI_[0]->translate.y += whightUIOffsetY;
-    weightUI_[0]->color = {0.6f,0.6f,0.6f,1.f};
-    weightUI_[0]->clipSize = {32.f,32.f};
-    weightUI_[0]->clipLT = {weightUI_[0]->clipSize.x * (hostWheight - (hostWheight / 10.f)),0.f};
+    weightUI_[0]->color = MyMath::FloatColor(0x173b4cff);
+    weightUI_[0]->clipSize = {39.f,56.f};
+    weightUI_[0]->clipLT = {0.f,0.f};
+
     // 10以上なら 2桁目
     if(host_->GetWeight() >= 10){
         isDoubleDigit_ = true;
-        weightUI_[1] = std::make_unique<Sprite>("GameUI/numbers.png");
+        weightUI_[1] = std::make_unique<Sprite>("GameUI/num.png");
         weightUI_[1]->scale = {2.f,2.f};
         weightUI_[1]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate());
         weightUI_[1]->translate.y += whightUIOffsetY;
-        weightUI_[1]->color = {0.6f,0.6f,0.6f,1.f};
-        weightUI_[1]->clipSize = {32.f,32.f};
-        weightUI_[1]->clipLT = {weightUI_[0]->clipSize.x * (hostWheight / 10.f),0.f};
-
+        weightUI_[1]->color = MyMath::FloatColor(0x173b4cff);
+        weightUI_[1]->clipSize = {39.f,56.f};
+        weightUI_[1]->clipLT = {0.f,0.f};
 
         weightUI_[0]->anchorPoint = {0.f,0.5f};
         weightUI_[1]->anchorPoint = {1.f,0.5f};
     } else{
         weightUI_[0]->anchorPoint = {0.5f,0.5f};
     }
+
+    //===================== Back 
+    back_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    back_->anchorPoint = {0.5f,0.5f};
+    back_->color ={1.f,1.f,1.f,0.6f};
+    back_->size = {76.f,76.f};
 }
 
 void SwitchWeightUI::Update(){
+    int hostWheight = host_->GetRequiredWeight();
+
+    // 座標更新
     const Vector3& hostPos = host_->GetWorldTranslate();
     weightUI_[0]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(hostPos);
     weightUI_[0]->translate.y += whightUIOffsetY;
-
-    if(isDoubleDigit_){
+    if(hostWheight >= 10){
+        isDoubleDigit_ = true;
+        //座標更新
         weightUI_[1]->translate =  weightUI_[0]->translate;
+
+        int wheightInt[2];
+        wheightInt[1] =  int(hostWheight) / 10;
+        wheightInt[0] = (int(hostWheight) - wheightInt[1]) / 10;
+
+        for(size_t i = 0; i < 2; i++){
+            weightUI_[i]->clipLT.x = float(int(weightUI_[i]->clipSize.x) * wheightInt[i]);
+        }
+    } else{
+        weightUI_[0]->clipLT.x = float(int(weightUI_[0]->clipSize.x) * int(hostWheight));
     }
+
+    back_->translate = weightUI_[0]->translate;
 }
 
 void SwitchWeightUI::Draw(){
+    back_->Draw();
     weightUI_[0]->Draw();
     if(isDoubleDigit_){
         weightUI_[1]->Draw();

@@ -23,6 +23,8 @@ private:
     // 2桁まで
     std::array<std::unique_ptr<Sprite>,2> weightUI_;
 
+    std::unique_ptr<Sprite> back_;
+
     bool isDoubleDigit_ = false;
 
 public:

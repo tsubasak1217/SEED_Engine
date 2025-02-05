@@ -86,7 +86,7 @@ void FieldObject_Door::ShowImGui(){
     ImGui::Text("has switch:%s", hasSwitchStr);
     ImGui::DragFloat("OpenSpeed", &openSpeed_, 0.01f);
     ImGui::DragFloat("ClosedPosY", &closedPosY_, 0.01f);
-    ImGui::DragFloat("MaxOpenHeight", &kMaxOpenHeight_, 0.01f,-100.0f,-5.0f);
+    ImGui::DragFloat("MaxOpenHeight", &kMaxOpenHeight_, 0.01f, -100.0f, -5.0f);
 
     ImGui::Checkbox("CameraView", &shouldPerformCameraView_);
 }
@@ -133,11 +133,15 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
         cameraTarget_->SetTranslate(GetWorldTranslate());
         cameraTarget_->UpdateMatrix();
 
-        // 例：グローバルなカメラマネージャからフォローカメラを取得
-        FollowCamera* followCamera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera());
+        FollowCamera* followCamera = dynamic_cast< FollowCamera* >(CameraManager::GetActiveCamera());
         if (followCamera){
-            followCamera->SetTarget(cameraTarget_.get());
-            shouldPerformCameraView_ = false;
+            // すでにカメラ演出が開始されていなければ、元のターゲットを保存
+            if (!cameraViewActive_){
+                followCamera->SetTarget(cameraTarget_.get());
+                followCamera->SetisViewingObject(true);
+            }
+            cameraViewActive_ = true;
+            shouldPerformCameraView_ = true;
         }
     }
 

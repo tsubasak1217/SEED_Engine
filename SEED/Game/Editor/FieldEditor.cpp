@@ -243,6 +243,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                 modelJson["openSpeed"] = door->GetOpenSpeed();
                 modelJson["openHeight"] = door->GetOpenHeight();
                 modelJson["closedPosY"] = door->GetClosedPosY();
+                modelJson["shouldPerformCameraView"] = door->GetShouldPerformCameraView();
             }
 
             // イベントエリアの場合

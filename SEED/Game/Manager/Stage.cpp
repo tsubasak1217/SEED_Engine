@@ -82,6 +82,13 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     //======================== その他 ========================//
     currentStarCount_ = 0;
+
+    //カメラがオブジェクトをviewしているモードの時はプレイヤーを動かさない
+    if (FollowCamera* camera = dynamic_cast< FollowCamera* >(CameraManager::GetActiveCamera())){
+        if (camera->GetIsViewingObject()){
+            camera->SetisViewingObject(false);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -95,6 +102,15 @@ void Stage::Update(){
         // woodだったらコライダーを編集
         if(FieldObject_Wood* wood = dynamic_cast<FieldObject_Wood*>(fieldObject.get())){
             fieldObject->EditCollider();
+        }
+    }
+
+    //カメラがオブジェクトをviewしているモードの時はプレイヤーを動かさない
+    if (FollowCamera* camera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera())){
+        if (camera->GetIsViewingObject()){
+            pPlayer_->SetIsMovable(false);
+        } else{
+            pPlayer_->SetIsMovable(true);
         }
     }
 
@@ -404,6 +420,24 @@ void Stage::LoadFromJson(const std::string& filePath){
                 }
                 moveFloor->InitializeRoutine();
             }
+
+            //===========================================================
+            // ★★ (D) Door
+            //===========================================================
+            else if (auto* door = dynamic_cast< FieldObject_Door* >(newObj)){
+                if (modelJson.contains("openSpeed") && modelJson["openSpeed"].is_number()){
+                    door->SetOpenSpeed(modelJson["openSpeed"].get<float>());
+                }
+                if (modelJson.contains("openHeight") && modelJson["openHeight"].is_number()){
+                    door->SetOpenHeight(modelJson["openHeight"].get<float>());
+                }
+                if (modelJson.contains("closedPosY") && modelJson["closedPosY"].is_number()){
+                    door->SetClosedPosY(modelJson["closedPosY"].get<float>());
+                }
+                if (modelJson.contains("shouldPerformCameraView") && modelJson["shouldPerformCameraView"].is_boolean()){
+                    door->SetShouldPerformCameraView(modelJson["shouldPerformCameraView"].get<bool>());
+                }
+            }
         }
     } else{
         std::cerr << "Warning: 'models' key is missing or not an array in JSON data." << std::endl;
@@ -477,21 +511,6 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_DOOR:
             newObj = std::make_unique<FieldObject_Door>();
-
-            if(json.contains("openSpeed")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetOpenSpeed(json["openSpeed"]);
-            }
-
-            if(json.contains("openHeight")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetOpenHeight(json["openHeight"]);
-            }
-
-            if(json.contains("closedPosY")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetClosedPosY(json["closedPosY"]);
-            }
             break;
         case FIELDMODEL_START:
             newObj = std::make_unique<FieldObject_Start>();

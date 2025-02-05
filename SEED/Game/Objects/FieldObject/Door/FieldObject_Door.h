@@ -27,6 +27,8 @@ public:
     void Update() override;
     void Draw() override;
 
+
+
     void ShowImGui() override;
 
     // IObserver の実装
@@ -51,8 +53,17 @@ public:
     void SetClosedPosY(float posY){ closedPosY_ = posY; }
     float GetClosedPosY() const{ return closedPosY_; }
 
+    bool GetShouldPerformCameraView() const{ return shouldPerformCameraView_; }
+    void SetShouldPerformCameraView(bool shouldPerform){ shouldPerformCameraView_ = shouldPerform; }
+
+    bool GetCameraViewActive() const{ return cameraViewActive_; }
+    void SetCameraViewActive(bool isActive){ cameraViewActive_ = isActive; }
+
+private:
+
 private:
     bool shouldPerformCameraView_ = false;      //< カメラ演出を行うかどうか
+    bool cameraViewActive_ = false;             //< カメラ演出中かどうか
     bool isOpened_ = false;                     //< 開閉状態のフラグ
     bool hasActivator_ = false;                 //< スイッチを持っているかどうか
     std::unique_ptr<DoorState> currentState_;   //< 現在の状態

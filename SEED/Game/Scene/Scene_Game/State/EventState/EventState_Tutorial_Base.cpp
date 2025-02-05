@@ -68,6 +68,11 @@ void EventState_Tutorial_Base::Update(){
             }
         }
 
+        if(PlayerInput::Tutorial::SkipTutorial()){
+            textStep_ = textStepMax_;
+            time_ = 0.25f;
+        }
+
         // テキストの透明度を徐々に濃くしていく(2秒かけて最大へ。1秒目から出現)
         alpha = std::clamp((time_ - kTime_) / kTime_, 0.0f, 1.0f);
         if(textStep_ == 0){

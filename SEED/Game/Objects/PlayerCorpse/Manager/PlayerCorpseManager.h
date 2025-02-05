@@ -25,6 +25,7 @@ private:
 public:
     void AddPlayerCorpse(std::unique_ptr<PlayerCorpse>& addCorpse);
     bool GetIsEmpty()const{ return playerCorpses_.empty(); }
+    PlayerCorpse* GetPlayerCorpse(int index);
     void RemoveAll();
 };
 

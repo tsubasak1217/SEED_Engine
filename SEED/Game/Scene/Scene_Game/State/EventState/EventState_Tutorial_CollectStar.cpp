@@ -15,11 +15,3 @@ EventState_Tutorial_CollectStar::EventState_Tutorial_CollectStar(Scene_Base* pSc
 EventState_Tutorial_CollectStar::~EventState_Tutorial_CollectStar(){
     pPlayer_->SetIsMovable(true);
 }
-
-void EventState_Tutorial_CollectStar::Update(){
-    EventState_Tutorial_Base::Update();
-}
-
-void EventState_Tutorial_CollectStar::Draw(){
-    EventState_Tutorial_Base::Draw();
-}

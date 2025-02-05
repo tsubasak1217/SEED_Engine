@@ -847,8 +847,10 @@ void FieldEditor::ShowImGui(){
                     static int selectedEventIndex = 0;
                     static std::vector<std::string> eventNames;
                     if (eventNames.empty()){
-                        for (const auto& [name, func] : EventFunctionTable::tableMap_){
-                            eventNames.push_back(name);
+                        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+                            if(name != ""){
+                                eventNames.push_back(name);
+                            }
                         }
                     }
                     std::string currentEventName;

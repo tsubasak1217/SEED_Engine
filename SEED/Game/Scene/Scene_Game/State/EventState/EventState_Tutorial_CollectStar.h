@@ -7,6 +7,4 @@ public:
     EventState_Tutorial_CollectStar();
     EventState_Tutorial_CollectStar(Scene_Base* pScene);
     ~EventState_Tutorial_CollectStar();
-    void Update()override;
-    void Draw()override;
 };

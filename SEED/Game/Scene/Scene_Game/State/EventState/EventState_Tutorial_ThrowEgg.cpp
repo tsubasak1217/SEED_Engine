@@ -13,12 +13,3 @@ EventState_Tutorial_ThrowEgg::EventState_Tutorial_ThrowEgg(Scene_Base* pScene) :
 EventState_Tutorial_ThrowEgg::~EventState_Tutorial_ThrowEgg(){
     pPlayer_->SetIsMovable(true);
 }
-
-
-void EventState_Tutorial_ThrowEgg::Update(){
-    EventState_Tutorial_Base::Update();
-}
-
-void EventState_Tutorial_ThrowEgg::Draw(){
-    EventState_Tutorial_Base::Draw();
-}

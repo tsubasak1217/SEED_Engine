@@ -23,4 +23,9 @@ public:
 private:
     Scene_Game* pGameScene_;
     std::unique_ptr<StageSelector> stageSelector_;
+
+private:
+    std::unique_ptr<Sprite> fade_ = nullptr;
+    bool fadeStarted_ = false; // フェード開始フラグ
+    const float fadeSpeed_ = 0.05f; // 1フレームあたりのフェード増加量
 };

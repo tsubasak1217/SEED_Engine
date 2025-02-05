@@ -42,6 +42,11 @@ void GameState_Select::Initialize(){
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetTranslate(StageManager::GetStartPos());
 
+    fade_ = std::make_unique<Sprite>("SelectScene/fade.png");
+    fade_->anchorPoint = Vector2(0.0f, 0.0f);
+    fade_->translate = Vector2(0.0f, 0.0f);
+    fade_->color = Vector4(1.0f, 1.0f, 1.0f, 0.0f);
+    fadeStarted_ = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +72,7 @@ void GameState_Select::Update(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Draw(){
     stageSelector_->Draw();
+    fade_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -108,22 +114,37 @@ void GameState_Select::HandOverColliders(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::ManageState(){
 
-    // title遷移
-    if (Input::IsTriggerPadButton(PAD_BUTTON::START)){
-        pGameScene_->ChangeState(new GameState_Title(pScene_));
+    // もしステージが決定されたなら、Playステートへ即座に遷移（フェードは行わない）
+    if (stageSelector_->GetIsDecided()){
+        // ステージ番号は現在のステージ番号+1（仕様に合わせる）
+        int stageNo = pGameScene_->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
+        std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
+
+        // ステージの初期化（InitializeStatusを呼ぶ）
+        pGameScene_->Get_pStageManager()->GetCurrentStage()->InitializeStatus(filePath);
+        pGameScene_->Get_pPlayer()->SetCorpseManager(
+            pGameScene_->Get_pStageManager()->GetCurrentStage()->GetPlayerCorpseManager()
+        );
+
+        // Playステートに遷移
+        pGameScene_->ChangeState(new GameState_Play(pGameScene_));
         return;
     }
 
-    // ステージが決定されたらプレイステートに遷移
-    if(stageSelector_->GetIsDecided()){
-        // ステージをリセット
-        int stageNo = pGameScene_->Get_pStageManager()->GetCurrentStage()->GetStageNo() + 1;
-        std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo) + ".json";
-        // pGameScene_->Get_pStageManager()->GetCurrentStage()->LoadFromJson(filePath); <- InitializeStatus を追加したのでコメントアウト
-        pGameScene_->Get_pStageManager()->GetCurrentStage()->InitializeStatus(filePath);
-        pGameScene_->Get_pPlayer()->SetCorpseManager(pGameScene_->Get_pStageManager()->GetCurrentStage()->GetPlayerCorpseManager());
+    // タイトルへの遷移を START ボタンで行う
+    if (Input::IsTriggerPadButton(PAD_BUTTON::START)){
+        // フェード処理がまだ開始されていなければ開始する
+        if (!fadeStarted_){
+            fadeStarted_ = true;
+        }
+    }
 
-        // 遷移
-        pGameScene_->ChangeState(new GameState_Play(pGameScene_));
+    // タイトルへのフェード処理中なら、fadeのアルファ値を更新する
+    if (fadeStarted_){
+        fade_->color.w += fadeSpeed_;
+        if (fade_->color.w >= 1.0f){
+            fade_->color.w = 1.0f; // 完全に暗転したら
+            pGameScene_->ChangeState(new GameState_Title(pScene_));
+        }
     }
 }

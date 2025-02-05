@@ -295,6 +295,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
+    <ClInclude Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />

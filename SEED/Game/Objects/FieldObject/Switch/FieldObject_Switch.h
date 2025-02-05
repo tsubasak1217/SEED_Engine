@@ -14,10 +14,11 @@ public:
     void EndFrame() override;
     
     // 衝突時の処理
-    void OnCollision(const BaseObject* other, ObjectType objectType) override;
+    void OnCollision(BaseObject* other, ObjectType objectType) override;
 
 private:
     // 重さに応じたUI
     std::unique_ptr<SwitchWeightUI> weightUI_;
     bool drawingUI_ = false;
+
 };

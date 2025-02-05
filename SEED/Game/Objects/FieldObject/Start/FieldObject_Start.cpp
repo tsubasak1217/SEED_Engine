@@ -15,7 +15,7 @@ FieldObject_Start::FieldObject_Start(){ // 名前の初期化
     model_->isRotateWithQuaternion_ = false;
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    InitColliders(ObjectType::Area);
     // 全般の初期化
     FieldObject::Initialize();
 }
@@ -27,7 +27,7 @@ FieldObject_Start::FieldObject_Start(const std::string& modelName)
     name_ = "start";
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    InitColliders(ObjectType::Area);
     // 全般の初期化
     FieldObject::Initialize();
 }

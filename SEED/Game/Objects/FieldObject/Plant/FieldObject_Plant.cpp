@@ -10,7 +10,7 @@ FieldObject_Plant::FieldObject_Plant(){
     model_->meshColor_[0] = MyMath::FloatColor(0x00af58ff);
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
-    InitColliders(ObjectType::Field);
+    InitColliders(ObjectType::Area);
     // 全般の初期化
     FieldObject::Initialize();
 }

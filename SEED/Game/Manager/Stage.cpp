@@ -2,6 +2,7 @@
 #include "CollisionManaer/CollisionManager.h"
 #include "EventState/EventFunctionTable.h"
 #include "Player/Player.h"
+#include "../GameSystem.h"
 
 // PlayerState
 #include "Player/PlayerState/PlayerState_Idle.h"
@@ -130,7 +131,9 @@ void Stage::Update(){
         if (camera->GetIsViewingObject()){
             pPlayer_->SetIsMovable(false);
         } else{
-            pPlayer_->SetIsMovable(true);
+            if(!GameSystem::GetScene()->HasEvent()){
+                pPlayer_->SetIsMovable(true);
+            }
         }
     }
 

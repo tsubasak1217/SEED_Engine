@@ -21,6 +21,7 @@ public:
     void ChangeState(State_Base* nextState);
     void CauseEvent(EventState_Base* nextEventState);
     void EndEvent() { currentEventState_ = nullptr; };
+    bool HasEvent(){ return currentEventState_ != nullptr; };
 
 protected:
     std::unique_ptr<State_Base> currentState_;

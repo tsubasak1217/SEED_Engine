@@ -59,7 +59,7 @@ void Shadow::Update(Stage* currentStage){
         if(MyMath::LengthSq(nearestPos - hostPosXZ) <= 0.001f /*仮決め*/){
             // 範囲内なら
             // 一番高さが近いオブジェクトの位置を取得
-            model_->translate_.y = (std::max)(model_->translate_.y,objectTranslate.y + 0.1f);
+            model_->translate_.y = (std::max)(model_->translate_.y,objectTranslate.y + 0.2f);
         }
     }
 

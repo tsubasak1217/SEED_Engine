@@ -113,6 +113,7 @@ void BaseObject::SetCollidable(bool _collidable){
     isHandOverColliders_ = _collidable;
 }
 
+
 // フレーム終了時の落下更新処理
 void BaseObject::EndFrameDropFlagUpdate(){
     // 落下フラグの更新
@@ -190,7 +191,7 @@ void BaseObject::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void BaseObject::OnCollision(const BaseObject* other, ObjectType objectType){
+void BaseObject::OnCollision( BaseObject* other, ObjectType objectType){
     isCollide_ = true;
     other;
     objectType;
@@ -268,3 +269,13 @@ void BaseObject::EraseCheckColliders(){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// jsonデータの取得
+//////////////////////////////////////////////////////////////////////////
+const nlohmann::json& BaseObject::GetJsonData() {
+    static nlohmann::json json;
+    json["Translate"] = GetWorldTranslate();
+    json["Rotate"] = GetWorldRotate();
+    json["Scale"] = GetWorldScale();
+    return json;
+}

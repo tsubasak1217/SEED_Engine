@@ -177,16 +177,16 @@ void Player::Spawn(Egg* _egg){
 }
 
 void Player::GameOver(){
-    { // ステージの初期化
-        StageManager::GetCurrentStage()->InitializeStatus();
-    }
-    { // プレイヤーを初期地点に戻す
+    { // プレイヤーを初期地点に戻す(セーブデータがあればInitializeStatusで上書きされる)
         DiscardPreCollider();
         SetTranslate(StageManager::GetCurrentStage()->GetStartPosition());
         UpdateMatrix();
     }
     {
         growLevel_ = 1;
+    }
+    { // ステージの初期化
+        StageManager::GetCurrentStage()->InitializeStatus(true);
     }
     
     { // ステートの初期化
@@ -263,9 +263,22 @@ bool Player::CanEatEnemy(){
 }
 
 //////////////////////////////////////////////////////////////////////////
+// 基本的な情報をJson形式で出す
+//////////////////////////////////////////////////////////////////////////
+const nlohmann::json& Player::GetJsonData(){
+    static nlohmann::json json;
+    json["GrowLevel"] = growLevel_;
+    json["Weight"] = weight_;
+    
+    // BaseObjectの情報と結合して出力
+    json.update(BaseCharacter::GetJsonData());
+    return json;
+}
+
+//////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(const BaseObject* other,ObjectType objectType){
+void Player::OnCollision(BaseObject* other,ObjectType objectType){
     other;
     objectType;
     static float kUnrriValledTime = 3.0f;

@@ -69,17 +69,32 @@ HRESULT AudioManager::InitializeMediaFoundation(){
 /////////////////////////////////////////////////////////////////////////////////////
 void AudioManager::BeginFrame(){
     // システムボリュームの設定
-    if(Input::IsPressKey(DIK_V) && Input::IsPressKey(DIK_O) && Input::IsPressKey(DIK_L)){
+    if(Input::IsPressKey(DIK_V)){
     
-        if(Input::IsTriggerKey(DIK_UP)){
+        if(Input::IsTriggerKey(DIK_F3)){// ボリュームを上げる
             systemVolumeRate_ += 0.1f;
         }
 
-        if(Input::IsTriggerKey(DIK_DOWN)){
+        if(Input::IsTriggerKey(DIK_F2)){// ボリュームを下げる
             systemVolumeRate_ -= 0.1f;
         }
 
+        if(Input::IsTriggerKey(DIK_F1)){// ミュート/ミュート解除
+            if(systemVolumeRate_ == 0.0f){
+                systemVolumeRate_ = 1.0f;
+            } else{
+                systemVolumeRate_ = 0.0f;
+            }
+        }
+
         systemVolumeRate_ = (std::max)(systemVolumeRate_, 0.0f);
+
+        // 流れている音声の音量を変更
+        for(auto& [filename, sourceVoice] : instance_->sourceVoices_){
+            if(sourceVoice != nullptr){
+                sourceVoice->SetVolume(instance_->volumeMap_[filename] * systemVolumeRate_);
+            }
+        }
     }
 }
 
@@ -172,7 +187,7 @@ void AudioManager::PlayAudio(const std::string& filename, bool loop, float volum
     assert(instance_->audios_.find(filename) != instance_->audios_.end());
 
     // 再生
-    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume * systemVolumeRate_);
+    instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume);
 
     // 再生フラグを立てる
     instance_->isPlaying_[filename] = true;
@@ -249,6 +264,7 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume){
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
     instance_->sourceVoices_[filename]->SetVolume(volume * systemVolumeRate_);
+    instance_->volumeMap_[filename] = volume;
 }
 
 

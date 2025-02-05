@@ -46,8 +46,15 @@ Stage::Stage(ISubject& subject):subject_(subject){
     playerCorpseManager_->Initialize();
 }
 
-void Stage::InitializeStatus(){
-    std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
+void Stage::InitializeStatus(bool isSaveData){
+    std::string filePath;
+
+    if(!isSaveData){
+        filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    } else{
+        filePath = "resources/jsons/StageSaveDatas/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    }
+
     InitializeStatus(filePath);
 }
 
@@ -62,8 +69,19 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     // Jsonから読み込み
     LoadFromJson(_jsonFilePath);
 
+    // _jsonFilePathのファイルをコピーする
+    std::string copyfilePath = "resources/jsons/StageSaveDatas/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    bool isSave = true;
+    if(_jsonFilePath != copyfilePath){
+        std::ifstream ifs(_jsonFilePath);
+        std::ofstream ofs(copyfilePath);
+        ofs << ifs.rdbuf();
+        ifs.close();
+        isSave = false;
+    }
+
     // 敵の初期化
-    enemyManager_->LoadEnemies();
+    enemyManager_->LoadEnemies(isSave);
 
     // player
     {
@@ -437,6 +455,16 @@ void Stage::LoadFromJson(const std::string& filePath){
             }
         }
     }
+
+    // プレイヤーの情報があるとき
+    if(jsonData.contains("player")){
+        pPlayer_->SetTranslate(jsonData["player"]["Translate"]);
+        pPlayer_->SetRotate(Vector3(jsonData["player"]["Rotate"]));
+        pPlayer_->SetScale(jsonData["player"]["Scale"]);
+        pPlayer_->SetGrowLevel(jsonData["player"]["GrowLevel"]);
+        pPlayer_->SetIsDrop(false);
+        pPlayer_->SetDropSpeed(0.0f);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -596,6 +624,10 @@ void Stage::AddModel(
 
         case FIELDMODEL_CHIKUWA:
             newObj = std::make_unique<FieldObject_Chikuwa>();
+            break;
+
+        case FIELDMODEL_SAVEAREA:
+            newObj = std::make_unique<FieldObject_SaveArea>();
             break;
 
         default:

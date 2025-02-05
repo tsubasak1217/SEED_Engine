@@ -242,7 +242,7 @@ void Enemy::Rename(const std::string& newName){
 //////////////////////////////////////////////////////////////////////////
 
 
-void Enemy::OnCollision(const BaseObject* other,ObjectType objectType){
+void Enemy::OnCollision(BaseObject* other,ObjectType objectType){
 
     other;
 

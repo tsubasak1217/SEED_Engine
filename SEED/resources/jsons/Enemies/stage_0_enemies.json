@@ -7,8 +7,8 @@
             "HP": 0,
             "Index": 0,
             "Name": "enemy0",
-            "RoutineName": "stage1_enemy0",
-            "moveSpeed": 2.5999999046325684
+            "RoutineName": "stage1_enemy_1",
+            "moveSpeed": 2.5
         }
     ]
 }

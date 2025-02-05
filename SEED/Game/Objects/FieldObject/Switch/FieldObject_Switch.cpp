@@ -102,7 +102,7 @@ void FieldObject_Switch::EndFrame(){
 ////////////////////////////////////////////////////////////////////
 // 衝突時処理
 ////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+void FieldObject_Switch::OnCollision(BaseObject* other,ObjectType objectType){
     // 重さを加算
     if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse
         or objectType == ObjectType::Enemy){

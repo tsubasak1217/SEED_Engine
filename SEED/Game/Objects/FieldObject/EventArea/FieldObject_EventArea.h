@@ -14,7 +14,7 @@ public:
     void Draw()override;
     void BeginFrame()override;
     void SetEvent(std::function<void(Scene_Base*)> event) { event_ = event; }
-    void OnCollision(const BaseObject* other, ObjectType objectType)override;
+    void OnCollision( BaseObject* other, ObjectType objectType)override;
 
 public:
     const std::string& GetEventName()const{ return eventName_; }

@@ -30,8 +30,18 @@ void TextureManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void TextureManager::StartUpLoad(){
+    // ===================== tutorial =====================//
     LoadTexture("Tutorials/tutorialText.png");
     LoadTexture("Tutorials/textField.png");
+
+    // ===================== UI =====================//
+    LoadTexture("GameUI/A.png");
+    LoadTexture("GameUI/B.png");
+    LoadTexture("GameUI/num.png");
+    LoadTexture("GameUI/eggUI.png");
+    LoadTexture("GameUI/skip.png");
+    LoadTexture("GameUI/start.png");
+    LoadTexture("GameUI/throwUI.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filename){

@@ -2,7 +2,7 @@
 #include "GameState_Title.h"
 #include "GameState_Select.h"
 
-//lib 
+// lib 
 #include "../adapter/json/JsonCoordinator.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -13,8 +13,6 @@
 GameState_Title::GameState_Title(Scene_Base* pScene): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize();
-
-
 }
 
 GameState_Title::~GameState_Title(){
@@ -28,9 +26,10 @@ GameState_Title::~GameState_Title(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::Initialize(){
     pGameScene_->Get_pStageManager()->GetTitleStage()->InitializeStatus(std::string("resources/jsons/Stages/stage_title.json"));
+
     // 操作フラグをfalseにしておく
     Vector3 initializePlayerPos = StageManager::GetTitleStartPos();
-    pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetTitleStartPos());
+    pGameScene_->Get_pPlayer()->SetPosition(initializePlayerPos);
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
 
@@ -42,9 +41,9 @@ void GameState_Title::Initialize(){
 
     const std::string groupName = "title";
     JsonCoordinator::LoadGroup(groupName);
-    JsonCoordinator::RegisterItem(groupName,"cameraPos",cameraOffset_);
-    JsonCoordinator::RegisterItem(groupName,"cameraRotate",cameraRotate_);
-    JsonCoordinator::RegisterItem(groupName,"playerRotate",playerRotate_);
+    JsonCoordinator::RegisterItem(groupName, "cameraPos", cameraOffset_);
+    JsonCoordinator::RegisterItem(groupName, "cameraRotate", cameraRotate_);
+    JsonCoordinator::RegisterItem(groupName, "playerRotate", playerRotate_);
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
@@ -52,6 +51,14 @@ void GameState_Title::Initialize(){
     titleLogo_ = std::make_unique<Sprite>("Title/TitleLogo.png");
     titleLogo_->anchorPoint = {0.5f,0.5f};
     titleLogo_->translate = {1090.f,190.f};
+  
+    // FadeIn用のフェードスプライトの初期化
+    fade_ = std::make_unique<Sprite>("SelectScene/fade.png");
+    fade_->anchorPoint = Vector2(0.0f, 0.0f);
+    fade_->translate = Vector2(0.0f, 0.0f);
+    // 初期状態は完全に不透明（フェードインで徐々に透明にする）
+    fade_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    fadeInStarted_ = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -73,17 +80,24 @@ void GameState_Title::Update(){
     if(ImGui::Button("save")){
         JsonCoordinator::SaveGroup("title");
     }
-
     JsonCoordinator::RenderGroupUI("title");
     ImGui::End();
 #endif // _DEBUG
-
 
     StageManager::GetTitleStage()->Update();
     Vector3 cameraPos = pGameScene_->Get_pPlayer()->GetWorldTranslate() + cameraOffset_;
     SEED::GetCamera()->SetTranslation(cameraPos);
     SEED::GetCamera()->SetRotation(cameraRotate_);
     pGameScene_->Get_pPlayer()->SetRotate(playerRotate_);
+
+    // フェードイン処理：フェードが始まっている場合、アルファ値を減少させる
+    if (fadeInStarted_){
+        fade_->color.w -= fadeSpeed_;
+        if (fade_->color.w <= 0.0f){
+            fade_->color.w = 0.0f;
+            fadeInStarted_ = false; // フェードイン完了
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -97,6 +111,8 @@ void GameState_Title::Draw(){
 
     titleLogo_->Draw();
 
+    // フェードイン効果の描画（フェードが完了していればアルファが0なので描画しても影響なし）
+    fade_->Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -129,8 +145,8 @@ void GameState_Title::HandOverColliders(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::ManageState(){
     // タイトル画面のステート管理
-    // 遷移
-    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
+    // 遷移：Aボタンを押したらセレクト画面へ
+    if (Input::IsTriggerPadButton(PAD_BUTTON::A)){
         pGameScene_->ChangeState(new GameState_Select(pGameScene_));
     }
 }

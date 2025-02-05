@@ -159,14 +159,6 @@ void Scene_Game::Initialize(){
     //  他クラスの情報を必要とするクラスの初期化
     ////////////////////////////////////////////////////
 
-    // DoorProximityChecker の 初期化
-    doorProximityChecker_ =
-        std::make_unique<DoorProximityChecker>(
-        eventManager_,
-        *stageManager_.get(),
-        *player_.get()
-        );
-
     // EnemyManager の 初期化
     enemyEditor_ = std::make_unique<EnemyEditor>();
 
@@ -271,8 +263,6 @@ void Scene_Game::Update(){
     cloudUV_translate_ += Vector3(-1.0f,0.0f,1.0f) * 0.01f * ClockManager::DeltaTime();
     underCloud_->uvTransform = AffineMatrix({5.0f,5.0f,1.0f},{0.0f,0.0f,0.0f},cloudUV_translate_);
 
-    // ドアとの距離をチェックし、近ければイベント発行
-    doorProximityChecker_->Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

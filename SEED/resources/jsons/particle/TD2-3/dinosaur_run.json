@@ -1,0 +1,61 @@
+{
+    "emitters": [
+        {
+            "CullingMode": 2,
+            "baseDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "blendMode": 0,
+            "center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "colors": [
+                [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "directionRange": 0.0,
+            "emitRange": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "emitType": 1,
+            "gravity": -9.800000190734863,
+            "interval": 0.5600000023841858,
+            "isActive": true,
+            "isBillboard": true,
+            "isUseGravity": false,
+            "isUseRotate": false,
+            "kMaxEmitCount": 1,
+            "lifeTimeRange": [
+                1.0,
+                3.0
+            ],
+            "numEmitEvery": 1,
+            "particleType": 0,
+            "radiusRange": [
+                1.2999999523162842,
+                2.5799999237060547
+            ],
+            "rotateSpeedRange": [
+                0.0,
+                1.0
+            ],
+            "speedRange": [
+                1.0,
+                4.639999866485596
+            ],
+            "textureHandles": [
+                "ParticleTextures/dust.png"
+            ]
+        }
+    ]
+}

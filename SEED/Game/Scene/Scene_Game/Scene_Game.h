@@ -12,7 +12,6 @@
 #include <Sprite.h>
 #include <Triangle.h>
 #include "Manager/EventManager/EventManager.h"
-#include "../Game/Objects/FieldObject/Door/DoorProximityChecker.h"
 
 // camera
 #include "FollowCamera.h"
@@ -83,7 +82,6 @@ private:
     std::unique_ptr<EnemyEditor> enemyEditor_ = nullptr;
     EventManager eventManager_;
     std::unique_ptr<StageManager> stageManager_;
-    std::unique_ptr<DoorProximityChecker> doorProximityChecker_;
 
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;

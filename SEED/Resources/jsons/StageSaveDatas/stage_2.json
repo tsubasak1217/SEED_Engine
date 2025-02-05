@@ -2471,7 +2471,7 @@
             ],
             "rotation": [
                 -0.0,
-                2.739835500717163,
+                -1.5280784368515015,
                 0.0
             ],
             "scale": [
@@ -3302,6 +3302,28 @@
             "type": 0
         },
         {
+            "eventFunctionKey": "Tutorial_ThrowEgg",
+            "fieldObjectID": "3d25c0a7-0b56-7538-21cd-9fa73d8fcb7d",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -115.0,
+                35.0,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                5.100002288818359,
+                2.5
+            ],
+            "type": 9
+        },
+        {
             "fieldObjectID": "1db6f7fd-78b9-a276-59b6-1a730a40cbe4",
             "name": "Soil",
             "position": [
@@ -3551,7 +3573,7 @@
             ],
             "rotation": [
                 -0.0,
-                1.2291697263717651,
+                -3.038698673248291,
                 0.0
             ],
             "scale": [
@@ -5131,15 +5153,37 @@
             ],
             "rotation": [
                 -0.0,
-                1.7479532957077026,
+                -2.519930362701416,
                 0.0
             ],
             "scale": [
-                2.499999523162842,
+                2.499999761581421,
                 2.5,
-                2.499999523162842
+                2.499999761581421
             ],
             "type": 2
+        },
+        {
+            "eventFunctionKey": "Tutorial_ThrowLength",
+            "fieldObjectID": "69a95415-5523-defd-6496-12e444cc69a9",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -135.0,
+                40.0,
+                -45.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 9
         },
         {
             "fieldObjectID": "68b21c72-66c8-e3d0-4754-f51871287638",
@@ -5160,26 +5204,29 @@
                 1.7000004053115845
             ],
             "type": 18
+        },
+        {
+            "eventFunctionKey": "Tutorial_Corpse",
+            "fieldObjectID": "29398ca8-590b-b337-363e-a2f667117b46",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -135.0,
+                40.0,
+                -52.5
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                4.799997806549072
+            ],
+            "type": 9
         }
     ],
-    "player": {
-        "GrowLevel": 1,
-        "Rotate": {
-            "x": -0.0,
-            "y": -0.5110396146774292,
-            "z": 0.0
-        },
-        "Scale": {
-            "x": 0.9999999403953552,
-            "y": 1.0,
-            "z": 0.9999999403953552
-        },
-        "Translate": {
-            "x": -134.96176147460938,
-            "y": 24.96000099182129,
-            "z": -47.939674377441406
-        },
-        "Weight": 14.050000190734863
-    },
     "stage": 2
 }

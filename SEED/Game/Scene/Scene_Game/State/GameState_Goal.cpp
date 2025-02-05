@@ -49,11 +49,12 @@ void GameState_Goal::Initialize(){
         isClearAll_ = pStageManager->GetIsClearAllGoal();
 
         // 次のステージの初期化
-        pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
+        if(!pStageManager->IsLastStage()){
+            pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
+            // 次のスタート地点
+            nextStartPosition_ = pGameScene_->Get_pStageManager()->GetNextStartPos();
+        }
     }
-
-    // 次のスタート地点
-    nextStartPosition_ = pGameScene_->Get_pStageManager()->GetNextStartPos();
 
     // egg
     {

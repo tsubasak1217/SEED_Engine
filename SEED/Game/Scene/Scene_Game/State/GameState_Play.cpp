@@ -6,10 +6,12 @@
 // 遷移可能なステートのインクルード
 #include "Pause/GameState_PauseForPlay.h"
 #include "GameState_Goal.h"
+#include "GameState_Select.h"
 
 // lib
 #include "../PlayerInput/PlayerInput.h"
 #include "LocalFunc.h"
+#include "Easing.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -20,8 +22,6 @@
 GameState_Play::GameState_Play(Scene_Base* pScene,bool isPlayerSetStartPos): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize(isPlayerSetStartPos);
-
-
 }
 
 GameState_Play::~GameState_Play(){}
@@ -66,15 +66,15 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
 
     // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pPlayer);
-   
+
     // ターゲットのワールド回転行列を取得
     Matrix4x4 targetWorldMatrix = pPlayer->GetWorldMat();
 
     // Y 軸の回転成分を抽出 (Z軸方向のベクトル)
-    Vector3 forward = MyMath::Normalize(Vector3(targetWorldMatrix.m[2][0], 0.0f, targetWorldMatrix.m[2][2]));
+    Vector3 forward = MyMath::Normalize(Vector3(targetWorldMatrix.m[2][0],0.0f,targetWorldMatrix.m[2][2]));
 
     // Y 軸の回転角度を求める
-    float targetYaw = std::atan2(forward.x, forward.z);
+    float targetYaw = std::atan2(forward.x,forward.z);
 
     // カメラの回転をターゲットの反対方向に設定
     pGameScene_->Get_pCamera()->SetTheta(targetYaw + 3.14f);
@@ -89,6 +89,12 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     //sprite
     pauseButton = std::make_unique<Sprite>("GameUI/start.png");
     pauseButton->color.w = 0.566f;
+
+    // 黒い画面を生成
+    fade_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    fade_->size = Vector2(1280.f,760.f);
+    fade_->color = Vector4(0.f,0.f,0.f,1.0f);
+    fade_->translate = Vector2(0.0f,fade_->size.y);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -118,6 +124,8 @@ void GameState_Play::Update(){
     fieldColliderEditor_->Edit();
 
 #endif // _DEBUG
+
+    FadeUpdate();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +135,10 @@ void GameState_Play::Update(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::Draw(){
     pauseButton->Draw();
+
+    if(isFadeIn_ || isFadeOut_){
+        fade_->Draw();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +187,54 @@ void GameState_Play::ManageState(){
 
             pScene_->ChangeState(new GameState_Goal(pScene_));
             return;
+        } else{
+            // 最後のステージならセレクトに戻る 全てクリアしていたら,ClearSceneへ
+            if(StageManager::GetIsClearAllGoal()){
+                pScene_->ChangeState(new GameState_Goal(pScene_));
+            } else{
+                pScene_->ChangeState(new GameState_Select(pScene_));
+            }
+            return;
+        }
+    }
+
+    // ゲームオーバー
+    if(!isFadeIn_ && !isFadeOut_){
+        if(pGameScene_->Get_pPlayer()->GetIsGameOver()){
+            pGameScene_->Get_pPlayer()->SetIsMovable(false);
+            isFadeIn_ = true;
+        }
+    }
+}
+
+void GameState_Play::FadeUpdate(){
+    if(isFadeIn_){
+        currentTime_ += ClockManager::DeltaTime();
+        fade_->translate.y = MyMath::Lerp(0.f,720.f,1.f - EaseInSine(currentTime_));
+        fade_->translate.y = (std::max)(fade_->translate.y,0.f);
+        if(currentTime_ >= fadeInTime_){
+            isFadeIn_ = false;
+            isFadeOut_ = true;
+            currentTime_ = 0.0f;
+
+            fade_->translate.y = 0.f;
+
+            // ゲームオーバー処理
+            pGameScene_->Get_pPlayer()->GameOver();
+        }
+    } else if(isFadeOut_){
+        currentTime_ += ClockManager::DeltaTime();
+        // フェードアウト処理
+        fade_->color.w =MyMath::Lerp(1.f,0.f,EaseInSine(currentTime_));
+        if(currentTime_ >= fadeOutTime_){
+            currentTime_ = 0;
+
+            fade_->size = Vector2(1280.f,760.f);
+            fade_->color = Vector4(0.f,0.f,0.f,1.0f);
+            fade_->translate = Vector2(0.0f,fade_->size.y);
+
+            isFadeOut_ = false;
+            pGameScene_->Get_pPlayer()->SetIsMovable(true);
         }
     }
 }

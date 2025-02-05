@@ -38,8 +38,9 @@ public:
     void Spawn(Egg* _egg);
     void UpdateScaleByGrowLevel();
     void ToClearStageState(const Vector3& nextStartPos);
-private:
+
     void GameOver();
+private:
 
 public: // Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration) override;

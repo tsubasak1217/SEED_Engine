@@ -718,13 +718,13 @@
             ],
             "rotation": [
                 -0.0,
-                -0.09875770658254623,
+                -1.793736457824707,
                 0.0
             ],
             "scale": [
-                2.499999761581421,
+                2.499999523162842,
                 2.5,
-                2.499999761581421
+                2.499999523162842
             ],
             "type": 2
         },
@@ -2142,7 +2142,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.8861068487167358,
+                -0.8087510466575623,
                 0.0
             ],
             "scale": [
@@ -8512,7 +8512,7 @@
             ],
             "rotation": [
                 -0.0,
-                1.2317527532577515,
+                -0.46329203248023987,
                 0.0
             ],
             "scale": [
@@ -8541,26 +8541,315 @@
                 2.5
             ],
             "type": 18
+        },
+        {
+            "fieldObjectID": "0a6b5d0d-127d-34b2-2ae0-23ee7f912e4d",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                228.10000610351563,
+                85.0,
+                -167.89999389648438
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                1.100000023841858,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "0a5ab443-42e3-a6ab-1f64-11883cf2d712",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                225.10000610351563,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.1600000113248825,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                1.899999976158142,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "6fece7d7-18d8-bbf2-7eba-bc326cd65f28",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                385.0,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "4e35fdcb-001a-0bcc-654e-5faf66e78e23",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                385.0,
+                85.0,
+                -155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "3533a7c2-3d6b-d78d-43c0-7ab67ee64872",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 0.4166666865348816,
+                "y": 0.016339868307113647,
+                "z": 0.016339868307113647
+            },
+            "flowerVolume": 13,
+            "isBloomFlower": true,
+            "name": "Plant",
+            "position": [
+                360.0,
+                85.0,
+                -170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                6.0,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "2d762e02-37ff-dcae-0a89-f83d35588015",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                370.0,
+                85.0,
+                -265.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "6ddb9a95-090d-5d54-552d-e96270d47c25",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                380.0,
+                85.0,
+                -250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "1c5ebd51-7da0-5bb1-648f-f6875f361cfa",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                280.0,
+                90.0,
+                -250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "69c15d5d-1b64-e6c4-42e1-bbf14c95bf3e",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                206.10000610351563,
+                85.0,
+                -250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "349708f7-223b-b2c4-0047-929250a4db82",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": true,
+            "name": "Plant",
+            "position": [
+                310.0,
+                90.0,
+                -160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                1.899999976158142,
+                2.5
+            ],
+            "type": 11
+        },
+        {
+            "fieldObjectID": "07122146-3aa9-8fff-1830-e6071416e566",
+            "flowerColor": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "flowerVolume": 10,
+            "isBloomFlower": false,
+            "name": "Plant",
+            "position": [
+                307.5,
+                90.0,
+                -162.1999969482422
+            ],
+            "rotation": [
+                -0.0,
+                -0.5199999809265137,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                1.100000023841858,
+                2.5
+            ],
+            "type": 11
         }
     ],
-    "player": {
-        "GrowLevel": 1,
-        "Rotate": {
-            "x": 1.314959803266902e-07,
-            "y": 3.012089490890503,
-            "z": -1.4973140594065626e-07
-        },
-        "Scale": {
-            "x": 0.9999999403953552,
-            "y": 1.0,
-            "z": 0.9999999403953552
-        },
-        "Translate": {
-            "x": 295.0,
-            "y": 89.95999908447266,
-            "z": -160.0
-        },
-        "Weight": 14.050000190734863
-    },
     "stage": 6
 }

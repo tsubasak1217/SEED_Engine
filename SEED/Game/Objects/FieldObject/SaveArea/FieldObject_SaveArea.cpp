@@ -68,10 +68,16 @@ void FieldObject_SaveArea::OnCollision( BaseObject* other, ObjectType objectType
 
             // セーブ
             if(Scene_Game* scene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())){
+
+                // 地形のセーブ
                 if(FieldEditor* editor = scene->GetFieldEditor()){
                     Player* player = dynamic_cast<Player*>(other);
                     editor->SaveToJson(filePath, stageNo, true, player);
                 }
+
+                // 敵のセーブ
+                EnemyManager* enemyEditor = stage->GetEnemyManager();
+                enemyEditor->SaveEnemies(true);
             }
         }
     }

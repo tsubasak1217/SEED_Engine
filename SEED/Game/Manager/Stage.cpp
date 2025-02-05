@@ -70,15 +70,17 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     // _jsonFilePathのファイルをコピーする
     std::string copyfilePath = "resources/jsons/StageSaveDatas/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    bool isSave = true;
     if(_jsonFilePath != copyfilePath){
         std::ifstream ifs(_jsonFilePath);
         std::ofstream ofs(copyfilePath);
         ofs << ifs.rdbuf();
         ifs.close();
+        isSave = false;
     }
 
     // 敵の初期化
-    enemyManager_->LoadEnemies();
+    enemyManager_->LoadEnemies(isSave);
 
     // player
     {

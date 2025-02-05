@@ -26,4 +26,5 @@ protected:
 
     static std::unique_ptr<Sprite> textFieldSprite_;
     static std::unique_ptr<Sprite> textSprite_;
+    static std::unique_ptr<Sprite> skipButtonUI_;
 };

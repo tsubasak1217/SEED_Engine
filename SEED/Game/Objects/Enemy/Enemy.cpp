@@ -34,6 +34,10 @@ void Enemy::Initialize(){
 
     // モデルの初期化
     model_ = std::make_unique<Model>("enemy.gltf");
+    if(canEat_){
+        model_ = std::make_unique<Model>("enemy_spike.gltf");
+    }
+
     model_->UpdateMatrix();
     model_->isRotateWithQuaternion_ = false;
 
@@ -44,7 +48,7 @@ void Enemy::Initialize(){
     colliderEditor_ = std::make_unique<ColliderEditor>(className_,this);
     InitColliders(ObjectType::Enemy);
     AddSkipPushBackType(ObjectType::Enemy);
-    
+
     // ターゲットになる際の注目点のオフセット
     targetOffset_ = Vector3(0.0f,3.0f,0.0f);
 
@@ -56,7 +60,7 @@ void Enemy::Initialize(){
 void Enemy::InitializeRoutine(){
     const EnemyManager* manager = GetManager();
     const auto* points = manager->GetRoutinePoints(routineName_);
-    if (points){
+    if(points){
         SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
     }
 }
@@ -96,16 +100,16 @@ void Enemy::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 void Enemy::ShowImGui(){
     // HP
-    ImGui::DragInt("HP", &HP_, 1.0f);
+    ImGui::DragInt("HP",&HP_,1.0f);
 
     // canEat
-    ImGui::Checkbox("CanEat", &canEat_);
+    ImGui::Checkbox("CanEat",&canEat_);
 
     // chasePlayer
-    ImGui::Checkbox("Chase Player", &cahsePlayer_);
+    ImGui::Checkbox("Chase Player",&cahsePlayer_);
 
     // moveSpeed
-    ImGui::DragFloat("Move Speed", &speed_, 0.1f);
+    ImGui::DragFloat("Move Speed",&speed_,0.1f);
 
     // ルーチン選択用のコンボ
     const EnemyManager* manager = GetManager();
@@ -113,9 +117,9 @@ void Enemy::ShowImGui(){
 
     // 現在の routineName_ をインデックス化
     int currentIndex = 0;
-    for (size_t i = 0; i < routineNames.size(); ++i){
-        if (routineNames[i] == routineName_){
-            currentIndex = static_cast< int >(i);
+    for(size_t i = 0; i < routineNames.size(); ++i){
+        if(routineNames[i] == routineName_){
+            currentIndex = static_cast<int>(i);
             break;
         }
     }
@@ -123,27 +127,27 @@ void Enemy::ShowImGui(){
     // コンボ表示
     std::vector<const char*> routineNamesCStr;
     routineNamesCStr.reserve(routineNames.size());
-    for (auto& rName : routineNames){
+    for(auto& rName : routineNames){
         routineNamesCStr.push_back(rName.c_str());
     }
 
-    if (ImGui::Combo("Select Routine", &currentIndex,
-        routineNamesCStr.data(),
-        static_cast< int >(routineNamesCStr.size()))){
+    if(ImGui::Combo("Select Routine",&currentIndex,
+       routineNamesCStr.data(),
+       static_cast<int>(routineNamesCStr.size()))){
         // 選択変更されたら更新
         routineName_ = routineNames[currentIndex];
         const auto* points = manager->GetRoutinePoints(routineName_);
-        if (points){
+        if(points){
             SetRoutinePoints(*points); // 選択ルーチンに対応するポイントを設定
         }
     }
 
     //状態遷移
-    if (ImGui::Button("Change State_Idle")){
-        ChangeState(new EnemyState_Idle("Enemy_Idle", this));
+    if(ImGui::Button("Change State_Idle")){
+        ChangeState(new EnemyState_Idle("Enemy_Idle",this));
     }
     if(ImGui::Button("change State_RoutineMove")){
-        ChangeState(new EnemyState_RoutineMove("Enemy_RoutineMove", this));
+        ChangeState(new EnemyState_RoutineMove("Enemy_RoutineMove",this));
     }
 
 }
@@ -152,41 +156,46 @@ void Enemy::ShowImGui(){
 //////////////////////////////////////////////////////////////////////////
 // データのセーブ
 //////////////////////////////////////////////////////////////////////////
-void Enemy::RegisterDataToJson(const std::string& group, int index){
+void Enemy::RegisterDataToJson(const std::string& group,int index){
     // インデックスを利用して各キーを生成し、自身のデータを登録
     std::string baseKey = "Enemy_" + std::to_string(index) + "_";
 
-    JsonCoordinator::RegisterItem(group, baseKey + "Name", name_);
-    JsonCoordinator::RegisterItem(group, baseKey + "HP", HP_);
-    JsonCoordinator::RegisterItem(group, baseKey + "CanEat", canEat_);
-    JsonCoordinator::RegisterItem(group, baseKey + "ChasePlayer", cahsePlayer_);
-    JsonCoordinator::RegisterItem(group, baseKey + "RoutineName", routineName_);
+    JsonCoordinator::RegisterItem(group,baseKey + "Name",name_);
+    JsonCoordinator::RegisterItem(group,baseKey + "HP",HP_);
+    JsonCoordinator::RegisterItem(group,baseKey + "CanEat",canEat_);
+    JsonCoordinator::RegisterItem(group,baseKey + "ChasePlayer",cahsePlayer_);
+    JsonCoordinator::RegisterItem(group,baseKey + "RoutineName",routineName_);
 
 
     // jsonを読み込んだ時に、ルーチン名に対応するポイントを取得するために登録
 }
 
-void Enemy::LoadDataFromJson(const std::string& group, int index){
+void Enemy::LoadDataFromJson(const std::string& group,int index){
     std::string baseKey = "Enemy_" + std::to_string(index) + "_";
 
     // HP
-    if (auto hpOpt = JsonCoordinator::GetValue(group, baseKey + "HP")){
+    if(auto hpOpt = JsonCoordinator::GetValue(group,baseKey + "HP")){
         HP_ = std::get<int>(*hpOpt);
     }
     // canEat
-    if (auto eatOpt = JsonCoordinator::GetValue(group, baseKey + "CanEat")){
+    if(auto eatOpt = JsonCoordinator::GetValue(group,baseKey + "CanEat")){
         canEat_ = std::get<bool>(*eatOpt);
     }
     // chasePlayer
-    if (auto chaseOpt = JsonCoordinator::GetValue(group, baseKey + "ChasePlayer")){
+    if(auto chaseOpt = JsonCoordinator::GetValue(group,baseKey + "ChasePlayer")){
         cahsePlayer_ = std::get<bool>(*chaseOpt);
     }
     // routineName
-    if (auto rOpt = JsonCoordinator::GetValue(group, baseKey + "RoutineName")){
+    if(auto rOpt = JsonCoordinator::GetValue(group,baseKey + "RoutineName")){
         routineName_ = std::get<std::string>(*rOpt);
     }
 
-   
+    // canEatによるモデルの変更
+    if(!canEat_){
+        model_ = std::make_unique<Model>("enemy_spike.gltf");
+    }
+
+
 }
 
 void Enemy::SaveData(){
@@ -231,10 +240,10 @@ float Enemy::GetDistanceToPlayer() const{
 
 void Enemy::Rename(const std::string& newName){
     SetName(newName);
-    JsonCoordinator::RegisterItem(newName, "CanEate", canEat_);
-    JsonCoordinator::RegisterItem(newName, "ChasePlayer", cahsePlayer_);
-    JsonCoordinator::RegisterItem(newName, "HP", HP_);
-    JsonCoordinator::RegisterItem(newName, "routineName", routineName_);
+    JsonCoordinator::RegisterItem(newName,"CanEate",canEat_);
+    JsonCoordinator::RegisterItem(newName,"ChasePlayer",cahsePlayer_);
+    JsonCoordinator::RegisterItem(newName,"HP",HP_);
+    JsonCoordinator::RegisterItem(newName,"routineName",routineName_);
 }
 
 //////////////////////////////////////////////////////////////////////////

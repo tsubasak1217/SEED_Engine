@@ -28,7 +28,7 @@
 			],
 			"name":"\u30a2\u30fc\u30de\u30c1\u30e5\u30a2.001",
 			"translation":[
-				0,
+				-0.09919819980859756,
 				1.4190583229064941,
 				0
 			]
@@ -100,13 +100,39 @@
 						"node":0,
 						"path":"scale"
 					}
+				},
+				{
+					"sampler":3,
+					"target":{
+						"node":2,
+						"path":"translation"
+					}
+				},
+				{
+					"sampler":4,
+					"target":{
+						"node":2,
+						"path":"rotation"
+					}
+				},
+				{
+					"sampler":5,
+					"target":{
+						"node":2,
+						"path":"scale"
+					}
 				}
 			],
 			"name":"danceTop",
 			"samplers":[
 				{
-					"input":11,
-					"interpolation":"LINEAR",
+					"input":7,
+					"interpolation":"STEP",
+					"output":11
+				},
+				{
+					"input":7,
+					"interpolation":"STEP",
 					"output":12
 				},
 				{
@@ -115,9 +141,19 @@
 					"output":13
 				},
 				{
+					"input":14,
+					"interpolation":"LINEAR",
+					"output":15
+				},
+				{
 					"input":7,
 					"interpolation":"STEP",
-					"output":14
+					"output":16
+				},
+				{
+					"input":7,
+					"interpolation":"STEP",
+					"output":17
 				}
 			]
 		}
@@ -181,12 +217,12 @@
 			"componentType":5126,
 			"count":955,
 			"max":[
-				0.9701694846153259,
+				0.8709712624549866,
 				2.4882564544677734,
 				0.9701692461967468
 			],
 			"min":[
-				-0.9701690673828125,
+				-1.0693672895431519,
 				1.2218585014343262,
 				-0.970169723033905
 			],
@@ -261,6 +297,24 @@
 		{
 			"bufferView":11,
 			"componentType":5126,
+			"count":2,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":12,
+			"componentType":5126,
+			"count":2,
+			"type":"VEC4"
+		},
+		{
+			"bufferView":13,
+			"componentType":5126,
+			"count":2,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":14,
+			"componentType":5126,
 			"count":81,
 			"max":[
 				1.3333333333333333
@@ -271,19 +325,19 @@
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":12,
+			"bufferView":15,
 			"componentType":5126,
 			"count":81,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":13,
+			"bufferView":16,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC4"
 		},
 		{
-			"bufferView":14,
+			"bufferView":17,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC3"
@@ -353,23 +407,38 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":324,
+			"byteLength":24,
 			"byteOffset":60372
 		},
 		{
 			"buffer":0,
-			"byteLength":972,
-			"byteOffset":60696
-		},
-		{
-			"buffer":0,
 			"byteLength":32,
-			"byteOffset":61668
+			"byteOffset":60396
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":61700
+			"byteOffset":60428
+		},
+		{
+			"buffer":0,
+			"byteLength":324,
+			"byteOffset":60452
+		},
+		{
+			"buffer":0,
+			"byteLength":972,
+			"byteOffset":60776
+		},
+		{
+			"buffer":0,
+			"byteLength":32,
+			"byteOffset":61748
+		},
+		{
+			"buffer":0,
+			"byteLength":24,
+			"byteOffset":61780
 		}
 	],
 	"samplers":[
@@ -380,7 +449,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":61724,
+			"byteLength":61804,
 			"uri":"eggTop_dance.bin"
 		}
 	]

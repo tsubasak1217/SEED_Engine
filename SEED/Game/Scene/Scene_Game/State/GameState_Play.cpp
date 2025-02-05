@@ -9,6 +9,7 @@
 
 // lib
 #include "../PlayerInput/PlayerInput.h"
+#include "LocalFunc.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -65,7 +66,22 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
 
     // カメラのターゲット
     pGameScene_->Get_pCamera()->SetTarget(pPlayer);
-    pGameScene_->Get_pCamera()->Reset();
+   
+    // ターゲットのワールド回転行列を取得
+    Matrix4x4 targetWorldMatrix = pPlayer->GetWorldMat();
+
+    // Y 軸の回転成分を抽出 (Z軸方向のベクトル)
+    Vector3 forward = MyMath::Normalize(Vector3(targetWorldMatrix.m[2][0], 0.0f, targetWorldMatrix.m[2][2]));
+
+    // Y 軸の回転角度を求める
+    float targetYaw = std::atan2(forward.x, forward.z);
+
+    // カメラの回転をターゲットの反対方向に設定
+    pGameScene_->Get_pCamera()->SetTheta(targetYaw + 3.14f);
+
+    float phi = MyMath::Deg2Rad(80.0f);
+    pGameScene_->Get_pCamera()->SetPhi(phi);
+
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();

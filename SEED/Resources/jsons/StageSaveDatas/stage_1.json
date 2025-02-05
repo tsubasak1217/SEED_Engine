@@ -891,7 +891,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.1714300662279129,
+                0.641133725643158,
                 0.0
             ],
             "scale": [
@@ -1231,7 +1231,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.1714300662279129,
+                0.641133725643158,
                 0.0
             ],
             "scale": [
@@ -1251,7 +1251,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.36159273982048035,
+                0.8312963843345642,
                 0.0
             ],
             "scale": [
@@ -1302,28 +1302,6 @@
             "type": 1
         },
         {
-            "eventFunctionKey": "Tutorial_Goal",
-            "fieldObjectID": "0e00f9fc-688d-ce6d-6afd-e39836e9497c",
-            "isOnceEvent": true,
-            "name": "EventArea",
-            "position": [
-                5.0,
-                20.0,
-                -235.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                7.5,
-                7.5
-            ],
-            "type": 9
-        },
-        {
             "fieldObjectID": "57131b94-53a2-d422-6988-d82a077de14d",
             "name": "GrassSoil",
             "position": [
@@ -1342,28 +1320,6 @@
                 7.5
             ],
             "type": 0
-        },
-        {
-            "eventFunctionKey": "Tutorial_EatEnemy",
-            "fieldObjectID": "52f8e0db-05a5-265b-596a-9574492de530",
-            "isOnceEvent": true,
-            "name": "EventArea",
-            "position": [
-                10.0,
-                20.0,
-                -180.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                7.5,
-                7.5
-            ],
-            "type": 9
         },
         {
             "fieldObjectID": "51cd73d0-00be-7693-49dc-f6d2508b97b6",
@@ -4036,5 +3992,24 @@
             "type": 18
         }
     ],
+    "player": {
+        "GrowLevel": 1,
+        "Rotate": {
+            "x": -0.0,
+            "y": -0.11401178687810898,
+            "z": 0.0
+        },
+        "Scale": {
+            "x": 0.9999999403953552,
+            "y": 1.0,
+            "z": 0.9999999403953552
+        },
+        "Translate": {
+            "x": 1.9082945585250854,
+            "y": 4.95999813079834,
+            "z": -173.71881103515625
+        },
+        "Weight": 14.050000190734863
+    },
     "stage": 1
 }

@@ -58,7 +58,7 @@ void ClearState_Main::ChangeModel(){
 
         // transform Initialize
         dinoModel->rotate_.y = 3.141592f;
-        dinoModel->translate_ = {0.0f,-1.910f,10.0f};
+        dinoModel->translate_ = {4.56f,-1.910f,10.0f};
 
         dinoModel->isRotateWithQuaternion_ = false;
         dinoModel->isParentScale_ = false;
@@ -72,7 +72,7 @@ void ClearState_Main::ChangeModel(){
         eggTopModel->StartAnimation("danceTop",true);
         // transform Initialize
         eggTopModel->rotate_.y = 3.141592f;
-        eggTopModel->translate_ = {0.0f,-1.910f,10.0f};
+        eggTopModel->translate_ = {4.56f,-1.910f,10.0f};
 
         eggTopModel->isRotateWithQuaternion_ = false;
         eggTopModel->isParentScale_ = false;
@@ -86,7 +86,7 @@ void ClearState_Main::ChangeModel(){
         eggBottomModel->StartAnimation("danceButtom",true);
         // transform Initialize
         eggBottomModel->rotate_.y = 3.141592f;
-        eggBottomModel->translate_ = {0.0f,-1.910f,10.0f};
+        eggBottomModel->translate_ = {4.56f,-1.910f,10.0f};
 
         eggBottomModel->isRotateWithQuaternion_ = false;
         eggBottomModel->isParentScale_ = false;

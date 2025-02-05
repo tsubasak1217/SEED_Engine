@@ -42,11 +42,14 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
     deadPos_ = pCharacter_->GetWorldTranslate();
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+    pPlayer->SetAnimation("dead",false);
 
     spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
 
     // 移動不可にする
     pPlayer->SetIsMovable(false);
+
+    beforePlayerScale_ = pPlayer->GetWorldScale();
 
     pCharacter_->SetIsJump(false);
     pCharacter_->SetIsDrop(false);
@@ -196,6 +199,8 @@ void PlayerState_Spawn::ManageState(){
                 std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
                 pCorpse->Initialize();
                 pCorpse->SetManager(pPlayer->GetCorpseManager());
+                pCorpse->SetScale(beforePlayerScale_);
+                pCorpse->SetRotateY(pPlayer->GetWorldRotate().y);
                 pCorpse->SetTranslate(deadPos_);
                 pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
             }

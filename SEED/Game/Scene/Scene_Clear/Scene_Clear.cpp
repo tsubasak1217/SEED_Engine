@@ -13,7 +13,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear(){
     SEED::SetCamera("main");
-    CameraManager::GetActiveCamera()->SetTranslation({0.f,0.f,-10.f});
+    CameraManager::GetActiveCamera()->SetTranslation({2.f,3.f,-10.f});
+    CameraManager::GetActiveCamera()->SetRotation({0.f,0.1f,0.f});
     Initialize();
 }
 
@@ -31,7 +32,7 @@ void Scene_Clear::Initialize(){
 
     // transform Initialize
     dinosaur_->rotate_.y = 3.141592f;
-    dinosaur_->translate_ = {0.0f,-1.910f,10.0f};
+    dinosaur_->translate_ = {4.56f,-1.910f,10.0f};
 
     dinosaur_->isRotateWithQuaternion_ = false;
     dinosaur_->isParentScale_ = false;
@@ -44,7 +45,7 @@ void Scene_Clear::Initialize(){
     eggTop_ = std::make_unique<Model>("eggTop_breakEgg.gltf");
     // transform Initialize
     eggTop_->rotate_.y = 3.141592f;
-    eggTop_->translate_ = {0.0f,-1.910f,10.0f};
+    eggTop_->translate_ = {4.56f,-1.910f,10.0f};
 
     eggTop_->isRotateWithQuaternion_ = false;
     eggTop_->isParentScale_ = false;
@@ -57,7 +58,7 @@ void Scene_Clear::Initialize(){
     eggBottom_ = std::make_unique<Model>("eggBottom_breakEgg.gltf");
     // transform Initialize
     eggBottom_->rotate_.y = 3.141592f;
-    eggBottom_->translate_ = {0.0f,-1.910f,10.0f};
+    eggBottom_->translate_ = {4.56f,-1.910f,10.0f};
 
     eggBottom_->isRotateWithQuaternion_ = false;
     eggBottom_->isParentScale_ = false;
@@ -69,7 +70,7 @@ void Scene_Clear::Initialize(){
     //=========================== corpsePile =======================//
     corpsesPile_ = std::make_unique<Model>("corpsesPile.obj");
     corpsesPile_->isRotateWithQuaternion_ = false;
-    corpsesPile_->translate_ = {-0.160f,-5.41f,8.99f};
+    corpsesPile_->translate_ = {4.36f,-5.41f,9.12f};
 
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();
@@ -106,17 +107,6 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
-    ImGui::Begin("dinosaur");
-    ImGui::DragFloat3("scale",&dinosaur_->scale_.x,0.01f);
-    ImGui::DragFloat3("rotate",&dinosaur_->rotate_.x,0.01f);
-    ImGui::DragFloat3("translate",&dinosaur_->translate_.x,0.01f);
-    ImGui::End();
-    ImGui::Begin("CorpsesPile");
-    ImGui::DragFloat3("scale",&corpsesPile_->scale_.x,0.01f);
-    ImGui::DragFloat3("rotate",&corpsesPile_->rotate_.x,0.01f);
-    ImGui::DragFloat3("translate",&corpsesPile_->translate_.x,0.01f);
-    ImGui::End();
-
     UpdateCorpseParticles();
 
     //=========================== Object =======================//

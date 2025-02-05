@@ -32,6 +32,9 @@ public:
     void HandOverColliders()override;
     void ManageState()override;
 
+public:
+    FieldEditor* GetFieldEditor(){ return fieldEditor_.get(); }
+
 private:
     Scene_Game* pGameScene_;
 

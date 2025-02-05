@@ -93,7 +93,7 @@ void FieldObject_Goal::EndFrame(){
 ////////////////////////////////////////////////////////////////////////////////////////
 //  衝突処理
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Goal::OnCollision(const BaseObject* other,ObjectType objectType){
+void FieldObject_Goal::OnCollision(BaseObject* other,ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
         if(PlayerInput::CharacterMove::GoNextStage()){

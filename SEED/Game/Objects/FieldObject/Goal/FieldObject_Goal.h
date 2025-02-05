@@ -16,7 +16,7 @@ public:
     void Draw()override;
     void BeginFrame()override;
     void EndFrame()override;
-    void OnCollision(const BaseObject* other, ObjectType objectType)override;
+    void OnCollision( BaseObject* other, ObjectType objectType)override;
     void ShowImGui()override{}
 
 public:

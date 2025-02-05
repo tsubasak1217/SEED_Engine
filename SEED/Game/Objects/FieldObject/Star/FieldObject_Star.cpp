@@ -70,7 +70,7 @@ void FieldObject_Star::Draw(){
 ///////////////////////////////////////////////////////////////////
 // 衝突処理
 ///////////////////////////////////////////////////////////////////
-void FieldObject_Star::OnCollision(const BaseObject* other, ObjectType objectType){
+void FieldObject_Star::OnCollision( BaseObject* other, ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
         // 取得されたので削除依頼を行う

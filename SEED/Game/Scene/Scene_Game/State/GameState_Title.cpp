@@ -27,7 +27,7 @@ GameState_Title::~GameState_Title(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::Initialize(){
-    pGameScene_->Get_pStageManager()->GetTitleStage()->InitializeStatus("resources/jsons/Stages/stage_title.json");
+    pGameScene_->Get_pStageManager()->GetTitleStage()->InitializeStatus(std::string("resources/jsons/Stages/stage_title.json"));
     // 操作フラグをfalseにしておく
     Vector3 initializePlayerPos = StageManager::GetTitleStartPos();
     pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetTitleStartPos());

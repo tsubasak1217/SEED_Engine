@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.cpp" />
@@ -292,6 +293,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForSelect.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseForPlay.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\Pause\GameState_PauseBase.h" />

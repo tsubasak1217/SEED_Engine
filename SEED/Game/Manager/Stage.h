@@ -28,6 +28,7 @@
 #include "FieldObject/Tile/FieldObject_Tile.h"
 #include "FieldObject/Box/FieldObject_Box.h"
 #include "FieldObject/Chikuwa/FieldObject_Chikuwa.h"
+#include "FieldObject/SaveArea/FieldObject_SaveArea.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"
@@ -43,7 +44,7 @@ public:
 
 
     // 卵の取得数など,ステータスの初期化(ステージを遷移したときなどに呼ぶ)
-    void InitializeStatus();
+    void InitializeStatus(bool isSaveData = false);
     void InitializeStatus(const std::string& _jsonFilePath);
 
     void Update();

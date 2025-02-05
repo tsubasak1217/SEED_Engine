@@ -19,6 +19,7 @@
 
 //editor
 #include "../Game/Editor/EnemyEditor.h"
+#include "../Game/Editor/FieldEditor.h"
 
 // objects
 #include "Egg/Manager/EggManager.h"
@@ -52,6 +53,10 @@ public:
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
     Player* Get_pPlayer(){ return player_.get(); }
     void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
+
+    // 禁忌
+    FieldEditor* GetFieldEditor();
+
 private:
     void BGMUpdate();
 

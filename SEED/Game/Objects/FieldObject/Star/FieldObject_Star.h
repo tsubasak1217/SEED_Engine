@@ -11,7 +11,7 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
-    void OnCollision(const BaseObject* other, ObjectType objectType)override;
+    void OnCollision( BaseObject* other, ObjectType objectType)override;
 
 public:
     std::unique_ptr<PointLight> light_;

@@ -40,7 +40,7 @@ protected:
     /*-------- コライダー関連 --------*/
 public:
     virtual void HandOverColliders();
-    virtual void OnCollision(const BaseObject* other,ObjectType objectType);
+    virtual void OnCollision(BaseObject* other,ObjectType objectType);
     void InitColliders(const std::string& fileName,ObjectType objectType);
     virtual void DiscardPreCollider();
     void ResetCollider();
@@ -151,6 +151,11 @@ public:
     bool GetIsCollide()const{ return isCollide_; }
     bool GetIsCollideEnter()const{ return isCollide_ && !preIsCollide_; }
     void SetCollidable(bool _collidable);
+
+    //=====================================
+    // json
+    //=====================================
+    virtual const nlohmann::json& GetJsonData();
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー変数

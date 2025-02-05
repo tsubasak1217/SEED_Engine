@@ -39,7 +39,7 @@ void FieldObject_Chikuwa::Update(){
 }
 
 // プレイヤーと接触したらタッチされたフラグを立てる
-void FieldObject_Chikuwa::OnCollision(const BaseObject* other, ObjectType objectType){
+void FieldObject_Chikuwa::OnCollision( BaseObject* other, ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
         model_->meshColor_[0] = { 1.0f,0.5f,0.0f,1.0f };

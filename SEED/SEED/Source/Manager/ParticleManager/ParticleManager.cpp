@@ -270,6 +270,18 @@ void ParticleManager::AddEffect(const std::string& fileName, const Vector3& posi
     AddEffect(fileName, position, nullptr);
 }
 
+/// <summary>
+/// エフェクトを削除する
+/// </summary>
+void ParticleManager::DeleteAll(){
+    instance_->particles_.clear();
+    instance_->emitters_.clear();
+    instance_->emitterGroups_.clear();
+    instance_->effects_.clear();
+    instance_->effectData_.clear();
+    instance_->accelerationFields_.clear();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */

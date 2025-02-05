@@ -56,6 +56,11 @@ public:
     static void AddEffect(const std::string& fileName, const Matrix4x4* parentMat);
     static void AddEffect(const std::string& fileName, const Vector3& position);
 
+    /// <summary>
+    /// 削除
+    /// </summary>
+    static void DeleteAll();
+
 private:
 
     /// <summary>
@@ -77,7 +82,7 @@ private:
 private:// ファイルの入出力
 
     // jsonファイルに保存
-    void OutputToJson(const EmitterGroup& emitterGroup,const std::string& outputFileName);
+    void OutputToJson(const EmitterGroup& emitterGroup, const std::string& outputFileName);
     void OutputEmitterGroup(const EmitterGroup& emitterGroup);
     // jsonファイルから読み込み
     void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);

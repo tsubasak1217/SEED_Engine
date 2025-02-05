@@ -57,15 +57,22 @@ void FollowCamera::Update(){
     transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
 
-void FollowCamera::Reset(){
-    if (target_){
-        targetPos_ = target_->GetWorldTranslate();
-        transform_.rotate_.y = target_->GetWorldRotate().y;
-    }
-    //追従対象からのオフセット
+void FollowCamera::Reset(const Vector3& pos){
+    // 指定された座標に即座にカメラを移動
+    targetPos_ = pos;
+    aimTargetPos_ = pos;
+    aimPosition_ = pos;
+
+    // カメラのオフセットベクトルを計算
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
+
+    // 目標カメラ位置を算出
     transform_.translate_ = targetPos_ + (offsetVec * distance_);
+
+    // カメラの回転を計算
+    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
+
 
 void FollowCamera::UpdateAngle(){
     // 入力が有効な場合のみ角度を更新

@@ -31,8 +31,5 @@ private:
 private:
     Scene_Clear* pClearScene_;
 
-    //
-    Model* pDinoModel_ = nullptr;
-
     bool isBreakEgg_ = false;
 };

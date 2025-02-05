@@ -35,6 +35,8 @@ private:
 
     // model
     std::unique_ptr<Model> dinosaur_;
+    std::unique_ptr<Model> eggBottom_;
+    std::unique_ptr<Model> eggTop_;
 
     //================== Emitter ==================//
     struct CorpseEmitter{
@@ -57,4 +59,10 @@ private:
 public:
     Model* GetDinosaur(){ return dinosaur_.get(); };
     void SetDinosaur(std::unique_ptr<Model> model){ dinosaur_ = std::move(model); };
+
+    Model* GetEggTop(){ return eggTop_.get(); };
+    void SetEggTop(std::unique_ptr<Model> model){ eggTop_ = std::move(model); };
+
+    Model* GetEggBottom(){ return eggBottom_.get(); };
+    void SetEggBottom(std::unique_ptr<Model> model){ eggBottom_ = std::move(model); };
 };

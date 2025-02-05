@@ -25,7 +25,6 @@ Scene_Clear::~Scene_Clear(){}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
     //=========================== dinosaur =======================//
-    dinosaur_ = std::make_unique<Model>();
     dinosaur_ = std::make_unique<Model>("clear_breakEgg.gltf");
     dinosaur_->StartAnimation("breakEgg",false);
 
@@ -39,6 +38,34 @@ void Scene_Clear::Initialize(){
 
     // 先に読み込んでおく
     ModelManager::LoadModel("clear_dance.gltf");
+
+    //=========================== eggTop =======================//
+    eggTop_ = std::make_unique<Model>("eggTop_breakEgg.gltf");
+    eggTop_->StartAnimation("breakEgg",false);
+    // transform Initialize
+    eggTop_->rotate_.y = 3.141592f;
+    eggTop_->translate_ = {0.0f,-1.2f,10.0f};
+
+    eggTop_->isRotateWithQuaternion_ = false;
+    eggTop_->isParentScale_ = false;
+    eggTop_->UpdateMatrix();
+
+    // 先に読み込んでおく
+    ModelManager::LoadModel("eggTop_dance.gltf");
+
+    //=========================== eggBottom =======================//
+    eggBottom_ = std::make_unique<Model>("eggBottom_breakEgg.gltf");
+    eggBottom_->StartAnimation("breakEgg",false);
+    // transform Initialize
+    eggBottom_->rotate_.y = 3.141592f;
+    eggBottom_->translate_ = {0.0f,-1.2f,10.0f};
+
+    eggBottom_->isRotateWithQuaternion_ = false;
+    eggBottom_->isParentScale_ = false;
+    eggBottom_->UpdateMatrix();
+
+    // 先に読み込んでおく
+    ModelManager::LoadModel("eggBottom_dance.gltf");
 
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();
@@ -57,8 +84,6 @@ void Scene_Clear::Initialize(){
 
     //=========================== state =========================//
     currentState_ = std::make_unique<ClearState_Enter>(this);
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +125,8 @@ void Scene_Clear::Update(){
 void Scene_Clear::Draw(){
     //=========================== Object =======================//
     dinosaur_->Draw();
+    eggTop_->Draw();
+    eggBottom_->Draw();
 
     for(int i = 0; i < corpseEmitter_->particles_.size(); i++){
         if(!corpseEmitter_->particleActiveStatus_[i]){

@@ -184,6 +184,15 @@ Vector3 StageManager::GetNextStartPos(){
     return stages_[std::clamp(currentStageNo_ + 1,0,kStageCount_ - 1)]->GetStartPosition();
 }
 
+bool StageManager::GetIsClearAllGoal(){
+    for(bool clearStatus : clearStatus_){
+        if(!clearStatus){
+            return false;
+        }
+    }
+    return true;
+}
+
 Vector3 StageManager::GetTitleStartPos(){
     return titleStage_->GetStartPosition();
 }

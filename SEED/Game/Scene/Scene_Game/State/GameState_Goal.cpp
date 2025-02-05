@@ -1,5 +1,8 @@
 #include "GameState_Goal.h"
 
+//sceneState
+#include "State/GameState_Out.h"
+
 // player State
 #include "Player/PlayerState/PlayerState_ForcedIdle.h"
 
@@ -39,6 +42,10 @@ void GameState_Goal::Initialize(){
         StageManager* pStageManager = pGameScene_->Get_pStageManager();
         // 現在のステージの星の数を更新
         pStageManager->UpdateStarContOnCurrentStage();
+        pStageManager->StageClear(pStageManager->GetCurrentStageNo());
+
+        // 全ステージをクリアしたら GameClear へ
+        isClearAll_ = pStageManager->GetIsClearAllGoal();
 
         // 次のステージの初期化
         pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
@@ -106,6 +113,9 @@ void GameState_Goal::ManageState(){
         SetUpNextStage();
 
         pScene_->ChangeState(new GameState_Play(pScene_));
+    }
+    if(isClearAll_){
+        pGameScene_->ChangeState(new GameState_Out(pScene_));
     }
 }
 

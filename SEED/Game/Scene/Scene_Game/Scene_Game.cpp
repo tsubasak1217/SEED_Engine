@@ -27,6 +27,7 @@ Scene_Game::Scene_Game(){
 
 Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
+    CameraManager::SetActiveCamera("main");
     AudioManager::EndAudio(currentBGM);
 }
 

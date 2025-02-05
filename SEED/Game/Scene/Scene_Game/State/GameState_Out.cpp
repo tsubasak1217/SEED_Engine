@@ -28,16 +28,20 @@ void GameState_Out::Initialize(){
 void GameState_Out::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
-    whiteScreen_->color.w = 1.0f - EaseInQuad(fadeTimer_ / fadeTime_);
+    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
 }
 
-void GameState_Out::Draw(){}
+void GameState_Out::Draw(){
+    whiteScreen_->Draw();
+}
 
 void GameState_Out::Finalize(){}
 
 void GameState_Out::BeginFrame(){}
 
-void GameState_Out::EndFrame(){}
+void GameState_Out::EndFrame(){
+    ManageState();
+}
 
 void GameState_Out::HandOverColliders(){}
 

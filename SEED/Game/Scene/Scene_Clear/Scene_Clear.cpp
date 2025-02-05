@@ -45,6 +45,8 @@ void Scene_Clear::Initialize(){
     for(auto& corpseModel : corpseEmitter_->particles_){
         corpseModel  = std::make_unique<Model>();
         corpseModel->Initialize("dinosaur_corpse.obj");
+        corpseModel->isRotateWithQuaternion_ = false;
+        corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
     }
 
     //=========================== light =========================//
@@ -172,11 +174,13 @@ void Scene_Clear::UpdateCorpseParticles(){
 
             corpseEmitter_->particleDropSpeed_[i] = 0.f;
 
-            corpseEmitter_->particles_[i]->translate_ = MyFunc::Random(corpseEmitter_->min_,corpseEmitter_->max_);
             float randomScale =  MyFunc::Random(0.5f,1.3f);
             corpseEmitter_->particles_[i]->scale_ = {randomScale,randomScale,randomScale};
-        }
+            corpseEmitter_->particles_[i]->rotate_ = {MyFunc::Random(0.f,3.141592f),MyFunc::Random(0.f,3.141592f),MyFunc::Random(0.f,3.141592f)};
+            corpseEmitter_->particles_[i]->translate_ = MyFunc::Random(corpseEmitter_->min_,corpseEmitter_->max_);
 
+            corpseEmitter_->particles_[i]->UpdateMatrix();
+        }
     }
 
     corpseEmitter_->leftCoolTime_ -= ClockManager::DeltaTime();

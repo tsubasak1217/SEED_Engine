@@ -7,7 +7,7 @@ class StageSelector{
 public:
     StageSelector() = default;
     StageSelector(StageManager* stageManager, FollowCamera* camera);
-    ~StageSelector() = default;
+    ~StageSelector();
 
 public:
     void Initialize();

@@ -2,6 +2,7 @@
 #include "InputManager/InputManager.h"
 #include "ClockManager.h"
 #include "Environment.h"
+#include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 
 //lib
 #include "../PlayerInput/PlayerInput.h"
@@ -15,6 +16,10 @@ StageSelector::StageSelector(StageManager* stageManager,FollowCamera* camera){
     pCamera_ = camera;
     pCamera_->SetInterpolationRate(0.075f);
     Initialize();
+}
+
+StageSelector::~StageSelector(){
+    pCamera_->SetDistance(50.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -216,11 +221,13 @@ void StageSelector::UpdateItems(int32_t step){
     // 注目点をカメラにセット
     if(pTarget){
         pCamera_->SetTarget(pTarget);
+        if(FieldObject_ViewPoint* pViewPoint = dynamic_cast<FieldObject_ViewPoint*>(pTarget)){
+            pCamera_->SetDistance(pViewPoint->distance_);
+        }
     }
 
     // カメラの初期位置をセット
     pCamera_->SetPhi(3.14f * 0.3f);
-    pCamera_->SetDistance(50.0f);
 }
 
 

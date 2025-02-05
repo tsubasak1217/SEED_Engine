@@ -273,6 +273,11 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
                 modelJson["leafColor"] = wood->leafColor_;
             }
 
+            // ViewPointの場合の処理
+            if(auto* viewPoint = dynamic_cast<FieldObject_ViewPoint*>(modelObj)){
+                modelJson["distance"] = viewPoint->distance_;
+            }
+
             jsonData["models"].push_back(modelJson);
         }
 
@@ -702,6 +707,14 @@ void FieldEditor::ShowImGui(){
                     ImGui::Text("Wood Settings");
                     ImGui::Separator();
                     ImGui::ColorEdit4("leafColor", &wood->leafColor_.x);
+                    ImGui::Separator();
+                }
+
+                // ViewPointの場合の設定
+                if(auto* viewPoint = dynamic_cast<FieldObject_ViewPoint*>(mfObj)){
+                    ImGui::Text("ViewPoint Settings");
+                    ImGui::Separator();
+                    ImGui::DragFloat("distance", &viewPoint->distance_,0.5f,10.0f);
                     ImGui::Separator();
                 }
 

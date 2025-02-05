@@ -565,6 +565,11 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_VIEWPOINT:
             newObj = std::make_unique<FieldObject_ViewPoint>();
+            if(json.contains("distance")){
+                FieldObject_ViewPoint* viewPoint = dynamic_cast<FieldObject_ViewPoint*>(newObj.get());
+                viewPoint->distance_ = json["distance"];
+            }
+
             break;
         case FIELDMODEL_MOVEFLOOR:
             newObj = std::make_unique<FieldObject_MoveFloor>(routineManager_);

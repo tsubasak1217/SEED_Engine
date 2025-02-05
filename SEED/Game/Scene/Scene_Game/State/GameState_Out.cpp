@@ -29,6 +29,9 @@ void GameState_Out::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
     whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
+
+    currentBgmVolume_ = MyMath::Lerp(0.f,maxBGMVolume_,fadeTimer_ / fadeTime_);
+    AudioManager::SetAudioVolume("BGM/title.wav",currentBgmVolume_);
 }
 
 void GameState_Out::Draw(){
@@ -48,5 +51,6 @@ void GameState_Out::HandOverColliders(){}
 void GameState_Out::ManageState(){
     if(fadeTimer_ >= fadeTime_){
         pScene_->ChangeScene("Clear");
+        AudioManager::EndAudio("BGM/title.wav");
     }
 }

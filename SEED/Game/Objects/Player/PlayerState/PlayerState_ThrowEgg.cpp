@@ -30,8 +30,8 @@
 //////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 //////////////////////////////////////////////////////////////////
-PlayerState_ThrowEgg::PlayerState_ThrowEgg(const std::string& stateName, BaseCharacter* player){
-    Initialize(stateName, player);
+PlayerState_ThrowEgg::PlayerState_ThrowEgg(const std::string& stateName,BaseCharacter* player){
+    Initialize(stateName,player);
 }
 
 PlayerState_ThrowEgg::~PlayerState_ThrowEgg(){}
@@ -39,13 +39,13 @@ PlayerState_ThrowEgg::~PlayerState_ThrowEgg(){}
 //////////////////////////////////////////////////////////////////
 // 初期化
 //////////////////////////////////////////////////////////////////
-void PlayerState_ThrowEgg::Initialize(const std::string& stateName, BaseCharacter* character){
-    ICharacterState::Initialize(stateName, character);
+void PlayerState_ThrowEgg::Initialize(const std::string& stateName,BaseCharacter* character){
+    ICharacterState::Initialize(stateName,character);
 
-    JsonCoordinator::RegisterItem("Player", "eggOffset", eggOffset_);
-    JsonCoordinator::RegisterItem("Player", "throwPower", throwPower_);
-    JsonCoordinator::RegisterItem("Player", "throwDirection", throwDirection_);
-    JsonCoordinator::RegisterItem("Player", "pressForcus", pressForcus_);
+    JsonCoordinator::RegisterItem("Player","eggOffset",eggOffset_);
+    JsonCoordinator::RegisterItem("Player","throwPower",throwPower_);
+    JsonCoordinator::RegisterItem("Player","throwDirection",throwDirection_);
+    JsonCoordinator::RegisterItem("Player","pressForcus",pressForcus_);
 
     // EggManagerを取得するために Player をダウンキャスト
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
@@ -62,24 +62,27 @@ void PlayerState_ThrowEgg::Initialize(const std::string& stateName, BaseCharacte
     eggWeight_ = dynamic_cast<Egg*>(throwEgg_)->GetWeight();
     // 狙う関連
     aimRadius_ = 32.0f;
-    aimPos_ = Vector3(0.0f, 0.0f, 10.0f);
+    aimPos_ = Vector3(0.0f,0.0f,10.0f);
     aimPos_ *= RotateYMatrix(pCharacter_->GetWorldRotate().y);
     sphere_ = std::make_unique<Model>("Assets/Sphere.obj");
-    sphere_->color_ = { 0.3f,1.0f,0.3f,0.5f };
-    sphere_->scale_ = { 0.3f,0.3f,0.3f };
+    sphere_->color_ = {0.3f,1.0f,0.3f,0.5f};
+    sphere_->scale_ = {0.3f,0.3f,0.3f};
     sphere_->blendMode_ = BlendMode::ADD;
     sphere_->UpdateMatrix();
     aimModel_ = std::make_unique<Model>("Egg.obj");
-    aimModel_->color_ = { 1.0f,1.0f,0.0f,0.3f };
+    aimModel_->color_ = {1.0f,1.0f,0.0f,0.3f};
     throwSimulationEgg_ = std::make_unique<BaseObject>("Egg.obj");
-    throwSimulationEgg_->InitColliders("Egg.json", ObjectType::Egg);
+    throwSimulationEgg_->InitColliders("Egg.json",ObjectType::Egg);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Egg);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Player);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::Enemy);
     throwSimulationEgg_->AddSkipPushBackType(ObjectType::EventArea);
 
     //Playerの Animation を aim に変更
-    pPlayer->SetAnimation("aim", false);
+    pPlayer->SetAnimation("aim",false);
+
+    //UI
+    throwEggUI_ = std::make_unique<Sprite>("GameUI/throwUI.png");
 }
 
 
@@ -99,13 +102,13 @@ void PlayerState_ThrowEgg::Update(){
 
 #ifdef _DEBUG
     // throwDirection_の値を取得
-    auto throwDirectionOpt = JsonCoordinator::GetValue("Player", "throwDirection");
+    auto throwDirectionOpt = JsonCoordinator::GetValue("Player","throwDirection");
     if(throwDirectionOpt.has_value()){
         throwDirection_ = std::get<Vector3>(*throwDirectionOpt);
     }
     throwDirection_ = MyMath::Normalize(throwDirection_);
     // 正規化した値を セット
-    JsonCoordinator::SetValue("Player", "throwDirection", throwDirection_);
+    JsonCoordinator::SetValue("Player","throwDirection",throwDirection_);
 #endif // _DEBUG
 
     // 卵 の 位置 を 更新
@@ -128,6 +131,9 @@ void PlayerState_ThrowEgg::Draw(){
     // 狙うモデルの描画
     aimModel_->Draw();
     throwSimulationEgg_->Draw();
+
+    // UI
+    throwEggUI_->Draw();
 }
 
 //////////////////////////////////////////////////////////////////
@@ -145,18 +151,18 @@ void PlayerState_ThrowEgg::HandOverColliders(){
 void PlayerState_ThrowEgg::ManageState(){
     // キャンセル
     if(PlayerInput::CharacterMove::CancelFocusEgg(pressForcus_)){
-        throwEgg_->ChangeState(new EggState_Follow(throwEgg_, pCharacter_));
-        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle", pCharacter_));
+        throwEgg_->ChangeState(new EggState_Follow(throwEgg_,pCharacter_));
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }
 
     // 投げる
     if(PlayerInput::CharacterMove::ThrowEggOnFocus(pressForcus_)){
-        throwEgg_->ChangeState(new EggState_Thrown(throwEgg_, controlPoints_[0], controlPoints_[1], controlPoints_[2] ));
+        throwEgg_->ChangeState(new EggState_Thrown(throwEgg_,controlPoints_[0],controlPoints_[1],controlPoints_[2]));
 
         //Playerの Animation を throw に変更
-        pCharacter_->SetAnimation("throw", false);
-        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle", pCharacter_));
+        pCharacter_->SetAnimation("throw",false);
+        pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }
 }
@@ -181,7 +187,7 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
     if(!isFirstAnimationEnd_){
         isFirstAnimationEnd_ = pCharacter_->GetIsEndAnimation();
         if(isFirstAnimationEnd_){
-            pCharacter_->SetAnimation("handUpIdle", true);
+            pCharacter_->SetAnimation("handUpIdle",true);
         }
     }
 
@@ -193,10 +199,10 @@ void PlayerState_ThrowEgg::ChangeAnimation(){
     // 動いているなら
     if(isMoving_){
         isFirstAnimationEnd_ = true;
-        pCharacter_->SetAnimation("handUpRunning", true);
+        pCharacter_->SetAnimation("handUpRunning",true);
     } else{
         isFirstAnimationEnd_ = true;
-        pCharacter_->SetAnimation("handUpIdle", true);
+        pCharacter_->SetAnimation("handUpIdle",true);
     }
 }
 
@@ -208,9 +214,9 @@ void PlayerState_ThrowEgg::Aim(){
 
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
     int32_t growLevel = pPlayer->GetGrowLevel() - 1;
-    aimRadius_ = 32.0f + (8.0f * growLevel);
+    aimRadius_ = 32.0f + (16.0f * growLevel);
 
-    if(PlayerInput::CharacterMove::Aim() != Vector2(0.0f, 0.0f)){
+    if(PlayerInput::CharacterMove::Aim() != Vector2(0.0f,0.0f)){
         Vector2 moveVec = PlayerInput::CharacterMove::Aim();
 
         // 視点の回転を加味して今の視点でXZ平面を動かせるよう回転
@@ -218,7 +224,7 @@ void PlayerState_ThrowEgg::Aim(){
         moveVec *= rotateMat;
 
         // 移動
-        aimPos_ += Vector3(moveVec.x, 0.0f, moveVec.y) * targetMoveSpeed * ClockManager::DeltaTime();
+        aimPos_ += Vector3(moveVec.x,0.0f,moveVec.y) * targetMoveSpeed * ClockManager::DeltaTime();
 
         // 範囲内に収める
         if(MyMath::Length(aimPos_) > aimRadius_ * 0.7f){
@@ -249,7 +255,7 @@ void PlayerState_ThrowEgg::SimulateThrowEgg(){
     float t = simulateTime_ / kSimulateTime;
 
     // シミュレーション卵の位置を更新
-    throwSimulationEgg_->SetTranslate(MyMath::Bezier(controlPoints_[0], controlPoints_[1], controlPoints_[2], t));
+    throwSimulationEgg_->SetTranslate(MyMath::Bezier(controlPoints_[0],controlPoints_[1],controlPoints_[2],t));
     throwSimulationEgg_->UpdateMatrix();
 
     // 当たったら時間をリセット
@@ -272,7 +278,7 @@ void PlayerState_ThrowEgg::UpdateCoontrolPoints(){
     Vector3 dif = controlPoints_[2] - controlPoints_[0];// 卵から狙うモデルへのベクトル
     float length = MyMath::Length(dif);// 卵から狙うモデルまでの距離
     float leftLength = aimRadius_ - length;// 残りの長さ(高さに変換する分)
-    controlPoints_[1] = (controlPoints_[0] + dif * 0.5f) + Vector3(0.0f, leftLength, 0.0f);
+    controlPoints_[1] = (controlPoints_[0] + dif * 0.5f) + Vector3(0.0f,leftLength,0.0f);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -284,7 +290,7 @@ void PlayerState_ThrowEgg::DrawLocus(uint32_t subdivision){
     float t = 0.0f;
 
     while(t <= 1.0f){
-        Vector3 pos = MyMath::Bezier(controlPoints_[0], controlPoints_[1], controlPoints_[2], t);
+        Vector3 pos = MyMath::Bezier(controlPoints_[0],controlPoints_[1],controlPoints_[2],t);
         sphere_->translate_ = pos;
         sphere_->UpdateMatrix();
         sphere_->Draw();

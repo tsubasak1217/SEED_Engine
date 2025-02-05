@@ -1,24 +1,21 @@
 #include "EggTimerUI.h"
 
+///math
+#include "Easing.h"
+
 EggTimerUI::EggTimerUI(){}
 
 EggTimerUI::~EggTimerUI(){}
 
 void EggTimerUI::Initialize(){
     //=================== UIの初期化 ===================//
-    backEggUI_ = std::make_unique<Sprite>("selectScene/egg.png");
-
-    backEggUI_->anchorPoint = {0.5f,0.5f};
-    backEggUI_->translate = {1180.f,620.f};
-    backEggUI_->size = {128.f,128.f};
-    backEggUI_->color = {.6f,.6f,.6f,1.f};
-
     for(auto& timeUI : leftTimeUI_){
-        timeUI = std::make_unique<Sprite>("GameUI/numbers.png");
-        timeUI->scale = {2.f,2.f};
-        timeUI->translate = {1180.f,620.f};
-
-        timeUI->clipSize = {32.f,32.f};
+        timeUI = std::make_unique<Sprite>("GameUI/num.png");
+        timeUI->scale = {1.2f,1.2f};
+        timeUI->anchorPoint = { 0.5f,0.5f };
+        timeUI->translate = {1158.f,572.f};
+        timeUI->color = MyMath::FloatColor(0x173b4cff);
+        timeUI->clipSize = {39.f,56.f};
         timeUI->clipLT = {0.f,0.f};
     }
     // 1桁目 .. [0]
@@ -49,8 +46,6 @@ void EggTimerUI::Update(float _leftTime){
 }
 
 void EggTimerUI::Draw(){
-    backEggUI_->Draw();
-
     leftTimeUI_[0]->Draw();
     if(isDoubleDigit_){
         leftTimeUI_[1]->Draw();

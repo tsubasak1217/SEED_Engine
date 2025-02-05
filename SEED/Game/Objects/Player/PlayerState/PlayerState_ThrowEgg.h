@@ -6,6 +6,7 @@
 
 #include "Vector3.h"
 
+#include "Sprite.h"
 #include "../Objects/Egg/Egg.h"
 #include "../Objects/Egg/Manager/EggManager.h"
 
@@ -61,4 +62,7 @@ private:
 
     // 卵を投げるとき FocusButton を 押していないと行けないか,切り替えか
     bool pressForcus_ = false;
+
+    // UI
+    std::unique_ptr<Sprite> throwEggUI_;
 };

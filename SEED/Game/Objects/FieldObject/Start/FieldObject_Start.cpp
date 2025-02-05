@@ -18,7 +18,6 @@ FieldObject_Start::FieldObject_Start(){ // 名前の初期化
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
-
 }
 
 FieldObject_Start::FieldObject_Start(const std::string& modelName)
@@ -31,7 +30,6 @@ FieldObject_Start::FieldObject_Start(const std::string& modelName)
     InitColliders(ObjectType::Field);
     // 全般の初期化
     FieldObject::Initialize();
-
 }
 
 ////////////////////////////////////////////////////////////////////////

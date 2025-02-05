@@ -27,7 +27,8 @@ Scene_Game::Scene_Game(){
 
 Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
-    AudioManager::EndAudio(bgmPath_);
+    CameraManager::SetActiveCamera("main");
+    AudioManager::EndAudio(currentBGM);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +58,7 @@ void Scene_Game::Initialize(){
     SEED::GetCamera()->Update();
 
     followCamera_ = std::make_unique<FollowCamera>();
+    followCamera_->SetFov(0.65f);
     CameraManager::AddCamera("follow",followCamera_.get());
     SEED::SetCamera("follow");
 
@@ -151,8 +153,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     // Audio の 初期化
     ////////////////////////////////////////////////////
-    AudioManager::LoadAudio(bgmPath_);
-    AudioManager::PlayAudio(bgmPath_,true,currentBgmVolume_);
+    AudioManager::PlayAudio(currentBGM,true,currentBgmVolume_);
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
@@ -244,6 +245,7 @@ void Scene_Game::Update(){
 
     // ポーズ中は以下を更新しない
     if(isPaused_){
+        player_->SetIsDrop(false);
         return;
     }
 
@@ -411,18 +413,30 @@ void Scene_Game::HandOverColliders(){
     stageManager_->HandOverColliders();
 }
 
+
+// 禁忌
+FieldEditor* Scene_Game::GetFieldEditor(){
+    if(GameState_Play* state = dynamic_cast<GameState_Play*>(currentState_.get())){
+        return state->GetFieldEditor();
+    }
+
+    return nullptr;
+}
+
 void Scene_Game::BGMUpdate(){
+#ifdef _DEBUG
     if(ImGui::Begin("BGM")){
         ImGui::SliderFloat("Volume_OnNormal",&bgmVolume_[0],0.f,1.f);
         ImGui::SliderFloat("Volume_OnPause",&bgmVolume_[1],0.f,1.f);
         ImGui::SliderFloat("Volume_InterpolateRate",&bgmVolumeInterpolateRate_,0.f,1.f);
     }
     ImGui::End();
+#endif // _DEBUG
 
     float prevBgmVolume = currentBgmVolume_;
     currentBgmVolume_ = MyMath::Lerp(currentBgmVolume_,bgmVolume_[int(isPaused_)],bgmVolumeInterpolateRate_);
 
     if(currentBgmVolume_ != prevBgmVolume){
-        AudioManager::SetAudioVolume(bgmPath_,currentBgmVolume_);
+        AudioManager::SetAudioVolume(currentBGM,currentBgmVolume_);
     }
 }

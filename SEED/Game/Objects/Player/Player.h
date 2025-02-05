@@ -8,6 +8,7 @@
 // container
 #include <list>
 #include <vector>
+#include <json.hpp>
 // object
 #include "Collision/Collider.h"
 #include "BaseCamera.h"
@@ -68,11 +69,15 @@ public: // アクセッサ
     void SetGrowLevel(int32_t level){ growLevel_ = level; }
     int32_t GetGrowLevel()const{ return growLevel_; }
 
+    // json
+    const nlohmann::json& GetJsonData()override;
+
     // 禁忌
     void SetPrePos(const Vector3& _newPrePos){ prePos_ = _newPrePos; }
     void SetLastOnGroundPos(const Vector3& _newLastPosOnGround){ lastPosOnGround_ = _newLastPosOnGround; }
+
 public:
-    void OnCollision(const BaseObject* other,ObjectType objectType) override;
+    void OnCollision(BaseObject* other,ObjectType objectType) override;
 
 private: // フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;

@@ -1,5 +1,8 @@
 #include "GameState_Goal.h"
 
+//sceneState
+#include "State/GameState_Out.h"
+
 // player State
 #include "Player/PlayerState/PlayerState_ForcedIdle.h"
 
@@ -11,6 +14,7 @@
 #include "Scene_Game/State/GameState_Play.h"
 // lib
 #include <ClockManager.h>
+#include "AudioManager.h"
 
 // math
 #include "MyMath.h"
@@ -38,6 +42,10 @@ void GameState_Goal::Initialize(){
         StageManager* pStageManager = pGameScene_->Get_pStageManager();
         // 現在のステージの星の数を更新
         pStageManager->UpdateStarContOnCurrentStage();
+        pStageManager->StageClear(pStageManager->GetCurrentStageNo());
+
+        // 全ステージをクリアしたら GameClear へ
+        isClearAll_ = pStageManager->GetIsClearAllGoal();
 
         // 次のステージの初期化
         pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
@@ -59,6 +67,19 @@ void GameState_Goal::Initialize(){
         pEgg_->UpdateMatrix();
 
         ThrowEggForNextStageInitialize();
+    }
+
+    //targetAngle
+    {
+        // ゴールの回転Y軸
+        Vector2 diffXZ = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
+
+        targetAngleY_ = atan2f(diffXZ.x,diffXZ.y);
+
+        // ゴールの回転X軸
+        Vector3 diff = bezierCtlPoint_ - goalPosition_;
+
+        targetAngleX_ = atan2f(diff.y,MyMath::Length({diff.x,diff.z}));
     }
 
     // update
@@ -93,6 +114,9 @@ void GameState_Goal::ManageState(){
 
         pScene_->ChangeState(new GameState_Play(pScene_));
     }
+    if(isClearAll_){
+        pGameScene_->ChangeState(new GameState_Out(pScene_));
+    }
 }
 
 void GameState_Goal::SetUpNextStage(){
@@ -121,13 +145,8 @@ void GameState_Goal::SetUpNextStage(){
 const float tau = std::numbers::pi_v<float> *2.f;
 
 void GameState_Goal::RotateYGoalForNextStage(){
-    // ゴールの回転Y軸
-    Vector2 diffXZ = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
-    diffXZ = MyMath::Normalize(diffXZ);
-    float targetAngle = atan2f(diffXZ.x,diffXZ.y);
-
     // 角度差を求める
-    float diff = pGoal_->GetWorldRotate().y - targetAngle;
+    float diff = pGoal_->GetWorldRotate().y - targetAngleY_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
 
@@ -146,7 +165,7 @@ void GameState_Goal::RotateYGoalForNextStage(){
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
-        pGoal_->SetRotateY(targetAngle);
+        pGoal_->SetRotateY(targetAngleY_);
         currentUpdate_ = [this](){ RotateXGoalForNextStage(); };
         return;
     }
@@ -154,13 +173,8 @@ void GameState_Goal::RotateYGoalForNextStage(){
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
-    // ゴールの回転Y軸
-    Vector2 diffXZ = Vector2(bezierCtlPoint_.y,bezierCtlPoint_.z) - Vector2(goalPosition_.y,goalPosition_.z);
-    diffXZ = MyMath::Normalize(diffXZ);
-    float targetAngle = atan2f(diffXZ.y,diffXZ.x);
-
     // 角度差を求める
-    float diff = pGoal_->GetWorldRotate().x - targetAngle;
+    float diff = pGoal_->GetWorldRotate().x - targetAngleX_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
 
@@ -179,17 +193,22 @@ void GameState_Goal::RotateXGoalForNextStage(){
     // 回転速度よりも小さければ目標角度に設定
     // そして 次へ
     if(std::abs(diff) < goalRotateSpeedBySecond_){
-        pGoal_->SetRotateX(targetAngle);
+        pGoal_->SetRotateX(targetAngleX_);
 
+        // 大砲のアニメーション
         pGoal_->GetModel()->StartAnimation("fire",false);
+        //Sound
+        AudioManager::PlayAudio("SE/goal.wav",false,0.65f);
         currentUpdate_ = [this](){ GoalAnimation(); };
         return;
     }
 }
 
 void GameState_Goal::GoalAnimation(){
-    // 大砲のアニメーション
-    if(pGoal_->GetModel()->GetIsEndAnimation()){
+    // goalアニメーションが終わるまで待つと違和感があるので,時間で管理する
+    leftGoalAnimationTime_ += ClockManager::DeltaTime();
+
+    if(leftGoalAnimationTime_ >= goalAnimationTime_){
         pEgg_->SetScale({1.f,1.f,1.f});
         currentUpdate_ = [this](){ ThrowEggForNextStage(); };
     }

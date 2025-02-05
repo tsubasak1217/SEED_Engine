@@ -59,12 +59,20 @@ private:
     float goalRotateSpeed_ = 0.7f;
     float goalRotateSpeedBySecond_ = 0.0f;
 
+    // goalアニメーションが終わるまで待つと違和感があるので,時間で管理する
+    float goalAnimationTime_ = 0.6f;
+    float leftGoalAnimationTime_ = 0.0f;
+
     // 卵を投げる関係
     float moveTime_ = 0.0f;
     float moveTimeMax_ = 0.6f;
+    float targetAngleY_ = 0.f;
+    float targetAngleX_ = 0.f;
 
     Vector3 bezierCtlPoint_;
 
     bool isThrow_ = false;
     bool preIsThrow_ = false;
+
+    bool isClearAll_ = false;
 };

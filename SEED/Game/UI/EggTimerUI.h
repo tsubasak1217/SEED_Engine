@@ -17,10 +17,12 @@ public:
     void Draw();
 
 private:
-    std::unique_ptr<Sprite> backEggUI_;
-
     // 2桁まで
     std::array<std::unique_ptr<Sprite>,2> leftTimeUI_;
-    
+
     bool isDoubleDigit_ = true;
+
+public:
+    Vector2 GetUIPos()const{ return leftTimeUI_[0]->translate; }
+    Vector2 GetUISize()const{ return leftTimeUI_[0]->size; }
 };

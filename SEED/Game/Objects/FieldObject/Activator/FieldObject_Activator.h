@@ -50,7 +50,7 @@ public:
     //--- 衝突検知 ---------------------------------------------------//
 
     // 衝突したオブジェクトを受け取り、必要なら重量を加算する処理を行う
-    virtual void OnCollision(const BaseObject* other, ObjectType objectType) override;
+    virtual void OnCollision( BaseObject* other, ObjectType objectType) override;
 
     //--- ドア／移動床との関連付け -----------------------------------//
 

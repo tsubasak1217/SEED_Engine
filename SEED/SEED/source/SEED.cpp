@@ -118,9 +118,13 @@ void SEED::BeginFrame(){
     // 全入力情報を格納
     Input::GetAllInput();
 
+    // Audioのフレーム開始処理
+    AudioManager::BeginFrame();
+
     // imgui,directXのフレーム開始時処理
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
+
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/
@@ -606,7 +610,11 @@ Vector2 SEED::GetImageSize(const std::wstring& fileName){
 /*------------------ 画面の解像度を変更する関数 ------------------*/
 
 void SEED::ChangeResolutionRate(float resolutionRate){
-    DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
+    static float preResolutionRate = 1.0f;
+    if(resolutionRate != preResolutionRate){
+        DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
+        preResolutionRate = resolutionRate;
+    }
 }
 
 /*------------------ カメラにシェイクを設定する関数 ------------------*/

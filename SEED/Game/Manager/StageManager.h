@@ -76,6 +76,17 @@ public:
     static bool IsHandOverColliderNext(){ return isHandOverColliderNext_; }
     static void SetIsHandOverColliderNext(bool isHandOverColliderNext){ isHandOverColliderNext_ = isHandOverColliderNext; }
 
+    static bool GetIsClearAllGoal();
+
+    static void ResetStageStatus(){
+        for(auto& clear : clearStatus_){
+            clear = false;
+        }
+        for(auto& star : getStarCounts_){
+            star = 0;
+        }
+    }
+
     // title
     static Stage* GetTitleStage(){ return titleStage_.get(); }
     static Vector3 GetTitleStartPos();

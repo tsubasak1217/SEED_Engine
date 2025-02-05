@@ -22,17 +22,20 @@ void GameState_Enter::Initialize(){
 void GameState_Enter::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
-    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
-    ManageState();
+    whiteScreen_->color.w = 1.f - EaseInQuad(fadeTimer_ / fadeTime_);
 }
 
-void GameState_Enter::Draw(){}
+void GameState_Enter::Draw(){
+    whiteScreen_->Draw();
+}
 
 void GameState_Enter::Finalize(){}
 
 void GameState_Enter::BeginFrame(){}
 
-void GameState_Enter::EndFrame(){}
+void GameState_Enter::EndFrame(){
+    ManageState();
+}
 
 void GameState_Enter::HandOverColliders(){}
 

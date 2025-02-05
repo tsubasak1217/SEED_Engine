@@ -13,7 +13,7 @@ public:
     // フレーム終了時
     virtual void EndFrame() override;
     // 衝突時の処理（重さは扱わない）
-    virtual void OnCollision(const BaseObject* other, ObjectType objectType) override;
+    virtual void OnCollision( BaseObject* other, ObjectType objectType) override;
     void DrawHud() override;
 private:
     // レバーをトグルする関数

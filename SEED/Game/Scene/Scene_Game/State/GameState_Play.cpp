@@ -19,6 +19,8 @@
 GameState_Play::GameState_Play(Scene_Base* pScene,bool isPlayerSetStartPos): State_Base(pScene){
     pGameScene_ = dynamic_cast<Scene_Game*>(pScene);
     Initialize(isPlayerSetStartPos);
+
+
 }
 
 GameState_Play::~GameState_Play(){}
@@ -65,6 +67,10 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
+
+    //sprite
+    pauseButton = std::make_unique<Sprite>("GameUI/start.png");
+    pauseButton->color.w = 0.566f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +107,9 @@ void GameState_Play::Update(){
 // 描画処理
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-void GameState_Play::Draw(){}
+void GameState_Play::Draw(){
+    pauseButton->Draw();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //

@@ -29,17 +29,20 @@ void ClearState_Enter::Initialize(){
 void ClearState_Enter::Update(){
     fadeTimer_ += ClockManager::DeltaTime();
 
-    whiteScreen_->color.w = EaseInQuad(fadeTimer_ / fadeTime_);
-    ManageState();
+    whiteScreen_->color.w = 1.f - EaseInQuad(fadeTimer_ / fadeTime_);
 }
 
-void ClearState_Enter::Draw(){}
+void ClearState_Enter::Draw(){
+    whiteScreen_->Draw();
+}
 
 void ClearState_Enter::Finalize(){}
 
 void ClearState_Enter::BeginFrame(){}
 
-void ClearState_Enter::EndFrame(){}
+void ClearState_Enter::EndFrame(){
+    ManageState();
+}
 
 void ClearState_Enter::HandOverColliders(){}
 

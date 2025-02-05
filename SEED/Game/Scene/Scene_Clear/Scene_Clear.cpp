@@ -25,7 +25,6 @@ Scene_Clear::~Scene_Clear(){}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
     //=========================== dinosaur =======================//
-    dinosaur_ = std::make_unique<Model>();
     dinosaur_ = std::make_unique<Model>("clear_breakEgg.gltf");
     dinosaur_->StartAnimation("breakEgg",false);
 
@@ -40,11 +39,41 @@ void Scene_Clear::Initialize(){
     // 先に読み込んでおく
     ModelManager::LoadModel("clear_dance.gltf");
 
+    //=========================== eggTop =======================//
+    eggTop_ = std::make_unique<Model>("eggTop_breakEgg.gltf");
+    eggTop_->StartAnimation("breakEgg",false);
+    // transform Initialize
+    eggTop_->rotate_.y = 3.141592f;
+    eggTop_->translate_ = {0.0f,-1.2f,10.0f};
+
+    eggTop_->isRotateWithQuaternion_ = false;
+    eggTop_->isParentScale_ = false;
+    eggTop_->UpdateMatrix();
+
+    // 先に読み込んでおく
+    ModelManager::LoadModel("eggTop_dance.gltf");
+
+    //=========================== eggBottom =======================//
+    eggBottom_ = std::make_unique<Model>("eggBottom_breakEgg.gltf");
+    eggBottom_->StartAnimation("breakEgg",false);
+    // transform Initialize
+    eggBottom_->rotate_.y = 3.141592f;
+    eggBottom_->translate_ = {0.0f,-1.2f,10.0f};
+
+    eggBottom_->isRotateWithQuaternion_ = false;
+    eggBottom_->isParentScale_ = false;
+    eggBottom_->UpdateMatrix();
+
+    // 先に読み込んでおく
+    ModelManager::LoadModel("eggBottom_dance.gltf");
+
     //=========================== corpseEmitter =======================//
     corpseEmitter_ = std::make_unique<CorpseEmitter>();
     for(auto& corpseModel : corpseEmitter_->particles_){
         corpseModel  = std::make_unique<Model>();
         corpseModel->Initialize("dinosaur_corpse.obj");
+        corpseModel->isRotateWithQuaternion_ = false;
+        corpseModel->color_ = MyMath::FloatColor(0x030ff30ff);
     }
 
     //=========================== light =========================//
@@ -55,8 +84,6 @@ void Scene_Clear::Initialize(){
 
     //=========================== state =========================//
     currentState_ = std::make_unique<ClearState_Enter>(this);
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +125,8 @@ void Scene_Clear::Update(){
 void Scene_Clear::Draw(){
     //=========================== Object =======================//
     dinosaur_->Draw();
+    eggTop_->Draw();
+    eggBottom_->Draw();
 
     for(int i = 0; i < corpseEmitter_->particles_.size(); i++){
         if(!corpseEmitter_->particleActiveStatus_[i]){
@@ -172,11 +201,13 @@ void Scene_Clear::UpdateCorpseParticles(){
 
             corpseEmitter_->particleDropSpeed_[i] = 0.f;
 
-            corpseEmitter_->particles_[i]->translate_ = MyFunc::Random(corpseEmitter_->min_,corpseEmitter_->max_);
             float randomScale =  MyFunc::Random(0.5f,1.3f);
             corpseEmitter_->particles_[i]->scale_ = {randomScale,randomScale,randomScale};
-        }
+            corpseEmitter_->particles_[i]->rotate_ = {MyFunc::Random(0.f,3.141592f),MyFunc::Random(0.f,3.141592f),MyFunc::Random(0.f,3.141592f)};
+            corpseEmitter_->particles_[i]->translate_ = MyFunc::Random(corpseEmitter_->min_,corpseEmitter_->max_);
 
+            corpseEmitter_->particles_[i]->UpdateMatrix();
+        }
     }
 
     corpseEmitter_->leftCoolTime_ -= ClockManager::DeltaTime();

@@ -13,6 +13,8 @@
 //lib
 #include "../adapter/json/JsonCoordinator.h"
 #include "../PlayerInput/PlayerInput.h"
+//math
+#include "Easing.h"
 
 EggState_Break::EggState_Break(BaseCharacter* character){
     JsonCoordinator::RegisterItem("Egg","BreakTime",breakTime_);
@@ -36,6 +38,7 @@ void EggState_Break::Initialize(const std::string& stateName,BaseCharacter* char
     timerUi_ = std::make_unique<EggTimerUI>();
     timerUi_->Initialize();
 
+    timeSkipButtonUI_ = std::make_unique<Sprite>("GameUI/eggUI.png");
 }
 
 void EggState_Break::Update(){
@@ -46,11 +49,10 @@ void EggState_Break::Update(){
     }
 
     timerUi_->Update(leftTime_);
-
-    ManageState();
 }
 
 void EggState_Break::Draw(){
+    timeSkipButtonUI_->Draw();
     timerUi_->Draw();
 }
 

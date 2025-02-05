@@ -19,4 +19,5 @@ enum FIELDMODELNAME{
     FIELDMODEL_TILE,            //< タイル
     FIELDMODEL_BOX,             //< 箱
     FIELDMODEL_CHIKUWA,         //< チクワ
+    FIELDMODEL_SAVEAREA,        //< セーブエリア
 };

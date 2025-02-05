@@ -1,6 +1,6 @@
 #pragma once
 #include <SEED.h>
-
+#include <Sprite.h>
 class Scene_Base;
 
 class EventState_Base {
@@ -15,4 +15,5 @@ public:
 private:
     // イベントを発行しているステート
     Scene_Base* pScene_;
+    std::unique_ptr<Sprite> skipButtonUI_;
 };

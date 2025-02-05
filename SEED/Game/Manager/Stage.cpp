@@ -2,6 +2,7 @@
 #include "CollisionManaer/CollisionManager.h"
 #include "EventState/EventFunctionTable.h"
 #include "Player/Player.h"
+#include "../GameSystem.h"
 
 // PlayerState
 #include "Player/PlayerState/PlayerState_Idle.h"
@@ -31,7 +32,7 @@ Stage::Stage(ISubject& subject,uint32_t stageNo)
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
 }
-Stage::Stage(ISubject& subject) :subject_(subject){
+Stage::Stage(ISubject& subject):subject_(subject){
     // ステージの初期化
     ClearAllFieldObjects();
 
@@ -40,14 +41,21 @@ Stage::Stage(ISubject& subject) :subject_(subject){
 
     routineManager_.LoadRoutines(stageNo_);
 
-    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_, stageNo_, routineManager_);
+    enemyManager_ = std::make_unique<EnemyManager>(pPlayer_,stageNo_,routineManager_);
 
     playerCorpseManager_ = std::make_unique<PlayerCorpseManager>();
     playerCorpseManager_->Initialize();
 }
 
-void Stage::InitializeStatus(){
-    std::string filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
+void Stage::InitializeStatus(bool isSaveData){
+    std::string filePath;
+
+    if(!isSaveData){
+        filePath = "resources/jsons/Stages/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    } else{
+        filePath = "resources/jsons/StageSaveDatas/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    }
+
     InitializeStatus(filePath);
 }
 
@@ -57,17 +65,30 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
     startObject_ = nullptr;
     goalObject_ = nullptr;
     starObjects_.clear();
+    currentStarSoundVolume_ = 0.0f;
 
     // Jsonから読み込み
     LoadFromJson(_jsonFilePath);
 
+    // _jsonFilePathのファイルをコピーする
+    std::string copyfilePath = "resources/jsons/StageSaveDatas/stage_" + std::to_string(stageNo_ + 1) + ".json";
+    bool isSave = true;
+    if(_jsonFilePath != copyfilePath){
+        std::ifstream ifs(_jsonFilePath);
+        std::ofstream ofs(copyfilePath);
+        ofs << ifs.rdbuf();
+        ifs.close();
+        isSave = false;
+    }
+
     // 敵の初期化
-    enemyManager_->LoadEnemies();
+    enemyManager_->LoadEnemies(isSave);
 
     // player
     {
         pPlayer_->SetScale(Vector3{1.0f,1.0f,1.0f});
         pPlayer_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pPlayer_));
+        pPlayer_->SetEnemyManager(enemyManager_.get());
     }
 
     { // 死体削除
@@ -82,6 +103,13 @@ void Stage::InitializeStatus(const std::string& _jsonFilePath){
 
     //======================== その他 ========================//
     currentStarCount_ = 0;
+
+    //カメラがオブジェクトをviewしているモードの時はプレイヤーを動かさない
+    if (FollowCamera* camera = dynamic_cast< FollowCamera* >(CameraManager::GetActiveCamera())){
+        if (camera->GetIsViewingObject()){
+            camera->SetisViewingObject(false);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -95,6 +123,17 @@ void Stage::Update(){
         // woodだったらコライダーを編集
         if(FieldObject_Wood* wood = dynamic_cast<FieldObject_Wood*>(fieldObject.get())){
             fieldObject->EditCollider();
+        }
+    }
+
+    //カメラがオブジェクトをviewしているモードの時はプレイヤーを動かさない
+    if (FollowCamera* camera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera())){
+        if (camera->GetIsViewingObject()){
+            pPlayer_->SetIsMovable(false);
+        } else{
+            if(!GameSystem::GetScene()->HasEvent()){
+                pPlayer_->SetIsMovable(true);
+            }
         }
     }
 
@@ -133,6 +172,8 @@ void Stage::BeginFrame(){
     for(auto& fieldObject : fieldObjects_){
         fieldObject->BeginFrame();
     }
+
+    enemyManager_->BeginFrame();
 
     playerCorpseManager_->BeginFrame();
 }
@@ -404,6 +445,24 @@ void Stage::LoadFromJson(const std::string& filePath){
                 }
                 moveFloor->InitializeRoutine();
             }
+
+            //===========================================================
+            // ★★ (D) Door
+            //===========================================================
+            else if (auto* door = dynamic_cast< FieldObject_Door* >(newObj)){
+                if (modelJson.contains("openSpeed") && modelJson["openSpeed"].is_number()){
+                    door->SetOpenSpeed(modelJson["openSpeed"].get<float>());
+                }
+                if (modelJson.contains("openHeight") && modelJson["openHeight"].is_number()){
+                    door->SetOpenHeight(modelJson["openHeight"].get<float>());
+                }
+                if (modelJson.contains("closedPosY") && modelJson["closedPosY"].is_number()){
+                    door->SetClosedPosY(modelJson["closedPosY"].get<float>());
+                }
+                if (modelJson.contains("shouldPerformCameraView") && modelJson["shouldPerformCameraView"].is_boolean()){
+                    door->SetShouldPerformCameraView(modelJson["shouldPerformCameraView"].get<bool>());
+                }
+            }
         }
     } else{
         std::cerr << "Warning: 'models' key is missing or not an array in JSON data." << std::endl;
@@ -435,6 +494,16 @@ void Stage::LoadFromJson(const std::string& filePath){
                 }
             }
         }
+    }
+
+    // プレイヤーの情報があるとき
+    if(jsonData.contains("player")){
+        pPlayer_->SetTranslate(jsonData["player"]["Translate"]);
+        pPlayer_->SetRotate(Vector3(jsonData["player"]["Rotate"]));
+        pPlayer_->SetScale(jsonData["player"]["Scale"]);
+        pPlayer_->SetGrowLevel(jsonData["player"]["GrowLevel"]);
+        pPlayer_->SetIsDrop(false);
+        pPlayer_->SetDropSpeed(0.0f);
     }
 }
 
@@ -477,21 +546,6 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_DOOR:
             newObj = std::make_unique<FieldObject_Door>();
-
-            if(json.contains("openSpeed")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetOpenSpeed(json["openSpeed"]);
-            }
-
-            if(json.contains("openHeight")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetOpenHeight(json["openHeight"]);
-            }
-
-            if(json.contains("closedPosY")){
-                FieldObject_Door* door = dynamic_cast<FieldObject_Door*>(newObj.get());
-                door->SetClosedPosY(json["closedPosY"]);
-            }
             break;
         case FIELDMODEL_START:
             newObj = std::make_unique<FieldObject_Start>();
@@ -597,11 +651,17 @@ void Stage::AddModel(
             newObj = std::make_unique<FieldObject_Chikuwa>();
             break;
 
+        case FIELDMODEL_SAVEAREA:
+            newObj = std::make_unique<FieldObject_SaveArea>();
+            break;
+
         default:
             break;
     }
 
     if(!newObj) return;  // newObj が生成されなかった場合は何もしない
+
+    newObj->SetPlayer(pPlayer_);
 
     // スタートまたはゴールの場合、スケールを 1 に固定（あるいは別途調整）
     Vector3 adjustedScale = scale;
@@ -629,6 +689,27 @@ void Stage::AddModel(
     }
     // Manager に登録
     AddFieldObject(std::move(newObj));
+}
+
+void Stage::StarSEUpdate(){
+    float nearestDistancePlayerToStar = 100.f;
+    for(auto& object : fieldObjects_){
+        FieldObject_Star* starObject = dynamic_cast<FieldObject_Star*>(object.get());
+        if(!starObject){
+            continue;
+        }
+        float distancePlayerToStar = MyMath::Length(pPlayer_->GetWorldTranslate() - starObject->GetWorldTranslate());
+        nearestDistancePlayerToStar = (std::min)(nearestDistancePlayerToStar,distancePlayerToStar);
+        float t = nearestDistancePlayerToStar / distanceToPlayStarSound_;
+        // 一定以上離れているなら再生しない
+        if(t >= 1.f){
+            currentStarSoundVolume_ = 0.f;
+        } else{
+            // 遠いほど音量を下げる
+            currentStarSoundVolume_ = minStarSoundVolume_ + (maxStarSoundVolume_ - minStarSoundVolume_) * (1.f - t);
+        }
+        AudioManager::SetAudioVolume(starSoundFileName_,currentStarSoundVolume_);
+    }
 }
 
 void Stage::UpdateStarCount(){

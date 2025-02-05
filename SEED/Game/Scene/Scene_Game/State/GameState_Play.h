@@ -32,8 +32,14 @@ public:
     void HandOverColliders()override;
     void ManageState()override;
 
+public:
+    FieldEditor* GetFieldEditor(){ return fieldEditor_.get(); }
+
 private:
     Scene_Game* pGameScene_;
+
+    // sprite
+    std::unique_ptr<Sprite> pauseButton = nullptr;
 
 private:
     std::unique_ptr<ColliderEditor> fieldColliderEditor_;

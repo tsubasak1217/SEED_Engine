@@ -24,7 +24,7 @@ FieldObject_Lever::FieldObject_Lever(){
     //objectのClear
     associatedDoors_.clear();
     associatedMoveFloors_.clear();
-    hud_ = std::make_unique<Sprite>("GameUI/A.png");
+    hud_ = std::make_unique<Sprite>("GameUI/B.png");
 
 }
 
@@ -44,7 +44,8 @@ void FieldObject_Lever::BeginFrame(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OnCollision
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Lever::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+void FieldObject_Lever::OnCollision(BaseObject* other,ObjectType objectType){
+    other;
     if (objectType == ObjectType::Player ||
         objectType == ObjectType::Egg ||
         objectType == ObjectType::PlayerCorpse){
@@ -66,9 +67,12 @@ void FieldObject_Lever::DrawHud(){
 // EndFrame
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void FieldObject_Lever::EndFrame(){
-    // レバーに触れている & Aボタンが押された瞬間ならトグルする
+    // レバーに触れている & Bボタンが押された瞬間ならトグルする
     if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::B)){
         Toggle();
+
+        // SE再生
+        AudioManager::PlayAudio("SE/switch.wav",false,0.7f);
     }
 
     FieldObject::EndFrame();

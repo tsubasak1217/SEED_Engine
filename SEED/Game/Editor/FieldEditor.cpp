@@ -58,6 +58,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["tile"] = FIELDMODEL_TILE;
     modelNameMap_["box"] = FIELDMODEL_BOX;
     modelNameMap_["chikuwa"] = FIELDMODEL_CHIKUWA;
+    modelNameMap_["saveArea"] = FIELDMODEL_SAVEAREA;
 
     LoadFieldModelTexture();
 
@@ -151,7 +152,7 @@ void FieldEditor::PopupDecideOutputName(){
 ////////////////////////////////////////////////////////////////////////////////////////
 //  jsonファイルの保存
 ////////////////////////////////////////////////////////////////////////////////////////
-void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
+void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool isSaveData, Player* playerData){
     try{
         namespace fs = std::filesystem;
         fs::path path(filePath);
@@ -243,6 +244,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
                 modelJson["openSpeed"] = door->GetOpenSpeed();
                 modelJson["openHeight"] = door->GetOpenHeight();
                 modelJson["closedPosY"] = door->GetClosedPosY();
+                modelJson["shouldPerformCameraView"] = door->GetShouldPerformCameraView();
             }
 
             // イベントエリアの場合
@@ -272,6 +274,15 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo){
             }
 
             jsonData["models"].push_back(modelJson);
+        }
+
+
+        // もしセーブデータ用のデータを保存する場合
+        if(isSaveData){
+            if(playerData){
+                // プレイヤーのデータを取得
+                jsonData["player"] = playerData->GetJsonData();
+            }
         }
 
         // JSONファイルに書き込み
@@ -837,8 +848,10 @@ void FieldEditor::ShowImGui(){
                     static int selectedEventIndex = 0;
                     static std::vector<std::string> eventNames;
                     if (eventNames.empty()){
-                        for (const auto& [name, func] : EventFunctionTable::tableMap_){
-                            eventNames.push_back(name);
+                        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+                            if(name != ""){
+                                eventNames.push_back(name);
+                            }
                         }
                     }
                     std::string currentEventName;

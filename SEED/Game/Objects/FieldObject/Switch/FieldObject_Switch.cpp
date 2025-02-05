@@ -2,6 +2,8 @@
 #include "FieldObject_Switch.h"
 #include "FieldObject/Door/FieldObject_Door.h"
 #include "InputManager.h"
+#include "AudioManager.h"
+#include "Player/Player.h"
 
 ////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -23,6 +25,10 @@ FieldObject_Switch::FieldObject_Switch(){
     //objectのClear
     associatedDoors_.clear();
     associatedMoveFloors_.clear();
+
+    //ui
+    weightUI_ = std::make_unique<SwitchWeightUI>(this);
+    weightUI_->Initialize();
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -47,6 +53,11 @@ void FieldObject_Switch::Draw(){
         break;
     }
     FieldObject::Draw();
+
+    if(drawingUI_){
+        weightUI_->Draw();
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -56,6 +67,10 @@ void FieldObject_Switch::BeginFrame(){
     if (isColliding_ && !isActivated_){
         // 乗っている状態で、まだ起動状態でなければ
         isActivated_ = true;
+
+        // SE再生
+        AudioManager::PlayAudio("SE/switch.wav",false,0.7f);
+
         Notify("SwitchActivated", this);
     } else if (!isColliding_ && isActivated_){
         // 何も乗っていない状態で、現在起動状態であれば
@@ -75,12 +90,19 @@ void FieldObject_Switch::EndFrame(){
     if((int)currentWeight_ >= requiredWeight_){
         isColliding_ = true;
     }
+
+    drawingUI_ = false;
+    const float distanceToDrawUI = 15.f;
+    if(MyMath::Length(player_->GetWorldTranslate() - GetWorldTranslate()) < distanceToDrawUI){
+        drawingUI_ = true;
+        weightUI_->Update();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
 // 衝突時処理
 ////////////////////////////////////////////////////////////////////
-void FieldObject_Switch::OnCollision([[maybe_unused]] const BaseObject* other, ObjectType objectType){
+void FieldObject_Switch::OnCollision(BaseObject* other,ObjectType objectType){
     // 重さを加算
     if(objectType == ObjectType::Player or objectType == ObjectType::Egg or objectType == ObjectType::PlayerCorpse
         or objectType == ObjectType::Enemy){

@@ -19,6 +19,7 @@
 
 //editor
 #include "../Game/Editor/EnemyEditor.h"
+#include "../Game/Editor/FieldEditor.h"
 
 // objects
 #include "Egg/Manager/EggManager.h"
@@ -52,6 +53,10 @@ public:
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
     Player* Get_pPlayer(){ return player_.get(); }
     void SetIsPaused(bool isPaused){ isPaused_ = isPaused; }
+
+    // 禁忌
+    FieldEditor* GetFieldEditor();
+
 private:
     void BGMUpdate();
 
@@ -87,5 +92,7 @@ private:
     float bgmVolumeInterpolateRate_ = 0.348f;
     //[0] = Game , [1] = Pause
     std::array<float,2> bgmVolume_ = {0.2f,0.104f};
-    const std::string bgmPath_ = "Scene_Game/rararacpp.wav";
+    const std::string titleBGM = "BGM/Title.wav";
+    const std::string gamePlayBGM = "Scene_Game/rararacpp.wav";
+    const std::string& currentBGM = titleBGM;
 };

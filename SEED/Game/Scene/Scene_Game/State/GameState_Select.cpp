@@ -1,6 +1,7 @@
 #include "GameState_Select.h"
 #include "GameState_Play.h"
 #include "Scene_Game.h"
+#include "State/GameState_Title.h"
 
 // 遷移可能なステートのインクルード
 #include "Pause/GameState_PauseForSelect.h"
@@ -27,6 +28,9 @@ GameState_Select::~GameState_Select(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Initialize(){
+
+    // ステージをリセット
+    StageManager::SetCurrentStageNo(0);
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();
@@ -104,9 +108,9 @@ void GameState_Select::HandOverColliders(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::ManageState(){
 
-    // ポーズへ遷移
-    if (PlayerInput::Pause::Pause()){
-        pGameScene_->ChangeState(new GameState_PauseForSelect(pScene_));
+    // title遷移
+    if (Input::IsTriggerPadButton(PAD_BUTTON::START)){
+        pGameScene_->ChangeState(new GameState_Title(pScene_));
         return;
     }
 

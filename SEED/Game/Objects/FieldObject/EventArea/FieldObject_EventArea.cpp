@@ -12,8 +12,9 @@ FieldObject_EventArea::FieldObject_EventArea() {
     std::string path = "FieldObject/" + name_ + ".obj";
     model_ = std::make_unique<Model>(path);
     model_->isRotateWithQuaternion_ = false;
+    model_->meshColor_[0] = { 1.0f,1.0f,0.0f,1.0f };
     model_->color_.w = 0.2f;
-    model_->blendMode_ = BlendMode::NORMAL;
+    model_->blendMode_ = BlendMode::ADD;
     // コライダー関連の初期化
     colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
     InitColliders(ObjectType::EventArea);
@@ -65,7 +66,7 @@ void FieldObject_EventArea::BeginFrame() {
 /////////////////////////////////////////////////////////////////////
 // 衝突時処理
 /////////////////////////////////////////////////////////////////////
-void FieldObject_EventArea::OnCollision(const BaseObject* other, ObjectType objectType) {
+void FieldObject_EventArea::OnCollision( BaseObject* other, ObjectType objectType) {
 
     other;
 

@@ -104,6 +104,7 @@ private:
     std::unordered_map<std::string, SoundData>audios_;
     std::unordered_map<std::string, IXAudio2SourceVoice*>sourceVoices_;
     std::unordered_map<std::string, bool>isPlaying_;
+    std::unordered_map<std::string, float>volumeMap_;
 
 private:
     static const std::string directoryPath_;

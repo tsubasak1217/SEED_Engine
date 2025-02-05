@@ -52,12 +52,14 @@ void EnemyManager::HandOverColliders(){
     }
 }
 
-void EnemyManager::EndFrame(){
+void EnemyManager::BeginFrame(){
     //死亡した敵を削除
-    std::erase_if(enemies_, [](const std::unique_ptr<Enemy>& enemy){
+    std::erase_if(enemies_,[](const std::unique_ptr<Enemy>& enemy){
         return !enemy->GetIsAlive();
-        });
+                  });
+}
 
+void EnemyManager::EndFrame(){
     // 各敵のEndFrame処理
     for(auto& enemy : enemies_){
         enemy->EndFrame();
@@ -67,7 +69,7 @@ void EnemyManager::EndFrame(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      enemyの保存
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void EnemyManager::SaveEnemies(){
+void EnemyManager::SaveEnemies(bool isSaveData){
     // CSVでの保存
     std::vector<std::vector<std::string>> csvData;
     csvData.emplace_back(std::vector<std::string>{"Index", "Name", "PosX", "PosY", "PosZ"}); // ヘッダ行
@@ -85,7 +87,15 @@ void EnemyManager::SaveEnemies(){
         });
     }
 
-    std::string csvPath = "enemies_position_" + std::to_string(stageNo_);
+    std::string csvPath;
+    if(!isSaveData){
+        csvPath = "enemies_position_" + std::to_string(stageNo_);
+        std::string copyPath = "SaveDatas/enemies_position_" + std::to_string(stageNo_);
+        CsvAdapter::GetInstance()->SaveCsv(copyPath, csvData);
+    } else{
+        csvPath = "SaveDatas/enemies_position_" + std::to_string(stageNo_);
+    }
+
     CsvAdapter::GetInstance()->SaveCsv(csvPath, csvData);
 
     // JSONでの保存
@@ -110,7 +120,13 @@ void EnemyManager::SaveEnemies(){
     rootJson["Enemies"] = enemyArray;
 
     // JSONファイルの出力
-    std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
+    std::string filePath;
+    if(!isSaveData){
+        filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
+    } else{// セーブデータの場合
+        filePath = "resources/jsons/enemies/SaveDatas/stage_" + std::to_string(stageNo_) + "_enemies_save.json";
+    }
+
     try{
         std::ofstream ofs(filePath);
         if(!ofs){
@@ -130,9 +146,15 @@ void EnemyManager::SaveEnemies(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      enemyの読み込み
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void EnemyManager::LoadEnemies(){
+void EnemyManager::LoadEnemies(bool isSaveData){
     // CSVの読み込み
-    std::string csvPath = "enemies_position_" + std::to_string(stageNo_);
+    std::string csvPath;
+    if(!isSaveData){
+        csvPath = "enemies_position_" + std::to_string(stageNo_);
+    } else{
+        csvPath = "SaveDatas/enemies_position_" + std::to_string(stageNo_);
+    }
+
     auto csvData = CsvAdapter::GetInstance()->LoadCsv(csvPath);
     if(csvData.size() <= 1){
         // 空なら何もしない
@@ -142,7 +164,14 @@ void EnemyManager::LoadEnemies(){
     // JSONの読み込み
     nlohmann::json rootJson;
     {
-        std::string filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
+        std::string filePath;
+
+        if(!isSaveData){
+            filePath = "resources/jsons/enemies/stage_" + std::to_string(stageNo_) + "_enemies.json";
+        } else{
+            filePath = "resources/jsons/enemies/SaveDatas/stage_" + std::to_string(stageNo_) + "_enemies_save.json";
+        }
+
         std::ifstream ifs(filePath);
         if(!ifs.is_open()){
             std::cerr << "Failed to open JSON file: " << filePath << std::endl;
@@ -154,7 +183,16 @@ void EnemyManager::LoadEnemies(){
             std::cerr << "Exception while reading JSON: " << e.what() << std::endl;
             return;
         }
+
+        // SaveDataに初期状態を丸ごとコピーする
+        if(!isSaveData){
+            std::string saveFilePath = "resources/jsons/enemies/SaveDatas/stage_" + std::to_string(stageNo_) + "_enemies_save.json";
+            std::ofstream ofs(saveFilePath);
+            ofs << ifs.rdbuf();
+        }
+
         ifs.close();
+
     }
 
     // 既存の敵を全削除

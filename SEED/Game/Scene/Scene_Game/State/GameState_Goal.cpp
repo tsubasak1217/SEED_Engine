@@ -1,5 +1,8 @@
 #include "GameState_Goal.h"
 
+//sceneState
+#include "State/GameState_Out.h"
+
 // player State
 #include "Player/PlayerState/PlayerState_ForcedIdle.h"
 
@@ -11,6 +14,7 @@
 #include "Scene_Game/State/GameState_Play.h"
 // lib
 #include <ClockManager.h>
+#include "AudioManager.h"
 
 // math
 #include "MyMath.h"
@@ -38,6 +42,10 @@ void GameState_Goal::Initialize(){
         StageManager* pStageManager = pGameScene_->Get_pStageManager();
         // 現在のステージの星の数を更新
         pStageManager->UpdateStarContOnCurrentStage();
+        pStageManager->StageClear(pStageManager->GetCurrentStageNo());
+
+        // 全ステージをクリアしたら GameClear へ
+        isClearAll_ = pStageManager->GetIsClearAllGoal();
 
         // 次のステージの初期化
         pGameScene_->Get_pStageManager()->GetStages()[StageManager::GetCurrentStageNo() + 1]->InitializeStatus();
@@ -106,6 +114,9 @@ void GameState_Goal::ManageState(){
 
         pScene_->ChangeState(new GameState_Play(pScene_));
     }
+    if(isClearAll_){
+        pGameScene_->ChangeState(new GameState_Out(pScene_));
+    }
 }
 
 void GameState_Goal::SetUpNextStage(){
@@ -162,7 +173,7 @@ void GameState_Goal::RotateYGoalForNextStage(){
 }
 
 void GameState_Goal::RotateXGoalForNextStage(){
-     // 角度差を求める
+    // 角度差を求める
     float diff = pGoal_->GetWorldRotate().x - targetAngleX_;
 
     goalRotateSpeedBySecond_ = goalRotateSpeed_ * ClockManager::DeltaTime();
@@ -184,15 +195,20 @@ void GameState_Goal::RotateXGoalForNextStage(){
     if(std::abs(diff) < goalRotateSpeedBySecond_){
         pGoal_->SetRotateX(targetAngleX_);
 
+        // 大砲のアニメーション
         pGoal_->GetModel()->StartAnimation("fire",false);
+        //Sound
+        AudioManager::PlayAudio("SE/goal.wav",false,0.65f);
         currentUpdate_ = [this](){ GoalAnimation(); };
         return;
     }
 }
 
 void GameState_Goal::GoalAnimation(){
-    // 大砲のアニメーション
-    if(pGoal_->GetModel()->GetIsEndAnimation()){
+    // goalアニメーションが終わるまで待つと違和感があるので,時間で管理する
+    leftGoalAnimationTime_ += ClockManager::DeltaTime();
+
+    if(leftGoalAnimationTime_ >= goalAnimationTime_){
         pEgg_->SetScale({1.f,1.f,1.f});
         currentUpdate_ = [this](){ ThrowEggForNextStage(); };
     }

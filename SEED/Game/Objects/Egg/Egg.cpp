@@ -73,7 +73,7 @@ void Egg::Draw(){
     BaseCharacter::Draw();
 }
 
-void Egg::OnCollision([[maybe_unused]] const BaseObject* other,ObjectType objectType){
+void Egg::OnCollision([[maybe_unused]] BaseObject* other,ObjectType objectType){
     BaseObject::OnCollision(other,objectType);
 
     if(objectType == ObjectType::Field){

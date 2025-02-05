@@ -111,7 +111,7 @@ void FieldObject_Activator::Notify(const std::string& event, void* data){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OnCollision
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void FieldObject_Activator::OnCollision(const BaseObject* other, ObjectType objectType){
+void FieldObject_Activator::OnCollision( BaseObject* other, ObjectType objectType){
     [[maybe_unused]] float speed = other->GetDropSpeed(); // 重さ判定をスキップするオブジェクトに追加
     // スイッチ等で使用する重さを加算する
     //  ※レバーはこの機能を使わない想定

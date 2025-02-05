@@ -28,6 +28,9 @@ class FieldEditor{
         AddFieldObject,
         AddEnemy,
     };
+
+    friend class FieldObject_SaveArea;
+
 public:
     //===================================================================*/
     //                   public methods
@@ -53,7 +56,7 @@ private:
     void RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, const std::vector<FieldObject_Switch*>& allSwitches) const;
     // jsonファイルへの保存
     void PopupDecideOutputName();
-    void SaveToJson(const std::string& filePath,int32_t stageNo);
+    void SaveToJson(const std::string& filePath,int32_t stageNo,bool isSaveData = false,Player* playerData = nullptr);
     // テクスチャの読み込み
     void LoadFieldModelTexture();
     // マウスで直接オブジェクト選択

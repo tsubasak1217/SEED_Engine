@@ -75,7 +75,7 @@ void FollowCamera::UpdateDistance(){
 
 void FollowCamera::SetTarget(BaseObject* target){
     // 前のターゲットを保存
-    preTarget_ = target_;
+    //preTarget_ = target_;
     // 新しいターゲットを設定
     target_ = target;
 }

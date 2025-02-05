@@ -7,6 +7,4 @@ public:
     EventState_Tutorial_Goal();
     EventState_Tutorial_Goal(Scene_Base* pScene);
     ~EventState_Tutorial_Goal()override;
-    void Update()override;
-    void Draw()override;
 };

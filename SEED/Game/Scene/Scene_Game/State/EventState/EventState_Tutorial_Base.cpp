@@ -32,12 +32,14 @@ void EventState_Tutorial_Base::Initialize(Scene_Base* pScene){
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
     textFieldSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
+    textFieldSprite_->isStaticDraw = false;
 
     textSprite_ = std::make_unique<Sprite>("Tutorials/tutorialText.png");
     textSprite_->anchorPoint = { 0.5f,0.5f };
     textSprite_->clipSize = { 1000.0f,63.0f };
     textSprite_->translate = { 640.0f,600.0f };
     textSprite_->color = { 1.0f,1.0f,1.0f,0.0f };
+    textSprite_->isStaticDraw = false;
 
     //
     kTime_ = 1.0f;
@@ -66,6 +68,11 @@ void EventState_Tutorial_Base::Update(){
             } else{
                 time_ = 2.0f;
             }
+        }
+
+        if(PlayerInput::Tutorial::SkipTutorial()){
+            textStep_ = textStepMax_;
+            time_ = 0.25f;
         }
 
         // テキストの透明度を徐々に濃くしていく(2秒かけて最大へ。1秒目から出現)

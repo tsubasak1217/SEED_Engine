@@ -2470,7 +2470,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.4792754054069519,
+                0.9287391304969788,
                 0.0
             ],
             "scale": [
@@ -3572,7 +3572,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.0309785604476929,
+                -0.5818809866905212,
                 0.0
             ],
             "scale": [
@@ -4983,46 +4983,6 @@
             "type": 18
         },
         {
-            "fieldObjectID": "0ee34f7a-3c7f-1ab7-1529-c79a1aaad660",
-            "name": "SaveArea",
-            "position": [
-                -136.0,
-                35.0,
-                -47.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.800009727478027,
-                7.5,
-                2.8999996185302734
-            ],
-            "type": 18
-        },
-        {
-            "fieldObjectID": "13ff9b3c-69ca-6ba2-5b30-2cfb2edf00f9",
-            "name": "SaveArea",
-            "position": [
-                -140.0,
-                35.0,
-                -53.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                7.5,
-                2.5
-            ],
-            "type": 18
-        },
-        {
             "fieldObjectID": "50271856-204c-f595-4cb4-a6fa1d1b2ebf",
             "name": "GrassSoil",
             "position": [
@@ -5192,35 +5152,80 @@
             ],
             "rotation": [
                 -0.0,
-                -0.5123035907745361,
+                -0.06311262398958206,
                 0.0
             ],
             "scale": [
+                2.499999761581421,
                 2.5,
-                2.5,
-                2.5
+                2.499999761581421
             ],
             "type": 2
+        },
+        {
+            "eventFunctionKey": "Tutorial_ThrowLength",
+            "fieldObjectID": "69a95415-5523-defd-6496-12e444cc69a9",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -135.0,
+                40.0,
+                -45.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 9
+        },
+        {
+            "fieldObjectID": "68b21c72-66c8-e3d0-4754-f51871287638",
+            "name": "SaveArea",
+            "position": [
+                -135.0,
+                40.0,
+                -44.5
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                1.7000004053115845
+            ],
+            "type": 18
+        },
+        {
+            "eventFunctionKey": "Tutorial_Corpse",
+            "fieldObjectID": "29398ca8-590b-b337-363e-a2f667117b46",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -135.0,
+                40.0,
+                -52.5
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                4.799997806549072
+            ],
+            "type": 9
         }
     ],
-    "player": {
-        "GrowLevel": 1,
-        "Rotate": {
-            "x": -0.0,
-            "y": 2.6378040313720703,
-            "z": 0.0
-        },
-        "Scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-        },
-        "Translate": {
-            "x": -125.79467010498047,
-            "y": 24.960004806518555,
-            "z": -50.40875244140625
-        },
-        "Weight": 14.050000190734863
-    },
     "stage": 2
 }

@@ -24,7 +24,7 @@ FieldObject_Lever::FieldObject_Lever(){
     //objectのClear
     associatedDoors_.clear();
     associatedMoveFloors_.clear();
-    hud_ = std::make_unique<Sprite>("GameUI/A.png");
+    hud_ = std::make_unique<Sprite>("GameUI/B.png");
 
 }
 
@@ -67,7 +67,7 @@ void FieldObject_Lever::DrawHud(){
 // EndFrame
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void FieldObject_Lever::EndFrame(){
-    // レバーに触れている & Aボタンが押された瞬間ならトグルする
+    // レバーに触れている & Bボタンが押された瞬間ならトグルする
     if (isTouched_ && Input::IsTriggerPadButton(PAD_BUTTON::B)){
         Toggle();
 

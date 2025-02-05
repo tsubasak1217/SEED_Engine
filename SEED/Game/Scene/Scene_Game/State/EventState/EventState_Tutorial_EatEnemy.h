@@ -7,6 +7,4 @@ public:
     EventState_Tutorial_EatEnemy();
     EventState_Tutorial_EatEnemy(Scene_Base* pScene);
     ~EventState_Tutorial_EatEnemy()override;
-    void Update()override;
-    void Draw()override;
 };

@@ -162,7 +162,7 @@ namespace PlayerInput{
         }
         inline  bool DecideStage(){
             if(Input::IsConnectedPad(0)){
-                return Input::IsPressPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
+                return Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
             }
             return Input::IsTriggerKey(DIK_SPACE) || Input::IsTriggerKey(DIK_RETURN);
         }
@@ -203,6 +203,13 @@ namespace PlayerInput{
                 return Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
             }
             return Input::IsTriggerKey(DIK_SPACE) || Input::IsTriggerKey(DIK_RETURN);
+        }
+
+        inline bool SkipTutorial(){
+            if(Input::IsConnectedPad(0)){
+                return Input::IsTriggerPadButton(PAD_BUTTON::X);
+            }
+            return Input::IsTriggerKey(DIK_ESCAPE);
         }
     }
 };

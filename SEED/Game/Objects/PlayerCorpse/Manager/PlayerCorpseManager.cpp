@@ -49,6 +49,14 @@ void PlayerCorpseManager::AddPlayerCorpse(std::unique_ptr<PlayerCorpse>& addCorp
     playerCorpses_.push_back(std::move(addCorpse));
 }
 
+PlayerCorpse* PlayerCorpseManager::GetPlayerCorpse(int index){
+    if(index < 0 || index >= playerCorpses_.size()){
+        return nullptr;
+    }
+
+    return playerCorpses_[index].get();
+}
+
 void PlayerCorpseManager::RemoveAll(){
     playerCorpses_.clear();
 }

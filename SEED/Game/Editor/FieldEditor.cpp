@@ -244,6 +244,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
                 modelJson["openSpeed"] = door->GetOpenSpeed();
                 modelJson["openHeight"] = door->GetOpenHeight();
                 modelJson["closedPosY"] = door->GetClosedPosY();
+                modelJson["shouldPerformCameraView"] = door->GetShouldPerformCameraView();
             }
 
             // イベントエリアの場合
@@ -847,8 +848,10 @@ void FieldEditor::ShowImGui(){
                     static int selectedEventIndex = 0;
                     static std::vector<std::string> eventNames;
                     if (eventNames.empty()){
-                        for (const auto& [name, func] : EventFunctionTable::tableMap_){
-                            eventNames.push_back(name);
+                        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+                            if(name != ""){
+                                eventNames.push_back(name);
+                            }
                         }
                     }
                     std::string currentEventName;

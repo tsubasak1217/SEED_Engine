@@ -23,11 +23,3 @@ EventState_Tutorial_EatEnemy::~EventState_Tutorial_EatEnemy(){
     pCamera_->SetTarget(pPlayer_);
     pCamera_->SetInterpolationRate(0.075f);
 }
-
-void EventState_Tutorial_EatEnemy::Update(){
-    EventState_Tutorial_Base::Update();
-}
-
-void EventState_Tutorial_EatEnemy::Draw(){
-    EventState_Tutorial_Base::Draw();
-}

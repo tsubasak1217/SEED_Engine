@@ -16,7 +16,7 @@ GameState_Title::GameState_Title(Scene_Base* pScene): State_Base(pScene){
 }
 
 GameState_Title::~GameState_Title(){
-    pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
+    pGameScene_->Get_pStageManager()->SetIsTitle(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -25,13 +25,17 @@ GameState_Title::~GameState_Title(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::Initialize(){
+    // タイトルステージの初期化
+    pGameScene_->Get_pStageManager()->SetIsTitle(true);
     pGameScene_->Get_pStageManager()->GetTitleStage()->InitializeStatus(std::string("resources/jsons/Stages/stage_title.json"));
-
+    pGameScene_->Get_pStageManager()->SetCurrentStageNo(0);
+    
     // 操作フラグをfalseにしておく
     Vector3 initializePlayerPos = StageManager::GetTitleStartPos();
     pGameScene_->Get_pPlayer()->SetPosition(initializePlayerPos);
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+
 
     // カメラの初期位置
     SEED::SetCamera("main");
@@ -85,6 +89,7 @@ void GameState_Title::Update(){
 #endif // _DEBUG
 
     StageManager::GetTitleStage()->Update();
+    StageManager::GetTitleStage()->HandOverColliders();
     Vector3 cameraPos = pGameScene_->Get_pPlayer()->GetWorldTranslate() + cameraOffset_;
     SEED::GetCamera()->SetTranslation(cameraPos);
     SEED::GetCamera()->SetRotation(cameraRotate_);

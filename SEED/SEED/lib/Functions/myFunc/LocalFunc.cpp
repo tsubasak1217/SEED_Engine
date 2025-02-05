@@ -83,3 +83,29 @@ std::string GenerateGUID(){
 
     return oss.str();
 }
+
+Vector3 GetForward(const Vector3& rotate){
+    // transform.rotate_ が { rotX, rotY, rotZ } (単位はラジアン) と想定
+    float pitch = rotate.x;
+    float yaw = rotate.y;
+    // float roll  = transform.rotate_.z; // 必要なら
+
+    // ピッチ・ヨーから「前方向」を計算 (Z前提)
+    // ゲームによっては X軸が前、-Z軸が前 など異なる場合があるので注意
+    float cosPitch = cosf(pitch);
+    float sinPitch = sinf(pitch);
+    float cosYaw = cosf(yaw);
+    float sinYaw = sinf(yaw);
+
+    // もし「前方向 = Z軸」ならこんな感じ (右手座標系想定)
+    //   forward.x = sinYaw * cosPitch;
+    //   forward.y = -sinPitch;  // ピッチが上向きならyが増えるように(好みに合わせる)
+    //   forward.z = cosYaw * cosPitch;
+
+    Vector3 forward;
+    forward.x = sinYaw * cosPitch;
+    forward.y = -sinPitch;         // ゲームのローカル軸仕様に合わせる
+    forward.z = cosYaw * cosPitch;
+
+    return forward;
+}

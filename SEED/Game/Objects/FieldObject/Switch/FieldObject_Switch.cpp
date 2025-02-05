@@ -92,7 +92,7 @@ void FieldObject_Switch::EndFrame(){
     }
 
     drawingUI_ = false;
-    const float distanceToDrawUI = 15.f;
+    const float distanceToDrawUI = 10.f;
     if(MyMath::Length(player_->GetWorldTranslate() - GetWorldTranslate()) < distanceToDrawUI){
         drawingUI_ = true;
         weightUI_->Update();

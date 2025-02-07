@@ -162,6 +162,9 @@ void GameState_Title::HandOverColliders(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Title::ManageState(){
+    if(Input::IsPressKey(DIK_RSHIFT) && Input::IsPressKey(DIK_LSHIFT)){
+        pGameScene_->Get_StageManager().ResetStageStatus();
+    }
     // タイトル画面のステート管理
     // 遷移：Aボタンを押したらセレクト画面へ
     if (Input::IsTriggerPadButton(PAD_BUTTON::A)){

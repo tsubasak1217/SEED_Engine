@@ -22,6 +22,8 @@ void BaseCamera::Initialize(){
     znear_ = 0.1f;
     zfar_ = 1500.0f;
     fov_ = 0.45f;
+    shakeTime_ = 0.0f;
+    shakePower_ = 0.0f;
     UpdateMatrix();
 }
 
@@ -69,7 +71,9 @@ void BaseCamera::UpdateMatrix(){
     shakeTime_ = std::clamp(shakeTime_ - ClockManager::DeltaTime(), 0.0f, 1000000.0f);
 }
 
-void BaseCamera::Update(){}
+void BaseCamera::Update(){
+    UpdateMatrix();
+}
 
 
 // カメラを揺らす

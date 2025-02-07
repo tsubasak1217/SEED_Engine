@@ -74,7 +74,7 @@ protected:
 
     // シェイク
     float shakeTime_;
-    float kShakeTime_;
+    float kShakeTime_ = 1.0f;
     float shakePower_;
     Vector3 shakeLevel_;
 };

@@ -100,7 +100,6 @@ void GameState_Title::Update(){
     SEED::GetCamera()->SetTranslation(cameraPos);
     SEED::GetCamera()->SetRotation(cameraRotate_);
     pGameScene_->Get_pPlayer()->SetRotate(playerRotate_);
-    pGameScene_->Get_pPlayer()->SetPosition(StageManager::GetTitleStartPos());
 
     // フェードイン処理：フェードが始まっている場合、アルファ値を減少させる
     if (fadeInStarted_){

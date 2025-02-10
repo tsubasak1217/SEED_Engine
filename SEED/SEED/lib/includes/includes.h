@@ -1,6 +1,6 @@
 #pragma once
-#include "Material.h"
-#include "Transform.h"
-#include "DirectionalLight.h"
-#include "VertexData.h"
-#include "Model.h"
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Structs/DirectionalLight.h>
+#include <SEED/Lib/Structs/VertexData.h>
+#include <SEED/Lib/Structs/Model.h>

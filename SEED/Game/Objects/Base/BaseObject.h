@@ -1,16 +1,17 @@
 #pragma once
-#include "Model.h"
 #include <memory>
 #include <cstdint>
 #include <string>
 #include <algorithm>
-#include <Physics.h>
-#include "Collision/Collider.h"
-#include "CollisionManaer/CollisionManager.h"
-#include "CollisionManaer/ColliderEditor.h"
-#include "ClockManager.h"
-#include "MyMath.h"
-#include "MyFunc.h"
+
+#include <SEED/Lib/Structs/Model.h>
+#include <Environment/Physics.h>
+#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
+#include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 
 class BaseObject{
 

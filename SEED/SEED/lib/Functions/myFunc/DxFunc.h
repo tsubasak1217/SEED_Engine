@@ -1,8 +1,8 @@
 #pragma once
 // mine
-#include <ModelData.h>
-#include <Material.h>
-#include <VertexData.h>
+#include <SEED/Lib/Structs/ModelData.h>
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/VertexData.h>
 
 // external
 #include <string>

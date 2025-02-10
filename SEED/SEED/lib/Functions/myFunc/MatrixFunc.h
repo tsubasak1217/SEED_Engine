@@ -1,11 +1,11 @@
 #pragma once
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Quaternion.h"
-#include "Matrix2x2.h"
-#include "Matrix3x3.h"
-#include "Matrix4x4.h"
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Vector4.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
+#include <SEED/Lib/Tensor/Matrix2x2.h>
+#include <SEED/Lib/Tensor/Matrix3x3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
 
 //================================================================
 //                      行列の計算関数

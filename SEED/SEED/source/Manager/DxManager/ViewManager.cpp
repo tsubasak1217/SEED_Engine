@@ -1,8 +1,8 @@
-#include "ViewManager.h"
-#include "DescriptoeHeap_SRV_CBV_UAV.h"
-#include "DescriptoeHeap_RTV.h"
-#include "DescriptoeHeap_DSV.h"
-#include "DescriptorHeap.h"
+#include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap_SRV_CBV_UAV.h>
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap_RTV.h>
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap_DSV.h>
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap.h>
 
 ViewManager* ViewManager::instance_ = nullptr;
 

@@ -1,13 +1,13 @@
 #pragma once
 
 // engine
-#include "../SEED/lib/structs/Model.h"
-#include "Base/BaseObject.h"
+#include <SEED/Lib/Structs/Model.h>
+#include <Game/Objects/Base/BaseObject.h>
 
 // lib
-#include "../SEED/lib/tensor/Vector3.h"
+#include <SEED/Lib/Tensor/Vector3.h>
 
-#include "imgui.h"
+#include <imgui.h>
 
 
 // c++

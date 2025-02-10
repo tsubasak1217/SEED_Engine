@@ -1,5 +1,5 @@
 #pragma once
-#include "Base/ICharacterState.h"
+#include <Game/Objects/Base/ICharacterState.h>
 
 class PlayerState_Move : public ICharacterState{
 public:
@@ -19,10 +19,9 @@ protected:
     void Move();
     void Rotate();
 
-    void EmitParticle();
-
 private:
     void DecideStickVelocity();
+
 protected:
     // 移動情報
     float moveSpeed_ = 30.0f;

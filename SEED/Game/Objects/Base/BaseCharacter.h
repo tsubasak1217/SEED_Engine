@@ -1,8 +1,8 @@
 #pragma once
 #include <list>
 #include <vector>
-#include "BaseObject.h"
-#include "BaseCamera.h"
+#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Object/Camera/BaseCamera.h>
 
 class ICharacterState;
 

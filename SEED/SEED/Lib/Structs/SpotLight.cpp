@@ -1,5 +1,5 @@
 #include "SpotLight.h"
-#include "SEED.h"
+#include <SEED/Source/SEED.h>
 
 SpotLight::SpotLight(){
     lightType_ = SPOT_LIGHT;

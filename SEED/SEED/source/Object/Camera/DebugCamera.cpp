@@ -1,7 +1,7 @@
-#include "DebugCamera.h"
-#include "InputManager.h"
-#include "MatrixFunc.h"
-#include "ClockManager.h"
+#include <SEED/Source/Object/Camera/DebugCamera.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
 
 
 DebugCamera::DebugCamera(){

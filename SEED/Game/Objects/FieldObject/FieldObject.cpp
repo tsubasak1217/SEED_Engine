@@ -1,11 +1,9 @@
 #include "FieldObject.h"
 
-#include "LocalFunc.h"
-
 ///////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////
-FieldObject::FieldObject(){ guid_ = GenerateGUID(); }
+FieldObject::FieldObject(){}
 
 FieldObject::FieldObject(const std::string& modelName){
     name_ = modelName;
@@ -14,9 +12,6 @@ FieldObject::FieldObject(const std::string& modelName){
     model_->isRotateWithQuaternion_ = false;
     Initialize();
     BaseObject::Update();
-
-    // ユニークなIDを生成
-    guid_ = GenerateGUID();
 }
 
 ///////////////////////////////////////////////////////////////////

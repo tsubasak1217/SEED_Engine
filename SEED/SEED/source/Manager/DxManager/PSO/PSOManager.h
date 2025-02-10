@@ -1,5 +1,5 @@
 #pragma once
-#include "blendMode.h"
+#include <SEED/Lib/Structs/blendMode.h>
 #include "Pipeline.h"
 #include "RootSignature.h"
 

@@ -1,11 +1,11 @@
-#include <DxManager.h>
-#include <SEED.h>
-#include <Environment.h>
-#include <MyMath.h>
-#include <CS_Buffers.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <thread>
-#include "InputManager.h"
-#include "PSO/PSOManager.h"
+#include <SEED/Source/SEED.h>
+#include <Environment/Environment.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Structs/CS_Buffers.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 
 DxManager* DxManager::instance_ = nullptr;
 

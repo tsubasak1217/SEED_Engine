@@ -1,6 +1,6 @@
-#include "ParticleManager.h"
-#include "ImGuiManager.h"
-#include "SEED.h"
+#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/SEED.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */

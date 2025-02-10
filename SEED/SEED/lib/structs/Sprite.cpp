@@ -1,6 +1,6 @@
-#include "Sprite.h"
-#include "SEED.h"
-#include "DxFunc.h"
+#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 
 Sprite::Sprite(){
     leftTop = { 0.0f,0.0f };

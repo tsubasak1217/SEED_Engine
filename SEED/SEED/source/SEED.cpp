@@ -1,13 +1,13 @@
 // local
-#include <SEED.h>
-#include <DxFunc.h>
-#include <MatrixFunc.h>
-#include <MyMath.h>
-#include <ShapeMath.h>
-#include <includes.h>
-#include <Environment.h>
-#include <SceneManager/SceneManager.h>
-#include <CollisionManaer/CollisionManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Includes/includes.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/SceneManager/SceneManager.h>
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */

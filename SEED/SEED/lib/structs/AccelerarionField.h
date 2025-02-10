@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector3.h"
-#include "Range3D.h"
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Structs/Range3D.h>
 
 struct AccelerationField{
 

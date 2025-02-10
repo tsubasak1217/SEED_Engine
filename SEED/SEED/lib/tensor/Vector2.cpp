@@ -1,6 +1,6 @@
-#include "Vector2.h"
-#include "Vector3.h"
-#include "MatrixFunc.h"
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
 Vector2 Vector2::operator*(const Matrix3x3& mat) const{
     return Multiply(*this, mat);

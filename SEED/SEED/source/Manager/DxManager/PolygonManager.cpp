@@ -1,13 +1,13 @@
 // local
-#include <PolygonManager.h>
-#include <DxManager.h>
-#include <SEED.h>
-#include <MyMath.h>
-#include <MyFunc.h>
-#include <Environment.h>
-#include "ModelManager.h"
-#include "TextureManager.h"
-#include "PSO/PSOManager.h"
+#include <SEED/Source/Manager/DxManager/PolygonManager.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/ModelManager/ModelManager.h>
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 
 // external
 #include <assert.h>

@@ -1,5 +1,5 @@
-#include "AccelerarionField.h"
-#include "SEED.h"
+#include <SEED/Lib/Structs/AccelerarionField.h>
+#include <SEED/Source/SEED.h>
 
 bool AccelerationField::CheckCollision(const Vector3& pos){
     if(range.min.x <= pos.x && pos.x <= range.max.x &&

@@ -1,5 +1,5 @@
-#include "Scene_Base.h"
-#include <../GameSystem.h>
+#include <Game/Scene/Base/Scene_Base.h>
+#include <Game/GameSystem.h>
 
 Scene_Base::Scene_Base(){}
 
@@ -24,7 +24,6 @@ void Scene_Base::Draw(){
 }
 
 void Scene_Base::BeginFrame(){
-    isStateChanged_ = false;
 }
 
 void Scene_Base::ManageState(){
@@ -38,7 +37,6 @@ void Scene_Base::ChangeScene(const std::string& nextSceneName){
 }
 
 void Scene_Base::ChangeState(State_Base* nextState){
-    isStateChanged_ = true;
     currentState_.reset(nextState);
 }
 

@@ -1,7 +1,7 @@
-#include <SEED.h>
-#include <../Game/GameSystem.h>
-#include <Environment.h>
-#include <WindowManager.h>
+#include <SEED/Source/SEED.h>
+#include <Game/GameSystem.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/WindowManager/WindowManager.h>
 
 static LeakChecker leakChecker;
 

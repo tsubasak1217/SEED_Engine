@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include <SEED/Lib/Tensor/Vector2.h>
 #include "WindowInfo.h"
 #include <cassert>
 #include <unordered_map>

@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
 #include <nlohmann/json.hpp>
-#include "Matrix4x4.h"
+#include <SEED/Lib/Tensor/Matrix4x4.h>
 
 
 struct Vector4;

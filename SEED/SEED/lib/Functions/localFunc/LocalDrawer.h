@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "Vector2.h"
-#include "Transform.h"
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Structs/Transform.h>
 

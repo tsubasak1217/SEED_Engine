@@ -5,15 +5,15 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
-#include "ImGuiManager.h"
-#include "Range1D.h"
-#include "Range3D.h"
-#include "AccelerarionField.h"
-#include "Emitter.h" 
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Lib/Structs/Range1D.h>
+#include <SEED/Lib/Structs/Range3D.h>
+#include <SEED/Lib/Structs/AccelerarionField.h>
+#include <SEED/Source/Object/Particle/Emitter.h> 
 
 // particles
-#include "BaseParticle.h"
-#include "RadialParticle.h"
+#include <SEED/Source/Object/Particle/BaseParticle.h>
+#include <SEED/Source/Object/Particle/RadialParticle.h>
 
 
 

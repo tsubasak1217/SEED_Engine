@@ -1,11 +1,10 @@
-#include "BaseCamera.h"
-#include "MatrixFunc.h"
-#include "MyMath.h"
-#include "MyFunc.h"
-#include "MatrixFunc.h"
-#include "InputManager.h"
-#include "Environment.h"
-#include "ClockManager.h"
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
 
 float znearOffsetForLayer = 0.09f;
 

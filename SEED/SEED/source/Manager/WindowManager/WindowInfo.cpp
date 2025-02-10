@@ -1,6 +1,6 @@
 #include "WindowInfo.h"
-#include "ViewManager.h"
-#include "DxFunc.h"
+#include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 
 WindowInfo::~WindowInfo(){
     Finalize();

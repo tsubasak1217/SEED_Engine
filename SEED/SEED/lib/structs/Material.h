@@ -1,9 +1,9 @@
 #pragma once
-#include "Matrix4x4.h"
-#include "Vector4.h"
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Tensor/Vector4.h>
 #include <stdint.h>
 #include <string>
-#include "blendMode.h"
+#include <SEED/Lib/Structs/blendMode.h>
 
 enum LIGHTING_TYPE : int32_t{
     LIGHTINGTYPE_NONE = 0,

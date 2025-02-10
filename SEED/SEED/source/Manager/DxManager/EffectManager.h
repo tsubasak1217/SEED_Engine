@@ -1,5 +1,5 @@
 #pragma once
-#include <DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 
 class DxManager;
 class SEED;

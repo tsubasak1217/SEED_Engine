@@ -1,4 +1,4 @@
-#include "CameraManager.h"
+#include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <cassert>
 #include <imgui.h>
 // static変数初期化

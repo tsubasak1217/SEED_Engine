@@ -1,5 +1,5 @@
 #pragma once
-#include <BaseLight.h>
+#include <SEED/Lib/Structs/BaseLight.h>
 
 struct PointLight : public BaseLight{
     PointLight();

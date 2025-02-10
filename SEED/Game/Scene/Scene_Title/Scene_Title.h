@@ -1,22 +1,15 @@
 #pragma once
-#include "Scene_Base.h"
+#include <Game/Scene/Base/Scene_Base.h>
 
 ///stl
 //pointer
 #include <memory>
 
-///local
-//state
-#include "State/ITitleState.h"
-//Scene
-class Scene_Game;
 //object
-#include "Sprite.h"
-#include "Model.h"
+#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/Structs/Model.h>
 
-class Scene_Title
-    : public Scene_Base{
-    friend class LoadNextSceneThread;
+class Scene_Title : public Scene_Base{
 public:
     Scene_Title();
     ~Scene_Title() override;
@@ -30,13 +23,4 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
-private:
-    //============= PlayerModel =============//
-    std::unique_ptr<Model> playerModel_ = nullptr;
-
-    //============= UI =============//
-    std::unique_ptr<Sprite> titleLogo_ = nullptr;
-    std::unique_ptr<Sprite> howToStartUI_ = nullptr; // "Press Any Button" 的なやつ
-
-public:
 };

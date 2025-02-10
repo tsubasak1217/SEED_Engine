@@ -1,4 +1,4 @@
-#include "OBB.h"
+#include <SEED/Lib/Shapes/OBB.h>
 
 // OBBの頂点を取得
 std::array<Vector3, 8> OBB::GetVertices()const{

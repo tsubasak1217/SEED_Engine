@@ -1,6 +1,6 @@
-#include "MyFunc.h"
-#include "MyMath.h"
-#include "Quaternion.h"
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
 
 // staticメンバーの定義
 std::random_device MyFunc::rd;

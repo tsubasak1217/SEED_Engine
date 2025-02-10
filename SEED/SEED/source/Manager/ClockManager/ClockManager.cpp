@@ -1,4 +1,4 @@
-#include "ClockManager.h"
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <thread>
 
 /////////////////////////////////////////////////

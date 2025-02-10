@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include "ViewManager_Enum.h"
-#include "DxManager.h"
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/ViewManager_Enum.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 
 class DescriptorHeap;
 

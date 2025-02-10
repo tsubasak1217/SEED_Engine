@@ -1,6 +1,6 @@
 #pragma once
-#include "BaseCamera.h"
-#include "DebugCamera.h"
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Source/Object/Camera/DebugCamera.h>
 
 #include <memory>
 #include <unordered_map>

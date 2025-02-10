@@ -1,5 +1,4 @@
 #pragma once
-
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Vector4.h>

@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector3.h"
-#include "Matrix4x4.h"
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
 
 // クォータニオンクラス(左手座標系)
 struct Quaternion{

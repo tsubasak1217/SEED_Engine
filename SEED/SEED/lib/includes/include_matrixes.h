@@ -1,5 +1,5 @@
 #pragma once
 
-#include "Matrix2x2.h"
-#include "Matrix3x3.h"
-#include "Matrix4x4.h"
+#include <SEED/Lib/Tensor/Matrix2x2.h>
+#include <SEED/Lib/Tensor/Matrix3x3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>

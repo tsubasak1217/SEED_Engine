@@ -1,13 +1,12 @@
 #pragma once
-#include "include_tensors.h"
 #include <climits>
 #include <stdint.h>
 #include <vector>
 #include <string>
 #include <numeric>
 #include <algorithm>
-#include "Line.h"
-#include "Vector4.h"
+#include <SEED/Lib/Includes/include_tensors.h>
+#include <SEED/Lib/Shapes/Line.h>
 
 const float kDeltaTime = 0.016f;
 

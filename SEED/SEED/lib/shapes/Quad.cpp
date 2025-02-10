@@ -1,5 +1,5 @@
-#include "Quad.h"
-#include "SEED.h"
+#include <SEED/Lib/Shapes/Quad.h>
+#include <SEED/Source/SEED.h>
 
 Quad::Quad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,

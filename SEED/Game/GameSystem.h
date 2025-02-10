@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include <CollisionManaer/CollisionManager.h>
-#include <CameraManager.h>
-#include "Scene_Base.h"
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
+#include <SEED/Source/Manager/CameraManager/CameraManager.h>
+#include <Game/Scene/Base/Scene_Base.h>
 
 class GameSystem{
 private:

@@ -1,5 +1,5 @@
 #pragma once
-#include "Base/ICharacterState.h"
+#include <Game/Objects/Base/ICharacterState.h>
 
 class PlayerState_Idle : public ICharacterState{
 public:

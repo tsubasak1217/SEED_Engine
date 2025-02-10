@@ -2,8 +2,8 @@
 #include <memory>
 #include <functional>
 #include <string>
-#include "SEED.h"
-#include "Scene_Base.h"
+#include <SEED/Source/SEED.h>
+#include <Game/Scene/Base/Scene_Base.h>
 
 // シーン管理クラス(シングルトン)
 class SceneManager{

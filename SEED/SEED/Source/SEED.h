@@ -1,35 +1,35 @@
 #pragma once
 
 // environment
-#include <Environment.h>
-#include <Physics.h>
+#include <Environment/Environment.h>
+#include <Environment/Physics.h>
 
 // Managers
-#include <DxManager.h>
-#include <ImGuiManager.h>
-#include <WindowManager.h>
-#include <AudioManager.h>
-#include <ClockManager.h>
-#include <PolygonManager.h>
-#include <ParticleManager.h>
-#include <InputManager.h>
-#include <ModelManager.h>
-#include <TextureManager.h>
-#include <ViewManager.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/WindowManager/WindowManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Source/Manager/DxManager/PolygonManager.h>
+#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/ModelManager/ModelManager.h>
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/DxManager/ViewManager.h>
 
 // structs
-#include <DirectionalLight.h>
-#include <Triangle.h>
-#include <Quad.h>
-#include <Sprite.h>
-#include <BaseCamera.h>
-#include <BlendMode.h>
-#include "AABB.h"
-#include "OBB.h"
-#include "Ring.h"
+#include <SEED/Lib/Structs/DirectionalLight.h>
+#include <SEED/Lib/Shapes/Triangle.h>
+#include <SEED/Lib/Shapes/Quad.h>
+#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Structs/blendMode.h>
+#include <SEED/Lib/Shapes/AABB.h>
+#include <SEED/Lib/Shapes/OBB.h>
+#include <SEED/Lib/Shapes/Ring.h>
 
 // math
-#include <ShapeMath.h>
+#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
 
 // external
 #include <json.hpp>

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
-#include <State_Base.h>
-#include <EventState/EventState_Base.h>
+#include <Game/Scene/Base/State_Base.h>
+#include <Game/Scene/Base/EventState_Base.h>
 
 class Scene_Base{
 public:
@@ -26,5 +26,4 @@ public:
 protected:
     std::unique_ptr<State_Base> currentState_;
     std::unique_ptr<EventState_Base> currentEventState_;
-    bool isStateChanged_ = false;
 };

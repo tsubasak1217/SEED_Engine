@@ -1,8 +1,8 @@
 #include <cassert>
-#include "Model.h"
-#include "MatrixFunc.h"
-#include "SEED.h"
-#include "ModelManager.h"
+#include <SEED/Lib/Structs/Model.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Source/Manager/ModelManager/ModelManager.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                          //

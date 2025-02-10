@@ -6,20 +6,20 @@
 #include <queue>
 #include <wrl/client.h>
 // local
-#include <Vector4.h>
-#include <VertexData.h>
-#include <OffsetData.h>
-#include <Model.h>
-#include <Material.h>
-#include <Transform.h>
-#include <CameraForGPU.h>
-#include <DirectionalLight.h>
-#include <PointLight.h>
-#include <SpotLight.h>
-#include "blendMode.h"
-#include "DrawLocation.h"
-#include "Ring.h"
-#include "Cylinder.h"
+#include <SEED/Lib/Tensor/Vector4.h>
+#include <SEED/Lib/Structs/VertexData.h>
+#include <SEED/Lib/Structs/OffsetData.h>
+#include <SEED/Lib/Structs/Model.h>
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Structs/CameraForGPU.h>
+#include <SEED/Lib/Structs/DirectionalLight.h>
+#include <SEED/Lib/Structs/PointLight.h>
+#include <SEED/Lib/Structs/SpotLight.h>
+#include <SEED/Lib/Structs/blendMode.h>
+#include <SEED/Lib/Structs/DrawLocation.h>
+#include <SEED/Lib/Shapes/Ring.h>
+#include <SEED/Lib/Shapes/Cylinder.h>
 
 //
 using Microsoft::WRL::ComPtr;

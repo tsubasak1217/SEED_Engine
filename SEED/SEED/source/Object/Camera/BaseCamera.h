@@ -1,9 +1,8 @@
 #pragma once
-#include "Transform.h"
-#include "Vector2.h"
-#include "Line.h"
-
 #include <stdint.h>
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Shapes/Line.h>
 
 
 struct BaseCamera{

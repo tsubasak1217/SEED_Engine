@@ -1,7 +1,7 @@
 #pragma once
-#include "Vector3.h"
-#include "Matrix4x4.h"
-#include "Quaternion.h"
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
 
 #include <d3d12.h>
 #include <dxgi1_6.h>

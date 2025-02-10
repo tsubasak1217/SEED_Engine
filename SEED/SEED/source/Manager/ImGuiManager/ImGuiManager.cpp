@@ -1,6 +1,6 @@
-#include "ImGuiManager.h"
-#include "WindowManager.h"
-#include "SEED.h"
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/WindowManager/WindowManager.h>
+#include <SEED/Source/SEED.h>
 
 // シングルトンインスタンス
 ImGuiManager* ImGuiManager::instance_ = nullptr;

@@ -1,9 +1,9 @@
 #pragma once
-#include "BaseCamera.h"
-#include "MyMath.h"
-#include "MyFunc.h"
-#include "Base/BaseObject.h"
-#include "InputHangler.h"
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Manager/InputManager/InputHandler.h>
 
 struct FollowCamera : public BaseCamera{
 

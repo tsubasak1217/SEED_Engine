@@ -1,8 +1,8 @@
 #pragma once
 
-#include "MyFunc.h"
-#include "MyMath.h"
-#include "MatrixFunc.h"
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
 Matrix4x4 LookAtMatrix(const Vector3& position, const Vector3& target, const Vector3& up);
 

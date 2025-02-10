@@ -1,9 +1,9 @@
 #pragma once
-#include "include_shapes.h"
-#include "Vector3.h"
-#include "Vector2.h"
-#include "AABB.h"
-#include "Line.h"
+#include <SEED/Lib/Includes/include_shapes.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Shapes/AABB.h>
+#include <SEED/Lib/Shapes/Line.h>
 #include <stdint.h>
 #include <cmath>
 #include <array>

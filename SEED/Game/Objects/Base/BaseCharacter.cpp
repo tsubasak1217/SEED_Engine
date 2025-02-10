@@ -1,9 +1,9 @@
 #include "BaseCharacter.h"
-#include "InputManager.h"
-#include "ImGuiManager.h"
-#include "ICharacterState.h"
-#include "TextureManager/TextureManager.h"
-#include "SEED.h"
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <Game/Objects/Base/ICharacterState.h>
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/SEED.h>
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数

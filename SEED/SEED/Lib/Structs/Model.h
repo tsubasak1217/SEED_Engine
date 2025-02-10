@@ -2,14 +2,14 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
-#include "MatrixFunc.h"
-#include "ModelData.h"
-#include "VertexData.h"
-#include "Vector3.h"
-#include "Matrix4x4.h"
-#include "DxFunc.h"
-#include "Material.h"
-#include "blendMode.h"
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Structs/ModelData.h>
+#include <SEED/Lib/Structs/VertexData.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/blendMode.h>
 
 class Model{
 

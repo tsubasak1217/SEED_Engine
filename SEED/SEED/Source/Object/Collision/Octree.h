@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include <Collision/Collider.h>
-#include <CollisionManaer/Collision.h>
-#include <AABB.h>
+#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Manager/CollisionManager/Collision.h>
+#include <SEED/Lib/Shapes/AABB.h>
 
 class Octree{
 public:

@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include <SEED/Lib/Tensor/Vector2.h>
 #include <algorithm>
 
 struct Range2D{

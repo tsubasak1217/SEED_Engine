@@ -1,7 +1,7 @@
 #include "GameSystem.h"
-#include <SceneManager/SceneManager.h>
-#include "SceneRegister.h"
-#include <ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/SceneManager/SceneManager.h>
+#include <Game/Scene/Base/SceneRegister.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 /////////////////////////////////////////////////////////////////
 // 静的メンバ変数の初期化

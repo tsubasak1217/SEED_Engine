@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 using Microsoft::WRL::ComPtr;
 
 // ルートシグネチャの情報を格納する構造体

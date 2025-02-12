@@ -61,6 +61,16 @@ void Scene_Game::Initialize(){
     player_ = std::make_unique<Player>();
     player_->Initialize();
 
+    // Ground
+    ground_ = std::make_unique<Model>("Assets/ground.obj");
+
+    // Models
+    for(int i = 0; i < 32; i++){
+        auto& model = models_.emplace_back(std::make_unique<Model>("Assets/teapot.obj"));
+        model->translate_ = MyFunc::RandomVector() * Vector3(100.0f, 0.0f, 100.0f);
+        model->scale_ = Vector3(1.0f, 1.0f, 1.0f) * MyFunc::Random(1.0f, 10.0f);
+    }
+
     ////////////////////////////////////////////////////
     // スプライトの初期化
     ////////////////////////////////////////////////////
@@ -126,6 +136,11 @@ void Scene_Game::Update(){
 
     ParticleManager::Update();
     player_->Update();
+    ground_->Update();
+
+    for(auto& model : models_){
+        model->Update();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +172,14 @@ void Scene_Game::Draw(){
 
     // プレイヤーの描画
     player_->Draw();
+
+    // 地面の描画
+    ground_->Draw();
+
+    // モデルの描画
+    for(auto& model : models_){
+        model->Draw();
+    }
 
     //グリッドの描画
     SEED::DrawGrid();

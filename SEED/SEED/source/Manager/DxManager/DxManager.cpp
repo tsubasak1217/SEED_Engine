@@ -743,7 +743,7 @@ void DxManager::DrawPolygonAll(){
 
     /*----------------------ぼかした画面を作る-------------------*/
 
-    //effectManager_->TransfarToCS();
+    effectManager_->TransfarToCS();
 
     //---------------------- 元の状態に遷移 ---------------------//
 

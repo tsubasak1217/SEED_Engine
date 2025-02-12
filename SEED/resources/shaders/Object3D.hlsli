@@ -26,11 +26,11 @@ float DepthToLinear(float depth, float near, float far)
 
 // フォーカスする深度や範囲
 // 0.0 ~ 1.0の間でピントが合う中心深度
-static const float focusDepth = 0.05f;
+static const float focusDepth = 0.001f;
 // ピントが影響を及ぼす直径
-static const float focusRange = 1.0f;
+static const float focusRange = 0.01f;
 // ピントが影響を及ぼす半径
-static const float rangeRadius = focusRange * 0.65f;
+static const float rangeRadius = focusRange * 0.5f;
 //
 static const float inverseRange = 1.0f / focusRange;
 // 最近値、最遠値
@@ -40,7 +40,7 @@ static const float2 min_max =
     focusDepth + rangeRadius
 };
 
-float CalcDepthData(float lenearDepth)
+float CalcFocusLevel(float lenearDepth)
 {
     float result;
     

@@ -1830,17 +1830,17 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 void PolygonManager::DrawToOffscreen(){
 
 #ifdef _DEBUG
-    //ImGui::Begin("PostEffect");
-    //ImGui::Checkbox("active", &isActivePostEffect_);
-    //ImGui::End();
+    ImGui::Begin("PostEffect");
+    ImGui::Checkbox("active", &isActivePostEffect_);
+    ImGui::End();
 #endif // _DEBUG
 
     // オフスクリーンの描画依頼をここで出しておく
     if(isActivePostEffect_){
         AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
-        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NORMAL);
+        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
     } else{
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NONE);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
     }
 
     // Resourceに情報を書き込む

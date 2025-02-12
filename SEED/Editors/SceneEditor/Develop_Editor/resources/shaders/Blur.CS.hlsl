@@ -8,19 +8,16 @@ RWTexture2D<float4> outputDepthTexture : register(u1);
 
 SamplerState gSampler : register(s0);
 
-cbuffer ConstantBuffer : register(b0)
-{
+cbuffer ConstantBuffer : register(b0) {
     float resolutionRate;
 }
 
 [numthreads(16, 16, 1)]
-void CSMain(uint3 DTid : SV_DispatchThreadID)
-{
+void CSMain(uint3 DTid : SV_DispatchThreadID) {
     // ピクセル座標の取得
     uint2 pixelCoord = DTid.xy;
     
-    if (pixelCoord.x >= 1280 || pixelCoord.y >= 720)
-    {
+    if (pixelCoord.x >= 1280 || pixelCoord.y >= 720) {
         return;
     }
     
@@ -28,28 +25,26 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     float4 blurredColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float4 currentPixelColor = inputTexture.Load(int3(pixelCoord, 0));
     float4 outputColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    int radius = int(ceil(8.0f * resolutionRate));
     float pixelCount = 0;
     uint2 currentPixelCoord = uint2(0, 0);
+    int radius = int(ceil(8.0f * resolutionRate)); // ぼかす半径
     
 
     // テクスチャから深度データを取得
     float depthData = inputDepthTexture.Load(int3(DTid.xy, 0)).x;
-    depthData = DepthToLinear(depthData, 0.1f, 1000.0f);
+    depthData = DepthToLinear(depthData, 0.1f, 1000.0f); // 深度情報を線形に変換
     float focusLevel = CalcDepthData(depthData);
     
     
     // ============================= 大ボケ画像の作成 ================================ //
     // BOX型に一定範囲の色を足す
-    for (int row = -radius; row < radius; row++)
-    {
+    for (int row = -radius; row < radius; row++) {
         currentPixelCoord.x = pixelCoord.x + row;
-        currentPixelCoord.x = clamp(currentPixelCoord.x, 0, 1279);
+        currentPixelCoord.x = clamp(currentPixelCoord.x, 0, 1279); // 画面外に出ないようにする
         
-        for (int col = -radius; col < radius; col++)
-        {
+        for (int col = -radius; col < radius; col++) {
             currentPixelCoord.y = pixelCoord.y + col;
-            currentPixelCoord.y = clamp(currentPixelCoord.y, 0, 719);
+            currentPixelCoord.y = clamp(currentPixelCoord.y, 0, 719); // 画面外に出ないようにする
             
             // 深度情報を参照して、ボケていない部分はあまり色に影響を与えないようにする
             float currentDepth = inputDepthTexture.Load(int3(currentPixelCoord, 0)).x;
@@ -78,7 +73,7 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
         
 
     // 加工
-    outputTexture[pixelCoord] = float4(1.0f, 1.0f, 1.0f, 1.0f) * depthData; //blurredColor;
+    outputTexture[pixelCoord] = blurredColor;
     
     // 深度情報の計算
     outputDepthTexture[pixelCoord] = float4(1.0f, 1.0f, 1.0f, 1.0f) * depthData;

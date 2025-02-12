@@ -41,5 +41,6 @@ private:
 
     // GameObjects
     std::unique_ptr<Player> player_ = nullptr;
-
+    std::unique_ptr<Model> ground_ = nullptr;
+    std::list<std::unique_ptr<Model>> models_;
 };

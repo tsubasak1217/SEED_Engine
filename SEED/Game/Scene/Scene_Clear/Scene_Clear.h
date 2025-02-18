@@ -1,8 +1,20 @@
 #pragma once
-#include "Scene_Base.h"
+
+//host
+#include <Game/Scene/Base/Scene_Base.h>
+
+///stl
 #include <memory>
 
-class Scene_Clear : public Scene_Base{
+///local
+//light
+#include <SEED/Lib/Structs/DirectionalLight.h>
+//objects
+#include <SEED/Lib/Structs/Model.h>
+#include <Game/Objects/Base/BaseObject.h>
+
+class Scene_Clear
+    : public Scene_Base{
 public:
     Scene_Clear();
     ~Scene_Clear()override;
@@ -13,7 +25,4 @@ public:
     void BeginFrame()override;
     void EndFrame()override;
     void HandOverColliders()override;
-
-private:
-
 };

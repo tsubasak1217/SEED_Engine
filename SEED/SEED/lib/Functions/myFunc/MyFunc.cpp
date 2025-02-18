@@ -1,6 +1,6 @@
-#include "MyFunc.h"
-#include "MyMath.h"
-#include "Quaternion.h"
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
 
 // staticメンバーの定義
 std::random_device MyFunc::rd;
@@ -36,6 +36,17 @@ float MyFunc::Random(float min,float max){
     return distrib(gen);
 }
 
+//------------------ uint64_t ------------------//
+uint64_t MyFunc::RandomU64(){
+    int32_t hi = Random(0, INT32_MAX);
+    int32_t lo = Random(0, INT32_MAX);
+
+    // 64ビットに合成
+    //  hi を上位32ビットに, lo を下位32ビットに詰める
+    uint64_t high = static_cast< uint64_t >(hi);
+    uint64_t low = static_cast< uint64_t >(lo);
+    return (high << 32) | low;
+}
 
 //----------------- 3次元ベクトル用 -----------------//
 
@@ -56,6 +67,8 @@ Vector2 MyFunc::Random(const Vector2& min,const Vector2& max){
 Vector2 MyFunc::Random(const Range2D& range){
     return Random(range.min,range.max);
 }
+
+
 
 //--------------- ランダムな方向を返す関数 ---------------//
 

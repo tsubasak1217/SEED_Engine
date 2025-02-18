@@ -1,13 +1,12 @@
 #pragma once
-#include "include_tensors.h"
 #include <climits>
 #include <stdint.h>
 #include <vector>
 #include <string>
 #include <numeric>
 #include <algorithm>
-#include "Line.h"
-#include "Vector4.h"
+#include <SEED/Lib/Includes/include_tensors.h>
+#include <SEED/Lib/Shapes/Line.h>
 
 const float kDeltaTime = 0.016f;
 
@@ -115,6 +114,7 @@ public:
     static float Lerp(const float v1,const float v2,float t);
     static float LerpShortAngle(float a,float b,float t);
 
+    // ベジェ曲線を求める関数
     static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,float t);
     static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);
 

@@ -2,12 +2,12 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <Physics.h>
-#include "../Game/Objects/Base/BaseCharacter.h"
-#include "Collision/Collider.h"
-#include "InputManager.h"
-#include "CollisionManaer/CollisionManager.h"
-#include "CollisionManaer/ColliderEditor.h"
+#include <Environment/Physics.h>
+#include <Game/Objects/Base/BaseCharacter.h>
+#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
+#include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 
 class ICharacterState
 {
@@ -25,11 +25,12 @@ public:
     virtual void Initialize(const std::string &stateName, BaseCharacter *character);
 
 public: // コライダー関連
-    void HandOverColliders();
+    virtual void HandOverColliders();
     void InitColliders(ObjectType objectType);
     void InitColliders(const std::string &fileName, ObjectType objectType);
     void EraseCheckColliders();
     void DiscardPreCollider();
+    void AddSkipPushBackType(ObjectType skipType);
 
 protected:
     virtual void ManageState() = 0;

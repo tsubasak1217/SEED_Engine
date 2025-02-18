@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "Vector2.h"
+#include <SEED/Lib/Tensor/Vector2.h>
 
 static const uint32_t kWindowSizeX = 1280;
 static const uint32_t kWindowSizeY = 720;

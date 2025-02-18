@@ -1,9 +1,8 @@
 #pragma once
-#include "Transform.h"
-#include "Vector2.h"
-#include "Line.h"
-
 #include <stdint.h>
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Shapes/Line.h>
 
 
 struct BaseCamera{
@@ -33,8 +32,11 @@ public:// アクセッサ
     void SetScale(const Vector3& scale){ transform_.scale_ = scale; }
     const Vector2& GetClipRange() const{ return clipRange_; }
     float GetZNear() const{ return znear_; }
+    void SetZNear(float znear){ znear_ = znear; }
     float GetZFar() const{ return zfar_; }
+    void SetZFar(float zfar){ zfar_ = zfar; }
     float GetFov() const{ return fov_; }
+    void SetFov(float fov){ fov_ = fov; }
     uint32_t GetProjectionMode() const{ return projectionMode_; }
     void SetProjectionMode(uint32_t mode){ projectionMode_ = mode; }
     const Vector3& GetNormal() const{ return normal_; }
@@ -71,7 +73,7 @@ protected:
 
     // シェイク
     float shakeTime_;
-    float kShakeTime_;
+    float kShakeTime_ = 1.0f;
     float shakePower_;
     Vector3 shakeLevel_;
 };

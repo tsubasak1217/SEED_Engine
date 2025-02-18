@@ -1,8 +1,7 @@
-#include "Scene_Title.h"
+#include <Game/Scene/Scene_Title/Scene_Title.h>
 
 //lib
-#include "InputManager/InputManager.h"
-
+#include <SEED/Source/Manager/InputManager/InputManager.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -22,7 +21,8 @@ Scene_Title::~Scene_Title(){}
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Initialize(){
-    currentState_->Initialize();
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +45,10 @@ void Scene_Title::Update(){
     if(currentState_){
         currentState_->Update();
     }
+
+    if(currentEventState_){
+        currentEventState_->Update();
+    }
 }
 
 
@@ -54,8 +58,13 @@ void Scene_Title::Update(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Draw(){
+    //===================== state =====================//
     if(currentState_){
         currentState_->Draw();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 }
 
@@ -79,6 +88,7 @@ void Scene_Title::BeginFrame(){
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::EndFrame(){
+    //===================== state =====================//
     if(currentState_){
         currentState_->EndFrame();
     }
@@ -89,4 +99,8 @@ void Scene_Title::EndFrame(){
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Title::HandOverColliders(){}
+void Scene_Title::HandOverColliders(){
+    if(currentState_){
+        currentState_->HandOverColliders();
+    }
+}

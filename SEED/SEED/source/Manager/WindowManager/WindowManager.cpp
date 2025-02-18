@@ -1,6 +1,6 @@
-#include "WindowManager.h"
-#include "SEED.h"
-#include "DxManager.h"
+#include <SEED/Source/Manager/WindowManager/WindowManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////
 //                                static変数の初期化

@@ -1,12 +1,13 @@
 #pragma once
-#include "Scene_Base.h"
+#include <Game/Scene/Base/Scene_Base.h>
 
 ///stl
 //pointer
 #include <memory>
 
 //object
-#include "Model.h"
+#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/Structs/Model.h>
 
 class Scene_Title : public Scene_Base{
 public:
@@ -21,8 +22,5 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
     void HandOverColliders() override;
-
-private:
-
 
 };

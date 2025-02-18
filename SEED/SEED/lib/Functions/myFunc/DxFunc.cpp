@@ -1,8 +1,8 @@
-#include "DxFunc.h"
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <windows.h>
 #include <format>
 #include <cassert>
-#include "DxManager.h"
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 
 
 // ログを出力する関数--------------------------------------------------------------------------------------

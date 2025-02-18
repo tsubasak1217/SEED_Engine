@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene_Base.h"
+#include <Game/Scene/Base/Scene_Base.h>
 
 // external
 #include <list>
@@ -8,16 +8,19 @@
 #include <vector>
 
 // local
-#include <Model.h>
-#include <Sprite.h>
-#include <Triangle.h>
+#include <SEED/Lib/Structs/Model.h>
+#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/Shapes/Triangle.h>
 
 // camera
-#include "FollowCamera.h"
+#include <SEED/Source/Object/Camera/FollowCamera.h>
+
+// objects
+#include <Game/Objects/Player/Player.h>
 
 
-class Scene_Game : public Scene_Base
-{
+class Scene_Game
+    : public Scene_Base{
 
 public:
     Scene_Game();
@@ -30,10 +33,14 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
-public:
-
-
 private:
 
+    // EngineObjects
+    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 
+    // GameObjects
+    std::unique_ptr<Player> player_ = nullptr;
+    std::unique_ptr<Model> ground_ = nullptr;
+    std::list<std::unique_ptr<Model>> models_;
 };

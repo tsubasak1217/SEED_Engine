@@ -4,11 +4,11 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "Vector3.h"
-#include "Vector2.h"
-#include "Range1D.h"
-#include "Range3D.h"
-#include "Range2D.h"
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Structs/Range1D.h>
+#include <SEED/Lib/Structs/Range3D.h>
+#include <SEED/Lib/Structs/Range2D.h>
 
 
 class MyFunc{
@@ -25,6 +25,9 @@ public:
     static Vector3 Random(const Range3D& range);
     static Vector2 Random(const Vector2& min,const Vector2& max);
     static Vector2 Random(const Range2D& range);
+
+    // 64ビットの乱数を返す関数
+    static uint64_t RandomU64();
 
     // ランダムな方向を返す関数
     static Vector3 RandomVector();

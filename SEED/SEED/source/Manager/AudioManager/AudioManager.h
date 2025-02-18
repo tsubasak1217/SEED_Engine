@@ -70,6 +70,7 @@ public:
 public:// 初期化に関する関数
 
     static void Initialize();
+    static void BeginFrame();
     static void StartUpLoad();
     HRESULT InitializeMediaFoundation();
 
@@ -98,11 +99,12 @@ private:
     static AudioManager* instance_;
     ComPtr<IXAudio2> xAudio2_;
     IXAudio2MasteringVoice* masteringVoice_;
-
+    static float systemVolumeRate_;
 private:
     std::unordered_map<std::string, SoundData>audios_;
     std::unordered_map<std::string, IXAudio2SourceVoice*>sourceVoices_;
     std::unordered_map<std::string, bool>isPlaying_;
+    std::unordered_map<std::string, float>volumeMap_;
 
 private:
     static const std::string directoryPath_;

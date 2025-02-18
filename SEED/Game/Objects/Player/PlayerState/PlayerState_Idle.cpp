@@ -4,8 +4,8 @@
 #include "PlayerState_Jump.h"
 #include "PlayerState_Move.h"
 
-// 主
-#include "Player/Player.h"
+// 状態を表されている主
+#include <Game/Objects/Player/Player.h>
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -55,7 +55,7 @@ void PlayerState_Idle::ManageState(){
     }
 
     // 移動
-    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
+    if(MyMath::LengthSq(Input::GetStickValue(LR::LEFT))){
         pCharacter_->ChangeState(new PlayerState_Move("Player_Move",pCharacter_));
         return;
     }

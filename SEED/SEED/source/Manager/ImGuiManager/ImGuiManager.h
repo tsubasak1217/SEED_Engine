@@ -1,5 +1,5 @@
 #pragma once
-#include "DxManager.h"
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 
 class SEED;
 

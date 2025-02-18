@@ -62,3 +62,50 @@ Vector3 TransformVector(const Vector3& vector, const Matrix4x4& matrix){
 float LengthSquared(const Vector3& v){
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
+
+std::string GenerateGUID(){
+    uint64_t high = MyFunc::RandomU64(); // 上位64ビット
+    uint64_t low = MyFunc::RandomU64(); // 下位64ビット
+
+    // "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" 形式にする
+    std::ostringstream oss;
+    oss << std::hex << std::nouppercase
+        << std::setw(8) << std::setfill('0') << static_cast< unsigned int >((high >> 32) & 0xffffffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((high >> 16) & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >(high & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((low >> 48) & 0xffff)
+        << '-'
+        << std::setw(4) << std::setfill('0') << static_cast< unsigned int >((low >> 32) & 0xffff)
+        << std::setw(8) << std::setfill('0') << static_cast< unsigned int >(low & 0xffffffff);
+
+    return oss.str();
+}
+
+Vector3 GetForward(const Vector3& rotate){
+    // transform.rotate_ が { rotX, rotY, rotZ } (単位はラジアン) と想定
+    float pitch = rotate.x;
+    float yaw = rotate.y;
+    // float roll  = transform.rotate_.z; // 必要なら
+
+    // ピッチ・ヨーから「前方向」を計算 (Z前提)
+    // ゲームによっては X軸が前、-Z軸が前 など異なる場合があるので注意
+    float cosPitch = cosf(pitch);
+    float sinPitch = sinf(pitch);
+    float cosYaw = cosf(yaw);
+    float sinYaw = sinf(yaw);
+
+    // もし「前方向 = Z軸」ならこんな感じ (右手座標系想定)
+    //   forward.x = sinYaw * cosPitch;
+    //   forward.y = -sinPitch;  // ピッチが上向きならyが増えるように(好みに合わせる)
+    //   forward.z = cosYaw * cosPitch;
+
+    Vector3 forward;
+    forward.x = sinYaw * cosPitch;
+    forward.y = -sinPitch;         // ゲームのローカル軸仕様に合わせる
+    forward.z = cosYaw * cosPitch;
+
+    return forward;
+}

@@ -1,12 +1,6 @@
 #pragma once
 #include "PlayerState_Move.h"
 
-enum class HoveringState{
-    MoveUp,
-    Hovering,
-    MoveDown,
-};
-
 class PlayerState_Jump : public PlayerState_Move{
 public:
     PlayerState_Jump() = default;
@@ -21,12 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-    float jumpPower_ = 0.f;
-    float jumpHoveringAccel_ = 0.f;
-
-    HoveringState hoveringState_ = HoveringState::MoveUp;
-    
-    float hoveringTime_ = 0.f;
-    float leftTime_ = 0.f;
-
+    float jumpPower_ = 0.0f;
 };

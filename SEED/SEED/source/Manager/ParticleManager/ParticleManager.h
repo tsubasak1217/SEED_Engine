@@ -5,15 +5,15 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
-#include "ImGuiManager.h"
-#include "Range1D.h"
-#include "Range3D.h"
-#include "AccelerarionField.h"
-#include "Emitter.h" 
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Lib/Structs/Range1D.h>
+#include <SEED/Lib/Structs/Range3D.h>
+#include <SEED/Lib/Structs/AccelerarionField.h>
+#include <SEED/Source/Object/Particle/Emitter.h> 
 
 // particles
-#include "BaseParticle.h"
-#include "RadialParticle.h"
+#include <SEED/Source/Object/Particle/BaseParticle.h>
+#include <SEED/Source/Object/Particle/RadialParticle.h>
 
 
 
@@ -56,6 +56,11 @@ public:
     static void AddEffect(const std::string& fileName, const Matrix4x4* parentMat);
     static void AddEffect(const std::string& fileName, const Vector3& position);
 
+    /// <summary>
+    /// 削除
+    /// </summary>
+    static void DeleteAll();
+
 private:
 
     /// <summary>
@@ -77,7 +82,7 @@ private:
 private:// ファイルの入出力
 
     // jsonファイルに保存
-    void OutputToJson(const EmitterGroup& emitterGroup,const std::string& outputFileName);
+    void OutputToJson(const EmitterGroup& emitterGroup, const std::string& outputFileName);
     void OutputEmitterGroup(const EmitterGroup& emitterGroup);
     // jsonファイルから読み込み
     void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);

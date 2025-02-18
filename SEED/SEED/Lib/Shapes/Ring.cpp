@@ -1,5 +1,5 @@
-#include "Ring.h"
-#include <SEED.h>
+#include <SEED/Lib/Shapes/Ring.h>
+#include <SEED/Source/SEED.h>
 
 void Ring::Draw(){
     // 円を描画

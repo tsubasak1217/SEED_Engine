@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Vector4.h"
+#include <SEED/Lib/Tensor/Vector4.h>
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
-#include <DxFunc.h>
-#include "MyMath.h"
-#include "MatrixFunc.h"
-#include "Material.h"
-#include "blendMode.h"
-#include "DrawLocation.h"
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/blendMode.h>
+#include <SEED/Lib/Structs/DrawLocation.h>
 
 struct Triangle{
 

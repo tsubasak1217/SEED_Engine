@@ -1,5 +1,5 @@
 #pragma once
 
-#include "sphere.h"
-#include "Triangle.h"
-#include "Quad.h"
+#include <SEED/Lib/Shapes/Sphere.h>
+#include <SEED/Lib/Shapes/Triangle.h>
+#include <SEED/Lib/Shapes/Quad.h>

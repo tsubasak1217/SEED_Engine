@@ -1,9 +1,12 @@
-#include "AudioManager.h"
-#include "DxFunc.h"
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <cassert>
 
 // static変数初期化
 AudioManager* AudioManager::instance_ = nullptr;
+float AudioManager::systemVolumeRate_ = 1.f;
+
 const std::string AudioManager::directoryPath_ = "resources/audios/";
 
 // デストラクタ
@@ -49,6 +52,8 @@ void AudioManager::Initialize(){
     StartUpLoad();
 }
 
+
+
 HRESULT AudioManager::InitializeMediaFoundation(){
     HRESULT hr = MFStartup(MF_VERSION);
     if(FAILED(hr)) {
@@ -56,6 +61,43 @@ HRESULT AudioManager::InitializeMediaFoundation(){
     }
     return S_OK;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 
+//                              フレーム開始時の処理
+// 
+/////////////////////////////////////////////////////////////////////////////////////
+void AudioManager::BeginFrame(){
+    // システムボリュームの設定
+    if(Input::IsPressKey(DIK_V)){
+    
+        if(Input::IsTriggerKey(DIK_F3)){// ボリュームを上げる
+            systemVolumeRate_ += 0.1f;
+        }
+
+        if(Input::IsTriggerKey(DIK_F2)){// ボリュームを下げる
+            systemVolumeRate_ -= 0.1f;
+        }
+
+        if(Input::IsTriggerKey(DIK_F1)){// ミュート/ミュート解除
+            if(systemVolumeRate_ == 0.0f){
+                systemVolumeRate_ = 1.0f;
+            } else{
+                systemVolumeRate_ = 0.0f;
+            }
+        }
+
+        systemVolumeRate_ = (std::max)(systemVolumeRate_, 0.0f);
+
+        // 流れている音声の音量を変更
+        for(auto& [filename, sourceVoice] : instance_->sourceVoices_){
+            if(sourceVoice != nullptr){
+                sourceVoice->SetVolume(instance_->volumeMap_[filename] * systemVolumeRate_);
+            }
+        }
+    }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -150,6 +192,9 @@ void AudioManager::PlayAudio(const std::string& filename, bool loop, float volum
 void AudioManager::EndAudio(const std::string& filename){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
+    if(IsPlayingAudio(filename) == false){
+        return;
+    }
 
     // 停止、終了
     HRESULT hr;
@@ -206,7 +251,8 @@ void AudioManager::SetAudioVolume(const std::string& filename, float volume){
     // 指定要素がなければアサート
     assert(instance_->sourceVoices_.find(filename) != instance_->sourceVoices_.end());
     // 設定
-    instance_->sourceVoices_[filename]->SetVolume(volume);
+    instance_->sourceVoices_[filename]->SetVolume(volume * systemVolumeRate_);
+    instance_->volumeMap_[filename] = volume;
 }
 
 

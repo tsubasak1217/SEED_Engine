@@ -3,10 +3,10 @@
 #include <memory>
 #include <string>
 #include <json.hpp>
-#include "ModelAnimation.h"
-#include "ImGuiManager.h"
-#include "Quaternion.h"
-#include "Matrix4x4.h"
+#include <SEED/Lib/Structs/ModelAnimation.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
 
 class ColliderAnimationData{
 public:

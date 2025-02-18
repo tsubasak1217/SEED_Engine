@@ -1,5 +1,5 @@
 #pragma once
-#include <Vector3.h>
+#include <SEED/Lib/Tensor/Vector3.h>
 
 struct Ring{
     Vector3 center_;

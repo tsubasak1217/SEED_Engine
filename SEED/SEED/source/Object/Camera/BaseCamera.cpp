@@ -1,11 +1,10 @@
-#include "BaseCamera.h"
-#include "MatrixFunc.h"
-#include "MyMath.h"
-#include "MyFunc.h"
-#include "MatrixFunc.h"
-#include "InputManager.h"
-#include "Environment.h"
-#include "ClockManager.h"
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
 
 float znearOffsetForLayer = 0.09f;
 
@@ -22,6 +21,8 @@ void BaseCamera::Initialize(){
     znear_ = 0.1f;
     zfar_ = 1000.0f;
     fov_ = 0.45f;
+    shakeTime_ = 0.0f;
+    shakePower_ = 0.0f;
     UpdateMatrix();
 }
 
@@ -69,7 +70,9 @@ void BaseCamera::UpdateMatrix(){
     shakeTime_ = std::clamp(shakeTime_ - ClockManager::DeltaTime(), 0.0f, 1000000.0f);
 }
 
-void BaseCamera::Update(){}
+void BaseCamera::Update(){
+    UpdateMatrix();
+}
 
 
 // カメラを揺らす

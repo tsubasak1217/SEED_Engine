@@ -1,8 +1,8 @@
-#include "ModelManager.h"
-#include "MatrixFunc.h"
-#include "ViewManager.h"
-#include "MyMath.h"
-#include "MyFunc.h"
+#include <SEED/Source/Manager/ModelManager/ModelManager.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <d3dx12.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -60,7 +60,6 @@ void ModelManager::Initialize() {
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad() {
-
 }
 
 void ModelManager::LoadModel(const std::string& filename) {

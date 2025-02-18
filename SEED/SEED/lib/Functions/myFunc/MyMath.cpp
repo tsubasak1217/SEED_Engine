@@ -1,4 +1,4 @@
-#include "MyMath.h"
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <cmath>
 #include <assert.h>
 #include <numbers>
@@ -233,13 +233,6 @@ float MyMath::LerpShortAngle(float a, float b, float t){
 
 }
 
-Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t){
-    return Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t);
-}
-
-Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
-    return Lerp(Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t), Lerp(Lerp(p1, p2, t), Lerp(p2, p3, t), t), t);
-}
 
 Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
@@ -248,6 +241,18 @@ Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
 Vector4 MyMath::Lerp(const Vector4& v1,const Vector4& v2,float t){
     return v1 + (v2 - v1) * t;
 }
+
+//================================================================
+//                      ベジェ曲線の関数
+//================================================================
+Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, float t){
+    return Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t);
+}
+
+Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
+    return Lerp(Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t), Lerp(Lerp(p1, p2, t), Lerp(p2, p3, t), t), t);
+}
+
 
 //================================================================
 //                      スプライン補間の関数

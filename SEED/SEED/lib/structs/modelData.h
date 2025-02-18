@@ -2,10 +2,10 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include "VertexData.h"
-#include "Material.h" 
-#include "Transform.h"
-#include "ModelAnimation.h"
+#include <SEED/Lib/Structs/VertexData.h>
+#include <SEED/Lib/Structs/Material.h> 
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Structs/ModelAnimation.h>
 
 // メッシュデータ構造体
 struct MeshData{

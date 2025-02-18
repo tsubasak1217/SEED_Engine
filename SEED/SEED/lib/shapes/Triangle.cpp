@@ -1,5 +1,5 @@
-#include "Triangle.h"
-#include "SEED.h"
+#include <SEED/Lib/Shapes/Triangle.h>
+#include <SEED/Source/SEED.h>
 
 
 /////////////////////////////////////////////////////////////////////////////////////

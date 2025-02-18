@@ -1,13 +1,12 @@
 #include "Collider_AABB.h"
-#include "Base/BaseObject.h"
-#include "Collision/Collider_Sphere.h"
-#include "Collision/Collider_AABB.h"
-#include "Collision/Collider_OBB.h"
-#include "Collision/Collider_Line.h"
-#include "Collision/Collider_Capsule.h"
-#include "Collision/Collider_Plane.h"
-#include "CollisionManaer/Collision.h"
-#include <SEED.h>
+#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Object/Collision/Collider_Sphere.h>
+#include <SEED/Source/Object/Collision/Collider_OBB.h>
+#include <SEED/Source/Object/Collision/Collider_Line.h>
+#include <SEED/Source/Object/Collision/Collider_Capsule.h>
+#include <SEED/Source/Object/Collision/Collider_Plane.h>
+#include <SEED/Source/Manager/CollisionManager/Collision.h>
+#include <SEED/Source/SEED.h>
 
 //////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -76,11 +75,12 @@ void Collider_AABB::CheckCollision(Collider* collider){
         }
 
         if(collisionData.isCollide){
-            OnCollision(collider, collider->GetObjectType());
-            collider->OnCollision(this, objectType_);
-
             // 押し戻しを行う
             PushBack(this, collider, collisionData);
+
+            // 衝突時の処理
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
 
         break;

@@ -1,6 +1,6 @@
-#include "ParticleManager.h"
-#include "ImGuiManager.h"
-#include "SEED.h"
+#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/SEED.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -268,6 +268,18 @@ void ParticleManager::AddEffect(const std::string& fileName, const Matrix4x4* pa
 
 void ParticleManager::AddEffect(const std::string& fileName, const Vector3& position){
     AddEffect(fileName, position, nullptr);
+}
+
+/// <summary>
+/// エフェクトを削除する
+/// </summary>
+void ParticleManager::DeleteAll(){
+    instance_->particles_.clear();
+    instance_->emitters_.clear();
+    instance_->emitterGroups_.clear();
+    instance_->effects_.clear();
+    instance_->effectData_.clear();
+    instance_->accelerationFields_.clear();
 }
 
 

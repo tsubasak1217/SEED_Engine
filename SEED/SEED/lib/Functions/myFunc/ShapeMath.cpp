@@ -1,5 +1,5 @@
-#include "ShapeMath.h"
-#include "MyMath.h"
+#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
 
 //---------------------- 正三角形 -------------------------
 

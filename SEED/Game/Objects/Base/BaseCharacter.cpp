@@ -1,9 +1,9 @@
 #include "BaseCharacter.h"
-#include "InputManager.h"
-#include "ImGuiManager.h"
-#include "ICharacterState.h"
-#include "TextureManager/TextureManager.h"
-#include "SEED.h"
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <Game/Objects/Base/ICharacterState.h>
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/SEED.h>
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
@@ -54,23 +54,6 @@ void BaseCharacter::Draw(){
 
     // 基本モデルの描画
     BaseObject::Draw();
-
-    Quad q = Quad(
-        Vector3(-3.0f,0.01f,3.0f),
-        Vector3(3.0f,0.01f,3.0f),
-        Vector3(-3.0f,0.01f,-3.0f),
-        Vector3(3.0f,0.01f,-3.0f)
-    );
-
-    q.GH = TextureManager::LoadTexture("ParticleTextures/particle.png");
-    q.blendMode = BlendMode::SUBTRACT;
-
-    for(int i = 0; i < 4; i++){
-        q.localVertex[i] += GetWorldTranslate();
-        q.localVertex[i].y = 0.01f;
-    }
-
-    SEED::DrawQuad(q);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -84,6 +67,11 @@ void BaseCharacter::BeginFrame(){
 
     // フラグの初期化
     isDamaged_ = false;
+
+    // 無敵時間の更新
+    if(unrivalledTime_ > 0.0f){
+        unrivalledTime_ -= ClockManager::DeltaTime();
+    }
 
     BaseObject::BeginFrame();
 }
@@ -178,6 +166,15 @@ void BaseCharacter::DiscardPreCollider(){
     // state固有のコライダーの破棄
     if(currentState_){
         currentState_->DiscardPreCollider();
+    }
+}
+
+
+// コライダーの判定スキップリストの追加
+void BaseCharacter::AddSkipPushBackType(ObjectType skipType){
+    BaseObject::AddSkipPushBackType(skipType);
+    if(currentState_){
+        currentState_->AddSkipPushBackType(skipType);
     }
 }
 

@@ -1,4 +1,7 @@
-#include "Scene_Clear.h"
+#include <Game/Scene/Scene_Clear/Scene_Clear.h>
+
+///etc
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -6,6 +9,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear(){
+    Initialize();
 }
 
 Scene_Clear::~Scene_Clear(){}
@@ -16,7 +20,9 @@ Scene_Clear::~Scene_Clear(){}
 // 初期化
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Clear::Initialize(){}
+void Scene_Clear::Initialize(){
+    SEED::SetCamera("main");
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -31,9 +37,15 @@ void Scene_Clear::Finalize(){}
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
+
     if(currentState_){
         currentState_->Update();
     }
+
+    if(currentEventState_){
+        currentEventState_->Update();
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +56,10 @@ void Scene_Clear::Update(){
 void Scene_Clear::Draw(){
     if(currentState_){
         currentState_->Draw();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 }
 
@@ -77,4 +93,8 @@ void Scene_Clear::EndFrame(){
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Clear::HandOverColliders(){}
+void Scene_Clear::HandOverColliders(){
+    if(currentState_){
+        currentState_->HandOverColliders();
+    }
+}

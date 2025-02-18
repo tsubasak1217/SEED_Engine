@@ -1,6 +1,6 @@
-#include "Vector4.h"
-#include "Vector3.h"
-#include "Matrix4x4.h"
+#include <SEED/Lib/Tensor/Vector4.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
 
 void Vector4::operator*=(const Matrix4x4& matrix){
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Base/ICharacterState.h"
+#include <Game/Objects/Base/ICharacterState.h>
 
 class PlayerState_Move : public ICharacterState{
 public:
@@ -21,9 +21,14 @@ protected:
 
 private:
     void DecideStickVelocity();
+
 protected:
     // 移動情報
     float moveSpeed_ = 30.0f;
+
+   const float emitTime_ = 0.260f;
+    float leftEmitTime_ = 0.f;
+
 private:
     // 回転の補間
     float lerpRate_ = 0.25f;

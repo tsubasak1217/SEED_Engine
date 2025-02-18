@@ -1,6 +1,6 @@
-#include <TextureManager.h>
-#include <SEED.h>
-#include "DxManager.h"
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
 
 // static変数初期化
 TextureManager* TextureManager::instance_ = nullptr;

@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
-#include "DxManager.h"
-#include "DxFunc.h"
-#include "ViewManager_Enum.h"
+#include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Source/Manager/DxManager/DescriptorHeap/ViewManager_Enum.h>
 
 
 class DescriptorHeap{

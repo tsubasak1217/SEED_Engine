@@ -1,5 +1,5 @@
-#include "ModelAnimation.h"
-#include "MyMath.h"
+#include <SEED/Lib/Structs/ModelAnimation.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
 
 /*--------------------------------------*/
 // 秒数からアニメーションの値を計算

@@ -1,5 +1,5 @@
 #include "Octree.h"
-#include "CollisionManaer/CollisionManager.h"
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // 所属するコライダーを描画

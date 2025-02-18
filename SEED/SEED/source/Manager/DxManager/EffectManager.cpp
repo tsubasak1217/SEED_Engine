@@ -1,9 +1,9 @@
 // local
-#include <DxManager.h>
-#include <EffectManager.h>
-#include <SEED.h>
-#include <MyMath.h>
-#include <CS_Buffers.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Source/Manager/DxManager/EffectManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Structs/CS_Buffers.h>
 
 // external
 #include <cmath>

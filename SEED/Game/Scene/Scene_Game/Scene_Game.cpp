@@ -1,9 +1,9 @@
-#include "Scene_Game.h"
-#include <SEED.h>
-#include "Environment.h"
-#include "ParticleManager.h"
-#include "CameraManager/CameraManager.h"
-
+#include <Game/Scene/Scene_Game/Scene_Game.h>
+#include <SEED/Source/SEED.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/CameraManager/CameraManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -11,11 +11,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game() {
+Scene_Game::Scene_Game(){
     Initialize();
 };
 
-Scene_Game::~Scene_Game() {
+Scene_Game::~Scene_Game(){
+    CameraManager::DeleteCamera("follow");
+    CameraManager::SetActiveCamera("main");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +26,7 @@ Scene_Game::~Scene_Game() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize() {
+void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
     // マネージャー初期化
@@ -40,18 +42,43 @@ void Scene_Game::Initialize() {
     SEED::GetCamera()->Update();
     SEED::SetCamera("debug");
 
+    followCamera_ = std::make_unique<FollowCamera>();
+    followCamera_->SetFov(0.65f);
+    CameraManager::AddCamera("follow", followCamera_.get());
+    SEED::SetCamera("follow");
+
     ////////////////////////////////////////////////////
     //  ライトの初期化
     ////////////////////////////////////////////////////
 
+    directionalLight_ = std::make_unique<DirectionalLight>();
+    directionalLight_->direction_ = { -0.5f,-1.0f,0.0f };
 
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
+    // Player
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
+
+    // Ground
+    ground_ = std::make_unique<Model>("Assets/ground.obj");
+
+    // Models
+    for(int i = 0; i < 32; i++){
+        auto& model = models_.emplace_back(std::make_unique<Model>("Assets/teapot.obj"));
+        model->translate_ = MyFunc::RandomVector() * Vector3(100.0f, 0.0f, 100.0f);
+        model->scale_ = Vector3(1.0f, 1.0f, 1.0f) * MyFunc::Random(1.0f, 10.0f);
+    }
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
+    ////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////
+    // Audio の 初期化
     ////////////////////////////////////////////////////
 
 
@@ -60,13 +87,23 @@ void Scene_Game::Initialize() {
     ////////////////////////////////////////////////////
 
 
+
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
     /////////////////////////////////////////////////
 
+    // followCameraにStageをセット
+    followCamera_->SetTarget(player_.get());
+
+    // playerに必要な情報をセット
+    player_->SetFollowCameraPtr(followCamera_.get());
+
+    // パーティクルの初期化
+    ParticleManager::DeleteAll();
 }
 
-void Scene_Game::Finalize() {}
+void Scene_Game::Finalize(){
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -74,7 +111,7 @@ void Scene_Game::Finalize() {}
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update() {
+void Scene_Game::Update(){
 
     /*========================== ImGui =============================*/
 
@@ -83,23 +120,28 @@ void Scene_Game::Update() {
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::End();
+
 #endif
 
     /*======================= 各状態固有の更新 ========================*/
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Update();
     }
 
-    if (currentEvent_) {
-        currentEvent_->Update();
+    if(currentEventState_){
+        currentEventState_->Update();
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
-    // パーティクルエディター
     ParticleManager::Update();
+    player_->Update();
+    ground_->Update();
 
+    for(auto& model : models_){
+        model->Update();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -108,26 +150,40 @@ void Scene_Game::Update() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw() {
+void Scene_Game::Draw(){
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if (currentState_) {
+    if(currentEventState_){
+        currentEventState_->Draw();
+    }
+
+    if(currentState_){
         currentState_->Draw();
     }
 
-    if (currentEvent_) {
-        currentEvent_->Draw();
-    }
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 
-    // グリッドの描画
-    SEED::DrawGrid();
-
+    // ライトをセット
+    directionalLight_->SendData();
 
     // パーティクルの描画
     ParticleManager::Draw();
+
+    // プレイヤーの描画
+    player_->Draw();
+
+    // 地面の描画
+    ground_->Draw();
+
+    // モデルの描画
+    for(auto& model : models_){
+        model->Draw();
+    }
+
+    //グリッドの描画
+    SEED::DrawGrid();
 
     /*======================= 各状態固有の描画 ========================*/
 
@@ -145,8 +201,13 @@ void Scene_Game::Draw() {
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame() {
+void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
+    player_->BeginFrame();
+
+    if(currentState_){
+        currentState_->BeginFrame();
+    }
 }
 
 
@@ -155,12 +216,16 @@ void Scene_Game::BeginFrame() {
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame() {
+void Scene_Game::EndFrame(){
 
     // 現在のステートがあればフレーム終了処理を行う
-    if (currentState_) {
+    if(currentState_){
         currentState_->EndFrame();
     }
+
+    // 各オブジェクトのフレーム終了処理
+    player_->EndFrame();
+
 }
 
 
@@ -169,9 +234,11 @@ void Scene_Game::EndFrame() {
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::HandOverColliders() {
+void Scene_Game::HandOverColliders(){
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->HandOverColliders();
     }
+
+    player_->HandOverColliders();
 }

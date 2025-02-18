@@ -1,6 +1,6 @@
 #include "Collider.h"
-#include "SEED.h"
-#include "Base/BaseObject.h"
+#include <SEED/Source/SEED.h>
+#include <Game/Objects/Base/BaseObject.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -178,6 +178,9 @@ bool Collider::CheckCollision(const Sphere& sphere){
 
 
 void Collider::OnCollision(Collider* collider,ObjectType objectType){
+
+    // 当たり判定をスキップするオブジェクトなら衝突判定を行わない
+    if(CanSkipPushBack(objectType)){ return; }
 
     // 衝突フラグを立てる
     isCollision_ = true;

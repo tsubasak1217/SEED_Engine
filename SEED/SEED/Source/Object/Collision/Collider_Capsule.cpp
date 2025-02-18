@@ -1,6 +1,6 @@
 #include "Collider_Capsule.h"
-#include "Base/BaseObject.h"
-#include <SEED.h>
+#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/SEED.h>
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ

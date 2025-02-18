@@ -36,7 +36,7 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     // テクスチャから深度データを取得
     float depthData = inputDepthTexture.Load(int3(DTid.xy, 0)).x;
     depthData = DepthToLinear(depthData, 0.01f, 1000.0f);
-    float focusLevel = CalcDepthData(depthData);
+    float focusLevel = CalcFocusLevel(depthData);
     
     
     // ============================= 大ボケ画像の作成 ================================ //
@@ -44,17 +44,17 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     for (int row = -radius; row < radius; row++)
     {
         currentPixelCoord.x = pixelCoord.x + row;
-        currentPixelCoord.x = clamp(currentPixelCoord.x, 0, 1279);
+        currentPixelCoord.x = clamp(currentPixelCoord.x, 1, 1280);
         
         for (int col = -radius; col < radius; col++)
         {
             currentPixelCoord.y = pixelCoord.y + col;
-            currentPixelCoord.y = clamp(currentPixelCoord.y, 0, 719);
+            currentPixelCoord.y = clamp(currentPixelCoord.y, 1, 720);
             
             // 今のピクセルの深度情報を参照して、ボケていない部分はあまり色に影響を与えないようにする
             float currentDepth = inputDepthTexture.Load(int3(currentPixelCoord, 0)).x;
             currentDepth = DepthToLinear(currentDepth, 0.1f, 1000.0f);
-            //currentDepth = CalcDepthData(currentDepth);
+            currentDepth = CalcFocusLevel(currentDepth);
             
             
             float blurLevel = 1.0f - currentDepth;
@@ -78,9 +78,9 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
         
 
     // 加工
-    outputTexture[pixelCoord] = blurredColor;
+    outputTexture[pixelCoord] = outputColor;
     
     // 深度情報の計算
-    outputDepthTexture[pixelCoord] = float4(1.0f, 1.0f, 1.0f, 1.0f) * depthData;
+    outputDepthTexture[pixelCoord] = float4(1.0f, 0.0f, 0.0f, 1.0f) * focusLevel;
 
 }

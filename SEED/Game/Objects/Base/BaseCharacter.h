@@ -1,8 +1,8 @@
 #pragma once
 #include <list>
 #include <vector>
-#include "BaseObject.h"
-#include "BaseCamera.h"
+#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Object/Camera/BaseCamera.h>
 
 class ICharacterState;
 
@@ -28,6 +28,7 @@ public: // コライダー
     void HandOverColliders() override;
     void InitColliders(ObjectType objectType) override;
     void DiscardPreCollider() override;
+    void AddSkipPushBackType(ObjectType skipType)override;
 
 protected:
     virtual void Damage(int32_t damage);
@@ -54,7 +55,10 @@ public: // アクセッサ
     bool IsJumpable(){ return jumpAllowableTime_ > 0.0f; }
     float GetJumpPower()const{ return jumpPower_; }
     void SetJumpPower(float power){ jumpPower_ = power; }
-    void SetIsMovable(bool isMovable){ isMovable_ = isMovable; }
+    void SetIsMovable(bool isMovable){ 
+        isMovable_ = isMovable;
+        isMovable_;
+    }
     bool GetIsMovable()const{ return isMovable_; }
 
 protected: // パラメータ

@@ -1,8 +1,8 @@
 #pragma once
-#include "Transform.h"
-#include "Matrix4x4.h"
-#include "Quaternion.h"
-#include "Vector3.h"
+#include <SEED/Lib/Structs/Transform.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
+#include <SEED/Lib/Tensor/Vector3.h>
 #include <vector>
 #include <array>
 #include <unordered_map>

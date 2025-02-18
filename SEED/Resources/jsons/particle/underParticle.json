@@ -1,0 +1,79 @@
+{
+    "emitters": [
+        {
+            "CullingMode": 2,
+            "baseDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "blendMode": 4,
+            "center": [
+                0.0,
+                -37.04999923706055,
+                0.0
+            ],
+            "colors": [
+                [
+                    0.03200690820813179,
+                    0.603110671043396,
+                    0.7254902124404907,
+                    1.0
+                ],
+                [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                [
+                    0.09803920984268188,
+                    1.0,
+                    0.2572087049484253,
+                    1.0
+                ],
+                [
+                    0.8186274766921997,
+                    0.0,
+                    0.505622923374176,
+                    1.0
+                ]
+            ],
+            "directionRange": 0.019999999552965164,
+            "emitRange": [
+                750.0,
+                6.150000095367432,
+                750.0
+            ],
+            "emitType": 1,
+            "gravity": -9.800000190734863,
+            "interval": 0.0,
+            "isActive": true,
+            "isBillboard": true,
+            "isUseGravity": false,
+            "isUseRotate": false,
+            "kMaxEmitCount": 1,
+            "lifeTimeRange": [
+                10.699999809265137,
+                28.850000381469727
+            ],
+            "numEmitEvery": 13,
+            "particleType": 0,
+            "radiusRange": [
+                0.3799999952316284,
+                1.8700000047683716
+            ],
+            "rotateSpeedRange": [
+                0.0,
+                1.0
+            ],
+            "speedRange": [
+                1.7799999713897705,
+                3.200000047683716
+            ],
+            "textureHandles": [
+                "ParticleTextures/particle.png"
+            ]
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 #include "GameSystem.h"
-#include <SceneManager/SceneManager.h>
-#include "SceneRegister.h"
+#include <SEED/Source/Manager/SceneManager/SceneManager.h>
+#include <Game/Scene/Base/SceneRegister.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 /////////////////////////////////////////////////////////////////
 // 静的メンバ変数の初期化
@@ -29,11 +30,12 @@ void GameSystem::Initialize() {
     ChangeScene("Game");
 }
 
-
 /////////////////////////////////////////////////////////////////
 // ゲームの終了処理
 /////////////////////////////////////////////////////////////////
 void GameSystem::Finalize() {
+    instance_->pScene_->Finalize();
+    instance_->pScene_.reset();
 }
 
 
@@ -78,7 +80,10 @@ void GameSystem::Draw() {
     }
 
     // コリジョンの描画(デバッグ表示)
-    CollisionManager::Draw();
+    //CollisionManager::Draw();
+    
+    // ImGuiの描画
+    DrawGUI();
 }
 
 
@@ -90,6 +95,8 @@ void GameSystem::BeginFrame() {
     CollisionManager::ResetColliderList();
     // シーンのフレーム開始処理
     instance_->pScene_->BeginFrame();
+    // 解像度の変更
+    SEED::ChangeResolutionRate(instance_->resolutionRate_);
 }
 
 
@@ -101,6 +108,17 @@ void GameSystem::EndFrame() {
     if (instance_->pScene_) {
         instance_->pScene_->EndFrame();
     }
+}
+
+/////////////////////////////////////////////////////////////////
+// ゲームのGUI描画処理
+/////////////////////////////////////////////////////////////////
+void GameSystem::DrawGUI(){
+#ifdef _DEBUG
+    ImGui::Begin("GameSystem");
+    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.01f, 1.0f);
+    ImGui::End();
+#endif // _DEBUG
 }
 
 

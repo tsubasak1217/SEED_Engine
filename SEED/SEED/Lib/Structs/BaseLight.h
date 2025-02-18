@@ -1,6 +1,6 @@
 #pragma once
-#include <Vector4.h>
-#include <Vector3.h>
+#include <SEED/Lib/Tensor/Vector4.h>
+#include <SEED/Lib/Tensor/Vector3.h>
 
 enum LIGHT_TYPE{
     BASE_LIGHT = 0,
@@ -20,7 +20,7 @@ protected:
     int32_t lightType_;
 
 public:
-    Vector4 color_;
-    float intensity;
+    Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
+    float intensity = 1.0f;
     bool isLighting_ = true;;
 };

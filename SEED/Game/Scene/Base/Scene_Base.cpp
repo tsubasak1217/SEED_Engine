@@ -1,5 +1,5 @@
-#include "Scene_Base.h"
-#include <../GameSystem.h>
+#include <Game/Scene/Base/Scene_Base.h>
+#include <Game/GameSystem.h>
 
 Scene_Base::Scene_Base(){}
 
@@ -8,8 +8,8 @@ void Scene_Base::Update(){
         currentState_->Update();
     }
 
-    if (currentEvent_) {
-        currentEvent_->Update();
+    if (currentEventState_) {
+        currentEventState_->Update();
     }
 }
 
@@ -18,17 +18,12 @@ void Scene_Base::Draw(){
         currentState_->Draw();
     }
 
-    if (currentEvent_) {
-        currentEvent_->Draw();
+    if (currentEventState_) {
+        currentEventState_->Draw();
     }
 }
 
 void Scene_Base::BeginFrame(){
-    isStateChanged_ = false;
-
-    if(currentState_){
-        currentState_->BeginFrame();
-    }
 }
 
 void Scene_Base::ManageState(){
@@ -42,10 +37,9 @@ void Scene_Base::ChangeScene(const std::string& nextSceneName){
 }
 
 void Scene_Base::ChangeState(State_Base* nextState){
-    isStateChanged_ = true;
     currentState_.reset(nextState);
 }
 
-void Scene_Base::CauseEvent(Event_Base* nextEventState) {
-    currentEvent_.reset(nextEventState);
+void Scene_Base::CauseEvent(EventState_Base* nextEventState) {
+    currentEventState_.reset(nextEventState);
 }

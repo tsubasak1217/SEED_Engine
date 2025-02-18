@@ -1,7 +1,7 @@
 #pragma once
-#include "BlendMode.h"
 #include <vector>
-#include <DxFunc.h>
+#include <SEED/Lib/Structs/blendMode.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 using Microsoft::WRL::ComPtr;
 
 enum class PolygonTopology : int{

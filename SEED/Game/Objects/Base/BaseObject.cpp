@@ -17,6 +17,14 @@ BaseObject::BaseObject(){
     Initialize();
 }
 
+BaseObject::BaseObject(const std::string& modelFilePath){
+    objectID_ = nextID_++;
+    className_ = "BaseObject";
+    name_ = "BaseObject";
+    model_ = std::make_unique<Model>(modelFilePath);
+    model_->UpdateMatrix();
+}
+
 BaseObject::~BaseObject(){}
 
 
@@ -61,6 +69,9 @@ void BaseObject::BeginFrame(){
     // 落下フラグの初期化
     isDrop_ = true;
 
+    // 座標の保存
+    prePos_ = GetWorldTranslate();
+
     // コライダーの開始処理
     for(auto& collider : colliders_){
         collider->BeginFrame();
@@ -98,6 +109,11 @@ void BaseObject::EditCollider(){
     }
 }
 
+void BaseObject::SetCollidable(bool _collidable){
+    isHandOverColliders_ = _collidable;
+}
+
+
 // フレーム終了時の落下更新処理
 void BaseObject::EndFrameDropFlagUpdate(){
     // 落下フラグの更新
@@ -108,8 +124,8 @@ void BaseObject::EndFrameDropFlagUpdate(){
     // 終了時の落下フラグに応じた処理
     if(isDrop_ && isApplyGravity_){
         float downAccel = -Physics::kGravity * weight_ * ClockManager::DeltaTime();
-        dropSpeed_ += downAccel ;
-        velocity_.y = dropSpeed_ ;
+        dropSpeed_ += downAccel;
+        velocity_.y = dropSpeed_;
     } else{
         dropSpeed_ = 0.0f;
         velocity_.y = 0.0f;
@@ -125,7 +141,7 @@ void BaseObject::MoveByVelocity(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::AddWorldTranslate(const Vector3& addValue){
     if(GetParent() != nullptr){
-        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(GetParent()->GetWorldRotate()));
         Vector3 localAddValue = addValue * invParentMat;
         model_->translate_ += localAddValue;
     } else{
@@ -158,6 +174,13 @@ void BaseObject::ResetCollider(){
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::HandOverColliders(){
 
+    // 衝突情報の保存・初期化
+    preIsCollide_ = isCollide_;
+    isCollide_ = false;
+
+    if(!isHandOverColliders_){
+        return;
+    }
     // キャラクターの基本コライダーを渡す
     for(auto& collider : colliders_){
         CollisionManager::AddCollider(collider.get());
@@ -168,7 +191,8 @@ void BaseObject::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void BaseObject::OnCollision(const BaseObject* other,ObjectType objectType){
+void BaseObject::OnCollision( BaseObject* other, ObjectType objectType){
+    isCollide_ = true;
     other;
     objectType;
 }
@@ -182,14 +206,32 @@ void BaseObject::DiscardPreCollider(){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// コライダーの判定スキップリストの追加
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::AddSkipPushBackType(ObjectType skipType){
+    for(auto& collider : colliders_){
+        collider->AddSkipPushBackType(skipType);
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // コライダーの読み込み
 //////////////////////////////////////////////////////////////////////////
 void BaseObject::LoadColliders(ObjectType objectType){
     // コライダーの読み込み
-    ColliderEditor::LoadColliders(className_ + ".json",this,&colliders_);
+    ColliderEditor::LoadColliders(className_ + ".json", this, &colliders_);
 
+    // オブジェクトの属性を取得
+    for(auto& collider : colliders_){
+        collider->SetObjectType(objectType);
+    }
+}
+
+void BaseObject::LoadColliders(const std::string& fileName, ObjectType objectType){
+    // コライダーの読み込み
+    ColliderEditor::LoadColliders(fileName, this, &colliders_);
     // オブジェクトの属性を取得
     for(auto& collider : colliders_){
         collider->SetObjectType(objectType);
@@ -204,6 +246,11 @@ void BaseObject::LoadColliders(ObjectType objectType){
 void BaseObject::InitColliders(ObjectType objectType){
     colliders_.clear();
     LoadColliders(objectType);
+}
+
+void BaseObject::InitColliders(const std::string& fileName, ObjectType objectType){
+    colliders_.clear();
+    LoadColliders(fileName, objectType);
 }
 
 
@@ -222,3 +269,13 @@ void BaseObject::EraseCheckColliders(){
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+// jsonデータの取得
+//////////////////////////////////////////////////////////////////////////
+const nlohmann::json& BaseObject::GetJsonData() {
+    static nlohmann::json json;
+    json["Translate"] = GetWorldTranslate();
+    json["Rotate"] = GetWorldRotate();
+    json["Scale"] = GetWorldScale();
+    return json;
+}

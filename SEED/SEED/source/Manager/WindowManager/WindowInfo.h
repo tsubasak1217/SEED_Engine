@@ -13,7 +13,7 @@ using Microsoft::WRL::ComPtr;
 #include <string>
 
 // local
-#include "Vector2.h"
+#include <SEED/Lib/Tensor/Vector2.h>
 
 
 class WindowInfo{

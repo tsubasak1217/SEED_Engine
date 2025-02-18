@@ -1,14 +1,19 @@
 #pragma once
 // parent
-#include "Base/BaseCharacter.h"
-
-// lib
+#include <Game/Objects/Base/BaseCharacter.h>
+///stl
+// pointer
 #include <memory>
 #include <list>
 #include <vector>
-
+#include <json.hpp>
 // object
-#include "BaseCamera.h"
+#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Structs/Sprite.h>
+
+// state
+class IPlayerState;
 
 class Player : public BaseCharacter{
 public:
@@ -17,13 +22,13 @@ public:
     void Initialize() override;
     void Update() override;
     void Draw() override;
+    void BeginFrame() override;
     void EndFrame() override;
+
+private:
 
 public: // Stateから呼び出す関数
     void HandleMove(const Vector3& acceleration) override;
-
-public:
-    void OnCollision(const BaseObject* other,ObjectType objectType) override;
 
 public: // アクセッサ
     void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
@@ -31,7 +36,13 @@ public: // アクセッサ
     const BaseCamera* GetFollowCamera() const{ return pCamera_; }
     BaseCamera* GetFollowCamera(){ return pCamera_; }
 
+    // json
+    const nlohmann::json& GetJsonData()override;
+
+
+public:
+    void OnCollision(BaseObject* other,ObjectType objectType) override;
+
 private: // フォローカメラ、ターゲット用
     BaseCamera* pCamera_ = nullptr;
-
 };

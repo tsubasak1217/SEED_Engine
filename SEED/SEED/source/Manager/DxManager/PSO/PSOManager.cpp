@@ -1,7 +1,7 @@
 // local
-#include "PSO/PSOManager.h"
-#include <DxManager.h>
-#include "blendMode.h"
+#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
+#include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Lib/Structs/blendMode.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 //                         static変数初期化

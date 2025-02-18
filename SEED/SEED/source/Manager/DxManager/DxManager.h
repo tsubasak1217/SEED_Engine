@@ -9,17 +9,17 @@
 #pragma comment (lib,"gdiplus.lib")
 
 // local
-#include <DxFunc.h>
-#include <PSO/Pipeline.h>
-#include <PSO/RootSignature.h>
-#include <matrixFunc.h>
-#include <sphere.h>
-#include <includes.h>
-#include <PolygonManager.h>
-#include <EffectManager.h>
-#include <BaseCamera.h>
-#include <CameraManager.h>
-#include <ViewManager.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Source/Manager/DxManager/PSO/Pipeline.h>
+#include <SEED/Source/Manager/DxManager/PSO/RootSignature.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Shapes/Sphere.h>
+#include <SEED/Lib/Includes/includes.h>
+#include <SEED/Source/Manager/DxManager/PolygonManager.h>
+#include <SEED/Source/Manager/DxManager/EffectManager.h>
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Source/Manager/CameraManager/CameraManager.h>
+#include <SEED/Source/Manager/DxManager/ViewManager.h>
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;

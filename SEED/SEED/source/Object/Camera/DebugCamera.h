@@ -1,6 +1,6 @@
 #pragma once
-#include "BaseCamera.h"
-#include "Vector3.h"
+#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Lib/Tensor/Vector3.h>
 
 struct DebugCamera : public BaseCamera{
     DebugCamera();

@@ -1,13 +1,13 @@
 // local
-#include <SEED.h>
-#include <DxFunc.h>
-#include <MatrixFunc.h>
-#include <MyMath.h>
-#include <ShapeMath.h>
-#include <includes.h>
-#include <Environment.h>
-#include <SceneManager/SceneManager.h>
-#include <CollisionManaer/CollisionManager.h>
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Includes/includes.h>
+#include <Environment/Environment.h>
+#include <SEED/Source/Manager/SceneManager/SceneManager.h>
+#include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"SEED";
+std::wstring SEED::windowTitle_ = L"2305_先祖ダイダイダイナソー";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
 uint32_t SEED::windowBackColor_ = 0x000000ff;//yMath::IntColor(0,160,232,255);
 
@@ -118,9 +118,13 @@ void SEED::BeginFrame(){
     // 全入力情報を格納
     Input::GetAllInput();
 
+    // Audioのフレーム開始処理
+    AudioManager::BeginFrame();
+
     // imgui,directXのフレーム開始時処理
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
+
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/
@@ -454,6 +458,23 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
     }
 }
 
+void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color){
+    // ベジェ曲線の描画
+    Vector3 previous = p1;
+    for(uint32_t i = 1; i <= subdivision; i++){
+
+        // 現在の位置を求める
+        float t = float(i) / subdivision;
+        Vector3 current = MyMath::Bezier(p1, p2, p3, t);
+
+        // 線を描画
+        DrawLine(previous, current, color);
+
+        // 現在の点を保存
+        previous = current;
+    }
+}
+
 
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画
@@ -589,7 +610,11 @@ Vector2 SEED::GetImageSize(const std::wstring& fileName){
 /*------------------ 画面の解像度を変更する関数 ------------------*/
 
 void SEED::ChangeResolutionRate(float resolutionRate){
-    DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
+    static float preResolutionRate = 1.0f;
+    if(resolutionRate != preResolutionRate){
+        DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
+        preResolutionRate = resolutionRate;
+    }
 }
 
 /*------------------ カメラにシェイクを設定する関数 ------------------*/

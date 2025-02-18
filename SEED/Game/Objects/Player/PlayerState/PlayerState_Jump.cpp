@@ -2,6 +2,9 @@
 //other state
 #include "PlayerState_Idle.h"
 
+//lib
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
@@ -33,7 +36,7 @@ void PlayerState_Jump::Update(){
     Move();
 
     // 回転処理
-    if(MyMath::Length(Input::GetStickValue(LR::LEFT))){
+    if(MyMath::LengthSq(Input::GetStickValue(LR::LEFT))){
         Rotate();
     }
 }

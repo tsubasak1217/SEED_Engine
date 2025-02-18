@@ -1,6 +1,6 @@
 #include "ColliderAnimationData.h"
-#include <SEED.h>
-#include "MyMath.h"
+#include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // コンストラクタ

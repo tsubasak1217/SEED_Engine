@@ -2,14 +2,14 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
-#include "MatrixFunc.h"
-#include "ModelData.h"
-#include "VertexData.h"
-#include "Vector3.h"
-#include "Matrix4x4.h"
-#include "DxFunc.h"
-#include "Material.h"
-#include "blendMode.h"
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Structs/ModelData.h>
+#include <SEED/Lib/Structs/VertexData.h>
+#include <SEED/Lib/Tensor/Vector3.h>
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Structs/Material.h>
+#include <SEED/Lib/Structs/blendMode.h>
 
 class Model{
 
@@ -56,7 +56,7 @@ public:// アクセッサ
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
 
     // マテリアル
-    Matrix4x4 GetUVTransform(int index)const{ return uvTransform_[index]; }
+    Matrix4x4 GetUVTransform(int index)const{ return AffineMatrix(uv_scale_[index],uv_rotate_[index],uv_translate_[index]); }
 
     // アニメーション
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
@@ -77,8 +77,12 @@ public:
 
     // 名前
     std::string modelName_;
-    const Model* parent_ = nullptr;// 親のポインタ
 
+    // 親子付け
+    const Model* parent_ = nullptr;// 親のポインタ
+    bool isParentRotate_ = true;
+    bool isParentScale_ = true;
+    bool isParentTranslate_ = true;
 
     // ----------------------- トランスフォーム情報 -----------------------//
 
@@ -107,9 +111,6 @@ public:
     std::vector<Vector3> uv_scale_;
     std::vector<Vector3> uv_rotate_;
     std::vector<Vector3> uv_translate_;
-
-private:
-    std::vector<Matrix4x4> uvTransform_;
 
 
     // --------------------- アニメーションパラメータ ---------------------//

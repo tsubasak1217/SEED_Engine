@@ -13,8 +13,8 @@
 #include <assimp/postprocess.h>
 
 // local
-#include "ModelData.h"
-#include "ModelAnimation.h"
+#include <SEED/Lib/Structs/ModelData.h>
+#include <SEED/Lib/Structs/ModelAnimation.h>
 
 class ModelManager{
 

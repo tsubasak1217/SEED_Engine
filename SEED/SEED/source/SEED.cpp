@@ -16,7 +16,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"2305_先祖ダイダイダイナソー";
+std::wstring SEED::windowTitle_ = L"SEED::GameWindow";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
 uint32_t SEED::windowBackColor_ = 0x000000ff;//yMath::IntColor(0,160,232,255);
 

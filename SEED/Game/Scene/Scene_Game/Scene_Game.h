@@ -36,11 +36,5 @@ public:
 private:
 
     // EngineObjects
-    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
-
-    // GameObjects
-    std::unique_ptr<Player> player_ = nullptr;
-    std::unique_ptr<Model> ground_ = nullptr;
-    std::list<std::unique_ptr<Model>> models_;
 };

@@ -127,7 +127,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
-    <ClCompile Include="Game\Objects\FieldObject\FieldObject.cpp" />
     <ClCompile Include="Game\Objects\Base\BaseCharacter.cpp" />
     <ClCompile Include="Game\Objects\Base\ICharacterState.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
@@ -139,8 +138,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
-    <ClCompile Include="SEED\lib\patterns\ISubject.cpp" />
-    <ClCompile Include="SEED\lib\patterns\IObserver.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
@@ -240,8 +237,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
-    <ClInclude Include="SEED\lib\patterns\ISubject.h" />
-    <ClInclude Include="SEED\lib\patterns\IObserver.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />

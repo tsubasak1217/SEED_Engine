@@ -16,8 +16,6 @@ Scene_Game::Scene_Game(){
 };
 
 Scene_Game::~Scene_Game(){
-    CameraManager::DeleteCamera("follow");
-    CameraManager::SetActiveCamera("main");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -42,11 +40,6 @@ void Scene_Game::Initialize(){
     SEED::GetCamera()->Update();
     SEED::SetCamera("debug");
 
-    followCamera_ = std::make_unique<FollowCamera>();
-    followCamera_->SetFov(0.65f);
-    CameraManager::AddCamera("follow", followCamera_.get());
-    SEED::SetCamera("follow");
-
     ////////////////////////////////////////////////////
     //  ライトの初期化
     ////////////////////////////////////////////////////
@@ -58,19 +51,6 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    // Player
-    player_ = std::make_unique<Player>();
-    player_->Initialize();
-
-    // Ground
-    ground_ = std::make_unique<Model>("Assets/ground.obj");
-
-    // Models
-    for(int i = 0; i < 32; i++){
-        auto& model = models_.emplace_back(std::make_unique<Model>("Assets/teapot.obj"));
-        model->translate_ = MyFunc::RandomVector() * Vector3(100.0f, 0.0f, 100.0f);
-        model->scale_ = Vector3(1.0f, 1.0f, 1.0f) * MyFunc::Random(1.0f, 10.0f);
-    }
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -91,12 +71,6 @@ void Scene_Game::Initialize(){
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
     /////////////////////////////////////////////////
-
-    // followCameraにStageをセット
-    followCamera_->SetTarget(player_.get());
-
-    // playerに必要な情報をセット
-    player_->SetFollowCameraPtr(followCamera_.get());
 
     // パーティクルの初期化
     ParticleManager::DeleteAll();
@@ -136,12 +110,7 @@ void Scene_Game::Update(){
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     ParticleManager::Update();
-    player_->Update();
-    ground_->Update();
 
-    for(auto& model : models_){
-        model->Update();
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -171,17 +140,6 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
-    // プレイヤーの描画
-    player_->Draw();
-
-    // 地面の描画
-    ground_->Draw();
-
-    // モデルの描画
-    for(auto& model : models_){
-        model->Draw();
-    }
-
     //グリッドの描画
     SEED::DrawGrid();
 
@@ -191,8 +149,8 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
-    if(currentEvent_){
-        currentEvent_->Draw();
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 }
 
@@ -203,7 +161,6 @@ void Scene_Game::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
-    player_->BeginFrame();
 
     if(currentState_){
         currentState_->BeginFrame();
@@ -223,9 +180,6 @@ void Scene_Game::EndFrame(){
         currentState_->EndFrame();
     }
 
-    // 各オブジェクトのフレーム終了処理
-    player_->EndFrame();
-
 }
 
 
@@ -239,6 +193,4 @@ void Scene_Game::HandOverColliders(){
     if(currentState_){
         currentState_->HandOverColliders();
     }
-
-    player_->HandOverColliders();
 }

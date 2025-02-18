@@ -107,26 +107,6 @@ void AudioManager::BeginFrame(){
 
 void AudioManager::StartUpLoad(){
     // 以下にロード処理をまとめる
-
-    //===================== BGM =====================//
-    AudioManager::LoadAudio("BGM/Title.wav");
-
-
-    //===================== SE =====================//
-    LoadAudio("SE/dinosaur_jump.wav");
-    LoadAudio("SE/dinosaur_eat.wav");
-    LoadAudio("SE/dinosaur_grow.wav");
-    LoadAudio("SE/dinosaur_born.wav");
-    LoadAudio("SE/goal.wav");
-    LoadAudio("SE/door.wav");
-    LoadAudio("SE/laver.wav");
-    LoadAudio("SE/star.wav");
-    LoadAudio("SE/star_shine.wav");
-    LoadAudio("SE/switch.wav");
-    LoadAudio("SE/walk.mp3");
-    LoadAudio("SE/select.mp3");
-    LoadAudio("SE/stageSelect.mp3");
-    LoadAudio("SE/hit.mp3");
 }
 
 

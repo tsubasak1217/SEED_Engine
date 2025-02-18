@@ -60,40 +60,6 @@ void ModelManager::Initialize() {
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad() {
-    // ============================== character ============================== //
-    // dinosaur
-    LoadModel("dinosaur.gltf");
-    LoadModel("dinosaur_corpse.obj");
-    LoadModel("dinosaur_ghost.obj");
-    // egg
-    LoadModel("egg.obj");
-    LoadModel("egg_born.gltf");
-    // enemy
-    LoadModel("enemy.gltf");
-    LoadModel("enemy_spike.gltf");
-
-    // ============================== FieldObject ============================== //
-    LoadModel("FieldObject/Box.obj");
-    LoadModel("FieldObject/Chikuwa.obj");
-    LoadModel("FieldObject/door.obj");
-    LoadModel("FieldObject/EventArea.obj");
-    LoadModel("FieldObject/Fence.obj");
-    LoadModel("FieldObject/goal.gltf"); 
-    LoadModel("FieldObject/GrassSoil.obj");
-    LoadModel("FieldObject/groundCube.obj");
-    LoadModel("FieldObject/lever.obj");
-    LoadModel("FieldObject/moveFloor.obj");
-    LoadModel("FieldObject/Plant.obj");
-    LoadModel("FieldObject/SaveArea.obj");
-    LoadModel("FieldObject/Soil.obj");
-    LoadModel("FieldObject/sphere.obj");
-    LoadModel("FieldObject/Star.obj");
-    LoadModel("FieldObject/start.obj");
-    LoadModel("FieldObject/switch.gltf");
-    LoadModel("FieldObject/Tile.obj");
-    LoadModel("FieldObject/tree.gltf");
-    LoadModel("FieldObject/Wood.obj");
-
 }
 
 void ModelManager::LoadModel(const std::string& filename) {

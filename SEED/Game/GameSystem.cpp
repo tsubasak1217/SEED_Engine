@@ -80,7 +80,7 @@ void GameSystem::Draw() {
     }
 
     // コリジョンの描画(デバッグ表示)
-    CollisionManager::Draw();
+    //CollisionManager::Draw();
     
     // ImGuiの描画
     DrawGUI();

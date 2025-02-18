@@ -1840,7 +1840,7 @@ void PolygonManager::DrawToOffscreen(){
         AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
         //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
     } else{
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NORMAL);
+        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NONE);
     }
 
     // Resourceに情報を書き込む

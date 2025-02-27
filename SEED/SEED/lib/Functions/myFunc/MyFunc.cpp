@@ -174,9 +174,31 @@ float MyFunc::Spiral(float input,float min,float max){
     return input;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 範囲に含まれているかを判定する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool MyFunc::IsContain(const Range1D& range, float value){
+    return range.min <= value && value <= range.max;
+}
+
+bool MyFunc::IsContain(const Range2D& range, const Vector2& value){
+    Range1D xRange = { range.min.x,range.max.x };
+    Range1D yRange = { range.min.y,range.max.y };
+    return IsContain(xRange, value.x) && IsContain(yRange, value.y);
+}
+
+bool MyFunc::IsContain(const Range3D& range, const Vector3& value){
+    Range1D xRange = { range.min.x,range.max.x };
+    Range1D yRange = { range.min.y,range.max.y };
+    Range1D zRange = { range.min.z,range.max.z };
+    return IsContain(xRange, value.x) && IsContain(yRange, value.y) && IsContain(zRange, value.z);
+}
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ベクトルから三次元の回転角を算出する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
     Vector3 rotate = {0.0f,0.0f,0.0f};
 

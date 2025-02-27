@@ -46,6 +46,11 @@ public:
     static int32_t Spiral(int32_t input,int32_t min,int32_t max);
     static float Spiral(float input,float min,float max);
 
+    // 範囲に含まれているかを判定する関数
+    static bool IsContain(const Range1D& range, float value);
+    static bool IsContain(const Range2D& range, const Vector2& value);
+    static bool IsContain(const Range3D& range, const Vector3& value);
+
     // ベクトルから三次元の回転角を算出する関数
     static Vector3 CalcRotateVec(const Vector3& vec);
 

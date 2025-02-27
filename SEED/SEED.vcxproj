@@ -114,6 +114,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
+    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Flick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Scene\Base\SceneRegister.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
@@ -204,9 +212,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Manager\RythmGameManager.h" />
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
+    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Flick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="Game\Scene\Base\SceneRegister.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />

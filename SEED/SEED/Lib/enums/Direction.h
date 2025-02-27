@@ -2,12 +2,14 @@
 #include <cstdint>
 
 enum class LR : uint32_t{
-    LEFT = 0,
+    NONE = -1,
+    LEFT,
     RIGHT
 };
 
 enum class DIRECTION : uint32_t{
-    UP = 0,
+    NONE = -1,
+    UP,
     DOWN,
     LEFT,
     RIGHT

@@ -5,6 +5,7 @@
 template<typename T>
 struct InputHandler{
     std::function<T()> Value = [] { return T{}; }; // デフォルトはゼロ初期化
+    std::function<T()> PreValue = []{ return T{}; };
     std::function<bool()> Press = [] { return false; };
     std::function<bool()> Trigger = [] { return false; };
     std::function<bool()> Release = [] { return false; };

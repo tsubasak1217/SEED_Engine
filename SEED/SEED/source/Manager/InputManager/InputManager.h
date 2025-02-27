@@ -68,10 +68,9 @@ public:// キーの状態を返す関数
     static bool IsTriggerMouse(MOUSE_BUTTON button);
     static bool IsReleaseMouse(MOUSE_BUTTON button);
     static int32_t GetMouseWheel();
-    static Vector2 GetMouseVector();
-    static Vector2 GetMouseDirection();
-    static Vector2 GetMousePosition();
-    static Vector2 GetPreMousePosition();
+    static Vector2 GetMouseVector(INPUT_STATE inputState = INPUT_STATE::CURRENT);
+    static Vector2 GetMouseDirection(INPUT_STATE inputState = INPUT_STATE::CURRENT);
+    static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);
 
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
@@ -84,12 +83,12 @@ public:// キーの状態を返す関数
     // 左右トリガーの値を0.0 ~ 1.0で取得
     static float GetLRTriggerValue(
         LR LEFTorRIGHT, uint8_t padNumber = 0,
-        PAD_STATE padState = PAD_STATE::CURRENT
+        INPUT_STATE padState = INPUT_STATE::CURRENT
     );
     // length 0 ~ 1 のベクトルで返ってくる
     static Vector2 GetStickValue(
         LR stick_LorR, uint8_t padNumber = 0,
-        PAD_STATE padState = PAD_STATE::CURRENT
+        INPUT_STATE padState = INPUT_STATE::CURRENT
     );
 
     // スティックをトリガーとして取得
@@ -103,7 +102,7 @@ public:// キーの状態を返す関数
 
 private:
 
-    bool IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, PAD_STATE padState);
+    bool IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE padState);
 
 private:
     static Input* instance_;

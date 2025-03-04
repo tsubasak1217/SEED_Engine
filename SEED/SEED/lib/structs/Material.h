@@ -1,8 +1,16 @@
 #pragma once
-#include <SEED/Lib/Tensor/Matrix4x4.h>
-#include <SEED/Lib/Tensor/Vector4.h>
+// stl
 #include <stdint.h>
 #include <string>
+
+// assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+// engine
+#include <SEED/Lib/Tensor/Matrix4x4.h>
+#include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Structs/blendMode.h>
 
 enum LIGHTING_TYPE : int32_t{

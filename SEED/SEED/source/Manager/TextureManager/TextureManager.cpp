@@ -32,14 +32,20 @@ void TextureManager::Initialize(){
 void TextureManager::StartUpLoad(){
 }
 
-uint32_t TextureManager::LoadTexture(const std::string& filename){
+uint32_t TextureManager::LoadTexture(const std::string& filename,const aiTexture* embeddedTexture){
     // すでに読み込み済みのファイルであればreturn
     if(instance_->graphHandle_.find(filename) != instance_->graphHandle_.end()){ 
         return instance_->graphHandle_[filename];
     }
 
-    // 読み込み
-    instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
+    // 埋め込みテクスチャでない場合
+    if(!embeddedTexture){
+        // 読み込み
+        instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
+    } else{
+        // 埋め込みテクスチャの場合
+        instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename,embeddedTexture);
+    }
 
     return instance_->graphHandle_[filename];
 }

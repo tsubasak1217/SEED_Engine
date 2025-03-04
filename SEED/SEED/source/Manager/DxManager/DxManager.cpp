@@ -929,7 +929,7 @@ void DxManager::PostDraw(){
 //           テクスチャを作成してグラフハンドルを返す関数          //
 //////////////////////////////////////////////////////////////
 
-uint32_t DxManager::CreateTexture(std::string filePath){
+uint32_t DxManager::CreateTexture(std::string filePath, const aiTexture* embeddedTexture){
 
     // 既にある場合
     if(ViewManager::GetTextureHandle(filePath) != -1){ return ViewManager::GetTextureHandle(filePath); }
@@ -937,7 +937,13 @@ uint32_t DxManager::CreateTexture(std::string filePath){
     /*----------------------------- TextureResourceの作成,転送 -----------------------------*/
 
     // 読み込み
-    DirectX::ScratchImage mipImages = LoadTextureImage(filePath);
+    DirectX::ScratchImage mipImages;
+    if(!embeddedTexture){
+        mipImages = LoadTextureImage(filePath);// 通常のテクスチャ
+    } else{
+        mipImages = LoadEmbeddedTextureImage(embeddedTexture);// 埋め込みテクスチャ
+    }
+
     // 作成
     const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
     textureResource.push_back(CreateTextureResource(device.Get(), metadata));
@@ -955,7 +961,7 @@ uint32_t DxManager::CreateTexture(std::string filePath){
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
     srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
-    // SRVの作成
+    // SRVの作成(グラフハンドルを返す)
     return ViewManager::CreateView(VIEW_TYPE::SRV, textureResource.back().Get(), &srvDesc, filePath);
 }
 

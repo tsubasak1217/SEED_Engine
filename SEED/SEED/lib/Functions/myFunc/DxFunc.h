@@ -73,6 +73,7 @@ void CreateDescriptorHeap(
 
 // テクスチャを読み込む関数
 DirectX::ScratchImage LoadTextureImage(const std::string& filePath);
+DirectX::ScratchImage LoadEmbeddedTextureImage(const aiTexture* embeddedTexture);
 ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state);
 
 // Resource作成関数

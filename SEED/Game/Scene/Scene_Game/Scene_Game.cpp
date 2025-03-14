@@ -145,7 +145,7 @@ void Scene_Game::Draw(){
     model_->Draw();
 
     //グリッドの描画
-    //SEED::DrawGrid();
+    SEED::DrawGrid();
 
     /*======================= 各状態固有の描画 ========================*/
 

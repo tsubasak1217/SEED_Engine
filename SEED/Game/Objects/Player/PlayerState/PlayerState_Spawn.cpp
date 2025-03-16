@@ -31,7 +31,8 @@ PlayerState_Spawn::PlayerState_Spawn(const std::string& stateName,BaseCharacter*
 }
 
 PlayerState_Spawn::~PlayerState_Spawn(){
-    // 重力を適応しない,当たり判定を取らない
+    // 重力を適応
+    // 当たり判定を取るように
     pCharacter_->SetIsApplyGravity(true);
     pCharacter_->SetCollidable(true);
 }
@@ -39,22 +40,26 @@ PlayerState_Spawn::~PlayerState_Spawn(){
 void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* character){
     ICharacterState::Initialize(stateName,character);
 
-    deadPos_ = pCharacter_->GetWorldTranslate();
-
+    // Player
     Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-    pPlayer->SetAnimation("dead",false);
+    {
+        deadPos_ = pCharacter_->GetWorldTranslate();
+        pPlayer->SetAnimation("dead",false);
+        // 移動先 
+        spawnPos_ = egg_->GetWorldTranslate();
 
-    spawnPos_ = egg_->GetWorldTranslate(); // 移動先 
+        // 移動不可にする
+        pPlayer->SetIsMovable(false);
 
-    // 移動不可にする
-    pPlayer->SetIsMovable(false);
+        // 生前の情報を保存
+        beforePlayerScale_ = pPlayer->GetWorldScale();
+        beforePlayerWeight_ = pPlayer->GetSwitchPushWeight();
 
-    beforePlayerScale_ = pPlayer->GetWorldScale();
-
-    pCharacter_->SetIsJump(false);
-    pCharacter_->SetIsDrop(false);
-    pCharacter_->SetJumpPower(0.f);
-    pCharacter_->SetDropSpeed(0.f);
+        // 重力を受けないように
+        pCharacter_->SetIsJump(false);
+        pCharacter_->SetIsDrop(true);
+        pCharacter_->SetJumpPower(0.f);
+    }
 
     // ghost
     {
@@ -135,13 +140,13 @@ void PlayerState_Spawn::Draw(){
 
 void PlayerState_Spawn::ManageState(){
     if(movedGhost_){
+        // ghostが移動し終わって Animation が終了していたら IdleStateへ
         if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
 
             Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
             // カメラのターゲットをplayerに
             FollowCamera* pCamera = dynamic_cast<FollowCamera*>(pPlayer->GetFollowCamera());
             pCamera->SetTarget(pPlayer);
-
 
             // ここで,移動可能にする
             pCharacter_->SetIsMovable(true);
@@ -161,6 +166,7 @@ void PlayerState_Spawn::ManageState(){
             pCharacter_->ChangeState(new PlayerState_Idle("PlayerState_Idle",pCharacter_));
         }
     } else{
+        // ghostが移動し終わったら
         if(elapsedTime_ >= ghostMoveTime_){
             // アニメーションを流す
             egg_->SetAnimation("born",false);
@@ -170,7 +176,7 @@ void PlayerState_Spawn::ManageState(){
             AudioManager::PlayAudio("SE/dinosaur_born.wav",false,0.7f);
 
             // 移動
-             // 卵が親子付けされていたらplayerも親子付け
+            // 卵が親子付けされていたらplayerも親子付け
             pCharacter_->ReleaseParent();// 親子付けを解除
             if(egg_->GetParent()){
                 Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
@@ -200,6 +206,8 @@ void PlayerState_Spawn::ManageState(){
                 pCorpse->Initialize();
                 pCorpse->SetManager(pPlayer->GetCorpseManager());
                 pCorpse->SetScale(beforePlayerScale_);
+                pCorpse->SetSwitchPushWeight(beforePlayerWeight_);
+                pCorpse->SetRotateX(pPlayer->GetWorldRotate().x);
                 pCorpse->SetRotateY(pPlayer->GetWorldRotate().y);
                 pCorpse->SetTranslate(deadPos_);
                 pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);

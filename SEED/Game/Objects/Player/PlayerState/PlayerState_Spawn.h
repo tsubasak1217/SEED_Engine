@@ -26,23 +26,26 @@ protected:
 private:
 
 private:
+    // * ------------------ Egg ------------------ *
     Egg* egg_ = nullptr;
+    bool spawnCorpse_ = false;
+    // 投げられた卵以外の卵があるか
+    bool playerHasManyEggs_ = false;
 
+    // * ------------------ Ghost ------------------ *
     bool movedGhost_ = false;
+    std::unique_ptr<BaseObject> ghostObject_ = nullptr;
+    float ghostMoveTime_ = 1.f;
+    float elapsedTime_ = 0.0f;
 
+
+    // * ------------------ Player ------------------ *
     Vector3 deadPos_;
     Vector3 spawnPos_;
 
     Vector3 beforePlayerScale_;
+    float beforePlayerWeight_ = 0.f;
 
-    std::unique_ptr<BaseObject> ghostObject_ = nullptr;
-
-    float ghostMoveTime_ = 1.f;
-    float elapsedTime_ = 0.0f;
-
-    bool spawnCorpse_ = false;
-    // 投げられた卵以外の卵があるか
-    bool playerHasManyEggs_ = false;
 public:
     void SetSpawnPos(const Vector3& _spawnPos){ spawnPos_ = _spawnPos; }
     const Vector3& GetSpawnPos()const{ return spawnPos_; }

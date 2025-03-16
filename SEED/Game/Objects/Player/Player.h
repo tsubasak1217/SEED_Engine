@@ -37,7 +37,6 @@ public:
 
     void Spawn(Egg* _egg);
     void UpdateScaleByGrowLevel();
-    void ToClearStageState(const Vector3& nextStartPos);
 
     void GameOver();
 private:

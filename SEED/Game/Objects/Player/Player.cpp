@@ -23,7 +23,6 @@
 #include "PlayerState/PlayerState_Jump.h"
 #include "PlayerState/PlayerState_Move.h"
 #include "PlayerState/PlayerState_Spawn.h"
-#include "PlayerState/PlayerStage_ForNextStage.h"
 #include "PlayerState/PlayerState_Eat.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -231,10 +230,6 @@ void Player::UpdateScaleByGrowLevel(){
         // 時間を加算
         growUpTime = std::clamp(growUpTime + ClockManager::DeltaTime(),0.0f,kGrowUpTime);
     }
-}
-
-void Player::ToClearStageState(const Vector3& nextStartPos){
-    ChangeState(new PlayerStage_ForNextStage(nextStartPos,this));
 }
 
 //////////////////////////////////////////////////////////////////////////

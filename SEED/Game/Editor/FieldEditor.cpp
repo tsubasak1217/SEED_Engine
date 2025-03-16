@@ -11,6 +11,7 @@
 #include "FieldObject/MoveFloor/FieldObject_MoveFloor.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"
+#include "FieldObject/CameraControlArea/FieldObject_CameraControlArea.h"
 #include "FieldObject/Lever/FieldObject_Lever.h"
 
 // other
@@ -59,6 +60,7 @@ void FieldEditor::Initialize(){
     modelNameMap_["box"] = FIELDMODEL_BOX;
     modelNameMap_["chikuwa"] = FIELDMODEL_CHIKUWA;
     modelNameMap_["saveArea"] = FIELDMODEL_SAVEAREA;
+    modelNameMap_["cameraControlArea"] = FIELDMODEL_CAMERACONTROLAREA;
 
     LoadFieldModelTexture();
 
@@ -276,6 +278,16 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
             // ViewPointの場合の処理
             if(auto* viewPoint = dynamic_cast<FieldObject_ViewPoint*>(modelObj)){
                 modelJson["distance"] = viewPoint->distance_;
+            }
+
+            // カメラ制御エリアの場合の処理
+            if(auto* cameraControlArea = dynamic_cast<FieldObject_CameraControlArea*>(modelObj)){
+                modelJson["isPositionFixed"] = cameraControlArea->isPositionFixed_;
+                modelJson["cameraPos"] = cameraControlArea->cameraPos_;
+                modelJson["cameraRotate"] = cameraControlArea->cameraRotate_;
+                modelJson["theta"] = cameraControlArea->theta_;
+                modelJson["phi"] = cameraControlArea->phi_;
+                modelJson["distance"] = cameraControlArea->distance_;
             }
 
             jsonData["models"].push_back(modelJson);
@@ -715,6 +727,27 @@ void FieldEditor::ShowImGui(){
                     ImGui::Text("ViewPoint Settings");
                     ImGui::Separator();
                     ImGui::DragFloat("distance", &viewPoint->distance_,0.5f,10.0f);
+                    ImGui::Separator();
+                }
+
+                // カメラ制御エリアの場合の設定
+                if(auto* cameraControlArea = dynamic_cast<FieldObject_CameraControlArea*>(mfObj)){
+                    ImGui::Text("CameraControlArea Settings");
+                    ImGui::Separator();
+                    ImGui::Checkbox("isTestParent", &cameraControlArea->isTestParent_);// カメラを試しにペアレントするモード
+                    ImGui::Checkbox("isPositionFixed", &cameraControlArea->isPositionFixed_);// カメラの位置を固定するか
+                    
+                    // カメラの位置を固定する場合()
+                    if(cameraControlArea->isPositionFixed_){
+                        // 座標と回転の編集
+                        ImGui::DragFloat3("position", &cameraControlArea->cameraPos_.x, 0.05f);
+                        ImGui::DragFloat3("rotate", &cameraControlArea->cameraRotate_.x, 0.01f);
+
+                    } else{// カメラの位置を固定しない場合(角度だけ指定するモード)
+                        ImGui::DragFloat("distance", &cameraControlArea->distance_, 0.5f, 10.0f);
+                        ImGui::DragFloat("theta", &cameraControlArea->theta_, 0.01f, 0.0f, 2.0f * 3.14159f);
+                        ImGui::DragFloat("phi", &cameraControlArea->phi_, 0.01f, 0.0f, 3.14159f);
+                    }
                     ImGui::Separator();
                 }
 

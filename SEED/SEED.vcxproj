@@ -112,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\FieldObject\CameraControlArea\FieldObject_CameraControlArea.cpp" />
     <ClCompile Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Corpse.cpp" />
@@ -297,6 +298,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\UI\SwitchWeightUI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\FieldObject\CameraControlArea\FieldObject_CameraControlArea.h" />
     <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
     <ClInclude Include="Game\Objects\FieldObject\SaveArea\FieldObject_SaveArea.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Base.h" />

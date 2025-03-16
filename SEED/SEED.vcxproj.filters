@@ -192,6 +192,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Corpse.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Switch.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowLength.cpp" />
+    <ClCompile Include="Game\Objects\FieldObject\CameraControlArea\FieldObject_CameraControlArea.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\FieldObject\Chikuwa\FieldObject_Chikuwa.h" />
@@ -414,6 +415,7 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Corpse.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_Switch.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\EventState\EventState_Tutorial_ThrowLength.h" />
+    <ClInclude Include="Game\Objects\FieldObject\CameraControlArea\FieldObject_CameraControlArea.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

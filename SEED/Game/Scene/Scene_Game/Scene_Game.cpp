@@ -185,8 +185,8 @@ void Scene_Game::Initialize(){
 
     // パーティクルの初期化
     ParticleManager::DeleteAll();
-    ParticleManager::AddEffect("underParticle.json", {0.0f,0.0f,0.0f});
-    ParticleManager::AddEffect("cherry.json", { 0.0f,0.0f,0.0f });
+    //ParticleManager::AddEffect("underParticle.json", {0.0f,0.0f,0.0f});
+    //ParticleManager::AddEffect("cherry.json", { 0.0f,0.0f,0.0f });
 }
 
 void Scene_Game::Finalize(){

@@ -464,6 +464,39 @@ void Stage::LoadFromJson(const std::string& filePath){
                     door->SetShouldPerformCameraView(modelJson["shouldPerformCameraView"].get<bool>());
                 }
             }
+            //===========================================================
+            // ★★ (E) CameraControlArea
+            //===========================================================
+            else if(auto* cameraControlArea = dynamic_cast<FieldObject_CameraControlArea*>(newObj)){
+                if(modelJson.contains("isPositionFixed") && modelJson["isPositionFixed"].is_boolean()){
+                    cameraControlArea->isPositionFixed_ = modelJson["isPositionFixed"].get<bool>();
+                }
+                if(modelJson.contains("theta") && modelJson["theta"].is_number()){
+                    cameraControlArea->theta_ = modelJson["theta"].get<float>();
+                }
+                if(modelJson.contains("phi") && modelJson["phi"].is_number()){
+                    cameraControlArea->phi_ = modelJson["phi"].get<float>();
+                }
+                if(modelJson.contains("distance") && modelJson["distance"].is_number()){
+                    cameraControlArea->distance_ = modelJson["distance"].get<float>();
+                }
+                if(modelJson.contains("cameraPos") && modelJson["cameraPos"].is_array()){
+                    auto arr = modelJson["cameraPos"];
+                    if(arr.size() >= 3){
+                        cameraControlArea->cameraPos_.x = arr[0].get<float>();
+                        cameraControlArea->cameraPos_.y = arr[1].get<float>();
+                        cameraControlArea->cameraPos_.z = arr[2].get<float>();
+                    }
+                }
+                if(modelJson.contains("cameraRotate") && modelJson["cameraRotate"].is_array()){
+                    auto arr = modelJson["cameraRotate"];
+                    if(arr.size() >= 3){
+                        cameraControlArea->cameraRotate_.x = arr[0].get<float>();
+                        cameraControlArea->cameraRotate_.y = arr[1].get<float>();
+                        cameraControlArea->cameraRotate_.z = arr[2].get<float>();
+                    }
+                }
+            }
         }
     } else{
         std::cerr << "Warning: 'models' key is missing or not an array in JSON data." << std::endl;
@@ -659,6 +692,10 @@ void Stage::AddModel(
 
         case FIELDMODEL_SAVEAREA:
             newObj = std::make_unique<FieldObject_SaveArea>();
+            break;
+
+        case FIELDMODEL_CAMERACONTROLAREA:
+            newObj = std::make_unique<FieldObject_CameraControlArea>();
             break;
 
         default:

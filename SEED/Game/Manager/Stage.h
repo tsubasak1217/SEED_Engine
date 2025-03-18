@@ -29,6 +29,7 @@
 #include "FieldObject/Box/FieldObject_Box.h"
 #include "FieldObject/Chikuwa/FieldObject_Chikuwa.h"
 #include "FieldObject/SaveArea/FieldObject_SaveArea.h"
+#include "FieldObject/CameraControlArea/FieldObject_CameraControlArea.h"
 
 // lib
 #include "../lib/patterns/ISubject.h"

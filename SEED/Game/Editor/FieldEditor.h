@@ -107,8 +107,6 @@ private:
     int selectedFunctionIndex_ = -1; // Functionならここのインデックスを使う
     uint32_t selectItemIdxOnGUI_ = FIELDMODEL_GRASSSOIL; // 選択中のアイテムのインデックス
 
-private:// enum
-    // fieldObjectName.h に移動しますた
 };
 
 ////////////////////////////////////////////////////////////////////////

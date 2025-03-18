@@ -116,8 +116,10 @@ void GameState_Play::Update(){
 
     if(fieldEditor_->GetIsEditing()){
         SEED::SetCamera("debug");
+        pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
     } else{
         SEED::SetCamera("follow");
+        pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
     }
 
     // フィールドのコライダーエディター

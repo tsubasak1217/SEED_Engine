@@ -39,7 +39,7 @@ private:
     void LoadTitleStage();
 
 private:
-    static const int32_t kStageCount_ = 6;
+    static const int32_t kStageCount_ = 10;
     static int32_t currentStageNo_;
     static int32_t preStageNo_;
     static std::array<std::unique_ptr<Stage>, kStageCount_> stages_;

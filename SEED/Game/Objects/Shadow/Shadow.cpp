@@ -23,7 +23,7 @@ void Shadow::Initialize(){
     model_->blendMode_ = BlendMode::NORMAL;
 }
 
-static const Vector3 blockSize = {2.5f,2.5,2.5};
+static const Vector3 blockSize = {1.f,1.f,1.f};
 
 void Shadow::Update(Stage* currentStage){
     if(currentStage->GetObjects().empty()){
@@ -32,10 +32,18 @@ void Shadow::Update(Stage* currentStage){
         return;
     }
 
+    // ホストの scale と 連携
+    model_->scale_ = host_->GetWorldScale();
+
+    ///=====================================================
+    // 影の位置を計算する
+    ///=====================================================
+    // ホストの位置を取得
     Vector3 hostPos = host_->GetWorldTranslate();
     Vector2 hostPosXZ = {hostPos.x,hostPos.z};
     model_->translate_ = hostPos;
     model_->translate_.y = -1000.0f;
+
 
     Vector3 objectTranslate;
     Vector2 objectTranslateXZ;
@@ -49,9 +57,9 @@ void Shadow::Update(Stage* currentStage){
         if(hostPos.y - objectTranslate.y <= -0.3f){
             continue;
         }
+        // XZ 平面で 当たり判定
         objectTranslateXZ = {objectTranslate.x,objectTranslate.z};
 
-        // XZ 平面で 当たり判定
         nearestPos = {
             std::clamp(hostPosXZ.x,objectTranslateXZ.x - objectSize.x,objectTranslateXZ.x + objectSize.x),
             std::clamp(hostPosXZ.y,objectTranslateXZ.y - objectSize.z,objectTranslateXZ.y + objectSize.z)};

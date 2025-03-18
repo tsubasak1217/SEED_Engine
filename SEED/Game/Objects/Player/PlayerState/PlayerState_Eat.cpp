@@ -46,7 +46,9 @@ void PlayerState_Eat::Initialize(const std::string& stateName,BaseCharacter* pla
     {
         // 捕食対象の方向を向く
         Vector3 direction = enemy_->GetWorldTranslate() - pCharacter_->GetWorldTranslate();
-        interpolationRotateY_ = atan2f(direction.x,direction.z);
+        Vector2 directionXZ = Vector2(direction.x,direction.z);
+        interpolationRotateY_ = atan2f(directionXZ.x,directionXZ.y);
+        interpolationRotateY_ = interpolationRotateY_;
     }
 
     currentUpdate_ = [this](){RotateForEnemy(); };
@@ -56,8 +58,9 @@ void PlayerState_Eat::ManageState(){}
 
 void PlayerState_Eat::RotateForEnemy(){
     float t = currentTime_ / rotateTime_;
-    float interpolatedRotateY = MyMath::LerpShortAngle(pCharacter_->GetLocalRotate().y,interpolationRotateY_,std::clamp(t,0.f,1.f));
-    pCharacter_->SetRotateY(interpolatedRotateY);
+    t = std::clamp(t,0.f,1.f);
+    // float interpolatedRotateY = MyMath::LerpShortAngle(pCharacter_->GetWorldRotate().y,interpolationRotateY_,t);
+    pCharacter_->SetRotateY(interpolationRotateY_);
 
     if(t >= 1.0f){
         currentTime_ = 0.f;

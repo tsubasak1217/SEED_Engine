@@ -73,15 +73,15 @@ void GameState_Goal::Initialize(){
 
     //targetAngle
     {
-        // ゴールの回転Y軸
-        Vector2 diffXZ = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
+        // ゴールの回転Y軸 (nextPos to goalPos)
+        Vector2 diffNext2goal = Vector2(nextStartPosition_.x,nextStartPosition_.z) - Vector2(goalPosition_.x,goalPosition_.z);
 
-        targetAngleY_ = atan2f(diffXZ.x,diffXZ.y);
+        targetAngleY_ = atan2f(diffNext2goal.x,diffNext2goal.y);
 
-        // ゴールの回転X軸
-        Vector3 diff = bezierCtlPoint_ - goalPosition_;
+        // ゴールの回転X軸 (bezier to goal)
+        Vector3 diffB2G = bezierCtlPoint_ - goalPosition_;
 
-        targetAngleX_ = atan2f(diff.y,MyMath::Length({diff.x,diff.z}));
+        targetAngleX_ = atan2f(diffB2G.y,MyMath::Length({diffB2G.x,diffB2G.z}));
     }
 
     // update

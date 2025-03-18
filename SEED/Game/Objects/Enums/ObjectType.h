@@ -17,8 +17,8 @@ enum class ObjectType : int32_t{
     Event = 0b1 << 11,
     // 組み合わせ
     Player = OnFieldObject | Friendly,
-    PlayerCorpse = OnFieldObject | Friendly,
-    Egg = OnFieldObject | Friendly | Item,
+    PlayerCorpse = Player | Item | NotMove,
+    Egg = OnFieldObject | Friendly | Item | Move,
     Enemy = OnFieldObject | NonFriendly,
     PlayerAttack = Friendly | Attack,
     EnemyAttack = NonFriendly | Attack,

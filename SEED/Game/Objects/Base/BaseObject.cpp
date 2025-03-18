@@ -117,7 +117,7 @@ void BaseObject::SetCollidable(bool _collidable){
 // フレーム終了時の落下更新処理
 void BaseObject::EndFrameDropFlagUpdate(){
     // 落下フラグの更新
-    if(GetWorldTranslate().y <= 0.0f){
+    if(GetWorldTranslate().y <= -20.0f){
         isDrop_ = false;
     }
 

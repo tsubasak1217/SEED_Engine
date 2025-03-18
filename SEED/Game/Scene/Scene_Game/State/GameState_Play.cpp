@@ -119,7 +119,7 @@ void GameState_Play::Update(){
         pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
     } else{
         SEED::SetCamera("follow");
-        pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+        pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
     }
 
     // フィールドのコライダーエディター

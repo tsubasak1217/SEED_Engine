@@ -24,8 +24,8 @@ void FollowCamera::Initialize(){
     kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
-    angleInput_.Value = [] (){ return PlayerInput::Camera::GetCameraDirection(); };
-    distanceInput_.Value = [] (){ return PlayerInput::Camera::GetCameraDistance(); };
+    angleInput_.Value = [](){ return PlayerInput::Camera::GetCameraDirection(); };
+    distanceInput_.Value = [](){ return PlayerInput::Camera::GetCameraDistance(); };
 
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
@@ -40,21 +40,22 @@ void FollowCamera::Update(){
     UpdateAngle();
 
     // 追従対象の更新（target_ が設定されていれば）
-    if (target_){
+    if(target_){
         aimTargetPos_ = target_->GetTargetPos();
+        // 現在の注視点へ補間
+        targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * interpolationRate_ * ClockManager::TimeRate();
+
+        // カメラのオフセットベクトルを計算
+        Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
+        // 目標カメラ位置の算出
+        aimPosition_ = targetPos_ + (offsetVec * distance_);
+        // カメラ位置を補間更新
+        transform_.translate_ += (aimPosition_ - transform_.translate_) * interpolationRate_ * ClockManager::TimeRate();
+
+        // 注視点とカメラ位置から回転（向き）を計算
+        transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
+
     }
-    // 現在の注視点へ補間
-    targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * interpolationRate_ * ClockManager::TimeRate();
-
-    // カメラのオフセットベクトルを計算
-    Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
-    // 目標カメラ位置の算出
-    aimPosition_ = targetPos_ + (offsetVec * distance_);
-    // カメラ位置を補間更新
-    transform_.translate_ += (aimPosition_ - transform_.translate_) * interpolationRate_ * ClockManager::TimeRate();
-
-    // 注視点とカメラ位置から回転（向き）を計算
-    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
 }
 
 void FollowCamera::Reset(const Vector3& pos){
@@ -76,7 +77,7 @@ void FollowCamera::Reset(const Vector3& pos){
 
 void FollowCamera::UpdateAngle(){
     // 入力が有効な場合のみ角度を更新
-    if (isInputActive_){
+    if(isInputActive_){
         theta_ += -angleInput_.Value().x * rotateSpeed_ * ClockManager::TimeRate();
         phi_ += angleInput_.Value().y * rotateSpeed_ * ClockManager::TimeRate();
     }
@@ -95,5 +96,11 @@ void FollowCamera::SetTarget(BaseObject* target){
     preTarget_ = target_;
     // 新しいターゲットを設定
     target_ = target;
+}
+
+void FollowCamera::ReleaseTarget(){
+    // ターゲットを解除
+    preTarget_ = target_;
+    target_ = nullptr;
 }
 

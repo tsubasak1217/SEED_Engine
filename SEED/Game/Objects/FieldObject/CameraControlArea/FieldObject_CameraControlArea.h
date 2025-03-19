@@ -1,5 +1,6 @@
 #pragma once
 #include "FieldObject/FieldObject.h"
+#include "FollowCamera.h"
 #include "MyFunc.h"
 #include "MyMath.h"
 
@@ -13,6 +14,7 @@ public:
     void Update()override;
     void Draw()override;
     void BeginFrame()override;
+    void EndFrame()override;
     void OnCollision( BaseObject* other, ObjectType objectType)override;
 
 public:
@@ -36,4 +38,6 @@ public:
 private:
     bool isCollidePlayer_ = false;
     bool preIsCollidePlayer_ = false;
+    FollowCamera* pCamera_ = nullptr;
+    float preDistance_;
 };

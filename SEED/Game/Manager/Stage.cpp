@@ -480,21 +480,11 @@ void Stage::LoadFromJson(const std::string& filePath){
                 if(modelJson.contains("distance") && modelJson["distance"].is_number()){
                     cameraControlArea->distance_ = modelJson["distance"].get<float>();
                 }
-                if(modelJson.contains("cameraPos") && modelJson["cameraPos"].is_array()){
-                    auto arr = modelJson["cameraPos"];
-                    if(arr.size() >= 3){
-                        cameraControlArea->cameraPos_.x = arr[0].get<float>();
-                        cameraControlArea->cameraPos_.y = arr[1].get<float>();
-                        cameraControlArea->cameraPos_.z = arr[2].get<float>();
-                    }
+                if(modelJson.contains("cameraPos")){
+                    cameraControlArea->cameraPos_ = modelJson["cameraPos"];
                 }
-                if(modelJson.contains("cameraRotate") && modelJson["cameraRotate"].is_array()){
-                    auto arr = modelJson["cameraRotate"];
-                    if(arr.size() >= 3){
-                        cameraControlArea->cameraRotate_.x = arr[0].get<float>();
-                        cameraControlArea->cameraRotate_.y = arr[1].get<float>();
-                        cameraControlArea->cameraRotate_.z = arr[2].get<float>();
-                    }
+                if(modelJson.contains("cameraRotate")){
+                    cameraControlArea->cameraRotate_ = modelJson["cameraRotate"];
                 }
             }
         }

@@ -121,7 +121,9 @@ struct Vector3 final {
         result.z = x * obj.m[0][2] + y * obj.m[1][2] + z * obj.m[2][2] + obj.m[3][2];
         w = x * obj.m[0][3] + y * obj.m[1][3] + z * obj.m[2][3] + obj.m[3][3];
 
-        assert(w != 0);
+        if(w == 0){
+            return *this;
+        }
 
         result.x /= w;
         result.y /= w;
@@ -139,7 +141,9 @@ struct Vector3 final {
         z = tmp.x * obj.m[0][2] + tmp.y * obj.m[1][2] + tmp.z * obj.m[2][2] + obj.m[3][2];
         w = tmp.x * obj.m[0][3] + tmp.y * obj.m[1][3] + tmp.z * obj.m[2][3] + obj.m[3][3];
 
-        assert(w != 0);
+        if(w == 0){
+            return;
+        }
 
         x /= w;
         y /= w;

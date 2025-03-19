@@ -21,8 +21,10 @@ private:
 
 public:
     void SetTarget(BaseObject* target);
+    void ReleaseTarget();
     BaseObject* GetPreTarget()const{ return preTarget_; }
     void SetDistance(float distance){ distance_ = distance; }
+    float GetDistance()const{ return distance_; }
     void SetRotateSpeed(float speed){ rotateSpeed_ = speed; }
     void SetIsInputActive(bool isActive){ isInputActive_ = isActive; }
     void SetTheta(float theta){ theta_ = theta; }
@@ -45,8 +47,9 @@ private:
     float theta_;
     float phi_;
     float rotateSpeed_;
-    bool isInputActive_ = true;
 
+    // フラグ
+    bool isInputActive_ = true;
     bool isViewingObject_ = false;
 
     // 限界角度

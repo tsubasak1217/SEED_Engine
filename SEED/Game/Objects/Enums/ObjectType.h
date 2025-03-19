@@ -25,5 +25,6 @@ enum class ObjectType : int32_t{
     StartField = Field | Start,
     GoalField = Field | Goal,
     EventArea = Field | Area | Event,
+    CameraControlArea = Field | Area,
     MoveFloor = Field | Move,
 };

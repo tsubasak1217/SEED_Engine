@@ -22,6 +22,7 @@ private:
 public:
     void SetTarget(BaseObject* target);
     void ReleaseTarget();
+    BaseObject* GetTarget()const{ return target_; }
     BaseObject* GetPreTarget()const{ return preTarget_; }
     void SetDistance(float distance){ distance_ = distance; }
     float GetDistance()const{ return distance_; }

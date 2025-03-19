@@ -28,7 +28,8 @@ PlayerState_Move::PlayerState_Move(const std::string &stateName, BaseCharacter *
     pCharacter_->SetAnimation("running", true);
 }
 
-PlayerState_Move::~PlayerState_Move() {}
+PlayerState_Move::~PlayerState_Move() {
+}
 
 void PlayerState_Move::Initialize(const std::string &stateName, BaseCharacter *player)
 {
@@ -74,15 +75,22 @@ void PlayerState_Move::Move()
 //////////////////////////////////////////////////////////////////////////
 void PlayerState_Move::DecideStickVelocity()
 {
+    Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
 
     // スティックの入力を取得
     stickDirection_ = PlayerInput::CharacterMove::GetCharacterMoveDirection();
+    if(MyMath::LengthSq(stickDirection_) == 0.0f){
+        pPlayer_->ReleasePreCameraRotate();
+    }
 
     // カメラの回転を考慮して補正
-    Player *pPlayer_ = dynamic_cast<Player *>(pCharacter_);
     if (pPlayer_->GetFollowCamera())
     {
-        stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
+        if(pPlayer_->GetPreCameraRotate() != std::nullopt){
+            stickDirection_ *= RotateMatrix(-pPlayer_->GetPreCameraRotate().value().y);
+        } else{
+            stickDirection_ *= RotateMatrix(-pPlayer_->GetFollowCamera()->GetRotation().y);
+        }
     }
 
     {
@@ -90,6 +98,7 @@ void PlayerState_Move::DecideStickVelocity()
     }
 
     acceleration_ = Vector3(stickDirection_.x, 0.0f, stickDirection_.y) * moveSpeed_ * ClockManager::DeltaTime();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -157,7 +166,7 @@ void PlayerState_Move::ManageState(){
     }
 
     // アイドル状態へ
-    if(MyMath::LengthSq(moveVec_) == 0.0f){
+    if(MyMath::LengthSq(acceleration_) == 0.0f){
         pCharacter_->ChangeState(new PlayerState_Idle("Player_Idle",pCharacter_));
         return;
     }

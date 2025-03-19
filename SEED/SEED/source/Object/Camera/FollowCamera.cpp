@@ -41,6 +41,7 @@ void FollowCamera::Update(){
 
     // 追従対象の更新（target_ が設定されていれば）
     if(target_){
+        if(reinterpret_cast<uintptr_t>(target_) == 0xdddddddddddddddd){ return; }
         aimTargetPos_ = target_->GetTargetPos();
         // 現在の注視点へ補間
         targetPos_ = targetPos_ + (aimTargetPos_ - targetPos_) * interpolationRate_ * ClockManager::TimeRate();

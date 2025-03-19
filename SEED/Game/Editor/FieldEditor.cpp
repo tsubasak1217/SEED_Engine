@@ -287,6 +287,8 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
                 modelJson["cameraRotate"] = cameraControlArea->cameraRotate_;
                 modelJson["theta"] = cameraControlArea->theta_;
                 modelJson["phi"] = cameraControlArea->phi_;
+                modelJson["exitTheta"] = cameraControlArea->exitTheta_;
+                modelJson["exitPhi"] = cameraControlArea->exitPhi_;
                 modelJson["distance"] = cameraControlArea->distance_;
             }
 
@@ -748,6 +750,10 @@ void FieldEditor::ShowImGui(){
                         ImGui::DragFloat("theta", &cameraControlArea->theta_, 0.01f, 0.0f, 2.0f * 3.14159f);
                         ImGui::DragFloat("phi", &cameraControlArea->phi_, 0.01f, 0.0f, 3.14159f);
                     }
+
+                    ImGui::DragFloat("exitTheta", &cameraControlArea->exitTheta_, 0.01f, 0.0f, 2.0f * 3.14159f);
+                    ImGui::DragFloat("exitPhi", &cameraControlArea->exitPhi_, 0.01f, 0.0f, 3.14159f);
+
                     ImGui::Separator();
                 }
 

@@ -69,6 +69,7 @@ public:
         parent_ = parent;
         model_->parent_ = parent->model_.get();
     }
+    void SetIsParentScale(bool isParentScale){ model_->isParentScale_ = isParentScale; }
     const BaseObject* GetParent() const{ return parent_; }
     const Model* GetParentModel() const{ return model_->parent_; }
     void ReleaseParent(){ parent_ = nullptr; model_->parent_ = nullptr; }

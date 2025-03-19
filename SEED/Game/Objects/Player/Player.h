@@ -71,6 +71,10 @@ public: // アクセッサ
     void SetGrowLevel(int32_t level){ growLevel_ = level; }
     int32_t GetGrowLevel()const{ return growLevel_; }
 
+    void SetPreCameraRotate(const Vector3& rotate){ preCameraRotate_ = rotate; }
+    void ReleasePreCameraRotate(){ preCameraRotate_ = std::nullopt; }
+    std::optional<Vector3> GetPreCameraRotate()const{ return preCameraRotate_; }
+
     // json
     const nlohmann::json& GetJsonData()override;
 
@@ -101,6 +105,9 @@ private: // フォローカメラ、ターゲット用
     int32_t growLevel_ = 1;
 
     bool isGameOver_ = false;
+
+    // カメラのターゲットが切り替わった際にいきなり移動ベクトルが変わらないようにするための変数
+    std::optional<Vector3> preCameraRotate_;
 
     std::unique_ptr<Sprite> fade_;
 };

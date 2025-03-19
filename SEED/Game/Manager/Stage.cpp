@@ -477,6 +477,12 @@ void Stage::LoadFromJson(const std::string& filePath){
                 if(modelJson.contains("phi") && modelJson["phi"].is_number()){
                     cameraControlArea->phi_ = modelJson["phi"].get<float>();
                 }
+                if(modelJson.contains("exitTheta") && modelJson["exitTheta"].is_number()){
+                    cameraControlArea->exitTheta_ = modelJson["exitTheta"].get<float>();
+                }
+                if(modelJson.contains("exitPhi") && modelJson["exitPhi"].is_number()){
+                    cameraControlArea->exitPhi_ = modelJson["exitPhi"].get<float>();
+                }
                 if(modelJson.contains("distance") && modelJson["distance"].is_number()){
                     cameraControlArea->distance_ = modelJson["distance"].get<float>();
                 }

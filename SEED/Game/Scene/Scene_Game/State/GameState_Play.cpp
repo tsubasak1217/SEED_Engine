@@ -117,6 +117,7 @@ void GameState_Play::Update(){
     if(fieldEditor_->GetIsEditing()){
         SEED::SetCamera("debug");
         pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+        pGameScene_->Get_pPlayer()->SetIsMovable(false);
     } else{
         SEED::SetCamera("follow");
         pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);

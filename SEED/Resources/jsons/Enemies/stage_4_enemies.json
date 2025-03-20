@@ -1,5 +1,5 @@
 {
-    "Count": 2,
+    "Count": 1,
     "Enemies": [
         {
             "CanEat": false,
@@ -8,16 +8,7 @@
             "Index": 0,
             "Name": "enemy0",
             "RoutineName": "NULL",
-            "moveSpeed": 4.599999904632568
-        },
-        {
-            "CanEat": false,
-            "ChasePlayer": false,
-            "HP": 0,
-            "Index": 1,
-            "Name": "enemy1",
-            "RoutineName": "enemy1",
-            "moveSpeed": 2.9000000953674316
+            "moveSpeed": 2.0
         }
     ]
 }

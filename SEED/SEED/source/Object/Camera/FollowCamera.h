@@ -31,6 +31,7 @@ public:
     void SetTheta(float theta){ theta_ = theta; }
     void AddTheta(float theta){ theta_ += theta; }
     void SetPhi(float phi){ phi_ = phi; }
+    float GetPhi()const{ return phi_; }
     void AddPhi(float phi){ phi_ += phi; }
     void SetInterpolationRate(float rate){ interpolationRate_ = rate; }
     void SetisViewingObject(bool isViewingObject){ isViewingObject_ = isViewingObject; }

@@ -201,6 +201,12 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
                 removeFlag_ = true;
                 pCamera_->SetIsInputActive(true);
             }
+
+        }
+
+        // phiが変わったら戻す
+        if(pCamera_->GetPhi() != phi_){
+            pCamera_->SetPhi(phi_);
         }
     }
 }

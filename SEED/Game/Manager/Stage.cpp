@@ -132,11 +132,11 @@ void Stage::Update(){
     if (FollowCamera* camera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera())){
         if (camera->GetIsViewingObject()){
             camera->SetPhi(MyMath::Deg2Rad(80.0f));
-            //pPlayer_->SetIsMovable(false);
+            pPlayer_->SetIsMovable(false);
         } else{
             if(!GameSystem::GetScene()->HasEvent()){
                 if(GameState_Play* playState = dynamic_cast<GameState_Play*>(GameSystem::GetScene()->GetCurrentState())){
-                   // pPlayer_->SetIsMovable(true);
+                   pPlayer_->SetIsMovable(true);
                 }
             }
         }

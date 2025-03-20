@@ -316,13 +316,13 @@
             ],
             "rotation": [
                 -0.0,
-                -1.4344338178634644,
+                1.1274956464767456,
                 0.0
             ],
             "scale": [
-                7.500001907348633,
+                7.500000476837158,
                 7.5,
-                7.500001907348633
+                7.500000476837158
             ],
             "type": 2
         },
@@ -352,7 +352,7 @@
             "position": [
                 365.0,
                 50.0,
-                190.0
+                185.0
             ],
             "rotation": [
                 -0.0,
@@ -372,7 +372,7 @@
             "position": [
                 360.0,
                 50.0,
-                195.0
+                185.0
             ],
             "rotation": [
                 -0.0,
@@ -441,146 +441,6 @@
             ],
             "scale": [
                 12.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6e44ebb7-1872-3228-3af4-b86111d967ae",
-            "name": "GrassSoil",
-            "position": [
-                355.0,
-                50.0,
-                195.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "1c6fc5d9-5638-7d57-7741-02ca3ec0aadd",
-            "name": "GrassSoil",
-            "position": [
-                350.0,
-                50.0,
-                200.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "150a371b-5560-be46-794a-d511446993b8",
-            "name": "Soil",
-            "position": [
-                375.0,
-                45.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                2.5,
-                12.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "6e3f60de-275d-ceae-2daa-29fe05da850f",
-            "name": "GrassSoil",
-            "position": [
-                360.0,
-                50.0,
-                180.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "18e92f1c-7995-b8df-61ab-449204d79737",
-            "name": "GrassSoil",
-            "position": [
-                365.0,
-                50.0,
-                175.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "5bb163fa-7598-5e76-024b-141870dca075",
-            "name": "GrassSoil",
-            "position": [
-                360.0,
-                50.0,
-                175.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6942fc01-190e-5c0b-18b2-14d12da974f9",
-            "name": "GrassSoil",
-            "position": [
-                355.0,
-                50.0,
-                180.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
                 2.5,
                 2.5
             ],
@@ -767,152 +627,12 @@
             "type": 1
         },
         {
-            "fieldObjectID": "7bcab5cf-3d27-d9fd-121b-36a82093497b",
-            "name": "Soil",
-            "position": [
-                350.0,
-                45.0,
-                190.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "355372cd-7d86-0a33-7a09-a4a661f2dd54",
-            "name": "Soil",
-            "position": [
-                355.0,
-                45.0,
-                195.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "5e4a83c6-2e8c-0d02-6466-36065fce90ad",
-            "name": "Soil",
-            "position": [
-                350.0,
-                45.0,
-                195.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "3f347b18-5608-19b0-2917-b0632dcfad9e",
-            "name": "Soil",
-            "position": [
-                355.0,
-                45.0,
-                200.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "7104624f-0d00-78b5-4960-cb1458cd802e",
-            "name": "Soil",
-            "position": [
-                350.0,
-                45.0,
-                205.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "23d2c1ee-2133-6fa6-3fbf-d432175d24ca",
-            "name": "Soil",
-            "position": [
-                350.0,
-                45.0,
-                210.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 1
-        },
-        {
             "fieldObjectID": "3ac0993f-7ba3-f889-5554-00dc494a5f2d",
             "name": "GrassSoil",
             "position": [
                 380.0,
                 50.0,
                 190.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                12.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "4c89664d-1c23-4fec-4054-441b743bd056",
-            "name": "GrassSoil",
-            "position": [
-                380.0,
-                50.0,
-                195.0
             ],
             "rotation": [
                 -0.0,
@@ -1067,52 +787,6 @@
             "type": 0
         },
         {
-            "fieldObjectID": "73cc81c0-78f1-31c4-7aa2-c4ec0ac25ba8",
-            "moveSpeed": 3.0,
-            "name": "moveFloor",
-            "position": [
-                380.0,
-                48.04547882080078,
-                165.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "moveFloor1",
-            "scale": [
-                7.5,
-                3.4999990463256836,
-                7.5
-            ],
-            "type": 8
-        },
-        {
-            "associatedDoors": [],
-            "associatedFloors": [
-                "73cc81c0-78f1-31c4-7aa2-c4ec0ac25ba8"
-            ],
-            "fieldObjectID": "06b20d93-35f0-04bd-4da6-5fbf4f60bdc7",
-            "name": "lever",
-            "position": [
-                380.0,
-                60.0,
-                180.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 14
-        },
-        {
             "fieldObjectID": "4219fe30-6030-1683-4fbe-1fd643bf21aa",
             "moveSpeed": 24.0,
             "name": "moveFloor",
@@ -1163,7 +837,7 @@
             "name": "goal",
             "position": [
                 380.0,
-                88.5,
+                85.5,
                 75.0
             ],
             "rotation": [
@@ -1177,679 +851,6 @@
                 1.0
             ],
             "type": 5
-        },
-        {
-            "fieldObjectID": "64fc6513-6f2c-090b-6515-0e0c02a254af",
-            "moveSpeed": 3.0,
-            "name": "moveFloor",
-            "position": [
-                380.0,
-                48.564300537109375,
-                145.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "moveFloor2",
-            "scale": [
-                7.5,
-                2.999999523162842,
-                7.5
-            ],
-            "type": 8
-        },
-        {
-            "fieldObjectID": "6d46d7c9-5263-51e9-6dba-0901288b8d70",
-            "moveSpeed": 3.0,
-            "name": "moveFloor",
-            "position": [
-                380.0,
-                48.04547882080078,
-                125.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "moveFloor3",
-            "scale": [
-                7.5,
-                2.999999523162842,
-                7.5
-            ],
-            "type": 8
-        },
-        {
-            "fieldObjectID": "10acd834-1386-0932-238e-74d1666723df",
-            "name": "GrassSoil",
-            "position": [
-                460.0,
-                55.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "5d8d5b2f-4e44-add0-51bb-42a43c574736",
-            "moveSpeed": 6.099999904632568,
-            "name": "moveFloor",
-            "position": [
-                295.5365295410156,
-                49.73174285888672,
-                146.07302856445313
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "autoMoveFlooor1",
-            "scale": [
-                7.5,
-                2.999999523162842,
-                7.5
-            ],
-            "type": 8
-        },
-        {
-            "fieldObjectID": "28f05e48-4f22-0aae-6e67-578f3eeffca7",
-            "moveSpeed": 6.0,
-            "name": "moveFloor",
-            "position": [
-                446.4085998535156,
-                50.70429992675781,
-                161.47848510742188
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "autoMoveFloor2",
-            "scale": [
-                7.5,
-                2.999999523162842,
-                7.5
-            ],
-            "type": 8
-        },
-        {
-            "associatedDoors": [],
-            "associatedFloors": [
-                "6d46d7c9-5263-51e9-6dba-0901288b8d70"
-            ],
-            "fieldObjectID": "27e101c8-6fb3-945e-50ee-412b7feb0800",
-            "name": "switch",
-            "position": [
-                300.0,
-                55.0,
-                110.0
-            ],
-            "requiredWeight": 1,
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 6
-        },
-        {
-            "fieldObjectID": "0ca33885-4727-6aec-7be2-46d405c639bc",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "0a3d1b31-6d95-5af6-37fa-75773e294acc",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "3e11f0a9-463f-48b3-2981-f6f37bbb4e5c",
-            "name": "Fence",
-            "position": [
-                295.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "56ccb6e8-1327-2b48-56d5-3ffa3b0f15bf",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "18a4ffc4-4145-1a82-452e-a8043309fba7",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "7c4bd395-4def-bf9c-01a0-265e76a1736d",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                115.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "54b5d63f-0d4c-0913-2377-18ae6fd816da",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "0cfe3c25-5c6e-fa9d-7546-1424753d2198",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                105.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "39bd685c-00f4-9875-7f8a-979424f9fe37",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "2c09f630-1a3c-a265-627e-0d1a26607ab9",
-            "name": "Fence",
-            "position": [
-                300.0,
-                50.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                3.141590118408203,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "0c4f5ebd-523c-12ee-14a4-2c145df44a31",
-            "name": "Fence",
-            "position": [
-                295.0,
-                50.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                3.141590118408203,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "10b2011e-4124-bc74-67ff-38e62298dfa9",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                3.141590118408203,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "32ce696d-2d66-8e6c-76b6-ef7236e15fb1",
-            "name": "Soil",
-            "position": [
-                300.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "03c628b4-23b8-017a-4f63-b15f273a3a86",
-            "name": "Soil",
-            "position": [
-                295.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "69d1dab5-297c-01df-0258-1c3a38934644",
-            "name": "Soil",
-            "position": [
-                290.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                12.5
-            ],
-            "type": 1
-        },
-        {
-            "fieldObjectID": "10a17b92-41e4-df4e-428d-8f043b0c94b4",
-            "name": "GrassSoil",
-            "position": [
-                285.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "47b4d71c-4b7b-fd53-04ef-0aac313d83ca",
-            "name": "GrassSoil",
-            "position": [
-                280.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "56e8d6b9-5e32-1f24-0c37-b185126ce7ba",
-            "name": "GrassSoil",
-            "position": [
-                305.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "074c0a99-0586-5048-2260-2f4d2e585f17",
-            "name": "GrassSoil",
-            "position": [
-                310.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6b279e7f-30eb-c39d-2d4e-7f3003f33789",
-            "name": "GrassSoil",
-            "position": [
-                295.0,
-                50.0,
-                95.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "7590279c-1765-a87f-496e-3a96198cea95",
-            "name": "GrassSoil",
-            "position": [
-                295.0,
-                50.0,
-                90.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "472dbd9d-11b4-43e1-1ffd-62cf2d24ff25",
-            "name": "GrassSoil",
-            "position": [
-                295.0,
-                50.0,
-                125.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "37bef219-367a-3009-5c6e-1a2c4d2efecd",
-            "name": "GrassSoil",
-            "position": [
-                295.0,
-                50.0,
-                130.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "35ec1857-0e55-a37a-5efa-29b669939aaa",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "3d4fbb1a-0c04-34ff-290a-881b32801ce2",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                105.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "0049a207-1806-ed4e-605e-1be939c71338",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                115.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
-        },
-        {
-            "fieldObjectID": "402d98c9-2966-2b7f-1560-c09028f7333e",
-            "name": "Fence",
-            "position": [
-                290.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                7.5,
-                2.5
-            ],
-            "type": 13
         },
         {
             "fieldObjectID": "31bdc16e-5f68-ffc9-2bcf-fdb418afa4fe",
@@ -2032,845 +1033,10 @@
             "type": 1
         },
         {
-            "fieldObjectID": "261f68b4-4739-18fe-444f-f9cf7fbb0e70",
-            "name": "GrassSoil",
-            "position": [
-                275.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "724edf72-372b-503f-516d-72e170cace01",
-            "name": "GrassSoil",
-            "position": [
-                270.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "0020ec58-18a6-ad3c-398f-face0ba890ca",
-            "name": "GrassSoil",
-            "position": [
-                265.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "associatedDoors": [
-                "091318c6-0616-5188-16d4-274a100a8d8a",
-                "7fee6a7f-25c6-0b05-4bbe-d2367992668c",
-                "610c0ed8-44c3-af93-1835-ed160a811c57",
-                "11fb4a01-7d8d-c4df-5f63-77dd476da175"
-            ],
-            "associatedFloors": [],
-            "fieldObjectID": "3b89a61d-2790-08bd-5a3c-60151e60cc44",
-            "name": "switch",
-            "position": [
-                290.0,
-                55.0,
-                110.0
-            ],
-            "requiredWeight": 2,
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 6
-        },
-        {
-            "closedPosY": 50.0,
-            "fieldObjectID": "7fee6a7f-25c6-0b05-4bbe-d2367992668c",
-            "name": "door",
-            "openHeight": 10.0,
-            "openSpeed": 16.0,
-            "position": [
-                272.5,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                4.999997615814209,
-                2.5
-            ],
-            "shouldPerformCameraView": false,
-            "type": 3
-        },
-        {
-            "closedPosY": 50.0,
-            "fieldObjectID": "091318c6-0616-5188-16d4-274a100a8d8a",
-            "name": "door",
-            "openHeight": 10.0,
-            "openSpeed": 16.0,
-            "position": [
-                270.0,
-                50.0,
-                112.5
-            ],
-            "rotation": [
-                -0.0,
-                3.141590118408203,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                4.999997615814209,
-                2.5
-            ],
-            "shouldPerformCameraView": false,
-            "type": 3
-        },
-        {
-            "closedPosY": 50.0,
-            "fieldObjectID": "11fb4a01-7d8d-c4df-5f63-77dd476da175",
-            "name": "door",
-            "openHeight": 10.0,
-            "openSpeed": 16.0,
-            "position": [
-                270.0,
-                50.0,
-                107.5
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                4.999997615814209,
-                2.5
-            ],
-            "shouldPerformCameraView": false,
-            "type": 3
-        },
-        {
-            "closedPosY": 50.0,
-            "fieldObjectID": "610c0ed8-44c3-af93-1835-ed160a811c57",
-            "name": "door",
-            "openHeight": 10.0,
-            "openSpeed": 16.0,
-            "position": [
-                267.5,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.5707950592041016,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                4.999997615814209,
-                2.5
-            ],
-            "shouldPerformCameraView": false,
-            "type": 3
-        },
-        {
-            "fieldObjectID": "45630f41-725a-5c4b-7be9-f0101c9c0608",
-            "name": "Star",
-            "position": [
-                270.0,
-                52.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.8204489946365356,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 2
-        },
-        {
-            "fieldObjectID": "0355578f-5fa5-af0d-22bf-f2952e299226",
-            "name": "tile",
-            "position": [
-                270.0,
-                65.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 15
-        },
-        {
-            "fieldObjectID": "60545761-5e7b-56c9-0b3b-c5f76b9525e5",
-            "name": "GrassSoil",
-            "position": [
-                465.0,
-                55.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "7ac01c3e-710d-11de-22b9-a36b00e0bec6",
-            "name": "GrassSoil",
-            "position": [
-                455.0,
-                55.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "7ccd985e-4065-c19a-2296-6290487e5cc9",
-            "name": "GrassSoil",
-            "position": [
-                450.0,
-                55.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6ad490c8-2e9b-600b-3bdb-e02a61697bfe",
-            "moveSpeed": 4.0,
-            "name": "moveFloor",
-            "position": [
-                460.0,
-                55.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "routineName": "autoMoveFloor3",
-            "scale": [
-                5.900001525878906,
-                2.5,
-                6.30000114440918
-            ],
-            "type": 8
-        },
-        {
-            "associatedDoors": [],
-            "associatedFloors": [
-                "6ad490c8-2e9b-600b-3bdb-e02a61697bfe"
-            ],
-            "fieldObjectID": "13833a62-16dc-3450-138e-130c3bfd6eee",
-            "name": "switch",
-            "position": [
-                450.0,
-                60.0,
-                120.0
-            ],
-            "requiredWeight": 1,
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 6
-        },
-        {
-            "fieldObjectID": "5ceb65ed-7465-1785-359c-142a3cc7dfd9",
-            "name": "Chikuwa",
-            "position": [
-                490.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "0e811358-1b77-a29f-7d67-ebbe4d5f4ffd",
-            "name": "Chikuwa",
-            "position": [
-                480.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "37fd5243-73a2-6df8-5520-fdbf6295a104",
-            "name": "Chikuwa",
-            "position": [
-                485.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "73f2dee9-667c-92f7-2170-a87c65397bb8",
-            "name": "Chikuwa",
-            "position": [
-                495.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "0f93dc42-1159-001b-5ac1-2e462baf6125",
-            "name": "GrassSoil",
-            "position": [
-                505.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                7.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "7b6f51ce-384d-a358-44c1-fe091574ebff",
-            "name": "Chikuwa",
-            "position": [
-                500.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "45658125-0a1b-4883-5e8e-3aa54534bb8a",
-            "name": "GrassSoil",
-            "position": [
-                515.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                7.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "61757a48-09e8-ebff-5f74-720e6a92c5f1",
-            "name": "GrassSoil",
-            "position": [
-                510.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                7.5
-            ],
-            "type": 0
-        },
-        {
-            "associatedDoors": [],
-            "associatedFloors": [
-                "64fc6513-6f2c-090b-6515-0e0c02a254af"
-            ],
-            "fieldObjectID": "2bca5d20-30f8-7cdd-6632-91f63788963d",
-            "name": "lever",
-            "position": [
-                510.0,
-                85.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 14
-        },
-        {
-            "fieldObjectID": "4fe02d17-3509-5323-0d42-0aa25af2613b",
-            "name": "GrassSoil",
-            "position": [
-                300.0,
-                45.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6989b11d-1665-7b0b-63f4-f5fe3ace27a0",
-            "name": "GrassSoil",
-            "position": [
-                305.0,
-                45.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "19b226aa-2291-f075-3923-fe3f107d9b34",
-            "name": "GrassSoil",
-            "position": [
-                280.0,
-                45.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "2662ec17-67ee-8a2c-4c13-5a1b5a729724",
-            "name": "GrassSoil",
-            "position": [
-                285.0,
-                45.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "61f14e7c-3828-5523-48e4-26c524b1baeb",
-            "name": "GrassSoil",
-            "position": [
-                275.0,
-                50.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "177cbdc7-7df5-522f-4c5f-d490652fc89f",
-            "name": "GrassSoil",
-            "position": [
-                270.0,
-                50.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "5f02dc16-60cb-4eb0-4a8b-eb406672fd9b",
-            "name": "GrassSoil",
-            "position": [
-                280.0,
-                50.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "76696eed-3cd3-443f-51c6-bb6849003973",
-            "name": "GrassSoil",
-            "position": [
-                275.0,
-                50.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "0e576dc1-3527-ab35-2262-a644228f0c3b",
-            "name": "GrassSoil",
-            "position": [
-                280.0,
-                45.0,
-                145.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "3d8fad02-336b-2473-5e0f-76a24e4acc4e",
-            "name": "GrassSoil",
-            "position": [
-                275.0,
-                45.0,
-                145.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "007c2417-6f7b-c971-32f1-a42e2f9f1052",
-            "name": "GrassSoil",
-            "position": [
-                270.0,
-                45.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "31f35cd9-00f9-b7a5-240c-b3455f654a06",
-            "name": "GrassSoil",
-            "position": [
-                265.0,
-                45.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "351bc099-5950-f490-03c5-787d28e33d98",
-            "name": "GrassSoil",
-            "position": [
-                260.0,
-                45.0,
-                130.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "5f9c6169-2714-5f0a-3401-968c1ff6077f",
-            "name": "GrassSoil",
-            "position": [
-                410.0,
-                40.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
             "fieldObjectID": "5b1c7578-254d-0f7c-0726-133055fd2237",
             "name": "GrassSoil",
             "position": [
                 405.0,
-                40.0,
-                200.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "0af2b36b-7b3b-93f1-528f-b6c83d4a6918",
-            "name": "GrassSoil",
-            "position": [
-                415.0,
-                40.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "4f68084c-3fec-f1ad-0dff-de4d6a0de9e1",
-            "name": "GrassSoil",
-            "position": [
-                410.0,
                 40.0,
                 200.0
             ],
@@ -2945,246 +1111,6 @@
                 2.5
             ],
             "type": 0
-        },
-        {
-            "fieldObjectID": "40ba723f-226d-a0e6-3149-613f624ede8e",
-            "name": "GrassSoil",
-            "position": [
-                460.0,
-                50.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                12.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "3413bbe3-1399-c118-1c93-15a40ecd8bc9",
-            "name": "GrassSoil",
-            "position": [
-                470.0,
-                50.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "0374d98b-06c8-960a-1088-348c751bce9d",
-            "name": "GrassSoil",
-            "position": [
-                445.0,
-                50.0,
-                125.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                12.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6b2f5d9a-0cec-f474-51fa-b943517d6954",
-            "name": "GrassSoil",
-            "position": [
-                445.0,
-                50.0,
-                110.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "2bf8f069-2fb2-70f8-70e9-420a084e0685",
-            "name": "GrassSoil",
-            "position": [
-                455.0,
-                50.0,
-                105.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                12.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6aff6dd7-657f-af65-31e7-a51456d240dc",
-            "name": "GrassSoil",
-            "position": [
-                470.0,
-                50.0,
-                105.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "3976e88c-7479-9bec-6d6c-641e0f40301e",
-            "name": "GrassSoil",
-            "position": [
-                455.0,
-                45.0,
-                140.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "665637c9-1c76-4057-200e-8f200cd6b660",
-            "name": "GrassSoil",
-            "position": [
-                440.0,
-                45.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                17.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "4f609702-3248-1327-520c-b46d7eca94ee",
-            "name": "GrassSoil",
-            "position": [
-                475.0,
-                45.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                22.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "44702c52-05f6-8318-24bb-74e372c496ba",
-            "name": "GrassSoil",
-            "position": [
-                455.0,
-                45.0,
-                100.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                2.5,
-                2.5
-            ],
-            "type": 0
-        },
-        {
-            "fieldObjectID": "6a53ab30-14ff-3610-3f82-21823820fb90",
-            "name": "Chikuwa",
-            "position": [
-                475.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "3d66fe92-1b2c-4b7b-02c5-7a4d0d4ebe86",
-            "name": "Chikuwa",
-            "position": [
-                470.0,
-                80.0,
-                120.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 17
         },
         {
             "fieldObjectID": "0b475434-251b-b57c-4f5e-b4e579fe7710",
@@ -3488,66 +1414,6 @@
             "type": 18
         },
         {
-            "fieldObjectID": "078378e4-650d-6165-4966-edba657c5521",
-            "name": "SaveArea",
-            "position": [
-                455.0,
-                65.0,
-                135.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                12.5,
-                7.5,
-                2.5
-            ],
-            "type": 18
-        },
-        {
-            "fieldObjectID": "5bf370a3-6784-d4e1-7304-10aa56893aa2",
-            "name": "Star",
-            "position": [
-                380.0,
-                63.0,
-                105.0
-            ],
-            "rotation": [
-                -0.0,
-                2.9705777168273926,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 2
-        },
-        {
-            "fieldObjectID": "64f6746d-07e9-21a0-1093-ee56491b916e",
-            "name": "SaveArea",
-            "position": [
-                380.0,
-                60.0,
-                190.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 18
-        },
-        {
             "fieldObjectID": "31bfdf19-0775-7635-4548-84db00b53451",
             "flowerColor": {
                 "w": 1.0,
@@ -3632,76 +1498,717 @@
             "type": 11
         },
         {
-            "fieldObjectID": "5a4d2045-26f9-ea62-4a98-d70c01610892",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "flowerVolume": 10,
-            "isBloomFlower": false,
-            "name": "Plant",
+            "fieldObjectID": "2cdde12b-5a8d-4569-05a9-5156217a3fa2",
+            "name": "GrassSoil",
             "position": [
-                395.0,
+                335.0,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                12.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2e40df08-79aa-a805-014e-099c32a475d2",
+            "name": "GrassSoil",
+            "position": [
+                335.0,
+                45.0,
+                160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "51eeb17a-2cce-e99f-5091-54e44eae1ee5",
+            "name": "GrassSoil",
+            "position": [
+                325.0,
+                45.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                17.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "784bdcaf-62c9-d6a7-4f07-196b4be416b0",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "238dd775-219d-c594-61cc-b4ff6c96a2f1",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "3506596a-0200-4d17-3334-45bf7c15a4c6",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                45.0,
+                180.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "64801c1b-40c2-54e1-1ef5-d5be098bed28",
+            "name": "GrassSoil",
+            "position": [
+                315.0,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "0a3c8d21-23b3-a354-4ca9-8cd36bd97665",
+            "name": "Fence",
+            "position": [
+                320.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                3.141590118408203,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "0bf968c6-03db-127d-6f66-5c8a080971c5",
+            "name": "Fence",
+            "position": [
+                325.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                3.141590118408203,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "32eed653-0737-d7c1-06a6-8f5d68e4c326",
+            "name": "Fence",
+            "position": [
+                330.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                3.141590118408203,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "097d2aaf-11d9-c297-66d4-31a223ffa8bb",
+            "name": "Fence",
+            "position": [
+                320.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                -1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "02f4aef0-6b1b-ef39-14e2-c67f3293920b",
+            "name": "Fence",
+            "position": [
+                320.0,
+                45.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                -1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "11d58529-3133-d646-5806-3fcc756dfb30",
+            "name": "Fence",
+            "position": [
+                320.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                -1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "1a8dd456-4b2e-2801-1192-20151e6af97a",
+            "name": "Fence",
+            "position": [
+                320.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "1ab65bf3-1ed5-c443-2369-108f463310ce",
+            "name": "Fence",
+            "position": [
+                325.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "727678ef-2030-5aac-06d6-c21975a78da3",
+            "name": "Fence",
+            "position": [
+                330.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "16598a29-078f-2cd2-61b5-880a67cf7ba3",
+            "name": "Fence",
+            "position": [
+                330.0,
+                45.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "07c76fdb-0922-5254-7f39-0dd353fd65e1",
+            "name": "Fence",
+            "position": [
+                330.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "00800383-0b97-b823-2794-f1a901cbdf52",
+            "name": "Fence",
+            "position": [
+                330.0,
+                45.0,
+                175.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                7.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "fieldObjectID": "74d2f451-5ab8-871f-0f7f-37cd34e10091",
+            "name": "Soil",
+            "position": [
+                325.0,
+                45.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "48d28982-5486-23d0-170d-f1b84e53c00a",
+            "name": "GrassSoil",
+            "position": [
+                320.0,
+                45.0,
+                160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "30ef9b95-7028-01ac-741a-456005f0303c",
+            "name": "GrassSoil",
+            "position": [
+                325.0,
+                45.0,
+                180.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2ad86b38-7248-25e5-1518-bf7062f7cdec",
+            "name": "GrassSoil",
+            "position": [
+                340.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "0cd22f9c-76d0-4ed0-288f-7a463752876b",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                45.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "50ad8987-3a08-6004-1623-79540bfb7c40",
+            "name": "GrassSoil",
+            "position": [
+                335.0,
+                45.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7951bbe3-6bb7-8d71-7f5c-bd647fd2996d",
+            "name": "GrassSoil",
+            "position": [
+                340.0,
+                45.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "5ac3cd95-7bc9-5087-4c98-76aa69ab7687",
+            "name": "GrassSoil",
+            "position": [
+                330.0,
+                45.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "59b1005b-5031-5b37-180a-f8f24adddaf8",
+            "name": "GrassSoil",
+            "position": [
+                315.0,
+                45.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1fc52cc6-5a9f-baac-6b9c-ee846a646292",
+            "name": "GrassSoil",
+            "position": [
+                325.0,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "71def8bf-34dd-5ae5-7e9e-8340392c02b7",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                45.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "5df36df2-1e04-04d5-2796-c7120a7e7d92",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                45.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "43bdc121-170d-a4c5-27a3-814802279e36",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                45.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6155b1aa-3cee-6654-5530-1a4b7c5e82e4",
+            "name": "GrassSoil",
+            "position": [
+                340.0,
                 45.0,
                 200.0
             ],
             "rotation": [
                 -0.0,
-                0.40000003576278687,
+                0.0,
                 0.0
             ],
             "scale": [
                 2.5,
-                1.100000023841858,
+                2.5,
                 2.5
             ],
-            "type": 11
+            "type": 0
         },
         {
-            "fieldObjectID": "05b1edc1-720a-c992-17bb-03ff4379ffe3",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "flowerVolume": 9,
-            "isBloomFlower": true,
-            "name": "Plant",
+            "associatedDoors": [
+                "1e0dfd8b-408f-7a3c-4824-3ec7566fd92a"
+            ],
+            "associatedFloors": [],
+            "fieldObjectID": "2aa4746b-7372-8b47-16d9-5c342e39e869",
+            "name": "switch",
             "position": [
-                445.0,
+                320.0,
                 50.0,
-                120.30000305175781
+                165.0
+            ],
+            "requiredWeight": 1,
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
+        },
+        {
+            "fieldObjectID": "19d24d26-6dd6-6f64-211c-7d191f5a1b96",
+            "name": "GrassSoil",
+            "position": [
+                380.0,
+                45.0,
+                170.0
             ],
             "rotation": [
                 -0.0,
-                0.47999998927116394,
+                0.0,
                 0.0
             ],
             "scale": [
+                17.5,
                 2.5,
-                1.7999999523162842,
                 2.5
             ],
-            "type": 11
+            "type": 0
         },
         {
-            "fieldObjectID": "48105ac5-6d23-1df6-10d0-42ec7b221638",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "flowerVolume": 10,
-            "isBloomFlower": false,
-            "name": "Plant",
+            "fieldObjectID": "0ef0d3e9-1cb2-8562-4547-006872ad6f5c",
+            "name": "GrassSoil",
             "position": [
-                455.0,
-                50.0,
-                135.0
+                350.0,
+                45.0,
+                190.0
             ],
             "rotation": [
                 -0.0,
@@ -3713,23 +2220,15 @@
                 2.5,
                 2.5
             ],
-            "type": 11
+            "type": 0
         },
         {
-            "fieldObjectID": "4cbd503a-5329-1027-7193-e9cb3c897d3a",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 0.5882352590560913,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "flowerVolume": 11,
-            "isBloomFlower": true,
-            "name": "Plant",
+            "fieldObjectID": "7b53105d-4240-d957-3695-4ad20a8e4ef1",
+            "name": "GrassSoil",
             "position": [
-                275.0,
-                50.0,
-                120.0
+                350.0,
+                45.0,
+                195.0
             ],
             "rotation": [
                 -0.0,
@@ -3738,26 +2237,1897 @@
             ],
             "scale": [
                 2.5,
-                1.7000000476837158,
+                2.5,
                 2.5
             ],
-            "type": 11
+            "type": 0
         },
         {
-            "fieldObjectID": "52833485-1926-e853-48d1-db87552a34bc",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            },
-            "flowerVolume": 10,
-            "isBloomFlower": false,
-            "name": "Plant",
+            "fieldObjectID": "1effb4c9-6583-e612-0a30-f9405890d83c",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                45.0,
+                200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "38d3e3dd-5646-6b3a-2604-a8083bbd6fff",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                45.0,
+                200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "29f261cd-414b-a06f-1b60-62443fe9c95d",
+            "name": "GrassSoil",
+            "position": [
+                325.0,
+                40.0,
+                150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                22.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "50ca0a5a-6ad6-566f-63cd-c0621c0fec1e",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                40.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "02272aa7-4853-2ad8-3990-fea3119501ad",
+            "name": "GrassSoil",
+            "position": [
+                290.0,
+                40.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                17.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "578c8142-5cd3-490c-2763-036347f6f45f",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                40.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "41809e5c-2058-bd77-0d08-ebae3990a7a7",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                40.0,
+                160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "65cc8ed0-7254-aaca-58cb-8d3c4ceb0f57",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                40.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6654bb6b-0787-84fd-3c3b-13ee4b870feb",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                40.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "66384dd1-3dd3-ae2b-266f-93115de1d81e",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                40.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "011b2e60-3797-db8b-1037-97b32d803094",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                40.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1346b7a2-5a41-7849-0b7c-b3d33365f087",
+            "name": "GrassSoil",
+            "position": [
+                320.0,
+                40.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "17912520-3fdd-5641-7d2b-1fe3735307ec",
+            "name": "GrassSoil",
+            "position": [
+                320.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1bf9b7f5-455a-2d49-7859-4ef72c5f8b08",
+            "name": "GrassSoil",
+            "position": [
+                325.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2698b2d2-0dfc-f693-6d81-ffc24dcde26b",
+            "name": "GrassSoil",
+            "position": [
+                330.0,
+                40.0,
+                200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "375f0ad0-5b12-2a5b-2f7a-76c50d12bb39",
+            "name": "GrassSoil",
+            "position": [
+                340.0,
+                40.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "229c512a-6473-378c-49bf-1a69024d64ae",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                40.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "512d57c8-470a-c179-5842-b84a6c568d7f",
+            "name": "Soil",
+            "position": [
+                365.0,
+                40.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "2d278c95-04c5-aba8-7971-4a8d4813d30b",
+            "name": "Soil",
+            "position": [
+                350.0,
+                40.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 1
+        },
+        {
+            "fieldObjectID": "74e98dc2-7e2c-a2aa-2486-11dc288ccabd",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                17.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "0d6aa1e2-3f4a-92ec-5b85-60bc379480e6",
+            "name": "GrassSoil",
+            "position": [
+                385.0,
+                40.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7d5dc9df-46b1-732c-11c8-e1c60d29fe36",
+            "name": "GrassSoil",
+            "position": [
+                375.0,
+                40.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                17.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "04060e6b-50ab-31c9-7e12-4d0035e269d5",
+            "name": "GrassSoil",
+            "position": [
+                395.0,
+                40.0,
+                165.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "531f5cc8-1801-00d3-799d-e1ff3e5dfa0b",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                40.0,
+                160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "25cf18c7-44f1-89d5-4201-fdb163d17253",
+            "moveSpeed": 8.0,
+            "name": "moveFloor",
+            "position": [
+                380.0,
+                55.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "routineName": "toWood",
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 8
+        },
+        {
+            "fieldObjectID": "39db034e-2686-9faf-0153-d3987475af14",
+            "name": "GrassSoil",
+            "position": [
+                360.0,
+                45.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "29df7af3-0993-59c9-4b0f-a2c1447b8687",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                45.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "47b53575-31ae-fdc3-1785-4b825327afb2",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                45.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "12ddc852-0294-9a72-4f7f-ff8630d0cfeb",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                50.0,
+                180.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2ad7fbb5-71c5-b9bd-6037-0cba6ab4228d",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                50.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "36f20af2-2d69-8bd4-5741-6032458bac22",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                50.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2e3e5b74-47d4-81bc-6ce6-9ef071abb4d0",
+            "name": "GrassSoil",
+            "position": [
+                395.0,
+                45.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "280d7bfc-2fb3-adfd-452d-30706f4e6626",
+            "name": "GrassSoil",
+            "position": [
+                385.0,
+                45.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "5672dc6c-7298-494e-6361-d0695a106e72",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                45.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "708db62f-0973-89f6-7d67-68466ac7984c",
+            "name": "GrassSoil",
+            "position": [
+                380.0,
+                45.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6c10cc6b-5213-ecc5-3b62-25915ecd7ccd",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "4982bb03-4b3c-053b-0e45-40661dd2bbf9",
+            "name": "GrassSoil",
+            "position": [
+                380.0,
+                40.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2298a17c-5de7-13cd-6550-c06453c389cf",
+            "name": "GrassSoil",
+            "position": [
+                390.0,
+                40.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "101f669e-37fc-6b74-18a6-c5562c10f2eb",
+            "name": "GrassSoil",
+            "position": [
+                410.0,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "09451c9c-10da-dfe7-7ea4-0718395d0fd4",
+            "name": "Chikuwa",
+            "position": [
+                417.5,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                4.999997615814209,
+                2.5,
+                7.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "0e4edf7d-443d-3a5a-4350-458a28667f16",
+            "name": "Chikuwa",
+            "position": [
+                425.0,
+                50.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "6dff7dff-7b7e-475e-0658-b1972b534706",
+            "name": "tile",
+            "position": [
+                440.0,
+                60.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "associatedDoors": [],
+            "associatedFloors": [
+                "25cf18c7-44f1-89d5-4201-fdb163d17253"
+            ],
+            "fieldObjectID": "00fe8040-4121-cc01-4848-8cf07b45a76b",
+            "name": "lever",
+            "position": [
+                440.0,
+                65.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 14
+        },
+        {
+            "fieldObjectID": "3cbdd067-7981-fdd8-5a3f-267c745cdabc",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                45.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "67b2f5b4-77df-dcec-3d0b-b06d07586a17",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                45.0,
+                200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "41f4abe2-29d6-0854-61ab-68fd52dc0c5d",
+            "name": "GrassSoil",
+            "position": [
+                360.0,
+                45.0,
+                200.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "23d0a66f-731b-9075-52ec-6d572f8eee5c",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                45.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "67698942-6b35-9c49-7ffd-b7ba7d1a3ff6",
+            "name": "GrassSoil",
+            "position": [
+                355.0,
+                45.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "18425c4a-3a64-9c28-5470-77305949bf22",
+            "name": "GrassSoil",
+            "position": [
+                375.0,
+                50.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "64e8b8ee-7f92-a9d9-35cc-748f77e9ed15",
+            "name": "GrassSoil",
+            "position": [
+                385.0,
+                50.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "60e3ea39-5282-a30b-255f-cf7a347317b6",
+            "name": "GrassSoil",
+            "position": [
+                390.0,
+                45.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "419fcf85-35ef-4939-6b0c-7d5c21e3fde2",
+            "name": "GrassSoil",
+            "position": [
+                390.0,
+                45.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1e0cd21b-2bbc-61da-475c-01524a590b7e",
+            "name": "GrassSoil",
+            "position": [
+                405.0,
+                40.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "5660afdf-29d8-a600-5555-94e001cfd115",
+            "name": "GrassSoil",
+            "position": [
+                400.0,
+                40.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "3b9f6af6-3387-6bbf-0e90-dd693d855c50",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "549b21d6-797c-b4a8-3ba7-f06943f8b2c1",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                40.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "735e8568-29e0-b353-37e5-96bb4923095e",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                235.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7581236b-68f1-f3b1-686e-78da051ea2d4",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                230.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "375d576b-345c-f3e3-00e9-a41361509b96",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                240.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6e79fd63-0170-3039-19d2-421766001f2e",
+            "name": "GrassSoil",
+            "position": [
+                380.0,
+                40.0,
+                225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "4bc370ef-64f1-9d5d-1312-3b836a1d1dbd",
+            "name": "GrassSoil",
+            "position": [
+                385.0,
+                40.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7111b221-41ad-a6de-5ef6-7c5809fa1dc4",
+            "name": "GrassSoil",
+            "position": [
+                380.0,
+                40.0,
+                230.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "65879dbb-157d-f71d-28f1-a8b817691aa3",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                40.0,
+                215.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "58107342-44d4-1bd4-2ff7-353b5621c004",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                40.0,
+                225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "72ea16a2-7a51-fccc-0197-540f44b51747",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                40.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "27ff1442-072e-e255-7efe-7d091bc5271b",
+            "name": "GrassSoil",
+            "position": [
+                350.0,
+                40.0,
+                230.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "3af1bfee-5bff-27ef-597c-61d14eaa9be1",
+            "name": "GrassSoil",
+            "position": [
+                345.0,
+                40.0,
+                225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2ea52990-3a10-be58-7c9e-4658674b2539",
+            "name": "GrassSoil",
+            "position": [
+                340.0,
+                40.0,
+                210.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "43aa77d5-6c82-38d7-06ec-dcbd2f4c8c62",
+            "name": "GrassSoil",
+            "position": [
+                335.0,
+                40.0,
+                205.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "2ad7f9c8-42a2-68d3-3157-3b575a58b7c6",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "68644589-0e23-1263-1a34-585211d406c4",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                40.0,
+                250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "closedPosY": 40.0,
+            "fieldObjectID": "660a52d7-72f8-1b14-11a6-998b58e44924",
+            "name": "door",
+            "openHeight": 15.0,
+            "openSpeed": 24.0,
+            "position": [
+                365.0,
+                40.0,
+                240.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                7.5,
+                2.5
+            ],
+            "shouldPerformCameraView": false,
+            "type": 3
+        },
+        {
+            "fieldObjectID": "759d7d2e-245d-8b5c-14fa-215a16a90ffb",
+            "name": "tile",
+            "position": [
+                355.0,
+                45.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "728fc33e-3085-8f9a-479e-9128722c19f7",
+            "name": "tile",
+            "position": [
+                365.0,
+                45.0,
+                250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "55741725-2f7b-724d-0d59-ef2319e3a069",
+            "name": "tile",
+            "position": [
+                365.0,
+                50.0,
+                250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "1dc4ecec-4538-3139-415e-6a55442e9695",
+            "name": "tile",
+            "position": [
+                365.0,
+                55.0,
+                250.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "70a5ce47-0ab1-117a-3aa1-a197301434bf",
+            "name": "tile",
+            "position": [
+                355.0,
+                50.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "11adeccd-5a99-0806-35a4-f1f070f49283",
+            "name": "tile",
+            "position": [
+                355.0,
+                55.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "570fdd89-4d43-d1db-26ca-6ef34720de2c",
+            "name": "tile",
+            "position": [
+                375.0,
+                45.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "2a872f2c-6592-da88-73bc-d8523a53d3c1",
+            "name": "tile",
+            "position": [
+                375.0,
+                50.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "399b1ab9-33f4-4644-407d-12145cafab44",
+            "name": "tile",
+            "position": [
+                375.0,
+                55.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "355cd1ff-0b1a-7f5a-16ce-59807c57f5b1",
+            "name": "tile",
+            "position": [
+                365.0,
+                60.0,
+                240.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "667b4c78-44ae-b7fb-76ef-71b34dd19058",
+            "name": "tile",
+            "position": [
+                365.0,
+                60.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "382280cb-4a9e-02d1-0b83-0ddd47e48db3",
+            "name": "Star",
+            "position": [
+                365.0,
+                45.0,
+                245.0
+            ],
+            "rotation": [
+                -0.0,
+                -2.953467607498169,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 2
+        },
+        {
+            "fieldObjectID": "66f1828e-5be0-4c7c-095f-7e8c441a7cbb",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                45.0,
+                220.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "4a47b617-60ec-5781-34b0-0fc64f9143b7",
+            "name": "GrassSoil",
+            "position": [
+                365.0,
+                45.0,
+                225.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "associatedDoors": [
+                "660a52d7-72f8-1b14-11a6-998b58e44924"
+            ],
+            "associatedFloors": [],
+            "fieldObjectID": "7d5fc015-04e3-d4b1-43ef-11792a652ee4",
+            "name": "switch",
+            "position": [
+                365.0,
+                50.0,
+                220.0
+            ],
+            "requiredWeight": 1,
+            "rotation": [
+                -0.0,
+                3.141590118408203,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 6
+        },
+        {
+            "fieldObjectID": "7ce2d54b-46e5-7ce1-4622-11b476a1eac5",
+            "name": "tile",
+            "position": [
+                365.0,
+                80.0,
+                150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                12.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "fieldObjectID": "4c629816-4c96-2594-08ae-b0f143cb9f3d",
+            "name": "tile",
+            "position": [
+                395.0,
+                80.0,
+                150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                12.5,
+                2.5
+            ],
+            "type": 15
+        },
+        {
+            "closedPosY": 55.0,
+            "fieldObjectID": "1e0dfd8b-408f-7a3c-4824-3ec7566fd92a",
+            "name": "door",
+            "openHeight": 25.0,
+            "openSpeed": 8.0,
+            "position": [
+                380.0,
+                55.0,
+                150.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                12.5,
+                2.5
+            ],
+            "shouldPerformCameraView": true,
+            "type": 3
+        },
+        {
+            "fieldObjectID": "42cf7592-1b09-545c-1840-487c10db14b3",
+            "name": "Chikuwa",
+            "position": [
+                430.0,
+                55.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                7.5
+            ],
+            "type": 17
+        },
+        {
+            "fieldObjectID": "3e063435-3857-5c45-3aa7-12743e37c431",
+            "name": "Star",
+            "position": [
+                440.0,
+                66.5,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                2.3367063999176025,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 2
+        },
+        {
+            "fieldObjectID": "1eaccd97-7ccd-95e0-00c1-550b52fdb509",
+            "name": "GrassSoil",
             "position": [
                 300.0,
                 45.0,
-                135.0
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                12.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "1d6ec946-2157-145a-7777-2bc943507959",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                45.0,
+                155.0
             ],
             "rotation": [
                 -0.0,
@@ -3769,35 +4139,246 @@
                 2.5,
                 2.5
             ],
-            "type": 11
+            "type": 0
         },
         {
-            "fieldObjectID": "32810d32-6dcb-9af9-3974-81b50281a183",
-            "flowerColor": {
-                "w": 1.0,
-                "x": 0.75,
-                "y": 0.23897060751914978,
-                "z": 0.23897060751914978
-            },
-            "flowerVolume": 16,
-            "isBloomFlower": true,
-            "name": "Plant",
+            "fieldObjectID": "3486a10d-74bc-4115-4d6f-3a4845ed81d8",
+            "name": "GrassSoil",
             "position": [
-                277.8999938964844,
-                50.0,
-                118.5
+                295.0,
+                45.0,
+                170.0
             ],
             "rotation": [
                 -0.0,
-                -0.3700000047683716,
+                0.0,
                 0.0
             ],
             "scale": [
                 2.5,
-                1.100000023841858,
+                2.5,
+                12.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "114b65fa-4ad0-a08a-3d71-c32578ce4d0a",
+            "name": "GrassSoil",
+            "position": [
+                300.0,
+                40.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
                 2.5
             ],
-            "type": 11
+            "type": 0
+        },
+        {
+            "fieldObjectID": "59661509-67d3-4f8b-07f0-40680fd9f6eb",
+            "name": "GrassSoil",
+            "position": [
+                295.0,
+                40.0,
+                155.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "573a8e12-252e-36c2-5ed6-dd90003a0fe9",
+            "name": "GrassSoil",
+            "position": [
+                315.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "39f8b643-28b5-50a5-2ade-a6124d4cfea0",
+            "name": "GrassSoil",
+            "position": [
+                300.0,
+                45.0,
+                185.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                7.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "08e968ef-65ac-da1a-5c44-f4551f711af8",
+            "name": "GrassSoil",
+            "position": [
+                300.0,
+                40.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6c6f0537-3ce2-a10e-1a2b-79ee23dbc4f3",
+            "name": "GrassSoil",
+            "position": [
+                295.0,
+                40.0,
+                190.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "20e6f539-343f-70a0-36a8-54a6637a5b0e",
+            "name": "GrassSoil",
+            "position": [
+                310.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "6afa0a3c-74ad-d1ad-09c9-b1d465bc57ad",
+            "name": "GrassSoil",
+            "position": [
+                305.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "fieldObjectID": "7558329a-3c06-f56b-114a-78ce60fec478",
+            "name": "GrassSoil",
+            "position": [
+                300.0,
+                40.0,
+                195.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 0
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": 1.5329999923706055,
+            "fieldObjectID": "1de0fe19-41bd-dba9-301d-11320196a1c3",
+            "isOnceEvent": false,
+            "isOutControl": true,
+            "isPositionFixed": false,
+            "isSavePreCameraRotate": true,
+            "name": "CameraControlArea",
+            "phi": 0.0,
+            "position": [
+                315.0,
+                60.0,
+                170.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                27.700000762939453,
+                12.5,
+                31.600000381469727
+            ],
+            "theta": 1.5700000524520874,
+            "type": 19
         }
     ],
     "stage": 5

@@ -105,7 +105,7 @@ namespace PlayerInput{
 
         inline bool GoNextStage(){
             if(Input::IsConnectedPad(0)){
-                return Input::IsTriggerPadButton(PAD_BUTTON::A | PAD_BUTTON::B);
+                return Input::IsTriggerPadButton(PAD_BUTTON::A);
             }
             return Input::IsTriggerKey(DIK_SPACE) || Input::IsTriggerKey(DIK_F);
 

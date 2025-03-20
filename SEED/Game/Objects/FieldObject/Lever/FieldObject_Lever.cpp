@@ -48,7 +48,10 @@ void FieldObject_Lever::OnCollision(BaseObject* other,ObjectType objectType){
     other;
     if (objectType == ObjectType::Player ||
         objectType == ObjectType::Egg){
-        isTouched_ = true;
+
+        if(objectType != ObjectType::PlayerCorpse){
+            isTouched_ = true;
+        }
     }
 }
 

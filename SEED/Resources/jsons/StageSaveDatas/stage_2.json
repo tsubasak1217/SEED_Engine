@@ -2471,7 +2471,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.318147897720337,
+                0.6764556765556335,
                 0.0
             ],
             "scale": [
@@ -3302,6 +3302,28 @@
             "type": 0
         },
         {
+            "eventFunctionKey": "Tutorial_ThrowEgg",
+            "fieldObjectID": "3d25c0a7-0b56-7538-21cd-9fa73d8fcb7d",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -116.5,
+                35.0,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                5.800000190734863,
+                5.100002288818359,
+                2.5
+            ],
+            "type": 9
+        },
+        {
             "fieldObjectID": "1db6f7fd-78b9-a276-59b6-1a730a40cbe4",
             "name": "Soil",
             "position": [
@@ -3551,7 +3573,7 @@
             ],
             "rotation": [
                 -0.0,
-                2.4541425704956055,
+                -0.834484875202179,
                 0.0
             ],
             "scale": [
@@ -4942,26 +4964,6 @@
             "type": 1
         },
         {
-            "fieldObjectID": "2aa910d3-7c87-330d-2d62-cc2b7f70ba09",
-            "name": "SaveArea",
-            "position": [
-                -90.0,
-                30.0,
-                -85.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 18
-        },
-        {
             "fieldObjectID": "50271856-204c-f595-4cb4-a6fa1d1b2ebf",
             "name": "GrassSoil",
             "position": [
@@ -5122,6 +5124,48 @@
             "type": 0
         },
         {
+            "fieldObjectID": "29092ec1-1b9f-e773-4993-5b135cdd88fb",
+            "name": "Star",
+            "position": [
+                -100.0,
+                15.0,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                -0.31565552949905396,
+                0.0
+            ],
+            "scale": [
+                2.499999523162842,
+                2.5,
+                2.499999523162842
+            ],
+            "type": 2
+        },
+        {
+            "eventFunctionKey": "Tutorial_ThrowLength",
+            "fieldObjectID": "69a95415-5523-defd-6496-12e444cc69a9",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -135.0,
+                40.0,
+                -45.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                12.5,
+                7.5,
+                2.5
+            ],
+            "type": 9
+        },
+        {
             "fieldObjectID": "68b21c72-66c8-e3d0-4754-f51871287638",
             "name": "SaveArea",
             "position": [
@@ -5142,12 +5186,14 @@
             "type": 18
         },
         {
-            "fieldObjectID": "38983082-5ea1-554d-24be-acc2747646ce",
-            "name": "SaveArea",
+            "eventFunctionKey": "Tutorial_Corpse",
+            "fieldObjectID": "29398ca8-590b-b337-363e-a2f667117b46",
+            "isOnceEvent": true,
+            "name": "EventArea",
             "position": [
-                -85.0,
-                45.0,
-                -75.0
+                -135.0,
+                40.0,
+                -52.5
             ],
             "rotation": [
                 -0.0,
@@ -5155,11 +5201,11 @@
                 0.0
             ],
             "scale": [
-                2.5,
-                2.5,
-                2.5
+                12.5,
+                7.5,
+                4.799997806549072
             ],
-            "type": 18
+            "type": 9
         },
         {
             "fieldObjectID": "5a3a1e67-6665-888f-3124-36c16a371998",
@@ -5765,26 +5811,85 @@
                 2.5
             ],
             "type": 13
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 21.5,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "622586bf-14bf-d570-228f-8f675e372cc6",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "isSavePreCameraRotate": true,
+            "name": "CameraControlArea",
+            "phi": 1.3700000047683716,
+            "position": [
+                -116.5999984741211,
+                32.20000076293945,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                5.900000095367432,
+                3.799999952316284,
+                2.5
+            ],
+            "theta": 5.409999847412109,
+            "type": 19
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "4f1c11af-39c7-9d88-7d89-4f034d55cf9d",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "isSavePreCameraRotate": false,
+            "name": "CameraControlArea",
+            "phi": 0.9599999785423279,
+            "position": [
+                -85.0,
+                46.0,
+                -75.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "theta": 5.550000190734863,
+            "type": 19
         }
     ],
-    "player": {
-        "GrowLevel": 1,
-        "Rotate": {
-            "x": -0.0,
-            "y": -0.4367988407611847,
-            "z": 0.0
-        },
-        "Scale": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0
-        },
-        "Translate": {
-            "x": -136.5238800048828,
-            "y": 24.959997177124023,
-            "z": -47.221580505371094
-        },
-        "Weight": 14.050000190734863
-    },
     "stage": 2
 }

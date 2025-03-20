@@ -39,10 +39,9 @@ void PlayerCorpse::Initialize(const Vector3& scale){
 //////////////////////////////////////////////////////////////////////////
 void PlayerCorpse::Update(){
     BaseObject::Update();
-    EditCollider();
 
     // 地面ではなく,y==0に落下したら削除
-    if(this->GetWorldTranslate().y <= 0.0f){
+    if(this->GetWorldTranslate().y <= -20.0f){
         isAlive_ = false;
     } else{
         HandOverColliders();

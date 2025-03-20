@@ -3,7 +3,7 @@
         {
             "center": {
                 "x": 0.0,
-                "y": 2.299999952316284,
+                "y": 1.2,
                 "z": 0.0
             },
             "colliderType": "Sphere",
@@ -15,7 +15,7 @@
             "isParentTranslate": true,
             "mass": 1.0,
             "miu": 0.0,
-            "radius": 1.9500000476837158
+            "radius": 1.200000476837158
         }
     ]
 }

@@ -125,10 +125,12 @@ void PlayerState_Spawn::Update(){
         elapsedTime_ = (std::min)(elapsedTime_,ghostMoveTime_);
 
         {// moving ghost
-            const float t = elapsedTime_ / ghostMoveTime_;
+            const float t = std::clamp(elapsedTime_ / ghostMoveTime_,0.f,ghostMoveTime_);
             ghostObject_->SetTranslate(MyMath::Lerp(deadPos_,spawnPos_,t));
         }
         ghostObject_->Update();
+    } else{
+        elpsedAnimationTime_ += ClockManager::DeltaTime();
     }
 }
 
@@ -141,7 +143,7 @@ void PlayerState_Spawn::Draw(){
 void PlayerState_Spawn::ManageState(){
     if(movedGhost_){
         // ghostが移動し終わって Animation が終了していたら IdleStateへ
-        if(pCharacter_->GetIsEndAnimation() && egg_->GetIsEndAnimation()){
+        if((std::max)(playerAnimationDuration_,eggAnimationDuration_) <= elpsedAnimationTime_){
 
             Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
             // カメラのターゲットをplayerに
@@ -171,6 +173,11 @@ void PlayerState_Spawn::ManageState(){
             // アニメーションを流す
             egg_->SetAnimation("born",false);
             pCharacter_->SetAnimation("born",false);
+
+            // アニメーションの時間を取得
+            playerAnimationDuration_ = pCharacter_->GetAnimationDuration();
+            eggAnimationDuration_ = egg_->GetAnimationDuration();
+            elpsedAnimationTime_ = 0.f;
 
             //Sound
             AudioManager::PlayAudio("SE/dinosaur_born.wav",false,0.7f);

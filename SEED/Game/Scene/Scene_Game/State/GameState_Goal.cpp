@@ -27,7 +27,9 @@ GameState_Goal::GameState_Goal(Scene_Base* pScene){
     Initialize();
 }
 
-GameState_Goal::~GameState_Goal(){}
+GameState_Goal::~GameState_Goal(){
+    ParticleManager::DeleteAll();
+}
 
 void GameState_Goal::Initialize(){
     // player

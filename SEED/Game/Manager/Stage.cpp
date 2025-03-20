@@ -59,6 +59,7 @@ void Stage::InitializeStatus(bool isSaveData){
     }
 
     InitializeStatus(filePath);
+    ParticleManager::DeleteAll();
 }
 
 void Stage::InitializeStatus(const std::string& _jsonFilePath){

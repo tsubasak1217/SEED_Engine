@@ -93,6 +93,7 @@ void PlayerState_Spawn::Initialize(const std::string& stateName,BaseCharacter* c
 
         if(beforeParent){
             egg_->SetParent(beforeParent);
+            egg_->SetIsParentScale(false);
         }
 
         egg_->InitColliders(ObjectType::Egg);

@@ -26,6 +26,11 @@ protected:
 private:
 
 private:
+    // * ------------------ Player & Egg AnimationTime ------------------ *
+    float playerAnimationDuration_ = 0.0f;
+    float eggAnimationDuration_ = 0.0f;
+    float elpsedAnimationTime_ = 0.f;
+
     // * ------------------ Egg ------------------ *
     Egg* egg_ = nullptr;
     bool spawnCorpse_ = false;

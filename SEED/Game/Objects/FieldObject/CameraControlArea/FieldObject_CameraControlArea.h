@@ -28,6 +28,8 @@ public:
     bool isOnceEvent_ = false;
     // エリアを抜ける際にカメラの角度を設定するかどうか
     bool isOutControl_ = true;
+    // カメラの角度を保存するかどうか
+    bool isSavePreCameraRotate_ = true;
 
     // 固定する場合のトランスフォーム情報
     Vector3 cameraPos_;

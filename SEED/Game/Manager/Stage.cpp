@@ -496,6 +496,9 @@ void Stage::LoadFromJson(const std::string& filePath){
                 if(modelJson.contains("cameraRotate")){
                     cameraControlArea->cameraRotate_ = modelJson["cameraRotate"];
                 }
+                if(modelJson.contains("isSavePreCameraRotate") && modelJson["isSavePreCameraRotate"].is_boolean()){
+                    cameraControlArea->isSavePreCameraRotate_ = modelJson["isSavePreCameraRotate"].get<bool>();
+                }
                 if(modelJson.contains("isOnceEvent") && modelJson["isOnceEvent"].is_boolean()){
                     cameraControlArea->isOnceEvent_ = modelJson["isOnceEvent"].get<bool>();
                 }

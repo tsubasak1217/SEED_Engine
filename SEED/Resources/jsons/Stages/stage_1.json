@@ -882,26 +882,6 @@
             "type": 0
         },
         {
-            "fieldObjectID": "46d7c451-6b88-93f5-771e-e7b21a527660",
-            "name": "Star",
-            "position": [
-                -34.865997314453125,
-                27.17099952697754,
-                -140.031005859375
-            ],
-            "rotation": [
-                -0.0,
-                -1.9745150804519653,
-                0.0
-            ],
-            "scale": [
-                2.499999523162842,
-                2.5,
-                2.499999523162842
-            ],
-            "type": 2
-        },
-        {
             "fieldObjectID": "60aaba1b-6011-f08e-4385-3b414f71312f",
             "name": "GrassSoil",
             "position": [
@@ -1220,46 +1200,6 @@
                 2.5
             ],
             "type": 0
-        },
-        {
-            "fieldObjectID": "410e22c3-37c0-aee7-14b5-3a2b593f91de",
-            "name": "Star",
-            "position": [
-                -20.05936050415039,
-                26.098461151123047,
-                -135.0166015625
-            ],
-            "rotation": [
-                -0.0,
-                -1.9745150804519653,
-                0.0
-            ],
-            "scale": [
-                2.499999523162842,
-                2.5,
-                2.499999523162842
-            ],
-            "type": 2
-        },
-        {
-            "fieldObjectID": "658c990b-7ea0-fb53-29c7-86766ec4baf5",
-            "name": "Star",
-            "position": [
-                35.0,
-                26.600000381469727,
-                -155.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.7843904495239258,
-                0.0
-            ],
-            "scale": [
-                2.5000014305114746,
-                2.5,
-                2.5000014305114746
-            ],
-            "type": 2
         },
         {
             "fieldObjectID": "0fecdf1b-0836-ed31-2dc8-4f0b1bc48418",
@@ -4069,12 +4009,13 @@
             "distance": 50.0,
             "exitPhi": 1.4129999876022339,
             "exitTheta": -1.5700000524520874,
-            "fieldObjectID": "7a013f05-2dbc-013e-1b33-93866a53e8a4",
+            "fieldObjectID": "75b1513e-6e12-5d29-5282-9de951442768",
             "isOnceEvent": true,
             "isOutControl": false,
             "isPositionFixed": false,
+            "isSavePreCameraRotate": false,
             "name": "CameraControlArea",
-            "phi": 1.409999966621399,
+            "phi": 1.4520000219345093,
             "position": [
                 -5.0,
                 31.0,
@@ -4090,7 +4031,7 @@
                 2.5,
                 2.5
             ],
-            "theta": 5.199999809265137,
+            "theta": 5.510000228881836,
             "type": 19
         }
     ],

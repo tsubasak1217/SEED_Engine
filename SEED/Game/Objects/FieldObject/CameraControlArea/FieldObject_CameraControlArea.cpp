@@ -155,8 +155,12 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
         if(!preIsCollidePlayer_ && isCollidePlayer_){
             Player* player = dynamic_cast<Player*>(other);
             pCamera_ = dynamic_cast<FollowCamera*>(player->GetFollowCamera());
+
+            // 角度が急に変わってもスティックを離すまでは同じベクトルで移動させるための保存
             if(player->GetPreCameraRotate() == std::nullopt){
-                player->SetPreCameraRotate(pCamera_->GetRotation());
+                if(isSavePreCameraRotate_){
+                    player->SetPreCameraRotate(pCamera_->GetRotation());
+                }
             }
 
             if(pCamera_){

@@ -291,6 +291,7 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
                 modelJson["exitPhi"] = cameraControlArea->exitPhi_;
                 modelJson["distance"] = cameraControlArea->distance_;
                 modelJson["isOutControl"] = cameraControlArea->isOutControl_;
+                modelJson["isSavePreCameraRotate"] = cameraControlArea->isSavePreCameraRotate_;
                 modelJson["isOnceEvent"] = cameraControlArea->isOnceEvent_;
             }
 
@@ -753,6 +754,7 @@ void FieldEditor::ShowImGui(){
                         ImGui::DragFloat("phi", &cameraControlArea->phi_, 0.01f, 0.0f, 3.14159f);
                     }
 
+                    ImGui::Checkbox("isSavePreCameraRotate", &cameraControlArea->isSavePreCameraRotate_);// カメラの回転を保存するか
                     ImGui::Checkbox("isOnceEvent", &cameraControlArea->isOnceEvent_);// 一度だけイベントを発生させるか
 
                     if(cameraControlArea->isOnceEvent_){

@@ -2471,7 +2471,7 @@
             ],
             "rotation": [
                 -0.0,
-                1.80342435836792,
+                0.9373655319213867,
                 0.0
             ],
             "scale": [
@@ -3573,7 +3573,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.2924685478210449,
+                -0.5735597014427185,
                 0.0
             ],
             "scale": [
@@ -5153,7 +5153,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.8113283514976501,
+                -0.054715074598789215,
                 0.0
             ],
             "scale": [
@@ -5433,6 +5433,7 @@
             "isOnceEvent": false,
             "isOutControl": true,
             "isPositionFixed": true,
+            "isSavePreCameraRotate": true,
             "name": "CameraControlArea",
             "phi": 0.0,
             "position": [
@@ -5471,6 +5472,7 @@
             "isOnceEvent": false,
             "isOutControl": true,
             "isPositionFixed": false,
+            "isSavePreCameraRotate": true,
             "name": "CameraControlArea",
             "phi": 1.3799999952316284,
             "position": [
@@ -5669,6 +5671,7 @@
             "isOnceEvent": false,
             "isOutControl": true,
             "isPositionFixed": false,
+            "isSavePreCameraRotate": true,
             "name": "CameraControlArea",
             "phi": 1.2100000381469727,
             "position": [
@@ -5867,6 +5870,7 @@
             "isOnceEvent": true,
             "isOutControl": false,
             "isPositionFixed": false,
+            "isSavePreCameraRotate": true,
             "name": "CameraControlArea",
             "phi": 1.3700000047683716,
             "position": [
@@ -5905,6 +5909,7 @@
             "isOnceEvent": true,
             "isOutControl": false,
             "isPositionFixed": false,
+            "isSavePreCameraRotate": false,
             "name": "CameraControlArea",
             "phi": 0.9599999785423279,
             "position": [

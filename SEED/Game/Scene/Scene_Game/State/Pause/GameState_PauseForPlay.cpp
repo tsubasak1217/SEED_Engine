@@ -27,7 +27,6 @@ GameState_PauseForPlay::GameState_PauseForPlay(Scene_Base* pScene)
 GameState_PauseForPlay::~GameState_PauseForPlay(){
     pGameScene_->Get_pPlayer()->SetIsMovable(true);
     pGameScene_->Get_pPlayer()->SetCollidable(true);
-    pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +61,7 @@ void GameState_PauseForPlay::Initialize(){
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetCollidable(false);
     pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+    pGameScene_->Get_pPlayer()->DiscardPreCollider();
 
     GameState_PauseBase::Initialize();
 }
@@ -73,6 +73,8 @@ void GameState_PauseForPlay::Initialize(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_PauseForPlay::Update(){
     GameState_PauseBase::Update();
+    pGameScene_->Get_pPlayer()->SetIsMovable(false);
+    pGameScene_->Get_pPlayer()->SetCollidable(false);
     pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
 }
 

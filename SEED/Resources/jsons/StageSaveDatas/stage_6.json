@@ -678,7 +678,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.24503755569458,
+                -0.5703819394111633,
                 0.0
             ],
             "scale": [
@@ -1882,7 +1882,7 @@
             ],
             "rotation": [
                 -0.0,
-                -0.2593808174133301,
+                0.41533589363098145,
                 0.0
             ],
             "scale": [
@@ -4298,7 +4298,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.30815455317497253,
+                0.9828407764434814,
                 0.0
             ],
             "scale": [
@@ -4427,6 +4427,45 @@
                 2.5
             ],
             "type": 15
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "1b176898-4193-9917-5b09-9c2b36ef8517",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "isSavePreCameraRotate": false,
+            "name": "CameraControlArea",
+            "phi": 1.340000033378601,
+            "position": [
+                295.0,
+                90.0,
+                -160.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "theta": 1.5299999713897705,
+            "type": 19
         }
     ],
     "stage": 6

@@ -205,8 +205,8 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
         }
 
         // phiが変わったら戻す
-        if(pCamera_->GetPhi() != phi_){
-            pCamera_->SetPhi(phi_);
-        }
+        //if(pCamera_->GetPhi() != phi_){
+        //    pCamera_->SetPhi(phi_);
+        //}
     }
 }

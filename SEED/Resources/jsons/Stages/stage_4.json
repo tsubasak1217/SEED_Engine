@@ -340,7 +340,7 @@
             "requiredWeight": 1,
             "rotation": [
                 -0.0,
-                0.0,
+                -1.5708001852035522,
                 0.0
             ],
             "scale": [
@@ -360,7 +360,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.8179197907447815,
+                2.6145167350769043,
                 0.0
             ],
             "scale": [
@@ -805,7 +805,7 @@
             "requiredWeight": 3,
             "rotation": [
                 -0.0,
-                0.0,
+                -1.5708001852035522,
                 0.0
             ],
             "scale": [
@@ -1447,7 +1447,7 @@
             ],
             "rotation": [
                 -0.0,
-                1.0516386032104492,
+                2.8482813835144043,
                 0.0
             ],
             "scale": [
@@ -1627,7 +1627,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.4582854211330414,
+                2.2548365592956543,
                 0.0
             ],
             "scale": [
@@ -1880,8 +1880,26 @@
             "type": 1
         },
         {
-            "fieldObjectID": "07104034-0512-7367-3f9c-38132e4ba26e",
-            "name": "SaveArea",
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "290e0ec3-1074-28cd-50cd-0c3f7181e6dc",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "isSavePreCameraRotate": false,
+            "name": "CameraControlArea",
+            "phi": 1.399999976158142,
             "position": [
                 85.0,
                 30.0,
@@ -1897,7 +1915,8 @@
                 2.5,
                 2.5
             ],
-            "type": 18
+            "theta": 3.130000114440918,
+            "type": 19
         }
     ],
     "stage": 4

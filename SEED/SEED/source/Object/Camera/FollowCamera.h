@@ -33,6 +33,7 @@ public:
     void SetPhi(float phi){ phi_ = phi; }
     float GetPhi()const{ return phi_; }
     void AddPhi(float phi){ phi_ += phi; }
+    float GetMinPhi(){ return kMinPhi_; }
     void SetInterpolationRate(float rate){ interpolationRate_ = rate; }
     void SetisViewingObject(bool isViewingObject){ isViewingObject_ = isViewingObject; }
     bool GetIsViewingObject()const{ return isViewingObject_; }
@@ -65,4 +66,7 @@ private:
 public:
     InputHandler<Vector2> angleInput_;
     InputHandler<float> distanceInput_;
+
+    // 後で消す
+    float prePhi_;
 };

@@ -16,6 +16,9 @@ void OpenedState::Update([[maybe_unused]] FieldObject_Door* door, [[maybe_unused
                 // カメラのターゲットを元に戻す
                 followCamera->SetTarget(followCamera->GetPreTarget());
                 followCamera->SetisViewingObject(false);
+
+                // 禁忌
+                followCamera->SetPhi(followCamera->prePhi_);
             }
             door->SetCameraViewActive(false);
         }

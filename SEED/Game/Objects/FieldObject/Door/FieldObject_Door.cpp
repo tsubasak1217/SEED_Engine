@@ -68,7 +68,7 @@ void FieldObject_Door::Initialize(){
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::Update(){
     float deltaTime = ClockManager::DeltaTime();
-    if (currentState_){
+    if(currentState_){
         currentState_->Update(this, deltaTime);
     }
     FieldObject::Update();
@@ -95,9 +95,9 @@ void FieldObject_Door::ShowImGui(){
 // getter / setter
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::SetIsOpened(bool isOpened){
-    if (isOpened_ != isOpened){
+    if(isOpened_ != isOpened){
         isOpened_ = isOpened;
-        if (isOpened_){
+        if(isOpened_){
             ChangeState(new OpeningState());
         } else{
             ChangeState(new ClosingState());
@@ -109,11 +109,11 @@ void FieldObject_Door::SetIsOpened(bool isOpened){
 // 状態変更用メソッド
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::ChangeState(DoorState* newState){
-    if (currentState_){
+    if(currentState_){
         currentState_->Exit(this);
     }
     currentState_.reset(newState);
-    if (currentState_){
+    if(currentState_){
         currentState_->Enter(this);
     }
 }
@@ -122,33 +122,35 @@ void FieldObject_Door::ChangeState(DoorState* newState){
 // Observerの関数
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void* data){
-    if (event != "SwitchActivated" && event != "SwitchDeactivated"
+    if(event != "SwitchActivated" && event != "SwitchDeactivated"
         && event != "LeverActivated" && event != "LeverDeactivated"){
         return;
     }
 
     // もしカメラ演出を行う必要があるなら
-    if (shouldPerformCameraView_){
+    if(shouldPerformCameraView_){
         // ドアの現在位置に合わせてカメラターゲットを更新
         cameraTarget_->SetTranslate(GetWorldTranslate());
         cameraTarget_->UpdateMatrix();
 
-        FollowCamera* followCamera = dynamic_cast< FollowCamera* >(CameraManager::GetActiveCamera());
-        if (followCamera){
+        FollowCamera* followCamera = dynamic_cast<FollowCamera*>(CameraManager::GetActiveCamera());
+        if(followCamera){
             // すでにカメラ演出が開始されていなければ、元のターゲットを保存
-            if (!cameraViewActive_){
+            if(!cameraViewActive_){
                 followCamera->SetTarget(cameraTarget_.get());
                 followCamera->SetisViewingObject(true);
             }
+
+            followCamera->prePhi_ = followCamera->GetPhi();
             cameraViewActive_ = true;
             shouldPerformCameraView_ = true;
         }
     }
 
     // 対象のイベントのみ処理する
-    if (event == "SwitchActivated" || event == "LeverActivated"){
+    if(event == "SwitchActivated" || event == "LeverActivated"){
         SetIsOpened(true);  // 常に開く
-    } else if (event == "SwitchDeactivated" || event == "LeverDeactivated"){
+    } else if(event == "SwitchDeactivated" || event == "LeverDeactivated"){
         SetIsOpened(false); // 常に閉じる
     }
 }
@@ -158,7 +160,7 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_Door::SetActivator(FieldObject_Activator* pActivator){
     FieldObject_Activator* activator = pActivator;
-    if (activator){
+    if(activator){
         activator->RegisterObserver(this);
     }
     hasActivator_ = true;
@@ -166,7 +168,7 @@ void FieldObject_Door::SetActivator(FieldObject_Activator* pActivator){
 
 void FieldObject_Door::RemoveActivator(FieldObject_Activator* pActivator){
     FieldObject_Activator* activator = pActivator;
-    if (activator){
+    if(activator){
         activator->UnregisterObserver(this);
     }
     hasActivator_ = false;

@@ -16,7 +16,7 @@ class FieldObject_MoveFloor;
  * スイッチやレバー等の、何らかの手段で起動／停止を行うオブジェクトの基底クラス。
  * 重量判定や Observer 通知などの共通機能を持つ。
  */
-class FieldObject_Activator : public FieldObject, public ISubject{
+class FieldObject_Activator : public FieldObject,public ISubject{
 public:
     FieldObject_Activator() = default;
     virtual ~FieldObject_Activator() = default;
@@ -43,14 +43,14 @@ public:
     // Observer の登録を解除
     virtual void UnregisterObserver(IObserver* observer) override;
     // イベント通知
-    virtual void Notify(const std::string& event, void* data = nullptr) override;
+    virtual void Notify(const std::string& event,void* data = nullptr) override;
 
     std::vector<IObserver*>& GetObservers(){ return observers_; }
 
     //--- 衝突検知 ---------------------------------------------------//
 
     // 衝突したオブジェクトを受け取り、必要なら重量を加算する処理を行う
-    virtual void OnCollision( BaseObject* other, ObjectType objectType) override;
+    virtual void OnCollision(BaseObject* other,ObjectType objectType) override;
 
     //--- ドア／移動床との関連付け -----------------------------------//
 
@@ -74,6 +74,8 @@ public:
     void SetRequiredWeight(int weight){ requiredWeight_ = weight; }
     // 必要な重量を取得
     int GetRequiredWeight() const{ return requiredWeight_; }
+    // 今スイッチに乗っている重さ
+    float GetCurrentWeight()const{ return currentWeight_; }
     // ImGui等で操作しやすいようポインタを取得
     int* GetRequiredWeightPtr(){ return &requiredWeight_; }
 

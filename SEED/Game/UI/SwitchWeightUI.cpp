@@ -25,7 +25,7 @@ void SwitchWeightUI::Initialize(){
         isDoubleDigit_ = true;
         weightUI_[1] = std::make_unique<Sprite>("GameUI/num.png");
         weightUI_[1]->scale = {0.9f,0.9f};
-        weightUI_[1]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate() + Vector3(0.0f, whightUIOffsetY,0.0f));
+        weightUI_[1]->translate = CameraManager::GetActiveCamera()->ToScreenPosition(host_->GetWorldTranslate() + Vector3(0.0f,whightUIOffsetY,0.0f));
         weightUI_[1]->color = MyMath::FloatColor(0x173b4cff);
         weightUI_[1]->clipSize = {39.f,56.f};
         weightUI_[1]->clipLT = {0.f,0.f};
@@ -43,7 +43,8 @@ void SwitchWeightUI::Initialize(){
 }
 
 void SwitchWeightUI::Update(){
-    int hostWheight = host_->GetRequiredWeight();
+    int hostWheight = host_->GetRequiredWeight() - (int)host_->GetCurrentWeight();
+    hostWheight = std::clamp(hostWheight,0,host_->GetRequiredWeight());
 
     // 座標更新
     const Vector3& hostPos = host_->GetWorldTranslate();

@@ -15,6 +15,8 @@ public:
     void Update() override;
 
 private:
+    void OnCollision(BaseObject* other,ObjectType objectType) override;
+private:
     bool isAlive_ = true;
 
     //member

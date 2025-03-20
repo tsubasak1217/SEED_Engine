@@ -39,13 +39,28 @@ void PlayerCorpse::Initialize(const Vector3& scale){
 //////////////////////////////////////////////////////////////////////////
 void PlayerCorpse::Update(){
     BaseObject::Update();
-    EditCollider();
 
     // 地面ではなく,y==0に落下したら削除
-    if(this->GetWorldTranslate().y <= 0.0f){
+    if(this->GetWorldTranslate().y <= -20.0f){
         isAlive_ = false;
     } else{
         HandOverColliders();
     }
 
+}
+
+void PlayerCorpse::OnCollision(BaseObject* other,ObjectType objectType){
+    // 移動床に触れている状態
+    if((int32_t)objectType & (int32_t)ObjectType::Move){
+        // 親子付けを行い移動床基準のトランスフォームに変換
+        SetParent(other);
+
+        Vector3 preTranslate = GetWorldTranslate();
+        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Vector3 localTranslate = preTranslate * invParentMat;
+        localTranslate *= ExtractScale(GetParent()->GetWorldMat());
+        SetTranslate(localTranslate);
+        UpdateMatrix();
+        Vector3 newTranslate = GetWorldTranslate();
+    }
 }

@@ -21,7 +21,7 @@ public:
     void Update()override;
     void Draw() override;
 protected:
-    virtual void ManageState()override;
+   void ManageState()override;
 
 private:
 

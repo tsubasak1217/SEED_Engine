@@ -182,8 +182,27 @@ void PlayerState_Spawn::ManageState(){
             //Sound
             AudioManager::PlayAudio("SE/dinosaur_born.wav",false,0.7f);
 
+            // 死体を作成
+            if(spawnCorpse_){
+                Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
+                std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
+                pCorpse->Initialize();
+                // Playerが parent を持っていれば parentを 継承
+                if(pCharacter_->GetParent()){
+                    pCorpse->SetParent(pCharacter_->GetParent());
+                }
+                pCorpse->SetManager(pPlayer->GetCorpseManager());
+                pCorpse->SetScale(beforePlayerScale_);
+                pCorpse->SetSwitchPushWeight(beforePlayerWeight_);
+                pCorpse->SetRotateX(pPlayer->GetWorldRotate().x);
+                pCorpse->SetRotateY(pPlayer->GetWorldRotate().y);
+                pCorpse->SetTranslate(pCharacter_->GetLocalTranslate());
+                pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
+            }
+
             // 移動
             // 卵が親子付けされていたらplayerも親子付け
+            // Playerの親子付けを解除する前に保存
             pCharacter_->ReleaseParent();// 親子付けを解除
             if(egg_->GetParent()){
                 Matrix4x4 invParentMat = InverseMatrix(egg_->GetParent()->GetWorldMat());
@@ -205,20 +224,6 @@ void PlayerState_Spawn::ManageState(){
             // 重力を適応,当たり判定を取らないように
             pCharacter_->SetIsApplyGravity(false);
             pCharacter_->SetCollidable(false);
-
-            // 死体を作成
-            if(spawnCorpse_){
-                Player* pPlayer = dynamic_cast<Player*>(pCharacter_);
-                std::unique_ptr<PlayerCorpse> pCorpse = std::make_unique<PlayerCorpse>();
-                pCorpse->Initialize();
-                pCorpse->SetManager(pPlayer->GetCorpseManager());
-                pCorpse->SetScale(beforePlayerScale_);
-                pCorpse->SetSwitchPushWeight(beforePlayerWeight_);
-                pCorpse->SetRotateX(pPlayer->GetWorldRotate().x);
-                pCorpse->SetRotateY(pPlayer->GetWorldRotate().y);
-                pCorpse->SetTranslate(deadPos_);
-                pPlayer->GetCorpseManager()->AddPlayerCorpse(pCorpse);
-            }
 
             movedGhost_ = true;
         }

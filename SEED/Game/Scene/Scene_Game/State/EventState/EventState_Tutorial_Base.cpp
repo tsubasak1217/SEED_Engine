@@ -1,4 +1,5 @@
 #include "EventState_Tutorial_Base.h"
+#include "Player/PlayerState/PlayerState_Idle.h"
 
 //static変数の初期化
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textFieldSprite_;
@@ -29,6 +30,7 @@ void EventState_Tutorial_Base::Initialize(Scene_Base* pScene){
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
     pPlayer_->SetIsMovable(false);
+    pPlayer_->ChangeState(new PlayerState_Idle("Player_Idle", pPlayer_));
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");

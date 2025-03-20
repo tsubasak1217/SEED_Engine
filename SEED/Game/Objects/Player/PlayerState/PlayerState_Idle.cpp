@@ -24,7 +24,15 @@ PlayerState_Idle::PlayerState_Idle(const std::string& stateName,BaseCharacter* p
     Initialize(stateName,player);
 }
 
-PlayerState_Idle::~PlayerState_Idle(){}
+PlayerState_Idle::~PlayerState_Idle(){
+    if(Player* pPlayer = dynamic_cast<Player*>(pCharacter_)){
+        // スティックの入力を取得
+        Vector2 stickDirection_ = PlayerInput::CharacterMove::GetCharacterMoveDirection();
+        if(MyMath::LengthSq(stickDirection_) == 0.0f){
+            pPlayer->ReleasePreCameraRotate();
+        }
+    }
+}
 
 void PlayerState_Idle::Initialize(const std::string& stateName,BaseCharacter* player){
     ICharacterState::Initialize(stateName,player);
@@ -39,10 +47,6 @@ void PlayerState_Idle::Update(){
     // コライダーの更新
     for(auto& collider : colliders_){
         collider->Update();
-    }
-
-    if(Player* pPlayer = dynamic_cast<Player*>(pCharacter_)){
-        pPlayer->ReleasePreCameraRotate();
     }
 
     HandOverColliders();

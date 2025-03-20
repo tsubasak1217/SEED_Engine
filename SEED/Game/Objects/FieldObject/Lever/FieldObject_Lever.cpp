@@ -77,6 +77,8 @@ void FieldObject_Lever::EndFrame(){
         AudioManager::PlayAudio("SE/switch.wav",false,0.7f);
     }
 
+    SetColor({ 1.0f,0.0f,0.0f,1.0f });
+
     FieldObject::EndFrame();
 }
 
@@ -89,6 +91,9 @@ void FieldObject_Lever::Toggle(){
 
     // イベント名を設定
     std::string event = isActivated_ ? "LeverActivated" : "LeverDeactivated";
+
+    // 反転する(レバー引いた風)
+    SetRotateY(GetLocalRotate().y + 3.141592f);
 
     // Observer に通知
     Notify(event);

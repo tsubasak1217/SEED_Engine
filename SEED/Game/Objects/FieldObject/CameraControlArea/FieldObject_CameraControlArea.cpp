@@ -126,10 +126,12 @@ void FieldObject_CameraControlArea::EndFrame(){
             if(!isCollidePlayerAll_){
                 // 角度と距離を元に戻す
                 pCamera_->SetIsInputActive(true);
-                pCamera_->SetDistance(preDistance_.value());
-                pCamera_->SetTheta(exitTheta_);
-                pCamera_->SetPhi(exitPhi_);
+                pCamera_->SetDistance(50.0f);
 
+                if(isOutControl_){
+                    pCamera_->SetTheta(exitTheta_);
+                    pCamera_->SetPhi(exitPhi_);
+                }
                 // 空にしておく
                 preDistance_ = std::nullopt;
             }
@@ -188,6 +190,12 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
                     pCamera_->SetPhi(phi_);
                     pCamera_->SetDistance(distance_);
                 }
+            }
+
+            if(isOnceEvent_){
+                // 一度触れたら消える場合
+                removeFlag_ = true;
+                pCamera_->SetIsInputActive(true);
             }
         }
     }

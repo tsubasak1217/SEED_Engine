@@ -20,7 +20,9 @@ GameState_Select::GameState_Select(Scene_Base* pScene): State_Base(pScene){
     Initialize();
 }
 
-GameState_Select::~GameState_Select(){}
+GameState_Select::~GameState_Select(){
+    pGameScene_->Get_pPlayer()->SetCollidable(true);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -41,6 +43,8 @@ void GameState_Select::Initialize(){
     // 操作フラグをfalseにしておく
     pGameScene_->Get_pPlayer()->SetIsMovable(false);
     pGameScene_->Get_pPlayer()->SetTranslate(StageManager::GetStartPos());
+    pGameScene_->Get_pPlayer()->SetCollidable(false);
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
 
     fade_ = std::make_unique<Sprite>("SelectScene/fade.png");
     fade_->anchorPoint = Vector2(0.0f, 0.0f);
@@ -63,6 +67,9 @@ void GameState_Select::Finalize(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_Select::Update(){
     stageSelector_->Update();
+    pGameScene_->Get_pPlayer()->SetIsMovable(false);
+    pGameScene_->Get_pPlayer()->SetCollidable(false);
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

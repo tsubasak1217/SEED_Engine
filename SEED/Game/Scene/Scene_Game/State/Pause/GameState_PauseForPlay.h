@@ -8,7 +8,7 @@ class GameState_PauseForPlay:public GameState_PauseBase{
 public:
     GameState_PauseForPlay() = default;
     GameState_PauseForPlay(Scene_Base* pScene);
-    ~GameState_PauseForPlay()override = default;
+    ~GameState_PauseForPlay()override;
     void Initialize()override;
     void Update()override;
     void Draw()override;

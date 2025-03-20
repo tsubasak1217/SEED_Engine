@@ -24,6 +24,12 @@ GameState_PauseForPlay::GameState_PauseForPlay(Scene_Base* pScene)
     Initialize();
 }
 
+GameState_PauseForPlay::~GameState_PauseForPlay(){
+    pGameScene_->Get_pPlayer()->SetIsMovable(true);
+    pGameScene_->Get_pPlayer()->SetCollidable(true);
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(true);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 // 初期化処理
@@ -53,6 +59,10 @@ void GameState_PauseForPlay::Initialize(){
         pauseMenuItems_[i]->second.translate = {-380.0f,(( float ) kWindowSizeY * 0.25f) * (i + 1)};
     }
 
+    pGameScene_->Get_pPlayer()->SetIsMovable(false);
+    pGameScene_->Get_pPlayer()->SetCollidable(false);
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
+
     GameState_PauseBase::Initialize();
 }
 
@@ -63,6 +73,7 @@ void GameState_PauseForPlay::Initialize(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void GameState_PauseForPlay::Update(){
     GameState_PauseBase::Update();
+    pGameScene_->Get_pPlayer()->SetIsApplyGravity(false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

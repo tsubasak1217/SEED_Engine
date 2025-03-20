@@ -141,6 +141,10 @@ void BaseCharacter::HandleRotate(const Vector3& rotate){
 //////////////////////////////////////////////////////////////////////////
 void BaseCharacter::HandOverColliders(){
 
+    if(!isHandOverColliders_){
+        return;
+    }
+
     // 基本コライダーを渡す
     BaseObject::HandOverColliders();
 

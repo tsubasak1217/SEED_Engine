@@ -1,4 +1,5 @@
 #include "EventState_Tutorial_ThrowEgg.h"
+#include "FollowCamera.h"
 
 EventState_Tutorial_ThrowEgg::EventState_Tutorial_ThrowEgg(){
 }
@@ -12,4 +13,7 @@ EventState_Tutorial_ThrowEgg::EventState_Tutorial_ThrowEgg(Scene_Base* pScene) :
 
 EventState_Tutorial_ThrowEgg::~EventState_Tutorial_ThrowEgg(){
     pPlayer_->SetIsMovable(true);
+    if(FollowCamera* followCamera = dynamic_cast<FollowCamera*>(pPlayer_->GetFollowCamera())){
+        followCamera->SetDistance(50.0f);
+    }
 }

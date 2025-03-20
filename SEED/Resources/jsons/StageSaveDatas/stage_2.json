@@ -2471,7 +2471,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.8021668195724487,
+                2.752584457397461,
                 0.0
             ],
             "scale": [
@@ -3302,6 +3302,28 @@
             "type": 0
         },
         {
+            "eventFunctionKey": "Tutorial_ThrowEgg",
+            "fieldObjectID": "3d25c0a7-0b56-7538-21cd-9fa73d8fcb7d",
+            "isOnceEvent": true,
+            "name": "EventArea",
+            "position": [
+                -116.5,
+                35.0,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                5.800000190734863,
+                5.100002288818359,
+                2.5
+            ],
+            "type": 9
+        },
+        {
             "fieldObjectID": "1db6f7fd-78b9-a276-59b6-1a730a40cbe4",
             "name": "Soil",
             "position": [
@@ -3551,7 +3573,7 @@
             ],
             "rotation": [
                 -0.0,
-                2.970032215118408,
+                1.2416284084320068,
                 0.0
             ],
             "scale": [
@@ -5122,6 +5144,26 @@
             "type": 0
         },
         {
+            "fieldObjectID": "29092ec1-1b9f-e773-4993-5b135cdd88fb",
+            "name": "Star",
+            "position": [
+                -100.0,
+                15.0,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                1.7604881525039673,
+                0.0
+            ],
+            "scale": [
+                2.499999523162842,
+                2.5,
+                2.499999523162842
+            ],
+            "type": 2
+        },
+        {
             "eventFunctionKey": "Tutorial_ThrowLength",
             "fieldObjectID": "69a95415-5523-defd-6496-12e444cc69a9",
             "isOnceEvent": true,
@@ -5388,6 +5430,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": 1.5700000524520874,
             "fieldObjectID": "4b6465d5-48fa-bacc-6fb4-c35565f68232",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": true,
             "name": "CameraControlArea",
             "phi": 0.0,
@@ -5424,6 +5468,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": -1.5700000524520874,
             "fieldObjectID": "4514f51a-0d30-2c5f-3fa2-041d00194688",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": false,
             "name": "CameraControlArea",
             "phi": 1.3799999952316284,
@@ -5620,6 +5666,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": -1.5700000524520874,
             "fieldObjectID": "4cbe56bb-4876-4734-15ac-8cf320c5b68e",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": false,
             "name": "CameraControlArea",
             "phi": 1.2100000381469727,
@@ -5780,24 +5828,120 @@
                 2.5
             ],
             "type": 13
+        },
+        {
+            "fieldObjectID": "3398f14e-350a-68a1-61fd-c4226baab2a5",
+            "name": "Fence",
+            "position": [
+                -110.0,
+                25.0,
+                -65.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 21.5,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "622586bf-14bf-d570-228f-8f675e372cc6",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "name": "CameraControlArea",
+            "phi": 1.3700000047683716,
+            "position": [
+                -116.5999984741211,
+                32.20000076293945,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                5.900000095367432,
+                3.799999952316284,
+                2.5
+            ],
+            "theta": 5.409999847412109,
+            "type": 19
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "4f1c11af-39c7-9d88-7d89-4f034d55cf9d",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "name": "CameraControlArea",
+            "phi": 0.9599999785423279,
+            "position": [
+                -85.0,
+                46.0,
+                -75.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "theta": 5.550000190734863,
+            "type": 19
         }
     ],
     "player": {
         "GrowLevel": 1,
         "Rotate": {
             "x": -0.0,
-            "y": 1.2307440042495728,
+            "y": 0.7300000190734863,
             "z": 0.0
         },
         "Scale": {
-            "x": 1.013999581336975,
-            "y": 1.013999581336975,
-            "z": 1.013999581336975
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
         },
         "Translate": {
-            "x": -93.28929138183594,
-            "y": 24.95930290222168,
-            "z": -84.38590240478516
+            "x": -85.0,
+            "y": 39.95999526977539,
+            "z": -75.0
         },
         "Weight": 14.050000190734863
     },

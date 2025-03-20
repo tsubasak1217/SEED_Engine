@@ -4,6 +4,8 @@
 #include "Player/Player.h"
 #include "../GameSystem.h"
 
+#include "GameState_Play.h"
+
 // PlayerState
 #include "Player/PlayerState/PlayerState_Idle.h"
 
@@ -133,7 +135,9 @@ void Stage::Update(){
             pPlayer_->SetIsMovable(false);
         } else{
             if(!GameSystem::GetScene()->HasEvent()){
-                pPlayer_->SetIsMovable(true);
+                if(GameState_Play* playState = dynamic_cast<GameState_Play*>(GameSystem::GetScene()->GetCurrentState())){
+                    pPlayer_->SetIsMovable(true);
+                }
             }
         }
     }
@@ -491,6 +495,12 @@ void Stage::LoadFromJson(const std::string& filePath){
                 }
                 if(modelJson.contains("cameraRotate")){
                     cameraControlArea->cameraRotate_ = modelJson["cameraRotate"];
+                }
+                if(modelJson.contains("isOnceEvent") && modelJson["isOnceEvent"].is_boolean()){
+                    cameraControlArea->isOnceEvent_ = modelJson["isOnceEvent"].get<bool>();
+                }
+                if(modelJson.contains("isOutControl") && modelJson["isOutControl"].is_boolean()){
+                    cameraControlArea->isOutControl_ = modelJson["isOutControl"].get<bool>();
                 }
             }
         }

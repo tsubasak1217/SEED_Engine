@@ -1,6 +1,7 @@
 #include "FieldObject_Goal.h"
 #include "StageManager.h"
 #include "SEED.h"
+#include <../Game/GameSystem.h>
 
 //input
 #include "../PlayerInput/PlayerInput.h"
@@ -96,12 +97,15 @@ void FieldObject_Goal::EndFrame(){
 void FieldObject_Goal::OnCollision(BaseObject* other,ObjectType objectType){
     other;
     if(objectType == ObjectType::Player){
-        if(PlayerInput::CharacterMove::GoNextStage()){
-            // ゴールしたことを通知
-            isGoal_ = true;
-        }
+        if(!GameSystem::GetScene()->HasEvent()){
 
-        // プレイヤーが触れたことを記録
-        isTouchedPlayer_ = true;
+            if(PlayerInput::CharacterMove::GoNextStage()){
+                // ゴールしたことを通知
+                isGoal_ = true;
+            }
+
+            // プレイヤーが触れたことを記録
+            isTouchedPlayer_ = true;
+        }
     }
 }

@@ -41,6 +41,10 @@ void PlayerState_Idle::Update(){
         collider->Update();
     }
 
+    if(Player* pPlayer = dynamic_cast<Player*>(pCharacter_)){
+        pPlayer->ReleasePreCameraRotate();
+    }
+
     HandOverColliders();
 }
 

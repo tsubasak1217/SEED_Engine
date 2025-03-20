@@ -76,6 +76,7 @@ public:// アクセッサ-------------------------------------------------------
     ColliderType GetColliderType()const{ return colliderType_; }
     uint32_t GetColliderID()const{ return colliderID_; }
     void SetColliderID(uint32_t colliderID){ colliderID_ = colliderID; }
+    void SetIsActive(bool isActive){ isActive_ = isActive; }
 
     // ペアレント情報
     void SetParentMatrix(const Matrix4x4* parentMat, bool isParentScale = true){
@@ -126,6 +127,7 @@ protected:// 基礎情報-------------------------------------------------------
     bool preIsCollision_ = false;
     Vector3 collidedPosition_;
     Vector4 color_;
+    bool isActive_ = true;
 
 protected:// 親子付け情報-----------------------------------------------------------
     const Matrix4x4* parentMat_ = nullptr;

@@ -24,6 +24,10 @@ public:
 
     // カメラの位置を固定するかどうか
     bool isPositionFixed_ = false;
+    // 一度触れたら消えるかどうか
+    bool isOnceEvent_ = false;
+    // エリアを抜ける際にカメラの角度を設定するかどうか
+    bool isOutControl_ = true;
 
     // 固定する場合のトランスフォーム情報
     Vector3 cameraPos_;

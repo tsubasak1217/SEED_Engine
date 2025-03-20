@@ -290,6 +290,8 @@ void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool 
                 modelJson["exitTheta"] = cameraControlArea->exitTheta_;
                 modelJson["exitPhi"] = cameraControlArea->exitPhi_;
                 modelJson["distance"] = cameraControlArea->distance_;
+                modelJson["isOutControl"] = cameraControlArea->isOutControl_;
+                modelJson["isOnceEvent"] = cameraControlArea->isOnceEvent_;
             }
 
             jsonData["models"].push_back(modelJson);
@@ -751,8 +753,17 @@ void FieldEditor::ShowImGui(){
                         ImGui::DragFloat("phi", &cameraControlArea->phi_, 0.01f, 0.0f, 3.14159f);
                     }
 
-                    ImGui::DragFloat("exitTheta", &cameraControlArea->exitTheta_, 0.01f, 0.0f, 2.0f * 3.14159f);
-                    ImGui::DragFloat("exitPhi", &cameraControlArea->exitPhi_, 0.01f, 0.0f, 3.14159f);
+                    ImGui::Checkbox("isOnceEvent", &cameraControlArea->isOnceEvent_);// 一度だけイベントを発生させるか
+
+                    if(cameraControlArea->isOnceEvent_){
+                        cameraControlArea->isOutControl_ = false;
+                    } else{
+                        ImGui::Checkbox("isOutControl", &cameraControlArea->isOutControl_);// エリア外に出た際にカメラを制御するか
+                        if(cameraControlArea->isOutControl_){
+                            ImGui::DragFloat("exitTheta", &cameraControlArea->exitTheta_, 0.01f, 0.0f, 2.0f * 3.14159f);
+                            ImGui::DragFloat("exitPhi", &cameraControlArea->exitPhi_, 0.01f, 0.0f, 3.14159f);
+                        }
+                    }
 
                     ImGui::Separator();
                 }

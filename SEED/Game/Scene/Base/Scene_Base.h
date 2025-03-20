@@ -19,6 +19,7 @@ public:
 public:
     void ChangeScene(const std::string& nextSceneName);
     void ChangeState(State_Base* nextState);
+    State_Base* GetCurrentState(){ return currentState_.get(); };
     void CauseEvent(EventState_Base* nextEventState);
     void EndEvent() { currentEventState_ = nullptr; };
     bool HasEvent(){ return currentEventState_ != nullptr; };

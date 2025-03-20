@@ -2471,7 +2471,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.1270928382873535,
+                1.80342435836792,
                 0.0
             ],
             "scale": [
@@ -3573,7 +3573,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.6380791664123535,
+                0.2924685478210449,
                 0.0
             ],
             "scale": [
@@ -5153,7 +5153,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.1192193031311035,
+                0.8113283514976501,
                 0.0
             ],
             "scale": [
@@ -5430,6 +5430,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": 1.5700000524520874,
             "fieldObjectID": "4b6465d5-48fa-bacc-6fb4-c35565f68232",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": true,
             "name": "CameraControlArea",
             "phi": 0.0,
@@ -5466,6 +5468,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": -1.5700000524520874,
             "fieldObjectID": "4514f51a-0d30-2c5f-3fa2-041d00194688",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": false,
             "name": "CameraControlArea",
             "phi": 1.3799999952316284,
@@ -5662,6 +5666,8 @@
             "exitPhi": 1.4129999876022339,
             "exitTheta": -1.5700000524520874,
             "fieldObjectID": "4cbe56bb-4876-4734-15ac-8cf320c5b68e",
+            "isOnceEvent": false,
+            "isOutControl": true,
             "isPositionFixed": false,
             "name": "CameraControlArea",
             "phi": 1.2100000381469727,
@@ -5822,6 +5828,102 @@
                 2.5
             ],
             "type": 13
+        },
+        {
+            "fieldObjectID": "3398f14e-350a-68a1-61fd-c4226baab2a5",
+            "name": "Fence",
+            "position": [
+                -110.0,
+                25.0,
+                -65.0
+            ],
+            "rotation": [
+                -0.0,
+                1.5707950592041016,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "type": 13
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 21.5,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "622586bf-14bf-d570-228f-8f675e372cc6",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "name": "CameraControlArea",
+            "phi": 1.3700000047683716,
+            "position": [
+                -116.5999984741211,
+                32.20000076293945,
+                -70.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                5.900000095367432,
+                3.799999952316284,
+                2.5
+            ],
+            "theta": 5.409999847412109,
+            "type": 19
+        },
+        {
+            "cameraPos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "cameraRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "distance": 50.0,
+            "exitPhi": 1.4129999876022339,
+            "exitTheta": -1.5700000524520874,
+            "fieldObjectID": "4f1c11af-39c7-9d88-7d89-4f034d55cf9d",
+            "isOnceEvent": true,
+            "isOutControl": false,
+            "isPositionFixed": false,
+            "name": "CameraControlArea",
+            "phi": 0.9599999785423279,
+            "position": [
+                -85.0,
+                46.0,
+                -75.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                2.5,
+                2.5,
+                2.5
+            ],
+            "theta": 5.550000190734863,
+            "type": 19
         }
     ],
     "stage": 2

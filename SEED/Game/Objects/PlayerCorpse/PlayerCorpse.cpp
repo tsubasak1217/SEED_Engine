@@ -48,3 +48,19 @@ void PlayerCorpse::Update(){
     }
 
 }
+
+void PlayerCorpse::OnCollision(BaseObject* other,ObjectType objectType){
+    // 移動床に触れている状態
+    if((int32_t)objectType & (int32_t)ObjectType::Move){
+        // 親子付けを行い移動床基準のトランスフォームに変換
+        SetParent(other);
+
+        Vector3 preTranslate = GetWorldTranslate();
+        Matrix4x4 invParentMat = InverseMatrix(GetParent()->GetWorldMat());
+        Vector3 localTranslate = preTranslate * invParentMat;
+        localTranslate *= ExtractScale(GetParent()->GetWorldMat());
+        SetTranslate(localTranslate);
+        UpdateMatrix();
+        Vector3 newTranslate = GetWorldTranslate();
+    }
+}

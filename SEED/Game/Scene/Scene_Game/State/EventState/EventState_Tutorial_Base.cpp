@@ -5,7 +5,7 @@
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textFieldSprite_;
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textSprite_;
 std::unique_ptr<Sprite> EventState_Tutorial_Base::skipButtonUI_;
-
+std::unique_ptr<Sprite> EventState_Tutorial_Base::progressButtonUI_;
 
 EventState_Tutorial_Base::EventState_Tutorial_Base(){
 }
@@ -48,6 +48,11 @@ void EventState_Tutorial_Base::Initialize(Scene_Base* pScene){
     skipButtonUI_ = std::make_unique<Sprite>("GameUI/skip.png");
     skipButtonUI_->anchorPoint = {0.5f,0.5f};
     skipButtonUI_->translate = {1114.f,50.f};
+
+    // progressButtonUI
+    progressButtonUI_ = std::make_unique<Sprite>("GameUI/a.png");
+    progressButtonUI_->anchorPoint = {0.5f,0.5f};
+    progressButtonUI_->translate = {1114.f,680.f};
 
     //
     kTime_ = 1.0f;
@@ -124,4 +129,5 @@ void EventState_Tutorial_Base::Draw(){
     textFieldSprite_->Draw();
     textSprite_->Draw();
     skipButtonUI_->Draw();
+    progressButtonUI_->Draw();
 }

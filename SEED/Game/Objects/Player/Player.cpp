@@ -123,6 +123,9 @@ void Player::Draw(){
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
 void Player::BeginFrame(){
+    if(isGameOver_){
+        SetAnimation("dead",false);
+    }
 
     // 落下中かつジャンプ可能でないとき or ジャンプ時
     if((isDrop_ && !IsJumpable()) or isJump_){
@@ -142,7 +145,6 @@ void Player::BeginFrame(){
 
     // スイッチ用の重量の更新
     switchPushWeight_ = 1.0f + (1.00f * (growLevel_ - 1));
-
 
     BaseCharacter::BeginFrame();
 
@@ -166,10 +168,6 @@ void Player::EndFrame(){
     if(!isDrop_){
         lastPosOnGround_ = GetLocalTranslate();
     }
-
-    if(isGameOver_){
-        SetAnimation("dead",false);
-    } 
 }
 
 void Player::Spawn(Egg* _egg){

@@ -224,6 +224,9 @@ void Stage::ClearAllFieldObjects(){
         }
     }
     fieldObjects_.clear();
+    startObject_ = nullptr;
+    goalObject_ = nullptr;
+    starObjects_.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -237,6 +240,10 @@ void Stage::AddFieldObject(std::unique_ptr<FieldObject> obj){
     }
 
     fieldObjects_.push_back(std::move(obj));
+
+    if(FieldObject_Star* star = dynamic_cast<FieldObject_Star*>(fieldObjects_.back().get())){
+        starObjects_.push_back(star);
+    }
 }
 
 void Stage::RemoveFieldObject(FieldObject* objToRemove){
@@ -586,8 +593,6 @@ void Stage::AddModel(
             break;
         case FIELDMODEL_STAR:
             newObj = std::make_unique<FieldObject_Star>();
-            // Star を 保持
-            starObjects_.push_back(dynamic_cast<FieldObject_Star*>(newObj.get()));
             break;
         case FIELDMODEL_DOOR:
             newObj = std::make_unique<FieldObject_Door>();

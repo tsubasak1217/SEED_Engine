@@ -1262,28 +1262,6 @@
             "type": 0
         },
         {
-            "eventFunctionKey": "Tutorial_EatEnemy",
-            "fieldObjectID": "52f8e0db-05a5-265b-596a-9574492de530",
-            "isOnceEvent": true,
-            "name": "EventArea",
-            "position": [
-                10.0,
-                40.0,
-                -180.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                17.5,
-                7.5,
-                7.5
-            ],
-            "type": 9
-        },
-        {
             "fieldObjectID": "51cd73d0-00be-7693-49dc-f6d2508b97b6",
             "name": "GrassSoil",
             "position": [
@@ -3954,28 +3932,6 @@
             "type": 18
         },
         {
-            "eventFunctionKey": "Tutorial_Goal",
-            "fieldObjectID": "3a535f2a-76eb-020a-5593-6c263c50fcba",
-            "isOnceEvent": true,
-            "name": "EventArea",
-            "position": [
-                5.0,
-                40.0,
-                -235.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                7.5,
-                7.5,
-                7.5
-            ],
-            "type": 9
-        },
-        {
             "fieldObjectID": "0ae635e5-6160-321a-28d6-856f5442eb93",
             "name": "SaveArea",
             "position": [
@@ -3996,45 +3952,6 @@
             "type": 18
         },
         {
-            "cameraPos": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "cameraRotate": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "distance": 50.0,
-            "exitPhi": 1.4129999876022339,
-            "exitTheta": -1.5700000524520874,
-            "fieldObjectID": "75b1513e-6e12-5d29-5282-9de951442768",
-            "isOnceEvent": true,
-            "isOutControl": false,
-            "isPositionFixed": false,
-            "isSavePreCameraRotate": false,
-            "name": "CameraControlArea",
-            "phi": 1.4520000219345093,
-            "position": [
-                -5.0,
-                31.0,
-                -250.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "theta": 5.510000228881836,
-            "type": 19
-        },
-        {
             "fieldObjectID": "23be74f4-02bd-7f49-332f-1c4614a2c760",
             "name": "Star",
             "position": [
@@ -4044,7 +3961,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.473867416381836,
+                -1.949022889137268,
                 0.0
             ],
             "scale": [
@@ -4064,7 +3981,7 @@
             ],
             "rotation": [
                 -0.0,
-                1.571695327758789,
+                1.0965512990951538,
                 0.0
             ],
             "scale": [
@@ -4084,7 +4001,7 @@
             ],
             "rotation": [
                 -0.0,
-                -1.7775914669036865,
+                -2.2527451515197754,
                 0.0
             ],
             "scale": [
@@ -4099,7 +4016,7 @@
         "GrowLevel": 1,
         "Rotate": {
             "x": -0.0,
-            "y": 0.7300000190734863,
+            "y": 0.7106925845146179,
             "z": 0.0
         },
         "Scale": {
@@ -4108,9 +4025,9 @@
             "z": 1.0
         },
         "Translate": {
-            "x": -5.0,
+            "x": 27.360132217407227,
             "y": 24.96000099182129,
-            "z": -250.0
+            "z": -174.14776611328125
         },
         "Weight": 14.050000190734863
     },

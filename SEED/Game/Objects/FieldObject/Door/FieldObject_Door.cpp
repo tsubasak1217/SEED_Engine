@@ -3,6 +3,7 @@
 #include "State/ClosingState.h"
 #include "State/OpenedState.h"
 #include "State/ClosedState.h"
+#include "StageManager.h"
 
 // local
 #include "../FieldObject/Activator/FieldObject_Activator.h"
@@ -61,6 +62,7 @@ void FieldObject_Door::Initialize(){
     isOpened_ = false;
     hasActivator_ = false;
     ChangeState(new ClosingState());
+    stageNum_ = StageManager::GetCurrentStageNo();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -128,7 +130,8 @@ void FieldObject_Door::OnNotify(const std::string& event, [[maybe_unused]] void*
     }
 
     // もしカメラ演出を行う必要があるなら
-    if(shouldPerformCameraView_){
+    int currentStageNo = StageManager::GetCurrentStageNo();
+    if(shouldPerformCameraView_&&currentStageNo == stageNum_){
         // ドアの現在位置に合わせてカメラターゲットを更新
         cameraTarget_->SetTranslate(GetWorldTranslate());
         cameraTarget_->UpdateMatrix();

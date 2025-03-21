@@ -70,6 +70,6 @@ private:
     float openSpeed_ = 8.0f;                    //< 開閉速度
     float kMaxOpenHeight_ =5.0f;                //< 最大開く高さ
     float closedPosY_ = 0.0f;                   //< 閉じた後のy座標
-
+    int stageNum_ = 0;                          //< ステージ番号      
     std::unique_ptr<BaseObject> cameraTarget_ = nullptr;        //< カメラ移動ターゲット
 };

@@ -316,7 +316,7 @@
             ],
             "rotation": [
                 -0.0,
-                -2.8822646141052246,
+                0.7600813508033752,
                 0.0
             ],
             "scale": [
@@ -2728,8 +2728,8 @@
             "name": "moveFloor",
             "position": [
                 380.0,
-                55.0,
-                170.0
+                74.13817596435547,
+                117.37000274658203
             ],
             "rotation": [
                 -0.0,
@@ -3025,46 +3025,6 @@
             "type": 0
         },
         {
-            "fieldObjectID": "09451c9c-10da-dfe7-7ea4-0718395d0fd4",
-            "name": "Chikuwa",
-            "position": [
-                417.5,
-                45.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                4.999997615814209,
-                2.5,
-                7.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "0e4edf7d-443d-3a5a-4350-458a28667f16",
-            "name": "Chikuwa",
-            "position": [
-                425.0,
-                50.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                7.5
-            ],
-            "type": 17
-        },
-        {
             "fieldObjectID": "6dff7dff-7b7e-475e-0658-b1972b534706",
             "name": "tile",
             "position": [
@@ -3098,7 +3058,7 @@
             ],
             "rotation": [
                 -0.0,
-                0.0,
+                3.141592025756836,
                 0.0
             ],
             "scale": [
@@ -3922,7 +3882,7 @@
             ],
             "rotation": [
                 -0.0,
-                -0.6801340579986572,
+                2.9621686935424805,
                 0.0
             ],
             "scale": [
@@ -4045,7 +4005,7 @@
             "openSpeed": 8.0,
             "position": [
                 380.0,
-                55.0,
+                80.0,
                 150.0
             ],
             "rotation": [
@@ -4060,46 +4020,6 @@
             ],
             "shouldPerformCameraView": true,
             "type": 3
-        },
-        {
-            "fieldObjectID": "42cf7592-1b09-545c-1840-487c10db14b3",
-            "name": "Chikuwa",
-            "position": [
-                430.0,
-                55.0,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                7.5
-            ],
-            "type": 17
-        },
-        {
-            "fieldObjectID": "3e063435-3857-5c45-3aa7-12743e37c431",
-            "name": "Star",
-            "position": [
-                440.0,
-                66.5,
-                185.0
-            ],
-            "rotation": [
-                -0.0,
-                -1.6730972528457642,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "type": 2
         },
         {
             "fieldObjectID": "1eaccd97-7ccd-95e0-00c1-550b52fdb509",
@@ -4379,46 +4299,26 @@
             ],
             "theta": 1.5700000524520874,
             "type": 19
-        },
-        {
-            "cameraPos": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "cameraRotate": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "distance": 50.0,
-            "exitPhi": 1.4129999876022339,
-            "exitTheta": -1.5700000524520874,
-            "fieldObjectID": "06e98e56-43b2-d6d0-60ce-cb396eb841d3",
-            "isOnceEvent": true,
-            "isOutControl": false,
-            "isPositionFixed": false,
-            "isSavePreCameraRotate": false,
-            "name": "CameraControlArea",
-            "phi": 1.7400000095367432,
-            "position": [
-                380.0,
-                60.0,
-                190.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                2.5,
-                2.5,
-                2.5
-            ],
-            "theta": 1.5299999713897705,
-            "type": 19
         }
     ],
+    "player": {
+        "GrowLevel": 1,
+        "Rotate": {
+            "x": 3.000704396072251e-07,
+            "y": -1.7304855585098267,
+            "z": -2.4010059718193588e-08
+        },
+        "Scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "Translate": {
+            "x": 369.10089111328125,
+            "y": 80.19295501708984,
+            "z": 114.32254028320313
+        },
+        "Weight": 14.050000190734863
+    },
     "stage": 5
 }

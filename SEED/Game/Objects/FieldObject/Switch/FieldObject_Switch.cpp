@@ -4,6 +4,8 @@
 #include "InputManager.h"
 #include "AudioManager.h"
 #include "Player/Player.h"
+#include "GameState_Play.h"
+#include "../Game/GameSystem.h"
 
 ////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -69,11 +71,17 @@ void FieldObject_Switch::BeginFrame(){
         // SE再生
         AudioManager::PlayAudio("SE/switch.wav",false,0.7f);
 
-        Notify("SwitchActivated", this);
+        if(GameState_Play* playstate = dynamic_cast<GameState_Play*>(GameSystem::GetScene()->GetCurrentState())){
+            Notify("SwitchActivated", this);
+        }
+
     } else if (!isColliding_ && isActivated_){
         // 何も乗っていない状態で、現在起動状態であれば
         isActivated_ = false;
-        Notify("SwitchDeactivated", this);
+
+        if(GameState_Play* playstate = dynamic_cast<GameState_Play*>(GameSystem::GetScene()->GetCurrentState())){
+            Notify("SwitchDeactivated", this);
+        }
     }
     // 基底クラスの BeginFrame() を呼ぶ（重さをリセット＆判定などを行う）
     FieldObject_Activator::BeginFrame();

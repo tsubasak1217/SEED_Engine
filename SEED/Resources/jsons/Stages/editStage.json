@@ -1,0 +1,80 @@
+{
+    "blocks": [
+        {
+            "address": {
+                "x": 6,
+                "y": 5
+            },
+            "type": 3
+        },
+        {
+            "address": {
+                "x": 2,
+                "y": 5
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 2,
+                "y": 4
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 2,
+                "y": 3
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 3,
+                "y": 3
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 4,
+                "y": 3
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 5,
+                "y": 3
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 4,
+                "y": 5
+            },
+            "type": 2
+        },
+        {
+            "address": {
+                "x": 0,
+                "y": 7
+            },
+            "type": 1
+        },
+        {
+            "address": {
+                "x": 0,
+                "y": 6
+            },
+            "type": 1
+        }
+    ],
+    "cameraHeight": 300.0,
+    "stageNo": -1,
+    "stageSize": {
+        "x": 10,
+        "y": 10
+    }
+}

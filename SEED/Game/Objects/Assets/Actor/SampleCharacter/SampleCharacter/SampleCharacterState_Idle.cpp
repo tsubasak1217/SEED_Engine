@@ -1,22 +1,22 @@
-#include "PlayerState_Idle.h"
+#include "SampleCharacterState_Idle.h"
 
 // 状態クラスのインクルード
-#include "PlayerState_Jump.h"
-#include "PlayerState_Move.h"
+#include "SampleCharacterState_Jump.h"
+#include "SampleCharacterState_Move.h"
 
 // 状態を表されている主
-#include <Game/Objects/Player/Player.h>
+#include <Game/Objects/Assets/Actor/SampleCharacter/SampleCharacter.h>
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-PlayerState_Idle::PlayerState_Idle(const std::string& stateName,BaseCharacter* player){
+SampleCharacterState_Idle::SampleCharacterState_Idle(const std::string& stateName,BaseCharacter* player){
     Initialize(stateName,player);
 }
 
-PlayerState_Idle::~PlayerState_Idle(){}
+SampleCharacterState_Idle::~SampleCharacterState_Idle(){}
 
-void PlayerState_Idle::Initialize(const std::string& stateName,BaseCharacter* player){
+void SampleCharacterState_Idle::Initialize(const std::string& stateName,BaseCharacter* player){
     ICharacterState::Initialize(stateName,player);
     pCharacter_->SetAnimation("idle",true);
 }
@@ -24,7 +24,7 @@ void PlayerState_Idle::Initialize(const std::string& stateName,BaseCharacter* pl
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void PlayerState_Idle::Update(){
+void SampleCharacterState_Idle::Update(){
 
     // コライダーの更新
     for(auto& collider : colliders_){
@@ -37,26 +37,26 @@ void PlayerState_Idle::Update(){
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void PlayerState_Idle::Draw(){}
+void SampleCharacterState_Idle::Draw(){}
 
 //////////////////////////////////////////////////////////////////////////
 // ステート管理
 //////////////////////////////////////////////////////////////////////////
-void PlayerState_Idle::ManageState(){
+void SampleCharacterState_Idle::ManageState(){
 
     if(!pCharacter_->GetIsMovable()){ return; }
 
     // ジャンプ状態へ
     if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         if(pCharacter_->IsJumpable()){
-            pCharacter_->ChangeState(new PlayerState_Jump("Player_Jump",pCharacter_));
+            pCharacter_->ChangeState(new SampleCharacterState_Jump("SampleCharacter_Jump",pCharacter_));
             return;
         }
     }
 
     // 移動
     if(MyMath::LengthSq(Input::GetStickValue(LR::LEFT))){
-        pCharacter_->ChangeState(new PlayerState_Move("Player_Move",pCharacter_));
+        pCharacter_->ChangeState(new SampleCharacterState_Move("SampleCharacter_Move",pCharacter_));
         return;
     }
 }

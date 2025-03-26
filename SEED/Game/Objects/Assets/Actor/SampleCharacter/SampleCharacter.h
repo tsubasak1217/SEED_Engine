@@ -13,12 +13,12 @@
 #include <SEED/Lib/Structs/Sprite.h>
 
 // state
-class IPlayerState;
+class ISampleCharacterState;
 
-class Player : public BaseCharacter{
+class SampleCharacter : public BaseCharacter{
 public:
-    Player();
-    ~Player();
+    SampleCharacter();
+    ~SampleCharacter();
     void Initialize() override;
     void Update() override;
     void Draw() override;

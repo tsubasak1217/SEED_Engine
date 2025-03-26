@@ -16,8 +16,10 @@
 #include <SEED/Source/Object/Camera/FollowCamera.h>
 
 // objects
-#include <Game/Objects/Player/Player.h>
+#include <Game/Objects/Assets/Actor/SampleCharacter/SampleCharacter.h>
 
+// manager
+#include <Game/Objects/Stage/StageManager.h>
 
 class Scene_Game
     : public Scene_Base{
@@ -38,5 +40,4 @@ private:
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 
-    std::unique_ptr<Model> model_ = nullptr;
 };

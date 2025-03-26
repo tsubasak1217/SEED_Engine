@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "SampleCharacter.h"
 
 // engine
 
@@ -9,22 +9,22 @@
 #include <SEED/Source/Object/Camera/FollowCamera.h>
 
 // 状態クラスのインクルード
-#include "PlayerState/PlayerState_Idle.h"
-#include "PlayerState/PlayerState_Jump.h"
-#include "PlayerState/PlayerState_Move.h"
+#include "SampleCharacter/SampleCharacterState_Idle.h"
+#include "SampleCharacter/SampleCharacterState_Jump.h"
+#include "SampleCharacter/SampleCharacterState_Move.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・初期化関数
 //////////////////////////////////////////////////////////////////////////
-Player::Player(): BaseCharacter(){
-    className_ = "Player";
-    name_ = "Player";
+SampleCharacter::SampleCharacter(): BaseCharacter(){
+    className_ = "SampleCharacter";
+    name_ = "SampleCharacter";
     Initialize();
 }
 
-Player::~Player(){}
+SampleCharacter::~SampleCharacter(){}
 
-void Player::Initialize(){
+void SampleCharacter::Initialize(){
 
     // 属性の決定
     objectType_ = ObjectType::Player;
@@ -48,15 +48,15 @@ void Player::Initialize(){
     targetOffset_ = Vector3(0.0f,7.0f,0.0f);
 
     // 状態の初期化
-    currentState_ = std::make_unique<PlayerState_Idle>("Player_Idle",this);
+    currentState_ = std::make_unique<SampleCharacterState_Idle>("SampleCharacter_Idle",this);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Update(){
+void SampleCharacter::Update(){
 #ifdef _DEBUG
-    ImGui::Begin("Player");
+    ImGui::Begin("SampleCharacter");
     ImGui::End();
 #endif // _DEBUG
 
@@ -66,14 +66,14 @@ void Player::Update(){
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void Player::Draw(){
+void SampleCharacter::Draw(){
     BaseCharacter::Draw();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::BeginFrame(){
+void SampleCharacter::BeginFrame(){
 
     // 落下中かつジャンプ可能でないとき or ジャンプ時
     if((isDrop_ && !IsJumpable()) or isJump_){
@@ -105,7 +105,7 @@ void Player::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::EndFrame(){
+void SampleCharacter::EndFrame(){
     BaseCharacter::EndFrame();
 }
 
@@ -113,7 +113,7 @@ void Player::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 // ステート関連
 //////////////////////////////////////////////////////////////////////////
-void Player::HandleMove(const Vector3& acceleration){
+void SampleCharacter::HandleMove(const Vector3& acceleration){
     // 移動
     if(isMovable_){
         model_->translate_ += acceleration;
@@ -127,7 +127,7 @@ void Player::HandleMove(const Vector3& acceleration){
 //////////////////////////////////////////////////////////////////////////
 // 基本的な情報をJson形式で出す
 //////////////////////////////////////////////////////////////////////////
-const nlohmann::json& Player::GetJsonData(){
+const nlohmann::json& SampleCharacter::GetJsonData(){
     static nlohmann::json json;
 
     // BaseObjectの情報と結合して出力
@@ -138,7 +138,7 @@ const nlohmann::json& Player::GetJsonData(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突時処理
 //////////////////////////////////////////////////////////////////////////
-void Player::OnCollision(BaseObject* other,ObjectType objectType){
+void SampleCharacter::OnCollision(BaseObject* other,ObjectType objectType){
 
     BaseObject::OnCollision(other,objectType);
 

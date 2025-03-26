@@ -1,11 +1,11 @@
 #pragma once
 #include <Game/Objects/Base/ICharacterState.h>
 
-class PlayerState_Idle : public ICharacterState{
+class SampleCharacterState_Idle : public ICharacterState{
 public:
-    PlayerState_Idle() = default;
-    PlayerState_Idle(const std::string& stateName, BaseCharacter* player);
-    ~PlayerState_Idle()override;
+    SampleCharacterState_Idle() = default;
+    SampleCharacterState_Idle(const std::string& stateName, BaseCharacter* player);
+    ~SampleCharacterState_Idle()override;
     void Update()override;
     void Draw()override;
     void Initialize(const std::string& stateName, BaseCharacter* player)override;

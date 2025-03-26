@@ -28,6 +28,7 @@ public:
     virtual void Draw();
     virtual void BeginFrame();
     virtual void EndFrame();
+    virtual void Edit();
 
     /*--- 物理・トランスフォーム関連 ---*/
 public:

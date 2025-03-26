@@ -11,6 +11,8 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     float distance_ = 50.0f;

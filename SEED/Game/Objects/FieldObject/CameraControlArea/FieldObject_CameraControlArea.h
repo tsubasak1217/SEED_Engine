@@ -17,6 +17,8 @@ public:
     void BeginFrame()override;
     void EndFrame()override;
     void OnCollision( BaseObject* other, ObjectType objectType)override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     // 試しにペアレントするかどうかのフラグ

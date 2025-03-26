@@ -3,16 +3,10 @@
 #include "Environment.h"
 #include "ParticleManager.h"
 #include "CameraManager/CameraManager.h"
-#include "../adapter/json/JsonCoordinator.h"
 #include "AudioManager.h"
 
 // 各ステートのインクルード
 #include <GameState_Play.h>
-#include <GameState_Select.h>
-#include <GameState_Title.h>
-#include <Scene_Game/State/Pause/GameState_PauseBase.h>
-#include <GameState_Exit.h>
-#include <GameState_Enter.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -22,13 +16,12 @@
 
 Scene_Game::Scene_Game(){
     Initialize();
-    ChangeState(new GameState_Title(this));
+    ChangeState(new GameState_Play(this));
 };
 
 Scene_Game::~Scene_Game(){
     CameraManager::DeleteCamera("follow");
     CameraManager::SetActiveCamera("main");
-    AudioManager::EndAudio(currentBGM);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -43,11 +36,7 @@ void Scene_Game::Initialize(){
     // マネージャー初期化
     ////////////////////////////////////////////////////
 
-    // EventManager
-    stageManager_ = std::make_unique<StageManager>(eventManager_);
 
-    // EggManager
-    eggManager_ = std::make_unique<EggManager>();
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -101,44 +90,6 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    // Player
-    player_ = std::make_unique<Player>();
-    player_->Initialize();
-    stageManager_->SetPlayer(player_.get());
-    stageManager_->Initialize();    //< stageの読み込み(playerをセットしてから
-
-    ground_ = std::make_unique<Model>("skydome.obj");
-    ground_->lightingType_ = LIGHTINGTYPE_NONE;
-
-    for(int i = 0; i < 3; i++){
-        cylinderWall_[i] = std::make_unique<Model>("Assets/cylinder.obj");
-        cylinderWall_[i]->lightingType_ = LIGHTINGTYPE_NONE;
-        cylinderWall_[i]->blendMode_ = BlendMode::NORMAL;
-        cylinderWall_[i]->color_.w = 1.0f;
-        i != 0 ? cylinderWall_[i]->color_.w = cylinderWall_[i - 1]->color_.w * 0.3f : 1.0f;
-        cylinderWall_[i]->translate_ = {0.0f,-783.0f,0.0f};
-        cylinderWall_[i]->scale_ = {2000.0f + (300.0f * i),658.0f + (200.0f * i),2000.0f + (300.0f * i)};
-        cylinderWall_[i]->rotate_.y = MyFunc::Random(0.0f,6.28f);
-        cylinderWall_[i]->isRotateWithQuaternion_ = false;
-        cylinderWall_[i]->uv_scale_[0] = Vector3(3.0f,1.0f,1.0f);
-        cylinderWall_[i]->UpdateMatrix();
-    }
-
-    // 下の雲
-    underCloud_ = std::make_unique<Quad>(
-        Vector3(-1.0f,0.0f,1.0f),
-        Vector3(1.0f,0.0f,1.0f),
-        Vector3(-1.0f,0.0f,-1.0f),
-        Vector3(1.0f,0.0f,-1.0f)
-    );
-
-    underCloud_->translate = {0.0f,-595.0f,0.0f};
-    underCloud_->scale = {2000.0f,1.0f,2000.0f};
-    underCloud_->GH = TextureManager::LoadTexture("cloud2.png");
-    underCloud_->blendMode = BlendMode::NORMAL;
-    underCloud_->lightingType = LIGHTINGTYPE_NONE;
-    underCloud_->color = {1.0f,1.0f,1.0f,0.3f};
-
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -153,14 +104,14 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     // Audio の 初期化
     ////////////////////////////////////////////////////
-    AudioManager::PlayAudio(currentBGM,true,currentBgmVolume_);
+
+
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
     ////////////////////////////////////////////////////
 
-    // EnemyManager の 初期化
-    enemyEditor_ = std::make_unique<EnemyEditor>();
+
 
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
@@ -168,16 +119,6 @@ void Scene_Game::Initialize(){
 
     // followCameraにStageをセット
     followCamera_->SetTarget(stageManager_->GetCurrentStage()->GetViewPoint());
-
-    // playerに必要な情報をセット
-    player_->SetFollowCameraPtr(followCamera_.get());
-    player_->SetEggManager(eggManager_.get());
-    player_->SetPosition(StageManager::GetStartPos());
-
-    // eggManagerにplayerをセット
-    eggManager_->SetPlayer(player_.get());
-    eggManager_->Initialize();
-
 
     //! 読み込みの DeltaTime が 膨大になりすぎるため,ここで 更新して 仮対処 とする
     ClockManager::EndFrame();
@@ -208,20 +149,7 @@ void Scene_Game::Update(){
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f",ImGui::GetIO().Framerate);
     ImGui::ColorEdit4("backSpriteColor",&backSprite_->color.x);
-    ImGui::Text("pointLight");
-    for(int i = 0; i < pointLights_.size(); i++){
-        std::string headerName = "pointLight" + std::to_string(i);
-        if(ImGui::CollapsingHeader(headerName.c_str())){
-            ImGui::DragFloat3("position",&pointLights_[i]->position.x,1.0f);
-            ImGui::ColorEdit4("color",&pointLights_[i]->color_.x);
-            ImGui::DragFloat("intensity",&pointLights_[i]->intensity,0.1f,0.0f);
-            ImGui::DragFloat("radius",&pointLights_[i]->radius,0.1f,0.0f);
-            ImGui::DragFloat("decay",&pointLights_[i]->decay,0.1f,0.0f);
-        }
-        SEED::DrawLight(pointLights_[i].get());
-    }
     ImGui::End();
-    enemyEditor_->ShowImGui();
 #endif
 
     /*======================= 各状態固有の更新 ========================*/
@@ -231,42 +159,17 @@ void Scene_Game::Update(){
     }
 
     if(currentEventState_){
-        if(!isPaused_){
             currentEventState_->Update();
-        }
+
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
-
-    BGMUpdate();
-
-    // ポーズ中は以下を更新しない
-    if(isPaused_){
-        player_->SetIsDrop(false);
-        return;
-    }
 
     ParticleManager::Update();
 
     // フィールドの更新
     stageManager_->Update();
 
-    player_->Update();
-
-    eggManager_->Update();
-
-    // 雲の回転
-    for(int i = 2; i >= 0; i--){
-        float addRotate = (3.14f * 0.002f) * ClockManager::DeltaTime();
-        addRotate *= 1.0f - (0.3f * i);
-        i % 2 == 1 ? addRotate *= -1.0f : addRotate;
-        cylinderWall_[i]->rotate_.y += addRotate;
-        cylinderWall_[i]->Update();
-    }
-
-    // 下の雲のスクロール
-    cloudUV_translate_ += Vector3(-1.0f,0.0f,1.0f) * 0.01f * ClockManager::DeltaTime();
-    underCloud_->uvTransform = AffineMatrix({5.0f,5.0f,1.0f},{0.0f,0.0f,0.0f},cloudUV_translate_);
 
 }
 
@@ -281,9 +184,7 @@ void Scene_Game::Draw(){
     /*======================= 各状態固有の描画 ========================*/
 
     if(currentEventState_){
-        if(!isPaused_){
             currentEventState_->Draw();
-        }
     }
 
     if(currentState_){
@@ -330,17 +231,6 @@ void Scene_Game::Draw(){
     // パーティクルの描画
     ParticleManager::Draw();
 
-    // プレイヤーの描画
-    player_->Draw();
-    eggManager_->Draw();
-
-    // 雲の描画
-    for(int i = 2; i >= 0; i--){
-        cylinderWall_[i]->Draw();
-    }
-
-    SEED::DrawQuad(*underCloud_.get());
-
     /*======================= 各状態固有の描画 ========================*/
 
     if(currentState_){
@@ -359,8 +249,6 @@ void Scene_Game::Draw(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
-    player_->BeginFrame();
-    eggManager_->BeginFrame();
     stageManager_->BeginFrame();
 
     if(currentState_){
@@ -385,8 +273,6 @@ void Scene_Game::EndFrame(){
     if(isStateChanged_){ return; }
 
     // 各オブジェクトのフレーム終了処理
-    player_->EndFrame();
-    eggManager_->EndFrame();
     stageManager_->EndFrame();
 
 }
@@ -399,16 +285,10 @@ void Scene_Game::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
 
-    if(GameState_Title* state = dynamic_cast<GameState_Title*>(currentState_.get())){
-        return;// タイトル画面ではコライダーを渡さない
-    }
-
     if(currentState_){
         currentState_->HandOverColliders();
     }
 
-    player_->HandOverColliders();
-    eggManager_->HandOverColliders();
     stageManager_->HandOverColliders();
 }
 
@@ -420,22 +300,4 @@ FieldEditor* Scene_Game::GetFieldEditor(){
     }
 
     return nullptr;
-}
-
-void Scene_Game::BGMUpdate(){
-#ifdef _DEBUG
-    if(ImGui::Begin("BGM")){
-        ImGui::SliderFloat("Volume_OnNormal",&bgmVolume_[0],0.f,1.f);
-        ImGui::SliderFloat("Volume_OnPause",&bgmVolume_[1],0.f,1.f);
-        ImGui::SliderFloat("Volume_InterpolateRate",&bgmVolumeInterpolateRate_,0.f,1.f);
-    }
-    ImGui::End();
-#endif // _DEBUG
-
-    float prevBgmVolume = currentBgmVolume_;
-    currentBgmVolume_ = MyMath::Lerp(currentBgmVolume_,bgmVolume_[int(isPaused_)],bgmVolumeInterpolateRate_);
-
-    if(currentBgmVolume_ != prevBgmVolume){
-        AudioManager::SetAudioVolume(currentBGM,currentBgmVolume_);
-    }
 }

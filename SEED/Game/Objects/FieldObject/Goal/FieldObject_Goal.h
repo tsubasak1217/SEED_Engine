@@ -17,7 +17,6 @@ public:
     void BeginFrame()override;
     void EndFrame()override;
     void OnCollision( BaseObject* other, ObjectType objectType)override;
-    void ShowImGui()override{}
 
 public:
     bool isGoal_ = false;

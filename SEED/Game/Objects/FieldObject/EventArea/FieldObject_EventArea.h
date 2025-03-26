@@ -15,6 +15,8 @@ public:
     void BeginFrame()override;
     void SetEvent(std::function<void(Scene_Base*)> event) { event_ = event; }
     void OnCollision( BaseObject* other, ObjectType objectType)override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     const std::string& GetEventName()const{ return eventName_; }

@@ -12,6 +12,8 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     std::unique_ptr<PointLight> pointLight_;

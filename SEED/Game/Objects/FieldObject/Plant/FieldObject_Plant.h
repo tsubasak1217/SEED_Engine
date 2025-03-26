@@ -8,6 +8,8 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     bool isBloomFlower_ = false;

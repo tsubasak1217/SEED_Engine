@@ -7,18 +7,11 @@
 #include "../FieldObject/FieldObjectName.h"
 #include "FieldObject/Goal/FieldObject_Goal.h"
 #include "FieldObject/Start/FieldObject_Start.h"
-#include "../Routine/RoutineManager.h"
-#include "PlayerCorpse/Manager/PlayerCorpseManager.h"
-
-#include "../Game/Manager/EnemyManager.h"
-#include "../Game/Editor/EnemyEditor.h" 
 
 // FieldObject
-#include "FieldObject/Door/FieldObject_Door.h"
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
 #include "FieldObject/Soil/FieldObject_Soil.h"
 #include "FieldObject/Star/FieldObject_Star.h"
-#include "FieldObject/Switch/FieldObject_Switch.h"
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"
 #include "FieldObject/PointLight/FieldObject_PointLight.h"
@@ -32,7 +25,6 @@
 #include "FieldObject/CameraControlArea/FieldObject_CameraControlArea.h"
 
 // lib
-#include "../lib/patterns/ISubject.h"
 #include <vector>
 #include <memory>
 
@@ -40,8 +32,7 @@ class Player;
 
 class Stage{
 public:
-    Stage(ISubject& subject,uint32_t stageNo);
-    Stage(ISubject& subject);
+    Stage(uint32_t stageNo);
 
 
     // 卵の取得数など,ステータスの初期化(ステージを遷移したときなどに呼ぶ)
@@ -50,7 +41,6 @@ public:
 
     void Update();
     void Draw();
-    void DrawHUD();
     void BeginFrame();
     void EndFrame();
 
@@ -74,8 +64,6 @@ public:
         const Vector3& rotate = {0.0f,0.0f,0.0f},
         const Vector3& translate = {0.0f,0.0f,0.0f}
     );
-
-    void StarSEUpdate();
 
     void UpdateStarCount();
 public:
@@ -111,21 +99,7 @@ public:
     void SetDifficulty(uint32_t difficulty){ difficulty_ = difficulty; }
     template <typename T>
     std::vector<T*> GetObjectsOfType();
-    void SetPlayer(Player* pPlayer){
-        pPlayer_ = pPlayer;
-        enemyManager_->SetPlayer(pPlayer);
-    }
-    EnemyManager* GetEnemyManager(){ return enemyManager_.get(); }
-    // RoutineManagerのゲッターを追加
-    RoutineManager& GetRoutineManager(){ return routineManager_; }
-    // PlayerCorpseManagerのゲッターを追加
-    PlayerCorpseManager* GetPlayerCorpseManager(){ return playerCorpseManager_.get(); }
 
-    /// <summary>
-    /// 現在の取得した星の数
-    /// </summary>
-    /// <returns></returns>
-    int32_t GetCurrentStarCount()const{ return currentStarCount_; }
 
 private:
     int32_t stageNo_ = -1;
@@ -133,36 +107,10 @@ private:
     std::vector<std::unique_ptr<FieldObject>> fieldObjects_;
     std::string selectedObjectGUID_;
 
-    // 現在の取得した星の数
-    uint32_t currentStarCount_ = 0;
-    // ハイスコア
-    // uint32_t heightStarCount_ = 0; <- StageManager::getStarCounts_ があったので削除
-
     FieldObject* selectedObject_ = nullptr;
-    //特殊処理 をするため ポインターを個別で保持
     FieldObject_Start* startObject_ = nullptr;
     FieldObject_Goal* goalObject_ = nullptr;
-    std::vector<FieldObject_Star*> starObjects_;
 
-    //star Sound
-    const std::string& starSoundFileName_ = "SE/star_shine.wav";
-    float distanceToPlayStarSound_ = 15.f;
-    float minStarSoundVolume_ = 0.0f;
-    float maxStarSoundVolume_ = 0.6f;
-    float currentStarSoundVolume_ = .0f;
-
-    ISubject& subject_;
-
-    //playerのポインタ
-    Player* pPlayer_ = nullptr;
-    //playerの死体
-    std::unique_ptr<PlayerCorpseManager> playerCorpseManager_;
-
-    //enemy
-    std::unique_ptr<EnemyManager> enemyManager_;
-
-    //routine
-    RoutineManager routineManager_;
 };
 
 ////////////////////////////////////////////////////////////////////

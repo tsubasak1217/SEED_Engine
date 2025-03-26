@@ -92,6 +92,24 @@ void BaseObject::EndFrame(){
     EraseCheckColliders();
 }
 
+//////////////////////////////////////////////////////////////////////////
+// 編集処理
+//////////////////////////////////////////////////////////////////////////
+void BaseObject::Edit(){
+#ifdef _DEBUG
+    ImGui::Text("Transform");
+    ImGui::Separator();
+    ImGui::DragFloat3("Translate", &model_->translate_.x, 0.1f);
+    ImGui::DragFloat3("Scale", &model_->scale_.x, 0.1f);
+    ImGui::DragFloat3("Rotate", &model_->rotate_.x, 0.1f);
+    ImGui::Separator();
+    ImGui::Text("Material");
+    ImGui::Separator();
+    ImGui::ColorEdit4("Color", &model_->color_.x);
+    ImGui::Separator();
+#endif // _DEBUG
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // マトリックスの更新

@@ -8,6 +8,8 @@ public:
     void Initialize()override;
     void Update()override;
     void Draw()override;
+    void Edit()override;
+    nlohmann::json OutputJson()override;
 
 public:
     Vector4 leafColor_ = Vector4(0.0f, 1.0f, 0.0f, 1.0f);

@@ -1,5 +1,6 @@
 #include "FieldObject_EventArea.h"
 #include <../GameSystem.h>
+#include <EventState/EventFunctionTable.h>
 
 /////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -88,4 +89,67 @@ void FieldObject_EventArea::OnCollision( BaseObject* other, ObjectType objectTyp
             }
         }
     }
+}
+
+/////////////////////////////////////////////////////////////////////
+// 編集関数
+/////////////////////////////////////////////////////////////////////
+void FieldObject_EventArea::Edit(){
+#ifdef _DEBUG
+    // 基本の編集
+    FieldObject::Edit();
+
+    // 固有の編集
+    ImGui::Separator();
+    ImGui::Text("EventArea Settings");	ImGui::Separator();
+    ImGui::Separator();
+
+    // EventFunctionTableの関数名をドロップダウンで表示・選択
+    static int selectedEventIndex = 0;
+    static std::vector<std::string> eventNames;
+    if(eventNames.empty()){
+        for(const auto& [name, func] : EventFunctionTable::tableMap_){
+            if(name != ""){
+                eventNames.push_back(name);
+            }
+        }
+    }
+
+    std::string currentEventName;
+    if(eventName_ != ""){
+        currentEventName = eventName_;
+    } else{
+        currentEventName = "none";
+    }
+
+    // ドロップダウンリストを作成	
+    if(ImGui::BeginCombo("Select Event", currentEventName.c_str())){
+        for(int i = 0; i < eventNames.size(); ++i){
+            bool isSelected = (selectedEventIndex == i);
+            if(ImGui::Selectable(eventNames[i].c_str(), isSelected)){
+                selectedEventIndex = i;  // 選択されたイベントのインデックスを更新	
+                SetEvent(EventFunctionTable::tableMap_[eventNames[i]]);
+                SetEventName(eventNames[i]);
+            }
+            if(isSelected){
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    // 一度のみのイベントかどうかのフラグ	
+    ImGui::Checkbox("Is Once Event", &isOnceEvent_);
+#endif // _DEBUG
+}
+
+
+/////////////////////////////////////////////////////////////////////
+// Json出力関数
+/////////////////////////////////////////////////////////////////////
+nlohmann::json FieldObject_EventArea::OutputJson(){
+    nlohmann::json json = FieldObject::OutputJson();
+    json["eventFunctionKey"] = eventName_;
+    json["isOnceEvent"] = isOnceEvent_;
+    return json;
 }

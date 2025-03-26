@@ -38,3 +38,29 @@ void FieldObject_ViewPoint::Draw(){
     FieldObject::Draw();
 #endif // _DEBUG
 }
+
+////////////////////////////////////////////////////////////////////////
+// 編集関数
+////////////////////////////////////////////////////////////////////////
+void FieldObject_ViewPoint::Edit(){
+#ifdef _DEBUG
+    // 基本の編集
+    FieldObject::Edit();
+
+    // 固有の編集
+    ImGui::Text("ViewPoint Settings");
+    ImGui::Separator();
+    ImGui::DragFloat("distance", &distance_, 0.5f, 10.0f);
+    ImGui::Separator();
+#endif // _DEBUG
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// Json出力関数
+////////////////////////////////////////////////////////////////////////
+nlohmann::json FieldObject_ViewPoint::OutputJson(){
+    nlohmann::json json = FieldObject::OutputJson();
+    json["distance"] = distance_;
+    return json;
+}

@@ -52,8 +52,6 @@ private:
     //                   private methods
     //===================================================================*/
 
-    // 全てのスイッチから特定のドア参照を削除する関数
-    void RemoveDoorFromAllSwitches(FieldObject_Door* doorToRemove, const std::vector<FieldObject_Switch*>& allSwitches) const;
     // jsonファイルへの保存
     void PopupDecideOutputName();
     void SaveToJson(const std::string& filePath,int32_t stageNo,bool isSaveData = false,Player* playerData = nullptr);
@@ -63,15 +61,6 @@ private:
     int32_t GetObjectIndexByMouse(std::vector<std::unique_ptr<FieldObject>>& objects);
     // マウスで直接オブジェクト追加
     void AddObjectByMouse(int32_t objectType);
-    // オブジェクトのID再割り当て
-    void ReassignIDsByType(uint32_t removedType, std::vector<std::unique_ptr<FieldObject>>& objects);
-
-    // 敵を配置するフロー用
-    void AddEnemyByMouse();
-    int32_t GetEnemyIndexByMouse(const std::vector<std::unique_ptr<Enemy>>& enemies);
-
-    // 選択関連
-    void UpdateSelectionByMouse(); // FieldObject / Enemy 両方を照合
 
 private:
     //===================================================================*/
@@ -93,17 +82,10 @@ private:
     const std::string jsonPath_ = "resources/jsons/Stages/";
 
     // ステージ管理用
-    const int kMaxStage = 6;
     int32_t edittingStageIndex = 0;
 
-
-    // モード切り替え用フラグ
-    EditorMode editorMode_ = EditorMode::AddFieldObject;
-
     // 選択中のもの
-    bool selectedIsEnemy_ = false;
     int selectedObjIndex_ = -1;    // FieldObjectならここのインデックスを使う
-    int selectedEnemyIndex_ = -1;  // Enemyならここのインデックスを使う
     int selectedFunctionIndex_ = -1; // Functionならここのインデックスを使う
     uint32_t selectItemIdxOnGUI_ = FIELDMODEL_GRASSSOIL; // 選択中のアイテムのインデックス
 

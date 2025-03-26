@@ -210,3 +210,63 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
         //}
     }
 }
+
+////////////////////////////////////////////////////////////////////////
+// 編集関数
+////////////////////////////////////////////////////////////////////////
+void FieldObject_CameraControlArea::Edit(){
+#ifdef _DEBUG
+    // 基本の編集
+    FieldObject::Edit();
+
+    // 固有の編集
+    ImGui::Text("CameraControlArea Settings");
+    ImGui::Separator();
+    ImGui::Checkbox("isTestParent", &isTestParent_);// カメラを試しにペアレントするモード
+    ImGui::Checkbox("isPositionFixed", &isPositionFixed_);// カメラの位置を固定するか
+
+    // カメラの位置を固定する場合()
+    if(isPositionFixed_){
+        // 座標と回転の編集
+        ImGui::DragFloat3("position", &cameraPos_.x, 0.05f);
+        ImGui::DragFloat3("rotate", &cameraRotate_.x, 0.01f);
+
+    } else{// カメラの位置を固定しない場合(角度だけ指定するモード)
+        ImGui::DragFloat("distance", &distance_, 0.5f, 10.0f);
+        ImGui::DragFloat("theta", &theta_, 0.01f, 0.0f, 2.0f * 3.14159f);
+        ImGui::DragFloat("phi", &phi_, 0.01f, 0.0f, 3.14159f);
+    }
+
+    ImGui::Checkbox("isSavePreCameraRotate", &isSavePreCameraRotate_);// カメラの回転を保存するか
+    ImGui::Checkbox("isOnceEvent", &isOnceEvent_);// 一度だけイベントを発生させるか
+
+    if(isOnceEvent_){
+        isOutControl_ = false;
+    } else{
+        ImGui::Checkbox("isOutControl", &isOutControl_);// エリア外に出た際にカメラを制御するか
+        if(isOutControl_){
+            ImGui::DragFloat("exitTheta", &exitTheta_, 0.01f, 0.0f, 2.0f * 3.14159f);
+            ImGui::DragFloat("exitPhi", &exitPhi_, 0.01f, 0.0f, 3.14159f);
+        }
+    }
+
+    ImGui::Separator();
+
+#endif // _DEBUG
+}
+
+nlohmann::json FieldObject_CameraControlArea::OutputJson(){
+    nlohmann::json json = FieldObject::OutputJson();
+    json["isPositionFixed"] = isPositionFixed_;
+    json["isOnceEvent"] = isOnceEvent_;
+    json["isOutControl"] = isOutControl_;
+    json["isSavePreCameraRotate"] = isSavePreCameraRotate_;
+    json["cameraPos"] = cameraPos_;
+    json["cameraRotate"] = cameraRotate_;
+    json["theta"] = theta_;
+    json["phi"] = phi_;
+    json["exitTheta"] = exitTheta_;
+    json["exitPhi"] = exitPhi_;
+    json["distance"] = distance_;
+    return json;
+}

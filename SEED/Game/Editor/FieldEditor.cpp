@@ -9,6 +9,7 @@
 #include "FieldObject/ViewPoint/FieldObject_ViewPoint.h"
 #include "FieldObject/EventArea/FieldObject_EventArea.h"
 #include "FieldObject/CameraControlArea/FieldObject_CameraControlArea.h"
+#include "Base/BaseCharacter.h"
 
 // other
 #include "EventState/EventFunctionTable.h"
@@ -55,7 +56,7 @@ void FieldEditor::Initialize(){
 
     LoadFieldModelTexture();
 
-    edittingStageIndex = StageManager::GetCurrentStageNo();
+    edittingStageIndex = StageManager::GetInstance()->GetCurrentStageNo();
 }
 
 
@@ -127,6 +128,8 @@ void FieldEditor::PopupDecideOutputName(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void FieldEditor::SaveToJson(const std::string& filePath, int32_t stageNo, bool isSaveData, Player* playerData){
 
+    isSaveData;
+    playerData;
     namespace fs = std::filesystem;
     fs::path path(filePath);
     auto directory = path.parent_path();
@@ -284,7 +287,7 @@ void FieldEditor::AddObjectByMouse(int32_t objectType){
 void FieldEditor::ShowImGui(){
 #ifdef _DEBUG
 
-    edittingStageIndex = StageManager::GetCurrentStageNo();
+    edittingStageIndex = StageManager::GetInstance()->GetCurrentStageNo();
 
     ImGui::Begin("Field Editor");
 
@@ -300,13 +303,13 @@ void FieldEditor::ShowImGui(){
         //----------------------------------------
         if(ImGui::Checkbox("isEditing", &isEditing_)){
             SEED::SetCamera("debug");
-            SEED::GetCamera()->SetTranslation(manager_.GetPlayerPtr()->GetWorldTranslate());
+            SEED::GetCamera()->SetTranslation(StageManager::GetInstance()->GetPlayer()->GetWorldTranslate());
 
-            if(isEditing_){
-                manager_.GetPlayerPtr()->SetIsMovable(false);
-            } else{
-                manager_.GetPlayerPtr()->SetIsMovable(true);
-            }
+            //if(isEditing_){
+            //    manager_.GetPlayerPtr()->SetIsMovable(false);
+            //} else{
+            //    manager_.GetPlayerPtr()->SetIsMovable(true);
+            //}
         }
 
 
@@ -319,7 +322,7 @@ void FieldEditor::ShowImGui(){
         ImGui::SameLine();
 
         static std::string stageSelectStr;
-        static int stageCount = StageManager::GetStageCount();
+        static int stageCount = StageManager::GetInstance()->GetStageCount();
         for(int i = 0; i < stageCount; ++i){
             stageSelectStr += std::to_string(i + 1);
             stageSelectStr += "\0";
@@ -585,22 +588,10 @@ void FieldEditor::ShowImGui(){
                 }
 
                 //=====================================================
-                // Position / Scale / Rotation の個別編集
+                // 個別の編集
                 //=====================================================
                 {
-                    Vector3 pos = mfObj->GetModel()->GetWorldTranslate();
-                    Vector3 scl = mfObj->GetModel()->GetWorldScale();
-                    Vector3 rot = mfObj->GetModel()->GetWorldRotate();
-
-                    if(ImGui::DragFloat3("Position", &pos.x, 0.1f)){
-                        mfObj->SetTranslate(pos);
-                    }
-                    if(ImGui::DragFloat3("Scale", &scl.x, 0.1f)){
-                        mfObj->SetScale(scl);
-                    }
-                    if(ImGui::DragFloat3("Rotation", &rot.x, 0.01f)){
-                        mfObj->SetRotate(rot);
-                    }
+                    mfObj->Edit();
                 }
 
                 // イベントエリアの場合、イベント内容を設定	// イベントエリア等の編集があればここに追加...

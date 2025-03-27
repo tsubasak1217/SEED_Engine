@@ -3,19 +3,16 @@
 // engine
 #include "../SEED/lib/structs/Model.h"
 #include "Base/BaseObject.h"
+#include "FollowCamera.h"
 
 // lib
 #include "../SEED/lib/tensor/Vector3.h"
-
 #include "imgui.h"
-
 
 // c++
 #include <memory>
 #include <string>
 #include <cstdint>
-
-class Player;
 
 class FieldObject : public BaseObject{
 public:

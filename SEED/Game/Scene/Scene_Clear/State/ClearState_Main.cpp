@@ -4,8 +4,6 @@
 #include "Scene_Clear.h"
 // ohter stae
 #include "ClearState_Out.h"
-//lib
-#include "../PlayerInput/PlayerInput.h"
 
 ClearState_Main::ClearState_Main(Scene_Clear* scene)
     :State_Base(scene),
@@ -43,9 +41,6 @@ void ClearState_Main::EndFrame(){
 void ClearState_Main::HandOverColliders(){}
 
 void ClearState_Main::ManageState(){
-    if(isBreakEgg_ && PlayerInput::TitleScene::IsStartGame()){
-        pClearScene_->ChangeState(new ClearState_Out(pClearScene_));
-    }
 }
 
 void ClearState_Main::ChangeModel(){

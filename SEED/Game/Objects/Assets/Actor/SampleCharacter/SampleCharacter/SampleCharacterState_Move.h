@@ -1,11 +1,11 @@
 #pragma once
-#include "Base/ICharacterState.h"
+#include <Game/Objects/Base/ICharacterState.h>
 
-class PlayerState_Move : public ICharacterState{
+class SampleCharacterState_Move : public ICharacterState{
 public:
-    PlayerState_Move() = default;
-    PlayerState_Move(const std::string& stateName,BaseCharacter* player);
-    ~PlayerState_Move()override;
+    SampleCharacterState_Move() = default;
+    SampleCharacterState_Move(const std::string& stateName,BaseCharacter* player);
+    ~SampleCharacterState_Move()override;
     void Update()override;
     void Draw()override;
     void Initialize(const std::string& stateName,BaseCharacter* player)override;
@@ -19,10 +19,9 @@ protected:
     void Move();
     void Rotate();
 
-    void EmitParticle();
-
 private:
     void DecideStickVelocity();
+
 protected:
     // 移動情報
     float moveSpeed_ = 30.0f;

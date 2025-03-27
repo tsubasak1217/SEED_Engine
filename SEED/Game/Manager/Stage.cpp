@@ -2,12 +2,8 @@
 #include "GameState_Play.h"
 #include "CollisionManaer/CollisionManager.h"
 #include "EventState/EventFunctionTable.h"
-#include "Player/Player.h"
 #include "../GameSystem.h"
 #include "StageManager.h"
-
-// PlayerState
-#include "Player/PlayerState/PlayerState_Idle.h"
 
 //lib
 #include <nlohmann/json.hpp>

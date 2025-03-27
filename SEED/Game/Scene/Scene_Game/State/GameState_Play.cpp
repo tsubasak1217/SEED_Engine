@@ -35,10 +35,10 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     fieldColliderEditor_ = std::make_unique<ColliderEditor>("field",nullptr);
 
     // カメラのターゲット
-    pGameScene_->Get_pCamera()->SetTarget(pPlayer);
+    pGameScene_->Get_pCamera()->SetTarget(pGameScene_->Get_pPlayer());
 
     // ターゲットのワールド回転行列を取得
-    Matrix4x4 targetWorldMatrix = pPlayer->GetWorldMat();
+    Matrix4x4 targetWorldMatrix = pGameScene_->Get_pPlayer()->GetWorldMat();
 
     // Y 軸の回転成分を抽出 (Z軸方向のベクトル)
     Vector3 forward = MyMath::Normalize(Vector3(targetWorldMatrix.m[2][0],0.0f,targetWorldMatrix.m[2][2]));
@@ -52,6 +52,7 @@ void GameState_Play::Initialize(bool isPlayerSetStartPos){
     float phi = MyMath::Deg2Rad(80.0f);
     pGameScene_->Get_pCamera()->SetPhi(phi);
 
+    isPlayerSetStartPos;
 
     // イベントシーンがあれば終了
     pGameScene_->EndEvent();

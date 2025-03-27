@@ -1,7 +1,6 @@
 #pragma once
 #include "EventState_Base.h"
 #include "Scene_Game.h"
-#include "../PlayerInput/PlayerInput.h"
 
 class EventState_Tutorial_Base : public EventState_Base{
 public:
@@ -15,7 +14,7 @@ public:
 protected:
     Scene_Game* pGameScene_;
     FollowCamera* pCamera_;
-    Player* pPlayer_;
+    BaseCharacter* pPlayer_;
 
 protected:
     float time_;

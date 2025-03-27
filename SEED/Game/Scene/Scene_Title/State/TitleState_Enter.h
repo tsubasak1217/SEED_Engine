@@ -1,9 +1,7 @@
 #pragma once
 
 #include "ITitleState.h"
-
-//objec
-#include "../UI/UI.h"
+#include "Sprite.h"
 
 class TitleState_Enter
     : public ITitleState{

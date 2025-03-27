@@ -57,28 +57,30 @@ void FieldObject_SaveArea::BeginFrame(){
 // 衝突処理
 ////////////////////////////////////////////////////////////////////////
 void FieldObject_SaveArea::OnCollision( BaseObject* other, ObjectType objectType){
+
+    other;
     if(objectType == ObjectType::Player){
         isCollidePlayer_ = true;
 
         // 衝突時
         if(!preIsCollidePlayer_ && isCollidePlayer_){
-            Stage* stage = StageManager::GetCurrentStage();
+            Stage* stage = StageManager::GetInstance()->GetCurrentStage();
             int32_t stageNo = stage->GetStageNo() + 1;
             std::string filePath = jsonPath_ + "stage_" + std::to_string(stageNo) + ".json";
 
-            // セーブ
-            if(Scene_Game* scene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())){
+            //// セーブ
+            //if(Scene_Game* scene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())){
 
-                // 地形のセーブ
-                if(FieldEditor* editor = scene->GetFieldEditor()){
-                    Player* player = dynamic_cast<Player*>(other);
-                    editor->SaveToJson(filePath, stageNo, true, player);
-                }
+            //    // 地形のセーブ
+            //    if(FieldEditor* editor = scene->GetFieldEditor()){
+            //        Player* player = dynamic_cast<Player*>(other);
+            //        editor->SaveToJson(filePath, stageNo, true, player);
+            //    }
 
-                // 敵のセーブ
-                EnemyManager* enemyEditor = stage->GetEnemyManager();
-                enemyEditor->SaveEnemies(true);
-            }
+            //    // 敵のセーブ
+            //    EnemyManager* enemyEditor = stage->GetEnemyManager();
+            //    enemyEditor->SaveEnemies(true);
+            //}
         }
     }
 }

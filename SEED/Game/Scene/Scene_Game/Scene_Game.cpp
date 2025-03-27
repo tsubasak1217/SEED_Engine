@@ -36,7 +36,7 @@ void Scene_Game::Initialize(){
     // マネージャー初期化
     ////////////////////////////////////////////////////
 
-
+    stageManager_ = StageManager::GetInstance();
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -78,18 +78,25 @@ void Scene_Game::Initialize(){
     pointLights_[1]->decay = 1.7f;
 
     spotLights_.clear();
-    for(int i = 0; i < 0; i++){
-        spotLights_.push_back(std::make_unique<SpotLight>());
-        spotLights_[i]->color_ = {1.0f,1.0f,1.0f,1.0f};
-        spotLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),15.0f,MyFunc::Random(-100.0f,100.0f)};
-        spotLights_[i]->intensity = 1.0f;
-        spotLights_[i]->direction = MyFunc::RandomDirection({0.0f,-1.0f,0.0f},3.14f * 0.5f);
-    }
+    //for(int i = 0; i < 0; i++){
+    //    spotLights_.push_back(std::make_unique<SpotLight>());
+    //    spotLights_[i]->color_ = {1.0f,1.0f,1.0f,1.0f};
+    //    spotLights_[i]->position = {MyFunc::Random(-100.0f,100.0f),15.0f,MyFunc::Random(-100.0f,100.0f)};
+    //    spotLights_[i]->intensity = 1.0f;
+    //    spotLights_[i]->direction = MyFunc::RandomDirection({0.0f,-1.0f,0.0f},3.14f * 0.5f);
+    //}
 
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
+    // プレイヤーの初期化
+    player_ = std::make_unique<SampleCharacter>();
+    player_->SetTranslate({ 0.0f,10.0f,0.0f });
+    player_->UpdateMatrix();
+
+    // 地面の初期化
+    ground_ = std::make_unique<BaseObject>("Assets/ground.obj","Ground");
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -111,7 +118,7 @@ void Scene_Game::Initialize(){
     //  他クラスの情報を必要とするクラスの初期化
     ////////////////////////////////////////////////////
 
-
+    stageManager_->GetInstance()->SetPlayer(player_.get());
 
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定
@@ -170,7 +177,12 @@ void Scene_Game::Update(){
     // フィールドの更新
     stageManager_->Update();
 
+    // player
+    player_->Update();
 
+    // ground
+    ground_->EditCollider();
+    ground_->Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +206,6 @@ void Scene_Game::Draw(){
     /*======================== スプライトの描画 =======================*/
 
     backSprite_->Draw();
-    stageManager_->DrawHUD();
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 
@@ -227,9 +238,16 @@ void Scene_Game::Draw(){
 
     // フィールドの描画
     stageManager_->Draw();
+    ground_->Draw();
 
     // パーティクルの描画
     ParticleManager::Draw();
+
+    // プレイヤーの描画
+    player_->Draw();
+
+    // グリッドの描画
+    SEED::DrawGrid();
 
     /*======================= 各状態固有の描画 ========================*/
 
@@ -250,6 +268,7 @@ void Scene_Game::Draw(){
 void Scene_Game::BeginFrame(){
     Scene_Base::BeginFrame();
     stageManager_->BeginFrame();
+    player_->BeginFrame();
 
     if(currentState_){
         currentState_->BeginFrame();
@@ -275,6 +294,7 @@ void Scene_Game::EndFrame(){
     // 各オブジェクトのフレーム終了処理
     stageManager_->EndFrame();
 
+    player_->EndFrame();
 }
 
 
@@ -290,6 +310,8 @@ void Scene_Game::HandOverColliders(){
     }
 
     stageManager_->HandOverColliders();
+    player_->HandOverColliders();
+    ground_->HandOverColliders();
 }
 
 

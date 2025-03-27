@@ -3,8 +3,6 @@
 ///local
 //lib
 #include "InputManager/InputManager.h"
-//external
-#include "../adapter/json/JsonCoordinator.h"
 
 //state
 #include "State/TitleState_Enter.h"
@@ -44,11 +42,6 @@ void Scene_Title::Initialize(){
     playerModel_ = std::make_unique<Model>("dinosaur.gltf");
     playerModel_->isRotateWithQuaternion_ = false;
     playerModel_->StartAnimation("handUpRunning",true);
-
-    // gameSceneとは分ける
-    JsonCoordinator::LoadGroup("TitlePlayerModel");
-    JsonCoordinator::RegisterItem("TitlePlayerModel","Rotate",playerModel_->rotate_);
-    JsonCoordinator::RegisterItem("TitlePlayerModel","Translate",playerModel_->translate_);
     playerModel_->UpdateMatrix();
 
 }
@@ -106,15 +99,6 @@ void Scene_Title::BeginFrame(){
     if(currentState_){
         currentState_->BeginFrame();
     }
-    //===================== Json =====================//
-#ifdef _DEBUG
-    ImGui::Begin("TitlePlayerModel");
-    JsonCoordinator::RenderGroupUI("TitlePlayerModel");
-    if(ImGui::Button("Save")){
-        JsonCoordinator::SaveGroup("TitlePlayerModel");
-    }
-    ImGui::End();
-#endif // _DEBUG
 }
 
 

@@ -3,8 +3,7 @@
 #include "InputManager.h"
 #include "ImGuiManager.h"
 #include "ClockManager.h"
-// lib
-#include "../PlayerInput/PlayerInput.h"
+#include "Base/BaseObject.h"
 
 FollowCamera::FollowCamera(){
     Initialize();
@@ -24,8 +23,8 @@ void FollowCamera::Initialize(){
     kMaxPhi_ = 3.14f * 0.7f;
     kMinPhi_ = 0.1f;
     // inputのデフォルト設定
-    angleInput_.Value = [](){ return PlayerInput::Camera::GetCameraDirection(); };
-    distanceInput_.Value = [](){ return PlayerInput::Camera::GetCameraDistance(); };
+    angleInput_.Value = [](){ return Input::GetStickValue(LR::RIGHT); };
+    distanceInput_.Value = [](){ return Input::GetLRTriggerValue(LR::LEFT) - Input::GetLRTriggerValue(LR::RIGHT); };
 
     // カメラ共通の初期化処理
     BaseCamera::Initialize();
@@ -93,10 +92,18 @@ void FollowCamera::UpdateDistance(){
 }
 
 void FollowCamera::SetTarget(BaseObject* target){
+    if(preTarget_){
+        preTarget_->ReleaseFollowCamera();
+    }
+
     // 前のターゲットを保存
     preTarget_ = target_;
     // 新しいターゲットを設定
     target_ = target;
+    // ターゲットにカメラを設定
+    if(target_){
+        target_->SetFollowCamera(this);
+    }
 }
 
 void FollowCamera::ReleaseTarget(){

@@ -19,7 +19,7 @@
 #include "../Game/Editor/FieldEditor.h"
 
 // objects
-
+#include "../Game/Objects/Assets/Actor/SampleCharacter/SampleCharacter.h"
 
 // manager
 #include "../Game/Manager/StageManager.h"
@@ -39,9 +39,10 @@ public:
     void HandOverColliders() override;
 
 public:
-    StageManager* Get_pStageManager(){ return stageManager_.get(); }
+    StageManager* Get_pStageManager(){ return stageManager_; }
     StageManager& Get_StageManager(){ return *stageManager_; }
     FollowCamera* Get_pCamera(){ return followCamera_.get(); }
+    BaseCharacter* Get_pPlayer(){ return player_.get(); }
 
     // 禁忌
     FieldEditor* GetFieldEditor();
@@ -55,9 +56,11 @@ private:
     std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 
     // GameObjects
+    std::unique_ptr<SampleCharacter> player_ = nullptr;
+    std::unique_ptr<BaseObject> ground_;
 
     // Manager
-    std::unique_ptr<StageManager> stageManager_;
+    StageManager* stageManager_;
 
     // Sprite
     std::unique_ptr<Sprite> backSprite_ = nullptr;

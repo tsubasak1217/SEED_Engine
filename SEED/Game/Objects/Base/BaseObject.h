@@ -11,6 +11,7 @@
 #include "ClockManager.h"
 #include "MyMath.h"
 #include "MyFunc.h"
+#include "FollowCamera.h"
 
 class BaseObject{
 
@@ -21,7 +22,7 @@ class BaseObject{
     /*----------- 基本関数 ----------*/
 public:
     BaseObject();
-    BaseObject(const std::string& modelFilePath);
+    BaseObject(const std::string& modelFilePath, const std::string& className = "");
     virtual ~BaseObject();
     virtual void Initialize();
     virtual void Update();
@@ -41,13 +42,13 @@ protected:
     /*-------- コライダー関連 --------*/
 public:
     virtual void HandOverColliders();
-    virtual void OnCollision(BaseObject* other,ObjectType objectType);
-    void InitColliders(const std::string& fileName,ObjectType objectType);
+    virtual void OnCollision(BaseObject* other, ObjectType objectType);
+    void InitColliders(const std::string& fileName, ObjectType objectType);
     virtual void DiscardPreCollider();
     void ResetCollider();
 protected:
     void LoadColliders(ObjectType objectType);
-    void LoadColliders(const std::string& fileName,ObjectType objectType);
+    void LoadColliders(const std::string& fileName, ObjectType objectType);
     virtual void InitColliders(ObjectType objectType);
     void EraseCheckColliders();
 
@@ -75,6 +76,9 @@ public:
     const Model* GetParentModel() const{ return model_->parent_; }
     void ReleaseParent(){ parent_ = nullptr; model_->parent_ = nullptr; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
+    FollowCamera* GetFollowCamera()const{ return pFollowCamera_; }
+    void SetFollowCamera(FollowCamera* pFollowCamera){ pFollowCamera_ = pFollowCamera; }
+    void ReleaseFollowCamera(){ pFollowCamera_ = nullptr; }
 
     /*------ Model -------*/
     const Model* GetModel() const{ return model_.get(); }
@@ -173,6 +177,7 @@ protected:
     const BaseObject* parent_ = nullptr;
     Vector3 targetOffset_;
     std::unique_ptr<Model> model_;
+    FollowCamera* pFollowCamera_ = nullptr;
 
     /*----------- 衝突判定 ----------*/
 protected:
@@ -189,7 +194,7 @@ protected:
     bool isDrop_ = false;
     float dropSpeed_ = 0.f;
     float weight_ = 1.f;
-    Vector3 velocity_ = {0.f,0.f,0.f};
+    Vector3 velocity_ = { 0.f,0.f,0.f };
 
     ////////////////////////////////////////////////////////////////////////////
     // 後で消す↓

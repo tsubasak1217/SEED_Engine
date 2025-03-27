@@ -2,8 +2,9 @@
 #include "BaseCamera.h"
 #include "MyMath.h"
 #include "MyFunc.h"
-#include "Base/BaseObject.h"
 #include "InputHangler.h"
+
+class BaseObject;
 
 struct FollowCamera : public BaseCamera{
 

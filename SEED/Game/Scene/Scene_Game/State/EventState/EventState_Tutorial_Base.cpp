@@ -1,5 +1,4 @@
 #include "EventState_Tutorial_Base.h"
-#include "Player/PlayerState/PlayerState_Idle.h"
 
 //static変数の初期化
 std::unique_ptr<Sprite> EventState_Tutorial_Base::textFieldSprite_;
@@ -30,7 +29,6 @@ void EventState_Tutorial_Base::Initialize(Scene_Base* pScene){
     pCamera_ = pGameScene_->Get_pCamera();
     pPlayer_ = pGameScene_->Get_pPlayer();
     pPlayer_->SetIsMovable(false);
-    pPlayer_->ChangeState(new PlayerState_Idle("Player_Idle", pPlayer_));
 
     // テキストの初期化
     textFieldSprite_ = std::make_unique<Sprite>("Tutorials/textField.png");
@@ -72,21 +70,21 @@ void EventState_Tutorial_Base::Update(){
     if(textStep_ < textStepMax_){
         time_ += ClockManager::DeltaTime();
 
-        if(PlayerInput::Tutorial::StepText()){
-            if(time_ > 2.0f){
+        //if(PlayerInput::Tutorial::StepText()){
+        //    if(time_ > 2.0f){
 
-                textStep_++;
-                time_ = kTime_;
+        //        textStep_++;
+        //        time_ = kTime_;
 
-            } else{
-                time_ = 2.0f;
-            }
-        }
+        //    } else{
+        //        time_ = 2.0f;
+        //    }
+        //}
 
-        if(PlayerInput::Tutorial::SkipTutorial()){
-            textStep_ = textStepMax_;
-            time_ = 0.25f;
-        }
+        //if(PlayerInput::Tutorial::SkipTutorial()){
+        //    textStep_ = textStepMax_;
+        //    time_ = 0.25f;
+        //}
 
         // テキストの透明度を徐々に濃くしていく(2秒かけて最大へ。1秒目から出現)
         alpha = std::clamp((time_ - kTime_) / kTime_, 0.0f, 1.0f);

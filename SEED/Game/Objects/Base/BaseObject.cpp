@@ -17,12 +17,19 @@ BaseObject::BaseObject(){
     Initialize();
 }
 
-BaseObject::BaseObject(const std::string& modelFilePath){
+BaseObject::BaseObject(const std::string& modelFilePath, const std::string& className){
     objectID_ = nextID_++;
-    className_ = "BaseObject";
-    name_ = "BaseObject";
+    if(className == ""){
+        className_ = "BaseObject";
+        name_ = "BaseObject";
+    } else{
+        className_ = className;
+        name_ = className;
+    }
+
     model_ = std::make_unique<Model>(modelFilePath);
     model_->UpdateMatrix();
+    InitColliders(ObjectType::Field);
 }
 
 BaseObject::~BaseObject(){}
@@ -209,7 +216,7 @@ void BaseObject::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void BaseObject::OnCollision( BaseObject* other, ObjectType objectType){
+void BaseObject::OnCollision(BaseObject* other, ObjectType objectType){
     isCollide_ = true;
     other;
     objectType;
@@ -264,11 +271,13 @@ void BaseObject::LoadColliders(const std::string& fileName, ObjectType objectTyp
 void BaseObject::InitColliders(ObjectType objectType){
     colliders_.clear();
     LoadColliders(objectType);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
 }
 
 void BaseObject::InitColliders(const std::string& fileName, ObjectType objectType){
     colliders_.clear();
     LoadColliders(fileName, objectType);
+    colliderEditor_ = std::make_unique<ColliderEditor>(className_, this);
 }
 
 
@@ -290,7 +299,7 @@ void BaseObject::EraseCheckColliders(){
 //////////////////////////////////////////////////////////////////////////
 // jsonデータの取得
 //////////////////////////////////////////////////////////////////////////
-const nlohmann::json& BaseObject::GetJsonData() {
+const nlohmann::json& BaseObject::GetJsonData(){
     static nlohmann::json json;
     json["Translate"] = GetWorldTranslate();
     json["Rotate"] = GetWorldRotate();

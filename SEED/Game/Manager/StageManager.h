@@ -3,7 +3,7 @@
 #include <memory>
 #include "../Manager/Stage.h"
 
-class Player;
+class BaseCharacter;
 
 class StageManager{
 private:
@@ -32,6 +32,7 @@ private:
     void LoadStages();
 
 private:
+    BaseCharacter* pPlayer_ = nullptr;
     static const int32_t kStageCount_ = 6;
     int32_t currentStageNo_;
     int32_t preStageNo_;
@@ -43,7 +44,8 @@ private:
 
 
 public:
-    void SetPlayer(Player* pPlayer);
+    void SetPlayer(BaseCharacter* pPlayer){ pPlayer_ = pPlayer; }
+    BaseCharacter* GetPlayer(){ return pPlayer_; }
     int32_t GetStageCount(){ return kStageCount_; }
     std::array<std::unique_ptr<Stage>, kStageCount_>& GetStages(){ return stages_; }
     Stage* GetCurrentStage(){ return stages_[currentStageNo_].get(); }

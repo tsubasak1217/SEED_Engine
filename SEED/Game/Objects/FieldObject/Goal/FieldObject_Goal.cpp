@@ -3,9 +3,6 @@
 #include "SEED.h"
 #include <../Game/GameSystem.h>
 
-//input
-#include "../PlayerInput/PlayerInput.h"
-
 ////////////////////////////////////////////////////////////////////////////////////////
 //  コンストラクタ
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +96,10 @@ void FieldObject_Goal::OnCollision(BaseObject* other,ObjectType objectType){
     if(objectType == ObjectType::Player){
         if(!GameSystem::GetScene()->HasEvent()){
 
-            if(PlayerInput::CharacterMove::GoNextStage()){
-                // ゴールしたことを通知
-                isGoal_ = true;
-            }
+            //if(PlayerInput::CharacterMove::GoNextStage()){
+            //    // ゴールしたことを通知
+            //    isGoal_ = true;
+            //}
 
             // プレイヤーが触れたことを記録
             isTouchedPlayer_ = true;

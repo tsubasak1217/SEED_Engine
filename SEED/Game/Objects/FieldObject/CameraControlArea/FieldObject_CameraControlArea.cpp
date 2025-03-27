@@ -112,7 +112,7 @@ void FieldObject_CameraControlArea::EndFrame(){
 
     // プレイヤーが衝突しなくなった瞬間の処理
     if(preIsCollidePlayer_ && !isCollidePlayer_){
-        Player* player = dynamic_cast<Player*>(pCamera_->GetTarget());
+        BaseCharacter* player = dynamic_cast<BaseCharacter*>(pCamera_->GetTarget());
 
         if(pCamera_){
             // カメラのターゲットを解除していた場合
@@ -135,10 +135,6 @@ void FieldObject_CameraControlArea::EndFrame(){
                 // 空にしておく
                 preDistance_ = std::nullopt;
             }
-
-            if(player){
-                player->SetPreCameraRotate(pCamera_->GetRotation());
-            }
         }
     }
 }
@@ -153,15 +149,9 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
 
         // 衝突時
         if(!preIsCollidePlayer_ && isCollidePlayer_){
-            Player* player = dynamic_cast<Player*>(other);
+            BaseCharacter* player = dynamic_cast<BaseCharacter*>(other);
             pCamera_ = dynamic_cast<FollowCamera*>(player->GetFollowCamera());
 
-            // 角度が急に変わってもスティックを離すまでは同じベクトルで移動させるための保存
-            if(player->GetPreCameraRotate() == std::nullopt){
-                if(isSavePreCameraRotate_){
-                    player->SetPreCameraRotate(pCamera_->GetRotation());
-                }
-            }
 
             if(pCamera_){
 
@@ -203,11 +193,6 @@ void FieldObject_CameraControlArea::OnCollision(BaseObject* other, ObjectType ob
             }
 
         }
-
-        // phiが変わったら戻す
-        //if(pCamera_->GetPhi() != phi_){
-        //    pCamera_->SetPhi(phi_);
-        //}
     }
 }
 

@@ -120,7 +120,7 @@ private:// 衝突判定を行わないリスト
 protected:// 基礎情報--------------------------------------------------------------
     BaseObject* parentObject_ = nullptr;
     ColliderType colliderType_;
-    ObjectType objectType_ = ObjectType::Editor;
+    ObjectType objectType_ = ObjectType::Field;
     static uint32_t nextID_;
     uint32_t colliderID_;
     bool isCollision_ = false;

@@ -667,18 +667,14 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
                     if(MyMath::Dot(line.end_ - line.origin_, axis) < 0.0f){
                         result.collideDepth = data.collideDepth;
                         result.hitNormal = axis;
-                    } else{
-                        result.collideDepth = 0.0f;
-                        result.hitNormal = { 0.0f,0.0f,0.0f };
                     }
-                } else{
-                    result.collideDepth = 0.0f;
-                    result.hitNormal = { 0.0f,0.0f,0.0f };
                 }
-            } else{
-                result.collideDepth = 0.0f;
-                result.hitNormal = { 0.0f,0.0f,0.0f };
             }
+        }
+
+        if(result.hitNormal == std::nullopt){
+            result.hitNormal = { 0.0f, 0.0f, 0.0f };
+            result.isCollide = false;
         }
     }
 

@@ -117,8 +117,7 @@ void ColliderEditor::AddColliderOnGUI(){
     );
 
     if(ImGui::Button("Add Collider")){
-        switch(addColliderType_)
-        {
+        switch(addColliderType_){
         case ColliderType::Sphere:
         {
             colliders_.push_back(std::make_unique<Collider_Sphere>());
@@ -314,8 +313,7 @@ void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* pare
         int colliderID = 0;
 
         // コライダーの形状に応じて生成
-        switch(collider->GetColliderType())
-        {
+        switch(collider->GetColliderType()){
         case ColliderType::Sphere:
         {
             pColliderArray->push_back(std::make_unique<Collider_Sphere>());

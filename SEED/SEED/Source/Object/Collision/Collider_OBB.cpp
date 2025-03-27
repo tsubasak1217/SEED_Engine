@@ -72,7 +72,7 @@ void Collider_OBB::CheckCollision(Collider* collider){
 
         if(collisionData.isCollide){
             // 押し戻しを行う
-            PushBack(this, collider, collisionData);
+            PushBack(collider, this, collisionData);
 
             // 衝突時の処理
             OnCollision(collider,collider->GetObjectType());

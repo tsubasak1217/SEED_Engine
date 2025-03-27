@@ -46,27 +46,15 @@ void FieldObject::Draw(){
 // Json出力関数
 ///////////////////////////////////////////////////////////////////
 nlohmann::json FieldObject::OutputJson(){
-    nlohmann::json json = {
-        { "name", name_ },
-        { "type", fieldObjectType_ },
-        { "position", {
-            GetLocalTranslate().x,
-            GetLocalTranslate().y,
-            GetLocalTranslate().z
-        } },
-        { "scale", {
-            GetLocalScale().x,
-            GetLocalScale().y,
-            GetLocalScale().z
-        } },
-        { "rotation", {
-            GetLocalRotate().x,
-            GetLocalRotate().y,
-            GetLocalRotate().z
-        } },
-        { "fieldObjectID", guid_ }
-    };
-    
+    nlohmann::json json;
+
+    json["name"] = name_;
+    json["type"] = fieldObjectType_;
+    json["position"] = GetWorldTranslate();
+    json["scale"] = GetWorldScale();
+    json["rotation"] = GetWorldRotate();
+    json["fieldObjectID"] = guid_;
+
     return json;
 }
 

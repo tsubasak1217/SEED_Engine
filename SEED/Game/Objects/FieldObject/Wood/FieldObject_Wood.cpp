@@ -66,3 +66,11 @@ nlohmann::json FieldObject_Wood::OutputJson(){
     json["leafColor"] = leafColor_;
     return json;
 }
+
+///////////////////////////////////////////////////////////////////
+// Json入力関数
+///////////////////////////////////////////////////////////////////
+void FieldObject_Wood::LoadFromJson(const nlohmann::json& json){
+    FieldObject::LoadFromJson(json);
+    leafColor_ = json.value("leafColor", leafColor_);
+}

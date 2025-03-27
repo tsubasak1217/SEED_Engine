@@ -32,9 +32,6 @@ public: // Stateから呼び出す関数
 
 public: // アクセッサ
     void SetPosition(const Vector3& pos){ model_->translate_ = pos; }
-    void SetFollowCameraPtr(BaseCamera* pCamera){ pCamera_ = pCamera; }
-    const BaseCamera* GetFollowCamera() const{ return pCamera_; }
-    BaseCamera* GetFollowCamera(){ return pCamera_; }
 
     // json
     const nlohmann::json& GetJsonData()override;
@@ -42,7 +39,4 @@ public: // アクセッサ
 
 public:
     void OnCollision(BaseObject* other,ObjectType objectType) override;
-
-private: // フォローカメラ、ターゲット用
-    BaseCamera* pCamera_ = nullptr;
 };

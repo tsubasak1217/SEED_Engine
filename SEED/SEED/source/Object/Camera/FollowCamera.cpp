@@ -87,7 +87,7 @@ void FollowCamera::UpdateAngle(){
 
 void FollowCamera::UpdateDistance(){
     // ※必要に応じて distanceInput_ による更新を有効にしてください
-    // distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
+    distance_ += distanceInput_.Value() * 20.0f * ClockManager::DeltaTime();
     distance_ = std::clamp(distance_, 15.0f, 500.0f);
 }
 

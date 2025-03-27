@@ -18,6 +18,7 @@ public:
 
 public:
     void Initialize();
+    void Initialize(int32_t stageNo,BaseCharacter* pPlayer);
     void Finalize();
     void Update();
     void Draw();
@@ -54,7 +55,7 @@ public:
     bool GetIsClear(int32_t stageNo){ return clearStatus_[stageNo]; }
     void SetIsClear(int32_t stageNo,bool isClear){ clearStatus_[stageNo] = isClear; }
     void StageClear(int32_t stageNo){ clearStatus_[stageNo] = true; }
-    void SetCurrentStageNo(int32_t stageNo){ currentStageNo_ = stageNo; }
+    void SetCurrentStageNo(int32_t stageNo);
     Vector3 GetStartPos();
     Vector3 GetNextStartPos();
     bool IsStageChanged(){ return currentStageNo_ != preStageNo_; }

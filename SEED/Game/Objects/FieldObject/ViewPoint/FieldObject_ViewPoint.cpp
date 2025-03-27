@@ -64,3 +64,11 @@ nlohmann::json FieldObject_ViewPoint::OutputJson(){
     json["distance"] = distance_;
     return json;
 }
+
+////////////////////////////////////////////////////////////////////////
+// Json入力関数
+////////////////////////////////////////////////////////////////////////
+void FieldObject_ViewPoint::LoadFromJson(const nlohmann::json& json){
+    FieldObject::LoadFromJson(json);
+    distance_ = json.value("distance", distance_);
+}

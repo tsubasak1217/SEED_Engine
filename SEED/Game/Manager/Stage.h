@@ -34,7 +34,6 @@ class Stage{
 public:
     Stage(uint32_t stageNo);
 
-
     // 卵の取得数など,ステータスの初期化(ステージを遷移したときなどに呼ぶ)
     void InitializeStatus(bool isSaveData = false);
     void InitializeStatus(const std::string& _jsonFilePath);

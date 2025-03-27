@@ -19,6 +19,7 @@ public:
     void OnCollision( BaseObject* other, ObjectType objectType)override;
     void Edit()override;
     nlohmann::json OutputJson()override;
+    void LoadFromJson(const nlohmann::json& json)override;
 
 public:
     // 試しにペアレントするかどうかのフラグ

@@ -39,7 +39,7 @@ void FieldObject_Plant::Update(){
                 float randScale = MyFunc::Random(0.1f, 0.3f);
                 flowerModel_[i]->isRotateWithQuaternion_ = false;
                 flowerModel_[i]->cullMode = D3D12_CULL_MODE_NONE;
-                flowerModel_[i]->translate_ = (model_->GetWorldTranslate() + Vector3(0.0f, 1.0f * model_->scale_.y, 0.0f))+ (MyFunc::RandomVector() * model_->scale_);
+                flowerModel_[i]->translate_ = (model_->GetWorldTranslate() + Vector3(0.0f, 1.0f * model_->scale_.y, 0.0f)) + (MyFunc::RandomVector() * model_->scale_);
                 flowerModel_[i]->scale_ = { randScale,randScale,randScale };
                 flowerModel_[i]->color_ = flowerColor_;
                 flowerModel_[i]->UpdateMatrix();
@@ -96,4 +96,14 @@ nlohmann::json FieldObject_Plant::OutputJson(){
     json["flowerVolume"] = flowerVolume_;
     json["flowerColor"] = flowerColor_;
     return json;
+}
+
+////////////////////////////////////////////////////////////////////////
+// Json入力関数
+////////////////////////////////////////////////////////////////////////
+void FieldObject_Plant::LoadFromJson(const nlohmann::json& json){
+    FieldObject::LoadFromJson(json);
+    isBloomFlower_ = json.value("isBloomFlower", isBloomFlower_);
+    flowerVolume_ = json.value("flowerVolume", flowerVolume_);
+    flowerColor_ = json.value("flowerColor", flowerColor_);
 }

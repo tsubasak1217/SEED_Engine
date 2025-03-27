@@ -153,3 +153,18 @@ nlohmann::json FieldObject_EventArea::OutputJson(){
     json["isOnceEvent"] = isOnceEvent_;
     return json;
 }
+
+/////////////////////////////////////////////////////////////////////
+// Json入力関数
+/////////////////////////////////////////////////////////////////////
+void FieldObject_EventArea::LoadFromJson(const nlohmann::json& json){
+
+    FieldObject::LoadFromJson(json);
+    eventName_ = json.value("eventFunctionKey", eventName_);
+    isOnceEvent_ = json.value("isOnceEvent", isOnceEvent_);
+
+    // EventFunctionTableから関数を取得
+    if(eventName_ != ""){
+        SetEvent(EventFunctionTable::tableMap_[eventName_]);
+    }
+}

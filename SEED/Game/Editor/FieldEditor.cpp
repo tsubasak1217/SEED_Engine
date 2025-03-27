@@ -331,10 +331,16 @@ void FieldEditor::ShowImGui(){
             }
         }
 
-        if(ImGui::Combo("##stageNo##1", &edittingStageIndex, stageSelectStr.c_str())){
+        if(ImGui::Combo("##stageNo##1", &edittingStageIndex,
+            "1\0"
+            "2\0"
+            "3\0"
+            "4\0"
+            "5\0"
+            "6\0\0"
+        )){
             manager_.SetCurrentStageNo(edittingStageIndex);
         }
-
 
         //----------------------------------------
         // ステージの出力
@@ -590,14 +596,8 @@ void FieldEditor::ShowImGui(){
                 //=====================================================
                 // 個別の編集
                 //=====================================================
-                {
-                    mfObj->Edit();
-                }
+                mfObj->Edit();
 
-                // イベントエリアの場合、イベント内容を設定	// イベントエリア等の編集があればここに追加...
-                if(auto* eventArea = dynamic_cast<FieldObject_EventArea*>(mfObj)){
-
-                }
                 ImGui::Separator();
 
                 //=====================================================

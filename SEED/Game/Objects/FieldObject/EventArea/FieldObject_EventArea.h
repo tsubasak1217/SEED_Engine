@@ -17,6 +17,7 @@ public:
     void OnCollision( BaseObject* other, ObjectType objectType)override;
     void Edit()override;
     nlohmann::json OutputJson()override;
+    void LoadFromJson(const nlohmann::json& json)override;
 
 public:
     const std::string& GetEventName()const{ return eventName_; }

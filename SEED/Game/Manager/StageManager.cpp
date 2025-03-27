@@ -1,4 +1,5 @@
 #include "StageManager.h"
+#include "Base/BaseCharacter.h"
 
 // 各ブロックのヘッダーファイル
 #include "FieldObject/GrassSoil/FieldObject_GrassSoil.h"
@@ -13,11 +14,7 @@
 // コンストラクタ
 ///////////////////////////////////////////////////////////////////////
 
-StageManager::StageManager(){
-    for(int i = 0; i < kStageCount_; i++){
-        stages_[i] = std::make_unique<Stage>(i);
-    }
-}
+StageManager::StageManager(){}
 
 ///////////////////////////////////////////////////////////////////////
 // デストラクタ
@@ -39,7 +36,19 @@ StageManager* StageManager::GetInstance(){
 // 初期化
 ///////////////////////////////////////////////////////////////////////
 void StageManager::Initialize(){
+    for(int i = 0; i < kStageCount_; i++){
+        stages_[i] = std::make_unique<Stage>(i);
+    }
     LoadStages();
+}
+
+void StageManager::Initialize(int32_t stageNo, BaseCharacter* pPlayer){
+    pPlayer_ = pPlayer;
+    for(int i = 0; i < kStageCount_; i++){
+        stages_[i] = std::make_unique<Stage>(i);
+    }
+    LoadStages();
+    SetCurrentStageNo(stageNo);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -126,6 +135,17 @@ void StageManager::LoadStages(){
     }
 }
 
+
+///////////////////////////////////////////////////////////////////////
+// ステージの変更
+///////////////////////////////////////////////////////////////////////
+void StageManager::SetCurrentStageNo(int32_t stageNo){
+    currentStageNo_ = std::clamp(stageNo, 0, kStageCount_ - 1);
+    if(pPlayer_){
+        pPlayer_->SetTranslate(GetStartPos());
+        pPlayer_->UpdateMatrix();
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////
 // スタート地点の取得

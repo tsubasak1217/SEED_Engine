@@ -13,6 +13,7 @@ public:
     void Draw()override;
     void Edit()override;
     nlohmann::json OutputJson()override;
+    void LoadFromJson(const nlohmann::json& json)override;
 
 public:
     float distance_ = 50.0f;

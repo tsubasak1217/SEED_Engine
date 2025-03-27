@@ -118,7 +118,7 @@ void Scene_Game::Initialize(){
     //  他クラスの情報を必要とするクラスの初期化
     ////////////////////////////////////////////////////
 
-    stageManager_->GetInstance()->SetPlayer(player_.get());
+    stageManager_->GetInstance()->Initialize(0, player_.get());
 
     /////////////////////////////////////////////////
     //  関連付けや初期値の設定

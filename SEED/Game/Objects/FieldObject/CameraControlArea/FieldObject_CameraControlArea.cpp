@@ -255,3 +255,29 @@ nlohmann::json FieldObject_CameraControlArea::OutputJson(){
     json["distance"] = distance_;
     return json;
 }
+
+
+////////////////////////////////////////////////////////////////////////
+// Jsonからの読み込み
+////////////////////////////////////////////////////////////////////////
+void FieldObject_CameraControlArea::LoadFromJson(const nlohmann::json& json){
+    FieldObject::LoadFromJson(json);
+
+    isPositionFixed_ = json.value("isPositionFixed", isPositionFixed_);
+    isOnceEvent_ = json.value("isOnceEvent", isOnceEvent_);
+    isOutControl_ = json.value("isOutControl", isOutControl_);
+    isSavePreCameraRotate_ = json.value("isSavePreCameraRotate", isSavePreCameraRotate_);
+    cameraPos_ = json.value("cameraPos", cameraPos_);
+    cameraRotate_ = json.value("cameraRotate", cameraRotate_);
+    theta_ = json.value("theta", theta_);
+    phi_ = json.value("phi", phi_);
+    exitTheta_ = json.value("exitTheta", exitTheta_);
+    exitPhi_ = json.value("exitPhi", exitPhi_);
+    distance_ = json.value("distance", distance_);
+
+    if(isPositionFixed_){
+        cameraModel_->SetTranslate(cameraPos_);
+        cameraModel_->SetRotate(cameraRotate_);
+        cameraMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate_, cameraPos_);
+    }
+}

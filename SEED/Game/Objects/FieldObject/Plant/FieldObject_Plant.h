@@ -10,6 +10,7 @@ public:
     void Draw()override;
     void Edit()override;
     nlohmann::json OutputJson()override;
+    void LoadFromJson(const nlohmann::json& json)override;
 
 public:
     bool isBloomFlower_ = false;

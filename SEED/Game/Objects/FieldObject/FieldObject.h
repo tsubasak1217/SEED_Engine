@@ -24,7 +24,7 @@ public:
     void Update()override;
     void Draw()override;
     virtual nlohmann::json OutputJson();
-    void LoadFromJson(const nlohmann::json& json);
+    virtual void LoadFromJson(const nlohmann::json& json);
 
     //--- getter / setter ---//
     Model* GetModel(){ return model_.get(); }

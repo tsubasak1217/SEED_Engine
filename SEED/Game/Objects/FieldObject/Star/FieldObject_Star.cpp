@@ -77,6 +77,5 @@ void FieldObject_Star::OnCollision( BaseObject* other, ObjectType objectType){
     if(objectType == ObjectType::Player){
         // 取得されたので削除依頼を行う
         removeFlag_ = true;
-        AudioManager::PlayAudio("SE/star.wav",false,0.8f);
     }
 }

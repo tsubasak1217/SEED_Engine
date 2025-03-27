@@ -63,6 +63,9 @@ void FieldObject_PointLight::Edit(){
 
 }
 
+/////////////////////////////////////////////////////////////
+// Json出力
+/////////////////////////////////////////////////////////////
 nlohmann::json FieldObject_PointLight::OutputJson(){
     nlohmann::json json = FieldObject::OutputJson();
     json["intensity"] = pointLight_->intensity;
@@ -70,4 +73,15 @@ nlohmann::json FieldObject_PointLight::OutputJson(){
     json["color"] = pointLight_->color_;
     json["decay"] = pointLight_->decay;
     return json;
+}
+
+/////////////////////////////////////////////////////////////
+// Jsonからの読み込み
+/////////////////////////////////////////////////////////////
+void FieldObject_PointLight::LoadFromJson(const nlohmann::json& json){
+    FieldObject::LoadFromJson(json);
+    pointLight_->intensity = json.value("intensity", pointLight_->intensity);
+    pointLight_->radius = json.value("radius", pointLight_->radius);
+    pointLight_->color_ = json.value("color", pointLight_->color_);
+    pointLight_->decay = json.value("decay", pointLight_->decay);
 }

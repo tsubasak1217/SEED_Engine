@@ -57,7 +57,6 @@ private:
 
     // GameObjects
     std::unique_ptr<SampleCharacter> player_ = nullptr;
-    std::unique_ptr<BaseObject> ground_;
 
     // Manager
     StageManager* stageManager_;

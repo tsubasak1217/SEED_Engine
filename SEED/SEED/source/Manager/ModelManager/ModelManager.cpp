@@ -60,17 +60,6 @@ void ModelManager::Initialize() {
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad() {
-    // ============================== character ============================== //
-    // dinosaur
-    LoadModel("dinosaur.gltf");
-    LoadModel("dinosaur_corpse.obj");
-    LoadModel("dinosaur_ghost.obj");
-    // egg
-    LoadModel("egg.obj");
-    LoadModel("egg_born.gltf");
-    // enemy
-    LoadModel("enemy.gltf");
-    LoadModel("enemy_spike.gltf");
 
     // ============================== FieldObject ============================== //
     LoadModel("FieldObject/Box.obj");

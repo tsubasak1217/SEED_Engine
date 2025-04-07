@@ -1,0 +1,1126 @@
+{
+    "colliders": [
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -127.66555786132812,
+                    "y": 1.847095251083374,
+                    "z": -118.7794189453125
+                },
+                "halfSize": {
+                    "x": 131.7479248046875,
+                    "y": 2.6576545238494873,
+                    "z": 122.07559204101562
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -29.96152114868164,
+                    "y": 6.067914962768555,
+                    "z": -39.591041564941406
+                },
+                "halfSize": {
+                    "x": 2.590465545654297,
+                    "y": 8.045332908630371,
+                    "z": 42.933937072753906
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": 0.24132204055786133,
+                    "y": 6.067914962768555,
+                    "z": -159.0538330078125
+                },
+                "halfSize": {
+                    "x": 2.590466260910034,
+                    "y": 8.045332908630371,
+                    "z": 83.22430419921875
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -104.64286804199219,
+                    "y": 6.067914962768555,
+                    "z": -240.3209228515625
+                },
+                "halfSize": {
+                    "x": 109.94198608398438,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -58.7491455078125,
+                    "y": 6.067914962768555,
+                    "z": -134.42935180664062
+                },
+                "halfSize": {
+                    "x": 63.25389099121094,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -182.2810516357422,
+                    "y": 6.067914962768555,
+                    "z": -134.42935180664062
+                },
+                "halfSize": {
+                    "x": 50.45622253417969,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -250.61077880859375,
+                    "y": 6.067914962768555,
+                    "z": -134.42935180664062
+                },
+                "halfSize": {
+                    "x": 7.9710693359375,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -246.02906799316406,
+                    "y": 6.067914962768555,
+                    "z": -89.85430145263672
+                },
+                "halfSize": {
+                    "x": 7.9710693359375,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -246.02906799316406,
+                    "y": 6.067914962768555,
+                    "z": -65.0101089477539
+                },
+                "halfSize": {
+                    "x": 7.9710693359375,
+                    "y": 8.045332908630371,
+                    "z": 2.5904674530029297
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -222.1434326171875,
+                    "y": 6.067914962768555,
+                    "z": -88.76828002929688
+                },
+                "halfSize": {
+                    "x": 6.69036865234375,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -201.31617736816406,
+                    "y": 6.067914962768555,
+                    "z": -64.19709014892578
+                },
+                "halfSize": {
+                    "x": 25.287078857421875,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -137.19464111328125,
+                    "y": 6.067914962768555,
+                    "z": -64.19709014892578
+                },
+                "halfSize": {
+                    "x": 29.855060577392578,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -63.39463806152344,
+                    "y": 6.067914962768555,
+                    "z": -64.19709014892578
+                },
+                "halfSize": {
+                    "x": 32.504302978515625,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -175.38685607910156,
+                    "y": 6.067914962768555,
+                    "z": -114.86113739013672
+                },
+                "halfSize": {
+                    "x": 27.567550659179688,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -142.36004638671875,
+                    "y": 6.067914962768555,
+                    "z": -0.40421295166015625
+                },
+                "halfSize": {
+                    "x": 114.85971069335938,
+                    "y": 8.045332908630371,
+                    "z": 2.5904712677001953
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -232.72987365722656,
+                    "y": 6.067914962768555,
+                    "z": -214.4260711669922
+                },
+                "halfSize": {
+                    "x": 25.498550415039062,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -154.8990478515625,
+                    "y": 6.067914962768555,
+                    "z": -174.5543212890625
+                },
+                "halfSize": {
+                    "x": 22.661849975585938,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -105.70912170410156,
+                    "y": 6.067914962768555,
+                    "z": -174.5543212890625
+                },
+                "halfSize": {
+                    "x": 16.64295196533203,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -199.41580200195312,
+                    "y": 6.067914962768555,
+                    "z": -174.5543212890625
+                },
+                "halfSize": {
+                    "x": 11.345962524414062,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -14.401557922363281,
+                    "y": 6.067914962768555,
+                    "z": -79.62258911132812
+                },
+                "halfSize": {
+                    "x": 14.814973831176758,
+                    "y": 8.045332908630371,
+                    "z": 2.5904693603515625
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -89.9369888305664,
+                    "y": 6.067914962768555,
+                    "z": -167.84625244140625
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 9.785476684570312
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -89.9369888305664,
+                    "y": 6.067914962768555,
+                    "z": -139.54615783691406
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 8.294692993164062
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -110.1068344116211,
+                    "y": 6.067914962768555,
+                    "z": -188.6234130859375
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 14.166244506835938
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -149.90586853027344,
+                    "y": 6.067914962768555,
+                    "z": -188.6234130859375
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 14.166244506835938
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -149.90586853027344,
+                    "y": 6.067914962768555,
+                    "z": -227.4609832763672
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 14.166244506835938
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -110.03112030029297,
+                    "y": 6.067914962768555,
+                    "z": -227.4609832763672
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 14.166244506835938
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -209.98355102539062,
+                    "y": 5.861372947692871,
+                    "z": -208.0187225341797
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 35.43724060058594
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -255.4393768310547,
+                    "y": 5.861372947692871,
+                    "z": -174.49024963378906
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 43.01588439941406
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -255.4393768310547,
+                    "y": 5.861372947692871,
+                    "z": -30.72510528564453
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 36.89562225341797
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -250.69960021972656,
+                    "y": 6.004278182983398,
+                    "z": -99.87554168701172
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 36.89562225341797
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -215.0889892578125,
+                    "y": 6.004278182983398,
+                    "z": -99.87554168701172
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 36.89562225341797
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -149.9503173828125,
+                    "y": 6.004278182983398,
+                    "z": -89.23445129394531
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 47.000335693359375
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -149.9503173828125,
+                    "y": 6.004278182983398,
+                    "z": -14.891530990600586
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 17.03022575378418
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "colliderType": "OBB",
+            "isAnimation": false,
+            "isGhost": false,
+            "isMovable": false,
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "local": {
+                "center": {
+                    "x": -200.1365203857422,
+                    "y": 6.004278182983398,
+                    "z": -89.53691101074219
+                },
+                "halfSize": {
+                    "x": 2.5904693603515625,
+                    "y": 8.045332908630371,
+                    "z": 27.76226043701172
+                },
+                "rotate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -0.0
+                }
+            },
+            "mass": 1.0,
+            "miu": 0.0,
+            "offset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    ]
+}

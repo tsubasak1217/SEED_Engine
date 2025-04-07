@@ -95,8 +95,6 @@ void Scene_Game::Initialize(){
     player_->SetTranslate({ 0.0f,10.0f,0.0f });
     player_->UpdateMatrix();
 
-    // 地面の初期化
-    ground_ = std::make_unique<BaseObject>("Assets/ground.obj","Ground");
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -179,10 +177,6 @@ void Scene_Game::Update(){
 
     // player
     player_->Update();
-
-    // ground
-    ground_->EditCollider();
-    ground_->Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +232,6 @@ void Scene_Game::Draw(){
 
     // フィールドの描画
     stageManager_->Draw();
-    ground_->Draw();
 
     // パーティクルの描画
     ParticleManager::Draw();
@@ -311,7 +304,6 @@ void Scene_Game::HandOverColliders(){
 
     stageManager_->HandOverColliders();
     player_->HandOverColliders();
-    ground_->HandOverColliders();
 }
 
 

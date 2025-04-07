@@ -15,5 +15,5 @@ protected:
     void ManageState()override;
 
 private:
-    float jumpPower_ = 10.0f;
+    float jumpPower_ = 100.0f;
 };

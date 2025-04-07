@@ -75,8 +75,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
             PushBack(collider, this, collisionData);
 
             // 衝突時の処理
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
@@ -84,8 +84,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
         if(Collision::OBB::AABB(body_, aabb->GetAABB())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
@@ -93,8 +93,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
         if(Collision::OBB::OBB(body_, obb->GetOBB())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
@@ -102,8 +102,8 @@ void Collider_OBB::CheckCollision(Collider* collider){
     {
         Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
         if(Collision::OBB::Line(body_, line->GetLine())){
-            OnCollision(collider,collider->GetObjectType());
-            collider->OnCollision(this,objectType_);
+            OnCollision(collider, collider->GetObjectType());
+            collider->OnCollision(this, objectType_);
         }
         break;
     }
@@ -138,14 +138,14 @@ bool Collider_OBB::CheckCollision(const Sphere& sphere){
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////////
 void Collider_OBB::UpdateBox(){
-    
+
     AABB aabb[2];
 
     float maxLen[2] = {
         (std::max)({body_.halfSize.x, body_.halfSize.y, body_.halfSize.z}),
         (std::max)({preBody_.halfSize.x, preBody_.halfSize.y, preBody_.halfSize.z})
     };
-    
+
     aabb[0].center = body_.center;
     aabb[0].halfSize = { maxLen[0],maxLen[0],maxLen[0] };
 
@@ -227,6 +227,7 @@ nlohmann::json Collider_OBB::GetJsonData(){
     // ローカル座標
     json["local"]["center"] = local_.center;
     json["local"]["halfSize"] = body_.halfSize;
+    json["local"]["rotate"] = rotate_;
 
     // オフセット
     json["offset"] = offset_;
@@ -242,12 +243,23 @@ void Collider_OBB::LoadFromJson(const nlohmann::json& jsonData){
     Collider::LoadFromJson(jsonData);
 
     // ローカル座標
-    local_.center = jsonData["local"]["center"];
-    body_.halfSize = jsonData["local"]["halfSize"];
-    local_.halfSize = body_.halfSize;
+    if(jsonData.contains("local") == false){ return; }
 
-    // オフセット
-    offset_ = jsonData["offset"];
+    if(jsonData["local"].contains("center")){
+        local_.center = jsonData["local"]["center"];
+    }
+    if(jsonData["local"].contains("halfSize")){
+        local_.halfSize = jsonData["local"]["halfSize"];
+        body_.halfSize = jsonData["local"]["halfSize"];
+        local_.halfSize = body_.halfSize;
+    }
+    if(jsonData["local"].contains("rotate")){
+        local_.rotate = jsonData["local"]["rotate"];
+        body_.rotate = jsonData["local"]["rotate"];
+    }
+    if(jsonData.contains("offset")){
+        offset_ = jsonData["offset"];
+    }
 
     // 行列の更新
     UpdateMatrix();

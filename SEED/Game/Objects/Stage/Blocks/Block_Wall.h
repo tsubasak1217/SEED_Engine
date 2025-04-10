@@ -8,4 +8,5 @@ public:
 
 public:
     void Initialize() override;
+    void SolveCollision(Block_Base* other) override;
 };

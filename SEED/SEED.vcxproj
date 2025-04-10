@@ -121,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Objects\Stage\Blocks\Block_Base.cpp" />
     <ClCompile Include="Game\Objects\Stage\Blocks\Block_Box.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Blocks\Block_Toge.cpp" />
     <ClCompile Include="Game\Objects\Stage\Blocks\Block_Wall.cpp" />
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\Stage\StageManager.cpp" />
@@ -221,6 +222,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Stage\Blocks\BlockType.h" />
     <ClInclude Include="Game\Objects\Stage\Blocks\Block_Base.h" />
     <ClInclude Include="Game\Objects\Stage\Blocks\Block_Box.h" />
+    <ClInclude Include="Game\Objects\Stage\Blocks\Block_Toge.h" />
     <ClInclude Include="Game\Objects\Stage\Blocks\Block_Wall.h" />
     <ClInclude Include="Game\Objects\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\Stage\StageManager.h" />

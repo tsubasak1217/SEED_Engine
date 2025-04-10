@@ -19,6 +19,7 @@ public:
     void Initialize();
     void Initialize(const std::string& filePath);
     void BeginFrame();
+    void EndFrame();
     void Update();
     void Draw();
     void Reset();
@@ -52,6 +53,8 @@ public:
 private:
     std::vector<std::unique_ptr<Block_Base>> blocks_;
     std::vector<std::vector<std::optional<std::pair<Block_Base*,size_t>>>> blockMap_;
+    std::vector<std::vector<std::vector<Block_Base*>>> collisionMap_;
+    std::vector<std::vector<std::optional<std::pair<Block_Base*, size_t>>>> preBlockMap_;
     int32_t stageNo_ = -1;
     Vector2i stageSize_ = { 10,10 };// ステージのサイズ
     float cameraHeight_ = 100.0f;

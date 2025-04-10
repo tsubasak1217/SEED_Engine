@@ -105,6 +105,7 @@
     <ClCompile Include="Game\Objects\Stage\Blocks\Block_Box.cpp" />
     <ClCompile Include="Game\Objects\Stage\Blocks\Block_Wall.cpp" />
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Blocks\Block_Toge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Game\Objects\Stage\Blocks\Block_Wall.h" />
     <ClInclude Include="SEED\Lib\Tensor\Vector2i.h" />
     <ClInclude Include="Game\Objects\Stage\Blocks\BlockType.h" />
+    <ClInclude Include="Game\Objects\Stage\Blocks\Block_Toge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

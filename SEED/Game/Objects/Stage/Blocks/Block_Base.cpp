@@ -47,9 +47,10 @@ void Block_Base::Load(const nlohmann::json& json){
     if(json.contains("address")){
         address_ = json["address"];
         firstAddress_ = address_;
-        Vector2 pos = Vector2((float)address_.x, (float)address_.y) * StageManager::GetInstance()->GetBlockSize();
+        Vector2 pos = Vector2((float)address_.x, (float)-address_.y) * StageManager::GetInstance()->GetBlockSize();
         blockModel_->translate_ = { pos.x,0.0f,pos.y };
-        firstPos_ = blockModel_->translate_;
+        UpdateMatrix();
+        firstPos_ = blockModel_->GetWorldTranslate();
     }
 }
 

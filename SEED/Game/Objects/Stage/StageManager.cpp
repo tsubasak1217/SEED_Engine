@@ -2,6 +2,7 @@
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
+#include <Game/Objects/Actor/Player/Player.h>
 
 /////////////////////////////////////////////////////////////////
 // static変数
@@ -48,6 +49,7 @@ void StageManager::Initialize(){
     blockNameMap_["Wall"] = BlockType::Wall;
     blockNameMap_["Box"] = BlockType::Box;
     blockNameMap_["Player"] = BlockType::Player;
+    blockNameMap_["Toge"] = BlockType::Toge;
 }
 
 
@@ -62,6 +64,19 @@ void StageManager::BeginFrame(){
         }
     } else{
         editStage_->BeginFrame();
+    }
+}
+
+/////////////////////////////////////////////////////////////////
+// フレームの終了時処理
+/////////////////////////////////////////////////////////////////
+void StageManager::EndFrame(){
+    if(!isEditMode_){
+        for(auto& stage : stages_){
+            stage->EndFrame();
+        }
+    } else{
+        editStage_->EndFrame();
     }
 }
 
@@ -192,6 +207,14 @@ void StageManager::EditStage(){
         if(ImGui::DragFloat("CameraHeight", &cameraHeight, 0.5f)){
             editStage_->SetCameraHeight(cameraHeight);
             SetCameraPosition(editStage_.get());
+        }
+
+        /*-------------------------------------------*/
+        // ドッペルゲンガーを生成する歩数
+        /*-------------------------------------------*/
+        static int32_t doppelgangerStep = Player::GetDoppelSteps();
+        if(ImGui::DragInt("DoppelgangerStep", &doppelgangerStep, 0.05f, 0)){
+            Player::SetDoppelSteps(doppelgangerStep);
         }
 
         /*-------------------------------------------*/

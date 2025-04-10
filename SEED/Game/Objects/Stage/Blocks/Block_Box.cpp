@@ -9,3 +9,7 @@ void Block_Box::Initialize(){
     blockModel_ = std::make_unique<Model>("Assets/Box.obj");
     AdjustSize();
 }
+
+void Block_Box::SolveCollision(Block_Base* other){
+    other;
+}

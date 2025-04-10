@@ -5,4 +5,5 @@ enum class BlockType{
     Wall,
     Box,
     Player,
+    Toge
 };

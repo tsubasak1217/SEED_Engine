@@ -182,6 +182,7 @@ void Scene_Game::EndFrame(){
         currentState_->EndFrame();
     }
 
+    StageManager::GetInstance()->EndFrame();
 }
 
 

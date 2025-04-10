@@ -4,12 +4,14 @@
 
 // static変数
 int Player::playerCount_ = 0;
+int32_t Player::doppelSteps_ = 10;// ドッペルゲンガーを生むまでの歩数
 
 ///////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////
 Player::Player(){
     Initialize();
+    characterNo_ = playerCount_;
     playerCount_++;
 }
 
@@ -41,6 +43,7 @@ void Player::Initialize(){
 ///////////////////////////////////////////////////////////
 void Player::BeginFrame(){
     Block_Base::BeginFrame();
+    isMoveInput_ = false;
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,6 +76,33 @@ void Player::Load(const nlohmann::json& json){
 }
 
 ///////////////////////////////////////////////////////////
+// 衝突解決
+///////////////////////////////////////////////////////////
+void Player::SolveCollision(Block_Base* other){
+
+    // 衝突したブロックの種類を取得
+    BlockType otherType = other->GetBlockType();
+
+    // プレイヤーの場合
+    if(otherType == BlockType::Player){
+        Player* otherPlayer = static_cast<Player*>(other);
+
+        // こちらからの入力で衝突した場合、相手を殺す
+        if(isMoveInput_){
+            otherPlayer->isAlive_ = false;
+        }
+    
+    } else if(otherType == BlockType::Toge){
+        // トゲに衝突した場合、こちらを殺す
+        isAlive_ = false;
+    
+    } else if(otherType == BlockType::Box){
+        // ブロックに埋まった場合、こちらを殺す
+        isAlive_ = false;
+    }
+}
+
+///////////////////////////////////////////////////////////
 // 移動
 ///////////////////////////////////////////////////////////
 bool Player::Move(){
@@ -95,6 +125,8 @@ bool Player::Move(){
 
 
         if(isPlaying_){
+
+            isMoveInput_ = true;
 
             // 移動方向に応じて回転する
             Vector3 rotate;
@@ -121,16 +153,17 @@ bool Player::Move(){
             // 移動履歴から自動で移動
             if(moveHistory_.size() > 0){
 
-                steps_++;
-                if(steps_ >= doppelSteps_){
-                    steps_ = 1;
-                }
 
                 // 移動に応じて回転
-                Vector2i autoMove = moveHistory_[steps_ - 1];
+                Vector2i autoMove = moveHistory_[steps_];
                 Vector3 rotate;
                 rotate = MyFunc::CalcRotateVec({ (float)autoMove.x,0.0f,(float)-autoMove.y });
                 blockModel_->rotate_ = rotate;
+
+                steps_++;
+                if(steps_ >= doppelSteps_){
+                    steps_ = 0;
+                }
 
                 // 移動
                 return StageManager::GetInstance()->GetCurrentStage()->RequestPlayerMove(address_ + autoMove, this);
@@ -165,4 +198,12 @@ void Player::DrawHistory(){
         historyModel_->UpdateMatrix();
         historyModel_->Draw();
     }
+}
+
+///////////////////////////////////////////////////////////
+// 前方ベクトルを取得
+///////////////////////////////////////////////////////////
+Vector2i Player::GetForwardVec(){
+    Vector3 rotatedVec = Vector3(0.0f, 0.0f, 1.0f) * RotateMatrix(blockModel_->rotate_);
+    return Vector2i((int)rotatedVec.x, (int)-rotatedVec.z);
 }

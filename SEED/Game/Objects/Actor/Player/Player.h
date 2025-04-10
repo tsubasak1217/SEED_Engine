@@ -19,6 +19,7 @@ public:
     Player(Player&&) = default;
     Player& operator=(Player&&) = default;
     void Load(const nlohmann::json& json) override;
+    void SolveCollision(Block_Base* other) override;
     
 
 private:
@@ -26,18 +27,29 @@ private:
     void DrawHistory();
 
 public:
+    static int32_t GetDoppelSteps(){ return doppelSteps_; }
+    static void SetDoppelSteps(int32_t steps){ doppelSteps_ = steps; }
     bool GetDoppelCreateOder(){ return steps_ >= doppelSteps_; }
     void SetIsPlaying(bool isPlaying){ isPlaying_ = isPlaying; }
     void SetIsDoppel(bool isDoppel){ isDoppel_ = isDoppel; }
-
+    int32_t GetCharacterNo(){ return characterNo_; }
+    bool GetIsDoppel(){ return isDoppel_; }
+    bool GetIsCreatedDoppel(){ return isCreatedDoppel_; }
+    void SetIsCreatedDoppel(bool isCreatedDoppel){ isCreatedDoppel_ = isCreatedDoppel; }
+    bool GetIsFoundDoppel(){ return isFoundDoppel_; }
+    void SetIsFoundDoppel(bool isFoundDoppel){ isFoundDoppel_ = isFoundDoppel; }
+    Vector2i GetForwardVec();
 private:
 
     static int playerCount_;// プレイヤーの数
     int32_t steps_;// 歩数
-    int32_t doppelSteps_ = 5;// ドッペルゲンガーを生むまでの歩数
+    static int32_t doppelSteps_;// ドッペルゲンガーを生むまでの歩数
+    int32_t characterNo_;// 何番目のキャラクターか認識するための変数
     bool isCreatedDoppel_ = false;// ドッペルゲンガーを生み出したかどうか
+    bool isFoundDoppel_ = false;// ドッペルゲンガーを見つけたかどうか
     bool isDoppel_ = false;// ドッペルゲンガーかどうか
     bool isPlaying_ = true;// プレイヤーが操作中かどうか
+    bool isMoveInput_ = false;// 移動の入力があったかどうか
     Vector4 modelColor_ = { 1.0f,0.0f,0.0f,1.0f };// モデルの色
 
     // 移動履歴

@@ -33,6 +33,7 @@ public:
     void SetFirstAddress(const Vector2i& address){ firstAddress_ = address; }
     void AddAddress(const Vector2i& addValue){ address_ += addValue; }
     void ResetAddress(){ address_ = firstAddress_; }
+    virtual void SolveCollision(Block_Base* other) = 0;
 
 protected:
     void AdjustSize();
@@ -44,6 +45,9 @@ public:
     void SetRotate(const Vector3& rotate){ blockModel_->rotate_ = rotate; }
     void SetFirstPos(const Vector3& pos){ firstPos_ = pos; }
     Vector3 GetTranslate()const{ return blockModel_->translate_; }
+    bool GetIsAlive(){ return isAlive_; }
+    BlockType GetBlockType(){ return blockType_; }
+    void SetIsAlive(bool isAlive){ isAlive_ = isAlive; }
 
 protected:
     static uint32_t nextBlockID_;
@@ -55,4 +59,5 @@ protected:
     Vector2i preAddress_;
     static float baseBlockSize_;
     std::unique_ptr<Model> blockModel_;
+    bool isAlive_ = true;
 };

@@ -9,3 +9,7 @@ void Block_Wall::Initialize(){
     blockModel_ = std::make_unique<Model>("Assets/Tile.obj");
     AdjustSize();
 }
+
+void Block_Wall::SolveCollision(Block_Base* other){
+    other;
+}

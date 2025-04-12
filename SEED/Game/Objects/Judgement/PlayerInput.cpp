@@ -1,4 +1,6 @@
 #include "PlayerInput.h"
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
 PlayerInput::PlayerInput(){
 
@@ -29,25 +31,68 @@ PlayerInput::PlayerInput(){
     }
 
     ///////////////////////////////////////////////////////
-    // フリックの取得
+    // 左右フリックの取得
     ///////////////////////////////////////////////////////
     {
-        flick_.Value = [&]{
+        sideFlick_.Value = [&]{
             float horizontalVal = Input::GetMouseVector().x;
             if(horizontalVal > flickDeadZone_){ return LR::RIGHT; }
             if(horizontalVal < -flickDeadZone_){ return LR::LEFT; }
             return LR::NONE;
         };
 
-        flick_.PreValue = [&]{
+        sideFlick_.PreValue = [&]{
             float horizontalVal = Input::GetMouseVector(INPUT_STATE::BEFORE).x;
             if(horizontalVal > flickDeadZone_){ return LR::RIGHT; }
             if(horizontalVal < -flickDeadZone_){ return LR::LEFT; }
             return LR::NONE;
         };
 
-        flick_.Trigger = [&]{
-            return (flick_.Value() != LR::NONE) && (flick_.PreValue() == LR::NONE);
+        sideFlick_.Trigger = [&]{
+            return (sideFlick_.Value() != LR::NONE) && (sideFlick_.PreValue() == LR::NONE);
+        };
+    }
+
+    ///////////////////////////////////////////////////////
+    // 矩形フリックの取得
+    ///////////////////////////////////////////////////////
+    {
+        rectFlick_.Value = [&]{
+            // LT,RT,LB,RB方向のマウスフリック判定を取得
+            Vector2 flickVec = Input::GetMouseVector();
+
+            // 長さがデッドゾーンより小さければ無視
+            if(MyMath::Length(flickVec) < flickDeadZone_){ return DIRECTION8::NONE; }
+
+            // 方向を取得
+            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::RIGHTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return DIRECTION8::RIGHTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return DIRECTION8::LEFTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::LEFTTOP; }
+
+            // どの方向にも当てはまらなければ無視
+            return DIRECTION8::NONE;
+        };
+
+        rectFlick_.PreValue = [&]{
+            // LT,RT,LB,RB方向のマウスフリック判定を取得
+            Vector2 flickVec = Input::GetMouseVector(INPUT_STATE::BEFORE);
+
+            // 長さがデッドゾーンより小さければ無視
+            if(MyMath::Length(flickVec) < flickDeadZone_){ return DIRECTION8::NONE; }
+
+            // 方向を取得
+            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::RIGHTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return DIRECTION8::RIGHTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return DIRECTION8::LEFTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::LEFTTOP; }
+
+            // どの方向にも当てはまらなければ無視
+            return DIRECTION8::NONE;
+        };
+
+        rectFlick_.Trigger = [&]{
+            return (rectFlick_.Value() != DIRECTION8::NONE) && (rectFlick_.PreValue() == DIRECTION8::NONE);
         };
     }
 
@@ -103,4 +148,10 @@ PlayerInput* PlayerInput::GetInstance(){
         instance_ = new PlayerInput();
     }
     return instance_;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// デストラクタ
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+PlayerInput::~PlayerInput(){
 }

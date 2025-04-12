@@ -39,8 +39,8 @@ void Judgement::Judge(NotesData* noteGroup, float time){
     /*--------------------------*/
     auto input = PlayerInput::GetInstance();
     int32_t lane = input->GetLane();// 今カーソルはどこのレーンか
-    LR flickDirection = input->GetFlickDirection();// フリックの方向、フリックしているか
-    bool isFlick = input->GetIsFlick();// フリック判定があるか
+    LR flickDirection = input->GetSideFlickDirection();// フリックの方向、フリックしているか
+    bool isFlick = input->GetIsSideFlick();// フリック判定があるか
     bool isTap = input->GetTapLane();// タップ判定があるか
     bool isHold = input->GetIsHold();// ホールド判定があるか
     std::unordered_set<int32_t> holdLane = input->GetHoldLane();// ホールドしているレーン

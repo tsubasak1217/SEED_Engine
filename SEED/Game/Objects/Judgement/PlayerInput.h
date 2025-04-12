@@ -13,13 +13,13 @@ private:
 public:
     static PlayerInput* GetInstance();
     ~PlayerInput();
-    void Update();
-    void Draw();
 
 public:// 入力情報を取得する関数
     bool GetTapLane(){ return tap_.Trigger(); }
-    LR GetFlickDirection(){ return flick_.Value(); }
-    bool GetIsFlick(){ return flick_.Trigger(); }
+    LR GetSideFlickDirection(){ return sideFlick_.Value(); }
+    bool GetIsSideFlick(){ return sideFlick_.Trigger(); }
+    DIRECTION8 GetRectFlickDirection(){ return rectFlick_.Value(); }
+    bool GetIsRectFlick(){ return rectFlick_.Trigger(); }
     bool GetIsHold(){ return hold_.Press(); }
     const std::unordered_set<int32_t>& GetHoldLane(){ return hold_.Value(); }
     int32_t GetLane(){ return lane_.Value(); }
@@ -37,7 +37,8 @@ private:
 private:
     InputHandler<bool> tap_;
     InputHandler<std::unordered_set<int32_t>> hold_;
-    InputHandler<LR> flick_;
+    InputHandler<LR> sideFlick_;
+    InputHandler<DIRECTION8> rectFlick_;
     InputHandler<int32_t>lane_;
 
 };

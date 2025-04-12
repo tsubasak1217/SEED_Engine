@@ -93,7 +93,7 @@ public:// キーの状態を返す関数
 
     // スティックをトリガーとして取得
     static bool IsTriggerStick(
-        LR stick_LorR, DIRECTION direction, float border = 0.5f,
+        LR stick_LorR, DIRECTION4 direction, float border = 0.5f,
         uint8_t padNumber = 0
     );
 

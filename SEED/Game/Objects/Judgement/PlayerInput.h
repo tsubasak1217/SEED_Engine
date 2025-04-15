@@ -26,7 +26,6 @@ public:// 入力情報を取得する関数
 
 private:
     static PlayerInput* instance_;
-    static PlayField* pPlayField_;
 
 private:
     float flickDeadZone_ = 10.0f;// フリックのデッドゾーン

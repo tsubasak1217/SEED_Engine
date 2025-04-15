@@ -1,5 +1,10 @@
 #include "Judgement.h"
 
+/////////////////////////////////////////////////////////
+// static変数の初期化
+/////////////////////////////////////////////////////////
+Judgement* Judgement::instance_ = nullptr;
+
 ////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////
@@ -37,20 +42,20 @@ void Judgement::Judge(NotesData* noteGroup, float time){
     /*--------------------------*/
     // Input情報の取得
     /*--------------------------*/
-    auto input = PlayerInput::GetInstance();
-    int32_t lane = input->GetLane();// 今カーソルはどこのレーンか
-    LR flickDirection = input->GetSideFlickDirection();// フリックの方向、フリックしているか
-    bool isFlick = input->GetIsSideFlick();// フリック判定があるか
-    bool isTap = input->GetTapLane();// タップ判定があるか
-    bool isHold = input->GetIsHold();// ホールド判定があるか
-    std::unordered_set<int32_t> holdLane = input->GetHoldLane();// ホールドしているレーン
+    //auto input = PlayerInput::GetInstance();
+    //int32_t lane = input->GetLane();// 今カーソルはどこのレーンか
+    //LR flickDirection = input->GetSideFlickDirection();// フリックの方向、フリックしているか
+    //bool isFlick = input->GetIsSideFlick();// フリック判定があるか
+    //bool isTap = input->GetTapLane();// タップ判定があるか
+    //bool isHold = input->GetIsHold();// ホールド判定があるか
+    //std::unordered_set<int32_t> holdLane = input->GetHoldLane();// ホールドしているレーン
 
     /*--------------------------*/
     // ノーツの判定
     /*--------------------------*/
     for(auto& note : nearNotes){
         // 正しい時間との差を取得
-        float dif = std::abs(note.lock()->time_ - time);
+        //float dif = std::abs(note.lock()->time_ - time);
 
         // ノーツの判定
         if(note.lock()->time_ < time - judgeTime_[Evaluation::GOOD]){

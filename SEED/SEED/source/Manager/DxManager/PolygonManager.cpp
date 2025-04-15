@@ -268,7 +268,7 @@ void PolygonManager::InitializePrimitive(){
 
     // プリミティブの描画情報を初期化
     for(int32_t blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int cullIdx = 0; cullIdx < 3; ++cullIdx){
+        for(int32_t cullIdx = 0; cullIdx < 3; ++cullIdx){
             // 参照先を設定
             modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE][blendIdx][cullIdx];
             modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE2D][blendIdx][cullIdx];
@@ -383,7 +383,7 @@ void PolygonManager::AddTriangle(
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_TRIANGLE";
     drawDataName[0] += blendName[(int)blendMode];
-    drawDataName[0] += cullName[0];
+    drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
     drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TRIANGLE2D" : "ENGINE_DRAW_TRIANGLE2D";
@@ -1649,7 +1649,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             /*                                     Modelごとに見ていく                                      */
             ///////////////////////////////////////////////////////////////////////////////////////////////
             for(auto& modelData : modelDrawData_){
-
 
                 // 各モデルの現在のブレンドモードのインスタンス数
                 auto& item = modelData.second;

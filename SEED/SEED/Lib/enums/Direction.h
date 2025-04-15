@@ -1,13 +1,13 @@
 #pragma once
 #include <cstdint>
 
-enum class LR : uint32_t{
+enum class LR : int32_t{
     NONE = -1,
     LEFT,
     RIGHT
 };
 
-enum class DIRECTION4 : uint32_t{
+enum class DIRECTION4 : int32_t{
     NONE = -1,
     UP,
     DOWN,
@@ -15,7 +15,7 @@ enum class DIRECTION4 : uint32_t{
     RIGHT
 };
 
-enum class DIRECTION8 : uint32_t{
+enum class DIRECTION8 : int32_t{
     NONE = -1,
     TOP,
     BOTTOM,

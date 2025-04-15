@@ -24,15 +24,15 @@ struct Triangle{
     );
 
     Vector3 localVertex[3];
-    Vector3 scale;
+    Vector3 scale = {1.0f,1.0f,1.0f};
     Vector3 rotate;
     Vector3 translate;
-    Vector4 color;
-    int32_t litingType;
-    uint32_t GH;
-    BlendMode blendMode;
+    Vector4 color = {1.0f,1.0f,1.0f,1.0f};
+    int32_t litingType = LIGHTINGTYPE_NONE;
+    int32_t GH = -1;
+    BlendMode blendMode = BlendMode::NORMAL;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
-    Matrix4x4 uvTransform;
+    Matrix4x4 uvTransform = IdentityMat4();
 };
 
 struct Triangle2D{
@@ -49,14 +49,14 @@ struct Triangle2D{
 
 public:
     Vector2 localVertex[3];
-    Vector2 scale;
+    Vector2 scale = { 1.0f,1.0f };
     float rotate;
     Vector2 translate;
-    Vector4 color;
-    int32_t litingType;
-    uint32_t GH;
-    BlendMode blendMode;
-    Matrix4x4 uvTransform;
+    Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
+    int32_t litingType = LIGHTINGTYPE_NONE;
+    int32_t GH = -1;
+    BlendMode blendMode = BlendMode::NORMAL;
+    Matrix4x4 uvTransform = IdentityMat4();
     // 解像度の変更を反映するかどうかの設定
     bool isStaticDraw;
     // 描画位置の設定(前景か背景か)

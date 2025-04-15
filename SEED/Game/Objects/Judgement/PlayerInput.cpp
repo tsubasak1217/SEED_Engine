@@ -2,9 +2,15 @@
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
-PlayerInput::PlayerInput(){
+/////////////////////////////////////////////////////////
+// static変数の初期化
+/////////////////////////////////////////////////////////
+PlayerInput* PlayerInput::instance_ = nullptr;
 
-    pPlayField_ = PlayField::GetInstance();
+/////////////////////////////////////////////////////////
+// コンストラクタ
+/////////////////////////////////////////////////////////
+PlayerInput::PlayerInput(){
 
     ///////////////////////////////////////////////////////
     // タップの取得
@@ -126,15 +132,15 @@ PlayerInput::PlayerInput(){
     ///////////////////////////////////////////////////////
     {
         lane_.Value = []{
-            static float basePosX = -pPlayField_->kPlayFieldSizeX_ * 0.5f;
+            static float basePosX = -PlayField::kPlayFieldSizeX_ * 0.5f;
             float cursorDif = instance_->cursorPos_ - basePosX;
-            return std::clamp(int(cursorDif / pPlayField_->kKeyWidth_), 0, pPlayField_->kKeyCount_ - 1);
+            return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
 
         lane_.PreValue = []{
-            static float basePosX = -pPlayField_->kPlayFieldSizeX_ * 0.5f;
+            static float basePosX = -PlayField::kPlayFieldSizeX_ * 0.5f;
             float cursorDif = instance_->preCursorPos_ - basePosX;
-            return std::clamp(int(cursorDif / pPlayField_->kKeyWidth_), 0, pPlayField_->kKeyCount_ - 1);
+            return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
     }
 }

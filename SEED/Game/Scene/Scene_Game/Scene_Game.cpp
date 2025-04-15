@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
+// state
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  コンストラクタ・デストラクタ
@@ -27,18 +30,17 @@ Scene_Game::~Scene_Game(){
 void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
-    // マネージャー初期化
+    // State初期化
     ////////////////////////////////////////////////////
 
+    // Playステートに初期化
+    ChangeState(new GameState_Play(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ -191.6f,46.8f,-185.8f });
-    SEED::GetCamera()->SetRotation({ 0.15173f,0.7807f,0.0f });
-    SEED::GetCamera()->Update();
-    SEED::SetCamera("debug");
+
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -139,19 +141,6 @@ void Scene_Game::Draw(){
 
     // パーティクルの描画
     ParticleManager::Draw();
-
-    //グリッドの描画
-    SEED::DrawGrid();
-
-    /*======================= 各状態固有の描画 ========================*/
-
-    if(currentState_){
-        currentState_->Draw();
-    }
-
-    if(currentEventState_){
-        currentEventState_->Draw();
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

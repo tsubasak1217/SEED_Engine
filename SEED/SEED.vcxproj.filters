@@ -107,6 +107,9 @@
     <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
     <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
     <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
+    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -246,6 +249,8 @@
     <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
     <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

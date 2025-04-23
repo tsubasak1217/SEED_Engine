@@ -16,6 +16,8 @@ public:
     ~RythmGameManager();
     static RythmGameManager* GetInstance();
     void Initialize();
+    void BeginFrame();
+    void EndFrame();
     void Update();
     void Draw();
 
@@ -24,5 +26,5 @@ public:
 
 private:
     std::unique_ptr<BaseCamera> gameCamera_;// カメラ
-    std::unique_ptr<PlayField> playField_;// プレイフィールド
+    std::unique_ptr<NotesData> notesData_;// 譜面データ
 };

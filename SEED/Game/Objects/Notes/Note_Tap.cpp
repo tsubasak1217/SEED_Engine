@@ -9,8 +9,20 @@ Note_Tap::~Note_Tap(){
 void Note_Tap::Update(){
 }
 
-void Note_Tap::Draw(){
-    Note_Base::Draw();
+void Note_Tap::Draw(float currentTime, float appearLength){
+    static Quad noteRect;
+    float timeRatio = (time_ - currentTime) / appearLength;
+
+    // 描画用の矩形を計算
+    noteRect = PlayField::GetInstance()->GetNoteRect(timeRatio, lane_, layer_,0.05f);
+
+    // 頂点設定
+    for(int i = 0; i < 4; i++){
+        noteQuad_->localVertex[i] = noteRect.localVertex[i];
+    }
+
+    // 描画
+    Note_Base::Draw(currentTime, appearLength);
 }
 
 ////////////////////////////////////////////////////////////////////

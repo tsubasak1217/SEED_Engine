@@ -2,19 +2,28 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/SEED.h>
+#include <Game/Objects/Notes/NotesData.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
 ///////////////////////////////////////////////////////////////////////////////
+PlayField* PlayField::instance_ = nullptr;
 float PlayField::kPlayFieldSizeX_ = kPlayFieldSizeY_ = float(kWindowSizeY) * 0.975f;// プレイフィールドの幅
 float PlayField::kPlayFieldSizeY_ = kPlayFieldSizeY_;// プレイフィールドの高さ
 float PlayField::kKeyWidth_ = kPlayFieldSizeX_ / kKeyCount_;// 鍵盤の幅
 
 /////////////////////////////////////////////////////////////////////////
-// コンストラクタ・デストラクタ
+// コンストラクタ・デストラクタ・インスタンス取得
 /////////////////////////////////////////////////////////////////////////
 PlayField::PlayField(){
     Initialize();
+}
+
+PlayField* PlayField::GetInstance(){
+    if(!instance_){
+        instance_ = new PlayField();
+    }
+    return instance_;
 }
 
 PlayField::~PlayField(){
@@ -139,6 +148,7 @@ void PlayField::Initialize(){
 /////////////////////////////////////////////////////////////////////////
 void PlayField::Update(){
 
+    // 押されたら反応するレーンの描画
     for(auto answerQuadArray : laneAnswer_){
         for(auto answerQuad : answerQuadArray){
             answerQuad.Update();
@@ -180,7 +190,6 @@ void PlayField::Draw(){
             SEED::DrawTriangle(laneBorderLineAura_[i][j]);
         }
     }
-
 }
 
 
@@ -233,4 +242,24 @@ void PlayField::SetLaneReleased(int32_t lane){
     // 押下状態を解除
     laneAnswer_[0][lane].isTrigger = false;
     laneAnswer_[1][lane].isTrigger = false;
+}
+
+/////////////////////////////////////////////////////////////////////////
+// 流れてくるノーツ描画に使う頂点情報を取得
+/////////////////////////////////////////////////////////////////////////
+Quad PlayField::GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float ratioWidth){
+    Quad result;
+    Triangle laneTriangle = lane_[(1 - (int)layer)][lane];
+
+    // ノーツの奥行きの計算
+    float farZ = std::clamp(timeRatio + ratioWidth * 0.5f,0.0f,1.0f);
+    float nearZ = std::clamp(timeRatio - ratioWidth * 0.5f, 0.0f, 1.0f);
+
+    // ノーツの矩形の頂点を計算
+    result.localVertex[0] = MyMath::Lerp(laneTriangle.localVertex[0], laneTriangle.localVertex[2], 1.0f - farZ);
+    result.localVertex[1] = MyMath::Lerp(laneTriangle.localVertex[0], laneTriangle.localVertex[1], 1.0f - farZ);
+    result.localVertex[2] = MyMath::Lerp(laneTriangle.localVertex[0], laneTriangle.localVertex[2], 1.0f - nearZ);
+    result.localVertex[3] = MyMath::Lerp(laneTriangle.localVertex[0], laneTriangle.localVertex[1], 1.0f - nearZ);
+
+    return result;
 }

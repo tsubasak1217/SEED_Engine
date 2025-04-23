@@ -6,6 +6,6 @@ public:
     Note_Tap();
     ~Note_Tap() override;
     void Update() override;
-    void Draw() override;
+    void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
 };

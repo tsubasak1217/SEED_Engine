@@ -29,6 +29,8 @@ void GameState_Play::Draw(){
 }
 
 void GameState_Play::BeginFrame(){
+    // ゲームマネージャーのフレーム開始処理
+    RythmGameManager::GetInstance()->BeginFrame();
 }
 
 void GameState_Play::EndFrame(){

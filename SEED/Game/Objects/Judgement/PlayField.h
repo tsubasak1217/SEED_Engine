@@ -2,10 +2,14 @@
 #include <array>
 #include <Environment/Environment.h>
 #include <SEED/Lib/Tensor/Vector2.h>
-#include <Game/Objects/Notes/NotesData.h>
 #include <SEED/Lib/Shapes/Triangle.h>
+#include <SEED/Lib/Shapes/Quad.h>
 #include <Game/Objects/Judgement/AnswerLane.h>
 #include <Game/Objects/Judgement/LaneBit.h>
+#include <SEED/Lib/enums/Direction.h>
+
+// 前方宣言
+class NotesData;
 
 class PlayField{
 private:
@@ -16,8 +20,14 @@ private:
         LEFT
     };
 
-public:
+    // シングルトン用
     PlayField();
+    PlayField(const PlayField&) = delete;
+    void operator=(const PlayField&) = delete;
+    static PlayField* instance_;
+
+public:
+    static PlayField* GetInstance();
     ~PlayField();
     void Initialize();
     void Update();
@@ -27,6 +37,9 @@ public:
     void SetEvalution(LaneBit laneBit,UpDown layer,const Vector4& color);
     void SetLanePressed(int32_t lane, const Vector4& color);
     void SetLaneReleased(int32_t lane);
+    void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
+    // 流れてくるノーツ描画に使う頂点情報を取得
+    Quad GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float width = 0.0f);
 
 public:
     static float kPlayFieldSizeX_;// プレイフィールドの幅
@@ -34,7 +47,7 @@ public:
     static const int32_t kKeyCount_ = 5;// 鍵盤数
     static float kKeyWidth_;// 鍵盤の幅
     float kBorderLineZ_;// 判定ボーダーラインの位置
-    float farZ_ = 100.0f;// プレイフィールドの奥行き
+    float farZ_ = 1000.0f;// プレイフィールドの奥行き
     float nearZ_ = 50.0f;// プレイフィールドの手前
 
 private:
@@ -50,4 +63,6 @@ private:
     std::array<std::array<AnswerLane, kKeyCount_>,2> laneAnswer_;// レーンに判定が入ったときに表示するやつ
     std::array<std::array<Triangle, kKeyCount_ + 1>,2> laneBorderLine_;// レーンの境界線
     std::array<std::array<Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
+
+
 };

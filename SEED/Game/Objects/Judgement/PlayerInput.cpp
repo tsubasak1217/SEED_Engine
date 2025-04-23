@@ -25,7 +25,7 @@ PlayerInput::PlayerInput(){
             if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
                 return true;
             } else{
-                if(lane_.Value() != lane_.PreValue()){
+                if(cursorLane_.Value() != cursorLane_.PreValue()){
                     if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
                         return true;
                     }
@@ -118,7 +118,7 @@ PlayerInput::PlayerInput(){
             if(Input::IsPressKey(DIK_D)){ holdLane.insert(2); }
             if(Input::IsPressKey(DIK_F)){ holdLane.insert(3); }
             if(Input::IsPressKey(DIK_SPACE)){ holdLane.insert(4); }
-            if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){ holdLane.insert(lane_.Value()); }
+            if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){ holdLane.insert(cursorLane_.Value()); }
             return holdLane;
 
         };
@@ -137,13 +137,13 @@ PlayerInput::PlayerInput(){
     // レーンの取得
     ///////////////////////////////////////////////////////
     {
-        lane_.Value = []{
+        cursorLane_.Value = []{
             static float basePosX = kWindowCenter.x - PlayField::kPlayFieldSizeX_ * 0.5f;
             float cursorDif = instance_->cursorPos_ - basePosX;
             return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
 
-        lane_.PreValue = []{
+        cursorLane_.PreValue = []{
             static float basePosX = kWindowCenter.x - PlayField::kPlayFieldSizeX_ * 0.5f;
             float cursorDif = instance_->preCursorPos_ - basePosX;
             return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
@@ -219,6 +219,9 @@ void PlayerInput::Draw(){
 void PlayerInput::BeginFrame(){
     // 前フレームでの情報を保存
     preCursorPos_ = cursorPos_;
+
+    // 入力情報の更新
+    DecideLaneInput();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,37 +231,70 @@ void PlayerInput::EndFrame(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 指定したレーンを押しているかどうか
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlayerInput::GetIsPress(int32_t key){
+
+    // keyが範囲外ならfalse
+    if(key < 0 || key >= PlayField::kKeyCount_){
+        return false;
+    }
+
+    // tapLaneに含まれているかどうか
+    if(holdLane_.find(key) != holdLane_.end()){
+        return true;
+    }
+
+    return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 指定したレーンを離したかどうか
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlayerInput::GetIsRelease(int32_t key){
+    // keyが範囲外ならfalse
+    if(key < 0 || key >= PlayField::kKeyCount_){
+        return false;
+    }
+    // tapLaneに含まれているかどうか
+    if(releaseLane_.find(key) != releaseLane_.end()){
+        return true;
+    }
+    return false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // タップしたレーンを取得
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-const std::unordered_set<int32_t>& PlayerInput::GetTapLane(){
+std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 
-    std::unordered_set<int32_t> holdLane;
+    std::unordered_set<int32_t> tapLane;
     if(!tap_.Trigger()){
-        return holdLane;
+        return tapLane;
     }
     
     // タップしたレーンを取得
-    if(Input::IsTriggerKey(DIK_A)){ holdLane.insert(0); }
-    if(Input::IsTriggerKey(DIK_S)){ holdLane.insert(1); }
-    if(Input::IsTriggerKey(DIK_D)){ holdLane.insert(2); }
-    if(Input::IsTriggerKey(DIK_F)){ holdLane.insert(3); }
-    if(Input::IsTriggerKey(DIK_SPACE)){ holdLane.insert(4); }
+    if(Input::IsTriggerKey(DIK_A)){ tapLane.insert(0); }
+    if(Input::IsTriggerKey(DIK_S)){ tapLane.insert(1); }
+    if(Input::IsTriggerKey(DIK_D)){ tapLane.insert(2); }
+    if(Input::IsTriggerKey(DIK_F)){ tapLane.insert(3); }
+    if(Input::IsTriggerKey(DIK_SPACE)){ tapLane.insert(4); }
     if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
-        holdLane.insert(lane_.Value());
+        tapLane.insert(cursorLane_.Value());
     }
-    if(lane_.Value() != lane_.PreValue()){
+    if(cursorLane_.Value() != cursorLane_.PreValue()){
         if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-            holdLane.insert(lane_.Value());
+            tapLane.insert(cursorLane_.Value());
         }
     }
 
-    return holdLane;
+    return tapLane;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // リリースしたレーンを取得
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-const std::unordered_set<int32_t>& PlayerInput::GetReleaseLane(){
+std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
     std::unordered_set<int32_t> releaseLane;
     if(!tap_.Release()){
         return releaseLane;
@@ -270,12 +306,24 @@ const std::unordered_set<int32_t>& PlayerInput::GetReleaseLane(){
     if(Input::IsReleaseKey(DIK_F)){ releaseLane.insert(3); }
     if(Input::IsReleaseKey(DIK_SPACE)){ releaseLane.insert(4); }
     if(Input::IsReleaseMouse(MOUSE_BUTTON::LEFT)){
-        releaseLane.insert(lane_.Value());
+        releaseLane.insert(cursorLane_.Value());
     }
-    if(lane_.Value() != lane_.PreValue()){
+    if(cursorLane_.Value() != cursorLane_.PreValue()){
         if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-            releaseLane.insert(lane_.PreValue());
+            releaseLane.insert(cursorLane_.PreValue());
         }
     }
     return releaseLane;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// レーンのInput情報を決定する関数
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PlayerInput::DecideLaneInput(){
+    // ホールドしているレーンを取得
+    holdLane_ = hold_.Value();
+    // タップしたレーンを取得
+    tapLane_ = SystemGetTapLane();
+    // リリースしたレーンを取得
+    releaseLane_ = SystemGetReleaseLane();
 }

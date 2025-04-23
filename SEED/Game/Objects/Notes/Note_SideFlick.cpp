@@ -9,8 +9,8 @@ Note_SideFlick::~Note_SideFlick(){
 void Note_SideFlick::Update(){
 }
 
-void Note_SideFlick::Draw(){
-    Note_Base::Draw();
+void Note_SideFlick::Draw(float currentTime, float appearLength){
+    Note_Base::Draw(currentTime,appearLength);
 }
 
 Judgement::Evaluation Note_SideFlick::Judge(float dif){

@@ -6,13 +6,14 @@ public:
     Note_Hold();
     ~Note_Hold() override;
     void Update() override;
-    void Draw() override;
+    void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
+    Judgement::Evaluation JudgeHoldEnd();
 
 public:
     float holdTime_;
-    float totalHoldTime_;
-    bool isHold_;
+    float releaseTime_;
+    bool isHold_ = false;// ホールドしているかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか
-    Judgement::Evaluation headEvaluation_;// 頭の判定
+    Judgement::Evaluation headEvaluation_ = Judgement::Evaluation::NONE;// 頭の判定
 };

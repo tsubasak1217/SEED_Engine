@@ -2,7 +2,7 @@
 
 class PlaySettings{
 private:
-    PlaySettings();
+    PlaySettings() = default;
     inline static PlaySettings* instance_ = nullptr;
     PlaySettings(const PlaySettings&) = delete;
     PlaySettings& operator=(const PlaySettings&) = delete;
@@ -18,8 +18,11 @@ public:
 
 public:
     // ノーツスピード
-    float GetNoteSpeed() const{ return noteSpeed_; }
-    void SetNoteSpeed(float speed){ noteSpeed_ = speed; }
+    float GetNoteSpeed() const{ return laneNoteSpeed_; }
+    void SetNoteSpeed(float speed){ laneNoteSpeed_ = speed; }
+    // ノーツの出現時間
+    float GetLaneNoteAppearTime() const{ return kNoteAppearTime * laneNoteSpeed_; }
+    float GetOutsideNoteAppearTime() const{ return kNoteAppearTime * outsideNoteSpeed_; }
     // 判定のオフセット
     float GetOffsetJudge() const{ return offset_judge_; }
     void SetOffsetJudge(float offset){ offset_judge_ = offset; }
@@ -33,8 +36,10 @@ public:
 
 private:
     // ノーツスピード
-    const float kNoteAppearTime = 2.0f;// ノーツが出現している時間(奥から手前に達するまでの時間)
-    float noteSpeed_ = 1.0f;// ノーツのスピード(1.0f = 1レーン分の距離をkNoteAppearTime秒で移動する)
+    const float kNoteAppearTime = 2.0f;// レーン上のノーツが出現している時間(奥から手前に達するまでの時間)
+    float laneNoteSpeed_ = 1.0f;// レーン上のノーツのスピード(1.0f = 1レーン分の距離をkNoteAppearTime秒で移動する)
+    float outsideNoteSpeed_ = 1.0f;// レーン外のノーツのスピード
+
     //判定のオフセット
     float offset_judge_ = 0.0f;// 判定そのもののオフセット
     float offset_view_ = 0.0f;// 表示のオフセット

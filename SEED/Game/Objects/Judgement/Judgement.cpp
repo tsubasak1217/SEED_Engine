@@ -1,6 +1,7 @@
 #include "Judgement.h"
 #include <Game/Objects/Notes/NotesData.h>
 #include <Game/Objects/Judgement/PlayField.h>
+#include <Game/Objects/Notes/Note_Hold.h>
 
 /////////////////////////////////////////////////////////
 // static変数の初期化
@@ -41,10 +42,11 @@ Judgement* Judgement::GetInstance(){
 ////////////////////////////////////////////////////////
 // 判定
 ////////////////////////////////////////////////////////
-void Judgement::Judge(NotesData* noteGroup, float time){
+void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
     // 付近のノーツの取得
     /*--------------------------*/
+    float time = noteGroup->GeetCurrentTime();
     auto nearNotes = noteGroup->GetNearNotes(time);
     if(nearNotes.empty()){ return; }
 
@@ -78,6 +80,8 @@ void Judgement::Judge(NotesData* noteGroup, float time){
             notePtr->isEnd_ = true;// ノーツを終了させる
             hitBits |= notePtr->laneBit_;// ビットを立てる
             pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.second]);// レーンを押下状態にする
+
+            // ここでエフェクトを出す(まだ書かない)
         }
     }
 
@@ -96,6 +100,16 @@ void Judgement::Judge(NotesData* noteGroup, float time){
     for(auto& lane : releaseLane){
         pPlayField_->SetLaneReleased(lane);
     }
+}
+
+// h－ルドの終点を判定する
+void Judgement::JudgeHoldEnd(Note_Hold* note){
+
+    // ホールドノーツの終点を判定する
+    Evaluation evaluation = note->JudgeHoldEnd();
+
+    // 終点の判定に応じてエフェクトとか出す
+    evaluation;
 }
 
 

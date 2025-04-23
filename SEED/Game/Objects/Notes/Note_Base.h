@@ -2,7 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include <memory>
-#include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Judgement/Judgement.h>
 #include <Game/Objects/Judgement/PlayerInput.h>
@@ -14,7 +14,7 @@ public:
     Note_Base();
     virtual ~Note_Base() = default;
     virtual void Update() = 0;
-    virtual void Draw();
+    virtual void Draw(float currentTime,float appearLength);
     virtual Judgement::Evaluation Judge(float dif) = 0;
 
 public:
@@ -29,5 +29,5 @@ public:
     bool isEnd_ = false;// ノーツが終わったかどうか
 
 protected:
-    std::unique_ptr<Sprite> noteSprite_;// ノーツの画像
+    std::unique_ptr<Quad> noteQuad_;// ノーツの画像
 };

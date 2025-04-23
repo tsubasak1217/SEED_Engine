@@ -6,7 +6,7 @@ public:
     Note_SideFlick();
     ~Note_SideFlick() override;
     void Update() override;
-    void Draw() override;
+    void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
 
 public:

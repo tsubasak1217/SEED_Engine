@@ -31,17 +31,11 @@ void PlayField::Initialize(){
     Vector2 center = kWindowCenter;
     Vector2 size = { kPlayFieldSizeX_, kPlayFieldSizeY_ };
 
-    //
-    static bool isFirst = true;
-
     // スクリーン上の四点を求める
-    if(isFirst){
-        playFieldPointsScreen_[TOP] = center + Vector2(0.0f, -size.y * 0.5f);
-        playFieldPointsScreen_[RIGHT] = center + Vector2(size.x * 0.5f, 0.0f);
-        playFieldPointsScreen_[BOTTOM] = center + Vector2(0.0f, size.y * 0.5f);
-        playFieldPointsScreen_[LEFT] = center + Vector2(-size.x * 0.5f, 0.0f);
-        isFirst = false;
-    }
+    playFieldPointsScreen_[TOP] = center + Vector2(0.0f, -size.y * 0.5f);
+    playFieldPointsScreen_[RIGHT] = center + Vector2(size.x * 0.5f, 0.0f);
+    playFieldPointsScreen_[BOTTOM] = center + Vector2(0.0f, size.y * 0.5f);
+    playFieldPointsScreen_[LEFT] = center + Vector2(-size.x * 0.5f, 0.0f);
 
     // ワールド上の四点を求める
     playFieldPointsWorld_[TOP] = gameCamera_->ToWorldPosition(playFieldPointsScreen_[TOP], farZ_);
@@ -74,6 +68,8 @@ void PlayField::Initialize(){
             lane_[1][i].localVertex[j] = v[1][j];
             laneAnswer_[0][i].tri.localVertex[j] = v[0][j];
             laneAnswer_[1][i].tri.localVertex[j] = v[1][j];
+            laneAnswer_[0][i].evalutionPolygon.localVertex[j] = v[0][j];
+            laneAnswer_[1][i].evalutionPolygon.localVertex[j] = v[1][j];
             laneAnswer_[0][i].baseScale = 1.05f;// 押したときのリアクション用の矩形は少し大きくする
             laneAnswer_[1][i].baseScale = 1.05f;
         }
@@ -83,6 +79,8 @@ void PlayField::Initialize(){
         lane_[1][i].color = { 1.0f, 1.0f, 1.0f, 0.1f };
         laneAnswer_[0][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[1][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+        laneAnswer_[0][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+        laneAnswer_[1][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         // レーンの境界線の矩形の座標を決定
         laneBorderLine_[0][i] = lane_[0][i];
@@ -141,20 +139,11 @@ void PlayField::Initialize(){
 /////////////////////////////////////////////////////////////////////////
 void PlayField::Update(){
 
-    Initialize();
-
     for(auto answerQuadArray : laneAnswer_){
         for(auto answerQuad : answerQuadArray){
             answerQuad.Update();
         }
     }
-
-    ImGui::Begin("vertex");
-    ImGui::DragFloat2("top", &playFieldPointsScreen_[TOP].x, 1.0f);
-    ImGui::DragFloat2("right", &playFieldPointsScreen_[RIGHT].x, 1.0f);
-    ImGui::DragFloat2("bottom", &playFieldPointsScreen_[BOTTOM].x, 1.0f);
-    ImGui::DragFloat2("left", &playFieldPointsScreen_[LEFT].x, 1.0f);
-    ImGui::End();
 }
 
 
@@ -198,6 +187,26 @@ void PlayField::Draw(){
 /////////////////////////////////////////////////////////////////////////
 // レーンの押下状態を設定
 /////////////////////////////////////////////////////////////////////////
+void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Vector4& color){
+
+    // ビットから押されているレーンを取得(5鍵の部分のみ)
+    std::vector<int32_t> lanes;
+    for(int i = 0; i < kKeyCount_; i++){
+        if(laneBit & (1 << i)){
+            lanes.push_back(i);
+        }
+    }
+
+    // レーンの押下状態を設定
+    for(auto& lane : lanes){
+        // ノーツを拾っている場合
+        if(color != Vector4(0.0f, 0.0f, 0.0f, 0.0f)){
+            laneAnswer_[(int)layer][lane].evalutionPolygon.color = color;
+            laneAnswer_[(int)layer][lane].isTapNote = true;
+        }
+    }
+}
+
 void PlayField::SetLanePressed(int32_t lane, const Vector4& color){
     // レーンの押下状態を設定
     laneAnswer_[0][lane].isTrigger = true;
@@ -213,7 +222,8 @@ void PlayField::SetLanePressed(int32_t lane, const Vector4& color){
     laneAnswer_[1][lane].tri.color = color;
 }
 
-void PlayField::SetLaneReleased(int32_t lane, const Vector4& color){
+void PlayField::SetLaneReleased(int32_t lane){
+
     // レーンの押下状態を解除
     laneAnswer_[0][lane].isRelease = true;
     laneAnswer_[1][lane].isRelease = true;
@@ -223,7 +233,4 @@ void PlayField::SetLaneReleased(int32_t lane, const Vector4& color){
     // 押下状態を解除
     laneAnswer_[0][lane].isTrigger = false;
     laneAnswer_[1][lane].isTrigger = false;
-    // 色を設定
-    laneAnswer_[0][lane].tri.color = color;
-    laneAnswer_[1][lane].tri.color = color;
 }

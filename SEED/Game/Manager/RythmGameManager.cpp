@@ -42,22 +42,38 @@ void RythmGameManager::Initialize(){
     SEED::SetCamera("gameCamera");
     //SEED::SetCamera("debug");
 
+    // Inputの初期化
+    PlayerInput::GetInstance()->Initialize();
+
     // プレイフィールドの初期化
     playField_ = std::make_unique<PlayField>();
+
+    // カーソルの設定
+    SEED::SetIsRepeatCursor(true);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // 更新
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::Update(){
+    // Inputの更新
+    PlayerInput::GetInstance()->Update();
+
     // プレイフィールドの更新
     playField_->Update();
+
+    if(Input::IsPressKey(DIK_ESCAPE)){
+        SEED::ToggleRepeatCursor();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // 描画
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::Draw(){
+    // Inputのカーソル描画
+    PlayerInput::GetInstance()->Draw();
+    
     // プレイフィールドの描画
     playField_->Draw();
 }

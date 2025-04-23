@@ -9,6 +9,7 @@ class NotesData{
 public:
     NotesData();
     ~NotesData();
+    void Initialize();
     void Update();
     void Draw();
 
@@ -20,7 +21,11 @@ public:
     float GetDuration(){ return duration_; }
 
 private:
+    void DeleteNotes();
+
+private:
     float duration_;// 譜面の長さ
+    float currentTime_;// 現在の時間
     std::vector<std::pair<float, std::shared_ptr<Note_Base>>> notes_;// すべてのノーツ
-    std::vector<std::weak_ptr<Note_Base>> activeHoldNotes_;//
+    std::vector<std::weak_ptr<Note_Base>> activeHoldNotes_;// アクティブなホールドノーツ
 };

@@ -1,8 +1,10 @@
 #pragma once
 #include <unordered_set>
 #include <Game/Objects/Judgement/PlayField.h>
-#include <Game/Objects/Notes/NotesData.h>
 #include <Game/Objects/Judgement/PlayerInput.h>
+
+// 前方宣言
+class NotesData;
 
 // 音ゲーの判定を行うクラス
 class Judgement{
@@ -29,7 +31,10 @@ public:
 
 public:
     float GetJudgeTime(Evaluation evaluation){ return judgeTime_[evaluation]; }
+    void SetPlayFieldPtr(PlayField* playField){ pPlayField_ = playField; }
 
 private:
     float judgeTime_[kEvaluationCount];
+    PlayField* pPlayField_;// プレイフィールド
+    std::array<Vector4, kEvaluationCount> judgeColor_;// 判定の色
 };

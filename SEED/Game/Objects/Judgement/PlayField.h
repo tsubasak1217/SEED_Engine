@@ -5,6 +5,7 @@
 #include <Game/Objects/Notes/NotesData.h>
 #include <SEED/Lib/Shapes/Triangle.h>
 #include <Game/Objects/Judgement/AnswerLane.h>
+#include <Game/Objects/Judgement/LaneBit.h>
 
 class PlayField{
 private:
@@ -23,8 +24,9 @@ public:
     void Draw();
 
 public:
-    void SetLanePressed(int32_t lane,const Vector4& color);
-    void SetLaneReleased(int32_t lane, const Vector4& color);
+    void SetEvalution(LaneBit laneBit,UpDown layer,const Vector4& color);
+    void SetLanePressed(int32_t lane, const Vector4& color);
+    void SetLaneReleased(int32_t lane);
 
 public:
     static float kPlayFieldSizeX_;// プレイフィールドの幅
@@ -36,7 +38,7 @@ public:
     float nearZ_ = 50.0f;// プレイフィールドの手前
 
 private:
-    NotesData* noteGroup_;// セットされている譜面
+    NotesData* noteData_;// セットされている譜面
 
     // 描画に使用する頂点情報
     std::array<Vector2, 4> playFieldPointsScreen_;// プレイフィールドの4頂点(スクリーン座標系)

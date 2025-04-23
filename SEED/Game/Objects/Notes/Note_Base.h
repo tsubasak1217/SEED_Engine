@@ -3,19 +3,30 @@
 #include <cstdint>
 #include <memory>
 #include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/enums/Direction.h>
+#include <Game/Objects/Judgement/Judgement.h>
+#include <Game/Objects/Judgement/PlayerInput.h>
+#include <Game/Objects/Judgement/PlayField.h>
+#include <Game/Objects/Judgement/LaneBit.h>
 
 class Note_Base{
 public:
-    Note_Base() = default;
+    Note_Base();
     virtual ~Note_Base() = default;
     virtual void Update() = 0;
     virtual void Draw();
+    virtual Judgement::Evaluation Judge(float dif) = 0;
 
 public:
     uint32_t lane_;// レーン番号
+    UpDown layer_ = UpDown::NONE;// 上下の方向
+    LaneBit laneBit_;// レーンのビットフラグ
     float time_;// 出現時間
     std::vector<std::shared_ptr<Note_Base>> controlPoints_;// スライドノーツなどの制御点の情報
     bool isExtraNote_;// 判定が甘いノーツかどうか
+    inline static int32_t nextNoteID_ = 0;// 次のノーツID
+    int32_t noteID_;// ノーツのID
+    bool isEnd_ = false;// ノーツが終わったかどうか
 
 protected:
     std::unique_ptr<Sprite> noteSprite_;// ノーツの画像

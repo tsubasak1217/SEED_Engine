@@ -7,6 +7,12 @@ enum class LR : int32_t{
     RIGHT
 };
 
+enum class UpDown : int32_t{
+    NONE = -1,
+    UP,
+    DOWN
+};
+
 enum class DIRECTION4 : int32_t{
     NONE = -1,
     UP,

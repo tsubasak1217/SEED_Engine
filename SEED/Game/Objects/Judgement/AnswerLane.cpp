@@ -7,6 +7,11 @@ void AnswerLane::Update(){
 
     // 押したら出現させる
     if(isTrigger){
+        // ノーツを処理していた場合
+        if(isTapNote){
+            evalutionLeftTime = kVisibleTime;
+            isTapNote = false;
+        }
         isTrigger = false;
         isPress = true;
     }
@@ -45,9 +50,20 @@ void AnswerLane::Update(){
             isRelease = false;
         }
     }
+
+    // 判定結果用の更新
+    if(evalutionLeftTime > 0.0f){
+        evalutionLeftTime -= ClockManager::DeltaTime();
+        evalutionLeftTime = std::clamp(evalutionLeftTime, 0.0f, kVisibleTime);
+        // 媒介変数の更新
+        float t = evalutionLeftTime / kVisibleTime;
+        // 色の更新
+        evalutionPolygon.color.w = t;
+    }
 }
 
 // 判定の矩形を描画する
 void AnswerLane::Draw(){
     SEED::DrawTriangle(tri);
+    SEED::DrawTriangle(evalutionPolygon);
 }

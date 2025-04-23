@@ -18,7 +18,7 @@
 SEED* SEED::instance_ = nullptr;
 std::wstring SEED::windowTitle_ = L"SEED::GameWindow";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
-uint32_t SEED::windowBackColor_ = 0xff0000ff;//yMath::IntColor(0,160,232,255);
+uint32_t SEED::windowBackColor_ = 0x000000ff;//yMath::IntColor(0,160,232,255);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,12 +44,12 @@ SEED* SEED::GetInstance(){
 }
 
 /*------------------------ 更新処理 ---------------------------*/
-void SEED::Update() {
+void SEED::Update(){
 
 }
 
 /*------------------------ 初期化処理 ---------------------------*/
-void SEED::Draw() {
+void SEED::Draw(){
 
 }
 
@@ -125,6 +125,10 @@ void SEED::BeginFrame(){
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
 
+    // カーソルの更新
+    if(instance_->isRepeatCursor_){
+        instance_->RepeatCursor();
+    }
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/
@@ -137,6 +141,7 @@ void SEED::EndFrame(){
     DxManager::GetInstance()->DrawPolygonAll();
     ImGuiManager::PostDraw();
     DxManager::GetInstance()->PostDraw();
+
     // 経過時間を取得
     ClockManager::EndFrame();
 }
@@ -186,9 +191,9 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, 
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
-        quad.blendMode,quad.cullMode
+        quad.blendMode, quad.cullMode
     );
 }
 
@@ -333,9 +338,9 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
     std::vector<Vector3> vertex((subdivision + 1) * subdivision); // 余分な頂点を確保
     float pi = static_cast<float>(std::numbers::pi);
 
-    for(int i = 0; i <= subdivision; i++) { // 緯度方向: 0～subdivision
+    for(int i = 0; i <= subdivision; i++){ // 緯度方向: 0～subdivision
         float theta = pi * i / subdivision; // 緯度角
-        for(int j = 0; j < subdivision; j++) { // 経度方向: 0～subdivision-1
+        for(int j = 0; j < subdivision; j++){ // 経度方向: 0～subdivision-1
             float phi = 2.0f * pi * j / subdivision; // 経度角
 
             // 頂点の計算
@@ -348,8 +353,8 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
     }
 
     // 線の描画(ラインで)
-    for(int i = 0; i < subdivision; i++) { // 緯度方向
-        for(int j = 0; j < subdivision; j++) { // 経度方向
+    for(int i = 0; i < subdivision; i++){ // 緯度方向
+        for(int j = 0; j < subdivision; j++){ // 経度方向
             int current = i * subdivision + j;
             int next = current + 1; // 経度方向の次の頂点
             int nextRow = (i + 1) * subdivision + j; // 緯度方向の次の頂点
@@ -365,7 +370,7 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
 
 
 void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Vector4& color){
-    DrawSphere(center, Vector3(radius,radius,radius), subdivision, color);
+    DrawSphere(center, Vector3(radius, radius, radius), subdivision, color);
 }
 
 
@@ -374,7 +379,7 @@ void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, 
 /////////////////////////////////////////////////////////////
 void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
 
-    if(subdivision < 3) {
+    if(subdivision < 3){
         subdivision = 3; // 最低3分割は必要
     }
 
@@ -391,7 +396,7 @@ void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, 
     std::vector<Vector3> topCircle(subdivision);
     float angleStep = 2.0f * 3.14159265359f / subdivision;
 
-    for(int i = 0; i < subdivision; ++i) {
+    for(int i = 0; i < subdivision; ++i){
         float angle = i * angleStep;
         float x = cos(angle) * radius;
         float z = sin(angle) * radius;
@@ -402,7 +407,7 @@ void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, 
     }
 
     // 線分を描画
-    for(int i = 0; i < subdivision; ++i) {
+    for(int i = 0; i < subdivision; ++i){
         int next = (i + 1) % subdivision;
 
         // 底面の線分
@@ -433,7 +438,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& 
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
     // 円柱を描画
-    DrawCylinder(start, end,MyMath::Length(radius), subdivision, color);
+    DrawCylinder(start, end, MyMath::Length(radius), subdivision, color);
 }
 
 
@@ -483,10 +488,10 @@ void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, u
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSpline(const std::vector<Vector3>& points,uint32_t subdivision, const Vector4& color,bool isControlPointVisible){
+void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
-    if(points.size() < 2){return;}
+    if(points.size() < 2){ return; }
 
     // 必要な変数を用意
     float t = 0;
@@ -624,4 +629,53 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 /*------------------ カメラにシェイクを設定する関数 ------------------*/
 void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
     GetCamera()->SetShake(time, power, shakeLevel);
+}
+
+/*------------------ マウスカーソルの表示・非表示を切り替える関数 ------------------*/
+void SEED::SetMouseCursorVisible(bool isVisible){
+    if(isVisible){
+        ShowCursor(TRUE);
+        instance_->isCursorVisible_ = true;
+    } else{
+        ShowCursor(FALSE);
+        instance_->isCursorVisible_ = false;
+    }
+}
+
+void SEED::ToggleMouseCursorVisible(){
+    instance_->isCursorVisible_ = !instance_->isCursorVisible_;
+    if(instance_->isCursorVisible_){
+        ShowCursor(TRUE);
+    } else{
+        ShowCursor(FALSE);
+    }
+}
+
+/*------------------ マウスカーソルをリピートさせる関数 ------------------*/
+void SEED::RepeatCursor(){
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+
+    RECT clientRect;
+    GetClientRect(WindowManager::GetHWND(windowTitle_), &clientRect);
+
+    // クライアント座標 -> スクリーン座標に変換（左上と右下）
+    POINT topLeft = { 0, 0 };
+    ClientToScreen(WindowManager::GetHWND(windowTitle_), &topLeft);
+
+    int clientWidth = clientRect.right - clientRect.left;
+    int clientHeight = clientRect.bottom - clientRect.top;
+
+    int left = topLeft.x;
+    int top = topLeft.y;
+    int right = left + clientWidth;
+    int bottom = top + clientHeight;
+
+    // 指定範囲を繰り返す
+    cursorPos.x = MyFunc::Spiral(cursorPos.x, left, right);
+    cursorPos.y = MyFunc::Spiral(cursorPos.y, top, bottom);
+
+    // カーソルを移動
+    SetCursorPos(cursorPos.x, cursorPos.y);
+
 }

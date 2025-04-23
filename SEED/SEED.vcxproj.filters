@@ -101,7 +101,7 @@
     <ClCompile Include="SEED\Source\Object\Collision\ColliderAnimationData.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Flick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
     <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
     <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
@@ -243,7 +243,7 @@
     <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Flick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
     <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
     <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
     <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
@@ -251,6 +251,8 @@
     <ClInclude Include="Game\Objects\Notes\NotesData.h" />
     <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
+    <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

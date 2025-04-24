@@ -161,6 +161,19 @@ void SEED::DrawTriangle(const Triangle& triangle){
     );
 }
 
+void SEED::AddTriangle3DPrimitive(
+    const Vector4& v1, const Vector4& v2, const Vector4& v3, 
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, 
+    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
+    const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
+){
+    instance_->pPolygonManager_->AddTriangle3DPrimitive(
+        v1, v2, v3,
+        texCoordV1, texCoordV2, texCoordV3,
+        color, GH, blendMode, lightingType, uvTransform, cullMode
+    );
+}
+
 
 void SEED::DrawTriangle2D(const Triangle2D& triangle){
 
@@ -186,6 +199,19 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[3],
         worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH, quad.blendMode,
         quad.cullMode
+    );
+}
+
+void SEED::AddQuad3DPrimitive(
+    const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, 
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
+    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, 
+    const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
+){
+    instance_->pPolygonManager_->AddQuad3DPrimitive(
+        v1, v2, v3, v4,
+        texCoordV1, texCoordV2, texCoordV3, texCoordV4,
+        color, GH, blendMode, lightingType, uvTransform, cullMode
     );
 }
 

@@ -72,6 +72,13 @@ public:
 
     // 3D三角形
     static void DrawTriangle(const Triangle& triangle);
+    static void AddTriangle3DPrimitive(
+        const Vector4& v1, const Vector4& v2, const Vector4& v3,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
+        uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
+    );
+
     // 2D三角形
     static void DrawTriangle2D(const Triangle2D& triangle);
 
@@ -79,6 +86,13 @@ public:
 
     // 3D矩形
     static void DrawQuad(const Quad& quad);
+    static void AddQuad3DPrimitive(
+        const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
+        const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
+    );
+
     // 2D矩形
     static void DrawQuad2D(const Quad2D& quad);
     // スプライト

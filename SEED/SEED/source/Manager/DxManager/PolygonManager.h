@@ -146,6 +146,13 @@ public:// 頂点情報の追加に関わる関数
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
+    void AddTriangle3DPrimitive(
+        const Vector4& v1, const Vector4& v2, const Vector4& v3,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
+        uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
+    );
+
     void AddQuad(
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
         const Matrix4x4& worldMat, const Vector4& color,
@@ -153,6 +160,13 @@ public:// 頂点情報の追加に関わる関数
         uint32_t GH, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+    );
+
+    void AddQuad3DPrimitive(
+        const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
+        const Vector4& color,uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
     void AddSprite(

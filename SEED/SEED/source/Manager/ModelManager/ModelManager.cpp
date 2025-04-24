@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <d3dx12.h>
@@ -221,6 +222,17 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
         // テクスチャがない場合は白テクスチャを設定
         if (materialData.textureFilePath_ == "") {
             materialData.textureFilePath_ = "Assets/white1x1.png";
+        } else{
+            // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
+            if(materialData.textureFilePath_.find("/*") != std::string::npos){
+                // "/*"より後の文字列を取得
+                std::string texIndexStr = materialData.textureFilePath_.substr(materialData.textureFilePath_.find("/*") + 2);
+                uint32_t texIndex = std::stoi(texIndexStr);
+
+                // 埋め込みテクスチャを取得し読み込む
+                const aiTexture* embeddedTexture = scene->mTextures[texIndex];
+                TextureManager::LoadTexture(materialData.textureFilePath_, embeddedTexture);
+            }
         }
 
         // 色の設定

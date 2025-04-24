@@ -176,7 +176,7 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     // ファイルを読み込む
     HRESULT hr = DirectX::LoadFromWICFile(
         filePathW.c_str(),
-        DirectX::WIC_FLAGS_FORCE_SRGB,
+        DirectX::WIC_FLAGS_DEFAULT_SRGB,
         nullptr,
         image
     );
@@ -199,6 +199,61 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     assert(SUCCEEDED(hr));
 
     return mipImages;
+}
+
+// 埋め込みテクスチャを読み込む関数
+DirectX::ScratchImage LoadEmbeddedTextureImage(const aiTexture* embeddedTexture){
+    DirectX::ScratchImage image{};
+    DirectX::ScratchImage mipImages{};
+    HRESULT hr;
+
+    if(embeddedTexture->mHeight == 0){
+        // 圧縮されたフォーマットの場合
+        std::string formatHint = embeddedTexture->achFormatHint;
+        if(formatHint == "jpg" || formatHint == "jpeg" || formatHint == "png" || formatHint == "bmp" || formatHint == "gif"){
+            hr = DirectX::LoadFromWICMemory(
+                reinterpret_cast<const uint8_t*>(embeddedTexture->pcData),
+                embeddedTexture->mWidth,
+                DirectX::WIC_FLAGS_DEFAULT_SRGB,
+                nullptr,
+                image
+            );
+            assert(SUCCEEDED(hr));
+        } else{
+            assert(false && "Unsupported embedded texture format.");
+        }
+    } else{
+        // Uncompressed RAW format
+        hr = image.Initialize2D(
+            DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+            embeddedTexture->mWidth,
+            embeddedTexture->mHeight,
+            1,
+            1
+        );
+        assert(SUCCEEDED(hr));
+
+        // ピクセルデータをコピー
+        uint8_t* destPixels = image.GetPixels();
+        memcpy(destPixels, embeddedTexture->pcData, image.GetPixelsSize());
+    }
+
+
+    // ミップマップの作成
+    if(image.GetMetadata().width > 1 && image.GetMetadata().height > 1){
+        hr = DirectX::GenerateMipMaps(
+            image.GetImages(),
+            image.GetImageCount(),
+            image.GetMetadata(),
+            DirectX::TEX_FILTER_SRGB,
+            0,
+            mipImages
+        );
+        assert(SUCCEEDED(hr));
+        return mipImages;
+    } else{
+        return image;
+    }
 }
 
 ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state){

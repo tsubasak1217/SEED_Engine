@@ -5,11 +5,14 @@
 #include <string>
 #include <cassert>
 
+// assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class TextureManager{
 
 private:
-
     // privateコンストラクタ
     TextureManager() = default;
 
@@ -18,17 +21,15 @@ private:
     void operator=(const TextureManager&) = delete;
 
 public:
-
     ~TextureManager();
 
 public:
-
     static const TextureManager* GetInstance();
     static void Initialize();
     static void StartUpLoad();
 
 public:
-    static uint32_t LoadTexture(const std::string& filename);
+    static uint32_t LoadTexture(const std::string& filename,const aiTexture* embeddedTexture = nullptr);
 
 private:
     static TextureManager* instance_;

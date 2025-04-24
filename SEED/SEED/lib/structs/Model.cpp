@@ -27,16 +27,17 @@ void Model::Initialize(const std::string& filename){
     // マテリアルの数だけ初期化
     for(int i = 0; i < modelData->materials.size(); i++){
 
-        meshColor_.push_back(modelData->materials[i].color_);
-        uv_scale_.push_back(modelData->materials[i].UV_scale_);
+        auto material = &modelData->materials[i];
+        meshColor_.push_back(material->color_);
+        uv_scale_.push_back(material->UV_scale_);
         uv_rotate_.push_back({0.0f,0.0f,0.0f});
         uv_translate_.push_back(
-            modelData->materials[i].UV_offset_ +
-            modelData->materials[i].UV_translate_
+            material->UV_offset_ +
+            material->UV_translate_
         );
 
         textureGH_.push_back(
-            TextureManager::LoadTexture(modelData->materials[i].textureFilePath_)
+            TextureManager::LoadTexture(material->textureFilePath_)
         );
     }
 

@@ -29,6 +29,10 @@ using Microsoft::WRL::ComPtr;
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
+// assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class SEED;
 class TextureManager;
@@ -111,7 +115,7 @@ private:/*============================ 描画に関わる関数 ================
 private:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
 
     // テクスチャを読み込む関数
-    uint32_t CreateTexture(std::string filePath);
+    uint32_t CreateTexture(std::string filePath,const aiTexture* embeddedTexture = nullptr);
 
     // 解像度を変更してRTVやScissorを設定し直す関数
     void ChangeResolutionRate(float resolutionRate);

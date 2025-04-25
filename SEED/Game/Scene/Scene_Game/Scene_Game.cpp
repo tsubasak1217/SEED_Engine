@@ -133,39 +133,6 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
-
-    SEED::AddTriangle3DPrimitive(
-        { -1.0f,0.0f,0.0f,1.0f },
-        { 1.0f,0.0f,0.0f,1.0f },
-        { 0.0f,1.0f,0.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f },
-        {0.0f,1.0f,1.0f,1.0f},
-        TextureManager::LoadTexture("Assets/white1x1.png"),
-        BlendMode::NORMAL,
-        LIGHTINGTYPE_NONE,
-        IdentityMat4(),
-        D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
-    );
-
-    SEED::AddQuad3DPrimitive(
-        { -1.0f,0.0f,10.0f,1.0f },
-        { 1.0f,0.0f,10.0f,1.0f },
-        { -1.0f,-2.0f,10.0f,1.0f },
-        { 1.0f,-2.0f,10.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f },
-        { 1.0f,1.0f,0.0f,1.0f },
-        TextureManager::LoadTexture("Assets/white1x1.png"),
-        BlendMode::NORMAL,
-        LIGHTINGTYPE_NONE,
-        IdentityMat4(),
-        D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
-    );
-
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ライトをセット

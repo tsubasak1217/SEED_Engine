@@ -1,6 +1,8 @@
 #include "Note_Tap.h"
 
 Note_Tap::Note_Tap() : Note_Base(){
+    noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
+    noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
 }
 
 Note_Tap::~Note_Tap(){
@@ -14,11 +16,12 @@ void Note_Tap::Draw(float currentTime, float appearLength){
     float timeRatio = (time_ - currentTime) / appearLength;
 
     // 描画用の矩形を計算
-    noteRect = PlayField::GetInstance()->GetNoteRect(timeRatio, lane_, layer_,0.05f);
+    noteRect = PlayField::GetInstance()->GetNoteRect(timeRatio, lane_, layer_,0.005f);
 
     // 頂点設定
     for(int i = 0; i < 4; i++){
         noteQuad_->localVertex[i] = noteRect.localVertex[i];
+        noteQuad_->localVertex[i].z += zOffset_;
     }
 
     // 描画

@@ -20,7 +20,7 @@ NotesData::NotesData(){
 // テスト用にランダムノーツを生成するコンストラクタ
 NotesData::NotesData(bool isRandomNotes){
     // 譜面の長さを初期化
-    duration_ = 32.0f;
+    duration_ = 64.0f;
     currentTime_ = 0.0f;
 
     // ノーツの初期化
@@ -28,7 +28,7 @@ NotesData::NotesData(bool isRandomNotes){
     activeHoldNotes_.clear();
 
     // ランダムノーツを生成する(いったんタップのみ)
-    int numNotes = 1000;
+    int numNotes = 500;
     if(isRandomNotes){
         for(int i = 0; i < numNotes; i++){
             // ノーツの時間をランダムに決定
@@ -39,6 +39,7 @@ NotesData::NotesData(bool isRandomNotes){
             note->time_ = time;
             note->lane_ = lane;
             note->layer_ = layer;
+            note->laneBit_ = (LaneBit)(1 << lane);
             notes_.emplace_back(std::make_pair(time, note));
         }
 
@@ -131,7 +132,7 @@ std::vector<std::weak_ptr<Note_Base>> NotesData::GetNearNotes(float time){
 void NotesData::DeleteNotes(){
 
     // ボーダーとなる時間を計算
-    float borderTime = currentTime_ + Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
+    float borderTime = currentTime_ - Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
 
     // 条件を満たすノーツを削除する
     for(auto it = notes_.begin(); it != notes_.end();){

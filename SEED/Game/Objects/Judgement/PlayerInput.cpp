@@ -19,7 +19,9 @@ PlayerInput::PlayerInput(){
     ///////////////////////////////////////////////////////
     {
         tap_.Value = []{
-            return Input::IsPressKey(DIK_A) or Input::IsPressKey(DIK_S) or Input::IsPressKey(DIK_D) or Input::IsPressMouse(MOUSE_BUTTON::LEFT);
+            return 
+                Input::IsPressKey(DIK_A) or Input::IsPressKey(DIK_S) or Input::IsPressKey(DIK_D) or 
+                Input::IsPressKey(DIK_F) or Input::IsPressKey(DIK_SPACE) or Input::IsPressMouse(MOUSE_BUTTON::LEFT);
         };
         tap_.Trigger = [&]{
             if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
@@ -30,13 +32,17 @@ PlayerInput::PlayerInput(){
                         return true;
                     }
                 } else{
-                    return Input::IsTriggerKey(DIK_A) or Input::IsTriggerKey(DIK_S) or Input::IsTriggerKey(DIK_D) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
+                    return 
+                        Input::IsTriggerKey(DIK_A) or Input::IsTriggerKey(DIK_S) or Input::IsTriggerKey(DIK_D) or 
+                        Input::IsTriggerKey(DIK_F) or Input::IsTriggerKey(DIK_SPACE) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
                 }
             }
             return false;
         };
         tap_.Release = []{
-            return Input::IsReleaseKey(DIK_A) or Input::IsReleaseKey(DIK_S) or Input::IsReleaseKey(DIK_D) or Input::IsReleaseMouse(MOUSE_BUTTON::LEFT);
+            return 
+                Input::IsReleaseKey(DIK_A) or Input::IsReleaseKey(DIK_S) or Input::IsReleaseKey(DIK_D) or 
+                Input::IsReleaseKey(DIK_F) or Input::IsReleaseKey(DIK_SPACE) or Input::IsReleaseMouse(MOUSE_BUTTON::LEFT);
         };
         tap_.Press = [&]{ return tap_.Value(); };
     }
@@ -296,7 +302,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
     std::unordered_set<int32_t> releaseLane;
-    if(!tap_.Release()){
+    if(!hold_.Release()){
         return releaseLane;
     }
     // リリースしたレーンを取得

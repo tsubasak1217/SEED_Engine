@@ -41,7 +41,7 @@ void RythmGameManager::Initialize(){
     // カメラの登録,設定
     CameraManager::GetInstance()->AddCamera("gameCamera", gameCamera_.get());
     SEED::SetCamera("gameCamera");
-    SEED::SetCamera("debug");
+    //SEED::SetCamera("debug");
 
     // settingsの初期化
     PlaySettings::GetInstance();

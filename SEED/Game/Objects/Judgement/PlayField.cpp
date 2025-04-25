@@ -40,6 +40,10 @@ void PlayField::Initialize(){
     Vector2 center = kWindowCenter;
     Vector2 size = { kPlayFieldSizeX_, kPlayFieldSizeY_ };
 
+    // 
+    static Vector3 layerOffset = { 0.0f,0.0f,-0.001f };
+
+
     // スクリーン上の四点を求める
     playFieldPointsScreen_[TOP] = center + Vector2(0.0f, -size.y * 0.5f);
     playFieldPointsScreen_[RIGHT] = center + Vector2(size.x * 0.5f, 0.0f);
@@ -115,6 +119,8 @@ void PlayField::Initialize(){
         // blendModeを設定
         laneAnswer_[0][i].tri.blendMode = BlendMode::ADD;
         laneAnswer_[1][i].tri.blendMode = BlendMode::ADD;
+        laneAnswer_[0][i].evalutionPolygon.blendMode = BlendMode::ADD;
+        laneAnswer_[1][i].evalutionPolygon.blendMode = BlendMode::ADD;
         laneBorderLine_[0][i].blendMode = BlendMode::ADD;
         laneBorderLine_[1][i].blendMode = BlendMode::ADD;
         laneBorderLineAura_[0][i].blendMode = BlendMode::ADD;
@@ -140,6 +146,25 @@ void PlayField::Initialize(){
             laneBorderLineAura_[1][i + 1].blendMode = BlendMode::ADD;
         }
     }
+
+    // Zファイティングを防ぐために、Z座標を少しずらす
+    for(int i = 0; i < kKeyCount_; i++){
+        for(int j = 0; j < 4; j++){
+            laneAnswer_[0][i].tri.localVertex[j].z += layerOffset.z;
+            laneAnswer_[1][i].tri.localVertex[j].z += layerOffset.z;
+            laneAnswer_[0][i].evalutionPolygon.localVertex[j].z += layerOffset.z * 2;
+            laneAnswer_[1][i].evalutionPolygon.localVertex[j].z += layerOffset.z * 2;
+        }
+    }
+
+    for(int i = 0; i < kKeyCount_ + 1; i++){
+        for(int j = 0; j < 3; j++){
+            laneBorderLineAura_[0][i].localVertex[j].z += layerOffset.z * 3;
+            laneBorderLineAura_[1][i].localVertex[j].z += layerOffset.z * 3;
+            laneBorderLine_[0][i].localVertex[j].z += layerOffset.z * 4;
+            laneBorderLine_[1][i].localVertex[j].z += layerOffset.z * 4;
+        }
+    }
 }
 
 
@@ -149,8 +174,8 @@ void PlayField::Initialize(){
 void PlayField::Update(){
 
     // 押されたら反応するレーンの描画
-    for(auto answerQuadArray : laneAnswer_){
-        for(auto answerQuad : answerQuadArray){
+    for(auto& answerQuadArray : laneAnswer_){
+        for(auto& answerQuad : answerQuadArray){
             answerQuad.Update();
         }
     }

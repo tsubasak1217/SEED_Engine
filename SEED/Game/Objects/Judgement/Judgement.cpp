@@ -44,6 +44,41 @@ Judgement* Judgement::GetInstance(){
 ////////////////////////////////////////////////////////
 void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
+    // プレイヤーの入力を取得し表示
+    /*--------------------------*/
+    auto& tpLane = PlayerInput::GetInstance()->GetTapLane();
+    auto& hlLane = PlayerInput::GetInstance()->GetHoldLane();
+    auto& relLane = PlayerInput::GetInstance()->GetReleaseLane();
+
+    ImGui::Begin("input");
+    ImGui::SameLine();
+    ImGui::Text("tapLane:{ ");
+    for(auto& lane : tpLane){
+        ImGui::Text("%d,", lane);
+        ImGui::SameLine();
+    }
+    ImGui::Text("}");
+
+    ImGui::Text("holdLane:{ ");
+    ImGui::SameLine();
+    for(auto& lane : hlLane){
+        ImGui::Text("%d,", lane);
+        ImGui::SameLine();
+    }
+    ImGui::Text("}");
+
+    ImGui::Text("releaseLane:{ ");
+    ImGui::SameLine();
+    for(auto& lane : relLane){
+        ImGui::Text("%d,", lane);
+        ImGui::SameLine();
+    }
+    ImGui::Text("}");
+    
+
+    ImGui::End();
+
+    /*--------------------------*/
     // 付近のノーツの取得
     /*--------------------------*/
     float time = noteGroup->GeetCurrentTime();
@@ -53,7 +88,7 @@ void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
     // ノーツの判定
     /*--------------------------*/
-    std::list<std::pair<std::weak_ptr<Note_Base>,Judgement::Evaluation>> hitNotes;// 判定を拾ったノーツ一覧
+    std::list<std::pair<std::weak_ptr<Note_Base>, Judgement::Evaluation>> hitNotes;// 判定を拾ったノーツ一覧
     for(auto& note : nearNotes){
         // 正しい時間との差を取得
         float dif = std::abs(note.lock()->time_ - time);
@@ -85,15 +120,15 @@ void Judgement::Judge(NotesData* noteGroup){
         }
     }
 
-    /*--------------------------*/ 
+    /*--------------------------*/
     // 押下状態はすべて設定する
     /*--------------------------*/
     std::unordered_set<int32_t> releaseLane = PlayerInput::GetInstance()->GetReleaseLane();
     std::unordered_set<int32_t> tapLane = PlayerInput::GetInstance()->GetTapLane();
-    
+
     // pressの設定
     for(auto& lane : tapLane){
-        pPlayField_->SetLanePressed(lane, {1.0f,1.0f,1.0f,1.0f});
+        pPlayField_->SetLanePressed(lane, { 1.0f,1.0f,1.0f,1.0f });
     }
 
     // releaseの設定

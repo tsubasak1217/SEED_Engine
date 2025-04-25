@@ -27,6 +27,7 @@ public:
     inline static int32_t nextNoteID_ = 0;// 次のノーツID
     int32_t noteID_;// ノーツのID
     bool isEnd_ = false;// ノーツが終わったかどうか
+    inline static float zOffset_ = -0.005f;// ノーツのZ軸オフセット
 
 protected:
     std::unique_ptr<Quad> noteQuad_;// ノーツの画像

@@ -36,7 +36,7 @@ public:
 
 private:
     // ノーツスピード
-    const float kNoteAppearTime = 2.0f;// レーン上のノーツが出現している時間(奥から手前に達するまでの時間)
+    const float kNoteAppearTime = 4.0f;// レーン上のノーツが出現している時間(奥から手前に達するまでの時間)
     float laneNoteSpeed_ = 1.0f;// レーン上のノーツのスピード(1.0f = 1レーン分の距離をkNoteAppearTime秒で移動する)
     float outsideNoteSpeed_ = 1.0f;// レーン外のノーツのスピード
 

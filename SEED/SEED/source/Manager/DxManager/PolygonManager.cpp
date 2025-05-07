@@ -198,6 +198,25 @@ void PolygonManager::InitResources(){
         &instancingSrvDesc[5], "spotLight"
     );
 
+
+    //////////////////////////////////////////////////
+    // GPUハンドルの取得
+    //////////////////////////////////////////////////
+    gpuHandles_.resize(7);
+    gpuHandles_[(int)HANDLE_TYPE::TextureTable] = 
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
+    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] = 
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
+    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material] =
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
+    gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette] =
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
+    gpuHandles_[(int)HANDLE_TYPE::DirectionalLight] =
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
+    gpuHandles_[(int)HANDLE_TYPE::PointLight] =
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
+    gpuHandles_[(int)HANDLE_TYPE::SpotLight] =
+        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
 }
 
 void PolygonManager::Finalize(){}
@@ -207,8 +226,8 @@ void PolygonManager::Reset(){
     // モデルの情報をリセット
     for(auto& modelDrawData : modelDrawData_){
         modelDrawData.second->indexCount = 0;
-        modelDrawData.second->modelSwitchIdx_Index.clear();
-        modelDrawData.second->modelSwitchIdx_Vertex.clear();
+        //modelDrawData.second->modelSwitchIdx_Index.clear();
+        //modelDrawData.second->modelSwitchIdx_Vertex.clear();
         std::memset(modelDrawData.second->totalDrawCount, 0, sizeof(modelDrawData.second->totalDrawCount));
     }
 
@@ -1817,30 +1836,21 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             pDxManager_->commandList->SetGraphicsRoot32BitConstants(7, 1, &numPointLight, 0);
             pDxManager_->commandList->SetGraphicsRoot32BitConstants(8, 1, &numSpotLight, 0);
 
-            // SRVヒープの上のアドレスを格納するハンドル
-            D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
             // マテリアルのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
             // トランスフォームのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
             // DirectionalLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
             // PointLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, gpuHandles_[(int)HANDLE_TYPE::PointLight]);
             // SpotLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
             // テクスチャのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, srvHandleGPU);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
-                srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, srvHandleGPU);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
             }
 
 

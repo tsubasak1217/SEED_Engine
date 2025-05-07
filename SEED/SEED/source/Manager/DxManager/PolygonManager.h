@@ -113,7 +113,16 @@ private:// 内部で使用する定数や列挙型
         DrawOrderCount
     };
 
-
+    // GPUハンドルの種類
+    enum class HANDLE_TYPE : BYTE{
+        TextureTable = 0,
+        InstancingResource_Transform,
+        InstancingResource_Material,
+        SkinningResource_Palette,
+        DirectionalLight,
+        PointLight,
+        SpotLight,
+    };
 
 public:// 根幹をなす関数
 
@@ -165,7 +174,7 @@ public:// 頂点情報の追加に関わる関数
     void AddQuad3DPrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-        const Vector4& color,uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
@@ -280,6 +289,9 @@ private:// Resource (すべての描画で1つにまとめている)
     OffsetData* mapOffsetData;
     VertexInfluence* mapVertexInfluenceData;
     WellForGPU* mapPaletteData;
+
+private:// GPUハンドルまとめ
+    std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> gpuHandles_;
 
 private:
 

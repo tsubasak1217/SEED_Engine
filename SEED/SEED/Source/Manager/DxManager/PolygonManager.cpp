@@ -1656,8 +1656,8 @@ void PolygonManager::WriteRenderData(){
 
                 // 各モデルの現在のブレンドモードのインスタンス数確認
                 auto& item = modelData.second;
-                int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-                int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
+                int instanceCount = static_cast<int>(item->transforms[blendIdx][cullModeIdx].size());
+                int jointSize = static_cast<int>(item->modelData->defaultSkeleton.joints.size());
                 if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
                 if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
 

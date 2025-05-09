@@ -19,30 +19,15 @@ PlayerInput::PlayerInput(){
     ///////////////////////////////////////////////////////
     {
         tap_.Value = []{
-            return 
-                Input::IsPressKey(DIK_A) or Input::IsPressKey(DIK_S) or Input::IsPressKey(DIK_D) or 
+            return
+                Input::IsPressKey(DIK_A) or Input::IsPressKey(DIK_S) or Input::IsPressKey(DIK_D) or
                 Input::IsPressKey(DIK_F) or Input::IsPressKey(DIK_SPACE) or Input::IsPressMouse(MOUSE_BUTTON::LEFT);
         };
         tap_.Trigger = [&]{
-            if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
-                return true;
-            } else{
-                if(cursorLane_.Value() != cursorLane_.PreValue()){
-                    if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-                        return true;
-                    }
-                } else{
-                    return 
-                        Input::IsTriggerKey(DIK_A) or Input::IsTriggerKey(DIK_S) or Input::IsTriggerKey(DIK_D) or 
-                        Input::IsTriggerKey(DIK_F) or Input::IsTriggerKey(DIK_SPACE) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
-                }
-            }
-            return false;
+            return tapLane_.size() > 0;
         };
-        tap_.Release = []{
-            return 
-                Input::IsReleaseKey(DIK_A) or Input::IsReleaseKey(DIK_S) or Input::IsReleaseKey(DIK_D) or 
-                Input::IsReleaseKey(DIK_F) or Input::IsReleaseKey(DIK_SPACE) or Input::IsReleaseMouse(MOUSE_BUTTON::LEFT);
+        tap_.Release = [&]{
+            return releaseLane_.size() > 0;
         };
         tap_.Press = [&]{ return tap_.Value(); };
     }
@@ -194,11 +179,6 @@ void PlayerInput::Initialize(){
 // 更新
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::Update(){
-    // カーソルの移動量を取得
-    Vector2 mouseVal = Input::GetMouseVector();
-
-    // カーソルの移動量を加算
-    cursorPos_ += mouseVal.x * cursorSenstivity_;
 
     // マウス右ボタン押していればループ、押していなければクランプ
     if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
@@ -225,6 +205,12 @@ void PlayerInput::Draw(){
 void PlayerInput::BeginFrame(){
     // 前フレームでの情報を保存
     preCursorPos_ = cursorPos_;
+
+    // カーソルの移動量を取得
+    Vector2 mouseVal = Input::GetMouseVector();
+
+    // カーソルの移動量を加算
+    cursorPos_ += mouseVal.x * cursorSenstivity_;
 
     // 入力情報の更新
     DecideLaneInput();
@@ -270,27 +256,79 @@ bool PlayerInput::GetIsRelease(int32_t key){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 押していないレーンを取得
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+const std::unordered_set<int32_t>& PlayerInput::GetUnTapLane(){
+    static std::unordered_set<int32_t> unTapLane;
+    
+    // いったん全部入れる
+    for(int i = 0; i < PlayField::kKeyCount_; ++i){
+        unTapLane.insert(i);
+    }
+
+    // 押しているレーンを削除
+    auto& holdLane = GetHoldLane();
+    for(auto& lane : holdLane){
+        unTapLane.erase(lane);
+    }
+
+    return unTapLane;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // タップしたレーンを取得
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 
     std::unordered_set<int32_t> tapLane;
-    if(!tap_.Trigger()){
-        return tapLane;
-    }
-    
+
     // タップしたレーンを取得
     if(Input::IsTriggerKey(DIK_A)){ tapLane.insert(0); }
     if(Input::IsTriggerKey(DIK_S)){ tapLane.insert(1); }
     if(Input::IsTriggerKey(DIK_D)){ tapLane.insert(2); }
     if(Input::IsTriggerKey(DIK_F)){ tapLane.insert(3); }
     if(Input::IsTriggerKey(DIK_SPACE)){ tapLane.insert(4); }
+
+    // マウスをトリガーしたとき
     if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
         tapLane.insert(cursorLane_.Value());
-    }
-    if(cursorLane_.Value() != cursorLane_.PreValue()){
+    } else{
+        // マウスを押しているとき
         if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-            tapLane.insert(cursorLane_.Value());
+            // レーンが切り替わったら
+            int preLane = cursorLane_.PreValue();
+            int curLane = cursorLane_.Value();
+            int kLaneCount = PlayField::kKeyCount_;
+            float horizontalVal = Input::GetMouseVector().x;
+
+            // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
+            if(curLane != preLane){
+                // 右側に動かしたとき
+                if(horizontalVal > 0.0f){
+                    for(int i = preLane; i != curLane; i = (i + 1) % kLaneCount){
+                        if(i != preLane){
+                            tapLane.insert(i);
+                        }
+                    }
+
+                } else{// 左側に動かしたとき
+                    for(int i = preLane; i != curLane; i = (i - 1 + kLaneCount) % kLaneCount){
+                        if(i != preLane){
+                            tapLane.insert(i);
+                        }
+                    }
+                }
+
+                tapLane.insert(curLane);
+
+            } else{
+                // マウスの移動量がkeyWidthより大きいとき、全部押している
+                if(fabsf(horizontalVal) > PlayField::kKeyWidth_){
+                    for(int i = 0; i < kLaneCount; ++i){
+                        tapLane.insert(i);
+                    }
+                }
+            }
         }
     }
 
@@ -302,9 +340,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
     std::unordered_set<int32_t> releaseLane;
-    if(!hold_.Release()){
-        return releaseLane;
-    }
+
     // リリースしたレーンを取得
     if(Input::IsReleaseKey(DIK_A)){ releaseLane.insert(0); }
     if(Input::IsReleaseKey(DIK_S)){ releaseLane.insert(1); }
@@ -313,10 +349,40 @@ std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
     if(Input::IsReleaseKey(DIK_SPACE)){ releaseLane.insert(4); }
     if(Input::IsReleaseMouse(MOUSE_BUTTON::LEFT)){
         releaseLane.insert(cursorLane_.Value());
-    }
-    if(cursorLane_.Value() != cursorLane_.PreValue()){
+    } else{
+        // マウスを押しているとき
         if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-            releaseLane.insert(cursorLane_.PreValue());
+            // レーンが切り替わったら
+            int preLane = cursorLane_.PreValue();
+            int curLane = cursorLane_.Value();
+            int kLaneCount = PlayField::kKeyCount_;
+            float horizontalVal = Input::GetMouseVector().x;
+
+            // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
+            if(curLane != preLane){
+                // 右側に動かしたとき
+                if(horizontalVal > 0.0f){
+                    for(int i = preLane; i != curLane; i = (i + 1) % kLaneCount){
+                        if(i != curLane){
+                            releaseLane.insert(i);
+                        }
+                    }
+                } else{// 左側に動かしたとき
+                    for(int i = preLane; i != curLane; i = (i - 1 + kLaneCount) % kLaneCount){
+                        if(i != curLane){
+                            releaseLane.insert(i);
+                        }
+                    }
+                }
+
+            } else{
+                // マウスの移動量がkeyWidthより大きいとき、全部押している
+                if(fabsf(horizontalVal) > PlayField::kKeyWidth_){
+                    for(int i = 0; i < kLaneCount; ++i){
+                        releaseLane.insert(i);
+                    }
+                }
+            }
         }
     }
     return releaseLane;

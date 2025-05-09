@@ -1,6 +1,7 @@
 #include "Note_Tap.h"
 
 Note_Tap::Note_Tap() : Note_Base(){
+    noteType_ = NoteType::Tap;// ノーツの種類をタップに設定
     noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
     noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
 }
@@ -38,7 +39,7 @@ Judgement::Evaluation Note_Tap::Judge(float dif){
 
     // タップしていないなら、判定しない
     if(!isTap){
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evaluation::NONE;
     }
 
     // 押したレーンを取得

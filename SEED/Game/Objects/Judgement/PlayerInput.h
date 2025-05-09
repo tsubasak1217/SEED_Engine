@@ -33,6 +33,7 @@ public:// 入力情報を取得する関数
     const std::unordered_set<int32_t>& GetHoldLane(){ return holdLane_; }
     const std::unordered_set<int32_t>& GetTapLane(){ return tapLane_; }
     const std::unordered_set<int32_t>& GetReleaseLane(){ return releaseLane_; }
+    const std::unordered_set<int32_t>& GetUnTapLane();
 
 private:
     const std::unordered_set<int32_t>& SystemGetHoldLane(){ return hold_.Value(); }

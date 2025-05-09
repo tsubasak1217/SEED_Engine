@@ -11,9 +11,11 @@ public:
     Judgement::Evaluation JudgeHoldEnd();
 
 public:
-    float holdTime_;
+    float kHoldTime_;
     float releaseTime_;
     bool isHold_ = false;// ホールドしているかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか
     Judgement::Evaluation headEvaluation_ = Judgement::Evaluation::NONE;// 頭の判定
+    int32_t textureGHs_[3];// ホールドノーツのテクスチャ
+    Vector4 noteColors_[3];// ホールドノーツの色
 };

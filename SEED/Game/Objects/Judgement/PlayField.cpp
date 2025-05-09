@@ -259,8 +259,8 @@ void PlayField::SetLanePressed(int32_t lane, const Vector4& color){
 void PlayField::SetLaneReleased(int32_t lane){
 
     // レーンの押下状態を解除
-    laneAnswer_[0][lane].isRelease = true;
-    laneAnswer_[1][lane].isRelease = true;
+    laneAnswer_[0][lane].isPress ? laneAnswer_[0][lane].isRelease = true : laneAnswer_[0][lane].isRelease = false;
+    laneAnswer_[1][lane].isPress ? laneAnswer_[1][lane].isRelease = true : laneAnswer_[1][lane].isRelease = false;
     // 押下状態を更新
     laneAnswer_[0][lane].isPress = false;
     laneAnswer_[1][lane].isPress = false;
@@ -274,7 +274,7 @@ void PlayField::SetLaneReleased(int32_t lane){
 /////////////////////////////////////////////////////////////////////////
 Quad PlayField::GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float ratioWidth){
     Quad result;
-    Triangle laneTriangle = lane_[(1 - (int)layer)][lane];
+    Triangle laneTriangle = lane_[(int)layer][lane];
 
     // ノーツの奥行きの計算
     float farZ = std::clamp(timeRatio + ratioWidth * 0.5f,0.0f,1.0f);

@@ -4,20 +4,26 @@
 #include <SEED/Source/SEED.h>
 
 void AnswerLane::Update(){
+    
+    // ノーツを処理していた場合
+    if(isTapNote){
+        evalutionLeftTime = kVisibleTime;
+        isTapNote = false;
+    }
 
     // 押したら出現させる
     if(isTrigger){
-        // ノーツを処理していた場合
-        if(isTapNote){
-            evalutionLeftTime = kVisibleTime;
-            isTapNote = false;
-        }
         isTrigger = false;
         isPress = true;
     }
 
+    if(isRelease){
+        isPress = false;
+        isRelease = false;
+    }
+
     // 押したら横幅を広げて色を濃くする
-    if(isPress && !isRelease){
+    if(isPress){
         leftTime += ClockManager::DeltaTime() * 2.0f;// 離して消えるときより早くする
         leftTime = std::clamp(leftTime, 0.0f, kVisibleTime);
 
@@ -31,8 +37,8 @@ void AnswerLane::Update(){
         // 色の変更
         tri.color.w = t;// 色を濃くする
 
-    }else if(isRelease){// 離したら色を薄くして消す
-        
+    } else{
+
         if(leftTime > 0.0f){
             // 時間を減少させる
             leftTime -= ClockManager::DeltaTime();
@@ -43,11 +49,10 @@ void AnswerLane::Update(){
 
             // 色の更新
             tri.color.w = t;
-        
+
         } else{
             // 判定が終わったら、色を完全に消す
             tri.color.w = 0.0f;
-            isRelease = false;
         }
     }
 

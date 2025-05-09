@@ -28,19 +28,38 @@ NotesData::NotesData(bool isRandomNotes){
     activeHoldNotes_.clear();
 
     // ランダムノーツを生成する(いったんタップのみ)
-    int numNotes = 500;
+    int numNotes = 100;
     if(isRandomNotes){
         for(int i = 0; i < numNotes; i++){
-            // ノーツの時間をランダムに決定
-            float time = MyFunc::Random(0.0f, duration_);
-            int32_t lane = rand() % PlayField::kKeyCount_;
-            UpDown layer = (UpDown)(rand() % 2);
-            std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
-            note->time_ = time;
-            note->lane_ = lane;
-            note->layer_ = layer;
-            note->laneBit_ = (LaneBit)(1 << lane);
-            notes_.emplace_back(std::make_pair(time, note));
+
+            //int random = MyFunc::Random(0, 100);
+
+            if(false/*random % 50 != 0*/){
+                // ノーツの時間をランダムに決定
+                float time = MyFunc::Random(10.0f, duration_);
+                int32_t lane = rand() % PlayField::kKeyCount_;
+                UpDown layer = (UpDown)(rand() % 2);
+                std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
+                note->time_ = time;
+                note->lane_ = lane;
+                note->layer_ = layer;
+                note->laneBit_ = (LaneBit)(1 << lane);
+                notes_.emplace_back(std::make_pair(time, note));
+
+            } else{
+                // ノーツの時間をランダムに決定
+                float time = 5.0f + 3.0f * i;
+                int32_t lane = i % PlayField::kKeyCount_;
+                UpDown layer = UpDown::UP;
+                std::shared_ptr<Note_Hold> note = std::make_shared<Note_Hold>();
+                note->time_ = time;
+                note->kHoldTime_ = MyFunc::Random(1.0f, 3.0f);
+                note->lane_ = lane;
+                note->layer_ = layer;
+                note->laneBit_ = (LaneBit)(1 << lane);
+                notes_.emplace_back(std::make_pair(time, note));
+
+            }
         }
 
         // ノーツを時間でソート
@@ -91,7 +110,7 @@ void NotesData::Draw(){
     // ノーツの描画
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
-            notePtr->Draw(currentTime_,PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
         }
     }
 }
@@ -151,13 +170,15 @@ void NotesData::DeleteNotes(){
             if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(it->second.get())){
 
                 // 後ろがまだ判定ラインよりも前ならアクティブなホールドノーツに追加
-                if(holdNote->time_ + holdNote->holdTime_ >= borderTime){
+                if(holdNote->time_ + holdNote->kHoldTime_ >= borderTime){
 
                     // まだアクティブリストに入っていないなら追加
                     if(holdNote->isStackedToHoldList_ == false){
                         holdNote->isStackedToHoldList_ = true;
                         activeHoldNotes_.push_back(it->second);
                     }
+
+                    ++it;
                 } else{
                     // 後ろが判定ラインよりも前なら終点の判定を行い削除
                     Judgement::GetInstance()->JudgeHoldEnd(holdNote);
@@ -182,6 +203,7 @@ void NotesData::DeleteNotes(){
             it = activeHoldNotes_.erase(it);
             continue;
         } else{
+            it->lock()->Judge(0.0f);
             ++it;
         }
     }

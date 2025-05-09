@@ -79,6 +79,22 @@ void Judgement::Judge(NotesData* noteGroup){
     ImGui::End();
 
     /*--------------------------*/
+    // 押下状態はすべて設定する
+    /*--------------------------*/
+    std::unordered_set<int32_t> releaseLane = PlayerInput::GetInstance()->GetUnTapLane();
+    std::unordered_set<int32_t> tapLane = PlayerInput::GetInstance()->GetTapLane();
+
+    // pressの設定
+    for(auto& lane : tapLane){
+        pPlayField_->SetLanePressed(lane, { 1.0f,1.0f,1.0f,1.0f });
+    }
+
+    // releaseの設定
+    for(auto& lane : releaseLane){
+        pPlayField_->SetLaneReleased(lane);
+    }
+
+    /*--------------------------*/
     // 付近のノーツの取得
     /*--------------------------*/
     float time = noteGroup->GeetCurrentTime();
@@ -112,28 +128,14 @@ void Judgement::Judge(NotesData* noteGroup){
         if(hitBits & notePtr->laneBit_){
             continue;
         } else{
-            notePtr->isEnd_ = true;// ノーツを終了させる
+            if(notePtr->noteType_ != NoteType::Hold){
+                notePtr->isEnd_ = true;// ノーツを終了させる
+            }
             hitBits |= notePtr->laneBit_;// ビットを立てる
             pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.second]);// レーンを押下状態にする
 
             // ここでエフェクトを出す(まだ書かない)
         }
-    }
-
-    /*--------------------------*/
-    // 押下状態はすべて設定する
-    /*--------------------------*/
-    std::unordered_set<int32_t> releaseLane = PlayerInput::GetInstance()->GetReleaseLane();
-    std::unordered_set<int32_t> tapLane = PlayerInput::GetInstance()->GetTapLane();
-
-    // pressの設定
-    for(auto& lane : tapLane){
-        pPlayField_->SetLanePressed(lane, { 1.0f,1.0f,1.0f,1.0f });
-    }
-
-    // releaseの設定
-    for(auto& lane : releaseLane){
-        pPlayField_->SetLaneReleased(lane);
     }
 }
 
@@ -144,7 +146,7 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
     Evaluation evaluation = note->JudgeHoldEnd();
 
     // 終点の判定に応じてエフェクトとか出す
-    evaluation;
+    pPlayField_->SetEvalution(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする
 }
 
 

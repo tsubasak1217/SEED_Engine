@@ -9,6 +9,15 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <Game/Objects/Judgement/LaneBit.h>
 
+enum class NoteType{
+    None = -1,
+    Tap,
+    Hold,
+    SideFlick,
+    RectFlick,
+    Wheel,
+};
+
 class Note_Base{
 public:
     Note_Base();
@@ -18,6 +27,7 @@ public:
     virtual Judgement::Evaluation Judge(float dif) = 0;
 
 public:
+    NoteType noteType_ = NoteType::None;// ノーツの種類
     uint32_t lane_;// レーン番号
     UpDown layer_ = UpDown::NONE;// 上下の方向
     LaneBit laneBit_;// レーンのビットフラグ

@@ -19,7 +19,7 @@ Texture2D<float4> gTexture[128] : register(t4, space0);
 SamplerState gSampler : register(s0);
 
 
-PixelShaderOutput main(VertexShaderOutput input) {
+PixelShaderOutput main(MeshShaderOutput input) {
     int GH = gMaterial[input.instanceID].GH;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial[input.instanceID].uvTransform);
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);
@@ -51,14 +51,14 @@ PixelShaderOutput main(VertexShaderOutput input) {
         }
     
         // スポットライトの計算
-        for(int k = 0; k < gSpotLightCount.value; k++) {
+        for (int k = 0; k < gSpotLightCount.value; k++) {
             CalcSpotLight(gSpotLight[k], gMaterial[input.instanceID], textureColor.rgb, input, toEye, diffuse, specular);
         }
         
         output.color.rgb = diffuse + specular;
         output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
     
-    } 
+    }
     // ライティングが無効な場合------------------------------------------------------------------
     else {
         output.color = gMaterial[input.instanceID].color * textureColor;

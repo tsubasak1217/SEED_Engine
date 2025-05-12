@@ -157,3 +157,28 @@ AABB MaxAABB(const AABB& aabb1, const AABB& aabb2){
 
     return AABB(mostMin + halfSize, halfSize);
 }
+
+//----------------------BOX頂点を作成する関数-------------------
+std::array<Vector3, 8> MakeBox(const Vector3& center, const Vector3& halfSize){
+    static std::array<Vector4, 8> vertices = {
+        Vector4(-1.0f, 1.0f, -1.0f,1.0f),
+        Vector4(1.0f, 1.0f, -1.0f,1.0f),
+        Vector4(-1.0f, -1.0f, -1.0f,1.0f),
+        Vector4(1.0f, -1.0f, -1.0f,1.0f),
+        Vector4(-1.0f, 1.0f, 1.0f,1.0f),
+        Vector4(1.0f, 1.0f, 1.0f,1.0f),
+        Vector4(-1.0f, -1.0f, 1.0f,1.0f),
+        Vector4(1.0f, -1.0f, 1.0f,1.0f)
+    };
+
+    std::array<Vector3, 8> boxVertices;
+    for(int i = 0; i < 8; ++i){
+        boxVertices[i] = Vector3(
+            center.x + vertices[i].x * halfSize.x,
+            center.y + vertices[i].y * halfSize.y,
+            center.z + vertices[i].z * halfSize.z
+        );
+    }
+
+    return boxVertices;
+}

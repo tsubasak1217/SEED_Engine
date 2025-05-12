@@ -271,6 +271,12 @@ void SEED::DrawModel(Model* model){
 }
 
 
+//========================================== スカイボックス ===========================================*/
+void SEED::DrawSkyBox(const SkyBox& skyBox){
+    skyBox;
+}
+
+
 /*========================================== 線 ===========================================*/
 
 void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, BlendMode blendMode){

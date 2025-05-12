@@ -26,3 +26,8 @@ float LineDistance(const Line& l1, const Line& l2);
 //------------------- 最大AABBを求める関数 ------------------
 
 AABB MaxAABB(const AABB& aabb1, const AABB& aabb2);
+
+
+//----------------------BOXを作成する関数-------------------
+
+std::array<Vector3, 8> MakeBox(const Vector3& center, const Vector3& halfSize);

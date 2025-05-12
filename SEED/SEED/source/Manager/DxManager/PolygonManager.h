@@ -20,6 +20,7 @@
 #include <SEED/Lib/Structs/DrawLocation.h>
 #include <SEED/Lib/Shapes/Ring.h>
 #include <SEED/Lib/Shapes/Cylinder.h>
+#include <SEED/Lib/Structs/SkyBox.h>
 
 //
 using Microsoft::WRL::ComPtr;
@@ -28,7 +29,7 @@ class DxManager;
 struct D3D12_VERTEX_BUFFER_VIEW;
 struct ID3D12Resource;
 
-
+// 全部の描画が種類ごとに最終的にこの形に情報をまとめられる
 struct ModelDrawData{
 
     // 各種データ
@@ -64,7 +65,9 @@ struct ModelDrawData{
     uint32_t totalDrawCount[(int32_t)BlendMode::kBlendModeCount][3];
 };
 
-
+///////////////////////////////////////////////////////////////////////////////
+// 本体
+///////////////////////////////////////////////////////////////////////////////
 class PolygonManager{
 
 private:// 内部で使用する定数や列挙型
@@ -79,8 +82,6 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_LINE2D,
         PRIMITIVE_SPRITE,
         PRIMITIVE_BACKSPRITE,
-        //PRIMITIVE_RING,
-        //PRIMITIVE_CYLINDER,
         // 以下は解像度の変更の影響を受けない描画用
         PRIMITIVE_OFFSCREEN,
         PRIMITIVE_STATIC_TRIANGLE2D,
@@ -102,8 +103,6 @@ private:// 内部で使用する定数や列挙型
         Line2D,
         Sprite,
         BackSprite,
-        //Ring,
-        //Cylinder,
         Offscreen,
         StaticTriangle2D,
         StaticQuad2D,
@@ -196,6 +195,7 @@ public:// 頂点情報の追加に関わる関数
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
+    void AddSkyBox(const SkyBox& skyBox);
     void AddRing(const Ring& ring);
     void AddCylinder(const Cylinder& cylinder);
 

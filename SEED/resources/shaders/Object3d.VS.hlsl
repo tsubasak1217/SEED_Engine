@@ -30,9 +30,9 @@ StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
 ///////////////////////////////////////// main ////////////////////////////////////////////////
 
 // Output
-VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
+MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
     
-    VertexShaderOutput output;
+    MeshShaderOutput output;
     int index = 0;
     
     // Caluculate InstanceID

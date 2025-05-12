@@ -78,9 +78,9 @@ Skinned Skinning(VertexShaderInput input,int offset) {
 ///////////////////////////////////////// main ////////////////////////////////////////////////
 
 // Output
-VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
+MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
     
-    VertexShaderOutput output;
+    MeshShaderOutput output;
     int offset = input.jointIndexOffset + input.jointInterval * instanceID;
     Skinned skinned = Skinning(input,offset);
     int index = 0;

@@ -174,15 +174,39 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
 
     std::wstring filePathW = ConvertString(filePath);// wstring型に変換
     // ファイルを読み込む
-    HRESULT hr = DirectX::LoadFromWICFile(
-        filePathW.c_str(),
-        DirectX::WIC_FLAGS_DEFAULT_SRGB,
-        nullptr,
-        image
-    );
+    HRESULT hr = S_FALSE;
+    
+    if(!filePathW.ends_with(L".dds")){
+        // 通常ファイルを読み込む  
+        DirectX::LoadFromWICFile(
+            filePathW.c_str(),
+            DirectX::WIC_FLAGS_DEFAULT_SRGB,
+            nullptr,
+            image
+        );
+    } else{
+        // DDSファイルを読み込む
+        hr = DirectX::LoadFromDDSFile(
+            filePathW.c_str(),
+            DirectX::DDS_FLAGS_NONE,
+            nullptr,
+            image
+        );
+    }
+
     assert(SUCCEEDED(hr));
 
+    /*-----------------------------*/
     // ミップマップの作成
+    /*-----------------------------*/
+
+    // 圧縮されている場合
+    if(DirectX::IsCompressed(image.GetMetadata().format)){
+        // 圧縮されている場合はミップマップを作成しない
+        return image;
+    }
+
+    // 1x1のテクスチャはミップマップを作成しない
     if(image.GetMetadata().width > 1 && image.GetMetadata().height > 1) {
         hr = DirectX::GenerateMipMaps(
             image.GetImages(),

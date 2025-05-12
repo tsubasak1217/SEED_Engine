@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIGHTING_INCLUDED
+#define LIGHTING_INCLUDED
 #include "Object3D.hlsli"
 #include "Material.hlsli"
 
@@ -44,7 +45,7 @@ void CalcDirectionalLight(
 in DirectionalLight light,
 in Material material,
 inout float3 textureColor,
-inout VertexShaderOutput input,
+inout MeshShaderOutput input,
 inout float3 toEye, inout float3 diffuse, inout float3 specular
 ) {
     // ライトが無効であればスキップ
@@ -82,7 +83,7 @@ void CalcPointLight(
 in PointLight light,
 in Material material,
 inout float3 textureColor,
-inout VertexShaderOutput input,
+inout MeshShaderOutput input,
 inout float3 toEye, inout float3 diffuse, inout float3 specular
 ) {
     // ライトが無効であればスキップ
@@ -129,7 +130,7 @@ void CalcSpotLight(
     in SpotLight light,
     in Material material,
     inout float3 textureColor,
-    inout VertexShaderOutput input,
+    inout MeshShaderOutput input,
     inout float3 toEye,
     inout float3 diffuse,
     inout float3 specular
@@ -185,3 +186,5 @@ void CalcSpotLight(
     float specularPower = pow(NdotH, material.shinines);
     specular += light.color.rgb * specularPower * light.intensity * finalAttenuation;
 }
+
+#endif

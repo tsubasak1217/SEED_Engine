@@ -1395,6 +1395,17 @@ void PolygonManager::AddLine(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                        //
+//                                                     スカイボックスの追加                                                  //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddSkyBox(const SkyBox& skyBox){
+    skyBox;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
 //                                                     リングの追加                                                         //
 //                                                                                                                        //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1803,7 +1814,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].rootSignature.Get()
                     );
                     pDxManager_->commandList->SetPipelineState(
-                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].pipelineState_.Get()
+                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].pipeline_.Get()
                     );
 
                 } else{
@@ -1811,7 +1822,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].rootSignature.Get()
                     );
                     pDxManager_->commandList->SetPipelineState(
-                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].pipelineState_.Get()
+                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].pipeline_.Get()
                     );
                 }
 
@@ -1821,7 +1832,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     pDxManager_->skinningRootSignatures[blendIdx][cullModeIdx].rootSignature.Get()
                 );
                 pDxManager_->commandList->SetPipelineState(
-                    pDxManager_->skinningPipelines[blendIdx][cullModeIdx].pipelineState_.Get()
+                    pDxManager_->skinningPipelines[blendIdx][cullModeIdx].pipeline_.Get()
                 );
             }
 
@@ -1870,6 +1881,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
                 if(item->drawOrder != (int8_t)drawOrder){
                     meshCountAll += instanceCount * (int)item->modelData->meshes.size();
+                    animationJointCount += jointSize * instanceCount;
                     instanceCountAll += instanceCount;
                     continue;
                 }
@@ -1884,8 +1896,9 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // 書き込み
                     for(auto& offset : item->offsetData[blendIdx][cullModeIdx][meshIdx]){
-                        offset.instanceOffset = instanceCountAll;
-                        offset.meshOffset = meshCountAll;
+                        offset.instanceOffset = instanceCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
+                        offset.meshOffset = meshCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
+                        // SkinningAnimation用
                         offset.jointIndexOffset = animationJointCount;
                         offset.jointinterval = jointSize;
                         offset.primitiveInterval = instanceInterval;

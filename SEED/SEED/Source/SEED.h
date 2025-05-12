@@ -27,6 +27,7 @@
 #include <SEED/Lib/Shapes/AABB.h>
 #include <SEED/Lib/Shapes/OBB.h>
 #include <SEED/Lib/Shapes/Ring.h>
+#include <SEED/Lib/Structs/SkyBox.h>
 
 // math
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
@@ -101,6 +102,7 @@ public:
     /*==========================モデルの描画関数==========================*/
 
     static void DrawModel(Model* model);
+    static void DrawSkyBox(const SkyBox& skyBox);
 
     /*==========================線の描画関数==========================*/
 

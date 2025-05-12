@@ -11,6 +11,7 @@
 // local
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/PSO/Pipeline.h>
+#include <SEED/Source/Manager/DxManager/PSO/MSPipeline.h>
 #include <SEED/Source/Manager/DxManager/PSO/RootSignature.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Shapes/Sphere.h>
@@ -169,7 +170,7 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     ComPtr<ID3D12Debug1> debugController = nullptr;
     ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
     ComPtr<IDXGIAdapter4> useAdapter = nullptr;// アダプタを格納する変数
-    ComPtr<ID3D12Device> device = nullptr;// 生成したデバイスを格納する変数
+    ComPtr<ID3D12Device8> device = nullptr;// 生成したデバイスを格納する変数
 
     // commandList類
     ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
@@ -201,6 +202,8 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     std::unordered_map<std::string, ComPtr<IDxcBlob>> psBlobs;
     // PixelShader
     std::unordered_map<std::string, ComPtr<IDxcBlob>> csBlobs;
+    // MeshShader
+    std::unordered_map<std::string, ComPtr<IDxcBlob>> msBlobs;
 
 
     //==================================================================//
@@ -208,12 +211,15 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     //==================================================================//
 
     // アニメーションしないPSO
-    Pipeline pipelines[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
+    MSPipeline pipelines[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
     RootSignature rootSignatures[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
 
     // アニメーションするPSO (modelしか使わない)
-    Pipeline skinningPipelines[(int)BlendMode::kBlendModeCount][kCullModeCount];
+    MSPipeline skinningPipelines[(int)BlendMode::kBlendModeCount][kCullModeCount];
     RootSignature skinningRootSignatures[(int)BlendMode::kBlendModeCount][kCullModeCount];
+
+    // SkyBox用のPSO
+    MSPipeline skyBoxPipeline;
 
     // コンピュートシェーダー用のやつ
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;

@@ -146,7 +146,7 @@ void PSOManager::GenerateTemplateParameter(
         /*================================================================================================================*/
     case PippelineType::Skinning:// スキニング用のパイプライン
         /*================================================================================================================*/
-
+    
         /*---------------- RootParameter ------------------*/
         // Camera(PS_b0)
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -195,13 +195,89 @@ void PSOManager::GenerateTemplateParameter(
     default:
         break;
     }
-    if(pypelineType == PippelineType::Normal){
+}
 
 
+// MS用
+void PSOManager::GenerateTemplateParameter(RootSignature* pRootSignature, MSPipeline* pPipeline, PippelineType pypelineType){
+    switch(pypelineType){
 
-    } else if(pypelineType == PippelineType::Skinning){// スキニング用のパイプライン=======================================
+        /*==================================================================================================================*/
+    case PippelineType::Normal:// 通常のパイプライン
+        /*==================================================================================================================*/
 
+        /*---------------- RootParameter ------------------*/
+        // Camera(PS_b0)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
+        // material(PS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+        // transform(MS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_MESH);
+        // DirectionalLights(PS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+        // PointLights(PS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // PointLights(PS_t3)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, D3D12_SHADER_VISIBILITY_PIXEL);
+        // DirectionalLight数(PS_b1)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 1, 0, 1);
+        // PointLight数(PS_b2)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2, 0, 1);
+        // SpotLight数(PS_b3)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 3, 0, 1);
+        // texture(PS_t3,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // VBV代わりのやつ(MS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_MESH);
+        // IBV代わりのやつ(MS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_MESH);
 
+        /*------------------- Shader -----------------------*/
+        pPipeline->pMsBlob_ = DxManager::GetInstance()->vsBlobs["commonMS"].Get();
+        pPipeline->pPsBlob_ = DxManager::GetInstance()->psBlobs["commonPS"].Get();
+
+        break;
+
+        /*================================================================================================================*/
+    case PippelineType::Skinning:// スキニング用のパイプライン
+        /*================================================================================================================*/
+
+        /*---------------- RootParameter ------------------*/
+        // Camera(PS_b0)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_CBV, D3D12_SHADER_VISIBILITY_PIXEL, 0);
+        // material(PS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+        // transform(MS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_MESH);
+        // DirectionalLights(PS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+        // PointLights(PS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_PIXEL);
+        // SpotLights(PS_t3)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, D3D12_SHADER_VISIBILITY_PIXEL);
+        // DirectionalLight数(PS_b1)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 1, 0, 1);
+        // PointLight数(PS_b2)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2, 0, 1);
+        // SpotLight数(PS_b3)
+        pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 3, 0, 1);
+        // texture(PS_t3,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // MatrixPalette(MS_t1)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_MESH);
+        // VBV代わりのやつ(MS_t2)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2, D3D12_SHADER_VISIBILITY_MESH);
+        // IBV代わりのやつ(MS_t3)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, D3D12_SHADER_VISIBILITY_MESH);
+
+        /*------------------- Shader -----------------------*/
+        pPipeline->pMsBlob_ = DxManager::GetInstance()->vsBlobs["skinningMS"].Get();
+        pPipeline->pPsBlob_ = DxManager::GetInstance()->psBlobs["commonPS"].Get();
+
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -267,7 +343,7 @@ void PSOManager::Create(RootSignature* pRootSignature, Pipeline* pPipeline){
     graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
     // 実際に生成
     hr = DxManager::GetInstance()->device->CreateGraphicsPipelineState(
-        &graphicsPipelineStateDesc, IID_PPV_ARGS(pPipeline->pipelineState_.GetAddressOf())
+        &graphicsPipelineStateDesc, IID_PPV_ARGS(pPipeline->pipeline_.GetAddressOf())
     );
 
     // 失敗したらアサート
@@ -280,4 +356,56 @@ void PSOManager::Create(RootSignature* pRootSignature, Pipeline* pPipeline){
         errorBlob->Release();
     }
 
+}
+
+
+
+void PSOManager::Create(RootSignature* pRootSignature, MSPipeline* pPipeline){
+
+    HRESULT hr;
+    ComPtr<ID3DBlob> signatureBlob = nullptr;
+    ComPtr<ID3DBlob> errorBlob = nullptr;
+
+    /*-------------------- RootSignatureの作成 ----------------------*/
+
+    // バイナリを生成
+    hr = D3D12SerializeRootSignature(&pRootSignature->desc, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+    // 失敗した場合
+    if(FAILED(hr)){
+        Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+        assert(false);
+    }
+
+    // RootSignatureの作成
+    hr = DxManager::GetInstance()->device->CreateRootSignature(
+        0, signatureBlob->GetBufferPointer(),
+        signatureBlob->GetBufferSize(), IID_PPV_ARGS(pRootSignature->rootSignature.GetAddressOf())
+    );
+
+    // 失敗したらアサート
+    assert(SUCCEEDED(hr));
+
+    /*------------------------- PSOの作成 ---------------------------*/
+
+    // RootSignature
+    pPipeline->pipelineDescs_.rootSignature = pRootSignature->rootSignature.Get();
+
+    D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc{};
+    pipelineStateStreamDesc.SizeInBytes = sizeof(pPipeline->pipelineDescs_);
+    pipelineStateStreamDesc.pPipelineStateSubobjectStream = &pPipeline->pipelineDescs_;
+
+    // 実際に生成
+    hr = DxManager::GetInstance()->device->CreatePipelineState(
+        &pipelineStateStreamDesc, IID_PPV_ARGS(pPipeline->pipeline_.GetAddressOf())
+    );
+
+    // 失敗したらアサート
+    assert(SUCCEEDED(hr));
+
+    /*---------------------------- 解放 ------------------------------*/
+
+    signatureBlob->Release();;
+    if(errorBlob){
+        errorBlob->Release();
+    }
 }

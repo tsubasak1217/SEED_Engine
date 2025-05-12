@@ -1,6 +1,7 @@
 #pragma once
 #include <SEED/Lib/Structs/blendMode.h>
 #include "Pipeline.h"
+#include "MSPipeline.h"
 #include "RootSignature.h"
 
 struct ID3D12RootSignature;
@@ -9,7 +10,7 @@ struct ID3D12PipelineState;
 // パイプラインの種類
 enum class PippelineType{
     Normal = 0,
-    Skinning,
+    Skinning
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -41,8 +42,10 @@ public:
 
     // テンプレートパラメータの生成
     static void GenerateTemplateParameter(RootSignature* pRootSignature, Pipeline* pPipeline,PippelineType pypelineType);
+    static void GenerateTemplateParameter(RootSignature* pRootSignature, MSPipeline* pPipeline, PippelineType pypelineType);
 
     // PSOの生成
     static void Create(RootSignature* pRootSignature,Pipeline* pPipeline);
+    static void Create(RootSignature* pRootSignature, MSPipeline* pPipeline);
 
 };

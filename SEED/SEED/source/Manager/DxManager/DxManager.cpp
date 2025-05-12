@@ -450,6 +450,22 @@ void DxManager::InitDxCompiler(){
 }
 
 void DxManager::CompileShaders(){
+
+    // 6.5に対応しているか確認
+    {
+        D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
+        hr = device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
+        assert(SUCCEEDED(hr));
+    }
+
+    // メッシュシェーダーに対応しているか確認
+    {
+        D3D12_FEATURE_DATA_D3D12_OPTIONS7 features = {};
+        hr = device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
+        assert(SUCCEEDED(hr));
+    }
+
+
     // VertexShader
     vsBlobs["commonVS"] = CompileShader(
         L"resources/shaders/Object3d.VS.hlsl",
@@ -492,7 +508,29 @@ void DxManager::CompileShaders(){
         includeHandler.Get()
     );
     assert(csBlobs["blurCS"] != nullptr);
+
+    // MeshShader
+    msBlobs["commonMS"] = CompileShader(
+        L"resources/shaders/SimpleMS.hlsl",
+        L"ms_6_5",
+        L"main",
+        dxcUtils.Get(),
+        dxcCompiler.Get(),
+        includeHandler.Get()
+    );
+    assert(vsBlobs["skinningMS"] != nullptr);
+
+    msBlobs["skinningMS"] = CompileShader(
+        L"resources/shaders/SimpleMS.hlsl",
+        L"ms_6_5",
+        L"main",
+        dxcUtils.Get(),
+        dxcCompiler.Get(),
+        includeHandler.Get()
+    );
+    assert(vsBlobs["skinningMS"] != nullptr);
 }
+
 
 void DxManager::InitPSO(){
     /*==================================================================================*/
@@ -505,7 +543,6 @@ void DxManager::InitPSO(){
                 // 通常のパイプライン
                 pipelines[blendMode][topology][cullMode].Initialize(
                     (BlendMode)blendMode,
-                    (PolygonTopology)topology,
                     D3D12_CULL_MODE(cullMode + 1)
                 );
 
@@ -531,9 +568,8 @@ void DxManager::InitPSO(){
     for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
         for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
             // スキニング用のパイプライン
-            skinningPipelines[blendMode][cullMode] = Pipeline(
+            skinningPipelines[blendMode][cullMode] = MSPipeline(
                 (BlendMode)blendMode,
-                PolygonTopology::TRIANGLE,
                 D3D12_CULL_MODE(cullMode + 1)
             );
 
@@ -958,8 +994,17 @@ uint32_t DxManager::CreateTexture(std::string filePath, const aiTexture* embedde
     D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
     srvDesc.Format = metadata.format;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-    srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+
+    // キューブマップかどうか
+    if(!metadata.IsCubemap()){
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+        srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+    } else{
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;//キューブマップ
+        srvDesc.TextureCube.MipLevels = UINT_MAX;
+        srvDesc.TextureCube.MostDetailedMip = 0;
+        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+    }
 
     // SRVの作成(グラフハンドルを返す)
     return ViewManager::CreateView(VIEW_TYPE::SRV, textureResource.back().Get(), &srvDesc, filePath);

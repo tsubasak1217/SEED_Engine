@@ -7,6 +7,7 @@
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.PS.hlsl" />
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl" />
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\SimpleMS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -253,6 +255,8 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
+    <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

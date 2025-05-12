@@ -184,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp" />
@@ -237,6 +238,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
     <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
     <ClInclude Include="SEED\Lib\Structs\PointLight.h" />
+    <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
@@ -267,6 +269,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
@@ -406,6 +409,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SimpleMS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.4</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.4</ShaderModel>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/tms_6_5 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/tms_6_5 %(AdditionalOptions)</AdditionalOptions>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename)</VariableName>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Resources\Shaders\Compiled\%(Filename).inc</HeaderFileOutput>
     </FxCompile>
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

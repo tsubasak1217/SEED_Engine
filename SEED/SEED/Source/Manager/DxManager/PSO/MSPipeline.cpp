@@ -1,4 +1,4 @@
-#include "Pipeline.h"
+#include "MSPipeline.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
@@ -6,23 +6,12 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Pipeline::Pipeline(BlendMode blendMode, PolygonTopology topology, D3D12_CULL_MODE cullMode){
-    Initialize(blendMode, topology, cullMode);
+
+MSPipeline::MSPipeline(BlendMode blendMode, D3D12_CULL_MODE cullMode){
+    Initialize(blendMode, cullMode);
 }
 
-void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CULL_MODE cullMode){
-
-    //======================================================================
-    //  Topology
-    //======================================================================
-    
-    // 形状の設定
-    if(topology == PolygonTopology::TRIANGLE){
-        topologyType_ = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    } else{
-        topologyType_ = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-    }
-
+void MSPipeline::Initialize(BlendMode blendMode,D3D12_CULL_MODE cullMode){
 
     //======================================================================
     //  BlendMode
@@ -70,35 +59,77 @@ void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CUL
     bDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO; 
     bDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;  // アルファの加算
 
-    blendDesc_ = bDesc;
-
     //======================================================================
     //  Rasterizer
     //======================================================================
 
-    if(topology == PolygonTopology::TRIANGLE){
-        rasterizerDesc_.CullMode = cullMode;// 裏面を表示しない
-    } else{
-        rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;// 表示
-    }
-
-    rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;// 三角形の中を塗りつぶす
-    rasterizerDesc_.MultisampleEnable = FALSE; // アンチエイリアシング無効化
-    rasterizerDesc_.AntialiasedLineEnable = FALSE; // ラインアンチエイリアシング無効化
+    D3D12_RASTERIZER_DESC rasterizerDesc{};
+    rasterizerDesc.CullMode = cullMode;
+    rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;// 三角形の中を塗りつぶす
+    rasterizerDesc.MultisampleEnable = FALSE; // アンチエイリアシング無効化
+    rasterizerDesc.AntialiasedLineEnable = FALSE; // ラインアンチエイリアシング無効化
 
     //======================================================================
     //  Depth
     //======================================================================
 
-    depthStencilDesc_.DepthEnable = true;// Depth機能有効化
-
+    D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+    depthStencilDesc.DepthEnable = true;// Depth機能有効化
     if(blendMode == BlendMode::ADD or blendMode == BlendMode::SCREEN or blendMode == BlendMode::SUBTRACT){
-        depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;// 書き込みしない
     } else{
-        depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
     }
+    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
 
-    depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
+
+    //======================================================================
+    //  Sampler
+    //======================================================================
+    DXGI_SAMPLE_DESC sampleDesc{};
+    sampleDesc.Count = 1; // サンプリングカウント。1固定
+    sampleDesc.Quality = 0; // サンプリング品
+
+    //======================================================================
+    //  Format
+    //======================================================================
+
+    D3D12_RT_FORMAT_ARRAY rtFormats{};
+    rtFormats.NumRenderTargets = 1;
+    rtFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 書き込むRTVの情報
+
+    //======================================================================
+    // Shader
+    //======================================================================
+
+    // MS
+    D3D12_SHADER_BYTECODE msByteCode{};
+    msByteCode.BytecodeLength = pMsBlob_->GetBufferSize();
+    msByteCode.pShaderBytecode = pMsBlob_->GetBufferPointer();
+
+    // PS
+    D3D12_SHADER_BYTECODE psByteCode{};
+    psByteCode.BytecodeLength = pPsBlob_->GetBufferSize();
+    psByteCode.pShaderBytecode = pPsBlob_->GetBufferPointer();
+
+    // AS
+    D3D12_SHADER_BYTECODE asByteCode{};
+    asByteCode.BytecodeLength = 0;
+    asByteCode.pShaderBytecode = nullptr;
+
+    //======================================================================
+    //  PipelineStateのDesc情報をまとめる
+    //======================================================================
+    pipelineDescs_.blend = bDesc;
+    pipelineDescs_.rasterizer = rasterizerDesc;
+    pipelineDescs_.depthStencil = depthStencilDesc;
+    pipelineDescs_.dsFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    pipelineDescs_.rtFormats = rtFormats;
+    pipelineDescs_.sampleDesc = sampleDesc;
+    pipelineDescs_.sampleMask = UINT_MAX;
+    pipelineDescs_.flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+
 }
 
 
@@ -107,36 +138,6 @@ void Pipeline::Initialize(BlendMode blendMode,PolygonTopology topology,D3D12_CUL
 // 解放関数
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Pipeline::Release(){
+void MSPipeline::Release(){
     pipeline_.Reset();
-    inputElementDescs_.clear();
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// 入力レイアウトの追加
-// 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Pipeline::AddInputElementDesc(
-    LPCSTR semanticName,
-    UINT semanticIndex,
-    UINT inputSlot, 
-    DXGI_FORMAT format, 
-    D3D12_INPUT_CLASSIFICATION inputSlotClass, 
-    UINT alignedByteOffset
-){
-    // 入力レイアウトの設定
-    D3D12_INPUT_ELEMENT_DESC elementDesc = {};
-    elementDesc.SemanticName = semanticName;
-    elementDesc.SemanticIndex = semanticIndex;
-    elementDesc.Format = format;
-    elementDesc.InputSlot = inputSlot;
-    elementDesc.AlignedByteOffset = alignedByteOffset;
-    elementDesc.InputSlotClass = inputSlotClass;
-
-    // 配列に追加し情報を更新
-    inputElementDescs_.push_back(elementDesc);
-    inputLayout_.NumElements = (UINT)inputElementDescs_.size();
-    inputLayout_.pInputElementDescs = inputElementDescs_.data();
 }

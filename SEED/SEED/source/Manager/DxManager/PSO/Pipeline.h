@@ -40,7 +40,7 @@ public:
     );
 
 public:
-    ComPtr<ID3D12PipelineState> pipelineState_;
+    ComPtr<ID3D12PipelineState> pipeline_;
     D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc_{};
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputElementDescs_;
     D3D12_INPUT_LAYOUT_DESC inputLayout_{};

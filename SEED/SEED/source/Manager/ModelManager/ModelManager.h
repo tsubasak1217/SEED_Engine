@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <cassert>
 #include <fstream>
@@ -45,6 +46,7 @@ private:
     // Loadに必要な関数
     ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
+    void CreateMeshlet(ModelData* modelData);
     std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene, const std::string& modelName);
 
     // アニメーション関連

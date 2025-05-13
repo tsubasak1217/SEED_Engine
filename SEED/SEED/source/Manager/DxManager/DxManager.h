@@ -170,13 +170,13 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     ComPtr<ID3D12Debug1> debugController = nullptr;
     ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
     ComPtr<IDXGIAdapter4> useAdapter = nullptr;// アダプタを格納する変数
-    ComPtr<ID3D12Device8> device = nullptr;// 生成したデバイスを格納する変数
+    ComPtr<ID3D12Device10> device = nullptr;// 生成したデバイスを格納する変数
 
     // commandList類
     ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
     ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
     ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;// コマンドアロケータを格納する変数
-    ComPtr<ID3D12GraphicsCommandList5> commandList = nullptr;// コマンドリストを格納する変数
+    ComPtr<ID3D12GraphicsCommandList6> commandList = nullptr;// コマンドリストを格納する変数
 
     /*====================== レンダーターゲット関係 ========================*/
 

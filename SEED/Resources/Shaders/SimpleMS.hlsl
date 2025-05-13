@@ -26,53 +26,39 @@ struct OffsetData {
 StructuredBuffer<TransformationMatrix> transformDatas : register(t0, space0);
 StructuredBuffer<VertexData> vertices : register(t1, space0);
 StructuredBuffer<int> indices : register(t2, space0);
-StructuredBuffer<OffsetData> offsetDatas : register(t3, space0);
-
+ConstantBuffer<OffsetData> offsetData : register(b0);
+// 
 
 ///////////////////////////////////////// Output ////////////////////////////////////////////////
-
-struct MeshVertexOutput {
-    float4 position : SV_Position;
-    float3 worldPosition : TEXCOORD1;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
-    uint instanceID : INSTANCE_ID;
-};
 
 [outputtopology("triangle")]
 [numthreads(1, 1, 1)]
 void main(
-    uint3 groupID : SV_GroupID,
-    uint groupIndex : SV_GroupIndex,
-    out vertices MeshVertexOutput verts[3],
-    out indices uint3 inds[1]
+    uint3 groupID : SV_GroupID,// vec3,threadNo
+    uint groupIndex : SV_GroupIndex,// linerIndex
+    out vertices MeshShaderOutput verts[64],
+    out indices uint3 inds[128]
     ) {
-    
+    　
     // Simulate instanceID and vertexID
+    uint localInstanceID = groupID.y;
     uint globalInstanceID;
     uint index = indices[groupIndex];
-    VertexData vertex = vertices[index]; // Or map by your own indexing
-    OffsetData offsetData = offsetDatas[index];
+    VertexData vertex = vertices[index];
     
-    // calc instanceID
+    // グローバルなインスタンスIDの計算
     if (offsetData.interval == 0) {
-        globalInstanceID = offsetData.meshOffset + groupID.x;
+        globalInstanceID = offsetData.meshOffset + localInstanceID;
     } else {
-        globalInstanceID = offsetData.meshOffset + groupID.x + (groupIndex / offsetData.interval);
+        globalInstanceID = offsetData.meshOffset + localInstanceID + (groupID.x / offsetData.interval);
     }
 
     // Apply Transformation
-    TransformationMatrix mat = transformDatas[groupIndex];
-    MeshVertexOutput output;
-    output.position = mul(input.position, mat.WVP);
-    output.worldPosition = mul(input.position, mat.world).xyz;
-    output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) mat.worldInverseTranspose));
+    TransformationMatrix mat = transformDatas[globalInstanceID];
+    MeshShaderOutput output;
+    output.position = mul(vertex.position, mat.WVP);
+    output.worldPosition = mul(vertex.position, mat.world).xyz;
+    output.texcoord = vertex.texcoord;
+    output.normal = normalize(mul(vertex.normal, (float3x3) mat.worldInverseTranspose));
 
-
-    // Simple triangle output (1 triangle with 3 vertices)
-    verts[0] = output;
-    verts[1] = output;
-    verts[2] = output;
-    inds[0] = uint3(0, 1, 2);
 }

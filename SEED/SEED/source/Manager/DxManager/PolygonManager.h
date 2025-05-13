@@ -142,6 +142,7 @@ private:
 
     void InitializePrimitive();
     void MapOnce();
+    int32_t CalcMeshletCount(int32_t indexCount);
 
 public:// 頂点情報の追加に関わる関数
 
@@ -220,6 +221,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxModelVertexCount = 5000000;
     static const int32_t kMaxSpriteCount = 256;
     static const int32_t kMaxLineCount_ = 512000;
+    static const int32_t kMeshletIndexCount = 64;
 
 private:// 現在の描画数や頂点数などを格納する変数
 

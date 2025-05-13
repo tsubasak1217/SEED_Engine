@@ -203,9 +203,9 @@ void PolygonManager::InitResources(){
     // GPUハンドルの取得
     //////////////////////////////////////////////////
     gpuHandles_.resize(7);
-    gpuHandles_[(int)HANDLE_TYPE::TextureTable] = 
+    gpuHandles_[(int)HANDLE_TYPE::TextureTable] =
         ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] = 
+    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] =
         ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
     gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material] =
         ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
@@ -334,6 +334,13 @@ void PolygonManager::MapOnce(){
     directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapDirectionalLightData));
     pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPointLightData));
     spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapSpotLightData));
+}
+
+// meshletの数を求める
+int32_t PolygonManager::CalcMeshletCount(int32_t indexCount){
+    // meshletの数を求める(端数も1として扱うためkMeshletIndexCount-1を加算)
+    int32_t meshletCount = (indexCount + kMeshletIndexCount - 1) / kMeshletIndexCount;
+    return meshletCount;
 }
 
 
@@ -2006,26 +2013,37 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*/////////////////////////////////////////////////////////////////*/
 
+                    // meshlet数を求める
+                    int meshletCount = CalcMeshletCount((int)item->modelData->meshes[meshIdx].indices.size());
+
+                    // 描画
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
-                        pDxManager_->commandList->DrawIndexedInstanced(
+                        /*pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->modelData->meshes[meshIdx].indices.size(),
                             item->totalDrawCount[blendIdx][cullModeIdx],
                             0,
                             0,
                             0
+                        );*/
+
+                        pDxManager_->commandList->DispatchMesh(
+                            meshletCount,// ここはMeshletの数
+                            item->totalDrawCount[blendIdx][cullModeIdx],// ここはインスタンス数
+                            1
                         );
+
 
                     } else{
 
                         // プリミティブは一斉描画
-                        pDxManager_->commandList->DrawIndexedInstanced(
+                        /*pDxManager_->commandList->DrawIndexedInstanced(
                             (int)item->indexCount,
                             1,
                             0,
                             0,
                             0
-                        );
+                        );*/
                     }
 
 

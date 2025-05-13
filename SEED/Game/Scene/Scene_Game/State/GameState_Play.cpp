@@ -26,6 +26,9 @@ void GameState_Play::Update(){
 void GameState_Play::Draw(){
     // ゲームマネージャーの描画
     RythmGameManager::GetInstance()->Draw();
+
+    uint32_t GH = TextureManager::LoadTexture("Assets/rostock_laage_airport_4k.dds");
+    SEED::DrawSkybox(GH);
 }
 
 void GameState_Play::BeginFrame(){

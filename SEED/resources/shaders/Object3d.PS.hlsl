@@ -15,7 +15,8 @@ ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 ConstantBuffer<Int> gPointLightCount : register(b2);
 ConstantBuffer<Int> gSpotLightCount : register(b3);
 // texture
-Texture2D<float4> gTexture[128] : register(t4, space0);
+TextureCube<float4> environmentTexture : register(t4, space0);
+Texture2D<float4> gTexture[128] : register(t5, space0);
 SamplerState gSampler : register(s0);
 
 
@@ -23,6 +24,8 @@ PixelShaderOutput main(VertexShaderOutput input) {
     int GH = gMaterial[input.instanceID].GH;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial[input.instanceID].uvTransform);
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);
+    float3 reflectVector = reflect(normalize(gCamera.position - input.worldPosition), input.normal);
+    float4 environmentColor = environmentTexture.Sample(gSampler, reflectVector);
     
      // 入力が透明の場合は棄却
     if (textureColor.a <= 1e-5f) {
@@ -56,6 +59,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
         }
         
         output.color.rgb = diffuse + specular;
+        output.color.rgb += environmentColor.rgb * gMaterial[input.instanceID].environmentCoefficient;
         output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
     
     } 

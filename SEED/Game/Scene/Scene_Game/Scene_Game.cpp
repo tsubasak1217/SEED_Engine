@@ -40,7 +40,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-
+    SEED::SetCamera("debug");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -53,6 +53,8 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
+    model_ = std::make_unique<Model>("Assets/sneakWalk.gltf");
+    model_->StartAnimation(0, true);
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -95,6 +97,8 @@ void Scene_Game::Update(){
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::DragFloat("modelEnvironmentCoefficient", &model_->environmentCoefficient_, 0.01f, 0.0f, 1.0f);
+
     ImGui::End();
 
 #endif
@@ -111,6 +115,7 @@ void Scene_Game::Update(){
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
+    model_->Update();
     ParticleManager::Update();
 }
 
@@ -137,6 +142,9 @@ void Scene_Game::Draw(){
 
     // ライトをセット
     directionalLight_->SendData();
+
+    //
+    model_->Draw();
 
     // パーティクルの描画
     ParticleManager::Draw();

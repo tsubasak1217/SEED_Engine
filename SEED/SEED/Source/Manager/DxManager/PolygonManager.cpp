@@ -319,6 +319,15 @@ void PolygonManager::InitializePrimitive(){
             modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
         }
     }
+
+    // skyboxの初期化
+    ModelManager::LoadModel("Assets/Skybox.obj", "SYSTEM_SKYBOX");
+    skyBoxModel_ = std::make_unique<Model>("SYSTEM_SKYBOX");
+    ModelData* skyBoxModelData = ModelManager::GetModelData(skyBoxModel_->modelName_);
+    skyBoxModelData->modelName = "SYSTEM_SKYBOX";
+    skyBoxModel_->modelName_ = "SYSTEM_SKYBOX";
+    skyBoxModel_->scale_ = { 1000.0f,1000.0f,1000.0f };
+    skyBoxModel_->UpdateMatrix();
 }
 
 // 初期化時に一度のみマッピングを行う
@@ -1173,6 +1182,7 @@ void PolygonManager::AddModel(Model* model){
         material[drawCount].lightingType_ = model->lightingType_;
         material[drawCount].uvTransform_ = model->GetUVTransform(meshIdx);
         material[drawCount].GH_ = model->textureGH_[meshIdx];
+        material[drawCount].environmentCoefficient_ = model->environmentCoefficient_;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -1391,6 +1401,23 @@ void PolygonManager::AddLine(
     view3D ? drawData3D->totalDrawCount[(int)blendMode][0]++ : drawData2D->totalDrawCount[(int)blendMode][0]++;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                     スカイボックスの追加                                                   //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddSkybox(uint32_t GH, const Vector4& color){
+
+    // マテリアルの設定
+    skyBoxModel_->textureGH_[0] = GH;
+    skyBoxModel_->color_ = color;
+
+    // 追加
+    AddModel(skyBoxModel_.get());
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1847,10 +1874,12 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // SpotLightのテーブルをセット
             pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
             // テクスチャのテーブルをセット
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9,ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV,TextureManager::LoadTexture("Assets/rostock_laage_airport_4k.dds")));
+            // テクスチャのテーブルをセット
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
             // パレットのテーブルをセット (アニメーション時のみ)
             if(drawOrder == DrawOrder::AnimationModel){
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
+                pDxManager_->commandList->SetGraphicsRootDescriptorTable(11, gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
             }
 
 
@@ -1872,6 +1901,24 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     meshCountAll += instanceCount * (int)item->modelData->meshes.size();
                     instanceCountAll += instanceCount;
                     continue;
+                }
+
+
+                if(modelData.first == "SYSTEM_SKYBOX"){
+                    // Pipelineセットし直す
+                    pDxManager_->commandList->SetGraphicsRootSignature(
+                        pDxManager_->skyboxRootSignatures[blendIdx][cullModeIdx].rootSignature.Get()
+                    );
+                    pDxManager_->commandList->SetPipelineState(
+                        pDxManager_->skyboxPipelines[blendIdx][cullModeIdx].pipelineState_.Get()
+                    );
+
+                    // マテリアルのテーブルをセット
+                    pDxManager_->commandList->SetGraphicsRootDescriptorTable(0, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+                    // トランスフォームのテーブルをセット
+                    pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+                    // テクスチャのテーブルをセット
+                    pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
                 }
 
 

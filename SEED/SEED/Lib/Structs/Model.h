@@ -105,6 +105,7 @@ public:
     std::vector<Vector4> meshColor_;// 各メッシュごとの色
     Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色
     float shininess_ = 50.0f;
+    float environmentCoefficient_ = 0.5f;// 環境マップの反射具合
     int32_t lightingType_;
     BlendMode blendMode_ = BlendMode::NORMAL;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;

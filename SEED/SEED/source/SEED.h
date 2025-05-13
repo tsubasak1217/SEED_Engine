@@ -106,19 +106,24 @@ public:
 
     // 3D線
     static void DrawLine(
-        const Vector3& v1, const Vector3& v2, 
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL
+        const Vector3& v1, const Vector3& v2,
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
     // 2D線
     static void DrawLine2D(
-        const Vector2& v1, const Vector2& v2, 
+        const Vector2& v1, const Vector2& v2,
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
     /*==========================リングの描画関数==========================*/
 
     static void DrawRing(const Ring& ring);
+
+
+    /*==========================Skyboxの描画関数==========================*/
+
+    static void DrawSkybox(uint32_t GH, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
 
     /*=========================デバッグ用の描画関数=======================*/
 
@@ -128,7 +133,7 @@ public:
 
     // 球の描画関数
     static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSphere(const Vector3& center, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // 円柱の描画関数
     static void DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // カプセルの描画関数
@@ -139,7 +144,7 @@ public:
     // ベジェ曲線の描画
     static void DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // スプライン曲線の描画
-    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
+    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     // ライトのデバッグ用描画
     static void DrawLight(const BaseLight* light);
 
@@ -158,7 +163,7 @@ public:
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
     static void ChangeResolutionRate(float resolutionRate);
     // カメラにシェイクを設定する関数
-    static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
+    static void SetCameraShake(float time, float power, const Vector3& shakeLevel = { 1.0f,1.0f,1.0f });
     // マウスカーソルの表示・非表示を切り替える関数
     static void SetMouseCursorVisible(bool isVisible);
     static void ToggleMouseCursorVisible();
@@ -175,7 +180,7 @@ public:
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
-    static void SetIsRepeatCursor(bool flag){instance_->isRepeatCursor_ = flag;}
+    static void SetIsRepeatCursor(bool flag){ instance_->isRepeatCursor_ = flag; }
     static void ToggleRepeatCursor(){ instance_->isRepeatCursor_ = !instance_->isRepeatCursor_; }
 
     /////////////////////////////////////////////////////////////////////////////////////

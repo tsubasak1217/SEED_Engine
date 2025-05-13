@@ -35,6 +35,8 @@ public:
 
 private:
 
+    std::unique_ptr<Model> model_ = nullptr;
+
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 };

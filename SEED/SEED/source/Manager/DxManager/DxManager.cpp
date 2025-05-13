@@ -492,6 +492,27 @@ void DxManager::CompileShaders(){
         includeHandler.Get()
     );
     assert(csBlobs["blurCS"] != nullptr);
+
+    // Skybox用のShader
+    vsBlobs["skyboxVS"] = CompileShader(
+        L"resources/shaders/SkyboxVS.hlsl",
+        L"vs_6_0",
+        L"main",
+        dxcUtils.Get(),
+        dxcCompiler.Get(),
+        includeHandler.Get()
+    );
+    assert(vsBlobs["skyboxVS"] != nullptr);
+
+    psBlobs["skyboxPS"] = CompileShader(
+        L"resources/shaders/SkyboxPS.hlsl",
+        L"ps_6_0",
+        L"main",
+        dxcUtils.Get(),
+        dxcCompiler.Get(),
+        includeHandler.Get()
+    );
+    assert(psBlobs["skyboxPS"] != nullptr);
 }
 
 void DxManager::InitPSO(){
@@ -551,6 +572,37 @@ void DxManager::InitPSO(){
             PSOManager::Create(
                 &skinningRootSignatures[blendMode][cullMode],
                 &skinningPipelines[blendMode][cullMode]
+            );
+        }
+    }
+
+    /*==================================================================================*/
+    //                         Skybox用のパイプラインの初期化
+    /*==================================================================================*/
+
+    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
+        for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
+            // スキニング用のパイプライン
+            skyboxPipelines[blendMode][cullMode] = Pipeline(
+                (BlendMode)blendMode,
+                PolygonTopology::TRIANGLE,
+                D3D12_CULL_MODE(cullMode + 1)
+            );
+
+            // ルートシグネチャの初期化
+            skyboxRootSignatures[blendMode][cullMode] = RootSignature();
+
+            // テンプレートのパラメーターを作成
+            PSOManager::GenerateTemplateParameter(
+                &skyboxRootSignatures[blendMode][cullMode],
+                &skyboxPipelines[blendMode][cullMode],
+                PippelineType::Skybox
+            );
+
+            // PSOの作成
+            PSOManager::Create(
+                &skyboxRootSignatures[blendMode][cullMode],
+                &skyboxPipelines[blendMode][cullMode]
             );
         }
     }

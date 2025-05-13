@@ -16,6 +16,10 @@ struct Int {
     int value;
 };
 
+struct Float {
+    float value;
+};
+
 /*- 仮: 非線形を線形に変換する関数-*/
 float DepthToLinear(float depth, float near, float far)
 {

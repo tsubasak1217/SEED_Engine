@@ -219,6 +219,10 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     ComPtr<ID3D12PipelineState> csPipelineState = nullptr;
     ComPtr<ID3D12RootSignature> csRootSignature = nullptr;
 
+    // Skybox用のPSO
+    Pipeline skyboxPipelines[(int)BlendMode::kBlendModeCount][kCullModeCount];
+    RootSignature skyboxRootSignatures[(int)BlendMode::kBlendModeCount][kCullModeCount];
+
     //===================================================================//
 
     ComPtr<ID3D12Resource> CS_ConstantBuffer = nullptr;

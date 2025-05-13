@@ -26,6 +26,7 @@ struct Material{
     Matrix4x4 uvTransform;
     BlendMode blendMode;
     float shininess_;
+    float environmentCoefficient_;
 };
 
 struct MaterialForGPU{
@@ -34,6 +35,7 @@ struct MaterialForGPU{
     int32_t lightingType_;
     int32_t GH_;
     float shininess_;
+    float environmentCoefficient_;
 };
 
 struct ModelMaterialLoadData{

@@ -71,12 +71,12 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     // 各マネージャの初期化
     ClockManager::Initialize();
     CameraManager::Initialize();
+    TextureManager::Initialize();
+    ModelManager::Initialize();
     DxManager::Initialize(instance_);
     ImGuiManager::Initialize();
-    TextureManager::Initialize();
     AudioManager::Initialize();
     Input::Initialize();
-    ModelManager::Initialize();
     ParticleManager::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
@@ -294,6 +294,12 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
 
 void SEED::DrawRing(const Ring& ring){
     instance_->pPolygonManager_->AddRing(ring);
+}
+
+
+/*========================================== スカイボックス ===========================================*/
+void SEED::DrawSkybox(uint32_t GH, const Vector4& color){
+    instance_->pPolygonManager_->AddSkybox(GH, color);
 }
 
 

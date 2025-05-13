@@ -10,6 +10,7 @@ struct ID3D12PipelineState;
 enum class PippelineType{
     Normal = 0,
     Skinning,
+    Skybox
 };
 
 //////////////////////////////////////////////////////////////////////

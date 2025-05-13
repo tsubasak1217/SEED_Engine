@@ -39,7 +39,7 @@ public:
     static const ModelManager* GetInstance();
     static void Initialize();
     static void StartUpLoad();
-    static void LoadModel(const std::string& filename);
+    static void LoadModel(const std::string& filename,const std::string& setName = "");
 
 private:
     // Loadに必要な関数

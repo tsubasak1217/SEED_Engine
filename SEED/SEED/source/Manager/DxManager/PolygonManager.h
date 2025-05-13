@@ -196,6 +196,8 @@ public:// 頂点情報の追加に関わる関数
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
+
+    void AddSkybox(uint32_t GH, const Vector4& color);
     void AddRing(const Ring& ring);
     void AddCylinder(const Cylinder& cylinder);
 
@@ -244,6 +246,8 @@ private:// 実際に頂点情報や色などの情報が入っている変数
     // プリミティブな描画に使用するデータ
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
     uint32_t primitiveDrawCount_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
+    // SkyBox用
+    std::unique_ptr<Model> skyBoxModel_;
 
 private:// ライティング用のデータ-----------------------------------------------------------------
 

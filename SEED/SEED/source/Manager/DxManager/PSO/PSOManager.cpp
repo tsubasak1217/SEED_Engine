@@ -122,8 +122,10 @@ void PSOManager::GenerateTemplateParameter(
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2, 0, 1);
         // SpotLight数(PS_b3)
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 3, 0, 1);
-        // texture(PS_t3,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // environmentTexture(PS_t4,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // texture(PS_t5,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 5, D3D12_SHADER_VISIBILITY_PIXEL);
 
         /*------------------ InputLayout ------------------*/
         // VBV_0
@@ -166,8 +168,10 @@ void PSOManager::GenerateTemplateParameter(
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 2, 0, 1);
         // SpotLight数(PS_b3)
         pRootSignature->AddParameter(D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS, D3D12_SHADER_VISIBILITY_PIXEL, 3, 0, 1);
-        // texture(PS_t3,128個)
-        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // environmentTexture(PS_t4,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, D3D12_SHADER_VISIBILITY_PIXEL);
+        // texture(PS_t5,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 5, D3D12_SHADER_VISIBILITY_PIXEL);
         // MatrixPalette(VS_t1)
         pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 
@@ -189,6 +193,37 @@ void PSOManager::GenerateTemplateParameter(
         /*------------------- Shader -----------------------*/
         pPipeline->pVsBlob_ = DxManager::GetInstance()->vsBlobs["skinningVS"].Get();
         pPipeline->pPsVlob_ = DxManager::GetInstance()->psBlobs["commonPS"].Get();
+
+        break;
+
+
+        /*==================================================================================================================*/
+    case PippelineType::Skybox:// Skyboxのパイプライン
+        /*==================================================================================================================*/
+
+        /*---------------- RootParameter ------------------*/
+        // material(PS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL);
+        // transform(VS_t0,1個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, D3D12_SHADER_VISIBILITY_VERTEX);
+        // texture(PS_t1,128個)
+        pRootSignature->AddDescriptorTable(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 128, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+
+        /*------------------ InputLayout ------------------*/
+        // VBV_0
+        pPipeline->AddInputElementDesc("POSITION", 0, 0, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA);
+        pPipeline->AddInputElementDesc("TEXCOORD", 0, 0, DXGI_FORMAT_R32G32_FLOAT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA);
+        pPipeline->AddInputElementDesc("NORMAL", 0, 0, DXGI_FORMAT_R32G32B32_FLOAT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA);
+        // VBV_1
+        pPipeline->AddInputElementDesc("INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("MESH_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("JOINT_INDEX_OFFSET", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("JOINT_INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+        pPipeline->AddInputElementDesc("INTERVAL", 0, 1, DXGI_FORMAT_R32_SINT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA);
+
+        /*------------------- Shader -----------------------*/
+        pPipeline->pVsBlob_ = DxManager::GetInstance()->vsBlobs["skyboxVS"].Get();
+        pPipeline->pPsVlob_ = DxManager::GetInstance()->psBlobs["skyboxPS"].Get();
 
         break;
 

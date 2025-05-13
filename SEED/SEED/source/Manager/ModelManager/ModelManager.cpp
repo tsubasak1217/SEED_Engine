@@ -63,12 +63,16 @@ void ModelManager::Initialize() {
 void ModelManager::StartUpLoad() {
 }
 
-void ModelManager::LoadModel(const std::string& filename) {
+void ModelManager::LoadModel(const std::string& filename, const std::string& setName) {
     // すでに読み込み済みのファイルであればreturn
     if (instance_->modelData_.find(filename) != instance_->modelData_.end()) { return; }
 
     // 読み込み
-    instance_->modelData_[filename] = instance_->LoadModelFile(instance_->directoryPath_, filename);
+    if(setName == ""){
+        instance_->modelData_[filename] = instance_->LoadModelFile(instance_->directoryPath_, filename);
+    } else{
+        instance_->modelData_[setName] = instance_->LoadModelFile(instance_->directoryPath_, filename);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

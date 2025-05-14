@@ -302,7 +302,7 @@ void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
     // 軸モデルの生成
     Model axis = Model("Assets/axis.obj");
     axis.scale_ = Vector3(0.3f, 0.3f, 0.3f);
-    axis.color_ = Vector4(1.0f, 1.0f, 1.0f, 0.5f);
+    axis.masterColor_ = Vector4(1.0f, 1.0f, 1.0f, 0.5f);
 
     // indexDrawなら時間からindexの時間を求める
     if(indexDraw == true){
@@ -319,7 +319,7 @@ void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
             }
         }
 
-        axis.color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+        axis.masterColor_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
     // 軸モデルの描画

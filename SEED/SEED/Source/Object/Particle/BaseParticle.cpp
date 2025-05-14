@@ -56,7 +56,7 @@ BaseParticle::BaseParticle(const Emitter& emitter){
     lifeTime_ = kLifeTime_;
 
     ////////////////////// 色をランダム決定 ////////////////////////
-    particle_->color_ = emitter.colors[MyFunc::Random(0, (int)emitter.colors.size() - 1)];
+    particle_->masterColor_ = emitter.colors[MyFunc::Random(0, (int)emitter.colors.size() - 1)];
 
     ///////////////////// ブレンドモードを設定 ////////////////////////
     particle_->blendMode_ = emitter.blendMode;

@@ -118,7 +118,7 @@ public:
     //=====================================
     // マテリアル
     //=====================================
-    void SetColor(const Vector4& color){ model_->color_ = color; }
+    void SetColor(const Vector4& color){ model_->masterColor_ = color; }
 
     //=====================================
     // 物理

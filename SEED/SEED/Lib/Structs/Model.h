@@ -55,9 +55,6 @@ public:// アクセッサ
     Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
 
-    // マテリアル
-    Matrix4x4 GetUVTransform(int index)const{ return AffineMatrix(uv_scale_[index],uv_rotate_[index],uv_translate_[index]); }
-
     // アニメーション
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
@@ -87,10 +84,7 @@ public:
     // ----------------------- トランスフォーム情報 -----------------------//
 
 public:
-    Vector3 scale_;
-    Vector3 rotate_;
-    Quaternion rotateQuat_;
-    Vector3 translate_;
+    Transform transform_;// トランスフォーム情報
     bool isRotateWithQuaternion_ = true;// クォータニオンで回転するか
 
 private:
@@ -101,16 +95,11 @@ private:
     //----------- マテリアル情報(vectorのものはメッシュごとに存在) -----------//
 
 public:
-    std::vector<uint32_t> textureGH_;
-    std::vector<Vector4> meshColor_;// 各メッシュごとの色
-    Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色
-    float shininess_ = 50.0f;
-    int32_t lightingType_;
+
+    std::vector<Material> materials_;// マテリアル情報(mesh数分)
+    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色(meshごとの色はmaterials内)
     BlendMode blendMode_ = BlendMode::NORMAL;
-    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
-    std::vector<Vector3> uv_scale_;
-    std::vector<Vector3> uv_rotate_;
-    std::vector<Vector3> uv_translate_;
+    D3D12_CULL_MODE cullMode_ = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;// カリング設定
 
 
     // --------------------- アニメーションパラメータ ---------------------//

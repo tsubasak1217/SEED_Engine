@@ -226,9 +226,7 @@ void PolygonManager::Reset(){
     // モデルの情報をリセット
     for(auto& modelDrawData : modelDrawData_){
         modelDrawData.second->indexCount = 0;
-        //modelDrawData.second->modelSwitchIdx_Index.clear();
-        //modelDrawData.second->modelSwitchIdx_Vertex.clear();
-        std::memset(modelDrawData.second->totalDrawCount, 0, sizeof(modelDrawData.second->totalDrawCount));
+        modelDrawData.second->totalDrawCount = 0;
     }
 
     // ライティングの情報をリセット
@@ -252,29 +250,6 @@ void PolygonManager::Reset(){
 // プリミティブ描画情報の初期化
 void PolygonManager::InitializePrimitive(){
 
-
-    for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int cullIdx = 0; cullIdx < 3; ++cullIdx){
-            // 通常の描画
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-
-            // 解像度に影響しない描画
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-        }
-    }
-
-
     // プリミティブの頂点などの情報を初期化
     for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
         for(int cullIdx = 0; cullIdx < 3; ++cullIdx){
@@ -285,40 +260,6 @@ void PolygonManager::InitializePrimitive(){
         }
     }
 
-    // プリミティブの描画情報を初期化
-    for(int32_t blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int32_t cullIdx = 0; cullIdx < 3; ++cullIdx){
-            // 参照先を設定
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_BACKSPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_SPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][blendIdx][cullIdx];
-
-            // 描画順を設定
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Triangle;
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Triangle2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticTriangle2D;
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Quad;
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Quad2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticQuad2D;
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Line;
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Line2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticLine2D;
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Sprite;
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::BackSprite;
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
-        }
-    }
 }
 
 // 初期化時に一度のみマッピングを行う
@@ -396,15 +337,15 @@ void PolygonManager::AddTriangle(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
+    // 頂点情報の取得
     auto* modelData = view3D ?
         &primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
+    isStaticDraw ? modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode][(int)cullMode - 1] : modelData;
 
-    if(isStaticDraw){
-        modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
-    }
-
+    // 描画データの取得
     static std::string drawDataName[2];
+    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_TRIANGLE";
@@ -416,11 +357,16 @@ void PolygonManager::AddTriangle(
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
-    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
-    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
+    // もし該当する描画データがなければ作成する
+    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
+    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[curDrawDataName]->modelData = modelData;
+    }
+    auto* drawData = modelDrawData_[curDrawDataName].get();
 
     // indexCount
-    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
+    int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
@@ -434,9 +380,9 @@ void PolygonManager::AddTriangle(
     mesh.indices[indexCount] = indexCount + 0;
     mesh.indices[indexCount + 1] = indexCount + 1;
     mesh.indices[indexCount + 2] = indexCount + 2;
-    // 合わせる
+    // 都合上頂点数に合わせる
     mesh.vertexInfluences.resize(mesh.vertices.size());
-    // materialResource
+    // materialResource(適当な値に初期化)
     if(modelData->materials.size() == 0){
         modelData->materials.resize(1);
         auto& baseMaterial = modelData->materials[0];
@@ -451,52 +397,25 @@ void PolygonManager::AddTriangle(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    if(view3D){
-        drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-
-    } else{
-        drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-    }
-
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
+    if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+    material[drawCount].color_ = color;
+    material[drawCount].lightingType_ = lightingType;
+    material[drawCount].uvTransform_ = uvTransform;
+    material[drawCount].GH_ = GH;
 
     // transform
-    if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
-        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
-    } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
-        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+    auto& transform = drawData->transforms;
+    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+    transform[drawCount].world_ = worldMat;
+    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetViewProjectionMat2D();
+    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+
+    // offsetResourceの数を更新(描画数分)
+    if(drawData->offsetData.size() <= drawCount){
+        drawData->offsetData.resize(drawCount + 1);
     }
-
-
-    // offsetResourceの数を更新
-    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][(int)cullMode - 1] : drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
-    }
-
-    if(offsetData.back().size() <= drawCount){
-        offsetData.back().resize(drawCount + 1);
-    }
-
 
     // カウントを更新
     if(isStaticDraw){
@@ -512,8 +431,8 @@ void PolygonManager::AddTriangle(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
-    view3D ? drawData3D->indexCount += 3 : drawData2D->indexCount += 3;
-    view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++ : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 3;
+    drawData->totalDrawCount++;
 }
 
 void PolygonManager::AddTriangle3DPrimitive(
@@ -541,10 +460,17 @@ void PolygonManager::AddTriangle3DPrimitive(
     drawDataName += "ENGINE_DRAW_TRIANGLE";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
-    auto* drawData3D = modelDrawData_[drawDataName].get();
+
+    // 無かったら作成する
+    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[drawDataName]->modelData = modelData;
+    }
+
+    auto* drawData = modelDrawData_[drawDataName].get();
 
     // indexCount
-    int drawCount = drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1];
+    int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
@@ -558,7 +484,7 @@ void PolygonManager::AddTriangle3DPrimitive(
     mesh.indices[indexCount] = indexCount + 0;
     mesh.indices[indexCount + 1] = indexCount + 1;
     mesh.indices[indexCount + 2] = indexCount + 2;
-    // 合わせる
+    // 頂点数に合わせる
     mesh.vertexInfluences.resize(mesh.vertices.size());
     // materialResource
     if(modelData->materials.size() == 0){
@@ -575,8 +501,8 @@ void PolygonManager::AddTriangle3DPrimitive(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
     material[drawCount].color_ = color;
     material[drawCount].lightingType_ = lightingType;
@@ -584,7 +510,7 @@ void PolygonManager::AddTriangle3DPrimitive(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
+    auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = IdentityMat4();
     transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
@@ -592,7 +518,7 @@ void PolygonManager::AddTriangle3DPrimitive(
 
 
     // offsetResourceの数を更新
-    auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
+    auto& offsetData = drawData->offsetData;
     if(offsetData.size() == 0){
         offsetData.resize(1);
     }
@@ -607,8 +533,8 @@ void PolygonManager::AddTriangle3DPrimitive(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
-    drawData3D->indexCount += 3;
-    drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 3;
+    drawData->totalDrawCount++;
 }
 
 
@@ -674,6 +600,7 @@ void PolygonManager::AddQuad(
     }
 
     static std::string drawDataName[2];
+    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_QUAD";
@@ -685,11 +612,16 @@ void PolygonManager::AddQuad(
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
-    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
-    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
+    // もし該当する描画データがなければ作成する
+    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
+    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[curDrawDataName]->modelData = modelData;
+    }
+    auto* drawData = modelDrawData_[curDrawDataName].get();
 
     // Count
-    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
     // vertexResource
@@ -728,25 +660,13 @@ void PolygonManager::AddQuad(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    if(view3D){
-        drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-
-    } else{
-        drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-    }
-
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
+    if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+    material[drawCount].color_ = color;
+    material[drawCount].lightingType_ = lightingType;
+    material[drawCount].uvTransform_ = uvTransform;
+    material[drawCount].GH_ = GH;
 
     // transform
     if(view3D){
@@ -1163,23 +1083,23 @@ void PolygonManager::AddModel(Model* model){
     int meshSize = (int)item->modelData->meshes.size();
 
     // count
-    int drawCount = item->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1];
+    int drawCount = item->totalDrawCount[(int)model->blendMode_][(int)model->cullMode_ - 1];
 
     /////////////////////////////////////////////////////////////////////////
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
-    item->materials[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
+    item->materials[(int)model->blendMode_][(int)model->cullMode_ - 1].resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
 
-        auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
+        auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode_ - 1][meshIdx];
         if(material.size() <= drawCount){ material.resize(drawCount + 1); }
 
-        material[drawCount].color_ = model->color_ * model->meshColor_[meshIdx];
-        material[drawCount].shininess_ = model->shininess_;
-        material[drawCount].lightingType_ = model->lightingType_;
-        material[drawCount].uvTransform_ = model->GetUVTransform(meshIdx);
-        material[drawCount].GH_ = model->textureGH_[meshIdx];
+        material[drawCount].color_ = model->masterColor_ * model->materials_[meshIdx].color;
+        material[drawCount].shininess_ = model->materials_[meshIdx].shininess;
+        material[drawCount].lightingType_ = model->materials_[meshIdx].lightingType;
+        material[drawCount].uvTransform_ = model->materials_[meshIdx].uvTransform;
+        material[drawCount].GH_ = model->materials_[meshIdx].GH;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -1191,7 +1111,7 @@ void PolygonManager::AddModel(Model* model){
         pDxManager_->GetCamera()->GetViewProjectionMat()
     );
 
-    auto& transform = item->transforms[(int)model->blendMode_][(int)model->cullMode - 1];
+    auto& transform = item->transforms[(int)model->blendMode_][(int)model->cullMode_ - 1];
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = model->GetWorldMat();
     transform[drawCount].WVP_ = wvp;
@@ -1201,9 +1121,9 @@ void PolygonManager::AddModel(Model* model){
     //                              offset情報の設定
     //////////////////////////////////////////////////////////////////////////
 
-    modelDrawData_[modelName]->offsetData[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
+    modelDrawData_[modelName]->offsetData[(int)model->blendMode_][(int)model->cullMode_ - 1].resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
-        auto& offsetData = item->offsetData[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
+        auto& offsetData = item->offsetData[(int)model->blendMode_][(int)model->cullMode_ - 1][meshIdx];
         offsetData.resize(drawCount + 1);
     }
 
@@ -1211,7 +1131,7 @@ void PolygonManager::AddModel(Model* model){
     //                              palette情報の設定
     //////////////////////////////////////////////////////////////////////////
     if(model->isAnimation_){
-        auto& palette = modelDrawData_[modelName]->paletteData[(int)model->blendMode_][(int)model->cullMode - 1];
+        auto& palette = modelDrawData_[modelName]->paletteData[(int)model->blendMode_][(int)model->cullMode_ - 1];
         if(palette.size() <= drawCount){ palette.resize(drawCount + 1); }
         palette[drawCount] = model->palette_;
     }
@@ -1223,9 +1143,9 @@ void PolygonManager::AddModel(Model* model){
         model->isParticle_ ? objCounts_[(int)DrawOrder::Particle]++ : objCounts_[(int)DrawOrder::Model]++;
     }
 
-    objCountCull_[(int)model->cullMode - 1]++;
+    objCountCull_[(int)model->cullMode_ - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
-    modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1]++;
+    modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode_ - 1]++;
     modelIndexCount_++;
 
     // モデルのスケルトンを描画

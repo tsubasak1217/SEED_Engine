@@ -24,7 +24,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
     int GH = gMaterial[input.instanceID].GH;
     float4 transformedUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial[input.instanceID].uvTransform);
     float4 textureColor = gTexture[GH].Sample(gSampler, transformedUV.xy);
-    float3 reflectVector = reflect(normalize(gCamera.position - input.worldPosition), input.normal);
+    float3 reflectVector = reflect(normalize(input.worldPosition - gCamera.position), input.normal);
     float4 environmentColor = environmentTexture.Sample(gSampler, reflectVector);
     
      // 入力が透明の場合は棄却

@@ -1874,7 +1874,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // SpotLightのテーブルをセット
             pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
             // テクスチャのテーブルをセット
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9,ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV,TextureManager::LoadTexture("Assets/rostock_laage_airport_4k.dds")));
+            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9,ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV,TextureManager::LoadTexture("Assets/picnic.dds")));
             // テクスチャのテーブルをセット
             pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
             // パレットのテーブルをセット (アニメーション時のみ)

@@ -1011,7 +1011,7 @@ uint32_t DxManager::CreateTexture(std::string filePath, const aiTexture* embedde
     srvDesc.Format = metadata.format;
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-    // キューブマップかどうか
+    // キューブマップかどうか(".dds"で終わっているか)
     if(!metadata.IsCubemap()){
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
         srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);

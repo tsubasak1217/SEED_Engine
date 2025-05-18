@@ -21,6 +21,7 @@
 #include <SEED/Source/Object/Camera/BaseCamera.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <SEED/Source/Manager/DxManager/ShaderDictionary.h>
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
@@ -40,6 +41,7 @@ class TextureManager;
 class ImGuiManager;
 class PSOManager;
 class ViewManager;
+
 
 struct LeakChecker{
     ~LeakChecker();
@@ -87,10 +89,6 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
 
     // 
     void InitializeSystemTextures();
-
-    // Shaderのコンパイルに関わる関数
-    void InitDxCompiler();
-    void CompileShaders();
 
     // PSO
     void InitPSO();
@@ -186,46 +184,7 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     // その他
     Vector4 clearColor;
 
-
-    //==================================================================//
-    //                            Shader
-    //==================================================================//
-    
-    // dxcCompiler(HLSLをコンパイルするのに必要なもの)
-    ComPtr<IDxcUtils> dxcUtils = nullptr;
-    ComPtr<IDxcCompiler3> dxcCompiler = nullptr;
-    ComPtr<IDxcIncludeHandler> includeHandler = nullptr;
-
-    // VertexShader
-    std::unordered_map<std::string,ComPtr<IDxcBlob>> vsBlobs;
-    // PixelShader
-    std::unordered_map<std::string, ComPtr<IDxcBlob>> psBlobs;
-    // PixelShader
-    std::unordered_map<std::string, ComPtr<IDxcBlob>> csBlobs;
-    // MeshShader
-    std::unordered_map<std::string, ComPtr<IDxcBlob>> msBlobs;
-
-
-    //==================================================================//
-    //                       PSO,rootSignature
-    //==================================================================//
-
-    // アニメーションしないPSO
-    MSPipeline pipelines[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
-    RootSignature rootSignatures[(int)BlendMode::kBlendModeCount][kTopologyCount][kCullModeCount];
-
-    // アニメーションするPSO (modelしか使わない)
-    MSPipeline skinningPipelines[(int)BlendMode::kBlendModeCount][kCullModeCount];
-    RootSignature skinningRootSignatures[(int)BlendMode::kBlendModeCount][kCullModeCount];
-
-    // SkyBox用のPSO
-    MSPipeline skyBoxPipeline;
-
-    // コンピュートシェーダー用のやつ
-    ComPtr<ID3D12PipelineState> csPipelineState = nullptr;
-    ComPtr<ID3D12RootSignature> csRootSignature = nullptr;
-
-    //===================================================================//
+    //================================ CSのバッファ ===============================//
 
     ComPtr<ID3D12Resource> CS_ConstantBuffer = nullptr;
 

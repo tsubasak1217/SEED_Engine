@@ -30,7 +30,6 @@ void Model::Initialize(const std::string& filename){
         // 新しいマテリアルを追加
         Material newMaterial;
         newMaterial.color = material->color_;
-        newMaterial.litingType = LIGHTINGTYPE_HALF_LAMBERT;
         newMaterial.GH = TextureManager::LoadTexture(material->textureFilePath_);
         newMaterial.uvTransform = AffineMatrix(
             material->UV_scale_,

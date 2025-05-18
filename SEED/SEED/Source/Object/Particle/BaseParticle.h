@@ -22,7 +22,7 @@ public:
 
     bool GetIsAlive()const{return lifeTime_ > 0.0f;}
     void SetAcceleration(const Vector3& acceleration){ acceleration_ = acceleration; }
-    const Vector3& GetPos()const{ return particle_->translate_; }
+    const Vector3& GetPos()const{ return particle_->transform_.translate_; }
 
 protected:
 

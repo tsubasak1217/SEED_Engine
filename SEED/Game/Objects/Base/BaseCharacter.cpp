@@ -127,12 +127,12 @@ void BaseCharacter::ChangeState(ICharacterState* nextState){
 
 void BaseCharacter::HandleMove(const Vector3& acceleration){
     // 移動
-    model_->translate_ += acceleration;
+    model_->transform_.translate_ += acceleration;
 }
 
 void BaseCharacter::HandleRotate(const Vector3& rotate){
     // 回転
-    model_->rotate_ = rotate;
+    model_->transform_.rotate_ = rotate;
     model_->UpdateMatrix();
 }
 

@@ -4,6 +4,7 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Structs/CS_Buffers.h>
+#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 
 // external
 #include <cmath>
@@ -22,82 +23,82 @@ void EffectManager::Finalize(){}
 void EffectManager::TransfarToCS()
 {
 
-    // ========================== RootSignatureを設定 ============================ //
+    //// ========================== RootSignatureを設定 ============================ //
 
-    pDxManager_->commandList->SetComputeRootSignature(pDxManager_->csRootSignature.Get());
+    //pDxManager_->commandList->SetComputeRootSignature(pDxManager_->csRootSignature.Get());
 
-    // =============================== CBVを設定 ================================= //
+    //// =============================== CBVを設定 ================================= //
 
-    Blur_CS_ConstantBuffer* blurCBVData;
-    pDxManager_->CS_ConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&blurCBVData));
-    blurCBVData[0].resolutionRate = pDxManager_->resolutionRate_;
+    //Blur_CS_ConstantBuffer* blurCBVData;
+    //pDxManager_->CS_ConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&blurCBVData));
+    //blurCBVData[0].resolutionRate = pDxManager_->resolutionRate_;
 
-    pDxManager_->commandList->SetComputeRootConstantBufferView(
-        4, pDxManager_->CS_ConstantBuffer->GetGPUVirtualAddress()
-    );
+    //pDxManager_->commandList->SetComputeRootConstantBufferView(
+    //    4, pDxManager_->CS_ConstantBuffer->GetGPUVirtualAddress()
+    //);
 
-    // ========================== 送信する画像の決定ゾーン ============================ //
+    //// ========================== 送信する画像の決定ゾーン ============================ //
 
-    // SRVHeapを設定
-    ID3D12DescriptorHeap* descriptorHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)};
-    pDxManager_->commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+    //// SRVHeapを設定
+    //ID3D12DescriptorHeap* descriptorHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)};
+    //pDxManager_->commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-    // まずは通常のスクリーンショットを転送する
-    D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
-    srvGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetTextureHandle("offScreen_0")
-    );
+    //// まずは通常のスクリーンショットを転送する
+    //D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle;
+    //srvGpuHandle = GetGPUDescriptorHandle(
+    //    ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetTextureHandle("offScreen_0")
+    //);
 
-    // 転送
-    pDxManager_->commandList->SetComputeRootDescriptorTable(0, srvGpuHandle);
-
-
-    // 次に書き込み用のリソースを転送する
-    D3D12_GPU_DESCRIPTOR_HANDLE uavGpuHandle;
-    uavGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetTextureHandle("blur_0_UAV")
-    );
-
-    // 転送
-    pDxManager_->commandList->SetComputeRootDescriptorTable(1, uavGpuHandle);
+    //// 転送
+    //pDxManager_->commandList->SetComputeRootDescriptorTable(0, srvGpuHandle);
 
 
-    // DepthStencilResourceのSRVを転送する
-    srvGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetTextureHandle("depth_0")
-    );
+    //// 次に書き込み用のリソースを転送する
+    //D3D12_GPU_DESCRIPTOR_HANDLE uavGpuHandle;
+    //uavGpuHandle = GetGPUDescriptorHandle(
+    //    ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetTextureHandle("blur_0_UAV")
+    //);
+
+    //// 転送
+    //pDxManager_->commandList->SetComputeRootDescriptorTable(1, uavGpuHandle);
 
 
-    // 転送
-    pDxManager_->commandList->SetComputeRootDescriptorTable(2, srvGpuHandle);
+    //// DepthStencilResourceのSRVを転送する
+    //srvGpuHandle = GetGPUDescriptorHandle(
+    //    ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetTextureHandle("depth_0")
+    //);
 
 
-    // 深度情報書き込み用のテクスチャを転送する
-    uavGpuHandle = GetGPUDescriptorHandle(
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetTextureHandle("depth_1_UAV")
-    );
+    //// 転送
+    //pDxManager_->commandList->SetComputeRootDescriptorTable(2, srvGpuHandle);
 
 
-    // 転送
-    pDxManager_->commandList->SetComputeRootDescriptorTable(3, uavGpuHandle);
+    //// 深度情報書き込み用のテクスチャを転送する
+    //uavGpuHandle = GetGPUDescriptorHandle(
+    //    ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetDescriptorSize(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
+    //    ViewManager::GetTextureHandle("depth_1_UAV")
+    //);
 
-    // =============================================================================//
+
+    //// 転送
+    //pDxManager_->commandList->SetComputeRootDescriptorTable(3, uavGpuHandle);
+
+    //// =============================================================================//
 
 
-    pDxManager_->commandList->SetPipelineState(pDxManager_->csPipelineState.Get());
+    //pDxManager_->commandList->SetPipelineState(pDxManager_->csPipelineState.Get());
 
-    UINT dispatchX = (SEED::GetInstance()->kClientWidth_ + 15) / 16;
-    UINT dispatchY = (SEED::GetInstance()->kClientHeight_ + 15) / 16;
+    //UINT dispatchX = (SEED::GetInstance()->kClientWidth_ + 15) / 16;
+    //UINT dispatchY = (SEED::GetInstance()->kClientHeight_ + 15) / 16;
 
-    pDxManager_->commandList->Dispatch(dispatchX,dispatchY,1);
+    //pDxManager_->commandList->Dispatch(dispatchX,dispatchY,1);
 
 }
 

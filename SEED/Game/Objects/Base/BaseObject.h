@@ -86,30 +86,30 @@ public:
 
     /*------ scale -------*/
     Vector3 GetWorldScale() const{ return model_->GetWorldScale(); }
-    const Vector3& GetLocalScale() const{ return model_->scale_; }
-    void SetScale(const Vector3& scale){ model_->scale_ = scale; }
-    void SetScaleX(float x){ model_->scale_.x = x; }
-    void SetScaleY(float y){ model_->scale_.y = y; }
-    void SetScaleZ(float z){ model_->scale_.z = z; }
+    const Vector3& GetLocalScale() const{ return model_->transform_.scale_; }
+    void SetScale(const Vector3& scale){ model_->transform_.scale_ = scale; }
+    void SetScaleX(float x){ model_->transform_.scale_.x = x; }
+    void SetScaleY(float y){ model_->transform_.scale_.y = y; }
+    void SetScaleZ(float z){ model_->transform_.scale_.z = z; }
     /*------ rotate -------*/
     Vector3 GetWorldRotate() const{ return model_->GetWorldRotate(); }
-    const Vector3& GetLocalRotate() const{ return model_->rotate_; }
+    const Vector3& GetLocalRotate() const{ return model_->transform_.rotate_; }
     void SetRotateWithQuaternion(bool isRotateWithQuaternion){ model_->isRotateWithQuaternion_ = isRotateWithQuaternion; }
-    void SetRotate(const Vector3& rotate){ model_->rotate_ = rotate; }
-    void SetRotate(const Quaternion& rotate){ model_->rotateQuat_ = rotate; }
-    void SetRotateX(float x){ model_->rotate_.x = x; }
-    void SetRotateY(float y){ model_->rotate_.y = y; }
-    void SetRotateZ(float z){ model_->rotate_.z = z; }
+    void SetRotate(const Vector3& rotate){ model_->transform_.rotate_ = rotate; }
+    void SetRotate(const Quaternion& rotate){ model_->transform_.rotateQuat_ = rotate; }
+    void SetRotateX(float x){ model_->transform_.rotate_.x = x; }
+    void SetRotateY(float y){ model_->transform_.rotate_.y = y; }
+    void SetRotateZ(float z){ model_->transform_.rotate_.z = z; }
     /*------ translate -------*/
     Vector3 GetWorldTranslate() const{ return model_->GetWorldTranslate(); }
-    const Vector3& GetLocalTranslate() const{ return model_->translate_; }
+    const Vector3& GetLocalTranslate() const{ return model_->transform_.translate_; }
     void AddWorldTranslate(const Vector3& addValue);
     const Vector3& GetPrePos() const{ return prePos_; }
-    void SetTranslate(const Vector3& translate){ model_->translate_ = translate; }
-    void SetTranslateX(float x){ model_->translate_.x = x; }
-    void SetTranslateY(float y){ model_->translate_.y = y; }
-    void SetTranslateZ(float z){ model_->translate_.z = z; }
-    void AddTranslate(const Vector3& addValue){ model_->translate_ += addValue; }
+    void SetTranslate(const Vector3& translate){ model_->transform_.translate_ = translate; }
+    void SetTranslateX(float x){ model_->transform_.translate_.x = x; }
+    void SetTranslateY(float y){ model_->transform_.translate_.y = y; }
+    void SetTranslateZ(float z){ model_->transform_.translate_.z = z; }
+    void AddTranslate(const Vector3& addValue){ model_->transform_.translate_ += addValue; }
     /*------ matrix -------*/
     Matrix4x4 GetLocalMat() const{ return model_->GetLocalMat(); }
     Matrix4x4 GetWorldMat() const{ return model_->GetWorldMat(); }

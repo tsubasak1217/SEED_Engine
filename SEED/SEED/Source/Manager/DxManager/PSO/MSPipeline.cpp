@@ -1,17 +1,26 @@
 #include "MSPipeline.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 
-// 初期化関数
-// 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// コンストラクタ
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 MSPipeline::MSPipeline(BlendMode blendMode, D3D12_CULL_MODE cullMode){
-    Initialize(blendMode, cullMode);
+    Create(blendMode,PolygonTopology::TRIANGLE, cullMode);
 }
 
-void MSPipeline::Initialize(BlendMode blendMode,D3D12_CULL_MODE cullMode){
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// 作成関数
+// 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void MSPipeline::Create(BlendMode blendMode, PolygonTopology topology,D3D12_CULL_MODE cullMode){
+
+    topologyType_ = (topology == PolygonTopology::TRIANGLE) ? 
+        D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE : D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
     //======================================================================
     //  BlendMode
@@ -80,7 +89,7 @@ void MSPipeline::Initialize(BlendMode blendMode,D3D12_CULL_MODE cullMode){
     } else{
         depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
     }
-    depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;// 近いものを優先して描画
+    depthStencilDesc.DepthFunc = depthFunc_;// 近いものを優先して描画
 
 
     //======================================================================
@@ -128,8 +137,9 @@ void MSPipeline::Initialize(BlendMode blendMode,D3D12_CULL_MODE cullMode){
     pipelineDescs_.sampleDesc = sampleDesc;
     pipelineDescs_.sampleMask = UINT_MAX;
     pipelineDescs_.flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-
-
+    pipelineDescs_.as = asByteCode;
+    pipelineDescs_.ms = msByteCode;
+    pipelineDescs_.ps = psByteCode;
 }
 
 

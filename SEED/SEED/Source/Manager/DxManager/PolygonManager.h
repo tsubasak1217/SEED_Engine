@@ -21,6 +21,7 @@
 #include <SEED/Lib/Shapes/Ring.h>
 #include <SEED/Lib/Shapes/Cylinder.h>
 #include <SEED/Lib/Structs/SkyBox.h>
+#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 
 //
 using Microsoft::WRL::ComPtr;
@@ -37,7 +38,7 @@ struct ModelDrawData{
     std::vector<std::vector<MaterialForGPU>> materials;// instance数 * mesh数分ある
     std::vector<TransformMatrix>transforms;// instance数分ある
     std::vector<std::vector<OffsetData>> offsetData;// instance数 * mesh数分ある
-    std::vector<std::vector<WellForGPU>> paletteData;// instance数 * mesh数分ある
+    std::vector<std::vector<WellForGPU>> paletteData;// instance数 * palette数分ある
 
     // VBV
     static D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
@@ -58,8 +59,12 @@ struct ModelDrawData{
     // 描画する順番
     int8_t drawOrder = 0;
     int32_t layer = 0;
-    // パイプラインハンドルごとに並べて描画することでパイプラインの切り替えを減らす
-    uint32_t pipelineHandle;
+
+    // パイプラインの種類
+    PipelineType pipelineType = PipelineType::VSPipeline;
+
+    // 対応するPSOのポインタ
+    PSO* pso = nullptr;
 
     // インデックス数(プリミティブ用)
     int32_t indexCount = 0;
@@ -145,7 +150,6 @@ private:
 
     void InitializePrimitive();
     void MapOnce();
-    int32_t CalcMeshletCount(int32_t indexCount);
 
 public:// 頂点情報の追加に関わる関数
 
@@ -199,10 +203,6 @@ public:// 頂点情報の追加に関わる関数
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );
 
-    void AddSkyBox(const SkyBox& skyBox);
-    void AddRing(const Ring& ring);
-    void AddCylinder(const Cylinder& cylinder);
-
 private:
     void AddOffscreenResult(uint32_t GH, BlendMode blendMode);
 
@@ -249,6 +249,9 @@ private:// 実際に頂点情報や色などの情報が入っている変数
     // プリミティブな描画に使用するデータ
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
     uint32_t primitiveDrawCount_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
+
+    // 上記をパイプラインごとにまとめたもの
+    std::unordered_map<PSO*, std::list<ModelDrawData*>> drawLists_;
 
 private:// ライティング用のデータ-----------------------------------------------------------------
 

@@ -101,11 +101,11 @@ void DxManager::Initialize(SEED* pSEED){
         変換しないといけない。
     */
 
-    // Shaderコンパイルのためのコンパイラの初期化
-    instance_->InitDxCompiler();
-
-    // shaderをコンパイルする
-    instance_->CompileShaders();
+    ShaderDictionary::GetInstance()->Initialize();
+    ShaderDictionary::GetInstance()->LoadFromDirectory(
+        "resources/shaders/",
+        instance_->device.Get()
+    );
 
     /*------------------------PSOの生成-----------------------*/
 
@@ -437,174 +437,15 @@ void DxManager::CreateFence(){
     assert(fenceEvent != nullptr);
 }
 
-void DxManager::InitDxCompiler(){
-    // インスタンスの作成
-    hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(dxcUtils.GetAddressOf()));
-    assert(SUCCEEDED(hr));
-    hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(dxcCompiler.GetAddressOf()));
-    assert(SUCCEEDED(hr));
-
-    // 現時点でincludeはしないが、 includeに対応するための設定を行っておく
-    hr = dxcUtils->CreateDefaultIncludeHandler(includeHandler.GetAddressOf());
-    assert(SUCCEEDED(hr));
-}
-
-void DxManager::CompileShaders(){
-
-    // 6.5に対応しているか確認
-    {
-        D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
-        hr = device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
-        assert(SUCCEEDED(hr));
-    }
-
-    // メッシュシェーダーに対応しているか確認
-    {
-        D3D12_FEATURE_DATA_D3D12_OPTIONS7 features = {};
-        hr = device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
-        assert(SUCCEEDED(hr));
-    }
-
-
-    // VertexShader
-    vsBlobs["commonVS"] = CompileShader(
-        L"resources/shaders/Object3d.VS.hlsl",
-        L"vs_6_0",
-        L"main",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(vsBlobs["commonVS"] != nullptr);
-
-    vsBlobs["skinningVS"] = CompileShader(
-        L"resources/shaders/Skinning.VS.hlsl",
-        L"vs_6_0",
-        L"main",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(vsBlobs["skinningVS"] != nullptr);
-
-    // PixelShader
-    psBlobs["commonPS"] = CompileShader(
-        L"resources/shaders/Object3d.PS.hlsl",
-        L"ps_6_0",
-        L"main",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(psBlobs["commonPS"] != nullptr);
-
-    // ComputeShader
-    csBlobs["blurCS"] = CompileShader(
-        L"resources/shaders/Blur.CS.hlsl",
-        L"cs_6_0",
-        L"CSMain",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(csBlobs["blurCS"] != nullptr);
-
-    // MeshShader
-    msBlobs["commonMS"] = CompileShader(
-        L"resources/shaders/SimpleMS.hlsl",
-        L"ms_6_5",
-        L"main",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(vsBlobs["skinningMS"] != nullptr);
-
-    msBlobs["skinningMS"] = CompileShader(
-        L"resources/shaders/SimpleMS.hlsl",
-        L"ms_6_5",
-        L"main",
-        dxcUtils.Get(),
-        dxcCompiler.Get(),
-        includeHandler.Get()
-    );
-    assert(vsBlobs["skinningMS"] != nullptr);
-}
-
 
 void DxManager::InitPSO(){
     /*==================================================================================*/
     //                              通常のパイプラインの初期化
     /*==================================================================================*/
-    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
-        for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
-            for(int topology = 0; topology < kTopologyCount; topology++){
-
-                // 通常のパイプライン
-                pipelines[blendMode][topology][cullMode].Initialize(
-                    (BlendMode)blendMode,
-                    D3D12_CULL_MODE(cullMode + 1)
-                );
-
-                // テンプレートのパラメーターを作成
-                PSOManager::GenerateTemplateParameter(
-                    &rootSignatures[blendMode][topology][cullMode],
-                    &pipelines[blendMode][topology][cullMode],
-                    PippelineType::Normal
-                );
-
-                // PSOの作成
-                PSOManager::Create(
-                    &rootSignatures[blendMode][topology][cullMode],
-                    &pipelines[blendMode][topology][cullMode]
-                );
-            }
-        }
-    }
-
-    /*==================================================================================*/
-    //                           スキニング用のパイプラインの初期化
-    /*==================================================================================*/
-    for(int blendMode = 0; blendMode < (int)BlendMode::kBlendModeCount; blendMode++){
-        for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
-            // スキニング用のパイプライン
-            skinningPipelines[blendMode][cullMode] = MSPipeline(
-                (BlendMode)blendMode,
-                D3D12_CULL_MODE(cullMode + 1)
-            );
-
-            // ルートシグネチャの初期化
-            skinningRootSignatures[blendMode][cullMode] = RootSignature();
-
-            // テンプレートのパラメーターを作成
-            PSOManager::GenerateTemplateParameter(
-                &skinningRootSignatures[blendMode][cullMode],
-                &skinningPipelines[blendMode][cullMode],
-                PippelineType::Skinning
-            );
-
-            // PSOの作成
-            PSOManager::Create(
-                &skinningRootSignatures[blendMode][cullMode],
-                &skinningPipelines[blendMode][cullMode]
-            );
-        }
-    }
-
-    /*==================================================================================*/
-    //                         ComputeShader用のパイプラインの初期化
-    /*==================================================================================*/
-
-    // ComputeShader用
-    csRootSignature = PSOManager::SettingCSRootSignature();
-    D3D12_COMPUTE_PIPELINE_STATE_DESC psoDesc = {};
-    psoDesc.pRootSignature = csRootSignature.Get();
-    psoDesc.CS = { reinterpret_cast<BYTE*>(csBlobs["blurCS"]->GetBufferPointer()), csBlobs["blurCS"]->GetBufferSize() };
-
-    // CBVの初期化
-    CS_ConstantBuffer = CreateBufferResource(device.Get(), sizeof(Blur_CS_ConstantBuffer));
-
-    device->CreateComputePipelineState(&psoDesc, IID_PPV_ARGS(csPipelineState.GetAddressOf()));
+    
+    PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
+    PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
+    PSOManager::CreatePipelines("DOFPipeline.pip");// CSのパイプライン。被写界深度
 
 }
 
@@ -1028,6 +869,7 @@ void DxManager::ReCreateResolutionSettings(){
     changeResolutionOrder = false;
 }
 
+
 void DxManager::SavePreVariable(){
     preResolutionRate_ = resolutionRate_;
 }
@@ -1073,28 +915,9 @@ void DxManager::Release(){
     // ディスクリプタヒープ
     ViewManager::Finalize();
 
-    // ルートシグネチャ・パイプラインの解放
-    csRootSignature.Reset();
-    csPipelineState.Reset();
-
-    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
-        for(int j = 0; j < kTopologyCount; j++){
-            for(int k = 0; k < kCullModeCount; k++){
-                rootSignatures[i][j][k].Release();
-                skinningRootSignatures[i][k].Release();
-                pipelines[i][j][k].Release();
-                skinningPipelines[i][k].Release();
-            }
-        }
-    }
-
-    // コンパイル系
-    for(auto& vsBlob : vsBlobs){ vsBlob.second.Reset(); }
-    for(auto& psBlob : psBlobs){ psBlob.second.Reset(); }
-    for(auto& csBlob : csBlobs){ csBlob.second.Reset(); }
-    dxcCompiler.Reset();
-    dxcUtils.Reset();
-    includeHandler.Reset();
+    // ルートシグネチャ・パイプライン・シェーダ情報解放
+    ShaderDictionary::GetInstance()->Release();
+    PSOManager::GetInstance()->Release();
 
     // フェンス
     CloseHandle(instance_->fenceEvent);

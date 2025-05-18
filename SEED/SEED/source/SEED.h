@@ -102,7 +102,6 @@ public:
     /*==========================モデルの描画関数==========================*/
 
     static void DrawModel(Model* model);
-    static void DrawSkyBox(const SkyBox& skyBox);
 
     /*==========================線の描画関数==========================*/
 

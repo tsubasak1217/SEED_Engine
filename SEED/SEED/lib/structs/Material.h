@@ -12,6 +12,7 @@
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Structs/blendMode.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
 enum LIGHTING_TYPE : int32_t{
     LIGHTINGTYPE_NONE = 0,
@@ -21,7 +22,6 @@ enum LIGHTING_TYPE : int32_t{
 
 struct Material{
     Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
-    int32_t lightingType = LIGHTING_TYPE::LIGHTINGTYPE_LAMBERT;
     uint32_t GH;
     Matrix4x4 uvTransform = IdentityMat4();
     float shininess = 50.0f;

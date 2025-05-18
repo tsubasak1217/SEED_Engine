@@ -116,11 +116,11 @@ void Player::EndFrame(){
 void Player::HandleMove(const Vector3& acceleration){
     // 移動
     if(isMovable_){
-        model_->translate_ += acceleration;
+        model_->transform_.translate_ += acceleration;
     }
 
     // 移動制限
-    model_->translate_.y = std::clamp(model_->translate_.y,0.0f,10000.0f);
+    model_->transform_.translate_.y = std::clamp(model_->transform_.translate_.y,0.0f,10000.0f);
     model_->UpdateMatrix();
 }
 

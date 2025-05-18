@@ -15,7 +15,7 @@ void RadialParticle::Update(){
     particle_->masterColor_.w = std::clamp(lifeTime_ / kLifeTime_, 0.0f, 1.0f);
 
     // 徐々に小さくする
-    particle_->scale_ = kScale_ * t;
+    particle_->transform_.scale_ = kScale_ * t;
 
     // 寿命、ビルボードの更新
     BaseParticle::Update();

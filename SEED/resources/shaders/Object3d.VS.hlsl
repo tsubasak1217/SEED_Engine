@@ -12,15 +12,15 @@ struct TransformationMatrix {
 
 struct VertexShaderInput {
     // VBV_0 (VertexData)
-    float4 position : POSITION0;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+    float4 position : S0_V_POSITION0;
+    float2 texcoord : S0_V_TEXCOORD0;
+    float3 normal : S0_V_NORMAL0;
     
     // VBV_1 (OffsetData)
-    int indexOffset : INDEX_OFFSET0;
-    int meshOffset : MESH_OFFSET0;
-    int jointIndexOffset : JOINT_INDEX_OFFSET0;
-    int interval : INTERVAL0; //line->2,triangle->3,quad->4
+    int indexOffset : S1_I_INDEX_OFFSET0;
+    int meshOffset : S1_I_MESH_OFFSET0;
+    int jointIndexOffset : S1_I_JOINT_INDEX_OFFSET0;
+    int interval : S1_I_INTERVAL0; //line->2,triangle->3,quad->4
 };
 
 

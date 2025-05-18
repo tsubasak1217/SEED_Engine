@@ -2,15 +2,27 @@
 #include <vector>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Source/Manager/DxManager/PSO/IPipeline.h>
 using Microsoft::WRL::ComPtr;
 
-enum class PolygonTopology : int{
-    TRIANGLE,
-    LINE
+struct PipelineDescs{
+    StateParam_RootSignature rootSignature;
+    StateParam_InputLayoutDesc inputLayoutDesc;
+    StateParam_VS vs;
+    StateParam_PS ps;
+    StateParam_Blend blend;
+    StateParam_Rasterizer rasterizer;
+    StateParam_DepthStencil depthStencil;
+    StateParam_SampleMask sampleMask;
+    StateParam_SampleDesc sampleDesc;
+    StateParam_DSFormat dsFormat;
+    StateParam_RTFormats rtFormats;
+    StateParam_Flags flags;
 };
 
+
 // パイプラインステートの情報を格納する構造体
-struct Pipeline{
+struct Pipeline : public IPipeline{
 
 public:
     Pipeline() = default;
@@ -20,11 +32,11 @@ public:
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
-    void Initialize(
+    void Create(
         BlendMode blendMode,
         PolygonTopology topology = PolygonTopology::TRIANGLE,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
-    );
+    )override;
 
     void Release();
 
@@ -40,17 +52,6 @@ public:
     );
 
 public:
-    ComPtr<ID3D12PipelineState> pipeline_;
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc_{};
+    PipelineDescs pipelineDescs_;
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputElementDescs_;
-    D3D12_INPUT_LAYOUT_DESC inputLayout_{};
-    D3D12_RASTERIZER_DESC rasterizerDesc_{};
-    D3D12_BLEND_DESC blendDesc_{};
-    D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
-    D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType_;
-    D3D12_CULL_MODE cullMode_;
-    D3D12_FILL_MODE fillMode_;
-    // シェーダー
-    IDxcBlob* pVsBlob_;
-    IDxcBlob* pPsVlob_;
 };

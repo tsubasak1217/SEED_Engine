@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="resources\shaders\Blur.CS.hlsl" />
-    <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
-    <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
-    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.PS.hlsl" />
-    <FxCompile Include="resources\shaders\ParticleShader\ParticleShader.VS.hlsl" />
-    <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\SimpleMS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Game\Objects\Base\BaseObject.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
@@ -112,6 +103,7 @@
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
+    <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -257,15 +249,24 @@
     <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SEED\external\imgui\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="resources\shaders\Blur.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Object3D.MS.hlsl" />
+    <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
+    <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
+    <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />
     <None Include="Resources\Shaders\Lighting.hlsli" />
     <None Include="Resources\Shaders\Material.hlsli" />
     <None Include="resources\shaders\Object3D.hlsli" />
-    <None Include="resources\shaders\ParticleShader\ParticleShader.hlsli" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt" />
   </ItemGroup>
 </Project>

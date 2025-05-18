@@ -271,12 +271,6 @@ void SEED::DrawModel(Model* model){
 }
 
 
-//========================================== スカイボックス ===========================================*/
-void SEED::DrawSkyBox(const SkyBox& skyBox){
-    skyBox;
-}
-
-
 /*========================================== 線 ===========================================*/
 
 void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, BlendMode blendMode){
@@ -299,7 +293,7 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
 /*========================================== リング ===========================================*/
 
 void SEED::DrawRing(const Ring& ring){
-    instance_->pPolygonManager_->AddRing(ring);
+    ring;
 }
 
 
@@ -551,11 +545,11 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
     // 制御点の描画
     if(!isControlPointVisible){ return; }
     Model controlPointModel = Model("Assets/cube.obj");
-    controlPointModel.scale_ = { 0.5f,0.5f,0.5f };
-    controlPointModel.color_ = { 1.0f,0.0f,0.0f,1.0f };
+    controlPointModel.transform_.scale_ = { 0.5f,0.5f,0.5f };
+    controlPointModel.masterColor_ = { 1.0f,0.0f,0.0f,1.0f };
 
     for(int i = 0; i < points.size(); i++){
-        controlPointModel.translate_ = points[i];
+        controlPointModel.transform_.translate_ = points[i];
         controlPointModel.UpdateMatrix();
         DrawModel(&controlPointModel);
     }

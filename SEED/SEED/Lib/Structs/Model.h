@@ -98,6 +98,7 @@ public:
 
     std::vector<Material> materials_;// マテリアル情報(mesh数分)
     Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色(meshごとの色はmaterials内)
+    int32_t lightingType_ = LIGHTING_TYPE::LIGHTINGTYPE_LAMBERT;
     BlendMode blendMode_ = BlendMode::NORMAL;
     D3D12_CULL_MODE cullMode_ = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;// カリング設定
 

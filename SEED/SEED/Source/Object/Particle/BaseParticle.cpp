@@ -19,12 +19,12 @@ BaseParticle::BaseParticle(const Emitter& emitter){
     Vector3 center = emitter.GetCenter();
     emitRange.min = center - emitter.emitRange * 0.5f;
     emitRange.max = center + emitter.emitRange * 0.5f;
-    particle_->translate_ = MyFunc::Random(emitRange);
+    particle_->transform_.translate_ = MyFunc::Random(emitRange);
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(emitter.radiusRange.min, emitter.radiusRange.max);
-    particle_->scale_ = { radius,radius,radius };
-    kScale_ = particle_->scale_;
+    particle_->transform_.scale_ = { radius,radius,radius };
+    kScale_ = particle_->transform_.scale_;
 
     //////////////////// 進行方向をランダム決定 ///////////////////////
     float angleRange = 3.14f * std::clamp(emitter.directionRange, 0.0f, 1.0f);
@@ -44,7 +44,7 @@ BaseParticle::BaseParticle(const Emitter& emitter){
 
     //////////////////////// 回転情報を決定 ////////////////////////
 
-    particle_->rotate_ = MyFunc::RandomVector() * 3.14f;
+    particle_->transform_.rotate_ = MyFunc::RandomVector() * 3.14f;
     rotateAxis_ = MyFunc::RandomVector();
     rotateSpeed_ = MyFunc::Random(emitter.rotateSpeedRange.min, emitter.rotateSpeedRange.max);
 
@@ -62,7 +62,7 @@ BaseParticle::BaseParticle(const Emitter& emitter){
     particle_->blendMode_ = emitter.blendMode;
 
     //////////////////////// カリングを設定 ////////////////////////
-    particle_->cullMode = D3D12_CULL_MODE(emitter.cullingMode + 1);
+    particle_->cullMode_ = D3D12_CULL_MODE(emitter.cullingMode + 1);
 
     //////////////////////// ライトを無効に //////////////////////////
     particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;
@@ -71,7 +71,7 @@ BaseParticle::BaseParticle(const Emitter& emitter){
     textureHandle_ = TextureManager::LoadTexture(
         emitter.texturePaths[MyFunc::Random(0, (int)emitter.texturePaths.size() - 1)]
     );
-    particle_->textureGH_[0] = textureHandle_;
+    particle_->materials_[0].GH = textureHandle_;
 }
 
 void BaseParticle::Update(){
@@ -80,7 +80,7 @@ void BaseParticle::Update(){
     // ビルボード処理
     //////////////////////////////////////
     if(isBillboard_){
-        particle_->rotate_ = SEED::GetCamera()->GetRotation();
+        particle_->transform_.rotate_ = SEED::GetCamera()->GetRotation();
     }
 
     //////////////////////////////////////
@@ -108,13 +108,13 @@ void BaseParticle::Update(){
     // 回転処理
     //////////////////////////////////
     if(isUseRotate_ && !isBillboard_){
-        particle_->rotate_ += rotateAxis_ * rotateSpeed_ * ClockManager::DeltaTime();
+        particle_->transform_.rotate_ += rotateAxis_ * rotateSpeed_ * ClockManager::DeltaTime();
     }
 
     //////////////////////////////////
     // パーティクルのトランスフォーム更新
     //////////////////////////////////
-    particle_->translate_ += velocity_;
+    particle_->transform_.translate_ += velocity_;
     particle_->UpdateMatrix();
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable: 4324)// 自動アライメントの警告を無視する
 #include <vector>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
@@ -36,7 +37,7 @@ struct IPipeline{
 //
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ValueType, D3D12_PIPELINE_STATE_SUBOBJECT_TYPE objectType>
-class StateParam{
+class alignas(void*) StateParam{
 public:
     StateParam() = default;
     StateParam(ValueType value) : type_(objectType), value_(value){}

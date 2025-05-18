@@ -17,23 +17,23 @@ struct Int {
     int value;
 };
 
-/*- ä»®: éç·šå½¢ã‚’ç·šå½¢ã«å¤‰æ›ã™ã‚‹é–¢æ•°-*/
+/*- ‰¼: ”ñüŒ`‚ğüŒ`‚É•ÏŠ·‚·‚éŠÖ”-*/
 float DepthToLinear(float depth, float near, float far) {
     float z = depth * 2.0f - 1.0f;
     float linearDepth = (2.0f * near * far) / (far + near - z * (far - near));
     return (linearDepth - near) / (far - near);
 }
 
-// ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã™ã‚‹æ·±åº¦ã‚„ç¯„å›²
-// 0.0 ~ 1.0ã®é–“ã§ãƒ”ãƒ³ãƒˆãŒåˆã†ä¸­å¿ƒæ·±åº¦
+// ƒtƒH[ƒJƒX‚·‚é[“x‚â”ÍˆÍ
+// 0.0 ~ 1.0‚ÌŠÔ‚Åƒsƒ“ƒg‚ª‡‚¤’†S[“x
 static const float focusDepth = 0.001f;
-// ãƒ”ãƒ³ãƒˆãŒå½±éŸ¿ã‚’åŠã¼ã™ç›´å¾„
+// ƒsƒ“ƒg‚ª‰e‹¿‚ğ‹y‚Ú‚·’¼Œa
 static const float focusRange = 0.01f;
-// ãƒ”ãƒ³ãƒˆãŒå½±éŸ¿ã‚’åŠã¼ã™åŠå¾„
+// ƒsƒ“ƒg‚ª‰e‹¿‚ğ‹y‚Ú‚·”¼Œa
 static const float rangeRadius = focusRange * 0.5f;
 //
 static const float inverseRange = 1.0f / focusRange;
-// æœ€è¿‘å€¤ã€æœ€é å€¤
+// Å‹ß’lAÅ‰“’l
 static const float2 min_max = {
     focusDepth - rangeRadius,
     focusDepth + rangeRadius

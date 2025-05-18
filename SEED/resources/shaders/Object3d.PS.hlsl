@@ -1,4 +1,4 @@
-﻿#include "Object3D.hlsli"
+﻿#include "Object3d.hlsli"
 #include "Lighting.hlsli"
 #include "Material.hlsli"
 #include "Camera.hlsli"

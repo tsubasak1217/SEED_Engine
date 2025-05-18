@@ -394,13 +394,19 @@ void PSOManager::GenerateInputLayout(Pipeline* pipeline, ID3D12ShaderReflection*
         D3D12_INPUT_CLASSIFICATION inputClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
 
         // セマンティク名から情報をマッチング
-        std::regex re(R"(S(\d+)_(V|I)_([A-Z_]+)(\d+))");
+        std::regex re(R"(S(\d+)_(V|I)_([A-Z_]+))");
         std::smatch match;
         if(std::regex_match(semanticName, match, re)){
             slot = std::stoi(match[1].str());
             inputClass = (match[2].str() == "I") ? D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA : D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
         
         } else{
+
+            // "SV_"がついている場合は無視
+            if(semanticName.find("SV_") != std::string::npos){
+                continue;
+            }
+
             /*
                 セマンティク名は "スロット"_"VertexData(V)"or"InstanceData(I)"_"セマンティクス名 + セマンティクスインデックス"の形式にしてください
                 例: S0_V_POSITION0 (slot0,VertexData,POSITION,セマンティク番号0)
@@ -507,21 +513,23 @@ void PSOManager::Create(RootSignature* pRootSignature, IPipeline* pPipeline, boo
 
     if(!isCSPipeline){
         // 型に応じた処理
-        void* pPipelineDescs = nullptr;
+        D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc{};
+
         if(MSPipeline* msPipeline = dynamic_cast<MSPipeline*>(pPipeline)){
+            // descの設定
             msPipeline->pipelineDescs_.rootSignature = pRootSignature->rootSignature.Get();
-            pPipelineDescs = &msPipeline->pipelineDescs_;
+            pipelineStateStreamDesc.SizeInBytes = sizeof(msPipeline->pipelineDescs_);
+            pipelineStateStreamDesc.pPipelineStateSubobjectStream = &msPipeline->pipelineDescs_;
+
         } else if(Pipeline* pipeline = dynamic_cast<Pipeline*>(pPipeline)){
+            // descの設定
             pipeline->pipelineDescs_.rootSignature = pRootSignature->rootSignature.Get();
-            pPipelineDescs = &pipeline->pipelineDescs_;
+            pipelineStateStreamDesc.SizeInBytes = sizeof(pipeline->pipelineDescs_);
+            pipelineStateStreamDesc.pPipelineStateSubobjectStream = &pipeline->pipelineDescs_;
         } else{
             assert(false);
         }
 
-        // desc関連の設定
-        D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc{};
-        pipelineStateStreamDesc.SizeInBytes = sizeof(pPipelineDescs);
-        pipelineStateStreamDesc.pPipelineStateSubobjectStream = pPipelineDescs;
 
         // 実際に生成
         hr = DxManager::GetInstance()->device->CreatePipelineState(

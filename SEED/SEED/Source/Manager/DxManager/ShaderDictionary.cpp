@@ -131,11 +131,16 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
         );
         assert(blobs_[fileName] != nullptr);
 
+        // DxcBuffer を作成
+        DxcBuffer dxcBuffer = {};
+        dxcBuffer.Ptr = blobs_[fileName]->GetBufferPointer();
+        dxcBuffer.Size = blobs_[fileName]->GetBufferSize();
+        dxcBuffer.Encoding = DXC_CP_ACP; // ANSI 文字コード（基本これでOK）
+
         // リフレクションを作成
         ID3D12ShaderReflection* reflection = nullptr;
-        hr = D3DReflect(
-            blobs_[fileName]->GetBufferPointer(),
-            blobs_[fileName]->GetBufferSize(),
+        hr = dxcUtils->CreateReflection(
+            &dxcBuffer,
             IID_PPV_ARGS(&reflection)
         );
         assert(SUCCEEDED(hr));

@@ -1,6 +1,6 @@
 #ifndef LIGHTING_INCLUDED
 #define LIGHTING_INCLUDED
-#include "Object3D.hlsli"
+#include "Object3d.hlsli"
 #include "Material.hlsli"
 
 struct DirectionalLight {

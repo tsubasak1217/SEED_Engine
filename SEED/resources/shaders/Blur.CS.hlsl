@@ -1,4 +1,4 @@
-#include "Object3D.hlsli"
+#include "Object3d.hlsli"
 
 Texture2D<float4> inputTexture : register(t0);
 RWTexture2D<float4> outputTexture : register(u0);

@@ -1,5 +1,5 @@
-#ifndef MATERIAL_HLSL
-#define MATERIAL_HLSL
+#ifndef MATERIAL_HLSLI
+#define MATERIAL_HLSLI
 
 struct Material {
     float4 color;

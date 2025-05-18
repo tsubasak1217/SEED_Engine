@@ -1,4 +1,4 @@
-#include "Object3D.hlsli"
+#include "Object3d.hlsli"
 
 /////////////////////////////////////// Transform //////////////////////////////////////////////
 
@@ -37,16 +37,19 @@ void main(
     uint3 groupID : SV_GroupID,// vec3,threadNo
     uint groupIndex : SV_GroupIndex,// linerIndex
     out vertices MeshShaderOutput verts[64],
-    out indices uint3 inds[128]
+    out indices uint3 tris[128]
     ) {
-    @
+    
+    // tmp
+    SetMeshOutputCounts(3, 1);
+    
     // Simulate instanceID and vertexID
     uint localInstanceID = groupID.y;
     uint globalInstanceID;
     uint index = indices[groupIndex];
     VertexData vertex = vertices[index];
     
-    // ƒOƒ[ƒoƒ‹‚ÈƒCƒ“ƒXƒ^ƒ“ƒXID‚ÌŒvZ
+    // ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹IDã®è¨ˆç®—
     if (offsetData.interval == 0) {
         globalInstanceID = offsetData.meshOffset + localInstanceID;
     } else {
@@ -60,5 +63,10 @@ void main(
     output.worldPosition = mul(vertex.position, mat.world).xyz;
     output.texcoord = vertex.texcoord;
     output.normal = normalize(mul(vertex.normal, (float3x3) mat.worldInverseTranspose));
-
+    
+    // temp
+    verts[0] = output;
+    verts[1] = output;
+    verts[2] = output;
+    tris[0] = uint3(0, 1, 2);
 }

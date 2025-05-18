@@ -52,7 +52,7 @@ public:
         return *this;
     }
 
-private:
+public:
     D3D12_PIPELINE_STATE_SUBOBJECT_TYPE type_;
     ValueType value_;
 };

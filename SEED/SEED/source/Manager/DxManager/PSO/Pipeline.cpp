@@ -160,9 +160,12 @@ void Pipeline::AddInputElementDesc(
     D3D12_INPUT_CLASSIFICATION inputSlotClass, 
     UINT alignedByteOffset
 ){
+    // セマンティクス名の追加
+    semanticNames_[inputElementDescs_.size()] = semanticName;
+
     // 入力レイアウトの設定
     D3D12_INPUT_ELEMENT_DESC elementDesc = {};
-    elementDesc.SemanticName = semanticName;
+    elementDesc.SemanticName = semanticNames_[inputElementDescs_.size()].c_str();
     elementDesc.SemanticIndex = semanticIndex;
     elementDesc.Format = format;
     elementDesc.InputSlot = inputSlot;

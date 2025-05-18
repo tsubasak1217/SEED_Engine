@@ -25,7 +25,7 @@ struct Skinned {
 struct VertexShaderInput {
     // VBV_0 (VertexData)
     float4 position : S0_V_POSITION0;
-    float2 texcoord : S0_VTEXCOORD0;
+    float2 texcoord : S0_V_TEXCOORD0;
     float3 normal : S0_V_NORMAL0;
     
     // VBV_1 (OffsetData)

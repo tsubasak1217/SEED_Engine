@@ -216,6 +216,11 @@ void PolygonManager::InitResources(){
         ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
     gpuHandles_[(int)HANDLE_TYPE::SpotLight] =
         ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
+
+    //////////////////////////////////////////////////
+    // バインドする情報を設定
+    //////////////////////////////////////////////////
+
 }
 
 void PolygonManager::Finalize(){}
@@ -1538,19 +1543,23 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    for(auto& modelData : modelDrawData_){
+    // 
+    
+    for(auto itr = modelDrawData_.begin(); itr != modelDrawData_.end();){
 
         int modelVertexCount = 0;
         int modelIndexCount = 0;
+        auto& modelData = *itr;
         auto& item = modelData.second;
-        ModelDrawData::modelSwitchIdx_Vertex[modelData.first] = vertexCountAll;
-        ModelDrawData::modelSwitchIdx_Index[modelData.first] = indexCountAll;
 
         // 要素が0なら削除してcontinue
-        if(modelData.second->totalDrawCount == 0){
-            modelDrawData_.erase(modelData.first);
+        if(item->totalDrawCount == 0){
+            itr = modelDrawData_.erase(itr);
             continue;
         }
+
+        ModelDrawData::modelSwitchIdx_Vertex[modelData.first] = vertexCountAll;
+        ModelDrawData::modelSwitchIdx_Index[modelData.first] = indexCountAll;
 
         // 描画リストに追加
         drawLists_[item->pso].push_back(item.get());
@@ -1594,6 +1603,9 @@ void PolygonManager::WriteRenderData(){
             vertexCountAll += meshVertexCount;
             indexCountAll += meshIndexCount;
         }
+
+        // イテレータを進める
+        itr++;
     }
 
 

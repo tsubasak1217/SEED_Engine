@@ -214,7 +214,7 @@ void PSOManager::CreatePipelines(const std::string& filename){
         for(int topology = 0; topology < kTopologyCount; topology++){
             for(int cullMode = 0; cullMode < kCullModeCount; cullMode++){
                 for(int blendMode = 0; blendMode < kBlendModeCount; blendMode++){
-                    
+
                     std::unique_ptr<PSO> pso = std::make_unique<PSO>();
 
                     // Pipelineの作成
@@ -265,9 +265,9 @@ void PSOManager::CreatePipelines(const std::string& filename){
         }
 
     } else{// ComputeShaderのパイプラインの場合は一つだけ作成
-        
+
         std::unique_ptr<PSO> pso = std::make_unique<PSO>();
-        
+
         // RootSignatureの作成
         pso->rootSignature = std::make_unique<RootSignature>();
 
@@ -347,7 +347,7 @@ void PSOManager::GenerateRootParameters(
         }
 
         // パラメータやテーブルの追加
-        if(!isConstant){
+        if(isConstant){
             rootSignature->AddParameter(
                 std::string(bindDesc.Name),
                 param.ParameterType,
@@ -399,7 +399,7 @@ void PSOManager::GenerateInputLayout(Pipeline* pipeline, ID3D12ShaderReflection*
         if(std::regex_match(semanticName, match, re)){
             slot = std::stoi(match[1].str());
             inputClass = (match[2].str() == "I") ? D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA : D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
-        
+
         } else{
 
             // "SV_"がついている場合は無視
@@ -526,16 +526,15 @@ void PSOManager::Create(RootSignature* pRootSignature, IPipeline* pPipeline, boo
             pipeline->pipelineDescs_.rootSignature = pRootSignature->rootSignature.Get();
             pipelineStateStreamDesc.SizeInBytes = sizeof(pipeline->pipelineDescs_);
             pipelineStateStreamDesc.pPipelineStateSubobjectStream = &pipeline->pipelineDescs_;
+
         } else{
             assert(false);
         }
 
-
-        // 実際に生成
+        // 生成
         hr = DxManager::GetInstance()->device->CreatePipelineState(
             &pipelineStateStreamDesc, IID_PPV_ARGS(pPipeline->pipeline_.GetAddressOf())
         );
-
 
     } else{
         // CS用のPSO作成設定

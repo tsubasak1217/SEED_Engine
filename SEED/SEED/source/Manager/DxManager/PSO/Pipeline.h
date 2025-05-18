@@ -54,4 +54,5 @@ public:
 public:
     PipelineDescs pipelineDescs_;
     std::vector<D3D12_INPUT_ELEMENT_DESC> inputElementDescs_;
+    std::array<std::string,32> semanticNames_;
 };

@@ -182,7 +182,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PostEffect.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
@@ -270,6 +271,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
@@ -332,7 +334,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\PostEffect.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
@@ -373,7 +375,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="resources\shaders\Blur.CS.hlsl">
+    <FxCompile Include="resources\shaders\DoF.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.6</ShaderModel>

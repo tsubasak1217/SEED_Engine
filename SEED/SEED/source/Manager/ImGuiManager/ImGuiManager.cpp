@@ -35,9 +35,9 @@ void ImGuiManager::Initialize(){
         DxManager::GetInstance()->device.Get(),
         2,
         DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV),
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),
-        ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV)->GetGPUDescriptorHandleForHeapStart()
+        ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV),
+        ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),
+        ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetGPUDescriptorHandleForHeapStart()
     );
 }
 

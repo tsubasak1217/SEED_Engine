@@ -534,3 +534,22 @@ DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix){
         matrix.m[3][0], matrix.m[3][1], matrix.m[3][2], matrix.m[3][3]
     );
 }
+
+void TransitionResourceState(
+    ID3D12GraphicsCommandList* commandList,
+    ID3D12Resource* resource,
+    D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter
+){
+    // 同じなら処理しない
+    if(stateAfter == stateBefore){ return; }
+
+    // バリアを設定してリソースの状態を遷移させる
+    CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+        resource,
+        stateBefore,
+        stateAfter
+    );
+
+    // リソースのstateを変更
+    commandList->ResourceBarrier(1, &barrier);
+}

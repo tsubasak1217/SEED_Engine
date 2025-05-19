@@ -72,7 +72,7 @@ void ParticleManager::LoadParticleTexture(){
 
         // GPUハンドルを取得
         textureIDs_[fileName] =
-            (ImTextureID)ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
+            (ImTextureID)ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
     }
 }
 

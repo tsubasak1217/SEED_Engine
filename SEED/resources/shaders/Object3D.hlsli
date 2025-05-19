@@ -17,6 +17,10 @@ struct Int {
     int value;
 };
 
+struct Float {
+    float value;
+};
+
 /*- ‰¼: ”ñüŒ`‚ğüŒ`‚É•ÏŠ·‚·‚éŠÖ”-*/
 float DepthToLinear(float depth, float near, float far) {
     float z = depth * 2.0f - 1.0f;

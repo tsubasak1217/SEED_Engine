@@ -115,11 +115,14 @@ void RootSignature::AddDescriptorTable(
 ////////////////////////////////////////////////////////////
 /// バインド情報を設定する
 ////////////////////////////////////////////////////////////
-void RootSignature::SetBindInfo(const std::string& name, std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info){
-    auto it = parameterMap.find(name);
+void RootSignature::SetBindInfo(
+    const std::string& variableName,
+    std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
+){
+    auto it = parameterMap.find(variableName);
     if(it != parameterMap.end()){
         // バインド情報を設定
-        parameterMap[name].bindInfo = info;
+        parameterMap[variableName].bindInfo = info;
     } else{
         // ない場合はアサート
         assert(false);
@@ -130,20 +133,38 @@ void RootSignature::SetBindInfo(const std::string& name, std::variant<D3D12_GPU_
 /////////////////////////////////////////////////////////////
 /// ルートシグネチャをバインドする
 /////////////////////////////////////////////////////////////
-void RootSignature::BindAll(ID3D12GraphicsCommandList* commandList){
+void RootSignature::BindAll(ID3D12GraphicsCommandList* commandList, bool isCSRootSignature){
     // ルートシグネチャをセット
     commandList->SetGraphicsRootSignature(rootSignature.Get());
 
     // バインド情報を設定
     for(auto& param : parameterMap){
-        if(param.second.bindInfo.index() == 0){// D3D12_GPU_DESCRIPTOR_HANDLE
-            commandList->SetGraphicsRootDescriptorTable(param.second.parameterIndex, std::get<D3D12_GPU_DESCRIPTOR_HANDLE>(param.second.bindInfo));
 
-        } else if(param.second.bindInfo.index() == 1){// D3D12_GPU_VIRTUAL_ADDRESS
-            commandList->SetGraphicsRootConstantBufferView(param.second.parameterIndex, std::get<D3D12_GPU_VIRTUAL_ADDRESS>(param.second.bindInfo));
+        if(!isCSRootSignature){// GraphicsShader用
 
-        } else if(param.second.bindInfo.index() == 2){// void*
-            commandList->SetGraphicsRoot32BitConstants(param.second.parameterIndex, 1, std::get<void*>(param.second.bindInfo), 0);
+            if(param.second.bindInfo.index() == 0){// D3D12_GPU_DESCRIPTOR_HANDLE
+                commandList->SetGraphicsRootDescriptorTable(param.second.parameterIndex, std::get<D3D12_GPU_DESCRIPTOR_HANDLE>(param.second.bindInfo));
+
+            } else if(param.second.bindInfo.index() == 1){// D3D12_GPU_VIRTUAL_ADDRESS
+                commandList->SetGraphicsRootConstantBufferView(param.second.parameterIndex, std::get<D3D12_GPU_VIRTUAL_ADDRESS>(param.second.bindInfo));
+
+            } else if(param.second.bindInfo.index() == 2){// void*
+                commandList->SetGraphicsRoot32BitConstants(param.second.parameterIndex, 1, std::get<void*>(param.second.bindInfo), 0);
+           
+            }
+
+        } else{// ComputeShader用
+
+            if(param.second.bindInfo.index() == 0){// D3D12_GPU_DESCRIPTOR_HANDLE
+                commandList->SetComputeRootDescriptorTable(param.second.parameterIndex, std::get<D3D12_GPU_DESCRIPTOR_HANDLE>(param.second.bindInfo));
+            
+            } else if(param.second.bindInfo.index() == 1){// D3D12_GPU_VIRTUAL_ADDRESS
+                commandList->SetComputeRootConstantBufferView(param.second.parameterIndex, std::get<D3D12_GPU_VIRTUAL_ADDRESS>(param.second.bindInfo));
+            
+            } else if(param.second.bindInfo.index() == 2){// void*
+                commandList->SetComputeRoot32BitConstants(param.second.parameterIndex, 1, std::get<void*>(param.second.bindInfo), 0);
+            
+            }
 
         }
     }

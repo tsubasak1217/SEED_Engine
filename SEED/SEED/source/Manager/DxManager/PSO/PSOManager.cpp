@@ -72,6 +72,15 @@ PSO* PSOManager::GetPSO_Compute(const std::string& name){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PSOManager::CreatePipelines(const std::string& filename){
 
+    // もうある場合はスルー
+    if(instance_->psoDictionary_.find(filename) != instance_->psoDictionary_.end()){
+        return;
+    }
+
+    if(instance_->csPsoDictionary_.find(filename) != instance_->csPsoDictionary_.end()){
+        return;
+    }
+
     // ファイルを開く
     static std::string directory = "Resources/Pipelines/";
     std::ifstream file(directory + filename);
@@ -292,6 +301,44 @@ void PSOManager::CreatePipelines(const std::string& filename){
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//      RootSignatureに対してバインド情報を設定する関数
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void PSOManager::SetBindInfo(
+    const std::string& pipelineName, const std::string& variableName,
+    std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
+){
+
+    // PSOの辞書を検索
+    auto it = instance_->psoDictionary_.find(pipelineName);
+    if(it != instance_->psoDictionary_.end()){
+        // PSOが見つかった場合
+        for(auto& topology : it->second.dict_){
+            for(auto& cullMode : topology){
+                for(auto& blendMode : cullMode){
+                    // バインド情報を設定
+                    blendMode->rootSignature->SetBindInfo(variableName, info);
+                }
+            }
+        }
+
+    } else{
+        // CSの辞書を検索
+        auto csIt = instance_->csPsoDictionary_.find(pipelineName);
+        if(csIt != instance_->csPsoDictionary_.end()){
+            // CSが見つかった場合
+            csIt->second->rootSignature->SetBindInfo(variableName, info);
+        } else{
+            assert(false);// PSOもCSも見つからない
+        }
+    }
+
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,9 +377,39 @@ void PSOManager::GenerateRootParameters(
         bool isConstant = false;
 
         if(bindDesc.Type == D3D_SIT_CBUFFER){
-            param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;// b
             rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
             isConstant = true;
+
+            // 32bit定数として使えるか判定（128バイト以下）
+            bool useAs32BitConstants = false;
+            if(ID3D12ShaderReflectionConstantBuffer* cb = reflection->GetConstantBufferByName(bindDesc.Name)){
+                D3D12_SHADER_BUFFER_DESC bufferDesc = {};
+                if(SUCCEEDED(cb->GetDesc(&bufferDesc))){
+                    UINT totalSize = 0;
+
+                    for(UINT varIdx = 0; varIdx < bufferDesc.Variables; ++varIdx){
+                        if(ID3D12ShaderReflectionVariable* var = cb->GetVariableByIndex(varIdx)){
+                            D3D12_SHADER_VARIABLE_DESC varDesc = {};
+                            if(SUCCEEDED(var->GetDesc(&varDesc))){
+                                totalSize += varDesc.Size;
+                            }
+                        }
+                    }
+
+                    // Root constants は 4バイト以内（DWORD 32個）まで
+                    if(totalSize <= 4){
+                        useAs32BitConstants = true;
+                    }
+                }
+            }
+
+            // 32bit定数として使える場合は、32bit定数として扱う
+            if(useAs32BitConstants){
+                param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+                param.Constants.Num32BitValues = 1;
+            } else{
+                param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+            }
 
         } else if(bindDesc.Type == D3D_SIT_STRUCTURED || bindDesc.Type == D3D_SIT_TEXTURE){
             param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// t
@@ -353,7 +430,8 @@ void PSOManager::GenerateRootParameters(
                 param.ParameterType,
                 visibility,
                 bindDesc.BindPoint,
-                bindDesc.Space
+                bindDesc.Space,
+                param.Constants.Num32BitValues
             );
         } else{
             rootSignature->AddDescriptorTable(

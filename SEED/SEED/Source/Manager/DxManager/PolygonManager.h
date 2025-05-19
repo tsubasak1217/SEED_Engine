@@ -269,6 +269,9 @@ private:// ライティング用のデータ------------------------------------
     DirectionalLight* mapDirectionalLightData;
     PointLight* mapPointLightData;
     SpotLight* mapSpotLightData;
+    int32_t directionalLightCount_ = 0;
+    int32_t pointLightCount_ = 0;
+    int32_t spotLightCount_ = 0;
 
 private:// カメラ用のデータ-----------------------------------------------------------------
 

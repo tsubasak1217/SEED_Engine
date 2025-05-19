@@ -8,20 +8,22 @@
 
 #pragma comment (lib,"gdiplus.lib")
 
-// local
+// functions
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+// PSO
 #include <SEED/Source/Manager/DxManager/PSO/Pipeline.h>
 #include <SEED/Source/Manager/DxManager/PSO/MSPipeline.h>
 #include <SEED/Source/Manager/DxManager/PSO/RootSignature.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Shapes/Sphere.h>
-#include <SEED/Lib/Includes/includes.h>
+// managers
 #include <SEED/Source/Manager/DxManager/PolygonManager.h>
-#include <SEED/Source/Manager/DxManager/EffectManager.h>
-#include <SEED/Source/Object/Camera/BaseCamera.h>
-#include <SEED/Source/Manager/CameraManager/CameraManager.h>
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
 #include <SEED/Source/Manager/DxManager/ShaderDictionary.h>
+#include <SEED/Source/Manager/CameraManager/CameraManager.h>
+// structs
+#include <SEED/Source/Manager/DxManager/DxResource.h>
+
 
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
@@ -50,12 +52,13 @@ struct LeakChecker{
 class DxManager{
 
     friend PolygonManager;
-    friend EffectManager;
+    friend PostEffect;
     friend SEED;
     friend TextureManager;
     friend ImGuiManager;
     friend PSOManager;
     friend ViewManager;
+    friend DxResource;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();
@@ -85,10 +88,9 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
 
     // SwapChain,ダブルバッファリングに関わる関数
     void CreateRenderTargets();
-    void CreateRTV();
 
     // 
-    void InitializeSystemTextures();
+    void InitResources();
 
     // PSO
     void InitPSO();
@@ -113,9 +115,6 @@ private:/*============================ 描画に関わる関数 ================
 
 private:/*==================== アクセッサ以外で外部から呼び出す関数 ====================*/
 
-    // テクスチャを読み込む関数
-    uint32_t CreateTexture(std::string filePath,const aiTexture* embeddedTexture = nullptr);
-
     // 解像度を変更してRTVやScissorを設定し直す関数
     void ChangeResolutionRate(float resolutionRate);
     void ReCreateResolutionSettings();
@@ -135,7 +134,6 @@ private:/*========================= 外部参照のためのポインタ =======
 private:/*============================ マネージャー変数 ============================*/
 
     PolygonManager* polygonManager_ = nullptr;
-    std::unique_ptr<EffectManager> effectManager_ = nullptr;
 
 private:/*============================== オブジェクト =============================*/
 
@@ -179,29 +177,15 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     /*====================== レンダーターゲット関係 ========================*/
 
     // オフスクリーン用
-    ComPtr<ID3D12Resource> offScreenResource = nullptr;
+    DxResource offScreenResource;
     D3D12_CPU_DESCRIPTOR_HANDLE offScreenHandle;
     // その他
     Vector4 clearColor;
 
-    //================================ CSのバッファ ===============================//
-
-    ComPtr<ID3D12Resource> CS_ConstantBuffer = nullptr;
-
-    //================================ テクスチャ ===================================//
-
-    // TextureResource
-    std::vector<ComPtr<ID3D12Resource>> textureResource;
-    std::vector<ComPtr<ID3D12Resource>> intermediateResource;
-
-    // ポストエフェクト用のテクスチャ
-    ComPtr<ID3D12Resource> blurTextureResource;// ぼけた画像
-    ComPtr<ID3D12Resource> depthTextureResource;// 深度情報の白黒画像
-
     //=====================================================================================//
 
     // DepthStencilTextureResourceの作成
-    ComPtr<ID3D12Resource> depthStencilResource = nullptr;
+    DxResource depthStencilResource;
     D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
     // scissor矩形とviewport

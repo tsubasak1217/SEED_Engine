@@ -52,7 +52,7 @@
     <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\EffectManager.cpp" />
+    <ClCompile Include="SEED\source\Manager\DxManager\PostEffect.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
@@ -104,6 +104,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
+    <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -193,7 +194,7 @@
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\EffectManager.h" />
+    <ClInclude Include="SEED\source\Manager\DxManager\PostEffect.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
@@ -252,12 +253,13 @@
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="resources\shaders\Blur.CS.hlsl" />
+    <FxCompile Include="resources\shaders\DoF.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\Object3d.MS.hlsl" />
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />

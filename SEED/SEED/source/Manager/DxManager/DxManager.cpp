@@ -24,9 +24,8 @@ void DxManager::Initialize(SEED* pSEED){
     // polygonManagerの作成
     instance_->polygonManager_ = new PolygonManager(instance_);
     instance_->pSEED_->SetPolygonManagerPtr(instance_->polygonManager_);
-    // effectManagerの作成
-    EffectManager* effectManagerInstance = new EffectManager(instance_);
-    instance_->effectManager_.reset(effectManagerInstance);
+    // PostEffectのinstance作成
+    PostEffect::GetInstance();
 
 
     /*===========================================================================================*/
@@ -68,24 +67,10 @@ void DxManager::Initialize(SEED* pSEED){
 
     /*--------------------- スワップチェーンの作成 --------------------------*/
 
-    // SwapChain ~ 画面を複数用意し、表示されていない画面で描画を同時進行で行う
     instance_->CreateRenderTargets();
-
-
-    /*----------------------------- RTVの作成 -----------------------------*/
-
-    /*
-        ここでは "描く" という処理を行いたいため、
-        描画担当のView、"RTV"(RenderTargetVier) を作成
-    */
-    instance_->CreateRTV();
 
     /*------------------- CPUとGPUの同期のための変数作成 ---------------------*/
 
-    /*
-        GPUからfenceに対して、fenceValueの値が書き込まれるまでResetを待つようにする。
-        そのために必要な変数を用意しておく
-    */
     instance_->CreateFence();
 
     /*===========================================================================================*/
@@ -95,62 +80,21 @@ void DxManager::Initialize(SEED* pSEED){
 
     /*---------------------- HLSLコンパイル --------------------------*/
 
-    /*
-        ポリゴンを描画するにはShaderの情報が必要。
-        Shaderの中身はGPUで処理をするため、GPUが読める形式に
-        変換しないといけない。
-    */
-
     ShaderDictionary::GetInstance()->Initialize();
     ShaderDictionary::GetInstance()->LoadFromDirectory(
         "resources/shaders/",
         instance_->device.Get()
     );
 
-    /*------------------------PSOの生成-----------------------*/
-
-    /*
-                            ~ PSOとは ~
-          長ったらしく工程数の多いレンダリングパイプラインの設定を
-          個別で行うのではなくまとめて1つの変数に集約して行うことで
-            アクセスの高速化、メンテナンス性などを向上させている。
-        入力された情報を加工するのに関わるものがここに集約されている。工場。
-    */
-
-    // PSOManagerクラスに丸投げ
-    instance_->InitPSO();
-
-    /*------------------------- DepthStencilTextureResourceの作成 -------------------------*/
-
-    instance_->depthStencilResource = CreateDepthStencilTextureResource(
-        instance_->device.Get(),
-        instance_->pSEED_->kClientWidth_,
-        instance_->pSEED_->kClientHeight_
-    );
-
-    instance_->depthStencilResource->SetName(L"depthStencilResource");
-
     /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
 
-    instance_->InitializeSystemTextures();
+    instance_->InitResources();
 
-    /*----------------------------- Textureの初期化に関わる部分 -----------------------------*/
+    /*------------------------PSOの生成-----------------------*/
 
-    // white1x1だけ読み込んでおく
-    instance_->CreateTexture("resources/textures/Assets/white1x1.png");
-    instance_->CreateTexture("resources/textures/Assets/uvChecker.png");
+    instance_->InitPSO();
 
-    /*------------------------------ DepthStencilViewの作成 -------------------------------*/
 
-    // DSVの設定
-    D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-    dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-
-    // DSVHeapの先頭にDSVを作る
-    ViewManager::CreateView(VIEW_TYPE::DSV, instance_->depthStencilResource.Get(), &dsvDesc, "depthStencil_1");
-    // ハンドルを得る
-    instance_->dsvHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::DSV, "depthStencil_1");
 
     /*--------------------------------- VewportとScissor ---------------------------------*/
 
@@ -319,111 +263,70 @@ void DxManager::CreateRenderTargets(){
 #ifdef _DEBUG
     WindowManager::GetWindow(pSEED_->systemWindowTitle_)->CreateSwapChain(dxgiFactory.Get(), commandQueue.Get());
 #endif // _DEBUG
-
-    // offScreen用のレンダーターゲットを作成
-    offScreenResource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
-
-    // リソースに名前をつける
-    offScreenResource.Get()->SetName(L"offScreenResource");
 }
 
 
-void DxManager::CreateRTV(){
-    // RTVの設定
-    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-    rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 出力結果をSRGBに変換して書き込むように設定
-    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャとして書き込むように設定
+void DxManager::InitResources(){
 
-    // RTVを作成
-    ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.Get(), &rtvDesc, "offScreen_0");// オフスクリーン用
+    // システムで使用するものは先にテクスチャを作成しておく
+    TextureManager::GetInstance();
+    TextureManager::LoadTexture("Assets/white1x1.png");
+    TextureManager::LoadTexture("Assets/uvChecker.png");
 
-    // ハンドル取得
-    offScreenHandle = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, "offScreen_0");
-}
+    //================================ オフスクリーンの初期化 ================================//
+    {
+        // レンダーターゲットとして作成
+        offScreenResource.resource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
+        offScreenResource.resource.Get()->SetName(L"offScreenResource");
+        offScreenResource.InitState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-void DxManager::InitializeSystemTextures(){
-    // SRVの設定を行う変数
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-    //uav
-    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+        // RTVの設定
+        D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+        rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // 出力結果をSRGBに変換して書き込むように設定
+        rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャとして書き込むように設定
 
-    //================================ オフスクリーンのキャプチャ用テクスチャの初期化 ================================//
+        // Texture用SRVの作成
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
+        srvDesc.Texture2D.MipLevels = 1;
 
-    // Texture用SRVの作成
-    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-    srvDesc.Texture2D.MipLevels = 1;
+        // Viewの生成
+        ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.resource.Get(), &rtvDesc, "offScreen_0");
+        ViewManager::CreateView(VIEW_TYPE::SRV, offScreenResource.resource.Get(), &srvDesc, "offScreen_0");
 
-    // SRVの生成
-    ViewManager::CreateView(VIEW_TYPE::SRV, offScreenResource.Get(), &srvDesc, "offScreen_0");
+        // ハンドル取得
+        offScreenHandle = ViewManager::GetHandleCPU(HEAP_TYPE::RTV, "offScreen_0");
+    }
 
-    //========================= DepthStencilResourceをテクスチャとして参照する用のSRV作成 ===============================//
+    //================================= 深度テクスチャの作成 ==================================//
+    {
+        // DepthStencil用のテクスチャとして作成
+        depthStencilResource.resource = CreateDepthStencilTextureResource(device.Get(),pSEED_->kClientWidth_,pSEED_->kClientHeight_);
+        depthStencilResource.resource->SetName(L"depthStencilResource");
+        depthStencilResource.InitState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
-    // depthStencilを参照する用のSRV
-    srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-    srvDesc.Texture2D.MipLevels = 1;
+        // DSVの設定
+        D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+        dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
-    // SRVの生成
-    ViewManager::CreateView(VIEW_TYPE::SRV, depthStencilResource.Get(), &srvDesc, "depth_0");
+        // depthStencilを参照する時用のSRV
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
+        srvDesc.Texture2D.MipLevels = 1;
 
-    //========================= 深度情報をテクスチャとして表示する用のResource作成 ===============================//
+        // Viewの生成
+        ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.resource.Get(), &dsvDesc, "depthStencil_1");
+        ViewManager::CreateView(VIEW_TYPE::SRV, depthStencilResource.resource.Get(), &srvDesc, "depth_0");
 
-    depthTextureResource = InitializeTextureResource(
-        device.Get(),
-        pSEED_->kClientWidth_,
-        pSEED_->kClientHeight_,
-        DXGI_FORMAT_R8G8B8A8_UNORM,
-        STATE_UNORDERED_ACCESS
-    );
+        // ハンドルを得る
+        instance_->dsvHandle = ViewManager::GetHandleCPU(HEAP_TYPE::DSV, "depthStencil_1");
+    }
 
-    // 名前の設定
-    depthTextureResource->SetName(L"depthTextureResource");
-
-    // Texture用SRVの作成
-    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-    srvDesc.Texture2D.MipLevels = 1;
-
-    // SRVの生成
-    ViewManager::CreateView(VIEW_TYPE::SRV, depthTextureResource.Get(), &srvDesc, "depth_1");
-
-    // UAVの作成
-    uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
-    ViewManager::CreateView(VIEW_TYPE::UAV, depthTextureResource.Get(), &uavDesc, "depth_1_UAV");
-
-    //==================================== ぼけたテクスチャ用のResourceの初期化 =======================================//
-
-    blurTextureResource = InitializeTextureResource(
-        device.Get(),
-        pSEED_->kClientWidth_,
-        pSEED_->kClientHeight_,
-        DXGI_FORMAT_R8G8B8A8_UNORM,
-        STATE_UNORDERED_ACCESS
-    );
-
-    // 名前の設定
-    blurTextureResource->SetName(L"blurTextureResource");
-
-    // Texture用SRVの作成
-    srvDesc.Format = blurTextureResource->GetDesc().Format;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-    srvDesc.Texture2D.MipLevels = 1;
-
-    // SRVの生成
-    ViewManager::CreateView(VIEW_TYPE::SRV, blurTextureResource.Get(), &srvDesc, "blur_0");
-
-    // UAVの作成
-    uavDesc.Format = blurTextureResource->GetDesc().Format;
-    uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
-
-    // UAVの生成
-    ViewManager::CreateView(VIEW_TYPE::UAV, blurTextureResource.Get(), &uavDesc, "blur_0_UAV");
 }
 
 void DxManager::CreateFence(){
@@ -445,7 +348,14 @@ void DxManager::InitPSO(){
     
     PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
-    PSOManager::CreatePipelines("DOFPipeline.pip");// CSのパイプライン。被写界深度
+    PSOManager::CreatePipelines("DoFPipeline.pip");// CSのパイプライン。被写界深度
+
+    /*==================================================================================*/
+    //                              CSのパイプラインの初期化
+    /*==================================================================================*/
+
+    // 内部でPSOManager::CreatePipelinesを呼び出している
+    PostEffect::GetInstance()->Initialize();
 
 }
 
@@ -568,7 +478,7 @@ void DxManager::PreDraw(){
         imGuiがフレーム単位でHeapの中身を操作するため
         SRVのHeapは毎フレームセットし直す
     */
-    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV) };
+    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV) };
     commandList->SetDescriptorHeaps(1, ppHeaps);
 }
 
@@ -588,57 +498,33 @@ void DxManager::DrawPolygonAll(){
 #endif // DEBUG
 
     //////////////////////////////////////////////////////////////////////////
-    //  カメラ・ライティングデータの書き込み
-    //////////////////////////////////////////////////////////////////////////
-
-
-
-    //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
 
     polygonManager_->DrawToOffscreen();
 
     //////////////////////////////////////////////////////////////////////////
-    // ここで描画結果に対して処理を行う
+    // ここで描画結果に対して処理を行う(ポストエフェクト)
     //////////////////////////////////////////////////////////////////////////
 
     //------------ 参照するリソースの状態を遷移させる--------------//
 
-    TransitionResourceState(
-        offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-    );
+    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+    depthStencilResource.TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-    TransitionResourceState(
-        depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-    );
+    /*----------------------ポストエフェクトを行う-------------------*/
 
+    // 被写界深度
+    PostEffect::GetInstance()->DoF();
 
-    /*----------------------ぼかした画面を作る-------------------*/
-
-    effectManager_->TransfarToCS();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
-    TransitionResourceState(
-        offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_RENDER_TARGET
-    );
-
-    TransitionResourceState(
-        depthStencilResource.Get(),
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE
-    );
-
+    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+    depthStencilResource.TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
     //////////////////////////////////////////////////////////////////////////
-    //  オフスクリーン → バックバッファに描画対象を切り変える
+    // 最終結果の描画
     //////////////////////////////////////////////////////////////////////////
 
     /*--------------- 切り替え ---------------*/
@@ -671,25 +557,10 @@ void DxManager::DrawPolygonAll(){
     // 各リソースの状態を遷移させる
     //////////////////////////////////////////////////////////////////
 
-    // ぼかした画面を写せる状態に
-    TransitionResourceState(
-        blurTextureResource.Get(),
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-    );
 
-    TransitionResourceState(
-        offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-    );
+    PostEffect::GetInstance()->BeforeBackBufferDrawTransition();
+    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-
-    TransitionResourceState(
-        depthTextureResource.Get(),
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-    );
 
     //////////////////////////////////////////////////////////////////
     //   最終結果を画面サイズの矩形に貼り付けて表示
@@ -703,23 +574,8 @@ void DxManager::DrawPolygonAll(){
     // すべてのリソースを基本の状態に戻す
     //////////////////////////////////////////////////////////////////
 
-    TransitionResourceState(
-        blurTextureResource.Get(),
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-    );
-
-    TransitionResourceState(
-        offScreenResource.Get(),
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_RENDER_TARGET
-    );
-
-    TransitionResourceState(
-        depthTextureResource.Get(),
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-    );
+    PostEffect::GetInstance()->EndTransition();
+    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
     /*---------- メインゲーム画面 -> ImGui用のSystem画面に描画を切り替え----------*/
 #ifdef _DEBUG
@@ -802,56 +658,6 @@ void DxManager::PostDraw(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-//           テクスチャを作成してグラフハンドルを返す関数          //
-//////////////////////////////////////////////////////////////
-
-uint32_t DxManager::CreateTexture(std::string filePath, const aiTexture* embeddedTexture){
-
-    // 既にある場合
-    if(ViewManager::GetTextureHandle(filePath) != -1){ return ViewManager::GetTextureHandle(filePath); }
-
-    /*----------------------------- TextureResourceの作成,転送 -----------------------------*/
-
-    // 読み込み
-    DirectX::ScratchImage mipImages;
-    if(!embeddedTexture){
-        mipImages = LoadTextureImage(filePath);// 通常のテクスチャ
-    } else{
-        mipImages = LoadEmbeddedTextureImage(embeddedTexture);// 埋め込みテクスチャ
-    }
-
-    // 作成
-    const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-    textureResource.push_back(CreateTextureResource(device.Get(), metadata));
-    // 転送
-    intermediateResource.push_back(
-        UploadTextureData(textureResource.back().Get(), mipImages, device.Get(), commandList.Get())
-    );
-
-    /*-------------------------------- Texture用SRVの作成 ----------------------------------*/
-
-    // metaDataをもとにSRVの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-    srvDesc.Format = metadata.format;
-    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-
-    // キューブマップかどうか
-    if(!metadata.IsCubemap()){
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-        srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-    } else{
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;//キューブマップ
-        srvDesc.TextureCube.MipLevels = UINT_MAX;
-        srvDesc.TextureCube.MostDetailedMip = 0;
-        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-    }
-
-    // SRVの作成(グラフハンドルを返す)
-    return ViewManager::CreateView(VIEW_TYPE::SRV, textureResource.back().Get(), &srvDesc, filePath);
-}
-
-
 
 //////////////////////////////////////////////////////////////
 //           解像度を変更してRTVやScissorを設定し直す関数        ///
@@ -901,14 +707,11 @@ void DxManager::Finalize(){
 void DxManager::Release(){
 
     // リソース
-    for(auto& textureRs : textureResource){ textureRs.Reset(); }
-    for(auto& intermediateRs : intermediateResource){ intermediateRs.Reset(); }
+    TextureManager::Release();
     WindowManager::Finalize();
-    offScreenResource.Reset();
-    depthStencilResource.Reset();
-    depthTextureResource.Reset();
-    blurTextureResource.Reset();
-    CS_ConstantBuffer.Reset();
+    offScreenResource.resource.Reset();
+    depthStencilResource.resource.Reset();
+    PostEffect::GetInstance()->Release();
     delete polygonManager_;
     polygonManager_ = nullptr;
 

@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <regex>
+#include <variant>
 // local
 #include <SEED/Source/Manager/DxManager/ShaderDictionary.h>
 #include <SEED/Lib/Structs/blendMode.h>
@@ -66,6 +67,12 @@ public:
 
     // ファイルからPSOを生成
     static void CreatePipelines(const std::string& filename);
+
+    // RootSignatureに対してバインド情報を設定する関数
+    static void SetBindInfo(
+        const std::string& pipelineName, const std::string& variableName,
+        std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
+    );
 
 private:
     // PSOの生成

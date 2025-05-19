@@ -24,7 +24,7 @@ struct VertexShaderInput {
 };
 
 
-StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
+StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 
 
 ///////////////////////////////////////// main ////////////////////////////////////////////////
@@ -43,10 +43,10 @@ MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, 
     }
     
     // Apply Transformation
-    output.position = mul(input.position, instanceData[index].WVP);
-    output.worldPosition = mul(input.position, instanceData[index].world).xyz;
+    output.position = mul(input.position, transforms[index].WVP);
+    output.worldPosition = mul(input.position, transforms[index].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) instanceData[index].worldInverseTranspose));
+    output.normal = normalize(mul(input.normal, (float3x3) transforms[index].worldInverseTranspose));
     
     // Caluculate MaterialID
     if (input.interval == 0) {// model

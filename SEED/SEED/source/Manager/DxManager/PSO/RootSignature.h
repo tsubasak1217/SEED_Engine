@@ -33,11 +33,11 @@ struct RootSignature{
     );
 
     void SetBindInfo(
-        const std::string& name,
+        const std::string& variableName,
         std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
     );
 
-    void BindAll(ID3D12GraphicsCommandList* commandList);
+    void BindAll(ID3D12GraphicsCommandList* commandList,bool isCSRootSignature = false);
 
     void Release();
 

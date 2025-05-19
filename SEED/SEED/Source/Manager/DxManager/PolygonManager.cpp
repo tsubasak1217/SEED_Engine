@@ -203,24 +203,48 @@ void PolygonManager::InitResources(){
     //////////////////////////////////////////////////
     gpuHandles_.resize(7);
     gpuHandles_[(int)HANDLE_TYPE::TextureTable] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, 0);
     gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
     gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
     gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
     gpuHandles_[(int)HANDLE_TYPE::DirectionalLight] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
     gpuHandles_[(int)HANDLE_TYPE::PointLight] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "pointLight");
     gpuHandles_[(int)HANDLE_TYPE::SpotLight] =
-        ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "spotLight");
 
     //////////////////////////////////////////////////
     // バインドする情報を設定
     //////////////////////////////////////////////////
 
+    // CommonVSPipeline
+    PSOManager::SetBindInfo("CommonVSPipeline.pip","transforms",gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // SkinningVSPipeline
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMatrixPalette", gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
 }
 
 void PolygonManager::Finalize(){}
@@ -363,17 +387,27 @@ void PolygonManager::AddTriangle(
     // もし該当する描画データがなければ作成する
     view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
     if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+
+        // 頂点データの取得
         modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[curDrawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
+
+        // 描画種類の設定
+        modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+            (int8_t)DrawOrder::Triangle : (int8_t)DrawOrder::Triangle2D;
+        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticTriangle2D : modelDrawData_[curDrawDataName]->drawOrder;
     }
-    auto* drawData = modelDrawData_[curDrawDataName].get();
 
     // indexCount
+    auto* drawData = modelDrawData_[curDrawDataName].get();
     int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
@@ -421,8 +455,10 @@ void PolygonManager::AddTriangle(
     transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新(描画数分)
-    if(drawData->offsetData.size() <= drawCount){
-        drawData->offsetData.resize(drawCount + 1);
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);// primitiveはmesh数1固定
+    if(offsetData.back().size() <= drawCount){
+        offsetData.back().resize(drawCount + 1);
     }
 
     // カウントを更新
@@ -471,13 +507,19 @@ void PolygonManager::AddTriangle3DPrimitive(
 
     // 無かったら作成する
     if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[drawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Triangle2D;
     }
 
     auto* drawData = modelDrawData_[drawDataName].get();
@@ -625,17 +667,26 @@ void PolygonManager::AddQuad(
     // もし該当する描画データがなければ作成する
     view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
     if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[curDrawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
+
+        // 描画種類の設定
+        modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+            (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
+        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
     }
-    auto* drawData = modelDrawData_[curDrawDataName].get();
 
     // Count
+    auto* drawData = modelDrawData_[curDrawDataName].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
@@ -747,13 +798,19 @@ void PolygonManager::AddQuad3DPrimitive(
 
     // 無かったら作成する
     if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[drawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Quad;
     }
 
     // Count
@@ -936,13 +993,22 @@ void PolygonManager::AddSprite(
 
     // もし該当する描画データがなければ作成する
     if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[drawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticSprite : (int8_t)DrawOrder::Sprite;
+        modelDrawData_[drawDataName]->drawOrder = drawLocation == DrawLocation::Back ?
+            (int8_t)DrawOrder::BackSprite : modelDrawData_[drawDataName]->drawOrder;
     }
 
     //count
@@ -1089,26 +1155,31 @@ void PolygonManager::AddModel(Model* model){
     //                     モデル描画データがが存在しないときのみ
     //////////////////////////////////////////////////////////////////////////
     if(modelDrawData_.find(modelName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[modelName] = std::make_unique<ModelDrawData>();
-        // vertexResource
         modelDrawData_[modelName]->modelData = ModelManager::GetModelData(model->modelName_);
-        // drawOrder
+
+        // 描画種類の設定
         if(model->isAnimation_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::AnimationModel;
-        } else if(model->isParticle_){
+        } else{
+            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Model;
+        }
+        if(model->isParticle_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Particle;
         }
 
+        // パイプラインの設定
         if(model->isAnimation_){
             modelDrawData_[modelName]->pso =
                 PSOManager::GetPSO(
-                    "SkinningMSPipeline.pip",
+                    "SkinningVSPipeline.pip",
                     model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
                 );
         } else{
             modelDrawData_[modelName]->pso =
                 PSOManager::GetPSO(
-                    "CommonMSPipeline.pip",
+                    "CommonVSPipeline.pip",
                     model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
                 );
         }
@@ -1284,13 +1355,23 @@ void PolygonManager::AddLine(
 
     // もし該当する描画データがなければ作成する
     if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
         modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
         modelDrawData_[curDrawDataName]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE
             );
+
+        // 描画種類の設定
+        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticLine2D : (int8_t)DrawOrder::Line2D;
+        if(view3D){
+            modelDrawData_[curDrawDataName]->drawOrder = (int8_t)DrawOrder::Line;
+        }
     }
 
 
@@ -1418,6 +1499,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
                 "CommonVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
             );
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Offscreen;
     }
 
     // Count
@@ -1532,6 +1614,11 @@ void PolygonManager::WriteRenderData(){
         spotLights_.data(),
         sizeof(SpotLight) * spotLights_.size()
     );
+
+    // ライティング情報の数を格納
+    directionalLightCount_ = (int)directionalLights_.size();
+    pointLightCount_ = (int)pointLights_.size();
+    spotLightCount_ = (int)spotLights_.size();
 
     // カメラ情報
     BaseCamera* pCamera = pDxManager_->GetCamera();

@@ -1,17 +1,13 @@
 #include "Object3d.hlsli"
 
-Texture2D<float4> inputTexture : register(t0);
-RWTexture2D<float4> outputTexture : register(u0);
-
+Texture2D<float4> inputTexture : register(t0);// スクショ
+RWTexture2D<float4> outputTexture : register(u0); // 出力画像
 Texture2D<float4> inputDepthTexture : register(t1);// depthStencilのほう
 RWTexture2D<float4> outputDepthTexture : register(u1);// depthTextureのほう
 
+ConstantBuffer<Float> resolutionRate : register(b0);
 SamplerState gSampler : register(s0);
 
-cbuffer ConstantBuffer : register(b0)
-{
-    float resolutionRate;
-}
 
 [numthreads(16, 16, 1)]
 void CSMain(uint3 DTid : SV_DispatchThreadID)
@@ -26,7 +22,7 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     
     // 色の取得
     float4 currentPixelColor = inputTexture.Load(int3(pixelCoord, 0));
-    int radius = int(ceil(8.0f * resolutionRate));
+    int radius = int(ceil(8.0f * resolutionRate.value));
     uint2 currentPixelCoord = uint2(0, 0);
     float pixelCount = 0;
     float4 blurredColor = float4(0.0f, 0.0f, 0.0f, 0.0f);

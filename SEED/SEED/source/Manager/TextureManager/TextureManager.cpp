@@ -28,6 +28,19 @@ void TextureManager::Initialize(){
     StartUpLoad();
 }
 
+//////////////////////////////////////////////
+// 解放処理
+//////////////////////////////////////////////
+void TextureManager::Release(){
+    // 各テクスチャの解放
+    for(auto& texture : instance_->textureResources){
+        texture->Release();
+    }
+    for(auto& intermediate : instance_->intermediateResources){
+        intermediate->Release();
+    }
+}
+
 // 起動時に読み込みたいモデルをここで読み込む
 void TextureManager::StartUpLoad(){
 }
@@ -41,12 +54,63 @@ uint32_t TextureManager::LoadTexture(const std::string& filename,const aiTexture
     // 埋め込みテクスチャでない場合
     if(!embeddedTexture){
         // 読み込み
-        instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename);
+        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename);
     } else{
         // 埋め込みテクスチャの場合
-        instance_->graphHandle_[filename] = DxManager::GetInstance()->CreateTexture("resources/textures/" + filename,embeddedTexture);
+        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename,embeddedTexture);
     }
 
     return instance_->graphHandle_[filename];
+}
+
+
+uint32_t TextureManager::CreateTexture(const std::string& filename, const aiTexture* embeddedTexture){
+
+    // 既にある場合
+    if(ViewManager::GetTextureHandle(filename) != -1){ return ViewManager::GetTextureHandle(filename); }
+
+    /*----------------------------- TextureResourceの作成,転送 -----------------------------*/
+
+    // 読み込み
+    DirectX::ScratchImage mipImages;
+    if(!embeddedTexture){
+        mipImages = LoadTextureImage(filename);// 通常のテクスチャ
+    } else{
+        mipImages = LoadEmbeddedTextureImage(embeddedTexture);// 埋め込みテクスチャ
+    }
+
+    // 作成
+    const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
+    textureResources.push_back(CreateTextureResource(DxManager::GetInstance()->GetDevice(), metadata));
+    // 転送
+    intermediateResources.push_back(
+        UploadTextureData(
+            textureResources.back().Get(), mipImages, 
+            DxManager::GetInstance()->GetDevice(),
+            DxManager::GetInstance()->commandList.Get()
+        )
+    );
+
+    /*-------------------------------- Texture用SRVの作成 ----------------------------------*/
+
+    // metaDataをもとにSRVの設定
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+    srvDesc.Format = metadata.format;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+    // キューブマップかどうか
+    if(!metadata.IsCubemap()){
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+        srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+    } else{
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;//キューブマップ
+        srvDesc.TextureCube.MipLevels = UINT_MAX;
+        srvDesc.TextureCube.MostDetailedMip = 0;
+        srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+    }
+
+    // SRVの作成(グラフハンドルを返す)
+    return ViewManager::CreateView(VIEW_TYPE::SRV, textureResources.back().Get(), &srvDesc, filename);
+
 }
 

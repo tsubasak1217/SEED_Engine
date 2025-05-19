@@ -41,7 +41,7 @@ struct VertexShaderInput {
 };
 
 
-StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
+StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 StructuredBuffer<Well> gMatrixPalette : register(t1, space0);
 
 
@@ -93,10 +93,10 @@ MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, 
     }
     
     // Apply Transformation
-    output.position = mul(skinned.position, instanceData[index].WVP);
-    output.worldPosition = mul(input.position, instanceData[index].world).xyz;
+    output.position = mul(skinned.position, transforms[index].WVP);
+    output.worldPosition = mul(input.position, transforms[index].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(skinned.normal, (float3x3) instanceData[index].worldInverseTranspose));
+    output.normal = normalize(mul(skinned.normal, (float3x3) transforms[index].worldInverseTranspose));
     
     // Caluculate MaterialID
     if (input.interval == 0) {// model

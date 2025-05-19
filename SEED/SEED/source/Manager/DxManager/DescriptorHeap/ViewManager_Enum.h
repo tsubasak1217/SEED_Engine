@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-enum class DESCRIPTOR_HEAP_TYPE : int32_t{
+enum class HEAP_TYPE : int32_t{
     SRV_CBV_UAV = 0,
     RTV,
     DSV,

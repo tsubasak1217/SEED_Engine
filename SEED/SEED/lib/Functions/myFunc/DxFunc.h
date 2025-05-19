@@ -101,3 +101,10 @@ D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
 
 // Matrix4x4 を DirectX::XMMATRIX に変換する関数
 DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix);
+
+// resourceの状態を遷移させる関数
+void TransitionResourceState(
+    ID3D12GraphicsCommandList* commandList,
+    ID3D12Resource* resource,
+    D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter
+);

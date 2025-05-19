@@ -35,14 +35,14 @@ public:
 
 public:
     static int32_t GetTextureHandle(const std::string& textureName);
-    static D3D12_CPU_DESCRIPTOR_HANDLE GetHandleCPU(DESCRIPTOR_HEAP_TYPE heapType, uint32_t index);
-    static D3D12_CPU_DESCRIPTOR_HANDLE GetHandleCPU(DESCRIPTOR_HEAP_TYPE heapType, const std::string& viewName);
-    static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapType, uint32_t index);
-    static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(DESCRIPTOR_HEAP_TYPE heapType, const std::string& viewName);
-    static ID3D12DescriptorHeap* GetHeap(DESCRIPTOR_HEAP_TYPE heapType);
-    static uint32_t GetDescriptorSize(DESCRIPTOR_HEAP_TYPE heapType);
+    static D3D12_CPU_DESCRIPTOR_HANDLE GetHandleCPU(HEAP_TYPE heapType, uint32_t index);
+    static D3D12_CPU_DESCRIPTOR_HANDLE GetHandleCPU(HEAP_TYPE heapType, const std::string& viewName);
+    static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(HEAP_TYPE heapType, uint32_t index);
+    static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(HEAP_TYPE heapType, const std::string& viewName);
+    static ID3D12DescriptorHeap* GetHeap(HEAP_TYPE heapType);
+    static uint32_t GetDescriptorSize(HEAP_TYPE heapType);
 
 private:
     std::unordered_map<std::string,std::unique_ptr<DescriptorHeap>>descriptorHeaps_;
-    std::unordered_map<std::string, uint32_t>handles_[(int32_t)DESCRIPTOR_HEAP_TYPE::CountOfHeapType];
+    std::unordered_map<std::string, uint32_t>handles_[(int32_t)HEAP_TYPE::CountOfHeapType];
 };

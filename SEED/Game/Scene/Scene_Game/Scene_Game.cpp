@@ -40,7 +40,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-
+    SEED::SetCamera("debug");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -52,6 +52,22 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
+
+    for(int i = 0; i < 100; i++){
+        if(i % 2 == 0){
+            //models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
+            //models_.emplace_back(std::make_unique<Model>("Assets/Boy.gltf"));
+            //models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
+            models_[i]->StartAnimation(0, true);
+        } else{
+            models_.emplace_back(std::make_unique<Model>("Assets/MultiMaterial.obj"));
+        }
+        models_[i]->transform_.translate_ = { i * 5.0f,0.0f,2.0f };
+        models_[i]->UpdateMatrix();
+        models_[i]->masterColor_ = MyFunc::RandomColor();
+        models_[i]->blendMode_ = BlendMode(i % 6);
+        models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
+    }
 
 
     ////////////////////////////////////////////////////
@@ -102,7 +118,7 @@ void Scene_Game::Update(){
     /*======================= 各状態固有の更新 ========================*/
 
     if(currentState_){
-        currentState_->Update();
+        //currentState_->Update();
     }
 
     if(currentEventState_){
@@ -110,6 +126,10 @@ void Scene_Game::Update(){
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
+
+    for(auto& model : models_){
+        model->Update();
+    }
 
     ParticleManager::Update();
 }
@@ -129,11 +149,17 @@ void Scene_Game::Draw(){
     }
 
     if(currentState_){
-        currentState_->Draw();
+        //currentState_->Draw();
     }
 
 
     /*==================== 各オブジェクトの基本描画 =====================*/
+
+    //SEED::DrawGrid();
+
+    for(auto& model : models_){
+        model->Draw();
+    }
 
     // ライトをセット
     directionalLight_->SendData();

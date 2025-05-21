@@ -33,6 +33,9 @@ struct ID3D12Resource;
 // 全部の描画が種類ごとに最終的にこの形に情報をまとめられる
 struct ModelDrawData{
 
+    // 名前
+    std::string name;
+
     // 各種データ
     ModelData* modelData;
     std::vector<std::vector<MaterialForGPU>> materials;// instance数 * mesh数分ある
@@ -50,11 +53,11 @@ struct ModelDrawData{
 
     // モデルの種類が切り替わる番号(頂点)
     static std::unordered_map<std::string, int32_t>modelSwitchIdx_Vertex;
-    std::vector<int32_t>meshSwitchIdx_Vertex;// メッシュの切り替わる番号
+    std::array<int32_t,16>meshSwitchIdx_Vertex;// メッシュの切り替わる番号(最大16meshまで)
 
     // モデルの種類が切り替わる番号(インデックス)
     static std::unordered_map<std::string, int32_t>modelSwitchIdx_Index;
-    std::vector<int32_t>meshSwitchIdx_Index;// メッシュの切り替わる番号
+    std::array<int32_t,16>meshSwitchIdx_Index;// メッシュの切り替わる番号(最大16meshまで)
 
     // 描画する順番
     int8_t drawOrder = 0;
@@ -300,6 +303,11 @@ private:// Resource (すべての描画で1つにまとめている)
     OffsetData* mapOffsetData;
     VertexInfluence* mapVertexInfluenceData;
     WellForGPU* mapPaletteData;
+
+    // debug用
+    std::vector<VertexData> debugVertexData_;
+    std::vector<MaterialForGPU> debugMaterialData_;
+    std::vector<OffsetData> debugOffsetData_;
 
 private:// GPUハンドルまとめ
     std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> gpuHandles_;

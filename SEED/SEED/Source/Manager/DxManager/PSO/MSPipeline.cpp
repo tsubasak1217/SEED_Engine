@@ -19,7 +19,13 @@ MSPipeline::MSPipeline(BlendMode blendMode, D3D12_CULL_MODE cullMode){
 
 void MSPipeline::Create(BlendMode blendMode, PolygonTopology topology,D3D12_CULL_MODE cullMode){
 
-    topologyType_ = (topology == PolygonTopology::TRIANGLE) ? 
+    //======================================================================
+    //  Topology
+    //======================================================================
+    primitiveTopology_ = (topology == PolygonTopology::TRIANGLE) ?
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST : D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = (topology == PolygonTopology::TRIANGLE) ?
         D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE : D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
     //======================================================================
@@ -140,6 +146,7 @@ void MSPipeline::Create(BlendMode blendMode, PolygonTopology topology,D3D12_CULL
     pipelineDescs_.as = asByteCode;
     pipelineDescs_.ms = msByteCode;
     pipelineDescs_.ps = psByteCode;
+    pipelineDescs_.primitiveTopologyType = topologyType;
 }
 
 

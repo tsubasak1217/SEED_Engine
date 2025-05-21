@@ -20,7 +20,7 @@ struct IPipeline{
     ) = 0;
 
     ComPtr<ID3D12PipelineState> pipeline_;
-    D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType_;
+    D3D_PRIMITIVE_TOPOLOGY primitiveTopology_;
     D3D12_COMPARISON_FUNC depthFunc_;
     // シェーダー
     IDxcBlob* pVsBlob_;
@@ -73,4 +73,5 @@ using StateParam_DSFormat = StateParam<DXGI_FORMAT, PSST(DEPTH_STENCIL_FORMAT)>;
 using StateParam_RTFormats = StateParam<D3D12_RT_FORMAT_ARRAY, PSST(RENDER_TARGET_FORMATS)>;
 using StateParam_Flags = StateParam<D3D12_PIPELINE_STATE_FLAGS, PSST(FLAGS)>;
 using StateParam_InputLayoutDesc = StateParam<D3D12_INPUT_LAYOUT_DESC, PSST(INPUT_LAYOUT)>;
+using StateParam_PrimitiveTopologyType = StateParam<D3D12_PRIMITIVE_TOPOLOGY_TYPE, PSST(PRIMITIVE_TOPOLOGY)>;
 #undef PSST

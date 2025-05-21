@@ -222,7 +222,7 @@ void PolygonManager::InitResources(){
     //////////////////////////////////////////////////
 
     // CommonVSPipeline
-    PSOManager::SetBindInfo("CommonVSPipeline.pip","transforms",gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
@@ -404,6 +404,8 @@ void PolygonManager::AddTriangle(
             (int8_t)DrawOrder::Triangle : (int8_t)DrawOrder::Triangle2D;
         modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
             (int8_t)DrawOrder::StaticTriangle2D : modelDrawData_[curDrawDataName]->drawOrder;
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
     }
 
     // indexCount
@@ -520,6 +522,8 @@ void PolygonManager::AddTriangle3DPrimitive(
 
         // 描画種類の設定
         modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Triangle2D;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
     }
 
     auto* drawData = modelDrawData_[drawDataName].get();
@@ -683,6 +687,8 @@ void PolygonManager::AddQuad(
             (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
         modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
             (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
     }
 
     // Count
@@ -811,6 +817,8 @@ void PolygonManager::AddQuad3DPrimitive(
 
         // 描画種類の設定
         modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Quad;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
     }
 
     // Count
@@ -1009,6 +1017,8 @@ void PolygonManager::AddSprite(
             (int8_t)DrawOrder::StaticSprite : (int8_t)DrawOrder::Sprite;
         modelDrawData_[drawDataName]->drawOrder = drawLocation == DrawLocation::Back ?
             (int8_t)DrawOrder::BackSprite : modelDrawData_[drawDataName]->drawOrder;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
     }
 
     //count
@@ -1139,9 +1149,12 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     static std::string modelName;
     modelName.clear();
-    modelName.reserve(64);
+    modelName.reserve(128);
     modelName = model->modelName_;
     if(modelName == ""){ return; }
+    modelName += blendName[(int)model->blendMode_];
+    modelName += cullName[(int)model->cullMode_ - 1];
+
 
     if(model->isAnimation_){
         // アニメーションしているモデルは別のデータとして扱う
@@ -1158,6 +1171,8 @@ void PolygonManager::AddModel(Model* model){
         // 頂点データの取得
         modelDrawData_[modelName] = std::make_unique<ModelDrawData>();
         modelDrawData_[modelName]->modelData = ModelManager::GetModelData(model->modelName_);
+        // 名前の設定
+        modelDrawData_[modelName]->name = modelName;
 
         // 描画種類の設定
         if(model->isAnimation_){
@@ -1372,6 +1387,8 @@ void PolygonManager::AddLine(
         if(view3D){
             modelDrawData_[curDrawDataName]->drawOrder = (int8_t)DrawOrder::Line;
         }
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
     }
 
 
@@ -1500,6 +1517,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
                 blendMode, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
             );
         modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Offscreen;
+        modelDrawData_[drawDataName]->name = drawDataName;
     }
 
     // Count
@@ -1630,8 +1648,7 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    // 
-    
+
     for(auto itr = modelDrawData_.begin(); itr != modelDrawData_.end();){
 
         int modelVertexCount = 0;
@@ -1659,12 +1676,12 @@ void PolygonManager::WriteRenderData(){
             int meshVertexCount = (int)item->modelData->meshes[meshIdx].vertices.size();
             int meshIndexCount = (int)item->modelData->meshes[meshIdx].indices.size();
 
-            item->meshSwitchIdx_Vertex.emplace_back(modelVertexCount);// メッシュが切り替わる頂点番号を記録
-            item->meshSwitchIdx_Index.emplace_back(modelIndexCount);// メッシュが切り替わるインデックス番号を記録
+            item->meshSwitchIdx_Vertex[meshIdx] = modelVertexCount;// メッシュが切り替わる頂点番号を記録
+            item->meshSwitchIdx_Index[meshIdx] = modelIndexCount;// メッシュが切り替わるインデックス番号を記録
 
             // 頂点情報を書き込む
             std::memcpy(
-                mapVertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                mapVertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx],// に
                 item->modelData->meshes[meshIdx].vertices.data(),// から
                 sizeof(VertexData) * meshVertexCount// のサイズコピー
             );
@@ -1672,7 +1689,7 @@ void PolygonManager::WriteRenderData(){
 
             // インデックス情報を書き込む
             std::memcpy(
-                mapIndexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index.back(),// に
+                mapIndexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx],// に
                 item->modelData->meshes[meshIdx].indices.data(),// から
                 sizeof(uint32_t) * meshIndexCount// のサイズコピー
             );
@@ -1682,6 +1699,14 @@ void PolygonManager::WriteRenderData(){
                 mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
                 item->modelData->meshes[meshIdx].vertexInfluences.data(),// から
                 sizeof(VertexInfluence) * meshVertexCount// のサイズコピー
+            );
+
+            //debug用のデータ
+            debugVertexData_.resize(vertexCountAll + meshVertexCount);
+            std::memcpy(
+                debugVertexData_.data() + vertexCountAll,
+                item->modelData->meshes[meshIdx].vertices.data(),
+                sizeof(VertexData) * meshVertexCount
             );
 
             // 数をインクリメント
@@ -1705,7 +1730,7 @@ void PolygonManager::WriteRenderData(){
     for(auto& drawList : drawLists_){
         for(auto& drawData : drawList.second){
 
-            // 各モデルの現在のブレンドモードのインスタンス数確認
+            // 各モデルの現在のインスタンス数確認
             int instanceCount = static_cast<int>(drawData->transforms.size());
             int jointSize = static_cast<int>(drawData->modelData->defaultSkeleton.joints.size());
             if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
@@ -1768,6 +1793,9 @@ void PolygonManager::WriteRenderData(){
         sizeof(MaterialForGPU) * (int)materialArray.size()
     );
 
+
+    debugMaterialData_ = materialArray;
+    debugOffsetData_.clear();
 }
 
 
@@ -1835,6 +1863,10 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
     for(auto& drawList : drawLists_){
 
+        // 描画リストが空ならcontinue
+        if(drawList.second.size() == 0){ continue; }
+
+
         ///////////////////////////////////////////////////////////////////////////////////////////////
         /*                                  パイプラインの切り替え                                      */
         ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1856,19 +1888,18 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
         ///////////////////////////////////////////////////////////////////////////////////////////////
         /*                                     Modelごとに見ていく                                      */
         ///////////////////////////////////////////////////////////////////////////////////////////////
-        for(auto& modelData : modelDrawData_){
+        for(auto& drawData : drawList.second){
 
             // 各モデルの現在のブレンドモードのインスタンス数
-            auto& item = modelData.second;
-            int instanceCount = (int)item->transforms.size();
-            int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
+            int instanceCount = (int)drawData->transforms.size();
+            int jointSize = (int)drawData->modelData->defaultSkeleton.joints.size();
             if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
-            if((int)item->materials.size() == 0){ continue; }// プリミティブ用の例外処理
+            if((int)drawData->materials.size() == 0){ continue; }// プリミティブ用の例外処理
 
 
             // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
-            if(item->drawOrder != (int8_t)drawOrder){
-                meshCountAll += instanceCount * (int)item->modelData->meshes.size();
+            if(drawData->drawOrder != (int8_t)drawOrder){
+                meshCountAll += instanceCount * (int)drawData->modelData->meshes.size();
                 animationJointCount += jointSize * instanceCount;
                 instanceCountAll += instanceCount;
                 continue;
@@ -1876,14 +1907,14 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 
             // オフセットなどを計算し書き込み・描画を行う
-            for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
+            for(int meshIdx = 0; meshIdx < drawData->modelData->meshes.size(); meshIdx++){
 
                 /*--------------------------------------*/
                 //      オフセット情報を書き込む
                 /*--------------------------------------*/
 
                 // 書き込み
-                for(auto& offset : item->offsetData[meshIdx]){
+                for(auto& offset : drawData->offsetData[meshIdx]){
                     offset.instanceOffset = instanceCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
                     offset.meshOffset = meshCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
                     // SkinningAnimation用
@@ -1895,15 +1926,22 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                 std::memmove(
                     mapOffsetData + meshCountAll,
-                    item->offsetData[meshIdx].data(),
-                    sizeof(OffsetData) * item->totalDrawCount
+                    drawData->offsetData[meshIdx].data(),
+                    sizeof(OffsetData) * drawData->totalDrawCount
+                );
+
+                debugOffsetData_.resize(meshCountAll + drawData->totalDrawCount);
+                std::memcpy(
+                    debugOffsetData_.data() + meshCountAll,
+                    drawData->offsetData[meshIdx].data(),
+                    sizeof(OffsetData) * drawData->totalDrawCount
                 );
 
 
                 //////////////////////////////////////////////////////////////////////
                 // VSPipelineの場合は、VBVとIBVをセットして描画を行う
                 //////////////////////////////////////////////////////////////////////
-                if(item->pipelineType == PipelineType::VSPipeline){
+                if(drawData->pipelineType == PipelineType::VSPipeline){
 
                     /*///////////////////////////////////////////////////////////////////////////*/
 
@@ -1914,16 +1952,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*-------------------- 頂点ごとのデータ --------------------*/
 
-                    D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex;
+                    D3D12_VERTEX_BUFFER_VIEW* vbv = &drawData->vbv_vertex;
                     int size = sizeof(VertexData);
 
                     // Resource上の開始位置設定
                     vbv->BufferLocation =
                         modelVertexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
-                    vbv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].vertices.size();
+                    vbv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].vertices.size();
                     vbv->StrideInBytes = size;
 
                     // VBVのセット
@@ -1931,7 +1969,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*-------------------- インスタンスごとのデータ --------------------*/
 
-                    D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
+                    D3D12_VERTEX_BUFFER_VIEW* vbv2 = &drawData->vbv_instance;
                     size = sizeof(OffsetData);
 
                     // Resource上の開始位置設定
@@ -1940,7 +1978,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // 総サイズ、刻み幅の設定
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-                        vbv2->SizeInBytes = size * item->totalDrawCount;
+                        vbv2->SizeInBytes = size * drawData->totalDrawCount;
                     } else{
                         vbv2->SizeInBytes = size;
                     }
@@ -1955,16 +1993,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // アニメーションモデルの場合のみ
                     if(drawOrder == DrawOrder::AnimationModel){
-                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
+                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &drawData->vbv_skinning;
                         size = sizeof(VertexInfluence);
-                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
                             vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
                             ofst;
 
                         // 総サイズ、刻み幅の設定
-                        vbv3->SizeInBytes = size * (UINT)item->modelData->meshes[meshIdx].vertices.size();
+                        vbv3->SizeInBytes = size * (UINT)drawData->modelData->meshes[meshIdx].vertices.size();
                         vbv3->StrideInBytes = size;
 
                         // VBVのセット
@@ -1978,16 +2016,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     /*///////////////////////////////////////////////////////////////////////////*/
 
 
-                    D3D12_INDEX_BUFFER_VIEW* ibv = &item->ibv;
+                    D3D12_INDEX_BUFFER_VIEW* ibv = &drawData->ibv;
                     size = sizeof(int32_t);
 
                     // Resource上の開始位置設定
                     ibv->BufferLocation =
                         modelIndexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Index[drawData->name] + drawData->meshSwitchIdx_Index[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
-                    ibv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].indices.size();
+                    ibv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].indices.size();
                     ibv->Format = DXGI_FORMAT_R32_UINT;
 
                     // IBVのセット
@@ -2004,8 +2042,8 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
-                            (int)item->modelData->meshes[meshIdx].indices.size(),
-                            item->totalDrawCount,
+                            (int)drawData->modelData->meshes[meshIdx].indices.size(),
+                            drawData->totalDrawCount,
                             0,
                             0,
                             0
@@ -2015,7 +2053,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                         // プリミティブは一斉描画
                         pDxManager_->commandList->DrawIndexedInstanced(
-                            (int)item->indexCount,
+                            (int)drawData->indexCount,
                             1,
                             0,
                             0,
@@ -2024,15 +2062,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     }
 
 
-                } else if(item->pipelineType == PipelineType::MSPipeline){
+                } else if(drawData->pipelineType == PipelineType::MSPipeline){
 
                     // meshlet数を求める
-                    int meshletCount = modelData.second->modelData->meshes[meshIdx].meshletCount;
+                    int meshletCount = drawData->modelData->meshes[meshIdx].meshletCount;
 
                     // 描画
                     pDxManager_->commandList->DispatchMesh(
                         meshletCount,// ここはMeshletの数
-                        item->totalDrawCount,// ここはインスタンス数
+                        drawData->totalDrawCount,// ここはインスタンス数
                         1
                     );
 
@@ -2055,267 +2093,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             instanceCountAll += instanceCount;
         }
     }
-
-
-    //for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-    //    if(objCountBlend_[blendIdx] == 0){ continue; }// 描画対象がない場合はスキップ
-
-    //    for(int cullModeIdx = 0; cullModeIdx < 3; cullModeIdx++){
-    //        if(objCountCull_[cullModeIdx] == 0){ continue; }// 描画対象がない場合はスキップ
-
-    //        ///////////////////////////////////////////////////////////////////////////////////////////////
-    //        /*                                  パイプラインの切り替え                                      */
-    //        ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    //        // RootSignature・PSOを設定
-    //        if(drawOrder != DrawOrder::AnimationModel){
-
-    //            if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D && drawOrder != DrawOrder::StaticLine2D){
-    //                pDxManager_->commandList->SetGraphicsRootSignature(
-    //                    pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].rootSignature.Get()
-    //                );
-    //                pDxManager_->commandList->SetPipelineState(
-    //                    pDxManager_->pipelines[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].pipeline_.Get()
-    //                );
-
-    //            } else{
-    //                pDxManager_->commandList->SetGraphicsRootSignature(
-    //                    pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].rootSignature.Get()
-    //                );
-    //                pDxManager_->commandList->SetPipelineState(
-    //                    pDxManager_->pipelines[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].pipeline_.Get()
-    //                );
-    //            }
-
-    //        } else{
-    //            // アニメーションを行うスキニングモデルの場合
-    //            pDxManager_->commandList->SetGraphicsRootSignature(
-    //                pDxManager_->skinningRootSignatures[blendIdx][cullModeIdx].rootSignature.Get()
-    //            );
-    //            pDxManager_->commandList->SetPipelineState(
-    //                pDxManager_->skinningPipelines[blendIdx][cullModeIdx].pipeline_.Get()
-    //            );
-    //        }
-
-    //        // Resourceを設定
-    //        pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
-
-    //        // ライトの数を設定
-    //        int32_t numDirectionalLight = (int32_t)directionalLights_.size();
-    //        int32_t numPointLight = (int32_t)pointLights_.size();
-    //        int32_t numSpotLight = (int32_t)spotLights_.size();
-    //        pDxManager_->commandList->SetGraphicsRoot32BitConstants(6, 1, &numDirectionalLight, 0);
-    //        pDxManager_->commandList->SetGraphicsRoot32BitConstants(7, 1, &numPointLight, 0);
-    //        pDxManager_->commandList->SetGraphicsRoot32BitConstants(8, 1, &numSpotLight, 0);
-
-    //        // マテリアルのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
-    //        // トランスフォームのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
-    //        // DirectionalLightのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
-    //        // PointLightのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, gpuHandles_[(int)HANDLE_TYPE::PointLight]);
-    //        // SpotLightのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
-    //        // テクスチャのテーブルをセット
-    //        pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
-    //        // パレットのテーブルをセット (アニメーション時のみ)
-    //        if(drawOrder == DrawOrder::AnimationModel){
-    //            pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
-    //        }
-
-
-    //        ///////////////////////////////////////////////////////////////////////////////////////////////
-    //        /*                                     Modelごとに見ていく                                      */
-    //        ///////////////////////////////////////////////////////////////////////////////////////////////
-    //        for(auto& modelData : modelDrawData_){
-
-    //            // 各モデルの現在のブレンドモードのインスタンス数
-    //            auto& item = modelData.second;
-    //            int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-    //            int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
-    //            if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
-    //            if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
-
-
-    //            // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
-    //            if(item->drawOrder != (int8_t)drawOrder){
-    //                meshCountAll += instanceCount * (int)item->modelData->meshes.size();
-    //                animationJointCount += jointSize * instanceCount;
-    //                instanceCountAll += instanceCount;
-    //                continue;
-    //            }
-
-
-    //            // オフセットなどを計算し書き込み・描画を行う
-    //            for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
-
-    //                /*--------------------------------------*/
-    //                //      オフセット情報を書き込む
-    //                /*--------------------------------------*/
-
-    //                // 書き込み
-    //                for(auto& offset : item->offsetData[blendIdx][cullModeIdx][meshIdx]){
-    //                    offset.instanceOffset = instanceCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
-    //                    offset.meshOffset = meshCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
-    //                    // SkinningAnimation用
-    //                    offset.jointIndexOffset = animationJointCount;
-    //                    offset.jointinterval = jointSize;
-    //                    offset.primitiveInterval = instanceInterval;
-    //                }
-
-
-    //                std::memmove(
-    //                    mapOffsetData + meshCountAll,
-    //                    item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
-    //                    sizeof(OffsetData) * item->totalDrawCount[blendIdx][cullModeIdx]
-    //                );
-
-    //                /*///////////////////////////////////////////////////////////////////////////*/
-
-    //                /*                                VBVの設定                                   */
-
-    //                /*///////////////////////////////////////////////////////////////////////////*/
-
-
-    //                /*-------------------- 頂点ごとのデータ --------------------*/
-
-    //                D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex;
-    //                int size = sizeof(VertexData);
-
-    //                // Resource上の開始位置設定
-    //                vbv->BufferLocation =
-    //                    modelVertexResource_.Get()->GetGPUVirtualAddress() +
-    //                    ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
-
-    //                // 総サイズ、刻み幅の設定
-    //                vbv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].vertices.size();
-    //                vbv->StrideInBytes = size;
-
-    //                // VBVのセット
-    //                pDxManager_->commandList->IASetVertexBuffers(0, 1, vbv);
-
-    //                /*-------------------- インスタンスごとのデータ --------------------*/
-
-    //                D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
-    //                size = sizeof(OffsetData);
-
-    //                // Resource上の開始位置設定
-    //                vbv2->BufferLocation =
-    //                    offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
-
-    //                // 総サイズ、刻み幅の設定
-    //                if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-    //                    vbv2->SizeInBytes = size * item->totalDrawCount[blendIdx][cullModeIdx];
-    //                } else{
-    //                    vbv2->SizeInBytes = size;
-    //                }
-    //                vbv2->StrideInBytes = size;
-
-    //                // VBVのセット
-    //                assert(meshCountAll < kMaxMeshCount_);// メッシュ数が上限を超えていないか確認
-    //                pDxManager_->commandList->IASetVertexBuffers(1, 1, vbv2);
-
-
-    //                /*-------------------- スキニング用のデータ --------------------*/
-
-    //                // アニメーションモデルの場合のみ
-    //                if(drawOrder == DrawOrder::AnimationModel){
-    //                    D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
-    //                    size = sizeof(VertexInfluence);
-    //                    int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
-    //                    // Resource上の開始位置設定
-    //                    vbv3->BufferLocation =
-    //                        vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
-    //                        ofst;
-
-    //                    // 総サイズ、刻み幅の設定
-    //                    vbv3->SizeInBytes = size * (UINT)item->modelData->meshes[meshIdx].vertices.size();
-    //                    vbv3->StrideInBytes = size;
-
-    //                    // VBVのセット
-    //                    pDxManager_->commandList->IASetVertexBuffers(2, 1, vbv3);
-    //                }
-
-    //                /*///////////////////////////////////////////////////////////////////////////*/
-
-    //                /*                                IBVの設定                                   */
-
-    //                /*///////////////////////////////////////////////////////////////////////////*/
-
-
-    //                D3D12_INDEX_BUFFER_VIEW* ibv = &item->ibv;
-    //                size = sizeof(int32_t);
-
-    //                // Resource上の開始位置設定
-    //                ibv->BufferLocation =
-    //                    modelIndexResource_.Get()->GetGPUVirtualAddress() +
-    //                    ((ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx]) * size);
-
-    //                // 総サイズ、刻み幅の設定
-    //                ibv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].indices.size();
-    //                ibv->Format = DXGI_FORMAT_R32_UINT;
-
-    //                // IBVのセット
-    //                pDxManager_->commandList->IASetIndexBuffer(ibv);
-
-
-    //                /*/////////////////////////////////////////////////////////////////*/
-
-    //                /*      　                 メッシュごとに描画                         */
-
-    //                /*/////////////////////////////////////////////////////////////////*/
-
-    //                // meshlet数を求める
-    //                int meshletCount = CalcMeshletCount((int)item->modelData->meshes[meshIdx].indices.size());
-
-    //                // 描画
-    //                if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-
-    //                    /*pDxManager_->commandList->DrawIndexedInstanced(
-    //                        (int)item->modelData->meshes[meshIdx].indices.size(),
-    //                        item->totalDrawCount[blendIdx][cullModeIdx],
-    //                        0,
-    //                        0,
-    //                        0
-    //                    );*/
-
-    //                    pDxManager_->commandList->DispatchMesh(
-    //                        meshletCount,// ここはMeshletの数
-    //                        item->totalDrawCount[blendIdx][cullModeIdx],// ここはインスタンス数
-    //                        1
-    //                    );
-
-
-    //                } else{
-
-    //                    // プリミティブは一斉描画
-    //                    /*pDxManager_->commandList->DrawIndexedInstanced(
-    //                        (int)item->indexCount,
-    //                        1,
-    //                        0,
-    //                        0,
-    //                        0
-    //                    );*/
-    //                }
-
-
-    //                // 描画総メッシュ数のインクリメント
-    //                meshCountAll += instanceCount;
-    //            }
-
-    //            // アニメーション用のジョイント数のインクリメント
-    //            if(drawOrder == DrawOrder::AnimationModel){
-    //                animationJointCount += jointSize * instanceCount;
-    //            }
-
-
-    //            // 描画総インスタンス数のインクリメント
-    //            instanceCountAll += instanceCount;
-    //        }
-    //    }
-    //}
 }
 
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/

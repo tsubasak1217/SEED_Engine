@@ -18,6 +18,7 @@ struct PipelineDescs{
     StateParam_DSFormat dsFormat;
     StateParam_RTFormats rtFormats;
     StateParam_Flags flags;
+    StateParam_PrimitiveTopologyType primitiveTopologyType;
 };
 
 

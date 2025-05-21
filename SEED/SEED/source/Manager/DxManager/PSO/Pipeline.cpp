@@ -12,7 +12,14 @@ Pipeline::Pipeline(BlendMode blendMode, PolygonTopology topology, D3D12_CULL_MOD
 
 void Pipeline::Create(BlendMode blendMode,PolygonTopology topology,D3D12_CULL_MODE cullMode){
 
-    topologyType_ = (topology == PolygonTopology::TRIANGLE) ? D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE : D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+    //======================================================================
+    //  Topology
+    //======================================================================
+    primitiveTopology_ = (topology == PolygonTopology::TRIANGLE) ?
+        D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST : D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+
+    D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = (topology == PolygonTopology::TRIANGLE) ?
+        D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE : D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
     //======================================================================
     //  BlendMode
@@ -75,6 +82,8 @@ void Pipeline::Create(BlendMode blendMode,PolygonTopology topology,D3D12_CULL_MO
     rasterizerDesc.MultisampleEnable = FALSE; // アンチエイリアシング無効化
     rasterizerDesc.AntialiasedLineEnable = FALSE; // ラインアンチエイリアシング無効化
 
+
+
     //======================================================================
     //  Depth
     //======================================================================
@@ -133,6 +142,7 @@ void Pipeline::Create(BlendMode blendMode,PolygonTopology topology,D3D12_CULL_MO
     pipelineDescs_.flags = D3D12_PIPELINE_STATE_FLAG_NONE;
     pipelineDescs_.vs = vsByteCode;
     pipelineDescs_.ps = psByteCode;
+    pipelineDescs_.primitiveTopologyType = topologyType;
 }
 
 

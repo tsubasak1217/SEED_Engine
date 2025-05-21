@@ -515,7 +515,7 @@ void DxManager::DrawPolygonAll(){
     /*----------------------ポストエフェクトを行う-------------------*/
 
     // 被写界深度
-    PostEffect::GetInstance()->DoF();
+    //PostEffect::GetInstance()->DoF();
 
 
     //---------------------- 元の状態に遷移 ---------------------//

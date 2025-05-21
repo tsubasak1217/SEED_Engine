@@ -20,6 +20,7 @@ struct VertexShaderInput {
     int indexOffset : S1_I_INDEX_OFFSET0;
     int meshOffset : S1_I_MESH_OFFSET0;
     int jointIndexOffset : S1_I_JOINT_INDEX_OFFSET0;
+    int jointInterval : S1_I_JOINT_INTERVAL0;
     int interval : S1_I_INTERVAL0; //line->2,triangle->3,quad->4
 };
 
@@ -33,25 +34,25 @@ StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
     
     MeshShaderOutput output;
-    int index = 0;
+    int transformIdx = 0;
     
-    // Caluculate InstanceID
-    if (input.interval == 0) {// model
-        index = instanceID + input.indexOffset;
-    } else {// primitive
-        index = instanceID + input.indexOffset + (vertexID / input.interval);
+    // Caluculate InstanceIdx
+    if (input.interval == 0) { // model
+        transformIdx = instanceID + input.indexOffset;
+    } else { // primitive
+        transformIdx = instanceID + input.indexOffset + (vertexID / input.interval);
     }
     
     // Apply Transformation
-    output.position = mul(input.position, transforms[index].WVP);
-    output.worldPosition = mul(input.position, transforms[index].world).xyz;
+    output.position = mul(input.position, transforms[transformIdx].WVP);
+    output.worldPosition = mul(input.position, transforms[transformIdx].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) transforms[index].worldInverseTranspose));
+    output.normal = normalize(mul(input.normal, (float3x3) transforms[transformIdx].worldInverseTranspose));
     
-    // Caluculate MaterialID
-    if (input.interval == 0) {// model
+    // Caluculate MaterialIdx
+    if (input.interval == 0) { // model
         output.instanceID = input.meshOffset + instanceID;
-    } else {// primitive
+    } else { // primitive
         output.instanceID = input.meshOffset + instanceID + (vertexID / input.interval);
     }
     

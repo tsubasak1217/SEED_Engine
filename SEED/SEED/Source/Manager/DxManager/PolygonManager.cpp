@@ -1900,8 +1900,10 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
             if(drawData->drawOrder != (int8_t)drawOrder){
                 meshCountAll += instanceCount * (int)drawData->modelData->meshes.size();
-                animationJointCount += jointSize * instanceCount;
                 instanceCountAll += instanceCount;
+                if(drawOrder == DrawOrder::AnimationModel){
+                    animationJointCount += jointSize * instanceCount;
+                }
                 continue;
             }
 
@@ -2081,6 +2083,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                 // 描画総メッシュ数のインクリメント
                 meshCountAll += instanceCount;
+
             }
 
             // アニメーション用のジョイント数のインクリメント

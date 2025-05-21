@@ -9,6 +9,8 @@ struct DebugCamera : public BaseCamera{
 
 private:
     void Move();
+    void MoveByPad();
+    void MoveByKeyboard();
 
 private:
     Vector3 moveDirection_;

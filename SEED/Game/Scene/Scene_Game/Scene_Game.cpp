@@ -57,8 +57,8 @@ void Scene_Game::Initialize(){
         if(i % 2 == 0){
             //models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
             //models_.emplace_back(std::make_unique<Model>("Assets/Boy.gltf"));
-            //models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
-            models_[i]->StartAnimation(0, true);
+            models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
+            //models_[i]->StartAnimation("idle", true);
         } else{
             models_.emplace_back(std::make_unique<Model>("Assets/MultiMaterial.obj"));
         }

@@ -453,7 +453,7 @@ void PolygonManager::AddTriangle(
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = worldMat;
-    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetViewProjectionMat2D();
+    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
     transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新(描画数分)
@@ -744,7 +744,7 @@ void PolygonManager::AddQuad(
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
     transform[drawCount].world_ = worldMat;
-    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetViewProjectionMat2D();
+    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
     transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新

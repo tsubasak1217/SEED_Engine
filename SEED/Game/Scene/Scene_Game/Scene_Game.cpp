@@ -40,7 +40,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::SetCamera("debug");
+    //SEED::SetCamera("debug");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -53,28 +53,28 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    for(int i = 0; i < 100; i++){
+    //for(int i = 0; i < 100; i++){
 
-        if(i % 4 == 0){
-            models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
-            models_[i]->StartAnimation(0, true);
-        } else if(i % 3 == 1){
-            models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
-            models_[i]->StartAnimation("idle", true);
-        } else if(i % 3 == 2){
-            models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
-            models_[i]->StartAnimation(0, true);
-        } else{
-            models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
-            models_[i]->StartAnimation(0, true);
-        }
-        //models_[i]->SetIsSkeletonVisible(true);
-        models_[i]->transform_.translate_ = { i * 5.0f,0.0f,2.0f };
-        models_[i]->UpdateMatrix();
-        models_[i]->masterColor_ = MyFunc::RandomColor();
-        models_[i]->blendMode_ = BlendMode(i % 6);
-        models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
-    }
+    //    if(i % 4 == 0){
+    //        models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
+    //        models_[i]->StartAnimation(0, true);
+    //    } else if(i % 3 == 1){
+    //        models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
+    //        models_[i]->StartAnimation("idle", true);
+    //    } else if(i % 3 == 2){
+    //        models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
+    //        models_[i]->StartAnimation(0, true);
+    //    } else{
+    //        models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
+    //        models_[i]->StartAnimation(0, true);
+    //    }
+    //    //models_[i]->SetIsSkeletonVisible(true);
+    //    models_[i]->transform_.translate_ = { i * 5.0f,0.0f,2.0f };
+    //    models_[i]->UpdateMatrix();
+    //    models_[i]->masterColor_ = MyFunc::RandomColor();
+    //    models_[i]->blendMode_ = BlendMode(i % 6);
+    //    models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
+    //}
 
 
     ////////////////////////////////////////////////////
@@ -118,6 +118,14 @@ void Scene_Game::Update(){
     ImGui::Begin("environment");
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    if(ImGui::Checkbox("DebugCamera", &isDebugCamera_)){
+        if(isDebugCamera_){
+            SEED::SetCamera("debug");
+        } else{
+            SEED::SetCamera("main");
+        }
+    }
+
     ImGui::End();
 
 #endif
@@ -163,10 +171,6 @@ void Scene_Game::Draw(){
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     //SEED::DrawGrid();
-
-    Quad2D q2d = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,0.0f,1.0f });
-    q2d.translate = { 640.0f,320.0f };
-    SEED::DrawQuad2D(q2d);
 
     for(auto& model : models_){
         model->Draw();

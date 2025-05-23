@@ -200,6 +200,7 @@ private:/*============================ アクセッサ関数 ===================
     BaseCamera* GetCamera()const{ return camera_; }
     void SetCamera(std::string nextCameraName){
         camera_ = CameraManager::GetCamera(nextCameraName);
+        camera_->Initialize();
         //activeなカメラを設定
         CameraManager::SetActiveCamera(nextCameraName);
     }

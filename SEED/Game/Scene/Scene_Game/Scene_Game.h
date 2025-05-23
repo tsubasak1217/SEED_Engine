@@ -38,6 +38,9 @@ private:
     // model
     std::vector<std::unique_ptr<Model>> models_;
 
+    // 
+    bool isDebugCamera_ = false;
+
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 };

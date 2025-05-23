@@ -54,14 +54,21 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     for(int i = 0; i < 100; i++){
-        if(i % 2 == 0){
-            //models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
-            //models_.emplace_back(std::make_unique<Model>("Assets/Boy.gltf"));
+
+        if(i % 4 == 0){
+            models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
+            models_[i]->StartAnimation(0, true);
+        } else if(i % 3 == 1){
             models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
             models_[i]->StartAnimation("idle", true);
+        } else if(i % 3 == 2){
+            models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
+            models_[i]->StartAnimation(0, true);
         } else{
-            models_.emplace_back(std::make_unique<Model>("Assets/MultiMaterial.obj"));
+            models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
+            models_[i]->StartAnimation(0, true);
         }
+        //models_[i]->SetIsSkeletonVisible(true);
         models_[i]->transform_.translate_ = { i * 5.0f,0.0f,2.0f };
         models_[i]->UpdateMatrix();
         models_[i]->masterColor_ = MyFunc::RandomColor();
@@ -118,7 +125,7 @@ void Scene_Game::Update(){
     /*======================= 各状態固有の更新 ========================*/
 
     if(currentState_){
-        //currentState_->Update();
+        currentState_->Update();
     }
 
     if(currentEventState_){
@@ -149,13 +156,17 @@ void Scene_Game::Draw(){
     }
 
     if(currentState_){
-        //currentState_->Draw();
+        currentState_->Draw();
     }
 
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     //SEED::DrawGrid();
+
+    Quad2D q2d = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,0.0f,1.0f });
+    q2d.translate = { 640.0f,320.0f };
+    SEED::DrawQuad2D(q2d);
 
     for(auto& model : models_){
         model->Draw();

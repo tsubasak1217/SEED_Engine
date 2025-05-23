@@ -769,7 +769,7 @@ void PolygonManager::AddQuad(
     objCountBlend_[(int)blendMode]++;
     quadIndexCount_++;
     drawData->indexCount += 6;
-    drawData->totalDrawCount;
+    drawData->totalDrawCount++;
 }
 
 
@@ -1299,8 +1299,11 @@ void PolygonManager::AddModel(Model* model){
             if(skeleton.joints[i].parent){
                 Vector3 point[2];
                 point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
-                point[1] = Vector3(0.0f, 0.0f, 0.0f) *
-                    skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+                point[0] = Multiply(point[0], wvp);
+
+                point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+                point[1] = Multiply(point[1], wvp);
+
 
                 SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
             }
@@ -1696,18 +1699,11 @@ void PolygonManager::WriteRenderData(){
 
             // 頂点の影響度(VertexInfluence)を書き込む
             std::memcpy(
-                mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx],// に
                 item->modelData->meshes[meshIdx].vertexInfluences.data(),// から
                 sizeof(VertexInfluence) * meshVertexCount// のサイズコピー
             );
 
-            //debug用のデータ
-            debugVertexData_.resize(vertexCountAll + meshVertexCount);
-            std::memcpy(
-                debugVertexData_.data() + vertexCountAll,
-                item->modelData->meshes[meshIdx].vertices.data(),
-                sizeof(VertexData) * meshVertexCount
-            );
 
             // 数をインクリメント
             modelVertexCount += meshVertexCount;
@@ -1758,19 +1754,20 @@ void PolygonManager::WriteRenderData(){
                     drawData->materials[meshIdx].begin(),
                     drawData->materials[meshIdx].end()
                 );
+            }
 
-                /*--------------------------------------*/
-                /*      アニメーション用の情報を格納        */
-                /*--------------------------------------*/
-                if(drawData->drawOrder == (int)DrawOrder::AnimationModel){
 
-                    for(int instanceIdx = 0; instanceIdx < drawData->paletteData.size(); instanceIdx++){
-                        std::memcpy(
-                            mapPaletteData + animationJointCount + (jointSize * instanceIdx),
-                            drawData->paletteData[instanceIdx].data(),
-                            sizeof(WellForGPU) * drawData->paletteData[instanceIdx].size()
-                        );
-                    }
+            /*--------------------------------------*/
+            /*      アニメーション用の情報を格納        */
+            /*--------------------------------------*/
+            if(drawData->drawOrder == (int)DrawOrder::AnimationModel){
+
+                for(int instanceIdx = 0; instanceIdx < drawData->paletteData.size(); instanceIdx++){
+                    std::memcpy(
+                        mapPaletteData + animationJointCount + (jointSize * instanceIdx),
+                        drawData->paletteData[instanceIdx].data(),
+                        sizeof(WellForGPU) * drawData->paletteData[instanceIdx].size()
+                    );
                 }
             }
 
@@ -1792,10 +1789,6 @@ void PolygonManager::WriteRenderData(){
         materialArray.data(),
         sizeof(MaterialForGPU) * (int)materialArray.size()
     );
-
-
-    debugMaterialData_ = materialArray;
-    debugOffsetData_.clear();
 }
 
 
@@ -1901,9 +1894,6 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
             if(drawData->drawOrder != (int8_t)drawOrder){
                 meshCountAll += instanceCount * (int)drawData->modelData->meshes.size();
                 instanceCountAll += instanceCount;
-                if(drawOrder == DrawOrder::AnimationModel){
-                    animationJointCount += jointSize * instanceCount;
-                }
                 continue;
             }
 
@@ -1919,22 +1909,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                 for(auto& offset : drawData->offsetData[meshIdx]){
                     offset.instanceOffset = instanceCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
                     offset.meshOffset = meshCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
+                    offset.primitiveInterval = instanceInterval;
                     // SkinningAnimation用
                     offset.jointIndexOffset = animationJointCount;
                     offset.jointinterval = jointSize;
-                    offset.primitiveInterval = instanceInterval;
                 }
 
 
-                std::memmove(
-                    mapOffsetData + meshCountAll,
-                    drawData->offsetData[meshIdx].data(),
-                    sizeof(OffsetData) * drawData->totalDrawCount
-                );
-
-                debugOffsetData_.resize(meshCountAll + drawData->totalDrawCount);
                 std::memcpy(
-                    debugOffsetData_.data() + meshCountAll,
+                    mapOffsetData + meshCountAll,
                     drawData->offsetData[meshIdx].data(),
                     sizeof(OffsetData) * drawData->totalDrawCount
                 );
@@ -2000,8 +1983,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                         int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
-                            vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
-                            ofst;
+                            vertexInfluenceResource_.Get()->GetGPUVirtualAddress() + ofst;
 
                         // 総サイズ、刻み幅の設定
                         vbv3->SizeInBytes = size * (UINT)drawData->modelData->meshes[meshIdx].vertices.size();

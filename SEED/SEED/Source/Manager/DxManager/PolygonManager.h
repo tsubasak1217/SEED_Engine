@@ -304,11 +304,6 @@ private:// Resource (すべての描画で1つにまとめている)
     VertexInfluence* mapVertexInfluenceData;
     WellForGPU* mapPaletteData;
 
-    // debug用
-    std::vector<VertexData> debugVertexData_;
-    std::vector<MaterialForGPU> debugMaterialData_;
-    std::vector<OffsetData> debugOffsetData_;
-
 private:// GPUハンドルまとめ
     std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> gpuHandles_;
 

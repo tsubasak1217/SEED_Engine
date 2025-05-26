@@ -170,7 +170,7 @@ void Scene_Game::Draw(){
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 
-    //SEED::DrawGrid();
+    SEED::DrawGrid();
 
     for(auto& model : models_){
         model->Draw();

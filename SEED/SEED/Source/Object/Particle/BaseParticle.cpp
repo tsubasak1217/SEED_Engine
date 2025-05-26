@@ -1,77 +1,8 @@
 #include <SEED/Source/Object/Particle/BaseParticle.h>
 #include <SEED/Source/SEED.h>
 
-BaseParticle::BaseParticle(const Emitter& emitter){
-
-    ////////////////// パーティクルのモデルを生成 /////////////////////
-    particle_ = std::make_unique<Model>("Assets/Plane.obj");
-    particle_->isRotateWithQuaternion_ = false;
-    particle_->isParticle_ = true;
-
-    /////////////////////// フラグ類を決定 ///////////////////////////
-
-    isBillboard_ = emitter.isBillboard;
-    isUseGravity_ = emitter.isUseGravity;
-    isUseRotate_ = emitter.isUseRotate;
-
-    ////////////////////// 座標をランダム決定 ////////////////////////
-    Range3D emitRange;
-    Vector3 center = emitter.GetCenter();
-    emitRange.min = center - emitter.emitRange * 0.5f;
-    emitRange.max = center + emitter.emitRange * 0.5f;
-    particle_->transform_.translate_ = MyFunc::Random(emitRange);
-
-    ///////////////////// 大きさをランダム決定 ////////////////////////
-    float radius = MyFunc::Random(emitter.radiusRange.min, emitter.radiusRange.max);
-    particle_->transform_.scale_ = { radius,radius,radius };
-    kScale_ = particle_->transform_.scale_;
-
-    //////////////////// 進行方向をランダム決定 ///////////////////////
-    float angleRange = 3.14f * std::clamp(emitter.directionRange, 0.0f, 1.0f);
-    float theta = MyFunc::Random(-angleRange, angleRange); // 水平回転
-    float phi = MyFunc::Random(-angleRange / 2.0f, angleRange / 2.0f); // 垂直回転 (範囲を制限)
-
-    Vector3 randomDirection = {// 球座標から方向ベクトルを計算
-        std::cos(phi) * std::cos(theta),
-        std::cos(phi) * std::sin(theta),
-        std::sin(phi)
-    };
-
-    direction_ = randomDirection * Quaternion::DirectionToDirection({ 1.0f, 0.0f, 0.0f }, emitter.baseDirection); // 回転を適用
-
-    ///////////////////// 速度をランダム決定 ////////////////////////
-    speed_ = MyFunc::Random(emitter.speedRange.min, emitter.speedRange.max);
-
-    //////////////////////// 回転情報を決定 ////////////////////////
-
-    particle_->transform_.rotate_ = MyFunc::RandomVector() * 3.14f;
-    rotateAxis_ = MyFunc::RandomVector();
-    rotateSpeed_ = MyFunc::Random(emitter.rotateSpeedRange.min, emitter.rotateSpeedRange.max);
-
-    //////////////////////// 重力を決定 //////////////////////////
-    gravity_ = emitter.gravity;
-
-    ///////////////////// 寿命をランダム決定 ////////////////////////
-    kLifeTime_ = MyFunc::Random(emitter.lifeTimeRange.min, emitter.lifeTimeRange.max);
-    lifeTime_ = kLifeTime_;
-
-    ////////////////////// 色をランダム決定 ////////////////////////
-    particle_->masterColor_ = emitter.colors[MyFunc::Random(0, (int)emitter.colors.size() - 1)];
-
-    ///////////////////// ブレンドモードを設定 ////////////////////////
-    particle_->blendMode_ = emitter.blendMode;
-
-    //////////////////////// カリングを設定 ////////////////////////
-    particle_->cullMode_ = D3D12_CULL_MODE(emitter.cullingMode + 1);
-
-    //////////////////////// ライトを無効に //////////////////////////
-    particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;
-
-    //////////////////////// テクスチャを設定 ////////////////////////
-    textureHandle_ = TextureManager::LoadTexture(
-        emitter.texturePaths[MyFunc::Random(0, (int)emitter.texturePaths.size() - 1)]
-    );
-    particle_->materials_[0].GH = textureHandle_;
+BaseParticle::BaseParticle(Emitter_Base* emitter){
+    emitter;
 }
 
 void BaseParticle::Update(){

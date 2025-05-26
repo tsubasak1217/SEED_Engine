@@ -56,6 +56,16 @@ void DebugCamera::MoveByPad(){
 //////////////////////////////////////////////////////////////
 void DebugCamera::MoveByKeyboard(){
 
+    // シフトキーが押されている時間を計測(加速用)
+    static float shiftPressedTime = 0.0f;
+    static float doubleSpeedTime = 0.2f;
+    float additionalSpeedRate = 1.0f + (shiftPressedTime / doubleSpeedTime);
+    if(Input::IsPressKey(DIK_LSHIFT)){
+        shiftPressedTime += ClockManager::DeltaTime();
+    } else{
+        shiftPressedTime = 0.0f;
+    }
+
     // 回転の取得(マウス)
     Vector3 rotateValue = { 0.0f,0.0f,0.0f };
     float basePixelCount = 8.0f;
@@ -75,7 +85,7 @@ void DebugCamera::MoveByKeyboard(){
     };
 
     // 移動量の計算
-    Vector3 velocity = (moveDirection_ * moveSpeed_) * RotateMatrix({ 0.0f,transform_.rotate_.y,0.0f });
+    Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(transform_.rotate_);
 
     // トランスフォームの更新
     transform_.rotate_ += rotateValue * ClockManager::TimeRate();

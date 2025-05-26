@@ -9,7 +9,10 @@
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Structs/AccelerarionField.h>
-#include <SEED/Source/Object/Particle/Emitter.h> 
+
+// emitters
+#include <SEED/Source/Object/Particle/Emitter/Emitter.h> 
+#include <SEED/Source/Object/Particle/Emitter/Emitter_Plane3D.h>
 
 // particles
 #include <SEED/Source/Object/Particle/BaseParticle.h>
@@ -45,11 +48,6 @@ public:
     static void CreateAccelerationField(const Range3D& range, const Vector3& force);
 
     /// <summary>
-    /// エミッターを追加する
-    /// </summary>
-    static void AddEmitter(const Emitter& emitter);
-
-    /// <summary>
     /// エフェクトを出現させる
     /// </summary>
     static void AddEffect(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat);
@@ -66,24 +64,15 @@ private:
     /// <summary>
     /// エミッターの情報からパーティクルを発生させる
     /// </summary>
-    static void Emit(Emitter* emitter);
+    static void Emit(Emitter_Base* emitter);
 
     /// <summary>
     /// ImGuiでエミッターの編集
     /// </summary>
-    void EditAll();
-    void EditEmitterGroup(EmitterGroup* emitterGroup);
-    void EditEmitter(Emitter* emitter);
-    void EditGeneral(Emitter* emitter);
-    void EditRangeParameters(Emitter* emitter);
-    void EditMaterial(Emitter* emitter);
-    void EditFrequency(Emitter* emitter);
+    void Edit();
 
 private:// ファイルの入出力
 
-    // jsonファイルに保存
-    void OutputToJson(const EmitterGroup& emitterGroup, const std::string& outputFileName);
-    void OutputEmitterGroup(const EmitterGroup& emitterGroup);
     // jsonファイルから読み込み
     void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);
     EmitterGroup LoadFromJson(const std::string& fileName);
@@ -109,12 +98,10 @@ private:
     std::list<std::unique_ptr<EmitterGroup>> effects_;// エフェクトのリスト
 
     // エミッター,パーティクル、フィールドのリスト
-    std::list<std::unique_ptr<Emitter>> emitters_;
+    std::list<std::unique_ptr<Emitter_Base>> emitters_;
     std::list<std::unique_ptr<BaseParticle>> particles_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
 
     // エディター用変数
     std::list<std::unique_ptr<EmitterGroup>> emitterGroups_;// エディターから追加されるエミッターグループ
-    std::unordered_map<std::string, ImTextureID> textureIDs_;// テクスチャのID
-    char outputFileName_[64];
 };

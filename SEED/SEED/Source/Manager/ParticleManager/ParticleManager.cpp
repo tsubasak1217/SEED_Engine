@@ -71,7 +71,7 @@ void ParticleManager::LoadParticleTexture(){
         int handle = TextureManager::LoadTexture(fileName);
 
         // GPUハンドルを取得
-        textureIDs_[fileName] =
+        Emitter_Base::textureDict[fileName] =
             (ImTextureID)ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
     }
 }
@@ -88,7 +88,7 @@ void ParticleManager::Update(){
 #ifdef _DEBUG
     ImGui::Begin("ParticleEditor");
     ImGui::Checkbox("isFieldVisible", &instance_->isFieldVisible_);
-    instance_->EditAll();
+    instance_->Edit();
     ImGui::End();
 #endif // _DEBUG
 
@@ -107,9 +107,9 @@ void ParticleManager::Update(){
     // エフェクトのエミッター更新
     for(auto& effect : instance_->effects_){
         for(auto& emitter : effect->emitters){
-            emitter.Update();
-            if(emitter.emitOrder == true){
-                Emit(&emitter);
+            emitter->Update();
+            if(emitter->emitOrder == true){
+                Emit(emitter);
             }
         }
     }
@@ -117,9 +117,9 @@ void ParticleManager::Update(){
     // エディターのエミッターグループの更新
     for(auto& emitterGroup : instance_->emitterGroups_){
         for(auto& emitter : emitterGroup->emitters){
-            emitter.Update();
-            if(emitter.emitOrder == true){
-                Emit(&emitter);
+            emitter->Update();
+            if(emitter->emitOrder == true){
+                Emit(emitter);
             }
         }
     }
@@ -188,27 +188,15 @@ void ParticleManager::Draw(){
             area.center = emitter->GetCenter();
             area.halfSize = emitter->emitRange * 0.5f;
             SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
-            // パーティクルの進行方向を描画
-            SEED::DrawLine(
-                area.center,
-                area.center + MyMath::Normalize(emitter->baseDirection) * 5.0f,
-                { 1.0f,0.0f,1.0f,1.0f }
-            );
         }
 
         // エミッターグループの描画
         for(auto& emitterGroup : instance_->emitterGroups_){
             for(auto& emitter : emitterGroup->emitters){
                 AABB area;
-                area.center = emitter.GetCenter();
-                area.halfSize = emitter.emitRange * 0.5f;
+                area.center = emitter->GetCenter();
+                area.halfSize = emitter->emitRange * 0.5f;
                 SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
-                // パーティクルの進行方向を描画
-                SEED::DrawLine(
-                    area.center,
-                    area.center + MyMath::Normalize(emitter.baseDirection) * 5.0f,
-                    { 1.0f,0.0f,1.0f,1.0f }
-                );
             }
         }
     }
@@ -232,15 +220,6 @@ void ParticleManager::CreateAccelerationField(const Range3D& range, const Vector
         std::make_unique<AccelerationField>(force, range)
     );
 }
-
-/// <summary>
-/// エミッターを追加する
-/// </summary>
-/// <param name="emitter"></param>
-void ParticleManager::AddEmitter(const Emitter& emitter){
-    instance_->emitters_.emplace_back(std::make_unique<Emitter>(emitter));
-}
-
 
 
 /// <summary>
@@ -293,7 +272,7 @@ void ParticleManager::DeleteAll(){
 /// パーティクルを発生させる
 /// </summary>
 /// <param name="emitter"></param>
-void ParticleManager::Emit(Emitter* emitter){
+void ParticleManager::Emit(Emitter_Base* emitter){
 
     if(!emitter->emitOrder){ return; }
     if(!emitter->isActive && !emitter->isEdittting){ return; }
@@ -303,7 +282,7 @@ void ParticleManager::Emit(Emitter* emitter){
 
         switch(emitter->particleType){
         case ParticleType::kRadial:
-            instance_->particles_.emplace_back(std::make_unique<RadialParticle>(*emitter));
+            instance_->particles_.emplace_back(std::make_unique<RadialParticle>(emitter));
             break;
         }
     }
@@ -320,7 +299,7 @@ void ParticleManager::Emit(Emitter* emitter){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void ParticleManager::EditAll(){
+void ParticleManager::Edit(){
 
     int32_t emitterGroupNo = 0;
     for(auto itEmitterGroups = instance_->emitterGroups_.begin(); itEmitterGroups != instance_->emitterGroups_.end();){
@@ -341,7 +320,7 @@ void ParticleManager::EditAll(){
             ImGui::DragFloat3("offset", &emitterGroup->offset.x, 0.05f);
 
             // エミッターグループの編集
-            EditEmitterGroup(emitterGroup);
+            emitterGroup->Edit();
 
             // 削除ボタン
             if(ImGui::Button("Delete")){
@@ -393,276 +372,6 @@ void ParticleManager::EditAll(){
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*                                                                                                               */
-/*                                          各EmitterGroupを編集する関数                                            */
-/*                                                                                                               */
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void ParticleManager::EditEmitterGroup(EmitterGroup* emitterGroup){
-
-    // エミッターごとに編集
-    int32_t emitterNo = 0;
-    for(auto itEmitter = emitterGroup->emitters.begin(); itEmitter != emitterGroup->emitters.end();){
-
-        std::string name = "Emitter_" + std::to_string(emitterNo);
-        Emitter& emitter = *itEmitter; // イテレーターが指す値にアクセス
-
-        if(ImGui::CollapsingHeader(name.c_str())){
-            ImGui::Indent();
-
-            // エミッターの編集
-            EditEmitter(&emitter);
-
-            // 削除ボタン
-            if(ImGui::Button("DeleteEmitter")){
-                ImGui::OpenPopup("Delete?");
-            }
-
-            // 削除ボタンを押したらポップアップを出し確認をする
-            if(ImGui::BeginPopupModal("Delete?")){
-                ImGui::Text("Are you sure you want to delete?");
-
-                // OKボタンを押したら削除
-                if(ImGui::Button("OK", ImVec2(120, 0))){
-                    itEmitter = emitterGroup->emitters.erase(itEmitter); // 要素を削除し、次の要素を取得
-                    ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                    continue; // 削除したので次の要素に進む
-                }
-
-                // キャンセルボタンを押したらポップアップを閉じる
-                if(ImGui::Button("Cancel", ImVec2(120, 0))){
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-
-            ImGui::Unindent();
-        }
-
-        ++itEmitter;// 次の要素に進む
-        ++emitterNo;
-    }
-
-    ImGui::Text("-------------");
-
-    // エミッターの追加ボタン
-    if(ImGui::Button("AddEmitter")){
-        emitterGroup->emitters.emplace_back(Emitter());
-        emitterGroup->emitters.back().parentGroup = emitterGroup;
-        emitterGroup->emitters.back().isEdittting = true;
-    }
-
-    // エミッターグループをjsonに保存
-    if(ImGui::Button("OutputToJson")){
-        // 入力前に文字列をクリア
-        for(auto& character : outputFileName_){ character = '\0'; }
-        // 名前があれば入れておく
-        //if(emitterGroup->name != ""){
-        //    for(int32_t i = 0; i < emitterGroup->name.size(); ++i){
-        //        outputFileName_[i] = '\0';
-        //    }
-        //}
-
-        ImGui::OpenPopup("OutputToJson");
-    }
-    OutputEmitterGroup(*emitterGroup);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*                                                                                                               */
-/*                                            各Emitterを編集する関数                                               */
-/*                                                                                                               */
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void ParticleManager::EditEmitter(Emitter* emitter){
-
-    // 全般の情報
-    if(ImGui::CollapsingHeader("General")){
-        ImGui::Indent();
-        EditGeneral(emitter);
-        ImGui::Dummy(ImVec2(0.0f, 5.0f));
-        ImGui::Unindent();
-    }
-
-
-    // 範囲などの情報
-    if(ImGui::CollapsingHeader("Ranges / Parameters")){
-        ImGui::Indent();
-        EditRangeParameters(emitter);
-        ImGui::Dummy(ImVec2(0.0f, 5.0f));
-        ImGui::Unindent();
-    }
-
-
-    // マテリアルなどの情報
-    if(ImGui::CollapsingHeader("Material")){
-        ImGui::Indent();
-        EditMaterial(emitter);
-        ImGui::Dummy(ImVec2(0.0f, 5.0f));
-        ImGui::Unindent();
-    }
-
-
-    // 頻度などの情報
-    if(ImGui::CollapsingHeader("Frequency")){
-        ImGui::Indent();
-        EditFrequency(emitter);
-        ImGui::Dummy(ImVec2(0.0f, 5.0f));
-        ImGui::Unindent();
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*                                                                                                               */
-/*                                        エミッター内の各パラメータ編集                                              */
-/*                                                                                                               */
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*------------------------*/
-/*        全般の情報       */
-/*------------------------*/
-void ParticleManager::EditGeneral(Emitter* emitter){
-    ImGui::Checkbox("isActive", &emitter->isActive);
-    ImGui::Checkbox("isBillboard", &emitter->isBillboard);
-    if(ImGui::Checkbox("isUseRotate", &emitter->isUseRotate)){ emitter->isBillboard = false; }
-    ImGui::Checkbox("isUseGravity", &emitter->isUseGravity);
-    ImGui::DragFloat3("center", &emitter->center.x, 0.05f);
-    ImGui::Combo("emitType", (int*)&emitter->emitType, "kOnce\0kInfinite\0kCustom\0");
-    ImGui::Combo("particleType", (int*)&emitter->particleType, "kRadial\0");
-    ImGui::Combo(
-        "blendMode", (int*)&emitter->blendMode,
-        "NONE\0MULTIPLY\0SUBTRACT\0NORMAL\0ADD\0SCREEN\0"
-    );
-    ImGui::Combo("CullingMode", (int*)&emitter->cullingMode, "NONE\0FRONT\0BACK\0");
-}
-
-
-/*------------------------*/
-/*      範囲などの情報      */
-/*------------------------*/
-void ParticleManager::EditRangeParameters(Emitter* emitter){
-    ImGui::Text("-------- Emit --------");
-    ImGui::DragFloat3("emitRange", &emitter->emitRange.x, 0.05f);
-    ImGui::Text("------- Radius -------");
-    ImGui::DragFloat("radiusRange.min", &emitter->radiusRange.min, 0.01f, 0.0f, emitter->radiusRange.max);
-    ImGui::DragFloat("radiusRange.max", &emitter->radiusRange.max, 0.01f, emitter->radiusRange.min);
-    ImGui::Text("------ Direction ------");
-    if(ImGui::DragFloat3("baseDirection", &emitter->baseDirection.x, 0.01f)){
-        emitter->baseDirection = MyMath::Normalize(emitter->baseDirection);
-    };
-    ImGui::DragFloat("directionRange", &emitter->directionRange, 0.01f, 0.0f, 1.0f);
-    ImGui::Text("------- Speed -------");
-    ImGui::DragFloat("speedRange.min", &emitter->speedRange.min, 0.02f, 0.0f, emitter->speedRange.max);
-    ImGui::DragFloat("speedRange.max", &emitter->speedRange.max, 0.02f, emitter->speedRange.min);
-    ImGui::Text("------ LifeTime ------");
-    ImGui::DragFloat("lifeTimeRange.min", &emitter->lifeTimeRange.min, 0.05f, 0.0f, emitter->lifeTimeRange.max);
-    ImGui::DragFloat("lifeTimeRange.max", &emitter->lifeTimeRange.max, 0.05f, emitter->lifeTimeRange.min);
-
-    // 回転が適用されている場合のみ
-    if(emitter->isUseRotate && !emitter->isBillboard){
-        ImGui::Text("------- Rotate -------");
-        ImGui::DragFloat("rotateSpeedRange.min", &emitter->rotateSpeedRange.min, 0.01f, 0.0f, emitter->rotateSpeedRange.max);
-        ImGui::DragFloat("rotateSpeedRange.max", &emitter->rotateSpeedRange.max, 0.01f, emitter->rotateSpeedRange.min);
-    }
-
-    // 重力が適用されている場合のみ
-    if(emitter->isUseGravity){
-        ImGui::Text("------- Gravity -------");
-        ImGui::DragFloat("gravity", &emitter->gravity, 0.01f);
-    }
-}
-
-
-/*------------------------*/
-/*     マテリアルなどの情報  */
-/*------------------------*/
-void ParticleManager::EditMaterial(Emitter* emitter){
-    // 色の設定
-    ImGui::Text("-------- Colors --------");
-    if(ImGui::CollapsingHeader("ColorList")){
-        ImGui::Indent();
-
-        // 色のリスト
-        for(int32_t i = 0; i < (int)emitter->colors.size(); ++i){
-            std::string colorName = "color_" + std::to_string(i);
-            ImGui::ColorEdit4(colorName.c_str(), &emitter->colors[i].x);
-            // 削除ボタン
-            if(ImGui::Button("DeleteColor")){
-                if(emitter->colors.size() > 1){
-                    emitter->colors.erase(emitter->colors.begin() + i);
-                }
-            }
-        }
-
-        // 追加ボタン
-        ImGui::Text("-- Add --");
-        if(ImGui::Button("AddColor")){
-            emitter->colors.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-        }
-
-        ImGui::Unindent();
-    }
-
-    // テクスチャの設定
-    ImGui::Text("-------- Textures --------");
-    if(ImGui::CollapsingHeader("TextureList")){
-        ImGui::Indent();
-
-        // エミッターに追加されたテクスチャのリスト
-        if(ImGui::CollapsingHeader("EmitTextures")){
-            ImGui::Indent();
-
-            // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
-            for(int32_t i = 0; i < emitter->texturePaths.size(); i++){
-                if(ImGui::ImageButton(textureIDs_[emitter->texturePaths[i]], ImVec2(50, 50))){
-                    // 消す
-                    if(emitter->texturePaths.size() > 1){
-                        emitter->texturePaths.erase(
-                            std::remove(emitter->texturePaths.begin(), emitter->texturePaths.end(), emitter->texturePaths[i]),
-                            emitter->texturePaths.end()
-                        );
-                    }
-                }
-            }
-
-            ImGui::Unindent();
-        }
-
-        // すべてのテクスチャのリスト
-        if(ImGui::CollapsingHeader("Liblaly")){
-            ImGui::Indent();
-
-            // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
-            for(auto& texture : textureIDs_){
-                if(ImGui::ImageButton(texture.second, ImVec2(50, 50))){
-                    emitter->texturePaths.push_back(texture.first);
-                }
-            }
-
-            ImGui::Unindent();
-        }
-
-        ImGui::Unindent();
-    }
-}
-
-
-/*------------------------*/
-/*      頻度などの情報      */
-/*------------------------*/
-void ParticleManager::EditFrequency(Emitter* emitter){
-    ImGui::DragFloat("emitInterval", &emitter->interval, 0.01f, 0.0f);
-    ImGui::DragInt("numEmitEvery", &emitter->numEmitEvery, 1, 0, 100);
-    if(emitter->emitType == EmitType::kCustom){
-        ImGui::DragInt("kMaxEmitCount", &emitter->kMaxEmitCount, 1);
-    }
-}
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -670,83 +379,6 @@ void ParticleManager::EditFrequency(Emitter* emitter){
 /*                                                                                                               */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// <summary>
-/// jsonファイルに保存
-/// </summary>
-void ParticleManager::OutputToJson(const EmitterGroup& emitterGroup, const std::string& outputFileName){
-    nlohmann::json j;
-
-    // エミッターの情報を保存
-    for(auto& emitter : emitterGroup.emitters){
-        nlohmann::json emitterJson;
-
-        // 全般の情報
-        emitterJson["isActive"] = emitter.isActive;
-        emitterJson["isBillboard"] = emitter.isBillboard;
-        emitterJson["isUseRotate"] = emitter.isUseRotate;
-        emitterJson["isUseGravity"] = emitter.isUseGravity;
-        emitterJson["emitType"] = (int)emitter.emitType;
-        emitterJson["particleType"] = (int)emitter.particleType;
-        emitterJson["blendMode"] = (int)emitter.blendMode;
-        emitterJson["CullingMode"] = (int)emitter.cullingMode;
-        emitterJson["center"] = { emitter.center.x, emitter.center.y, emitter.center.z };
-
-        // 範囲などの情報
-        emitterJson["emitRange"] = { emitter.emitRange.x, emitter.emitRange.y, emitter.emitRange.z };
-        emitterJson["radiusRange"] = { emitter.radiusRange.min, emitter.radiusRange.max };
-        emitterJson["baseDirection"] = { emitter.baseDirection.x, emitter.baseDirection.y, emitter.baseDirection.z };
-        emitterJson["directionRange"] = emitter.directionRange;
-        emitterJson["speedRange"] = { emitter.speedRange.min, emitter.speedRange.max };
-        emitterJson["rotateSpeedRange"] = { emitter.rotateSpeedRange.min, emitter.rotateSpeedRange.max };
-        emitterJson["lifeTimeRange"] = { emitter.lifeTimeRange.min, emitter.lifeTimeRange.max };
-        emitterJson["gravity"] = emitter.gravity;
-
-        // 発生頻度などの情報
-        emitterJson["interval"] = emitter.interval;
-        emitterJson["numEmitEvery"] = emitter.numEmitEvery;
-        emitterJson["kMaxEmitCount"] = emitter.kMaxEmitCount;
-
-        // 色の情報
-        for(auto& color : emitter.colors){
-            emitterJson["colors"].push_back({ color.x, color.y, color.z, color.w });
-        }
-
-        // テクスチャの情報
-        for(auto& textureHandle : emitter.texturePaths){
-            emitterJson["textureHandles"].push_back(textureHandle);
-        }
-
-        j["emitters"].push_back(emitterJson);
-    }
-
-    // ファイルに保存
-    std::ofstream ofs("resources/jsons/particle/" + outputFileName + ".json");
-    ofs << j.dump(4);
-}
-
-
-/// <summary>
-/// EmitterGroupをJsonに保存するUIなどを表示
-/// </summary>
-/// <param name="emitterGroup"></param>
-void ParticleManager::OutputEmitterGroup(const EmitterGroup& emitterGroup){
-
-    if(ImGui::BeginPopupModal("OutputToJson")){
-        ImGui::Text("Please fileName in below");
-        ImGui::InputText(".json", outputFileName_, IM_ARRAYSIZE(outputFileName_));
-
-        if(ImGui::Button("OK")){
-            // ファイルに保存
-            OutputToJson(emitterGroup, outputFileName_);
-            // 成功した旨を表示
-            MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
-            // ポップアップを閉じる
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-}
 
 /// <summary>
 /// Jsonファイルから読み込み
@@ -768,61 +400,15 @@ EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
 
     // エミッターの情報を読み込み
     for(auto& emitterJson : j["emitters"]){
-        Emitter emitter;
+        Emitter_Base* emitter = nullptr;
 
-        // 全般の情報
-        emitter.isActive = emitterJson["isActive"];
-        emitter.isBillboard = emitterJson["isBillboard"];
-        emitter.isUseRotate = emitterJson["isUseRotate"];
-        emitter.isUseGravity = emitterJson["isUseGravity"];
-        emitter.emitType = (EmitType)emitterJson["emitType"];
-        emitter.particleType = (ParticleType)emitterJson["particleType"];
-        emitter.blendMode = (BlendMode)emitterJson["blendMode"];
-        emitter.cullingMode = emitterJson["CullingMode"];
-        emitter.center = Vector3(
-            emitterJson["center"][0], emitterJson["center"][1], emitterJson["center"][2]
-        );
-
-        // 範囲などの情報
-        emitter.emitRange = Vector3(
-            emitterJson["emitRange"][0], emitterJson["emitRange"][1], emitterJson["emitRange"][2]
-        );
-        emitter.radiusRange = Range1D(
-            emitterJson["radiusRange"][0], emitterJson["radiusRange"][1]
-        );
-        emitter.baseDirection = Vector3(
-            emitterJson["baseDirection"][0], emitterJson["baseDirection"][1], emitterJson["baseDirection"][2]
-        );
-        emitter.directionRange = emitterJson["directionRange"];
-        emitter.speedRange = Range1D(
-            emitterJson["speedRange"][0], emitterJson["speedRange"][1]
-        );
-        emitter.rotateSpeedRange = Range1D(
-            emitterJson["rotateSpeedRange"][0], emitterJson["rotateSpeedRange"][1]
-        );
-        emitter.lifeTimeRange = Range1D(
-            emitterJson["lifeTimeRange"][0], emitterJson["lifeTimeRange"][1]
-        );
-        emitter.gravity = emitterJson["gravity"];
-
-
-        // 発生頻度などの情報
-        emitter.interval = emitterJson["interval"];
-        emitter.numEmitEvery = emitterJson["numEmitEvery"];
-        emitter.kMaxEmitCount = emitterJson["kMaxEmitCount"];
-
-        // 色の情報
-        emitter.colors.clear();
-        for(auto& color : emitterJson["colors"]){
-            emitter.colors.emplace_back(Vector4(color[0], color[1], color[2], color[3]));
+        // エミッターの種類によってインスタンスを生成
+        if(emitterJson["emitterType"] == "Emitter_Plane3D"){
+            emitter = new Emitter_Plane3D();
         }
 
-        // テクスチャの情報
-        emitter.texturePaths.clear();
-        for(auto& textureHandle : emitterJson["textureHandles"]){
-            emitter.texturePaths.push_back(textureHandle);
-        }
-
+        // エミッターの情報を読み込み
+        emitter->LoadFromJson(emitterJson);
         emitterGroup.emitters.emplace_back(emitter);
     }
 
@@ -857,7 +443,7 @@ void ParticleManager::Load(){
             instance_->emitterGroups_.back()->TeachParent();
 
             for(auto& emitter : instance_->emitterGroups_.back()->emitters){
-                emitter.isEdittting = true;
+                emitter->isEdittting = true;
             }
         }
     }

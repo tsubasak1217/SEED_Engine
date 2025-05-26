@@ -28,6 +28,7 @@
                 200.0
             ],
             "emitType": 1,
+            "emitterType": "Emitter_Plane3D",
             "gravity": -9.800000190734863,
             "interval": 0.0,
             "isActive": true,

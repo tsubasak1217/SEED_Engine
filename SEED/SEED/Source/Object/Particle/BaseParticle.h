@@ -5,14 +5,14 @@
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Source/Object/Particle/Emitter.h>
+#include <SEED/Source/Object/Particle/Emitter/Emitter.h>
 #include <vector>
 #include <memory>
 
 class BaseParticle{
 public:
     BaseParticle() = default;
-    BaseParticle(const Emitter& emitter);
+    BaseParticle(Emitter_Base* emitter);
     virtual ~BaseParticle() = default;
 
     virtual void Update();
@@ -22,7 +22,7 @@ public:
 
     bool GetIsAlive()const{return lifeTime_ > 0.0f;}
     void SetAcceleration(const Vector3& acceleration){ acceleration_ = acceleration; }
-    const Vector3& GetPos()const{ return particle_->transform_.translate_; }
+    virtual const Vector3& GetPos() = 0;
 
 protected:
 

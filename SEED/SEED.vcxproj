@@ -213,7 +213,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Object\Collision\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\BaseParticle.cpp" />
-    <ClCompile Include="SEED\Source\Object\Particle\Emitter.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\RadialParticle.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
@@ -362,7 +363,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Object\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Object\Particle\BaseParticle.h" />
-    <ClInclude Include="SEED\Source\Object\Particle\Emitter.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.h" />
     <ClInclude Include="SEED\Source\Object\Particle\RadialParticle.h" />
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>

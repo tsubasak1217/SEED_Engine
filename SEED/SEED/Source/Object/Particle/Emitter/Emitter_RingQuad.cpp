@@ -1,13 +1,13 @@
 #include <SEED/Source/Object/Particle/Emitter/Emitter.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
-#include "Emitter_Plane3D.h"
+#include "Emitter_RingQuad.h"
 
-Emitter_Plane3D::Emitter_Plane3D(){
+Emitter_RingQuad::Emitter_RingQuad(){
 }
 
 //
-void Emitter_Plane3D::Edit(){
+void Emitter_RingQuad::Edit(){
     // 全般の情報
     if(ImGui::CollapsingHeader("General")){
         ImGui::Indent();
@@ -48,7 +48,7 @@ void Emitter_Plane3D::Edit(){
 /*------------------------*/
 /*        全般の情報       */
 /*------------------------*/
-void Emitter_Plane3D::EditGeneral(){
+void Emitter_RingQuad::EditGeneral(){
     ImGui::Checkbox("isActive", &isActive);
     ImGui::Checkbox("isBillboard", &isBillboard);
     if(ImGui::Checkbox("isUseRotate", &isUseRotate)){ isBillboard = false; }
@@ -64,7 +64,7 @@ void Emitter_Plane3D::EditGeneral(){
 /*------------------------*/
 /*      範囲などの情報      */
 /*------------------------*/
-void Emitter_Plane3D::EditRangeParameters(){
+void Emitter_RingQuad::EditRangeParameters(){
     ImGui::Text("-------- Emit --------");
     ImGui::DragFloat3("emitRange", &emitRange.x, 0.05f);
     ImGui::Text("------- Radius -------");
@@ -100,7 +100,7 @@ void Emitter_Plane3D::EditRangeParameters(){
 /*------------------------*/
 /*     マテリアルなどの情報  */
 /*------------------------*/
-void Emitter_Plane3D::EditMaterial(){
+void Emitter_RingQuad::EditMaterial(){
     // 色の設定
     ImGui::Text("-------- Colors --------");
     if(ImGui::CollapsingHeader("ColorList")){
@@ -138,7 +138,7 @@ void Emitter_Plane3D::EditMaterial(){
 
             // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
             for(int32_t i = 0; i < texturePaths.size(); i++){
-                if(ImGui::ImageButton(textureDict[texturePaths[i]], ImVec2(50, 50))){
+                if(ImGui::ImageButton(texturePaths[i].c_str(),textureDict[texturePaths[i]], ImVec2(50, 50))){
                     // 消す
                     if(texturePaths.size() > 1){
                         texturePaths.erase(
@@ -158,7 +158,7 @@ void Emitter_Plane3D::EditMaterial(){
 
             // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
             for(auto& texture : textureDict){
-                if(ImGui::ImageButton(texture.second, ImVec2(50, 50))){
+                if(ImGui::ImageButton(texture.first.c_str(), texture.second, ImVec2(50, 50))){
                     texturePaths.push_back(texture.first);
                 }
             }
@@ -174,7 +174,7 @@ void Emitter_Plane3D::EditMaterial(){
 /*------------------------*/
 /*      頻度などの情報      */
 /*------------------------*/
-void Emitter_Plane3D::EditFrequency(){
+void Emitter_RingQuad::EditFrequency(){
     ImGui::DragFloat("emitInterval", &interval, 0.01f, 0.0f);
     ImGui::DragInt("numEmitEvery", &numEmitEvery, 1, 0, 100);
     if(emitType == EmitType::kCustom){
@@ -186,11 +186,11 @@ void Emitter_Plane3D::EditFrequency(){
 ///////////////////////////////////////////////////////////
 // 出力
 ///////////////////////////////////////////////////////////
-nlohmann::json Emitter_Plane3D::ExportToJson(){
+nlohmann::json Emitter_RingQuad::ExportToJson(){
     nlohmann::json j;
 
     // 全般の情報
-    j["emitterType"] = "Emitter_Plane3D";
+    j["emitterType"] = "Emitter_Primitive3D";
     j["isActive"] = isActive;
     j["isBillboard"] = isBillboard;
     j["isUseRotate"] = isUseRotate;
@@ -232,7 +232,7 @@ nlohmann::json Emitter_Plane3D::ExportToJson(){
 ///////////////////////////////////////////////////////////
 // 読み込み
 ///////////////////////////////////////////////////////////
-void Emitter_Plane3D::LoadFromJson(const nlohmann::json& j){
+void Emitter_RingQuad::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
     isActive = j["isActive"];

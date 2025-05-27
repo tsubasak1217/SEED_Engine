@@ -42,6 +42,7 @@ protected:
     Vector3 velocity_;
     Vector3 acceleration_;
     Vector3 totalAcceleration_;
+    EasingFunction velocityEaseFunc_;
 
     // 寿命関連
     float kLifeTime_;
@@ -56,7 +57,13 @@ protected:
     bool isUseRotate_;
     float rotateSpeed_;
     Vector3 rotateAxis_;
+    EasingFunction rotateEaseFunc_;
 
     // テクスチャ
     uint32_t textureHandle_;
+
+    // 減衰
+    bool enableSizeDecay_ = true; // サイズの減衰を有効にするかどうか
+    bool enableAlphaDecay_ = true; // アルファの減衰を有効にするかどうか
+    EasingFunction decayEaseFunc_;
 };

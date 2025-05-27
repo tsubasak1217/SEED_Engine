@@ -59,7 +59,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/source-charset:utf-8  /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
@@ -88,7 +88,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/source-charset:utf-8  /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
@@ -214,8 +214,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Object\Collision\Octree.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\BaseParticle.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter.cpp" />
-    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.cpp" />
-    <ClCompile Include="SEED\Source\Object\Particle\RadialParticle.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Particle_Plane.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +278,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
+    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
@@ -364,8 +366,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Object\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Object\Particle\BaseParticle.h" />
     <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter.h" />
-    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.h" />
-    <ClInclude Include="SEED\Source\Object\Particle\RadialParticle.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Particle_Plane.h" />
     <ClInclude Include="SEED\source\SEED.h" />
   </ItemGroup>
   <ItemGroup>

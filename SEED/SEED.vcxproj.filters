@@ -74,7 +74,6 @@
     <ClCompile Include="SEED\source\SEED.cpp" />
     <ClCompile Include="Game\Scene\Base\SceneRegister.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\BaseParticle.cpp" />
-    <ClCompile Include="SEED\Source\Object\Particle\RadialParticle.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.cpp" />
@@ -105,7 +104,9 @@
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
-    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.cpp" />
+    <ClCompile Include="SEED\Source\Object\Particle\Particle_Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -217,7 +218,7 @@
     <ClInclude Include="SEED\source\SEED.h" />
     <ClInclude Include="Game\Scene\Base\SceneRegister.h" />
     <ClInclude Include="SEED\Source\Object\Particle\BaseParticle.h" />
-    <ClInclude Include="SEED\Source\Object\Particle\RadialParticle.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Particle_Plane.h" />
     <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h" />
@@ -255,7 +256,9 @@
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
-    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane3D.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_Plane.h" />
+    <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.h" />
+    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />

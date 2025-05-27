@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/Manager/WindowManager/WindowManager.h>
 #include <SEED/Source/SEED.h>
+#include "ImGlyph.h"
 
 // シングルトンインスタンス
 ImGuiManager* ImGuiManager::instance_ = nullptr;
@@ -13,7 +14,6 @@ ImGuiManager* ImGuiManager::GetInstance(){
     return instance_;
 }
 
-
 void ImGuiManager::Initialize(){
 
     /*===========================================================================================*/
@@ -24,12 +24,27 @@ void ImGuiManager::Initialize(){
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::StyleColorsDark();
+
+    // ImGuiのフォント設定
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->AddFontFromFileTTF(
+        "./SEED/EngineResources/Fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf",
+        18.0f,// フォントサイズ
+        nullptr,// オプション
+        glyphRangesJapanese // 日本語用グリフ範囲
+    );
+    io.Fonts->Build(); // フォント構築を明示的に実行
+
+    ImGui_ImplDX12_InvalidateDeviceObjects();
+    ImGui_ImplDX12_CreateDeviceObjects();
+
+    // ウィンドウハンドルの取得
     HWND hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
 #ifdef _DEBUG
     hwnd = WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_);
 #endif // _DEBUG
 
+    // directX用の初期化
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX12_Init(
         DxManager::GetInstance()->device.Get(),
@@ -39,6 +54,10 @@ void ImGuiManager::Initialize(){
         ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),
         ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetGPUDescriptorHandleForHeapStart()
     );
+
+
+    size_t fontSize = io.Fonts->Fonts.size();
+    fontSize;
 }
 
 

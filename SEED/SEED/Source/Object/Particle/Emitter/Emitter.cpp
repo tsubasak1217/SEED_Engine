@@ -2,6 +2,10 @@
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 
+// Emitter
+#include "Emitter_Plane.h"
+
+
 Emitter_Base::Emitter_Base(){
     colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
     texturePaths.push_back(std::string("ParticleTextures/particle.png"));
@@ -100,7 +104,7 @@ void EmitterGroup::Edit(){
     // エミッターの追加ボタン
     if(ImGui::Button("AddEmitter")){
         // ここでエミッターの種類によって追加するエミッターを変える (あとで)
-        //emitterGroup->emitters.emplace_back(Emitter());
+        emitters.emplace_back(new Emitter_Plane());
 
         emitters.back()->parentGroup = this;
         emitters.back()->isEdittting = true;

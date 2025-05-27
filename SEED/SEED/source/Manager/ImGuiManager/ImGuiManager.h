@@ -39,8 +39,20 @@ struct ImFunc{
             cstrItems.push_back(item.c_str()); // 一時的に const char* に変換
         }
 
+        //int currentIndex = static_cast<int>(currentValue);
+        //bool changed = ImGui::Combo(label, &currentIndex, cstrItems.data(), static_cast<int>(cstrItems.size()));
+        //if(changed){
+        //    currentValue = static_cast<EnumType>(currentIndex);
+        //}
+        return Combo(label, currentValue, cstrItems.data(), static_cast<int>(cstrItems.size()));
+    }
+
+
+    template <typename EnumType>
+    static bool Combo(const char* label, EnumType& currentValue, const char* const* items,int size){
+
         int currentIndex = static_cast<int>(currentValue);
-        bool changed = ImGui::Combo(label, &currentIndex, cstrItems.data(), static_cast<int>(cstrItems.size()));
+        bool changed = ImGui::Combo(label, &currentIndex, items, size);
         if(changed){
             currentValue = static_cast<EnumType>(currentIndex);
         }

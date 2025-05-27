@@ -12,13 +12,11 @@
 
 // emitters
 #include <SEED/Source/Object/Particle/Emitter/Emitter.h> 
-#include <SEED/Source/Object/Particle/Emitter/Emitter_Plane3D.h>
+#include <SEED/Source/Object/Particle/Emitter/Emitter_Plane.h>
 
 // particles
 #include <SEED/Source/Object/Particle/BaseParticle.h>
-#include <SEED/Source/Object/Particle/RadialParticle.h>
-
-
+#include <SEED/Source/Object/Particle/Particle_Plane.h>
 
 class ParticleManager{
 

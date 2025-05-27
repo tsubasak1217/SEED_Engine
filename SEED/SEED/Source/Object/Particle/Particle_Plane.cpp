@@ -1,9 +1,9 @@
-#include "RadialParticle.h"
-#include "Emitter/Emitter_Plane3D.h"
+#include "Particle_Plane.h"
+#include "Emitter/Emitter_Plane.h"
 
-RadialParticle::RadialParticle(Emitter_Base* emitter) : BaseParticle(emitter){
+Particle_Plane::Particle_Plane(Emitter_Base* emitter) : BaseParticle(emitter){
 
-    Emitter_Plane3D* planeEmitter = dynamic_cast<Emitter_Plane3D*>(emitter);
+    Emitter_Plane* planeEmitter = dynamic_cast<Emitter_Plane*>(emitter);
     if(!planeEmitter){
         return;
     }
@@ -12,6 +12,7 @@ RadialParticle::RadialParticle(Emitter_Base* emitter) : BaseParticle(emitter){
     particle_ = std::make_unique<Model>("Assets/Plane.obj");
     particle_->isRotateWithQuaternion_ = false;
     particle_->isParticle_ = true;
+    particle_->cullMode_ = planeEmitter->cullingMode; // カリングモードを設定
 
     /////////////////////// フラグ類を決定 ///////////////////////////
 
@@ -66,9 +67,6 @@ RadialParticle::RadialParticle(Emitter_Base* emitter) : BaseParticle(emitter){
     ///////////////////// ブレンドモードを設定 ////////////////////////
     particle_->blendMode_ = planeEmitter->blendMode;
 
-    //////////////////////// カリングを設定 ////////////////////////
-    particle_->cullMode_ = D3D12_CULL_MODE(planeEmitter->cullingMode + 1);
-
     //////////////////////// ライトを無効に //////////////////////////
     particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;
 
@@ -78,9 +76,13 @@ RadialParticle::RadialParticle(Emitter_Base* emitter) : BaseParticle(emitter){
     );
     particle_->materials_[0].GH = textureHandle_;
 
+    //////////////////// イージング関数を設定 ////////////////////////
+    velocityEaseFunc_ = Easing::Ease[planeEmitter->velocityEaseType_];
+    rotateEaseFunc_ = Easing::Ease[planeEmitter->rotateEaseType_];
+    decayEaseFunc_ = Easing::Ease[planeEmitter->decayEaseType_];
 }
 
-void RadialParticle::Update(){
+void Particle_Plane::Update(){
 
     //
     float t = lifeTime_ / kLifeTime_;
@@ -88,11 +90,16 @@ void RadialParticle::Update(){
     // パーティクルの移動
     velocity_ = direction_ * speed_ * ClockManager::DeltaTime();
 
-    // 色を時間経過で薄くする
-    particle_->masterColor_.w = std::clamp(lifeTime_ / kLifeTime_, 0.0f, 1.0f);
 
     // 徐々に小さくする
-    particle_->transform_.scale_ = kScale_ * t;
+    if(enableSizeDecay_){
+        particle_->transform_.scale_ = kScale_ * (1.0f - decayEaseFunc_(1.0f - t));
+    }
+
+    // 徐々に透明にする
+    if(enableAlphaDecay_){
+        particle_->masterColor_.w = 1.0f - decayEaseFunc_(1.0f - t);
+    }
 
     // 寿命、ビルボードの更新
     BaseParticle::Update();

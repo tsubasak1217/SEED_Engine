@@ -1,7 +1,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <math.h>
-// range(t): 0 ~ 1;
+#include <functional>
 
 float EaseInSine(float t);
 float EaseOutSine(float t);
@@ -44,3 +44,103 @@ float EaseOutBounce(float t);
 float EaseInOutBounce(float t);
 
 
+using EasingFunction = std::function<float(float)>;
+namespace Easing{
+
+    // イージングの種類を列挙型で定義
+    enum Type{
+        None = 0,
+        InSine,
+        InQuad,
+        InCubic,
+        InQuart,
+        InQuint,
+        InCirc,
+        InExpo,
+        InBack,
+        InBounce,
+        OutSine,
+        OutQuad,
+        OutCubic,
+        OutQuart,
+        OutQuint,
+        OutCirc,
+        OutExpo,
+        OutBack,
+        OutBounce,
+        InOutSine,
+        InOutQuad,
+        InOutCubic,
+        InOutQuart,
+        InOutQuint,
+        InOutCirc,
+        InOutExpo,
+        InOutBack,
+        InOutBounce
+    };
+
+
+    // 関数ポインタ配列を作成
+    inline EasingFunction Ease[] = {
+        [](float t){ return t; }, // None
+        EaseInSine,
+        EaseInQuad,
+        EaseInCubic,
+        EaseInQuart,
+        EaseInQuint,
+        EaseInCirc,
+        EaseInExpo,
+        EaseInBack,
+        EaseInBounce,
+        EaseOutSine,
+        EaseOutQuad,
+        EaseOutCubic,
+        EaseOutQuart,
+        EaseOutQuint,
+        EaseOutCirc,
+        EaseOutExpo,
+        EaseOutBack,
+        EaseOutBounce,
+        EaseInOutSine,
+        EaseInOutQuad,
+        EaseInOutCubic,
+        EaseInOutQuart,
+        EaseInOutQuint,
+        EaseInOutCirc,
+        EaseInOutExpo,
+        EaseInOutBack,
+        EaseInOutBounce
+    };
+
+    // イージングの名前を配列で定義(ImGui::Comboで使用)
+    static inline const char* names[] = {
+        "None",
+        "InSine",
+        "InQuad",
+        "InCubic",
+        "InQuart",
+        "InQuint",
+        "InCirc",
+        "InExpo",
+        "InBack",
+        "InBounce",
+        "OutSine",
+        "OutQuad",
+        "OutCubic",
+        "OutQuart",
+        "OutQuint",
+        "OutCirc",
+        "OutExpo",
+        "OutBack",
+        "OutBounce",
+        "InOutSine",
+        "InOutQuad",
+        "InOutCubic",
+        "InOutQuart",
+        "InOutQuint",
+        "InOutCirc",
+        "InOutExpo",
+        "InOutBack",
+        "InOutBounce"
+    };
+};

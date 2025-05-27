@@ -282,7 +282,7 @@ void ParticleManager::Emit(Emitter_Base* emitter){
 
         switch(emitter->particleType){
         case ParticleType::kRadial:
-            instance_->particles_.emplace_back(std::make_unique<RadialParticle>(emitter));
+            instance_->particles_.emplace_back(std::make_unique<Particle_Plane>(emitter));
             break;
         }
     }
@@ -404,7 +404,7 @@ EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
 
         // エミッターの種類によってインスタンスを生成
         if(emitterJson["emitterType"] == "Emitter_Plane3D"){
-            emitter = new Emitter_Plane3D();
+            emitter = new Emitter_Plane();
         }
 
         // エミッターの情報を読み込み

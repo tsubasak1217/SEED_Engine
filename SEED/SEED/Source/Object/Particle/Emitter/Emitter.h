@@ -1,5 +1,6 @@
 #pragma once
 #include <SEED/Lib/Structs/Range1D.h>
+#include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Vector4.h>
@@ -7,6 +8,7 @@
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 

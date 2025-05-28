@@ -32,7 +32,7 @@ struct ImFunc{
 
     // コンボボックスのテンプレート関数
     template <typename EnumType>
-    static bool Combo(const char* label, EnumType& currentValue, std::initializer_list<std::string> items){
+    static bool Combo(const char* label, EnumType& currentValue, std::initializer_list<std::string> items,int padding = 0){
         std::vector<const char*> cstrItems;
         cstrItems.reserve(items.size());
         for(const auto& item : items){
@@ -44,17 +44,18 @@ struct ImFunc{
         //if(changed){
         //    currentValue = static_cast<EnumType>(currentIndex);
         //}
-        return Combo(label, currentValue, cstrItems.data(), static_cast<int>(cstrItems.size()));
+        return Combo(label, currentValue, cstrItems.data(), static_cast<int>(cstrItems.size()),padding);
     }
 
 
     template <typename EnumType>
-    static bool Combo(const char* label, EnumType& currentValue, const char* const* items,int size){
+    static bool Combo(const char* label, EnumType& currentValue, const char* const* items,int size,int padding = 0){
 
-        int currentIndex = static_cast<int>(currentValue);
+        int currentIndex = static_cast<int>(currentValue) - padding;
         bool changed = ImGui::Combo(label, &currentIndex, items, size);
         if(changed){
-            currentValue = static_cast<EnumType>(currentIndex);
+            //EnumTypeの最初の値を取得
+            currentValue = static_cast<EnumType>(currentIndex + padding);
         }
         return changed;
     }

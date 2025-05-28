@@ -13,6 +13,9 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
+#define IMGUI_HAS_DOCK
+#define IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_ENABLE_DOCKING
 
 //---- Define assertion handler. Defaults to calling assert().
 // If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.

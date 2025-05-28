@@ -35,8 +35,8 @@ void ImGuiManager::Initialize(){
     );
     io.Fonts->Build(); // フォント構築を明示的に実行
 
-    ImGui_ImplDX12_InvalidateDeviceObjects();
-    ImGui_ImplDX12_CreateDeviceObjects();
+    // ドッキング機能の有効化
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     // ウィンドウハンドルの取得
     HWND hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
@@ -45,6 +45,8 @@ void ImGuiManager::Initialize(){
 #endif // _DEBUG
 
     // directX用の初期化
+    ImGui_ImplDX12_InvalidateDeviceObjects();
+    ImGui_ImplDX12_CreateDeviceObjects();
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX12_Init(
         DxManager::GetInstance()->device.Get(),
@@ -54,10 +56,6 @@ void ImGuiManager::Initialize(){
         ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetCPUDescriptorHandleForHeapStart(),
         ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV)->GetGPUDescriptorHandleForHeapStart()
     );
-
-
-    size_t fontSize = io.Fonts->Fonts.size();
-    fontSize;
 }
 
 

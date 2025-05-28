@@ -51,7 +51,8 @@ enum class EmitType : int32_t{
 
 // パーティクルを発生させるための構造体
 class Emitter_Base{
-
+    friend EmitterGroup;
+    friend class ParticleManager;
 public:
     Emitter_Base();
     virtual ~Emitter_Base() = default;
@@ -99,19 +100,24 @@ public:
     //-------------------- 管理用パラメータ ------------------//
 public:// アクティブ・非アクティブ管理のための変数
     EmitType emitType = EmitType::kInfinite;// 発生方法
-    int32_t kMaxEmitCount = 1;// 最大発生回数(EmitType::kCustomの時用)
+    int32_t kMaxEmitCount = 5;// 最大発生回数(EmitType::kCustomの時用)
 
 protected:
     float totalTime;// 経過時間
     int32_t emitCount = 0;// 発生させた回数
+    float kReactiveTime = 2.0f;// 再発生までの時間(実際の処理用)
+    float curReactiveTime = 0.0f;// 再発生までの時間(エディター用)
+    inline static int nextEmitterID_ = 0; // エミッターIDのカウンター
+    std::string idTag_;// IDタグ（エディター用）
 };
 
 
 
 // パーティクルをプリセット化するための構造体
 class EmitterGroup{
+    friend class ParticleManager;
 public:
-    EmitterGroup() = default;
+    EmitterGroup();
     EmitterGroup(const Matrix4x4* parentMat) : parentMat(parentMat){}
 
 public:
@@ -152,4 +158,9 @@ public:
 
 private:
     char outputFileName_[64];
+    inline static int nextGroupID_ = 0; // グループIDのカウンター
+    std::string idTag_;
+    static inline Emitter_Base* selectedEmitter_ = nullptr;
+    static inline auto selectedItEmitter_ = std::list<Emitter_Base*>::iterator();
+    std::string selectedEmitterName_;
 };

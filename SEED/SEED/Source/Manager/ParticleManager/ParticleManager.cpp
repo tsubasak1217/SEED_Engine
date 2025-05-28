@@ -54,8 +54,8 @@ void ParticleManager::LoadParticleTexture(){
     std::vector<std::string> fileNames;
 
     // 指定されたディレクトリ内のすべてのファイルを探索
-    for(const auto& entry : std::filesystem::directory_iterator("resources/textures/ParticleTextures/")) {
-        if(entry.is_regular_file()) { // 通常のファイルのみ取得（ディレクトリを除外）
+    for(const auto& entry : std::filesystem::directory_iterator("resources/textures/ParticleTextures/")){
+        if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
             // もしファイル名が".png"で終わっていたら
             if(entry.path().extension() == ".png"){
                 // ファイル名を追加
@@ -86,8 +86,8 @@ void ParticleManager::Update(){
 
 
 #ifdef _DEBUG
-    ImGui::Begin("ParticleEditor");
-    ImGui::Checkbox("isFieldVisible", &instance_->isFieldVisible_);
+    ImGui::Begin("パーティクルエディター");
+    ImGui::Checkbox("範囲の描画", &instance_->isFieldVisible_);
     instance_->Edit();
     ImGui::End();
 #endif // _DEBUG
@@ -302,41 +302,89 @@ void ParticleManager::Emit(Emitter_Base* emitter){
 void ParticleManager::Edit(){
 
     int32_t emitterGroupNo = 0;
-    for(auto itEmitterGroups = instance_->emitterGroups_.begin(); itEmitterGroups != instance_->emitterGroups_.end();){
-        // エミッターグループを取得
-        EmitterGroup* emitterGroup = itEmitterGroups->get();
+    static EmitterGroup* currentEmitterGroup = nullptr;
+    static auto selectedItEmitterGroup = instance_->emitterGroups_.begin();
+    std::string label = "";
 
-        // タブの名前の決定
-        std::string headerName = "EmitterGroup (" + std::to_string(emitterGroupNo) + ")";
-        if(emitterGroup->name != ""){
-            emitterGroup->name = emitterGroup->name + "(" + std::to_string(emitterGroupNo) + ")";
+
+    ImGui::BeginChild("クループの管理", ImVec2(200, 0), true);
+    {
+        for(auto itEmitterGroup = instance_->emitterGroups_.begin(); itEmitterGroup != instance_->emitterGroups_.end();){
+            // エミッターグループを取得
+            EmitterGroup* emitterGroup = itEmitterGroup->get();
+
+            // タブの名前の決定
+            emitterGroup->name = "グループ(" + std::to_string(emitterGroupNo) + ")";
+
+            // 各エミッターグループタブの開閉
+            if(ImGui::Button(emitterGroup->name.c_str())){
+                // 現在のエミッターグループを設定
+                currentEmitterGroup = emitterGroup;
+                selectedItEmitterGroup = itEmitterGroup; // 選択されたエミッターグループを保存
+                ImGui::SetWindowFocus(emitterGroup->name.c_str()); // タブを選択状態にする
+            }
+
+            ++itEmitterGroup;
+            ++emitterGroupNo;
         }
 
-        // 各エミッターグループタブの開閉
-        if(ImGui::CollapsingHeader(headerName.c_str())){
+
+        ImGui::Separator();
+
+        // エミッターの追加ボタン
+        ImGui::Text("-- エミッターグループの追加 --");
+        if(ImGui::Button("グループの追加")){
+            instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>());
+        }
+
+        // ホットリロード
+        ImGui::Text("-- ファイルから読み込む --");
+        if(ImGui::CollapsingHeader("ファイル一覧")){
             ImGui::Indent();
+            Load();
+            ImGui::Unindent();
+        }
+
+    } ImGui::EndChild();
+    ImGui::SameLine();
+
+    // 選択されているグループの 編集を行う
+    if(currentEmitterGroup){
+
+
+        // エミッターの選択・追加/グループの削除
+        ImGui::BeginChild(currentEmitterGroup->name.c_str(), ImVec2(200, 0), true);
+        {
+            // 選択されているエミッターグループの情報を表示
+            ImGui::Text(currentEmitterGroup->name.c_str());
+            ImGui::Separator();
 
             // オフセットの設定
-            ImGui::DragFloat3("offset", &emitterGroup->offset.x, 0.05f);
+            ImGui::Text("グループ単位の座標設定");
+            label = "offset" + currentEmitterGroup->idTag_;
+            ImGui::DragFloat3(label.c_str(), &currentEmitterGroup->offset.x, 0.05f);
+            ImGui::Separator();
 
             // エミッターグループの編集
-            emitterGroup->Edit();
+            currentEmitterGroup->Edit();
 
             // 削除ボタン
-            if(ImGui::Button("Delete")){
-                ImGui::OpenPopup("Delete?");
+            ImGui::Separator();
+            ImGui::Text("削除");
+            label = "グループの削除" + currentEmitterGroup->idTag_;
+            if(ImGui::Button(label.c_str())){
+                ImGui::OpenPopup("削除しますか?");
             }
 
             // 削除ボタンを押したらポップアップを出し確認をする
-            if(ImGui::BeginPopupModal("Delete?")){
-                ImGui::Text("Are you sure you want to delete?");
+            if(ImGui::BeginPopupModal("削除しますか?")){
+                ImGui::Text("本当に削除しますか？");
 
                 // OKボタンを押したら削除
                 if(ImGui::Button("OK", ImVec2(120, 0))){
-                    itEmitterGroups = instance_->emitterGroups_.erase(itEmitterGroups); // 要素を削除し、次の要素を取得
+                    instance_->emitterGroups_.erase(selectedItEmitterGroup); // 要素を削除し、次の要素を取得
+                    currentEmitterGroup = nullptr; // 現在のエミッターグループをリセット
                     ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                    continue; // 削除したので次の要素に進む
                 }
 
                 // キャンセルボタンを押したらポップアップを閉じる
@@ -347,28 +395,51 @@ void ParticleManager::Edit(){
                 ImGui::EndPopup();
             }
 
+        }ImGui::EndChild();
+        ImGui::SameLine();
+    }
+
+
+    // 選択しているエミッターの編集
+    if(currentEmitterGroup && currentEmitterGroup->selectedEmitter_){
+
+        // エミッターの情報編集・削除
+        ImGui::BeginChild("エミッター", ImVec2(0, 0), true);
+        {
+            // 選択されているエミッターの名前を表示
+            ImGui::Text(currentEmitterGroup->selectedEmitterName_.c_str());
+
+            // エミッターの一般的な情報を編集
+            Emitter_Base* emitter = currentEmitterGroup->selectedEmitter_;
+            emitter->Edit();
+
+            // 削除ボタン
             ImGui::Separator();
-            ImGui::Unindent();
-        }
+            label = "エミッターの削除" + emitter->idTag_;
+            if(ImGui::Button(label.c_str())){
+                ImGui::OpenPopup("削除しますか?");
+            }
 
-        ++itEmitterGroups;
-        ++emitterGroupNo;
-    }
+            // 削除ボタンを押したらポップアップを出し確認をする
+            if(ImGui::BeginPopupModal("削除しますか?")){
+                ImGui::Text("本当に削除しますか？");
 
-    ImGui::Separator();
+                // OKボタンを押したら削除
+                if(ImGui::Button("OK", ImVec2(120, 0))){
+                    currentEmitterGroup->emitters.erase(currentEmitterGroup->selectedItEmitter_);
+                    currentEmitterGroup->selectedEmitter_ = nullptr; // 選択されているエミッターをリセット
+                    ImGui::CloseCurrentPopup();
+                }
 
-    // エミッターの追加ボタン
-    ImGui::Text("-- AddEmitterGroup --");
-    if(ImGui::Button("AddEmitterGroup")){
-        instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>());
-    }
+                // キャンセルボタンを押したらポップアップを閉じる
+                if(ImGui::Button("Cancel", ImVec2(120, 0))){
+                    ImGui::CloseCurrentPopup();
+                }
 
-    // ホットリロード
-    ImGui::Text("-- Load --");
-    if(ImGui::CollapsingHeader("Load")){
-        ImGui::Indent();
-        Load();
-        ImGui::Unindent();
+                ImGui::EndPopup();
+            }
+
+        }ImGui::EndChild();
     }
 }
 
@@ -422,8 +493,8 @@ EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
 void ParticleManager::Load(){
     // ファイル一覧を取得
     std::vector<std::string> fileNames;
-    for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")) {
-        if(entry.is_regular_file()) { // 通常のファイルのみ取得（ディレクトリを除外）
+    for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")){
+        if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
             // もしファイル名が".json"で終わっていたら
             if(entry.path().extension() == ".json"){
                 // ファイル名を追加
@@ -433,7 +504,7 @@ void ParticleManager::Load(){
     }
 
     // ファイルを選択して読み込み
-    ImGui::Text("Please select file");
+    ImGui::Text("読み込むファイルを選択");
     for(auto& fileName : fileNames){
         if(ImGui::Button(fileName.c_str())){
 

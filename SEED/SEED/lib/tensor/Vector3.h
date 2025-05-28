@@ -175,9 +175,15 @@ inline void to_json(nlohmann::json& j, const Vector3& vec){
 
 // JSON から Vector3 に変換
 inline void from_json(const nlohmann::json& j, Vector3& v){
-    v.x = j.at("x").get<float>();
-    v.y = j.at("y").get<float>();
-    v.z = j.at("z").get<float>();
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z")){
+        v.x = j[0].get<float>();
+        v.y = j[1].get<float>();
+        v.z = j[2].get<float>();
+    } else{
+        v.x = j.at("x").get<float>();
+        v.y = j.at("y").get<float>();
+        v.z = j.at("z").get<float>();
+    }
 }
 
 inline void to_json(nlohmann::ordered_json& j, const Vector3& vec){
@@ -185,9 +191,15 @@ inline void to_json(nlohmann::ordered_json& j, const Vector3& vec){
 }
 
 inline void from_json(const nlohmann::ordered_json& j, Vector3& v){
-    v.x = j.at("x").get<float>();
-    v.y = j.at("y").get<float>();
-    v.z = j.at("z").get<float>();
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z")){
+        v.x = j[0].get<float>();
+        v.y = j[1].get<float>();
+        v.z = j[2].get<float>();
+    } else{
+        v.x = j.at("x").get<float>();
+        v.y = j.at("y").get<float>();
+        v.z = j.at("z").get<float>();
+    }
 }
 
 struct Vector3Int{

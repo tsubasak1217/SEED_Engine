@@ -10,11 +10,26 @@ Emitter_Base::Emitter_Base(){
     colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
     texturePaths.push_back(std::string("ParticleTextures/particle.png"));
     totalTime = interval;
+    // タグの生成
+    idTag_ = "##" + std::to_string(nextEmitterID_); // ユニークなIDタグを生成
+    nextEmitterID_++;
 }
 
 void Emitter_Base::Update(){
 
-    if(!isActive){ return; }
+    if(!isActive){
+        if(!isEdittting){
+            return;
+        } else{
+            // 編集中はアクティブにするまでの時間をカウントする
+            curReactiveTime += ClockManager::DeltaTime();
+            if(curReactiveTime >= kReactiveTime){
+                isActive = true;
+                curReactiveTime = 0.0f;
+            }
+            return;
+        }
+    }
 
     totalTime += ClockManager::DeltaTime();
 
@@ -50,59 +65,43 @@ Vector3 Emitter_Base::GetCenter(){
     }
 }
 
+// EmitterGroupのコンストラクタ
+EmitterGroup::EmitterGroup(){
+    idTag_ = "##" + std::to_string(nextGroupID_); // ユニークなIDタグを生成
+    nextGroupID_++;
+}
 
 // 編集関数
 void EmitterGroup::Edit(){
 
+    ImGui::Text("エミッター一覧(要素数:%d)", (int)emitters.size());
+
     // エミッターごとに編集
+    static std::string label = "";
     int32_t emitterNo = 0;
+
     for(auto itEmitter = emitters.begin(); itEmitter != emitters.end();){
 
-        std::string eName = "Emitter_" + std::to_string(emitterNo);
+        label = "Emitter_" + std::to_string(emitterNo) + idTag_;
         Emitter_Base* emitter = *itEmitter;
 
-        if(ImGui::CollapsingHeader(eName.c_str())){
-            ImGui::Indent();
-
-            // エミッターの編集
-            emitter->Edit();
-
-            // 削除ボタン
-            if(ImGui::Button("DeleteEmitter")){
-                ImGui::OpenPopup("Delete?");
-            }
-
-            // 削除ボタンを押したらポップアップを出し確認をする
-            if(ImGui::BeginPopupModal("Delete?")){
-                ImGui::Text("Are you sure you want to delete?");
-
-                // OKボタンを押したら削除
-                if(ImGui::Button("OK", ImVec2(120, 0))){
-                    itEmitter = emitters.erase(itEmitter); // 要素を削除し、次の要素を取得
-                    ImGui::CloseCurrentPopup();
-                    ImGui::EndPopup();
-                    continue; // 削除したので次の要素に進む
-                }
-
-                // キャンセルボタンを押したらポップアップを閉じる
-                if(ImGui::Button("Cancel", ImVec2(120, 0))){
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::EndPopup();
-            }
-
-            ImGui::Unindent();
+        // 選択を更新
+        if(ImGui::Button(label.c_str())){
+            selectedEmitter_ = emitter; // 選択されたエミッターを保存
+            selectedItEmitter_ = itEmitter; // 選択されたエミッターのイテレータを保存
+            selectedEmitterName_ = "Emitter_" + std::to_string(emitterNo); // 選択されたエミッターの名前を保存
         }
 
         ++itEmitter;// 次の要素に進む
         ++emitterNo;
     }
 
-    ImGui::Text("-------------");
+    ImGui::Separator();
+    ImGui::Text("要素の追加");
 
     // エミッターの追加ボタン
-    if(ImGui::Button("AddEmitter")){
+    label = "エミッターの追加" + idTag_;
+    if(ImGui::Button(label.c_str())){
         // ここでエミッターの種類によって追加するエミッターを変える (あとで)
         emitters.emplace_back(new Emitter_Plane());
 
@@ -111,10 +110,13 @@ void EmitterGroup::Edit(){
     }
 
     // エミッターグループをjsonに保存
-    if(ImGui::Button("OutputToJson")){
+    ImGui::Separator();
+    ImGui::Text("出力");
+    label = "jsonに保存" + idTag_;
+    if(ImGui::Button(label.c_str())){
         // 入力前に文字列をクリア
         for(auto& character : outputFileName_){ character = '\0'; }
-        ImGui::OpenPopup("OutputToJson");
+        ImGui::OpenPopup("保存");
     }
 
     OutputGUI();
@@ -123,15 +125,21 @@ void EmitterGroup::Edit(){
 
 void EmitterGroup::OutputGUI(){
 
-    if(ImGui::BeginPopupModal("OutputToJson")){
-        ImGui::Text("Please fileName in below");
+    if(ImGui::BeginPopupModal("保存")){
+        ImGui::Text("ファイル名を入力");
         ImGui::InputText(".json", outputFileName_, IM_ARRAYSIZE(outputFileName_));
 
-        if(ImGui::Button("OK")){
+        if(ImGui::Button("決定")){
             // ファイルに保存
             Output();
             // 成功した旨を表示
             MessageBoxA(nullptr, "Json is Saved", "SaveToJson", MB_OK);
+            // ポップアップを閉じる
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if(ImGui::Button("キャンセル")){
             // ポップアップを閉じる
             ImGui::CloseCurrentPopup();
         }

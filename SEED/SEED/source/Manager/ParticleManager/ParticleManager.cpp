@@ -474,7 +474,7 @@ EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
         Emitter_Base* emitter = nullptr;
 
         // エミッターの種類によってインスタンスを生成
-        if(emitterJson["emitterType"] == "Emitter_Plane3D"){
+        if(emitterJson["emitterType"] == "Emitter_Model3D"){
             emitter = new Emitter_Model();
         }
 

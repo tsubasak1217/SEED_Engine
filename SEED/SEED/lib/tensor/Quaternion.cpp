@@ -507,6 +507,19 @@ Quaternion Quaternion::operator/(float f) const{
     return Quaternion(x / f, y / f, z / f, w / f);
 }
 
+void Quaternion::operator*=(const Quaternion& q){
+    // クォータニオンの積を計算
+    float newX = w * q.x + x * q.w + y * q.z - z * q.y;
+    float newY = w * q.y - x * q.z + y * q.w + z * q.x;
+    float newZ = w * q.z + x * q.y - y * q.x + z * q.w;
+    float newW = w * q.w - x * q.x - y * q.y - z * q.z;
+    // 各成分を更新
+    x = newX;
+    y = newY;
+    z = newZ;
+    w = newW;
+}
+
 Vector3 Quaternion::operator*(const Vector3& v) const{
     // 1) v を「スカラー部 0、ベクトル部 v」のクォータニオンに変換
     Quaternion qv(v.x, v.y, v.z, 0.0f);

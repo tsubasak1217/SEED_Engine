@@ -15,6 +15,7 @@
 // lib
 #include <vector>
 #include <list>
+#include <unordered_set>
 #include <memory>
 #include <string>
 #include <d3d12.h>
@@ -48,6 +49,7 @@ enum class EmitType : int32_t{
     kInfinite,// 無限に発生
     kCustom,// カスタム
 };
+
 
 // パーティクルを発生させるための構造体
 class Emitter_Base{
@@ -92,10 +94,25 @@ public:
     // texture
     static inline std::unordered_map<std::string, ImTextureID> textureDict;// テクスチャの辞書
     std::vector<std::string> texturePaths;// テクスチャハンドルの一覧
+    std::unordered_set<std::string> textureSet;// テクスチャのセット（重複を避けるため）
 
     // material
     std::vector<Vector4> colors;// 発生させる色の一覧
     BlendMode blendMode = BlendMode::ADD;// ブレンドモード
+
+    // 発生・消滅の動きに関わるパラメータ
+    float maxTimePoint = 0.5f;// 中心(scale,Alphaともに最大になる場所)の時間(0.0f~1.0f/lifeTime)
+    float maxTimeRate = 0.2f;// 最大になっている時間の割合
+    Vector3 kInScale = { 1.0f,1.0f,1.0f };// 出現時のスケール
+    Vector3 kOutScale = { 0.0f,0.0f,0.0f };// 消失時のスケール
+    float kInAlpha = 0.0f;// 出現時のアルファ値
+    float kOutAlpha = 0.0f;// 消失時のアルファ値
+
+    // ease関数
+    Easing::Type velocityEaseType_ = Easing::Type::None;
+    Easing::Type rotateEaseType_ = Easing::Type::None;
+    Easing::Type enterEaseType_ = Easing::Type::None;
+    Easing::Type exitEaseType_ = Easing::Type::None;
 
     //-------------------- 管理用パラメータ ------------------//
 public:// アクティブ・非アクティブ管理のための変数

@@ -82,6 +82,7 @@ void ImGuiManager::PreDraw(){
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+    //ImGuizmo::BeginFrame();
 
     // マウス座標の補正
     ImGuiIO& io = ImGui::GetIO();

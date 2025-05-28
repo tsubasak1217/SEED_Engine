@@ -24,8 +24,9 @@ public:
     bool isBillboard = true;// ビルボード処理を行うかどうか
     bool isUseGravity = false;// ライトを有効にするかどうか
     bool isUseRotate = false;// 回転処理を行うかどうか
-    bool enableSizeDecay = true;// サイズの減衰を有効にするかどうか
-    bool enableAlphaDecay = true;// アルファの減衰を有効にするかどうか
+    bool useRotateDirection = false;// 回転方向を自分で決めるかどうか
+    bool isRoteteRandomInit_ = false;
+    bool useDefaultTexture = true;// モデルのデフォルトのテクスチャを使用するかどうか
 
     //-------------------- 発生パラメータ ------------------//
 public:
@@ -35,14 +36,10 @@ public:
     float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
     Range1D speedRange = { 0.1f,1.0f };// 速度の幅
     Range1D rotateSpeedRange = { 0.0f,1.0f };// 回転速度の幅
+    Vector3 rotateDirection = { 0.0f,1.0f,0.0f };// 回転方向
     float gravity = -9.8f;// 重力
     Range1D lifeTimeRange = { 1.0f,3.0f };// 寿命時間の幅
     D3D12_CULL_MODE cullingMode = D3D12_CULL_MODE_BACK;// カリングモード
     LIGHTING_TYPE lightingType_ = LIGHTINGTYPE_NONE;// ライティングの種類
     std::string emitModelFilePath_ = "Assets/Plane.obj";// 発生モデルのファイルパス
-
-    // ease関数
-    Easing::Type velocityEaseType_ = Easing::Type::None;
-    Easing::Type rotateEaseType_ = Easing::Type::None;
-    Easing::Type decayEaseType_ = Easing::Type::None;
 };

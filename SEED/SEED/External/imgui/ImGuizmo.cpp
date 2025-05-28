@@ -24,7 +24,6 @@
 // SOFTWARE.
 //
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -1879,7 +1878,7 @@ namespace ImGuizmo
       // move
       if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID) && IsTranslateType(gContext.mCurrentOperation))
       {
-         ImGui::SetNextFrameWantCaptureMouse(true);
+         ImGui::CaptureMouseFromApp();
          const float len = fabsf(IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, gContext.mTranslationPlan)); // near plan
          vec_t newPos = gContext.mRayOrigin + gContext.mRayVector * len;
 
@@ -1949,7 +1948,7 @@ namespace ImGuizmo
          type = GetMoveType(op, &gizmoHitProportion);
          if (type != MT_NONE)
          {
-            ImGui::SetNextFrameWantCaptureMouse(true);
+            ImGui::CaptureMouseFromApp();
          }
          if (CanActivate() && type != MT_NONE)
          {
@@ -1994,7 +1993,7 @@ namespace ImGuizmo
          type = GetScaleType(op);
          if (type != MT_NONE)
          {
-            ImGui::SetNextFrameWantCaptureMouse(true);
+            ImGui::CaptureMouseFromApp();
          }
          if (CanActivate() && type != MT_NONE)
          {
@@ -2017,7 +2016,7 @@ namespace ImGuizmo
       // scale
       if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID) && IsScaleType(gContext.mCurrentOperation))
       {
-         ImGui::SetNextFrameWantCaptureMouse(true);
+         ImGui::CaptureMouseFromApp();
          const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, gContext.mTranslationPlan);
          vec_t newPos = gContext.mRayOrigin + gContext.mRayVector * len;
          vec_t newOrigin = newPos - gContext.mRelativeOrigin * gContext.mScreenFactor;
@@ -2108,7 +2107,7 @@ namespace ImGuizmo
 
          if (type != MT_NONE)
          {
-            ImGui::SetNextFrameWantCaptureMouse(true);
+            ImGui::CaptureMouseFromApp();
          }
 
          if (type == MT_ROTATE_SCREEN)
@@ -2142,7 +2141,7 @@ namespace ImGuizmo
       // rotation
       if (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID) && IsRotateType(gContext.mCurrentOperation))
       {
-         ImGui::SetNextFrameWantCaptureMouse(true);
+         ImGui::CaptureMouseFromApp();
          gContext.mRotationAngle = ComputeAngleOnPlan();
          if (snap)
          {

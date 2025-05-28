@@ -3,12 +3,13 @@
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 
 // Emitter
-#include "Emitter_Plane.h"
+#include "Emitter_Model.h"
 
 
 Emitter_Base::Emitter_Base(){
     colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-    texturePaths.push_back(std::string("ParticleTextures/particle.png"));
+    //texturePaths.push_back(std::string("ParticleTextures/particle.png"));
+    //textureSet.insert(texturePaths.back()); // テクスチャセットに追加
     totalTime = interval;
     // タグの生成
     idTag_ = "##" + std::to_string(nextEmitterID_); // ユニークなIDタグを生成

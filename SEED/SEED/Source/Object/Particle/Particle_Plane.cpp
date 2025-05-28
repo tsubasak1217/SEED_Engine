@@ -1,15 +1,15 @@
 #include "Particle_Plane.h"
 #include "Emitter/Emitter_Plane.h"
 
-Particle_Plane::Particle_Plane(Emitter_Base* emitter) : BaseParticle(emitter){
+Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
-    Emitter_Plane* planeEmitter = dynamic_cast<Emitter_Plane*>(emitter);
+    Emitter_Model* planeEmitter = dynamic_cast<Emitter_Model*>(emitter);
     if(!planeEmitter){
         return;
     }
 
     ////////////////// パーティクルのモデルを生成 /////////////////////
-    particle_ = std::make_unique<Model>("Assets/Plane.obj");
+    particle_ = std::make_unique<Model>(planeEmitter->emitModelFilePath_);
     particle_->isRotateWithQuaternion_ = false;
     particle_->isParticle_ = true;
     particle_->cullMode_ = planeEmitter->cullingMode; // カリングモードを設定
@@ -29,7 +29,7 @@ Particle_Plane::Particle_Plane(Emitter_Base* emitter) : BaseParticle(emitter){
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(planeEmitter->radiusRange.min, planeEmitter->radiusRange.max);
-    particle_->transform_.scale_ = { radius,radius,radius };
+    particle_->transform_.scale_ = MyFunc::Random(planeEmitter->scaleRange) * radius;
     kScale_ = particle_->transform_.scale_;
 
     //////////////////// 進行方向をランダム決定 ///////////////////////
@@ -67,8 +67,8 @@ Particle_Plane::Particle_Plane(Emitter_Base* emitter) : BaseParticle(emitter){
     ///////////////////// ブレンドモードを設定 ////////////////////////
     particle_->blendMode_ = planeEmitter->blendMode;
 
-    //////////////////////// ライトを無効に //////////////////////////
-    particle_->lightingType_ = (int32_t)LIGHTINGTYPE_NONE;
+    //////////////////////// ライト設定 //////////////////////////
+    particle_->lightingType_ = (int32_t)planeEmitter->lightingType_;
 
     //////////////////////// テクスチャを設定 ////////////////////////
     textureHandle_ = TextureManager::LoadTexture(
@@ -80,9 +80,13 @@ Particle_Plane::Particle_Plane(Emitter_Base* emitter) : BaseParticle(emitter){
     velocityEaseFunc_ = Easing::Ease[planeEmitter->velocityEaseType_];
     rotateEaseFunc_ = Easing::Ease[planeEmitter->rotateEaseType_];
     decayEaseFunc_ = Easing::Ease[planeEmitter->decayEaseType_];
+
+    //////////////////////// 減衰の設定 ////////////////////////
+    enableSizeDecay_ = planeEmitter->enableSizeDecay;
+    enableAlphaDecay_ = planeEmitter->enableAlphaDecay;
 }
 
-void Particle_Plane::Update(){
+void Particle_Model::Update(){
 
     //
     float t = lifeTime_ / kLifeTime_;

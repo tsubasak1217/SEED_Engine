@@ -103,7 +103,7 @@ void EmitterGroup::Edit(){
     label = "エミッターの追加" + idTag_;
     if(ImGui::Button(label.c_str())){
         // ここでエミッターの種類によって追加するエミッターを変える (あとで)
-        emitters.emplace_back(new Emitter_Plane());
+        emitters.emplace_back(new Emitter_Model());
 
         emitters.back()->parentGroup = this;
         emitters.back()->isEdittting = true;

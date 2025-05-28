@@ -1,11 +1,11 @@
 #pragma once
 #include <SEED/Source/Object/Particle/BaseParticle.h>
 
-class Particle_Plane : public BaseParticle{
+class Particle_Model : public BaseParticle{
 public:
-    Particle_Plane() = default;
-    Particle_Plane(Emitter_Base* emitter);
-    ~Particle_Plane() = default;
+    Particle_Model() = default;
+    Particle_Model(Emitter_Base* emitter);
+    ~Particle_Model() = default;
 
     void Update()override;
 

@@ -70,4 +70,13 @@ public:
         assert(instance_->modelData_.find(fileName) != instance_->modelData_.end());
         return instance_->modelData_[fileName];
     }
+
+    static std::vector<std::string> GetModelNames(){
+        std::vector<std::string> modelNames;
+        modelNames.reserve(instance_->modelData_.size());
+        for(const auto& pair : instance_->modelData_){
+            modelNames.push_back(pair.first);
+        }
+        return modelNames;
+    }
 };

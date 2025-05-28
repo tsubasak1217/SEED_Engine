@@ -1,13 +1,14 @@
 #include <SEED/Source/Object/Particle/Emitter/Emitter.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include "Emitter_Plane.h"
 
-Emitter_Plane::Emitter_Plane() : Emitter_Base(){
+Emitter_Model::Emitter_Model() : Emitter_Base(){
 }
 
 //
-void Emitter_Plane::Edit(){
+void Emitter_Model::Edit(){
 
     static std::string label = "";
 
@@ -31,7 +32,7 @@ void Emitter_Plane::Edit(){
     }
 
     // イージング関数の情報
-    label = "イージング関数" + idTag_;
+    label = "減衰・イージング" + idTag_;
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
         EditEaseType();
@@ -40,7 +41,7 @@ void Emitter_Plane::Edit(){
     }
 
     // マテリアルなどの情報
-    label = "マテリアル" + idTag_;
+    label = "マテリアル・形状・描画設定" + idTag_;
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
         EditMaterial();
@@ -63,14 +64,9 @@ void Emitter_Plane::Edit(){
 /*------------------------*/
 /*        全般の情報       */
 /*------------------------*/
-void Emitter_Plane::EditGeneral(){
+void Emitter_Model::EditGeneral(){
     ImGui::Checkbox("アクティブ", &isActive);
-    ImGui::Checkbox("ビルボードするか", &isBillboard);
-    if(ImGui::Checkbox("回転するか", &isUseRotate)){ isBillboard = false; }
-    ImGui::Checkbox("重力を使用するか", &isUseGravity);
-    ImFunc::Combo("particleType", particleType, {"kRadial"});
-    ImFunc::Combo("ブレンド", blendMode,{ "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
-    ImFunc::Combo("カリング設定", cullingMode, { "なし","前面","背面" },1);
+    ImFunc::Combo("particleType", particleType, { "kRadial" });
     ImFunc::Combo("発生タイプ", emitType, { "一度のみ","ずっと","指定回数" });
     if(emitType == EmitType::kCustom){
         ImGui::DragInt("発生回数", &kMaxEmitCount, 1);
@@ -81,7 +77,7 @@ void Emitter_Plane::EditGeneral(){
 /*------------------------*/
 /*      範囲などの情報      */
 /*------------------------*/
-void Emitter_Plane::EditRangeParameters(){
+void Emitter_Model::EditRangeParameters(){
     ImGui::Text("-------- 出現 --------");
     ImGui::DragFloat3("中心座標", &center.x, 0.05f);
     ImGui::DragFloat3("発生範囲", &emitRange.x, 0.05f);
@@ -89,8 +85,8 @@ void Emitter_Plane::EditRangeParameters(){
     ImGui::DragFloat("最小半径", &radiusRange.min, 0.01f, 0.0f, radiusRange.max);
     ImGui::DragFloat("最大半径", &radiusRange.max, 0.01f, radiusRange.min);
     ImGui::Text("------- スケール -------");
-    ImGui::DragFloat2("最小倍率(x,y)", &scaleRange.min.x, 0.005f, 0.0f, scaleRange.max.x);
-    ImGui::DragFloat2("最大倍率(x,y)", &scaleRange.max.x, 0.005f, scaleRange.min.x);
+    ImGui::DragFloat3("最小倍率(x,y,x)", &scaleRange.min.x, 0.005f, 0.0f, scaleRange.max.x);
+    ImGui::DragFloat3("最大倍率(x,y,x)", &scaleRange.max.x, 0.005f, scaleRange.min.x);
     ImGui::Text("------ 向き ------");
     if(ImGui::DragFloat3("基礎となる方向", &baseDirection.x, 0.01f)){
         baseDirection = MyMath::Normalize(baseDirection);
@@ -103,16 +99,17 @@ void Emitter_Plane::EditRangeParameters(){
     ImGui::DragFloat("最短", &lifeTimeRange.min, 0.05f, 0.0f, lifeTimeRange.max);
     ImGui::DragFloat("最長", &lifeTimeRange.max, 0.05f, lifeTimeRange.min);
 
-    // 回転が適用されている場合のみ
+    ImGui::Text("------- 回転 -------");
+    ImGui::Checkbox("ビルボードするか", &isBillboard);
+    if(ImGui::Checkbox("回転するか", &isUseRotate)){ isBillboard = false; }
     if(isUseRotate && !isBillboard){
-        ImGui::Text("------- 回転 -------");
         ImGui::DragFloat("最小回転速度", &rotateSpeedRange.min, 0.01f, 0.0f, rotateSpeedRange.max);
         ImGui::DragFloat("最大回転速度", &rotateSpeedRange.max, 0.01f, rotateSpeedRange.min);
     }
 
-    // 重力が適用されている場合のみ
+    ImGui::Text("------- 重力 -------");
+    ImGui::Checkbox("重力を使用するか", &isUseGravity);
     if(isUseGravity){
-        ImGui::Text("------- 重力 -------");
         ImGui::DragFloat("重力", &gravity, 0.01f);
     }
 }
@@ -121,11 +118,12 @@ void Emitter_Plane::EditRangeParameters(){
 /*------------------------*/
 /*      イージング関数の情報  */
 /*------------------------*/
-void Emitter_Plane::EditEaseType(){
-    ImGui::Text("-------- イージング形式 --------");
+void Emitter_Model::EditEaseType(){
+    ImGui::Text("-------- 減衰設定 --------");
     ImGui::Checkbox("サイズ減衰するか", &enableSizeDecay);
     ImGui::Checkbox("透明度減衰するか", &enableAlphaDecay);
-    ImFunc::Combo("速度", velocityEaseType_, Easing::names,IM_ARRAYSIZE(Easing::names));
+    ImGui::Text("-------- イージング関数 --------");
+    ImFunc::Combo("速度", velocityEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImFunc::Combo("回転", rotateEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImFunc::Combo("減衰", decayEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
 }
@@ -134,7 +132,14 @@ void Emitter_Plane::EditEaseType(){
 /*------------------------*/
 /*     マテリアルなどの情報  */
 /*------------------------*/
-void Emitter_Plane::EditMaterial(){
+void Emitter_Model::EditMaterial(){
+
+    // BlendMode, CullingMode,LightingTypeの設定
+    ImGui::Text("-------- 描画設定 --------");
+    ImFunc::Combo("ブレンドモード", blendMode, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
+    ImFunc::Combo("ライティング", lightingType_, { "なし","ランバート","ハーフランバート"});
+    ImFunc::Combo("カリング設定", cullingMode, { "なし","前面","背面" }, 1);
+
     // 色の設定
     ImGui::Text("-------- 色 --------");
     if(ImGui::CollapsingHeader("出現色の一覧")){
@@ -214,13 +219,30 @@ void Emitter_Plane::EditMaterial(){
 
         ImGui::Unindent();
     }
+
+    // モデルの設定
+    ImGui::Text("-------- モデル --------");
+    if(ImGui::CollapsingHeader("モデル一覧")){
+        ImGui::Indent();
+        // モデルの一覧から選択したものをエミッターのモデルリストに追加
+        static std::vector<std::string> modelPaths;
+        modelPaths = ModelManager::GetModelNames();
+        ImGui::Text("現在のモデル:%s", emitModelFilePath_.c_str());
+        for(auto& modelName : modelPaths){
+            if(ImGui::Button(modelName.c_str())){
+                // モデルをエミッターに追加
+                emitModelFilePath_ = modelName;
+            }
+        }
+        ImGui::Unindent();
+    }
 }
 
 
 /*------------------------*/
 /*      頻度などの情報      */
 /*------------------------*/
-void Emitter_Plane::EditFrequency(){
+void Emitter_Model::EditFrequency(){
     ImGui::DragFloat("発生間隔", &interval, 0.01f, 0.0f);
     ImGui::DragInt("一度に発生する数", &numEmitEvery, 1, 0, 100);
 }
@@ -229,7 +251,7 @@ void Emitter_Plane::EditFrequency(){
 ///////////////////////////////////////////////////////////
 // 出力
 ///////////////////////////////////////////////////////////
-nlohmann::json Emitter_Plane::ExportToJson(){
+nlohmann::json Emitter_Model::ExportToJson(){
     nlohmann::json j;
 
     // 全般の情報
@@ -242,6 +264,7 @@ nlohmann::json Emitter_Plane::ExportToJson(){
     j["particleType"] = (int)particleType;
     j["blendMode"] = (int)blendMode;
     j["CullingMode"] = (int)cullingMode;
+    j["lightingType"] = (int)lightingType_;
     j["center"] = { center.x, center.y, center.z };
 
     // 範囲などの情報
@@ -253,9 +276,11 @@ nlohmann::json Emitter_Plane::ExportToJson(){
     j["rotateSpeedRange"] = { rotateSpeedRange.min, rotateSpeedRange.max };
     j["lifeTimeRange"] = { lifeTimeRange.min, lifeTimeRange.max };
     j["gravity"] = gravity;
-    j["scaleRange"] = { {scaleRange.min.x, scaleRange.min.y}, {scaleRange.max.x, scaleRange.max.y} };
+    j["scaleRange"] = { scaleRange.min, scaleRange.max };
 
-    // イージング関数の情報
+    // 減衰・イージング関数の情報
+    j["enableSizeDecay"] = enableSizeDecay;
+    j["enableAlphaDecay"] = enableAlphaDecay;
     j["velocityEaseType"] = (int)velocityEaseType_;
     j["rotateEaseType"] = (int)rotateEaseType_;
     j["decayEaseType"] = (int)decayEaseType_;
@@ -275,13 +300,16 @@ nlohmann::json Emitter_Plane::ExportToJson(){
         j["textureHandles"].push_back(textureHandle);
     }
 
+    // モデルの情報
+    j["emitModelFilePath"] = emitModelFilePath_;
+
     return j;
 }
 
 ///////////////////////////////////////////////////////////
 // 読み込み
 ///////////////////////////////////////////////////////////
-void Emitter_Plane::LoadFromJson(const nlohmann::json& j){
+void Emitter_Model::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
     isActive = j["isActive"];
@@ -292,6 +320,7 @@ void Emitter_Plane::LoadFromJson(const nlohmann::json& j){
     particleType = (ParticleType)j["particleType"];
     blendMode = (BlendMode)j["blendMode"];
     cullingMode = (D3D12_CULL_MODE)j["CullingMode"];
+    lightingType_ = (LIGHTING_TYPE)j["lightingType"];
     center = Vector3(
         j["center"][0], j["center"][1], j["center"][2]
     );
@@ -305,12 +334,14 @@ void Emitter_Plane::LoadFromJson(const nlohmann::json& j){
     rotateSpeedRange = Range1D(j["rotateSpeedRange"][0], j["rotateSpeedRange"][1]);
     lifeTimeRange = Range1D(j["lifeTimeRange"][0], j["lifeTimeRange"][1]);
     gravity = j["gravity"];
-    scaleRange = Range2D(j["scaleRange"][0],j["scaleRange"][1]);
+    scaleRange = Range3D(j["scaleRange"][0], j["scaleRange"][1]);
 
     // イージング関数の情報
-    //velocityEaseType_ = (Easing::Type)j["velocityEaseType"];
-    //rotateEaseType_ = (Easing::Type)j["rotateEaseType"];
-    //decayEaseType_ = (Easing::Type)j["decayEaseType"];
+    enableSizeDecay = j["enableSizeDecay"];
+    enableAlphaDecay = j["enableAlphaDecay"];
+    velocityEaseType_ = (Easing::Type)j["velocityEaseType"];
+    rotateEaseType_ = (Easing::Type)j["rotateEaseType"];
+    decayEaseType_ = (Easing::Type)j["decayEaseType"];
 
     // 発生頻度などの情報
     interval = j["interval"];
@@ -328,5 +359,8 @@ void Emitter_Plane::LoadFromJson(const nlohmann::json& j){
     for(auto& textureHandle : j["textureHandles"]){
         texturePaths.push_back(textureHandle);
     }
+
+    // モデルの情報
+    emitModelFilePath_ = j["emitModelFilePath"].get<std::string>();
 }
 

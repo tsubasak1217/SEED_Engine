@@ -2,10 +2,10 @@
 #include <SEED/Source/Object/Particle/Emitter/Emitter.h>
 
 // パーティクルを発生させるための構造体
-class Emitter_Plane : public Emitter_Base{
+class Emitter_Model : public Emitter_Base{
 
 public:
-    Emitter_Plane();
+    Emitter_Model();
 
 public:
     void Edit()override;
@@ -30,7 +30,7 @@ public:
     //-------------------- 発生パラメータ ------------------//
 public:
     Range1D radiusRange = { 0.5f,3.0f };// 大きさの幅
-    Range2D scaleRange = { { 1.0f,1.0f },{ 1.0f,1.0f } };// スケールの幅(2D用)
+    Range3D scaleRange = { { 1.0f,1.0f,1.0f },{ 1.0f,1.0f,1.0f }};// スケールの幅
     Vector3 baseDirection = { 0.0f,1.0f,0.0f };// パーティクルの向き
     float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
     Range1D speedRange = { 0.1f,1.0f };// 速度の幅
@@ -38,6 +38,8 @@ public:
     float gravity = -9.8f;// 重力
     Range1D lifeTimeRange = { 1.0f,3.0f };// 寿命時間の幅
     D3D12_CULL_MODE cullingMode = D3D12_CULL_MODE_BACK;// カリングモード
+    LIGHTING_TYPE lightingType_ = LIGHTINGTYPE_NONE;// ライティングの種類
+    std::string emitModelFilePath_ = "Assets/Plane.obj";// 発生モデルのファイルパス
 
     // ease関数
     Easing::Type velocityEaseType_ = Easing::Type::None;

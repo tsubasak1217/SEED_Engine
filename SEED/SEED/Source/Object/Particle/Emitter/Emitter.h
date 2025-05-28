@@ -162,5 +162,5 @@ private:
     std::string idTag_;
     static inline Emitter_Base* selectedEmitter_ = nullptr;
     static inline auto selectedItEmitter_ = std::list<Emitter_Base*>::iterator();
-    std::string selectedEmitterName_;
+    std::string selectedEmitterName_ = "";
 };

@@ -101,10 +101,10 @@ void Emitter_Model::EditRangeParameters(){
 
     ImGui::Text("------- 回転 -------");
     ImGui::Checkbox("ビルボードするか", &isBillboard);
+    ImGui::Checkbox("回転の初期化値をランダムにするか", &isRoteteRandomInit_);
     ImGui::Checkbox("回転するか", &isUseRotate);
     if(isUseRotate){
         ImGui::Checkbox("回転軸を指定するか", &useRotateDirection);
-        ImGui::Checkbox("回転の初期化値をランダムにするか", &isRoteteRandomInit_);
         if(useRotateDirection){
             ImGui::DragFloat3("回転軸", &rotateDirection.x, 0.01f);
             rotateDirection = MyMath::Normalize(rotateDirection);
@@ -150,7 +150,7 @@ void Emitter_Model::EditMaterial(){
     // BlendMode, CullingMode,LightingTypeの設定
     ImGui::Text("-------- 描画設定 --------");
     ImFunc::Combo("ブレンドモード", blendMode, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
-    ImFunc::Combo("ライティング", lightingType_, { "なし","ランバート","ハーフランバート"});
+    ImFunc::Combo("ライティング", lightingType_, { "なし","ランバート","ハーフランバート" });
     ImFunc::Combo("カリング設定", cullingMode, { "なし","前面","背面" }, 1);
 
     // 色の設定
@@ -280,7 +280,7 @@ nlohmann::json Emitter_Model::ExportToJson(){
 
     // 全般の情報
     j["emitterType"] = "Emitter_Model3D";
-    j["isActive"] = isActive;
+    j["isActive"] = true;
     j["isBillboard"] = isBillboard;
     j["isUseRotate"] = isUseRotate;
     j["isUseGravity"] = isUseGravity;
@@ -345,7 +345,7 @@ nlohmann::json Emitter_Model::ExportToJson(){
 void Emitter_Model::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
-    isActive = j["isActive"];
+    isActive = true;//j["isActive"];
     isBillboard = j["isBillboard"];
     isUseRotate = j["isUseRotate"];
     isUseGravity = j["isUseGravity"];

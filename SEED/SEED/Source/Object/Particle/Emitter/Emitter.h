@@ -54,7 +54,7 @@ enum class EmitType : int32_t{
 // パーティクルを発生させるための構造体
 class Emitter_Base{
     friend EmitterGroup;
-    friend class ParticleManager;
+    friend class EffectSystem;
 public:
     Emitter_Base();
     virtual ~Emitter_Base() = default;
@@ -122,8 +122,6 @@ public:// アクティブ・非アクティブ管理のための変数
 protected:
     float totalTime;// 経過時間
     int32_t emitCount = 0;// 発生させた回数
-    float kReactiveTime = 2.0f;// 再発生までの時間(実際の処理用)
-    float curReactiveTime = 0.0f;// 再発生までの時間(エディター用)
     inline static int nextEmitterID_ = 0; // エミッターIDのカウンター
     std::string idTag_;// IDタグ（エディター用）
 };
@@ -132,19 +130,30 @@ protected:
 
 // パーティクルをプリセット化するための構造体
 class EmitterGroup{
-    friend class ParticleManager;
+    friend class EffectSystem;
 public:
     EmitterGroup();
     EmitterGroup(const Matrix4x4* parentMat) : parentMat(parentMat){}
 
 public:
     bool GetIsAlive() const{
-        if(emitters.size() == 0){ return true; }
+        // エミッターが1つもない場合はtrueを返す
+        if(emitters.size() == 0){ 
+            return true;
+        }
+       
+        if(isEditMode_){
+            // 編集モードの場合は常にtrueを返す
+            return true;
+        }
+
+        // 1つでも生存しているエミッターがあればtrueを返す
         for(const auto& emitter : emitters){
             if(emitter->isAlive){
                 return true;
             }
         }
+
         return false;
     }
 
@@ -167,10 +176,13 @@ public:
     void OutputGUI();
     void Output();
 
+private:
+    void Reactivation();
+
 public:
     std::string name = "";
     const Matrix4x4* parentMat = nullptr;
-    std::list<Emitter_Base*> emitters;
+    std::list<std::unique_ptr<Emitter_Base>> emitters;
     Vector3 offset;
 
 private:
@@ -178,6 +190,9 @@ private:
     inline static int nextGroupID_ = 0; // グループIDのカウンター
     std::string idTag_;
     static inline Emitter_Base* selectedEmitter_ = nullptr;
-    static inline auto selectedItEmitter_ = std::list<Emitter_Base*>::iterator();
+    static inline auto selectedItEmitter_ = std::list<std::unique_ptr<Emitter_Base>>::iterator();
     std::string selectedEmitterName_ = "";
+    bool isEditMode_ = false; // 編集モードかどうか
+    float kReactiveTime_ = 3.0f; // 再復活までの時間
+    float curReactiveTime_ = 0.0f; // 現在の再復活時間
 };

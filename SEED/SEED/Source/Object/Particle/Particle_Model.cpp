@@ -13,25 +13,6 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
     particle_->isParticle_ = true;
     particle_->cullMode_ = modelEmitter->cullingMode; // カリングモードを設定
 
-    // モデルのテクスチャを取得し、無ければ追加
-    if(modelEmitter->useDefaultTexture){
-        ModelData* modelData = ModelManager::GetModelData(modelEmitter->emitModelFilePath_);
-        auto& materials = modelData->materials;
-        for(auto material : materials){
-            std::string& texturePath = material.textureFilePath_;
-            if(modelEmitter->textureSet.find(texturePath) != modelEmitter->textureSet.end()){
-                continue; // 既に追加されているテクスチャはスキップ
-            }
-            modelEmitter->texturePaths.push_back(texturePath);
-            modelEmitter->textureSet.insert(texturePath); // テクスチャセットに追加
-
-            // GPUハンドルを取得し追加
-            uint32_t handle = TextureManager::LoadTexture(texturePath);
-            Emitter_Base::textureDict[texturePath] =
-                (ImTextureID)ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
-        }
-    }
-
     /////////////////////// フラグ類を決定 ///////////////////////////
 
     isBillboard_ = modelEmitter->isBillboard;
@@ -68,17 +49,17 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     //////////////////////// 回転情報を決定 ////////////////////////
 
-    // ランダム初期化フラグがある場合
-    if(modelEmitter->isRoteteRandomInit_){
-        particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(MyFunc::RandomVector() * 3.14f);
-        localRotate_ = particle_->transform_.rotateQuat_;
-    }
-
-    // 回転軸の決定
+    // 回転軸指定がある場合、軸を決定
     if(modelEmitter->useRotateDirection){
         rotateAxis_ = modelEmitter->rotateDirection; // 基本方向を使用
     } else{
         rotateAxis_ = MyFunc::RandomVector();
+    }
+
+    // ランダム初期化フラグがある場合
+    if(modelEmitter->isRoteteRandomInit_){
+        particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f,3.14f));
+        localRotate_ = particle_->transform_.rotateQuat_;
     }
 
     // 回転速度の決定
@@ -101,8 +82,26 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     //////////////////////// テクスチャを設定 ////////////////////////
 
-    // カスタムテクスチャの場合、選択肢の中からランダム決定
-    if(!modelEmitter->useDefaultTexture){
+    // モデルのテクスチャを取得し、無ければ追加
+    if(modelEmitter->useDefaultTexture){
+        ModelData* modelData = ModelManager::GetModelData(modelEmitter->emitModelFilePath_);
+        auto& materials = modelData->materials;
+        for(auto material : materials){
+            std::string& texturePath = material.textureFilePath_;
+            if(modelEmitter->textureSet.find(texturePath) != modelEmitter->textureSet.end()){
+                continue; // 既に追加されているテクスチャはスキップ
+            }
+            modelEmitter->texturePaths.push_back(texturePath);
+            modelEmitter->textureSet.insert(texturePath); // テクスチャセットに追加
+
+            // GPUハンドルを取得し追加
+            uint32_t handle = TextureManager::LoadTexture(texturePath);
+            Emitter_Base::textureDict[texturePath] =
+                (ImTextureID)ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, handle).ptr;
+        }
+
+    } else{// カスタムテクスチャを使用する場合、メッシュごとにランダムなテクスチャを設定
+
         for(auto& material : particle_->materials_){
             textureHandle_ = TextureManager::LoadTexture(
                 modelEmitter->texturePaths[MyFunc::Random(0, (int)modelEmitter->texturePaths.size() - 1)]

@@ -16,19 +16,26 @@ void BaseParticle::Update(){
 
 
     //////////////////////////////////
-    // 加速度を追加
+    // 速度の計算
     //////////////////////////////////
+
+    // 基本速度
+    float velocityEase = velocityEaseFunc_(t);
+    if(&velocityEaseFunc_ == &Easing::Ease[0]){ velocityEase = 1.0f; }
+    velocity_ = direction_ * speed_ * velocityEase * ClockManager::DeltaTime();
+
+    // 加速度の計算
     totalAcceleration_ += acceleration_ * ClockManager::DeltaTime();
     velocity_ += totalAcceleration_ * ClockManager::DeltaTime();
 
-
-    //////////////////////////////////
     // 重力処理
-    //////////////////////////////////
     if(isUseGravity_){
         gravityAcceleration_ += gravity_ * ClockManager::DeltaTime();
         velocity_.y += gravityAcceleration_ * ClockManager::DeltaTime();
     }
+
+    // translateの更新
+    particle_->transform_.translate_ += velocity_;
 
     //////////////////////////////////
     // 回転処理
@@ -64,10 +71,6 @@ void BaseParticle::Update(){
     //////////////////////////////////
     // パーティクルのトランスフォーム更新
     //////////////////////////////////
-    float velocityEase = velocityEaseFunc_(t);
-    if(&velocityEaseFunc_ == &Easing::Ease[0]){ velocityEase = 1.0f; }
-    velocity_ = direction_ * speed_ * velocityEase * ClockManager::DeltaTime();
-    particle_->transform_.translate_ += velocity_;
     particle_->UpdateMatrix();
 }
 

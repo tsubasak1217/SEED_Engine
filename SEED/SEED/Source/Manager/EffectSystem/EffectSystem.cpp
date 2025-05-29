@@ -1,4 +1,4 @@
-#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include "EffectSystem.h"
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/SEED.h>
 
@@ -8,7 +8,7 @@
 /*                                                                                                               */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ParticleManager* ParticleManager::instance_ = nullptr;
+EffectSystem* EffectSystem::instance_ = nullptr;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ ParticleManager* ParticleManager::instance_ = nullptr;
 /// <summary>
 /// デストラクタ
 /// </summary>
-ParticleManager::~ParticleManager(){
+EffectSystem::~EffectSystem(){
     delete instance_;
     instance_ = nullptr;
 }
@@ -30,9 +30,9 @@ ParticleManager::~ParticleManager(){
 /// インスタンスを取得
 /// </summary>
 /// <returns></returns>
-ParticleManager* ParticleManager::GetInstance(){
+EffectSystem* EffectSystem::GetInstance(){
     if(!instance_){
-        instance_ = new ParticleManager();
+        instance_ = new EffectSystem();
     }
     return instance_;
 }
@@ -40,7 +40,7 @@ ParticleManager* ParticleManager::GetInstance(){
 /// <summary>
 /// 初期化
 /// </summary>
-void ParticleManager::Initialize(){
+void EffectSystem::Initialize(){
     // インスタンスを取得
     GetInstance();
     // テクスチャの読み込み
@@ -48,7 +48,7 @@ void ParticleManager::Initialize(){
 }
 
 // 起動時のテクスチャの読み込み
-void ParticleManager::LoadParticleTexture(){
+void EffectSystem::LoadParticleTexture(){
 
     // resources/textures/ParticleTextures/ 以下の階層にあるテクスチャを自動で読む
     std::vector<std::string> fileNames;
@@ -82,7 +82,7 @@ void ParticleManager::LoadParticleTexture(){
 /*                                                                                                               */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ParticleManager::Update(){
+void EffectSystem::Update(){
 
 
 #ifdef _DEBUG
@@ -95,17 +95,9 @@ void ParticleManager::Update(){
     ////////////////////////////////////////////
     // エミッターの更新
     ////////////////////////////////////////////
-    for(auto& emitter : instance_->emitters_){
-        emitter->Update();
-
-        // 発生命令が出ていればパーティクルを発生させる
-        if(emitter->emitOrder == true){
-            Emit(emitter.get());
-        }
-    }
 
     // エフェクトのエミッター更新
-    for(auto& effect : instance_->effects_){
+    for(auto& effect : instance_->onceEffects_){
         for(auto& emitter : effect->emitters){
             emitter->Update();
             if(emitter->emitOrder == true){
@@ -146,11 +138,7 @@ void ParticleManager::Update(){
         return !particle->GetIsAlive();
     });
 
-    instance_->emitters_.remove_if([](auto& emitter){
-        return !emitter->isAlive;
-    });
-
-    instance_->effects_.remove_if([](auto& effect){
+    instance_->onceEffects_.remove_if([](auto& effect){
         return !effect->GetIsAlive();
     });
 
@@ -165,7 +153,7 @@ void ParticleManager::Update(){
 /*                                                                                                               */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ParticleManager::Draw(){
+void EffectSystem::Draw(){
 
     // パーティクルの描画
     for(auto& particle : instance_->particles_){
@@ -180,14 +168,6 @@ void ParticleManager::Draw(){
             area.center = (accelerationField->range.min + accelerationField->range.max) * 0.5f;
             area.halfSize = (accelerationField->range.max - accelerationField->range.min) * 0.5f;
             SEED::DrawAABB(area, { 1.0f,0.0f,0.0f,1.0f });
-        }
-
-        // エミッターの描画
-        for(auto& emitter : instance_->emitters_){
-            AABB area;
-            area.center = emitter->GetCenter();
-            area.halfSize = emitter->emitRange * 0.5f;
-            SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
         }
 
         // エミッターグループの描画
@@ -215,7 +195,7 @@ void ParticleManager::Draw(){
 /// </summary>
 /// <param name="range">フィールドの範囲</param>
 /// <param name="force">加速度</param>
-void ParticleManager::CreateAccelerationField(const Range3D& range, const Vector3& force){
+void EffectSystem::CreateAccelerationField(const Range3D& range, const Vector3& force){
     instance_->accelerationFields_.emplace_back(
         std::make_unique<AccelerationField>(force, range)
     );
@@ -227,7 +207,7 @@ void ParticleManager::CreateAccelerationField(const Range3D& range, const Vector
 /// </summary>
 /// <param name="fileName"></param>
 /// <param name="parentMat"></param>
-void ParticleManager::AddEffect(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat){
+void EffectSystem::AddEffectOnce(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat){
 
     // ファイル名が登録されていない場合は読み込む
     if(instance_->effectData_.find(fileName) == instance_->effectData_.end()){
@@ -235,28 +215,40 @@ void ParticleManager::AddEffect(const std::string& fileName, const Vector3& posi
     }
 
     // エフェクトデータを取得
-    auto& effect = instance_->effects_.emplace_back(std::make_unique<EmitterGroup>(instance_->effectData_[fileName]));
+    auto& effect = instance_->onceEffects_.emplace_back(std::make_unique<EmitterGroup>(instance_->effectData_[fileName]));
     effect->offset = position;
     effect->parentMat = parentMat;
     effect->TeachParent();
 }
 
-void ParticleManager::AddEffect(const std::string& fileName, const Matrix4x4* parentMat){
-    AddEffect(fileName, { 0.0f,0.0f,0.0f }, parentMat);
+void EffectSystem::AddEffectOnce(const std::string& fileName, const Matrix4x4* parentMat){
+    AddEffectOnce(fileName, { 0.0f,0.0f,0.0f }, parentMat);
 }
 
-void ParticleManager::AddEffect(const std::string& fileName, const Vector3& position){
-    AddEffect(fileName, position, nullptr);
+void EffectSystem::AddEffectOnce(const std::string& fileName, const Vector3& position){
+    AddEffectOnce(fileName, position, nullptr);
+}
+
+uint32_t EffectSystem::AddEffectEndless(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat){
+    // ファイル名が登録されていない場合は読み込む
+    if(instance_->effectData_.find(fileName) == instance_->effectData_.end()){
+        instance_->effectData_[fileName] = instance_->LoadFromJson(fileName);
+    }
+
+    // エフェクトデータを取得
+    auto& effect = instance_->onceEffects_.emplace_back(std::make_unique<EmitterGroup>(instance_->effectData_[fileName]));
+    effect->offset = position;
+    effect->parentMat = parentMat;
+    effect->TeachParent();
 }
 
 /// <summary>
 /// エフェクトを削除する
 /// </summary>
-void ParticleManager::DeleteAll(){
+void EffectSystem::DeleteAll(){
     instance_->particles_.clear();
-    instance_->emitters_.clear();
     instance_->emitterGroups_.clear();
-    instance_->effects_.clear();
+    instance_->onceEffects_.clear();
     instance_->effectData_.clear();
     instance_->accelerationFields_.clear();
 }
@@ -272,7 +264,7 @@ void ParticleManager::DeleteAll(){
 /// パーティクルを発生させる
 /// </summary>
 /// <param name="emitter"></param>
-void ParticleManager::Emit(Emitter_Base* emitter){
+void EffectSystem::Emit(Emitter_Base* emitter){
 
     if(!emitter->emitOrder){ return; }
     if(!emitter->isActive && !emitter->isEdittting){ return; }
@@ -299,7 +291,7 @@ void ParticleManager::Emit(Emitter_Base* emitter){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void ParticleManager::Edit(){
+void EffectSystem::Edit(){
 
     int32_t emitterGroupNo = 0;
     static EmitterGroup* currentEmitterGroup = nullptr;
@@ -310,8 +302,10 @@ void ParticleManager::Edit(){
     ImGui::BeginChild("クループの管理", ImVec2(200, 0), true);
     {
         for(auto itEmitterGroup = instance_->emitterGroups_.begin(); itEmitterGroup != instance_->emitterGroups_.end();){
+            
             // エミッターグループを取得
             EmitterGroup* emitterGroup = itEmitterGroup->get();
+            emitterGroup->Reactivation(); // エミッターグループの再活性化処理
 
             // タブの名前の決定
             emitterGroup->name = "グループ(" + std::to_string(emitterGroupNo) + ")";
@@ -335,6 +329,7 @@ void ParticleManager::Edit(){
         ImGui::Text("-- エミッターグループの追加 --");
         if(ImGui::Button("グループの追加")){
             instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>());
+            instance_->emitterGroups_.back()->isEditMode_ = true; // 編集モードにする
         }
 
         // ホットリロード
@@ -454,11 +449,11 @@ void ParticleManager::Edit(){
 /// <summary>
 /// Jsonファイルから読み込み
 /// </summary>
-void ParticleManager::LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName){
+void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName){
     *emitterGroup = LoadFromJson(fileName);
 }
 
-EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
+EmitterGroup EffectSystem::LoadFromJson(const std::string& fileName){
 
     EmitterGroup emitterGroup;
     std::ifstream ifs("resources/jsons/particle/" + fileName);
@@ -490,7 +485,7 @@ EmitterGroup ParticleManager::LoadFromJson(const std::string& fileName){
 /// <summary>
 /// Particleフォルダ内のファイルを選択してロード
 /// </summary>
-void ParticleManager::Load(){
+void EffectSystem::Load(){
     // ファイル一覧を取得
     std::vector<std::string> fileNames;
     for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")){
@@ -512,6 +507,7 @@ void ParticleManager::Load(){
             EmitterGroup emitterGroup = LoadFromJson(fileName);
             instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>(emitterGroup));
             instance_->emitterGroups_.back()->TeachParent();
+            instance_->emitterGroups_.back()->isEditMode_ = true; // 編集モードにする
 
             for(auto& emitter : instance_->emitterGroups_.back()->emitters){
                 emitter->isEdittting = true;
@@ -531,7 +527,7 @@ void ParticleManager::Load(){
 /// <summary>
 /// パーティクルと加速フィールドの衝突判定
 /// </summary>
-void ParticleManager::CollisionParticle2Field(){
+void EffectSystem::CollisionParticle2Field(){
     for(auto& particle : instance_->particles_){
         for(auto& field : instance_->accelerationFields_){
             if(field->CheckCollision(particle->GetPos())){

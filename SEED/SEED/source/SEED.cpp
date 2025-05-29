@@ -77,7 +77,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
-    ParticleManager::Initialize();
+    EffectSystem::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
 

@@ -11,7 +11,7 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/DxManager/PolygonManager.h>
-#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>

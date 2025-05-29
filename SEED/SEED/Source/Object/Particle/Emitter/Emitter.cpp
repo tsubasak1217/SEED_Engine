@@ -19,17 +19,7 @@ Emitter_Base::Emitter_Base(){
 void Emitter_Base::Update(){
 
     if(!isActive){
-        if(!isEdittting){
-            return;
-        } else{
-            // 編集中はアクティブにするまでの時間をカウントする
-            curReactiveTime += ClockManager::DeltaTime();
-            if(curReactiveTime >= kReactiveTime){
-                isActive = true;
-                curReactiveTime = 0.0f;
-            }
-            return;
-        }
+        return;
     }
 
     totalTime += ClockManager::DeltaTime();
@@ -84,7 +74,7 @@ void EmitterGroup::Edit(){
     for(auto itEmitter = emitters.begin(); itEmitter != emitters.end();){
 
         label = "Emitter_" + std::to_string(emitterNo) + idTag_;
-        Emitter_Base* emitter = *itEmitter;
+        Emitter_Base* emitter = itEmitter->get();
 
         // 選択を更新
         if(ImGui::Button(label.c_str())){
@@ -162,4 +152,42 @@ void EmitterGroup::Output(){
     // ファイルに保存
     std::ofstream ofs("resources/jsons/particle/" + std::string(outputFileName_) + ".json");
     ofs << j.dump(4);
+}
+
+// エミッターの再活性化処理
+void EmitterGroup::Reactivation(){
+    // 復活処理など
+    bool isAllStopped = true;
+
+    // エミッターが1つもない場合はfalse
+    if(emitters.size() == 0){
+        isAllStopped = false;
+    }
+
+    // 1つでも生存しているエミッターがあればfalse
+    for(const auto& emitter : emitters){
+        if(emitter->isActive){
+            isAllStopped = false;
+        }
+    }
+
+    // まだ誰か生きてるから処理しない
+    if(!isAllStopped){ return; }
+
+    // 全てのエミッターが停止している場合,復活処理を始める
+    curReactiveTime_ += ClockManager::DeltaTime();
+
+    // 再活性化までの時間が経過したら復活
+    if(curReactiveTime_ >= kReactiveTime_){
+        curReactiveTime_ = 0.0f;
+
+        // 全てのエミッターを再活性化
+        for(auto& emitter : emitters){
+            emitter->isEdittting = true; // 編集モードにする
+            emitter->isActive = true; // アクティブにする
+            emitter->isAlive = true; // 生存状態にする
+            emitter->emitCount = 0; // 発生回数をリセット
+            emitter->totalTime = 0.0f;
+        }
+    }
 }

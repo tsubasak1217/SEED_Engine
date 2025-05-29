@@ -18,17 +18,17 @@
 #include <SEED/Source/Object/Particle/BaseParticle.h>
 #include <SEED/Source/Object/Particle/Particle_Model.h>
 
-class ParticleManager{
+class EffectSystem{
 
 private:
-    ParticleManager() = default;
+    EffectSystem() = default;
     // コピー禁止
-    ParticleManager(const ParticleManager&) = delete;
-    void operator=(const ParticleManager&) = delete;
+    EffectSystem(const EffectSystem&) = delete;
+    void operator=(const EffectSystem&) = delete;
 
 public:
-    ~ParticleManager();
-    static ParticleManager* GetInstance();
+    ~EffectSystem();
+    static EffectSystem* GetInstance();
     static void Initialize();
     static void Update();
     static void Draw();
@@ -48,9 +48,10 @@ public:
     /// <summary>
     /// エフェクトを出現させる
     /// </summary>
-    static void AddEffect(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat);
-    static void AddEffect(const std::string& fileName, const Matrix4x4* parentMat);
-    static void AddEffect(const std::string& fileName, const Vector3& position);
+    static void AddEffectOnce(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat);
+    static void AddEffectOnce(const std::string& fileName, const Matrix4x4* parentMat);
+    static void AddEffectOnce(const std::string& fileName, const Vector3& position);
+    static uint32_t AddEffectEndless(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat);
 
     /// <summary>
     /// 削除
@@ -84,7 +85,7 @@ private:
 
 private:
 
-    static ParticleManager* instance_;
+    static EffectSystem* instance_;
 
 private:
 
@@ -92,11 +93,11 @@ private:
     bool isFieldVisible_ = true;
 
     // エフェクトデータ
-    std::unordered_map<std::string, EmitterGroup> effectData_;// ロードしたエフェクトの情報
-    std::list<std::unique_ptr<EmitterGroup>> effects_;// エフェクトのリスト
+    std::unordered_map<std::string, EmitterGroup> effectData_;// ロード済みのエフェクト情報
+    std::list<std::unique_ptr<EmitterGroup>> onceEffects_;// 一度出現させて消えるエフェクトのリスト
+    std::list<std::pair<uint32_t,std::unique_ptr<EmitterGroup>>> endlessEffects_;// 命令するまで消えないエフェクトのリスト
 
     // エミッター,パーティクル、フィールドのリスト
-    std::list<std::unique_ptr<Emitter_Base>> emitters_;
     std::list<std::unique_ptr<BaseParticle>> particles_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
 

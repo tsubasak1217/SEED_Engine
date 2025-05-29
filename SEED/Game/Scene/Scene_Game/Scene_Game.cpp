@@ -1,7 +1,7 @@
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
-#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
@@ -98,7 +98,7 @@ void Scene_Game::Initialize(){
     /////////////////////////////////////////////////
 
     // パーティクルの初期化
-    ParticleManager::DeleteAll();
+    EffectSystem::DeleteAll();
 }
 
 void Scene_Game::Finalize(){
@@ -146,7 +146,7 @@ void Scene_Game::Update(){
         model->Update();
     }
 
-    ParticleManager::Update();
+    EffectSystem::Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +180,7 @@ void Scene_Game::Draw(){
     directionalLight_->SendData();
 
     // パーティクルの描画
-    ParticleManager::Draw();
+    EffectSystem::Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

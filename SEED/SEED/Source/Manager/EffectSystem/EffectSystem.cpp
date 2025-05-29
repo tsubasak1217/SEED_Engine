@@ -2,6 +2,13 @@
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/SEED.h>
 
+// emitters
+#include <SEED/Source/Object/Particle/Emitter/Emitter.h> 
+#include <SEED/Source/Object/Particle/Emitter/Emitter_Model.h>
+// particles
+#include <SEED/Source/Object/Particle/BaseParticle.h>
+#include <SEED/Source/Object/Particle/Particle_Model.h>
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
 /*                                            statich変数の初期化                                                  */
@@ -101,7 +108,7 @@ void EffectSystem::Update(){
         for(auto& emitter : effect->emitters){
             emitter->Update();
             if(emitter->emitOrder == true){
-                Emit(emitter);
+                Emit(emitter.get());
             }
         }
     }
@@ -111,7 +118,7 @@ void EffectSystem::Update(){
         for(auto& emitter : emitterGroup->emitters){
             emitter->Update();
             if(emitter->emitOrder == true){
-                Emit(emitter);
+                Emit(emitter.get());
             }
         }
     }
@@ -164,19 +171,13 @@ void EffectSystem::Draw(){
     if(instance_->isFieldVisible_){
         // 加速フィールドの描画
         for(auto& accelerationField : instance_->accelerationFields_){
-            AABB area;
-            area.center = (accelerationField->range.min + accelerationField->range.max) * 0.5f;
-            area.halfSize = (accelerationField->range.max - accelerationField->range.min) * 0.5f;
-            SEED::DrawAABB(area, { 1.0f,0.0f,0.0f,1.0f });
+            accelerationField->Draw();
         }
 
         // エミッターグループの描画
         for(auto& emitterGroup : instance_->emitterGroups_){
             for(auto& emitter : emitterGroup->emitters){
-                AABB area;
-                area.center = emitter->GetCenter();
-                area.halfSize = emitter->emitRange * 0.5f;
-                SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
+                emitter->DrawEditData();
             }
         }
     }
@@ -209,13 +210,9 @@ void EffectSystem::CreateAccelerationField(const Range3D& range, const Vector3& 
 /// <param name="parentMat"></param>
 void EffectSystem::AddEffectOnce(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat){
 
-    // ファイル名が登録されていない場合は読み込む
-    if(instance_->effectData_.find(fileName) == instance_->effectData_.end()){
-        instance_->effectData_[fileName] = instance_->LoadFromJson(fileName);
-    }
-
     // エフェクトデータを取得
-    auto& effect = instance_->onceEffects_.emplace_back(std::make_unique<EmitterGroup>(instance_->effectData_[fileName]));
+    auto& effect = instance_->onceEffects_.emplace_back(std::make_unique<EmitterGroup>());
+    instance_->LoadFromJson(effect.get(), fileName);
     effect->offset = position;
     effect->parentMat = parentMat;
     effect->TeachParent();
@@ -230,16 +227,33 @@ void EffectSystem::AddEffectOnce(const std::string& fileName, const Vector3& pos
 }
 
 uint32_t EffectSystem::AddEffectEndless(const std::string& fileName, const Vector3& position, const Matrix4x4* parentMat){
-    // ファイル名が登録されていない場合は読み込む
-    if(instance_->effectData_.find(fileName) == instance_->effectData_.end()){
-        instance_->effectData_[fileName] = instance_->LoadFromJson(fileName);
+
+    // endlessEffectsから使われていないハンドルを探す
+    uint32_t handle = 0;
+    while(true){
+        uint32_t prev = handle;
+        for(auto& effect : instance_->endlessEffects_){
+            if(handle == effect.first){
+                handle++;
+                break; // 使われているハンドルが見つかったので、次のハンドルを探す
+            }
+        }
+
+        // 値が同じ場合、使われていないハンドル
+        if(prev == handle){ 
+            break;
+        }
     }
 
     // エフェクトデータを取得
-    auto& effect = instance_->onceEffects_.emplace_back(std::make_unique<EmitterGroup>(instance_->effectData_[fileName]));
-    effect->offset = position;
-    effect->parentMat = parentMat;
-    effect->TeachParent();
+    auto& effect = instance_->endlessEffects_.emplace_back(std::make_pair(handle, std::make_unique<EmitterGroup>()));
+    instance_->LoadFromJson(effect.second.get(), fileName);
+    effect.second->offset = position;
+    effect.second->parentMat = parentMat;
+    effect.second->TeachParent();
+
+    // ハンドルを返す
+    return handle;
 }
 
 /// <summary>
@@ -251,6 +265,18 @@ void EffectSystem::DeleteAll(){
     instance_->onceEffects_.clear();
     instance_->effectData_.clear();
     instance_->accelerationFields_.clear();
+}
+
+void EffectSystem::DeleteEffect(uint32_t handle){
+    // ハンドルに対応するエフェクトを削除
+    auto it = std::find_if(instance_->endlessEffects_.begin(), instance_->endlessEffects_.end(),
+        [handle](const std::pair<uint32_t, std::unique_ptr<EmitterGroup>>& effect){
+        return effect.first == handle;
+    });
+
+    if(it != instance_->endlessEffects_.end()){
+        instance_->endlessEffects_.erase(it);
+    }
 }
 
 
@@ -378,6 +404,7 @@ void EffectSystem::Edit(){
                 // OKボタンを押したら削除
                 if(ImGui::Button("OK", ImVec2(120, 0))){
                     instance_->emitterGroups_.erase(selectedItEmitterGroup); // 要素を削除し、次の要素を取得
+                    currentEmitterGroup->selectedEmitter_ = nullptr; // 選択されているエミッターをリセット
                     currentEmitterGroup = nullptr; // 現在のエミッターグループをリセット
                     ImGui::CloseCurrentPopup();
                 }
@@ -446,13 +473,6 @@ void EffectSystem::Edit(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-/// <summary>
-/// Jsonファイルから読み込み
-/// </summary>
-void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName){
-    *emitterGroup = LoadFromJson(fileName);
-}
-
 EmitterGroup EffectSystem::LoadFromJson(const std::string& fileName){
 
     EmitterGroup emitterGroup;
@@ -466,20 +486,51 @@ EmitterGroup EffectSystem::LoadFromJson(const std::string& fileName){
 
     // エミッターの情報を読み込み
     for(auto& emitterJson : j["emitters"]){
-        Emitter_Base* emitter = nullptr;
+        std::unique_ptr<Emitter_Base> emitter;
 
         // エミッターの種類によってインスタンスを生成
         if(emitterJson["emitterType"] == "Emitter_Model3D"){
-            emitter = new Emitter_Model();
+            emitter = std::make_unique<Emitter_Model>();
+        } else{
+            // 他の型への対応があるならここに追加
+            continue; // 未対応タイプはスキップ
         }
 
-        // エミッターの情報を読み込み
         emitter->LoadFromJson(emitterJson);
-        emitterGroup.emitters.emplace_back(emitter);
+        emitterGroup.emitters.emplace_back(std::move(emitter));
     }
 
     emitterGroup.name = fileName;
     return emitterGroup;
+}
+
+void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName){
+
+    std::ifstream ifs("resources/jsons/particle/" + fileName);
+    if(ifs.fail()){
+        assert(false);
+    }
+
+    nlohmann::json j;
+    ifs >> j;
+
+    // エミッターの情報を読み込み
+    for(auto& emitterJson : j["emitters"]){
+        std::unique_ptr<Emitter_Base> emitter;
+
+        // エミッターの種類によってインスタンスを生成
+        if(emitterJson["emitterType"] == "Emitter_Model3D"){
+            emitter = std::make_unique<Emitter_Model>();
+        } else{
+            // 他の型への対応があるならここに追加
+            continue; // 未対応タイプはスキップ
+        }
+
+        emitter->LoadFromJson(emitterJson);
+        emitterGroup->emitters.emplace_back(std::move(emitter));
+    }
+
+    emitterGroup->name = fileName;
 }
 
 /// <summary>
@@ -504,10 +555,10 @@ void EffectSystem::Load(){
         if(ImGui::Button(fileName.c_str())){
 
             // ファイルを読み込み、追加
-            EmitterGroup emitterGroup = LoadFromJson(fileName);
-            instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>(emitterGroup));
-            instance_->emitterGroups_.back()->TeachParent();
-            instance_->emitterGroups_.back()->isEditMode_ = true; // 編集モードにする
+            auto& effect = instance_->emitterGroups_.emplace_back(std::make_unique<EmitterGroup>());
+            instance_->LoadFromJson(effect.get(), fileName);
+            effect->TeachParent();
+            effect->isEditMode_ = true; // 編集モードにする
 
             for(auto& emitter : instance_->emitterGroups_.back()->emitters){
                 emitter->isEdittting = true;

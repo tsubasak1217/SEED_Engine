@@ -8,17 +8,18 @@
 
 Emitter_Base::Emitter_Base(){
     colors.push_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-    //texturePaths.push_back(std::string("ParticleTextures/particle.png"));
-    //textureSet.insert(texturePaths.back()); // テクスチャセットに追加
     totalTime = interval;
     // タグの生成
     idTag_ = "##" + std::to_string(nextEmitterID_); // ユニークなIDタグを生成
     nextEmitterID_++;
 }
 
+////////////////////////////////////////////////////////
+// 更新関数
+////////////////////////////////////////////////////////
 void Emitter_Base::Update(){
 
-    if(!isActive){
+    if(!isAlive){
         return;
     }
 
@@ -26,8 +27,12 @@ void Emitter_Base::Update(){
 
     if(totalTime >= interval){
         totalTime = 0.0f;
-        emitOrder = true;
         emitCount++;
+
+        // アクティブな時だけ発生依頼を出す
+        if(isActive){
+            emitOrder = true;
+        }
 
         // 無限発生の場合はこのまま処理を続ける
         if(emitType == EmitType::kInfinite){
@@ -36,16 +41,16 @@ void Emitter_Base::Update(){
 
         // カスタム発生 or 1回発生の場合は最大発生回数に達したら非アクティブにする
         if(emitCount >= kMaxEmitCount or emitType == EmitType::kOnce){
-            if(!isEdittting){
-                isAlive = false;
-            } else{
-                isActive = false;
+
+            isAlive = false;
+            if(isEdittting){
                 emitCount = 0;
             }
             return;
         }
     }
 }
+
 
 // 中心座標を取得
 Vector3 Emitter_Base::GetCenter(){
@@ -166,7 +171,7 @@ void EmitterGroup::Reactivation(){
 
     // 1つでも生存しているエミッターがあればfalse
     for(const auto& emitter : emitters){
-        if(emitter->isActive){
+        if(emitter->isAlive){
             isAllStopped = false;
         }
     }
@@ -184,7 +189,6 @@ void EmitterGroup::Reactivation(){
         // 全てのエミッターを再活性化
         for(auto& emitter : emitters){
             emitter->isEdittting = true; // 編集モードにする
-            emitter->isActive = true; // アクティブにする
             emitter->isAlive = true; // 生存状態にする
             emitter->emitCount = 0; // 発生回数をリセット
             emitter->totalTime = 0.0f;

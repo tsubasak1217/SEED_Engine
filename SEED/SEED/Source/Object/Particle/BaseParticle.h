@@ -7,6 +7,7 @@
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Object/Particle/Emitter/Emitter.h>
+#include <optional>
 #include <vector>
 #include <memory>
 
@@ -33,8 +34,10 @@ protected:
 
     // モデル
     std::unique_ptr<Model>particle_;
-    // 保存しておくスケール
+    // 保存変数
     Vector3 kScale_;
+    Vector3 emitPos_;
+    std::optional<Vector3> goalPos_; // 親の位置(親がある場合)
 
     // ビルボードを適用するかどうか
     bool isBillboard_;

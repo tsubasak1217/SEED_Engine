@@ -25,27 +25,46 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
     emitRange.min = center - modelEmitter->emitRange * 0.5f;
     emitRange.max = center + modelEmitter->emitRange * 0.5f;
     particle_->transform_.translate_ = MyFunc::Random(emitRange);
+    emitPos_ = particle_->transform_.translate_;
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(modelEmitter->radiusRange.min, modelEmitter->radiusRange.max);
     particle_->transform_.scale_ = MyFunc::Random(modelEmitter->scaleRange) * radius;
     kScale_ = particle_->transform_.scale_;
 
-    //////////////////// 進行方向をランダム決定 ///////////////////////
-    float angleRange = 3.14f * std::clamp(modelEmitter->directionRange, 0.0f, 1.0f);
-    float theta = MyFunc::Random(-angleRange, angleRange); // 水平回転
-    float phi = MyFunc::Random(-angleRange / 2.0f, angleRange / 2.0f); // 垂直回転 (範囲を制限)
+    /////////////////////// 進行方向を決定 ////////////////////////
 
-    Vector3 randomDirection = {// 球座標から方向ベクトルを計算
-        std::cos(phi) * std::cos(theta),
-        std::cos(phi) * std::sin(theta),
-        std::sin(phi)
-    };
+    direction_ = modelEmitter->baseDirection; // 基本方向を設定
 
-    direction_ = randomDirection * Quaternion::DirectionToDirection({ 1.0f, 0.0f, 0.0f }, modelEmitter->baseDirection); // 回転を適用
+    // 目標位置が設定されている場合、方向を目標位置に向ける
+    if(modelEmitter->isSetGoalPosition){
+        direction_ = MyMath::Normalize(modelEmitter->goalPosition - particle_->transform_.translate_);
+    }
 
-    ///////////////////// 速度をランダム決定 ////////////////////////
-    speed_ = MyFunc::Random(modelEmitter->speedRange.min, modelEmitter->speedRange.max);
+    // 目標地点で終了するかどうかで処理を分岐
+    if(!modelEmitter->isEndWithGoalPosition){
+        // ばらけさせるやつ
+        float angleRange = 3.14f * std::clamp(modelEmitter->directionRange, 0.0f, 1.0f);
+        float theta = MyFunc::Random(-angleRange, angleRange); // 水平回転
+        float phi = MyFunc::Random(-angleRange / 2.0f, angleRange / 2.0f); // 垂直回転 (範囲を制限)
+        Vector3 randomDirection = {// 球座標から方向ベクトルを計算
+            std::cos(phi) * std::cos(theta),
+            std::cos(phi) * std::sin(theta),
+            std::sin(phi)
+        };
+
+        // 基本方向とランダムな方向を組み合わせて最終的な方向を決定
+        direction_ = randomDirection * Quaternion::DirectionToDirection({ 1.0f, 0.0f, 0.0f }, direction_); // 回転を適用
+    
+    } else{
+        // 目標地点を設定
+        goalPos_ = modelEmitter->GetCenter() + modelEmitter->goalPosition;
+    }
+
+    ///////////////////// 速度を決定 ////////////////////////
+    if(!modelEmitter->isEndWithGoalPosition){
+        speed_ = MyFunc::Random(modelEmitter->speedRange.min, modelEmitter->speedRange.max);
+    }
 
     //////////////////////// 回転情報を決定 ////////////////////////
 
@@ -58,7 +77,7 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     // ランダム初期化フラグがある場合
     if(modelEmitter->isRoteteRandomInit_){
-        particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f,3.14f));
+        particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f, 3.14f));
         localRotate_ = particle_->transform_.rotateQuat_;
     }
 

@@ -31,6 +31,9 @@
 
 // math
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 
 // external
 #include <json.hpp>

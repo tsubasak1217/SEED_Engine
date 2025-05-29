@@ -81,24 +81,39 @@ void Emitter_Model::EditRangeParameters(){
     ImGui::Text("-------- 出現 --------");
     ImGui::DragFloat3("中心座標", &center.x, 0.05f);
     ImGui::DragFloat3("発生範囲", &emitRange.x, 0.05f);
+    
     ImGui::Text("------- 半径 -------");
     ImGui::DragFloat("最小半径", &radiusRange.min, 0.01f, 0.0f, radiusRange.max);
     ImGui::DragFloat("最大半径", &radiusRange.max, 0.01f, radiusRange.min);
+    
     ImGui::Text("------- スケール -------");
     ImGui::DragFloat3("最小倍率(x,y,x)", &scaleRange.min.x, 0.005f, 0.0f, scaleRange.max.x);
     ImGui::DragFloat3("最大倍率(x,y,x)", &scaleRange.max.x, 0.005f, scaleRange.min.x);
-    ImGui::Text("------ 向き ------");
-    if(ImGui::DragFloat3("基礎となる方向", &baseDirection.x, 0.01f)){
-        baseDirection = MyMath::Normalize(baseDirection);
-    };
-    ImGui::DragFloat("方向のばらけ具合", &directionRange, 0.01f, 0.0f, 1.0f);
-    ImGui::Text("------- 速さ -------");
-    ImGui::DragFloat("最低速度", &speedRange.min, 0.02f, 0.0f, speedRange.max);
-    ImGui::DragFloat("最高速度", &speedRange.max, 0.02f, speedRange.min);
+    
+    
+    ImGui::Text("------- 移動 -------");
+    ImGui::Checkbox("目標位置を設定するか", &isSetGoalPosition);
+    if(isSetGoalPosition){
+        ImGui::Checkbox("目標位置で終了するか", &isEndWithGoalPosition);
+        ImGui::DragFloat3("ゴール位置", &goalPosition.x, 0.05f);
+    } else{
+        isEndWithGoalPosition = false;
+        if(ImGui::DragFloat3("基礎となる方向", &baseDirection.x, 0.01f)){
+            baseDirection = MyMath::Normalize(baseDirection);
+        };
+    }
+    if(!isEndWithGoalPosition){
+        ImGui::DragFloat("方向のばらけ具合", &directionRange, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("最低速度", &speedRange.min, 0.02f, 0.0f, speedRange.max);
+        ImGui::DragFloat("最高速度", &speedRange.max, 0.02f, speedRange.min);
+    }
+    
+    
     ImGui::Text("------ 寿命 ------");
     ImGui::DragFloat("最短", &lifeTimeRange.min, 0.05f, 0.0f, lifeTimeRange.max);
     ImGui::DragFloat("最長", &lifeTimeRange.max, 0.05f, lifeTimeRange.min);
 
+    
     ImGui::Text("------- 回転 -------");
     ImGui::Checkbox("ビルボードするか", &isBillboard);
     ImGui::Checkbox("回転の初期化値をランダムにするか", &isRoteteRandomInit_);
@@ -113,6 +128,7 @@ void Emitter_Model::EditRangeParameters(){
         ImGui::DragFloat("最大回転速度", &rotateSpeedRange.max, 0.01f, rotateSpeedRange.min);
     }
 
+    
     ImGui::Text("------- 重力 -------");
     ImGui::Checkbox("重力を使用するか", &isUseGravity);
     if(isUseGravity){
@@ -271,6 +287,33 @@ void Emitter_Model::EditFrequency(){
     ImGui::DragInt("一度に発生する数", &numEmitEvery, 1, 0, 100);
 }
 
+///////////////////////////////////////////////////////////
+// 描画
+///////////////////////////////////////////////////////////
+void Emitter_Model::DrawEditData(){
+
+    // アクティブでない場合は描画しない
+    if(!isActive){
+        return;
+    }
+
+    // 範囲の描画
+    AABB area;
+    area.center = center;
+    area.halfSize = emitRange * 0.5f;
+    if(parentGroup){
+        area.center += parentGroup->GetCenter();
+    }
+
+    SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
+
+    // 発生範囲の中心に球を描画
+    if(isSetGoalPosition){
+        Vector3 goalPos = center + goalPosition;
+        SEED::DrawSphere(goalPos, 1.0f, 6,{ 1.0f,0.0f,0.0f,1.0f });
+    }
+}
+
 
 ///////////////////////////////////////////////////////////
 // 出力
@@ -296,6 +339,9 @@ nlohmann::json Emitter_Model::ExportToJson(){
     j["radiusRange"] = { radiusRange.min, radiusRange.max };
     j["baseDirection"] = { baseDirection.x, baseDirection.y, baseDirection.z };
     j["directionRange"] = directionRange;
+    j["isSetGoalPosition"] = isSetGoalPosition;
+    j["isEndWithGoalPosition"] = isEndWithGoalPosition;
+    j["goalPosition"] = { goalPosition.x, goalPosition.y, goalPosition.z };
     j["speedRange"] = { speedRange.min, speedRange.max };
     j["rotateSpeedRange"] = { rotateSpeedRange.min, rotateSpeedRange.max };
     j["useRotateDirection"] = useRotateDirection;
@@ -361,6 +407,9 @@ void Emitter_Model::LoadFromJson(const nlohmann::json& j){
     // 範囲やパラメーターなどの情報
     emitRange = Vector3(j["emitRange"]);
     radiusRange = Range1D(j["radiusRange"][0], j["radiusRange"][1]);
+    isSetGoalPosition = j["isSetGoalPosition"];
+    isEndWithGoalPosition = j["isEndWithGoalPosition"];
+    goalPosition = Vector3(j["goalPosition"]);
     baseDirection = Vector3(j["baseDirection"]);
     directionRange = j["directionRange"];
     speedRange = Range1D(j["speedRange"][0], j["speedRange"][1]);

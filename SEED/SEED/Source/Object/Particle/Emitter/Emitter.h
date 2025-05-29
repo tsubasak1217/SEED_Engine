@@ -1,10 +1,8 @@
 #pragma once
+#include <SEED/Source/SEED.h>
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Range3D.h>
-#include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Lib/Tensor/Vector4.h>
-#include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
@@ -70,6 +68,9 @@ public:
     virtual void Edit() = 0;
     virtual nlohmann::json ExportToJson() = 0;
     virtual void LoadFromJson(const nlohmann::json& j) = 0;
+
+protected:
+    virtual void DrawEditData() = 0;
 
 public:
     Vector3 GetCenter();

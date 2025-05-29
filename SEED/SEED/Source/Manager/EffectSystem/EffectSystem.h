@@ -1,23 +1,24 @@
 #pragma once
+// stl
 #include <list>
 #include <memory>
 #include <initializer_list>
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
+// SEED
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Structs/AccelerarionField.h>
+// 前方宣言
+class EmitterGroup;
+class Emitter_Base;
+class BaseParticle;
 
-// emitters
-#include <SEED/Source/Object/Particle/Emitter/Emitter.h> 
-#include <SEED/Source/Object/Particle/Emitter/Emitter_Model.h>
 
-// particles
-#include <SEED/Source/Object/Particle/BaseParticle.h>
-#include <SEED/Source/Object/Particle/Particle_Model.h>
 
+// エフェクトシステム
 class EffectSystem{
 
 private:
@@ -57,6 +58,7 @@ public:
     /// 削除
     /// </summary>
     static void DeleteAll();
+    static void DeleteEffect(uint32_t handle);
 
 private:
 
@@ -73,8 +75,8 @@ private:
 private:// ファイルの入出力
 
     // jsonファイルから読み込み
-    void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);
     EmitterGroup LoadFromJson(const std::string& fileName);
+    void LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName);
     // ファイルを選択して読み込み
     void Load();
 

@@ -7,7 +7,7 @@
                 1.0,
                 0.0
             ],
-            "blendMode": 4,
+            "blendMode": 5,
             "center": [
                 0.0,
                 0.0,
@@ -50,6 +50,11 @@
             "emitterType": "Emitter_Model3D",
             "enterEaseType": 16,
             "exitEaseType": 0,
+            "goalPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
             "gravity": -9.800000190734863,
             "inAlpha": 0.0,
             "inScale": {
@@ -58,9 +63,11 @@
                 "z": 0.0
             },
             "interval": 0.0,
-            "isActive": false,
+            "isActive": true,
             "isBillboard": true,
+            "isEndWithGoalPosition": false,
             "isRoteteRandomInit": true,
+            "isSetGoalPosition": false,
             "isUseGravity": false,
             "isUseRotate": true,
             "kMaxEmitCount": 5,
@@ -71,7 +78,7 @@
             "lightingType": 0,
             "maxTimePoint": 0.23999999463558197,
             "maxTimeRate": 0.0,
-            "numEmitEvery": 21,
+            "numEmitEvery": 8,
             "outAlpha": 0.0,
             "outScale": {
                 "x": 0.0,
@@ -106,8 +113,8 @@
                 }
             ],
             "speedRange": [
-                0.10000000149011612,
-                1.0
+                0.0,
+                0.0
             ],
             "textureHandles": [
                 "ParticleTextures/particle.png"
@@ -148,6 +155,11 @@
             "emitterType": "Emitter_Model3D",
             "enterEaseType": 0,
             "exitEaseType": 15,
+            "goalPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
             "gravity": -9.800000190734863,
             "inAlpha": 0.0,
             "inScale": {
@@ -156,9 +168,11 @@
                 "z": 1.0
             },
             "interval": 0.0,
-            "isActive": false,
+            "isActive": true,
             "isBillboard": true,
+            "isEndWithGoalPosition": false,
             "isRoteteRandomInit": false,
+            "isSetGoalPosition": false,
             "isUseGravity": false,
             "isUseRotate": true,
             "kMaxEmitCount": 5,
@@ -221,7 +235,7 @@
                 1.0,
                 0.0
             ],
-            "blendMode": 4,
+            "blendMode": 1,
             "center": [
                 0.0,
                 0.0,
@@ -264,6 +278,11 @@
             "emitterType": "Emitter_Model3D",
             "enterEaseType": 0,
             "exitEaseType": 16,
+            "goalPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
             "gravity": -9.800000190734863,
             "inAlpha": 0.44999998807907104,
             "inScale": {
@@ -272,9 +291,11 @@
                 "z": 0.0
             },
             "interval": 0.0,
-            "isActive": false,
+            "isActive": true,
             "isBillboard": true,
+            "isEndWithGoalPosition": false,
             "isRoteteRandomInit": true,
+            "isSetGoalPosition": false,
             "isUseGravity": true,
             "isUseRotate": true,
             "kMaxEmitCount": 5,
@@ -285,7 +306,7 @@
             "lightingType": 0,
             "maxTimePoint": 0.0,
             "maxTimeRate": 0.0,
-            "numEmitEvery": 20,
+            "numEmitEvery": 29,
             "outAlpha": 1.0,
             "outScale": {
                 "x": 0.0,

@@ -19,23 +19,35 @@ void BaseParticle::Update(){
     // 速度の計算
     //////////////////////////////////
 
-    // 基本速度
+    // 媒介変数の計算
     float velocityEase = velocityEaseFunc_(t);
-    if(&velocityEaseFunc_ == &Easing::Ease[0]){ velocityEase = 1.0f; }
-    velocity_ = direction_ * speed_ * velocityEase * ClockManager::DeltaTime();
 
-    // 加速度の計算
-    totalAcceleration_ += acceleration_ * ClockManager::DeltaTime();
-    velocity_ += totalAcceleration_ * ClockManager::DeltaTime();
+    // 特に目標地点がない場合
+    if(goalPos_ == std::nullopt){
+        // 基本速度
+        if(&velocityEaseFunc_ == &Easing::Ease[0]){ velocityEase = 1.0f; }
+        velocity_ = direction_ * speed_ * velocityEase * ClockManager::DeltaTime();
 
-    // 重力処理
-    if(isUseGravity_){
-        gravityAcceleration_ += gravity_ * ClockManager::DeltaTime();
-        velocity_.y += gravityAcceleration_ * ClockManager::DeltaTime();
+        // 加速度の計算
+        totalAcceleration_ += acceleration_ * ClockManager::DeltaTime();
+        velocity_ += totalAcceleration_ * ClockManager::DeltaTime();
+
+        // 重力処理
+        if(isUseGravity_){
+            gravityAcceleration_ += gravity_ * ClockManager::DeltaTime();
+            velocity_.y += gravityAcceleration_ * ClockManager::DeltaTime();
+        }
+        // translateの更新
+        particle_->transform_.translate_ += velocity_;
+
+    } else{
+        // 明確な目標地点がある場合
+        particle_->transform_.translate_ = MyMath::Lerp(
+            emitPos_,
+            goalPos_.value(),
+            velocityEase
+        );
     }
-
-    // translateの更新
-    particle_->transform_.translate_ += velocity_;
 
     //////////////////////////////////
     // 回転処理

@@ -115,18 +115,6 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-    ImGui::Begin("environment");
-    /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
-    if(ImGui::Checkbox("DebugCamera", &isDebugCamera_)){
-        if(isDebugCamera_){
-            SEED::SetCamera("debug");
-        } else{
-            SEED::SetCamera("main");
-        }
-    }
-
-    ImGui::End();
 
 #endif
 

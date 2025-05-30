@@ -38,6 +38,10 @@
 // external
 #include <json.hpp>
 
+#ifdef _DEBUG
+//#define USE_SUB_WINDOW
+#endif // _DEBUG
+
 
 class SEED{
 
@@ -60,6 +64,9 @@ public:
     static void Draw();
     static void BeginFrame();
     static void EndFrame();
+
+private:
+    void DrawGUI();
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                          このエンジンが用意する描画関数                              */
@@ -190,6 +197,8 @@ private:// インスタンス
     static SEED* instance_;
     bool isRepeatCursor_ = false;
     bool isCursorVisible_ = true;
+    bool isDebugCamera_ = false;
+    float resolutionRate_ = 1.0f;
 
 private:
     std::unique_ptr<Sprite> offscreenWrapper_;

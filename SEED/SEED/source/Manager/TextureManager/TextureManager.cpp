@@ -45,9 +45,9 @@ void TextureManager::Release(){
 void TextureManager::StartUpLoad(){
 }
 
-uint32_t TextureManager::LoadTexture(const std::string& filename,const aiTexture* embeddedTexture){
+uint32_t TextureManager::LoadTexture(const std::string& filename, const aiTexture* embeddedTexture){
     // すでに読み込み済みのファイルであればreturn
-    if(instance_->graphHandle_.find(filename) != instance_->graphHandle_.end()){ 
+    if(instance_->graphHandle_.find(filename) != instance_->graphHandle_.end()){
         return instance_->graphHandle_[filename];
     }
 
@@ -57,7 +57,7 @@ uint32_t TextureManager::LoadTexture(const std::string& filename,const aiTexture
         instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename);
     } else{
         // 埋め込みテクスチャの場合
-        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename,embeddedTexture);
+        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename, embeddedTexture);
     }
 
     return instance_->graphHandle_[filename];
@@ -85,7 +85,7 @@ uint32_t TextureManager::CreateTexture(const std::string& filename, const aiText
     // 転送
     intermediateResources.push_back(
         UploadTextureData(
-            textureResources.back().Get(), mipImages, 
+            textureResources.back().Get(), mipImages,
             DxManager::GetInstance()->GetDevice(),
             DxManager::GetInstance()->commandList.Get()
         )
@@ -114,3 +114,20 @@ uint32_t TextureManager::CreateTexture(const std::string& filename, const aiText
 
 }
 
+// テクスチャハンドルを返す
+uint32_t TextureManager::GetGraphHandle(const std::string& fileName){
+    assert(instance_->graphHandle_.find(fileName) != instance_->graphHandle_.end());
+    return instance_->graphHandle_[fileName];
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetHandleGPU(const std::string& fileName){
+    if(instance_->graphHandle_.find(fileName) != instance_->graphHandle_.end()){
+        return ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, instance_->graphHandle_[fileName]);
+    } else{
+        return ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, fileName);
+    }
+}
+
+ImTextureID TextureManager::GetImGuiTexture(const std::string& fileName){
+    return ImTextureID(GetHandleGPU(fileName).ptr);
+}

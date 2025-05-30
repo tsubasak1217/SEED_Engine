@@ -48,9 +48,88 @@ void SEED::Update(){
 
 }
 
-/*------------------------ 初期化処理 ---------------------------*/
+/*------------------------ 描画処理 ---------------------------*/
 void SEED::Draw(){
+    instance_->DrawGUI();
+}
 
+
+void SEED::DrawGUI(){
+#ifdef _DEBUG
+
+    // 親子付け用の空ウィンドウを作成
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->WorkPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiCond_Always);
+    ImGui::Begin("SEED", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoBringToFrontOnFocus
+    );
+    ImGui::End();
+
+
+    // ゲーム画面描画ウインドウ
+    ImGui::Begin("GameWindow");
+    // サイズの計算
+    ImVec2 availSize = ImGui::GetContentRegionAvail();
+    ImVec2 imageSize;
+    Vector2 windowSize = kWindowSize;
+    float ratioX[2] = {
+    availSize.x / availSize.y,
+    windowSize.x / windowSize.y
+    };
+
+    // 狭いほうに合わせる
+    if(ratioX[0] > ratioX[1]){
+        imageSize = { availSize.y * ratioX[1],availSize.y };
+    } else{
+        imageSize = { availSize.x,availSize.x * (windowSize.y / windowSize.x)};
+    }
+
+    ImGui::Image(TextureManager::GetImGuiTexture("offScreen_0"), imageSize);
+    ImGui::End();
+
+
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+    // ボタンの背景色を設定
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    // menuItemの背景色を設定
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    if(ImGui::BeginMainMenuBar()){
+        if(ImGui::BeginMenu("ファイル")){
+            ImGui::EndMenu();
+        }
+
+        if(ImGui::BeginMenu("編集")){
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+    ImGui::PopStyleColor(3);
+
+
+    ImGui::Begin("システム");
+    /*===== FPS表示 =====*/
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    if(ImGui::Checkbox("デバッグカメラ", &isDebugCamera_)){
+        if(isDebugCamera_){
+            SEED::SetCamera("debug");
+        } else{
+            SEED::SetCamera("main");
+        }
+    }
+
+    if(ImGui::SliderFloat("解像度", &instance_->resolutionRate_, 0.0f, 1.0f)){
+        // 解像度率を変更
+        ChangeResolutionRate(instance_->resolutionRate_);
+    }
+
+    ImGui::End();
+
+#endif // _DEBUG
 }
 
 /*------------------------ 初期化処理 ---------------------------*/
@@ -64,9 +143,9 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     // ウインドウの作成
     WindowManager::Initialize(hInstance, nCmdShow);
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 
     // 各マネージャの初期化
     ClockManager::Initialize();
@@ -87,7 +166,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     // offscreenの画面のアルファ値を1にするためのcolor{0,0,0,1}のスプライトを作成
     instance_->offscreenWrapper_ = std::make_unique<Sprite>("Assets/white1x1.png");
     instance_->offscreenWrapper_->size = { (float)clientWidth,(float)clientHeight };
-    instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 1);
+    instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 256);
     instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
     instance_->offscreenWrapper_->isStaticDraw = false;
 }
@@ -136,6 +215,7 @@ void SEED::BeginFrame(){
 void SEED::EndFrame(){
     // offscreenの画面のアルファ値を1にするため、color{0,0,01}のスプライトを表示
     instance_->offscreenWrapper_->Draw();
+    Draw();
 
     // 描画
     DxManager::GetInstance()->DrawPolygonAll();
@@ -168,8 +248,8 @@ void SEED::DrawTriangle(const Triangle& triangle){
 }
 
 void SEED::AddTriangle3DPrimitive(
-    const Vector4& v1, const Vector4& v2, const Vector4& v3, 
-    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, 
+    const Vector4& v1, const Vector4& v2, const Vector4& v3,
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3,
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
@@ -211,9 +291,9 @@ void SEED::DrawQuad(const Quad& quad){
 }
 
 void SEED::AddQuad3DPrimitive(
-    const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, 
+    const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, 
+    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     instance_->pPolygonManager_->AddQuad3DPrimitive(

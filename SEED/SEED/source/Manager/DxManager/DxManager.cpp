@@ -260,9 +260,9 @@ void DxManager::CreateRenderTargets(){
 
     // swapChainの作成
     WindowManager::GetWindow(pSEED_->windowTitle_)->CreateSwapChain(dxgiFactory.Get(), commandQueue.Get());
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     WindowManager::GetWindow(pSEED_->systemWindowTitle_)->CreateSwapChain(dxgiFactory.Get(), commandQueue.Get());
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 }
 
 
@@ -462,12 +462,12 @@ void DxManager::PreDraw(){
         D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET
     );
 
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     TransitionResourceState(
         WindowManager::GetBackBuffer(pSEED_->systemWindowTitle_),
         D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET
     );
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 
     /*----------画面、深度情報のクリア、DSVとRTVの結び直し-----------*/
 
@@ -493,9 +493,9 @@ void DxManager::PreDraw(){
 
 
 void DxManager::DrawPolygonAll(){
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     DrawGUI();
-#endif // DEBUG
+#endif // USE_SUB_WINDOW
 
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
@@ -539,12 +539,12 @@ void DxManager::DrawPolygonAll(){
         &clearColor.x, 0, nullptr
     );
 
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     commandList->ClearRenderTargetView(
         WindowManager::GetRtvHandle(pSEED_->systemWindowTitle_),
         &clearColor.x, 0, nullptr
     );
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 
     /*--------------深度値のクリア---------------*/
     commandList->ClearDepthStencilView(
@@ -575,22 +575,21 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
 
     PostEffect::GetInstance()->EndTransition();
-    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
     /*---------- メインゲーム画面 -> ImGui用のSystem画面に描画を切り替え----------*/
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     commandList->OMSetRenderTargets(
         1, &WindowManager::GetRtvHandle(pSEED_->systemWindowTitle_),
         false, nullptr
     );
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 }
 
 void DxManager::DrawGUI(){
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
 
 
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 }
 
 
@@ -607,9 +606,12 @@ void DxManager::PostDraw(){
     // 画面に描く処理はすべて終わり、 画面に映すので、状態を遷移 ----------------------
     // 今回はRenderTargetからPresent にする
     TransitionResourceState(WindowManager::GetBackBuffer(pSEED_->windowTitle_), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     TransitionResourceState(WindowManager::GetBackBuffer(pSEED_->systemWindowTitle_), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
+
+    // オフスクリーンのリソースもRenderTargetに戻す
+    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
     /*----------------------------------------------------------*/
 
@@ -623,9 +625,9 @@ void DxManager::PostDraw(){
 
     // GPUとOSに画面の交換を行うよう通知する
     WindowManager::Present(pSEED_->windowTitle_,0,0);
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     WindowManager::Present(pSEED_->systemWindowTitle_, 0, 0);
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 
     /*---------------------- CPUとGPUの同期 ----------------------*/
 

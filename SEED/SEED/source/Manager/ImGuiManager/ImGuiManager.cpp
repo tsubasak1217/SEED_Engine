@@ -38,11 +38,23 @@ void ImGuiManager::Initialize(){
     // ドッキング機能の有効化
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+    // スタイルの変更
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImVec4* colors = style.Colors;
+    // 白
+    colors[ImGuiCol_MenuBarBg] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);// メニューバーの背景色
+    // 黒に近い色に変更
+    colors[ImGuiCol_WindowBg] = ImVec4(0.01f, 0.01f, 0.01f, 1.0f);// 背景を暗く
+    // 深い青色に変更
+    colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.02f, 0.1f, 1.0f);// 選択されたウィンドウのタイトルバー
+    //colors[ImGuiCol_HeaderHovered] = ImVec4(0.0f, 0.02f, 0.1f, 1.0f);// ヘッダーのホバー時
+
+
     // ウィンドウハンドルの取得
     HWND hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
-#ifdef _DEBUG
+#ifdef USE_SUB_WINDOW
     hwnd = WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_);
-#endif // _DEBUG
+#endif // USE_SUB_WINDOW
 
     // directX用の初期化
     ImGui_ImplDX12_InvalidateDeviceObjects();
@@ -84,6 +96,8 @@ void ImGuiManager::PreDraw(){
     ImGui::NewFrame();
     //ImGuizmo::BeginFrame();
 
+#ifdef USE_SUB_WINDOW
+
     // マウス座標の補正
     ImGuiIO& io = ImGui::GetIO();
 
@@ -97,6 +111,7 @@ void ImGuiManager::PreDraw(){
         // 非アクティブなウィンドウではマウス入力を無効化
         io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
     }
+#endif
 
 #endif
 }

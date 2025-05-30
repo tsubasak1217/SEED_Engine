@@ -95,8 +95,6 @@ void GameSystem::BeginFrame() {
     CollisionManager::ResetColliderList();
     // シーンのフレーム開始処理
     instance_->pScene_->BeginFrame();
-    // 解像度の変更
-    SEED::ChangeResolutionRate(instance_->resolutionRate_);
 }
 
 
@@ -115,9 +113,7 @@ void GameSystem::EndFrame() {
 /////////////////////////////////////////////////////////////////
 void GameSystem::DrawGUI(){
 #ifdef _DEBUG
-    ImGui::Begin("GameSystem");
-    ImGui::SliderFloat("resolutionRate", &resolutionRate_, 0.01f, 1.0f);
-    ImGui::End();
+
 #endif // _DEBUG
 }
 

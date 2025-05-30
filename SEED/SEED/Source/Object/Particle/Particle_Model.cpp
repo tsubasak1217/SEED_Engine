@@ -89,6 +89,7 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     ///////////////////// 寿命をランダム決定 ////////////////////////
     kLifeTime_ = MyFunc::Random(modelEmitter->lifeTimeRange.min, modelEmitter->lifeTimeRange.max);
+    kLifeTime_ = std::clamp(kLifeTime_, 0.1f, 100000.0f); // 寿命の範囲を制限
 
     ////////////////////// 色をランダム決定 ////////////////////////
     particle_->masterColor_ = modelEmitter->colors[MyFunc::Random(0, (int)modelEmitter->colors.size() - 1)];

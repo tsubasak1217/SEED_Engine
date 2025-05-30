@@ -199,6 +199,8 @@ private:// インスタンス
     bool isCursorVisible_ = true;
     bool isDebugCamera_ = false;
     float resolutionRate_ = 1.0f;
+    bool isGridVisible_ = false;
+    Vector4 clearColor_;
 
 private:
     std::unique_ptr<Sprite> offscreenWrapper_;

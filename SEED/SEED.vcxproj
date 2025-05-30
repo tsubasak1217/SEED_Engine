@@ -72,6 +72,8 @@
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -98,12 +100,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -126,6 +129,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Scene\Base\SceneRegister.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -156,7 +160,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_draw.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_tables.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp" />

@@ -113,6 +113,16 @@ void EffectSystem::Update(){
         }
     }
 
+    // endlessEffectsの更新
+    for(auto& effect : instance_->endlessEffects_){
+        for(auto& emitter : effect.second->emitters){
+            emitter->Update();
+            if(emitter->emitOrder == true){
+                Emit(emitter.get());
+            }
+        }
+    }
+
     // エディターのエミッターグループの更新
     for(auto& emitterGroup : instance_->emitterGroups_){
         for(auto& emitter : emitterGroup->emitters){
@@ -147,6 +157,10 @@ void EffectSystem::Update(){
 
     instance_->onceEffects_.remove_if([](auto& effect){
         return !effect->GetIsAlive();
+    });
+
+    instance_->endlessEffects_.remove_if([](auto& effect){
+        return !effect.second->GetIsAlive();
     });
 
     instance_->emitterGroups_.remove_if([](auto& emitterGroup){

@@ -449,6 +449,11 @@ void Emitter_Model::LoadFromJson(const nlohmann::json& j){
     useDefaultTexture = j["useDefaultTexture"];
     for(auto& textureHandle : j["textureHandles"]){
         texturePaths.push_back(textureHandle);
+        // テクスチャのセットに追加
+        if(textureSet.find(textureHandle) == textureSet.end()){
+            textureSet.insert(textureHandle);
+            textureDict[textureHandle] = TextureManager::GetImGuiTexture(textureHandle);
+        }
     }
 
     // モデルの情報

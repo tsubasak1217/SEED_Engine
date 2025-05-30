@@ -26,7 +26,6 @@
     <ClCompile Include="SEED\external\imgui\imgui.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_draw.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_tables.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp" />
@@ -107,6 +106,7 @@
     <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\Particle_Model.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
+    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />

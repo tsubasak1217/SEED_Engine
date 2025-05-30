@@ -7,48 +7,42 @@
                 1.0,
                 0.0
             ],
-            "blendMode": 5,
+            "blendMode": 4,
             "center": [
                 0.0,
-                0.0,
-                0.0
+                24.399999618530273,
+                -1.149999976158142
             ],
             "colors": [
                 [
+                    0.40154439210891724,
+                    0.5355614423751831,
                     1.0,
-                    0.7876448035240173,
+                    1.0
+                ],
+                [
+                    0.9343628883361816,
                     0.0,
+                    1.0,
                     1.0
                 ],
                 [
                     1.0,
-                    0.5791505575180054,
-                    0.0,
-                    1.0
-                ],
-                [
                     1.0,
-                    0.7205617427825928,
-                    0.5559845566749573,
-                    1.0
-                ],
-                [
-                    0.9566941261291504,
                     1.0,
-                    0.6795367002487183,
                     1.0
                 ]
             ],
             "directionRange": 1.0,
             "emitModelFilePath": "Assets/Plane.obj",
             "emitRange": [
-                0.0,
-                0.0,
-                0.0
+                23.649999618530273,
+                71.0999984741211,
+                23.850000381469727
             ],
-            "emitType": 0,
+            "emitType": 2,
             "emitterType": "Emitter_Model3D",
-            "enterEaseType": 16,
+            "enterEaseType": 0,
             "exitEaseType": 0,
             "goalPosition": [
                 0.0,
@@ -56,112 +50,7 @@
                 0.0
             ],
             "gravity": -9.800000190734863,
-            "inAlpha": 0.0,
-            "inScale": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "interval": 0.0,
-            "isActive": true,
-            "isBillboard": true,
-            "isEndWithGoalPosition": false,
-            "isRoteteRandomInit": true,
-            "isSetGoalPosition": false,
-            "isUseGravity": false,
-            "isUseRotate": true,
-            "kMaxEmitCount": 5,
-            "lifeTimeRange": [
-                1.0,
-                1.0
-            ],
-            "lightingType": 0,
-            "maxTimePoint": 0.23999999463558197,
-            "maxTimeRate": 0.0,
-            "numEmitEvery": 8,
-            "outAlpha": 0.0,
-            "outScale": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "particleType": 0,
-            "radiusRange": [
-                0.5,
-                3.0
-            ],
-            "rotateDirection": [
-                0.0,
-                8.513197099091485e-05,
-                1.0
-            ],
-            "rotateEaseType": 0,
-            "rotateSpeedRange": [
-                0.7599999904632568,
-                1.4299999475479126
-            ],
-            "scaleRange": [
-                {
-                    "x": 0.5,
-                    "y": 5.0,
-                    "z": 1.0
-                },
-                {
-                    "x": 0.5,
-                    "y": 6.179999828338623,
-                    "z": 1.0
-                }
-            ],
-            "speedRange": [
-                0.0,
-                0.0
-            ],
-            "textureHandles": [
-                "ParticleTextures/particle.png"
-            ],
-            "useDefaultTexture": false,
-            "useRotateDirection": true,
-            "velocityEaseType": 0
-        },
-        {
-            "CullingMode": 3,
-            "baseDirection": [
-                0.0,
-                1.0,
-                0.0
-            ],
-            "blendMode": 4,
-            "center": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "colors": [
-                [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            ],
-            "directionRange": 0.0,
-            "emitModelFilePath": "Assets/Plane.obj",
-            "emitRange": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "emitType": 0,
-            "emitterType": "Emitter_Model3D",
-            "enterEaseType": 0,
-            "exitEaseType": 15,
-            "goalPosition": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "gravity": -9.800000190734863,
-            "inAlpha": 0.0,
+            "inAlpha": 1.0,
             "inScale": {
                 "x": 1.0,
                 "y": 1.0,
@@ -171,39 +60,39 @@
             "isActive": true,
             "isBillboard": true,
             "isEndWithGoalPosition": false,
-            "isRoteteRandomInit": false,
+            "isRoteteRandomInit": true,
             "isSetGoalPosition": false,
             "isUseGravity": false,
             "isUseRotate": true,
-            "kMaxEmitCount": 5,
+            "kMaxEmitCount": 31,
             "lifeTimeRange": [
-                1.0,
-                1.0
+                0.0,
+                0.6000000238418579
             ],
             "lightingType": 0,
-            "maxTimePoint": 0.0,
+            "maxTimePoint": 0.5799999833106995,
             "maxTimeRate": 0.0,
-            "numEmitEvery": 1,
+            "numEmitEvery": 6,
             "outAlpha": 0.0,
             "outScale": {
-                "x": 5.0,
-                "y": 5.0,
+                "x": 1.0,
+                "y": 1.0,
                 "z": 1.0
             },
             "particleType": 0,
             "radiusRange": [
-                1.0,
-                1.0
+                0.38999998569488525,
+                3.5299999713897705
             ],
             "rotateDirection": [
                 0.0,
-                0.0017808760749176145,
-                0.9999984502792358
+                1.0,
+                0.0
             ],
-            "rotateEaseType": 16,
+            "rotateEaseType": 0,
             "rotateSpeedRange": [
-                3.0,
-                3.0
+                0.0,
+                0.0
             ],
             "scaleRange": [
                 {
@@ -218,59 +107,53 @@
                 }
             ],
             "speedRange": [
-                0.0,
-                0.0
+                -0.1599999964237213,
+                0.10000000149011612
             ],
             "textureHandles": [
-                "ParticleTextures/bubble.png"
+                "ParticleTextures/Thunder.png"
             ],
             "useDefaultTexture": false,
-            "useRotateDirection": true,
-            "velocityEaseType": 12
+            "useRotateDirection": false,
+            "velocityEaseType": 0
         },
         {
-            "CullingMode": 3,
+            "CullingMode": 1,
             "baseDirection": [
                 0.0,
                 1.0,
                 0.0
             ],
-            "blendMode": 1,
+            "blendMode": 4,
             "center": [
                 0.0,
-                0.0,
+                42.400001525878906,
                 0.0
             ],
             "colors": [
                 [
-                    0.06902104616165161,
                     1.0,
-                    0.061776041984558105,
+                    0.9139100313186646,
+                    0.5945945978164673,
                     1.0
                 ],
                 [
+                    0.8994499444961548,
+                    0.6332046389579773,
                     1.0,
-                    0.09266406297683716,
-                    0.5761097073554993,
                     1.0
                 ],
                 [
-                    1.0,
-                    0.9968694448471069,
-                    0.18918919563293457,
-                    1.0
-                ],
-                [
-                    0.13127410411834717,
-                    0.8088131546974182,
+                    0.5135135054588318,
+                    0.8703955411911011,
                     1.0,
                     1.0
                 ]
             ],
-            "directionRange": 0.019999999552965164,
-            "emitModelFilePath": "Assets/cube.obj",
+            "directionRange": 1.0,
+            "emitModelFilePath": "Assets/Plane.obj",
             "emitRange": [
-                2.6500000953674316,
+                0.0,
                 0.0,
                 0.0
             ],
@@ -284,15 +167,132 @@
                 0.0
             ],
             "gravity": -9.800000190734863,
-            "inAlpha": 0.44999998807907104,
+            "inAlpha": 0.0,
             "inScale": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             },
-            "interval": 0.0,
+            "interval": 0.10000000149011612,
             "isActive": true,
             "isBillboard": true,
+            "isEndWithGoalPosition": false,
+            "isRoteteRandomInit": false,
+            "isSetGoalPosition": false,
+            "isUseGravity": false,
+            "isUseRotate": false,
+            "kMaxEmitCount": 5,
+            "lifeTimeRange": [
+                2.0,
+                2.0
+            ],
+            "lightingType": 0,
+            "maxTimePoint": 0.0,
+            "maxTimeRate": 0.0,
+            "numEmitEvery": 2,
+            "outAlpha": 0.0,
+            "outScale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 0.0
+            },
+            "particleType": 0,
+            "radiusRange": [
+                10.0,
+                10.0
+            ],
+            "rotateDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "rotateEaseType": 0,
+            "rotateSpeedRange": [
+                0.0,
+                1.0
+            ],
+            "scaleRange": [
+                {
+                    "x": -2.0,
+                    "y": 3.0,
+                    "z": 1.0
+                },
+                {
+                    "x": 2.0,
+                    "y": 5.0,
+                    "z": 1.0
+                }
+            ],
+            "speedRange": [
+                0.0,
+                0.0
+            ],
+            "textureHandles": [
+                "ParticleTextures/Thunder.png"
+            ],
+            "useDefaultTexture": false,
+            "useRotateDirection": false,
+            "velocityEaseType": 0
+        },
+        {
+            "CullingMode": 3,
+            "baseDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "blendMode": 3,
+            "center": [
+                0.0,
+                -4.5,
+                0.0
+            ],
+            "colors": [
+                [
+                    0.27799224853515625,
+                    0.1545594036579132,
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.41698843240737915,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                [
+                    0.33590734004974365,
+                    0.06225309893488884,
+                    0.0,
+                    1.0
+                ]
+            ],
+            "directionRange": 0.1599999964237213,
+            "emitModelFilePath": "Assets/cube.obj",
+            "emitRange": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "emitType": 0,
+            "emitterType": "Emitter_Model3D",
+            "enterEaseType": 0,
+            "exitEaseType": 16,
+            "goalPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "gravity": -105.69999694824219,
+            "inAlpha": 1.0,
+            "inScale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "interval": 0.10000000149011612,
+            "isActive": true,
+            "isBillboard": false,
             "isEndWithGoalPosition": false,
             "isRoteteRandomInit": true,
             "isSetGoalPosition": false,
@@ -301,32 +301,32 @@
             "kMaxEmitCount": 5,
             "lifeTimeRange": [
                 1.0,
-                1.0
+                3.0
             ],
             "lightingType": 0,
-            "maxTimePoint": 0.0,
-            "maxTimeRate": 0.0,
-            "numEmitEvery": 29,
-            "outAlpha": 1.0,
+            "maxTimePoint": 0.44999998807907104,
+            "maxTimeRate": 0.14000000059604645,
+            "numEmitEvery": 34,
+            "outAlpha": 0.0,
             "outScale": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 3.0,
+                "y": 3.0,
+                "z": 3.0
             },
             "particleType": 0,
             "radiusRange": [
                 0.5,
-                3.0
+                1.0
             ],
             "rotateDirection": [
                 0.0,
-                0.023249585181474686,
-                0.9997297525405884
+                1.0,
+                0.0
             ],
             "rotateEaseType": 0,
             "rotateSpeedRange": [
-                -1.25,
-                1.0
+                -15.0,
+                15.0
             ],
             "scaleRange": [
                 {
@@ -341,15 +341,16 @@
                 }
             ],
             "speedRange": [
-                0.5600000023841858,
-                22.299999237060547
+                105.19999694824219,
+                105.19999694824219
             ],
             "textureHandles": [
-                "ParticleTextures/white.png"
+                "ParticleTextures/kirakira.png",
+                "ParticleTextures/spark.png"
             ],
             "useDefaultTexture": false,
-            "useRotateDirection": true,
-            "velocityEaseType": 13
+            "useRotateDirection": false,
+            "velocityEaseType": 16
         },
         {
             "CullingMode": 3,
@@ -361,10 +362,127 @@
             "blendMode": 4,
             "center": [
                 0.0,
-                0.0,
+                -5.400000095367432,
                 0.0
             ],
             "colors": [
+                [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                [
+                    0.16988414525985718,
+                    0.6057752370834351,
+                    1.0,
+                    1.0
+                ]
+            ],
+            "directionRange": 1.0,
+            "emitModelFilePath": "Assets/Plane.obj",
+            "emitRange": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "emitType": 0,
+            "emitterType": "Emitter_Model3D",
+            "enterEaseType": 0,
+            "exitEaseType": 16,
+            "goalPosition": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "gravity": -9.800000190734863,
+            "inAlpha": 0.0,
+            "inScale": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "interval": 0.10000000149011612,
+            "isActive": true,
+            "isBillboard": true,
+            "isEndWithGoalPosition": false,
+            "isRoteteRandomInit": true,
+            "isSetGoalPosition": false,
+            "isUseGravity": false,
+            "isUseRotate": false,
+            "kMaxEmitCount": 5,
+            "lifeTimeRange": [
+                1.0,
+                1.0
+            ],
+            "lightingType": 0,
+            "maxTimePoint": 0.0,
+            "maxTimeRate": 0.0,
+            "numEmitEvery": 2,
+            "outAlpha": 0.0,
+            "outScale": {
+                "x": 10.0,
+                "y": 10.0,
+                "z": 10.0
+            },
+            "particleType": 0,
+            "radiusRange": [
+                1.0,
+                1.0
+            ],
+            "rotateDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "rotateEaseType": 0,
+            "rotateSpeedRange": [
+                0.0,
+                0.0
+            ],
+            "scaleRange": [
+                {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            ],
+            "speedRange": [
+                0.10000000149011612,
+                1.0
+            ],
+            "textureHandles": [
+                "ParticleTextures/spark.png"
+            ],
+            "useDefaultTexture": false,
+            "useRotateDirection": false,
+            "velocityEaseType": 0
+        },
+        {
+            "CullingMode": 3,
+            "baseDirection": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "blendMode": 4,
+            "center": [
+                0.0,
+                -5.050000190734863,
+                0.0
+            ],
+            "colors": [
+                [
+                    0.007722020149230957,
+                    1.0,
+                    0.8275965452194214,
+                    1.0
+                ],
                 [
                     1.0,
                     1.0,
@@ -389,7 +507,7 @@
                 0.0
             ],
             "gravity": -9.800000190734863,
-            "inAlpha": 1.0,
+            "inAlpha": 0.0,
             "inScale": {
                 "x": 0.0,
                 "y": 0.0,
@@ -399,10 +517,10 @@
             "isActive": true,
             "isBillboard": true,
             "isEndWithGoalPosition": false,
-            "isRoteteRandomInit": false,
+            "isRoteteRandomInit": true,
             "isSetGoalPosition": false,
             "isUseGravity": false,
-            "isUseRotate": false,
+            "isUseRotate": true,
             "kMaxEmitCount": 5,
             "lifeTimeRange": [
                 1.0,
@@ -411,12 +529,12 @@
             "lightingType": 0,
             "maxTimePoint": 0.0,
             "maxTimeRate": 0.0,
-            "numEmitEvery": 1,
+            "numEmitEvery": 2,
             "outAlpha": 0.0,
             "outScale": {
-                "x": 7.0,
-                "y": 7.0,
-                "z": 7.0
+                "x": 50.0,
+                "y": 50.0,
+                "z": 50.0
             },
             "particleType": 0,
             "radiusRange": [
@@ -425,13 +543,13 @@
             ],
             "rotateDirection": [
                 0.0,
-                1.0,
-                0.0
+                7.603497351738042e-07,
+                1.0
             ],
             "rotateEaseType": 0,
             "rotateSpeedRange": [
                 0.0,
-                1.0
+                0.0
             ],
             "scaleRange": [
                 {
@@ -446,14 +564,14 @@
                 }
             ],
             "speedRange": [
-                0.0,
-                0.0
+                0.10000000149011612,
+                1.0
             ],
             "textureHandles": [
-                "ParticleTextures/shine.png"
+                "ParticleTextures/twinkle.png"
             ],
             "useDefaultTexture": false,
-            "useRotateDirection": false,
+            "useRotateDirection": true,
             "velocityEaseType": 0
         }
     ]

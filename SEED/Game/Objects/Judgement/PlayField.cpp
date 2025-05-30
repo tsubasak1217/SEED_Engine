@@ -3,6 +3,7 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/SEED.h>
 #include <Game/Objects/Notes/NotesData.h>
+#include <Game/Objects/Judgement/Judgement.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -165,6 +166,12 @@ void PlayField::Initialize(){
             laneBorderLine_[1][i].localVertex[j].z += layerOffset.z * 4;
         }
     }
+
+    // エフェクトの発生位置を計算
+    CalcEffectEmitPoints();
+
+    // エフェクトの初期化
+    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetCamera()->GetTranslation(),nullptr);
 }
 
 
@@ -287,4 +294,62 @@ Quad PlayField::GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float r
     result.localVertex[3] = MyMath::Lerp(laneTriangle.localVertex[0], laneTriangle.localVertex[1], 1.0f - nearZ);
 
     return result;
+}
+
+
+void PlayField::CalcEffectEmitPoints(){
+
+    // レーン部分
+    for(int i = 0; i < kKeyCount_; i++){
+        Vector3 point = (keyboardBorderPoints_[i] + keyboardBorderPoints_[i + 1]) * 0.5f;
+        effectEmitPoints_[GetLaneBitIndex(LANE_1) + i] = point;
+    }
+
+    effectEmitPoints_[GetLaneBitIndex(SIDEFLICK_LEFT)] = playFieldPointsWorld_[LEFT];
+    effectEmitPoints_[GetLaneBitIndex(SIDEFLICK_RIGHT)] = playFieldPointsWorld_[RIGHT];
+    effectEmitPoints_[GetLaneBitIndex(WHEEL_DOWN)] = (playFieldPointsWorld_[LEFT] + playFieldPointsWorld_[RIGHT]) * 0.5f;
+    effectEmitPoints_[GetLaneBitIndex(WHEEL_UP)] = effectEmitPoints_[GetLaneBitIndex(WHEEL_DOWN)];
+
+}
+
+int PlayField::GetLaneBitIndex(uint32_t laneBit){
+    assert(laneBit != 0 && (laneBit & (laneBit - 1)) == 0); // 単一ビットのみ有効かチェック
+    int index = 0;
+    while((laneBit >>= 1) != 0){
+        ++index;
+    }
+    return index;
+}
+
+void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
+
+    layer;
+
+    // レーンのビットからレーン番号を取得
+    std::vector<int32_t> lanes;
+    for(int i = 0; i < kLaneBitCount; i++){
+        if(laneBit & (1 << i)){
+            lanes.push_back(i);
+        }
+    }
+
+    for(auto& lane : lanes){
+        switch(evalution){
+        case Judgement::Evaluation::PERFECT:
+            EffectSystem::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[lane]);
+            break;
+
+        case Judgement::Evaluation::GREAT:
+            EffectSystem::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[lane]);
+            break;
+
+        case Judgement::Evaluation::GOOD:
+            EffectSystem::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[lane]);
+            break;
+
+        default:
+            // MISSのときは何もしない
+            return;
+        }
+    }
 }

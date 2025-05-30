@@ -18,7 +18,7 @@
 SEED* SEED::instance_ = nullptr;
 std::wstring SEED::windowTitle_ = L"SEED::GameWindow";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
-uint32_t SEED::windowBackColor_ = 0x3f3f3fff;//yMath::IntColor(0,160,232,255);
+uint32_t SEED::windowBackColor_ = 0x000000ff;//yMath::IntColor(0,160,232,255);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,13 @@ void SEED::Update(){
 
 /*------------------------ 描画処理 ---------------------------*/
 void SEED::Draw(){
+
+    // グリッドの描画
+    if(instance_->isGridVisible_){
+        DrawGrid();
+    }
+
+    // imguiの描画
     instance_->DrawGUI();
 }
 
@@ -114,6 +121,7 @@ void SEED::DrawGUI(){
     ImGui::Begin("システム");
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::Checkbox("グリッド表示", &instance_->isGridVisible_);
     if(ImGui::Checkbox("デバッグカメラ", &isDebugCamera_)){
         if(isDebugCamera_){
             SEED::SetCamera("debug");
@@ -125,6 +133,11 @@ void SEED::DrawGUI(){
     if(ImGui::SliderFloat("解像度", &instance_->resolutionRate_, 0.0f, 1.0f)){
         // 解像度率を変更
         ChangeResolutionRate(instance_->resolutionRate_);
+    }
+
+    if(ImGui::ColorEdit4("ウインドウの背景色", (float*)&instance_->clearColor_)){
+        // ウインドウの背景色を変更
+        instance_->windowBackColor_ = MyMath::IntColor(instance_->clearColor_);
     }
 
     ImGui::End();
@@ -169,6 +182,8 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 256);
     instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
     instance_->offscreenWrapper_->isStaticDraw = false;
+    // Vec4版の色の計算
+    instance_->clearColor_ = MyMath::FloatColor(windowBackColor_);
 }
 
 /*------------------------- 終了処理 ---------------------------*/

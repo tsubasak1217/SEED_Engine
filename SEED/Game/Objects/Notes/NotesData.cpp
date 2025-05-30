@@ -28,17 +28,17 @@ NotesData::NotesData(bool isRandomNotes){
     activeHoldNotes_.clear();
 
     // ランダムノーツを生成する(いったんタップのみ)
-    int numNotes = 100;
+    int numNotes = 1000;
     if(isRandomNotes){
         for(int i = 0; i < numNotes; i++){
 
             //int random = MyFunc::Random(0, 100);
 
-            if(false/*random % 50 != 0*/){
+            if(true/*random % 50 != 0*/){
                 // ノーツの時間をランダムに決定
-                float time = MyFunc::Random(10.0f, duration_);
-                int32_t lane = rand() % PlayField::kKeyCount_;
-                UpDown layer = (UpDown)(rand() % 2);
+                float time = 10.0f + 0.1f * i;//MyFunc::Random(10.0f, duration_);
+                int32_t lane = i % PlayField::kKeyCount_;
+                UpDown layer = (UpDown)(rand() % 1);
                 std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
                 note->time_ = time;
                 note->lane_ = lane;
@@ -46,20 +46,20 @@ NotesData::NotesData(bool isRandomNotes){
                 note->laneBit_ = (LaneBit)(1 << lane);
                 notes_.emplace_back(std::make_pair(time, note));
 
-            } else{
-                // ノーツの時間をランダムに決定
-                float time = 5.0f + 3.0f * i;
-                int32_t lane = i % PlayField::kKeyCount_;
-                UpDown layer = UpDown::UP;
-                std::shared_ptr<Note_Hold> note = std::make_shared<Note_Hold>();
-                note->time_ = time;
-                note->kHoldTime_ = MyFunc::Random(1.0f, 3.0f);
-                note->lane_ = lane;
-                note->layer_ = layer;
-                note->laneBit_ = (LaneBit)(1 << lane);
-                notes_.emplace_back(std::make_pair(time, note));
+            }// else{
+            //    // ノーツの時間をランダムに決定
+            //    float time = 5.0f + 3.0f * i;
+            //    int32_t lane = i % PlayField::kKeyCount_;
+            //    UpDown layer = UpDown::UP;
+            //    std::shared_ptr<Note_Hold> note = std::make_shared<Note_Hold>();
+            //    note->time_ = time;
+            //    note->kHoldTime_ = MyFunc::Random(1.0f, 3.0f);
+            //    note->lane_ = lane;
+            //    note->layer_ = layer;
+            //    note->laneBit_ = (LaneBit)(1 << lane);
+            //    notes_.emplace_back(std::make_pair(time, note));
 
-            }
+            //}
         }
 
         // ノーツを時間でソート

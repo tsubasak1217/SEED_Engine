@@ -46,10 +46,10 @@ void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
     // プレイヤーの入力を取得し表示
     /*--------------------------*/
+#ifdef _DEBUG
     auto& tpLane = PlayerInput::GetInstance()->GetTapLane();
     auto& hlLane = PlayerInput::GetInstance()->GetHoldLane();
     auto& relLane = PlayerInput::GetInstance()->GetReleaseLane();
-
     ImGui::Begin("input");
     ImGui::SameLine();
     ImGui::Text("tapLane:{ ");
@@ -77,6 +77,7 @@ void Judgement::Judge(NotesData* noteGroup){
     
 
     ImGui::End();
+#endif // _DEBUG
 
     /*--------------------------*/
     // 押下状態はすべて設定する
@@ -134,7 +135,8 @@ void Judgement::Judge(NotesData* noteGroup){
             hitBits |= notePtr->laneBit_;// ビットを立てる
             pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.second]);// レーンを押下状態にする
 
-            // ここでエフェクトを出す(まだ書かない)
+            // エフェクトを出す
+            pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.second);
         }
     }
 }

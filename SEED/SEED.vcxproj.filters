@@ -107,6 +107,7 @@
     <ClCompile Include="SEED\Source\Object\Particle\Particle_Model.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -259,6 +260,9 @@
     <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h" />
+    <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
+    <ClInclude Include="SEED\External\stb\stb_truetype.h" />
+    <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />

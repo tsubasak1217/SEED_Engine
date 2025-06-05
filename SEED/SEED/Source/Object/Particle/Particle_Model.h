@@ -11,7 +11,7 @@ public:
 
 public:
     // パーティクルの位置を取得
-    const Vector3& GetPos() override{ return particle_->transform_.translate_; }
+    const Vector3& GetPos() override{ return particle_->transform_.translate; }
 
 private:
 

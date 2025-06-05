@@ -19,13 +19,17 @@ struct TextBox2D{
     std::string fontName;
     Transform2D transform;
     Vector2 size = {128.0f,64.0f};
-    Vector2 anchorPos;
+    Vector2 anchorPos = {0.5f,0.5f};
     float fontSize = 16.0f;
     float lineSpacing = 8.0f;// 行間の間隔
     float glyphSpacing = 8.0f;// 字間の間隔
     TextAlign align = TextAlign::CENTER;// テキストの配置
     BlendMode blendMode = BlendMode::NORMAL;
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA color
+
+#ifdef _DEBUG
+    bool textBoxVisible = true;
+#endif // _DEBUG
 
 public:// 関数
     void Draw()const;

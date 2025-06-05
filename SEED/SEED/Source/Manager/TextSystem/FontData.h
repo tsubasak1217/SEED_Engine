@@ -27,4 +27,6 @@ struct FontData{
     std::vector<FontAtlas> atlases;
     // 文字コードでグリフデータを管理
     std::unordered_map<int32_t,GlyphData*> glyphDatas;
+    // フォントのベースライン高さの比率(縦幅に対して)
+    float baselneHeightRate;
 };

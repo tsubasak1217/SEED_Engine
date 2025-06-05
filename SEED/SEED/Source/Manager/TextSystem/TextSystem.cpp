@@ -127,6 +127,7 @@ std::vector<unsigned char> TextSystem::ParseTTF(const char* filename){
 ///////////////////////////////////////////////////////////////////
 uint32_t TextSystem::CreateFontAtlas(
     const std::string& fontName,
+    FontData* fontData,
     const stbtt_fontinfo& font,
     std::vector<int32_t>& codePoints,
     std::unordered_map<int32_t, GlyphData>& outGlyphs
@@ -134,60 +135,78 @@ uint32_t TextSystem::CreateFontAtlas(
     const int texWidth = 1024, texHeight = 1024;
     std::vector<unsigned char> atlasBitmap(texWidth * texHeight, 0);
 
-    stbtt_pack_context pc;
-    stbtt_PackBegin(&pc, atlasBitmap.data(), texWidth, texHeight, 0, 1, nullptr);
-
-    int32_t size = static_cast<int32_t>(codePoints.size());
-    std::vector<stbtt_packedchar> packedChars(size);
-    stbtt_pack_range range{};
-    range.font_size = 32.0f;
-    range.first_unicode_codepoint_in_range = 0;
-    range.array_of_unicode_codepoints = codePoints.data();
-    range.num_chars = size;
-    range.chardata_for_range = packedChars.data();
-
-    stbtt_PackSetOversampling(&pc, 2, 2);
-    stbtt_PackFontRanges(&pc, font.data, 0, &range, 1);
-    stbtt_PackEnd(&pc);
-
-    // フォントの共通スケールとベースラインを計算
-    float fontSize = range.font_size;
+    // 各種情報を取得
+    float fontSize = 32.0f;
     float scale = stbtt_ScaleForPixelHeight(&font, fontSize);
     int ascent, descent, lineGap;
     stbtt_GetFontVMetrics(&font, &ascent, &descent, &lineGap);
-    float baseline = ascent * scale;
+    // baselineを計算
+    int baseline = static_cast<int>(ascent * scale);
+    fontData->baselneHeightRate = static_cast<float>(baseline) / fontSize;
 
-    // テクスチャ化
-    uint32_t textureHandle = CreateFontTexture(fontName, atlasBitmap.data(), texWidth, texHeight);
 
-    // 出力 GlyphData を構築
-    for(size_t i = 0; i < size; ++i){
-        int codePoint = codePoints[i];
-        const auto& ch = packedChars[i];
+    int penX = 0, penY = 0;
+    int rowHeight = 0;
 
-        GlyphData glyphData;
-        glyphData.graphHandle = textureHandle;
-
-        glyphData.texcoordLT = {
-            static_cast<float>(ch.x0) / texWidth,
-            static_cast<float>(ch.y0) / texHeight
-        };
-        glyphData.texcoordRB = {
-            static_cast<float>(ch.x1) / texWidth,
-            static_cast<float>(ch.y1) / texHeight
-        };
-
-        // サイズ比（横幅 / 縦幅）
-        Vector2 _size = glyphData.texcoordRB - glyphData.texcoordLT;
-        glyphData.yRatio = (_size.y == 0.0f) ? 0.0f : (_size.y / fontSize); // yRatioはフォントサイズに対する比率
-        glyphData.xRatio = (_size.y == 0.0f) ? 0.0f : (_size.x / _size.y);
-
-        // ベースラインからのオフセットを計算
+    for(int32_t codePoint : codePoints){
         int x0, y0, x1, y1;
         stbtt_GetCodepointBitmapBox(&font, codePoint, scale, scale, &x0, &y0, &x1, &y1);
-        glyphData.yOffset = baseline + static_cast<float>(y0); // ← ここがポイント！
+        int glyphWidth = x1 - x0;
+        int glyphHeight = y1 - y0;
 
-        outGlyphs[codePoint] = glyphData;
+        if(penX + glyphWidth >= texWidth){
+            penX = 0;
+            penY += rowHeight + 1;
+            rowHeight = 0;
+        }
+
+        // グリフビットマップ生成
+        std::vector<unsigned char> bitmap(glyphWidth * glyphHeight);
+        stbtt_MakeCodepointBitmap(&font, bitmap.data(), glyphWidth, glyphHeight, glyphWidth, scale, scale, codePoint);
+
+        int drawY = penY + (baseline - y0); // baseline 揃え位置
+
+        // アトラスに書き込み
+        for(int yy = 0; yy < glyphHeight; ++yy){
+            for(int xx = 0; xx < glyphWidth; ++xx){
+                int dstIndex = (drawY + yy) * texWidth + (penX + xx);
+                if(dstIndex < texWidth * texHeight)
+                    atlasBitmap[dstIndex] = bitmap[yy * glyphWidth + xx];
+            }
+        }
+
+        // GlyphData 作成
+        GlyphData glyph;
+        glyph.graphHandle = 0; // 仮。後でまとめて設定
+
+        glyph.texcoordLT = {
+            static_cast<float>(penX) / texWidth,
+            static_cast<float>(drawY) / texHeight
+        };
+        glyph.texcoordRB = {
+            static_cast<float>(penX + glyphWidth) / texWidth,
+            static_cast<float>(drawY + glyphHeight) / texHeight
+        };
+
+        Vector2 texSize = glyph.texcoordRB - glyph.texcoordLT;
+        glyph.xRatio = (texSize.y == 0.0f) ? 0.0f : texSize.x / texSize.y;
+        glyph.yRatio = static_cast<float>(glyphHeight) / fontSize;
+
+        // yOffset（描画時に足すことで baseline 揃え）
+        glyph.yOffset = static_cast<float>(y0) / fontSize;
+
+        outGlyphs[codePoint] = glyph;
+
+        penX += glyphWidth + 1;
+        rowHeight = (std::max)(rowHeight, glyphHeight);
+    }
+
+    // テクスチャ作成
+    uint32_t textureHandle = CreateFontTexture(fontName, atlasBitmap.data(), texWidth, texHeight);
+
+    // 各GlyphDataにテクスチャハンドル設定
+    for(auto& [_, glyph] : outGlyphs){
+        glyph.graphHandle = textureHandle;
     }
 
     return textureHandle;
@@ -278,7 +297,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
         FontAtlas* atlas = &fontData->atlases.back();
 
         std::string atlasName = fullPath + "_atlas" + std::to_string(pages++);
-        atlas->textureHandle = CreateFontAtlas(atlasName, font, codePoints, atlas->glyphs);
+        atlas->textureHandle = CreateFontAtlas(atlasName, fontData.get(), font, codePoints, atlas->glyphs);
 
         // offsetを更新
         offset += batchSize;
@@ -296,4 +315,18 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
     }
 
     return insertedIt->second.get();
+}
+
+
+///////////////////////////////////////////////////////////////////
+// フォントデータを取得する関数
+///////////////////////////////////////////////////////////////////
+const FontData& TextSystem::GetFont(const std::string& filename){
+    
+    if(fontDataMap_.find(directory_ + filename) == fontDataMap_.end()){
+        assert(false); // フォントが読み込まれていない
+    }
+
+    // フォントデータを取得
+    return *fontDataMap_[directory_ + filename];
 }

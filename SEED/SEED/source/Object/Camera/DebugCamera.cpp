@@ -44,11 +44,11 @@ void DebugCamera::MoveByPad(){
     };
 
     // 移動量の計算
-    Vector3 velocity = (moveDirection_ * moveSpeed_) * RotateMatrix({ 0.0f,transform_.rotate_.y,0.0f });
+    Vector3 velocity = (moveDirection_ * moveSpeed_) * RotateMatrix({ 0.0f,transform_.rotate.y,0.0f });
 
     // トランスフォームの更新
-    transform_.rotate_ += rotateValue * ClockManager::TimeRate();
-    transform_.translate_ += velocity * ClockManager::DeltaTime();
+    transform_.rotate += rotateValue * ClockManager::TimeRate();
+    transform_.translate += velocity * ClockManager::DeltaTime();
 }
 
 //////////////////////////////////////////////////////////////
@@ -85,9 +85,9 @@ void DebugCamera::MoveByKeyboard(){
     };
 
     // 移動量の計算
-    Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(transform_.rotate_);
+    Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(transform_.rotate);
 
     // トランスフォームの更新
-    transform_.rotate_ += rotateValue * ClockManager::TimeRate();
-    transform_.translate_ += velocity * ClockManager::DeltaTime();
+    transform_.rotate += rotateValue * ClockManager::TimeRate();
+    transform_.translate += velocity * ClockManager::DeltaTime();
 }

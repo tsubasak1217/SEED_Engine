@@ -464,9 +464,9 @@ void PolygonManager::AddTriangle(
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = worldMat;
-    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+    transform[drawCount].world = worldMat;
+    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新(描画数分)
     auto& offsetData = drawData->offsetData;
@@ -583,9 +583,9 @@ void PolygonManager::AddTriangle3DPrimitive(
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+    transform[drawCount].world = IdentityMat4();
+    transform[drawCount].WVP = pDxManager_->GetCamera()->GetViewProjectionMat();
+    transform[drawCount].worldInverseTranspose = IdentityMat4();
 
 
     // offsetResourceの数を更新
@@ -776,9 +776,9 @@ void PolygonManager::AddQuad(
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = worldMat;
-    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+    transform[drawCount].world = worldMat;
+    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -920,9 +920,9 @@ void PolygonManager::AddQuad3DPrimitive(
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+    transform[drawCount].world = IdentityMat4();
+    transform[drawCount].WVP = pDxManager_->GetCamera()->GetViewProjectionMat();
+    transform[drawCount].worldInverseTranspose = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -1144,9 +1144,9 @@ void PolygonManager::AddSprite(
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+    transform[drawCount].world = IdentityMat4();
+    transform[drawCount].WVP = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -1286,9 +1286,9 @@ void PolygonManager::AddModel(Model* model){
         pDxManager_->GetCamera()->GetViewProjectionMat()
     );
 
-    transform[drawCount].world_ = model->GetWorldMat();
-    transform[drawCount].WVP_ = wvp;
-    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(model->GetWorldMat()));
+    transform[drawCount].world = model->GetWorldMat();
+    transform[drawCount].WVP = wvp;
+    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(model->GetWorldMat()));
 
     //////////////////////////////////////////////////////////////////////////
     //                              offset情報の設定
@@ -1485,9 +1485,9 @@ void PolygonManager::AddLine(
     // transform (instance数分)
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = worldMat;
-    transform[drawCount].WVP_ = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+    transform[drawCount].world = worldMat;
+    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
 
     // offsetResourceの数を更新 (instance数分)
     auto& offsetData = drawData->offsetData;
@@ -1617,9 +1617,9 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     // transform
     auto& transform = drawData->transforms;
     if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+    transform[drawCount].world = IdentityMat4();
+    transform[drawCount].WVP = pDxManager_->GetCamera()->GetProjectionMat2D();
+    transform[drawCount].worldInverseTranspose = IdentityMat4();
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;

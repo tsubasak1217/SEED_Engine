@@ -4,45 +4,33 @@
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
 
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <dxgidebug.h>
-#include <dxcapi.h>
-#include <DirectXTex.h>
-
-#include "d3dx12.h"
-#pragma comment(lib,"d3d12.lib")
-#pragma comment(lib,"dxgi.lib")
-#pragma comment(lib,"dxguid.lib")
-#pragma comment(lib,"dxcompiler.lib")
-
 struct Transform2D{
-    Vector2 scale_ = { 1.0f,1.0f };
-    float rotate_ = 0.0f; // in radians
-    Vector2 translate_;
+    Vector2 scale = { 1.0f,1.0f };
+    float rotate = 0.0f; // radians
+    Vector2 translate;
 };
 
 struct Transform{
-    Vector3 scale_ = {1.0f,1.0f,1.0f};
-    Vector3 rotate_;
-    Quaternion rotateQuat_;
-    Vector3 translate_;
+    Vector3 scale = {1.0f,1.0f,1.0f};
+    Vector3 rotate;
+    Quaternion rotateQuat;
+    Vector3 translate;
 };
 
 struct EulerTransform {
-    Vector3 scale_;
-    Vector3 rotate_;
-    Vector3 translate_;
+    Vector3 scale;
+    Vector3 rotate;
+    Vector3 translate;
 };
 
 struct QuaternionTransform{
-    Vector3 scale_;
-    Quaternion rotate_;
-    Vector3 translate_;
+    Vector3 scale;
+    Quaternion rotate;
+    Vector3 translate;
 };
 
 struct TransformMatrix {
-    Matrix4x4 WVP_;
-    Matrix4x4 world_;
-    Matrix4x4 worldInverseTranspose_;
+    Matrix4x4 WVP;
+    Matrix4x4 world;
+    Matrix4x4 worldInverseTranspose;
 };

@@ -13,9 +13,9 @@ BaseCamera::BaseCamera(){
 }
 
 void BaseCamera::Initialize(){
-    transform_.scale_ = { 1.0f,1.0f,1.0f }; // scale
-    transform_.rotate_ = { 0.0f,0.0f,0.0f }; // rotate
-    transform_.translate_ = { 0.0f,1.0f,-10.0f }; // translate
+    transform_.scale = { 1.0f,1.0f,1.0f }; // scale
+    transform_.rotate = { 0.0f,0.0f,0.0f }; // rotate
+    transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
     projectionMode_ = PERSPECTIVE;
     clipRange_ = kWindowSize;
     znear_ = 0.1f;
@@ -34,9 +34,9 @@ void BaseCamera::UpdateMatrix(){
 
     // カメラのワールド行列
     worldMat_ = AffineMatrix(
-        transform_.scale_,
-        transform_.rotate_,
-        transform_.translate_ + CalcShake()
+        transform_.scale,
+        transform_.rotate,
+        transform_.translate + CalcShake()
     );
 
     // カメラの逆行列
@@ -56,7 +56,7 @@ void BaseCamera::UpdateMatrix(){
     );
 
     // カメラ法線
-    normal_ = MyMath::Normalize(Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(transform_.rotate_)));
+    normal_ = MyMath::Normalize(Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(transform_.rotate)));
 
     // ViewProjectionMatrixの計算
     viewProjectionMat_ = Multiply(viewMat_, projectionMat_);

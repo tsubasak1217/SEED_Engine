@@ -77,10 +77,10 @@ void Scene_Game::Initialize(){
     //}
 
     textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf");
-    textBox_.text = "隣の客はよく柿食う客だ。Hello,World!";
-    textBox_.fontSize = 96.0f;
-    textBox_.size = { 1280.0f, 720.0f };
-    textBox_.anchorPos = { 0.0f,0.0f };
+    textBox_.text = "隣の客はよく柿食う客だ。Hello,World!ポッチャマ・・・";
+    textBox_.fontSize = 32.0f;
+    textBox_.transform.translate = { 400.0f,400.0f };
+    textBox_.size = { 400.0f, 200.0f };
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -120,7 +120,16 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-
+    ImGui::Begin("テキスト");
+    ImGui::DragFloat2("テキスト位置", &textBox_.transform.translate.x, 1.0f, 0.0f);
+    ImGui::DragFloat2("ボックスサイズ", &textBox_.size.x, 1.0f, 0.0f);
+    ImGui::DragFloat2("アンカーポイント", &textBox_.anchorPos.x, 0.01f, 0.0f, 1.0f);
+    ImGui::DragFloat("回転", &textBox_.transform.rotate, 0.01f);
+    ImGui::DragFloat2("スケール", &textBox_.transform.scale.x, 0.01f, 0.0f);
+    ImGui::DragFloat("行間", &textBox_.lineSpacing, 0.1f, 0.0f, 100.0f);
+    ImGui::DragFloat("文字間隔", &textBox_.glyphSpacing, 0.1f, 0.0f, 100.0f);
+    ImGui::DragFloat("フォントサイズ", &textBox_.fontSize, 1.0f, 1.0f, 100.0f);
+    ImGui::End();
 #endif
 
     /*======================= 各状態固有の更新 ========================*/

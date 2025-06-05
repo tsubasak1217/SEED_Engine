@@ -133,7 +133,7 @@ void BaseObject::EndFrameDropFlagUpdate(){
 }
 
 void BaseObject::MoveByVelocity(){
-    model_->transform_.translate_ += velocity_ * ClockManager::DeltaTime();
+    model_->transform_.translate += velocity_ * ClockManager::DeltaTime();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,9 +143,9 @@ void BaseObject::AddWorldTranslate(const Vector3& addValue){
     if(GetParent() != nullptr){
         Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(GetParent()->GetWorldRotate()));
         Vector3 localAddValue = addValue * invParentMat;
-        model_->transform_.translate_ += localAddValue;
+        model_->transform_.translate += localAddValue;
     } else{
-        model_->transform_.translate_ += addValue;
+        model_->transform_.translate += addValue;
     }
 }
 

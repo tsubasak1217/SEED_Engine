@@ -38,11 +38,11 @@ void BaseParticle::Update(){
             velocity_.y += gravityAcceleration_ * ClockManager::DeltaTime();
         }
         // translateの更新
-        particle_->transform_.translate_ += velocity_;
+        particle_->transform_.translate += velocity_;
 
     } else{
         // 明確な目標地点がある場合
-        particle_->transform_.translate_ = MyMath::Lerp(
+        particle_->transform_.translate = MyMath::Lerp(
             emitPos_,
             goalPos_.value(),
             velocityEase
@@ -59,7 +59,7 @@ void BaseParticle::Update(){
     if(isBillboard_){
         if(!isUseRotate_){
             // 通常のビルボード
-            particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(SEED::GetCamera()->GetRotation());
+            particle_->transform_.rotateQuat = Quaternion::ToQuaternion(SEED::GetCamera()->GetRotation());
         } else{
             // ビルボードしながら任意回転(ずっと動かずに回転を見てる感じになる)
             localRotate_ *= Quaternion::AngleAxis(
@@ -68,12 +68,12 @@ void BaseParticle::Update(){
             );
 
             // ビルボードの回転と任意回転を合成
-            particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(SEED::GetCamera()->GetRotation()) * localRotate_;
+            particle_->transform_.rotateQuat = Quaternion::ToQuaternion(SEED::GetCamera()->GetRotation()) * localRotate_;
         }
     } else{
         if(isUseRotate_){
             // 通常の回転
-            particle_->transform_.rotateQuat_ *= Quaternion::AngleAxis(
+            particle_->transform_.rotateQuat *= Quaternion::AngleAxis(
                 rotateSpeed_ * rotateEase * ClockManager::DeltaTime(),
                 rotateAxis_
             );
@@ -96,8 +96,8 @@ void BaseParticle::Draw(){
 void BaseParticle::Enter(){
     // もう最大に到達している
     if(lifeTime_ > borderTime_[0]){
-        if(particle_->transform_.scale_ != kScale_){
-            particle_->transform_.scale_ = kScale_;
+        if(particle_->transform_.scale != kScale_){
+            particle_->transform_.scale = kScale_;
             particle_->masterColor_.w = 1.0f;
         }
         return;
@@ -108,7 +108,7 @@ void BaseParticle::Enter(){
     float ease = enterEaseFunc_(t);
 
     // スケールの補間
-    particle_->transform_.scale_ = MyMath::Lerp(kInScale_ * kScale_, kScale_, ease);
+    particle_->transform_.scale = MyMath::Lerp(kInScale_ * kScale_, kScale_, ease);
 
     // アルファ値の補間
     particle_->masterColor_.w = MyMath::Lerp(kInAlpha_, 1.0f, ease);
@@ -127,7 +127,7 @@ void BaseParticle::Exit(){
     float ease = exitEaseFunc_(t);
 
     // スケールの補間
-    particle_->transform_.scale_ = MyMath::Lerp(kScale_, kOutScale_ * kScale_, ease);
+    particle_->transform_.scale = MyMath::Lerp(kScale_, kOutScale_ * kScale_, ease);
     // アルファ値の補間
     particle_->masterColor_.w = MyMath::Lerp(1.0f, kOutAlpha_, ease);
 }

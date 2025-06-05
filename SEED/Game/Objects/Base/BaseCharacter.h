@@ -35,7 +35,7 @@ protected:
 
 public: // アクセッサ
     const Vector3& GetPrePos() const{ return prePos_; }
-    void SetTranslate(const Vector3& pos){ model_->transform_.translate_ = pos; }
+    void SetTranslate(const Vector3& pos){ model_->transform_.translate = pos; }
     // アニメーション関連
     void SetAnimation(const std::string& animName,bool loop){ model_->StartAnimation(animName,loop); }
     void SetAnimation(int32_t animIdx,bool loop){ model_->StartAnimation(animIdx,loop); }

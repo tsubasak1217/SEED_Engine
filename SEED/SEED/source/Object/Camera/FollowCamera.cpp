@@ -49,10 +49,10 @@ void FollowCamera::Update(){
     // 目標カメラ位置の算出
     aimPosition_ = targetPos_ + (offsetVec * distance_);
     // カメラ位置を補間更新
-    transform_.translate_ += (aimPosition_ - transform_.translate_) * interpolationRate_ * ClockManager::TimeRate();
+    transform_.translate += (aimPosition_ - transform_.translate) * interpolationRate_ * ClockManager::TimeRate();
 
     // 注視点とカメラ位置から回転（向き）を計算
-    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
+    transform_.rotate = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
 }
 
 void FollowCamera::Reset(const Vector3& pos){
@@ -65,10 +65,10 @@ void FollowCamera::Reset(const Vector3& pos){
     Vector3 offsetVec = MyFunc::CreateVector(theta_, phi_);
 
     // 目標カメラ位置を算出
-    transform_.translate_ = targetPos_ + (offsetVec * distance_);
+    transform_.translate = targetPos_ + (offsetVec * distance_);
 
     // カメラの回転を計算
-    transform_.rotate_ = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate_));
+    transform_.rotate = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
 }
 
 

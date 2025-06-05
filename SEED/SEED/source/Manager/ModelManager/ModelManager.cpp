@@ -462,10 +462,10 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node){
     node->mTransformation.Decompose(aiScale, aiRotate, aiTranslate);
 
     // 情報を格納(左手座標に変換して)
-    result.transform.scale_ = Vector3(aiScale.x, aiScale.y, aiScale.z);
-    result.transform.rotate_ = Quaternion(aiRotate.x, -aiRotate.y, -aiRotate.z, aiRotate.w);
-    result.transform.translate_ = Vector3(-aiTranslate.x, aiTranslate.y, aiTranslate.z);
-    result.localMatrix = AffineMatrix(result.transform.scale_, result.transform.rotate_, result.transform.translate_);
+    result.transform.scale = Vector3(aiScale.x, aiScale.y, aiScale.z);
+    result.transform.rotate = Quaternion(aiRotate.x, -aiRotate.y, -aiRotate.z, aiRotate.w);
+    result.transform.translate = Vector3(-aiTranslate.x, aiTranslate.y, aiTranslate.z);
+    result.localMatrix = AffineMatrix(result.transform.scale, result.transform.rotate, result.transform.translate);
 
     // ノード名を取得
     result.name = node->mName.C_Str();
@@ -554,9 +554,9 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             Vector3 scale = CalcMomentValue(nodeAnim.scale.keyframes, time);
 
             // トランスフォーム情報を更新
-            skeleton.joints[idx].transform.translate_ = translate;
-            skeleton.joints[idx].transform.rotate_ = rotate;
-            skeleton.joints[idx].transform.scale_ = scale;
+            skeleton.joints[idx].transform.translate = translate;
+            skeleton.joints[idx].transform.rotate = rotate;
+            skeleton.joints[idx].transform.scale = scale;
         } else{
             // ノードアニメーションがない場合はデフォルトの値を設定
             skeleton.joints[idx].transform = defaultJoint.transform;
@@ -590,15 +590,15 @@ ModelSkeleton ModelManager::InterpolateSkeleton(
         ModelJoint jointB = skeletonB.joints[i];
 
         // 補間
-        Quaternion rotate = Quaternion::Slerp(jointA.transform.rotate_, jointB.transform.rotate_, t);
-        Vector3 translate = MyMath::Lerp(jointA.transform.translate_, jointB.transform.translate_, t);
-        Vector3 scale = MyMath::Lerp(jointA.transform.scale_, jointB.transform.scale_, t);
+        Quaternion rotate = Quaternion::Slerp(jointA.transform.rotate, jointB.transform.rotate, t);
+        Vector3 translate = MyMath::Lerp(jointA.transform.translate, jointB.transform.translate, t);
+        Vector3 scale = MyMath::Lerp(jointA.transform.scale, jointB.transform.scale, t);
 
         // 補間したジョイントを作成
         ModelJoint joint;
-        joint.transform.rotate_ = rotate;
-        joint.transform.translate_ = translate;
-        joint.transform.scale_ = scale;
+        joint.transform.rotate = rotate;
+        joint.transform.translate = translate;
+        joint.transform.scale = scale;
         joint.localMatrix = AffineMatrix(scale, rotate, translate);
         joint.skeletonSpaceMatrix = joint.localMatrix;
         joint.index = i;
@@ -619,7 +619,7 @@ ModelSkeleton ModelManager::InterpolateSkeleton(
 /*-----------------------------------------------------------*/
 void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton){
     for(ModelJoint& joint : skeleton->joints){
-        joint.localMatrix = AffineMatrix(joint.transform.scale_, joint.transform.rotate_, joint.transform.translate_);
+        joint.localMatrix = AffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
         if(joint.parent){
             joint.skeletonSpaceMatrix = joint.localMatrix * skeleton->joints[*joint.parent].skeletonSpaceMatrix;
         } else{

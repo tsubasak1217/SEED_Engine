@@ -263,7 +263,7 @@ void ColliderAnimationData::DrawCollider() const{
 
     // 軸モデルの生成
     Model axis = Model("Assets/axis.obj");
-    axis.transform_.scale_ = Vector3(0.3f, 0.3f, 0.3f);
+    axis.transform_.scale = Vector3(0.3f, 0.3f, 0.3f);
 
     // 要素を取り出し、行列を計算
     for(int i = 0; i < nodeAnimation.translate.keyframes.size(); i++){
@@ -282,9 +282,9 @@ void ColliderAnimationData::DrawCollider() const{
         }
 
         // 軸モデルの描画
-        axis.transform_.translate_ = translate[i];
-        axis.transform_.scale_ = scale[i] * axis.transform_.scale_;
-        axis.transform_.rotateQuat_ = rotate[i];
+        axis.transform_.translate = translate[i];
+        axis.transform_.scale = scale[i] * axis.transform_.scale;
+        axis.transform_.rotateQuat = rotate[i];
         axis.UpdateMatrix();
         axis.Draw();
     }
@@ -301,7 +301,7 @@ void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
 
     // 軸モデルの生成
     Model axis = Model("Assets/axis.obj");
-    axis.transform_.scale_ = Vector3(0.3f, 0.3f, 0.3f);
+    axis.transform_.scale = Vector3(0.3f, 0.3f, 0.3f);
     axis.masterColor_ = Vector4(1.0f, 1.0f, 1.0f, 0.5f);
 
     // indexDrawなら時間からindexの時間を求める
@@ -338,10 +338,10 @@ void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
     }
 
     // 軸モデルの描画
-    axis.transform_.translate_ = translate;
-    axis.transform_.scale_ = scale * axis.transform_.scale_;
-    axis.transform_.rotateQuat_ = rotate;
-    if(indexDraw){ axis.transform_.scale_ *= 1.1f; }
+    axis.transform_.translate = translate;
+    axis.transform_.scale = scale * axis.transform_.scale;
+    axis.transform_.rotateQuat = rotate;
+    if(indexDraw){ axis.transform_.scale *= 1.1f; }
     axis.UpdateMatrix();
     axis.Draw();
 }

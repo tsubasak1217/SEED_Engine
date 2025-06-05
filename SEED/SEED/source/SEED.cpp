@@ -654,11 +654,11 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
     // 制御点の描画
     if(!isControlPointVisible){ return; }
     Model controlPointModel = Model("Assets/cube.obj");
-    controlPointModel.transform_.scale_ = { 0.5f,0.5f,0.5f };
+    controlPointModel.transform_.scale = { 0.5f,0.5f,0.5f };
     controlPointModel.masterColor_ = { 1.0f,0.0f,0.0f,1.0f };
 
     for(int i = 0; i < points.size(); i++){
-        controlPointModel.transform_.translate_ = points[i];
+        controlPointModel.transform_.translate = points[i];
         controlPointModel.UpdateMatrix();
         DrawModel(&controlPointModel);
     }

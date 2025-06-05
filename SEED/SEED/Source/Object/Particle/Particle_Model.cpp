@@ -24,13 +24,13 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
     Vector3 center = modelEmitter->GetCenter();
     emitRange.min = center - modelEmitter->emitRange * 0.5f;
     emitRange.max = center + modelEmitter->emitRange * 0.5f;
-    particle_->transform_.translate_ = MyFunc::Random(emitRange);
-    emitPos_ = particle_->transform_.translate_;
+    particle_->transform_.translate = MyFunc::Random(emitRange);
+    emitPos_ = particle_->transform_.translate;
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(modelEmitter->radiusRange.min, modelEmitter->radiusRange.max);
-    particle_->transform_.scale_ = MyFunc::Random(modelEmitter->scaleRange) * radius;
-    kScale_ = particle_->transform_.scale_;
+    particle_->transform_.scale = MyFunc::Random(modelEmitter->scaleRange) * radius;
+    kScale_ = particle_->transform_.scale;
 
     /////////////////////// 進行方向を決定 ////////////////////////
 
@@ -38,7 +38,7 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     // 目標位置が設定されている場合、方向を目標位置に向ける
     if(modelEmitter->isSetGoalPosition){
-        direction_ = MyMath::Normalize(modelEmitter->goalPosition - particle_->transform_.translate_);
+        direction_ = MyMath::Normalize(modelEmitter->goalPosition - particle_->transform_.translate);
     }
 
     // 目標地点で終了するかどうかで処理を分岐
@@ -77,8 +77,8 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     // ランダム初期化フラグがある場合
     if(modelEmitter->isRoteteRandomInit_){
-        particle_->transform_.rotateQuat_ = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f, 3.14f));
-        localRotate_ = particle_->transform_.rotateQuat_;
+        particle_->transform_.rotateQuat = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f, 3.14f));
+        localRotate_ = particle_->transform_.rotateQuat;
     }
 
     // 回転速度の決定

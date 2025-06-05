@@ -348,7 +348,7 @@ void DxManager::InitPSO(){
     
     PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
-    PSOManager::CreatePipelines("DoFPipeline.pip");// CSのパイプライン。被写界深度
+    PSOManager::CreatePipelines("TextVSPipeline.pip");// テキストのパイプライン。
 
     /*==================================================================================*/
     //                              CSのパイプラインの初期化
@@ -710,6 +710,7 @@ void DxManager::Release(){
 
     // リソース
     TextureManager::Release();
+    TextSystem::Release();
     WindowManager::Finalize();
     offScreenResource.resource.Reset();
     depthStencilResource.resource.Reset();

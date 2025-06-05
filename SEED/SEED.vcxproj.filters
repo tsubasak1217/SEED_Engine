@@ -108,6 +108,7 @@
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
     <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -263,6 +264,7 @@
     <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
+    <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SEED\external\imgui\LICENSE.txt" />
@@ -273,6 +275,7 @@
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Text.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -64,6 +64,47 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
     );
 }
 
+Quad MakeQuad(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){
+
+    Quad quad = Quad(
+        { 0.0f, 0.0f, 0.0f },
+        { size.x, 0.0f, 0.0f },
+        { 0.0f, -size.y, 0.0f },
+        { size.x, -size.y, 0.0f },
+        { 1.0f,1.0f,1.0f },
+        { 0.0f,0.0f,0.0f },
+        { 0.0f,0.0f,0.0f },
+        color
+    );
+
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x -= size.x * anchorPoint.x;
+        quad.localVertex[i].y += size.y * anchorPoint.y;
+    }
+
+    return quad;
+}
+
+Quad2D MakeQuad2D(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){
+    Quad2D quad = Quad2D(
+        { 0.0f, 0.0f },
+        { size.x, 0.0f },
+        { 0.0f, size.y },
+        { size.x, size.y },
+        { 1.0f,1.0f },
+        0.0f,
+        { 0.0f,0.0f },
+        color
+    );
+
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x -= size.x * anchorPoint.x;
+        quad.localVertex[i].y -= size.y * anchorPoint.y;// y軸は下方向が正なので逆
+    }
+
+    return quad;
+}
+
 //-------------- 線分同士の最近傍点を求める関数 ---------------
 
 

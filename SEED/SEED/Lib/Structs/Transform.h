@@ -1,4 +1,5 @@
 #pragma once
+#include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
@@ -14,6 +15,12 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
+
+struct Transform2D{
+    Vector2 scale_ = { 1.0f,1.0f };
+    float rotate_ = 0.0f; // in radians
+    Vector2 translate_;
+};
 
 struct Transform{
     Vector3 scale_ = {1.0f,1.0f,1.0f};

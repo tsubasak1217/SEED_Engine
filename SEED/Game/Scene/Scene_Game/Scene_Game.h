@@ -38,6 +38,9 @@ private:
     // model
     std::vector<std::unique_ptr<Model>> models_;
 
+    // text
+    TextBox2D textBox_;
+
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 };

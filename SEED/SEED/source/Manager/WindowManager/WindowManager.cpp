@@ -26,8 +26,8 @@ LRESULT CALLBACK WindowProc(
 ///////////////////////////////////////////////////////////////////////////////////
 
 WindowManager* WindowManager::GetInstance(){
-    if(!instance_) {
-        instance_ = new WindowManager(); 
+    if(!instance_){
+        instance_ = new WindowManager();
         // GDIの初期化
         instance_->InitializeGDI();
     }
@@ -72,7 +72,7 @@ int WindowManager::ProcessMessage(){
 //                             ウィンドウを新しく作成
 ///////////////////////////////////////////////////////////////////////////////////
 
-void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_t height,HWND parentHandle){
+void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_t height, HWND parentHandle){
 
 
     /*--------------------- クライアント領域の決定 -----------------*/
@@ -92,7 +92,7 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = szAppName.c_str();
 
-    if(!RegisterClass(&wc)) { return; }
+    if(!RegisterClass(&wc)){ return; }
 
     /*-------------------- ウィンドウの生成 -------------------------*/
 
@@ -113,7 +113,7 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
     );
 
     // ウインドウハンドルが取得できなかった場合アサート
-    if(!instance_->windowList_[windowName]->GetWindowHandle()) { assert(0); }
+    if(!instance_->windowList_[windowName]->GetWindowHandle()){ assert(0); }
 
 
     // ウインドウの表示
@@ -133,7 +133,7 @@ void WindowManager::Create(const std::wstring& windowName, int32_t width, int32_
 void WindowManager::Update(){
 
     // メッセージ処理
-    if(PeekMessage(&instance_->msg, NULL, 0, 0, PM_REMOVE)) {
+    while(PeekMessage(&instance_->msg, NULL, 0, 0, PM_REMOVE)){
         TranslateMessage(&instance_->msg);
         DispatchMessage(&instance_->msg);
     }
@@ -152,16 +152,16 @@ void WindowManager::Update(){
 LRESULT CALLBACK WindowProc(
     HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
-    if(ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)) {
+    if(ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)){
         return true;
     }
 
-    switch(uMsg) {
+    switch(uMsg){
 
     case WM_DESTROY:
 
         // メインのウィンドウが破棄されたらアプリケーションを終了
-        if(hwnd == WindowManager::GetHWND(SEED::GetWindowTitle())) {
+        if(hwnd == WindowManager::GetHWND(SEED::GetWindowTitle())){
             PostQuitMessage(0);
         }
         return 0;

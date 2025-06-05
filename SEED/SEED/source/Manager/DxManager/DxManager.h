@@ -38,12 +38,6 @@ using Microsoft::WRL::ComPtr;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-class SEED;
-class TextureManager;
-class ImGuiManager;
-class PSOManager;
-class ViewManager;
-
 
 struct LeakChecker{
     ~LeakChecker();
@@ -53,12 +47,13 @@ class DxManager{
 
     friend PolygonManager;
     friend PostEffect;
-    friend SEED;
-    friend TextureManager;
-    friend ImGuiManager;
-    friend PSOManager;
-    friend ViewManager;
     friend DxResource;
+    friend class SEED;
+    friend class TextureManager;
+    friend class TextSystem;
+    friend class ImGuiManager;
+    friend class PSOManager;
+    friend class ViewManager;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();

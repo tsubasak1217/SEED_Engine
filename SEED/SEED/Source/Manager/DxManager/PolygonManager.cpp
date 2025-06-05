@@ -245,6 +245,18 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // TextVSPipeline
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
 }
 
 void PolygonManager::Finalize(){}
@@ -604,9 +616,10 @@ void PolygonManager::AddTriangle3DPrimitive(
 
 void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, uint32_t layer
 ){
 
@@ -659,12 +672,16 @@ void PolygonManager::AddQuad(
     std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
-    drawDataName[0] += "ENGINE_DRAW_QUAD";
+    drawDataName[0] += isText ? "ENGINE_DRAW_TEXT" : "ENGINE_DRAW_QUAD";
     drawDataName[0] += blendName[(int)blendMode];
     drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
-    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+    if(isText){
+        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TEXT2D" : "ENGINE_DRAW_TEXT2D";
+    } else{
+        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+    }
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
@@ -676,17 +693,33 @@ void PolygonManager::AddQuad(
         modelDrawData_[curDrawDataName]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[curDrawDataName]->pso =
-            PSOManager::GetPSO(
-                "CommonVSPipeline.pip",
-                blendMode, cullMode, PolygonTopology::TRIANGLE
-            );
+        if(!isText){
+            modelDrawData_[curDrawDataName]->pso =
+                PSOManager::GetPSO(
+                    "CommonVSPipeline.pip",
+                    blendMode, cullMode, PolygonTopology::TRIANGLE
+                );
+        } else{
+            modelDrawData_[curDrawDataName]->pso =
+                PSOManager::GetPSO(
+                    "TextVSPipeline.pip",
+                    blendMode, cullMode, PolygonTopology::TRIANGLE
+                );
+        }
 
         // 描画種類の設定
-        modelDrawData_[curDrawDataName]->drawOrder = view3D ?
-            (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
-        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
-            (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
+        if(!isText){
+            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+                (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
+            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
+        } else{
+            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+                (int8_t)DrawOrder::Text : (int8_t)DrawOrder::Text2D;
+            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticText2D : modelDrawData_[curDrawDataName]->drawOrder;
+        }
+
         // 名前の設定
         modelDrawData_[curDrawDataName]->name = curDrawDataName;
     }
@@ -700,10 +733,10 @@ void PolygonManager::AddQuad(
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() < vertexCount + 4){ mesh.vertices.resize(vertexCount + 4); }
-    mesh.vertices[vertexCount] = VertexData(transformed[0].ToVec4(), Vector2(0.0f, 0.0f), normalVec);
-    mesh.vertices[vertexCount + 1] = VertexData(transformed[1].ToVec4(), Vector2(1.0f, 0.0f), normalVec);
-    mesh.vertices[vertexCount + 2] = VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec);
-    mesh.vertices[vertexCount + 3] = VertexData(transformed[3].ToVec4(), Vector2(1.0f, 1.0f), normalVec);
+    mesh.vertices[vertexCount] = VertexData(transformed[0].ToVec4(), texCoordV1, normalVec);
+    mesh.vertices[vertexCount + 1] = VertexData(transformed[1].ToVec4(), texCoordV2, normalVec);
+    mesh.vertices[vertexCount + 2] = VertexData(transformed[2].ToVec4(), texCoordV3, normalVec);
+    mesh.vertices[vertexCount + 3] = VertexData(transformed[3].ToVec4(), texCoordV4, normalVec);
 
     //indexResource
     if(mesh.indices.size() <= indexCount){ mesh.indices.resize(indexCount + 6); }
@@ -755,13 +788,25 @@ void PolygonManager::AddQuad(
     }
 
     // カウントを更新
-    if(isStaticDraw){
-        objCounts_[(int)DrawOrder::StaticQuad2D]++;
-    } else{
-        if(view3D){
-            objCounts_[(int)DrawOrder::Quad]++;
+    if(!isText){
+        if(isStaticDraw){
+            objCounts_[(int)DrawOrder::StaticQuad2D]++;
         } else{
-            objCounts_[(int)DrawOrder::Quad2D]++;
+            if(view3D){
+                objCounts_[(int)DrawOrder::Quad]++;
+            } else{
+                objCounts_[(int)DrawOrder::Quad2D]++;
+            }
+        }
+    } else{
+        if(isStaticDraw){
+            objCounts_[(int)DrawOrder::StaticText2D]++;
+        } else{
+            if(view3D){
+                objCounts_[(int)DrawOrder::Text]++;
+            } else{
+                objCounts_[(int)DrawOrder::Text2D]++;
+            }
         }
     }
 
@@ -1811,15 +1856,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
     // インスタンスが切り替わる頂点間隔の決定(モデルは必要ないため0)
     int32_t instanceInterval = 0;
-    if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
+    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::AnimationModel){
+        instanceInterval = 0;
+    } else if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
         instanceInterval = 2;
 
     } else if(drawOrder == DrawOrder::Triangle or drawOrder == DrawOrder::Triangle2D){
         instanceInterval = 3;
 
-    } else if(
-        drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or drawOrder == DrawOrder::BackSprite or
-        drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D or drawOrder == DrawOrder::Offscreen){
+    } else {
         instanceInterval = 4;
     }
 
@@ -2107,6 +2152,7 @@ void PolygonManager::DrawToOffscreen(){
     // 3D
     SetRenderData(DrawOrder::Line);
     SetRenderData(DrawOrder::Quad);
+    SetRenderData(DrawOrder::Text);
     SetRenderData(DrawOrder::Triangle);
     SetRenderData(DrawOrder::Model);
     SetRenderData(DrawOrder::AnimationModel);
@@ -2116,6 +2162,7 @@ void PolygonManager::DrawToOffscreen(){
     SetRenderData(DrawOrder::Line2D);
     SetRenderData(DrawOrder::Triangle2D);
     SetRenderData(DrawOrder::Quad2D);
+    SetRenderData(DrawOrder::Text2D);
     SetRenderData(DrawOrder::Sprite);
 }
 
@@ -2128,6 +2175,7 @@ void PolygonManager::DrawToBackBuffer(){
     SetRenderData(DrawOrder::StaticLine2D);
     SetRenderData(DrawOrder::StaticTriangle2D);
     SetRenderData(DrawOrder::StaticQuad2D);
+    SetRenderData(DrawOrder::StaticText2D);
     SetRenderData(DrawOrder::StaticSprite);
 }
 

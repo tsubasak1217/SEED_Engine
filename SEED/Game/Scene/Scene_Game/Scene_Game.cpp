@@ -76,6 +76,11 @@ void Scene_Game::Initialize(){
     //    models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
     //}
 
+    textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf");
+    textBox_.text = "隣の客はよく柿食う客だ。Hello,World!";
+    textBox_.fontSize = 96.0f;
+    textBox_.size = { 1280.0f, 720.0f };
+    textBox_.anchorPos = { 0.0f,0.0f };
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -161,6 +166,8 @@ void Scene_Game::Draw(){
     for(auto& model : models_){
         model->Draw();
     }
+
+    textBox_.Draw();
 
     // ライトをセット
     directionalLight_->SendData();

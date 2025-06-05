@@ -93,11 +93,14 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_LINE2D,
         PRIMITIVE_SPRITE,
         PRIMITIVE_BACKSPRITE,
+        PRIMITIVE_TEXT,
+        PRIMITIVE_TEXT2D,
         // 以下は解像度の変更の影響を受けない描画用
         PRIMITIVE_OFFSCREEN,
         PRIMITIVE_STATIC_TRIANGLE2D,
         PRIMITIVE_STATIC_QUAD2D,
         PRIMITIVE_STATIC_SPRITE,
+        PRIMITIVE_STATIC_TEXT2D,
         PRIMITIVE_STATIC_LINE2D,
     };
 
@@ -114,10 +117,13 @@ private:// 内部で使用する定数や列挙型
         Line2D,
         Sprite,
         BackSprite,
+        Text,
+        Text2D,
         Offscreen,
         StaticTriangle2D,
         StaticQuad2D,
         StaticSprite,
+        StaticText2D,
         StaticLine2D,
         // カウント用。これより後ろには追加しないこと
         DrawOrderCount
@@ -174,9 +180,10 @@ public:// 頂点情報の追加に関わる関数
 
     void AddQuad(
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
         const Matrix4x4& worldMat, const Vector4& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
-        uint32_t GH, BlendMode blendMode,
+        uint32_t GH, BlendMode blendMode,bool isText = false,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
     );

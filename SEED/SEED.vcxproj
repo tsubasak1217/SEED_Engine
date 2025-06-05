@@ -135,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp" />
@@ -249,6 +250,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Lib\Structs\PointLight.h" />
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
+    <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionData.h" />
@@ -412,6 +414,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Text.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

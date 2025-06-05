@@ -416,6 +416,7 @@ ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX
     return resource;
 }
 
+
 ComPtr<ID3D12Resource> CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height){
     D3D12_RESOURCE_DESC resourceDesc{};
     resourceDesc.Width = width;// テクスチャの幅

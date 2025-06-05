@@ -166,6 +166,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     DxManager::Initialize(instance_);
     ImGuiManager::Initialize();
     TextureManager::Initialize();
+    TextSystem::Initialize();
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
@@ -299,9 +300,10 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
+        quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
         worldMat, quad.color, quad.lightingType, quad.uvTransform, true,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
-        quad.blendMode, quad.cullMode
+        quad.blendMode, quad.isText, quad.cullMode
     );
 }
 
@@ -326,9 +328,10 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[1].ToVec3(),
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
+        quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
         worldMat, quad.color, quad.lightingType, quad.uvTransform, false,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
-        quad.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
+        quad.blendMode, quad.isText, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
     );
 }
@@ -382,6 +385,17 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
         TransformToVec4(v2),
         IdentityMat4(), color, false, blendMode, false, DrawLocation::Front, 0
     );
+}
+
+/*========================================== テキスト ===========================================*/
+
+// 内部で文字ごとのDrawQuadに変換する
+void SEED::DrawText2D(const TextBox2D& textBox){
+    textBox.Draw();
+}
+
+void SEED::DrawText3D(const TextBox3D& textBox){
+    textBox.Draw();
 }
 
 

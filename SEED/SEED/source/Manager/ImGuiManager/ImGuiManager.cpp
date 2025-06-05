@@ -31,7 +31,7 @@ void ImGuiManager::Initialize(){
         "./SEED/EngineResources/Fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf",
         18.0f,// フォントサイズ
         nullptr,// オプション
-        glyphRangesJapanese // 日本語用グリフ範囲
+        GlyphRanges::imJpGlyphRanges // 日本語用グリフ範囲
     );
     io.Fonts->Build(); // フォント構築を明示的に実行
 

@@ -15,6 +15,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/TextSystem/TextSystem.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
 
 // structs
@@ -28,6 +29,7 @@
 #include <SEED/Lib/Shapes/OBB.h>
 #include <SEED/Lib/Shapes/Ring.h>
 #include <SEED/Lib/Structs/SkyBox.h>
+#include <SEED/Lib/Structs/TextBox.h>
 
 // math
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
@@ -106,6 +108,7 @@ public:
 
     // 2D矩形
     static void DrawQuad2D(const Quad2D& quad);
+
     // スプライト
     static void DrawSprite(const Sprite& sprite);
 
@@ -126,6 +129,13 @@ public:
         const Vector2& v1, const Vector2& v2, 
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
+
+    /*========================テキストの描画関数==========================*/
+
+    // 2Dテキスト
+    static void DrawText2D(const TextBox2D& textBox);
+    // 3Dテキスト
+    static void DrawText3D(const TextBox3D& textBox);
 
     /*==========================リングの描画関数==========================*/
 

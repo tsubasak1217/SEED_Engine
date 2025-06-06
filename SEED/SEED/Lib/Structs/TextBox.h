@@ -32,6 +32,7 @@ struct TextBox2D{
     BlendMode blendMode = BlendMode::NORMAL;
     bool useOutline = false;
     float outlineWidth = 2.0f; // アウトラインの幅
+    int outlineSplitCount = 16;
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 

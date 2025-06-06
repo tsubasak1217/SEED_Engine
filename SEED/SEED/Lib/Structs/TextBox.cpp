@@ -23,6 +23,7 @@ void TextBox2D::Edit(){
     if(useOutline){
         ImGui::DragFloat("アウトライン幅", &outlineWidth, 0.1f, 0.0f);
         ImGui::ColorEdit4("アウトライン色", (float*)&outlineColor);
+        ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
     }
 }
 #endif // _DEBUG
@@ -224,14 +225,13 @@ void TextBox2D::Draw()const{
                     if(useOutline){
                         Matrix3x3 rotateMat = RotateMatrix(transform.rotate);
                         Vector2 rotatedVec = Vector2(0.0f, 1.0f) * rotateMat;
-                        int splitCount = 16;
-                        float radianEvery = (3.14f * 2.0f) / splitCount;
+                        float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
                         Quad2D outlineQuad = quad;
                         outlineQuad.color = outlineColor;
                         outlineQuad.layer = 0; // アウトラインは下に描画するためレイヤーを0に設定
 
                         // アウトラインを移動させて描画
-                        for(int j = 0; j < splitCount; j++){
+                        for(int j = 0; j < outlineSplitCount; j++){
                             // アウトラインの位置を計算
                             Vector2 offset = rotatedVec * outlineWidth;
                             outlineQuad.localVertex[0] = quad.localVertex[0] + offset;

@@ -220,32 +220,33 @@ void TextBox2D::Draw()const{
                     // 描画
                     quad.isText = true;
                     quad.layer = 1;
-                    SEED::DrawQuad2D(quad);
 
                     if(useOutline){
                         Matrix3x3 rotateMat = RotateMatrix(transform.rotate);
                         Vector2 rotatedVec = Vector2(0.0f, 1.0f) * rotateMat;
                         int splitCount = 16;
                         float radianEvery = (3.14f * 2.0f) / splitCount;
-                        Quad2D originQuad = quad;
-                        quad.color = outlineColor;
-                        quad.layer = 0; // アウトラインは下に描画するためレイヤーを0に設定
+                        Quad2D outlineQuad = quad;
+                        outlineQuad.color = outlineColor;
+                        outlineQuad.layer = 0; // アウトラインは下に描画するためレイヤーを0に設定
 
                         // アウトラインを移動させて描画
                         for(int j = 0; j < splitCount; j++){
                             // アウトラインの位置を計算
                             Vector2 offset = rotatedVec * outlineWidth;
-                            quad.localVertex[0] = originQuad.localVertex[0] + offset;
-                            quad.localVertex[1] = originQuad.localVertex[1] + offset;
-                            quad.localVertex[2] = originQuad.localVertex[2] + offset;
-                            quad.localVertex[3] = originQuad.localVertex[3] + offset;
+                            outlineQuad.localVertex[0] = quad.localVertex[0] + offset;
+                            outlineQuad.localVertex[1] = quad.localVertex[1] + offset;
+                            outlineQuad.localVertex[2] = quad.localVertex[2] + offset;
+                            outlineQuad.localVertex[3] = quad.localVertex[3] + offset;
                             // アウトラインの色を設定
-                            quad.color = outlineColor;
-                            SEED::DrawQuad2D(quad);
+                            SEED::DrawQuad2D(outlineQuad);
                             // 回転ベクトルを更新
                             rotatedVec *= RotateMatrix(radianEvery);
                         }
                     }
+
+                    SEED::DrawQuad2D(quad);
+                    
                     // X座標オフセットを加算
                     float height = fontSize * lineGlyph->yRatio;
                     curX += height * lineGlyph->xRatio + glyphSpacing;

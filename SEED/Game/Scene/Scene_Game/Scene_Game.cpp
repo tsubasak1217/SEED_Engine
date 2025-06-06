@@ -78,7 +78,7 @@ void Scene_Game::Initialize(){
 
     textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Black.ttf");
     textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf");
-    textBox_.text = "%sさん、こんにちは。。";
+    textBox_.text = "%sさん、こんにちは。";
     textBox_.BindDatas({insertText_, textBox_.fontSize});
     textBox_.fontSize = 32.0f;
     textBox_.transform.translate = { 400.0f,400.0f };

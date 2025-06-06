@@ -25,13 +25,8 @@ void TextSystem::Initialize(){
 /////////////////////////////////////////////////////////////////
 void TextSystem::Release(){
     if(instance_){
-        // テクスチャリソースの解放
-        for(auto& resource : instance_->textureResources){
-            resource->Release();
-        }
-        for(auto& intermediate : instance_->intermediateResources){
-            intermediate->Release();
-        }
+        instance_->textureResources.clear();
+        instance_->intermediateResources.clear();
     }
 }
 
@@ -132,11 +127,12 @@ uint32_t TextSystem::CreateFontAtlas(
     std::vector<int32_t>& codePoints,
     std::unordered_map<int32_t, GlyphData>& outGlyphs
 ){
-    const int texWidth = 1024, texHeight = 1024;
+    const int texWidth = 2048, texHeight = 2048;
+    int padding = 16;
     std::vector<unsigned char> atlasBitmap(texWidth * texHeight, 0);
 
     // 各種情報を取得
-    float fontSize = 32.0f;
+    float fontSize = 64.0f;
     float scale = stbtt_ScaleForPixelHeight(&font, fontSize);
     int ascent, descent, lineGap;
     stbtt_GetFontVMetrics(&font, &ascent, &descent, &lineGap);
@@ -156,7 +152,7 @@ uint32_t TextSystem::CreateFontAtlas(
 
         if(penX + glyphWidth >= texWidth){
             penX = 0;
-            penY += rowHeight + 1;
+            penY += rowHeight + padding;
             rowHeight = 0;
         }
 
@@ -177,7 +173,6 @@ uint32_t TextSystem::CreateFontAtlas(
 
         // GlyphData 作成
         GlyphData glyph;
-        glyph.graphHandle = 0; // 仮。後でまとめて設定
 
         glyph.texcoordLT = {
             static_cast<float>(penX) / texWidth,
@@ -197,7 +192,7 @@ uint32_t TextSystem::CreateFontAtlas(
 
         outGlyphs[codePoint] = glyph;
 
-        penX += glyphWidth + 1;
+        penX += glyphWidth + padding;
         rowHeight = (std::max)(rowHeight, glyphHeight);
     }
 
@@ -283,7 +278,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
 
     // ここで複数アトラスに分けて読み込む
     std::unique_ptr<FontData> fontData = std::make_unique<FontData>();
-    constexpr size_t MAX_GLYPHS_PER_ATLAS = 1024;
+    constexpr size_t MAX_GLYPHS_PER_ATLAS = 4000;
     size_t offset = 0;
     int pages = 0;
 
@@ -313,6 +308,9 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
             insertedIt->second.get()->glyphDatas[glyph.first] = &glyph.second;
         }
     }
+
+    // フォント名を保存
+    fontNames.push_back(filename);
 
     return insertedIt->second.get();
 }

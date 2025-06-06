@@ -34,6 +34,7 @@ public:
     const FontData* LoadFont(const std::string& filename);// 失敗したらnullptr
     const FontData& GetFont(const std::string& filename);
     const GlyphData* GetGlyphData(const std::string& fontName, int32_t codePoint);// フォント名と文字コードからグリフデータを取得
+    const std::vector<std::string>& GetFontNames() { return fontNames; } // 読み込んだフォント名のリストを取得
     int TextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* in_text_end); // UTF-8文字列から文字コードを取得
     std::vector<uint32_t> Utf8ToCodepoints(const std::string& utf8text); // UTF-8文字列から文字コードのリストを取得
 
@@ -53,6 +54,7 @@ private:// 読み込みに使用する内部関数
 
 private:
     std::unordered_map<std::string, std::unique_ptr<FontData>> fontDataMap_; // フォントデータのマップ
+    std::vector<std::string> fontNames; // 読み込んだフォント名のリスト
     // 読み込んだTexture(フォントアトラス)のResource
     std::vector<ComPtr<ID3D12Resource>> textureResources;
     std::vector<ComPtr<ID3D12Resource>> intermediateResources;

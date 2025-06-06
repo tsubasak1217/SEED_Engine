@@ -40,6 +40,7 @@ private:
 
     // text
     TextBox2D textBox_;
+    std::string insertText_ = "サクヤ";
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;

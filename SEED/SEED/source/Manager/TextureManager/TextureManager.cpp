@@ -33,12 +33,8 @@ void TextureManager::Initialize(){
 //////////////////////////////////////////////
 void TextureManager::Release(){
     // 各テクスチャの解放
-    for(auto& texture : instance_->textureResources){
-        texture->Release();
-    }
-    for(auto& intermediate : instance_->intermediateResources){
-        intermediate->Release();
-    }
+    instance_->textureResources.clear();
+    instance_->intermediateResources.clear();
 }
 
 // 起動時に読み込みたいモデルをここで読み込む

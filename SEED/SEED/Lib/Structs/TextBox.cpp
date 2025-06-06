@@ -217,7 +217,7 @@ void TextBox2D::Draw()const{
                     quad.GH = lineGlyph->graphHandle;
                     // 色を設定
                     quad.color = color;
-                    // 描画
+                    // その他設定
                     quad.isText = true;
                     quad.layer = 1;
 
@@ -245,6 +245,7 @@ void TextBox2D::Draw()const{
                         }
                     }
 
+                    // 描画
                     SEED::DrawQuad2D(quad);
                     
                     // X座標オフセットを加算

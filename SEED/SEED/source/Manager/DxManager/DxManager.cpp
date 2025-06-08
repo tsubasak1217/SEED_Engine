@@ -266,12 +266,43 @@ void DxManager::CreateRenderTargets(){
 }
 
 
-void DxManager::InitResources(){
-
+void DxManager::StartUpload(){
     // システムで使用するものは先にテクスチャを作成しておく
     TextureManager::GetInstance();
     TextureManager::LoadTexture("Assets/white1x1.png");
     TextureManager::LoadTexture("Assets/uvChecker.png");
+
+#ifdef _DEBUG
+    // エンジン用リソースを自動で読み込む
+    std::string directory = "../../SEED/EngineResources/Textures/";
+
+    // resources/textures/ParticleTextures/ 以下の階層にあるテクスチャを自動で読む
+    std::vector<std::string> fileNames;
+
+    // 指定されたディレクトリ内のすべてのファイルを探索
+    for(const auto& entry : std::filesystem::directory_iterator("SEED/EngineResources/Textures/")){
+        if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
+            // もしファイル名が".png"で終わっていたら
+            if(entry.path().extension() == ".png"){
+                // ファイル名を追加
+                fileNames.push_back(directory + entry.path().filename().string()); // ファイル名のみ追加
+            }
+        }
+    }
+
+    // テクスチャの読み込み
+    for(const auto& fileName : fileNames){
+        // テクスチャの読み込み
+        TextureManager::LoadTexture(fileName);
+    }
+
+#endif // _DEBUG
+}
+
+void DxManager::InitResources(){
+
+    // 初期化時読み込みリソ－ス
+    StartUpload();
 
     //================================ オフスクリーンの初期化 ================================//
     {

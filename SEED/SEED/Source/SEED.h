@@ -41,7 +41,7 @@
 #include <json.hpp>
 
 #ifdef _DEBUG
-//#define USE_SUB_WINDOW
+#define USE_SUB_WINDOW
 #endif // _DEBUG
 
 
@@ -168,6 +168,8 @@ public:
     /*                                その他細かい関数                                   */
     /////////////////////////////////////////////////////////////////////////////////////
 private:
+    //
+    void SetImGuiEmptyWindows();
     // 起動時の読み込み関数
     void StartUpLoad();
     // カーソルのリピートを行う関数
@@ -218,6 +220,8 @@ private:
 public:// ウインドウに関する変数
     int kClientWidth_;
     int kClientHeight_;
+    int kSystemClientWidth_ = 1920;
+    int kSystemClientHeight_ = 1020;
     static std::wstring windowTitle_;
     static std::wstring systemWindowTitle_;
     static uint32_t windowBackColor_;

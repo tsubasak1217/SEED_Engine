@@ -33,7 +33,7 @@ void TextBox2D::Edit(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> TextBox2D::AnalyzeFormatToken(const std::string& sourceText)const{
     // %d, %f, %s などのフォーマット文字列があればバインドデータに置き換える
-    std::string convertedTexts;
+    std::string convertedText;
     int offset = 0; // 解析位置のオフセット
 
     // 先頭から文字列を解析
@@ -42,50 +42,79 @@ std::vector<std::string> TextBox2D::AnalyzeFormatToken(const std::string& source
             // フォーマット文字列の開始
             if(i + 1 < sourceText.size()){
                 // 次の文字を確認
-                if(sourceText[i + 1] == 'd'){ // 整数
-                    convertedTexts += std::to_string(std::get<std::reference_wrapper<int>>(bindedDatas[offset]).get());
-                    offset++;
+                if(bindedDatas.size() <= offset){
+                    // バインドデータが足りない場合はそのまま追加
+                    convertedText += sourceText[i];
+                    convertedText += sourceText[i + 1];
                     i++; // 次の文字をスキップ
-                } else if(sourceText[i + 1] == 'f'){ // 浮動小数点数
-                    // 小数点以下の桁数を制限する
-                    std::string fStr = std::to_string(std::get<std::reference_wrapper<float>>(bindedDatas[offset]).get());
-                    size_t dotPos = fStr.find('.');
-                    if(dotPos != std::string::npos){
-                        fStr = fStr.substr(0, dotPos + 3); // 小数点以下2桁まで
-                    }
-                    convertedTexts += fStr;
-                    offset++;
-                    i++; // 次の文字をスキップ
-                } else if(sourceText[i + 1] == 's'){ // 文字列
-                    convertedTexts += std::get<std::reference_wrapper<std::string>>(bindedDatas[offset]).get();
-                    offset++;
-                    i++; // 次の文字をスキップ
-                } else{
-                    convertedTexts += sourceText[i]; // %以外はそのまま追加
-                }
 
+                } else{
+                    if(sourceText[i + 1] == 'd'){ // 整数
+                        // データがint&であることを確認
+                        if(!std::holds_alternative<std::reference_wrapper<int>>(bindedDatas[offset])){
+                            convertedText += sourceText[i];
+                            convertedText += sourceText[i + 1];
+                            i++; // 次の文字をスキップ
+                            continue;
+                        }
+
+                        convertedText += std::to_string(std::get<std::reference_wrapper<int>>(bindedDatas[offset]).get());
+                        offset++;
+                        i++; // 次の文字をスキップ
+
+                    } else if(sourceText[i + 1] == 'f'){ // 浮動小数点数
+                        if(!std::holds_alternative<std::reference_wrapper<float>>(bindedDatas[offset])){
+                            convertedText += sourceText[i];
+                            convertedText += sourceText[i + 1];
+                            i++; // 次の文字をスキップ
+                            continue;
+                        }
+                        // 小数点以下の桁数を制限する
+                        std::string fStr = std::to_string(std::get<std::reference_wrapper<float>>(bindedDatas[offset]).get());
+                        size_t dotPos = fStr.find('.');
+                        if(dotPos != std::string::npos){
+                            fStr = fStr.substr(0, dotPos + 3); // 小数点以下2桁まで
+                        }
+                        convertedText += fStr;
+                        offset++;
+                        i++; // 次の文字をスキップ
+
+                    } else if(sourceText[i + 1] == 's'){ // 文字列
+                        if(!std::holds_alternative<std::reference_wrapper<std::string>>(bindedDatas[offset])){
+                            convertedText += sourceText[i];
+                            convertedText += sourceText[i + 1];
+                            i++; // 次の文字をスキップ
+                            continue;
+                        }
+                        convertedText += std::get<std::reference_wrapper<std::string>>(bindedDatas[offset]).get();
+                        offset++;
+                        i++; // 次の文字をスキップ
+                    } else{
+                        convertedText += sourceText[i]; // %以外はそのまま追加
+                    }
+                }
             } else{
-                convertedTexts += sourceText[i]; // %の後に文字がない場合はそのまま追加}
+                convertedText += sourceText[i]; // %の後に文字がない場合はそのまま追加}
             }
 
         } else{
-            convertedTexts += sourceText[i]; // フォーマット文字列以外はそのまま追加
+            convertedText += sourceText[i]; // フォーマット文字列以外はそのまま追加
         }
     }
 
-    // "\n"区切りで行ごとに分割
+    // '\n'区切りで行ごとに分割(文字列としての"\n"も判別)
     std::vector<std::string> lines;
     size_t start = 0;
-    size_t end = convertedTexts.find('\n');
+    size_t end = convertedText.find('\n');
     while(end != std::string::npos){
-        lines.push_back(convertedTexts.substr(start, end - start));
+        lines.push_back(convertedText.substr(start, end - start));
         start = end + 1; // 次の行の開始位置
-        end = convertedTexts.find('\n', start);
+        end = convertedText.find('\n', start);
     }
 
     // 最後の行を追加
-    if(start < convertedTexts.size()){
-        lines.push_back(convertedTexts.substr(start));
+    if(start < convertedText.size()){
+        lines.push_back(convertedText.substr(start));
     }
 
     return lines; // 行ごとの文字列のリストを返す

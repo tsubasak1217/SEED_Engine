@@ -50,7 +50,8 @@ void Judgement::Judge(NotesData* noteGroup){
     auto& tpLane = PlayerInput::GetInstance()->GetTapLane();
     auto& hlLane = PlayerInput::GetInstance()->GetHoldLane();
     auto& relLane = PlayerInput::GetInstance()->GetReleaseLane();
-    ImGui::Begin("input");
+
+    ImFunc::CustomBegin("input",MoveOnly_TitleBar);
     ImGui::SameLine();
     ImGui::Text("tapLane:{ ");
     for(auto& lane : tpLane){

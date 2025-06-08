@@ -71,6 +71,12 @@ EmitterGroup::EmitterGroup(){
 void EmitterGroup::Edit(){
 
     ImGui::Text("エミッター一覧(要素数:%d)", (int)emitters.size());
+    
+    //
+    ImTextureID visibleIcons[] = {
+        TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/visible.png"),
+        TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/invisible.png")
+    };
 
     // エミッターごとに編集
     static std::string label = "";
@@ -78,10 +84,25 @@ void EmitterGroup::Edit(){
 
     for(auto itEmitter = emitters.begin(); itEmitter != emitters.end();){
 
-        label = "Emitter_" + std::to_string(emitterNo) + idTag_;
         Emitter_Base* emitter = itEmitter->get();
+        label = "visible_" + std::to_string(emitterNo) + idTag_;
 
-        // 選択を更新
+        // アクティブかどうかのチェックボックス
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+        if(emitter->isActive){
+            if(ImGui::ImageButton(label.c_str(),visibleIcons[0], ImVec2(30, 20), ImVec2(0, 0), ImVec2(1, 1))){
+                emitter->isActive = false; // 非アクティブにする
+            }
+        } else{
+            if(ImGui::ImageButton(label.c_str(), visibleIcons[1], ImVec2(30, 20), ImVec2(0, 0), ImVec2(1, 1))){
+                emitter->isActive = true; // アクティブにする
+            }
+        }
+        ImGui::PopStyleColor();
+
+        // エミッターボタン
+        ImGui::SameLine();
+        label = "Emitter_" + std::to_string(emitterNo) + idTag_;
         if(ImGui::Button(label.c_str())){
             selectedEmitter_ = emitter; // 選択されたエミッターを保存
             selectedItEmitter_ = itEmitter; // 選択されたエミッターのイテレータを保存

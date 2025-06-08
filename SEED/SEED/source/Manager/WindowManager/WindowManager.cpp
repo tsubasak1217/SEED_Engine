@@ -159,11 +159,7 @@ LRESULT CALLBACK WindowProc(
     switch(uMsg){
 
     case WM_DESTROY:
-
-        // メインのウィンドウが破棄されたらアプリケーションを終了
-        if(hwnd == WindowManager::GetHWND(SEED::GetWindowTitle())){
-            PostQuitMessage(0);
-        }
+        PostQuitMessage(0);
         return 0;
 
     default:

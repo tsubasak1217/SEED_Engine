@@ -85,6 +85,7 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
     void CreateRenderTargets();
 
     // 
+    void StartUpload();
     void InitResources();
 
     // PSO

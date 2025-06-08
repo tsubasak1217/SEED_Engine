@@ -61,42 +61,25 @@ void SEED::Draw(){
 }
 
 
-void SEED::DrawGUI(){
+void SEED::SetImGuiEmptyWindows(){
 #ifdef _DEBUG
 
-    // 親子付け用の空ウィンドウを作成
+    // 全体
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->WorkPos, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiCond_Always);
-    ImGui::Begin("SEED", nullptr,
+    ImGui::SetNextWindowSize(ImGui::GetMainViewport()->WorkSize, ImGuiCond_Always);
+    ImGui::Begin("SEED_Empty", nullptr,
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoBringToFrontOnFocus
     );
     ImGui::End();
+#endif
+}
 
 
-    // ゲーム画面描画ウインドウ
-    ImGui::Begin("GameWindow");
-    // サイズの計算
-    ImVec2 availSize = ImGui::GetContentRegionAvail();
-    ImVec2 imageSize;
-    Vector2 windowSize = kWindowSize;
-    float ratioX[2] = {
-    availSize.x / availSize.y,
-    windowSize.x / windowSize.y
-    };
-
-    // 狭いほうに合わせる
-    if(ratioX[0] > ratioX[1]){
-        imageSize = { availSize.y * ratioX[1],availSize.y };
-    } else{
-        imageSize = { availSize.x,availSize.x * (windowSize.y / windowSize.x)};
-    }
-
-    ImGui::Image(TextureManager::GetImGuiTexture("offScreen_0"), imageSize);
-    ImGui::End();
-
-
+void SEED::DrawGUI(){
+#ifdef _DEBUG
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
     // ボタンの背景色を設定
@@ -118,7 +101,34 @@ void SEED::DrawGUI(){
     ImGui::PopStyleColor(3);
 
 
-    ImGui::Begin("システム");
+    // 親子付け用の空ウィンドウを作成
+    SetImGuiEmptyWindows();
+
+    // ゲーム画面描画ウインドウ
+    ImFunc::CustomBegin("GameWindow",MoveOnly_TitleBar);
+    // サイズの計算
+    Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+    ImVec2 availSize = ImGui::GetContentRegionAvail();
+    ImVec2 imageSize;
+    float ratioX[2] = {
+    availSize.x / availSize.y,
+    displaySize.x / displaySize.y
+    };
+
+    // 狭いほうに合わせる
+    if(ratioX[0] > ratioX[1]){
+        imageSize = { availSize.y * ratioX[1],availSize.y };
+    } else{
+        imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x)};
+    }
+
+    ImGui::Image(TextureManager::GetImGuiTexture("offScreen_0"), imageSize);
+    ImGui::End();
+
+
+
+
+    ImFunc::CustomBegin("システム",MoveOnly_TitleBar);
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
     ImGui::Checkbox("グリッド表示", &instance_->isGridVisible_);
@@ -140,6 +150,12 @@ void SEED::DrawGUI(){
         instance_->windowBackColor_ = MyMath::IntColor(instance_->clearColor_);
     }
 
+    // マウス移動量
+    Vector2 mouseVec = Input::GetMouseVector();
+    Vector2 mousePos = Input::GetMousePosition();
+    ImGui::Text("Mouse Vector: (%.1f, %.1f)", mouseVec.x, mouseVec.y);
+    ImGui::Text("Mouse Position: (%.1f, %.1f)", mousePos.x, mousePos.y);
+
     ImGui::End();
 
 #endif // _DEBUG
@@ -157,7 +173,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     WindowManager::Initialize(hInstance, nCmdShow);
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
 #ifdef USE_SUB_WINDOW
-    WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
+    WindowManager::Create(systemWindowTitle_, instance_->kSystemClientWidth_, instance_->kSystemClientHeight_);
 #endif // USE_SUB_WINDOW
 
     // 各マネージャの初期化

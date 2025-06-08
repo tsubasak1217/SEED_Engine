@@ -93,7 +93,7 @@ void EffectSystem::Update(){
 
 
 #ifdef _DEBUG
-    ImGui::Begin("パーティクルエディター");
+    ImFunc::CustomBegin("エフェクトエディター",MoveOnly_TitleBar);
     ImGui::Checkbox("範囲の描画", &instance_->isFieldVisible_);
     instance_->Edit();
     ImGui::End();
@@ -339,7 +339,7 @@ void EffectSystem::Edit(){
     std::string label = "";
 
 
-    ImGui::BeginChild("クループの管理", ImVec2(200, 0), true);
+    ImGui::BeginChild("クループの管理", ImVec2(250, 350), true);
     {
         for(auto itEmitterGroup = instance_->emitterGroups_.begin(); itEmitterGroup != instance_->emitterGroups_.end();){
             
@@ -388,7 +388,7 @@ void EffectSystem::Edit(){
 
 
         // エミッターの選択・追加/グループの削除
-        ImGui::BeginChild(currentEmitterGroup->name.c_str(), ImVec2(200, 0), true);
+        ImGui::BeginChild(currentEmitterGroup->name.c_str(), ImVec2(0, 350), true);
         {
             // 選択されているエミッターグループの情報を表示
             ImGui::Text(currentEmitterGroup->name.c_str());
@@ -432,12 +432,14 @@ void EffectSystem::Edit(){
             }
 
         }ImGui::EndChild();
-        ImGui::SameLine();
+        //ImGui::SameLine();
     }
 
 
     // 選択しているエミッターの編集
     if(currentEmitterGroup && currentEmitterGroup->selectedEmitter_){
+
+        ImGui::Text("---------- エミッターの編集 ----------");
 
         // エミッターの情報編集・削除
         ImGui::BeginChild("エミッター", ImVec2(0, 0), true);

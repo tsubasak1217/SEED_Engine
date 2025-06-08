@@ -2130,7 +2130,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 void PolygonManager::DrawToOffscreen(){
 
 #ifdef _DEBUG
-    ImGui::Begin("PostEffect");
+    ImFunc::CustomBegin("PostEffect",MoveOnly_TitleBar);
     ImGui::Checkbox("active", &isActivePostEffect_);
     ImGui::End();
 #endif // _DEBUG

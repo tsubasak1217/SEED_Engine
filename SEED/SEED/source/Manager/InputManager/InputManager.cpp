@@ -72,38 +72,46 @@ void Input::InitializeDInput(){
     );
     assert(SUCCEEDED(hr));
 
-    /*======================== キーボード ========================*/
+    // ウィンドウハンドルの一覧
+    auto hwnds = WindowManager::GetAllHWNDs();
 
-    // キーボードデバイスの生成
-    hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
-    assert(SUCCEEDED(hr));
+    // デバイスの生成
+    for(const auto& hwnd : hwnds){
+        /*======================== キーボード ========================*/
 
-    // 入力形式のセット
-    hr = keyboard_->SetDataFormat(&c_dfDIKeyboard);// 標準
-    assert(SUCCEEDED(hr));
+        //  キーボードデバイスの生成
+        keyboards_[hwnd] = nullptr;
+        hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboards_[hwnd], NULL);
+        assert(SUCCEEDED(hr));
 
-    // 制御レベルの設定
-    hr = keyboard_->SetCooperativeLevel(
-        WindowManager::GetHWND(SEED::GetWindowTitle()),
-        DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
-    );
-    assert(SUCCEEDED(hr));
+        // 入力形式のセット
+        hr = keyboards_[hwnd]->SetDataFormat(&c_dfDIKeyboard);// 標準
+        assert(SUCCEEDED(hr));
 
-    /*========================== マウス ==========================*/
+        // 制御レベルの設定
+        hr = keyboards_[hwnd]->SetCooperativeLevel(
+            hwnd,
+            DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
+        );
+        assert(SUCCEEDED(hr));
 
-    // マウスデバイスの生成
-    hr = directInput->CreateDevice(GUID_SysMouse, &mouse_, NULL);
-    assert(SUCCEEDED(hr));
 
-    // 入力形式のセット
-    hr = mouse_->SetDataFormat(&c_dfDIMouse);
-    assert(SUCCEEDED(hr));
+        /*========================== マウス ==========================*/
 
-    // 制御レベルの設定
-    hr = mouse_->SetCooperativeLevel(
-        WindowManager::GetHWND(SEED::GetWindowTitle()),
-        DISCL_FOREGROUND | DISCL_NONEXCLUSIVE
-    );
+        // マウスデバイスの生成
+        hr = directInput->CreateDevice(GUID_SysMouse, &mouses_[hwnd], NULL);
+        assert(SUCCEEDED(hr));
+
+        // 入力形式のセット
+        hr = mouses_[hwnd]->SetDataFormat(&c_dfDIMouse);
+        assert(SUCCEEDED(hr));
+
+        // 制御レベルの設定
+        hr = mouses_[hwnd]->SetCooperativeLevel(
+            hwnd,
+            DISCL_FOREGROUND | DISCL_NONEXCLUSIVE
+        );
+    }
 }
 
 void Input::InitializeXInput(){
@@ -135,20 +143,27 @@ void Input::GetAllInput(){
 
 void Input::GetDInputState(){
 
+    // 現在フォーカスされているウィンドウを取得
+    HWND activeWindow = GetForegroundWindow();
+    if(keyboards_.find(activeWindow) == keyboards_.end()){
+        // フォーカスされているウィンドウがない場合は何もしない
+        return;
+    }
+
     // DirectInputのキーボード情報取得開始
-    keyboard_->Acquire();
+    keyboards_[activeWindow]->Acquire();
     // 前のフレームのキー情報を保存
     std::memcpy(preKeys_, keys_, sizeof(BYTE) * kMaxKey_);
     // 現在の全キーの状態を取得する
-    keyboard_->GetDeviceState(sizeof(keys_), keys_);
+    keyboards_[activeWindow]->GetDeviceState(sizeof(keys_), keys_);
 
 
     // マウスの情報取得開始
-    mouse_->Acquire();
+    mouses_[activeWindow]->Acquire();
     // 前のフレームのマウス情報を保存
     std::memcpy(&preMouseState_, &mouseState_, sizeof(DIMOUSESTATE));
     // 現在のマウス状態を取得
-    mouse_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
+    mouses_[activeWindow]->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
 
 }
 
@@ -315,11 +330,17 @@ Vector2 Input::GetMouseDirection(INPUT_STATE inputState){
 // マウスの座標を取得
 Vector2 Input::GetMousePosition(INPUT_STATE inputState){
 
+    HWND activeWindow = GetForegroundWindow();
+    if(instance_->mouses_.find(activeWindow) == instance_->mouses_.end()){
+        // フォーカスされているウィンドウがない場合は何もしない
+        return { 0.0f, 0.0f };
+    }
+
     if(inputState == INPUT_STATE::CURRENT){
         // マウスの座標を取得
         POINT point;
         GetCursorPos(&point);
-        ScreenToClient(WindowManager::GetHWND(SEED::GetWindowTitle()), &point);
+        ScreenToClient(activeWindow, &point);
         Vector2 result = { (float)point.x,(float)point.y };
 
         // 比率をかけてもとに戻す

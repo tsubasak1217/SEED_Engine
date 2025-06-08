@@ -122,7 +122,7 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-    ImGui::Begin("テキスト");
+    ImFunc::CustomBegin("テキスト",MoveOnly_TitleBar);
     textBox_.Edit();
     ImGui::End();
 #endif

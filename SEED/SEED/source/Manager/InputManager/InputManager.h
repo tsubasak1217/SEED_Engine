@@ -108,13 +108,13 @@ private:
     static Input* instance_;
 
     // キーボード入力を格納する変数
-    IDirectInputDevice8* keyboard_ = nullptr;
+    std::unordered_map<HWND,IDirectInputDevice8*> keyboards_;
     static const int32_t kMaxKey_ = 256;
     BYTE keys_[kMaxKey_];
     BYTE preKeys_[kMaxKey_];
 
     // マウス入力を格納する変数
-    IDirectInputDevice8* mouse_ = nullptr;
+    std::unordered_map<HWND,IDirectInputDevice8*> mouses_;
     DIMOUSESTATE mouseState_;
     DIMOUSESTATE preMouseState_;
 

@@ -65,7 +65,6 @@ void Emitter_Model::Edit(){
 /*        全般の情報       */
 /*------------------------*/
 void Emitter_Model::EditGeneral(){
-    ImGui::Checkbox("アクティブ", &isActive);
     ImFunc::Combo("particleType", particleType, { "kRadial" });
     ImFunc::Combo("発生タイプ", emitType, { "一度のみ","ずっと","指定回数" });
     if(emitType == EmitType::kCustom){

@@ -86,7 +86,7 @@ void PolygonManager::InitResources(){
 
     // Camera
     cameraResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU));
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU)* 16);
     cameraResource_->SetName(L"cameraResource");
 
     // Lighting
@@ -201,7 +201,7 @@ void PolygonManager::InitResources(){
     //////////////////////////////////////////////////
     // GPUハンドルの取得
     //////////////////////////////////////////////////
-    gpuHandles_.resize(7);
+    gpuHandles_.resize(8);
     gpuHandles_[(int)HANDLE_TYPE::TextureTable] =
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, 0);
     gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] =
@@ -210,6 +210,8 @@ void PolygonManager::InitResources(){
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
     gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette] =
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
+    gpuHandles_[(int)HANDLE_TYPE::CameraResource] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "CameraResource");
     gpuHandles_[(int)HANDLE_TYPE::DirectionalLight] =
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
     gpuHandles_[(int)HANDLE_TYPE::PointLight] =
@@ -223,7 +225,7 @@ void PolygonManager::InitResources(){
 
     // CommonVSPipeline
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
-    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
@@ -236,7 +238,7 @@ void PolygonManager::InitResources(){
     // SkinningVSPipeline
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMatrixPalette", gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
-    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
@@ -248,7 +250,7 @@ void PolygonManager::InitResources(){
 
     // TextVSPipeline
     PSOManager::SetBindInfo("TextVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
-    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCamera", cameraResource_.Get()->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
@@ -257,6 +259,18 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+}
+
+// カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
+void PolygonManager::BindCameraDatas(const std::string& cameraName){
+    // カメラのインデックスを設定
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    // カメラが切り替わるインスタンス数を設定
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
 }
 
 void PolygonManager::Finalize(){}
@@ -283,12 +297,16 @@ void PolygonManager::Reset(){
     objCounts_.fill(0);
     objCountCull_.fill(0);
     objCountBlend_.fill(0);
+    cameraSwitchInstanceCount_.clear();
+    cameraOrder_.clear();
 
     // 描画リストのリセット
     for(auto& drawList : drawLists_){
         drawList.second.clear();
     }
 
+    // フラグの初期化
+    isWrited_ = false;
 }
 
 
@@ -353,12 +371,12 @@ void PolygonManager::AddTriangle(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -462,11 +480,13 @@ void PolygonManager::AddTriangle(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = worldMat;
-    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
     // offsetResourceの数を更新(描画数分)
     auto& offsetData = drawData->offsetData;
@@ -581,11 +601,13 @@ void PolygonManager::AddTriangle3DPrimitive(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = IdentityMat4();
-    transform[drawCount].WVP = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
 
     // offsetResourceの数を更新
@@ -635,13 +657,13 @@ void PolygonManager::AddQuad(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
             transformed[3].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -774,11 +796,13 @@ void PolygonManager::AddQuad(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = worldMat;
-    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -918,11 +942,13 @@ void PolygonManager::AddQuad3DPrimitive(
 
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = IdentityMat4();
-    transform[drawCount].WVP = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -965,8 +991,8 @@ void PolygonManager::AddSprite(
 
     // 遠近
     float layerZ = 0.001f * layer;
-    float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
-    float zfar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+    float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
+    float zfar = pDxManager_->mainCamera_->GetZFar() - layerZ;
 
     // スプライトの四頂点を格納する変数
     Vector4 v[4]{};
@@ -1142,11 +1168,13 @@ void PolygonManager::AddSprite(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = IdentityMat4();
-    transform[drawCount].WVP = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -1277,18 +1305,24 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
 
     // instance数分のtransformを確保(meshごとには必要ない)
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+    Matrix4x4 wvp;
+    Matrix4x4 worldInverseTranspose = model->isAnimation_ ?
+        Transpose(InverseMatrix(model->GetWorldMat())) : IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
 
-    // transformの設定
-    Matrix4x4 wvp = Multiply(
-        model->GetWorldMat(),
-        pDxManager_->GetCamera()->GetViewProjectionMat()
-    );
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
 
-    transform[drawCount].world = model->GetWorldMat();
-    transform[drawCount].WVP = wvp;
-    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(model->GetWorldMat()));
+        // transformの設定
+        wvp = Multiply(
+            model->GetWorldMat(),
+            camera->GetViewProjectionMat()
+        );
+
+        transform[drawCount].world = model->GetWorldMat();
+        transform[drawCount].WVP = wvp;
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //                              offset情報の設定
@@ -1330,30 +1364,30 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     //                  モデルのスケルトンを描画(オプションがあれば)
     //////////////////////////////////////////////////////////////////////////
-    if(model->isSkeletonVisible_){
+    //if(model->isSkeletonVisible_){
 
-        const auto& modeldata = ModelManager::GetModelData(model->modelName_);
-        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
-            modeldata->animations[model->animationName_],
-            modeldata->defaultSkeleton,
-            model->animationTime_
-        );
+    //    const auto& modeldata = ModelManager::GetModelData(model->modelName_);
+    //    const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+    //        modeldata->animations[model->animationName_],
+    //        modeldata->defaultSkeleton,
+    //        model->animationTime_
+    //    );
 
-        for(int i = 0; i < skeleton.joints.size(); i++){
+    //    for(int i = 0; i < skeleton.joints.size(); i++){
 
-            if(skeleton.joints[i].parent){
-                Vector3 point[2];
-                point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
-                point[0] = Multiply(point[0], wvp);
+    //        if(skeleton.joints[i].parent){
+    //            Vector3 point[2];
+    //            point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
+    //            point[0] = Multiply(point[0], wvp);
 
-                point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
-                point[1] = Multiply(point[1], wvp);
+    //            point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+    //            point[1] = Multiply(point[1], wvp);
 
 
-                SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
-            }
-        }
-    }
+    //            SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
+    //        }
+    //    }
+    //}
 }
 
 
@@ -1379,11 +1413,11 @@ void PolygonManager::AddLine(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             v[0].z = zFar;
             v[1].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             v[0].z = zNear;
             v[1].z = zNear;
         }
@@ -1483,11 +1517,14 @@ void PolygonManager::AddLine(
     material[0][drawCount].GH_ = GH;
 
     // transform (instance数分)
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = worldMat;
-    transform[drawCount].WVP = view3D ? pDxManager_->GetCamera()->GetViewProjectionMat() : pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose = Transpose(InverseMatrix(worldMat));
+    Matrix4x4 worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
+    }
 
     // offsetResourceの数を更新 (instance数分)
     auto& offsetData = drawData->offsetData;
@@ -1532,7 +1569,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     Vector2 windowSize = { float(kWindowSizeX),float(kWindowSizeY) };
     float scaleRate = float(pDxManager_->GetPreResolutionRate());
     Matrix4x4 uvTransform = AffineMatrix({ scaleRate,scaleRate,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
-    float zfar = pDxManager_->GetCamera()->GetZFar();
+    float zfar = pDxManager_->mainCamera_->GetZFar();
 
     // 4頂点
     Vector4 v[4]{
@@ -1615,11 +1652,13 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms;
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world = IdentityMat4();
-    transform[drawCount].WVP = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
     // offsetResourceの数を更新
     auto& offsetData = drawData->offsetData;
@@ -1685,10 +1724,6 @@ void PolygonManager::WriteRenderData(){
     directionalLightCount_ = (int)directionalLights_.size();
     pointLightCount_ = (int)pointLights_.size();
     spotLightCount_ = (int)spotLights_.size();
-
-    // カメラ情報
-    BaseCamera* pCamera = pDxManager_->GetCamera();
-    mapCameraData->position = pCamera->GetTranslation();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1772,20 +1807,10 @@ void PolygonManager::WriteRenderData(){
         for(auto& drawData : drawList.second){
 
             // 各モデルの現在のインスタンス数確認
-            int instanceCount = static_cast<int>(drawData->transforms.size());
+            int instanceCount = (int)drawData->transforms["default"].size();
             int jointSize = static_cast<int>(drawData->modelData->defaultSkeleton.joints.size());
             if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
             if((int)drawData->materials.size() == 0){ continue; }// プリミティブ用の例外処理
-
-            /*--------------------------------------*/
-            //      トランスフォーム情報を書き込む
-            /*--------------------------------------*/
-            std::memcpy(
-                mapTransformData + instanceCountAll,
-                drawData->transforms.data(),
-                sizeof(TransformMatrix) * instanceCount
-            );
-
 
             for(int meshIdx = 0; meshIdx < drawData->modelData->meshes.size(); meshIdx++){
 
@@ -1826,6 +1851,44 @@ void PolygonManager::WriteRenderData(){
         }
     }
 
+    instanceCountAll = 0;
+    int cameraIdx = 0;
+    for(auto& [cameraName, camera] : pDxManager_->cameras_){
+
+        // カメラ情報
+        BaseCamera* pCamera = pDxManager_->GetCamera(cameraName);
+        CameraForGPU cameraData;
+        cameraData.position = pCamera->GetTranslation();
+        std::memcpy(
+            mapCameraData + cameraIdx,
+            &cameraData,
+            sizeof(CameraForGPU)
+        );
+
+        // カメラが切り替わるインスタンス数を記録
+        cameraSwitchInstanceCount_[cameraName] = instanceCountAll;
+        cameraOrder_[cameraName] = cameraIdx;
+
+        for(auto& drawList : drawLists_){
+            for(auto& drawData : drawList.second){
+                /*--------------------------------------*/
+                //      トランスフォーム情報を書き込む
+                /*--------------------------------------*/
+                int instanceCount = (int)drawData->transforms[cameraName].size();
+                std::memcpy(
+                    mapTransformData + instanceCountAll,
+                    drawData->transforms[cameraName].data(),
+                    sizeof(TransformMatrix) * instanceCount
+                );
+
+                // インスタンス数をインクリメント
+                instanceCountAll += instanceCount;
+            }
+        }
+        cameraIdx++;
+    }
+
+
     /*--------------------------------------*/
     //       マテリアル情報を書き込む
     /*--------------------------------------*/
@@ -1846,8 +1909,7 @@ void PolygonManager::WriteRenderData(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
+void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrder& drawOrder){
 
     // モノがなければreturn
     if(modelDrawData_.size() == 0){ return; }
@@ -1864,7 +1926,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     } else if(drawOrder == DrawOrder::Triangle or drawOrder == DrawOrder::Triangle2D){
         instanceInterval = 3;
 
-    } else {
+    } else{
         instanceInterval = 4;
     }
 
@@ -1929,7 +1991,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
         for(auto& drawData : drawList.second){
 
             // 各モデルの現在のブレンドモードのインスタンス数
-            int instanceCount = (int)drawData->transforms.size();
+            int instanceCount = (int)drawData->transforms[cameraName].size();
             int jointSize = (int)drawData->modelData->defaultSkeleton.joints.size();
             if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
             if((int)drawData->materials.size() == 0){ continue; }// プリミティブ用の例外処理
@@ -1952,8 +2014,11 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                 // 書き込み
                 for(auto& offset : drawData->offsetData[meshIdx]){
-                    offset.instanceOffset = instanceCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
-                    offset.meshOffset = meshCountAll;// 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
+                    // 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
+                    offset.instanceOffset = instanceCountAll;
+                    // 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
+                    offset.meshOffset = meshCountAll;
+                    // プリミティブの1インスタンスあたりの頂点数
                     offset.primitiveInterval = instanceInterval;
                     // SkinningAnimation用
                     offset.jointIndexOffset = animationJointCount;
@@ -2127,56 +2192,63 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/
 
-void PolygonManager::DrawToOffscreen(){
+void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
-#ifdef _DEBUG
-    ImFunc::CustomBegin("PostEffect",MoveOnly_TitleBar);
-    ImGui::Checkbox("active", &isActivePostEffect_);
-    ImGui::End();
-#endif // _DEBUG
+    if(!isWrited_){
+    #ifdef _DEBUG
+        ImFunc::CustomBegin("PostEffect", MoveOnly_TitleBar);
+        ImGui::Checkbox("active", &isActivePostEffect_);
+        ImGui::End();
+    #endif // _DEBUG
 
-    // オフスクリーンの描画依頼をここで出しておく
-    if(isActivePostEffect_){
-        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
-        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
-    } else{
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NONE);
+        // オフスクリーンの描画依頼をここで出しておく
+        if(isActivePostEffect_){
+            AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
+            //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
+        } else{
+            AddOffscreenResult(
+                ViewManager::GetTextureHandle(pDxManager_->offScreenNames[pDxManager_->mainCameraName_]),
+                BlendMode::NONE
+            );
+        }
+
+        // Resourceに情報を書き込む
+        WriteRenderData();
+        isWrited_ = true;
     }
 
-    // Resourceに情報を書き込む
-    WriteRenderData();
-
     // 背景描画
-    SetRenderData(DrawOrder::BackSprite);
+    SetRenderData(cameraName, DrawOrder::BackSprite);
 
     // 3D
-    SetRenderData(DrawOrder::Line);
-    SetRenderData(DrawOrder::Quad);
-    SetRenderData(DrawOrder::Text);
-    SetRenderData(DrawOrder::Triangle);
-    SetRenderData(DrawOrder::Model);
-    SetRenderData(DrawOrder::AnimationModel);
-    SetRenderData(DrawOrder::Particle);
+    SetRenderData(cameraName, DrawOrder::Line);
+    SetRenderData(cameraName, DrawOrder::Quad);
+    SetRenderData(cameraName, DrawOrder::Text);
+    SetRenderData(cameraName, DrawOrder::Triangle);
+    SetRenderData(cameraName, DrawOrder::Model);
+    SetRenderData(cameraName, DrawOrder::AnimationModel);
+    SetRenderData(cameraName, DrawOrder::Particle);
 
     // 2D
-    SetRenderData(DrawOrder::Line2D);
-    SetRenderData(DrawOrder::Triangle2D);
-    SetRenderData(DrawOrder::Quad2D);
-    SetRenderData(DrawOrder::Text2D);
-    SetRenderData(DrawOrder::Sprite);
+    SetRenderData(cameraName, DrawOrder::Line2D);
+    SetRenderData(cameraName, DrawOrder::Triangle2D);
+    SetRenderData(cameraName, DrawOrder::Quad2D);
+    SetRenderData(cameraName, DrawOrder::Text2D);
+    SetRenderData(cameraName, DrawOrder::Sprite);
 }
 
 void PolygonManager::DrawToBackBuffer(){
 
     // オフスクリーンの描画結果を貼り付ける
-    SetRenderData(DrawOrder::Offscreen);
+    std::string cameraName = pDxManager_->mainCameraName_;
+    SetRenderData(cameraName, DrawOrder::Offscreen);
 
     // 解像度の変更に影響を受けない2D描画
-    SetRenderData(DrawOrder::StaticLine2D);
-    SetRenderData(DrawOrder::StaticTriangle2D);
-    SetRenderData(DrawOrder::StaticQuad2D);
-    SetRenderData(DrawOrder::StaticText2D);
-    SetRenderData(DrawOrder::StaticSprite);
+    SetRenderData(cameraName, DrawOrder::StaticLine2D);
+    SetRenderData(cameraName, DrawOrder::StaticTriangle2D);
+    SetRenderData(cameraName, DrawOrder::StaticQuad2D);
+    SetRenderData(cameraName, DrawOrder::StaticText2D);
+    SetRenderData(cameraName, DrawOrder::StaticSprite);
 }
 
 

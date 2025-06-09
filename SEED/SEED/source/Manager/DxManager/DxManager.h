@@ -1,10 +1,11 @@
 #pragma once
 
-// external
+// lib
 #include <windows.h>
 #include <gdiplus.h>
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
 
 #pragma comment (lib,"gdiplus.lib")
 
@@ -84,9 +85,8 @@ private:/*===================== 内部の細かい初期設定を行う関数 ==
     // SwapChain,ダブルバッファリングに関わる関数
     void CreateRenderTargets();
 
-    // 
+    // リソースの初期化に関わる関数
     void StartUpload();
-    void InitResources();
 
     // PSO
     void InitPSO();
@@ -133,8 +133,9 @@ private:/*============================ マネージャー変数 ================
 
 private:/*============================== オブジェクト =============================*/
 
-    BaseCamera* camera_;
-    bool isDebugCameraAvtive_ = false;
+    std::unordered_map<std::string, BaseCamera*> cameras_;
+    std::string mainCameraName_;
+    BaseCamera* mainCamera_;// メインのカメラ(実際に描画するカメラ)
 
 private:/*================================= 定数 =================================*/
 
@@ -172,17 +173,19 @@ private:/*======================== DirectXの設定に必要な変数 ==========
 
     /*====================== レンダーターゲット関係 ========================*/
 
-    // オフスクリーン用
-    DxResource offScreenResource;
-    D3D12_CPU_DESCRIPTOR_HANDLE offScreenHandle;
+    // カメラごとにオフスクリーンリソースを格納するマップ
+    std::unordered_map<std::string, DxResource> offScreenResources;
+    std::unordered_map<std::string, D3D12_CPU_DESCRIPTOR_HANDLE> offScreenHandles;
+    std::unordered_map<std::string, std::string> offScreenNames; // オフスクリーンの名前を格納するマップ
     // その他
     Vector4 clearColor;
 
     //=====================================================================================//
 
-    // DepthStencilTextureResourceの作成
-    DxResource depthStencilResource;
-    D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+    // DepthStencilTextureResource(これもカメラごとに)
+    std::unordered_map<std::string, DxResource> depthStencilResources;
+    std::unordered_map<std::string, D3D12_CPU_DESCRIPTOR_HANDLE> dsvHandles;
+    std::unordered_map<std::string, std::string> depthStencilNames;
 
     // scissor矩形とviewport
     D3D12_VIEWPORT viewport{};
@@ -193,17 +196,39 @@ private:/*======================== DirectXの設定に必要な変数 ==========
 
 private:/*============================ アクセッサ関数 ============================*/
 
-    BaseCamera* GetCamera()const{ return camera_; }
-    void SetCamera(std::string nextCameraName){
-        camera_ = CameraManager::GetCamera(nextCameraName);
-        camera_->Initialize();
-        //activeなカメラを設定
-        CameraManager::SetActiveCamera(nextCameraName);
+    BaseCamera* GetCamera(const std::string& name){
+        if(cameras_.find(name) == cameras_.end()){
+            assert(false);
+        }
+        return cameras_[name];
     }
-    void SetCamera(BaseCamera* camera){ camera_ = camera; }
+    void RegisterCamera(std::string name,BaseCamera* pCamera){
+        CameraManager::RegisterCamera(name,pCamera);
+        cameras_[name] = pCamera; // カメラのポインタを登録
+        CreateRenderResource(name); // レンダリング用リソースを作成(なければ)
+        //activeなカメラとして設定
+        CameraManager::SetIsCameraActive(name, true);
+    }
+    // 実際の画面に表示するメインのカメラを設定
+    void SetMainCamera(const std::string& name){
+        if(cameras_.find(name) != cameras_.end()){
+            mainCameraName_ = name;
+            mainCamera_ = cameras_[name];
+        }
+    }
+    void RemoveCamera(const std::string& name){
+        CameraManager::RemoveCamera(name);
+        if(cameras_.find(name) != cameras_.end()){
+            cameras_.erase(name);
+        }
+    }
+    void SetIsCameraActive(const std::string& name, bool isActive){
+        CameraManager::SetIsCameraActive(name, isActive);
+    }
     void SetChangeResolutionFlag(bool flag){ changeResolutionOrder = flag; }
     float GetResolutionRate(){ return resolutionRate_; }
     float GetPreResolutionRate(){ return preResolutionRate_; }
+    void CreateRenderResource(const std::string& cameraName);
 
 public:
     ID3D12Device* GetDevice()const{ return device.Get(); }

@@ -43,7 +43,7 @@ struct VertexShaderInput {
 
 StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 StructuredBuffer<Well> gMatrixPalette : register(t1, space0);
-
+ConstantBuffer<Int> cameraIndexOffset : register(b0);
 
 /////////////////////////////////////// Methods //////////////////////////////////////////////
 
@@ -85,11 +85,11 @@ MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, 
     Skinned skinned = Skinning(input,offset);
     int index = 0;
     
-    // Caluculate InstanceID
+    // Caluculate TransformID
     if (input.interval == 0) {// model
-        index = instanceID + input.indexOffset;
+        index = instanceID + input.indexOffset + cameraIndexOffset.value;
     } else {// primitive
-        index = instanceID + input.indexOffset + (vertexID / input.interval);
+        index = instanceID + input.indexOffset + cameraIndexOffset.value + (vertexID / input.interval);
     }
     
     // Apply Transformation

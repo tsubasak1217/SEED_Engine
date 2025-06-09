@@ -442,7 +442,7 @@ void EffectSystem::Edit(){
         ImGui::Text("---------- エミッターの編集 ----------");
 
         // エミッターの情報編集・削除
-        ImGui::BeginChild("エミッター", ImVec2(0, 0), true);
+        ImGui::BeginChild("エミッター", ImVec2(0, 720), true);
         {
             // 選択されているエミッターの名前を表示
             ImGui::Text(currentEmitterGroup->selectedEmitterName_.c_str());

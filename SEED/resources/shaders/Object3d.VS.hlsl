@@ -26,7 +26,7 @@ struct VertexShaderInput {
 
 
 StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
-
+ConstantBuffer<Int> cameraIndexOffset : register(b0);
 
 ///////////////////////////////////////// main ////////////////////////////////////////////////
 
@@ -38,9 +38,9 @@ MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, 
     
     // Caluculate InstanceIdx
     if (input.interval == 0) { // model
-        transformIdx = instanceID + input.indexOffset;
+        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value;
     } else { // primitive
-        transformIdx = instanceID + input.indexOffset + (vertexID / input.interval);
+        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value + (vertexID / input.interval);
     }
     
     // Apply Transformation

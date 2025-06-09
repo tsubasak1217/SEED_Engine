@@ -6,7 +6,9 @@
 
 
 struct BaseCamera{
-
+    friend class CameraManager;
+    friend class DxManager;
+public:
     BaseCamera();
     virtual ~BaseCamera() = default;
     virtual void Initialize();
@@ -53,6 +55,8 @@ public:// アクセッサ
     //              メンバ変数
     //=============================================================================
 protected:
+
+    bool isActive_ = true;
     EulerTransform transform_;
     Vector2 clipRange_;
     float znear_;

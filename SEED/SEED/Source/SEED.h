@@ -48,6 +48,7 @@
 class SEED{
 
     friend TextureManager;
+    friend class DxManager;
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     基本の関数                                    */
@@ -191,10 +192,16 @@ public:
     /////////////////////////////////////////////////////////////////////////////////////
 public:
 
-    static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
-    static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
-    static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
+    // カメラ関連
+    static BaseCamera* GetMainCamera(){ return DxManager::GetInstance()->mainCamera_; }
+    static BaseCamera* GetCamera(const std::string& cameraName){ return DxManager::GetInstance()->GetCamera(cameraName); }
+    static void SetMainCamera(const std::string& cameraName){ DxManager::GetInstance()->SetMainCamera(cameraName); }
+    static void RegisterCamera(const std::string& cameraName, BaseCamera* pCamera){ DxManager::GetInstance()->RegisterCamera(cameraName, pCamera); }
+    static void RemoveCamera(const std::string& cameraName){ DxManager::GetInstance()->RemoveCamera(cameraName); }
+    static void SetIsCameraActive(const std::string& cameraName, bool isActive){DxManager::GetInstance()->SetIsCameraActive(cameraName, isActive);}
+    // ライト
     static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
+    // ウィンドウ
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
@@ -214,13 +221,18 @@ private:// インスタンス
     bool isGridVisible_ = false;
     Vector4 clearColor_;
 
+private:// object
+    // デフォルト用意のカメラ
+    std::unique_ptr<BaseCamera> defaultCamera_;
+    std::unique_ptr<DebugCamera> debugCamera_;
+
 private:
     std::unique_ptr<Sprite> offscreenWrapper_;
 
 public:// ウインドウに関する変数
-    int kClientWidth_;
+    int kClientWidth_;// game用
     int kClientHeight_;
-    int kSystemClientWidth_ = 1920;
+    int kSystemClientWidth_ = 1920;// editor用
     int kSystemClientHeight_ = 1020;
     static std::wstring windowTitle_;
     static std::wstring systemWindowTitle_;

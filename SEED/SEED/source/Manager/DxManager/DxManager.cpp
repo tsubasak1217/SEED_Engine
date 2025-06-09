@@ -23,7 +23,7 @@ void DxManager::Initialize(SEED* pSEED){
     PSOManager::GetInstance();
     // polygonManagerの作成
     instance_->polygonManager_ = new PolygonManager(instance_);
-    instance_->pSEED_->SetPolygonManagerPtr(instance_->polygonManager_);
+    SEED::instance_->pPolygonManager_ = instance_->polygonManager_;
     // PostEffectのinstance作成
     PostEffect::GetInstance();
 
@@ -86,15 +86,13 @@ void DxManager::Initialize(SEED* pSEED){
         instance_->device.Get()
     );
 
-    /*--------------------オフスクリーン用のテクスチャの初期化とSRVの作成--------------------*/
+    /*--------------------初期化時読み込みリソ－ス--------------------*/
 
-    instance_->InitResources();
+    instance_->StartUpload();
 
     /*------------------------PSOの生成-----------------------*/
 
     instance_->InitPSO();
-
-
 
     /*--------------------------------- VewportとScissor ---------------------------------*/
 
@@ -106,7 +104,6 @@ void DxManager::Initialize(SEED* pSEED){
 
     // ------------------------------------------------------------------------------------
 
-    instance_->camera_ = CameraManager::GetCamera("main");
 
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
@@ -118,7 +115,7 @@ void DxManager::Initialize(SEED* pSEED){
 /*===========================================================================================*/
 
 void DxManager::CreateDebugLayer(){
-    if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+    if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))){
         // デバッグレイヤーを有効化する
         debugController->EnableDebugLayer();
         // さらにGPU側でもチェックを行うようにする
@@ -144,7 +141,7 @@ void DxManager::CreateDevice(){
             IID_PPV_ARGS(useAdapter.GetAddressOf())
         ) != DXGI_ERROR_NOT_FOUND;
         ++i
-        ) {
+        ){
 
         // アダプタの情報を取得する
         DXGI_ADAPTER_DESC3 adapterDesc{};
@@ -154,7 +151,7 @@ void DxManager::CreateDevice(){
         assert(SUCCEEDED(hr));
 
         // ソフトウェアアダプタでなければ採用
-        if(adapterDesc.Flags != DXGI_ADAPTER_FLAG3_SOFTWARE) {
+        if(adapterDesc.Flags != DXGI_ADAPTER_FLAG3_SOFTWARE){
 
             // 使用アダプタを出力してループ終了
             Log(std::format(L"useAdapter:{}\n", adapterDesc.Description));
@@ -178,13 +175,13 @@ void DxManager::CreateDevice(){
 
     const char* featureLevelString[] = { "12.2","12.1","12.0" };
 
-    for(size_t i = 0; i < _countof(featureLevels); ++i) {
+    for(size_t i = 0; i < _countof(featureLevels); ++i){
 
         // 先ほど決定したアダプタを使用してデバイスを生成
         hr = D3D12CreateDevice(useAdapter.Get(), featureLevels[i], IID_PPV_ARGS(device.GetAddressOf()));
 
         // 生成に成功したらログを出力してループを終了
-        if(SUCCEEDED(hr)) {
+        if(SUCCEEDED(hr)){
             Log(std::format("FeatureLevel : {}\n", featureLevelString[i]));
             break;
         }
@@ -199,7 +196,7 @@ void DxManager::CreateDevice(){
 
 void DxManager::CheckDebugLayer(){
 
-    if(SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+    if(SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue)))){
         // ヤバエラー時に止まる
         infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
         //エラー時に止まる
@@ -299,16 +296,18 @@ void DxManager::StartUpload(){
 #endif // _DEBUG
 }
 
-void DxManager::InitResources(){
-
-    // 初期化時読み込みリソ－ス
-    StartUpload();
-
-    //================================ オフスクリーンの初期化 ================================//
+//================================ オフスクリーンの初期化 ================================//
+void DxManager::CreateRenderResource(const std::string& cameraName){
+    // オフスクリーンリソースがすでに存在する場合は何もしない
+    if(offScreenResources.find(cameraName) != offScreenResources.end()){
+        return;
+    }
     {
         // レンダーターゲットとして作成
+        DxResource& offScreenResource = offScreenResources[cameraName];
+        std::string resourceName = "offScreen_" + cameraName;
         offScreenResource.resource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
-        offScreenResource.resource.Get()->SetName(L"offScreenResource");
+        offScreenResource.resource.Get()->SetName(ConvertString(resourceName).c_str());
         offScreenResource.InitState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
         // RTVの設定
@@ -324,18 +323,19 @@ void DxManager::InitResources(){
         srvDesc.Texture2D.MipLevels = 1;
 
         // Viewの生成
-        ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.resource.Get(), &rtvDesc, "offScreen_0");
-        ViewManager::CreateView(VIEW_TYPE::SRV, offScreenResource.resource.Get(), &srvDesc, "offScreen_0");
+        ViewManager::CreateView(VIEW_TYPE::RTV, offScreenResource.resource.Get(), &rtvDesc, resourceName);
+        ViewManager::CreateView(VIEW_TYPE::SRV, offScreenResource.resource.Get(), &srvDesc, resourceName);
 
         // ハンドル取得
-        offScreenHandle = ViewManager::GetHandleCPU(HEAP_TYPE::RTV, "offScreen_0");
+        offScreenHandles[cameraName] = ViewManager::GetHandleCPU(HEAP_TYPE::RTV, resourceName);
+        offScreenNames[cameraName] = resourceName;
     }
-
-    //================================= 深度テクスチャの作成 ==================================//
     {
         // DepthStencil用のテクスチャとして作成
-        depthStencilResource.resource = CreateDepthStencilTextureResource(device.Get(),pSEED_->kClientWidth_,pSEED_->kClientHeight_);
-        depthStencilResource.resource->SetName(L"depthStencilResource");
+        DxResource& depthStencilResource = depthStencilResources[cameraName];
+        std::string resourceName = "depthStencil_" + cameraName;
+        depthStencilResource.resource = CreateDepthStencilTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
+        depthStencilResource.resource->SetName(ConvertString(resourceName).c_str());
         depthStencilResource.InitState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
         // DSVの設定
@@ -351,14 +351,15 @@ void DxManager::InitResources(){
         srvDesc.Texture2D.MipLevels = 1;
 
         // Viewの生成
-        ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.resource.Get(), &dsvDesc, "depthStencil_1");
-        ViewManager::CreateView(VIEW_TYPE::SRV, depthStencilResource.resource.Get(), &srvDesc, "depth_0");
+        ViewManager::CreateView(VIEW_TYPE::DSV, depthStencilResource.resource.Get(), &dsvDesc, resourceName);
+        ViewManager::CreateView(VIEW_TYPE::SRV, depthStencilResource.resource.Get(), &srvDesc, resourceName);
 
         // ハンドルを得る
-        instance_->dsvHandle = ViewManager::GetHandleCPU(HEAP_TYPE::DSV, "depthStencil_1");
+        dsvHandles[cameraName] = ViewManager::GetHandleCPU(HEAP_TYPE::DSV, resourceName);
+        depthStencilNames[cameraName] = resourceName;
     }
-
 }
+
 
 void DxManager::CreateFence(){
     //初期値でFenceを作る
@@ -376,7 +377,7 @@ void DxManager::InitPSO(){
     /*==================================================================================*/
     //                              通常のパイプラインの初期化
     /*==================================================================================*/
-    
+
     PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
     PSOManager::CreatePipelines("TextVSPipeline.pip");// テキストのパイプライン。
@@ -426,32 +427,21 @@ void DxManager::TransitionResourceState(ID3D12Resource* resource, D3D12_RESOURCE
 }
 
 void DxManager::ClearViewSettings(){
-    //////////////////////////////////////////////////////////////////
-    // RTVのクリア
-    //////////////////////////////////////////////////////////////////
 
-    // オフスクリーンのRTVをクリアする
-    clearColor = MyMath::FloatColor(SEED::GetWindowColor());
-    commandList->ClearRenderTargetView(
-        offScreenHandle,
-        &clearColor.x, 0, nullptr
-    );
+    for(const auto& [cameraName, offScreenHandle] : offScreenHandles){
+        // オフスクリーンのRTVをクリアする
+        clearColor = MyMath::FloatColor(SEED::GetWindowColor());
+        commandList->ClearRenderTargetView(
+            offScreenHandle,
+            &clearColor.x, 0, nullptr
+        );
 
-    //////////////////////////////////////////////////////////////////
-    // DSVとオフスクリーンのRTVを結びつける
-    //////////////////////////////////////////////////////////////////
-    commandList->OMSetRenderTargets(
-        1, &offScreenHandle,
-        false, &dsvHandle
-    );
-
-    //////////////////////////////////////////////////////////////////
-    // フレームの最初にもっとも遠くにクリアする
-    //////////////////////////////////////////////////////////////////
-    commandList->ClearDepthStencilView(
-        dsvHandle,
-        D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
-    );
+        // フレームの最初にもっとも遠くにクリアする
+        commandList->ClearDepthStencilView(
+            dsvHandles[cameraName],
+            D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
+        );
+    }
 }
 
 void DxManager::WaitForGPU(){
@@ -462,7 +452,7 @@ void DxManager::WaitForGPU(){
 
     // Fenceの値が指定したSignal値にたどり着いているか確認する
     // GetCompletedValueの初期値はFence作成時に渡した初期値
-    if(fence->GetCompletedValue() < fenceValue) {
+    if(fence->GetCompletedValue() < fenceValue){
 
         // 指定したSignalにたどりついていないので、GPUがたどり着くまで待つようにイベントを設定する
         fence->SetEventOnCompletion(fenceValue, fenceEvent);
@@ -531,17 +521,31 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
+    for(const auto& [cameraName, camera] : cameras_){
+        if(!camera->isActive_){ continue; }
 
-    polygonManager_->DrawToOffscreen();
+        // レンダーターゲットを設定
+        commandList->OMSetRenderTargets(
+            1, &offScreenHandles[cameraName],
+            false, &dsvHandles[cameraName]
+        );
+
+        // オフスクリーンに描画
+        polygonManager_->BindCameraDatas(cameraName);
+        polygonManager_->DrawToOffscreen(cameraName);
+    }
 
     //////////////////////////////////////////////////////////////////////////
-    // ここで描画結果に対して処理を行う(ポストエフェクト)
+    // ここで描画結果に対して処理を行う(ポストエフェクト。メインのカメラにのみ)
     //////////////////////////////////////////////////////////////////////////
 
     //------------ 参照するリソースの状態を遷移させる--------------//
 
-    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-    depthStencilResource.TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+    for(const auto& [cameraName, camera] : cameras_){
+        // オフスクリーンのリソースを参照するために状態を遷移させる
+        offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+        depthStencilResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+    }
 
     /*----------------------ポストエフェクトを行う-------------------*/
 
@@ -551,8 +555,11 @@ void DxManager::DrawPolygonAll(){
 
     //---------------------- 元の状態に遷移 ---------------------//
 
-    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
-    depthStencilResource.TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    for(const auto& [cameraName, camera] : cameras_){
+        // オフスクリーンのリソースを参照するために状態を遷移させる
+        offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+        depthStencilResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    }
 
     //////////////////////////////////////////////////////////////////////////
     // 最終結果の描画
@@ -561,7 +568,7 @@ void DxManager::DrawPolygonAll(){
     /*--------------- 切り替え ---------------*/
     commandList->OMSetRenderTargets(
         1, &WindowManager::GetRtvHandle(pSEED_->windowTitle_),
-        false, &dsvHandle
+        false, &dsvHandles[mainCameraName_]
     );
 
     /*----------バックバッファをクリアする----------*/
@@ -579,7 +586,7 @@ void DxManager::DrawPolygonAll(){
 
     /*--------------深度値のクリア---------------*/
     commandList->ClearDepthStencilView(
-        dsvHandle,
+        dsvHandles[mainCameraName_],
         D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr
     );
 
@@ -590,7 +597,11 @@ void DxManager::DrawPolygonAll(){
 
 
     PostEffect::GetInstance()->BeforeBackBufferDrawTransition();
-    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+    // オフスクリーンのリソースを参照するために状態を遷移させる
+    for(const auto& [cameraName, camera] : cameras_){
+        offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    }
 
 
     //////////////////////////////////////////////////////////////////
@@ -642,7 +653,10 @@ void DxManager::PostDraw(){
 #endif // USE_SUB_WINDOW
 
     // オフスクリーンのリソースもRenderTargetに戻す
-    offScreenResource.TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+    for(const auto& [cameraName, camera] : cameras_){
+        // オフスクリーンのリソースを参照するために状態を遷移させる
+        offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+    }
 
     /*----------------------------------------------------------*/
 
@@ -655,7 +669,7 @@ void DxManager::PostDraw(){
     commandQueue->ExecuteCommandLists(1, commandLists);
 
     // GPUとOSに画面の交換を行うよう通知する
-    WindowManager::Present(pSEED_->windowTitle_,0,0);
+    WindowManager::Present(pSEED_->windowTitle_, 0, 0);
 #ifdef USE_SUB_WINDOW
     WindowManager::Present(pSEED_->systemWindowTitle_, 0, 0);
 #endif // USE_SUB_WINDOW
@@ -743,8 +757,10 @@ void DxManager::Release(){
     TextureManager::Release();
     TextSystem::Release();
     WindowManager::Finalize();
-    offScreenResource.resource.Reset();
-    depthStencilResource.resource.Reset();
+    for(auto& [cameraName, camera] : cameras_){
+        offScreenResources[cameraName].resource.Reset();
+        depthStencilResources[cameraName].resource.Reset();
+    }
     PostEffect::GetInstance()->Release();
     delete polygonManager_;
     polygonManager_ = nullptr;
@@ -777,6 +793,7 @@ void DxManager::Release(){
 #endif // _DEBUG
 }
 
+
 /*-------------------- インスタンスの取得 -------------------*/
 DxManager* DxManager::GetInstance(){
     if(!instance_){
@@ -790,7 +807,7 @@ DxManager* DxManager::GetInstance(){
 LeakChecker::~LeakChecker(){
     // 解放漏れがないかチェック
     ComPtr<IDXGIDebug1> debug;
-    if(SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))) {
+    if(SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debug)))){
         debug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
         debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);

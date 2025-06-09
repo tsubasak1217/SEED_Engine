@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Title::Scene_Title(){
     Initialize();
-    SEED::SetCamera("main");
+    SEED::SetMainCamera("default");
 }
 
 Scene_Title::~Scene_Title(){}

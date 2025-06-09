@@ -106,26 +106,49 @@ void SEED::DrawGUI(){
 
     // ゲーム画面描画ウインドウ
     ImFunc::CustomBegin("GameWindow",MoveOnly_TitleBar);
-    // サイズの計算
-    Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
-    ImVec2 availSize = ImGui::GetContentRegionAvail();
-    ImVec2 imageSize;
-    float ratioX[2] = {
-    availSize.x / availSize.y,
-    displaySize.x / displaySize.y
-    };
+    {
+        // サイズの計算
+        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageSize;
+        float ratioX[2] = {
+        availSize.x / availSize.y,
+        displaySize.x / displaySize.y
+        };
 
-    // 狭いほうに合わせる
-    if(ratioX[0] > ratioX[1]){
-        imageSize = { availSize.y * ratioX[1],availSize.y };
-    } else{
-        imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x)};
+        // 狭いほうに合わせる
+        if(ratioX[0] > ratioX[1]){
+            imageSize = { availSize.y * ratioX[1],availSize.y };
+        } else{
+            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
+        }
+
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_default"), imageSize);
     }
-
-    ImGui::Image(TextureManager::GetImGuiTexture("offScreen_0"), imageSize);
     ImGui::End();
 
+    // デバッグカメラ視点描画ウインドウ
+    ImFunc::CustomBegin("DebugCameraWindow", MoveOnly_TitleBar);
+    {
+        // サイズの計算
+        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageSize;
+        float ratioX[2] = {
+        availSize.x / availSize.y,
+        displaySize.x / displaySize.y
+        };
 
+        // 狭いほうに合わせる
+        if(ratioX[0] > ratioX[1]){
+            imageSize = { availSize.y * ratioX[1],availSize.y };
+        } else{
+            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
+        }
+
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
+    }
+    ImGui::End();
 
 
     ImFunc::CustomBegin("システム",MoveOnly_TitleBar);
@@ -134,9 +157,11 @@ void SEED::DrawGUI(){
     ImGui::Checkbox("グリッド表示", &instance_->isGridVisible_);
     if(ImGui::Checkbox("デバッグカメラ", &isDebugCamera_)){
         if(isDebugCamera_){
-            SEED::SetCamera("debug");
+            SEED::SetMainCamera("debug");
+            SEED::SetIsCameraActive("debug", true);
         } else{
-            SEED::SetCamera("main");
+            SEED::SetMainCamera("default");
+            SEED::SetIsCameraActive("debug", false);
         }
     }
 
@@ -189,6 +214,14 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     EffectSystem::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
+
+    // カメラの作成と追加
+    instance_->defaultCamera_ = std::make_unique<BaseCamera>();
+    instance_->debugCamera_ = std::make_unique<DebugCamera>();
+    RegisterCamera("default",instance_->defaultCamera_.get());
+    RegisterCamera("debug",instance_->debugCamera_.get());
+    // デフォルトカメラを設定
+    SetMainCamera("default");
 
     // 起動時読み込み
     instance_->StartUpLoad();
@@ -695,12 +728,12 @@ void SEED::DrawLight(const BaseLight* light){
 
         // 必要な情報を用意
         Vector2 screenPos = { 50.0f,50.0f };
-        Vector3 screenPos3D = GetCamera()->ToWorldPosition(screenPos, 1.0f);
+        Vector3 screenPos3D = GetMainCamera()->ToWorldPosition(screenPos, 1.0f);
         Vector3 direction = MyMath::Normalize(directionalLight->direction_);
-        float dot = MyMath::Dot(direction, -GetCamera()->GetNormal());
+        float dot = MyMath::Dot(direction, -GetMainCamera()->GetNormal());
 
         // スクリーン上で最長20.0fの線を描画
-        Matrix4x4 vpVp = GetCamera()->GetVpVp();
+        Matrix4x4 vpVp = GetMainCamera()->GetVpVp();
         Vector3 transformedPos[2] = {
             screenPos3D * vpVp,
             (screenPos3D + direction) * vpVp
@@ -780,7 +813,7 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 
 /*------------------ カメラにシェイクを設定する関数 ------------------*/
 void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
-    GetCamera()->SetShake(time, power, shakeLevel);
+    GetMainCamera()->SetShake(time, power, shakeLevel);
 }
 
 /*------------------ マウスカーソルの表示・非表示を切り替える関数 ------------------*/

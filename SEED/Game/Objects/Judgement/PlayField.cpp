@@ -35,7 +35,7 @@ PlayField::~PlayField(){
 /////////////////////////////////////////////////////////////////////////
 void PlayField::Initialize(){
     // ゲームカメラの取得
-    BaseCamera* gameCamera_ = CameraManager::GetInstance()->GetCamera("gameCamera");
+    BaseCamera* gameCamera_ = SEED::GetCamera("gameCamera");
 
     // プレイフィールドの4点を求める
     Vector2 center = kWindowCenter;
@@ -171,7 +171,7 @@ void PlayField::Initialize(){
     CalcEffectEmitPoints();
 
     // エフェクトの初期化
-    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetCamera()->GetTranslation(),nullptr);
+    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(),nullptr);
 }
 
 

@@ -39,7 +39,7 @@ struct ModelDrawData{
     // 各種データ
     ModelData* modelData;
     std::vector<std::vector<MaterialForGPU>> materials;// instance数 * mesh数分ある
-    std::vector<TransformMatrix>transforms;// instance数分ある
+    std::unordered_map<std::string, std::vector<TransformMatrix>>transforms;// instance数分 * カメラ数分ある
     std::vector<std::vector<OffsetData>> offsetData;// instance数 * mesh数分ある
     std::vector<std::vector<WellForGPU>> paletteData;// instance数 * palette数分ある
 
@@ -135,6 +135,7 @@ private:// 内部で使用する定数や列挙型
         InstancingResource_Transform,
         InstancingResource_Material,
         SkinningResource_Palette,
+        CameraResource,
         DirectionalLight,
         PointLight,
         SpotLight,
@@ -145,11 +146,12 @@ public:// 根幹をなす関数
     PolygonManager(DxManager* pDxManager);
     ~PolygonManager();
     void InitResources();
+    void BindCameraDatas(const std::string& cameraName);
     void Finalize();
     void Reset();
 
 public:
-    void DrawToOffscreen();
+    void DrawToOffscreen(const std::string& cameraName);
     void DrawToBackBuffer();
 
 public:
@@ -219,7 +221,7 @@ private:
 private:
 
     void WriteRenderData();
-    void SetRenderData(const DrawOrder& drawOrder);
+    void SetRenderData(const std::string& cameraName, const DrawOrder& drawOrder);
 
 private:// 外部参照のためのポインタ変数
 
@@ -251,6 +253,9 @@ private:// 現在の描画数や頂点数などを格納する変数
     std::array<int32_t, (int)BlendMode::kBlendModeCount>objCountBlend_;
     // 描画種類ごとの描画数
     std::array<int32_t, (int)DrawOrder::DrawOrderCount> objCounts_;
+    // カメラが切り替わるインスタンス数
+    std::unordered_map<std::string, int32_t> cameraSwitchInstanceCount_;
+    std::unordered_map<std::string, int32_t> cameraOrder_;
 
 private:// 実際に頂点情報や色などの情報が入っている変数
 
@@ -315,6 +320,6 @@ private:// GPUハンドルまとめ
     std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> gpuHandles_;
 
 private:
-
+    bool isWrited_ = false; // 描画データを書き込んだかどうか
     bool isActivePostEffect_ = false;
 };

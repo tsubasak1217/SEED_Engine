@@ -4,18 +4,19 @@
 #include "Camera.hlsli"
 
 // camera
-ConstantBuffer<Camera> gCamera : register(b0);
+StructuredBuffer<Camera> gCamera : register(t0);
+ConstantBuffer<Int> gCameraIndex : register(b0);
 // material
-StructuredBuffer<Material> gMaterial : register(t0, space0);
+StructuredBuffer<Material> gMaterial : register(t1, space0);
 // light
-StructuredBuffer<DirectionalLight> gDirectionalLight : register(t1, space0);
-StructuredBuffer<PointLight> gPointLight : register(t2, space0);
-StructuredBuffer<SpotLight> gSpotLight : register(t3, space0);
+StructuredBuffer<DirectionalLight> gDirectionalLight : register(t2, space0);
+StructuredBuffer<PointLight> gPointLight : register(t3, space0);
+StructuredBuffer<SpotLight> gSpotLight : register(t4, space0);
 ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 ConstantBuffer<Int> gPointLightCount : register(b2);
 ConstantBuffer<Int> gSpotLightCount : register(b3);
 // texture
-Texture2D<float4> gTexture[128] : register(t4, space0);
+Texture2D<float4> gTexture[128] : register(t5, space0);
 SamplerState gSampler : register(s0);
 
 
@@ -32,15 +33,15 @@ PixelShaderOutput main(MeshShaderOutput input) {
     
     PixelShaderOutput output;
     
-    // カメラへのベクトルを求める
-    float3 toEye = normalize(gCamera.position - input.worldPosition);
-    // 格納用
-    float3 specular = float3(0.0f, 0.0f, 0.0f);
-    float3 diffuse = float3(0.0f, 0.0f, 0.0f);
-    
     // ライティングが有効な場合------------------------------------------------------------------
     if (gMaterial[input.instanceID].lightingType != LightingType::NONE) {
     
+        // カメラへのベクトルを求める
+        float3 toEye = normalize(gCamera[gCameraIndex.value].position - input.worldPosition);
+        // 格納用
+        float3 specular = float3(0.0f, 0.0f, 0.0f);
+        float3 diffuse = float3(0.0f, 0.0f, 0.0f);
+        
         // ディレクショナルライトの計算
         for (int i = 0; i < gDirectionalLightCount.value; i++) {
             CalcDirectionalLight(gDirectionalLight[i], gMaterial[input.instanceID], white.rgb, input, toEye, diffuse, specular);

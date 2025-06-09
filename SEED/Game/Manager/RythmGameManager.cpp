@@ -16,7 +16,7 @@ RythmGameManager::RythmGameManager(){
 
 RythmGameManager::~RythmGameManager(){
     // カメラの登録解除
-    CameraManager::GetInstance()->DeleteCamera("gameCamera");
+    SEED::RemoveCamera("gameCamera");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,9 +39,8 @@ void RythmGameManager::Initialize(){
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
-    CameraManager::GetInstance()->AddCamera("gameCamera", gameCamera_.get());
-    SEED::SetCamera("gameCamera");
-    //SEED::SetCamera("debug");
+    SEED::RegisterCamera("gameCamera", gameCamera_.get());
+    SEED::SetMainCamera("gameCamera");
 
     // settingsの初期化
     PlaySettings::GetInstance();

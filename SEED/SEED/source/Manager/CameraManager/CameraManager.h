@@ -6,7 +6,9 @@
 #include <unordered_map>
 #include <string>
 
-class CameraManager {
+class CameraManager{
+    friend class SEED;
+    friend class DxManager;
 private:
     CameraManager() = default;
 
@@ -24,16 +26,15 @@ private:
     CameraManager(const CameraManager& other) = delete;
     CameraManager& operator=(const CameraManager& other) = delete;
 
-public:
+private:
 
     // カメラのポインタ取得
     static BaseCamera* GetCamera(const std::string& name);
-    static void AddCamera(const std::string& name, BaseCamera* camera);
-    static void DeleteCamera(const std::string& name);
-    static BaseCamera* GetActiveCamera();
+    static void RegisterCamera(const std::string& name, BaseCamera* camera);
+    static void RemoveCamera(const std::string& name);
 
     // アクティブなカメラを設定
-    static void SetActiveCamera(const std::string& name);
+    static void SetIsCameraActive(const std::string& name,bool isActive);
 
 
 private:
@@ -41,10 +42,4 @@ private:
     // カメラの一覧
     std::unordered_map<std::string, BaseCamera*>cameras_;
 
-    // メインのカメラ
-    std::unique_ptr<BaseCamera> mainCamera_;
-    std::unique_ptr<DebugCamera> debugCamera_;
-
-    // アクティブなカメラを保持するポインタ
-    BaseCamera* activeCamera_ = nullptr;
 };

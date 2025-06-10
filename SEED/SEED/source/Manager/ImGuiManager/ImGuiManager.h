@@ -44,12 +44,19 @@ public:
             instance_->guizmoTransforms_.push_back({ transform,isUseQuaternion });
         }
     }
+    static void RegisterGuizmoItem(Transform2D* transform){
+        if(transform != nullptr){
+            instance_->guizmoTransforms2D_.push_back(transform);
+        }
+    }
 
 private:
     std::wstring windowTitle_;
+    bool isGuizmoActive_ = false; // ImGuizmoの操作を有効にするかどうか
     ImGuizmo::OPERATION currentOperation_ = ImGuizmo::TRANSLATE; // 現在の操作モード
     ImDrawList* pDrawList_ = nullptr; // ImGuiの描画リスト
     std::list<std::pair<Transform*,bool>> guizmoTransforms_; // ImGuizmoで操作するTransformのリスト
+    std::list<Transform2D*> guizmoTransforms2D_; // ImGuizmoで操作するTransformのリスト
 };
 
 
@@ -82,6 +89,7 @@ struct ImFunc{
 
     // ImGuizmoの操作を行う関数
     static void Guizmo(Transform* transform,ImDrawList* pDrawList,Range2D rectRange,bool isUseQuaternion);
+    static void Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectRange);
 };
 
 

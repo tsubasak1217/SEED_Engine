@@ -98,6 +98,7 @@ void ImGuiManager::PreDraw(){
 
     // guizmoのリストをクリア
     instance_->guizmoTransforms_.clear();
+    instance_->guizmoTransforms2D_.clear();
 
     // ディスプレイサイズの設定
     ImGuiIO& io = ImGui::GetIO();
@@ -136,15 +137,19 @@ void ImGuiManager::PostDraw(){
 
     ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
     ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+    ImGui::Checkbox("Guizmo", &instance_->isGuizmoActive_);
 
-    // 現在の操作モードを表示
-    ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
-        {
-            {"Translate",ImGuizmo::TRANSLATE},
-            {"Rotate",ImGuizmo::ROTATE},
-            {"Scale",ImGuizmo::SCALE}
-        }
-    );
+    // ImGuizmoの操作モードを切り替えるコンボボックス
+    if(instance_->isGuizmoActive_){
+        // 現在の操作モードを表示
+        ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
+            {
+                {"Translate",ImGuizmo::TRANSLATE},
+                {"Rotate",ImGuizmo::ROTATE},
+                {"Scale",ImGuizmo::SCALE}
+            }
+        );
+    }
     ImGui::End();
 
     // ゲーム画面描画ウインドウ
@@ -191,17 +196,25 @@ void ImGuiManager::PostDraw(){
 
         ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
 
-        // ImGuizmoの操作
-        ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-        ImVec2 windowPos = ImGui::GetWindowPos();
-        Range2D rectRange = {
-            {windowPos.x,windowPos.y},
-            {windowPos.x + imageSize.x, windowPos.y + imageSize.y}
-        };
+        // Guizmo
+        if(instance_->isGuizmoActive_){
+            // ImGuizmoの操作
+            ImDrawList* pDrawList = ImGui::GetWindowDrawList();
+            ImVec2 windowPos = ImGui::GetWindowPos();
+            Range2D rectRange = {
+                {windowPos.x,windowPos.y},
+                {windowPos.x + imageSize.x, windowPos.y + imageSize.y}
+            };
 
-        // ImGuizmoの操作を行う
-        for(auto& transform : instance_->guizmoTransforms_){
-            ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
+            // ImGuizmoの操作を行う
+            for(auto& transform : instance_->guizmoTransforms_){
+                ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
+            }
+
+            // 2D ImGuizmoの操作を行う
+            for(auto& transform2D : instance_->guizmoTransforms2D_){
+                ImFunc::Guizmo(transform2D, pDrawList, rectRange);
+            }
         }
     }
     ImGui::End();
@@ -340,12 +353,20 @@ bool ImFunc::InputText(const char* label, std::string& str){
 /////////////////////////////////////////////////////////////////
 void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRange, bool isUseQuaternion){
 
+    if(!transform){
+        return; // transformがnullptrの場合は何もしない
+    }
+
     // 必要な行列の用意
     BaseCamera* camera = SEED::GetCamera("debug");
     Matrix4x4 viewMat = camera->GetViewMat();
     Matrix4x4 projMat = camera->GetProjectionMat();
     Matrix4x4 modelMat = transform->ToMatrix(isUseQuaternion);
     Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
+
+    // IDの設定(ポインタをIDとして仕様)
+    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(transform);
+    ImGuizmo::SetID(id);
 
     // Rectの設定
     ImGuizmo::SetRect(
@@ -367,5 +388,49 @@ void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRan
     // 変化量をトランスフォームに適用
     if(isManipulated){
         transform->FromMatrix(modelMat);
+    }
+}
+
+// 2D用のImGuizmo操作関数
+void ImFunc::Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectRange){
+
+    if(!transform){
+        return; // transformがnullptrの場合は何もしない
+    }
+
+    // 必要な行列の用意
+    BaseCamera* camera = SEED::GetCamera("debug");
+    Matrix4x4 viewMat = TranslateMatrix(Vector3(0.0f, 0.0f, 10.0f));
+    Matrix4x4 projMat = camera->GetProjectionMat2D();
+    Matrix4x4 modelMat = transform->ToMatrix4x4();
+    Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
+
+    // IDの設定(ポインタをIDとして仕様)
+    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(transform);
+    ImGuizmo::SetID(id);
+
+    // Rectの設定
+    ImGuizmo::SetRect(
+        rectRange.min.x, rectRange.min.y,
+        rectRange.max.x - rectRange.min.x,
+        rectRange.max.y - rectRange.min.y
+    );
+
+    // DrawListの設定
+    ImGuizmo::SetDrawlist(pDrawList);
+    // ImGuizmoの操作
+    ImGuizmo::MODE mode = ImGuizmo::LOCAL; // ローカル座標系で操作
+    ImGuizmo::OPERATION operation = ImGuiManager::instance_->currentOperation_;
+    if(operation == ImGuizmo::ROTATE){// 2Dでは回転はZ軸のみ
+        operation = ImGuizmo::ROTATE_Z;
+    }
+    bool isManipulated = ImGuizmo::Manipulate(
+        viewMat.m[0], projMat.m[0], operation, mode,
+        modelMat.m[0], deltaMat.m[0], nullptr, nullptr, nullptr
+    );
+
+    // 変化量をトランスフォームに適用
+    if(isManipulated){
+        transform->FromMatrix4x4(modelMat);
     }
 }

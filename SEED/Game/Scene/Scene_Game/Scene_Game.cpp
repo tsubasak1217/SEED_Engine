@@ -124,6 +124,7 @@ void Scene_Game::Update(){
 #ifdef _DEBUG
     ImFunc::CustomBegin("テキスト", MoveOnly_TitleBar);
     textBox_.Edit();
+    ImGuiManager::RegisterGuizmoItem(&textBox_.transform);
     ImGui::End();
 #endif
 
@@ -170,6 +171,7 @@ void Scene_Game::Draw(){
     for(auto& model : models_){
         model->Draw();
         // Guizmoに登録
+
         ImGuiManager::RegisterGuizmoItem(&model->transform_,model->isRotateWithQuaternion_);
     }
 

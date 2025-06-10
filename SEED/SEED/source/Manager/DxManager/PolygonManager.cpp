@@ -112,7 +112,7 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[6];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[7];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -139,7 +139,7 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[3].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[3].Buffer.FirstElement = 0;
     instancingSrvDesc[3].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[3].Buffer.NumElements = 0xff;
+    instancingSrvDesc[3].Buffer.NumElements = 0xf;
 
     instancingSrvDesc[4].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[4].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -154,6 +154,13 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[5].Buffer.FirstElement = 0;
     instancingSrvDesc[5].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
     instancingSrvDesc[5].Buffer.NumElements = 0xff;
+
+    instancingSrvDesc[6].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[6].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[6].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[6].Buffer.FirstElement = 0;
+    instancingSrvDesc[6].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[6].Buffer.NumElements = 0xff;
 
     /*------------- Transform用 --------------*/
     instancingSrvDesc[0].Buffer.StructureByteStride = sizeof(TransformMatrix);
@@ -176,25 +183,32 @@ void PolygonManager::InitResources(){
         &instancingSrvDesc[2], "SkinningResource_Palette"
     );
 
+    /*------------- Camera用 --------------*/
+    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(CameraForGPU);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, cameraResource_.Get(),
+        &instancingSrvDesc[3], "CameraResource"
+    );
+
     /*--------- DirectionalLight用 ----------*/
-    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(DirectionalLight);
+    instancingSrvDesc[4].Buffer.StructureByteStride = sizeof(DirectionalLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, directionalLightResource_.Get(),
-        &instancingSrvDesc[3], "directionalLight"
+        &instancingSrvDesc[4], "directionalLight"
     );
 
     /*------------ PointLight用 --------------*/
-    instancingSrvDesc[4].Buffer.StructureByteStride = sizeof(PointLight);
+    instancingSrvDesc[5].Buffer.StructureByteStride = sizeof(PointLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, pointLightResource_.Get(),
-        &instancingSrvDesc[4], "pointLight"
+        &instancingSrvDesc[5], "pointLight"
     );
 
     /*------------ SpotLight用 --------------*/
-    instancingSrvDesc[5].Buffer.StructureByteStride = sizeof(SpotLight);
+    instancingSrvDesc[6].Buffer.StructureByteStride = sizeof(SpotLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, spotLightResource_.Get(),
-        &instancingSrvDesc[5], "spotLight"
+        &instancingSrvDesc[6], "spotLight"
     );
 
 

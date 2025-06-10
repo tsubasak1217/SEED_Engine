@@ -96,9 +96,11 @@ void ImGuiManager::PreDraw(){
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
 
-    ImGuiIO& io = ImGui::GetIO();
+    // guizmoのリストをクリア
+    instance_->guizmoTransforms_.clear();
 
     // ディスプレイサイズの設定
+    ImGuiIO& io = ImGui::GetIO();
     Vector2 displaySize = WindowManager::GetCurrentWindowSize(instance_->windowTitle_);
     io.DisplaySize = ImVec2(displaySize.x, displaySize.y);
     static Vector2 preWinScale{};
@@ -125,16 +127,86 @@ void ImGuiManager::PreDraw(){
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 
-    ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
-    ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
-    ImGui::End();
-
 #endif
 }
 
 
 void ImGuiManager::PostDraw(){
 #ifdef _DEBUG
+
+    ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
+    ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+
+    // 現在の操作モードを表示
+    ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
+        {
+            {"Translate",ImGuizmo::TRANSLATE},
+            {"Rotate",ImGuizmo::ROTATE},
+            {"Scale",ImGuizmo::SCALE}
+        }
+    );
+    ImGui::End();
+
+    // ゲーム画面描画ウインドウ
+    ImFunc::CustomBegin("GameWindow", MoveOnly_TitleBar);
+    {
+        // サイズの計算
+        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageSize;
+        float ratioX[2] = {
+        availSize.x / availSize.y,
+        displaySize.x / displaySize.y
+        };
+
+        // 狭いほうに合わせる
+        if(ratioX[0] > ratioX[1]){
+            imageSize = { availSize.y * ratioX[1],availSize.y };
+        } else{
+            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
+        }
+
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_default"), imageSize);
+    }
+    ImGui::End();
+
+    // デバッグカメラ視点描画ウインドウ
+    ImFunc::CustomBegin("DebugCameraWindow", MoveOnly_TitleBar);
+    {
+        // サイズの計算
+        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageSize;
+        float ratioX[2] = {
+        availSize.x / availSize.y,
+        displaySize.x / displaySize.y
+        };
+
+        // 狭いほうに合わせる
+        if(ratioX[0] > ratioX[1]){
+            imageSize = { availSize.y * ratioX[1],availSize.y };
+        } else{
+            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
+        }
+
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
+
+        // ImGuizmoの操作
+        ImDrawList* pDrawList = ImGui::GetWindowDrawList();
+        ImVec2 windowPos = ImGui::GetWindowPos();
+        Range2D rectRange = {
+            {windowPos.x,windowPos.y},
+            {windowPos.x + imageSize.x, windowPos.y + imageSize.y}
+        };
+
+        // ImGuizmoの操作を行う
+        for(auto& transform : instance_->guizmoTransforms_){
+            ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
+        }
+    }
+    ImGui::End();
+
+
     // 描画前準備
     ImGui::Render();
 
@@ -251,7 +323,7 @@ bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<st
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
 bool ImFunc::InputText(const char* label, std::string& str){
-    static std::array<char,1024> buffer;
+    static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
@@ -260,4 +332,40 @@ bool ImFunc::InputText(const char* label, std::string& str){
         str = buffer.data();  // 更新
     }
     return changed;
+}
+
+
+/////////////////////////////////////////////////////////////////
+// ImGuizmoで操作をしてトランスフォームに反映する関数
+/////////////////////////////////////////////////////////////////
+void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRange, bool isUseQuaternion){
+
+    // 必要な行列の用意
+    BaseCamera* camera = SEED::GetCamera("debug");
+    Matrix4x4 viewMat = camera->GetViewMat();
+    Matrix4x4 projMat = camera->GetProjectionMat();
+    Matrix4x4 modelMat = transform->ToMatrix(isUseQuaternion);
+    Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
+
+    // Rectの設定
+    ImGuizmo::SetRect(
+        rectRange.min.x, rectRange.min.y,
+        rectRange.max.x - rectRange.min.x,
+        rectRange.max.y - rectRange.min.y
+    );
+
+    // DrawListの設定
+    ImGuizmo::SetDrawlist(pDrawList);
+
+    // ImGuizmoの操作
+    ImGuizmo::MODE mode = ImGuizmo::LOCAL; // ローカル座標系で操作
+    bool isManipulated = ImGuizmo::Manipulate(
+        viewMat.m[0], projMat.m[0], ImGuiManager::instance_->currentOperation_, mode,
+        modelMat.m[0], deltaMat.m[0], nullptr, nullptr, nullptr
+    );
+
+    // 変化量をトランスフォームに適用
+    if(isManipulated){
+        transform->FromMatrix(modelMat);
+    }
 }

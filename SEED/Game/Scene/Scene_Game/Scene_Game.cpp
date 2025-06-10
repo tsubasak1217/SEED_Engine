@@ -40,7 +40,7 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    //SEED::SetCamera("debug");
+    SEED::SetMainCamera("debug");
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -53,33 +53,33 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    //for(int i = 0; i < 100; i++){
+    for(int i = 0; i < 1; i++){
 
-    //    if(i % 4 == 0){
-    //        models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
-    //        models_[i]->StartAnimation(0, true);
-    //    } else if(i % 3 == 1){
-    //        models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
-    //        models_[i]->StartAnimation("idle", true);
-    //    } else if(i % 3 == 2){
-    //        models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
-    //        models_[i]->StartAnimation(0, true);
-    //    } else{
-    //        models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
-    //        models_[i]->StartAnimation(0, true);
-    //    }
-    //    //models_[i]->SetIsSkeletonVisible(true);
-    //    models_[i]->transform_.translate_ = { i * 5.0f,0.0f,2.0f };
-    //    models_[i]->UpdateMatrix();
-    //    models_[i]->masterColor_ = MyFunc::RandomColor();
-    //    models_[i]->blendMode_ = BlendMode(i % 6);
-    //    models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
-    //}
+        if(i % 4 == 0){
+            models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
+            models_[i]->StartAnimation(0, true);
+        } else if(i % 3 == 1){
+            models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
+            models_[i]->StartAnimation("idle", true);
+        } else if(i % 3 == 2){
+            models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
+            models_[i]->StartAnimation(0, true);
+        } else{
+            models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
+            models_[i]->StartAnimation(0, true);
+        }
+        models_[i]->SetIsSkeletonVisible(true);
+        models_[i]->transform_.translate = { i * 5.0f,0.0f,2.0f };
+        models_[i]->UpdateMatrix();
+        models_[i]->masterColor_ = MyFunc::RandomColor();
+        models_[i]->blendMode_ = BlendMode(i % 6);
+        models_[i]->cullMode_ = D3D12_CULL_MODE(i % 3 + 1);
+    }
 
     textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Black.ttf");
     textBox_.SetFont("M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf");
     textBox_.text = "%sさん、こんにちは。";
-    textBox_.BindDatas({insertText_, textBox_.fontSize});
+    textBox_.BindDatas({ insertText_, textBox_.fontSize });
     textBox_.fontSize = 32.0f;
     textBox_.transform.translate = { 400.0f,400.0f };
     textBox_.size = { 400.0f, 200.0f };
@@ -122,7 +122,7 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-    ImFunc::CustomBegin("テキスト",MoveOnly_TitleBar);
+    ImFunc::CustomBegin("テキスト", MoveOnly_TitleBar);
     textBox_.Edit();
     ImGui::End();
 #endif
@@ -169,6 +169,8 @@ void Scene_Game::Draw(){
 
     for(auto& model : models_){
         model->Draw();
+        // Guizmoに登録
+        ImGuiManager::RegisterGuizmoItem(&model->transform_,model->isRotateWithQuaternion_);
     }
 
     textBox_.Draw();

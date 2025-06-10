@@ -104,53 +104,6 @@ void SEED::DrawGUI(){
     // 親子付け用の空ウィンドウを作成
     SetImGuiEmptyWindows();
 
-    // ゲーム画面描画ウインドウ
-    ImFunc::CustomBegin("GameWindow",MoveOnly_TitleBar);
-    {
-        // サイズの計算
-        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        ImVec2 imageSize;
-        float ratioX[2] = {
-        availSize.x / availSize.y,
-        displaySize.x / displaySize.y
-        };
-
-        // 狭いほうに合わせる
-        if(ratioX[0] > ratioX[1]){
-            imageSize = { availSize.y * ratioX[1],availSize.y };
-        } else{
-            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
-        }
-
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_default"), imageSize);
-    }
-    ImGui::End();
-
-    // デバッグカメラ視点描画ウインドウ
-    ImFunc::CustomBegin("DebugCameraWindow", MoveOnly_TitleBar);
-    {
-        // サイズの計算
-        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        ImVec2 imageSize;
-        float ratioX[2] = {
-        availSize.x / availSize.y,
-        displaySize.x / displaySize.y
-        };
-
-        // 狭いほうに合わせる
-        if(ratioX[0] > ratioX[1]){
-            imageSize = { availSize.y * ratioX[1],availSize.y };
-        } else{
-            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
-        }
-
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
-    }
-    ImGui::End();
-
-
     ImFunc::CustomBegin("システム",MoveOnly_TitleBar);
     /*===== FPS表示 =====*/
     ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);

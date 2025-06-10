@@ -135,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\PointLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp" />

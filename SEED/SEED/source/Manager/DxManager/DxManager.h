@@ -25,7 +25,6 @@
 // structs
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 
-
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
 

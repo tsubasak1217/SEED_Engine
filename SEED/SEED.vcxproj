@@ -70,8 +70,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Debug;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
     </Link>
@@ -102,8 +102,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -129,8 +129,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Scene\Base\SceneRegister.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
-    <ClCompile Include="SEED\External\imgui\ImGuizmo.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -159,12 +157,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="SEED\lib\Functions\localFunc\LocalDrawer.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\DxFunc.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\Easing.cpp" />
@@ -243,7 +235,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="Game\Scene\Base\SceneRegister.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="SEED\External\imgui\ImGuizmo.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
@@ -292,14 +283,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\external\imgui\imconfig.h" />
-    <ClInclude Include="SEED\external\imgui\imgui.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_internal.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_textedit.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_truetype.h" />
     <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\DxFunc.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\Easing.h" />
@@ -381,9 +364,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.h" />
     <ClInclude Include="SEED\Source\Object\Particle\Particle_Model.h" />
     <ClInclude Include="SEED\source\SEED.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

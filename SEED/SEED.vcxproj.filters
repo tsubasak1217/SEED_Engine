@@ -23,12 +23,6 @@
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_demo.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_draw.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_tables.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="SEED\lib\Functions\localFunc\LocalDrawer.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\DxFunc.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\Easing.cpp" />
@@ -106,10 +100,8 @@
     <ClCompile Include="SEED\Source\Object\Particle\Emitter\Emitter_RingQuad.cpp" />
     <ClCompile Include="SEED\Source\Object\Particle\Particle_Model.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
-    <ClCompile Include="SEED\external\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
-    <ClCompile Include="SEED\External\imgui\ImGuizmo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Base\BaseObject.h" />
@@ -144,14 +136,6 @@
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\external\imgui\imconfig.h" />
-    <ClInclude Include="SEED\external\imgui\imgui.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="SEED\external\imgui\imgui_internal.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_rectpack.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_textedit.h" />
-    <ClInclude Include="SEED\external\imgui\imstb_truetype.h" />
     <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\DxFunc.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\Easing.h" />
@@ -266,10 +250,6 @@
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
-    <ClInclude Include="SEED\External\imgui\ImGuizmo.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="SEED\external\imgui\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

@@ -95,8 +95,6 @@ void ImGuiManager::PreDraw(){
     // ImGuiフレーム開始
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
-    //ImGuizmo::BeginFrame();
-
 
     ImGuiIO& io = ImGui::GetIO();
 
@@ -125,6 +123,7 @@ void ImGuiManager::PreDraw(){
     }
 
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 
     ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
     ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);

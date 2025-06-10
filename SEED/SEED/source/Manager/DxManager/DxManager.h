@@ -29,9 +29,12 @@
 using Microsoft::WRL::ComPtr;
 
 // imgui
+#define USE_IMGUI_API
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
+#include <ImGuizmo.h>
 
 // assimp
 #include <assimp/Importer.hpp>

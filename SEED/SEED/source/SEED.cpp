@@ -44,13 +44,99 @@ SEED* SEED::GetInstance(){
 }
 
 /*------------------------ 更新処理 ---------------------------*/
-void SEED::Update() {
+void SEED::Update(){
 
 }
 
-/*------------------------ 初期化処理 ---------------------------*/
-void SEED::Draw() {
+/*------------------------ 描画処理 ---------------------------*/
+void SEED::Draw(){
 
+    // グリッドの描画
+    if(instance_->isGridVisible_){
+        DrawGrid();
+    }
+
+    // imguiの描画
+    instance_->DrawGUI();
+}
+
+
+void SEED::SetImGuiEmptyWindows(){
+#ifdef _DEBUG
+
+    // 全体
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->WorkPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImGui::GetMainViewport()->WorkSize, ImGuiCond_Always);
+    ImGui::Begin("SEED_Empty", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoBringToFrontOnFocus
+    );
+    ImGui::End();
+#endif
+}
+
+
+void SEED::DrawGUI(){
+#ifdef _DEBUG
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+    // ボタンの背景色を設定
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+    // menuItemの背景色を設定
+    ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    if(ImGui::BeginMainMenuBar()){
+        if(ImGui::BeginMenu("ファイル")){
+            ImGui::EndMenu();
+        }
+
+        if(ImGui::BeginMenu("編集")){
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+    ImGui::PopStyleColor(3);
+
+
+    // 親子付け用の空ウィンドウを作成
+    SetImGuiEmptyWindows();
+
+    ImFunc::CustomBegin("システム",MoveOnly_TitleBar);
+    /*===== FPS表示 =====*/
+    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
+    ImGui::Checkbox("グリッド表示", &instance_->isGridVisible_);
+    if(ImGui::Checkbox("デバッグカメラ", &isDebugCamera_)){
+        if(isDebugCamera_){
+            SEED::SetMainCamera("debug");
+            SEED::SetIsCameraActive("debug", true);
+        } else{
+            SEED::SetMainCamera("default");
+            SEED::SetIsCameraActive("debug", false);
+        }
+    }
+
+    if(ImGui::SliderFloat("解像度", &instance_->resolutionRate_, 0.0f, 1.0f)){
+        // 解像度率を変更
+        ChangeResolutionRate(instance_->resolutionRate_);
+    }
+
+    if(ImGui::ColorEdit4("ウインドウの背景色", (float*)&instance_->clearColor_)){
+        // ウインドウの背景色を変更
+        instance_->windowBackColor_ = MyMath::IntColor(instance_->clearColor_);
+    }
+
+    // マウス移動量
+    Vector2 mouseVec = Input::GetMouseVector();
+    Vector2 mousePos = Input::GetMousePosition();
+    ImGui::Text("Mouse Vector: (%.1f, %.1f)", mouseVec.x, mouseVec.y);
+    ImGui::Text("Mouse Position: (%.1f, %.1f)", mousePos.x, mousePos.y);
+
+    ImGui::End();
+
+#endif // _DEBUG
 }
 
 /*------------------------ 初期化処理 ---------------------------*/
@@ -64,9 +150,9 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     // ウインドウの作成
     WindowManager::Initialize(hInstance, nCmdShow);
     WindowManager::Create(windowTitle_, clientWidth, clientHeight);
-#ifdef _DEBUG
-    WindowManager::Create(systemWindowTitle_, clientWidth, clientHeight);
-#endif // _DEBUG
+#ifdef USE_SUB_WINDOW
+    WindowManager::Create(systemWindowTitle_, instance_->kSystemClientWidth_, instance_->kSystemClientHeight_);
+#endif // USE_SUB_WINDOW
 
     // 各マネージャの初期化
     ClockManager::Initialize();
@@ -74,22 +160,34 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     DxManager::Initialize(instance_);
     ImGuiManager::Initialize();
     TextureManager::Initialize();
+    TextSystem::Initialize();
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
-    ParticleManager::Initialize();
+    EffectSystem::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
+
+    // カメラの作成と追加
+    instance_->defaultCamera_ = std::make_unique<BaseCamera>();
+    instance_->debugCamera_ = std::make_unique<DebugCamera>();
+    RegisterCamera("default",instance_->defaultCamera_.get());
+    RegisterCamera("debug",instance_->debugCamera_.get());
+    // デフォルトカメラを設定
+    SetMainCamera("default");
 
     // 起動時読み込み
     instance_->StartUpLoad();
 
     // offscreenの画面のアルファ値を1にするためのcolor{0,0,0,1}のスプライトを作成
-    instance_->offscreenWrapper_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    instance_->offscreenWrapper_ = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
     instance_->offscreenWrapper_->size = { (float)clientWidth,(float)clientHeight };
-    instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 1);
+    instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 256);
     instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
     instance_->offscreenWrapper_->isStaticDraw = false;
+    instance_->offscreenWrapper_->layer = 100;
+    // Vec4版の色の計算
+    instance_->clearColor_ = MyMath::FloatColor(windowBackColor_);
 }
 
 /*------------------------- 終了処理 ---------------------------*/
@@ -125,6 +223,10 @@ void SEED::BeginFrame(){
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
 
+    // カーソルの更新
+    if(instance_->isRepeatCursor_){
+        instance_->RepeatCursor();
+    }
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/
@@ -132,11 +234,13 @@ void SEED::BeginFrame(){
 void SEED::EndFrame(){
     // offscreenの画面のアルファ値を1にするため、color{0,0,01}のスプライトを表示
     instance_->offscreenWrapper_->Draw();
+    Draw();
 
     // 描画
     DxManager::GetInstance()->DrawPolygonAll();
     ImGuiManager::PostDraw();
     DxManager::GetInstance()->PostDraw();
+
     // 経過時間を取得
     ClockManager::EndFrame();
 }
@@ -157,13 +261,14 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
-        triangle.GH, triangle.blendMode, triangle.cullMode
+        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
+        triangle.blendMode, triangle.cullMode
     );
 }
 
 void SEED::AddTriangle3DPrimitive(
-    const Vector4& v1, const Vector4& v2, const Vector4& v3, 
-    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, 
+    const Vector4& v1, const Vector4& v2, const Vector4& v3,
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3,
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
@@ -181,7 +286,8 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false, triangle.GH,
+        triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false,
+        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         triangle.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         triangle.isStaticDraw, triangle.drawLocation, triangle.layer
     );
@@ -197,15 +303,17 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[1],
         quad.localVertex[2],
         quad.localVertex[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true, quad.GH, quad.blendMode,
-        quad.cullMode
+        quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true,
+        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
+        quad.blendMode, quad.isText, quad.cullMode
     );
 }
 
 void SEED::AddQuad3DPrimitive(
-    const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4, 
+    const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, 
+    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     instance_->pPolygonManager_->AddQuad3DPrimitive(
@@ -223,8 +331,10 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[1].ToVec3(),
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, false, quad.GH,
-        quad.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
+        quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, false,
+        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
+        quad.blendMode, quad.isText, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
     );
 }
@@ -280,11 +390,22 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     );
 }
 
+/*========================================== テキスト ===========================================*/
+
+// 内部で文字ごとのDrawQuadに変換する
+void SEED::DrawText2D(const TextBox2D& textBox){
+    textBox.Draw();
+}
+
+void SEED::DrawText3D(const TextBox3D& textBox){
+    textBox.Draw();
+}
+
 
 /*========================================== リング ===========================================*/
 
 void SEED::DrawRing(const Ring& ring){
-    instance_->pPolygonManager_->AddRing(ring);
+    ring;
 }
 
 
@@ -355,9 +476,9 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
     std::vector<Vector3> vertex((subdivision + 1) * subdivision); // 余分な頂点を確保
     float pi = static_cast<float>(std::numbers::pi);
 
-    for(int i = 0; i <= subdivision; i++) { // 緯度方向: 0～subdivision
+    for(int i = 0; i <= subdivision; i++){ // 緯度方向: 0～subdivision
         float theta = pi * i / subdivision; // 緯度角
-        for(int j = 0; j < subdivision; j++) { // 経度方向: 0～subdivision-1
+        for(int j = 0; j < subdivision; j++){ // 経度方向: 0～subdivision-1
             float phi = 2.0f * pi * j / subdivision; // 経度角
 
             // 頂点の計算
@@ -370,8 +491,8 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
     }
 
     // 線の描画(ラインで)
-    for(int i = 0; i < subdivision; i++) { // 緯度方向
-        for(int j = 0; j < subdivision; j++) { // 経度方向
+    for(int i = 0; i < subdivision; i++){ // 緯度方向
+        for(int j = 0; j < subdivision; j++){ // 経度方向
             int current = i * subdivision + j;
             int next = current + 1; // 経度方向の次の頂点
             int nextRow = (i + 1) * subdivision + j; // 緯度方向の次の頂点
@@ -387,7 +508,7 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
 
 
 void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Vector4& color){
-    DrawSphere(center, Vector3(radius,radius,radius), subdivision, color);
+    DrawSphere(center, Vector3(radius, radius, radius), subdivision, color);
 }
 
 
@@ -396,7 +517,7 @@ void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, 
 /////////////////////////////////////////////////////////////
 void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
 
-    if(subdivision < 3) {
+    if(subdivision < 3){
         subdivision = 3; // 最低3分割は必要
     }
 
@@ -413,7 +534,7 @@ void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, 
     std::vector<Vector3> topCircle(subdivision);
     float angleStep = 2.0f * 3.14159265359f / subdivision;
 
-    for(int i = 0; i < subdivision; ++i) {
+    for(int i = 0; i < subdivision; ++i){
         float angle = i * angleStep;
         float x = cos(angle) * radius;
         float z = sin(angle) * radius;
@@ -424,7 +545,7 @@ void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, 
     }
 
     // 線分を描画
-    for(int i = 0; i < subdivision; ++i) {
+    for(int i = 0; i < subdivision; ++i){
         int next = (i + 1) % subdivision;
 
         // 底面の線分
@@ -455,7 +576,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& 
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
     // 円柱を描画
-    DrawCylinder(start, end,MyMath::Length(radius), subdivision, color);
+    DrawCylinder(start, end, MyMath::Length(radius), subdivision, color);
 }
 
 
@@ -471,7 +592,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(gridInterval * xIdx, 0.0f, 0.0f),
             leftFront + Vector3(gridInterval * xIdx, 0.0f, width),
-            { 0.2f,0.2f,0.2f,1.0f }
+            { 1.0f,1.0f,1.0f,1.0f }
         );
     }
 
@@ -479,7 +600,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
         SEED::DrawLine(
             leftFront + Vector3(0.0f, 0.0f, gridInterval * yIdx),
             leftFront + Vector3(width, 0.0f, gridInterval * yIdx),
-            { 0.2f,0.2f,0.2f,1.0f }
+            { 1.0f,1.0f,1.0f,1.0f }
         );
     }
 }
@@ -505,10 +626,10 @@ void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, u
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSpline(const std::vector<Vector3>& points,uint32_t subdivision, const Vector4& color,bool isControlPointVisible){
+void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
-    if(points.size() < 2){return;}
+    if(points.size() < 2){ return; }
 
     // 必要な変数を用意
     float t = 0;
@@ -535,12 +656,12 @@ void SEED::DrawSpline(const std::vector<Vector3>& points,uint32_t subdivision, c
 
     // 制御点の描画
     if(!isControlPointVisible){ return; }
-    Model controlPointModel = Model("Assets/cube.obj");
-    controlPointModel.scale_ = { 0.5f,0.5f,0.5f };
-    controlPointModel.color_ = { 1.0f,0.0f,0.0f,1.0f };
+    Model controlPointModel = Model("DefaultAssets/cube.obj");
+    controlPointModel.transform_.scale = { 0.5f,0.5f,0.5f };
+    controlPointModel.masterColor_ = { 1.0f,0.0f,0.0f,1.0f };
 
     for(int i = 0; i < points.size(); i++){
-        controlPointModel.translate_ = points[i];
+        controlPointModel.transform_.translate = points[i];
         controlPointModel.UpdateMatrix();
         DrawModel(&controlPointModel);
     }
@@ -560,12 +681,12 @@ void SEED::DrawLight(const BaseLight* light){
 
         // 必要な情報を用意
         Vector2 screenPos = { 50.0f,50.0f };
-        Vector3 screenPos3D = GetCamera()->ToWorldPosition(screenPos, 1.0f);
+        Vector3 screenPos3D = GetMainCamera()->ToWorldPosition(screenPos, 1.0f);
         Vector3 direction = MyMath::Normalize(directionalLight->direction_);
-        float dot = MyMath::Dot(direction, -GetCamera()->GetNormal());
+        float dot = MyMath::Dot(direction, -GetMainCamera()->GetNormal());
 
         // スクリーン上で最長20.0fの線を描画
-        Matrix4x4 vpVp = GetCamera()->GetVpVp();
+        Matrix4x4 vpVp = GetMainCamera()->GetVpVp();
         Vector3 transformedPos[2] = {
             screenPos3D * vpVp,
             (screenPos3D + direction) * vpVp
@@ -645,5 +766,54 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 
 /*------------------ カメラにシェイクを設定する関数 ------------------*/
 void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
-    GetCamera()->SetShake(time, power, shakeLevel);
+    GetMainCamera()->SetShake(time, power, shakeLevel);
+}
+
+/*------------------ マウスカーソルの表示・非表示を切り替える関数 ------------------*/
+void SEED::SetMouseCursorVisible(bool isVisible){
+    if(isVisible){
+        ShowCursor(TRUE);
+        instance_->isCursorVisible_ = true;
+    } else{
+        ShowCursor(FALSE);
+        instance_->isCursorVisible_ = false;
+    }
+}
+
+void SEED::ToggleMouseCursorVisible(){
+    instance_->isCursorVisible_ = !instance_->isCursorVisible_;
+    if(instance_->isCursorVisible_){
+        ShowCursor(TRUE);
+    } else{
+        ShowCursor(FALSE);
+    }
+}
+
+/*------------------ マウスカーソルをリピートさせる関数 ------------------*/
+void SEED::RepeatCursor(){
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+
+    RECT clientRect;
+    GetClientRect(WindowManager::GetHWND(windowTitle_), &clientRect);
+
+    // クライアント座標 -> スクリーン座標に変換（左上と右下）
+    POINT topLeft = { 0, 0 };
+    ClientToScreen(WindowManager::GetHWND(windowTitle_), &topLeft);
+
+    int clientWidth = clientRect.right - clientRect.left;
+    int clientHeight = clientRect.bottom - clientRect.top;
+
+    int left = topLeft.x;
+    int top = topLeft.y;
+    int right = left + clientWidth;
+    int bottom = top + clientHeight;
+
+    // 指定範囲を繰り返す
+    cursorPos.x = MyFunc::Spiral(cursorPos.x, left, right);
+    cursorPos.y = MyFunc::Spiral(cursorPos.y, top, bottom);
+
+    // カーソルを移動
+    SetCursorPos(cursorPos.x, cursorPos.y);
+
 }

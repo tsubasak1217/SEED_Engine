@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 #include <SEED/Source/SEED.h>
-#include <Game/Scene/Base/Scene_Base.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
 
 // シーン管理クラス(シングルトン)
 class SceneManager{

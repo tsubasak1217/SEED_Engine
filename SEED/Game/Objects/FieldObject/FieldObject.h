@@ -17,7 +17,7 @@
 
 class Player;
 
-class FieldObject : public BaseObject{
+class FieldObject : public GameObject{
 public:
     FieldObject();
     FieldObject(const std::string& modelName);

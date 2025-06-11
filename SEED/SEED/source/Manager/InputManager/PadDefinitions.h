@@ -48,7 +48,7 @@ constexpr bool operator!=(uint32_t lhs, PAD_BUTTON rhs){
 }
 
 // パッドの状態(今か前か)
-enum class PAD_STATE : BYTE{
+enum class INPUT_STATE : BYTE{
     CURRENT = 0,// 今のフレームの状態を取得したいとき
     BEFORE = 1// 前のフレームの状態を取得したいとき
 };

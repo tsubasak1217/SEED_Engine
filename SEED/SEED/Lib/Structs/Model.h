@@ -14,6 +14,7 @@
 class Model{
 
     friend class PolygonManager;
+    friend class ModelRenderComponent;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -55,10 +56,8 @@ public:// アクセッサ
     Vector3 GetWorldRotate()const{ return ExtractRotation(worldMat_); }
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
 
-    // マテリアル
-    Matrix4x4 GetUVTransform(int index)const{ return AffineMatrix(uv_scale_[index],uv_rotate_[index],uv_translate_[index]); }
-
     // アニメーション
+    bool HasAnimation()const{ return hasAnimation_; }
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
     void SetAnimationSpeedRate(float speedRate){ animationSpeedRate_ = speedRate; }
@@ -66,6 +65,10 @@ public:// アクセッサ
     float GetAnimationDuration()const{ return animationDuration_; }
     bool GetIsEndAnimation()const{ return animationTime_ >= animationDuration_; }
     void SetIsSkeletonVisible(bool isSkeletonVisible){ isSkeletonVisible_ = isSkeletonVisible; }
+    std::vector<std::string> GetAnimationNames()const;
+
+    // モデルの変更
+    void ChangeModel(const std::string& modelName);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -79,7 +82,7 @@ public:
     std::string modelName_;
 
     // 親子付け
-    const Model* parent_ = nullptr;// 親のポインタ
+    const Matrix4x4* parentMat_ = nullptr;// 親のポインタ
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
@@ -87,10 +90,7 @@ public:
     // ----------------------- トランスフォーム情報 -----------------------//
 
 public:
-    Vector3 scale_;
-    Vector3 rotate_;
-    Quaternion rotateQuat_;
-    Vector3 translate_;
+    Transform transform_;// トランスフォーム情報
     bool isRotateWithQuaternion_ = true;// クォータニオンで回転するか
 
 private:
@@ -101,16 +101,12 @@ private:
     //----------- マテリアル情報(vectorのものはメッシュごとに存在) -----------//
 
 public:
-    std::vector<uint32_t> textureGH_;
-    std::vector<Vector4> meshColor_;// 各メッシュごとの色
-    Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色
-    float shininess_ = 50.0f;
-    int32_t lightingType_;
+
+    std::vector<Material> materials_;// マテリアル情報(mesh数分)
+    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// モデル全体の色(meshごとの色はmaterials内)
+    int32_t lightingType_ = LIGHTING_TYPE::LIGHTINGTYPE_HALF_LAMBERT;
     BlendMode blendMode_ = BlendMode::NORMAL;
-    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
-    std::vector<Vector3> uv_scale_;
-    std::vector<Vector3> uv_rotate_;
-    std::vector<Vector3> uv_translate_;
+    D3D12_CULL_MODE cullMode_ = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;// カリング設定
 
 
     // --------------------- アニメーションパラメータ ---------------------//
@@ -131,7 +127,7 @@ private:
     std::vector<WellForGPU> palette_;// スキニング情報
     // 補間用変数
     std::unique_ptr<ModelSkeleton> preSkeleton_ = nullptr;// アニメーションが切り替わる前のスケルトン
-    const float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
+    float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
     float animLerpTime_ = 0.0f;// アニメーションの補間時間
     float progressOfAnimLerp_ = 0.0f;// アニメーションの補間進捗度
 

@@ -1,12 +1,21 @@
 #pragma once
 #include <array>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <string>
+#include <unordered_map>
+#include <variant>
 using Microsoft::WRL::ComPtr;
+
+struct Parameter{
+    int32_t parameterIndex = -1;
+    std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> bindInfo;
+};
 
 // ルートシグネチャの情報を格納する構造体
 struct RootSignature{
     RootSignature();
     void AddParameter(
+        const std::string& name,
         D3D12_ROOT_PARAMETER_TYPE type,
         D3D12_SHADER_VISIBILITY visibility,
         UINT shaderRegister,
@@ -15,12 +24,20 @@ struct RootSignature{
     );
 
     void AddDescriptorTable(
+        const std::string& name,
         D3D12_DESCRIPTOR_RANGE_TYPE type,
         UINT numDescriptors,
         UINT baseShaderRegister,
         D3D12_SHADER_VISIBILITY visibility,
         UINT registerSpace = 0
     );
+
+    void SetBindInfo(
+        const std::string& variableName,
+        std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
+    );
+
+    void BindAll(ID3D12GraphicsCommandList* commandList,bool isCSRootSignature = false);
 
     void Release();
 
@@ -34,4 +51,7 @@ private:
     int32_t parameterCount = 0;
     int32_t rangeCount = 0;
     int32_t samplerCount = 0;
+
+    // RootParameterのインデックスを変数名で格納するマップ
+    std::unordered_map<std::string, Parameter> parameterMap;
 };

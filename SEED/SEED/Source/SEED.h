@@ -11,10 +11,11 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/DxManager/PolygonManager.h>
-#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/TextSystem/TextSystem.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
 
 // structs
@@ -22,22 +23,32 @@
 #include <SEED/Lib/Shapes/Triangle.h>
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/Structs/Sprite.h>
-#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Source/Basic/Camera/BaseCamera.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Shapes/AABB.h>
 #include <SEED/Lib/Shapes/OBB.h>
 #include <SEED/Lib/Shapes/Ring.h>
+#include <SEED/Lib/Structs/SkyBox.h>
+#include <SEED/Lib/Structs/TextBox.h>
 
 // math
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 
 // external
 #include <json.hpp>
+
+#ifdef _DEBUG
+#define USE_SUB_WINDOW
+#endif // _DEBUG
 
 
 class SEED{
 
     friend TextureManager;
+    friend class DxManager;
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     基本の関数                                    */
@@ -56,6 +67,9 @@ public:
     static void Draw();
     static void BeginFrame();
     static void EndFrame();
+
+private:
+    void DrawGUI();
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                          このエンジンが用意する描画関数                              */
@@ -95,6 +109,7 @@ public:
 
     // 2D矩形
     static void DrawQuad2D(const Quad2D& quad);
+
     // スプライト
     static void DrawSprite(const Sprite& sprite);
 
@@ -115,6 +130,13 @@ public:
         const Vector2& v1, const Vector2& v2, 
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
+
+    /*========================テキストの描画関数==========================*/
+
+    // 2Dテキスト
+    static void DrawText2D(const TextBox2D& textBox);
+    // 3Dテキスト
+    static void DrawText3D(const TextBox3D& textBox);
 
     /*==========================リングの描画関数==========================*/
 
@@ -147,8 +169,12 @@ public:
     /*                                その他細かい関数                                   */
     /////////////////////////////////////////////////////////////////////////////////////
 private:
+    //
+    void SetImGuiEmptyWindows();
     // 起動時の読み込み関数
     void StartUpLoad();
+    // カーソルのリピートを行う関数
+    void RepeatCursor();
 
 public:
     // 画像の縦横幅を取得する関数
@@ -157,19 +183,30 @@ public:
     static void ChangeResolutionRate(float resolutionRate);
     // カメラにシェイクを設定する関数
     static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
+    // マウスカーソルの表示・非表示を切り替える関数
+    static void SetMouseCursorVisible(bool isVisible);
+    static void ToggleMouseCursorVisible();
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                 アクセッサ関数                                    */
     /////////////////////////////////////////////////////////////////////////////////////
 public:
 
-    static void SetPolygonManagerPtr(PolygonManager* ptr){ instance_->pPolygonManager_ = ptr; }
-    static BaseCamera* GetCamera(){ return DxManager::GetInstance()->GetCamera(); }
-    static void SetCamera(const std::string& cameraName){ DxManager::GetInstance()->SetCamera(cameraName); }
+    // カメラ関連
+    static BaseCamera* GetMainCamera(){ return DxManager::GetInstance()->mainCamera_; }
+    static BaseCamera* GetCamera(const std::string& cameraName){ return DxManager::GetInstance()->GetCamera(cameraName); }
+    static void SetMainCamera(const std::string& cameraName){ DxManager::GetInstance()->SetMainCamera(cameraName); }
+    static void RegisterCamera(const std::string& cameraName, BaseCamera* pCamera){ DxManager::GetInstance()->RegisterCamera(cameraName, pCamera); }
+    static void RemoveCamera(const std::string& cameraName){ DxManager::GetInstance()->RemoveCamera(cameraName); }
+    static void SetIsCameraActive(const std::string& cameraName, bool isActive){DxManager::GetInstance()->SetIsCameraActive(cameraName, isActive);}
+    // ライト
     static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
+    // ウィンドウ
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
+    static void SetIsRepeatCursor(bool flag){instance_->isRepeatCursor_ = flag;}
+    static void ToggleRepeatCursor(){ instance_->isRepeatCursor_ = !instance_->isRepeatCursor_; }
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */
@@ -177,13 +214,26 @@ public:
 
 private:// インスタンス
     static SEED* instance_;
+    bool isRepeatCursor_ = false;
+    bool isCursorVisible_ = true;
+    bool isDebugCamera_ = false;
+    float resolutionRate_ = 1.0f;
+    bool isGridVisible_ = false;
+    Vector4 clearColor_;
+
+private:// object
+    // デフォルト用意のカメラ
+    std::unique_ptr<BaseCamera> defaultCamera_;
+    std::unique_ptr<DebugCamera> debugCamera_;
 
 private:
     std::unique_ptr<Sprite> offscreenWrapper_;
 
 public:// ウインドウに関する変数
-    int kClientWidth_;
+    int kClientWidth_;// game用
     int kClientHeight_;
+    int kSystemClientWidth_ = 1920;// editor用
+    int kSystemClientHeight_ = 1020;
     static std::wstring windowTitle_;
     static std::wstring systemWindowTitle_;
     static uint32_t windowBackColor_;

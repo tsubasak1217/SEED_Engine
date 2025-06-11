@@ -2,10 +2,12 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 // assimp
 #include <assimp/Importer.hpp>
@@ -45,7 +47,8 @@ private:
     // Loadに必要な関数
     ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
-    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene, const std::string& modelName);
+    void CreateMeshlet(ModelData* modelData);
+    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene);
 
     // アニメーション関連
     std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
@@ -67,5 +70,14 @@ public:
     static ModelData* GetModelData(const std::string& fileName){
         assert(instance_->modelData_.find(fileName) != instance_->modelData_.end());
         return instance_->modelData_[fileName];
+    }
+
+    static std::vector<std::string> GetModelNames(){
+        std::vector<std::string> modelNames;
+        modelNames.reserve(instance_->modelData_.size());
+        for(const auto& pair : instance_->modelData_){
+            modelNames.push_back(pair.first);
+        }
+        return modelNames;
     }
 };

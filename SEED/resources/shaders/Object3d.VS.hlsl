@@ -1,4 +1,4 @@
-﻿#include "Object3D.hlsli"
+﻿#include "Object3d.hlsli"
 
 /////////////////////////////////////// Transform //////////////////////////////////////////////
 
@@ -12,46 +12,47 @@ struct TransformationMatrix {
 
 struct VertexShaderInput {
     // VBV_0 (VertexData)
-    float4 position : POSITION0;
-    float2 texcoord : TEXCOORD0;
-    float3 normal : NORMAL0;
+    float4 position : S0_V_POSITION0;
+    float2 texcoord : S0_V_TEXCOORD0;
+    float3 normal : S0_V_NORMAL0;
     
     // VBV_1 (OffsetData)
-    int indexOffset : INDEX_OFFSET0;
-    int meshOffset : MESH_OFFSET0;
-    int jointIndexOffset : JOINT_INDEX_OFFSET0;
-    int interval : INTERVAL0; //line->2,triangle->3,quad->4
+    int indexOffset : S1_I_INDEX_OFFSET0;
+    int meshOffset : S1_I_MESH_OFFSET0;
+    int jointIndexOffset : S1_I_JOINT_INDEX_OFFSET0;
+    int jointInterval : S1_I_JOINT_INTERVAL0;
+    int interval : S1_I_INTERVAL0; //line->2,triangle->3,quad->4
 };
 
 
-StructuredBuffer<TransformationMatrix> instanceData : register(t0, space0);
-
+StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
+ConstantBuffer<Int> cameraIndexOffset : register(b0);
 
 ///////////////////////////////////////// main ////////////////////////////////////////////////
 
 // Output
-VertexShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
+MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
     
-    VertexShaderOutput output;
-    int index = 0;
+    MeshShaderOutput output;
+    int transformIdx = 0;
     
-    // Caluculate InstanceID
-    if (input.interval == 0) {// model
-        index = instanceID + input.indexOffset;
-    } else {// primitive
-        index = instanceID + input.indexOffset + (vertexID / input.interval);
+    // Caluculate InstanceIdx
+    if (input.interval == 0) { // model
+        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value;
+    } else { // primitive
+        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value + (vertexID / input.interval);
     }
     
     // Apply Transformation
-    output.position = mul(input.position, instanceData[index].WVP);
-    output.worldPosition = mul(input.position, instanceData[index].world).xyz;
+    output.position = mul(input.position, transforms[transformIdx].WVP);
+    output.worldPosition = mul(input.position, transforms[transformIdx].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) instanceData[index].worldInverseTranspose));
+    output.normal = normalize(mul(input.normal, (float3x3) transforms[transformIdx].worldInverseTranspose));
     
-    // Caluculate MaterialID
-    if (input.interval == 0) {// model
+    // Caluculate MaterialIdx
+    if (input.interval == 0) { // model
         output.instanceID = input.meshOffset + instanceID;
-    } else {// primitive
+    } else { // primitive
         output.instanceID = input.meshOffset + instanceID + (vertexID / input.interval);
     }
     

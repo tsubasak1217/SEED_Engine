@@ -7,8 +7,6 @@
 /////////////////////////////////////////////////////////////////////////////////////
 
 Triangle::Triangle(){
-    litingType = LIGHTINGTYPE_HALF_LAMBERT;
-    blendMode = BlendMode::NORMAL;
 }
 
 Triangle::Triangle(
@@ -24,9 +22,8 @@ Triangle::Triangle(
     this->translate = translate;
     this->color = color;
     this->blendMode = blendMode;
-    litingType = LIGHTINGTYPE_HALF_LAMBERT;
     uvTransform = IdentityMat4();
-    GH = TextureManager::LoadTexture("Assets/white1x1.png");
+    GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
 }
 
 
@@ -37,8 +34,6 @@ Triangle::Triangle(
 
 
 Triangle2D::Triangle2D(){
-    litingType = LIGHTINGTYPE_NONE;
-    blendMode = BlendMode::NORMAL;
 }
 
 Triangle2D::Triangle2D(
@@ -58,7 +53,7 @@ Triangle2D::Triangle2D(
     this->color = color;
     this->blendMode = blendMode;
     litingType = LIGHTINGTYPE_NONE;
-    GH = TextureManager::LoadTexture("Assets/white1x1.png");
+    GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
     uvTransform = IdentityMat4();
     isStaticDraw = false;
 }

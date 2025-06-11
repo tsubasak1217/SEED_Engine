@@ -12,36 +12,18 @@ CameraManager::~CameraManager(){
 }
 
 void CameraManager::Initialize(){
-
     GetInstance();
-    instance_->mainCamera_ = std::make_unique<BaseCamera>();
-    instance_->debugCamera_ = std::make_unique<DebugCamera>();
-
-    instance_->cameras_["main"] = instance_->mainCamera_.get();
-    instance_->cameras_["debug"] = instance_->debugCamera_.get();
 }
 
 void CameraManager::Update(){
 
     // 全カメラを更新するのではなく、アクティブなカメラのみ更新
-    if (instance_->activeCamera_){
-        instance_->activeCamera_->Update();
-        instance_->activeCamera_->UpdateMatrix();
+    for(auto& camera : instance_->cameras_){
+        if(camera.second->isActive_){
+            camera.second->Update();
+            camera.second->UpdateMatrix();
+        }
     }
-
-
-    /*----------------------------------------------------
-    /
-    /  debugCamera->mainCameraなど切り替えた時に他のカメラが動いてしまっている
-    /  現象があっるので、全てのカメラを更新するのではなく、アクティブなカメラのみ更新する
-    /
-    -------------------------------------------------------*/
-
-    //// カメラの更新
-    //for(auto& camera : instance_->cameras_){
-    //    camera.second->UpdateMatrix();
-    //    camera.second->Update();
-    //}
 }
 
 CameraManager* CameraManager::GetInstance(){
@@ -56,7 +38,7 @@ BaseCamera* CameraManager::GetCamera(const std::string& name){
     return instance_->cameras_[name];
 }
 
-void CameraManager::AddCamera(const std::string& name, BaseCamera* camera){
+void CameraManager::RegisterCamera(const std::string& name, BaseCamera* camera){
     // 指定要素が既にあるとアサート
     if(instance_->cameras_.find(name) != instance_->cameras_.end()){ assert(false); }
     // カメラを追加
@@ -64,21 +46,22 @@ void CameraManager::AddCamera(const std::string& name, BaseCamera* camera){
 }
 
 // カメラの削除
-void CameraManager::DeleteCamera(const std::string& name){
+void CameraManager::RemoveCamera(const std::string& name){
     // 指定要素がなければアサート
     if(instance_->cameras_.find(name) == instance_->cameras_.end()){ return; }
     // カメラを削除
     instance_->cameras_.erase(name);
 }
 
-BaseCamera* CameraManager::GetActiveCamera(){
-    return instance_->activeCamera_;
-}
 
-void CameraManager::SetActiveCamera(const std::string& name){
+void CameraManager::SetIsCameraActive(const std::string& name,bool isActive){
     // cameras_ マップから指定された名前のカメラを探す
-    auto it = instance_->cameras_.find(name);
-    if (it != instance_->cameras_.end()){
-        instance_->activeCamera_ = it->second;
+    if(instance_->cameras_.find(name) != instance_->cameras_.end()){
+        // カメラが見つかった場合、isActiveフラグを設定
+        instance_->cameras_[name]->isActive_ = isActive;
+
+    } else{
+        // カメラが見つからない場合はアサート
+        assert(false);
     }
 }

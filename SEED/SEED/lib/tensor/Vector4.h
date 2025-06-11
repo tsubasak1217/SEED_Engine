@@ -92,10 +92,17 @@ inline void to_json(nlohmann::json& j, const Vector4& vec){
 
 // JSONをVector4に変換する関数
 inline void from_json(const nlohmann::json& j, Vector4& vec){
-    vec.x = j.at("x").get<float>();
-    vec.y = j.at("y").get<float>();
-    vec.z = j.at("z").get<float>();
-    vec.w = j.at("w").get<float>();
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z") || !j.contains("w")){
+        vec.x = j[0].get<float>();
+        vec.y = j[1].get<float>();
+        vec.z = j[2].get<float>();
+        vec.w = j[3].get<float>();
+    } else{
+        vec.x = j.at("x").get<float>();
+        vec.y = j.at("y").get<float>();
+        vec.z = j.at("z").get<float>();
+        vec.w = j.at("w").get<float>();
+    }
 }
 
 inline void to_json(nlohmann::ordered_json& j, const Vector4& vec){
@@ -104,8 +111,15 @@ inline void to_json(nlohmann::ordered_json& j, const Vector4& vec){
 
 // JSONをVector4に変換する関数
 inline void from_json(const nlohmann::ordered_json& j, Vector4& vec){
-    vec.x = j.at("x").get<float>();
-    vec.y = j.at("y").get<float>();
-    vec.z = j.at("z").get<float>();
-    vec.w = j.at("w").get<float>();
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z") || !j.contains("w")){
+        vec.x = j[0].get<float>();
+        vec.y = j[1].get<float>();
+        vec.z = j[2].get<float>();
+        vec.w = j[3].get<float>();
+    } else{
+        vec.x = j.at("x").get<float>();
+        vec.y = j.at("y").get<float>();
+        vec.z = j.at("z").get<float>();
+        vec.w = j.at("w").get<float>();
+    }
 }

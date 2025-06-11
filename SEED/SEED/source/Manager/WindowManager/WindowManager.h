@@ -54,6 +54,14 @@ public:// アクセッサ
         return instance_->GetWindow(windowName)->GetWindowHandle();
     }
 
+    static std::vector<HWND> GetAllHWNDs(){
+        std::vector<HWND> hwnds;
+        for(const auto& windowInfo : instance_->windowList_){
+            hwnds.push_back(windowInfo.second->GetWindowHandle());
+        }
+        return hwnds;
+    }
+
     static Vector2 GetCurrentWindowSize(const std::wstring& windowName){
         return instance_->GetWindow(windowName)->GetCurrentWindowSize();
     }

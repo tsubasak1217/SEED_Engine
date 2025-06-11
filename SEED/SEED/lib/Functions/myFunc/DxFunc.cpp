@@ -174,15 +174,39 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
 
     std::wstring filePathW = ConvertString(filePath);// wstring型に変換
     // ファイルを読み込む
-    HRESULT hr = DirectX::LoadFromWICFile(
-        filePathW.c_str(),
-        DirectX::WIC_FLAGS_DEFAULT_SRGB,
-        nullptr,
-        image
-    );
+    HRESULT hr = S_FALSE;
+    
+    if(!filePathW.ends_with(L".dds")){
+        // 通常ファイルを読み込む  
+        DirectX::LoadFromWICFile(
+            filePathW.c_str(),
+            DirectX::WIC_FLAGS_DEFAULT_SRGB,
+            nullptr,
+            image
+        );
+    } else{
+        // DDSファイルを読み込む
+        hr = DirectX::LoadFromDDSFile(
+            filePathW.c_str(),
+            DirectX::DDS_FLAGS_NONE,
+            nullptr,
+            image
+        );
+    }
+
     assert(SUCCEEDED(hr));
 
+    /*-----------------------------*/
     // ミップマップの作成
+    /*-----------------------------*/
+
+    // 圧縮されている場合
+    if(DirectX::IsCompressed(image.GetMetadata().format)){
+        // 圧縮されている場合はミップマップを作成しない
+        return image;
+    }
+
+    // 1x1のテクスチャはミップマップを作成しない
     if(image.GetMetadata().width > 1 && image.GetMetadata().height > 1) {
         hr = DirectX::GenerateMipMaps(
             image.GetImages(),
@@ -392,6 +416,7 @@ ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX
     return resource;
 }
 
+
 ComPtr<ID3D12Resource> CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height){
     D3D12_RESOURCE_DESC resourceDesc{};
     resourceDesc.Width = width;// テクスチャの幅
@@ -509,4 +534,23 @@ DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix){
         matrix.m[2][0], matrix.m[2][1], matrix.m[2][2], matrix.m[2][3],
         matrix.m[3][0], matrix.m[3][1], matrix.m[3][2], matrix.m[3][3]
     );
+}
+
+void TransitionResourceState(
+    ID3D12GraphicsCommandList* commandList,
+    ID3D12Resource* resource,
+    D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter
+){
+    // 同じなら処理しない
+    if(stateAfter == stateBefore){ return; }
+
+    // バリアを設定してリソースの状態を遷移させる
+    CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+        resource,
+        stateBefore,
+        stateAfter
+    );
+
+    // リソースのstateを変更
+    commandList->ResourceBarrier(1, &barrier);
 }

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MATERIAL_HLSLI
+#define MATERIAL_HLSLI
+
 struct Material {
     float4 color;
     float4x4 uvTransform;
@@ -6,3 +8,5 @@ struct Material {
     int GH;
     float shinines;
 };
+
+#endif

@@ -10,7 +10,7 @@
 
 // static変数初期化
 ModelManager* ModelManager::instance_ = nullptr;
-const std::string ModelManager::directoryPath_ = "resources/models";
+const std::string ModelManager::directoryPath_ = "Resources/Models/";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,29 +20,29 @@ const std::string ModelManager::directoryPath_ = "resources/models";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ModelManager::~ModelManager() {
+ModelManager::~ModelManager(){
     // モデルデータの解放
-    for (auto& model : modelData_) {
+    for(auto& model : modelData_){
         delete model.second;
         model.second = nullptr;
     }
 
     // インスタンスがあれば解放
-    if (instance_) {
+    if(instance_){
         delete instance_;
         instance_ = nullptr;
     }
 }
 
-const ModelManager* ModelManager::GetInstance() {
-    if (!instance_) {
+const ModelManager* ModelManager::GetInstance(){
+    if(!instance_){
         instance_ = new ModelManager();
     }
 
     return instance_;
 }
 
-void ModelManager::Initialize() {
+void ModelManager::Initialize(){
     // インスタンスなければ作成
     GetInstance();
 
@@ -60,12 +60,17 @@ void ModelManager::Initialize() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 起動時に読み込みたいモデルをここで読み込む
-void ModelManager::StartUpLoad() {
+void ModelManager::StartUpLoad(){
+    // モデルの読み込み
+    LoadModel("DefaultAssets/cube/cube.obj");
+    LoadModel("DefaultAssets/JapaneseSword/JapaneseSword.obj");
+    LoadModel("DefaultAssets/tree/tree.gltf");
+    LoadModel("DefaultAssets/Boy/Boy.gltf");
 }
 
-void ModelManager::LoadModel(const std::string& filename) {
+void ModelManager::LoadModel(const std::string& filename){
     // すでに読み込み済みのファイルであればreturn
-    if (instance_->modelData_.find(filename) != instance_->modelData_.end()) { return; }
+    if(instance_->modelData_.find(filename) != instance_->modelData_.end()){ return; }
 
     // 読み込み
     instance_->modelData_[filename] = instance_->LoadModelFile(instance_->directoryPath_, filename);
@@ -79,13 +84,11 @@ void ModelManager::LoadModel(const std::string& filename) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const std::string& filename) {
+ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const std::string& filename){
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string modelName = filename.substr(0, filename.find_last_of('.'));
-    bool npos = filename.find_last_of('/') == std::string::npos;
-    std::string filePath = directoryPath + "/" + modelName + "/" + (npos ? filename : filename.substr(filename.find_last_of('/') + 1));
+    std::string filePath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -98,8 +101,10 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     ModelData* modelData = new ModelData();
     // メッシュデータの読み込み
     modelData->meshes = ParseMeshes(scene);
+    // メッシュレットの作成
+    CreateMeshlet(modelData);
     // マテリアルデータの読み込み
-    modelData->materials = ParseMaterials(scene, modelName);
+    modelData->materials = ParseMaterials(scene);
     modelData->modelName = filename;
     // アニメーションデータの読み込み
     modelData->animations = LoadAnimation(directoryPath, filename);
@@ -125,8 +130,8 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 頂点データの比較用にハッシュ関数と等価演算子を定義
-struct VertexHash {
-    size_t operator()(const VertexData& vertex) const {
+struct VertexHash{
+    size_t operator()(const VertexData& vertex) const{
         size_t hash = 0;
         hash ^= std::hash<float>()(vertex.position_.x) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
         hash ^= std::hash<float>()(vertex.position_.y) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
@@ -137,8 +142,8 @@ struct VertexHash {
     }
 };
 
-struct VertexEqual {
-    bool operator()(const VertexData& lhs, const VertexData& rhs) const {
+struct VertexEqual{
+    bool operator()(const VertexData& lhs, const VertexData& rhs) const{
         return lhs.position_ == rhs.position_ &&
             lhs.normal_ == rhs.normal_ &&
             lhs.texcoord_ == rhs.texcoord_;
@@ -146,20 +151,20 @@ struct VertexEqual {
 };
 
 
-std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene) {
+std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene){
     std::vector<MeshData> meshes;
 
-    for (uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
+    for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx){
         aiMesh* mesh = scene->mMeshes[meshIdx];
         MeshData meshData;
         bool hasTexcoords_ = mesh->HasTextureCoords(0);
 
         // 頂点を元ファイルの順番で格納
-        for (uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx) {
+        for(uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx){
             aiVector3D position = mesh->mVertices[vertexIdx];
             aiVector3D normal = mesh->mNormals[vertexIdx];
             aiVector3D texcoord = { 0.0f, 0.0f, 0.0f };
-            if (hasTexcoords_) {
+            if(hasTexcoords_){
                 texcoord = mesh->mTextureCoords[0][vertexIdx];
             }
 
@@ -178,12 +183,12 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene) {
         }
 
         // インデックスを格納
-        for (uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx) {
+        for(uint32_t faceIdx = 0; faceIdx < mesh->mNumFaces; ++faceIdx){
             aiFace& face = mesh->mFaces[faceIdx];
             assert(face.mNumIndices == 3); // 三角形以外は無視
 
             // インデックスデータを追加
-            for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+            for(uint32_t element = 0; element < face.mNumIndices; ++element){
                 meshData.indices.push_back(face.mIndices[element]);
             }
         }
@@ -198,6 +203,53 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene) {
     return meshes;
 }
 
+
+//=============================================
+// メッシュレットの作成
+//=============================================
+void ModelManager::CreateMeshlet(ModelData* modelData){
+
+    uint32_t kMaxVertexCount = 64;
+    uint32_t kMaxIndexCount = 128;
+
+    for(auto& mesh : modelData->meshes){
+        
+        uint32_t curIndex = 0;
+
+        while(true){
+            // ユニークな頂点リスト
+            std::unordered_set<uint32_t> vertexDict;
+            // indexの合計値
+            uint32_t indexCount = 0;
+
+            // 終了チェック
+            if(curIndex >= mesh.indices.size()){
+                break;
+            }
+
+            // meshletが切り替わるインデックスを記録
+            mesh.meshletSwitchIndices.push_back(mesh.meshletCount);
+
+            for(uint32_t index = curIndex; index < mesh.indices.size(); index += 3){
+                // インデックスバッファの中身（頂点番号）をセットに入れる
+                vertexDict.insert(mesh.indices[index]);
+                vertexDict.insert(mesh.indices[index + 1]);
+                vertexDict.insert(mesh.indices[index + 2]);
+
+                curIndex += 3;
+                indexCount += 3;
+
+                if(vertexDict.size() >= kMaxVertexCount || indexCount >= kMaxIndexCount){
+                    break;
+                }
+            }
+
+            // メッシュレットの数を増やす
+            mesh.meshletCount++;
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                                        //
@@ -206,22 +258,34 @@ std::vector<MeshData> ModelManager::ParseMeshes(const aiScene* scene) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName) {
+std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene){
     std::vector<ModelMaterialLoadData> materials;
 
     // マテリアルを読み込む
-    for (uint32_t materialIdx = 0; materialIdx < scene->mNumMaterials; ++materialIdx) {
+    for(uint32_t materialIdx = 0; materialIdx < scene->mNumMaterials; ++materialIdx){
         aiMaterial* material = scene->mMaterials[materialIdx];
         ModelMaterialLoadData materialData;
 
         aiString texturePath;
-        if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
-            materialData.textureFilePath_ = "../models/" + modelName + "/" + std::string(texturePath.C_Str());
+        if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS){
+
+            std::string findResult;
+            // まずmodel階層内から探す
+            findResult = MyFunc::FindFile("Resources/models/", texturePath.C_Str());
+            if(!findResult.empty()){
+                materialData.textureFilePath_ = "../models/" + findResult;
+
+            } else{// 見つからなかったらTextures階層から探す
+                findResult = MyFunc::FindFile("Resources/Textures/", texturePath.C_Str());
+                if(!findResult.empty()){
+                    materialData.textureFilePath_ = findResult;
+                }
+            }
         }
 
         // テクスチャがない場合は白テクスチャを設定
-        if (materialData.textureFilePath_ == "") {
-            materialData.textureFilePath_ = "Assets/white1x1.png";
+        if(materialData.textureFilePath_ == ""){
+            materialData.textureFilePath_ = "DefaultAssets/white1x1.png";
         } else{
             // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
             if(materialData.textureFilePath_.find("/*") != std::string::npos){
@@ -237,10 +301,10 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
         // 色の設定
         aiColor4D baseColor;
-        if (material->Get(AI_MATKEY_BASE_COLOR, baseColor) == AI_SUCCESS) {
+        if(material->Get(AI_MATKEY_BASE_COLOR, baseColor) == AI_SUCCESS){
             materialData.color_ = Vector4(baseColor.r, baseColor.g, baseColor.b, baseColor.a);
 
-        } else {
+        } else{
             materialData.color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -249,23 +313,23 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
     // メッシュごとのマテリアル割り当て
     std::vector<ModelMaterialLoadData> meshMaterials;
-    for (uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
+    for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx){
         aiMesh* mesh = scene->mMeshes[meshIdx];
         uint32_t materialIndex = mesh->mMaterialIndex;
 
         // マテリアルが存在する場合は対応するものを割り当て
-        if (materialIndex < materials.size()) {
+        if(materialIndex < materials.size()){
             meshMaterials.push_back(materials[materialIndex]);
-        } else {
+        } else{
             // マテリアルが対応していない場合はデフォルトマテリアルを割り当て
             ModelMaterialLoadData defaultMaterial;
-            defaultMaterial.textureFilePath_ = "Assets/white1x1.png";
+            defaultMaterial.textureFilePath_ = "DefaultAssets/white1x1.png";
             meshMaterials.push_back(defaultMaterial);
         }
     }
 
     // テクスチャのUV変換行列を初期化
-    for (auto& material : meshMaterials) {
+    for(auto& material : meshMaterials){
         material.UV_offset_ = { 0.0f,0.0f,0.0f };
         material.UV_scale_ = { 1.0f,1.0f,1.0f };
         material.UV_translate_ = { 0.0f,0.0f,0.0f };
@@ -285,22 +349,19 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 /*--------------------------------------*/
 // アニメーションデータの解析
 /*--------------------------------------*/
-std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename) {
+std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(const std::string& directoryPath, const std::string& filename){
 
     // アニメーションデータの格納用
     std::unordered_map<std::string, ModelAnimation> result;
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    bool npos = filename.find_last_of('/') == std::string::npos;
-    std::string filePath =
-        directoryPath + "/" + filename.substr(0, filename.find_last_of('.'))
-        + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
+    std::string filePath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
-    if (!scene->HasAnimations()) { return result; }// animationがない場合は終了
+    if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 
     // アニメーションの解析を行っていく
-    for (uint32_t animIdx = 0; animIdx < scene->mNumAnimations; ++animIdx) {
+    for(uint32_t animIdx = 0; animIdx < scene->mNumAnimations; ++animIdx){
 
         aiAnimation* anim = scene->mAnimations[animIdx];
         ModelAnimation animation;
@@ -310,13 +371,13 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
         animation.duration = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
 
         // ノードごとのアニメーションを解析
-        for (uint32_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx) {
+        for(uint32_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx){
             aiNodeAnim* channel = anim->mChannels[channelIdx];
             NodeAnimation nodeAnim;
 
             // 位置アニメーションを解析
-            if (channel->mNumPositionKeys > 0) {
-                for (uint32_t keyIdx = 0; keyIdx < channel->mNumPositionKeys; ++keyIdx) {
+            if(channel->mNumPositionKeys > 0){
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumPositionKeys; ++keyIdx){
                     aiVectorKey key = channel->mPositionKeys[keyIdx];
                     Keyframe<Vector3> keyframe;
                     keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
@@ -326,8 +387,8 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
             }
 
             // 回転アニメーションを解析
-            if (channel->mNumRotationKeys > 0) {
-                for (uint32_t keyIdx = 0; keyIdx < channel->mNumRotationKeys; ++keyIdx) {
+            if(channel->mNumRotationKeys > 0){
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumRotationKeys; ++keyIdx){
                     aiQuatKey key = channel->mRotationKeys[keyIdx];
                     Keyframe<Quaternion> keyframe;
                     keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
@@ -337,8 +398,8 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
             }
 
             // スケールアニメーションを解析
-            if (channel->mNumScalingKeys > 0) {
-                for (uint32_t keyIdx = 0; keyIdx < channel->mNumScalingKeys; ++keyIdx) {
+            if(channel->mNumScalingKeys > 0){
+                for(uint32_t keyIdx = 0; keyIdx < channel->mNumScalingKeys; ++keyIdx){
                     aiVectorKey key = channel->mScalingKeys[keyIdx];
                     Keyframe<Vector3> keyframe;
                     keyframe.time = static_cast<float>(key.mTime / anim->mTicksPerSecond);
@@ -348,14 +409,14 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
             }
 
             // ノード名をキーにしてアニメーションデータに追加(重複を確認して重複している名前があれば後ろに番号を割り当てる)
-            if (animation.nodeAnimations.find(channel->mNodeName.C_Str()) == animation.nodeAnimations.end()) {
+            if(animation.nodeAnimations.find(channel->mNodeName.C_Str()) == animation.nodeAnimations.end()){
                 animation.nodeAnimations[channel->mNodeName.C_Str()] = nodeAnim;
 
-            } else {
+            } else{
                 int i = 1;
-                while (true) {
+                while(true){
                     std::string nodeName = channel->mNodeName.C_Str() + std::to_string(i);
-                    if (animation.nodeAnimations.find(nodeName) == animation.nodeAnimations.end()) {
+                    if(animation.nodeAnimations.find(nodeName) == animation.nodeAnimations.end()){
                         animation.nodeAnimations[nodeName] = nodeAnim;
                         break;
                     }
@@ -365,13 +426,13 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
         }
 
         // アニメーションデータを追加(重複を確認して重複している名前があれば後ろに番号を割り当てる)
-        if (result.find(anim->mName.C_Str()) == result.end()) {
+        if(result.find(anim->mName.C_Str()) == result.end()){
             result[anim->mName.C_Str()] = animation;
-        } else {
+        } else{
             int i = 1;
-            while (true) {
+            while(true){
                 std::string animName = anim->mName.C_Str() + std::to_string(i);
-                if (result.find(animName) == result.end()) {
+                if(result.find(animName) == result.end()){
                     result[animName] = animation;
                     break;
                 }
@@ -395,7 +456,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 /*-----------------------------------------------------------*/
 // ノードデータの読み込み
 /*-----------------------------------------------------------*/
-ModelNode ModelManager::ReadModelNode(const aiNode* node) {
+ModelNode ModelManager::ReadModelNode(const aiNode* node){
     ModelNode result;
 
     // ノードのローカル行列を取得
@@ -408,16 +469,16 @@ ModelNode ModelManager::ReadModelNode(const aiNode* node) {
     node->mTransformation.Decompose(aiScale, aiRotate, aiTranslate);
 
     // 情報を格納(左手座標に変換して)
-    result.transform.scale_ = Vector3(aiScale.x, aiScale.y, aiScale.z);
-    result.transform.rotate_ = Quaternion(aiRotate.x, -aiRotate.y, -aiRotate.z, aiRotate.w);
-    result.transform.translate_ = Vector3(-aiTranslate.x, aiTranslate.y, aiTranslate.z);
-    result.localMatrix = AffineMatrix(result.transform.scale_, result.transform.rotate_, result.transform.translate_);
+    result.transform.scale = Vector3(aiScale.x, aiScale.y, aiScale.z);
+    result.transform.rotate = Quaternion(aiRotate.x, -aiRotate.y, -aiRotate.z, aiRotate.w);
+    result.transform.translate = Vector3(-aiTranslate.x, aiTranslate.y, aiTranslate.z);
+    result.localMatrix = AffineMatrix(result.transform.scale, result.transform.rotate, result.transform.translate);
 
     // ノード名を取得
     result.name = node->mName.C_Str();
 
     // 子ノードを再帰的に処理
-    for (uint32_t i = 0; i < node->mNumChildren; ++i) {
+    for(uint32_t i = 0; i < node->mNumChildren; ++i){
         result.children.push_back(ReadModelNode(node->mChildren[i]));
     }
 
@@ -439,7 +500,7 @@ int32_t ModelManager::CreateJoint(
     const ModelNode& node,
     const std::optional<int32_t>& parent,
     std::vector<ModelJoint>& joints
-) {
+){
     ModelJoint joint;
     joint.name = node.name;
     joint.localMatrix = node.localMatrix;
@@ -450,7 +511,7 @@ int32_t ModelManager::CreateJoint(
     joint.parent = parent;
     joints.push_back(joint);
 
-    for (const ModelNode& child : node.children) {
+    for(const ModelNode& child : node.children){
         // 子ジョイントを作成しindexを登録
         int32_t childIndex = CreateJoint(child, joint.index, joints);
         joints[joint.index].children.push_back(childIndex);
@@ -463,11 +524,11 @@ int32_t ModelManager::CreateJoint(
 /*-----------------------------------------------------------*/
 // スケルトンの作成
 /*-----------------------------------------------------------*/
-ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode) {
+ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
     ModelSkeleton skeleton;
     skeleton.rootIndex = CreateJoint(rootNode, std::nullopt, skeleton.joints);
 
-    for (const ModelJoint& joint : skeleton.joints) {
+    for(const ModelJoint& joint : skeleton.joints){
         skeleton.jointMap.emplace(joint.name, joint.index);
     }
 
@@ -481,14 +542,14 @@ ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode) {
 /*-----------------------------------------------------------*/
 ModelSkeleton ModelManager::AnimatedSkeleton(
     const ModelAnimation& modelAnimation, const ModelSkeleton& defaultSkeleton, float time
-) {
+){
     ModelSkeleton skeleton;
     skeleton.joints.resize(defaultSkeleton.joints.size());
     int idx = 0;
 
     // 指定した時間の値を取得
-    for (auto& defaultJoint : defaultSkeleton.joints) {
-        if (auto it = modelAnimation.nodeAnimations.find(defaultJoint.name); it != modelAnimation.nodeAnimations.end()) {
+    for(auto& defaultJoint : defaultSkeleton.joints){
+        if(auto it = modelAnimation.nodeAnimations.find(defaultJoint.name); it != modelAnimation.nodeAnimations.end()){
 
             // ノードアニメーションを取得
             const NodeAnimation& nodeAnim = it->second;
@@ -500,10 +561,10 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             Vector3 scale = CalcMomentValue(nodeAnim.scale.keyframes, time);
 
             // トランスフォーム情報を更新
-            skeleton.joints[idx].transform.translate_ = translate;
-            skeleton.joints[idx].transform.rotate_ = rotate;
-            skeleton.joints[idx].transform.scale_ = scale;
-        } else {
+            skeleton.joints[idx].transform.translate = translate;
+            skeleton.joints[idx].transform.rotate = rotate;
+            skeleton.joints[idx].transform.scale = scale;
+        } else{
             // ノードアニメーションがない場合はデフォルトの値を設定
             skeleton.joints[idx].transform = defaultJoint.transform;
             skeleton.joints[idx].skeletonSpaceMatrix = IdentityMat4();
@@ -522,29 +583,29 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
 // スケルトンの補間
 ModelSkeleton ModelManager::InterpolateSkeleton(
     const ModelSkeleton& skeletonA, const ModelSkeleton& skeletonB, float t
-) {
+){
     // 違うジョイント数の場合は補間できない
-    if (skeletonA.joints.size() != skeletonB.joints.size()) {
+    if(skeletonA.joints.size() != skeletonB.joints.size()){
         assert(false);
     }
 
     // ジョイントごとに補間
     ModelSkeleton skeleton;
 
-    for (uint32_t i = 0; i < skeletonA.joints.size(); ++i) {
+    for(uint32_t i = 0; i < skeletonA.joints.size(); ++i){
         ModelJoint jointA = skeletonA.joints[i];
         ModelJoint jointB = skeletonB.joints[i];
 
         // 補間
-        Quaternion rotate = Quaternion::Slerp(jointA.transform.rotate_, jointB.transform.rotate_, t);
-        Vector3 translate = MyMath::Lerp(jointA.transform.translate_, jointB.transform.translate_, t);
-        Vector3 scale = MyMath::Lerp(jointA.transform.scale_, jointB.transform.scale_, t);
+        Quaternion rotate = Quaternion::Slerp(jointA.transform.rotate, jointB.transform.rotate, t);
+        Vector3 translate = MyMath::Lerp(jointA.transform.translate, jointB.transform.translate, t);
+        Vector3 scale = MyMath::Lerp(jointA.transform.scale, jointB.transform.scale, t);
 
         // 補間したジョイントを作成
         ModelJoint joint;
-        joint.transform.rotate_ = rotate;
-        joint.transform.translate_ = translate;
-        joint.transform.scale_ = scale;
+        joint.transform.rotate = rotate;
+        joint.transform.translate = translate;
+        joint.transform.scale = scale;
         joint.localMatrix = AffineMatrix(scale, rotate, translate);
         joint.skeletonSpaceMatrix = joint.localMatrix;
         joint.index = i;
@@ -563,12 +624,12 @@ ModelSkeleton ModelManager::InterpolateSkeleton(
 /*-----------------------------------------------------------*/
 // スケルトン行列の更新
 /*-----------------------------------------------------------*/
-void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton) {
-    for (ModelJoint& joint : skeleton->joints) {
-        joint.localMatrix = AffineMatrix(joint.transform.scale_, joint.transform.rotate_, joint.transform.translate_);
-        if (joint.parent) {
+void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton){
+    for(ModelJoint& joint : skeleton->joints){
+        joint.localMatrix = AffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+        if(joint.parent){
             joint.skeletonSpaceMatrix = joint.localMatrix * skeleton->joints[*joint.parent].skeletonSpaceMatrix;
-        } else {
+        } else{
             joint.skeletonSpaceMatrix = joint.localMatrix;
         }
     }
@@ -585,18 +646,18 @@ void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton) {
 /*-----------------------------------------------------------*/
 // スキンクラスタのためにジョイントのウェイトを解析
 /*-----------------------------------------------------------*/
-std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeightData(const aiScene* scene) {
+std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeightData(const aiScene* scene){
 
     std::unordered_map<std::string, JointWeightData> result;
     int32_t vertexCount = 0;
 
-    for (uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx) {
+    for(uint32_t meshIdx = 0; meshIdx < scene->mNumMeshes; ++meshIdx){
         aiMesh* mesh = scene->mMeshes[meshIdx];
 
-        if (mesh->mNumBones == 0) {
+        if(mesh->mNumBones == 0){
             // メッシュに対応するノード名を取得
             aiNode* meshNode = scene->mRootNode->FindNode(mesh->mName);
-            if (meshNode) {
+            if(meshNode){
                 std::string nodeName = meshNode->mName.C_Str();
                 JointWeightData& jointWeightData = result[nodeName];
 
@@ -614,17 +675,17 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
                 jointWeightData.inverseBindPoseMatrix = InverseMatrix(bindPoseMatrix);
 
                 // 各頂点に均一なウェイトを付与
-                for (uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx) {
+                for(uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx){
                     jointWeightData.vertexWeights.push_back(
                         VertexWeightData(1.0f, vertexCount + vertexIdx)
                     );
                 }
-            } else {
+            } else{
 
-                for (uint32_t animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex) {
+                for(uint32_t animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex){
                     aiAnimation* animation = scene->mAnimations[animIndex];
 
-                    for (uint32_t channelIndex = 0; channelIndex < animation->mNumChannels; ++channelIndex) {
+                    for(uint32_t channelIndex = 0; channelIndex < animation->mNumChannels; ++channelIndex){
                         aiNodeAnim* channel = animation->mChannels[channelIndex];
                         std::string nodeName = channel->mNodeName.C_Str();
                         JointWeightData& jointWeightData = result[nodeName];
@@ -643,7 +704,7 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
                         jointWeightData.inverseBindPoseMatrix = InverseMatrix(bindPoseMatrix);
 
                         // ウェイトの生成（全頂点に均等に割り当てる）
-                        for (uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx) {
+                        for(uint32_t vertexIdx = 0; vertexIdx < mesh->mNumVertices; ++vertexIdx){
                             jointWeightData.vertexWeights.push_back(
                                 VertexWeightData(1.0f, vertexCount + vertexIdx)
                             );
@@ -652,8 +713,8 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
                 }
             }
 
-        } else {
-            for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+        } else{
+            for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex){
 
                 //------------- jointごとの格納領域を作る -------------//
 
@@ -678,7 +739,7 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
 
                 //--------------- Weight情報を取り出す ---------------//
 
-                for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+                for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex){
                     jointWeightData.vertexWeights.push_back(
                         VertexWeightData(
                             bone->mWeights[weightIndex].mWeight,
@@ -698,7 +759,7 @@ std::unordered_map<std::string, JointWeightData> ModelManager::CreateJointWeight
 /*-----------------------------------------------------------*/
 // モデルの全頂点分のweight影響データの作成
 /*-----------------------------------------------------------*/
-void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData) {
+void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData){
 
     // InverrseBindPoseMatrixを格納する場所を作成し、単位行列で初期化
     auto& palette = modelData->defaultSkinClusterData;
@@ -706,7 +767,7 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
 
     // meshごとのvertexInfluence格納場所を作成
     int32_t vertexCount = 0;
-    for (auto& mesh : modelData->meshes) {
+    for(auto& mesh : modelData->meshes){
         mesh.vertexInfluences.resize(mesh.vertices.size());
         vertexCount += (int32_t)mesh.vertices.size();
     }
@@ -714,25 +775,25 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
     // 全頂点分の影響情報を格納する場所を作成(あとでmeshごとに分ける)
     std::vector<VertexInfluence*> influences;
     influences.resize(vertexCount);
-    for (auto& influence : influences) {
+    for(auto& influence : influences){
         influence = new VertexInfluence();
         std::fill(std::begin(influence->weights), std::end(influence->weights), 0.0f);
         std::fill(std::begin(influence->jointIndices), std::end(influence->jointIndices), 0);
     }
 
     // modelDataを解析して、Influenceを作成
-    for (const auto& jointWeight : modelData->jointWeightData) {// ModelDataのweightDataを解析
+    for(const auto& jointWeight : modelData->jointWeightData){// ModelDataのweightDataを解析
 
         auto it = skeleton.jointMap.find(jointWeight.first);// 対象のjointが存在するか確認
-        if (it == skeleton.jointMap.end()) {
+        if(it == skeleton.jointMap.end()){
             continue;// jointが存在しない場合はスキップ
         }
 
         palette.inverseBindPoseMatrices[(*it).second] = jointWeight.second.inverseBindPoseMatrix;// InverseBindPoseMatrixを格納
 
-        for (const auto& vertexWeight : jointWeight.second.vertexWeights) {// 頂点ウェイトを格納
+        for(const auto& vertexWeight : jointWeight.second.vertexWeights){// 頂点ウェイトを格納
 
-            if (vertexWeight.vertexIndex > vertexCount) {
+            if(vertexWeight.vertexIndex > vertexCount){
                 continue;
             }
 
@@ -740,8 +801,8 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
             auto& currentInfluence = influences[vertexWeight.vertexIndex];
 
             // ウェイト、インデックス情報を格納していく
-            for (uint32_t index = 0; index < kMaxInfluence; ++index) {// 空いている場所に格納
-                if (currentInfluence->weights[index] == 0.0f) {// weight == 0 が空の状態なのでその場所にweightとindexを格納
+            for(uint32_t index = 0; index < kMaxInfluence; ++index){// 空いている場所に格納
+                if(currentInfluence->weights[index] == 0.0f){// weight == 0 が空の状態なのでその場所にweightとindexを格納
                     currentInfluence->weights[index] = vertexWeight.weight;
                     currentInfluence->jointIndices[index] = it->second;
                     break;
@@ -752,15 +813,15 @@ void ModelManager::CreateVertexInfluence(const ModelSkeleton& skeleton, ModelDat
 
     // influencesをmeshごとに分ける
     int32_t vertexIndex = 0;
-    for (auto& mesh : modelData->meshes) {
-        for (auto& vertexInfluence : mesh.vertexInfluences) {
+    for(auto& mesh : modelData->meshes){
+        for(auto& vertexInfluence : mesh.vertexInfluences){
             vertexInfluence = *influences[vertexIndex];
             vertexIndex++;
         }
     }
 
     // 解放
-    for (auto& influence : influences) {
+    for(auto& influence : influences){
         delete influence;
         influence = nullptr;
     }

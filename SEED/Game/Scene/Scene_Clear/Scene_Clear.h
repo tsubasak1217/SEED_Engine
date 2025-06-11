@@ -1,7 +1,7 @@
 #pragma once
 
 //host
-#include <Game/Scene/Base/Scene_Base.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
 
 ///stl
 #include <memory>
@@ -11,7 +11,7 @@
 #include <SEED/Lib/Structs/DirectionalLight.h>
 //objects
 #include <SEED/Lib/Structs/Model.h>
-#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 
 class Scene_Clear
     : public Scene_Base{

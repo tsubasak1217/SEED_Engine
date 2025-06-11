@@ -93,8 +93,8 @@ void WindowInfo::CreateSwapChain(IDXGIFactory4* dxgiFactory, ID3D12CommandQueue*
     ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[1].Get(), &rtvDesc, windowNameStr + "_doubleBuffer_1");// ダブルバッファ用
 
     // ハンドル取得
-    doubleBufferRtvHandles[0] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, windowNameStr + "_doubleBuffer_0");
-    doubleBufferRtvHandles[1] = ViewManager::GetHandleCPU(DESCRIPTOR_HEAP_TYPE::RTV, windowNameStr + "_doubleBuffer_1");
+    doubleBufferRtvHandles[0] = ViewManager::GetHandleCPU(HEAP_TYPE::RTV, windowNameStr + "_doubleBuffer_0");
+    doubleBufferRtvHandles[1] = ViewManager::GetHandleCPU(HEAP_TYPE::RTV, windowNameStr + "_doubleBuffer_1");
 
     // バックバッファのインデックスを取得
     backBufferIndex = swapChain->GetCurrentBackBufferIndex();

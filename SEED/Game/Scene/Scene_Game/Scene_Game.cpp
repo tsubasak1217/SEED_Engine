@@ -1,9 +1,12 @@
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
-#include <SEED/Source/Manager/ParticleManager/ParticleManager.h>
+#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
+
+// state
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -11,11 +14,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game(){
+Scene_Game::Scene_Game() : Scene_Base(){
     Initialize();
 };
 
 Scene_Game::~Scene_Game(){
+    Scene_Base::Finalize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -27,18 +31,19 @@ Scene_Game::~Scene_Game(){
 void Scene_Game::Initialize(){
 
     ////////////////////////////////////////////////////
-    // マネージャー初期化
+    // State初期化
     ////////////////////////////////////////////////////
 
+    // Playステートに初期化
+    ChangeState(new GameState_Play(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::GetCamera()->SetTranslation({ -191.6f,46.8f,-185.8f });
-    SEED::GetCamera()->SetRotation({ 0.15173f,0.7807f,0.0f });
-    SEED::GetCamera()->Update();
-    SEED::SetCamera("debug");
+    SEED::SetMainCamera("debug");
+    auto* scene = this;
+    scene;
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -51,8 +56,6 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
-    model_ = std::make_unique<Model>("Assets/Boy.glb");
-    //model_->StartAnimation(0,true);
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -75,10 +78,11 @@ void Scene_Game::Initialize(){
     /////////////////////////////////////////////////
 
     // パーティクルの初期化
-    ParticleManager::DeleteAll();
+    EffectSystem::DeleteAll();
 }
 
-void Scene_Game::Finalize(){
+void Scene_Game::Finalize() {
+    Scene_Base::Finalize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -92,14 +96,15 @@ void Scene_Game::Update(){
     /*========================== ImGui =============================*/
 
 #ifdef _DEBUG
-    ImGui::Begin("environment");
-    /*===== FPS表示 =====*/
-    ImGui::Text("FPS: %f", ImGui::GetIO().Framerate);
-    ImGui::End();
+    ImFunc::CustomBegin("テキスト", MoveOnly_TitleBar);
 
+    ImGui::End();
 #endif
 
     /*======================= 各状態固有の更新 ========================*/
+
+    // ヒエラルキー内のオブジェクトの更新
+    hierarchy_->Update();
 
     if(currentState_){
         currentState_->Update();
@@ -111,8 +116,7 @@ void Scene_Game::Update(){
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
-    ParticleManager::Update();
-    model_->Update();
+    EffectSystem::Update();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -133,28 +137,17 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
+
     /*==================== 各オブジェクトの基本描画 =====================*/
+
+    // ヒエラルキー内のオブジェクトの描画
+    hierarchy_->Draw();
 
     // ライトをセット
     directionalLight_->SendData();
 
     // パーティクルの描画
-    ParticleManager::Draw();
-
-    model_->Draw();
-
-    //グリッドの描画
-    SEED::DrawGrid();
-
-    /*======================= 各状態固有の描画 ========================*/
-
-    if(currentState_){
-        currentState_->Draw();
-    }
-
-    if(currentEventState_){
-        currentEventState_->Draw();
-    }
+    EffectSystem::Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -163,8 +156,11 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
-    Scene_Base::BeginFrame();
 
+    // ヒエラルキー内のオブジェクトの描画
+    hierarchy_->BeginFrame();
+
+    // 現在のステートがあればフレーム開始処理を行う
     if(currentState_){
         currentState_->BeginFrame();
     }
@@ -183,6 +179,8 @@ void Scene_Game::EndFrame(){
         currentState_->EndFrame();
     }
 
+    // ヒエラルキー内のオブジェクトのフレーム終了処理
+    hierarchy_->EndFrame();
 }
 
 

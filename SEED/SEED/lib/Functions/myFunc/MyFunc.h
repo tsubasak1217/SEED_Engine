@@ -4,6 +4,10 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+#include <initializer_list>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Structs/Range1D.h>
@@ -46,6 +50,11 @@ public:
     static int32_t Spiral(int32_t input,int32_t min,int32_t max);
     static float Spiral(float input,float min,float max);
 
+    // 範囲に含まれているかを判定する関数
+    static bool IsContain(const Range1D& range, float value);
+    static bool IsContain(const Range2D& range, const Vector2& value);
+    static bool IsContain(const Range3D& range, const Vector3& value);
+
     // ベクトルから三次元の回転角を算出する関数
     static Vector3 CalcRotateVec(const Vector3& vec);
 
@@ -63,6 +72,15 @@ public:
    /// <returns></returns>
     static  Vector2 CalculateParabolic(const Vector2& _direction,float speed,float _gravity,float _time);
 
+
+public:// ファイル関連 ==============================================================
+
+    // 指定したパス以降で拡張子の合致するファイル一覧を取得する関数
+    static std::vector<std::string> GetFileList(
+        const std::string& entryPath, std::initializer_list<std::string>extensions,bool isRelative = true
+    );
+    // 指定したパス以降で名前の一致するファイルがあればそのパスを返す関数
+    static std::string FindFile(const std::string& entryPath, const std::string& filePath,bool isRelative = true);
 };
 
 // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)

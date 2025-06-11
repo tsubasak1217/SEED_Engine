@@ -132,15 +132,25 @@ inline void to_json(nlohmann::json& j, const Vector2& vec){
 
 // JSONをVector2に変換する関数
 inline void from_json(const nlohmann::json& j, Vector2& vec){
-    vec.x = j.at("x").get<float>();
-    vec.y = j.at("y").get<float>();
+    if(!j.contains("x") || !j.contains("y")){
+        vec.x = j[0].get<float>();
+        vec.y = j[1].get<float>();
+    } else{
+        vec.x = j.at("x").get<float>();
+        vec.y = j.at("y").get<float>();
+    }
 }
 
 inline void to_json(nlohmann::ordered_json& j,const Vector2& vec){
     j = {{"x",vec.x},{"y",vec.y}};
 }
 
-inline void from_json(const nlohmann::ordered_json& j,Vector2& v){
-    v.x = j.at("x").get<float>();
-    v.y = j.at("y").get<float>();
+inline void from_json(const nlohmann::ordered_json& j, Vector2& v){
+    if(!j.contains("x") || !j.contains("y")){
+        v.x = j[0].get<float>();
+        v.y = j[1].get<float>();
+    } else{
+        v.x = j.at("x").get<float>();
+        v.y = j.at("y").get<float>();
+    }
 }

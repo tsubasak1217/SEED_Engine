@@ -1,7 +1,7 @@
 #pragma once
-#include <Game/Scene/Base/Scene_Base.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
 
-// external
+// stl
 #include <list>
 #include <memory>
 #include <string>
@@ -13,10 +13,7 @@
 #include <SEED/Lib/Shapes/Triangle.h>
 
 // camera
-#include <SEED/Source/Object/Camera/FollowCamera.h>
-
-// objects
-#include <Game/Objects/Player/Player.h>
+#include <SEED/Source/Basic/Camera/FollowCamera.h>
 
 
 class Scene_Game
@@ -37,6 +34,4 @@ private:
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
-
-    std::unique_ptr<Model> model_ = nullptr;
 };

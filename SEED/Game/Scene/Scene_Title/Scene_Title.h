@@ -1,11 +1,10 @@
 #pragma once
-#include <Game/Scene/Base/Scene_Base.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
 
-///stl
-//pointer
+// stl
 #include <memory>
 
-//object
+// object
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Model.h>
 

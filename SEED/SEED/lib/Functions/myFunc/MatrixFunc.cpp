@@ -645,6 +645,10 @@ Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 translate) {
     return matrix;
 }
 
+Matrix3x3 AffineMatrix(const Transform2D& transform){
+    return AffineMatrix(transform.scale, transform.rotate, transform.translate);
+}
+
 Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
     Matrix4x4 matrix(Multiply(ScaleMatrix(scale), RotateMatrix(rotate)));
     matrix.m[3][0] = translate.x;
@@ -659,6 +663,14 @@ Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vec
     matrix.m[3][1] = translate.y;
     matrix.m[3][2] = translate.z;
     return matrix;
+}
+
+Matrix4x4 AffineMatrix(const Transform& transform,bool isQuaternion){
+    
+    if(!isQuaternion){
+        return AffineMatrix(transform.scale, transform.rotate, transform.translate);
+    }
+    return AffineMatrix(transform.scale, transform.rotateQuat, transform.translate);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,6 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
-#include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 
 // external
 #include <assert.h>
@@ -87,7 +86,7 @@ void PolygonManager::InitResources(){
 
     // Camera
     cameraResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU));
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU)* 16);
     cameraResource_->SetName(L"cameraResource");
 
     // Lighting
@@ -113,7 +112,7 @@ void PolygonManager::InitResources(){
     ////////////////////////////////////////////////
 
     // SRVのDescの設定
-    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[6];
+    D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc[7];
     instancingSrvDesc[0].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[0].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     instancingSrvDesc[0].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -140,7 +139,7 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[3].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
     instancingSrvDesc[3].Buffer.FirstElement = 0;
     instancingSrvDesc[3].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-    instancingSrvDesc[3].Buffer.NumElements = 0xff;
+    instancingSrvDesc[3].Buffer.NumElements = 0xf;
 
     instancingSrvDesc[4].Format = DXGI_FORMAT_UNKNOWN;
     instancingSrvDesc[4].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -155,6 +154,13 @@ void PolygonManager::InitResources(){
     instancingSrvDesc[5].Buffer.FirstElement = 0;
     instancingSrvDesc[5].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
     instancingSrvDesc[5].Buffer.NumElements = 0xff;
+
+    instancingSrvDesc[6].Format = DXGI_FORMAT_UNKNOWN;
+    instancingSrvDesc[6].Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    instancingSrvDesc[6].ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    instancingSrvDesc[6].Buffer.FirstElement = 0;
+    instancingSrvDesc[6].Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    instancingSrvDesc[6].Buffer.NumElements = 0xff;
 
     /*------------- Transform用 --------------*/
     instancingSrvDesc[0].Buffer.StructureByteStride = sizeof(TransformMatrix);
@@ -177,27 +183,108 @@ void PolygonManager::InitResources(){
         &instancingSrvDesc[2], "SkinningResource_Palette"
     );
 
+    /*------------- Camera用 --------------*/
+    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(CameraForGPU);
+    ViewManager::CreateView(
+        VIEW_TYPE::SRV, cameraResource_.Get(),
+        &instancingSrvDesc[3], "CameraResource"
+    );
+
     /*--------- DirectionalLight用 ----------*/
-    instancingSrvDesc[3].Buffer.StructureByteStride = sizeof(DirectionalLight);
+    instancingSrvDesc[4].Buffer.StructureByteStride = sizeof(DirectionalLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, directionalLightResource_.Get(),
-        &instancingSrvDesc[3], "directionalLight"
+        &instancingSrvDesc[4], "directionalLight"
     );
 
     /*------------ PointLight用 --------------*/
-    instancingSrvDesc[4].Buffer.StructureByteStride = sizeof(PointLight);
+    instancingSrvDesc[5].Buffer.StructureByteStride = sizeof(PointLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, pointLightResource_.Get(),
-        &instancingSrvDesc[4], "pointLight"
+        &instancingSrvDesc[5], "pointLight"
     );
 
     /*------------ SpotLight用 --------------*/
-    instancingSrvDesc[5].Buffer.StructureByteStride = sizeof(SpotLight);
+    instancingSrvDesc[6].Buffer.StructureByteStride = sizeof(SpotLight);
     ViewManager::CreateView(
         VIEW_TYPE::SRV, spotLightResource_.Get(),
-        &instancingSrvDesc[5], "spotLight"
+        &instancingSrvDesc[6], "spotLight"
     );
 
+
+    //////////////////////////////////////////////////
+    // GPUハンドルの取得
+    //////////////////////////////////////////////////
+    gpuHandles_.resize(8);
+    gpuHandles_[(int)HANDLE_TYPE::TextureTable] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, 0);
+    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
+    gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
+    gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
+    gpuHandles_[(int)HANDLE_TYPE::CameraResource] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "CameraResource");
+    gpuHandles_[(int)HANDLE_TYPE::DirectionalLight] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
+    gpuHandles_[(int)HANDLE_TYPE::PointLight] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "pointLight");
+    gpuHandles_[(int)HANDLE_TYPE::SpotLight] =
+        ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "spotLight");
+
+    //////////////////////////////////////////////////
+    // バインドする情報を設定
+    //////////////////////////////////////////////////
+
+    // CommonVSPipeline
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // SkinningVSPipeline
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMatrixPalette", gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // TextVSPipeline
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+}
+
+// カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
+void PolygonManager::BindCameraDatas(const std::string& cameraName){
+    // カメラのインデックスを設定
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    // カメラが切り替わるインスタンス数を設定
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
 }
 
 void PolygonManager::Finalize(){}
@@ -207,9 +294,7 @@ void PolygonManager::Reset(){
     // モデルの情報をリセット
     for(auto& modelDrawData : modelDrawData_){
         modelDrawData.second->indexCount = 0;
-        modelDrawData.second->modelSwitchIdx_Index.clear();
-        modelDrawData.second->modelSwitchIdx_Vertex.clear();
-        std::memset(modelDrawData.second->totalDrawCount, 0, sizeof(modelDrawData.second->totalDrawCount));
+        modelDrawData.second->totalDrawCount = 0;
     }
 
     // ライティングの情報をリセット
@@ -226,35 +311,21 @@ void PolygonManager::Reset(){
     objCounts_.fill(0);
     objCountCull_.fill(0);
     objCountBlend_.fill(0);
+    cameraSwitchInstanceCount_.clear();
+    cameraOrder_.clear();
 
+    // 描画リストのリセット
+    for(auto& drawList : drawLists_){
+        drawList.second.clear();
+    }
+
+    // フラグの初期化
+    isWrited_ = false;
 }
 
 
 // プリミティブ描画情報の初期化
 void PolygonManager::InitializePrimitive(){
-
-
-    for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int cullIdx = 0; cullIdx < 3; ++cullIdx){
-            // 通常の描画
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-
-            // 解像度に影響しない描画
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]] = std::make_unique<ModelDrawData>();
-        }
-    }
-
 
     // プリミティブの頂点などの情報を初期化
     for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
@@ -266,40 +337,6 @@ void PolygonManager::InitializePrimitive(){
         }
     }
 
-    // プリミティブの描画情報を初期化
-    for(int32_t blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int cullIdx = 0; cullIdx < 3; ++cullIdx){
-            // 参照先を設定
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_TRIANGLE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_QUAD2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_LINE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_SPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_BACKSPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_STATIC_SPRITE][blendIdx][cullIdx];
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][blendIdx][cullIdx];
-
-            // 描画順を設定
-            modelDrawData_["ENGINE_DRAW_TRIANGLE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Triangle;
-            modelDrawData_["ENGINE_DRAW_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Triangle2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_TRIANGLE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticTriangle2D;
-            modelDrawData_["ENGINE_DRAW_QUAD" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Quad;
-            modelDrawData_["ENGINE_DRAW_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Quad2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_QUAD2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticQuad2D;
-            modelDrawData_["ENGINE_DRAW_LINE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Line;
-            modelDrawData_["ENGINE_DRAW_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Line2D;
-            modelDrawData_["ENGINE_DRAW_STATIC_LINE2D" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticLine2D;
-            modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Sprite;
-            modelDrawData_["ENGINE_DRAW_BACKSPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::BackSprite;
-            modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::StaticSprite;
-            modelDrawData_["ENGINE_DRAW_OFFSCREEN" + blendName[blendIdx] + cullName[cullIdx]]->drawOrder = (int8_t)DrawOrder::Offscreen;
-        }
-    }
 }
 
 // 初期化時に一度のみマッピングを行う
@@ -316,6 +353,7 @@ void PolygonManager::MapOnce(){
     pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapPointLightData));
     spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mapSpotLightData));
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,12 +385,12 @@ void PolygonManager::AddTriangle(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -370,31 +408,53 @@ void PolygonManager::AddTriangle(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
+    // 頂点情報の取得
     auto* modelData = view3D ?
         &primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode][(int)cullMode - 1] :
         &primitiveData_[PRIMITIVE_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
+    isStaticDraw ? modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode][(int)cullMode - 1] : modelData;
 
-    if(isStaticDraw){
-        modelData = &primitiveData_[PRIMITIVE_STATIC_TRIANGLE2D][(int)blendMode][(int)cullMode - 1];
-    }
-
+    // 描画データの取得
     static std::string drawDataName[2];
+    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_TRIANGLE";
     drawDataName[0] += blendName[(int)blendMode];
-    drawDataName[0] += cullName[0];
+    drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
     drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TRIANGLE2D" : "ENGINE_DRAW_TRIANGLE2D";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
-    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
-    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
+    // もし該当する描画データがなければ作成する
+    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
+    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+
+        // 頂点データの取得
+        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        modelDrawData_[curDrawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, cullMode, PolygonTopology::TRIANGLE
+            );
+
+        // 描画種類の設定
+        modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+            (int8_t)DrawOrder::Triangle : (int8_t)DrawOrder::Triangle2D;
+        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticTriangle2D : modelDrawData_[curDrawDataName]->drawOrder;
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+    }
 
     // indexCount
-    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
+    auto* drawData = modelDrawData_[curDrawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
@@ -408,9 +468,9 @@ void PolygonManager::AddTriangle(
     mesh.indices[indexCount] = indexCount + 0;
     mesh.indices[indexCount + 1] = indexCount + 1;
     mesh.indices[indexCount + 2] = indexCount + 2;
-    // 合わせる
+    // 都合上頂点数に合わせる
     mesh.vertexInfluences.resize(mesh.vertices.size());
-    // materialResource
+    // materialResource(適当な値に初期化)
     if(modelData->materials.size() == 0){
         modelData->materials.resize(1);
         auto& baseMaterial = modelData->materials[0];
@@ -425,52 +485,29 @@ void PolygonManager::AddTriangle(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    if(view3D){
-        drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-
-    } else{
-        drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-    }
-
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
+    if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+    material[drawCount].color_ = color;
+    material[drawCount].lightingType_ = lightingType;
+    material[drawCount].uvTransform_ = uvTransform;
+    material[drawCount].GH_ = GH;
 
     // transform
-    if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
-    } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
-        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat2D();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
-
-    // offsetResourceの数を更新
-    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][(int)cullMode - 1] : drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
-    }
-
+    // offsetResourceの数を更新(描画数分)
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);// primitiveはmesh数1固定
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
-
 
     // カウントを更新
     if(isStaticDraw){
@@ -486,8 +523,8 @@ void PolygonManager::AddTriangle(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
-    view3D ? drawData3D->indexCount += 3 : drawData2D->indexCount += 3;
-    view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++ : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 3;
+    drawData->totalDrawCount++;
 }
 
 void PolygonManager::AddTriangle3DPrimitive(
@@ -496,7 +533,6 @@ void PolygonManager::AddTriangle3DPrimitive(
     uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     assert(triangleIndexCount_ < kMaxTriangleCount_);
-
 
     Vector3 normalVec =
         MyMath::Normalize(MyMath::Cross(
@@ -510,17 +546,36 @@ void PolygonManager::AddTriangle3DPrimitive(
     ///////////////////////////////////////////////////////////////////
 
     auto* modelData = &primitiveData_[PRIMITIVE_TRIANGLE][(int)blendMode][(int)cullMode - 1];
-
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
     drawDataName += "ENGINE_DRAW_TRIANGLE";
     drawDataName += blendName[(int)blendMode];
-    drawDataName += cullName[0];
-    auto* drawData3D = modelDrawData_[drawDataName].get();
+    drawDataName += cullName[(int)cullMode - 1];
+
+    // 無かったら作成する
+    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        modelDrawData_[drawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, cullMode, PolygonTopology::TRIANGLE
+            );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Triangle2D;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
+    }
+
+    auto* drawData = modelDrawData_[drawDataName].get();
 
     // indexCount
-    int drawCount = drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1];
+    int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
     modelData->meshes.resize(1);
@@ -534,7 +589,7 @@ void PolygonManager::AddTriangle3DPrimitive(
     mesh.indices[indexCount] = indexCount + 0;
     mesh.indices[indexCount + 1] = indexCount + 1;
     mesh.indices[indexCount + 2] = indexCount + 2;
-    // 合わせる
+    // 頂点数に合わせる
     mesh.vertexInfluences.resize(mesh.vertices.size());
     // materialResource
     if(modelData->materials.size() == 0){
@@ -551,30 +606,27 @@ void PolygonManager::AddTriangle3DPrimitive(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
+    drawData->materials.resize(1);// primitiveはmesh数1固定
+    auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
     material[drawCount].color_ = color;
     material[drawCount].lightingType_ = lightingType;
     material[drawCount].uvTransform_ = uvTransform;
     material[drawCount].GH_ = GH;
 
-
     // transform
-    auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
-
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
+    }
 
 
     // offsetResourceの数を更新
-    auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
-    }
-
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);// primitiveはmesh数1固定
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
@@ -582,12 +634,11 @@ void PolygonManager::AddTriangle3DPrimitive(
 
     // カウントを更新
     objCounts_[(int)DrawOrder::Triangle]++;
-
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     triangleIndexCount_++;
-    drawData3D->indexCount += 3;
-    drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 3;
+    drawData->totalDrawCount++;
 }
 
 
@@ -601,9 +652,10 @@ void PolygonManager::AddTriangle3DPrimitive(
 
 void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, uint32_t layer
 ){
 
@@ -619,13 +671,13 @@ void PolygonManager::AddQuad(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back && !isStaticDraw){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             transformed[0].z = zFar;
             transformed[1].z = zFar;
             transformed[2].z = zFar;
             transformed[3].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             transformed[0].z = zNear;
             transformed[1].z = zNear;
             transformed[2].z = zNear;
@@ -653,32 +705,74 @@ void PolygonManager::AddQuad(
     }
 
     static std::string drawDataName[2];
+    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
-    drawDataName[0] += "ENGINE_DRAW_QUAD";
+    drawDataName[0] += isText ? "ENGINE_DRAW_TEXT" : "ENGINE_DRAW_QUAD";
     drawDataName[0] += blendName[(int)blendMode];
     drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
-    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+    if(isText){
+        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TEXT2D" : "ENGINE_DRAW_TEXT2D";
+    } else{
+        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+    }
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
-    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
-    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
+    // もし該当する描画データがなければ作成する
+    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
+    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        if(!isText){
+            modelDrawData_[curDrawDataName]->pso =
+                PSOManager::GetPSO(
+                    "CommonVSPipeline.pip",
+                    blendMode, cullMode, PolygonTopology::TRIANGLE
+                );
+        } else{
+            modelDrawData_[curDrawDataName]->pso =
+                PSOManager::GetPSO(
+                    "TextVSPipeline.pip",
+                    blendMode, cullMode, PolygonTopology::TRIANGLE
+                );
+        }
+
+        // 描画種類の設定
+        if(!isText){
+            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+                (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
+            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
+        } else{
+            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+                (int8_t)DrawOrder::Text : (int8_t)DrawOrder::Text2D;
+            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticText2D : modelDrawData_[curDrawDataName]->drawOrder;
+        }
+
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+    }
 
     // Count
-    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1] : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]);
+    auto* drawData = modelDrawData_[curDrawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
     // vertexResource
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() < vertexCount + 4){ mesh.vertices.resize(vertexCount + 4); }
-    mesh.vertices[vertexCount] = VertexData(transformed[0].ToVec4(), Vector2(0.0f, 0.0f), normalVec);
-    mesh.vertices[vertexCount + 1] = VertexData(transformed[1].ToVec4(), Vector2(1.0f, 0.0f), normalVec);
-    mesh.vertices[vertexCount + 2] = VertexData(transformed[2].ToVec4(), Vector2(0.0f, 1.0f), normalVec);
-    mesh.vertices[vertexCount + 3] = VertexData(transformed[3].ToVec4(), Vector2(1.0f, 1.0f), normalVec);
+    mesh.vertices[vertexCount] = VertexData(transformed[0].ToVec4(), texCoordV1, normalVec);
+    mesh.vertices[vertexCount + 1] = VertexData(transformed[1].ToVec4(), texCoordV2, normalVec);
+    mesh.vertices[vertexCount + 2] = VertexData(transformed[2].ToVec4(), texCoordV3, normalVec);
+    mesh.vertices[vertexCount + 3] = VertexData(transformed[3].ToVec4(), texCoordV4, normalVec);
 
     //indexResource
     if(mesh.indices.size() <= indexCount){ mesh.indices.resize(indexCount + 6); }
@@ -707,69 +801,60 @@ void PolygonManager::AddQuad(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    if(view3D){
-        drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-
-    } else{
-        drawData2D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-        auto& material = drawData2D->materials[(int)blendMode][(int)cullMode - 1].back();
-        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-        material[drawCount].color_ = color;
-        material[drawCount].lightingType_ = lightingType;
-        material[drawCount].uvTransform_ = uvTransform;
-        material[drawCount].GH_ = GH;
-    }
-
+    drawData->materials.resize(1);// primitiveはmesh数1固定
+    auto& material = drawData->materials.back();
+    if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+    material[drawCount].color_ = color;
+    material[drawCount].lightingType_ = lightingType;
+    material[drawCount].uvTransform_ = uvTransform;
+    material[drawCount].GH_ = GH;
 
     // transform
-    if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
-    } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][(int)cullMode - 1];
-        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = IdentityMat4();
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
-
 
     // offsetResourceの数を更新
-    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][(int)cullMode - 1] : drawData2D->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
-    }
-
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);// primitiveはmesh数1固定
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
 
     // カウントを更新
-    if(isStaticDraw){
-        objCounts_[(int)DrawOrder::StaticQuad2D]++;
-    } else{
-        if(view3D){
-            objCounts_[(int)DrawOrder::Quad]++;
+    if(!isText){
+        if(isStaticDraw){
+            objCounts_[(int)DrawOrder::StaticQuad2D]++;
         } else{
-            objCounts_[(int)DrawOrder::Quad2D]++;
+            if(view3D){
+                objCounts_[(int)DrawOrder::Quad]++;
+            } else{
+                objCounts_[(int)DrawOrder::Quad2D]++;
+            }
+        }
+    } else{
+        if(isStaticDraw){
+            objCounts_[(int)DrawOrder::StaticText2D]++;
+        } else{
+            if(view3D){
+                objCounts_[(int)DrawOrder::Text]++;
+            } else{
+                objCounts_[(int)DrawOrder::Text2D]++;
+            }
         }
     }
 
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     quadIndexCount_++;
-    view3D ? drawData3D->indexCount += 6 : drawData2D->indexCount += 6;
-    view3D ? drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++ : drawData2D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 6;
+    drawData->totalDrawCount++;
 }
+
 
 void PolygonManager::AddQuad3DPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
@@ -799,12 +884,32 @@ void PolygonManager::AddQuad3DPrimitive(
     drawDataName += "ENGINE_DRAW_QUAD";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
-    auto* drawData3D = modelDrawData_[drawDataName].get();
+
+    // 無かったら作成する
+    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        modelDrawData_[drawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, cullMode, PolygonTopology::TRIANGLE
+            );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Quad;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
+    }
 
     // Count
-    int drawCount = drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1];
+    auto* drawData = modelDrawData_[drawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
+
     // vertexResource
     modelData->meshes.resize(1);
     auto& mesh = modelData->meshes[0];
@@ -841,8 +946,8 @@ void PolygonManager::AddQuad3DPrimitive(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    drawData3D->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData3D->materials[(int)blendMode][(int)cullMode - 1].back();
+    drawData->materials.resize(1);// primitiveはmesh数1固定
+    auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
     material[drawCount].color_ = color;
     material[drawCount].lightingType_ = lightingType;
@@ -851,18 +956,17 @@ void PolygonManager::AddQuad3DPrimitive(
 
 
     // transform
-    auto& transform = drawData3D->transforms[(int)blendMode][(int)cullMode - 1];
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
-
-    // offsetResourceの数を更新
-    auto& offsetData = drawData3D->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetViewProjectionMat();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
+    // offsetResourceの数を更新
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
@@ -872,8 +976,8 @@ void PolygonManager::AddQuad3DPrimitive(
     objCountCull_[(int)cullMode - 1]++;
     objCountBlend_[(int)blendMode]++;
     quadIndexCount_++;
-    drawData3D->indexCount += 6;
-    drawData3D->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->indexCount += 6;
+    drawData->totalDrawCount++;
 }
 
 
@@ -901,8 +1005,8 @@ void PolygonManager::AddSprite(
 
     // 遠近
     float layerZ = 0.001f * layer;
-    float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
-    float zfar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+    float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
+    float zfar = pDxManager_->mainCamera_->GetZFar() - layerZ;
 
     // スプライトの四頂点を格納する変数
     Vector4 v[4]{};
@@ -964,14 +1068,6 @@ void PolygonManager::AddSprite(
         &primitiveData_[PRIMITIVE_BACKSPRITE][(int)blendMode][(int)cullMode - 1] : modelData;
 
     static std::string drawDataName;
-    drawDataName.clear();
-    drawDataName.reserve(128);
-    drawDataName += isStaticDraw ? "ENGINE_DRAW_STATIC_SPRITE" : "ENGINE_DRAW_SPRITE";
-    drawLocation == DrawLocation::Back ? drawDataName = "ENGINE_DRAW_BACKSPRITE" : drawDataName;
-    drawDataName += blendName[(int)blendMode];
-    drawDataName += cullName[(int)cullMode - 1];
-    auto* drawData = modelDrawData_[drawDataName].get();
-
     // 背面描画の場合はzFarに設定
     if(drawLocation == DrawLocation::Back && !isStaticDraw){
         v[0].z = zfar;
@@ -980,12 +1076,43 @@ void PolygonManager::AddSprite(
         v[3].z = zfar;
     }
 
+    // 描画データの取得
+    drawDataName.clear();
+    drawDataName.reserve(128);
+    drawDataName += isStaticDraw ? "ENGINE_DRAW_STATIC_SPRITE" : "ENGINE_DRAW_SPRITE";
+    drawLocation == DrawLocation::Back ? drawDataName = "ENGINE_DRAW_BACKSPRITE" : drawDataName;
+    drawDataName += blendName[(int)blendMode];
+    drawDataName += cullName[(int)cullMode - 1];
+
+    // もし該当する描画データがなければ作成する
+    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[drawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        modelDrawData_[drawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, cullMode, PolygonTopology::TRIANGLE
+            );
+
+        // 描画種類の設定
+        modelDrawData_[drawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticSprite : (int8_t)DrawOrder::Sprite;
+        modelDrawData_[drawDataName]->drawOrder = drawLocation == DrawLocation::Back ?
+            (int8_t)DrawOrder::BackSprite : modelDrawData_[drawDataName]->drawOrder;
+        // 名前の設定
+        modelDrawData_[drawDataName]->name = drawDataName;
+    }
+
     //count
-    int drawCount = drawData->totalDrawCount[(int)blendMode][(int)cullMode - 1];
+    auto* drawData = modelDrawData_[drawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
     // vertexResource
-    modelData->meshes.resize(1);
+    modelData->meshes.resize(1);// primitiveはmesh数1固定
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() <= vertexCount){ mesh.vertices.resize(vertexCount + 4); }
 
@@ -1046,8 +1173,8 @@ void PolygonManager::AddSprite(
     ///////////////////////////////////////////////////////////////////
 
     // material
-    drawData->materials[(int)blendMode][(int)cullMode - 1].resize(1);
-    auto& material = drawData->materials[(int)blendMode][(int)cullMode - 1].back();
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
     material[drawCount].color_ = color;
     material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
@@ -1055,18 +1182,17 @@ void PolygonManager::AddSprite(
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms[(int)blendMode][(int)cullMode - 1];
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
-
-    // offsetResourceの数を更新
-    auto& offsetData = drawData->offsetData[(int)blendMode][(int)cullMode - 1];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
+    // offsetResourceの数を更新
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
@@ -1088,7 +1214,7 @@ void PolygonManager::AddSprite(
     objCountBlend_[(int)blendMode]++;
     spriteCount_++;
     drawData->indexCount += 6;
-    drawData->totalDrawCount[(int)blendMode][(int)cullMode - 1]++;
+    drawData->totalDrawCount++;
 
 }
 
@@ -1110,9 +1236,12 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     static std::string modelName;
     modelName.clear();
-    modelName.reserve(64);
+    modelName.reserve(128);
     modelName = model->modelName_;
     if(modelName == ""){ return; }
+    modelName += blendName[(int)model->blendMode_];
+    modelName += cullName[(int)model->cullMode_ - 1];
+
 
     if(model->isAnimation_){
         // アニメーションしているモデルは別のデータとして扱う
@@ -1126,63 +1255,97 @@ void PolygonManager::AddModel(Model* model){
     //                     モデル描画データがが存在しないときのみ
     //////////////////////////////////////////////////////////////////////////
     if(modelDrawData_.find(modelName) == modelDrawData_.end()){
+        // 頂点データの取得
         modelDrawData_[modelName] = std::make_unique<ModelDrawData>();
-        // vertexResource
         modelDrawData_[modelName]->modelData = ModelManager::GetModelData(model->modelName_);
-        // drawOrder
+        // 名前の設定
+        modelDrawData_[modelName]->name = modelName;
+
+        // 描画種類の設定
         if(model->isAnimation_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::AnimationModel;
-        } else if(model->isParticle_){
+        } else{
+            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Model;
+        }
+        if(model->isParticle_){
             modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Particle;
+        }
+
+        // パイプラインの設定
+        if(model->isAnimation_){
+            modelDrawData_[modelName]->pso =
+                PSOManager::GetPSO(
+                    "SkinningVSPipeline.pip",
+                    model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
+                );
+        } else{
+            modelDrawData_[modelName]->pso =
+                PSOManager::GetPSO(
+                    "CommonVSPipeline.pip",
+                    model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
+                );
         }
     }
 
     // サイズ確保
-    auto& item = modelDrawData_[modelName];
-    int meshSize = (int)item->modelData->meshes.size();
+    auto& drawData = modelDrawData_[modelName];
+    int meshSize = (int)drawData->modelData->meshes.size();
 
-    // count
-    int drawCount = item->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1];
+    // count(instance数)
+    int drawCount = drawData->totalDrawCount;
 
     /////////////////////////////////////////////////////////////////////////
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
-    item->materials[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
+    // 各meshごとにinstance数分のマテリアルを持つ。ここではmesh数分の配列を確保
+    drawData->materials.resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
 
-        auto& material = item->materials[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
+        // ここではinstance数分のマテリアルを確保
+        auto& material = drawData->materials[meshIdx];
         if(material.size() <= drawCount){ material.resize(drawCount + 1); }
 
-        material[drawCount].color_ = model->color_ * model->meshColor_[meshIdx];
-        material[drawCount].shininess_ = model->shininess_;
+        // マテリアルの設定
+        material[drawCount].color_ = model->masterColor_ * model->materials_[meshIdx].color;
+        material[drawCount].shininess_ = model->materials_[meshIdx].shininess;
         material[drawCount].lightingType_ = model->lightingType_;
-        material[drawCount].uvTransform_ = model->GetUVTransform(meshIdx);
-        material[drawCount].GH_ = model->textureGH_[meshIdx];
+        material[drawCount].uvTransform_ = model->materials_[meshIdx].uvTransform;
+        material[drawCount].GH_ = model->materials_[meshIdx].GH;
     }
 
     //////////////////////////////////////////////////////////////////////////
     //                          transformResourceの設定
     //////////////////////////////////////////////////////////////////////////
 
-    Matrix4x4 wvp = Multiply(
-        model->GetWorldMat(),
-        pDxManager_->GetCamera()->GetViewProjectionMat()
-    );
+    // instance数分のtransformを確保(meshごとには必要ない)
+    Matrix4x4 wvp;
+    Matrix4x4 worldInverseTranspose = model->isAnimation_ ?
+        Transpose(InverseMatrix(model->GetWorldMat())) : IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
 
-    auto& transform = item->transforms[(int)model->blendMode_][(int)model->cullMode - 1];
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = model->GetWorldMat();
-    transform[drawCount].WVP_ = wvp;
-    transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(model->GetWorldMat()));
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+
+        // transformの設定
+        wvp = Multiply(
+            model->GetWorldMat(),
+            camera->GetViewProjectionMat()
+        );
+
+        transform[drawCount].world = model->GetWorldMat();
+        transform[drawCount].WVP = wvp;
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //                              offset情報の設定
     //////////////////////////////////////////////////////////////////////////
 
-    modelDrawData_[modelName]->offsetData[(int)model->blendMode_][(int)model->cullMode - 1].resize(meshSize);
+    // mesh数 * instance数分のoffsetを確保(各instanceごとにオフセットが必要なため)
+    modelDrawData_[modelName]->offsetData.resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
-        auto& offsetData = item->offsetData[(int)model->blendMode_][(int)model->cullMode - 1][meshIdx];
+        auto& offsetData = drawData->offsetData[meshIdx];
         offsetData.resize(drawCount + 1);
     }
 
@@ -1190,10 +1353,15 @@ void PolygonManager::AddModel(Model* model){
     //                              palette情報の設定
     //////////////////////////////////////////////////////////////////////////
     if(model->isAnimation_){
-        auto& palette = modelDrawData_[modelName]->paletteData[(int)model->blendMode_][(int)model->cullMode - 1];
+        // instance数分のpalette(行列などの入った配列)を確保
+        auto& palette = modelDrawData_[modelName]->paletteData;
         if(palette.size() <= drawCount){ palette.resize(drawCount + 1); }
         palette[drawCount] = model->palette_;
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                              カウントの更新
+    //////////////////////////////////////////////////////////////////////////
 
     // 要素数を更新
     if(model->isAnimation_){
@@ -1202,33 +1370,38 @@ void PolygonManager::AddModel(Model* model){
         model->isParticle_ ? objCounts_[(int)DrawOrder::Particle]++ : objCounts_[(int)DrawOrder::Model]++;
     }
 
-    objCountCull_[(int)model->cullMode - 1]++;
+    objCountCull_[(int)model->cullMode_ - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
-    modelDrawData_[modelName]->totalDrawCount[(int)model->blendMode_][(int)model->cullMode - 1]++;
+    modelDrawData_[modelName]->totalDrawCount++;
     modelIndexCount_++;
 
-    // モデルのスケルトンを描画
-    if(model->isSkeletonVisible_){
+    //////////////////////////////////////////////////////////////////////////
+    //                  モデルのスケルトンを描画(オプションがあれば)
+    //////////////////////////////////////////////////////////////////////////
+    //if(model->isSkeletonVisible_){
 
-        const auto& modeldata = ModelManager::GetModelData(model->modelName_);
-        const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
-            modeldata->animations[model->animationName_],
-            modeldata->defaultSkeleton,
-            model->animationTime_
-        );
+    //    const auto& modeldata = ModelManager::GetModelData(model->modelName_);
+    //    const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
+    //        modeldata->animations[model->animationName_],
+    //        modeldata->defaultSkeleton,
+    //        model->animationTime_
+    //    );
 
-        for(int i = 0; i < skeleton.joints.size(); i++){
+    //    for(int i = 0; i < skeleton.joints.size(); i++){
 
-            if(skeleton.joints[i].parent){
-                Vector3 point[2];
-                point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
-                point[1] = Vector3(0.0f, 0.0f, 0.0f) *
-                    skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+    //        if(skeleton.joints[i].parent){
+    //            Vector3 point[2];
+    //            point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
+    //            point[0] = Multiply(point[0], wvp);
 
-                SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
-            }
-        }
-    }
+    //            point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
+    //            point[1] = Multiply(point[1], wvp);
+
+
+    //            SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
+    //        }
+    //    }
+    //}
 }
 
 
@@ -1254,11 +1427,11 @@ void PolygonManager::AddLine(
     // レイヤー、描画場所に応じたZ値に設定
     if(drawLocation != DrawLocation::Not2D){
         if(drawLocation == DrawLocation::Back){
-            float zFar = pDxManager_->GetCamera()->GetZFar() - layerZ;
+            float zFar = pDxManager_->mainCamera_->GetZFar() - layerZ;
             v[0].z = zFar;
             v[1].z = zFar;
         } else{
-            float zNear = pDxManager_->GetCamera()->GetZNear() - layerZ;
+            float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
             v[0].z = zNear;
             v[1].z = zNear;
         }
@@ -1276,7 +1449,9 @@ void PolygonManager::AddLine(
         modelData = &primitiveData_[PRIMITIVE_STATIC_LINE2D][(int)blendMode][0];
     }
 
+    // 描画データの取得
     static std::string drawDataName[2];
+    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
     drawDataName[0] += "ENGINE_DRAW_LINE";
@@ -1287,12 +1462,35 @@ void PolygonManager::AddLine(
     drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_LINE2D" : "ENGINE_DRAW_LINE2D";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[0];
+    curDrawDataName = view3D ? drawDataName[0] : drawDataName[1];
 
-    auto* drawData3D = modelDrawData_[drawDataName[0]].get();
-    auto* drawData2D = modelDrawData_[drawDataName[1]].get();
+    // もし該当する描画データがなければ作成する
+    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[curDrawDataName]->modelData = modelData;
+
+        // パイプラインの設定
+        modelDrawData_[curDrawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE
+            );
+
+        // 描画種類の設定
+        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticLine2D : (int8_t)DrawOrder::Line2D;
+        if(view3D){
+            modelDrawData_[curDrawDataName]->drawOrder = (int8_t)DrawOrder::Line;
+        }
+        // 名前の設定
+        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+    }
+
 
     // Count
-    int drawCount = (view3D ? drawData3D->totalDrawCount[(int)blendMode][0] : drawData2D->totalDrawCount[(int)blendMode][0]);
+    auto* drawData = modelDrawData_[curDrawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 2;
     int indexCount = drawCount * 2;
 
@@ -1322,42 +1520,36 @@ void PolygonManager::AddLine(
     /*-------------------- 描画データに情報を書き込む --------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    // material
-    auto& material = view3D ? drawData3D->materials[(int)blendMode][0] : drawData2D->materials[(int)blendMode][0];
-    static int GH = TextureManager::LoadTexture("Assets/white1x1.png");
-    material.resize(1);
+    // material (mesh * instance数分)
+    auto& material = drawData->materials;
+    static int GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    material.resize(1);// primitiveはmesh数1固定
     if(material[0].size() <= drawCount){ material[0].resize(drawCount + 1); }
     material[0][drawCount].color_ = color;
     material[0][drawCount].lightingType_ = LIGHTINGTYPE_NONE;
     material[0][drawCount].uvTransform_ = IdentityMat4();
     material[0][drawCount].GH_ = GH;
 
-
-    // transform
-    if(view3D){
-        auto& transform = drawData3D->transforms[(int)blendMode][0];
+    // transform (instance数分)
+    Matrix4x4 worldInverseTranspose = IdentityMat4();
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetViewProjectionMat();
-        transform[drawCount].worldInverseTranspose_ = Transpose(InverseMatrix(worldMat));
-    } else{
-        auto& transform = drawData2D->transforms[(int)blendMode][0];
-        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-        transform[drawCount].world_ = worldMat;
-        transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-        transform[drawCount].worldInverseTranspose_ = IdentityMat4();
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
     }
 
-    // offsetResourceの数を更新
-    auto& offsetData = view3D ? drawData3D->offsetData[(int)blendMode][0] : drawData2D->offsetData[(int)blendMode][0];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
-    }
-
+    // offsetResourceの数を更新 (instance数分)
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
 
+    //////////////////////////////////////////////////////////////////////////
+    //                              カウントの更新
+    //////////////////////////////////////////////////////////////////////////
 
     // カウントを更新
     if(isStaticDraw){
@@ -1373,46 +1565,8 @@ void PolygonManager::AddLine(
     objCountCull_[0]++;
     objCountBlend_[(int)blendMode]++;
     lineCount_++;
-    view3D ? drawData3D->indexCount += 2 : drawData2D->indexCount += 2;
-    view3D ? drawData3D->totalDrawCount[(int)blendMode][0]++ : drawData2D->totalDrawCount[(int)blendMode][0]++;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                                                        //
-//                                                     リングの追加                                                         //
-//                                                                                                                        //
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void PolygonManager::AddRing(const Ring& ring){
-
-    //auto* modelData = 
-    //    &primitiveData_[PRIMITIVE_RING][(int)blendMode][(int)cullMode - 1]
-    //auto* drawData = isStaticDraw ?
-    //    modelDrawData_["ENGINE_DRAW_STATIC_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get() :
-    //    modelDrawData_["ENGINE_DRAW_SPRITE" + blendName[(int)blendMode] + cullName[(int)cullMode - 1]].get();
-
-    ring;
-
-    // 分割数と刻み幅の設定
-    //int diviceCount = 32;
-    //float radianStep = 2.0f * 3.14159265358979323846f / diviceCount;
-
-    // リングの頂点を求める
-
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                                                        //
-//                                                      円柱の追加                                                         //
-//                                                                                                                        //
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void PolygonManager::AddCylinder(const Cylinder& cylinder){
-    cylinder;
+    drawData->indexCount += 2;
+    drawData->totalDrawCount++;
 }
 
 
@@ -1429,7 +1583,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     Vector2 windowSize = { float(kWindowSizeX),float(kWindowSizeY) };
     float scaleRate = float(pDxManager_->GetPreResolutionRate());
     Matrix4x4 uvTransform = AffineMatrix({ scaleRate,scaleRate,0.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
-    float zfar = pDxManager_->GetCamera()->GetZFar();
+    float zfar = pDxManager_->mainCamera_->GetZFar();
 
     // 4頂点
     Vector4 v[4]{
@@ -1443,18 +1597,31 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
+    // 描画データの取得
     auto* modelData = &primitiveData_[PRIMITIVE_OFFSCREEN][(int)blendMode][0];
-
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
     drawDataName += "ENGINE_DRAW_OFFSCREEN";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[0];
-    auto* drawData = modelDrawData_[drawDataName].get();
+
+    // もし該当する描画データがなければ作成する
+    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
+        modelDrawData_[drawDataName]->modelData = modelData;
+        modelDrawData_[drawDataName]->pso =
+            PSOManager::GetPSO(
+                "CommonVSPipeline.pip",
+                blendMode, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
+            );
+        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Offscreen;
+        modelDrawData_[drawDataName]->name = drawDataName;
+    }
 
     // Count
-    int drawCount = drawData->totalDrawCount[(int)blendMode][0];
+    auto* drawData = modelDrawData_[drawDataName].get();
+    int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
 
@@ -1490,8 +1657,8 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     mesh.vertexInfluences.resize(mesh.vertices.size());
 
     // material
-    drawData->materials[(int)blendMode][0].resize(1);
-    auto& material = drawData->materials[(int)blendMode][0].back();
+    drawData->materials.resize(1);
+    auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
     material[drawCount].color_ = { 1.0f,1.0f,1.0f,1.0f };
     material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
@@ -1499,18 +1666,17 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     material[drawCount].GH_ = GH;
 
     // transform
-    auto& transform = drawData->transforms[(int)blendMode][0];
-    if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
-    transform[drawCount].world_ = IdentityMat4();
-    transform[drawCount].WVP_ = pDxManager_->GetCamera()->GetProjectionMat2D();
-    transform[drawCount].worldInverseTranspose_ = IdentityMat4();
-
-    // offsetResourceの数を更新
-    auto& offsetData = drawData->offsetData[(int)blendMode][0];
-    if(offsetData.size() == 0){
-        offsetData.resize(1);
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+        transform[drawCount].world = IdentityMat4();
+        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
+    // offsetResourceの数を更新
+    auto& offsetData = drawData->offsetData;
+    offsetData.resize(1);
     if(offsetData.back().size() <= drawCount){
         offsetData.back().resize(drawCount + 1);
     }
@@ -1520,7 +1686,7 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     objCountBlend_[(int)blendMode]++;
     objCountCull_[0]++;
     drawData->indexCount += 6;
-    drawData->totalDrawCount[(int)blendMode][0]++;
+    drawData->totalDrawCount++;
 }
 
 
@@ -1568,9 +1734,10 @@ void PolygonManager::WriteRenderData(){
         sizeof(SpotLight) * spotLights_.size()
     );
 
-    // カメラ情報
-    BaseCamera* pCamera = pDxManager_->GetCamera();
-    mapCameraData->position = pCamera->GetTranslation();
+    // ライティング情報の数を格納
+    directionalLightCount_ = (int)directionalLights_.size();
+    pointLightCount_ = (int)pointLights_.size();
+    spotLightCount_ = (int)spotLights_.size();
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1578,14 +1745,25 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    for(auto& modelData : modelDrawData_){
+
+    for(auto itr = modelDrawData_.begin(); itr != modelDrawData_.end();){
 
         int modelVertexCount = 0;
         int modelIndexCount = 0;
+        auto& modelData = *itr;
         auto& item = modelData.second;
+
+        // 要素が0なら削除してcontinue
+        if(item->totalDrawCount == 0){
+            itr = modelDrawData_.erase(itr);
+            continue;
+        }
+
         ModelDrawData::modelSwitchIdx_Vertex[modelData.first] = vertexCountAll;
         ModelDrawData::modelSwitchIdx_Index[modelData.first] = indexCountAll;
-        if(modelData.second->totalDrawCount == 0){ continue; }
+
+        // 描画リストに追加
+        drawLists_[item->pso].push_back(item.get());
 
         /*--------------------------------------*/
         //      modelの頂点,index情報を書き込む
@@ -1595,12 +1773,12 @@ void PolygonManager::WriteRenderData(){
             int meshVertexCount = (int)item->modelData->meshes[meshIdx].vertices.size();
             int meshIndexCount = (int)item->modelData->meshes[meshIdx].indices.size();
 
-            item->meshSwitchIdx_Vertex.emplace_back(modelVertexCount);// メッシュが切り替わる頂点番号を記録
-            item->meshSwitchIdx_Index.emplace_back(modelIndexCount);// メッシュが切り替わるインデックス番号を記録
+            item->meshSwitchIdx_Vertex[meshIdx] = modelVertexCount;// メッシュが切り替わる頂点番号を記録
+            item->meshSwitchIdx_Index[meshIdx] = modelIndexCount;// メッシュが切り替わるインデックス番号を記録
 
             // 頂点情報を書き込む
             std::memcpy(
-                mapVertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                mapVertexData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx],// に
                 item->modelData->meshes[meshIdx].vertices.data(),// から
                 sizeof(VertexData) * meshVertexCount// のサイズコピー
             );
@@ -1608,14 +1786,14 @@ void PolygonManager::WriteRenderData(){
 
             // インデックス情報を書き込む
             std::memcpy(
-                mapIndexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index.back(),// に
+                mapIndexData + ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx],// に
                 item->modelData->meshes[meshIdx].indices.data(),// から
                 sizeof(uint32_t) * meshIndexCount// のサイズコピー
             );
 
             // 頂点の影響度(VertexInfluence)を書き込む
             std::memcpy(
-                mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex.back(),// に
+                mapVertexInfluenceData + ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx],// に
                 item->modelData->meshes[meshIdx].vertexInfluences.data(),// から
                 sizeof(VertexInfluence) * meshVertexCount// のサイズコピー
             );
@@ -1627,6 +1805,9 @@ void PolygonManager::WriteRenderData(){
             vertexCountAll += meshVertexCount;
             indexCountAll += meshIndexCount;
         }
+
+        // イテレータを進める
+        itr++;
     }
 
 
@@ -1636,64 +1817,89 @@ void PolygonManager::WriteRenderData(){
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        for(int cullModeIdx = 0; cullModeIdx < 3; cullModeIdx++){
-            for(auto& modelData : modelDrawData_){
+    for(auto& drawList : drawLists_){
+        for(auto& drawData : drawList.second){
 
-                // 各モデルの現在のブレンドモードのインスタンス数確認
-                auto& item = modelData.second;
-                int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-                int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
-                if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
-                if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
+            // 各モデルの現在のインスタンス数確認
+            int instanceCount = (int)drawData->transforms["default"].size();
+            int jointSize = static_cast<int>(drawData->modelData->defaultSkeleton.joints.size());
+            if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
+            if((int)drawData->materials.size() == 0){ continue; }// プリミティブ用の例外処理
 
+            for(int meshIdx = 0; meshIdx < drawData->modelData->meshes.size(); meshIdx++){
+
+                /*--------------------------------------*/
+                /*        materialを一列に格納            */
+                /*--------------------------------------*/
+
+                // すべてのマテリアルを一列に並べる
+                materialArray.insert(
+                    materialArray.end(),
+                    drawData->materials[meshIdx].begin(),
+                    drawData->materials[meshIdx].end()
+                );
+            }
+
+
+            /*--------------------------------------*/
+            /*      アニメーション用の情報を格納        */
+            /*--------------------------------------*/
+            if(drawData->drawOrder == (int)DrawOrder::AnimationModel){
+
+                for(int instanceIdx = 0; instanceIdx < drawData->paletteData.size(); instanceIdx++){
+                    std::memcpy(
+                        mapPaletteData + animationJointCount + (jointSize * instanceIdx),
+                        drawData->paletteData[instanceIdx].data(),
+                        sizeof(WellForGPU) * drawData->paletteData[instanceIdx].size()
+                    );
+                }
+            }
+
+            // アニメーション用の情報を更新
+            if(drawData->drawOrder == (int)DrawOrder::AnimationModel){
+                animationJointCount += jointSize * instanceCount;
+            }
+
+            // インスタンス数をインクリメント
+            instanceCountAll += instanceCount;
+        }
+    }
+
+    instanceCountAll = 0;
+    int cameraIdx = 0;
+    for(auto& [cameraName, camera] : pDxManager_->cameras_){
+
+        // カメラ情報
+        BaseCamera* pCamera = pDxManager_->GetCamera(cameraName);
+        CameraForGPU cameraData;
+        cameraData.position = pCamera->GetTranslation();
+        std::memcpy(
+            mapCameraData + cameraIdx,
+            &cameraData,
+            sizeof(CameraForGPU)
+        );
+
+        // カメラが切り替わるインスタンス数を記録
+        cameraSwitchInstanceCount_[cameraName] = instanceCountAll;
+        cameraOrder_[cameraName] = cameraIdx;
+
+        for(auto& drawList : drawLists_){
+            for(auto& drawData : drawList.second){
                 /*--------------------------------------*/
                 //      トランスフォーム情報を書き込む
                 /*--------------------------------------*/
+                int instanceCount = (int)drawData->transforms[cameraName].size();
                 std::memcpy(
                     mapTransformData + instanceCountAll,
-                    item->transforms[blendIdx][cullModeIdx].data(),
+                    drawData->transforms[cameraName].data(),
                     sizeof(TransformMatrix) * instanceCount
                 );
-
-
-                for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
-
-                    /*--------------------------------------*/
-                    /*        materialを一列に格納            */
-                    /*--------------------------------------*/
-
-                    // すべてのマテリアルを一列に並べる
-                    materialArray.insert(
-                        materialArray.end(),
-                        item->materials[blendIdx][cullModeIdx][meshIdx].begin(),
-                        item->materials[blendIdx][cullModeIdx][meshIdx].end()
-                    );
-
-                    /*--------------------------------------*/
-                    /*      アニメーション用の情報を格納        */
-                    /*--------------------------------------*/
-                    if(item->drawOrder == (int)DrawOrder::AnimationModel){
-
-                        for(int instanceIdx = 0; instanceIdx < item->paletteData[blendIdx][cullModeIdx].size(); instanceIdx++){
-                            std::memcpy(
-                                mapPaletteData + animationJointCount + (jointSize * instanceIdx),
-                                item->paletteData[blendIdx][cullModeIdx][instanceIdx].data(),
-                                sizeof(WellForGPU) * item->paletteData[blendIdx][cullModeIdx][instanceIdx].size()
-                            );
-                        }
-                    }
-                }
-
-                // アニメーション用の情報を更新
-                if(item->drawOrder == (int)DrawOrder::AnimationModel){
-                    animationJointCount += jointSize * instanceCount;
-                }
 
                 // インスタンス数をインクリメント
                 instanceCountAll += instanceCount;
             }
         }
+        cameraIdx++;
     }
 
 
@@ -1705,7 +1911,6 @@ void PolygonManager::WriteRenderData(){
         materialArray.data(),
         sizeof(MaterialForGPU) * (int)materialArray.size()
     );
-
 }
 
 
@@ -1718,8 +1923,7 @@ void PolygonManager::WriteRenderData(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
+void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrder& drawOrder){
 
     // モノがなければreturn
     if(modelDrawData_.size() == 0){ return; }
@@ -1728,15 +1932,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
     // インスタンスが切り替わる頂点間隔の決定(モデルは必要ないため0)
     int32_t instanceInterval = 0;
-    if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
+    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::AnimationModel){
+        instanceInterval = 0;
+    } else if(drawOrder == DrawOrder::Line or drawOrder == DrawOrder::Line2D){
         instanceInterval = 2;
 
     } else if(drawOrder == DrawOrder::Triangle or drawOrder == DrawOrder::Triangle2D){
         instanceInterval = 3;
 
-    } else if(
-        drawOrder == DrawOrder::Sprite or drawOrder == DrawOrder::StaticSprite or drawOrder == DrawOrder::BackSprite or
-        drawOrder == DrawOrder::Quad or drawOrder == DrawOrder::Quad2D or drawOrder == DrawOrder::Offscreen){
+    } else{
         instanceInterval = 4;
     }
 
@@ -1771,128 +1975,82 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
     int instanceCountAll = 0;
     int animationJointCount = 0;
 
-    for(int blendIdx = 0; blendIdx < (int)BlendMode::kBlendModeCount; blendIdx++){
-        if(objCountBlend_[blendIdx] == 0){ continue; }// 描画対象がない場合はスキップ
+    for(auto& drawList : drawLists_){
 
-        for(int cullModeIdx = 0; cullModeIdx < 3; cullModeIdx++){
-            if(objCountCull_[cullModeIdx] == 0){ continue; }// 描画対象がない場合はスキップ
+        // 描画リストが空ならcontinue
+        if(drawList.second.size() == 0){ continue; }
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            /*                                  パイプラインの切り替え                                      */
-            ///////////////////////////////////////////////////////////////////////////////////////////////
 
-            // RootSignature・PSOを設定
-            if(drawOrder != DrawOrder::AnimationModel){
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        /*                                  パイプラインの切り替え                                      */
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
-                if(drawOrder != DrawOrder::Line && drawOrder != DrawOrder::Line2D && drawOrder != DrawOrder::StaticLine2D){
-                    pDxManager_->commandList->SetGraphicsRootSignature(
-                        pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].rootSignature.Get()
-                    );
-                    pDxManager_->commandList->SetPipelineState(
-                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::TRIANGLE][cullModeIdx].pipelineState_.Get()
-                    );
+        // キーがPSOなので、そこから取得し設定
+        auto* rootSignature = drawList.first->rootSignature.get();
+        auto* pipeline = drawList.first->pipeline.get();
 
-                } else{
-                    pDxManager_->commandList->SetGraphicsRootSignature(
-                        pDxManager_->rootSignatures[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].rootSignature.Get()
-                    );
-                    pDxManager_->commandList->SetPipelineState(
-                        pDxManager_->pipelines[blendIdx][(int)PolygonTopology::LINE][cullModeIdx].pipelineState_.Get()
-                    );
-                }
+        pDxManager_->commandList->SetGraphicsRootSignature(
+            rootSignature->rootSignature.Get()
+        );
+        pDxManager_->commandList->SetPipelineState(
+            pipeline->pipeline_.Get()
+        );
 
-            } else{
-                // アニメーションを行うスキニングモデルの場合
-                pDxManager_->commandList->SetGraphicsRootSignature(
-                    pDxManager_->skinningRootSignatures[blendIdx][cullModeIdx].rootSignature.Get()
-                );
-                pDxManager_->commandList->SetPipelineState(
-                    pDxManager_->skinningPipelines[blendIdx][cullModeIdx].pipelineState_.Get()
-                );
-            }
+        // Resourceのバインドを行う
+        rootSignature->BindAll(pDxManager_->commandList.Get());
 
-            // Resourceを設定
-            pDxManager_->commandList->SetGraphicsRootConstantBufferView(0, cameraResource_->GetGPUVirtualAddress());
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        /*                                     Modelごとに見ていく                                      */
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        for(auto& drawData : drawList.second){
 
-            // ライトの数を設定
-            int32_t numDirectionalLight = (int32_t)directionalLights_.size();
-            int32_t numPointLight = (int32_t)pointLights_.size();
-            int32_t numSpotLight = (int32_t)spotLights_.size();
-            pDxManager_->commandList->SetGraphicsRoot32BitConstants(6, 1, &numDirectionalLight, 0);
-            pDxManager_->commandList->SetGraphicsRoot32BitConstants(7, 1, &numPointLight, 0);
-            pDxManager_->commandList->SetGraphicsRoot32BitConstants(8, 1, &numSpotLight, 0);
+            // 各モデルの現在のブレンドモードのインスタンス数
+            int instanceCount = (int)drawData->transforms[cameraName].size();
+            int jointSize = (int)drawData->modelData->defaultSkeleton.joints.size();
+            if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
+            if((int)drawData->materials.size() == 0){ continue; }// プリミティブ用の例外処理
 
-            // SRVヒープの上のアドレスを格納するハンドル
-            D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
-            // マテリアルのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Material");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(1, srvHandleGPU);
-            // トランスフォームのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "instancingResource_Transform");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(2, srvHandleGPU);
-            // DirectionalLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "directionalLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(3, srvHandleGPU);
-            // PointLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "pointLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(4, srvHandleGPU);
-            // SpotLightのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "spotLight");
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(5, srvHandleGPU);
-            // テクスチャのテーブルをセット
-            srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, 0);
-            pDxManager_->commandList->SetGraphicsRootDescriptorTable(9, srvHandleGPU);
-            // パレットのテーブルをセット (アニメーション時のみ)
-            if(drawOrder == DrawOrder::AnimationModel){
-                srvHandleGPU = ViewManager::GetHandleGPU(DESCRIPTOR_HEAP_TYPE::SRV_CBV_UAV, "SkinningResource_Palette");
-                pDxManager_->commandList->SetGraphicsRootDescriptorTable(10, srvHandleGPU);
+
+            // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
+            if(drawData->drawOrder != (int8_t)drawOrder){
+                meshCountAll += instanceCount * (int)drawData->modelData->meshes.size();
+                instanceCountAll += instanceCount;
+                continue;
             }
 
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            /*                                     Modelごとに見ていく                                      */
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            for(auto& modelData : modelDrawData_){
+            // オフセットなどを計算し書き込み・描画を行う
+            for(int meshIdx = 0; meshIdx < drawData->modelData->meshes.size(); meshIdx++){
 
+                /*--------------------------------------*/
+                //      オフセット情報を書き込む
+                /*--------------------------------------*/
 
-                // 各モデルの現在のブレンドモードのインスタンス数
-                auto& item = modelData.second;
-                int instanceCount = (int)item->transforms[blendIdx][cullModeIdx].size();
-                int jointSize = (int)item->modelData->defaultSkeleton.joints.size();
-                if(instanceCount == 0){ continue; }// インスタンスがない場合はスキップ
-                if((int)item->materials[blendIdx][cullModeIdx].size() == 0){ continue; }// プリミティブ用の例外処理
-
-
-                // 描画対象でない場合は書き込みを行わずインクリメントだけ行いスキップ
-                if(item->drawOrder != (int8_t)drawOrder){
-                    meshCountAll += instanceCount * (int)item->modelData->meshes.size();
-                    instanceCountAll += instanceCount;
-                    continue;
+                // 書き込み
+                for(auto& offset : drawData->offsetData[meshIdx]){
+                    // 現在のモデルデータの先頭に到達するまでにどれだけinstanceがあったかのoffset
+                    offset.instanceOffset = instanceCountAll;
+                    // 現在のモデルデータの先頭に到達するまでにどれだけmeshがあったかのoffset
+                    offset.meshOffset = meshCountAll;
+                    // プリミティブの1インスタンスあたりの頂点数
+                    offset.primitiveInterval = instanceInterval;
+                    // SkinningAnimation用
+                    offset.jointIndexOffset = animationJointCount;
+                    offset.jointinterval = jointSize;
                 }
 
 
-                // オフセットなどを計算し書き込み・描画を行う
-                for(int meshIdx = 0; meshIdx < item->modelData->meshes.size(); meshIdx++){
-
-                    /*--------------------------------------*/
-                    //      オフセット情報を書き込む
-                    /*--------------------------------------*/
-
-                    // 書き込み
-                    for(auto& offset : item->offsetData[blendIdx][cullModeIdx][meshIdx]){
-                        offset.instanceOffset = instanceCountAll;
-                        offset.meshOffset = meshCountAll;
-                        offset.jointIndexOffset = animationJointCount;
-                        offset.jointinterval = jointSize;
-                        offset.primitiveInterval = instanceInterval;
-                    }
+                std::memcpy(
+                    mapOffsetData + meshCountAll,
+                    drawData->offsetData[meshIdx].data(),
+                    sizeof(OffsetData) * drawData->totalDrawCount
+                );
 
 
-                    std::memmove(
-                        mapOffsetData + meshCountAll,
-                        item->offsetData[blendIdx][cullModeIdx][meshIdx].data(),
-                        sizeof(OffsetData) * item->totalDrawCount[blendIdx][cullModeIdx]
-                    );
+                //////////////////////////////////////////////////////////////////////
+                // VSPipelineの場合は、VBVとIBVをセットして描画を行う
+                //////////////////////////////////////////////////////////////////////
+                if(drawData->pipelineType == PipelineType::VSPipeline){
 
                     /*///////////////////////////////////////////////////////////////////////////*/
 
@@ -1903,16 +2061,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*-------------------- 頂点ごとのデータ --------------------*/
 
-                    D3D12_VERTEX_BUFFER_VIEW* vbv = &item->vbv_vertex;
+                    D3D12_VERTEX_BUFFER_VIEW* vbv = &drawData->vbv_vertex;
                     int size = sizeof(VertexData);
 
                     // Resource上の開始位置設定
                     vbv->BufferLocation =
                         modelVertexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
-                    vbv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].vertices.size();
+                    vbv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].vertices.size();
                     vbv->StrideInBytes = size;
 
                     // VBVのセット
@@ -1920,7 +2078,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*-------------------- インスタンスごとのデータ --------------------*/
 
-                    D3D12_VERTEX_BUFFER_VIEW* vbv2 = &item->vbv_instance;
+                    D3D12_VERTEX_BUFFER_VIEW* vbv2 = &drawData->vbv_instance;
                     size = sizeof(OffsetData);
 
                     // Resource上の開始位置設定
@@ -1929,7 +2087,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // 総サイズ、刻み幅の設定
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
-                        vbv2->SizeInBytes = size * item->totalDrawCount[blendIdx][cullModeIdx];
+                        vbv2->SizeInBytes = size * drawData->totalDrawCount;
                     } else{
                         vbv2->SizeInBytes = size;
                     }
@@ -1944,16 +2102,15 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     // アニメーションモデルの場合のみ
                     if(drawOrder == DrawOrder::AnimationModel){
-                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &item->vbv_skinning;
+                        D3D12_VERTEX_BUFFER_VIEW* vbv3 = &drawData->vbv_skinning;
                         size = sizeof(VertexInfluence);
-                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[modelData.first] + item->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
-                            vertexInfluenceResource_.Get()->GetGPUVirtualAddress() +
-                            ofst;
+                            vertexInfluenceResource_.Get()->GetGPUVirtualAddress() + ofst;
 
                         // 総サイズ、刻み幅の設定
-                        vbv3->SizeInBytes = size * (UINT)item->modelData->meshes[meshIdx].vertices.size();
+                        vbv3->SizeInBytes = size * (UINT)drawData->modelData->meshes[meshIdx].vertices.size();
                         vbv3->StrideInBytes = size;
 
                         // VBVのセット
@@ -1967,16 +2124,16 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     /*///////////////////////////////////////////////////////////////////////////*/
 
 
-                    D3D12_INDEX_BUFFER_VIEW* ibv = &item->ibv;
+                    D3D12_INDEX_BUFFER_VIEW* ibv = &drawData->ibv;
                     size = sizeof(int32_t);
 
                     // Resource上の開始位置設定
                     ibv->BufferLocation =
                         modelIndexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Index[modelData.first] + item->meshSwitchIdx_Index[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Index[drawData->name] + drawData->meshSwitchIdx_Index[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
-                    ibv->SizeInBytes = size * (int)item->modelData->meshes[meshIdx].indices.size();
+                    ibv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].indices.size();
                     ibv->Format = DXGI_FORMAT_R32_UINT;
 
                     // IBVのセット
@@ -1989,11 +2146,12 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                     /*/////////////////////////////////////////////////////////////////*/
 
+                    // 描画
                     if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
-                            (int)item->modelData->meshes[meshIdx].indices.size(),
-                            item->totalDrawCount[blendIdx][cullModeIdx],
+                            (int)drawData->modelData->meshes[meshIdx].indices.size(),
+                            drawData->totalDrawCount,
                             0,
                             0,
                             0
@@ -2003,7 +2161,7 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
 
                         // プリミティブは一斉描画
                         pDxManager_->commandList->DrawIndexedInstanced(
-                            (int)item->indexCount,
+                            (int)drawData->indexCount,
                             1,
                             0,
                             0,
@@ -2012,72 +2170,99 @@ void PolygonManager::SetRenderData(const DrawOrder& drawOrder){
                     }
 
 
-                    // 描画総メッシュ数のインクリメント
-                    meshCountAll += instanceCount;
+                } else if(drawData->pipelineType == PipelineType::MSPipeline){
+
+                    // meshlet数を求める
+                    int meshletCount = drawData->modelData->meshes[meshIdx].meshletCount;
+
+                    // 描画
+                    pDxManager_->commandList->DispatchMesh(
+                        meshletCount,// ここはMeshletの数
+                        drawData->totalDrawCount,// ここはインスタンス数
+                        1
+                    );
+
+                } else{
+                    assert(false);// CSPipelineで描画すんな
                 }
 
-                // アニメーション用のジョイント数のインクリメント
-                if(drawOrder == DrawOrder::AnimationModel){
-                    animationJointCount += jointSize * instanceCount;
-                }
 
+                // 描画総メッシュ数のインクリメント
+                meshCountAll += instanceCount;
 
-                // 描画総インスタンス数のインクリメント
-                instanceCountAll += instanceCount;
             }
+
+            // アニメーション用のジョイント数のインクリメント
+            if(drawOrder == DrawOrder::AnimationModel){
+                animationJointCount += jointSize * instanceCount;
+            }
+
+
+            // 描画総インスタンス数のインクリメント
+            instanceCountAll += instanceCount;
         }
     }
 }
 
 /*---------------- フレームの終わりに積み上げられた情報をまとめてコマンドに積んで描画する関数 -------------------*/
 
-void PolygonManager::DrawToOffscreen(){
+void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
-#ifdef _DEBUG
-    ImGui::Begin("PostEffect");
-    ImGui::Checkbox("active", &isActivePostEffect_);
-    ImGui::End();
-#endif // _DEBUG
+    if(!isWrited_){
+    #ifdef _DEBUG
+        ImFunc::CustomBegin("PostEffect", MoveOnly_TitleBar);
+        ImGui::Checkbox("active", &isActivePostEffect_);
+        ImGui::End();
+    #endif // _DEBUG
 
-    // オフスクリーンの描画依頼をここで出しておく
-    if(isActivePostEffect_){
-        AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
-        //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
-    } else{
-        AddOffscreenResult(ViewManager::GetTextureHandle("offScreen_0"), BlendMode::NONE);
+        // オフスクリーンの描画依頼をここで出しておく
+        if(isActivePostEffect_){
+            AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
+            //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
+        } else{
+            AddOffscreenResult(
+                ViewManager::GetTextureHandle(pDxManager_->offScreenNames[pDxManager_->mainCameraName_]),
+                BlendMode::NONE
+            );
+        }
+
+        // Resourceに情報を書き込む
+        WriteRenderData();
+        isWrited_ = true;
     }
 
-    // Resourceに情報を書き込む
-    WriteRenderData();
-
     // 背景描画
-    SetRenderData(DrawOrder::BackSprite);
+    SetRenderData(cameraName, DrawOrder::BackSprite);
 
     // 3D
-    SetRenderData(DrawOrder::Line);
-    SetRenderData(DrawOrder::Quad);
-    SetRenderData(DrawOrder::Triangle);
-    SetRenderData(DrawOrder::Model);
-    SetRenderData(DrawOrder::AnimationModel);
-    SetRenderData(DrawOrder::Particle);
+    SetRenderData(cameraName, DrawOrder::Line);
+    SetRenderData(cameraName, DrawOrder::Quad);
+    SetRenderData(cameraName, DrawOrder::Text);
+    SetRenderData(cameraName, DrawOrder::Triangle);
+    SetRenderData(cameraName, DrawOrder::Model);
+    SetRenderData(cameraName, DrawOrder::AnimationModel);
+    SetRenderData(cameraName, DrawOrder::Particle);
 
     // 2D
-    SetRenderData(DrawOrder::Line2D);
-    SetRenderData(DrawOrder::Triangle2D);
-    SetRenderData(DrawOrder::Quad2D);
-    SetRenderData(DrawOrder::Sprite);
+    SetRenderData(cameraName, DrawOrder::Line2D);
+    SetRenderData(cameraName, DrawOrder::Triangle2D);
+    SetRenderData(cameraName, DrawOrder::Quad2D);
+    SetRenderData(cameraName, DrawOrder::Text2D);
+    SetRenderData(cameraName, DrawOrder::Sprite);
 }
 
 void PolygonManager::DrawToBackBuffer(){
 
     // オフスクリーンの描画結果を貼り付ける
-    SetRenderData(DrawOrder::Offscreen);
+    std::string cameraName = pDxManager_->mainCameraName_;
+    SetRenderData(cameraName, DrawOrder::Offscreen);
 
     // 解像度の変更に影響を受けない2D描画
-    SetRenderData(DrawOrder::StaticLine2D);
-    SetRenderData(DrawOrder::StaticTriangle2D);
-    SetRenderData(DrawOrder::StaticQuad2D);
-    SetRenderData(DrawOrder::StaticSprite);
+    SetRenderData(cameraName, DrawOrder::StaticLine2D);
+    SetRenderData(cameraName, DrawOrder::StaticTriangle2D);
+    SetRenderData(cameraName, DrawOrder::StaticQuad2D);
+    SetRenderData(cameraName, DrawOrder::StaticText2D);
+    SetRenderData(cameraName, DrawOrder::StaticSprite);
 }
 
 

@@ -13,6 +13,8 @@ struct MeshData{
     std::vector<uint32_t> indices;   // インデックスデータ
     int materialIndex;               // 使用するマテリアルのインデックス
     std::vector<VertexInfluence> vertexInfluences; // 頂点の影響情報
+    uint32_t meshletCount;// メッシュレットの数
+    std::vector<uint32_t> meshletSwitchIndices;// メッシュレットの切り替わるインデックス
 };
 
 // モデルのノード構造体

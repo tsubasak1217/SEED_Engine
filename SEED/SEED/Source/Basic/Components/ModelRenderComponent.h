@@ -9,7 +9,7 @@
 /*----------- モデルを描画するやつ ----------*/
 class ModelRenderComponent : public IComponent{
 public:
-    ModelRenderComponent(GameObject* pOwner, const std::string& tagName);
+    ModelRenderComponent(GameObject* pOwner, const std::string& tagName = "");
     ~ModelRenderComponent() = default;
     void Initialize(const std::string& modelPath);
     void BeginFrame();
@@ -17,11 +17,12 @@ public:
     void Draw();
     void EndFrame();
     void Finalize();
+    void EditGUI() override;
 
 public:
     /*------ Model -------*/
     Model* GetModel(){ return model_.get(); }
-    void ChangeModel(const std::string& modelFilePath);
+    void ChangeModel(const std::string& modelFilePath){ model_->ChangeModel(modelFilePath); }
 
     /*----- アニメーション関連 -----*/
     void StartAnimation(int32_t animationIndex, bool loop, float speedRate = 1.0f){ 
@@ -40,6 +41,10 @@ public:
     float GetAnimationDuration()const{ return model_->GetAnimationDuration(); }
     bool GetIsEndAnimation()const{ return model_->GetIsEndAnimation(); }
     void SetIsSkeletonVisible(bool isSkeletonVisible){ model_->SetIsSkeletonVisible(isSkeletonVisible); }
+
+public:// json
+    nlohmann::json GetJsonData() const override;
+    void LoadFromJson(const nlohmann::json& jsonData) override;
 
 private:
     std::unique_ptr<Model> model_;

@@ -14,6 +14,9 @@
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <SEED/Source/Basic/Components/ComponentDictionary.h>
 
+class Scene_Base;
+class Hierarchy;
+
 class GameObject{
 
     ////////////////////////////////////////////////////////////////////////////
@@ -22,20 +25,28 @@ class GameObject{
 
     /*----------- 基本関数 ----------*/
 public:
-    GameObject();
-    GameObject(const std::string& modelFilePath, const std::string& tagName);
+    GameObject(Scene_Base* pScene);
     virtual ~GameObject();
     virtual void Initialize();
     virtual void Update();
     virtual void Draw();
     virtual void BeginFrame();
     virtual void EndFrame();
+    void EditGUI();
+    void RegisterToHierarchy(Hierarchy* pHierarchy);
 
 public:// コンポーネントの管理関数
     template<typename TComponent>
     TComponent* AddComponent(const std::string& tagName){
         static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
         components_.emplace_back(std::make_unique<TComponent>(this, tagName));
+        return static_cast<TComponent*>(components_.back().get());
+    }
+
+    template<typename TComponent>
+    TComponent* AddComponent(){
+        static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
+        components_.emplace_back(std::make_unique<TComponent>(this));
         return static_cast<TComponent*>(components_.back().get());
     }
 
@@ -57,23 +68,17 @@ public:// コンポーネントの管理関数
     /*--- 物理・トランスフォーム関連 ---*/
 public:
     void UpdateMatrix();
-    void EditCollider();
 protected:
     void EndFrameDropFlagUpdate();
     void MoveByVelocity();
 
-    /*-------- コライダー関連 --------*/
+    /*-------- 当たり判定時関数 --------*/
 public:
-    virtual void HandOverColliders();
-    virtual void OnCollision(GameObject* other, ObjectType objectType);
-    void InitColliders(const std::string& fileName, ObjectType objectType);
-    virtual void DiscardPreCollider();
-    void ResetCollider();
+    virtual void OnCollision(GameObject* other);
 protected:
-    void LoadColliders(ObjectType objectType);
-    void LoadColliders(const std::string& fileName, ObjectType objectType);
-    virtual void InitColliders(ObjectType objectType);
-    void EraseCheckColliders();
+    virtual void OnCollisionEnter(GameObject* other);
+    virtual void OnCollisionStay(GameObject* other);
+    virtual void OnCollisionExit(GameObject* other);
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -88,11 +93,22 @@ public:
     ObjectType GetObjectType() const{ return objectType_; }
     std::string GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
-    const std::string& GetIdolName() const{ return idolName_; }
+    void SetIsActive(bool isActive){ isActive_ = isActive; }
+    bool GetIsActive() const{ return isActive_; }
+
     /*------ parent -------*/
-    void SetParent(const GameObject* parent){ parent_ = parent; }
-    const GameObject* GetParent() const{ return parent_; }
-    void ReleaseParent(){ parent_ = nullptr; }
+    void SetParent(GameObject* parent){
+        parent_ = parent;
+        parent->children_.push_back(this);
+    }
+    GameObject* GetParent(){ return parent_; }
+    void ReleaseParent(){
+        if(parent_){
+            parent_->children_.remove(this);
+            parent_ = nullptr;
+        }
+    }
+    const std::list<GameObject*>& GetChildren() const{ return children_; }
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
 
@@ -141,19 +157,12 @@ public:
     void SetVelocityZ(float z){ velocity_.z = z; }
 
     //=====================================
-    // コライダー関連
-    //=====================================
-    void AddCollider(Collider* collider);
-    std::vector<std::unique_ptr<Collider>>& GetColliders(){ return colliders_; }
-    virtual void AddSkipPushBackType(ObjectType skipType);
-    bool GetIsCollide()const{ return isCollide_; }
-    bool GetIsCollideEnter()const{ return isCollide_ && !preIsCollide_; }
-    void SetCollidable(bool _collidable);
-
-    //=====================================
     // json
     //=====================================
-    virtual const nlohmann::json& GetJsonData();
+    virtual const nlohmann::json& GetJsonData(int32_t depth);
+    virtual void LoadFromJson(const nlohmann::json& jsonData);
+    static GameObject* CreateFromJson(const nlohmann::json& jsonData);
+    static std::vector<GameObject*> CreateFamily(const nlohmann::json& jsonData, GameObject* parent = nullptr);
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー変数
@@ -164,14 +173,15 @@ protected:
     static uint32_t nextID_;
     uint32_t objectID_;
     ObjectType objectType_;
-    std::string idolName_;
     std::string objectName_;
     Vector3 targetOffset_;
+    bool isActive_ = true;
     std::list<std::unique_ptr<IComponent>> components_;
 
 public:
-    // 親子付け
-    const GameObject* parent_ = nullptr;
+    // 親子付け情報
+    GameObject* parent_ = nullptr;
+    std::list<GameObject*> children_;
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
@@ -187,16 +197,13 @@ private:
 
     /*----------- 衝突判定 ----------*/
 protected:
-    std::vector<std::unique_ptr<Collider>> colliders_;
     bool isCollide_ = false;
     bool preIsCollide_ = false;
-    bool isHandOverColliders_ = true;
     Vector3 prePos_;
-    std::unique_ptr<ColliderEditor> colliderEditor_;
 
     /*----------- 物理 ----------*/
 protected:
-    bool isApplyGravity_ = true;
+    bool isApplyGravity_ = false;
     bool isDrop_ = false;
     float dropSpeed_ = 0.f;
     float weight_ = 1.f;

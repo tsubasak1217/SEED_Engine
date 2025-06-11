@@ -137,19 +137,15 @@ void ImGuiManager::PostDraw(){
 
     ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
     ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
-    ImGui::Checkbox("Guizmo", &instance_->isGuizmoActive_);
 
     // ImGuizmoの操作モードを切り替えるコンボボックス
-    if(instance_->isGuizmoActive_){
-        // 現在の操作モードを表示
-        ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
-            {
-                {"Translate",ImGuizmo::TRANSLATE},
-                {"Rotate",ImGuizmo::ROTATE},
-                {"Scale",ImGuizmo::SCALE}
-            }
-        );
-    }
+    ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
+        {
+            {"Translate",ImGuizmo::TRANSLATE},
+            {"Rotate",ImGuizmo::ROTATE},
+            {"Scale",ImGuizmo::SCALE}
+        }
+    );
     ImGui::End();
 
     // ゲーム画面描画ウインドウ
@@ -197,24 +193,21 @@ void ImGuiManager::PostDraw(){
         ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
 
         // Guizmo
-        if(instance_->isGuizmoActive_){
-            // ImGuizmoの操作
-            ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-            ImVec2 imageLeftTop = ImGui::GetCursorScreenPos() - ImVec2(0.0f,imageSize.y);
-            Range2D rectRange = {
-                {imageLeftTop.x,imageLeftTop.y},
-                {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
-            };
+        ImDrawList* pDrawList = ImGui::GetWindowDrawList();
+        ImVec2 imageLeftTop = ImGui::GetCursorScreenPos() - ImVec2(0.0f, imageSize.y);
+        Range2D rectRange = {
+            {imageLeftTop.x,imageLeftTop.y},
+            {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
+        };
 
-            // ImGuizmoの操作を行う
-            for(auto& transform : instance_->guizmoTransforms_){
-                ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
-            }
+        // ImGuizmoの操作を行う
+        for(auto& transform : instance_->guizmoTransforms_){
+            ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
+        }
 
-            // 2D ImGuizmoの操作を行う
-            for(auto& transform2D : instance_->guizmoTransforms2D_){
-                ImFunc::Guizmo(transform2D, pDrawList, rectRange);
-            }
+        // 2D ImGuizmoの操作を行う
+        for(auto& transform2D : instance_->guizmoTransforms2D_){
+            ImFunc::Guizmo(transform2D, pDrawList, rectRange);
         }
     }
     ImGui::End();
@@ -335,12 +328,24 @@ bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<st
 ///////////////////////////////////////////////////////////////////
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
-bool ImFunc::InputText(const char* label, std::string& str){
+bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
     bool changed = ImGui::InputTextMultiline(label, buffer.data(), buffer.size());
+    if(changed){
+        str = buffer.data();  // 更新
+    }
+    return changed;
+}
+
+bool ImFunc::InputText(const char* label, string& str){
+    static std::array<char, 256> buffer;
+    std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
+    strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
+
+    bool changed = ImGui::InputText(label, buffer.data(), buffer.size());
     if(changed){
         str = buffer.data();  // 更新
     }

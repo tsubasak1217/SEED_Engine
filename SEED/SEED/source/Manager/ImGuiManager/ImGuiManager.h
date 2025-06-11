@@ -52,7 +52,6 @@ public:
 
 private:
     std::wstring windowTitle_;
-    bool isGuizmoActive_ = false; // ImGuizmoの操作を有効にするかどうか
     ImGuizmo::OPERATION currentOperation_ = ImGuizmo::TRANSLATE; // 現在の操作モード
     ImDrawList* pDrawList_ = nullptr; // ImGuiの描画リスト
     std::list<std::pair<Transform*,bool>> guizmoTransforms_; // ImGuizmoで操作するTransformのリスト
@@ -85,6 +84,7 @@ struct ImFunc{
     static bool ComboText(const char* label, string& str, const vector<string>& items);
 
     // inputTextに直接stringを渡せるように
+    static bool InputTextMultiLine(const char* label, string& str);
     static bool InputText(const char* label, string& str);
 
     // ImGuizmoの操作を行う関数

@@ -14,6 +14,7 @@
 class Model{
 
     friend class PolygonManager;
+    friend class ModelRenderComponent;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -56,6 +57,7 @@ public:// アクセッサ
     Vector3 GetWorldScale()const{ return ExtractScale(worldMat_); }
 
     // アニメーション
+    bool HasAnimation()const{ return hasAnimation_; }
     int32_t GetAnimationLoopCount()const{ return animationLoopCount_; }
     void SetIsLoopAnimation(bool isLoop){ isAnimationLoop_ = isLoop; }
     void SetAnimationSpeedRate(float speedRate){ animationSpeedRate_ = speedRate; }
@@ -63,6 +65,10 @@ public:// アクセッサ
     float GetAnimationDuration()const{ return animationDuration_; }
     bool GetIsEndAnimation()const{ return animationTime_ >= animationDuration_; }
     void SetIsSkeletonVisible(bool isSkeletonVisible){ isSkeletonVisible_ = isSkeletonVisible; }
+    std::vector<std::string> GetAnimationNames()const;
+
+    // モデルの変更
+    void ChangeModel(const std::string& modelName);
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                         //
@@ -121,7 +127,7 @@ private:
     std::vector<WellForGPU> palette_;// スキニング情報
     // 補間用変数
     std::unique_ptr<ModelSkeleton> preSkeleton_ = nullptr;// アニメーションが切り替わる前のスケルトン
-    const float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
+    float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
     float animLerpTime_ = 0.0f;// アニメーションの補間時間
     float progressOfAnimLerp_ = 0.0f;// アニメーションの補間進捗度
 

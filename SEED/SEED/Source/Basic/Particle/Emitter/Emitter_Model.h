@@ -47,5 +47,5 @@ public:
     Range1D lifeTimeRange = { 1.0f,3.0f };// 寿命時間の幅
     D3D12_CULL_MODE cullingMode = D3D12_CULL_MODE_BACK;// カリングモード
     LIGHTING_TYPE lightingType_ = LIGHTINGTYPE_NONE;// ライティングの種類
-    std::string emitModelFilePath_ = "DefaultAssets/Plane.obj";// 発生モデルのファイルパス
+    std::string emitModelFilePath_ = "DefaultAssets/Plane/Plane.obj";// 発生モデルのファイルパス
 };

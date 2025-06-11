@@ -2,6 +2,9 @@
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
 
+// usiing
+namespace fs = std::filesystem;
+
 // staticメンバーの定義
 std::random_device MyFunc::rd;
 std::mt19937 MyFunc::gen(MyFunc::rd());
@@ -222,4 +225,49 @@ Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float 
     float x = _direction.x * _speed * _time;
     float y = _direction.y * _speed * _time - 0.5f * _gravity * _time * _time;
     return Vector2(x,y);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// entry階層以下の拡張子の合致するファイルリストを取得する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<std::string> MyFunc::GetFileList(
+    const std::string& entryPath, std::initializer_list<std::string>extensions, bool isRelative
+){
+
+    std::vector<std::string> fileList;
+
+    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+        // 拡張子が合致するファイルを探す
+        for(const auto& ext : extensions){
+            if(cur.is_regular_file() && cur.path().extension() == ext){
+                // ファイル名を格納
+                if(isRelative){
+                    fileList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                } else{
+                    fileList.push_back(cur.path().string()); // 絶対パスを格納
+                }
+            }
+        }
+    }
+
+    return fileList;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// entry階層以下に指定したファイル名が存在するかを確認し、あればそのパスを返す関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::string MyFunc::FindFile(const std::string& entryPath, const std::string& filePath, bool isRelative){
+    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+        // 名前の合致するファイルを探す
+        if(cur.is_regular_file() && cur.path().filename() == filePath){
+            // 存在する場合はパスを返す
+            if(isRelative){
+                return fs::relative(cur.path(), entryPath).string(); // 相対パスを返す
+            } else{
+                return cur.path().string(); // 絶対パスを返す
+            }
+        }
+    }
+    return ""; // 存在しない場合は空文字列を返す
 }

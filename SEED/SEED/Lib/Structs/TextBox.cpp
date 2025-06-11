@@ -6,7 +6,7 @@
 #ifdef _DEBUG
 void TextBox2D::Edit(){
     // beginされているウインドウ内で使うこと
-    ImFunc::InputText("テキスト", text);
+    ImFunc::InputTextMultiLine("テキスト", text);
     ImFunc::ComboText("フォント", fontName, TextSystem::GetInstance()->GetFontNames());
     ImFunc::Combo<TextAlign>("配置", align, { "LEFT","CENTER","RIGHT" });
     ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 100.0f);

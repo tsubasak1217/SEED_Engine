@@ -35,7 +35,6 @@ void GameSystem::Initialize() {
 /////////////////////////////////////////////////////////////////
 void GameSystem::Finalize() {
     instance_->pScene_->Finalize();
-    instance_->pScene_.reset();
 }
 
 
@@ -80,7 +79,7 @@ void GameSystem::Draw() {
     }
 
     // コリジョンの描画(デバッグ表示)
-    //CollisionManager::Draw();
+    CollisionManager::Draw();
     
     // ImGuiの描画
     DrawGUI();

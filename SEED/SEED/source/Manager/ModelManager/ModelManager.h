@@ -7,6 +7,7 @@
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 // assimp
 #include <assimp/Importer.hpp>
@@ -47,7 +48,7 @@ private:
     ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
     void CreateMeshlet(ModelData* modelData);
-    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene, const std::string& modelName);
+    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene);
 
     // アニメーション関連
     std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);

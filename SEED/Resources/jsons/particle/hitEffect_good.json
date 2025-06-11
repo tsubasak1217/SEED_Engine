@@ -40,7 +40,7 @@
                 ]
             ],
             "directionRange": 1.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 0.0,
                 0.0,
@@ -145,7 +145,7 @@
                 ]
             ],
             "directionRange": 0.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 0.0,
                 0.0,
@@ -268,7 +268,7 @@
                 ]
             ],
             "directionRange": 0.019999999552965164,
-            "emitModelFilePath": "DefaultAssets/cube.obj",
+            "emitModelFilePath": "DefaultAssets/cube/cube.obj",
             "emitRange": [
                 2.6500000953674316,
                 0.0,
@@ -373,7 +373,7 @@
                 ]
             ],
             "directionRange": 1.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 0.0,
                 0.0,
@@ -478,7 +478,7 @@
                 ]
             ],
             "directionRange": 1.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 0.0,
                 0.0,
@@ -595,7 +595,7 @@
                 ]
             ],
             "directionRange": 1.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 0.0,
                 0.0,

@@ -554,16 +554,16 @@ void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& f
 /// </summary>
 void EffectSystem::Load(){
     // ファイル一覧を取得
-    std::vector<std::string> fileNames;
-    for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")){
-        if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
-            // もしファイル名が".json"で終わっていたら
-            if(entry.path().extension() == ".json"){
-                // ファイル名を追加
-                fileNames.push_back(entry.path().filename().string());
-            }
-        }
-    }
+    auto fileNames = MyFunc::GetFileList("resources/jsons/particle/", { ".json" });
+    //for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")){
+    //    if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
+    //        // もしファイル名が".json"で終わっていたら
+    //        if(entry.path().extension() == ".json"){
+    //            // ファイル名を追加
+    //            fileNames.push_back(entry.path().filename().string());
+    //        }
+    //    }
+    //}
 
     // ファイルを選択して読み込み
     ImGui::Text("読み込むファイルを選択");

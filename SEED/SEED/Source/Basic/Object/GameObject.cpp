@@ -1,4 +1,8 @@
 #include "GameObject.h"
+#include <Game/GameSystem.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
+#include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
+
 
 //////////////////////////////////////////////////////////////////////////
 // static変数
@@ -10,31 +14,33 @@ uint32_t GameObject::nextID_ = 0;
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
 //////////////////////////////////////////////////////////////////////////
-GameObject::GameObject(){
+GameObject::GameObject(Scene_Base* pScene){
     objectID_ = nextID_++;
-    idolName_ = "BaseObject";
-    objectName_ = "BaseObject";
+    objectName_ = "BaseObject" + std::to_string(objectID_);
     Initialize();
+    // シーンのヒエラルキーに登録
+    pScene->RegisterToHierarchy(this);
 }
 
-// モデル名指定がある場合
-GameObject::GameObject(const std::string& modelFilePath, const std::string& tagName){
-    objectID_ = nextID_++;
-    idolName_ = "BaseObject";
-    objectName_ = "BaseObject";
-    // モデルの初期化
-    AddComponent<ModelRenderComponent>(tagName)->Initialize(modelFilePath);
-}
+GameObject::~GameObject(){
+    // シーンのヒエラルキーから削除
+    GameSystem::GetScene()->RemoveFromHierarchy(this);
+    // 親子関係の解除
+    ReleaseParent();
 
-GameObject::~GameObject(){}
+    // コンポーネントの終了処理
+    for(auto& component : components_){
+        component->Finalize();
+    }
+
+    components_.clear();
+}
 
 
 //////////////////////////////////////////////////////////////////////////
 // 初期化処理
 //////////////////////////////////////////////////////////////////////////
 void GameObject::Initialize(){
-    // コライダーの初期化
-    InitColliders(ObjectType::Editor);
 }
 
 
@@ -53,7 +59,6 @@ void GameObject::Update(){
     for(auto& component : components_){
         component->Update();
     }
-
 }
 
 
@@ -81,11 +86,6 @@ void GameObject::BeginFrame(){
     // 座標の保存
     prePos_ = GetWorldTranslate();
 
-    // コライダーの開始処理
-    for(auto& collider : colliders_){
-        collider->BeginFrame();
-    }
-
     // コンポーネントの開始処理
     for(auto& component : components_){
         component->BeginFrame();
@@ -102,13 +102,65 @@ void GameObject::EndFrame(){
     // 落下処理の更新
     EndFrameDropFlagUpdate();
 
-    // コライダーの更新
-    EraseCheckColliders();
-
     // コンポーネントの終了処理
     for(auto& component : components_){
         component->EndFrame();
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+// GUI編集処理
+//////////////////////////////////////////////////////////////////////////
+void GameObject::EditGUI(){
+#ifdef _DEBUG
+
+    // オブジェクトの名前を編集
+    std::string label = "オブジェクト名##" + std::to_string(objectID_);
+    ImFunc::InputText(label.c_str(), objectName_);
+
+    ImGui::Text("------------- トランスフォーム -------------");
+    // トランスフォームのGUI編集
+    ImGui::Checkbox("クォータニオン回転", &isRotateWithQuaternion_);
+    Vector3 info[3] = { GetWorldTranslate(), GetWorldRotate(), GetWorldScale() };
+    ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
+    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", transform_.translate.x, transform_.translate.y, transform_.translate.z);
+    ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
+    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", transform_.rotate.x, transform_.rotate.y, transform_.rotate.z);
+    ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
+    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", transform_.scale.x, transform_.scale.y, transform_.scale.z);
+
+    ImGui::Text("--------------- ペアレント方式 ---------------");
+    ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
+    ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
+    ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
+
+    ImGui::Text("------------- コンポーネント一覧 -------------");
+
+    // コンポーネントのGUI編集
+    for(auto& component : components_){
+        component->EditGUI();
+    }
+
+    // コンポーネントの追加
+    ImGui::Separator();
+    if(ImGui::Button("コンポーネントを追加")){
+        ImGui::OpenPopup("AddComponentPopup");
+    }
+
+    if(ImGui::BeginPopup("AddComponentPopup")){
+        // コンポーネントの追加
+        if(ImGui::Button("ModelRenderComponent / モデル描画")){
+            AddComponent<ModelRenderComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
+            AddComponent<CollisionComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+#endif // _DEBUG
 }
 
 
@@ -165,19 +217,6 @@ void GameObject::UpdateMatrix(){
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// コライダーの編集
-//////////////////////////////////////////////////////////////////////////
-void GameObject::EditCollider(){
-    if(colliderEditor_){
-        colliderEditor_->Edit();
-    }
-}
-
-void GameObject::SetCollidable(bool _collidable){
-    isHandOverColliders_ = _collidable;
-}
-
 
 // フレーム終了時の落下更新処理
 void GameObject::EndFrameDropFlagUpdate(){
@@ -201,6 +240,7 @@ void GameObject::MoveByVelocity(){
     transform_.translate += velocity_ * ClockManager::DeltaTime();
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
 //////////////////////////////////////////////////////////////////////////
@@ -215,132 +255,160 @@ void GameObject::AddWorldTranslate(const Vector3& addValue){
 }
 
 
-//////////////////////////////////////////////////////////////////////////
-// コライダーの追加
-//////////////////////////////////////////////////////////////////////////
-void GameObject::AddCollider(Collider* collider){
-    colliders_.emplace_back(std::make_unique<Collider>());
-    colliders_.back().reset(collider);
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// コライダーのリセット
-//////////////////////////////////////////////////////////////////////////
-void GameObject::ResetCollider(){
-    colliders_.clear();
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// コライダーをCollisionManagerに渡す
-//////////////////////////////////////////////////////////////////////////
-void GameObject::HandOverColliders(){
-
-    // 衝突情報の保存・初期化
-    preIsCollide_ = isCollide_;
-    isCollide_ = false;
-
-    if(!isHandOverColliders_){
-        return;
-    }
-    // キャラクターの基本コライダーを渡す
-    for(auto& collider : colliders_){
-        CollisionManager::AddCollider(collider.get());
-    }
-}
 
 
 //////////////////////////////////////////////////////////////////////////
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
-void GameObject::OnCollision( GameObject* other, ObjectType objectType){
+
+void GameObject::OnCollision(GameObject* other){
+
+    if(other == nullptr){ return; }
+    // 衝突フラグを立てる
     isCollide_ = true;
-    other;
-    objectType;
-}
 
-//////////////////////////////////////////////////////////////////////////
-// 前フレームのコライダーの破棄
-//////////////////////////////////////////////////////////////////////////
-void GameObject::DiscardPreCollider(){
-    for(auto& collider : colliders_){
-        collider->DiscardPreCollider();
+    // 衝突中の処理
+    if(isCollide_){
+        OnCollisionStay(other);
+    }
+
+    // 衝突開始時の処理
+    if(isCollide_ && !preIsCollide_){
+        OnCollisionEnter(other);
+    }
+
+    // 衝突終了時の処理
+    if(!isCollide_ && preIsCollide_){
+        OnCollisionExit(other);
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// コライダーの判定スキップリストの追加
-//////////////////////////////////////////////////////////////////////////
-void GameObject::AddSkipPushBackType(ObjectType skipType){
-    for(auto& collider : colliders_){
-        collider->AddSkipPushBackType(skipType);
+void GameObject::OnCollisionEnter(GameObject* other){
+    // コンポーネントに衝突イベントを通知
+    for(auto& component : components_){
+        component->OnCollisionEnter(other);
     }
 }
 
-
-//////////////////////////////////////////////////////////////////////////
-// コライダーの読み込み
-//////////////////////////////////////////////////////////////////////////
-void GameObject::LoadColliders(ObjectType objectType){
-    // コライダーの読み込み
-    ColliderEditor::LoadColliders(idolName_ + ".json", this, &colliders_);
-
-    // オブジェクトの属性を取得
-    for(auto& collider : colliders_){
-        collider->SetObjectType(objectType);
+void GameObject::OnCollisionStay(GameObject* other){
+    // コンポーネントに衝突イベントを通知
+    for(auto& component : components_){
+        component->OnCollisionStay(other);
     }
 }
 
-void GameObject::LoadColliders(const std::string& fileName, ObjectType objectType){
-    // コライダーの読み込み
-    ColliderEditor::LoadColliders(fileName, this, &colliders_);
-    // オブジェクトの属性を取得
-    for(auto& collider : colliders_){
-        collider->SetObjectType(objectType);
+void GameObject::OnCollisionExit(GameObject* other){
+    // コンポーネントに衝突イベントを通知
+    for(auto& component : components_){
+        component->OnCollisionExit(other);
     }
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////
-// コライダーの初期化
-//////////////////////////////////////////////////////////////////////////
-void GameObject::InitColliders(ObjectType objectType){
-    colliders_.clear();
-    LoadColliders(objectType);
-}
-
-void GameObject::InitColliders(const std::string& fileName, ObjectType objectType){
-    colliders_.clear();
-    LoadColliders(fileName, objectType);
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// コライダーの更新
-//////////////////////////////////////////////////////////////////////////
-void GameObject::EraseCheckColliders(){
-
-    // 終了した要素の削除
-    for(int i = 0; i < colliders_.size(); ++i){
-        if(colliders_[i]->IsEndAnimation()){
-            colliders_.erase(colliders_.begin() + i);
-            --i;
-        }
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////
 // jsonデータの取得
 //////////////////////////////////////////////////////////////////////////
-const nlohmann::json& GameObject::GetJsonData() {
+const nlohmann::json& GameObject::GetJsonData(int32_t depth){
     static nlohmann::json json;
-    json["Translate"] = GetWorldTranslate();
-    json["Rotate"] = GetWorldRotate();
-    json["Scale"] = GetWorldScale();
+    json.clear(); // 以前のデータをクリア
+
+    // 全般の情報
+    json["objectType"] = int(objectType_);
+    json["objectName"] = objectName_;
+
+    // 親子関係の情報
+    json["isParentRotate"] = isParentRotate_;
+    json["isParentScale"] = isParentScale_;
+    json["isParentTranslate"] = isParentTranslate_;
+
+    // transformの情報
+    json["transform"]["translate"] = transform_.translate;
+    json["transform"]["rotate"] = transform_.rotate;
+    json["transform"]["scale"] = transform_.scale;
+    json["isRotateWithQuaternion"] = isRotateWithQuaternion_;
+
+    // コンポーネントの情報
+    for(const auto& component : components_){
+        json["components"].push_back(component->GetJsonData());
+    }
+
+    // 子がいる場合は再帰的に子の情報も取得
+    for(const auto& child : children_){
+        json["children"].push_back(child->GetJsonData(depth + 1));
+    }
+
     return json;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// jsonデータから読み込み値を設定する関数
+//////////////////////////////////////////////////////////////////////////
+void GameObject::LoadFromJson(const nlohmann::json& jsonData){
+
+    // 全般の情報
+    objectType_ = static_cast<ObjectType>(jsonData["objectType"]);
+    objectName_ = jsonData["objectName"];
+    // 親子関係の情報
+    isParentRotate_ = jsonData["isParentRotate"];
+    isParentScale_ = jsonData["isParentScale"];
+    isParentTranslate_ = jsonData["isParentTranslate"];
+    // transformの情報
+    transform_.translate = jsonData["transform"]["translate"];
+    transform_.rotate = jsonData["transform"]["rotate"];
+    transform_.rotateQuat = Quaternion::ToQuaternion(transform_.rotate);
+    transform_.scale = jsonData["transform"]["scale"];
+    isRotateWithQuaternion_ = jsonData["isRotateWithQuaternion"];
+
+    // コンポーネントの情報
+    for(const auto& componentJson : jsonData["components"]){
+        std::string componentType = componentJson["componentType"];
+        if(componentType == "ModelRender"){
+            auto* modelComponent = AddComponent<ModelRenderComponent>();
+            modelComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "Collision"){
+            auto* collisionComponent = AddComponent<CollisionComponent>();
+            collisionComponent->LoadFromJson(componentJson);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////
+// 新しいGameObjectをjsonデータから作成する関数
+////////////////////////////////////////////////////////////////////////////
+GameObject* GameObject::CreateFromJson(const nlohmann::json& jsonData){
+    // 新しいGameObjectを作成
+    GameObject* newObject = new GameObject(GameSystem::GetScene());
+    // jsonデータから情報を読み込む
+    newObject->LoadFromJson(jsonData);
+    return newObject;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// 家族を再帰的に作成する関数
+//////////////////////////////////////////////////////////////////////////////
+std::vector<GameObject*> GameObject::CreateFamily(const nlohmann::json& jsonData, GameObject* parent){
+    static std::vector<GameObject*> familyObjects;
+    if(!parent){
+        familyObjects.clear(); // 最初のみ初期化
+    }
+
+    // 自分自身を作成し、追加
+    GameObject* self = CreateFromJson(jsonData);
+    familyObjects.push_back(self);
+
+    // 親がいる場合は親を設定
+    if(parent){
+        self->SetParent(parent);
+    }
+
+    // 子オブジェクトを再帰的に作成
+    if(jsonData.find("children") != jsonData.end()){
+        for(const auto& childJson : jsonData["children"]){
+            CreateFamily(childJson, self);
+        }
+    }
+
+    // 結果を返す
+    return familyObjects;
 }

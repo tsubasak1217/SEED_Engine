@@ -187,6 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
+    <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
     <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp" />
     <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp" />
@@ -275,6 +276,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h" />
+    <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />

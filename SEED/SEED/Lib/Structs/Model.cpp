@@ -345,3 +345,42 @@ void Model::UpdatePalette(){
             Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
     }
 }
+
+// アニメーションの名前一覧を取得
+std::vector<std::string> Model::GetAnimationNames() const{
+    auto modelData = ModelManager::GetModelData(modelName_);
+    std::vector<std::string> animationNames;
+    for(const auto& animation : modelData->animations){
+        animationNames.push_back(animation.first);
+    }
+    return animationNames;
+}
+
+
+// モデルの変更
+void Model::ChangeModel(const std::string& modelName){
+    // モデルの読み込み
+    ModelManager::LoadModel(modelName);
+    auto modelData = ModelManager::GetModelData(modelName);
+    // マテリアルの数だけ初期化
+    materials_.clear();
+    for(int i = 0; i < modelData->materials.size(); i++){
+        auto material = &modelData->materials[i];
+        // 新しいマテリアルを追加
+        Material newMaterial;
+        newMaterial.color = material->color_;
+        newMaterial.GH = TextureManager::LoadTexture(material->textureFilePath_);
+        newMaterial.uvTransform = AffineMatrix(
+            material->UV_scale_,
+            { 0.0f,0.0f,0.0f },
+            material->UV_offset_ + material->UV_translate_
+        );
+        materials_.push_back(newMaterial);
+    }
+    // 全体の色
+    masterColor_ = { 1.0f,1.0f,1.0f,1.0f };
+    // アニメーションの情報取得
+    hasAnimation_ = modelData->animations.size() > 0;
+    // モデル名の更新
+    modelName_ = modelName;
+}

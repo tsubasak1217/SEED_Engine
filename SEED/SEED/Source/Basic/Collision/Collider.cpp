@@ -188,7 +188,7 @@ void Collider::OnCollision(Collider* collider,ObjectType objectType){
     color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     // 親オブジェクトにも衝突を通知
     if(ownerObject_){
-        ownerObject_->OnCollision(collider->ownerObject_,objectType);
+        ownerObject_->OnCollision(collider->ownerObject_);
     }
 
     // 衝突リストに追加

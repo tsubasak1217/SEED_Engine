@@ -34,7 +34,7 @@
                 ]
             ],
             "directionRange": 1.0,
-            "emitModelFilePath": "DefaultAssets/Plane.obj",
+            "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
             "emitRange": [
                 100.0,
                 17.75,
@@ -145,7 +145,7 @@
           ]
         ],
         "directionRange": 1.0,
-        "emitModelFilePath": "DefaultAssets/Plane.obj",
+        "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
         "emitRange": [
           100.0,
           10.0,

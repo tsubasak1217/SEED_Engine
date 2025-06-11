@@ -10,7 +10,7 @@
 
 // static変数初期化
 ModelManager* ModelManager::instance_ = nullptr;
-const std::string ModelManager::directoryPath_ = "resources/models";
+const std::string ModelManager::directoryPath_ = "Resources/Models/";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,10 +62,10 @@ void ModelManager::Initialize(){
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
     // モデルの読み込み
-    LoadModel("DefaultAssets/cube.obj");
-    LoadModel("DefaultAssets/JapaneseSword.obj");
-    LoadModel("DefaultAssets/tree.gltf");
-    LoadModel("DefaultAssets/Boy.gltf");
+    LoadModel("DefaultAssets/cube/cube.obj");
+    LoadModel("DefaultAssets/JapaneseSword/JapaneseSword.obj");
+    LoadModel("DefaultAssets/tree/tree.gltf");
+    LoadModel("DefaultAssets/Boy/Boy.gltf");
 }
 
 void ModelManager::LoadModel(const std::string& filename){
@@ -88,9 +88,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string modelName = filename.substr(0, filename.find_last_of('.'));
-    bool npos = filename.find_last_of('/') == std::string::npos;
-    std::string filePath = directoryPath + "/" + modelName + "/" + (npos ? filename : filename.substr(filename.find_last_of('/') + 1));
+    std::string filePath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(
         filePath.c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -106,7 +104,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // メッシュレットの作成
     CreateMeshlet(modelData);
     // マテリアルデータの読み込み
-    modelData->materials = ParseMaterials(scene, modelName);
+    modelData->materials = ParseMaterials(scene);
     modelData->modelName = filename;
     // アニメーションデータの読み込み
     modelData->animations = LoadAnimation(directoryPath, filename);
@@ -260,7 +258,7 @@ void ModelManager::CreateMeshlet(ModelData* modelData){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName){
+std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene){
     std::vector<ModelMaterialLoadData> materials;
 
     // マテリアルを読み込む
@@ -270,7 +268,19 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
         aiString texturePath;
         if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS){
-            materialData.textureFilePath_ = "../models/" + modelName + "/" + std::string(texturePath.C_Str());
+
+            std::string findResult;
+            // まずmodel階層内から探す
+            findResult = MyFunc::FindFile("Resources/models/", texturePath.C_Str());
+            if(!findResult.empty()){
+                materialData.textureFilePath_ = "../models/" + findResult;
+
+            } else{// 見つからなかったらTextures階層から探す
+                findResult = MyFunc::FindFile("Resources/Textures/", texturePath.C_Str());
+                if(!findResult.empty()){
+                    materialData.textureFilePath_ = findResult;
+                }
+            }
         }
 
         // テクスチャがない場合は白テクスチャを設定
@@ -346,10 +356,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    bool npos = filename.find_last_of('/') == std::string::npos;
-    std::string filePath =
-        directoryPath + "/" + filename.substr(0, filename.find_last_of('.'))
-        + "/" + (npos ? filename : filename.substr(filename.find_last_of('/')));
+    std::string filePath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 

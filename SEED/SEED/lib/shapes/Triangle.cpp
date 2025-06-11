@@ -23,7 +23,7 @@ Triangle::Triangle(
     this->color = color;
     this->blendMode = blendMode;
     uvTransform = IdentityMat4();
-    GH = TextureManager::LoadTexture("Assets/white1x1.png");
+    GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
 }
 
 
@@ -53,7 +53,7 @@ Triangle2D::Triangle2D(
     this->color = color;
     this->blendMode = blendMode;
     litingType = LIGHTINGTYPE_NONE;
-    GH = TextureManager::LoadTexture("Assets/white1x1.png");
+    GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
     uvTransform = IdentityMat4();
     isStaticDraw = false;
 }

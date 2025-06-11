@@ -1,27 +1,31 @@
 #pragma once
+// stl
 #include <vector>
-#include <json.hpp>
 #include <string>
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include <memory>
+// json
+#include <json.hpp>
+// local
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/Collider.h>
 
-class BaseObject;
+class GameObject;
 
 class ColliderEditor{
 
 private:// 基本関数
     ColliderEditor() = default;
 public:
-    ColliderEditor(const std::string& className, BaseObject* parent);
+    ColliderEditor(const std::string& className, GameObject* parent);
     ~ColliderEditor();
 
 public:// 編集・ファイル操作関数
     void Edit();
-    static void LoadColliders(const std::string& fileName, BaseObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray);
+    static void LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray);
 
 private:
     void AddColliderOnGUI();
@@ -42,7 +46,7 @@ public:// アクセッサ
 private:
     std::string className_;
     ColliderType addColliderType_ = ColliderType::OBB;
-    BaseObject* parentObject_ = nullptr;
+    GameObject* parentObject_ = nullptr;
     const Matrix4x4* parentMat_ = nullptr;
     std::vector<std::unique_ptr<Collider>>colliders_;
     // ロードしたコライダーのデータ

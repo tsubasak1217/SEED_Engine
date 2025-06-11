@@ -4,14 +4,14 @@
 #include <array>
 #include <memory>
 // Collider
-#include <SEED/Source/Object/Collision/Collider.h>
-#include <SEED/Source/Object/Collision/Collider_Sphere.h>
-#include <SEED/Source/Object/Collision/Collider_AABB.h>
-#include <SEED/Source/Object/Collision/Collider_OBB.h>
-#include <SEED/Source/Object/Collision/Collider_Line.h>
-#include <SEED/Source/Object/Collision/Collider_Capsule.h>
-#include <SEED/Source/Object/Collision/Collider_Plane.h>
-#include <SEED/Source/Object/Collision/Octree.h>
+#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
+#include <SEED/Source/Basic/Collision/Collider_AABB.h>
+#include <SEED/Source/Basic/Collision/Collider_OBB.h>
+#include <SEED/Source/Basic/Collision/Collider_Line.h>
+#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/Collider_Plane.h>
+#include <SEED/Source/Basic/Collision/Octree.h>
 
 class CollisionManager{
 private:

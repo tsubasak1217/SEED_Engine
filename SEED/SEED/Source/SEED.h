@@ -23,7 +23,7 @@
 #include <SEED/Lib/Shapes/Triangle.h>
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/Structs/Sprite.h>
-#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Source/Basic/Camera/BaseCamera.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Shapes/AABB.h>
 #include <SEED/Lib/Shapes/OBB.h>

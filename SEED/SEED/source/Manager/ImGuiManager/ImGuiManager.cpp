@@ -200,10 +200,10 @@ void ImGuiManager::PostDraw(){
         if(instance_->isGuizmoActive_){
             // ImGuizmoの操作
             ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-            ImVec2 windowPos = ImGui::GetWindowPos();
+            ImVec2 imageLeftTop = ImGui::GetCursorScreenPos() - ImVec2(0.0f,imageSize.y);
             Range2D rectRange = {
-                {windowPos.x,windowPos.y},
-                {windowPos.x + imageSize.x, windowPos.y + imageSize.y}
+                {imageLeftTop.x,imageLeftTop.y},
+                {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
             };
 
             // ImGuizmoの操作を行う
@@ -400,7 +400,7 @@ void ImFunc::Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectR
 
     // 必要な行列の用意
     BaseCamera* camera = SEED::GetCamera("debug");
-    Matrix4x4 viewMat = TranslateMatrix(Vector3(0.0f, 0.0f, 10.0f));
+    Matrix4x4 viewMat = TranslateMatrix(Vector3(0.0f, 0.0f, camera->GetZNear() + 1.0f));
     Matrix4x4 projMat = camera->GetProjectionMat2D();
     Matrix4x4 modelMat = transform->ToMatrix4x4();
     Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列

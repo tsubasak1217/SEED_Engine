@@ -3,7 +3,7 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <Game/Objects/Judgement/Judgement.h>
 #include <Game/Objects/Notes/NotesData.h>
-#include <SEED/Source/Object/Camera/BaseCamera.h>
+#include <SEED/Source/Basic/Camera/BaseCamera.h>
 
 class RythmGameManager{
 private:

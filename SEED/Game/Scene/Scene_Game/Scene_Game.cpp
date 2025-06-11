@@ -56,16 +56,16 @@ void Scene_Game::Initialize(){
     for(int i = 0; i < 1; i++){
 
         if(i % 4 == 0){
-            models_.emplace_back(std::make_unique<Model>("Assets/MultiMeshSkinning.glb"));
+            models_.emplace_back(std::make_unique<Model>("DefaultAssets/MultiMeshSkinning.glb"));
             models_[i]->StartAnimation(0, true);
         } else if(i % 3 == 1){
-            models_.emplace_back(std::make_unique<Model>("Assets/zombie.gltf"));
+            models_.emplace_back(std::make_unique<Model>("DefaultAssets/zombie.gltf"));
             models_[i]->StartAnimation("idle", true);
         } else if(i % 3 == 2){
-            models_.emplace_back(std::make_unique<Model>("Assets/walk.gltf"));
+            models_.emplace_back(std::make_unique<Model>("DefaultAssets/walk.gltf"));
             models_[i]->StartAnimation(0, true);
         } else{
-            models_.emplace_back(std::make_unique<Model>("Assets/sneakWalk.gltf"));
+            models_.emplace_back(std::make_unique<Model>("DefaultAssets/sneakWalk.gltf"));
             models_[i]->StartAnimation(0, true);
         }
         models_[i]->SetIsSkeletonVisible(true);
@@ -83,6 +83,9 @@ void Scene_Game::Initialize(){
     textBox_.fontSize = 32.0f;
     textBox_.transform.translate = { 400.0f,400.0f };
     textBox_.size = { 400.0f, 200.0f };
+
+    gameObject_ = std::make_unique<GameObject>("DefaultAssets/man.gltf","model1");
+    gameObject_->GetComponent<ModelRenderComponent>("model1")->StartAnimation(0, true);
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -144,6 +147,8 @@ void Scene_Game::Update(){
         model->Update();
     }
 
+    gameObject_->Update();
+
     EffectSystem::Update();
 }
 
@@ -174,6 +179,9 @@ void Scene_Game::Draw(){
 
         ImGuiManager::RegisterGuizmoItem(&model->transform_,model->isRotateWithQuaternion_);
     }
+
+    gameObject_->Draw();
+    ImGuiManager::RegisterGuizmoItem(&gameObject_->transform_,gameObject_->isRotateWithQuaternion_);
 
     textBox_.Draw();
 

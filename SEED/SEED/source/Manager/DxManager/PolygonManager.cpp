@@ -1522,7 +1522,7 @@ void PolygonManager::AddLine(
 
     // material (mesh * instance数分)
     auto& material = drawData->materials;
-    static int GH = TextureManager::LoadTexture("Assets/white1x1.png");
+    static int GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
     material.resize(1);// primitiveはmesh数1固定
     if(material[0].size() <= drawCount){ material[0].resize(drawCount + 1); }
     material[0][drawCount].color_ = color;

@@ -180,7 +180,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     instance_->StartUpLoad();
 
     // offscreenの画面のアルファ値を1にするためのcolor{0,0,0,1}のスプライトを作成
-    instance_->offscreenWrapper_ = std::make_unique<Sprite>("Assets/white1x1.png");
+    instance_->offscreenWrapper_ = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
     instance_->offscreenWrapper_->size = { (float)clientWidth,(float)clientHeight };
     instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 256);
     instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
@@ -261,7 +261,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
-        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
+        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         triangle.blendMode, triangle.cullMode
     );
 }
@@ -287,7 +287,7 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false,
-        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
+        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         triangle.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         triangle.isStaticDraw, triangle.drawLocation, triangle.layer
     );
@@ -305,7 +305,7 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[3],
         quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
         worldMat, quad.color, quad.lightingType, quad.uvTransform, true,
-        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
+        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         quad.blendMode, quad.isText, quad.cullMode
     );
 }
@@ -333,7 +333,7 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[3].ToVec3(),
         quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
         worldMat, quad.color, quad.lightingType, quad.uvTransform, false,
-        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("Assets/white1x1.png"),
+        quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         quad.blendMode, quad.isText, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
     );
@@ -656,7 +656,7 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
 
     // 制御点の描画
     if(!isControlPointVisible){ return; }
-    Model controlPointModel = Model("Assets/cube.obj");
+    Model controlPointModel = Model("DefaultAssets/cube.obj");
     controlPointModel.transform_.scale = { 0.5f,0.5f,0.5f };
     controlPointModel.masterColor_ = { 1.0f,0.0f,0.0f,1.0f };
 

@@ -1,6 +1,6 @@
 #include "GameSystem.h"
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
-#include <Game/Scene/Base/SceneRegister.h>
+#include <SEED/Source/Basic/Scene/SceneRegister.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 /////////////////////////////////////////////////////////////////

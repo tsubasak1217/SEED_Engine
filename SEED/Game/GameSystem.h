@@ -2,7 +2,7 @@
 #include <memory>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
-#include <Game/Scene/Base/Scene_Base.h>
+#include <SEED/Source/Basic/Scene/Scene_Base.h>
 
 class GameSystem{
 private:

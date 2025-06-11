@@ -1,5 +1,5 @@
 #pragma once
-#include <Game/Scene/Base/State_Base.h>
+#include <SEED/Source/Basic/Scene/State_Base.h>
 #include <Game/Manager/RythmGameManager.h>
 
 class GameState_Play : public State_Base{

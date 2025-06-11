@@ -76,7 +76,7 @@ public:
     std::string modelName_;
 
     // 親子付け
-    const Model* parent_ = nullptr;// 親のポインタ
+    const Matrix4x4* parentMat_ = nullptr;// 親のポインタ
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;

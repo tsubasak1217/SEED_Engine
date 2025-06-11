@@ -5,9 +5,9 @@ Note_Hold::Note_Hold() : Note_Base(){
     noteType_ = NoteType::Hold;
 
     // ホールドノーツのテクスチャの設定
-    textureGHs_[0] = TextureManager::GetInstance()->LoadTexture("Assets/white1x1.png");
-    textureGHs_[1] = TextureManager::GetInstance()->LoadTexture("Assets/white1x1.png");
-    textureGHs_[2] = TextureManager::GetInstance()->LoadTexture("Assets/white1x1.png");
+    textureGHs_[0] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
+    textureGHs_[1] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
+    textureGHs_[2] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
 
     // ホールドノーツの色の設定
     noteColors_[0] = { 1.0f, 1.0f, 0.0f, 1.0f };

@@ -1,12 +1,12 @@
 #include "ColliderEditor.h"
-#include <Game/Objects/Base/BaseObject.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
-#include <SEED/Source/Object/Collision/Collider_Sphere.h>
-#include <SEED/Source/Object/Collision/Collider_AABB.h>
-#include <SEED/Source/Object/Collision/Collider_OBB.h>
-#include <SEED/Source/Object/Collision/Collider_Line.h>
-#include <SEED/Source/Object/Collision/Collider_Capsule.h>
-#include <SEED/Source/Object/Collision/Collider_Plane.h>
+#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
+#include <SEED/Source/Basic/Collision/Collider_AABB.h>
+#include <SEED/Source/Basic/Collision/Collider_OBB.h>
+#include <SEED/Source/Basic/Collision/Collider_Line.h>
+#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/Collider_Plane.h>
 
 ////////////////////////////////////////////////////////////
 // 静的メンバ変数
@@ -19,7 +19,7 @@ std::vector<std::string> ColliderEditor::colliderFileNames_;
 // コンストラクタ ・ デストラクタ
 ////////////////////////////////////////////////////////////
 
-ColliderEditor::ColliderEditor(const std::string& className, BaseObject* parent){
+ColliderEditor::ColliderEditor(const std::string& className, GameObject* parent){
     className_ = className;
     parentObject_ = parent;
     if(parent){
@@ -166,7 +166,7 @@ void ColliderEditor::AddColliderOnGUI(){
         }
 
         // 行列に親子付け
-        colliders_.back()->SetParentObject(parentObject_);
+        colliders_.back()->SetOwnerObject(parentObject_);
         colliders_.back()->SetParentMatrix(parentMat_);
         colliders_.back()->objectType_ = ObjectType::Editor;
         colliders_.back()->isEdit_ = true;
@@ -302,7 +302,7 @@ void ColliderEditor::OutputToJson(){
 // Jsonファイルからの読み込み
 ////////////////////////////////////////////////////////////
 
-void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray){
+void ColliderEditor::LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray){
     // 無ければ読み込む
     if(colliderData_.find(fileName) == colliderData_.end()){
         LoadColliderData(fileName);
@@ -377,7 +377,7 @@ void ColliderEditor::LoadColliders(const std::string& fileName, BaseObject* pare
     for(auto& collider : *pColliderArray){
         // 親子付け
         collider->SetParentMatrix(parentObject->GetWorldMatPtr());
-        collider->SetParentObject(parentObject);
+        collider->SetOwnerObject(parentObject);
     }
 }
 

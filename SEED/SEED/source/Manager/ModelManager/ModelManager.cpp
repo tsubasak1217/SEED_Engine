@@ -62,10 +62,10 @@ void ModelManager::Initialize(){
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
     // モデルの読み込み
-    LoadModel("Assets/cube.obj");
-    LoadModel("Assets/JapaneseSword.obj");
-    LoadModel("Assets/tree.gltf");
-    LoadModel("Assets/Boy.gltf");
+    LoadModel("DefaultAssets/cube.obj");
+    LoadModel("DefaultAssets/JapaneseSword.obj");
+    LoadModel("DefaultAssets/tree.gltf");
+    LoadModel("DefaultAssets/Boy.gltf");
 }
 
 void ModelManager::LoadModel(const std::string& filename){
@@ -275,7 +275,7 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
         // テクスチャがない場合は白テクスチャを設定
         if(materialData.textureFilePath_ == ""){
-            materialData.textureFilePath_ = "Assets/white1x1.png";
+            materialData.textureFilePath_ = "DefaultAssets/white1x1.png";
         } else{
             // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
             if(materialData.textureFilePath_.find("/*") != std::string::npos){
@@ -313,7 +313,7 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
         } else{
             // マテリアルが対応していない場合はデフォルトマテリアルを割り当て
             ModelMaterialLoadData defaultMaterial;
-            defaultMaterial.textureFilePath_ = "Assets/white1x1.png";
+            defaultMaterial.textureFilePath_ = "DefaultAssets/white1x1.png";
             meshMaterials.push_back(defaultMaterial);
         }
     }

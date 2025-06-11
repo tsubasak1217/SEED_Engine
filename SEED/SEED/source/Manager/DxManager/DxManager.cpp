@@ -266,8 +266,8 @@ void DxManager::CreateRenderTargets(){
 void DxManager::StartUpload(){
     // システムで使用するものは先にテクスチャを作成しておく
     TextureManager::GetInstance();
-    TextureManager::LoadTexture("Assets/white1x1.png");
-    TextureManager::LoadTexture("Assets/uvChecker.png");
+    TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    TextureManager::LoadTexture("DefaultAssets/uvChecker.png");
 
 #ifdef _DEBUG
     // エンジン用リソースを自動で読み込む

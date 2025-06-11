@@ -22,7 +22,7 @@
                 ]
             ],
             "directionRange": 0.0,
-            "emitModelFilePath": "Assets/cube.obj",
+            "emitModelFilePath": "DefaultAssets/cube.obj",
             "emitRange": [
                 10.0,
                 10.0,
@@ -100,7 +100,7 @@
             ],
             "textureHandles": [
                 "../models/Assets/Plane/uvChecker.png",
-                "Assets/white1x1.png"
+                "DefaultAssets/white1x1.png"
             ],
             "useDefaultTexture": true,
             "useRotateDirection": false,

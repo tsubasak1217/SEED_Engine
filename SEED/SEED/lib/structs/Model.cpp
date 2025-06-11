@@ -93,12 +93,10 @@ void Model::UpdateMatrix(){
     }
 
     // ワールド行列の更新
-    if(parent_){
-
-        Matrix4x4 parentMat = parent_->worldMat_;
+    if(parentMat_){
 
         if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
-            worldMat_ = localMat_ * (parentMat);
+            worldMat_ = localMat_ * (*parentMat_);
             return;
         } else{
 
@@ -106,22 +104,21 @@ void Model::UpdateMatrix(){
 
             // 親の行列から取り出した要素を打ち消す行列を作成
             if(!isParentScale_){
-                Vector3 inverseScale = Vector3(1.0f, 1.0f, 1.0f) / ExtractScale(parentMat);
+                Vector3 inverseScale = Vector3(1.0f, 1.0f, 1.0f) / ExtractScale(*parentMat_);
                 cancelMat = cancelMat * ScaleMatrix(inverseScale);
             }
 
             if(!isParentRotate_){
-                Vector3 inverseRotate = ExtractRotation(parentMat) * -1.0f;
+                Vector3 inverseRotate = ExtractRotation(*parentMat_) * -1.0f;
                 cancelMat = cancelMat * RotateMatrix(inverseRotate);
             }
 
             if(!isParentTranslate_){
-                Vector3 inverseTranslate = ExtractTranslation(parentMat) * -1.0f;
+                Vector3 inverseTranslate = ExtractTranslation(*parentMat_) * -1.0f;
                 cancelMat = cancelMat * TranslateMatrix(inverseTranslate);
             }
 
-            Matrix4x4 canceledMat = cancelMat * parentMat;
-            //worldMat_ = (localMat_ * parentMat) * cancelMat;
+            Matrix4x4 canceledMat = cancelMat * *parentMat_;
             worldMat_ = localMat_ * canceledMat;
 
         }

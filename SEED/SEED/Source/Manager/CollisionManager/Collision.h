@@ -9,7 +9,7 @@
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/Shapes/Triangle.h>
 #include <SEED/Lib/Shapes/Capsule.h>
-#include <SEED/Source/Object/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/Collider.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionData.h>
 
 namespace Collision{

@@ -3,11 +3,11 @@
 #include <SEED/Source/SEED.h>
 
 // emitters
-#include <SEED/Source/Object/Particle/Emitter/Emitter.h> 
-#include <SEED/Source/Object/Particle/Emitter/Emitter_Model.h>
+#include <SEED/Source/Basic/Particle/Emitter/Emitter.h> 
+#include <SEED/Source/Basic/Particle/Emitter/Emitter_Model.h>
 // particles
-#include <SEED/Source/Object/Particle/BaseParticle.h>
-#include <SEED/Source/Object/Particle/Particle_Model.h>
+#include <SEED/Source/Basic/Particle/BaseParticle.h>
+#include <SEED/Source/Basic/Particle/Particle_Model.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */

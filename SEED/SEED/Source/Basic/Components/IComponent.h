@@ -1,6 +1,7 @@
 #pragma once 
 #include <string>
 #include <json.hpp>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 // コンポーネントのインターフェース
 class IComponent{

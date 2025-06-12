@@ -68,9 +68,6 @@ void ModelRenderComponent::EditGUI(){
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
 
-        // Guizmoで操作できるように
-        ImGuiManager::RegisterGuizmoItem(&model_->transform_, owner_->isRotateWithQuaternion_);
-
         // モデルの変更
         label = "モデル変更##" + std::to_string(componentID_);
         if(ImGui::CollapsingHeader(label.c_str())){

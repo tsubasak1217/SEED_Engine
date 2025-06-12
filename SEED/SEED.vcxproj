@@ -119,6 +119,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
@@ -223,6 +224,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />

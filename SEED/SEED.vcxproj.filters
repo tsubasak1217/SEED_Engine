@@ -101,6 +101,7 @@
     <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

@@ -12,3 +12,9 @@ nlohmann::json IComponent::GetJsonData() const{
     j["componentTag"] = componentTag_;
     return j;
 }
+
+void IComponent::LoadFromJson(const nlohmann::json& jsonData){
+    // コンポーネントのIDとタグを読み込む
+    componentID_ = jsonData["componentID"];
+    componentTag_ = jsonData["componentTag"];
+}

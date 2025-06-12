@@ -6,6 +6,8 @@
 #include <functional>
 // directX
 #include <d3d12.h>
+/// json
+#include <json.hpp>
 // local
 #include <SEED/Lib/Structs/Transform.h>
 #include <SEED/Lib/Structs/blendMode.h>
@@ -20,6 +22,8 @@ enum class TextAlign{
 };
 
 struct TextBox2D{
+    TextBox2D() = default;
+    TextBox2D(const std::string& _text) : text(_text){}
     std::string text;
     std::string fontName;
     Transform2D transform;
@@ -39,6 +43,8 @@ struct TextBox2D{
 #ifdef _DEBUG
     bool textBoxVisible = true;
     void Edit();
+    nlohmann::json GetJsonData() const;
+    void LoadFromJson(const nlohmann::json& jsonData);
 #endif // _DEBUG
 
 private:// フォーマット解析

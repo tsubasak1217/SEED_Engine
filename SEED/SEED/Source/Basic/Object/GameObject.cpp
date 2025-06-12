@@ -157,6 +157,10 @@ void GameObject::EditGUI(){
             AddComponent<CollisionComponent>();
             ImGui::CloseCurrentPopup();
         }
+        if(ImGui::Button("TextComponent / テキスト描画")){
+            AddComponent<TextComponent>();
+            ImGui::CloseCurrentPopup();
+        }
         ImGui::EndPopup();
     }
 
@@ -369,7 +373,11 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Collision"){
             auto* collisionComponent = AddComponent<CollisionComponent>();
             collisionComponent->LoadFromJson(componentJson);
-        }
+
+        } else if(componentType == "Text"){
+            auto* textComponent = AddComponent<TextComponent>();
+            textComponent->LoadFromJson(componentJson);
+        } 
     }
 }
 

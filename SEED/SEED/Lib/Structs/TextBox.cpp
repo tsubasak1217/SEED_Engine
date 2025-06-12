@@ -7,7 +7,8 @@
 void TextBox2D::Edit(){
     // beginされているウインドウ内で使うこと
     ImFunc::InputTextMultiLine("テキスト", text);
-    ImFunc::ComboText("フォント", fontName, TextSystem::GetInstance()->GetFontNames());
+    auto fontNames = MyFunc::GetFileList("Resources/fonts", { ".ttf", ".otf" });
+    ImFunc::ComboText("フォント", fontName, fontNames);
     ImFunc::Combo<TextAlign>("配置", align, { "LEFT","CENTER","RIGHT" });
     ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 100.0f);
     ImGui::DragFloat2("テキスト位置", &transform.translate.x, 1.0f);
@@ -26,6 +27,53 @@ void TextBox2D::Edit(){
         ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
     }
 }
+
+// jsonデータの取得
+nlohmann::json TextBox2D::GetJsonData() const{
+    nlohmann::json jsonData;
+    jsonData["text"] = text;
+    jsonData["fontName"] = fontName;
+    jsonData["transform"]["translate"] = transform.translate;
+    jsonData["transform"]["rotate"] = transform.rotate;
+    jsonData["transform"]["scale"] = transform.scale;
+    jsonData["size"] = size;
+    jsonData["anchorPos"] = anchorPos;
+    jsonData["fontSize"] = fontSize;
+    jsonData["lineSpacing"] = lineSpacing;
+    jsonData["glyphSpacing"] = glyphSpacing;
+    jsonData["align"] = static_cast<int>(align);
+    jsonData["blendMode"] = static_cast<int>(blendMode);
+    jsonData["useOutline"] = useOutline;
+    jsonData["outlineWidth"] = outlineWidth;
+    jsonData["outlineSplitCount"] = outlineSplitCount;
+    jsonData["color"] = color;
+    jsonData["outlineColor"] = outlineColor;
+    return jsonData; // JSONデータを返す
+}
+
+// jsonデータからの読み込み
+void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
+    text = jsonData["text"];
+    fontName = jsonData["fontName"];
+    transform.translate = jsonData["transform"]["translate"];
+    transform.rotate = jsonData["transform"]["rotate"];
+    transform.scale = jsonData["transform"]["scale"];
+    size = jsonData["size"];
+    anchorPos = jsonData["anchorPos"];
+    fontSize = jsonData["fontSize"];
+    lineSpacing = jsonData["lineSpacing"];
+    glyphSpacing = jsonData["glyphSpacing"];
+    align = static_cast<TextAlign>(jsonData["align"]);
+    blendMode = static_cast<BlendMode>(jsonData["blendMode"]);
+    useOutline = jsonData["useOutline"];
+    outlineWidth = jsonData["outlineWidth"];
+    outlineSplitCount = jsonData["outlineSplitCount"];
+    color = jsonData["color"];
+    outlineColor = jsonData["outlineColor"];
+    // フォントを設定
+    SetFont(fontName);
+}
+
 #endif // _DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

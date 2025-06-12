@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
+// state
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  コンストラクタ・デストラクタ
@@ -31,7 +34,8 @@ void Scene_Game::Initialize(){
     // State初期化
     ////////////////////////////////////////////////////
 
-
+    // Playステートに初期化
+    ChangeState(new GameState_Play(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化

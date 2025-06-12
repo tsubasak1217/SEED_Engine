@@ -104,7 +104,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // メッシュレットの作成
     CreateMeshlet(modelData);
     // マテリアルデータの読み込み
-    modelData->materials = ParseMaterials(scene,filename);
+    modelData->materials = ParseMaterials(scene);
     modelData->modelName = filename;
     // アニメーションデータの読み込み
     modelData->animations = LoadAnimation(directoryPath, filename);
@@ -213,7 +213,7 @@ void ModelManager::CreateMeshlet(ModelData* modelData){
     uint32_t kMaxIndexCount = 128;
 
     for(auto& mesh : modelData->meshes){
-
+        
         uint32_t curIndex = 0;
 
         while(true){
@@ -258,7 +258,7 @@ void ModelManager::CreateMeshlet(ModelData* modelData){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene,const std::string& modelName){
+std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene){
     std::vector<ModelMaterialLoadData> materials;
 
     // マテリアルを読み込む
@@ -282,22 +282,20 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
                 }
             }
         }
-        // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
-        std::string embeddedStr = std::string(texturePath.C_Str());
-        if(embeddedStr.find("*") != std::string::npos){
-            // "*"より後の文字列を取得
-            std::string texIndexStr = embeddedStr.substr(embeddedStr.find("*") + 1);
-            uint32_t texIndex = std::stoi(texIndexStr);
-            
-            // 埋め込みテクスチャを取得し読み込む
-            const aiTexture* embeddedTexture = scene->mTextures[texIndex];
-            materialData.textureFilePath_ = modelName + texIndexStr; // 埋め込みテクスチャのファイルパスを設定
-            TextureManager::LoadTexture(materialData.textureFilePath_, embeddedTexture);
 
+        // テクスチャがない場合は白テクスチャを設定
+        if(materialData.textureFilePath_ == ""){
+            materialData.textureFilePath_ = "DefaultAssets/white1x1.png";
         } else{
-            // テクスチャがない場合は白テクスチャを設定
-            if(materialData.textureFilePath_ == ""){
-                materialData.textureFilePath_ = "DefaultAssets/white1x1.png";
+            // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
+            if(materialData.textureFilePath_.find("/*") != std::string::npos){
+                // "/*"より後の文字列を取得
+                std::string texIndexStr = materialData.textureFilePath_.substr(materialData.textureFilePath_.find("/*") + 2);
+                uint32_t texIndex = std::stoi(texIndexStr);
+
+                // 埋め込みテクスチャを取得し読み込む
+                const aiTexture* embeddedTexture = scene->mTextures[texIndex];
+                TextureManager::LoadTexture(materialData.textureFilePath_, embeddedTexture);
             }
         }
 

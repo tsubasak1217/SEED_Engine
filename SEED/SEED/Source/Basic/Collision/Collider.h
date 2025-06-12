@@ -7,7 +7,7 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
-#include <Game/Objects/Enums/ObjectType.h>
+#include <SEED/Lib/enums/ObjectType.h>
 #include <SEED/Lib/Shapes/AABB.h>
 #include <SEED/Lib/Shapes/OBB.h>
 #include <SEED/Lib/Shapes/Line.h>

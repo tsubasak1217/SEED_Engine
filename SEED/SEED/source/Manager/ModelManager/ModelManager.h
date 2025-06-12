@@ -48,7 +48,7 @@ private:
     ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
     std::vector<MeshData> ParseMeshes(const aiScene* scene);
     void CreateMeshlet(ModelData* modelData);
-    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene);
+    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene,const std::string& modelName);
 
     // アニメーション関連
     std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);

@@ -103,7 +103,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -115,23 +115,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
-    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -217,27 +206,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Config\PlaySettings.h" />
-    <ClInclude Include="Game\Manager\RythmGameManager.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
-    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
-    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
-    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
@@ -255,10 +230,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
-    <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
+    <ClInclude Include="SEED\Lib\enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
@@ -397,6 +371,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Text.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

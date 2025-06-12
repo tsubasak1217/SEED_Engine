@@ -236,6 +236,10 @@ std::vector<std::string> MyFunc::GetFileList(
 ){
 
     std::vector<std::string> fileList;
+    // entryPathが無ければ作成
+    if(!fs::exists(entryPath)){
+        fs::create_directories(entryPath); // ディレクトリを作成
+    }
 
     for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
         // 拡張子が合致するファイルを探す

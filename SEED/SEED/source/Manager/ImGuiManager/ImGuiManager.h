@@ -13,6 +13,14 @@
 using namespace std;
 class SEED;
 
+// 内部で使用する構造体
+struct GuizmoInfo{
+    Transform* transform = nullptr; // 操作対象のTransform
+    Transform2D* transform2D = nullptr; // 操作対象のTransform2D
+    bool isUseQuaternion = false; // クォータニオンを使用するかどうか
+    Matrix4x4 parentMat = IdentityMat4(); // 親の行列
+};
+
 ///////////////////////////////////////////////////////////////////
 // ImGuiの描画などを行うクラス
 ///////////////////////////////////////////////////////////////////
@@ -39,14 +47,22 @@ public:
 
 public:
     static const std::wstring& GetWindowName(){ return instance_->windowTitle_; }
-    static void RegisterGuizmoItem(Transform* transform,bool isUseQuaternion){
+    static void RegisterGuizmoItem(Transform* transform,bool isUseQuaternion,const Matrix4x4& parentMat = IdentityMat4()){
         if(transform != nullptr){
-            instance_->guizmoTransforms_.push_back({ transform,isUseQuaternion });
+            GuizmoInfo info;
+            info.transform = transform;
+            info.isUseQuaternion = isUseQuaternion;
+            info.parentMat = parentMat;
+            instance_->guizmoInfo3D_.push_back(info);
         }
     }
-    static void RegisterGuizmoItem(Transform2D* transform){
+    static void RegisterGuizmoItem(Transform2D* transform, const Matrix4x4& parentMat = IdentityMat4()){
         if(transform != nullptr){
-            instance_->guizmoTransforms2D_.push_back(transform);
+            GuizmoInfo info;
+            info.transform2D = transform;
+            info.parentMat = parentMat;
+
+            instance_->guizmoInfo2D_.push_back(info);
         }
     }
 
@@ -54,8 +70,8 @@ private:
     std::wstring windowTitle_;
     ImGuizmo::OPERATION currentOperation_ = ImGuizmo::TRANSLATE; // 現在の操作モード
     ImDrawList* pDrawList_ = nullptr; // ImGuiの描画リスト
-    std::list<std::pair<Transform*,bool>> guizmoTransforms_; // ImGuizmoで操作するTransformのリスト
-    std::list<Transform2D*> guizmoTransforms2D_; // ImGuizmoで操作するTransformのリスト
+    std::list<GuizmoInfo> guizmoInfo3D_; // ImGuizmoで操作するTransformのリスト
+    std::list<GuizmoInfo> guizmoInfo2D_; // ImGuizmoで操作するTransformのリスト
 };
 
 
@@ -88,10 +104,9 @@ struct ImFunc{
     static bool InputText(const char* label, string& str);
 
     // ImGuizmoの操作を行う関数
-    static void Guizmo(Transform* transform,ImDrawList* pDrawList,Range2D rectRange,bool isUseQuaternion);
-    static void Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectRange);
+    static void Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
+    static void Guizmo2D(const GuizmoInfo& info,ImDrawList* pDrawList,Range2D rectRange);
 };
-
 
 
 template<typename EnumType>

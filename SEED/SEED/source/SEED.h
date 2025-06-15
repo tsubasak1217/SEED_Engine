@@ -152,7 +152,7 @@ public:
     static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // 円柱の描画関数
-    static void DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawCylinder(const Vector3& start, const Vector3& end, float startRadius, float endRadius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // カプセルの描画関数
     static void DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });

@@ -95,6 +95,8 @@ Vector3 ExtractTranslation(const Matrix4x4& matrix);
 Vector3 ExtractScale(const Matrix4x4& matrix);
 // 行列から回転成分を取り出す
 Vector3 ExtractRotation(const Matrix4x4& matrix);
+// 行列からクォータニオンを取り出す
+Quaternion ExtractQuaternion(const Matrix4x4& matrix);
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);

@@ -13,6 +13,7 @@ struct Vector2 final {
 
 
     Vector2() = default;
+    Vector2(float value) : x(value), y(value){}
     Vector2(float x, float y){
         this->x = x;
         this->y = y;

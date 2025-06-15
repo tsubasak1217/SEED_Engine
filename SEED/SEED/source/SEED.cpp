@@ -515,7 +515,11 @@ void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, 
 /////////////////////////////////////////////////////////////
 // 円柱の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
+void SEED::DrawCylinder(
+    const Vector3& start, const Vector3& end, 
+    float startRadius, float endRadius, 
+    int32_t subdivision, const Vector4& color
+){
 
     if(subdivision < 3){
         subdivision = 3; // 最低3分割は必要
@@ -536,11 +540,19 @@ void SEED::DrawCylinder(const Vector3& start, const Vector3& end, float radius, 
 
     for(int i = 0; i < subdivision; ++i){
         float angle = i * angleStep;
-        float x = cos(angle) * radius;
-        float z = sin(angle) * radius;
+        float x = cos(angle) * startRadius;
+        float z = sin(angle) * startRadius;
 
         // 円周上の点を計算
         bottomCircle[i] = start + tangent * x + bitangent * z;
+    }
+
+    for(int i = 0; i < subdivision; ++i){
+        float angle = i * angleStep;
+        float x = cos(angle) * endRadius;
+        float z = sin(angle) * endRadius;
+
+        // 円周上の点を計算
         topCircle[i] = end + tangent * x + bitangent * z;
     }
 
@@ -568,7 +580,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, i
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
     // 円柱を描画
-    DrawCylinder(start, end, radius, subdivision, color);
+    DrawCylinder(start, end, radius, radius, subdivision, color);
 }
 
 void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Vector4& color){
@@ -576,7 +588,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& 
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
     // 円柱を描画
-    DrawCylinder(start, end, MyMath::Length(radius), subdivision, color);
+    DrawCylinder(start, end, MyMath::Length(radius), MyMath::Length(radius), subdivision, color);
 }
 
 
@@ -713,7 +725,8 @@ void SEED::DrawLight(const BaseLight* light){
     {
         SpotLight* spotLight = (SpotLight*)light;
         DrawSphere(spotLight->position, 1.0f, 6, light->color_);
-        DrawLine(spotLight->position, spotLight->position + spotLight->direction * spotLight->distance, light->color_);
+        Vector3 lightVec = spotLight->direction * spotLight->distance;
+        DrawLine(spotLight->position, spotLight->position + lightVec, light->color_);
         break;
     }
     default:

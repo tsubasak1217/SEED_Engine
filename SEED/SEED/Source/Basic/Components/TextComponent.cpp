@@ -68,7 +68,7 @@ nlohmann::json TextComponent::GetJsonData() const{
     nlohmann::json jsonData;
     jsonData["componentType"] = "Text";
     jsonData.update(IComponent::GetJsonData());
-    jsonData["textBox"].push_back(textBox_->GetJsonData()); // TextBox2Dのjsonデータを追加
+    jsonData["textBox"].update(textBox_->GetJsonData()); // TextBox2Dのjsonデータを追加
     return jsonData; // JSONデータを返す
 }
 

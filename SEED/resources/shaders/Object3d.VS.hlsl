@@ -47,7 +47,7 @@ MeshShaderOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, 
     output.position = mul(input.position, transforms[transformIdx].WVP);
     output.worldPosition = mul(input.position, transforms[transformIdx].world).xyz;
     output.texcoord = input.texcoord;
-    output.normal = normalize(mul(input.normal, (float3x3) transforms[transformIdx].worldInverseTranspose));
+    output.normal = normalize(mul(input.normal, (float3x3) transforms[transformIdx].world));
     
     // Caluculate MaterialIdx
     if (input.interval == 0) { // model

@@ -251,45 +251,46 @@ Vector3 Quaternion::ToEuler(const Quaternion& q){
 }
 
 Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
-    float trace = mat.m[0][0] + mat.m[1][1] + mat.m[2][2]; // 対角成分の合計
+    const auto& m = mat.m; // 行列の参照
+    float trace = m[0][0] + m[1][1] + m[2][2]; // 対角成分の合計
 
     if (trace > 0.0f){
         float s = std::sqrt(trace + 1.0f) * 0.5f;
         float invS = 0.5f / s; // sの逆数
         return Quaternion(
-            (mat.m[1][2] - mat.m[2][1]) * invS,
-            (mat.m[2][0] - mat.m[0][2]) * invS,
-            (mat.m[0][1] - mat.m[1][0]) * invS,
+            (m[1][2] - m[2][1]) * invS,
+            (m[2][0] - m[0][2]) * invS,
+            (m[0][1] - m[1][0]) * invS,
             s
         );
     } else{
         // 最大成分の判定
-        if (mat.m[0][0] > mat.m[1][1] && mat.m[0][0] > mat.m[2][2]){
-            float s = std::sqrt(1.0f + mat.m[0][0] - mat.m[1][1] - mat.m[2][2]) * 2.0f;
+        if (m[0][0] > m[1][1] && m[0][0] > m[2][2]){
+            float s = std::sqrt(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
             float invS = 1.0f / s;
             return Quaternion(
                 0.25f * s,
-                (mat.m[0][1] + mat.m[1][0]) * invS,
-                (mat.m[0][2] + mat.m[2][0]) * invS,
-                (mat.m[1][2] - mat.m[2][1]) * invS
+                (m[0][1] + m[1][0]) * invS,
+                (m[0][2] + m[2][0]) * invS,
+                (m[1][2] - m[2][1]) * invS
             );
-        } else if (mat.m[1][1] > mat.m[2][2]){
-            float s = std::sqrt(1.0f + mat.m[1][1] - mat.m[0][0] - mat.m[2][2]) * 2.0f;
+        } else if (m[1][1] > m[2][2]){
+            float s = std::sqrt(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
             float invS = 1.0f / s;
             return Quaternion(
-                (mat.m[0][1] + mat.m[1][0]) * invS,
+                (m[0][1] + m[1][0]) * invS,
                 0.25f * s,
-                (mat.m[1][2] + mat.m[2][1]) * invS,
-                (mat.m[2][0] - mat.m[0][2]) * invS
+                (m[1][2] + m[2][1]) * invS,
+                (m[2][0] - m[0][2]) * invS
             );
         } else{
-            float s = std::sqrt(1.0f + mat.m[2][2] - mat.m[0][0] - mat.m[1][1]) * 2.0f;
+            float s = std::sqrt(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
             float invS = 1.0f / s;
             return Quaternion(
-                (mat.m[0][2] + mat.m[2][0]) * invS,
-                (mat.m[1][2] + mat.m[2][1]) * invS,
+                (m[0][2] + m[2][0]) * invS,
+                (m[1][2] + m[2][1]) * invS,
                 0.25f * s,
-                (mat.m[0][1] - mat.m[1][0]) * invS
+                (m[0][1] - m[1][0]) * invS
             );
         }
     }

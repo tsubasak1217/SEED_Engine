@@ -97,8 +97,8 @@ void ImGuiManager::PreDraw(){
     ImGui_ImplWin32_NewFrame();
 
     // guizmoのリストをクリア
-    instance_->guizmoTransforms_.clear();
-    instance_->guizmoTransforms2D_.clear();
+    instance_->guizmoInfo3D_.clear();
+    instance_->guizmoInfo2D_.clear();
 
     // ディスプレイサイズの設定
     ImGuiIO& io = ImGui::GetIO();
@@ -201,13 +201,13 @@ void ImGuiManager::PostDraw(){
         };
 
         // ImGuizmoの操作を行う
-        for(auto& transform : instance_->guizmoTransforms_){
-            ImFunc::Guizmo(transform.first, pDrawList, rectRange, transform.second);
+        for(auto& info : instance_->guizmoInfo3D_){
+            ImFunc::Guizmo3D(info, pDrawList, rectRange);
         }
 
         // 2D ImGuizmoの操作を行う
-        for(auto& transform2D : instance_->guizmoTransforms2D_){
-            ImFunc::Guizmo(transform2D, pDrawList, rectRange);
+        for(auto& info : instance_->guizmoInfo2D_){
+            ImFunc::Guizmo2D(info, pDrawList, rectRange);
         }
     }
     ImGui::End();
@@ -356,9 +356,9 @@ bool ImFunc::InputText(const char* label, string& str){
 /////////////////////////////////////////////////////////////////
 // ImGuizmoで操作をしてトランスフォームに反映する関数
 /////////////////////////////////////////////////////////////////
-void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRange, bool isUseQuaternion){
+void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange){
 
-    if(!transform){
+    if(!info.transform){
         return; // transformがnullptrの場合は何もしない
     }
 
@@ -366,11 +366,11 @@ void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRan
     BaseCamera* camera = SEED::GetCamera("debug");
     Matrix4x4 viewMat = camera->GetViewMat();
     Matrix4x4 projMat = camera->GetProjectionMat();
-    Matrix4x4 modelMat = transform->ToMatrix(isUseQuaternion);
+    Matrix4x4 worldMat = info.transform->ToMatrix(info.isUseQuaternion) * info.parentMat;
     Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
 
     // IDの設定(ポインタをIDとして仕様)
-    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(transform);
+    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(info.transform);
     ImGuizmo::SetID(id);
 
     // Rectの設定
@@ -387,19 +387,21 @@ void ImFunc::Guizmo(Transform* transform, ImDrawList* pDrawList, Range2D rectRan
     ImGuizmo::MODE mode = ImGuizmo::LOCAL; // ローカル座標系で操作
     bool isManipulated = ImGuizmo::Manipulate(
         viewMat.m[0], projMat.m[0], ImGuiManager::instance_->currentOperation_, mode,
-        modelMat.m[0], deltaMat.m[0], nullptr, nullptr, nullptr
+        worldMat.m[0], deltaMat.m[0], nullptr, nullptr, nullptr
     );
 
     // 変化量をトランスフォームに適用
     if(isManipulated){
-        transform->FromMatrix(modelMat);
+        Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
+        worldMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
+        info.transform->FromMatrix(worldMat);
     }
 }
 
 // 2D用のImGuizmo操作関数
-void ImFunc::Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectRange){
+void ImFunc::Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange){
 
-    if(!transform){
+    if(!info.transform2D){
         return; // transformがnullptrの場合は何もしない
     }
 
@@ -407,11 +409,11 @@ void ImFunc::Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectR
     BaseCamera* camera = SEED::GetCamera("debug");
     Matrix4x4 viewMat = TranslateMatrix(Vector3(0.0f, 0.0f, camera->GetZNear() + 1.0f));
     Matrix4x4 projMat = camera->GetProjectionMat2D();
-    Matrix4x4 modelMat = transform->ToMatrix4x4();
+    Matrix4x4 modelMat = info.transform2D->ToMatrix4x4() * info.parentMat;
     Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
 
     // IDの設定(ポインタをIDとして仕様)
-    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(transform);
+    uint32_t id = (uint32_t)reinterpret_cast<uintptr_t>(info.transform2D);
     ImGuizmo::SetID(id);
 
     // Rectの設定
@@ -436,6 +438,8 @@ void ImFunc::Guizmo(Transform2D* transform, ImDrawList* pDrawList, Range2D rectR
 
     // 変化量をトランスフォームに適用
     if(isManipulated){
-        transform->FromMatrix4x4(modelMat);
+        Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
+        modelMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
+        info.transform2D->FromMatrix4x4(modelMat);
     }
 }

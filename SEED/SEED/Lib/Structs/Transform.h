@@ -19,6 +19,7 @@ struct Transform{
     Vector3 rotate;
     Quaternion rotateQuat;
     Vector3 translate;
+
     // 変換関数
     Matrix4x4 ToMatrix(bool isUseQuaternion);
     void FromMatrix(const Matrix4x4& mat);

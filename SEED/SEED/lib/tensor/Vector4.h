@@ -12,6 +12,7 @@ struct Vector4 final{
     float w;
 
     Vector4() = default;
+    Vector4(float value) : x(value), y(value), z(value), w(value){}
     Vector4(float x, float y, float z, float w){
         this->x = x;
         this->y = y;

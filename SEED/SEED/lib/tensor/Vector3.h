@@ -16,6 +16,7 @@ struct Vector3 final {
 
 
     Vector3() = default;
+    Vector3(float value) : x(value), y(value), z(value){}
     Vector3(float x, float y, float z){
         this->x = x;
         this->y = y;

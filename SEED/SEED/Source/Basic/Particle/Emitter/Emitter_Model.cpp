@@ -404,25 +404,25 @@ void Emitter_Model::LoadFromJson(const nlohmann::json& j){
     );
 
     // 範囲やパラメーターなどの情報
-    emitRange = Vector3(j["emitRange"]);
+    emitRange = j["emitRange"];
     radiusRange = Range1D(j["radiusRange"][0], j["radiusRange"][1]);
     isSetGoalPosition = j["isSetGoalPosition"];
     isEndWithGoalPosition = j["isEndWithGoalPosition"];
-    goalPosition = Vector3(j["goalPosition"]);
-    baseDirection = Vector3(j["baseDirection"]);
+    goalPosition = j["goalPosition"];
+    baseDirection = j["baseDirection"];
     directionRange = j["directionRange"];
     speedRange = Range1D(j["speedRange"][0], j["speedRange"][1]);
     rotateSpeedRange = Range1D(j["rotateSpeedRange"][0], j["rotateSpeedRange"][1]);
     useRotateDirection = j["useRotateDirection"];
     isRoteteRandomInit_ = j["isRoteteRandomInit"];
-    rotateDirection = Vector3(j["rotateDirection"]);
+    rotateDirection = j["rotateDirection"];
     lifeTimeRange = Range1D(j["lifeTimeRange"][0], j["lifeTimeRange"][1]);
     gravity = j["gravity"];
     scaleRange = Range3D(j["scaleRange"][0], j["scaleRange"][1]);
 
     // 出現・消失・イージング関数の情報
-    kInScale = Vector3(j["inScale"]);
-    kOutScale = Vector3(j["outScale"]);
+    kInScale = j["inScale"];
+    kOutScale = j["outScale"];
     kInAlpha = j["inAlpha"];
     kOutAlpha = j["outAlpha"];
     maxTimePoint = j["maxTimePoint"];

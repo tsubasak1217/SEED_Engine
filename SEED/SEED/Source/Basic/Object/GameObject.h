@@ -116,16 +116,18 @@ public:
     // トランスフォーム
     //=====================================
 
+    Transform GetLocalTransform() { return localTransform_; }
+    Transform GetWorldTransform() { return worldTransform_; }
     /*------ scale -------*/
-    Vector3 GetWorldScale() const{ return ExtractScale(worldMat_); }
-    const Vector3& GetLocalScale() const{ return transform_.scale; }
+    Vector3 GetWorldScale() const{ return worldTransform_.scale; }
+    const Vector3& GetLocalScale() const{ return localTransform_.scale; }
     /*------ rotate -------*/
-    Vector3 GetWorldRotate() const{ return ExtractRotation(worldMat_); }
-    const Vector3& GetLocalRotate() const{ return transform_.rotate; }
+    Vector3 GetWorldRotate() const{ return worldTransform_.rotate; }
+    const Vector3& GetLocalRotate() const{ return localTransform_.rotate; }
 
     /*------ translate -------*/
-    Vector3 GetWorldTranslate() const{ return ExtractTranslation(worldMat_); }
-    const Vector3& GetLocalTranslate() const{ return transform_.translate; }
+    Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
+    const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
     void AddWorldTranslate(const Vector3& addValue);
     const Vector3& GetPrePos() const{ return prePos_; }
     /*------ matrix -------*/
@@ -187,8 +189,11 @@ public:
     bool isParentTranslate_ = true;
 
     // トランスフォーム情報
-    Transform transform_;
+    Transform localTransform_;
     bool isRotateWithQuaternion_ = true;
+
+private:
+    Transform worldTransform_;
 
 private:
     // 行列情報

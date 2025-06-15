@@ -142,7 +142,7 @@ void Hierarchy::EditGUI(){
         selectedObject_->EditGUI();
 
         // Guizmoに登録
-        ImGuiManager::RegisterGuizmoItem(&selectedObject_->transform_, selectedObject_->isRotateWithQuaternion_);
+        ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_, selectedObject_->isRotateWithQuaternion_);
     }
     ImGui::End();
 #endif // _DEBUG

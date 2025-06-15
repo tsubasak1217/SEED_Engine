@@ -11,24 +11,24 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 加算
-Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
+Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2){
 
     Matrix2x2 result;
 
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2; j++) {
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
             result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
         }
     }
 
     return result;
 };
-Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
+Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2){
 
     Matrix3x3 result;
 
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
             result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
         }
     }
@@ -36,12 +36,12 @@ Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
     return result;
 }
 
-Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2){
 
     Matrix4x4 result;
 
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
         }
     }
@@ -56,24 +56,24 @@ Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 減算
-Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
+Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2){
 
     Matrix2x2 result;
 
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2; j++) {
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
             result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
         }
     }
 
     return result;
 };
-Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
+Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2){
 
     Matrix3x3 result;
 
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
             result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
         }
     }
@@ -81,12 +81,12 @@ Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
     return result;
 };
 
-Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2){
 
     Matrix4x4 result;
 
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
         }
     }
@@ -101,11 +101,11 @@ Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // -----------------割り算------------------
-Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
+Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum){
     Matrix2x2 result;
 
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2; j++) {
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
             result.m[i][j] = matrix.m[i][j] / devideNum;
         }
     }
@@ -113,12 +113,12 @@ Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
     return result;
 };
 
-Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum) {
+Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum){
 
     Matrix3x3 result;
 
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
             result.m[i][j] = matrix.m[i][j] / devideNum;
         }
     }
@@ -126,12 +126,12 @@ Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum) {
     return result;
 }
 
-Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
+Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum){
 
     Matrix4x4 result;
 
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             result.m[i][j] = matrix.m[i][j] / devideNum;
         }
     }
@@ -146,14 +146,14 @@ Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ---------------積を求める----------------
-Vector2 Multiply(const Vector2& vector, const Matrix2x2& matrix) {
+Vector2 Multiply(const Vector2& vector, const Matrix2x2& matrix){
 
     return {
         vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0],
         vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1]
     };
 };
-Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix) {
+Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix){
     Vector2 result;
     float w;
 
@@ -169,7 +169,7 @@ Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix) {
     return result;
 }
 
-Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix) {
+Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix){
 
     Vector3 result;
     float w;
@@ -190,12 +190,12 @@ Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix) {
 };
 ;
 
-Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
+Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2){
 
     Matrix2x2 result;
 
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2; j++) {
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
 
             result.m[i][j] =
                 (matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -205,12 +205,12 @@ Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
     return result;
 };
-Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
+Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2){
 
     Matrix3x3 result;
 
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
 
             result.m[i][j] =
                 (matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -222,12 +222,12 @@ Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
     return result;
 }
 
-Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2){
 
     Matrix4x4 result;
 
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
 
             result.m[i][j] =
                 (matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -247,39 +247,39 @@ Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // --------------スカラー倍----------------
-Vector2 Multiply(const Vector2& vector, float scalar) {
+Vector2 Multiply(const Vector2& vector, float scalar){
     return { vector.x * scalar,vector.y * scalar };
 }
-Vector3 Multiply(const Vector3& vector, float scalar) {
+Vector3 Multiply(const Vector3& vector, float scalar){
     return { vector.x * scalar,vector.y * scalar,vector.z * scalar };
 }
-Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar) {
+Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar){
 
     Matrix2x2 result;
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2; j++) {
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
             result.m[i][j] = matrix.m[i][j] * scalar;
         }
     }
 
     return result;
 }
-Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar) {
+Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar){
 
     Matrix3x3 result;
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
             result.m[i][j] = matrix.m[i][j] * scalar;
         }
     }
 
     return result;
 }
-Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
+Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar){
 
     Matrix4x4 result;
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             result.m[i][j] = matrix.m[i][j] * scalar;
         }
     }
@@ -294,7 +294,7 @@ Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 同時座標系からデカルト座標系に変換する関数
-Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix) {
+Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix){
     Vector2 result;
     float w;
 
@@ -310,7 +310,7 @@ Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix) {
     return result;
 }
 
-Vector3 TransformDescartes(const Vector3& vector, const Matrix4x4& matrix) {
+Vector3 TransformDescartes(const Vector3& vector, const Matrix4x4& matrix){
     Vector3 result;
     float w;
 
@@ -328,34 +328,28 @@ Vector3 TransformDescartes(const Vector3& vector, const Matrix4x4& matrix) {
     return result;
 }
 
-Vector3 TransformToVec3(const Vector2& vec)
-{
-    return Vector3(vec.x, vec.y,1.0f);
+Vector3 TransformToVec3(const Vector2& vec){
+    return Vector3(vec.x, vec.y, 1.0f);
 }
 
-Vector3 TransformToVec3(const Vector4& vec)
-{
+Vector3 TransformToVec3(const Vector4& vec){
     assert(vec.w != 0.0f);
-    return {vec.x / vec.w,vec.y / vec.w ,vec.z / vec.w };
+    return { vec.x / vec.w,vec.y / vec.w ,vec.z / vec.w };
 }
 
-Vector3 Expand0ToVec3(const Vector2& vec)
-{
-    return Vector3(vec.x,vec.y,0.0f);
-}
-
-Vector3 Expand1ToVec3(const Vector2& vec)
-{
+Vector3 Expand0ToVec3(const Vector2& vec){
     return Vector3(vec.x, vec.y, 0.0f);
 }
 
-Vector4 TransformToVec4(const Vector3& vec)
-{
-    return Vector4(vec.x,vec.y,vec.z,1.0f);
+Vector3 Expand1ToVec3(const Vector2& vec){
+    return Vector3(vec.x, vec.y, 0.0f);
 }
 
-Vector4 TransformToVec4(const Vector2& vec)
-{
+Vector4 TransformToVec4(const Vector3& vec){
+    return Vector4(vec.x, vec.y, vec.z, 1.0f);
+}
+
+Vector4 TransformToVec4(const Vector2& vec){
     return Vector4(vec.x, vec.y, 0.0f, 1.0f);
 }
 
@@ -367,7 +361,7 @@ Vector4 TransformToVec4(const Vector2& vec)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 単位行列を返す関数
-Matrix2x2 IdentityMat2() {
+Matrix2x2 IdentityMat2(){
 
     Matrix2x2 identity(
         1.0f, 0.0f,
@@ -377,7 +371,7 @@ Matrix2x2 IdentityMat2() {
     return identity;
 }
 
-Matrix3x3 IdentityMat3() {
+Matrix3x3 IdentityMat3(){
 
     Matrix3x3 identity(
         1.0f, 0.0f, 0.0f,
@@ -388,7 +382,7 @@ Matrix3x3 IdentityMat3() {
     return identity;
 }
 
-Matrix4x4 IdentityMat4() {
+Matrix4x4 IdentityMat4(){
 
     Matrix4x4 identity(
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -400,7 +394,7 @@ Matrix4x4 IdentityMat4() {
     return identity;
 }
 
-Matrix4x4 NegaIdentityMat4() {
+Matrix4x4 NegaIdentityMat4(){
 
     Matrix4x4 identity(
         -1.0f, 0.0f, 0.0f, 0.0f,
@@ -420,7 +414,7 @@ Matrix4x4 NegaIdentityMat4() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*------------------------- 拡大縮小行列を作る関数 --------------------------*/
-Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
+Matrix3x3 ScaleMatrix(float scaleX, float scaleY){
     Matrix3x3 matrix;
     matrix.m[0][0] = scaleX;
     matrix.m[0][1] = 0;
@@ -437,7 +431,7 @@ Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
     return matrix;
 }
 
-Matrix3x3 ScaleMatrix(const Vector2& scale) {
+Matrix3x3 ScaleMatrix(const Vector2& scale){
     Matrix3x3 matrix;
     matrix.m[0][0] = scale.x;
     matrix.m[0][1] = 0;
@@ -454,7 +448,7 @@ Matrix3x3 ScaleMatrix(const Vector2& scale) {
     return matrix;
 }
 
-Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ) {
+Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ){
     Matrix4x4 matrix;
     matrix.m[0][0] = scaleX;
     matrix.m[0][1] = 0;
@@ -479,7 +473,7 @@ Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ) {
     return matrix;
 }
 
-Matrix4x4 ScaleMatrix(const Vector3& scale) {
+Matrix4x4 ScaleMatrix(const Vector3& scale){
     Matrix4x4 matrix;
     matrix.m[0][0] = scale.x;
     matrix.m[0][1] = 0;
@@ -511,7 +505,7 @@ Matrix4x4 ScaleMatrix(const Vector3& scale) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*------------------------- 回転行列を作る関数 --------------------------*/
-Matrix3x3 RotateMatrix(float theta) {
+Matrix3x3 RotateMatrix(float theta){
 
     Matrix3x3 result;
     result.m[0][0] = std::cos(theta);
@@ -562,7 +556,7 @@ Matrix4x4 RotateZMatrix(float theta){
     return mat;
 }
 
-Matrix4x4 RotateMatrix(const Vector3& rotate) {
+Matrix4x4 RotateMatrix(const Vector3& rotate){
     Matrix4x4 rotX = std::abs(rotate.x) > 1e-6f ? RotateXMatrix(rotate.x) : IdentityMat4();
     Matrix4x4 rotY = std::abs(rotate.y) > 1e-6f ? RotateYMatrix(rotate.y) : IdentityMat4();
     Matrix4x4 rotZ = std::abs(rotate.z) > 1e-6f ? RotateZMatrix(rotate.z) : IdentityMat4();
@@ -586,7 +580,7 @@ Matrix4x4 RotateMatrix(const Vector3& axis, float angle){
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Matrix3x3 TranslateMatrix(float tx, float ty) {
+Matrix3x3 TranslateMatrix(float tx, float ty){
     Matrix3x3 matrix;
     matrix.m[0][0] = 1;  matrix.m[0][1] = 0;  matrix.m[0][2] = 0;
     matrix.m[1][0] = 0;  matrix.m[1][1] = 1;  matrix.m[1][2] = 0;
@@ -594,7 +588,7 @@ Matrix3x3 TranslateMatrix(float tx, float ty) {
     return matrix;
 }
 
-Matrix3x3 TranslateMatrix(const Vector2& t) {
+Matrix3x3 TranslateMatrix(const Vector2& t){
     Matrix3x3 matrix;
     matrix.m[0][0] = 1;   matrix.m[0][1] = 0;   matrix.m[0][2] = 0;
     matrix.m[1][0] = 0;   matrix.m[1][1] = 1;   matrix.m[1][2] = 0;
@@ -602,7 +596,7 @@ Matrix3x3 TranslateMatrix(const Vector2& t) {
     return matrix;
 }
 
-Matrix4x4 TranslateMatrix(float tx, float ty, float tz) {
+Matrix4x4 TranslateMatrix(float tx, float ty, float tz){
     Matrix4x4 matrix;
     matrix.m[0][0] = 1;  matrix.m[0][1] = 0;  matrix.m[0][2] = 0;  matrix.m[0][3] = 0;
     matrix.m[1][0] = 0;  matrix.m[1][1] = 1;  matrix.m[1][2] = 0;  matrix.m[1][3] = 0;
@@ -611,7 +605,7 @@ Matrix4x4 TranslateMatrix(float tx, float ty, float tz) {
     return matrix;
 }
 
-Matrix4x4 TranslateMatrix(const Vector3& t) {
+Matrix4x4 TranslateMatrix(const Vector3& t){
     Matrix4x4 matrix;
     matrix.m[0][0] = 1;   matrix.m[0][1] = 0;   matrix.m[0][2] = 0;   matrix.m[0][3] = 0;
     matrix.m[1][0] = 0;   matrix.m[1][1] = 1;   matrix.m[1][2] = 0;   matrix.m[1][3] = 0;
@@ -627,7 +621,7 @@ Matrix4x4 TranslateMatrix(const Vector3& t) {
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 translate) {
+Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 translate){
 
     Matrix3x3 matrix;
     matrix.m[0][0] = scale.x * cosf(rotateTheta);
@@ -649,7 +643,7 @@ Matrix3x3 AffineMatrix(const Transform2D& transform){
     return AffineMatrix(transform.scale, transform.rotate, transform.translate);
 }
 
-Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate){
     Matrix4x4 matrix(Multiply(ScaleMatrix(scale), RotateMatrix(rotate)));
     matrix.m[3][0] = translate.x;
     matrix.m[3][1] = translate.y;
@@ -665,8 +659,8 @@ Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vec
     return matrix;
 }
 
-Matrix4x4 AffineMatrix(const Transform& transform,bool isQuaternion){
-    
+Matrix4x4 AffineMatrix(const Transform& transform, bool isQuaternion){
+
     if(!isQuaternion){
         return AffineMatrix(transform.scale, transform.rotate, transform.translate);
     }
@@ -713,18 +707,18 @@ Vector3 ExtractRotation(const Matrix4x4& matrix){
     // オイラー角を抽出 (YXZ順)
     float pitch, yaw, roll;
 
-    if(rotationMatrix.m[2][1] < 1) {
-        if(rotationMatrix.m[2][1] > -1) {
+    if(rotationMatrix.m[2][1] < 1){
+        if(rotationMatrix.m[2][1] > -1){
             yaw = asin(-rotationMatrix.m[2][1]);
             pitch = atan2(rotationMatrix.m[2][0], rotationMatrix.m[2][2]);
             roll = atan2(rotationMatrix.m[0][1], rotationMatrix.m[1][1]);
-        } else {
+        } else{
             // 特殊ケース: rotationMatrix.m[2][1] = -1
             yaw = std::numbers::pi_v<float> / 2;
             pitch = -atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
             roll = 0;
         }
-    } else {
+    } else{
         // 特殊ケース: rotationMatrix.m[2][1] = 1
         yaw = -std::numbers::pi_v<float> / 2;
         pitch = atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
@@ -732,6 +726,39 @@ Vector3 ExtractRotation(const Matrix4x4& matrix){
     }
 
     return Vector3(yaw, pitch, roll);
+}
+
+Quaternion ExtractQuaternion(const Matrix4x4& matrix){
+    Quaternion q;
+    const auto& m = matrix.m;
+    float trace = m[0][0] + m[1][1] + m[2][2];
+
+    if(trace > 0.0f){
+        float s = sqrtf(trace + 1.0f) * 2.0f;
+        q.w = 0.25f * s;
+        q.x = (m[2][1] - m[1][2]) / s;
+        q.y = (m[0][2] - m[2][0]) / s;
+        q.z = (m[1][0] - m[0][1]) / s;
+    } else if((m[0][0] > m[1][1]) && (m[0][0] > m[2][2])){
+        float s = sqrtf(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
+        q.w = (m[2][1] - m[1][2]) / s;
+        q.x = 0.25f * s;
+        q.y = (m[0][1] + m[1][0]) / s;
+        q.z = (m[0][2] + m[2][0]) / s;
+    } else if(m[1][1] > m[2][2]){
+        float s = sqrtf(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
+        q.w = (m[0][2] - m[2][0]) / s;
+        q.x = (m[0][1] + m[1][0]) / s;
+        q.y = 0.25f * s;
+        q.z = (m[1][2] + m[2][1]) / s;
+    } else{
+        float s = sqrtf(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
+        q.w = (m[1][0] - m[0][1]) / s;
+        q.x = (m[0][2] + m[2][0]) / s;
+        q.y = (m[1][2] + m[2][1]) / s;
+        q.z = 0.25f * s;
+    }
+    return q;
 }
 
 
@@ -744,7 +771,7 @@ Vector3 ExtractRotation(const Matrix4x4& matrix){
 
 // 正則行列かどうか確認する関数--------------------------------------
 // 3x3 行列の行列式を計算する関数
-float Determinant3x3(const Matrix3x3& mat) {
+float Determinant3x3(const Matrix3x3& mat){
     return
         (mat.m[0][0] * mat.m[1][1] * mat.m[2][2]) +
         (mat.m[0][1] * mat.m[1][2] * mat.m[2][0]) +
@@ -755,16 +782,16 @@ float Determinant3x3(const Matrix3x3& mat) {
 }
 
 // 4x4 行列の行列式を計算する関数
-float Determinant4x4(const Matrix4x4& mat) {
+float Determinant4x4(const Matrix4x4& mat){
     float det = 0.0f;
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++){
 
         Matrix3x3 minor;
 
-        for(int j = 0; j < 3; j++) {
+        for(int j = 0; j < 3; j++){
             int k = 0;
-            for(int l = 0; l < 4; l++) {
-                if(l != i) {
+            for(int l = 0; l < 4; l++){
+                if(l != i){
                     minor.m[j][k++] = mat.m[j + 1][l];
                 }
             }
@@ -777,7 +804,7 @@ float Determinant4x4(const Matrix4x4& mat) {
 }
 
 //逆行列を求める関数
-Matrix2x2 InverseMatrix(const Matrix2x2& matrix) {
+Matrix2x2 InverseMatrix(const Matrix2x2& matrix){
 
     float det = (matrix.m[0][0] * matrix.m[1][1]) - (matrix.m[0][1] * matrix.m[1][0]);
     assert(det != 0);
@@ -793,7 +820,7 @@ Matrix2x2 InverseMatrix(const Matrix2x2& matrix) {
     return Devide(result, det);
 };
 
-Matrix3x3 InverseMatrix(const Matrix3x3& matrix) {
+Matrix3x3 InverseMatrix(const Matrix3x3& matrix){
 
     float det =
         (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2]) +
@@ -821,13 +848,13 @@ Matrix3x3 InverseMatrix(const Matrix3x3& matrix) {
     return Devide(result, det);
 }
 
-Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
+Matrix4x4 InverseMatrix(const Matrix4x4& matrix){
 
     Matrix4x4 inv;
     float sweep[4][8];
 
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             // sweepの左側に逆行列を求める行列をセット
             sweep[i][j] = matrix.m[i][j];
 
@@ -837,7 +864,7 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
     }
 
     // 左半分が単位行列になるまで繰り返す (右半分に逆行列が求められる)
-    for(int col = 0; col < 4; col++) {
+    for(int col = 0; col < 4; col++){
 
         /*------------------------------------------------------*/
         /*				       	ソート、除外						*/
@@ -848,8 +875,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
         int maxIdx = col;
 
         // 今見ている対角成分より大きい絶対値を持つ要素がその列のその行より後にあるか探す
-        for(int row = col + 1; row < 4; row++) {
-            if(fabs(sweep[row][col]) > max) {
+        for(int row = col + 1; row < 4; row++){
+            if(fabs(sweep[row][col]) > max){
                 max = fabs(sweep[row][col]);
                 maxIdx = row;
             }
@@ -859,8 +886,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
         if(fabs(sweep[maxIdx][col]) == 0){ return IdentityMat4(); }
 
         // 見つかった場合、その要素が見つかった行と今の行の要素を入れ替える
-        if(col != maxIdx) {
-            for(int col2 = 0; col2 < 8; col2++) {
+        if(col != maxIdx){
+            for(int col2 = 0; col2 < 8; col2++){
                 std::swap(sweep[maxIdx][col2], sweep[col][col2]);
             }
         }
@@ -874,21 +901,21 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
         // 対角成分 sweep[col][col]に掛けると1になる値を求める
         float x = 1.0f / sweep[col][col];
 
-        for(int col2 = 0; col2 < 8; col2++) {
+        for(int col2 = 0; col2 < 8; col2++){
             // この計算でsweep[col][col]が1になる 
             // (対角成分以外にもその行すべての要素に掛ける。)
             sweep[col][col2] *= x;
         }
 
         /*------- 今見ている列の対角成分以外を0にする -------*/
-        for(int row = 0; row < 4; row++) {
+        for(int row = 0; row < 4; row++){
 
-            if(row == col) { continue; }// 対角成分はそのまま
+            if(row == col){ continue; }// 対角成分はそのまま
 
             // 対角成分のある行以外に掛ける値を求める
             x = -sweep[row][col];
 
-            for(int col2 = 0; col2 < 8; col2++) {
+            for(int col2 = 0; col2 < 8; col2++){
                 // 対角成分を1にした行をa倍して足していく
                 // すると対角成分以外のsweep[row][col]が0になる ( 自分に対して 1 x -自分 を足しているため。)
                 sweep[row][col2] += sweep[col][col2] * x;
@@ -897,8 +924,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
     }
 
     // sweepの右半分がmatrixの逆行列
-    for(int row = 0; row < 4; row++) {
-        for(int col = 0; col < 4; col++) {
+    for(int row = 0; row < 4; row++){
+        for(int col = 0; col < 4; col++){
             inv.m[row][col] = sweep[row][4 + col];
         }
     }
@@ -912,7 +939,7 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Matrix2x2 Transpose(const Matrix2x2& matrix) {
+Matrix2x2 Transpose(const Matrix2x2& matrix){
 
     Matrix2x2 result;
     result.m[0][0] = matrix.m[0][0];
@@ -924,7 +951,7 @@ Matrix2x2 Transpose(const Matrix2x2& matrix) {
     return result;
 };
 
-Matrix3x3 Transpose(const Matrix3x3& matrix) {
+Matrix3x3 Transpose(const Matrix3x3& matrix){
 
     Matrix3x3 result;
     result.m[0][0] = matrix.m[0][0];
@@ -942,10 +969,10 @@ Matrix3x3 Transpose(const Matrix3x3& matrix) {
     return result;
 }
 
-Matrix4x4 Transpose(const Matrix4x4& matrix) {
+Matrix4x4 Transpose(const Matrix4x4& matrix){
     Matrix4x4 result;
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4; j++) {
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             result.m[i][j] = matrix.m[j][i];
         }
     }
@@ -960,7 +987,7 @@ Matrix4x4 Transpose(const Matrix4x4& matrix) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // 正射影行列を求める関数(2D)
-Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom) {
+Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom){
 
     Matrix3x3 result;
 
@@ -980,7 +1007,7 @@ Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom) {
 }
 
 // 正射影行列を求める関数(3D)
-Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar) {
+Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar){
 
     Matrix4x4 result;
 
@@ -1008,12 +1035,12 @@ Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float zn
 }
 
 // アスペクト比を求める関数
-float AspectRatio(float windowWidth, float windowHeight) {
+float AspectRatio(float windowWidth, float windowHeight){
     return windowWidth / windowHeight;
 }
 
 // 透視投影行列を求める関数
-Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar) {
+Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar){
 
     Matrix4x4 result;
 
@@ -1048,7 +1075,7 @@ Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zf
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //ビューポート変換行列を求める関数(2D)
-Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop) {
+Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop){
 
     Matrix3x3 result;
 
@@ -1068,7 +1095,7 @@ Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop) {
 }
 
 // ビューポート変換行列を求める関数(3D)
-Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minDepth, float maxDepth) {
+Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minDepth, float maxDepth){
 
     Matrix4x4 result;
 
@@ -1108,7 +1135,7 @@ Matrix3x3 WvpVpMatrix(
     Vector2 cameraPos, Vector2 cameraScale, float cameraAngle,
     Vector2 cameraRange, Vector2 leftTop,
     Vector2 screenSize
-) {
+){
 
     Matrix3x3 worldMatrix;
     Matrix3x3 cameraMatrix;

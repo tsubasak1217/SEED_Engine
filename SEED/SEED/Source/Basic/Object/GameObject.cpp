@@ -123,11 +123,11 @@ void GameObject::EditGUI(){
     ImGui::Checkbox("クォータニオン回転", &isRotateWithQuaternion_);
     Vector3 info[3] = { GetWorldTranslate(), GetWorldRotate(), GetWorldScale() };
     ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
-    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", transform_.translate.x, transform_.translate.y, transform_.translate.z);
+    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y, localTransform_.translate.z);
     ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
-    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", transform_.rotate.x, transform_.rotate.y, transform_.rotate.z);
+    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localTransform_.rotate.x, localTransform_.rotate.y, localTransform_.rotate.z);
     ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
-    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", transform_.scale.x, transform_.scale.y, transform_.scale.z);
+    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y, localTransform_.scale.z);
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
     ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
@@ -161,6 +161,10 @@ void GameObject::EditGUI(){
             AddComponent<TextComponent>();
             ImGui::CloseCurrentPopup();
         }
+        if(ImGui::Button("SpotLightComponent / スポットライト")){
+            AddComponent<SpotLightComponent>();
+            ImGui::CloseCurrentPopup();
+        }
         ImGui::EndPopup();
     }
 
@@ -175,11 +179,11 @@ void GameObject::UpdateMatrix(){
 
     // ローカル変換行列の更新
     if(isRotateWithQuaternion_){
-        localMat_ = AffineMatrix(transform_.scale, transform_.rotateQuat, transform_.translate);
-        transform_.rotate = Quaternion::ToEuler(transform_.rotateQuat);// 切り替えても大丈夫なように同期させておく
+        localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotateQuat, localTransform_.translate);
+        localTransform_.rotate = Quaternion::ToEuler(localTransform_.rotateQuat);// 切り替えても大丈夫なように同期させておく
     } else{
-        localMat_ = AffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-        transform_.rotateQuat = Quaternion::ToQuaternion(transform_.rotate);// 切り替えても大丈夫なように同期させておく
+        localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotate, localTransform_.translate);
+        localTransform_.rotateQuat = Quaternion::ToQuaternion(localTransform_.rotate);// 切り替えても大丈夫なように同期させておく
     }
 
     // ワールド行列の更新
@@ -213,12 +217,15 @@ void GameObject::UpdateMatrix(){
             Matrix4x4 canceledMat = cancelMat * parentMat;
             //worldMat_ = (localMat_ * parentMat) * cancelMat;
             worldMat_ = localMat_ * canceledMat;
-
         }
-
     } else{
         worldMat_ = localMat_;
     }
+
+    worldTransform_.translate = ExtractTranslation(worldMat_);
+    worldTransform_.rotate = ExtractRotation(worldMat_);
+    worldTransform_.rotateQuat = Quaternion::ToQuaternion(worldTransform_.rotate);
+    worldTransform_.scale = ExtractScale(worldMat_);
 }
 
 
@@ -241,7 +248,7 @@ void GameObject::EndFrameDropFlagUpdate(){
 }
 
 void GameObject::MoveByVelocity(){
-    transform_.translate += velocity_ * ClockManager::DeltaTime();
+    localTransform_.translate += velocity_ * ClockManager::DeltaTime();
 }
 
 
@@ -252,9 +259,9 @@ void GameObject::AddWorldTranslate(const Vector3& addValue){
     if(parent_ != nullptr){
         Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
         Vector3 localAddValue = addValue * invParentMat;
-        transform_.translate += localAddValue;
+        localTransform_.translate += localAddValue;
     } else{
-        transform_.translate += addValue;
+        localTransform_.translate += addValue;
     }
 }
 
@@ -326,9 +333,9 @@ const nlohmann::json& GameObject::GetJsonData(int32_t depth){
     json["isParentTranslate"] = isParentTranslate_;
 
     // transformの情報
-    json["transform"]["translate"] = transform_.translate;
-    json["transform"]["rotate"] = transform_.rotate;
-    json["transform"]["scale"] = transform_.scale;
+    json["transform"]["translate"] = localTransform_.translate;
+    json["transform"]["rotate"] = localTransform_.rotate;
+    json["transform"]["scale"] = localTransform_.scale;
     json["isRotateWithQuaternion"] = isRotateWithQuaternion_;
 
     // コンポーネントの情報
@@ -357,10 +364,10 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
     isParentScale_ = jsonData["isParentScale"];
     isParentTranslate_ = jsonData["isParentTranslate"];
     // transformの情報
-    transform_.translate = jsonData["transform"]["translate"];
-    transform_.rotate = jsonData["transform"]["rotate"];
-    transform_.rotateQuat = Quaternion::ToQuaternion(transform_.rotate);
-    transform_.scale = jsonData["transform"]["scale"];
+    localTransform_.translate = jsonData["transform"]["translate"];
+    localTransform_.rotate = jsonData["transform"]["rotate"];
+    localTransform_.rotateQuat = Quaternion::ToQuaternion(localTransform_.rotate);
+    localTransform_.scale = jsonData["transform"]["scale"];
     isRotateWithQuaternion_ = jsonData["isRotateWithQuaternion"];
 
     // コンポーネントの情報
@@ -377,7 +384,12 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Text"){
             auto* textComponent = AddComponent<TextComponent>();
             textComponent->LoadFromJson(componentJson);
-        } 
+        
+        } else if(componentType == "SpotLight"){
+            auto* spotLightComponent = AddComponent<SpotLightComponent>();
+            spotLightComponent->LoadFromJson(componentJson);
+        
+        }
     }
 }
 

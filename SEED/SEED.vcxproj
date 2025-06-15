@@ -118,6 +118,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
@@ -222,6 +223,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />

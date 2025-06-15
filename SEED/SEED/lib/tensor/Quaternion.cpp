@@ -251,49 +251,96 @@ Vector3 Quaternion::ToEuler(const Quaternion& q){
 }
 
 Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){
-    const auto& m = mat.m; // 行列の参照
-    float trace = m[0][0] + m[1][1] + m[2][2]; // 対角成分の合計
+    //const auto& m = mat.m; // 行列の参照
+    //float trace = m[0][0] + m[1][1] + m[2][2]; // 対角成分の合計
 
-    if (trace > 0.0f){
-        float s = std::sqrt(trace + 1.0f) * 0.5f;
-        float invS = 0.5f / s; // sの逆数
-        return Quaternion(
-            (m[1][2] - m[2][1]) * invS,
-            (m[2][0] - m[0][2]) * invS,
-            (m[0][1] - m[1][0]) * invS,
-            s
-        );
-    } else{
-        // 最大成分の判定
-        if (m[0][0] > m[1][1] && m[0][0] > m[2][2]){
-            float s = std::sqrt(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
-            float invS = 1.0f / s;
-            return Quaternion(
-                0.25f * s,
-                (m[0][1] + m[1][0]) * invS,
-                (m[0][2] + m[2][0]) * invS,
-                (m[1][2] - m[2][1]) * invS
-            );
-        } else if (m[1][1] > m[2][2]){
-            float s = std::sqrt(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
-            float invS = 1.0f / s;
-            return Quaternion(
-                (m[0][1] + m[1][0]) * invS,
-                0.25f * s,
-                (m[1][2] + m[2][1]) * invS,
-                (m[2][0] - m[0][2]) * invS
-            );
-        } else{
-            float s = std::sqrt(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
-            float invS = 1.0f / s;
-            return Quaternion(
-                (m[0][2] + m[2][0]) * invS,
-                (m[1][2] + m[2][1]) * invS,
-                0.25f * s,
-                (m[0][1] - m[1][0]) * invS
-            );
+    //if (trace > 0.0f){
+    //    float s = std::sqrt(trace + 1.0f) * 0.5f;
+    //    float invS = 0.5f / s; // sの逆数
+    //    return Quaternion(
+    //        (m[1][2] - m[2][1]) * invS,
+    //        (m[2][0] - m[0][2]) * invS,
+    //        (m[0][1] - m[1][0]) * invS,
+    //        s
+    //    );
+    //} else{
+    //    // 最大成分の判定
+    //    if (m[0][0] > m[1][1] && m[0][0] > m[2][2]){
+    //        float s = std::sqrt(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
+    //        float invS = 1.0f / s;
+    //        return Quaternion(
+    //            0.25f * s,
+    //            (m[0][1] + m[1][0]) * invS,
+    //            (m[0][2] + m[2][0]) * invS,
+    //            (m[1][2] - m[2][1]) * invS
+    //        );
+    //    } else if (m[1][1] > m[2][2]){
+    //        float s = std::sqrt(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
+    //        float invS = 1.0f / s;
+    //        return Quaternion(
+    //            (m[0][1] + m[1][0]) * invS,
+    //            0.25f * s,
+    //            (m[1][2] + m[2][1]) * invS,
+    //            (m[2][0] - m[0][2]) * invS
+    //        );
+    //    } else{
+    //        float s = std::sqrt(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
+    //        float invS = 1.0f / s;
+    //        return Quaternion(
+    //            (m[0][2] + m[2][0]) * invS,
+    //            (m[1][2] + m[2][1]) * invS,
+    //            0.25f * s,
+    //            (m[0][1] - m[1][0]) * invS
+    //        );
+    //    }
+    //}
+
+    Quaternion q;
+    float r22 = mat.m[2][2];
+    if(r22 <= 0.f)  // x^2 + y^2 >= z^2 + w^2
+    {
+        float dif10 = mat.m[1][1] - mat.m[0][0];
+        float omr22 = 1.f - r22;
+        if(dif10 <= 0.f)  // x^2 >= y^2
+        {
+            float fourXSqr = omr22 - dif10;
+            float inv4x = 0.5f / sqrtf(fourXSqr);
+            q.x = fourXSqr * inv4x;
+            q.y = (mat.m[0][1] + mat.m[1][0]) * inv4x;
+            q.z = (mat.m[0][2] + mat.m[2][0]) * inv4x;
+            q.w = (mat.m[1][2] - mat.m[2][1]) * inv4x;
+        } else  // y^2 >= x^2
+        {
+            float fourYSqr = omr22 + dif10;
+            float inv4y = 0.5f / sqrtf(fourYSqr);
+            q.x = (mat.m[0][1] + mat.m[1][0]) * inv4y;
+            q.y = fourYSqr * inv4y;
+            q.z = (mat.m[1][2] + mat.m[2][1]) * inv4y;
+            q.w = (mat.m[2][0] - mat.m[0][2]) * inv4y;
+        }
+    } else  // z^2 + w^2 >= x^2 + y^2
+    {
+        float sum10 = mat.m[1][1] + mat.m[0][0];
+        float opr22 = 1.f + r22;
+        if(sum10 <= 0.f)  // z^2 >= w^2
+        {
+            float fourZSqr = opr22 - sum10;
+            float inv4z = 0.5f / sqrtf(fourZSqr);
+            q.x = (mat.m[0][2] + mat.m[2][0]) * inv4z;
+            q.y = (mat.m[1][2] + mat.m[2][1]) * inv4z;
+            q.z = fourZSqr * inv4z;
+            q.w = (mat.m[0][1] - mat.m[1][0]) * inv4z;
+        } else  // w^2 >= z^2
+        {
+            float fourWSqr = opr22 + sum10;
+            float inv4w = 0.5f / sqrtf(fourWSqr);
+            q.x = (mat.m[1][2] - mat.m[2][1]) * inv4w;
+            q.y = (mat.m[2][0] - mat.m[0][2]) * inv4w;
+            q.z = (mat.m[0][1] - mat.m[1][0]) * inv4w;
+            q.w = fourWSqr * inv4w;
         }
     }
+    return q;
 }
 
 

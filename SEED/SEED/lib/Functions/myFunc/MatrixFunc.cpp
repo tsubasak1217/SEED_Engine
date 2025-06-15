@@ -688,77 +688,81 @@ Vector3 ExtractScale(const Matrix4x4& matrix){
 
 // 行列から回転成分を取り出す
 Vector3 ExtractRotation(const Matrix4x4& matrix){
-    // スケールを取り除くために各軸を正規化
-    Vector3 scale = ExtractScale(matrix);
-    Matrix4x4 rotationMatrix = matrix;
+    //// スケールを取り除くために各軸を正規化
+    //Vector3 scale = ExtractScale(matrix);
+    //Matrix4x4 rotationMatrix = matrix;
 
-    rotationMatrix.m[0][0] /= scale.x;
-    rotationMatrix.m[0][1] /= scale.x;
-    rotationMatrix.m[0][2] /= scale.x;
+    //rotationMatrix.m[0][0] /= scale.x;
+    //rotationMatrix.m[0][1] /= scale.x;
+    //rotationMatrix.m[0][2] /= scale.x;
 
-    rotationMatrix.m[1][0] /= scale.y;
-    rotationMatrix.m[1][1] /= scale.y;
-    rotationMatrix.m[1][2] /= scale.y;
+    //rotationMatrix.m[1][0] /= scale.y;
+    //rotationMatrix.m[1][1] /= scale.y;
+    //rotationMatrix.m[1][2] /= scale.y;
 
-    rotationMatrix.m[2][0] /= scale.z;
-    rotationMatrix.m[2][1] /= scale.z;
-    rotationMatrix.m[2][2] /= scale.z;
+    //rotationMatrix.m[2][0] /= scale.z;
+    //rotationMatrix.m[2][1] /= scale.z;
+    //rotationMatrix.m[2][2] /= scale.z;
 
-    // オイラー角を抽出 (YXZ順)
-    float pitch, yaw, roll;
+    //// オイラー角を抽出 (YXZ順)
+    //float pitch, yaw, roll;
 
-    if(rotationMatrix.m[2][1] < 1){
-        if(rotationMatrix.m[2][1] > -1){
-            yaw = asin(-rotationMatrix.m[2][1]);
-            pitch = atan2(rotationMatrix.m[2][0], rotationMatrix.m[2][2]);
-            roll = atan2(rotationMatrix.m[0][1], rotationMatrix.m[1][1]);
-        } else{
-            // 特殊ケース: rotationMatrix.m[2][1] = -1
-            yaw = std::numbers::pi_v<float> / 2;
-            pitch = -atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
-            roll = 0;
-        }
-    } else{
-        // 特殊ケース: rotationMatrix.m[2][1] = 1
-        yaw = -std::numbers::pi_v<float> / 2;
-        pitch = atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
-        roll = 0;
-    }
+    //if(rotationMatrix.m[2][1] < 1){
+    //    if(rotationMatrix.m[2][1] > -1){
+    //        yaw = asin(-rotationMatrix.m[2][1]);
+    //        pitch = atan2(rotationMatrix.m[2][0], rotationMatrix.m[2][2]);
+    //        roll = atan2(rotationMatrix.m[0][1], rotationMatrix.m[1][1]);
+    //    } else{
+    //        // 特殊ケース: rotationMatrix.m[2][1] = -1
+    //        yaw = std::numbers::pi_v<float> / 2;
+    //        pitch = -atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
+    //        roll = 0;
+    //    }
+    //} else{
+    //    // 特殊ケース: rotationMatrix.m[2][1] = 1
+    //    yaw = -std::numbers::pi_v<float> / 2;
+    //    pitch = atan2(-rotationMatrix.m[1][0], rotationMatrix.m[0][0]);
+    //    roll = 0;
+    //}
 
-    return Vector3(yaw, pitch, roll);
+    //return Vector3(yaw, pitch, roll);
+
+    return Quaternion::ToEuler(ExtractQuaternion(matrix));
 }
 
 Quaternion ExtractQuaternion(const Matrix4x4& matrix){
-    Quaternion q;
-    const auto& m = matrix.m;
-    float trace = m[0][0] + m[1][1] + m[2][2];
+    //Quaternion q;
+    //const auto& m = matrix.m;
+    //float trace = m[0][0] + m[1][1] + m[2][2];
 
-    if(trace > 0.0f){
-        float s = sqrtf(trace + 1.0f) * 2.0f;
-        q.w = 0.25f * s;
-        q.x = (m[2][1] - m[1][2]) / s;
-        q.y = (m[0][2] - m[2][0]) / s;
-        q.z = (m[1][0] - m[0][1]) / s;
-    } else if((m[0][0] > m[1][1]) && (m[0][0] > m[2][2])){
-        float s = sqrtf(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
-        q.w = (m[2][1] - m[1][2]) / s;
-        q.x = 0.25f * s;
-        q.y = (m[0][1] + m[1][0]) / s;
-        q.z = (m[0][2] + m[2][0]) / s;
-    } else if(m[1][1] > m[2][2]){
-        float s = sqrtf(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
-        q.w = (m[0][2] - m[2][0]) / s;
-        q.x = (m[0][1] + m[1][0]) / s;
-        q.y = 0.25f * s;
-        q.z = (m[1][2] + m[2][1]) / s;
-    } else{
-        float s = sqrtf(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
-        q.w = (m[1][0] - m[0][1]) / s;
-        q.x = (m[0][2] + m[2][0]) / s;
-        q.y = (m[1][2] + m[2][1]) / s;
-        q.z = 0.25f * s;
-    }
-    return q;
+    //if(trace > 0.0f){
+    //    float s = sqrtf(trace + 1.0f) * 2.0f;
+    //    q.w = 0.25f * s;
+    //    q.x = (m[2][1] - m[1][2]) / s;
+    //    q.y = (m[0][2] - m[2][0]) / s;
+    //    q.z = (m[1][0] - m[0][1]) / s;
+    //} else if((m[0][0] > m[1][1]) && (m[0][0] > m[2][2])){
+    //    float s = sqrtf(1.0f + m[0][0] - m[1][1] - m[2][2]) * 2.0f;
+    //    q.w = (m[2][1] - m[1][2]) / s;
+    //    q.x = 0.25f * s;
+    //    q.y = (m[0][1] + m[1][0]) / s;
+    //    q.z = (m[0][2] + m[2][0]) / s;
+    //} else if(m[1][1] > m[2][2]){
+    //    float s = sqrtf(1.0f + m[1][1] - m[0][0] - m[2][2]) * 2.0f;
+    //    q.w = (m[0][2] - m[2][0]) / s;
+    //    q.x = (m[0][1] + m[1][0]) / s;
+    //    q.y = 0.25f * s;
+    //    q.z = (m[1][2] + m[2][1]) / s;
+    //} else{
+    //    float s = sqrtf(1.0f + m[2][2] - m[0][0] - m[1][1]) * 2.0f;
+    //    q.w = (m[1][0] - m[0][1]) / s;
+    //    q.x = (m[0][2] + m[2][0]) / s;
+    //    q.y = (m[1][2] + m[2][1]) / s;
+    //    q.z = 0.25f * s;
+    //}
+    //return q;
+
+    return Quaternion::MatrixToQuaternion(matrix);
 }
 
 

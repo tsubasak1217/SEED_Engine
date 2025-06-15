@@ -86,7 +86,7 @@ void SpotLightComponent::EditGUI(){
 #ifdef _DEBUG
 
     // guizmoに登録
-    ImGuiManager::RegisterGuizmoItem(&localTransform_, true,owner_->GetWorldTransform().ToMatrix(false));
+    ImGuiManager::RegisterGuizmoItem(&localTransform_, true,owner_->GetWorldMat());
 
     std::string label = componentTag_ + "##" + std::to_string(componentID_);
     if(ImGui::CollapsingHeader(label.c_str())){
@@ -111,9 +111,12 @@ void SpotLightComponent::EditGUI(){
         Matrix4x4 rotMat = RotateMatrix(localTransform_.rotate);
         Vector3 rot1 = localTransform_.rotate;
         Vector3 rot2 = ExtractRotation(rotMat);
+        Quaternion q1 = localTransform_.rotateQuat;
+        Quaternion q2 = Quaternion::MatrixToQuaternion(rotMat);
         ImGui::Text("回転値1: (%.2f, %.2f, %.2f)", rot1.x, rot1.y, rot1.z);
         ImGui::Text("回転値2: (%.2f, %.2f, %.2f)", rot2.x, rot2.y, rot2.z);
-
+        ImGui::Text("Quaternion1: (%.2f, %.2f, %.2f, %.2f)",q1.x, q1.y, q1.z, q1.w);
+        ImGui::Text("Quaternion2: (%.2f, %.2f, %.2f, %.2f)", q2.x, q2.y, q2.z, q2.w);
         ImGui::Unindent();
     }
 

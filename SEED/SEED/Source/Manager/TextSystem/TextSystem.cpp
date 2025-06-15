@@ -322,7 +322,8 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
 const FontData& TextSystem::GetFont(const std::string& filename){
     
     if(fontDataMap_.find(directory_ + filename) == fontDataMap_.end()){
-        assert(false); // フォントが読み込まれていない
+        // フォントが読み込まれていない場合はロードを試みる
+        LoadFont(filename);
     }
 
     // フォントデータを取得

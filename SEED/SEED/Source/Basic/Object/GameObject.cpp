@@ -27,6 +27,8 @@ GameObject::~GameObject(){
     GameSystem::GetScene()->RemoveFromHierarchy(this);
     // 親子関係の解除
     ReleaseParent();
+    // 子オブジェクトのリセット
+    ReleaseChildren();
 
     // コンポーネントの終了処理
     for(auto& component : components_){
@@ -119,13 +121,12 @@ void GameObject::EditGUI(){
     ImFunc::InputText(label.c_str(), objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
-    // トランスフォームのGUI編集
-    ImGui::Checkbox("クォータニオン回転", &isRotateWithQuaternion_);
-    Vector3 info[3] = { GetWorldTranslate(), GetWorldRotate(), GetWorldScale() };
+    Vector3 info[3] = { GetWorldTranslate(), GetWorldEulerRotate(), GetWorldScale() };
+    Vector3 localRotEuler = GetLocalEulerRotate();
     ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
     ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y, localTransform_.translate.z);
     ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
-    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localTransform_.rotate.x, localTransform_.rotate.y, localTransform_.rotate.z);
+    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localRotEuler.x, localRotEuler.y,localRotEuler.z);
     ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
     ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y, localTransform_.scale.z);
 
@@ -178,13 +179,7 @@ void GameObject::EditGUI(){
 void GameObject::UpdateMatrix(){
 
     // ローカル変換行列の更新
-    if(isRotateWithQuaternion_){
-        localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotateQuat, localTransform_.translate);
-        localTransform_.rotate = Quaternion::ToEuler(localTransform_.rotateQuat);// 切り替えても大丈夫なように同期させておく
-    } else{
-        localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotate, localTransform_.translate);
-        localTransform_.rotateQuat = Quaternion::ToQuaternion(localTransform_.rotate);// 切り替えても大丈夫なように同期させておく
-    }
+    localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotate.ToEuler(), localTransform_.translate);
 
     // ワールド行列の更新
     if(parent_){
@@ -192,8 +187,8 @@ void GameObject::UpdateMatrix(){
         Matrix4x4 parentMat = parent_->worldMat_;
 
         if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
-            worldMat_ = localMat_ * (parentMat);
-            return;
+            worldMat_ = localMat_ * parentMat;
+
         } else{
 
             Matrix4x4 cancelMat = IdentityMat4();
@@ -215,16 +210,15 @@ void GameObject::UpdateMatrix(){
             }
 
             Matrix4x4 canceledMat = cancelMat * parentMat;
-            //worldMat_ = (localMat_ * parentMat) * cancelMat;
-            worldMat_ = localMat_ * canceledMat;
+            worldMat_ = (localMat_ * parentMat) * cancelMat;
+            //worldMat_ = localMat_ * canceledMat;
         }
     } else{
         worldMat_ = localMat_;
     }
 
     worldTransform_.translate = ExtractTranslation(worldMat_);
-    worldTransform_.rotate = ExtractRotation(worldMat_);
-    worldTransform_.rotateQuat = Quaternion::ToQuaternion(worldTransform_.rotate);
+    worldTransform_.rotate = Quaternion::ToQuaternion(ExtractRotation(worldMat_));
     worldTransform_.scale = ExtractScale(worldMat_);
 }
 
@@ -251,6 +245,18 @@ void GameObject::MoveByVelocity(){
     localTransform_.translate += velocity_ * ClockManager::DeltaTime();
 }
 
+
+// 自分の子孫かどうか確認する関数
+bool GameObject::IsDescendant(GameObject* obj) const{
+    if(obj == nullptr) return false;
+    // 子供の中に含まれているか確認
+    for(const auto& child : children_){
+        if(child->IsDescendant(obj)){
+            return true;
+        }
+    }
+    return false;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
@@ -319,9 +325,8 @@ void GameObject::OnCollisionExit(GameObject* other){
 //////////////////////////////////////////////////////////////////////////
 // jsonデータの取得
 //////////////////////////////////////////////////////////////////////////
-const nlohmann::json& GameObject::GetJsonData(int32_t depth){
-    static nlohmann::json json;
-    json.clear(); // 以前のデータをクリア
+nlohmann::json GameObject::GetJsonData(int32_t depth){
+    nlohmann::json json;
 
     // 全般の情報
     json["objectType"] = int(objectType_);
@@ -336,7 +341,6 @@ const nlohmann::json& GameObject::GetJsonData(int32_t depth){
     json["transform"]["translate"] = localTransform_.translate;
     json["transform"]["rotate"] = localTransform_.rotate;
     json["transform"]["scale"] = localTransform_.scale;
-    json["isRotateWithQuaternion"] = isRotateWithQuaternion_;
 
     // コンポーネントの情報
     for(const auto& component : components_){
@@ -366,9 +370,7 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
     // transformの情報
     localTransform_.translate = jsonData["transform"]["translate"];
     localTransform_.rotate = jsonData["transform"]["rotate"];
-    localTransform_.rotateQuat = Quaternion::ToQuaternion(localTransform_.rotate);
     localTransform_.scale = jsonData["transform"]["scale"];
-    isRotateWithQuaternion_ = jsonData["isRotateWithQuaternion"];
 
     // コンポーネントの情報
     for(const auto& componentJson : jsonData["components"]){
@@ -384,11 +386,11 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Text"){
             auto* textComponent = AddComponent<TextComponent>();
             textComponent->LoadFromJson(componentJson);
-        
+
         } else if(componentType == "SpotLight"){
             auto* spotLightComponent = AddComponent<SpotLightComponent>();
             spotLightComponent->LoadFromJson(componentJson);
-        
+
         }
     }
 }

@@ -84,13 +84,7 @@ void Model::Update(){
 void Model::UpdateMatrix(){
 
     // ローカル変換行列の更新
-    if(isRotateWithQuaternion_){
-        localMat_ = AffineMatrix(transform_.scale, transform_.rotateQuat, transform_.translate);
-        transform_.rotate = Quaternion::ToEuler(transform_.rotateQuat);// 切り替えても大丈夫なように同期させておく
-    } else{
-        localMat_ = AffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
-        transform_.rotateQuat = Quaternion::ToQuaternion(transform_.rotate);// 切り替えても大丈夫なように同期させておく
-    }
+    localMat_ = AffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 
     // ワールド行列の更新
     if(parentMat_){

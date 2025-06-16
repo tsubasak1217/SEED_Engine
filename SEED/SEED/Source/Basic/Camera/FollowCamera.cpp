@@ -52,7 +52,8 @@ void FollowCamera::Update(){
     transform_.translate += (aimPosition_ - transform_.translate) * interpolationRate_ * ClockManager::TimeRate();
 
     // 注視点とカメラ位置から回転（向き）を計算
-    transform_.rotate = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
+    Vector3 eulerAngles = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
+    transform_.rotate = Quaternion::ToQuaternion(eulerAngles);
 }
 
 void FollowCamera::Reset(const Vector3& pos){
@@ -68,7 +69,8 @@ void FollowCamera::Reset(const Vector3& pos){
     transform_.translate = targetPos_ + (offsetVec * distance_);
 
     // カメラの回転を計算
-    transform_.rotate = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
+    Vector3 eulerAngles = MyFunc::CalcRotateVec(MyMath::Normalize(targetPos_ - transform_.translate));
+    transform_.rotate = Quaternion::ToQuaternion(eulerAngles);
 }
 
 

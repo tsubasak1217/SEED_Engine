@@ -73,14 +73,40 @@ public:
 };
 
 // QuaternionをJSONに変換する関数
-inline void to_json(nlohmann::json& j, const Quaternion& quat){
-    j = { {"x", quat.x}, {"y", quat.y}, {"z", quat.z}, {"w", quat.w} };
+inline void to_json(nlohmann::json& j, const Quaternion& q){
+    j = { {"x", q.x}, {"y", q.y}, {"z", q.z},{"w",q.w} };
 }
 
-// JSONからQuaternionを読み込む関数
-inline void from_json(const nlohmann::json& j, Quaternion& quat){
-    quat.x = j.value("x", 0.0f);
-    quat.y = j.value("y", 0.0f);
-    quat.z = j.value("z", 0.0f);
-    quat.w = j.value("w", 1.0f);
+// JSONをQuaternionに変換する関数
+inline void from_json(const nlohmann::json& j, Quaternion& q){
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z") || !j.contains("w")){
+        q.x = j[0].get<float>();
+        q.y = j[1].get<float>();
+        q.z = j[2].get<float>();
+        q.w = j[3].get<float>();
+    } else{
+        q.x = j.at("x").get<float>();
+        q.y = j.at("y").get<float>();
+        q.z = j.at("z").get<float>();
+        q.w = j.at("w").get<float>();
+    }
+}
+
+inline void to_json(nlohmann::ordered_json& j, const Quaternion& q){
+    j = { {"x", q.x}, {"y", q.y}, {"z", q.z},{"w",q.w} };
+}
+
+// JSONをQuaternionに変換する関数
+inline void from_json(const nlohmann::ordered_json& j, Quaternion& q){
+    if(!j.contains("x") || !j.contains("y") || !j.contains("z") || !j.contains("w")){
+        q.x = j[0].get<float>();
+        q.y = j[1].get<float>();
+        q.z = j[2].get<float>();
+        q.w = j[3].get<float>();
+    } else{
+        q.x = j.at("x").get<float>();
+        q.y = j.at("y").get<float>();
+        q.z = j.at("z").get<float>();
+        q.w = j.at("w").get<float>();
+    }
 }

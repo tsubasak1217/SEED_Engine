@@ -91,7 +91,6 @@ public:
 
 public:
     Transform transform_;// トランスフォーム情報
-    bool isRotateWithQuaternion_ = true;// クォータニオンで回転するか
 
 private:
     Matrix4x4 localMat_;

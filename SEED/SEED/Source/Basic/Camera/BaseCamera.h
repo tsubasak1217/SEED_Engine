@@ -28,8 +28,10 @@ public:// アクセッサ
 
     const Vector3& GetTranslation() const{ return transform_.translate; }
     void SetTranslation(const Vector3& translation){ transform_.translate = translation; }
-    const Vector3& GetRotation() const{ return transform_.rotate; }
-    void SetRotation(const Vector3& rotation){ transform_.rotate = rotation; }
+    const Quaternion& GetRotation() const{ return transform_.rotate; }
+    const Vector3& GetEulerRotation() const{ return Quaternion::ToEuler(transform_.rotate); }
+    void SetRotation(const Vector3& rotation){ transform_.rotate = Quaternion::ToQuaternion(rotation); }
+    void SetRotation(const Quaternion& rotation){ transform_.rotate = rotation; }
     const Vector3& GetScale() const{ return transform_.scale; }
     void SetScale(const Vector3& scale){ transform_.scale = scale; }
     const Vector2& GetClipRange() const{ return clipRange_; }
@@ -57,7 +59,7 @@ public:// アクセッサ
 protected:
 
     bool isActive_ = true;
-    EulerTransform transform_;
+    Transform transform_;
     Vector2 clipRange_;
     float znear_;
     float zfar_;

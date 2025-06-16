@@ -59,7 +59,7 @@ void BaseParticle::Update(){
     if(isBillboard_){
         if(!isUseRotate_){
             // 通常のビルボード
-            particle_->transform_.rotateQuat = Quaternion::ToQuaternion(SEED::GetMainCamera()->GetRotation());
+            particle_->transform_.rotate = SEED::GetMainCamera()->GetRotation();
         } else{
             // ビルボードしながら任意回転(ずっと動かずに回転を見てる感じになる)
             localRotate_ *= Quaternion::AngleAxis(
@@ -68,12 +68,12 @@ void BaseParticle::Update(){
             );
 
             // ビルボードの回転と任意回転を合成
-            particle_->transform_.rotateQuat = Quaternion::ToQuaternion(SEED::GetMainCamera()->GetRotation()) * localRotate_;
+            particle_->transform_.rotate = SEED::GetMainCamera()->GetRotation() * localRotate_;
         }
     } else{
         if(isUseRotate_){
             // 通常の回転
-            particle_->transform_.rotateQuat *= Quaternion::AngleAxis(
+            particle_->transform_.rotate *= Quaternion::AngleAxis(
                 rotateSpeed_ * rotateEase * ClockManager::DeltaTime(),
                 rotateAxis_
             );

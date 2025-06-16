@@ -98,17 +98,27 @@ public:
 
     /*------ parent -------*/
     void SetParent(GameObject* parent){
+        ReleaseParent();
         parent_ = parent;
         parent->children_.push_back(this);
     }
     GameObject* GetParent(){ return parent_; }
+    const std::list<GameObject*>& GetChildren() const{ return children_; }
+
     void ReleaseParent(){
         if(parent_){
             parent_->children_.remove(this);
             parent_ = nullptr;
         }
     }
-    const std::list<GameObject*>& GetChildren() const{ return children_; }
+    void ReleaseChildren(){
+        auto childrenCopy = children_;
+        for(auto* child : childrenCopy){
+            child->ReleaseParent();
+        }
+        children_.clear();
+    }
+    bool IsDescendant(GameObject* obj) const;
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
 
@@ -122,9 +132,10 @@ public:
     Vector3 GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
     /*------ rotate -------*/
-    Vector3 GetWorldRotate() const{ return worldTransform_.rotate; }
-    const Vector3& GetLocalRotate() const{ return localTransform_.rotate; }
-
+    const Quaternion& GetWorldRotate() const{ return worldTransform_.rotate; }
+    const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
+    Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
+    Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
     /*------ translate -------*/
     Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
@@ -161,7 +172,7 @@ public:
     //=====================================
     // json
     //=====================================
-    virtual const nlohmann::json& GetJsonData(int32_t depth);
+    virtual nlohmann::json GetJsonData(int32_t depth);
     virtual void LoadFromJson(const nlohmann::json& jsonData);
     static GameObject* CreateFromJson(const nlohmann::json& jsonData);
     static std::vector<GameObject*> CreateFamily(const nlohmann::json& jsonData, GameObject* parent = nullptr);
@@ -190,7 +201,6 @@ public:
 
     // トランスフォーム情報
     Transform localTransform_;
-    bool isRotateWithQuaternion_ = true;
 
 private:
     Transform worldTransform_;

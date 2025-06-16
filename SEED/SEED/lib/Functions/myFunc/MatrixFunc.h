@@ -7,6 +7,9 @@
 #include <SEED/Lib/Tensor/Matrix3x3.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Structs/Transform.h>
+#include <DirectXMath.h>
+#include <DirectXMathMatrix.inl>
+using namespace DirectX;
 
 //================================================================
 //                      行列の計算関数
@@ -87,7 +90,7 @@ Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
 Matrix3x3 AffineMatrix(const Transform2D& transform);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
-Matrix4x4 AffineMatrix(const Transform& transform,bool isQuaternion);
+Matrix4x4 AffineMatrix(const Transform& transform);
 
 // 行列から平行移動成分を取り出す
 Vector3 ExtractTranslation(const Matrix4x4& matrix);

@@ -43,11 +43,15 @@ void DebugCamera::MoveByPad(){
         0.0f
     };
 
+    // 回転速度に時間を掛ける
+    static Vector3 localEulerRotate;
+    localEulerRotate += rotateValue * ClockManager::TimeRate();
+
     // 移動量の計算
     Vector3 velocity = (moveDirection_ * moveSpeed_) * RotateMatrix({ 0.0f,transform_.rotate.y,0.0f });
 
     // トランスフォームの更新
-    transform_.rotate += rotateValue * ClockManager::TimeRate();
+    transform_.rotate = Quaternion::ToQuaternion(localEulerRotate);
     transform_.translate += velocity * ClockManager::DeltaTime();
 }
 
@@ -77,6 +81,10 @@ void DebugCamera::MoveByKeyboard(){
         };
     }
 
+    // 回転速度に時間を掛ける
+    static Vector3 localEulerRotate;
+    localEulerRotate += rotateValue * ClockManager::TimeRate();
+
     // 移動方向の取得
     moveDirection_ = {
         float(Input::IsPressKey(DIK_D) - Input::IsPressKey(DIK_A)),
@@ -85,9 +93,9 @@ void DebugCamera::MoveByKeyboard(){
     };
 
     // 移動量の計算
-    Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(transform_.rotate);
+    Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(localEulerRotate);
 
     // トランスフォームの更新
-    transform_.rotate += rotateValue * ClockManager::TimeRate();
+    transform_.rotate = Quaternion::ToQuaternion(localEulerRotate);
     transform_.translate += velocity * ClockManager::DeltaTime();
 }

@@ -2,6 +2,9 @@
 #include <SEED/Source/Manager/WindowManager/WindowManager.h>
 #include <SEED/Source/SEED.h>
 #include "ImGlyph.h"
+#include <DirectXMath.h>
+#include <DirectXMathMatrix.inl>
+using namespace DirectX;
 
 // シングルトンインスタンス
 ImGuiManager* ImGuiManager::instance_ = nullptr;
@@ -366,7 +369,8 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
     BaseCamera* camera = SEED::GetCamera("debug");
     Matrix4x4 viewMat = camera->GetViewMat();
     Matrix4x4 projMat = camera->GetProjectionMat();
-    Matrix4x4 worldMat = info.transform->ToMatrix(info.isUseQuaternion) * info.parentMat;
+    Matrix4x4 modelMat = info.transform->ToMatrix();
+    Matrix4x4 worldMat = modelMat * info.parentMat;
     Matrix4x4 deltaMat = IdentityMat4(); // 変化量の行列
 
     // IDの設定(ポインタをIDとして仕様)
@@ -396,6 +400,29 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
         worldMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
         info.transform->FromMatrix(worldMat);
     }
+
+    // 変化量をトランスフォームに適用
+    //if(isManipulated){
+    //    // ローカル行列に変換
+    //    Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
+    //    XMFLOAT4X4 localMat = (worldMat * invParentMat).ToXMFLOAT4X4();
+
+    //    // XMMatrixDecomposeで安全に分解
+    //    XMMATRIX xmMat = XMLoadFloat4x4(&localMat);
+    //    XMVECTOR scale, rotationQuat, translation;
+    //    if(XMMatrixDecompose(&scale, &rotationQuat, &translation, xmMat)){
+    //        XMFLOAT3 pos, scl;
+    //        XMStoreFloat3(&pos, translation);
+    //        XMStoreFloat3(&scl, scale);
+    //        XMFLOAT4 rotQuat;
+    //        XMStoreFloat4(&rotQuat, rotationQuat);
+
+    //        // トランスフォームへ反映（FromMatrixを使わず直接設定）
+    //        info.transform->translate = { pos.x, pos.y, pos.z };
+    //        info.transform->scale = { scl.x, scl.y, scl.z };
+    //        info.transform->rotate = Quaternion{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w };
+    //    }
+    //}
 }
 
 // 2D用のImGuizmo操作関数

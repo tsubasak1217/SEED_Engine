@@ -48,4 +48,5 @@ public:// json
 
 private:
     std::unique_ptr<Model> model_;
+    Vector3 eulerAngles_;
 };

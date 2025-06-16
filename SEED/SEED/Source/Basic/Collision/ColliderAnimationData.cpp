@@ -277,14 +277,14 @@ void ColliderAnimationData::DrawCollider() const{
 
             // 行列から各要素を計算
             translate[i] = ExtractTranslation(worldMat);
-            rotate[i] = Quaternion::ToQuaternion(ExtractRotation(worldMat));
+            rotate[i] = ExtractQuaternion(worldMat);
             scale[i] = ExtractScale(worldMat);
         }
 
         // 軸モデルの描画
         axis.transform_.translate = translate[i];
         axis.transform_.scale = scale[i] * axis.transform_.scale;
-        axis.transform_.rotateQuat = rotate[i];
+        axis.transform_.rotate = rotate[i];
         axis.UpdateMatrix();
         axis.Draw();
     }
@@ -333,14 +333,14 @@ void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
 
         // 行列から各要素を計算
         translate = ExtractTranslation(resultMat);
-        rotate = Quaternion::ToQuaternion(ExtractRotation(resultMat));
+        rotate = ExtractQuaternion(resultMat);
         scale = ExtractScale(resultMat);
     }
 
     // 軸モデルの描画
     axis.transform_.translate = translate;
     axis.transform_.scale = scale * axis.transform_.scale;
-    axis.transform_.rotateQuat = rotate;
+    axis.transform_.rotate = rotate;
     if(indexDraw){ axis.transform_.scale *= 1.1f; }
     axis.UpdateMatrix();
     axis.Draw();

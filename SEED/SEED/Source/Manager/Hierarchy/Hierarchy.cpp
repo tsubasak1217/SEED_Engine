@@ -12,6 +12,7 @@ void Hierarchy::RegisterGameObject(GameObject* gameObject){
 void Hierarchy::RemoveGameObject(GameObject* gameObject){
     // ゲームオブジェクトを削除
     gameObjects_.remove(gameObject);
+
     // ヒエラルキーから削除
     if(selectedObject_ == gameObject){
         selectedObject_ = nullptr; // 選択中のオブジェクトをクリア
@@ -22,7 +23,6 @@ void Hierarchy::RemoveGameObject(GameObject* gameObject){
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////
 void Hierarchy::BeginFrame(){
-
     // 親子関係の再構築
     RebuildParentInfo();
 
@@ -85,7 +85,7 @@ void Hierarchy::RebuildParentInfo(){
     // 親のリストをクリア(毎フレーム初めに再構築)
     grandParentObjects_.clear();
 
-    // 親子関係の再構築
+    // 親子関係の再構築(親のいないオブジェクトだけのリストを作成)
     std::unordered_set<GameObject*> addedObjects;
     for(auto* gameObject : gameObjects_){
         while(true){
@@ -142,7 +142,12 @@ void Hierarchy::EditGUI(){
         selectedObject_->EditGUI();
 
         // Guizmoに登録
-        ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_, selectedObject_->isRotateWithQuaternion_);
+        if(selectedObject_->GetParent()){
+            Matrix4x4 parentWorldMat = selectedObject_->GetParent()->GetWorldMat();
+            ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_,parentWorldMat);
+        } else{
+            ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_);
+        }
     }
     ImGui::End();
 #endif // _DEBUG
@@ -164,25 +169,49 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
         isReset = false;
     }
 
-    if(ImGui::TreeNode(nodeName.c_str())){
-        // 色を元に戻す
+
+    // TreeNode の展開状態
+    bool open = ImGui::TreeNode(nodeName.c_str());
+
+    if(ImGui::IsItemClicked()){
+        selectedObject_ = gameObject;
+    }
+
+    // ドラッグ操作の送信側設定
+    if(ImGui::BeginDragDropSource()){
+        ImGui::SetDragDropPayload("GAMEOBJECT", &gameObject, sizeof(GameObject*));
+        ImGui::Text("親を変更: %s", gameObject->GetName().c_str());
+        ImGui::EndDragDropSource();
+    }
+
+    // ドラッグ操作の受信側設定
+    if(ImGui::BeginDragDropTarget()){
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT")){
+            if(payload->DataSize == sizeof(GameObject*)){
+                GameObject* draggedObj = *(GameObject**)payload->Data;
+
+                // 自分自身や子孫を親にしないようチェック
+                if(draggedObj != gameObject && !gameObject->IsDescendant(draggedObj)){
+                    // 親子付けを変更する処理
+                    draggedObj->SetParent(gameObject);  // あなたの GameObject クラスに応じて関数を調整
+                }
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    // 子を表示（再帰）
+    if(open){
         if(isSelected){
             ImGui::PopStyleColor(2);
             isReset = true;
         }
-
-        // 選択中のオブジェクトを更新
-        if(ImGui::IsItemClicked()){
-            selectedObject_ = gameObject;
-        }
-        // 子オブジェクトの再帰的な表示
         for(auto& child : gameObject->GetChildren()){
             RecursiveTreeNode(child, depth + 1);
         }
         ImGui::TreePop();
     }
 
-    // 色を元に戻す
     if(isSelected && !isReset){
         ImGui::PopStyleColor(2);
     }

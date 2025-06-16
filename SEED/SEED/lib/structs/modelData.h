@@ -19,7 +19,7 @@ struct MeshData{
 
 // モデルのノード構造体
 struct ModelNode{
-    QuaternionTransform transform;
+    Transform transform;
     Matrix4x4 localMatrix;
     std::string name;
     std::vector<ModelNode> children;

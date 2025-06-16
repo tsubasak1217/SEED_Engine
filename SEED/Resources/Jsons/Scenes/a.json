@@ -1,0 +1,136 @@
+{
+    "gameObjects": [
+        {
+            "children": [
+                {
+                    "components": [
+                        {
+                            "animationName": "",
+                            "animationSpeedRate": 1.0,
+                            "blendMode": 3,
+                            "componentID": 1,
+                            "componentTag": "ModelRender_ID:1",
+                            "componentType": "ModelRender",
+                            "cullMode": 3,
+                            "isAnimation": false,
+                            "isAnimationLoop": false,
+                            "kAnimLerpTime": 0.20000000298023224,
+                            "lightingType": 2,
+                            "masterColor": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "modelFilePath": "DefaultAssets/cube/cube.obj",
+                            "transform": {
+                                "rotate": {
+                                    "w": 1.0,
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "BaseObject1",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "translate": {
+                            "x": 1.6108492612838745,
+                            "y": 1.6595247983932495,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 0,
+                    "componentTag": "ModelRender_ID:0",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "DefaultAssets/cube/cube.obj",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "BaseObject0",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

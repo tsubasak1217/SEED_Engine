@@ -14,7 +14,7 @@ BaseCamera::BaseCamera(){
 
 void BaseCamera::Initialize(){
     transform_.scale = { 1.0f,1.0f,1.0f }; // scale
-    transform_.rotate = { 0.0f,0.0f,0.0f }; // rotate
+    transform_.rotate = Quaternion();
     transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
     projectionMode_ = PERSPECTIVE;
     clipRange_ = kWindowSize;

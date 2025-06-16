@@ -32,22 +32,22 @@ void SpotLightComponent::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////////
 void SpotLightComponent::Update(){
 
-    // transformの更新
-    Matrix4x4 localRotMat = RotateMatrix(localTransform_.rotate);
-    Matrix4x4 worldRotMat = localRotMat;
-    Vector3 rotated = Vector3(0.0f, -1.0f, 0.0f);
-    Vector3 positionVec = localTransform_.translate;
+    //// transformの更新
+    //Matrix4x4 localRotMat = RotateMatrix(localTransform_.rotate);
+    //Matrix4x4 worldRotMat = localRotMat;
+    //Vector3 rotated = Vector3(0.0f, -1.0f, 0.0f);
+    //Vector3 positionVec = localTransform_.translate;
 
-    // 親の回転を反映する場合
-    if(isParentRotate_){
-        positionVec *= RotateMatrix(owner_->GetWorldRotate());
-        worldRotMat = RotateMatrix(owner_->GetWorldRotate()) * localRotMat;
-    }
+    //// 親の回転を反映する場合
+    //if(isParentRotate_){
+    //    positionVec *= RotateMatrix(owner_->GetWorldRotate());
+    //    worldRotMat = localRotMat * RotateMatrix(owner_->GetWorldRotate());
+    //}
 
-    // 最終結果を反映
-    rotated *= worldRotMat;
-    light_->position = owner_->GetWorldTranslate() + positionVec;
-    light_->direction = rotated;
+    //// 最終結果を反映
+    //rotated *= worldRotMat;
+    //light_->position = owner_->GetWorldTranslate() + positionVec;
+    //light_->direction = rotated;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ void SpotLightComponent::EditGUI(){
 #ifdef _DEBUG
 
     // guizmoに登録
-    ImGuiManager::RegisterGuizmoItem(&localTransform_, true,owner_->GetWorldMat());
+    ImGuiManager::RegisterGuizmoItem(&localTransform_,owner_->GetWorldMat());
 
     std::string label = componentTag_ + "##" + std::to_string(componentID_);
     if(ImGui::CollapsingHeader(label.c_str())){
@@ -109,12 +109,8 @@ void SpotLightComponent::EditGUI(){
         ImGui::DragFloat("フェード開始角度", &light_->cosFallofStart, 0.01f, 0.0f, 1.0f);
 
         Matrix4x4 rotMat = RotateMatrix(localTransform_.rotate);
-        Vector3 rot1 = localTransform_.rotate;
-        Vector3 rot2 = ExtractRotation(rotMat);
-        Quaternion q1 = localTransform_.rotateQuat;
+        Quaternion q1 = localTransform_.rotate;
         Quaternion q2 = Quaternion::MatrixToQuaternion(rotMat);
-        ImGui::Text("回転値1: (%.2f, %.2f, %.2f)", rot1.x, rot1.y, rot1.z);
-        ImGui::Text("回転値2: (%.2f, %.2f, %.2f)", rot2.x, rot2.y, rot2.z);
         ImGui::Text("Quaternion1: (%.2f, %.2f, %.2f, %.2f)",q1.x, q1.y, q1.z, q1.w);
         ImGui::Text("Quaternion2: (%.2f, %.2f, %.2f, %.2f)", q2.x, q2.y, q2.z, q2.w);
         ImGui::Unindent();

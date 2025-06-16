@@ -16,28 +16,15 @@ struct Transform2D{
 
 struct Transform{
     Vector3 scale = {1.0f,1.0f,1.0f};
-    Vector3 rotate;
-    Quaternion rotateQuat;
+    Quaternion rotate;
     Vector3 translate;
 
     // 変換関数
-    Matrix4x4 ToMatrix(bool isUseQuaternion);
+    Matrix4x4 ToMatrix();
     void FromMatrix(const Matrix4x4& mat);
 };
 
-struct EulerTransform {
-    Vector3 scale;
-    Vector3 rotate;
-    Vector3 translate;
-};
-
-struct QuaternionTransform{
-    Vector3 scale;
-    Quaternion rotate;
-    Vector3 translate;
-};
-
-struct TransformMatrix {
+struct TransformMatrix{
     Matrix4x4 WVP;
     Matrix4x4 world;
     Matrix4x4 worldInverseTranspose;

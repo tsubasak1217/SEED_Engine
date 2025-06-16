@@ -92,8 +92,9 @@ void ModelRenderComponent::EditGUI(){
         if(ImGui::CollapsingHeader(label.c_str())){
             ImGui::Indent();
             ImGui::DragFloat3("Translate", &model_->transform_.translate.x, 0.1f);
-            ImGui::DragFloat3("Rotate", &model_->transform_.rotate.x, 0.1f);
+            ImGui::DragFloat3("Rotate", &eulerAngles_.x, 0.05f);
             ImGui::DragFloat3("Scale", &model_->transform_.scale.x, 0.1f);
+            model_->transform_.rotate = Quaternion::ToQuaternion(eulerAngles_);
             ImGui::Unindent();
         }
 
@@ -154,7 +155,6 @@ nlohmann::json ModelRenderComponent::GetJsonData() const{
     j["transform"]["translate"] = model_->transform_.translate;
     j["transform"]["rotate"] = model_->transform_.rotate;
     j["transform"]["scale"] = model_->transform_.scale;
-    j["isRotateWithQuaternion"] = model_->isRotateWithQuaternion_;
     // レンダリング設定
     j["masterColor"] = model_->masterColor_;
     j["lightingType"] = (int)model_->lightingType_;
@@ -184,9 +184,7 @@ void ModelRenderComponent::LoadFromJson(const nlohmann::json& jsonData){
     // Transformの情報を読み込み
     model_->transform_.translate = jsonData["transform"]["translate"];
     model_->transform_.rotate = jsonData["transform"]["rotate"];
-    model_->transform_.rotateQuat = Quaternion::ToQuaternion(model_->transform_.rotate);
     model_->transform_.scale = jsonData["transform"]["scale"];
-    model_->isRotateWithQuaternion_ = jsonData["isRotateWithQuaternion"];
     // レンダリング設定
     model_->masterColor_ = jsonData["masterColor"];
     model_->lightingType_ = static_cast<LIGHTING_TYPE>(jsonData["lightingType"]);

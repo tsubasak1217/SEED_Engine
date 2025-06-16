@@ -77,8 +77,8 @@ Particle_Model::Particle_Model(Emitter_Base* emitter) : BaseParticle(emitter){
 
     // ランダム初期化フラグがある場合
     if(modelEmitter->isRoteteRandomInit_){
-        particle_->transform_.rotateQuat = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f, 3.14f));
-        localRotate_ = particle_->transform_.rotateQuat;
+        particle_->transform_.rotate = Quaternion::ToQuaternion(rotateAxis_ * MyFunc::Random(-3.14f, 3.14f));
+        localRotate_ = particle_->transform_.rotate;
     }
 
     // 回転速度の決定

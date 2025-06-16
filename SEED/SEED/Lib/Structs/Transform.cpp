@@ -16,14 +16,8 @@ Matrix4x4 Transform2D::ToMatrix4x4(){
     );
 }
 
-Matrix4x4 Transform::ToMatrix(bool isUseQuaternion){
-    if(isUseQuaternion){
-        // クォータニオンを使用して変換
-        return AffineMatrix(scale,rotateQuat, translate);
-    } else{
-        // オイラー角を使用して変換
-        return AffineMatrix(scale, rotate, translate);
-    }
+Matrix4x4 Transform::ToMatrix(){
+    return AffineMatrix(scale, rotate, translate);
 }
 
 /////////////////////////////////////////////////////////////
@@ -46,9 +40,7 @@ void Transform::FromMatrix(const Matrix4x4& mat){
     // 拡大縮小成分を抽出
     scale = ExtractScale(mat);
     // 回転成分を抽出
-    rotate = ExtractRotation(mat);
-    // クォータニオンに変換
-    rotateQuat = Quaternion::ToQuaternion(rotate);
+    rotate = Quaternion::ToQuaternion(ExtractRotation(mat));
 }
 
 

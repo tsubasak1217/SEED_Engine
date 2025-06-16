@@ -17,7 +17,6 @@ class SEED;
 struct GuizmoInfo{
     Transform* transform = nullptr; // 操作対象のTransform
     Transform2D* transform2D = nullptr; // 操作対象のTransform2D
-    bool isUseQuaternion = false; // クォータニオンを使用するかどうか
     Matrix4x4 parentMat = IdentityMat4(); // 親の行列
 };
 
@@ -47,11 +46,10 @@ public:
 
 public:
     static const std::wstring& GetWindowName(){ return instance_->windowTitle_; }
-    static void RegisterGuizmoItem(Transform* transform,bool isUseQuaternion,const Matrix4x4& parentMat = IdentityMat4()){
+    static void RegisterGuizmoItem(Transform* transform,const Matrix4x4& parentMat = IdentityMat4()){
         if(transform != nullptr){
             GuizmoInfo info;
             info.transform = transform;
-            info.isUseQuaternion = isUseQuaternion;
             info.parentMat = parentMat;
             instance_->guizmoInfo3D_.push_back(info);
         }

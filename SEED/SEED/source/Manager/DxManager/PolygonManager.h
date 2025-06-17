@@ -53,11 +53,11 @@ struct ModelDrawData{
 
     // モデルの種類が切り替わる番号(頂点)
     static std::unordered_map<std::string, int32_t>modelSwitchIdx_Vertex;
-    std::array<int32_t,16>meshSwitchIdx_Vertex;// メッシュの切り替わる番号(最大16meshまで)
+    std::array<int32_t,128>meshSwitchIdx_Vertex;// メッシュの切り替わる番号(最大16meshまで)
 
     // モデルの種類が切り替わる番号(インデックス)
     static std::unordered_map<std::string, int32_t>modelSwitchIdx_Index;
-    std::array<int32_t,16>meshSwitchIdx_Index;// メッシュの切り替わる番号(最大16meshまで)
+    std::array<int32_t,128>meshSwitchIdx_Index;// メッシュの切り替わる番号(最大16meshまで)
 
     // 描画する順番
     int8_t drawOrder = 0;

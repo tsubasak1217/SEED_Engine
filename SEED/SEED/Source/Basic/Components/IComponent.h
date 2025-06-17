@@ -11,6 +11,7 @@ protected:
     std::string componentTag_; // コンポーネントのタグ
     inline static uint32_t nextComponentID_ = 0; // コンポーネントのID
     uint32_t componentID_ = 0; // コンポーネントのインスタンスID
+    bool isActive_ = true; // コンポーネントが有効かどうか
 public:
     IComponent() = default;
     IComponent(GameObject* pOwner,const std::string& tagName = "");
@@ -49,4 +50,5 @@ public:
     GameObject* GetOwner() const{ return owner_; }
     const std::string& GetTagName() const{ return componentTag_; }
     void SetTagName(const std::string& tagName){ componentTag_ = tagName; }
+    void SetIsActive(bool isActive){ isActive_ = isActive; }
 };

@@ -32,22 +32,22 @@ void SpotLightComponent::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////////
 void SpotLightComponent::Update(){
 
-    //// transformの更新
-    //Matrix4x4 localRotMat = RotateMatrix(localTransform_.rotate);
-    //Matrix4x4 worldRotMat = localRotMat;
-    //Vector3 rotated = Vector3(0.0f, -1.0f, 0.0f);
-    //Vector3 positionVec = localTransform_.translate;
+    // transformの更新
+    Matrix4x4 localRotMat = RotateMatrix(localTransform_.rotate);
+    Matrix4x4 worldRotMat = localRotMat;
+    Vector3 rotated = Vector3(0.0f, -1.0f, 0.0f);
+    Vector3 positionVec = localTransform_.translate;
 
-    //// 親の回転を反映する場合
-    //if(isParentRotate_){
-    //    positionVec *= RotateMatrix(owner_->GetWorldRotate());
-    //    worldRotMat = localRotMat * RotateMatrix(owner_->GetWorldRotate());
-    //}
+    // 親の回転を反映する場合
+    if(isParentRotate_){
+        positionVec *= RotateMatrix(owner_->GetWorldRotate());
+        worldRotMat = localRotMat * RotateMatrix(owner_->GetWorldRotate());
+    }
 
-    //// 最終結果を反映
-    //rotated *= worldRotMat;
-    //light_->position = owner_->GetWorldTranslate() + positionVec;
-    //light_->direction = rotated;
+    // 最終結果を反映
+    rotated *= worldRotMat;
+    light_->position = owner_->GetWorldTranslate() + positionVec;
+    light_->direction = rotated;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -84,38 +84,34 @@ void SpotLightComponent::Finalize(){
 
 void SpotLightComponent::EditGUI(){
 #ifdef _DEBUG
-
     // guizmoに登録
-    ImGuiManager::RegisterGuizmoItem(&localTransform_,owner_->GetWorldMat());
+    ImGuiManager::RegisterGuizmoItem(&localTransform_, owner_->GetWorldMat());
 
-    std::string label = componentTag_ + "##" + std::to_string(componentID_);
-    if(ImGui::CollapsingHeader(label.c_str())){
-        ImGui::Indent();
+    ImGui::Indent();
 
-        // 編集
-        ImGui::Text("------- 親子付け関連 ------");
-        ImGui::Checkbox("親の回転を反映", &isParentRotate_);
-        ImGui::Spacing();
+    // 編集
+    ImGui::Text("------- 親子付け関連 ------");
+    ImGui::Checkbox("親の回転を反映", &isParentRotate_);
+    ImGui::Spacing();
 
-        ImGui::Text("------- ライトの設定 ------");
-        ImGui::ColorEdit4("色", (float*)&light_->color_);
-        ImGui::DragFloat("光の強さ", &light_->intensity, 0.01f, 0.0f, 10.0f);
-        ImGui::Checkbox("ライティング有効", &light_->isLighting_);
-        ImGui::DragFloat3("ローカル位置", &localTransform_.translate.x, 0.01f);
-        ImGui::DragFloat3("回転(方向)", &localTransform_.rotate.x, 0.01f);
-        ImGui::DragFloat("距離", &light_->distance, 0.1f, 0.0f);
-        ImGui::DragFloat("減衰率", &light_->decay, 0.1f, 0.0f);
-        ImGui::DragFloat("角度", &light_->cosAngle, 0.01f, 0.0f, 3.14f);
-        ImGui::DragFloat("フェード開始角度", &light_->cosFallofStart, 0.01f, 0.0f, 1.0f);
+    ImGui::Text("------- ライトの設定 ------");
+    ImGui::ColorEdit4("色", (float*)&light_->color_);
+    ImGui::DragFloat("光の強さ", &light_->intensity, 0.01f, 0.0f, 10.0f);
+    ImGui::Checkbox("ライティング有効", &light_->isLighting_);
+    ImGui::DragFloat3("ローカル位置", &localTransform_.translate.x, 0.01f);
+    ImGui::DragFloat3("回転(方向)", &localTransform_.rotate.x, 0.01f);
+    ImGui::DragFloat("距離", &light_->distance, 0.1f, 0.0f);
+    ImGui::DragFloat("減衰率", &light_->decay, 0.1f, 0.0f);
+    ImGui::DragFloat("角度", &light_->cosAngle, 0.01f, 0.0f, 3.14f);
+    ImGui::DragFloat("フェード開始角度", &light_->cosFallofStart, 0.01f, 0.0f, 1.0f);
 
-        Matrix4x4 rotMat = RotateMatrix(localTransform_.rotate);
-        Quaternion q1 = localTransform_.rotate;
-        Quaternion q2 = Quaternion::MatrixToQuaternion(rotMat);
-        ImGui::Text("Quaternion1: (%.2f, %.2f, %.2f, %.2f)",q1.x, q1.y, q1.z, q1.w);
-        ImGui::Text("Quaternion2: (%.2f, %.2f, %.2f, %.2f)", q2.x, q2.y, q2.z, q2.w);
-        ImGui::Unindent();
-    }
+    Matrix4x4 rotMat = RotateMatrix(localTransform_.rotate);
+    Quaternion q1 = localTransform_.rotate;
+    Quaternion q2 = Quaternion::MatrixToQuaternion(rotMat);
+    ImGui::Text("Quaternion1: (%.2f, %.2f, %.2f, %.2f)", q1.x, q1.y, q1.z, q1.w);
+    ImGui::Text("Quaternion2: (%.2f, %.2f, %.2f, %.2f)", q2.x, q2.y, q2.z, q2.w);
 
+    ImGui::Unindent();
 #endif // _DEBUG
 
 }

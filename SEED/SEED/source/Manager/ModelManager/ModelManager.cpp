@@ -104,7 +104,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
     // メッシュレットの作成
     CreateMeshlet(modelData);
     // マテリアルデータの読み込み
-    modelData->materials = ParseMaterials(scene);
+    modelData->materials = ParseMaterials(scene, filename);
     modelData->modelName = filename;
     // アニメーションデータの読み込み
     modelData->animations = LoadAnimation(directoryPath, filename);
@@ -258,7 +258,7 @@ void ModelManager::CreateMeshlet(ModelData* modelData){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene){
+std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* scene, const std::string& modelName){
     std::vector<ModelMaterialLoadData> materials;
 
     // マテリアルを読み込む
@@ -268,18 +268,33 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
         aiString texturePath;
         if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS){
+            // ファイル名から種類を判別し種類に応じた処理を行う
+            std::string textureFilePath = texturePath.C_Str();
 
-            std::string findResult;
-            // まずmodel階層内から探す
-            findResult = MyFunc::FindFile("Resources/models/", texturePath.C_Str());
-            if(!findResult.empty()){
-                materialData.textureFilePath_ = "../models/" + findResult;
-
-            } else{// 見つからなかったらTextures階層から探す
-                findResult = MyFunc::FindFile("Resources/Textures/", texturePath.C_Str());
+            // '*'が含まれていなければ通常のテクスチャファイルとみなす
+            if(textureFilePath.find("*") == std::string::npos){
+                std::string findResult;
+                // まずmodel階層内から探す
+                findResult = MyFunc::FindFile("Resources/models/", texturePath.C_Str());
                 if(!findResult.empty()){
-                    materialData.textureFilePath_ = findResult;
+                    materialData.textureFilePath_ = "../models/" + findResult;
+
+                } else{// 見つからなかったらTextures階層から探す
+                    findResult = MyFunc::FindFile("Resources/Textures/", texturePath.C_Str());
+                    if(!findResult.empty()){
+                        materialData.textureFilePath_ = findResult;
+                    }
                 }
+
+            } else{// 埋め込みテクスチャ
+                // "*"より後の文字列を取得
+                std::string texIndexStr = textureFilePath.substr(textureFilePath.find("*") + 1);
+                materialData.textureFilePath_ = modelName + texIndexStr;
+                uint32_t texIndex = std::stoi(texIndexStr);
+
+                // 埋め込みテクスチャを取得し読み込む
+                const aiTexture* embeddedTexture = scene->mTextures[texIndex];
+                TextureManager::LoadTexture(materialData.textureFilePath_, embeddedTexture);
             }
         }
 
@@ -289,13 +304,7 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
         } else{
             // 埋め込みテクスチャの場合(最後の'/'の次が'*'の場合)、aiTextureを設定
             if(materialData.textureFilePath_.find("/*") != std::string::npos){
-                // "/*"より後の文字列を取得
-                std::string texIndexStr = materialData.textureFilePath_.substr(materialData.textureFilePath_.find("/*") + 2);
-                uint32_t texIndex = std::stoi(texIndexStr);
 
-                // 埋め込みテクスチャを取得し読み込む
-                const aiTexture* embeddedTexture = scene->mTextures[texIndex];
-                TextureManager::LoadTexture(materialData.textureFilePath_, embeddedTexture);
             }
         }
 

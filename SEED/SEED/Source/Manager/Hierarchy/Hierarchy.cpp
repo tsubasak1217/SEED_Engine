@@ -13,6 +13,24 @@ void Hierarchy::RemoveGameObject(GameObject* gameObject){
     // ゲームオブジェクトを削除
     gameObjects_.remove(gameObject);
 
+    // 親子関係の再構築
+    if(gameObject->GetParent()){
+        auto childrenCopy = gameObject->children_;
+        for(auto* child : childrenCopy){
+            // 親を結び直す
+            child->ReleaseParent();
+            child->SetParent(gameObject->GetParent());
+        }
+        gameObject->parent_->RemoveChild(gameObject);
+    } else{
+        // 親がいない場合
+        auto childrenCopy = gameObject->children_;
+        for(auto* child : childrenCopy){
+            child->ReleaseParent();
+        }
+        gameObject->ReleaseChildren();
+    }
+
     // ヒエラルキーから削除
     if(selectedObject_ == gameObject){
         selectedObject_ = nullptr; // 選択中のオブジェクトをクリア
@@ -129,6 +147,9 @@ void Hierarchy::EditGUI(){
     ImGui::Separator();
     InOutOnGUI();
 
+    // コンテキストメニューの表示
+    ExecuteContextMenu();
+
     ImGui::End();
 
 
@@ -144,7 +165,7 @@ void Hierarchy::EditGUI(){
         // Guizmoに登録
         if(selectedObject_->GetParent()){
             Matrix4x4 parentWorldMat = selectedObject_->GetParent()->GetWorldMat();
-            ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_,parentWorldMat);
+            ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_, parentWorldMat);
         } else{
             ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_);
         }
@@ -173,8 +194,21 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
     // TreeNode の展開状態
     bool open = ImGui::TreeNode(nodeName.c_str());
 
-    if(ImGui::IsItemClicked()){
+    // ダブルクリックで
+    if(ImGui::IsMouseDoubleClicked(0)){
         selectedObject_ = gameObject;
+    }
+
+    // 右クリックでコンテキストメニューを開く
+    if(ImGui::BeginPopupContextItem(nodeName.c_str())){
+
+        contextMenuObject_ = gameObject;
+        // コンテキストメニューの表示
+        if(ImGui::MenuItem("オブジェクトを削除")){
+            executeMenuName_ = "Delete Object"; // 実際の削除は関数外で行う
+        }
+
+        ImGui::EndPopup();
     }
 
     // ドラッグ操作の送信側設定
@@ -268,7 +302,7 @@ void Hierarchy::InOutOnGUI(){
     }
     // Jsonファイルからの読み込み
     if(ImGui::CollapsingHeader("Jsonファイルから読み込み")){
-        auto filenames = MyFunc::GetFileList("Resources/jsons/Scenes", {".json"},false);
+        auto filenames = MyFunc::GetFileList("Resources/jsons/Scenes", { ".json" }, false);
 
         // ファイルを選択して読み込み
         ImGui::Text("読み込むファイルを選択");
@@ -282,6 +316,21 @@ void Hierarchy::InOutOnGUI(){
 
 
 #endif
+}
+
+void Hierarchy::ExecuteContextMenu(){
+#ifdef _DEBUG
+    // 選択中のオブジェクトがある場合
+    if(contextMenuObject_){
+        // オブジェクトの削除
+        if(executeMenuName_ == "Delete Object"){
+            RemoveGameObject(contextMenuObject_);
+            contextMenuObject_ = nullptr;
+            RebuildParentInfo();
+            executeMenuName_ = "";
+        }
+    }
+#endif // _DEBUG
 }
 
 
@@ -329,7 +378,6 @@ void Hierarchy::LoadFromJson(const std::string& filePath){
         // vector内の要素を自身の所有物にする
         for(auto& obj : familyObjects){
             selfCreateObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
-            RegisterGameObject(obj);
         }
     }
 }

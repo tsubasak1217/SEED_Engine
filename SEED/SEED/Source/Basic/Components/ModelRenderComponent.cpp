@@ -64,80 +64,79 @@ void ModelRenderComponent::Finalize(){
 void ModelRenderComponent::EditGUI(){
 #ifdef _DEBUG
     static std::vector<std::string> modelFiles;
-    std::string label = componentTag_ + "##" + std::to_string(componentID_);
+    std::string label;
+    ImGui::Indent();
+
+    // モデルの変更
+    label = "モデル変更##" + std::to_string(componentID_);
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
-
-        // モデルの変更
-        label = "モデル変更##" + std::to_string(componentID_);
-        if(ImGui::CollapsingHeader(label.c_str())){
-            ImGui::Indent();
-            // クリック時のみ更新
-            if(ImGui::IsMouseClicked(0)){
-                // モデルのファイル一覧を取得
-                modelFiles = MyFunc::GetFileList("Resources/models", { ".obj",".gltf",".glb" });
-            }
-
-            // モデルファイルの一覧を表示
-            for(const auto& modelFile : modelFiles){
-                if(ImGui::Button(modelFile.c_str())){
-                    ChangeModel(modelFile);
-                }
-            }
-            ImGui::Unindent();
+        // クリック時のみ更新
+        if(ImGui::IsMouseClicked(0)){
+            // モデルのファイル一覧を取得
+            modelFiles = MyFunc::GetFileList("Resources/models", { ".obj",".gltf",".glb" });
         }
 
-        // localなTransformの編集
-        label = "トランスフォーム##" + std::to_string(componentID_);
-        if(ImGui::CollapsingHeader(label.c_str())){
-            ImGui::Indent();
-            ImGui::DragFloat3("Translate", &model_->transform_.translate.x, 0.1f);
-            ImGui::DragFloat3("Rotate", &eulerAngles_.x, 0.05f);
-            ImGui::DragFloat3("Scale", &model_->transform_.scale.x, 0.1f);
-            model_->transform_.rotate = Quaternion::ToQuaternion(eulerAngles_);
-            ImGui::Unindent();
-        }
-
-        // レンダリング系
-        label = "レンダリング設定##" + std::to_string(componentID_);
-        if(ImGui::CollapsingHeader(label.c_str())){
-            ImGui::Indent();
-            ImGui::ColorEdit4("色", &model_->masterColor_.x);
-            ImFunc::Combo("ライティング", model_->lightingType_, { "なし","ランバート","ハーフランバート" });
-            ImFunc::Combo("ブレンドモード", model_->blendMode_, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
-            ImFunc::Combo("カリング設定", model_->cullMode_, { "なし","背面","全面" }, 1);
-            ImGui::Unindent();
-        }
-
-        // アニメーションデータがあれば編集
-        if(model_->hasAnimation_){
-            label = "アニメーション設定##" + std::to_string(componentID_);
-            if(ImGui::CollapsingHeader(label.c_str())){
-                ImGui::Indent();
-                if(ImGui::Checkbox("アニメーションするか", &model_->isAnimation_)){
-                    if(model_->isAnimation_){
-                        model_->StartAnimation(0, true);
-                    }
-                }
-
-                if(model_->isAnimation_){
-                    // アニメーションの編集
-                    std::string selected = model_->animationName_;
-                    if(ImFunc::ComboText("アニメーション選択", selected, model_->GetAnimationNames())){
-                        model_->StartAnimation(selected, model_->isAnimationLoop_,model_->animationSpeedRate_);
-                    }
-                    ImGui::Checkbox("ループ再生", &model_->isAnimationLoop_);
-                    ImGui::DragFloat("再生速度倍率", &model_->animationSpeedRate_, 0.01f);
-                    ImGui::SliderFloat("アニメーション補間時間", &model_->kAnimLerpTime_, 0.0f, 1.0f);
-                    ImGui::Text("%.2f/%.2f秒", model_->animationTime_, model_->animationDuration_);
-                    ImGui::Text("補間%.2f%", model_->progressOfAnimLerp_);
-                }
-
-                ImGui::Unindent();
+        // モデルファイルの一覧を表示
+        for(const auto& modelFile : modelFiles){
+            if(ImGui::Button(modelFile.c_str())){
+                ChangeModel(modelFile);
             }
         }
         ImGui::Unindent();
     }
+
+    // localなTransformの編集
+    label = "トランスフォーム##" + std::to_string(componentID_);
+    if(ImGui::CollapsingHeader(label.c_str())){
+        ImGui::Indent();
+        ImGui::DragFloat3("Translate", &model_->transform_.translate.x, 0.1f);
+        ImGui::DragFloat3("Rotate", &eulerAngles_.x, 0.05f);
+        ImGui::DragFloat3("Scale", &model_->transform_.scale.x, 0.1f);
+        model_->transform_.rotate = Quaternion::ToQuaternion(eulerAngles_);
+        ImGui::Unindent();
+    }
+
+    // レンダリング系
+    label = "レンダリング設定##" + std::to_string(componentID_);
+    if(ImGui::CollapsingHeader(label.c_str())){
+        ImGui::Indent();
+        ImGui::ColorEdit4("色", &model_->masterColor_.x);
+        ImFunc::Combo("ライティング", model_->lightingType_, { "なし","ランバート","ハーフランバート" });
+        ImFunc::Combo("ブレンドモード", model_->blendMode_, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
+        ImFunc::Combo("カリング設定", model_->cullMode_, { "なし","背面","全面" }, 1);
+        ImGui::Unindent();
+    }
+
+    // アニメーションデータがあれば編集
+    if(model_->hasAnimation_){
+        label = "アニメーション設定##" + std::to_string(componentID_);
+        if(ImGui::CollapsingHeader(label.c_str())){
+            ImGui::Indent();
+            if(ImGui::Checkbox("アニメーションするか", &model_->isAnimation_)){
+                if(model_->isAnimation_){
+                    model_->StartAnimation(0, true);
+                }
+            }
+
+            if(model_->isAnimation_){
+                // アニメーションの編集
+                std::string selected = model_->animationName_;
+                if(ImFunc::ComboText("アニメーション選択", selected, model_->GetAnimationNames())){
+                    model_->StartAnimation(selected, model_->isAnimationLoop_, model_->animationSpeedRate_);
+                }
+                ImGui::Checkbox("ループ再生", &model_->isAnimationLoop_);
+                ImGui::DragFloat("再生速度倍率", &model_->animationSpeedRate_, 0.01f);
+                ImGui::SliderFloat("アニメーション補間時間", &model_->kAnimLerpTime_, 0.0f, 1.0f);
+                ImGui::Text("%.2f/%.2f秒", model_->animationTime_, model_->animationDuration_);
+                ImGui::Text("補間%.2f%", model_->progressOfAnimLerp_);
+            }
+
+            ImGui::Unindent();
+        }
+    }
+
+    ImGui::Unindent();
 #endif // _DEBUG
 }
 
@@ -202,6 +201,6 @@ void ModelRenderComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     // フラグがあればアニメーションを開始
     if(model_->isAnimation_){
-        model_->StartAnimation(model_->animationName_, model_->isAnimationLoop_,model_->animationSpeedRate_);
+        model_->StartAnimation(model_->animationName_, model_->isAnimationLoop_, model_->animationSpeedRate_);
     }
 }

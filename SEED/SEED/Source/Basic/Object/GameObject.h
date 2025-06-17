@@ -32,7 +32,6 @@ public:
     virtual void Draw();
     virtual void BeginFrame();
     virtual void EndFrame();
-    void EditGUI();
     void RegisterToHierarchy(Hierarchy* pHierarchy);
 
 public:// コンポーネントの管理関数
@@ -70,7 +69,6 @@ public:
     void UpdateMatrix();
 protected:
     void EndFrameDropFlagUpdate();
-    void MoveByVelocity();
 
     /*-------- 当たり判定時関数 --------*/
 public:
@@ -96,28 +94,15 @@ public:
     void SetIsActive(bool isActive){ isActive_ = isActive; }
     bool GetIsActive() const{ return isActive_; }
 
-    /*------ parent -------*/
-    void SetParent(GameObject* parent){
-        ReleaseParent();
-        parent_ = parent;
-        parent->children_.push_back(this);
-    }
+    //=====================================
+    // 親子付け関連
+    //=====================================
+    void SetParent(GameObject* parent);
     GameObject* GetParent(){ return parent_; }
     const std::list<GameObject*>& GetChildren() const{ return children_; }
-
-    void ReleaseParent(){
-        if(parent_){
-            parent_->children_.remove(this);
-            parent_ = nullptr;
-        }
-    }
-    void ReleaseChildren(){
-        auto childrenCopy = children_;
-        for(auto* child : childrenCopy){
-            child->ReleaseParent();
-        }
-        children_.clear();
-    }
+    void RemoveChild(GameObject* child);
+    void ReleaseParent();
+    void ReleaseChildren();
     bool IsDescendant(GameObject* obj) const;
     Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
@@ -126,8 +111,8 @@ public:
     // トランスフォーム
     //=====================================
 
-    Transform GetLocalTransform() { return localTransform_; }
-    Transform GetWorldTransform() { return worldTransform_; }
+    Transform GetLocalTransform(){ return localTransform_; }
+    Transform GetWorldTransform(){ return worldTransform_; }
     /*------ scale -------*/
     Vector3 GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
@@ -145,24 +130,7 @@ public:
     const Matrix4x4& GetLocalMat() const{ return localMat_; }
     const Matrix4x4& GetWorldMat() const{ return worldMat_; }
     const Matrix4x4* GetWorldMatPtr() const{ return &worldMat_; }
-
-    //=====================================
-    // 物理
-    //=====================================
-
-    /*------- 重力・落下 ------*/
-    void SetIsApplyGravity(bool isApplyGravity){ isApplyGravity_ = isApplyGravity; }
-    bool GetIsApplyGravity()const{ return isApplyGravity_; }
-    void SetIsDrop(bool isDrop){ isDrop_ = isDrop; }
-    float GetDropSpeed()const{ return dropSpeed_; }
-    void SetDropSpeed(float _dropSpeed){ dropSpeed_ = _dropSpeed; }
-    bool GetIsDrop()const{ return isDrop_; }
-
-    /*------- 重さ ------*/
-    float GetWeight()const{ return weight_; }
-    void SetWeight(float weight){ weight_ = weight; }
-
-    /*------- 速度 ------*/
+    /*------- velocity ------*/
     Vector3 GetVelocity()const{ return velocity_; }
     void SetVelocity(const Vector3& velocity){ velocity_ = velocity; }
     void SetVelocityX(float x){ velocity_.x = x; }
@@ -192,23 +160,20 @@ protected:
     std::list<std::unique_ptr<IComponent>> components_;
 
 public:
-    // 親子付け情報
+    //---------- 親子付け情報 ---------//
     GameObject* parent_ = nullptr;
     std::list<GameObject*> children_;
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
 
-    // トランスフォーム情報
+    //------- トランスフォーム情報 ------//
     Transform localTransform_;
-
 private:
     Transform worldTransform_;
-
-private:
-    // 行列情報
     Matrix4x4 localMat_;
     Matrix4x4 worldMat_;
+    Vector3 velocity_;
 
     /*----------- 衝突判定 ----------*/
 protected:
@@ -216,11 +181,16 @@ protected:
     bool preIsCollide_ = false;
     Vector3 prePos_;
 
-    /*----------- 物理 ----------*/
+
+    /*----------- デバッグ用 ----------*/
+#ifdef _DEBUG
+public:
+    void EditGUI();
+
 protected:
-    bool isApplyGravity_ = false;
-    bool isDrop_ = false;
-    float dropSpeed_ = 0.f;
-    float weight_ = 1.f;
-    Vector3 velocity_ = { 0.f,0.f,0.f };
+    void ContextMenu();
+    IComponent* contextMenuComponent_;
+
+#endif // _DEBUG
+
 };

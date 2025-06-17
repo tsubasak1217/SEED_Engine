@@ -103,6 +103,7 @@
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -252,6 +253,7 @@
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
     <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

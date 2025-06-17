@@ -255,7 +255,7 @@ void Collider::PushBack(Collider* collider1, Collider* collider2, CollisionData 
 
         // ある程度平らな面に衝突した場合は落下フラグをオフにする
         if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-            parent[0]->SetIsDrop(false);
+            //parent[0]->SetIsDrop(false);
         }
 
         // 親の行列を更新する
@@ -273,7 +273,7 @@ void Collider::PushBack(Collider* collider1, Collider* collider2, CollisionData 
 
         // ある程度平らな面に衝突した場合は落下フラグをオフにする
         if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f,0.0f }) > 0.7f){
-            parent[1]->SetIsDrop(false);
+            //parent[1]->SetIsDrop(false);
         }
 
         // 親の行列を更新する

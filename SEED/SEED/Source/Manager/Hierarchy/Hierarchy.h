@@ -32,6 +32,7 @@ private:
     void RecursiveTreeNode(GameObject* gameObject, int32_t depth);
     void CreateEmptyObject();
     void InOutOnGUI();
+    void ExecuteContextMenu();
 
     // json
     nlohmann::json OutputToJson(const std::string& outputFilePath) const;
@@ -41,5 +42,7 @@ private:
     std::list<GameObject*> gameObjects_;// 登録されているゲームオブジェクトのリスト
     std::list<GameObject*> grandParentObjects_;// 親オブジェクトのリスト
     GameObject* selectedObject_ = nullptr; // 選択中のオブジェクト
+    GameObject* contextMenuObject_ = nullptr; // コンテキストメニューのオブジェクト
     std::list<std::unique_ptr<GameObject>> selfCreateObjects_; // 自分で生成したオブジェクトのリスト
+    std::string executeMenuName_;
 };

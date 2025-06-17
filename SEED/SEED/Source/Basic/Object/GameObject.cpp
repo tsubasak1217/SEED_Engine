@@ -52,15 +52,14 @@ void GameObject::Initialize(){
 //////////////////////////////////////////////////////////////////////////
 void GameObject::Update(){
 
-    // velocityで移動
-    MoveByVelocity();
-    // マトリックスの更新
-    UpdateMatrix();
-
     // コンポーネントの更新
     for(auto& component : components_){
+        if(!component->isActive_){ continue; }
         component->Update();
     }
+
+    // マトリックスの更新
+    UpdateMatrix();
 }
 
 
@@ -71,6 +70,7 @@ void GameObject::Update(){
 void GameObject::Draw(){
     // コンポーネントの描画
     for(auto& component : components_){
+        if(!component->isActive_){ continue; }
         component->Draw();
     }
 }
@@ -82,16 +82,17 @@ void GameObject::Draw(){
 //////////////////////////////////////////////////////////////////////////
 void GameObject::BeginFrame(){
 
-    // 落下フラグの初期化
-    isDrop_ = true;
-
     // 座標の保存
     prePos_ = GetWorldTranslate();
 
     // コンポーネントの開始処理
     for(auto& component : components_){
+        if(!component->isActive_){ continue; }
         component->BeginFrame();
     }
+
+    // velocityを加算
+    AddWorldTranslate(velocity_);
 }
 
 
@@ -106,70 +107,9 @@ void GameObject::EndFrame(){
 
     // コンポーネントの終了処理
     for(auto& component : components_){
+        if(!component->isActive_){ continue; }
         component->EndFrame();
     }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// GUI編集処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject::EditGUI(){
-#ifdef _DEBUG
-
-    // オブジェクトの名前を編集
-    std::string label = "オブジェクト名##" + std::to_string(objectID_);
-    ImFunc::InputText(label.c_str(), objectName_);
-
-    ImGui::Text("------------- トランスフォーム -------------");
-    Vector3 info[3] = { GetWorldTranslate(), GetWorldEulerRotate(), GetWorldScale() };
-    Vector3 localRotEuler = GetLocalEulerRotate();
-    ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
-    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y, localTransform_.translate.z);
-    ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
-    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localRotEuler.x, localRotEuler.y,localRotEuler.z);
-    ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
-    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y, localTransform_.scale.z);
-
-    ImGui::Text("--------------- ペアレント方式 ---------------");
-    ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
-    ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
-    ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
-
-    ImGui::Text("------------- コンポーネント一覧 -------------");
-
-    // コンポーネントのGUI編集
-    for(auto& component : components_){
-        component->EditGUI();
-    }
-
-    // コンポーネントの追加
-    ImGui::Separator();
-    if(ImGui::Button("コンポーネントを追加")){
-        ImGui::OpenPopup("AddComponentPopup");
-    }
-
-    if(ImGui::BeginPopup("AddComponentPopup")){
-        // コンポーネントの追加
-        if(ImGui::Button("ModelRenderComponent / モデル描画")){
-            AddComponent<ModelRenderComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
-            AddComponent<CollisionComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("TextComponent / テキスト描画")){
-            AddComponent<TextComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("SpotLightComponent / スポットライト")){
-            AddComponent<SpotLightComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
-
-#endif // _DEBUG
 }
 
 
@@ -225,26 +165,41 @@ void GameObject::UpdateMatrix(){
 
 // フレーム終了時の落下更新処理
 void GameObject::EndFrameDropFlagUpdate(){
-    // 落下フラグの更新
-    if(GetWorldTranslate().y <= 0.0f){
-        isDrop_ = false;
-    }
 
-    // 終了時の落下フラグに応じた処理
-    if(isDrop_ && isApplyGravity_){
-        float downAccel = -Physics::kGravity * weight_ * ClockManager::DeltaTime();
-        dropSpeed_ += downAccel;
-        velocity_.y = dropSpeed_;
-    } else{
-        dropSpeed_ = 0.0f;
-        velocity_.y = 0.0f;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// 親子付け関連
+//////////////////////////////////////////////////////////////////////////
+
+void GameObject::SetParent(GameObject* parent){
+    ReleaseParent();
+    parent_ = parent;
+    parent->children_.push_back(this);
+}
+
+void GameObject::RemoveChild(GameObject* child){
+    if(child){
+        child->ReleaseParent();
+        children_.remove(child);
     }
 }
 
-void GameObject::MoveByVelocity(){
-    localTransform_.translate += velocity_ * ClockManager::DeltaTime();
+void GameObject::ReleaseParent(){
+    if(parent_){
+        parent_->children_.remove(this);
+        parent_ = nullptr;
+    }
 }
 
+void GameObject::ReleaseChildren(){
+    auto childrenCopy = children_;
+    for(auto* child : childrenCopy){
+        child->ReleaseParent();
+    }
+    children_.clear();
+}
 
 // 自分の子孫かどうか確認する関数
 bool GameObject::IsDescendant(GameObject* obj) const{
@@ -433,4 +388,110 @@ std::vector<GameObject*> GameObject::CreateFamily(const nlohmann::json& jsonData
 
     // 結果を返す
     return familyObjects;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// GUI編集処理
+//////////////////////////////////////////////////////////////////////////
+void GameObject::EditGUI(){
+#ifdef _DEBUG
+
+    // オブジェクトの名前を編集
+    std::string label = "オブジェクト名##" + std::to_string(objectID_);
+    ImFunc::InputText(label.c_str(), objectName_);
+
+    ImGui::Text("------------- トランスフォーム -------------");
+    Vector3 info[3] = { GetWorldTranslate(), GetWorldEulerRotate(), GetWorldScale() };
+    Vector3 localRotEuler = GetLocalEulerRotate();
+    ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
+    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y, localTransform_.translate.z);
+    ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
+    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localRotEuler.x, localRotEuler.y, localRotEuler.z);
+    ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
+    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y, localTransform_.scale.z);
+
+    ImGui::Text("--------------- ペアレント方式 ---------------");
+    ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
+    ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
+    ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
+
+    ImGui::Text("------------- コンポーネント一覧 -------------");
+
+    // コンポーネントのGUI編集
+    for(auto& component : components_){
+        // ラベルの設定
+        label = component->componentTag_ + "##" + std::to_string(component->componentID_);
+        bool opened = ImGui::CollapsingHeader(label.c_str());
+
+        // 右クリックでコンテキストメニューを表示
+        if(ImGui::IsItemClicked(1)){
+            contextMenuComponent_ = component.get(); // コンテキストメニューの対象を設定
+            ImGui::OpenPopup("ComponentContextMenu");
+        }
+
+        // コンポーネントのGUI編集
+        if(opened){
+            component->EditGUI();
+        }
+    }
+
+    // コンテキストメニューの表示
+    ContextMenu();
+
+    // コンポーネントの追加
+    ImGui::Separator();
+    if(ImGui::Button("コンポーネントを追加")){
+        ImGui::OpenPopup("AddComponentPopup");
+    }
+
+    if(ImGui::BeginPopup("AddComponentPopup")){
+        // コンポーネントの追加
+        if(ImGui::Button("ModelRenderComponent / モデル描画")){
+            AddComponent<ModelRenderComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
+            AddComponent<CollisionComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("TextComponent / テキスト描画")){
+            AddComponent<TextComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("SpotLightComponent / スポットライト")){
+            AddComponent<SpotLightComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+#endif // _DEBUG
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// コンテキストメニューの表示
+//////////////////////////////////////////////////////////////////////////////
+void GameObject::ContextMenu(){
+#ifdef _DEBUG
+    if(ImGui::BeginPopup("ComponentContextMenu")){
+        // 選択中のコンポーネントがある場合
+        if(contextMenuComponent_){
+            // コンポーネントの削除
+            if(ImGui::MenuItem("コンポーネントを削除")){
+                auto it = std::find_if(components_.begin(), components_.end(),
+                    [this](const std::unique_ptr<IComponent>& comp){
+                    return comp.get() == contextMenuComponent_;
+                });
+                if(it != components_.end()){
+                    components_.erase(it);
+                }
+                contextMenuComponent_ = nullptr; // コンテキストメニューオブジェクトをクリア
+            }
+            ImGui::Separator();
+        }
+        ImGui::EndPopup();
+    }
+#endif // _DEBUG
 }

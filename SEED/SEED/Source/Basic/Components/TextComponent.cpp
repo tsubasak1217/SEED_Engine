@@ -45,17 +45,14 @@ void TextComponent::Finalize(){
 void TextComponent::EditGUI(){
 #ifdef _DEBUG
 
-    std::string label = componentTag_ + "##" + std::to_string(componentID_);
-    if(ImGui::CollapsingHeader(label.c_str())){
-        ImGui::Indent();
+    ImGui::Indent();
 
-        // 編集
-        if(textBox_){
-            textBox_->Edit();
-        }
-
-        ImGui::Unindent();
+    // 編集
+    if(textBox_){
+        textBox_->Edit();
     }
+
+    ImGui::Unindent();
 
 #endif // _DEBUG
 

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 //////////////////////////////////////////////////////////////////////////
-CollisionComponent::CollisionComponent(GameObject* pOwner, const std::string& tagName) 
-    : IComponent(pOwner,tagName){
+CollisionComponent::CollisionComponent(GameObject* pOwner, const std::string& tagName)
+    : IComponent(pOwner, tagName){
 
     if(tagName == ""){
         componentTag_ = "ModelRender_ID:" + std::to_string(componentID_);
@@ -88,15 +88,12 @@ void CollisionComponent::Finalize(){
 //////////////////////////////////////////////////////////////////////////
 void CollisionComponent::EditGUI(){
 #ifdef _DEBUG
-    std::string headerName = componentTag_ + "##" + std::to_string(componentID_);
-    if(ImGui::CollapsingHeader(headerName.c_str())){
-        ImGui::Indent();
+    ImGui::Indent();
 
-        // コライダーエディターのGUI編集
-        colliderEditor_->Edit();
+    // コライダーエディターのGUI編集
+    colliderEditor_->Edit();
 
-        ImGui::Unindent();
-    }
+    ImGui::Unindent();
 #endif
 }
 

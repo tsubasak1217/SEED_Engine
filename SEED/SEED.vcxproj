@@ -63,22 +63,23 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\external\stb\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\external\stb\;$(ProjectDir)SEED\external\dotNet\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Debug;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Debug;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Debug;$(ProjectDir)SEED\External\dotNet</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;imgui.lib;nethost.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)ScriptRuntime\publish\hostfxr.dll" "$(TargetDir)hostfxr.dll"
+copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptRuntime.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,7 +95,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)SEED\lib\tensor\;$(ProjectDir)SEED\lib\Functions\myFunc\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\resources\audios\;$(ProjectDir)SEED\resources\textures\;$(ProjectDir)SEED\resources\shaders\;$(ProjectDir)SEED\source\Manager\;$(ProjectDir)SEED\lib\includes\;$(ProjectDir)SEED\lib\shapes\;$(ProjectDir)SEED\lib\structs\;$(ProjectDir)Game\Scene\;$(ProjectDir)Game\Manager\;$(ProjectDir)Game\Scene\Scene_Game\;$(ProjectDir)Environment\;$(ProjectDir)SEED\source\;$(ProjectDir)SEED\source\Manager\DxManager\;$(ProjectDir)SEED\source\Manager\ImGuiManager\;$(ProjectDir)SEED\source\Manager\WindowManager\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\source\Manager\AudioManager\;$(ProjectDir)SEED\source\Manager\InputManager\;$(ProjectDir)SEED\source\Manager\ModelManager\;$(ProjectDir)Game\Objects;$(ProjectDir)Game\Objects\PlayerState;$(ProjectDir)Game\Collision;$(ProjectDir)Game\Scene\Scene_Game\Animals;$(ProjectDir)Game\Scene\Scene_Game\Foods\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\GlobalVariable\;$(ProjectDir)SEED\lib\Functions\localFunc\</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories>$(ProjectDir)\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)SEED\external\stb\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\;$(ProjectDir)SEED\external\;$(ProjectDir)SEED\external\imgui\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\;$(ProjectDir)SEED\external\DirectXTex-mar2023\DirectXTex-mar2023\DirectXTex\;$(ProjectDir)SEED\external\nlohmann\;$(ProjectDir)SEED\external\assimp\;$(ProjectDir)SEED\external\assimp\include\;$(ProjectDir)SEED\external\stb\;$(ProjectDir)SEED\external\dotNet\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -102,16 +103,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;imgui.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)SEED\External\assimp\lib\Release;$(ProjectDir)SEED\External\imgui\Generated\Obj\imgui\Release;$(ProjectDir)SEED\External\dotNet</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;imgui.lib;nethost.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)ScriptRuntime\publish\hostfxr.dll" "$(TargetDir)hostfxr.dll"
+copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptRuntime.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

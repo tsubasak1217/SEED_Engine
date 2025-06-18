@@ -78,8 +78,8 @@
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)ScriptRuntime\publish\hostfxr.dll" "$(TargetDir)hostfxr.dll"
-copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptRuntime.dll"</Command>
+copy "$(ProjectDir)SEED\Source\Manager\RuntimeScriptSystem\sln\ScriptCompiler\bin\$(Configuration)\net9.0\ScriptCompiler.dll" "$(TargetDir)ScriptCompiler.dll"
+copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -112,8 +112,8 @@ copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptR
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)ScriptRuntime\publish\hostfxr.dll" "$(TargetDir)hostfxr.dll"
-copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptRuntime.dll"</Command>
+copy "$(ProjectDir)SEED\Source\Manager\RuntimeScriptSystem\sln\ScriptCompiler\bin\$(Configuration)\net9.0\ScriptCompiler.dll" "$(TargetDir)ScriptCompiler.dll"
+copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -346,6 +346,7 @@ copy "$(ProjectDir)ScriptRuntime\publish\ScriptRuntime.dll" "$(TargetDir)ScriptR
     <ClInclude Include="SEED\source\Manager\InputManager\InputManager.h" />
     <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h" />
     <ClInclude Include="SEED\source\Manager\ModelManager\ModelManager.h" />
+    <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
     <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />

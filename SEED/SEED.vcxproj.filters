@@ -254,6 +254,7 @@
     <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

@@ -1,6 +1,7 @@
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
+#include <Windows.h>
 
 // usiing
 namespace fs = std::filesystem;
@@ -14,26 +15,26 @@ std::mt19937 MyFunc::gen(MyFunc::rd());
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //------------------ int ------------------//
-int32_t MyFunc::Random(int min,int max){
+int32_t MyFunc::Random(int min, int max){
 
     // もしminがmaxより大きい場合は入れ替える
-    if(min > max){ std::swap(min,max); }
+    if(min > max){ std::swap(min, max); }
 
     // minからmaxまでの一様分布を設定
-    std::uniform_int_distribution<> distrib(min,max);
+    std::uniform_int_distribution<> distrib(min, max);
 
     // 乱数を生成して返す
     return distrib(gen);
 }
 
 //------------------ float ------------------//
-float MyFunc::Random(float min,float max){
+float MyFunc::Random(float min, float max){
 
     // もしminがmaxより大きい場合は入れ替える
-    if(min > max){ std::swap(min,max); }
+    if(min > max){ std::swap(min, max); }
 
     // minからmaxまでの一様分布を設定 (float用)
-    std::uniform_real_distribution<float> distrib(min,max);
+    std::uniform_real_distribution<float> distrib(min, max);
 
     // 乱数を生成して返す
     return distrib(gen);
@@ -46,29 +47,29 @@ uint64_t MyFunc::RandomU64(){
 
     // 64ビットに合成
     //  hi を上位32ビットに, lo を下位32ビットに詰める
-    uint64_t high = static_cast< uint64_t >(hi);
-    uint64_t low = static_cast< uint64_t >(lo);
+    uint64_t high = static_cast<uint64_t>(hi);
+    uint64_t low = static_cast<uint64_t>(lo);
     return (high << 32) | low;
 }
 
 //----------------- 3次元ベクトル用 -----------------//
 
-Vector3 MyFunc::Random(const Vector3& min,const Vector3& max){
-    return {Random(min.x,max.x),Random(min.y,max.y),Random(min.z,max.z)};
+Vector3 MyFunc::Random(const Vector3& min, const Vector3& max){
+    return { Random(min.x,max.x),Random(min.y,max.y),Random(min.z,max.z) };
 }
 
 Vector3 MyFunc::Random(const Range3D& range){
-    return Random(range.min,range.max);
+    return Random(range.min, range.max);
 }
 
 //----------------- 2次元ベクトル用 -----------------//
 
-Vector2 MyFunc::Random(const Vector2& min,const Vector2& max){
-    return {Random(min.x,max.x),Random(min.y,max.y)};
+Vector2 MyFunc::Random(const Vector2& min, const Vector2& max){
+    return { Random(min.x,max.x),Random(min.y,max.y) };
 }
 
 Vector2 MyFunc::Random(const Range2D& range){
-    return Random(range.min,range.max);
+    return Random(range.min, range.max);
 }
 
 
@@ -77,35 +78,35 @@ Vector2 MyFunc::Random(const Range2D& range){
 
 Vector3 MyFunc::RandomVector(){
     // ランダムなthetaとphiの範囲
-    float theta = MyFunc::Random(0.0f,2.0f * 3.14159265358979323846f); // 0 ~ 2π
-    float phi = MyFunc::Random(0.0f,3.14159265358979323846f); // 0 ~ π
+    float theta = MyFunc::Random(0.0f, 2.0f * 3.14159265358979323846f); // 0 ~ 2π
+    float phi = MyFunc::Random(0.0f, 3.14159265358979323846f); // 0 ~ π
 
     // 球座標から直交座標への変換
     float x = std::sin(phi) * std::cos(theta);
     float y = std::sin(phi) * std::sin(theta);
     float z = std::cos(phi);
 
-    return {x,y,z};
+    return { x,y,z };
 }
 
 Vector2 MyFunc::RandomVector2(){
     // ランダムなthetaの範囲
-    float theta = MyFunc::Random(0.0f,2.0f * 3.14159265358979323846f); // 0 ~ 2π
+    float theta = MyFunc::Random(0.0f, 2.0f * 3.14159265358979323846f); // 0 ~ 2π
 
     // 球座標から直交座標への変換
     float x = std::cos(theta);
     float y = std::sin(theta);
 
-    return {x,y};
+    return { x,y };
 }
 
 //----------------- ランダムな色を返す関数 -----------------//
-Vector4 MyFunc::RandomColor() {
+Vector4 MyFunc::RandomColor(){
     return { Random(0.0f,1.0f),Random(0.0f,1.0f),Random(0.0f,1.0f),1.0f };
 }
 
 //----------------- ランダムな方向を返す関数 -----------------//
-Vector3 MyFunc::RandomDirection(const Vector3& baseDirection, float angle) {
+Vector3 MyFunc::RandomDirection(const Vector3& baseDirection, float angle){
     // ランダムなthetaとphiの範囲
     float theta = MyFunc::Random(-angle, angle); // -angle ~ angle
     float phi = MyFunc::Random(-angle / 2.0f, angle / 2.0f); // -angle/2 ~ angle/2
@@ -117,13 +118,13 @@ Vector3 MyFunc::RandomDirection(const Vector3& baseDirection, float angle) {
 }
 
 //----------------- thetaとphiからベクトルを生成する関数 -----------------//
-Vector3 MyFunc::CreateVector(float theta,float phi){
+Vector3 MyFunc::CreateVector(float theta, float phi){
     // 球座標から直交座標への変換（左手座標系用）
     float x = std::sin(phi) * std::cos(theta);
     float y = std::cos(phi);
     float z = std::sin(phi) * std::sin(theta);
 
-    return {x,y,z};
+    return { x,y,z };
 }
 
 
@@ -132,7 +133,7 @@ Vector3 MyFunc::CreateVector(float theta,float phi){
 // 指定範囲を繰り返す関数 (最大値を超えたら最小値へ戻る)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t MyFunc::Spiral(int32_t input,int32_t min,int32_t max){
+int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 
     if(max <= min){
         assert(false);
@@ -155,7 +156,7 @@ int32_t MyFunc::Spiral(int32_t input,int32_t min,int32_t max){
 }
 
 
-float MyFunc::Spiral(float input,float min,float max){
+float MyFunc::Spiral(float input, float min, float max){
 
     if(max <= min){
         assert(false);
@@ -166,12 +167,12 @@ float MyFunc::Spiral(float input,float min,float max){
     if(input > max){
 
         float sub = input - max;
-        return min + std::fmod(sub,range);
+        return min + std::fmod(sub, range);
 
     } else if(input < min){
 
         float sub = input - min;
-        return max + std::fmod(sub,range);
+        return max + std::fmod(sub, range);
     }
 
     return input;
@@ -203,7 +204,7 @@ bool MyFunc::IsContain(const Range3D& range, const Vector3& value){
 // ベクトルから三次元の回転角を算出する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
-    Vector3 rotate = {0.0f,0.0f,0.0f};
+    Vector3 rotate = { 0.0f,0.0f,0.0f };
 
     // ベクトルの長さを計算
     float length = MyMath::Length(vec);
@@ -215,16 +216,16 @@ Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
         rotate.x = -std::asin(normalizedVec.y); // Y成分で縦方向の角度を決定
 
         // Y軸回りの回転角
-        rotate.y = std::atan2(normalizedVec.x,normalizedVec.z); // XとZの比率で横方向の角度を決定
+        rotate.y = std::atan2(normalizedVec.x, normalizedVec.z); // XとZの比率で横方向の角度を決定
     }
 
     return rotate;
 }
 
-Vector2 MyFunc::CalculateParabolic(const Vector2& _direction,float _speed,float _time,float _gravity){
+Vector2 MyFunc::CalculateParabolic(const Vector2& _direction, float _speed, float _time, float _gravity){
     float x = _direction.x * _speed * _time;
     float y = _direction.y * _speed * _time - 0.5f * _gravity * _time * _time;
-    return Vector2(x,y);
+    return Vector2(x, y);
 }
 
 
@@ -270,4 +271,26 @@ std::string MyFunc::FindFile(const std::string& entryPath, const std::string& fi
         }
     }
     return ""; // 存在しない場合は空文字列を返す
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// プロジェクトのルートディレクトリまでのフルパスを取得する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::filesystem::path MyFunc::GetProjectDirectory(){
+    // exeファイルの場所までのパスを取得
+    char path[MAX_PATH];
+    GetModuleFileNameA(NULL, path, MAX_PATH);
+    auto exeDir = std::filesystem::path(path).parent_path();
+
+    // Debug/Release → EXE → Build ->SEED_Engine -> SEED
+    return exeDir.parent_path().parent_path().parent_path() / "SEED";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ProjectDirからの相対パスをユーザーのフルパスに変換する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::string MyFunc::ToFullPath(const std::string& relativePath){
+    std::string fullPath = GetProjectDirectory().string() + "/" + relativePath;
+    // フルパスを正規化して返す
+    return std::filesystem::canonical(fullPath).string();
 }

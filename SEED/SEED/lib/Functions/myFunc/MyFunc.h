@@ -81,6 +81,12 @@ public:// ファイル関連 ===================================================
     );
     // 指定したパス以降で名前の一致するファイルがあればそのパスを返す関数
     static std::string FindFile(const std::string& entryPath, const std::string& filePath,bool isRelative = true);
+    
+    // projectのディレクトリまでのフルパスを取得する関数
+    std::filesystem::path GetProjectDirectory();
+
+    // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
+    std::string ToFullPath(const std::string& relativePath);
 };
 
 // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)

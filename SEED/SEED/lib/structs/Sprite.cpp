@@ -20,7 +20,7 @@ Sprite::Sprite(){
 
 Sprite::Sprite(const std::string& filename) : Sprite::Sprite(){
     GH = TextureManager::LoadTexture(filename);
-    size = SEED::GetImageSize(ConvertString(filename));
+    size = SEED::GetImageSize(MyFunc::ConvertString(filename));
 }
 
 Sprite::Sprite(const std::string& filename, const Vector2& leftTop, const Vector2& size)

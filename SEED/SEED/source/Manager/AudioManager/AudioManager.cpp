@@ -292,7 +292,7 @@ void AudioManager::LoadAudio(const std::string& filename){
             instance_->audios_[filename] = instance_->LoadWave(correctPath.c_str());
 
         } else if(extention == "mp3" or extention == "m4a"){
-            instance_->audios_[filename] = instance_->LoadMP3(ConvertString(correctPath).c_str());
+            instance_->audios_[filename] = instance_->LoadMP3(MyFunc::ConvertString(correctPath).c_str());
 
         } else{
             assert(false);

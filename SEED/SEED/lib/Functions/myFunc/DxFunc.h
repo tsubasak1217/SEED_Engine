@@ -24,6 +24,9 @@
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
+// local
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+
 class DxManager;
 
 enum DX_RESOURCE_STATE : int{
@@ -35,10 +38,6 @@ enum DX_RESOURCE_STATE : int{
 // ログ関数
 void Log(const std::string& message);
 void Log(const std::wstring& message);
-
-// 文字列を変換する関数
-std::wstring ConvertString(const std::string& str);
-std::string ConvertString(const std::wstring& str);
 
 //
 uint32_t Align(uint32_t size, uint32_t alignment);

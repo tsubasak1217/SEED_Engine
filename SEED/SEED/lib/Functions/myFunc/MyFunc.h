@@ -73,7 +73,11 @@ public:
     static  Vector2 CalculateParabolic(const Vector2& _direction,float speed,float _gravity,float _time);
 
 
-public:// ファイル関連 ==============================================================
+public:// ファイル・文字列関連 ==============================================================
+
+    // 文字列を変換する関数
+    static std::wstring ConvertString(const std::string& str);
+    static std::string ConvertString(const std::wstring& str);
 
     // 指定したパス以降で拡張子の合致するファイル一覧を取得する関数
     static std::vector<std::string> GetFileList(
@@ -83,11 +87,16 @@ public:// ファイル関連 ===================================================
     static std::string FindFile(const std::string& entryPath, const std::string& filePath,bool isRelative = true);
     
     // projectのディレクトリまでのフルパスを取得する関数
-    std::filesystem::path GetProjectDirectory();
+    static std::filesystem::path GetProjectDirectory();
 
     // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
-    std::string ToFullPath(const std::string& relativePath);
+    static std::string ToFullPath(const std::string& relativePath);
+    static std::wstring ToFullPath(const std::wstring& relativePath);
 };
+
+
+
+
 
 // マップのキーを検索して、特定のトークンを持つ要素を後ろに回す関数(何番目かも返す)
 template<typename T>

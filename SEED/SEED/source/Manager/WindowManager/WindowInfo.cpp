@@ -86,7 +86,7 @@ void WindowInfo::CreateSwapChain(IDXGIFactory4* dxgiFactory, ID3D12CommandQueue*
     rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D; // 2dテクスチャとして書き込むように設定
 
     // wstring->stringに変換
-    std::string windowNameStr = ConvertString(windowName);
+    std::string windowNameStr = MyFunc::ConvertString(windowName);
 
     // RTVを作成
     ViewManager::CreateView(VIEW_TYPE::RTV, swapChainResources[0].Get(), &rtvDesc, windowNameStr + "_doubleBuffer_0");// ダブルバッファ用

@@ -1,0 +1,7 @@
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\obj\Debug\GameScripts.csproj.AssemblyReference.cache
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\obj\Debug\GameScripts.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\bin\Debug\ScriptInterface.dll.config
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\bin\Debug\ScriptInterface.dll
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\bin\Debug\ScriptInterface.pdb
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\obj\Debug\ScriptInterface.dll
+C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\Source\Manager\RuntimeScriptSystem\sln\GameScripts\obj\Debug\ScriptInterface.pdb

@@ -122,7 +122,7 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
 
         // コンパイルする
         blobs_[fileName] = CompileShader(
-            ConvertString(directoryPath + fileName),
+            MyFunc::ConvertString(directoryPath + fileName),
             shaderProfile.c_str(),
             entryPoint.c_str(),
             dxcUtils.Get(),

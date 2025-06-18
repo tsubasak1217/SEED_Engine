@@ -307,7 +307,7 @@ void DxManager::CreateRenderResource(const std::string& cameraName){
         DxResource& offScreenResource = offScreenResources[cameraName];
         std::string resourceName = "offScreen_" + cameraName;
         offScreenResource.resource = CreateRenderTargetTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
-        offScreenResource.resource.Get()->SetName(ConvertString(resourceName).c_str());
+        offScreenResource.resource.Get()->SetName(MyFunc::ConvertString(resourceName).c_str());
         offScreenResource.InitState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
         // RTVの設定
@@ -335,7 +335,7 @@ void DxManager::CreateRenderResource(const std::string& cameraName){
         DxResource& depthStencilResource = depthStencilResources[cameraName];
         std::string resourceName = "depthStencil_" + cameraName;
         depthStencilResource.resource = CreateDepthStencilTextureResource(device.Get(), pSEED_->kClientWidth_, pSEED_->kClientHeight_);
-        depthStencilResource.resource->SetName(ConvertString(resourceName).c_str());
+        depthStencilResource.resource->SetName(MyFunc::ConvertString(resourceName).c_str());
         depthStencilResource.InitState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
         // DSVの設定

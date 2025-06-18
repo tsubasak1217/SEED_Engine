@@ -11,40 +11,10 @@ void Log(const std::string& message){
 }
 
 void Log(const std::wstring& message){
-    OutputDebugStringA(ConvertString(message).c_str());
+    OutputDebugStringA(MyFunc::ConvertString(message).c_str());
 }
 
-
-
-// 文字列を変換する関数--------------------------------------------------------------------------------------
-std::wstring ConvertString(const std::string& str){
-    if(str.empty()) {
-        return std::wstring();
-    }
-
-    auto sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<const char*>(&str[0]), static_cast<int>(str.size()), NULL, 0);
-    if(sizeNeeded == 0) {
-        return std::wstring();
-    }
-    std::wstring result(sizeNeeded, 0);
-    MultiByteToWideChar(CP_UTF8, 0, reinterpret_cast<const char*>(&str[0]), static_cast<int>(str.size()), &result[0], sizeNeeded);
-    return result;
-}
-
-std::string ConvertString(const std::wstring& str){
-    if(str.empty()) {
-        return std::string();
-    }
-
-    auto sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), NULL, 0, NULL, NULL);
-    if(sizeNeeded == 0) {
-        return std::string();
-    }
-    std::string result(sizeNeeded, 0);
-    WideCharToMultiByte(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), sizeNeeded, NULL, NULL);
-    return result;
-}
-
+// アライメントを合わせる関数
 uint32_t Align(uint32_t size, uint32_t alignment){
     return (size + (alignment - 1)) & ~(alignment - 1);
 };
@@ -61,7 +31,7 @@ ComPtr<IDxcBlob> CompileShader(
 ){
 
     // これからシェーダーをコンパイルする旨をログに出す
-    Log(ConvertString(std::format(L"Begin CompileShader, path: {}, profile : {}\n", filePath, profile)));
+    Log(MyFunc::ConvertString(std::format(L"Begin CompileShader, path: {}, profile : {}\n", filePath, profile)));
 
     /*------------------------ ファイルを読み込む --------------------------*/
 
@@ -118,7 +88,7 @@ ComPtr<IDxcBlob> CompileShader(
     hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
     assert(SUCCEEDED(hr));
     // 成功したログを出す
-    Log(ConvertString(std::format(L"Compile Succeeded, path: {}, profile:{}\n", filePath, profile)));
+    Log(MyFunc::ConvertString(std::format(L"Compile Succeeded, path: {}, profile:{}\n", filePath, profile)));
     // もう使わないリソースを解放
     shaderSource->Release();
     shaderResult->Release();
@@ -172,7 +142,7 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     DirectX::ScratchImage image{};
     DirectX::ScratchImage mipImages{};
 
-    std::wstring filePathW = ConvertString(filePath);// wstring型に変換
+    std::wstring filePathW = MyFunc::ConvertString(filePath);// wstring型に変換
     // ファイルを読み込む
     HRESULT hr = S_FALSE;
     

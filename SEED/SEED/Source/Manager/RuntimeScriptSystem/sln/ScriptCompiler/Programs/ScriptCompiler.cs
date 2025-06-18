@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 class ScriptCompiler {
 
 
-    static void Main(string[] args) {
+    public static bool CompileScripts() {
 
         // コンパイルするスクリプトが格納されているディレクトリ一覧
         var scriptDirs = new[]{
@@ -23,7 +23,7 @@ class ScriptCompiler {
         // ソースファイルが見つからない場合の処理
         if(sourceFiles.Length == 0) {
             Console.WriteLine("スクリプトファイルが見つかりませんでした。");
-            return;
+            return false;
         }
 
         // ソースコードを SyntaxTree に変換
@@ -62,10 +62,13 @@ class ScriptCompiler {
 
         if(result.Success) {
             Console.WriteLine("コンパイル成功: " + outputPath);
+            return true;
         } else {
             Console.WriteLine("コンパイル失敗:");
             foreach(var diagnostic in result.Diagnostics)
                 Console.WriteLine(diagnostic.ToString());
         }
+
+        return false;
     }
 }

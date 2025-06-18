@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ScriptCompiler")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f98aff78aa50720f63fe46f429ad0a2dd2d81926")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a0e65f339a6ec0197c983a1d263ba80f0a9df8f1")]
 [assembly: System.Reflection.AssemblyProductAttribute("ScriptCompiler")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ScriptCompiler")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

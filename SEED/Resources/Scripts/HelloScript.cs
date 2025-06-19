@@ -1,11 +1,11 @@
 
 public class HelloScript : IScript {
 
-    public void Start() {
+    public override void OnStart() {
         System.Console.WriteLine("Hello from HelloScript!");
     }
 
-    public void Update() {
+    public override void Update() {
         System.Console.WriteLine("Hello from HelloScript!");
     }
 }

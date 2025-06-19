@@ -102,16 +102,12 @@ void GameObject::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////
 void GameObject::EndFrame(){
 
-    // 落下処理の更新
-    EndFrameDropFlagUpdate();
-
     // コンポーネントの終了処理
     for(auto& component : components_){
         if(!component->isActive_){ continue; }
         component->EndFrame();
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 // マトリックスの更新
@@ -160,12 +156,6 @@ void GameObject::UpdateMatrix(){
     worldTransform_.translate = ExtractTranslation(worldMat_);
     worldTransform_.rotate = Quaternion::ToQuaternion(ExtractRotation(worldMat_));
     worldTransform_.scale = ExtractScale(worldMat_);
-}
-
-
-// フレーム終了時の落下更新処理
-void GameObject::EndFrameDropFlagUpdate(){
-
 }
 
 

@@ -26,12 +26,12 @@ class GameObject{
     /*----------- 基本関数 ----------*/
 public:
     GameObject(Scene_Base* pScene);
-    virtual ~GameObject();
-    virtual void Initialize();
-    virtual void Update();
-    virtual void Draw();
-    virtual void BeginFrame();
-    virtual void EndFrame();
+    ~GameObject();
+    void Initialize();
+    void Update();
+    void Draw();
+    void BeginFrame();
+    void EndFrame();
     void RegisterToHierarchy(Hierarchy* pHierarchy);
 
 public:// コンポーネントの管理関数
@@ -67,16 +67,22 @@ public:// コンポーネントの管理関数
     /*--- 物理・トランスフォーム関連 ---*/
 public:
     void UpdateMatrix();
-protected:
-    void EndFrameDropFlagUpdate();
 
     /*-------- 当たり判定時関数 --------*/
 public:
-    virtual void OnCollision(GameObject* other);
+    void OnCollision(GameObject* other);
 protected:
-    virtual void OnCollisionEnter(GameObject* other);
-    virtual void OnCollisionStay(GameObject* other);
-    virtual void OnCollisionExit(GameObject* other);
+    void OnCollisionEnter(GameObject* other);
+    void OnCollisionStay(GameObject* other);
+    void OnCollisionExit(GameObject* other);
+
+    /*----------- デバッグ用 ----------*/
+public:
+    void EditGUI();
+
+protected:
+    void ContextMenu();
+    IComponent* contextMenuComponent_;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -110,7 +116,6 @@ public:
     //=====================================
     // トランスフォーム
     //=====================================
-
     Transform GetLocalTransform(){ return localTransform_; }
     Transform GetWorldTransform(){ return worldTransform_; }
     /*------ scale -------*/
@@ -140,8 +145,8 @@ public:
     //=====================================
     // json
     //=====================================
-    virtual nlohmann::json GetJsonData(int32_t depth);
-    virtual void LoadFromJson(const nlohmann::json& jsonData);
+    nlohmann::json GetJsonData(int32_t depth);
+    void LoadFromJson(const nlohmann::json& jsonData);
     static GameObject* CreateFromJson(const nlohmann::json& jsonData);
     static std::vector<GameObject*> CreateFamily(const nlohmann::json& jsonData, GameObject* parent = nullptr);
 
@@ -180,17 +185,4 @@ protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     Vector3 prePos_;
-
-
-    /*----------- デバッグ用 ----------*/
-#ifdef _DEBUG
-public:
-    void EditGUI();
-
-protected:
-    void ContextMenu();
-    IComponent* contextMenuComponent_;
-
-#endif // _DEBUG
-
 };

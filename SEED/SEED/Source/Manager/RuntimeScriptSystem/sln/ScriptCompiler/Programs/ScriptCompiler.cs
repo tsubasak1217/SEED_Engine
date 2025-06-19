@@ -5,8 +5,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 class ScriptCompiler {
-
-
     public static bool CompileScripts() {
 
         // コンパイルするスクリプトが格納されているディレクトリ一覧

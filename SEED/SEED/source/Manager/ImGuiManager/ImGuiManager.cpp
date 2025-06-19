@@ -151,50 +151,13 @@ void ImGuiManager::PostDraw(){
     );
     ImGui::End();
 
-    // ゲーム画面描画ウインドウ
-    ImFunc::CustomBegin("GameWindow", MoveOnly_TitleBar);
-    {
-        // サイズの計算
-        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        ImVec2 imageSize;
-        float ratioX[2] = {
-        availSize.x / availSize.y,
-        displaySize.x / displaySize.y
-        };
-
-        // 狭いほうに合わせる
-        if(ratioX[0] > ratioX[1]){
-            imageSize = { availSize.y * ratioX[1],availSize.y };
-        } else{
-            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
-        }
-
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_default"), imageSize);
-    }
+    // デフォルトカメラ画面描画ウインドウ
+    ImFunc::SceneWindowBegin("GameWindow", "default",MoveOnly_TitleBar);
     ImGui::End();
 
     // デバッグカメラ視点描画ウインドウ
-    ImFunc::CustomBegin("DebugCameraWindow", MoveOnly_TitleBar);
+    ImVec2 imageSize = ImFunc::SceneWindowBegin("DebugCameraWindow", "debug", MoveOnly_TitleBar);
     {
-        // サイズの計算
-        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
-        ImVec2 availSize = ImGui::GetContentRegionAvail();
-        ImVec2 imageSize;
-        float ratioX[2] = {
-        availSize.x / availSize.y,
-        displaySize.x / displaySize.y
-        };
-
-        // 狭いほうに合わせる
-        if(ratioX[0] > ratioX[1]){
-            imageSize = { availSize.y * ratioX[1],availSize.y };
-        } else{
-            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
-        }
-
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_debug"), imageSize);
-
         // Guizmo
         ImDrawList* pDrawList = ImGui::GetWindowDrawList();
         ImVec2 imageLeftTop = ImGui::GetCursorScreenPos() - ImVec2(0.0f, imageSize.y);
@@ -214,7 +177,6 @@ void ImGuiManager::PostDraw(){
         }
     }
     ImGui::End();
-
 
     // 描画前準備
     ImGui::Render();
@@ -279,7 +241,7 @@ void ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiW
                 flags &= ~ImGuiWindowFlags_NoMove;
             }
 
-            if(Input::IsPressKey(DIK_SPACE)){
+            if(Input::IsPressKey(DIK_LCONTROL)){
                 flags &= ~ImGuiWindowFlags_NoMove;
             }
         }
@@ -296,6 +258,33 @@ void ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiW
     // ドラッグ解除
     if(ImGui::IsMouseReleased(ImGuiMouseButton_Left)){
         isDragging[name] = false;
+    }
+}
+
+/////////////////////////////////////////////////////////////////
+// シーン描画ウインドウ
+/////////////////////////////////////////////////////////////////
+ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName, CustomImWindowFlag customFlags, ImGuiWindowFlags normalFlags){
+    ImFunc::CustomBegin(label, customFlags,normalFlags);
+    {
+        // サイズの計算
+        Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
+        ImVec2 availSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageSize;
+        float ratioX[2] = {
+        availSize.x / availSize.y,
+        displaySize.x / displaySize.y
+        };
+
+        // 狭いほうに合わせる
+        if(ratioX[0] > ratioX[1]){
+            imageSize = { availSize.y * ratioX[1],availSize.y };
+        } else{
+            imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
+        }
+
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), imageSize);
+        return imageSize; // 画像サイズを返す
     }
 }
 
@@ -400,29 +389,6 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
         worldMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
         info.transform->FromMatrix(worldMat);
     }
-
-    // 変化量をトランスフォームに適用
-    //if(isManipulated){
-    //    // ローカル行列に変換
-    //    Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
-    //    XMFLOAT4X4 localMat = (worldMat * invParentMat).ToXMFLOAT4X4();
-
-    //    // XMMatrixDecomposeで安全に分解
-    //    XMMATRIX xmMat = XMLoadFloat4x4(&localMat);
-    //    XMVECTOR scale, rotationQuat, translation;
-    //    if(XMMatrixDecompose(&scale, &rotationQuat, &translation, xmMat)){
-    //        XMFLOAT3 pos, scl;
-    //        XMStoreFloat3(&pos, translation);
-    //        XMStoreFloat3(&scl, scale);
-    //        XMFLOAT4 rotQuat;
-    //        XMStoreFloat4(&rotQuat, rotationQuat);
-
-    //        // トランスフォームへ反映（FromMatrixを使わず直接設定）
-    //        info.transform->translate = { pos.x, pos.y, pos.z };
-    //        info.transform->scale = { scl.x, scl.y, scl.z };
-    //        info.transform->rotate = Quaternion{ rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w };
-    //    }
-    //}
 }
 
 // 2D用のImGuizmo操作関数

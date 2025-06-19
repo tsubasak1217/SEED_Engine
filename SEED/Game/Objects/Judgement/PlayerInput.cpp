@@ -180,13 +180,6 @@ void PlayerInput::Initialize(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::Update(){
 
-    // マウス右ボタン押していればループ、押していなければクランプ
-    if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
-        cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
-    } else{
-        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
-    }
-
     // カーソル矩形の位置を更新
     cursorQuad_.translate = { cursorPos_, kWindowCenter.y };
 }
@@ -196,7 +189,7 @@ void PlayerInput::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::Draw(){
     // カーソルの描画
-    //SEED::DrawQuad2D(cursorQuad_);
+    SEED::DrawQuad2D(cursorQuad_);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -276,7 +269,7 @@ const std::unordered_set<int32_t>& PlayerInput::GetUnTapLane(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-// タップしたレーンを取得
+// タップしたレーンを一括取得
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 
@@ -292,6 +285,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
     // マウスをトリガーしたとき
     if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
         tapLane.insert(cursorLane_.Value());
+
     } else{
         // マウスを押しているとき
         if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
@@ -392,6 +386,14 @@ std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
 // レーンのInput情報を決定する関数
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::DecideLaneInput(){
+
+    // マウス右ボタン押していればループ、押していなければクランプ
+    if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
+        cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
+    } else{
+        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
+    }
+
     // ホールドしているレーンを取得
     holdLane_ = hold_.Value();
     // タップしたレーンを取得

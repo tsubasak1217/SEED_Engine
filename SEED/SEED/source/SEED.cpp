@@ -55,9 +55,6 @@ void SEED::Draw(){
     if(instance_->isGridVisible_){
         DrawGrid();
     }
-
-    // imguiの描画
-    instance_->DrawGUI();
 }
 
 
@@ -71,8 +68,18 @@ void SEED::SetImGuiEmptyWindows(){
         ImGuiWindowFlags_NoTitleBar |
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoBringToFrontOnFocus
+        ImGuiWindowFlags_NoBringToFrontOnFocus|
+        ImGuiWindowFlags_NoDocking |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_HorizontalScrollbar |
+        ImGuiWindowFlags_NoScrollWithMouse
     );
+
+    // ドックIDの取得
+    ImGuiID dockId = ImGui::GetID("SEED_Empty");
+    // windowSize分のドックスペースを作成
+    ImGui::DockSpace(dockId, ImGui::GetMainViewport()->WorkSize);
+
     ImGui::End();
 #endif
 }
@@ -222,6 +229,9 @@ void SEED::BeginFrame(){
     // imgui,directXのフレーム開始時処理
     ImGuiManager::PreDraw();
     DxManager::GetInstance()->PreDraw();
+
+    // imguiの描画
+    instance_->DrawGUI();
 
     // カーソルの更新
     if(instance_->isRepeatCursor_){

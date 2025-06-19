@@ -41,7 +41,6 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    SEED::SetMainCamera("debug");
     auto* scene = this;
     scene;
 

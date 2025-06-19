@@ -16,7 +16,7 @@ public:
     void BeginFrame();
 
 public:
-    float GeetCurrentTime(){ return currentTime_; }
+    float GetCurMusicTime(){ return currentTime_; }
     void AddNote();
     void RemoveNote();
     void LoadFromFile(const std::string& fileName);

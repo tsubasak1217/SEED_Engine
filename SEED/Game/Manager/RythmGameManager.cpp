@@ -113,4 +113,8 @@ void RythmGameManager::Draw(){
 
     // 譜面データの描画
     notesData_->Draw();
+
+    // ゲームカメラ画面の描画
+    ImFunc::SceneWindowBegin("GameScene", "gameCamera",MoveOnly_TitleBar);
+    ImGui::End();
 }

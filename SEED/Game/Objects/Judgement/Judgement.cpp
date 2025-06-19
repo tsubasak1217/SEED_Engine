@@ -53,14 +53,14 @@ void Judgement::Judge(NotesData* noteGroup){
 
     ImFunc::CustomBegin("input",MoveOnly_TitleBar);
     ImGui::SameLine();
-    ImGui::Text("tapLane:{ ");
+    ImGui::Text("タップ判定:{ ");
     for(auto& lane : tpLane){
         ImGui::Text("%d,", lane);
         ImGui::SameLine();
     }
     ImGui::Text("}");
 
-    ImGui::Text("holdLane:{ ");
+    ImGui::Text("ホールド判定:{ ");
     ImGui::SameLine();
     for(auto& lane : hlLane){
         ImGui::Text("%d,", lane);
@@ -68,7 +68,7 @@ void Judgement::Judge(NotesData* noteGroup){
     }
     ImGui::Text("}");
 
-    ImGui::Text("releaseLane:{ ");
+    ImGui::Text("離した判定:{ ");
     ImGui::SameLine();
     for(auto& lane : relLane){
         ImGui::Text("%d,", lane);
@@ -76,6 +76,10 @@ void Judgement::Judge(NotesData* noteGroup){
     }
     ImGui::Text("}");
     
+    ImGui::Text("カーソルのレーン: %d", PlayerInput::GetInstance()->GetCursorLane());
+    ImGui::Text("前のカーソルのレーン: %d", PlayerInput::GetInstance()->GetPreCursorLane());
+
+
 
     ImGui::End();
 #endif // _DEBUG
@@ -99,7 +103,7 @@ void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
     // 付近のノーツの取得
     /*--------------------------*/
-    float time = noteGroup->GeetCurrentTime();
+    float time = noteGroup->GetCurMusicTime();
     auto nearNotes = noteGroup->GetNearNotes(time);
     if(nearNotes.empty()){ return; }
 
@@ -142,7 +146,7 @@ void Judgement::Judge(NotesData* noteGroup){
     }
 }
 
-// h－ルドの終点を判定する
+// －ルドの終点を判定する
 void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // ホールドノーツの終点を判定する

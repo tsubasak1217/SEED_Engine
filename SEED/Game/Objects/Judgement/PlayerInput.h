@@ -30,6 +30,7 @@ public:// 入力情報を取得する関数
     bool GetIsRectFlick(){ return rectFlick_.Trigger(); }
     bool GetIsHold(){ return hold_.Press(); }
     int32_t GetCursorLane(){ return cursorLane_.Value(); }
+    int32_t GetPreCursorLane(){ return cursorLane_.PreValue(); }
     const std::unordered_set<int32_t>& GetHoldLane(){ return holdLane_; }
     const std::unordered_set<int32_t>& GetTapLane(){ return tapLane_; }
     const std::unordered_set<int32_t>& GetReleaseLane(){ return releaseLane_; }

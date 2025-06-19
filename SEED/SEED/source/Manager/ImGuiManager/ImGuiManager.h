@@ -87,6 +87,8 @@ struct ImFunc{
 
     // カスタムウィンドウの開始関数
     static void CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiWindowFlags flags = 0);
+    // シーン描画ウィンドウの関数
+    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName, CustomImWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
 
     // コンボボックスの拡張関数
     template <typename EnumType>

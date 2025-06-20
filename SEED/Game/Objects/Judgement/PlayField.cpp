@@ -4,6 +4,7 @@
 #include <SEED/Source/SEED.h>
 #include <Game/Objects/Notes/NotesData.h>
 #include <Game/Objects/Judgement/Judgement.h>
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -171,7 +172,7 @@ void PlayField::Initialize(){
     CalcEffectEmitPoints();
 
     // エフェクトの初期化
-    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(),nullptr);
+    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
 }
 
 
@@ -279,12 +280,12 @@ void PlayField::SetLaneReleased(int32_t lane){
 /////////////////////////////////////////////////////////////////////////
 // 流れてくるノーツ描画に使う頂点情報を取得
 /////////////////////////////////////////////////////////////////////////
-Quad PlayField::GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float ratioWidth){
+Quad PlayField::GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float ratioWidth){
     Quad result;
     Triangle laneTriangle = lane_[(int)layer][lane];
 
     // ノーツの奥行きの計算
-    float farZ = std::clamp(timeRatio + ratioWidth * 0.5f,0.0f,1.0f);
+    float farZ = std::clamp(timeRatio + ratioWidth * 0.5f, 0.0f, 1.0f);
     float nearZ = std::clamp(timeRatio - ratioWidth * 0.5f, 0.0f, 1.0f);
 
     // ノーツの矩形の頂点を計算
@@ -297,18 +298,66 @@ Quad PlayField::GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float r
 }
 
 
+// RectFlickの矩形を取得
+Quad2D PlayField::GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth){
+    Quad2D result;
+    Vector2 points[2];
+
+    switch(dir){
+    case DIRECTION8::LEFTTOP:
+        points[0] = playFieldPointsScreen_[LEFT];
+        points[1] = playFieldPointsScreen_[TOP];
+        break;
+
+    case DIRECTION8::RIGHTTOP:
+        points[0] = playFieldPointsScreen_[TOP];
+        points[1] = playFieldPointsScreen_[RIGHT];
+        break;
+
+    case DIRECTION8::RIGHTBOTTOM:
+        points[0] = playFieldPointsScreen_[RIGHT];
+        points[1] = playFieldPointsScreen_[BOTTOM];
+        break;
+
+    case DIRECTION8::LEFTBOTTOM:
+        points[0] = playFieldPointsScreen_[BOTTOM];
+        points[1] = playFieldPointsScreen_[LEFT];
+        break;
+
+    default:
+        return result; // 無効な方向の場合は空のQuadを返す
+    }
+
+    // ノーツの奥行きの計算
+    float timeratio2 = std::clamp(timeRatio, 0.3f, FLT_MAX);
+    float farZ = std::clamp(timeratio2 + ratioWidth * 0.5f, 0.0f, FLT_MAX);
+    float nearZ = std::clamp(timeratio2 - ratioWidth * 0.5f, 0.0f, FLT_MAX);
+
+    // ノーツの矩形の頂点を計算
+    result.localVertex[0] = MyMath::Lerp(kWindowCenter, points[0], farZ);
+    result.localVertex[1] = MyMath::Lerp(kWindowCenter, points[1], farZ);
+    result.localVertex[2] = MyMath::Lerp(kWindowCenter, points[0], nearZ);
+    result.localVertex[3] = MyMath::Lerp(kWindowCenter, points[1], nearZ);
+
+    return result;
+}
+
+
+
 void PlayField::CalcEffectEmitPoints(){
 
     // レーン部分
     for(int i = 0; i < kKeyCount_; i++){
         Vector3 point = (keyboardBorderPoints_[i] + keyboardBorderPoints_[i + 1]) * 0.5f;
-        effectEmitPoints_[GetLaneBitIndex(LANE_1) + i] = point;
+        effectEmitPoints_[LaneBit(LANE_1 << i)] = point;
     }
 
-    effectEmitPoints_[GetLaneBitIndex(SIDEFLICK_LEFT)] = playFieldPointsWorld_[LEFT];
-    effectEmitPoints_[GetLaneBitIndex(SIDEFLICK_RIGHT)] = playFieldPointsWorld_[RIGHT];
-    effectEmitPoints_[GetLaneBitIndex(WHEEL_DOWN)] = (playFieldPointsWorld_[LEFT] + playFieldPointsWorld_[RIGHT]) * 0.5f;
-    effectEmitPoints_[GetLaneBitIndex(WHEEL_UP)] = effectEmitPoints_[GetLaneBitIndex(WHEEL_DOWN)];
+    // 左右のサイドフリック
+    effectEmitPoints_[SIDEFLICK_LEFT] = playFieldPointsWorld_[LEFT];
+    effectEmitPoints_[SIDEFLICK_RIGHT] = playFieldPointsWorld_[RIGHT];
+    // ホイールノーツ
+    effectEmitPoints_[WHEEL_DOWN] = (playFieldPointsWorld_[LEFT] + playFieldPointsWorld_[RIGHT]) * 0.5f;
+    effectEmitPoints_[WHEEL_UP] = effectEmitPoints_[WHEEL_DOWN];
 
 }
 
@@ -321,35 +370,38 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
     return index;
 }
 
+// レーンのエフェクトを発生させる関数
+void PlayField::LaneEffect(int evalution, LaneBit laneBit){
+    switch(evalution){
+    case Judgement::Evaluation::PERFECT:
+        EffectSystem::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[laneBit]);
+        break;
+
+    case Judgement::Evaluation::GREAT:
+        EffectSystem::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[laneBit]);
+        break;
+
+    case Judgement::Evaluation::GOOD:
+        EffectSystem::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[laneBit]);
+        break;
+
+    default:
+        // MISSのときは何もしない
+        return;
+    }
+}
+
 void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
 
     layer;
 
     // レーンのビットからレーン番号を取得
-    std::vector<int32_t> lanes;
-    for(int i = 0; i < kLaneBitCount; i++){
+    for(int i = 0; i < kKeyCount_; i++){
         if(laneBit & (1 << i)){
-            lanes.push_back(i);
+            // レーンのエフェクトを発生させる
+            LaneEffect(evalution, LaneBit(LANE_1 << i));
         }
     }
 
-    for(auto& lane : lanes){
-        switch(evalution){
-        case Judgement::Evaluation::PERFECT:
-            EffectSystem::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[lane]);
-            break;
 
-        case Judgement::Evaluation::GREAT:
-            EffectSystem::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[lane]);
-            break;
-
-        case Judgement::Evaluation::GOOD:
-            EffectSystem::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[lane]);
-            break;
-
-        default:
-            // MISSのときは何もしない
-            return;
-        }
-    }
 }

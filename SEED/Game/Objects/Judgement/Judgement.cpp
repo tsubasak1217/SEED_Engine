@@ -13,9 +13,9 @@ Judgement* Judgement::instance_ = nullptr;
 ////////////////////////////////////////////////////////
 Judgement::Judgement(){
     // 判定の幅の設定
-    judgeTime_[Evaluation::PERFECT] = 3.0f / 60.0f;// パーフェクト(前後3フレーム)
-    judgeTime_[Evaluation::GREAT] = 5.0f / 60.0f;// グレート(前後5フレーム)
-    judgeTime_[Evaluation::GOOD] = 7.0f / 60.0f;// グッド(前後7フレーム)
+    judgeTime_[Evaluation::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後3フレーム)
+    judgeTime_[Evaluation::GREAT] = 8.0f / 60.0f;// グレート(前後5フレーム)
+    judgeTime_[Evaluation::GOOD] = 12.0f / 60.0f;// グッド(前後7フレーム)
 
     // 判定の色の設定
     judgeColor_[Evaluation::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
@@ -43,46 +43,6 @@ Judgement* Judgement::GetInstance(){
 // 判定
 ////////////////////////////////////////////////////////
 void Judgement::Judge(NotesData* noteGroup){
-    /*--------------------------*/
-    // プレイヤーの入力を取得し表示
-    /*--------------------------*/
-#ifdef _DEBUG
-    auto& tpLane = PlayerInput::GetInstance()->GetTapLane();
-    auto& hlLane = PlayerInput::GetInstance()->GetHoldLane();
-    auto& relLane = PlayerInput::GetInstance()->GetReleaseLane();
-
-    ImFunc::CustomBegin("input",MoveOnly_TitleBar);
-    ImGui::SameLine();
-    ImGui::Text("タップ判定:{ ");
-    for(auto& lane : tpLane){
-        ImGui::Text("%d,", lane);
-        ImGui::SameLine();
-    }
-    ImGui::Text("}");
-
-    ImGui::Text("ホールド判定:{ ");
-    ImGui::SameLine();
-    for(auto& lane : hlLane){
-        ImGui::Text("%d,", lane);
-        ImGui::SameLine();
-    }
-    ImGui::Text("}");
-
-    ImGui::Text("離した判定:{ ");
-    ImGui::SameLine();
-    for(auto& lane : relLane){
-        ImGui::Text("%d,", lane);
-        ImGui::SameLine();
-    }
-    ImGui::Text("}");
-    
-    ImGui::Text("カーソルのレーン: %d", PlayerInput::GetInstance()->GetCursorLane());
-    ImGui::Text("前のカーソルのレーン: %d", PlayerInput::GetInstance()->GetPreCursorLane());
-
-
-
-    ImGui::End();
-#endif // _DEBUG
 
     /*--------------------------*/
     // 押下状態はすべて設定する

@@ -1,6 +1,8 @@
 #include "Note_RectFlick.h"
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 
 Note_RectFlick::Note_RectFlick() : Note_Base(){
+    noteType_ = NoteType::RectFlick;
 }
 
 Note_RectFlick::~Note_RectFlick(){
@@ -10,22 +12,38 @@ void Note_RectFlick::Update(){
 }
 
 void Note_RectFlick::Draw(float currentTime, float appearLength){
-    Note_Base::Draw(currentTime,appearLength);
+    Quad2D q;
+    float timeRatio = 1.0f - ((time_ - currentTime) / (appearLength * 0.2f));
+    float alpha = 0.0f;
+    std::vector<DIRECTION8> dirs;
+    if(laneBit_ & LaneBit::RECTFLICK_LT){ dirs.push_back(DIRECTION8::LEFTTOP); }
+    if(laneBit_ & LaneBit::RECTFLICK_LB){ dirs.push_back(DIRECTION8::LEFTBOTTOM); }
+    if(laneBit_ & LaneBit::RECTFLICK_RT){ dirs.push_back(DIRECTION8::RIGHTTOP); }
+    if(laneBit_ & LaneBit::RECTFLICK_RB){ dirs.push_back(DIRECTION8::RIGHTBOTTOM); }
+
+    if(timeRatio <= 1.0f){
+        alpha = EaseOutSine(std::clamp(timeRatio, 0.0f, 1.0f));
+    } else{
+        alpha = 1.0f - EaseOutSine(std::clamp((timeRatio - 1.0f)/0.2f, 0.0f, 1.0f));
+    }
+
+    // フリック矩形の描画
+    for(int i = 0; i < dirs.size(); ++i){
+        // 描画用の四角形を取得
+        q = PlayField::GetInstance()->GetRectFlickQuad(timeRatio, dirs[i], 0.05f);
+        // 描画
+        q.color = { 1.0f,1.0f,0.0f,alpha };
+        SEED::DrawQuad2D(q);
+    }
 }
 
 Judgement::Evaluation Note_RectFlick::Judge(float dif){
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
-    LR flickDirection = input->GetSideFlickDirection();
-    bool isFlick = input->GetIsSideFlick();
-
-    // フリックしていないなら、判定しない
-    if(!isFlick){
-        return Judgement::Evaluation::MISS;
-    }
+    DIRECTION8 flickDirection = input->GetRectFlickDirection();
 
     // フリックの方向が自身のレーンと一致しているか
-    if(flickDirection != flickDirection){
+    if(!CheckBit(flickDirection)){
         return Judgement::Evaluation::MISS;
     }
 
@@ -37,4 +55,27 @@ Judgement::Evaluation Note_RectFlick::Judge(float dif){
         // PERFECT
         return Judgement::Evaluation::PERFECT;
     }
+}
+
+// 範囲内のフリックか、ビットで確認する関数
+bool Note_RectFlick::CheckBit(DIRECTION8 dir) const{
+    LaneBit bit;
+    switch(dir){
+    case DIRECTION8::LEFTTOP:
+        bit = LaneBit::RECTFLICK_LT;
+        break;
+    case DIRECTION8::LEFTBOTTOM:
+        bit = LaneBit::RECTFLICK_LB;
+        break;
+    case DIRECTION8::RIGHTTOP:
+        bit = LaneBit::RECTFLICK_RT;
+        break;
+    case DIRECTION8::RIGHTBOTTOM:
+        bit = LaneBit::RECTFLICK_RB;
+        break;
+    default:
+        return false;
+    }
+
+    return (laneBit_ & bit);// ビットが立っているか確認
 }

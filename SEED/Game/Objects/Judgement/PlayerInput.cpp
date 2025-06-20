@@ -190,6 +190,11 @@ void PlayerInput::Update(){
 void PlayerInput::Draw(){
     // カーソルの描画
     SEED::DrawQuad2D(cursorQuad_);
+
+#ifdef _DEBUG
+    // 入力情報の表示
+    DisplayInputInfo();
+#endif // _DEBUG
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,4 +405,79 @@ void PlayerInput::DecideLaneInput(){
     tapLane_ = SystemGetTapLane();
     // リリースしたレーンを取得
     releaseLane_ = SystemGetReleaseLane();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 入力情報を表示する関数
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PlayerInput::DisplayInputInfo(){
+    /*--------------------------*/
+// プレイヤーの入力を取得し表示
+/*--------------------------*/
+#ifdef _DEBUG
+    auto& tpLane = GetTapLane();
+    auto& hlLane = GetHoldLane();
+    auto& relLane = GetReleaseLane();
+
+    ImFunc::CustomBegin("input", MoveOnly_TitleBar);
+    
+    // タップ判定
+    {
+        ImGui::Text("タップ判定:{ ");
+        ImGui::SameLine();
+        for(auto& lane : tpLane){
+            ImGui::Text("%d,", lane);
+            ImGui::SameLine();
+        }
+        ImGui::Text("}");
+        ImGui::Separator();
+    }
+
+    // ホールド判定
+    {
+        ImGui::Text("ホールド判定:{ ");
+        ImGui::SameLine();
+        for(auto& lane : hlLane){
+            ImGui::Text("%d,", lane);
+            ImGui::SameLine();
+        }
+        ImGui::Text("}");
+        ImGui::Separator();
+    }
+
+    // リリース判定
+    {
+        ImGui::Text("離した判定:{ ");
+        ImGui::SameLine();
+        for(auto& lane : relLane){
+            ImGui::Text("%d,", lane);
+            ImGui::SameLine();
+        }
+        ImGui::Text("}");
+        ImGui::Separator();
+    }
+
+    // カーソル
+    {
+        ImGui::Text("カーソルのレーン: %d", GetCursorLane());
+        ImGui::Text("前のカーソルのレーン: %d", GetPreCursorLane());
+        ImGui::Separator();
+    }
+
+    // フリック
+    {
+        LR sideFlick = GetSideFlickDirection();
+        ImGui::Text("SideFlick: %d | %d", sideFlick == LR::LEFT, sideFlick == LR::RIGHT);
+        ImGui::Separator();
+
+        DIRECTION8 rectFlick = GetRectFlickDirection();
+        ImGui::Text("RectFlick");
+        ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTTOP, rectFlick == DIRECTION8::RIGHTTOP);
+        ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTBOTTOM, rectFlick == DIRECTION8::RIGHTBOTTOM);
+        ImGui::Separator();
+    }
+
+    ImGui::End();
+#endif // _DEBUG
+
 }

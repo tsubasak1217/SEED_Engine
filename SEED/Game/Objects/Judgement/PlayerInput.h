@@ -43,6 +43,7 @@ private:
 
 private:// 内部用
     void DecideLaneInput();
+    void DisplayInputInfo();
 
 private:
     static PlayerInput* instance_;

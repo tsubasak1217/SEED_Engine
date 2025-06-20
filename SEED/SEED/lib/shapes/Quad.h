@@ -55,8 +55,8 @@ struct Quad2D{
     // UV座標
     Vector2 texCoord[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
     Vector2 scale = { 1.0f,1.0f };
-    float rotate;
-    Vector2 translate;
+    float rotate = 0.0f;
+    Vector2 translate = {0.0f,0.0f};
     Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
     BlendMode blendMode = BlendMode::NORMAL;
     int32_t lightingType = LIGHTINGTYPE_NONE;

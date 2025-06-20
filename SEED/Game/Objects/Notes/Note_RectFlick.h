@@ -8,7 +8,6 @@ public:
     void Update() override;
     void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
-
-public:
-    LR flickDirection_ = LR::NONE;// フリックの方向
+private:
+    bool CheckBit(DIRECTION8 dir) const;
 };

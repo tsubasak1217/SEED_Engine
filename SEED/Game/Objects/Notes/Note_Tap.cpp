@@ -17,7 +17,7 @@ void Note_Tap::Draw(float currentTime, float appearLength){
     float timeRatio = (time_ - currentTime) / appearLength;
 
     // 描画用の矩形を計算
-    noteRect = PlayField::GetInstance()->GetNoteRect(timeRatio, lane_, layer_,0.005f);
+    noteRect = PlayField::GetInstance()->GetNoteQuad(timeRatio, lane_, layer_,0.005f);
 
     // 頂点設定
     for(int i = 0; i < 4; i++){

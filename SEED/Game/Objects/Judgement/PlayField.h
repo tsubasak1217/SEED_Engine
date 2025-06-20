@@ -39,12 +39,15 @@ public:
     void SetLaneReleased(int32_t lane);
     void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
     // 流れてくるノーツ描画に使う頂点情報を取得
-    Quad GetNoteRect(float timeRatio, int32_t lane, UpDown layer, float width = 0.0f);
+    Quad GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float width = 0.0f);
+    Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
+    // エフェクトの発生
     void EmitEffect(LaneBit laneBit, UpDown layer, int evalution);
 
 private:
     void CalcEffectEmitPoints();
     int GetLaneBitIndex(uint32_t laneBit);
+    void LaneEffect(int evalution, LaneBit laneBit);
 
 public:
     static float kPlayFieldSizeX_;// プレイフィールドの幅
@@ -68,6 +71,6 @@ private:
     std::array<std::array<AnswerLane, kKeyCount_>,2> laneAnswer_;// レーンに判定が入ったときに表示するやつ
     std::array<std::array<Triangle, kKeyCount_ + 1>,2> laneBorderLine_;// レーンの境界線
     std::array<std::array<Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
-    std::array<Vector3, kLaneBitCount>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
+    std::unordered_map<LaneBit, Vector3>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
 
 };

@@ -25,7 +25,7 @@ Judgement::Evaluation Note_SideFlick::Judge(float dif){
     }
 
     // フリックの方向が自身のレーンと一致しているか
-    if(flickDirection != flickDirection){
+    if(flickDirection != flickDirection_){
         return Judgement::Evaluation::MISS;
     }
 

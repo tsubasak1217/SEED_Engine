@@ -109,6 +109,7 @@ public:
     static float Deg2Rad(float deg);
 
     /*-------------------- 線形補完をする関数 ------------------*/
+    static Vector2 Lerp(const Vector2& v1, const Vector2& v2, float t);
     static Vector3 Lerp(const Vector3& v1,const Vector3& v2,float t);
     static Vector4 Lerp(const Vector4& v1,const Vector4& v2,float t);
     static float Lerp(const float v1,const float v2,float t);

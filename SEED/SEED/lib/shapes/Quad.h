@@ -25,7 +25,7 @@ struct Quad{
     );
 
     Vector3 localVertex[4];
-    Vector2 texCoord[4] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}};
+    Vector2 texCoord[4] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}};
     Vector3 scale = {1.0f,1.0f,1.0f};
     Vector3 rotate;
     Vector3 translate;
@@ -53,7 +53,7 @@ struct Quad2D{
 
     Vector2 localVertex[4];
     // UV座標
-    Vector2 texCoord[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+    Vector2 texCoord[4] = { {0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f} };
     Vector2 scale = { 1.0f,1.0f };
     float rotate = 0.0f;
     Vector2 translate = {0.0f,0.0f};

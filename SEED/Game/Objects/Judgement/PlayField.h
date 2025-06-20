@@ -39,7 +39,9 @@ public:
     void SetLaneReleased(int32_t lane);
     void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
     // 流れてくるノーツ描画に使う頂点情報を取得
-    Quad GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float width = 0.0f);
+    Quad GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float ratioWidth = 0.0f);
+    Quad GetWheelFloorQuad(float timeRatio, UpDown layer, float ratioWidth = 0.0f);
+    Quad GetWheelDirectionQuad(float timeRatio, UpDown layer);
     Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
     void EmitEffect(LaneBit laneBit, UpDown layer, int evalution);

@@ -297,6 +297,48 @@ Quad PlayField::GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float r
     return result;
 }
 
+Quad PlayField::GetWheelFloorQuad(float timeRatio, UpDown layer, float ratioWidth){
+    Quad result;
+
+    // ノーツの奥行きの計算
+    float farZ = std::clamp(timeRatio - ratioWidth * 0.5f, 0.0f, 1.0f);
+    float nearZ = std::clamp(timeRatio + ratioWidth * 0.5f, 0.0f, 1.0f);
+
+    // ノーツの矩形の頂点を計算
+    if(layer == UpDown::UP){
+        result.localVertex[0] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[LEFT], farZ);
+        result.localVertex[1] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[RIGHT], farZ);
+        result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[LEFT], nearZ);
+        result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[RIGHT], nearZ);
+    } else{
+        result.localVertex[0] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[RIGHT], farZ);
+        result.localVertex[1] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[LEFT], farZ);
+        result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[RIGHT], nearZ);
+        result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[LEFT], nearZ);
+    }
+    return result;
+}
+
+Quad PlayField::GetWheelDirectionQuad(float timeRatio, UpDown layer){
+    Quad result;
+
+    // ノーツの奥行きの計算
+    timeRatio = std::clamp(timeRatio, 0.0f, 1.0f);
+
+    // ノーツの矩形の頂点を計算
+    if(layer == UpDown::UP){
+        result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[LEFT], timeRatio);
+        result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[RIGHT], timeRatio);
+        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, 2.0f, 0.0f);
+        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, 2.0f, 0.0f);
+    } else{
+        result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[RIGHT], timeRatio);
+        result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[LEFT], timeRatio);
+        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, -2.0f, 0.0f);
+        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, -2.0f, 0.0f);
+    }
+    return result;
+}
 
 // RectFlickの矩形を取得
 Quad2D PlayField::GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth){

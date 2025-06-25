@@ -34,4 +34,5 @@ private:
     std::vector<std::pair<float, std::shared_ptr<Note_Base>>> notes_;// すべてのノーツ
     std::vector<std::weak_ptr<Note_Base>> activeHoldNotes_;// アクティブなホールドノーツ
     std::list<std::weak_ptr<Note_Base>> onFieldNotes_;// フィールド上のノーツ(見えているノーツ)
+    
 };

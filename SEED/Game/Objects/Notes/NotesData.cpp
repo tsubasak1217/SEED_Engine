@@ -13,6 +13,9 @@
 #include <Game/Objects/Notes/Note_RectFlick.h>
 #include <Game/Objects/Notes/Note_Wheel.h>
 
+// managerのインクルード
+#include <Game/Manager/RythmGameManager.h>
+
 ////////////////////////////////////////////////////////////////////
 // ノーツデータのコンストラクタ
 ////////////////////////////////////////////////////////////////////
@@ -46,23 +49,23 @@ NotesData::NotesData(bool isRandomNotes){
             //    notes_.emplace_back(std::make_pair(time, note));
             //}
 
-            //{// Wheelノーツ確認用
-            //    float time = 10.0f + 1.0f * i;
-            //    UpDown layer = UpDown(i % 2);
-            //    std::shared_ptr<Note_Wheel> note = std::make_shared<Note_Wheel>();
-            //    note->time_ = time;
-            //    note->layer_ = layer;
+            {// Wheelノーツ確認用
+                float time = 10.0f + 1.0f * i;
+                UpDown layer = UpDown(i % 2);
+                std::shared_ptr<Note_Wheel> note = std::make_shared<Note_Wheel>();
+                note->time_ = time;
+                note->layer_ = layer;
 
-            //    if(i % 2 == 0){
-            //        note->direction_ = UpDown::UP;
-            //        note->laneBit_ = LaneBit::WHEEL_UP;
-            //    } else{
-            //        note->direction_ = UpDown::DOWN;
-            //        note->laneBit_ = LaneBit::WHEEL_DOWN;
-            //    }
+                if(i % 2 == 0){
+                    note->direction_ = UpDown::UP;
+                    note->laneBit_ = LaneBit::WHEEL_UP;
+                } else{
+                    note->direction_ = UpDown::DOWN;
+                    note->laneBit_ = LaneBit::WHEEL_DOWN;
+                }
 
-            //    notes_.emplace_back(std::make_pair(time, note));
-            //}
+                notes_.emplace_back(std::make_pair(time, note));
+            }
 
             //{// RectFlickノーツ確認用
             //    float time = 5.0f + 0.5f * i;
@@ -228,6 +231,11 @@ void NotesData::DeleteNotes(){
                     if(holdNote->isStackedToHoldList_ == false){
                         holdNote->isStackedToHoldList_ = true;
                         activeHoldNotes_.push_back(it->second);
+
+                        // 先頭を押せなかった場合
+                        if(holdNote->headEvaluation_ == Judgement::Evaluation::NONE){
+                            RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
+                        }
                     }
 
                     ++it;
@@ -242,6 +250,8 @@ void NotesData::DeleteNotes(){
                 // ホールドノーツでなければノーツを削除
                 it->second.reset();
                 it = notes_.erase(it);
+                // 押せずに通り過ぎたノーツなのでコンボを切る
+                RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
             }
         } else{
             ++it;

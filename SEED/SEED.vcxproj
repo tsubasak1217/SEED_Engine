@@ -125,6 +125,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
@@ -234,6 +235,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   <ItemGroup>
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
     <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />

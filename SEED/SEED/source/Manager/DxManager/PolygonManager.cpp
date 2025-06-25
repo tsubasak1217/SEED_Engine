@@ -697,12 +697,21 @@ void PolygonManager::AddQuad(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto* modelData = view3D ?
-        &primitiveData_[PRIMITIVE_QUAD][(int)blendMode][(int)cullMode - 1] :
-        &primitiveData_[PRIMITIVE_QUAD2D][(int)blendMode][(int)cullMode - 1];
+    ModelData* modelData;
+    if(isText){
+        modelData = view3D ? &primitiveData_[PRIMITIVE_TEXT][(int)blendMode][(int)cullMode - 1]:
+            &primitiveData_[PRIMITIVE_TEXT2D][(int)blendMode][(int)cullMode - 1];
+    } else{
+        modelData = view3D ? &primitiveData_[PRIMITIVE_QUAD][(int)blendMode][(int)cullMode - 1] :
+            &primitiveData_[PRIMITIVE_QUAD2D][(int)blendMode][(int)cullMode - 1];
+    }
 
     if(isStaticDraw){
-        modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][(int)blendMode][(int)cullMode - 1];
+        if(!isText){
+            modelData = &primitiveData_[PRIMITIVE_STATIC_QUAD2D][(int)blendMode][(int)cullMode - 1];
+        } else{
+            modelData = &primitiveData_[PRIMITIVE_STATIC_TEXT2D][(int)blendMode][(int)cullMode - 1];
+        }
     }
 
     static std::string drawDataName[2];

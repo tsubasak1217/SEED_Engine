@@ -105,4 +105,7 @@ private:
 
     // エディター用変数
     std::list<std::unique_ptr<EmitterGroup>> emitterGroups_;// エディターから追加されるエミッターグループ
+
+    // 読み込み済みのエフェクトのマップ
+    std::unordered_map<std::string, std::list<std::unique_ptr<Emitter_Base>>> loadedEffects_;
 };

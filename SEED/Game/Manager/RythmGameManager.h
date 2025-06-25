@@ -4,6 +4,7 @@
 #include <Game/Objects/Judgement/Judgement.h>
 #include <Game/Objects/Notes/NotesData.h>
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
+#include <Game/Objects/Combo/ComboObject.h>
 
 class RythmGameManager{
 private:
@@ -23,8 +24,11 @@ public:
 
 public:
     BaseCamera* GetCamera(){ return gameCamera_.get(); }
+    void BreakCombo(){ comboObject_->comboCount = 0; }
+    void AddCombo(){ comboObject_->comboCount++; }
 
 private:
     std::unique_ptr<BaseCamera> gameCamera_;// カメラ
     std::unique_ptr<NotesData> notesData_;// 譜面データ
+    std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
 };

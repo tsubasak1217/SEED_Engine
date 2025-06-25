@@ -58,6 +58,11 @@ void BaseCamera::UpdateMatrix(){
     // カメラ法線
     normal_ = MyMath::Normalize(Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(transform_.rotate)));
 
+    // 平行投影の場合は2D射影行列を使用
+    if(projectionMode_ == ORTHO){
+        projectionMat_ = projectionMat2D_;
+    }
+
     // ViewProjectionMatrixの計算
     viewProjectionMat_ = Multiply(viewMat_, projectionMat_);
     viewProjectionMat2D_ = Multiply(viewMat_, projectionMat2D_);

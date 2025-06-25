@@ -107,6 +107,7 @@
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -261,6 +262,7 @@
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

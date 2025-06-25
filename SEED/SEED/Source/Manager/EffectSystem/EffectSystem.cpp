@@ -93,7 +93,7 @@ void EffectSystem::Update(){
 
 
 #ifdef _DEBUG
-    ImFunc::CustomBegin("エフェクトエディター",MoveOnly_TitleBar);
+    ImFunc::CustomBegin("エフェクトエディター", MoveOnly_TitleBar);
     ImGui::Checkbox("範囲の描画", &instance_->isFieldVisible_);
     instance_->Edit();
     ImGui::End();
@@ -254,7 +254,7 @@ uint32_t EffectSystem::AddEffectEndless(const std::string& fileName, const Vecto
         }
 
         // 値が同じ場合、使われていないハンドル
-        if(prev == handle){ 
+        if(prev == handle){
             break;
         }
     }
@@ -342,7 +342,7 @@ void EffectSystem::Edit(){
     ImGui::BeginChild("クループの管理", ImVec2(250, 350), true);
     {
         for(auto itEmitterGroup = instance_->emitterGroups_.begin(); itEmitterGroup != instance_->emitterGroups_.end();){
-            
+
             // エミッターグループを取得
             EmitterGroup* emitterGroup = itEmitterGroup->get();
             emitterGroup->Reactivation(); // エミッターグループの再活性化処理
@@ -465,6 +465,9 @@ void EffectSystem::Edit(){
                 // OKボタンを押したら削除
                 if(ImGui::Button("OK", ImVec2(120, 0))){
                     currentEmitterGroup->emitters.erase(currentEmitterGroup->selectedItEmitter_);
+                    if(currentEmitterGroup->copyDstEmitter_ == currentEmitterGroup->selectedEmitter_){
+                        currentEmitterGroup->copyDstEmitter_ = nullptr; // コピー先のエミッターをリセット
+                    }
                     currentEmitterGroup->selectedEmitter_ = nullptr; // 選択されているエミッターをリセット
                     ImGui::CloseCurrentPopup();
                 }
@@ -522,6 +525,21 @@ EmitterGroup EffectSystem::LoadFromJson(const std::string& fileName){
 
 void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& fileName){
 
+    // エミッターグループの名前を設定
+    emitterGroup->name = fileName;
+
+    // 既に読み込まれている場合はコピーだけ行う
+    if(loadedEffects_.find(fileName) != loadedEffects_.end()){
+        for(auto& emitter : loadedEffects_[fileName]){
+            // エミッターの型に応じて処理
+            if(Emitter_Model* modelEmitter = dynamic_cast<Emitter_Model*>(emitter.get())){
+                emitterGroup->emitters.emplace_back(new Emitter_Model(*(modelEmitter)));
+            }
+        }
+        return;
+    }
+
+    // ファイルを読み込む
     std::ifstream ifs("resources/jsons/particle/" + fileName);
     if(ifs.fail()){
         assert(false);
@@ -543,10 +561,16 @@ void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& f
         }
 
         emitter->LoadFromJson(emitterJson);
-        emitterGroup->emitters.emplace_back(std::move(emitter));
+        loadedEffects_[fileName].emplace_back(std::move(emitter));
     }
 
-    emitterGroup->name = fileName;
+    // コピーを行う
+    for(auto& emitter : loadedEffects_[fileName]){
+        // エミッターの型に応じて処理
+        if(Emitter_Model* modelEmitter = dynamic_cast<Emitter_Model*>(emitter.get())){
+            emitterGroup->emitters.emplace_back(new Emitter_Model(*(modelEmitter)));
+        }
+    }
 }
 
 /// <summary>
@@ -555,15 +579,6 @@ void EffectSystem::LoadFromJson(EmitterGroup* emitterGroup, const std::string& f
 void EffectSystem::Load(){
     // ファイル一覧を取得
     auto fileNames = MyFunc::GetFileList("resources/jsons/particle/", { ".json" });
-    //for(const auto& entry : std::filesystem::directory_iterator("resources/jsons/particle/")){
-    //    if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
-    //        // もしファイル名が".json"で終わっていたら
-    //        if(entry.path().extension() == ".json"){
-    //            // ファイル名を追加
-    //            fileNames.push_back(entry.path().filename().string());
-    //        }
-    //    }
-    //}
 
     // ファイルを選択して読み込み
     ImGui::Text("読み込むファイルを選択");

@@ -402,6 +402,13 @@ void PlayField::CalcEffectEmitPoints(){
     effectEmitPoints_[WHEEL_DOWN] = (playFieldPointsWorld_[LEFT] + playFieldPointsWorld_[RIGHT]) * 0.5f;
     effectEmitPoints_[WHEEL_UP] = effectEmitPoints_[WHEEL_DOWN];
 
+    // レクトフリックのエフェクト発生位置(wheelノーツと同じ)
+    effectEmitPoints_[RECTFLICK_LT] = effectEmitPoints_[WHEEL_DOWN];
+    effectEmitPoints_[RECTFLICK_RT] = effectEmitPoints_[WHEEL_DOWN];
+    effectEmitPoints_[RECTFLICK_LB] = effectEmitPoints_[WHEEL_DOWN];
+    effectEmitPoints_[RECTFLICK_RB] = effectEmitPoints_[WHEEL_DOWN];
+    effectEmitPoints_[RECTFLICK_ALL] = effectEmitPoints_[WHEEL_DOWN];
+
 }
 
 int PlayField::GetLaneBitIndex(uint32_t laneBit){
@@ -413,7 +420,9 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
     return index;
 }
 
+/////////////////////////////////////////////////////////////
 // レーンのエフェクトを発生させる関数
+/////////////////////////////////////////////////////////////
 void PlayField::LaneEffect(int evalution, LaneBit laneBit){
     switch(evalution){
     case Judgement::Evaluation::PERFECT:
@@ -434,14 +443,16 @@ void PlayField::LaneEffect(int evalution, LaneBit laneBit){
     }
 }
 
-// 
+/////////////////////////////////////////////////////////////
+// wheelノーツのエフェクトを発生させる関数
+/////////////////////////////////////////////////////////////
 void PlayField::WheelEffect(int evalution, LaneBit laneBit){
 
     std::string filename;
     if(laneBit & LaneBit::WHEEL_UP){
         filename = "wheel_up.json";
     } else{
-        filename = "wheel_up.json";
+        filename = "wheel_down.json";
     }
 
     switch(evalution){
@@ -463,6 +474,30 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit){
     }
 }
 
+
+/////////////////////////////////////////////////////////////
+// rectFlickのエフェクトを発生させる関数
+/////////////////////////////////////////////////////////////
+void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){ 
+
+    evalution;
+    if(laneBit & LaneBit::RECTFLICK_LT){
+        EffectSystem::AddEffectOnce("rectFlick_LT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+    }
+    if(laneBit & LaneBit::RECTFLICK_RT){
+        EffectSystem::AddEffectOnce("rectFlick_RT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+    }
+    if(laneBit & LaneBit::RECTFLICK_LB){
+        EffectSystem::AddEffectOnce("rectFlick_LB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+    }
+    if(laneBit & LaneBit::RECTFLICK_RB){
+        EffectSystem::AddEffectOnce("rectFlick_RB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+    }
+}
+
+/////////////////////////////////////////////////////////////
+// エフェクトを発生させる関数
+/////////////////////////////////////////////////////////////
 void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
 
     layer;
@@ -487,5 +522,9 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
     //===================================
     // レクトフリックの場合
     //===================================
+    if(laneBit & LaneBit::RECTFLICK_ALL){
+        // レクトフリックのエフェクトを発生させる
+        RectFlickEffect(evalution, laneBit);
+    }
 
 }

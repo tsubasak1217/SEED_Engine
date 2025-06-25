@@ -121,7 +121,7 @@
             "CullingMode": 3,
             "baseDirection": [
                 0.0,
-                1.0,
+                -1.0,
                 0.0
             ],
             "blendMode": 4,
@@ -449,7 +449,7 @@
             "CullingMode": 3,
             "baseDirection": [
                 0.0,
-                1.0,
+                -1.0,
                 0.0
             ],
             "blendMode": 4,

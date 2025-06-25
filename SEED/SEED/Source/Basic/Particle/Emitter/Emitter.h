@@ -191,9 +191,11 @@ private:
     inline static int nextGroupID_ = 0; // グループIDのカウンター
     std::string idTag_;
     static inline Emitter_Base* selectedEmitter_ = nullptr;
+    static inline Emitter_Base* copyDstEmitter_ = nullptr;
     static inline auto selectedItEmitter_ = std::list<std::unique_ptr<Emitter_Base>>::iterator();
     std::string selectedEmitterName_ = "";
     bool isEditMode_ = false; // 編集モードかどうか
     float kReactiveTime_ = 3.0f; // 再復活までの時間
     float curReactiveTime_ = 0.0f; // 現在の再復活時間
+
 };

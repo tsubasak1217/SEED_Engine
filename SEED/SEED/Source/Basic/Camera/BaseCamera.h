@@ -4,6 +4,10 @@
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Shapes/Line.h>
 
+enum PROJECTIONMODE{
+    PERSPECTIVE,
+    ORTHO
+};
 
 struct BaseCamera{
     friend class CameraManager;
@@ -42,7 +46,7 @@ public:// アクセッサ
     float GetFov() const{ return fov_; }
     void SetFov(float fov){ fov_ = fov; }
     uint32_t GetProjectionMode() const{ return projectionMode_; }
-    void SetProjectionMode(uint32_t mode){ projectionMode_ = mode; }
+    void SetProjectionMode(PROJECTIONMODE mode){ projectionMode_ = mode; }
     const Vector3& GetNormal() const{ return normal_; }
     const Matrix4x4& GetWorldMat() const{ return worldMat_; }
     const Matrix4x4& GetViewMat() const{ return viewMat_; }
@@ -64,7 +68,7 @@ protected:
     float znear_;
     float zfar_;
     float fov_;
-    uint32_t projectionMode_;
+    PROJECTIONMODE projectionMode_;
 
     Vector3 normal_;
 
@@ -82,9 +86,4 @@ protected:
     float kShakeTime_ = 1.0f;
     float shakePower_;
     Vector3 shakeLevel_;
-};
-
-enum PROJECTIONMODE{
-    PERSPECTIVE,
-    ORTHO
 };

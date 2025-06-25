@@ -71,7 +71,7 @@ EmitterGroup::EmitterGroup(){
 void EmitterGroup::Edit(){
 
     ImGui::Text("エミッター一覧(要素数:%d)", (int)emitters.size());
-    
+
     //
     ImTextureID visibleIcons[] = {
         TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/visible.png"),
@@ -90,7 +90,7 @@ void EmitterGroup::Edit(){
         // アクティブかどうかのチェックボックス
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
         if(emitter->isActive){
-            if(ImGui::ImageButton(label.c_str(),visibleIcons[0], ImVec2(30, 20), ImVec2(0, 0), ImVec2(1, 1))){
+            if(ImGui::ImageButton(label.c_str(), visibleIcons[0], ImVec2(30, 20), ImVec2(0, 0), ImVec2(1, 1))){
                 emitter->isActive = false; // 非アクティブにする
             }
         } else{
@@ -137,6 +137,43 @@ void EmitterGroup::Edit(){
     }
 
     OutputGUI();
+
+
+    // コピー
+    if(selectedEmitter_){
+        // ctrl + cでコピー情報取得
+        if(Input::IsPressKey(DIK_LCONTROL) && Input::IsPressKey(DIK_C)){
+            copyDstEmitter_ = selectedEmitter_;
+        }
+    }
+
+    // ペースト
+    if(copyDstEmitter_){
+        // ctrl + vのトリガー取得
+        bool isTrigger = false;
+        if(Input::IsPressKey(DIK_LCONTROL)){
+            if(Input::IsTriggerKey(DIK_V)){
+                isTrigger = true;
+            }
+        } else if(Input::IsPressKey(DIK_RCONTROL)){
+            if(Input::IsTriggerKey(DIK_V)){
+                isTrigger = true;
+            }
+        }
+
+        // ペースト処理
+        if(isTrigger){
+            // コピー元のエミッターの情報を元に新しいエミッターを作成
+            if(Emitter_Model* modelEmitter = dynamic_cast<Emitter_Model*>(copyDstEmitter_)){
+                // コピー元のエミッターの情報を元に新しいエミッターを作成
+                emitters.emplace_back(new Emitter_Model(*modelEmitter));
+            }
+
+            // 親の設定
+            emitters.back()->parentGroup = this;
+            emitters.back()->isEdittting = true; // 編集モードにする
+        }
+    }
 }
 
 

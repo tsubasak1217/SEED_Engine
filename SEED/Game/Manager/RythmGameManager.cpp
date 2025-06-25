@@ -12,6 +12,10 @@ RythmGameManager* RythmGameManager::instance_ = nullptr;
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////////////
 RythmGameManager::RythmGameManager(){
+    comboObject_ = std::make_unique<ComboObject>();
+    comboObject_->comboText.transform.translate = { 187.0f,147.0f };
+    comboObject_->comboText.size = { 300.0f,200.0f };
+    comboObject_->comboText.fontSize = 100.0f;
 }
 
 RythmGameManager::~RythmGameManager(){
@@ -36,6 +40,7 @@ void RythmGameManager::Initialize(){
     // カメラの初期化
     gameCamera_ = std::make_unique<BaseCamera>();
     gameCamera_->SetTranslation(Vector3(0.0f, 0.0f, 0.0f));
+    //gameCamera_->SetProjectionMode(PROJECTIONMODE::ORTHO);
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
@@ -99,6 +104,13 @@ void RythmGameManager::Update(){
     if(Input::IsPressKey(DIK_ESCAPE)){
         SEED::ToggleRepeatCursor();
     }
+
+#ifdef _DEBUG
+    ImFunc::CustomBegin("ComboText", MoveOnly_TitleBar);
+    comboObject_->comboText.Edit();
+    ImGui::End();
+#endif // _DEBUG
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +125,9 @@ void RythmGameManager::Draw(){
 
     // 譜面データの描画
     notesData_->Draw();
+
+    // コンボの描画
+    comboObject_->Draw();
 
     // ゲームカメラ画面の描画
     ImFunc::SceneWindowBegin("GameScene", "gameCamera",MoveOnly_TitleBar);

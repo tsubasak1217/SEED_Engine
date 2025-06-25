@@ -3,6 +3,9 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <Game/Objects/Notes/Note_Hold.h>
 
+// managerのインクルード
+#include <Game/Manager/RythmGameManager.h>
+
 /////////////////////////////////////////////////////////
 // static変数の初期化
 /////////////////////////////////////////////////////////
@@ -102,15 +105,25 @@ void Judgement::Judge(NotesData* noteGroup){
 
             // エフェクトを出す
             pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.second);
+
+            // コンボを加算
+            RythmGameManager::GetInstance()->AddCombo();
         }
     }
 }
 
-// －ルドの終点を判定する
+// ホ－ルドの終点を判定する
 void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // ホールドノーツの終点を判定する
     Evaluation evaluation = note->JudgeHoldEnd();
+
+    // コンボの管理
+    if(evaluation != Evaluation::MISS){
+        RythmGameManager::GetInstance()->AddCombo();// コンボを加算
+    } else{
+        RythmGameManager::GetInstance()->BreakCombo();// コンボを切る
+    }
 
     // 終点の判定に応じてエフェクトとか出す
     pPlayField_->SetEvalution(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする

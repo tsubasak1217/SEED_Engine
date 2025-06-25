@@ -56,8 +56,17 @@ void Note_Hold::Draw(float currentTime, float appearLength){
         noteQuad_->color = noteColors_[i];
 
         // 押していない場合に色を暗くする(頭が判定ラインを超えていない場合はそのまま)
-        if(!isHold_ && timeRatio[0] < 0.0f){
-            noteQuad_->color.w *= 0.5f;
+        if(headEvaluation_ == Judgement::Evaluation::NONE){
+            bool isTrigger = PlayerInput::GetInstance()->GetIsTap(lane_);
+            if(!isTrigger && timeRatio[0] < 0.0f){
+                noteQuad_->color.w *= 0.25f;
+            }
+        } else{
+            if(isReleased_){
+                if(!isHold_){
+                    noteQuad_->color.w *= 0.25f;
+                }
+            }
         }
 
         // 描画
@@ -84,46 +93,56 @@ Judgement::Evaluation Note_Hold::Judge(float dif){
 
     // 自身のレーンが押されているか
     isHold_ = input->GetIsPress(lane);
+    if(isHold_){
+        isReleased_ = !Input::IsPressMouse(MOUSE_BUTTON::LEFT);
+    }
 
+    if(Input::IsReleaseMouse(MOUSE_BUTTON::LEFT)){
+        isReleased_ = true;
+    }
 
     // 頭をまだ押していない場合の判定
     if(headEvaluation_ == Judgement::Evaluation::NONE){
 
         // ホールドしていないなら、判定しない
         if(!isHold_){
+            releaseTime_ += ClockManager::DeltaTime();
             return Judgement::Evaluation::NONE;
 
         } else{// ホールドしている
 
+            // ホールドしているが、まだ押していない
+            bool isTrigger = input->GetIsTap(lane);
+            if(!isTrigger){
+                return Judgement::Evaluation::NONE;
+            }
+
             // ノーツの判定
             if(dif > judgeTime[Judgement::Evaluation::GOOD]){
                 // MISS
-                releaseTime_ = judgeTime[Judgement::Evaluation::GOOD];
                 return headEvaluation_ = Judgement::Evaluation::MISS;
 
             } else if(dif > judgeTime[Judgement::Evaluation::GREAT]){
                 // GOOD
-                releaseTime_ = judgeTime[Judgement::Evaluation::GREAT];
                 return headEvaluation_ = Judgement::Evaluation::GOOD;
 
             } else if(dif > judgeTime[Judgement::Evaluation::PERFECT]){
                 // GREAT
-                releaseTime_ = judgeTime[Judgement::Evaluation::PERFECT];
                 return headEvaluation_ = Judgement::Evaluation::GREAT;
 
             } else{
                 // PERFECT
-                releaseTime_ = 0.0f;
                 return headEvaluation_ = Judgement::Evaluation::PERFECT;
             }
         }
 
     } else{// 頭をもう押している場合
 
-        if(isHold_){
-        } else{
-            // 離している時間を加算
-            releaseTime_ += ClockManager::DeltaTime();
+        if(isReleased_){
+            if(!isHold_){
+                // 離している時間を加算
+                releaseTime_ += ClockManager::DeltaTime();
+            }
         }
 
         return Judgement::Evaluation::NONE;
@@ -136,7 +155,7 @@ Judgement::Evaluation Note_Hold::Judge(float dif){
 Judgement::Evaluation Note_Hold::JudgeHoldEnd(){
 
     // 
-    static float rate = 3.0f;
+    static float rate = 5.0f;
 
     // 判定時間の取得
     static float judgeTime[Judgement::kEvaluationCount] = {

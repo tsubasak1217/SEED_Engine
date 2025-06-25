@@ -22,6 +22,7 @@ public:
 
 public:// 入力情報を取得する関数
     bool GetIsTap(){ return tap_.Trigger(); }
+    bool GetIsTap(int32_t key);
     bool GetIsPress(int32_t key);
     bool GetIsRelease(int32_t key);
     LR GetSideFlickDirection(){ return sideFlick_.Value(); }
@@ -35,6 +36,8 @@ public:// 入力情報を取得する関数
     const std::unordered_set<int32_t>& GetTapLane(){ return tapLane_; }
     const std::unordered_set<int32_t>& GetReleaseLane(){ return releaseLane_; }
     const std::unordered_set<int32_t>& GetUnTapLane();
+    bool GetIsWheelTrigger(){ return wheelScroll_.Trigger(); }
+    UpDown GetWheelScrollDirection(){ return wheelScroll_.Value(); }
 
 private:
     const std::unordered_set<int32_t>& SystemGetHoldLane(){ return hold_.Value(); }
@@ -61,6 +64,7 @@ private:
     InputHandler<LR> sideFlick_;
     InputHandler<DIRECTION8> rectFlick_;
     InputHandler<int32_t>cursorLane_;
+    InputHandler<UpDown> wheelScroll_;
     Quad2D cursorQuad_;// カーソル描画用の四角形
 
     // 判定のたびに無駄な計算を行わないように毎フレーム最初にこいつらに情報を入れる

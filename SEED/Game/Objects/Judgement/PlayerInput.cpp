@@ -140,6 +140,25 @@ PlayerInput::PlayerInput(){
             return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
     }
+    ///////////////////////////////////////////////////////
+    // ホイールの取得
+    ///////////////////////////////////////////////////////
+    {
+        wheelScroll_.PreValue = []{
+            int32_t wheel = Input::GetMouseWheel(INPUT_STATE::BEFORE);
+            if(wheel == 0){ return UpDown::NONE; }
+            return (wheel > 0) ? UpDown::UP : UpDown::DOWN;
+        };
+        wheelScroll_.Value = []{
+            int32_t wheel = Input::GetMouseWheel();
+            if(wheel == 0){ return UpDown::NONE; }
+            return (wheel > 0) ? UpDown::UP : UpDown::DOWN;
+        };
+        wheelScroll_.Trigger = [&]{
+            if(wheelScroll_.PreValue() != UpDown::NONE){ return false; }
+            return wheelScroll_.Value() != UpDown::NONE;
+        };
+    }
 }
 
 
@@ -218,6 +237,21 @@ void PlayerInput::BeginFrame(){
 // フレーム終了時の処理
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::EndFrame(){
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 指定したレーンをタップしたか取得
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool PlayerInput::GetIsTap(int32_t key){
+    // keyが範囲外ならfalse
+    if(key < 0 || key >= PlayField::kKeyCount_){
+        return false;
+    }
+    // tapLaneに含まれているかどうか
+    if(tapLane_.find(key) != tapLane_.end()){
+        return true;
+    }
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -474,6 +508,15 @@ void PlayerInput::DisplayInputInfo(){
         ImGui::Text("RectFlick");
         ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTTOP, rectFlick == DIRECTION8::RIGHTTOP);
         ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTBOTTOM, rectFlick == DIRECTION8::RIGHTBOTTOM);
+        ImGui::Separator();
+    }
+
+    // ホイールスクロール
+    {
+        UpDown wheelScroll = GetWheelScrollDirection();
+        ImGui::Text("wheel↑ %d", wheelScroll == UpDown::UP);
+        ImGui::Text("wheel↓ %d", wheelScroll == UpDown::DOWN);
+        ImGui::Text("Trigger %d", GetIsWheelTrigger());
         ImGui::Separator();
     }
 

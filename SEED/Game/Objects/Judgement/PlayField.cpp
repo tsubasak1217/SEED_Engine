@@ -324,18 +324,19 @@ Quad PlayField::GetWheelDirectionQuad(float timeRatio, UpDown layer){
 
     // ノーツの奥行きの計算
     timeRatio = std::clamp(timeRatio, 0.0f, 1.0f);
+    float height = timeRatio == 1.0f ? 0.0f : 4.0f;
 
     // ノーツの矩形の頂点を計算
     if(layer == UpDown::UP){
         result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[LEFT], timeRatio);
         result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[TOP], playFieldPointsWorld_[RIGHT], timeRatio);
-        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, 2.0f, 0.0f);
-        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, 2.0f, 0.0f);
+        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, height, 0.0f);
+        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, height, 0.0f);
     } else{
         result.localVertex[2] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[RIGHT], timeRatio);
         result.localVertex[3] = MyMath::Lerp(playFieldPointsWorld_[BOTTOM], playFieldPointsWorld_[LEFT], timeRatio);
-        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, -2.0f, 0.0f);
-        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, -2.0f, 0.0f);
+        result.localVertex[0] = result.localVertex[2] + Vector3(0.0f, -height, 0.0f);
+        result.localVertex[1] = result.localVertex[3] + Vector3(0.0f, -height, 0.0f);
     }
     return result;
 }
@@ -433,11 +434,42 @@ void PlayField::LaneEffect(int evalution, LaneBit laneBit){
     }
 }
 
+// 
+void PlayField::WheelEffect(int evalution, LaneBit laneBit){
+
+    std::string filename;
+    if(laneBit & LaneBit::WHEEL_UP){
+        filename = "wheel_up.json";
+    } else{
+        filename = "wheel_up.json";
+    }
+
+    switch(evalution){
+    case Judgement::Evaluation::PERFECT:
+        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        break;
+
+    case Judgement::Evaluation::GREAT:
+        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        break;
+
+    case Judgement::Evaluation::GOOD:
+        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        break;
+
+    default:
+        // MISSのときは何もしない
+        return;
+    }
+}
+
 void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
 
     layer;
 
-    // レーンのビットからレーン番号を取得
+    //===================================
+    // レーンに属するノーツの場合(tap,hold)
+    //===================================
     for(int i = 0; i < kKeyCount_; i++){
         if(laneBit & (1 << i)){
             // レーンのエフェクトを発生させる
@@ -445,5 +477,15 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
         }
     }
 
+    //===================================
+    // ホイールノーツの場合
+    //===================================
+    if(laneBit & LaneBit::WHEEL){
+        WheelEffect(evalution, laneBit);
+    }
+
+    //===================================
+    // レクトフリックの場合
+    //===================================
 
 }

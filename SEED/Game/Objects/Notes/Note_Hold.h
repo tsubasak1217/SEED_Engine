@@ -12,8 +12,9 @@ public:
 
 public:
     float kHoldTime_;
-    float releaseTime_;
+    float releaseTime_ = 0.0f;
     bool isHold_ = false;// ホールドしているかどうか
+    bool isReleased_ = false;// リリースしたかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか
     Judgement::Evaluation headEvaluation_ = Judgement::Evaluation::NONE;// 頭の判定
     int32_t textureGHs_[3];// ホールドノーツのテクスチャ

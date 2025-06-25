@@ -50,6 +50,7 @@ private:
     void CalcEffectEmitPoints();
     int GetLaneBitIndex(uint32_t laneBit);
     void LaneEffect(int evalution, LaneBit laneBit);
+    void WheelEffect(int evalution, LaneBit laneBit);
 
 public:
     static float kPlayFieldSizeX_;// プレイフィールドの幅

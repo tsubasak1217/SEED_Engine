@@ -315,6 +315,7 @@ void PolygonManager::Reset(){
     cameraOrder_.clear();
 
     // 描画リストのリセット
+    orderedDrawLists_.clear();
     for(auto& drawList : drawLists_){
         drawList.second.clear();
     }
@@ -1811,14 +1812,23 @@ void PolygonManager::WriteRenderData(){
     }
 
 
+    // drawListsをorderedListsにblendMode順に並べていく
+    for(int i = 0; i < (int)BlendMode::kBlendModeCount; i++){
+        for(auto& drawData : drawLists_){
+            if(drawData.first->GetBlendMode() == (BlendMode)i){
+                orderedDrawLists_.push_back(&drawData.second);
+            }
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /*                          transform、material情報・を書き込む                                 */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    for(auto& drawList : drawLists_){
-        for(auto& drawData : drawList.second){
+    for(auto& drawList : orderedDrawLists_){
+        for(auto& drawData : *drawList){
 
             // 各モデルの現在のインスタンス数確認
             int instanceCount = (int)drawData->transforms["default"].size();
@@ -1883,8 +1893,8 @@ void PolygonManager::WriteRenderData(){
         cameraSwitchInstanceCount_[cameraName] = instanceCountAll;
         cameraOrder_[cameraName] = cameraIdx;
 
-        for(auto& drawList : drawLists_){
-            for(auto& drawData : drawList.second){
+        for(auto& drawList : orderedDrawLists_){
+            for(auto& drawData : *drawList){
                 /*--------------------------------------*/
                 //      トランスフォーム情報を書き込む
                 /*--------------------------------------*/
@@ -1975,19 +1985,19 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
     int instanceCountAll = 0;
     int animationJointCount = 0;
 
-    for(auto& drawList : drawLists_){
+    for(auto& pDrawList : orderedDrawLists_){
 
         // 描画リストが空ならcontinue
-        if(drawList.second.size() == 0){ continue; }
-
+        auto& drawList = *pDrawList;
+        if(drawList.size() == 0){ continue; }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
         /*                                  パイプラインの切り替え                                      */
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
         // キーがPSOなので、そこから取得し設定
-        auto* rootSignature = drawList.first->rootSignature.get();
-        auto* pipeline = drawList.first->pipeline.get();
+        auto* rootSignature = drawList.front()->pso->rootSignature.get();
+        auto* pipeline = drawList.front()->pso->pipeline.get();
 
         pDxManager_->commandList->SetGraphicsRootSignature(
             rootSignature->rootSignature.Get()
@@ -2002,7 +2012,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
         ///////////////////////////////////////////////////////////////////////////////////////////////
         /*                                     Modelごとに見ていく                                      */
         ///////////////////////////////////////////////////////////////////////////////////////////////
-        for(auto& drawData : drawList.second){
+        for(auto& drawData : drawList){
 
             // 各モデルの現在のブレンドモードのインスタンス数
             int instanceCount = (int)drawData->transforms[cameraName].size();
@@ -2236,18 +2246,18 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
     // 3D
     SetRenderData(cameraName, DrawOrder::Line);
-    SetRenderData(cameraName, DrawOrder::Quad);
-    SetRenderData(cameraName, DrawOrder::Text);
-    SetRenderData(cameraName, DrawOrder::Triangle);
     SetRenderData(cameraName, DrawOrder::Model);
     SetRenderData(cameraName, DrawOrder::AnimationModel);
+    SetRenderData(cameraName, DrawOrder::Text);
+    SetRenderData(cameraName, DrawOrder::Triangle);
+    SetRenderData(cameraName, DrawOrder::Quad);
     SetRenderData(cameraName, DrawOrder::Particle);
 
     // 2D
     SetRenderData(cameraName, DrawOrder::Line2D);
+    SetRenderData(cameraName, DrawOrder::Text2D);
     SetRenderData(cameraName, DrawOrder::Triangle2D);
     SetRenderData(cameraName, DrawOrder::Quad2D);
-    SetRenderData(cameraName, DrawOrder::Text2D);
     SetRenderData(cameraName, DrawOrder::Sprite);
 }
 

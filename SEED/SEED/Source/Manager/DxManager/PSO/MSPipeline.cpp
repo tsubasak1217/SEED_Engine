@@ -33,6 +33,7 @@ void MSPipeline::Create(BlendMode blendMode, PolygonTopology topology,D3D12_CULL
     //======================================================================
 
     D3D12_BLEND_DESC bDesc{};
+    blendMode_ = blendMode;
     // すべての色を書き込むよう設定
     bDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
     bDesc.RenderTarget[0].BlendEnable = TRUE;  // ブレンドを有効にする

@@ -11,7 +11,7 @@ public:
 
 public:
     UpDown direction_ = UpDown::NONE;
-    uint32_t wheelUpGH_;
-    uint32_t wheelDownGH_;
+    uint32_t wheelDirectionGH_;
+    uint32_t wheelAuraGH_;
     Vector4 upDownColor_[2];
 };

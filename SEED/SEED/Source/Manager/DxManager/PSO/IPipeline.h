@@ -22,6 +22,7 @@ struct IPipeline{
     ComPtr<ID3D12PipelineState> pipeline_;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology_;
     D3D12_COMPARISON_FUNC depthFunc_;
+    BlendMode blendMode_;
     // シェーダー
     IDxcBlob* pVsBlob_;
     IDxcBlob* pPsBlob_;

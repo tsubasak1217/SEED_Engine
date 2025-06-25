@@ -67,7 +67,7 @@ public:// キーの状態を返す関数
     static bool IsPressMouse(MOUSE_BUTTON button);
     static bool IsTriggerMouse(MOUSE_BUTTON button);
     static bool IsReleaseMouse(MOUSE_BUTTON button);
-    static int32_t GetMouseWheel();
+    static int32_t GetMouseWheel(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMouseVector(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMouseDirection(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);

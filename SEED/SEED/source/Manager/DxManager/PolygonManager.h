@@ -267,6 +267,8 @@ private:// 実際に頂点情報や色などの情報が入っている変数
 
     // 上記をパイプラインごとにまとめたもの
     std::unordered_map<PSO*, std::list<ModelDrawData*>> drawLists_;
+    // 上記の描画リストを描画順に並べ替えたもの
+    std::list<std::list<ModelDrawData*>*> orderedDrawLists_;
 
 private:// ライティング用のデータ-----------------------------------------------------------------
 

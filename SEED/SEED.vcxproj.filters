@@ -108,6 +108,7 @@
     <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
     <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
+    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -263,6 +264,7 @@
     <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
     <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
+    <ClInclude Include="Game\Manager\NotesEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

@@ -112,11 +112,25 @@ uint32_t TextureManager::CreateTexture(const std::string& filename, const aiText
 
 // テクスチャハンドルを返す
 uint32_t TextureManager::GetGraphHandle(const std::string& fileName){
-    assert(instance_->graphHandle_.find(fileName) != instance_->graphHandle_.end());
+    // ない場合読み込み
+    if(instance_->graphHandle_.find(fileName) == instance_->graphHandle_.end()){
+        // 拡張子がある場合のみ読み込み(png、jpgのみ)
+        if(fileName.find(".png") != std::string::npos || fileName.find(".jpg") != std::string::npos){
+            LoadTexture(fileName);
+        }
+    }
     return instance_->graphHandle_[fileName];
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetHandleGPU(const std::string& fileName){
+    // ない場合読み込み
+    if(instance_->graphHandle_.find(fileName) == instance_->graphHandle_.end()){
+        // 拡張子がある場合のみ読み込み(png、jpgのみ)
+        if(fileName.find(".png") != std::string::npos || fileName.find(".jpg") != std::string::npos){
+            LoadTexture(fileName);
+        }
+    }
+
     if(instance_->graphHandle_.find(fileName) != instance_->graphHandle_.end()){
         return ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, instance_->graphHandle_[fileName]);
     } else{
@@ -125,5 +139,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetHandleGPU(const std::string& file
 }
 
 ImTextureID TextureManager::GetImGuiTexture(const std::string& fileName){
+    // ない場合読み込み
+    if(instance_->graphHandle_.find(fileName) == instance_->graphHandle_.end()){
+        // 拡張子がある場合のみ読み込み(png、jpgのみ)
+        if(fileName.find(".png") != std::string::npos || fileName.find(".jpg") != std::string::npos){
+            LoadTexture(fileName);
+        }
+    }
     return ImTextureID(GetHandleGPU(fileName).ptr);
 }

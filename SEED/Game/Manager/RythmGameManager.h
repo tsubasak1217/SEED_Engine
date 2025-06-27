@@ -5,6 +5,7 @@
 #include <Game/Objects/Notes/NotesData.h>
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
 #include <Game/Objects/Combo/ComboObject.h>
+#include <Game/Manager/NotesEditor.h>
 
 class RythmGameManager{
 private:
@@ -31,4 +32,5 @@ private:
     std::unique_ptr<BaseCamera> gameCamera_;// カメラ
     std::unique_ptr<NotesData> notesData_;// 譜面データ
     std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
+    std::unique_ptr<NotesEditor> notesEditor_; // ノーツエディタ
 };

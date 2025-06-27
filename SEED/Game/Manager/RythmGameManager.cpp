@@ -12,10 +12,14 @@ RythmGameManager* RythmGameManager::instance_ = nullptr;
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////////////
 RythmGameManager::RythmGameManager(){
+    // コンボオブジェクト
     comboObject_ = std::make_unique<ComboObject>();
     comboObject_->comboText.transform.translate = { 187.0f,147.0f };
     comboObject_->comboText.size = { 300.0f,200.0f };
     comboObject_->comboText.fontSize = 100.0f;
+
+    // エディタ
+    notesEditor_ = std::make_unique<NotesEditor>();
 }
 
 RythmGameManager::~RythmGameManager(){
@@ -109,6 +113,8 @@ void RythmGameManager::Update(){
     ImFunc::CustomBegin("ComboText", MoveOnly_TitleBar);
     comboObject_->comboText.Edit();
     ImGui::End();
+    // ノーツの編集ウインドウ
+    notesEditor_->EditNotes();
 #endif // _DEBUG
 
 }

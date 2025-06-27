@@ -16,8 +16,8 @@ struct TempoData{
     float time;
     float CalcDuration() const {
         // (一拍の秒数) * (四分音符の数) ←一般化式
-        // (一拍の秒数) * (小節数) * (拍子の分母) * (4分に戻すための比率) ←少し展開した式
-        return (60.0f / bpm) * barCount * timeSignature_denominator * (4.0f / timeSignature_numerator);
+        // (一拍の秒数) * (小節数) * (拍子の分子) * (4分に戻すための比率) ←少し展開した式
+        return (60.0f / bpm) * barCount * timeSignature_numerator * (4.0f / timeSignature_denominator);
     }
 
     void Edit();
@@ -31,12 +31,15 @@ public:
 
 private:
     void DisplayLane();
+    void DisplayLine();
     void DisplayTempoData();
     void EditTempoData();
 private:
+    float duration_ = 0.0f; // 曲の長さ
     float curLaneTime_ = 0.0;
     float timeScale_ = 1.0;
     float kVisibleTime_ = 2.0; // 可視範囲の時間
+    bool isPlaying_ = false; // 再生中かどうか
 
     ImVec2 laneLTPos_;
     ImVec2 laneSize_;

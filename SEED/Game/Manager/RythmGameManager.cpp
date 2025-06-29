@@ -114,7 +114,7 @@ void RythmGameManager::Update(){
     comboObject_->comboText.Edit();
     ImGui::End();
     // ノーツの編集ウインドウ
-    notesEditor_->EditNotes();
+    notesEditor_->Edit();
 #endif // _DEBUG
 
 }

@@ -5,14 +5,14 @@ Note_Hold::Note_Hold() : Note_Base(){
     noteType_ = NoteType::Hold;
 
     // ホールドノーツのテクスチャの設定
-    textureGHs_[0] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
-    textureGHs_[1] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
-    textureGHs_[2] = TextureManager::GetInstance()->LoadTexture("DefaultAssets/white1x1.png");
+    textureGHs_[0] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[1] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[2] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Body.png");
 
     // ホールドノーツの色の設定
     noteColors_[0] = { 1.0f, 1.0f, 0.0f, 1.0f };
     noteColors_[1] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    noteColors_[2] = { 1.0f, 1.0f, 1.0f, 0.5f };
+    noteColors_[2] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     // ライティングを無効に
     noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;
@@ -34,8 +34,8 @@ void Note_Hold::Draw(float currentTime, float appearLength){
     float timeRatio[2] = { (time_ - currentTime) / appearLength,((time_ + kHoldTime_) - currentTime) / appearLength };
 
     // 描画用の矩形を計算
-    noteRect[0] = PlayField::GetInstance()->GetNoteQuad(timeRatio[0], lane_, layer_, 0.005f);
-    noteRect[1] = PlayField::GetInstance()->GetNoteQuad(timeRatio[1], lane_, layer_, 0.005f);
+    noteRect[0] = PlayField::GetInstance()->GetNoteQuad(timeRatio[0], lane_, layer_, 0.01f);
+    noteRect[1] = PlayField::GetInstance()->GetNoteQuad(timeRatio[1], lane_, layer_, 0.01f);
 
     // 始点から終点までの間の部分の頂点
     noteRect[2].localVertex[0] = noteRect[1].localVertex[2];

@@ -90,8 +90,8 @@ void PlayField::Initialize(){
         }
 
         // 色を設定
-        lane_[0][i].color = { 1.0f, 1.0f, 1.0f, 0.1f };
-        lane_[1][i].color = { 1.0f, 1.0f, 1.0f, 0.1f };
+        lane_[0][i].color = { 0.0f, 0.0f, 0.0f, 0.5f };
+        lane_[1][i].color = { 0.0f, 0.0f, 0.0f, 0.5f };
         laneAnswer_[0][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[1][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[0][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
@@ -100,6 +100,8 @@ void PlayField::Initialize(){
         // レーンの境界線の矩形の座標を決定
         laneBorderLine_[0][i] = lane_[0][i];
         laneBorderLine_[1][i] = lane_[1][i];
+        laneBorderLine_[0][i].color = { 1.0f,1.0f,1.0f,0.5f };
+        laneBorderLine_[1][i].color = { 1.0f,1.0f,1.0f,0.5f };
         laneBorderLine_[0][i].localVertex[1].x -= keyWidth * 0.5f;
         laneBorderLine_[0][i].localVertex[2].x -= keyWidth * 0.5f;
         laneBorderLine_[1][i].localVertex[1].x -= keyWidth * 0.5f;
@@ -132,6 +134,8 @@ void PlayField::Initialize(){
         if(i == kKeyCount_ - 1){
             laneBorderLine_[0][i + 1] = lane_[0][i];
             laneBorderLine_[1][i + 1] = lane_[1][i];
+            laneBorderLine_[0][i + 1].color = { 1.0f,1.0f,1.0f,0.5f };
+            laneBorderLine_[1][i + 1].color = { 1.0f,1.0f,1.0f,0.5f };
             laneBorderLine_[0][i + 1].localVertex[1].x += keyWidth * 0.5f;
             laneBorderLine_[0][i + 1].localVertex[2].x += keyWidth * 0.5f;
             laneBorderLine_[1][i + 1].localVertex[1].x += keyWidth * 0.5f;
@@ -223,6 +227,13 @@ void PlayField::Draw(){
             SEED::DrawTriangle(laneBorderLineAura_[i][j]);
         }
     }
+
+    // 背景の描画
+    Sprite sprite = Sprite("PlayField/tempBack.png");
+    sprite.drawLocation = DrawLocation::Back;
+    sprite.isStaticDraw = false;
+    sprite.size = kWindowSize;
+    sprite.Draw();
 }
 
 
@@ -478,7 +489,7 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit){
 /////////////////////////////////////////////////////////////
 // rectFlickのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){ 
+void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 
     evalution;
     if(laneBit & LaneBit::RECTFLICK_LT){

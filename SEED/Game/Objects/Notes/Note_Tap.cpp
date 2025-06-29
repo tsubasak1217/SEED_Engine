@@ -4,6 +4,8 @@ Note_Tap::Note_Tap() : Note_Base(){
     noteType_ = NoteType::Tap;// ノーツの種類をタップに設定
     noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
     noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
+
+    noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNote.png");
 }
 
 Note_Tap::~Note_Tap(){
@@ -17,7 +19,7 @@ void Note_Tap::Draw(float currentTime, float appearLength){
     float timeRatio = (time_ - currentTime) / appearLength;
 
     // 描画用の矩形を計算
-    noteRect = PlayField::GetInstance()->GetNoteQuad(timeRatio, lane_, layer_,0.005f);
+    noteRect = PlayField::GetInstance()->GetNoteQuad(timeRatio, lane_, layer_,0.01f);
 
     // 頂点設定
     for(int i = 0; i < 4; i++){

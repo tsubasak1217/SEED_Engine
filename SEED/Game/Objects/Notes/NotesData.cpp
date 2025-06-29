@@ -37,17 +37,17 @@ NotesData::NotesData(bool isRandomNotes){
     if(isRandomNotes){
         for(int i = 0; i < numNotes; i++){
 
-            //{// Tapノーツ確認用
-            //    float time = 10.0f + 0.1f * i;
-            //    int32_t lane = i % PlayField::kKeyCount_;
-            //    UpDown layer = (UpDown)(rand() % 1);
-            //    std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
-            //    note->time_ = time;
-            //    note->lane_ = lane;
-            //    note->layer_ = layer;
-            //    note->laneBit_ = (LaneBit)(1 << lane);
-            //    notes_.emplace_back(std::make_pair(time, note));
-            //}
+            {// Tapノーツ確認用
+                float time = 10.0f + 0.1f * i;
+                int32_t lane = i % PlayField::kKeyCount_;
+                UpDown layer = (UpDown)(rand() % 1);
+                std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
+                note->time_ = time;
+                note->lane_ = lane;
+                note->layer_ = layer;
+                note->laneBit_ = (LaneBit)(1 << lane);
+                notes_.emplace_back(std::make_pair(time, note));
+            }
 
             {// Wheelノーツ確認用
                 float time = 10.0f + 1.0f * i;
@@ -67,41 +67,41 @@ NotesData::NotesData(bool isRandomNotes){
                 notes_.emplace_back(std::make_pair(time, note));
             }
 
-            //{// RectFlickノーツ確認用
-            //    float time = 5.0f + 0.5f * i;
-            //    int32_t dir = i % 13;
-            //    std::shared_ptr<Note_Base> note = std::make_shared<Note_RectFlick>();
-            //    note->time_ = time;
-            //    if(dir == 0){
-            //        note->laneBit_ = LaneBit::RECTFLICK_LT;
-            //    } else if(dir == 1){
-            //        note->laneBit_ = LaneBit::RECTFLICK_RT;
-            //    } else if(dir == 2){
-            //        note->laneBit_ = LaneBit::RECTFLICK_RB;
-            //    } else if(dir == 3){
-            //        note->laneBit_ = LaneBit::RECTFLICK_LB;
-            //    } else if(dir == 4){
-            //        note->laneBit_ = LaneBit::RECTFLICK_UP;
-            //    } else if(dir == 5){
-            //        note->laneBit_ = LaneBit::RECTFLICK_RIGHT;
-            //    } else if(dir == 6){
-            //        note->laneBit_ = LaneBit::RECTFLICK_DOWN;
-            //    } else if(dir == 7){
-            //        note->laneBit_ = LaneBit::RECTFLICK_LEFT;
-            //    } else if(dir == 8){
-            //        note->laneBit_ = LaneBit::RECTFLICK_LT_EX;
-            //    } else if(dir == 9){
-            //        note->laneBit_ = LaneBit::RECTFLICK_RT_EX;
-            //    } else if(dir == 10){
-            //        note->laneBit_ = LaneBit::RECTFLICK_RB_EX;
-            //    } else if(dir == 11){
-            //        note->laneBit_ = LaneBit::RECTFLICK_LB_EX;
-            //    } else{
-            //        note->laneBit_ = LaneBit::RECTFLICK_ALL;
-            //    }
+            {// RectFlickノーツ確認用
+                float time = 5.0f + 0.5f * i;
+                int32_t dir = i % 13;
+                std::shared_ptr<Note_Base> note = std::make_shared<Note_RectFlick>();
+                note->time_ = time;
+                if(dir == 0){
+                    note->laneBit_ = LaneBit::RECTFLICK_LT;
+                } else if(dir == 1){
+                    note->laneBit_ = LaneBit::RECTFLICK_RT;
+                } else if(dir == 2){
+                    note->laneBit_ = LaneBit::RECTFLICK_RB;
+                } else if(dir == 3){
+                    note->laneBit_ = LaneBit::RECTFLICK_LB;
+                } else if(dir == 4){
+                    note->laneBit_ = LaneBit::RECTFLICK_UP;
+                } else if(dir == 5){
+                    note->laneBit_ = LaneBit::RECTFLICK_RIGHT;
+                } else if(dir == 6){
+                    note->laneBit_ = LaneBit::RECTFLICK_DOWN;
+                } else if(dir == 7){
+                    note->laneBit_ = LaneBit::RECTFLICK_LEFT;
+                } else if(dir == 8){
+                    note->laneBit_ = LaneBit::RECTFLICK_LT_EX;
+                } else if(dir == 9){
+                    note->laneBit_ = LaneBit::RECTFLICK_RT_EX;
+                } else if(dir == 10){
+                    note->laneBit_ = LaneBit::RECTFLICK_RB_EX;
+                } else if(dir == 11){
+                    note->laneBit_ = LaneBit::RECTFLICK_LB_EX;
+                } else{
+                    note->laneBit_ = LaneBit::RECTFLICK_ALL;
+                }
 
-            //    notes_.emplace_back(std::make_pair(time, note));
-            //}
+                notes_.emplace_back(std::make_pair(time, note));
+            }
 
             {// Holdノーツ確認用
                 float time = 5.0f + 3.0f * i;
@@ -162,10 +162,36 @@ void NotesData::Update(){
 // 描画処理
 ////////////////////////////////////////////////////////////////////
 void NotesData::Draw(){
-    // ノーツの描画
+    // ノーツの描画(hold->tap->wheel->rectFlickの順)
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
-            notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            if(notePtr->noteType_ == NoteType::Hold){
+                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
+        }
+    }
+
+    for(auto& note : onFieldNotes_){
+        if(auto notePtr = note.lock()){
+            if(notePtr->noteType_ == NoteType::Tap){
+                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
+        }
+    }
+
+    for(auto& note : onFieldNotes_){
+        if(auto notePtr = note.lock()){
+            if(notePtr->noteType_ == NoteType::Wheel){
+                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
+        }
+    }
+
+    for(auto& note : onFieldNotes_){
+        if(auto notePtr = note.lock()){
+            if(notePtr->noteType_ == NoteType::RectFlick){
+                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
         }
     }
 }

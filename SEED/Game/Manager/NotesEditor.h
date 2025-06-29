@@ -61,6 +61,7 @@ public:
     void Edit();
 
 private:
+    void UpdateTimeScale();
     void DisplayLane();
     void DisplayLine();
     void DisplayTempoData();
@@ -68,6 +69,7 @@ private:
     void EditNotes();
     void CreateNoteOnLane();
     void DisplayNotes();
+    void DraggingNote();
 
 private:
     // 基礎情報
@@ -76,6 +78,7 @@ private:
     float timeScale_ = 1.0;
     float kVisibleTime_ = 2.0; // 可視範囲の時間
     bool isPlaying_ = false; // 再生中かどうか
+    bool isEditOnLane_ = false; // レーン上での編集モードかどうか
     float division_ = 4;
     ImVec2 laneLTPos_;
     ImVec2 laneSize_;
@@ -90,6 +93,8 @@ private:
     TempoData* selectedTempoData_ = nullptr; // 選択中のテンポデータ
     TempoData* contextMenuTempoData_ = nullptr; // コンテキストメニュー用のテンポデータ
     ImDrawList* pDrawList_ = nullptr;
+    Note_Base* draggingNote_ = nullptr; // ドラッグ中のノート
+    Note_Base* edittingNote_ = nullptr; // 編集中のノート
 
     // 編集モードなどの情報
     EditNoteType editNoteType_ = Tap; // 編集中のノートタイプ

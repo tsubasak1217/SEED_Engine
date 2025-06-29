@@ -19,4 +19,10 @@ public:
     Judgement::Evaluation headEvaluation_ = Judgement::Evaluation::NONE;// 頭の判定
     int32_t textureGHs_[3];// ホールドノーツのテクスチャ
     Vector4 noteColors_[3];// ホールドノーツの色
+
+#ifdef _DEBUG
+    bool isDraggingHoldStart_ = false;
+    bool isDraggingHoldEnd_ = false;
+#endif // _DEBUG
+
 };

@@ -39,6 +39,11 @@ public:
     bool isEnd_ = false;// ノーツが終わったかどうか
     inline static float zOffset_ = -0.005f;// ノーツのZ軸オフセット
 
+#ifdef _DEBUG
+    bool isDragging_ = false;
+#endif // _DEBUG
+
+
 protected:
     std::unique_ptr<Quad> noteQuad_;// ノーツの画像
 };

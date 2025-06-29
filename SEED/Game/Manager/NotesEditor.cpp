@@ -12,6 +12,13 @@ NotesEditor::NotesEditor(){
     textureIDs_["laneField"] = TextureManager::GetImGuiTexture("PlayField/editorLane.png");
     textureIDs_["playIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
     textureIDs_["pauseIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+    // note
+    textureIDs_["tap"] = TextureManager::GetImGuiTexture("Notes/tapNote.png");
+    textureIDs_["holdHead"] = TextureManager::GetImGuiTexture("Notes/holdNote_Head.png");
+    textureIDs_["holdBody"] = TextureManager::GetImGuiTexture("Notes/holdNote_Body.png");
+    textureIDs_["rectFlick"] = TextureManager::GetImGuiTexture("DefaultAssets/white1x1.png");
+    textureIDs_["wheel"] = TextureManager::GetImGuiTexture("Notes/wheel_Direction.png");
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -24,6 +31,8 @@ void NotesEditor::Edit(){
     // ドローリストの取得
     pDrawList_ = ImGui::GetWindowDrawList();
 
+    // タイムスケールの更新処理
+    UpdateTimeScale();
     // レーンの表示
     DisplayLane();
     // テンポ情報をレーン上に配置して表示
@@ -40,7 +49,10 @@ void NotesEditor::Edit(){
     ImGui::BeginChild("ノーツ編集", ImVec2(0, 300), true);
     EditNotes();
     ImGui::EndChild();
-
+    // ノーツの表示処理
+    DisplayNotes();
+    // ドラッグ中のノーツの処理
+    DraggingNote();
 
     // durationの更新
     if(!tempoDataList_.empty()){
@@ -60,13 +72,32 @@ void NotesEditor::Edit(){
 }
 
 ////////////////////////////////////////////////////////////////////////
+// タイムスケールの更新処理
+////////////////////////////////////////////////////////////////////////
+void NotesEditor::UpdateTimeScale(){
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    worldLaneLTPos_ = windowPos + laneLTPos_;
+    ImVec2 mousePos = ImGui::GetMousePos();
+
+    // マウスの位置がレーンの範囲内にあるかチェック
+    if(mousePos.x >= worldLaneLTPos_.x && mousePos.x <= worldLaneLTPos_.x + laneSize_.x &&
+       mousePos.y >= worldLaneLTPos_.y && mousePos.y <= worldLaneLTPos_.y + laneSize_.y){
+        // マウスホイールの回転でタイムスケールを変更
+        float wheel = ImGui::GetIO().MouseWheel;
+        if(wheel != 0.0f){
+            timeScale_ += wheel * 10.0f * ClockManager::DeltaTime(); // スケールを調整
+            timeScale_ = (std::max)(timeScale_, 0.1f); // 最小値を設定
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
 // レーンの表示
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::DisplayLane(){
 
     laneBorders_.clear();
     ImVec2 windowPos = ImGui::GetWindowPos();
-    worldLaneLTPos_ = windowPos + laneLTPos_;
     tempoDataDisplayPos_ = worldLaneLTPos_ + ImVec2(laneSize_.x + 30.0f, 0.0f);
     ImGui::SetCursorScreenPos(windowPos + laneLTPos_);
     ImGui::Image(textureIDs_["laneField"], laneSize_);
@@ -144,9 +175,9 @@ void NotesEditor::DisplayTempoData(){
         // 時間を表示する位置を計算
         float t = (tempoData.time - curLaneTime_) / visibleTime;
         float height = (laneSize_.y * 0.5f) * t;
-        float beatTime = 60.0f / tempoData.bpm;
         float ratio = 4.0f / tempoData.timeSignature_denominator; // 4分音符を基準にする
-        float beatHeight = (laneSize_.y * 0.5f) * (beatTime / visibleTime) * ratio;
+        float beatTime = (60.0f / tempoData.bpm) * ratio;
+        float beatHeight = (laneSize_.y * 0.5f) * (beatTime / visibleTime);
         int loopCount = tempoData.barCount * tempoData.timeSignature_numerator;
 
         for(int i = 0; i < loopCount; i++){
@@ -311,6 +342,7 @@ void TempoData::Edit(){
 void NotesEditor::EditNotes(){
 
     // 編集ノーツ種の選択
+    ImGui::Checkbox("レーン編集", &isEditOnLane_);
     ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール" });
 
     // 小節の分割モードの選択
@@ -337,6 +369,10 @@ void NotesEditor::EditNotes(){
 // レーン上に直接ノーツを作成する処理
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::CreateNoteOnLane(){
+
+    if(!isEditOnLane_){
+        return; // レーン編集モードでないなら何もしない
+    }
 
     // マウス座標がレーンの範囲外なら何もしない
     ImVec2 mousePos = ImGui::GetMousePos();
@@ -388,8 +424,8 @@ void NotesEditor::CreateNoteOnLane(){
                 // マウスのY座標から分割位置を計算
                 float offsetY = mousePos.y - upLayerBorders_[i].laneYPosition;
                 // 分割位置を計算
-                timeLocation = upLayerBorders_[i].timeOnLane 
-                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime/ divisionRate);
+                timeLocation = upLayerBorders_[i].timeOnLane
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
                 // ノーツの配置予定座標の計算
                 navLineDrawPosY = upLayerBorders_[i].laneYPosition
                     + float(int(offsetY / dividedHeight)) * (upLayerBorders_[i].beatYHeight / divisionRate);
@@ -410,7 +446,7 @@ void NotesEditor::CreateNoteOnLane(){
                 // マウスのY座標から分割位置を計算
                 float offsetY = mousePos.y - downLayerBorders_[i].laneYPosition;
                 // 分割位置を計算
-                timeLocation = downLayerBorders_[i].timeOnLane 
+                timeLocation = downLayerBorders_[i].timeOnLane
                     + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
                 // ノーツの配置予定座標の計算
                 navLineDrawPosY = downLayerBorders_[i].laneYPosition
@@ -424,7 +460,7 @@ void NotesEditor::CreateNoteOnLane(){
     if(ImGui::IsMouseDown(0)){
         // マウスを押している間はノーツの配置予定位置を表示
         ImVec2 p1 = ImVec2(laneBorders_[laneIndex], navLineDrawPosY);
-        ImVec2 p2 = p1 + ImVec2(laneBorders_[1] - laneBorders_[0],0.0f); // ノーツの配置予定位置のY座標を少し下げる
+        ImVec2 p2 = p1 + ImVec2(laneBorders_[1] - laneBorders_[0], 0.0f); // ノーツの配置予定位置のY座標を少し下げる
         pDrawList_->AddLine(p1, p2, IM_COL32(255, 0, 0, 255), 3.0f); // 緑色のラインを表示
         ImGui::Text("true");
     }
@@ -485,5 +521,365 @@ void NotesEditor::CreateNoteOnLane(){
 // ノーツの表示処理
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::DisplayNotes(){
+#ifdef _DEBUG
 
+    float judgeLineY = worldLaneLTPos_.y + laneSize_.y * 0.5f; // ジャッジラインのY座標
+    float laneWidth = laneSize_.x / 5.0f; // レーンの幅
+    float noteHeight = 20.0f;
+    int noteIdx = 0; // ノーツのID
+    std::string label;
+
+    for(auto& note : notes_){
+
+        float t = (note->time_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
+
+        // スキップ判定
+        if(note->noteType_ != NoteType::Hold){
+            if(t < 0.0f || t > 1.0f){ continue; } // 表示範囲外ならスキップ
+        } else{
+            Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.get());
+            float t2 = (holdNote->time_ + holdNote->kHoldTime_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
+            if(t > 1.0f){ continue; } // 表示範囲外ならスキップ
+            if(t2 < 0.0f){ continue; } // 表示範囲外ならスキップ
+        }
+
+        // 描画位置を計算
+        float displayY = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t, 0.0f, 1.0f) * (note->layer_ == UpDown::UP ? -1.0f : 1.0f);
+        float laneX = laneBorders_[note->lane_]; // レーンのX座標
+
+        if(note->noteType_ == NoteType::Tap){
+            // ノーツ画像を描画
+            ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+            ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
+            int alpha = 128;
+
+            // ノーツにボタン判定を作成
+            ImGui::SetCursorScreenPos(p1);
+            label = "tapNote##" + std::to_string(noteIdx);
+
+            // クリックしたらノーツを編集状態にする
+            if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
+                edittingNote_ = note.get();
+            }
+
+            // ボタンを押している間ドラッグ状態にする
+            if(ImGui::IsItemActive()){
+                note->isDragging_ = true; // ドラッグ中にする
+                draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+            }
+
+            // ホバー時は不透明にする
+            if(ImGui::IsItemHovered()){
+                alpha = 255;
+            }
+
+            pDrawList_->AddImage(textureIDs_["tap"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+
+        } else if(note->noteType_ == NoteType::Hold){
+            Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.get());
+            float t2 = (holdNote->time_ + holdNote->kHoldTime_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
+            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (holdNote->layer_ == UpDown::UP ? -1.0f : 1.0f);
+
+            /*-------------- ボディの描画 -------------*/
+            {
+                ImVec2 p1 = ImVec2(laneX, displayY);
+                ImVec2 p2 = ImVec2(laneX + laneWidth, displayY2);
+                int alpha = 128;
+
+                // ノーツにボタン判定を作成
+                ImGui::SetCursorScreenPos(p1);
+                label = "holdBody##" + std::to_string(noteIdx);
+                // クリックしたらノーツを編集状態にする
+                if(ImGui::InvisibleButton(label.c_str(), p2 - p1)){
+                    edittingNote_ = note.get();
+                }
+
+                // ボタンを押している間ドラッグ状態にする
+                if(ImGui::IsItemActive()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    holdNote->isDraggingHoldEnd_ = false;
+                    holdNote->isDraggingHoldStart_ = false;
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                }
+
+                // ホバー時は不透明にする
+                if(ImGui::IsItemHovered()){
+                    alpha = 255;
+                }
+
+                pDrawList_->AddImage(textureIDs_["holdBody"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            }
+
+            /*--------------- 先頭を描画 ----------------*/
+            if(t >= 0.0f && t <= 1.0f){
+                ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+                ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
+                int alpha = 128;
+
+                // ノーツにボタン判定を作成
+                ImGui::SetCursorScreenPos(p1);
+                label = "holdHead##" + std::to_string(noteIdx);
+
+                // クリックしたらノーツを編集状態にする
+                if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
+                    edittingNote_ = note.get();
+                }
+
+                // ボタンを押している間ドラッグ状態にする
+                if(ImGui::IsItemActive()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    holdNote->isDraggingHoldStart_ = true; // ホールドの先頭をドラッグ中にする
+                    holdNote->isDraggingHoldEnd_ = false; // ホールドの末尾はドラッグ中でない
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                }
+
+                // ホバー時は不透明にする
+                if(ImGui::IsItemHovered()){
+                    alpha = 255;
+                }
+
+                pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            }
+
+            /*--------------- 終端を描画 ----------------*/
+            if(t2 >= 0.0f && t2 <= 1.0f){
+                // ホールドの終端を描画
+                ImVec2 p1 = ImVec2(laneX, displayY2 - noteHeight * 0.5f);
+                ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
+                int alpha = 128;
+                // ノーツにボタン判定を作成
+                ImGui::SetCursorScreenPos(p1);
+                label = "holdEnd##" + std::to_string(noteIdx);
+
+                // クリックしたらノーツを編集状態にする
+                if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
+                    edittingNote_ = note.get();
+                }
+
+                // ボタンを押している間ドラッグ状態にする
+                if(ImGui::IsItemActive()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    holdNote->isDraggingHoldEnd_ = true; // ホールドの終端をドラッグ中にする
+                    holdNote->isDraggingHoldStart_ = false;
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                }
+
+                // ホバー時は不透明にする
+                if(ImGui::IsItemHovered()){
+                    alpha = 255;
+                }
+                pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            }
+
+
+        } else if(note->noteType_ == NoteType::RectFlick){
+        } else if(note->noteType_ == NoteType::Wheel){
+            Note_Wheel* wheelNote = dynamic_cast<Note_Wheel*>(note.get());
+            ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+            ImVec2 p2 = p1 + ImVec2(laneSize_.x, noteHeight); // ノーツのサイズを設定
+            float direction = wheelNote->direction_ == UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
+            ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, 255) : IM_COL32(0, 255, 255, 255); // 上向きはピンク、下向きは水色
+            pDrawList_->AddImage(textureIDs_["wheel"], p1, p2, ImVec2(0, 0), ImVec2(direction, direction), color);
+        }
+
+        noteIdx++; // ノーツのIDをインクリメント
+    }
+#endif // _DEBUG
+}
+
+////////////////////////////////////////////////////////////////////////
+// ドラッグ中のノーツの処理
+////////////////////////////////////////////////////////////////////////
+void NotesEditor::DraggingNote(){
+#ifdef _DEBUG
+    if(!draggingNote_){
+        return; // ドラッグ中のノーツがないなら何もしない
+    }
+
+    // マウス座標がレーンの範囲外なら何もしない
+    ImVec2 mousePos = ImGui::GetMousePos();
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 worldLaneRB = worldLaneLTPos_ + laneSize_;
+
+    // レーンの範囲外なら終了
+    if(!ImGui::IsMouseDown(0)){
+        if(mousePos.x < worldLaneLTPos_.x || mousePos.x > worldLaneRB.x ||
+            mousePos.y < worldLaneLTPos_.y || mousePos.y > worldLaneRB.y){
+            return;
+        }
+    }
+
+    // マウスを押していなければ何もしない
+    if(!ImGui::IsMouseDown(0) && !ImGui::IsMouseReleased(0)){
+        return;
+    }
+
+    // 上下どちらにマウスがあるかを判定
+    UpDown layer;
+    if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
+        layer = UpDown::UP; // 上半分
+    } else{
+        layer = UpDown::DOWN; // 下半分
+    }
+
+    // どこのレーンに配置するかを判定
+    int laneIndex = -1;
+    for(int i = 0; i < laneBorders_.size(); i++){
+        if(mousePos.x >= laneBorders_[i]){
+            laneIndex = i; // レーンのインデックスを取得
+        }
+    }
+
+    // レーン上のどこに配置するかを計算
+    float timeLocation = 0.0f;
+    float divisionRate = division_ / 4.0f;
+    float navLineDrawPosY = 0.0f;
+
+    if(layer == UpDown::UP){
+        for(int i = 0; i < upLayerBorders_.size(); i++){
+            int nextIdx = std::clamp(i + 1, 0, int(upLayerBorders_.size()) - 1);
+
+            if(MyFunc::IsContain(
+                { upLayerBorders_[nextIdx].laneYPosition,upLayerBorders_[i].laneYPosition },
+                mousePos.y)){
+
+                // さらに分割数に応じて位置を調整
+                float dividedHeight = upLayerBorders_[i].beatYHeight / divisionRate;
+                // マウスのY座標から分割位置を計算
+                float offsetY = mousePos.y - upLayerBorders_[i].laneYPosition;
+                // 分割位置を計算
+                timeLocation = upLayerBorders_[i].timeOnLane
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
+                // ノーツの配置予定座標の計算
+                navLineDrawPosY = upLayerBorders_[i].laneYPosition
+                    + float(int(offsetY / dividedHeight)) * (upLayerBorders_[i].beatYHeight / divisionRate);
+
+                break;
+            }
+        }
+
+    } else{
+        for(int i = 0; i < downLayerBorders_.size(); i++){
+            int nextIdx = std::clamp(i + 1, 0, int(downLayerBorders_.size()) - 1);
+            if(MyFunc::IsContain(
+                { downLayerBorders_[nextIdx].laneYPosition,downLayerBorders_[i].laneYPosition },
+                mousePos.y)){
+
+                // さらに分割数に応じて位置を調整
+                float dividedHeight = downLayerBorders_[i].beatYHeight / divisionRate;
+                // マウスのY座標から分割位置を計算
+                float offsetY = mousePos.y - downLayerBorders_[i].laneYPosition;
+                // 分割位置を計算
+                timeLocation = downLayerBorders_[i].timeOnLane
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
+                // ノーツの配置予定座標の計算
+                navLineDrawPosY = downLayerBorders_[i].laneYPosition
+                    + float(int(offsetY / dividedHeight)) * (downLayerBorders_[i].beatYHeight / divisionRate);
+
+                break;
+            }
+        }
+    }
+
+    if(ImGui::IsMouseDown(0)){
+
+        // ノーツの更新
+        switch(draggingNote_->noteType_){
+        case NoteType::Tap:
+        {
+            // タップノーツの移動
+            if(Note_Tap* note = dynamic_cast<Note_Tap*>(draggingNote_)){
+                note->layer_ = layer; // レイヤーを設定
+                note->lane_ = laneIndex; // レーンを設定
+                note->time_ = timeLocation; // 時間を設定
+                note->laneBit_ = (LaneBit)(1 << laneIndex);
+            }
+            break;
+        }
+        case NoteType::Hold:
+        {
+            // ホールドノーツの移動・編集
+            if(Note_Hold* note = dynamic_cast<Note_Hold*>(draggingNote_)){
+
+
+                if(note->isDraggingHoldEnd_ || note->isDraggingHoldStart_){
+                    if(layer == UpDown::UP){
+                        if(mousePos.y < worldLaneLTPos_.y){
+                            curLaneTime_ += ClockManager::DeltaTime() * timeScale_; // 上にドラッグしたら時間を進める
+                            curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
+                            timeLocation = curLaneTime_ + kVisibleTime_ * timeScale_;
+                        }
+                    } else{
+                        if(mousePos.y > worldLaneLTPos_.y + laneSize_.y){
+                            curLaneTime_ += ClockManager::DeltaTime() * timeScale_; // 下にドラッグしたら時間を進める
+                            curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
+                            timeLocation = curLaneTime_ + kVisibleTime_ * timeScale_;
+                        }
+                    }
+                }
+
+                if(note->isDraggingHoldEnd_){
+                    if(layer != note->layer_){
+                        curLaneTime_ -= ClockManager::DeltaTime() * timeScale_;
+                        curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
+                        timeLocation = curLaneTime_;
+                    }
+                    note->kHoldTime_ = std::clamp(timeLocation - note->time_, 0.1f, FLT_MAX); // ホールド時間を更新
+
+                } else if(note->isDraggingHoldStart_){
+                    if(layer != note->layer_){
+                        curLaneTime_ -= ClockManager::DeltaTime() * timeScale_;
+                        curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
+                        timeLocation = curLaneTime_; // レイヤーが変わったら時間を現在の時間に戻す
+                    }
+                    note->kHoldTime_ -= timeLocation - note->time_;
+                    note->kHoldTime_ = std::clamp(note->kHoldTime_, 0.1f, FLT_MAX);
+                    timeLocation = std::clamp(timeLocation, 0.0f, note->time_ + note->kHoldTime_);
+                    note->time_ = timeLocation; // ホールドの開始時間を更新
+
+                } else{
+                    note->layer_ = layer; // レイヤーを設定
+                    note->lane_ = laneIndex; // レーンを設定
+                    note->laneBit_ = (LaneBit)(1 << laneIndex);
+                    note->time_ = timeLocation; // 時間を設定
+                }
+
+            }
+
+            break;
+        }
+        case NoteType::RectFlick:
+        {
+
+            break;
+        }
+        case NoteType::Wheel:
+        {
+            // ホイールノーツの作成
+            notes_.emplace_back(std::make_unique<Note_Wheel>());
+            if(Note_Wheel* note = dynamic_cast<Note_Wheel*>(draggingNote_)){
+                note->layer_ = layer; // レイヤーを設定
+                note->direction_ = UpDown::UP;
+                note->laneBit_ = LaneBit::WHEEL_UP;
+                note->time_ = timeLocation; // 時間を設定
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+    // マウスを離したら
+    if(ImGui::IsMouseReleased(0)){
+        draggingNote_->isDragging_ = false; // ドラッグ中フラグを解除
+        draggingNote_ = nullptr; // ドラッグ中のノーツをクリア
+
+        if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(draggingNote_)){
+            holdNote->isDraggingHoldStart_ = false; // ホールドの先頭ドラッグフラグを解除
+            holdNote->isDraggingHoldEnd_ = false; // ホールドの終端ドラッグフラグを解除
+        }
+    }
+
+#endif // _DEBUG
 }

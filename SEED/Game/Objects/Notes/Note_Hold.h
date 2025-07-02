@@ -21,6 +21,7 @@ public:
     Vector4 noteColors_[3];// ホールドノーツの色
 
 #ifdef _DEBUG
+    void Edit()override;
     bool isDraggingHoldStart_ = false;
     bool isDraggingHoldEnd_ = false;
 #endif // _DEBUG

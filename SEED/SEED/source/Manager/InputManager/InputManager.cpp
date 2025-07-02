@@ -356,6 +356,11 @@ Vector2 Input::GetMousePosition(INPUT_STATE inputState){
     }
 }
 
+// マウスが移動したか
+bool Input::IsMouseMoved(INPUT_STATE inputState){
+    return MyMath::LengthSq(GetMouseVector(inputState)) > 0.0f;
+}
+
 
 //---------------------------------- ゲームパッド --------------------------------------//
 

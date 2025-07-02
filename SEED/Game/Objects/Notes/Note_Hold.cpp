@@ -179,3 +179,13 @@ Judgement::Evaluation Note_Hold::JudgeHoldEnd(){
         return Judgement::Evaluation::GOOD;
     }
 }
+
+#ifdef _DEBUG
+void Note_Hold::Edit(){
+    // 基本情報の編集
+    Note_Base::Edit();
+    ImGui::Separator();
+    // ホールドノーツの情報の編集
+    ImGui::DragFloat("ホールドの長さ", &kHoldTime_, 0.01f, 0.1f,FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+}
+#endif // _DEBUG

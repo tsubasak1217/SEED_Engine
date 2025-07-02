@@ -8,4 +8,9 @@ public:
     void Update() override;
     void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
+
+#ifdef _DEBUG
+    void Edit()override;
+#endif // _DEBUG
+
 };

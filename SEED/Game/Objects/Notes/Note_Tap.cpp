@@ -73,3 +73,9 @@ Judgement::Evaluation Note_Tap::Judge(float dif){
     // 押したレーンに含まれていないなら、MISS
     return Judgement::Evaluation::MISS;
 }
+
+#ifdef _DEBUG
+void Note_Tap::Edit(){
+    Note_Base::Edit();
+}
+#endif // _DEBUG

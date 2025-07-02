@@ -53,7 +53,7 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     }
 
     // uvをスクロールする
-    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,2.0f,1.0f }, {0.0f,0.0f,0.0f}, uv_translate);
+    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,2.0f,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate);
 
     // テクスチャの設定
     noteAuraRect.GH = wheelAuraGH_;
@@ -105,3 +105,21 @@ Judgement::Evaluation Note_Wheel::Judge(float dif){
     // 押したレーンに含まれていないなら、MISS
     return Judgement::Evaluation::MISS;
 }
+
+#ifdef _DEBUG
+void Note_Wheel::Edit(){
+    // 基本情報の編集
+    Note_Base::Edit();
+    ImGui::Separator();
+    // ホールドノーツの情報の編集
+    if(ImFunc::ComboPair("フリック方向", direction_,
+        {
+            {"↑", UpDown::UP},
+            {"↓", UpDown::DOWN},
+        }
+    )){
+        // フリック方向が変更された場合、レーンビットを更新
+        laneBit_ = direction_ == UpDown::UP ? LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
+    }
+}
+#endif // _DEBUG

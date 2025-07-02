@@ -23,7 +23,7 @@ using Microsoft::WRL::ComPtr;
 #include <unordered_map>
 
 
-
+using AudioHandle = uint32_t;
 
 // 読み込みに必要な構造体
 struct ChunkHeader{
@@ -50,7 +50,6 @@ struct SoundData{
     uint32_t bufferSize;
 };
 
-
 class AudioManager{
 
 private:
@@ -76,20 +75,20 @@ public:// 初期化に関する関数
 
 public:// エンジンで利用できる関数
 
-    static void PlayAudio(const std::string& filename,bool loop,float volume = 1.0f);
-    static void EndAudio(const std::string& filename);
-    static void PauseAudio(const std::string& filename);
-    static void RestertAudio(const std::string& filename);
-    static void SetAudioVolume(const std::string& filename, float volume);
-    static bool IsPlayingAudio(const std::string& filename);
+    static AudioHandle PlayAudio(const std::string& filename,bool loop,float volume = 1.0f,float time = 0.0f);
+    static void EndAudio(AudioHandle handle);
+    static void PauseAudio(AudioHandle handle);
+    static void RestertAudio(AudioHandle handle);
+    static void SetAudioVolume(AudioHandle handle, float volume);
+    static bool IsPlayingAudio(AudioHandle handle);
     static void LoadAudio(const std::string& filename);
     static void UnloadAudio(const std::string& filename);
     static void UnloadAllAudio();
 
 private:
-    void PlayAudio(
+    AudioHandle PlayAudio(
         IXAudio2* xAudio2,const SoundData& soundData, 
-        const std::string& filename, bool loop, float volume
+        const std::string& filename, bool loop, float volume, float time
     );
     SoundData LoadWave(const char* filename);
     SoundData LoadMP3(const wchar_t* filename);
@@ -100,11 +99,13 @@ private:
     ComPtr<IXAudio2> xAudio2_;
     IXAudio2MasteringVoice* masteringVoice_;
     static float systemVolumeRate_;
+    AudioHandle nextAudioHandle_ = 0;
+
 private:
-    std::unordered_map<std::string, SoundData>audios_;
-    std::unordered_map<std::string, IXAudio2SourceVoice*>sourceVoices_;
-    std::unordered_map<std::string, bool>isPlaying_;
-    std::unordered_map<std::string, float>volumeMap_;
+    std::unordered_map<std::string, SoundData>audios_;// データそのもの。複数鳴らしても1つでOK
+    std::unordered_map<uint32_t, IXAudio2SourceVoice*>sourceVoices_;// 同じ音源でも、鳴らす数だけ必要
+    std::unordered_map<AudioHandle, bool>isPlaying_;
+    std::unordered_map<AudioHandle, float>volumeMap_;
 
 private:
     static const std::string directoryPath_;

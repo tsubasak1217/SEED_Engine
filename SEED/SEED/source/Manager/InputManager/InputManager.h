@@ -71,6 +71,7 @@ public:// キーの状態を返す関数
     static Vector2 GetMouseVector(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMouseDirection(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);
+    static bool IsMouseMoved(INPUT_STATE inputState = INPUT_STATE::CURRENT);
 
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);

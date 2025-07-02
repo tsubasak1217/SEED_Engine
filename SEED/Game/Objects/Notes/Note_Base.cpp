@@ -11,3 +11,11 @@ void Note_Base::Draw(float currentTime, float appearLength){
     appearLength;
     SEED::DrawQuad(*noteQuad_.get());
 }
+
+#ifdef _DEBUG
+void Note_Base::Edit(){
+    ImGui::Text("ノーツID: %d", noteID_);
+    ImGui::DragFloat("配置時間", &time_, 0.001f, 0.0f,FLT_MAX, "%.3f",ImGuiSliderFlags_AlwaysClamp);
+    ImGui::Checkbox("EXノーツかどうか", &isExtraNote_);
+}
+#endif // _DEBUG

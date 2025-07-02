@@ -24,7 +24,7 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
     if(timeRatio <= 1.0f){
         alpha = EaseOutSine(std::clamp(timeRatio, 0.0f, 1.0f));
     } else{
-        alpha = 1.0f - EaseOutSine(std::clamp((timeRatio - 1.0f)/0.2f, 0.0f, 1.0f));
+        alpha = 1.0f - EaseOutSine(std::clamp((timeRatio - 1.0f) / 0.2f, 0.0f, 1.0f));
     }
 
     // フリック矩形の描画
@@ -57,6 +57,7 @@ Judgement::Evaluation Note_RectFlick::Judge(float dif){
     }
 }
 
+
 // 範囲内のフリックか、ビットで確認する関数
 bool Note_RectFlick::CheckBit(DIRECTION8 dir) const{
     LaneBit bit;
@@ -79,3 +80,29 @@ bool Note_RectFlick::CheckBit(DIRECTION8 dir) const{
 
     return (laneBit_ & bit);// ビットが立っているか確認
 }
+
+#ifdef _DEBUG
+void Note_RectFlick::Edit(){
+    // 基本情報の編集
+    Note_Base::Edit();
+    ImGui::Separator();
+    // ホールドノーツの情報の編集
+    ImFunc::ComboPair("フリック方向", laneBit_,
+        {
+            {"↖", LaneBit::RECTFLICK_LT},
+            {"↖(ワイド)", LaneBit::RECTFLICK_LT_EX},
+            {"↙", LaneBit::RECTFLICK_LB},
+            {"↙(ワイド)", LaneBit::RECTFLICK_LB_EX},
+            {"↗", LaneBit::RECTFLICK_RT},
+            {"↗(ワイド)", LaneBit::RECTFLICK_RT_EX},
+            {"↘", LaneBit::RECTFLICK_RB},
+            {"↘(ワイド)", LaneBit::RECTFLICK_RB_EX},
+            {"↑", LaneBit::RECTFLICK_UP},
+            {"↓", LaneBit::RECTFLICK_DOWN},
+            {"←", LaneBit::RECTFLICK_LEFT},
+            {"→", LaneBit::RECTFLICK_RIGHT},
+            {"全体", LaneBit::RECTFLICK_ALL},
+        }
+    );
+}
+#endif // _DEBUG

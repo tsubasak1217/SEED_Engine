@@ -64,6 +64,7 @@ public:
     void Edit();
 
 private:
+    void SelectAudioFile();
     void UpdateTimeScale();
     void DisplayLane();
     void DisplayLine();
@@ -74,6 +75,8 @@ private:
     void DisplayNotes();
     void DraggingNote();
     void ScrollOnLane();
+    void EditSelectNote();
+    void EraseCheck();
 
 private:
     // 基礎情報
@@ -93,6 +96,7 @@ private:
 
     // 表示する情報
     unordered_map<std::string, ImTextureID> textureIDs_;
+    unordered_map<LaneBit, std::string> laneTextureNameMap_;
     std::list<TempoData> tempoDataList_;
 
     // ポインタ
@@ -113,4 +117,9 @@ private:
 
     // 配置されたノートのリスト
     std::list<std::unique_ptr<Note_Base>> notes_;
+
+    // 音声情報
+    std::string audioFileName_;
+    std::string answerAudioFileName_;
+    AudioHandle audioHandle_;
 };

@@ -38,3 +38,8 @@ Judgement::Evaluation Note_SideFlick::Judge(float dif){
         return Judgement::Evaluation::PERFECT;
     }
 }
+
+#ifdef _DEBUG
+void Note_SideFlick::Edit(){
+}
+#endif // _DEBUG

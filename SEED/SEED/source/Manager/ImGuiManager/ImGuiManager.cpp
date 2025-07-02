@@ -293,7 +293,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 // stringのコンボボックスを作成
 /////////////////////////////////////////////////////////////////
 bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<std::string>& items){
-    int currentIndex = 0;
+    int currentIndex = -1;
     int size = static_cast<int>(items.size()); // padding分を除外
     for(int i = 0; i < size; ++i){
         if(items[i] == str){

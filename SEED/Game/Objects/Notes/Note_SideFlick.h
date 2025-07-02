@@ -9,6 +9,10 @@ public:
     void Draw(float currentTime, float appearLength) override;
     Judgement::Evaluation Judge(float dif) override;
 
+#ifdef _DEBUG
+    void Edit()override;
+#endif // _DEBUG
+
 public:
     LR flickDirection_ = LR::NONE;// フリックの方向
 };

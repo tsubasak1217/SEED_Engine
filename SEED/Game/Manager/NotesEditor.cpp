@@ -12,13 +12,40 @@ NotesEditor::NotesEditor(){
     textureIDs_["laneField"] = TextureManager::GetImGuiTexture("PlayField/editorLane.png");
     textureIDs_["playIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
     textureIDs_["pauseIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+
     // note
     textureIDs_["tap"] = TextureManager::GetImGuiTexture("Notes/tapNote.png");
     textureIDs_["holdHead"] = TextureManager::GetImGuiTexture("Notes/holdNote_Head.png");
     textureIDs_["holdBody"] = TextureManager::GetImGuiTexture("Notes/holdNote_Body.png");
-    textureIDs_["rectFlick"] = TextureManager::GetImGuiTexture("DefaultAssets/white1x1.png");
-    textureIDs_["wheel"] = TextureManager::GetImGuiTexture("Notes/wheel_Direction.png");
+    textureIDs_["wheel"] = TextureManager::GetImGuiTexture("Notes/wheel_Edit.png");
+    textureIDs_["rf_LT"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT.png");
+    textureIDs_["rf_RT"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT.png");
+    textureIDs_["rf_LB"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB.png");
+    textureIDs_["rf_RB"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB.png");
+    textureIDs_["rf_L"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_L.png");
+    textureIDs_["rf_R"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_R.png");
+    textureIDs_["rf_U"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_U.png");
+    textureIDs_["rf_D"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_D.png");
+    textureIDs_["rf_ALL"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_All.png");
+    textureIDs_["rf_LT_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT_EX.png");
+    textureIDs_["rf_RT_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT_EX.png");
+    textureIDs_["rf_LB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB_EX.png");
+    textureIDs_["rf_RB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB_EX.png");
 
+    // name
+    laneTextureNameMap_[LaneBit::RECTFLICK_LT] = "rf_LT";
+    laneTextureNameMap_[LaneBit::RECTFLICK_RT] = "rf_RT";
+    laneTextureNameMap_[LaneBit::RECTFLICK_LB] = "rf_LB";
+    laneTextureNameMap_[LaneBit::RECTFLICK_RB] = "rf_RB";
+    laneTextureNameMap_[LaneBit::RECTFLICK_LEFT] = "rf_L";
+    laneTextureNameMap_[LaneBit::RECTFLICK_RIGHT] = "rf_R";
+    laneTextureNameMap_[LaneBit::RECTFLICK_UP] = "rf_U";
+    laneTextureNameMap_[LaneBit::RECTFLICK_DOWN] = "rf_D";
+    laneTextureNameMap_[LaneBit::RECTFLICK_LT_EX] = "rf_LT_EX";
+    laneTextureNameMap_[LaneBit::RECTFLICK_RT_EX] = "rf_RT_EX";
+    laneTextureNameMap_[LaneBit::RECTFLICK_LB_EX] = "rf_LB_EX";
+    laneTextureNameMap_[LaneBit::RECTFLICK_RB_EX] = "rf_RB_EX";
+    laneTextureNameMap_[LaneBit::RECTFLICK_ALL] = "rf_ALL";
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -39,13 +66,18 @@ void NotesEditor::Edit(){
     DisplayTempoData();
     // テンポデータの編集
     ImGui::SetCursorScreenPos(tempoDataDisplayPos_);
-    ImGui::BeginChild("テンポ情報一覧", ImVec2(0, 300), true);
+    ImGui::BeginChild("テンポ情報", ImVec2(0, 200), true);
     EditTempoData();
+    ImGui::EndChild();
+    // 音声データの編集
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220));
+    ImGui::BeginChild("楽曲情報", ImVec2(0, 100), true);
+    SelectAudioFile();
     ImGui::EndChild();
     // 中心線の表示
     DisplayLine();
     // ノーツの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 320));
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220) + ImVec2(0, 120));
     ImGui::BeginChild("ノーツ編集", ImVec2(0, 300), true);
     EditNotes();
     ImGui::EndChild();
@@ -69,8 +101,28 @@ void NotesEditor::Edit(){
         curLaneTime_ = std::clamp(curLaneTime_, 0.0f, duration_); // 範囲外チェック
     }
 
+    // ノーツの削除処理
+    EraseCheck();
+
     ImGui::End();
 #endif // _DEBUG
+}
+
+////////////////////////////////////////////////////////////////////////
+// 音声ファイルの選択
+////////////////////////////////////////////////////////////////////////
+void NotesEditor::SelectAudioFile(){
+
+    // 音声ファイルのリストを取得
+    static auto paths = MyFunc::GetFileList("Resources/Audios", { ".wav", ".mp3" }, true);
+
+    if(ImGui::CollapsingHeader("音声ファイルの選択")){
+        if(ImGui::IsItemClicked(0)){
+            paths = MyFunc::GetFileList("Resources/Audios/musics", { ".wav", ".mp3" }, true); // 再取得
+        }
+
+        ImFunc::ComboText("音声ファイル一覧", audioFileName_, paths);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -119,12 +171,32 @@ void NotesEditor::DisplayLane(){
 
     if(ImGui::ImageButton("playIcon", playIcon, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1))){
         isPlaying_ = !isPlaying_; // 再生/停止の切り替え
+        if(isPlaying_){
+            if(!audioFileName_.empty()){
+                audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+            }
+        } else{
+            AudioManager::EndAudio(audioHandle_); // 音声を停止
+        }
     }
 
     // タイムのスライダー表示
     ImGui::SameLine();
     ImGui::SetNextItemWidth(laneSize_.x);
-    ImGui::SliderFloat("時間", &curLaneTime_, 0.0f, duration_, "%.2f");
+    static bool isSliderActive = false; // スライダーがアクティブかどうかのフラグ
+    if(ImGui::SliderFloat("時間", &curLaneTime_, 0.0f, duration_, "%.2f")){
+        isSliderActive = true;
+        AudioManager::EndAudio(audioHandle_); // 音声を停止
+    } else{
+        if(isSliderActive){
+            isSliderActive = false;
+            if(isPlaying_){
+                if(!audioFileName_.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+                }
+            }
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -276,53 +348,53 @@ void NotesEditor::EditTempoData(){
         selectedTempoData_ = &tempoDataList_.back(); // 追加したばかりのテンポデータを選択
     }
 
-    std::string label;
-    int idx = 0;
+    //std::string label;
+    //int idx = 0;
 
-    // 一覧の表示
-    ImGui::Separator();
-    for(auto it = tempoDataList_.begin(); it != tempoDataList_.end(); ++it){
-        label = "テンポ情報_" + std::to_string(idx);
-        bool isColorPushed = false;
+    //// 一覧の表示
+    //ImGui::Separator();
+    //for(auto it = tempoDataList_.begin(); it != tempoDataList_.end(); ++it){
+    //    label = "テンポ情報_" + std::to_string(idx);
+    //    bool isColorPushed = false;
 
-        if(selectedTempoData_ == &(*it)){
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.2f, 1.0f)); // 選択中のボタンの色
-            isColorPushed = true; // 色を変更したフラグを立てる
-        }
+    //    if(selectedTempoData_ == &(*it)){
+    //        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.2f, 1.0f)); // 選択中のボタンの色
+    //        isColorPushed = true; // 色を変更したフラグを立てる
+    //    }
 
-        if(ImGui::Button(label.c_str())){
-            selectedTempoData_ = &(*it); // ボタンが押されたら選択
-        }
+    //    if(ImGui::Button(label.c_str())){
+    //        selectedTempoData_ = &(*it); // ボタンが押されたら選択
+    //    }
 
-        ImGui::SameLine(); // ボタンの横にテキストを表示
-        ImGui::Text("(%d分%.3f秒~)", int(it->time / 60.0f), std::fmod(it->time, 60.0f));
+    //    ImGui::SameLine(); // ボタンの横にテキストを表示
+    //    ImGui::Text("(%d分%.3f秒~)", int(it->time / 60.0f), std::fmod(it->time, 60.0f));
 
-        if(isColorPushed){
-            ImGui::PopStyleColor(); // 色を元に戻す
-        }
+    //    if(isColorPushed){
+    //        ImGui::PopStyleColor(); // 色を元に戻す
+    //    }
 
-        // 右クリックでコンテキストメニューを表示
-        if(ImGui::BeginPopupContextItem(label.c_str())){
-            contextMenuTempoData_ = &(*it); // コンテキストメニューの対象を保存
-            if(ImGui::MenuItem("削除")){
+    //    // 右クリックでコンテキストメニューを表示
+    //    if(ImGui::BeginPopupContextItem(label.c_str())){
+    //        contextMenuTempoData_ = &(*it); // コンテキストメニューの対象を保存
+    //        if(ImGui::MenuItem("削除")){
 
-                // ポインタのクリア
-                if(selectedTempoData_ == &(*it)){
-                    selectedTempoData_ = nullptr; // 選択中のテンポデータをクリア
-                }
-                contextMenuTempoData_ = nullptr; // コンテキストメニューの対象をクリア
+    //            // ポインタのクリア
+    //            if(selectedTempoData_ == &(*it)){
+    //                selectedTempoData_ = nullptr; // 選択中のテンポデータをクリア
+    //            }
+    //            contextMenuTempoData_ = nullptr; // コンテキストメニューの対象をクリア
 
-                // 削除処理
-                tempoDataList_.erase(it); // リストから削除
+    //            // 削除処理
+    //            tempoDataList_.erase(it); // リストから削除
 
-                ImGui::EndPopup();
-                break;// ループを抜ける
-            }
-            ImGui::EndPopup();
-        }
+    //            ImGui::EndPopup();
+    //            break;// ループを抜ける
+    //        }
+    //        ImGui::EndPopup();
+    //    }
 
-        idx++;
-    }
+    //    idx++;
+    //}
 
     // 選択中のテンポデータの編集
     if(selectedTempoData_){
@@ -368,9 +440,24 @@ void NotesEditor::EditNotes(){
         }
     }
 
-
     // レーン上にノーツを作成する処理
     CreateNoteOnLane();
+
+    // ノーツの編集処理
+    if(edittingNote_){
+        ImGui::SeparatorText("ノーツ編集");
+        edittingNote_->Edit(); // ノーツの編集
+
+        // ノーツの削除ボタン
+        ImGui::Separator();
+        if(ImGui::Button("削除")){
+            edittingNote_->isEnd_ = true;
+            if(draggingNote_ == edittingNote_){
+                draggingNote_ = nullptr; // ドラッグ中のノーツもクリア
+            }
+            edittingNote_ = nullptr; // 編集中のノーツをクリア
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -539,7 +626,13 @@ void NotesEditor::CreateNoteOnLane(){
         }
         case RectFlick:
         {
-
+            // ホールドノーツの作成
+            notes_.emplace_back(std::make_unique<Note_RectFlick>());
+            if(Note_RectFlick* note = dynamic_cast<Note_RectFlick*>(notes_.back().get())){
+                note->layer_ = layer; // レイヤーを設定
+                note->laneBit_ = LaneBit::RECTFLICK_RT;
+                note->time_ = timeLocation; // 時間を設定
+            }
             break;
         }
         case Wheel:
@@ -557,6 +650,9 @@ void NotesEditor::CreateNoteOnLane(){
         default:
             break;
         }
+
+        // 作成したノーツを編集状態にする
+        edittingNote_ = notes_.back().get();
     }
 }
 
@@ -608,13 +704,20 @@ void NotesEditor::DisplayNotes(){
 
             // ボタンを押している間ドラッグ状態にする
             if(ImGui::IsItemActive()){
-                note->isDragging_ = true; // ドラッグ中にする
-                draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                if(Input::IsMouseMoved()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                }
             }
 
             // ホバー時は不透明にする
             if(ImGui::IsItemHovered()){
                 isHoveringNote_ = true;
+                alpha = 255;
+            }
+
+            // 編集中のノーツは不透明にする
+            if(edittingNote_ == note.get()){
                 alpha = 255;
             }
 
@@ -633,24 +736,40 @@ void NotesEditor::DisplayNotes(){
                 int alpha = 128;
 
                 // ノーツにボタン判定を作成
-                ImGui::SetCursorScreenPos(p1);
                 label = "holdBody##" + std::to_string(noteIdx);
                 // クリックしたらノーツを編集状態にする
-                if(ImGui::InvisibleButton(label.c_str(), p2 - p1)){
-                    edittingNote_ = note.get();
+                if(note->layer_ == UpDown::UP){
+                    ImGui::SetCursorScreenPos(ImVec2(p1.x, p2.y) + ImVec2(0.0f, noteHeight * 0.5f));
+                    ImVec2 buttonSize = ImVec2(p2.x, p1.y) - ImVec2(p1.x, p2.y) - ImVec2(0.0f, noteHeight);
+                    if(ImGui::InvisibleButton(label.c_str(), buttonSize)){
+                        edittingNote_ = note.get();
+                    }
+                } else{
+                    ImGui::SetCursorScreenPos(p1 + ImVec2(0.0f, noteHeight * 0.5f));
+                    if(ImGui::InvisibleButton(label.c_str(), p2 - p1 - ImVec2(0.0f, noteHeight))){
+                        edittingNote_ = note.get();
+                    }
                 }
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    note->isDragging_ = true; // ドラッグ中にする
-                    holdNote->isDraggingHoldEnd_ = false;
-                    holdNote->isDraggingHoldStart_ = false;
-                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    if(Input::IsMouseMoved()){
+                        note->isDragging_ = true; // ドラッグ中にする
+                        holdNote->isDraggingHoldEnd_ = false;
+                        holdNote->isDraggingHoldStart_ = false;
+                        draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                        edittingNote_ = note.get();
+                    }
                 }
 
                 // ホバー時は不透明にする
                 if(ImGui::IsItemHovered()){
                     isHoveringNote_ = true;
+                    alpha = 255;
+                }
+
+                // 編集中のノーツは不透明にする
+                if(edittingNote_ == note.get()){
                     alpha = 255;
                 }
 
@@ -674,15 +793,23 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    note->isDragging_ = true; // ドラッグ中にする
-                    holdNote->isDraggingHoldStart_ = true; // ホールドの先頭をドラッグ中にする
-                    holdNote->isDraggingHoldEnd_ = false; // ホールドの末尾はドラッグ中でない
-                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    if(Input::IsMouseMoved()){
+                        note->isDragging_ = true; // ドラッグ中にする
+                        holdNote->isDraggingHoldStart_ = true; // ホールドの先頭をドラッグ中にする
+                        holdNote->isDraggingHoldEnd_ = false; // ホールドの末尾はドラッグ中でない
+                        draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                        edittingNote_ = note.get();
+                    }
                 }
 
                 // ホバー時は不透明にする
                 if(ImGui::IsItemHovered()){
                     isHoveringNote_ = true;
+                    alpha = 255;
+                }
+
+                // 編集中のノーツは不透明にする
+                if(edittingNote_ == note.get()){
                     alpha = 255;
                 }
 
@@ -706,10 +833,13 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    note->isDragging_ = true; // ドラッグ中にする
-                    holdNote->isDraggingHoldEnd_ = true; // ホールドの終端をドラッグ中にする
-                    holdNote->isDraggingHoldStart_ = false;
-                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    if(Input::IsMouseMoved()){
+                        note->isDragging_ = true; // ドラッグ中にする
+                        holdNote->isDraggingHoldEnd_ = true; // ホールドの終端をドラッグ中にする
+                        holdNote->isDraggingHoldStart_ = false;
+                        draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                        edittingNote_ = note.get();
+                    }
                 }
 
                 // ホバー時は不透明にする
@@ -717,17 +847,90 @@ void NotesEditor::DisplayNotes(){
                     isHoveringNote_ = true;
                     alpha = 255;
                 }
+
+                // 編集中のノーツは不透明にする
+                if(edittingNote_ == note.get()){
+                    alpha = 255;
+                }
+
                 pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
             }
 
 
         } else if(note->noteType_ == NoteType::RectFlick){
+            Note_RectFlick* rectFlickNote = dynamic_cast<Note_RectFlick*>(note.get());
+            ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+            ImVec2 p2 = p1 + ImVec2(laneSize_.x, noteHeight); // ノーツのサイズを設定
+
+            // ノーツにボタン判定を作成
+            ImGui::SetCursorScreenPos(p1);
+            label = "rectFlickNote##" + std::to_string(noteIdx);
+            // クリックしたらノーツを編集状態にする
+            if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneSize_.x, noteHeight))){
+                edittingNote_ = note.get();
+            }
+            // ボタンを押している間ドラッグ状態にする
+            if(ImGui::IsItemActive()){
+                if(Input::IsMouseMoved()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    edittingNote_ = note.get();
+                }
+            }
+
+            // ホバー時は不透明にする
+            int alpha = 128;
+            if(ImGui::IsItemHovered()){
+                isHoveringNote_ = true;
+                alpha = 255;
+            }
+
+            // 編集中のノーツは不透明にする
+            if(edittingNote_ == note.get()){
+                alpha = 255;
+            }
+
+            ImGuiCol color = IM_COL32(255, 255, 0, alpha); // 上向きはピンク、下向きは水色
+            std::string textureName = laneTextureNameMap_[rectFlickNote->laneBit_]; // レーンに応じたテクスチャ名を取得
+            pDrawList_->AddImage(textureIDs_[textureName], p1, p2, ImVec2(0, 0), ImVec2(1, 1), color);
+
         } else if(note->noteType_ == NoteType::Wheel){
             Note_Wheel* wheelNote = dynamic_cast<Note_Wheel*>(note.get());
             ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
             ImVec2 p2 = p1 + ImVec2(laneSize_.x, noteHeight); // ノーツのサイズを設定
+
+            // ノーツにボタン判定を作成
+            ImGui::SetCursorScreenPos(p1);
+            label = "rectFlickNote##" + std::to_string(noteIdx);
+
+            // クリックしたらノーツを編集状態にする
+            if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneSize_.x, noteHeight))){
+                edittingNote_ = note.get();
+            }
+
+            // ボタンを押している間ドラッグ状態にする
+            if(ImGui::IsItemActive()){
+                if(Input::IsMouseMoved()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    edittingNote_ = note.get();
+                }
+            }
+
+            // ホバー時は不透明にする
+            int alpha = 128;
+            if(ImGui::IsItemHovered()){
+                isHoveringNote_ = true;
+                alpha = 255;
+            }
+
+            // 編集中のノーツは不透明にする
+            if(edittingNote_ == note.get()){
+                alpha = 255;
+            }
+
             float direction = wheelNote->direction_ == UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
-            ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, 255) : IM_COL32(0, 255, 255, 255); // 上向きはピンク、下向きは水色
+            ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, alpha) : IM_COL32(0, 255, 255, alpha); // 上向きはピンク、下向きは水色
             pDrawList_->AddImage(textureIDs_["wheel"], p1, p2, ImVec2(0, 0), ImVec2(direction, direction), color);
         }
 
@@ -924,17 +1127,18 @@ void NotesEditor::DraggingNote(){
         }
         case NoteType::RectFlick:
         {
-
+            // ホイールノーツの作成
+            if(Note_RectFlick* note = dynamic_cast<Note_RectFlick*>(draggingNote_)){
+                note->layer_ = layer; // レイヤーを設定
+                note->time_ = timeLocation; // 時間を設定
+            }
             break;
         }
         case NoteType::Wheel:
         {
             // ホイールノーツの作成
-            notes_.emplace_back(std::make_unique<Note_Wheel>());
             if(Note_Wheel* note = dynamic_cast<Note_Wheel*>(draggingNote_)){
                 note->layer_ = layer; // レイヤーを設定
-                note->direction_ = UpDown::UP;
-                note->laneBit_ = LaneBit::WHEEL_UP;
                 note->time_ = timeLocation; // 時間を設定
             }
             break;
@@ -973,6 +1177,7 @@ void NotesEditor::ScrollOnLane(){
     ImVec2 worldLaneRB = worldLaneLTPos_ + laneSize_;
     float laneCenterY = worldLaneLTPos_.y + laneSize_.y * 0.5f;
     static bool isScrolling = false; // スクロール中フラグ
+    static bool isPause = false;
     static UpDown scrollLayer = UpDown::NONE;
     static ImVec2 prevMousePos; // 前回のマウス座標
     static float savedTimeVelocity;
@@ -989,6 +1194,10 @@ void NotesEditor::ScrollOnLane(){
             return;
         }
 
+        // 再生の停止
+        AudioManager::EndAudio(audioHandle_);
+        isPause = true; // 一時停止フラグを立てる
+        isPlaying_ = false; // 再生中フラグを解除
 
         // 上下どちらにマウスがあるかを判定
         if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
@@ -1022,8 +1231,34 @@ void NotesEditor::ScrollOnLane(){
         isScrolling = false;
         savedTimeVelocity *= 0.9f;
         curLaneTime_ += savedTimeVelocity;
-    }
 
+        // 動きが小さくなったら再生を再開
+        if(isPause){
+            if(std::fabsf(savedTimeVelocity) < 0.001f){
+                if(!audioFileName_.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+                }
+                isPause = false; // 再生中フラグを設定
+                isPlaying_ = true; // 再生中フラグを設定
+            }
+        }
+    }
     prevMousePos = mousePos;
     curLaneTime_ = std::clamp(curLaneTime_, 0.0f, duration_);
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+// 選択中のノーツの編集処理
+/////////////////////////////////////////////////////////////////////////
+void NotesEditor::EditSelectNote(){
+}
+
+/////////////////////////////////////////////////////////////////////////
+// ノーツの削除処理
+/////////////////////////////////////////////////////////////////////////
+void NotesEditor::EraseCheck(){
+    notes_.remove_if([](const std::unique_ptr<Note_Base>& note){
+        return note->isEnd_;
+    });
 }

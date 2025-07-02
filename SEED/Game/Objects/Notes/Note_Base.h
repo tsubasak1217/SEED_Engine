@@ -25,10 +25,14 @@ public:
     virtual void Update() = 0;
     virtual void Draw(float currentTime,float appearLength);
     virtual Judgement::Evaluation Judge(float dif) = 0;
+#ifdef _DEBUG
+    virtual void Edit() = 0;
+#endif // _DEBUG
+
 
 public:
     NoteType noteType_ = NoteType::None;// ノーツの種類
-    uint32_t lane_;// レーン番号
+    int32_t lane_;// レーン番号
     UpDown layer_ = UpDown::NONE;// 上下の方向
     LaneBit laneBit_;// レーンのビットフラグ
     float time_;// 出現時間

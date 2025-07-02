@@ -136,6 +136,8 @@ void RythmGameManager::Draw(){
     comboObject_->Draw();
 
     // ゲームカメラ画面の描画
+#ifdef _DEBUG
     ImFunc::SceneWindowBegin("GameScene", "gameCamera",MoveOnly_TitleBar);
     ImGui::End();
+#endif // _DEBUG
 }

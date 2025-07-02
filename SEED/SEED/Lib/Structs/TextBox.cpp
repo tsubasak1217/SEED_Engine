@@ -27,6 +27,7 @@ void TextBox2D::Edit(){
         ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
     }
 }
+#endif // _DEBUG
 
 // jsonデータの取得
 nlohmann::json TextBox2D::GetJsonData() const{
@@ -74,7 +75,6 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     SetFont(fontName);
 }
 
-#endif // _DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  テクストからトークンを解析して新しい文字列を返す関数

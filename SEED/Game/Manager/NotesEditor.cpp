@@ -8,7 +8,7 @@
 
 NotesEditor::NotesEditor(){
     laneLTPos_ = { 30,30 };
-    laneSize_ = { 300,600 };
+    laneSize_ = { 300,900 };
     textureIDs_["laneField"] = TextureManager::GetImGuiTexture("PlayField/editorLane.png");
     textureIDs_["playIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
     textureIDs_["pauseIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
@@ -53,6 +53,8 @@ void NotesEditor::Edit(){
     DisplayNotes();
     // ドラッグ中のノーツの処理
     DraggingNote();
+    // スクロール処理
+    ScrollOnLane();
 
     // durationの更新
     if(!tempoDataList_.empty()){
@@ -81,9 +83,9 @@ void NotesEditor::UpdateTimeScale(){
 
     // マウスの位置がレーンの範囲内にあるかチェック
     if(mousePos.x >= worldLaneLTPos_.x && mousePos.x <= worldLaneLTPos_.x + laneSize_.x &&
-       mousePos.y >= worldLaneLTPos_.y && mousePos.y <= worldLaneLTPos_.y + laneSize_.y){
+        mousePos.y >= worldLaneLTPos_.y && mousePos.y <= worldLaneLTPos_.y + laneSize_.y){
         // マウスホイールの回転でタイムスケールを変更
-        float wheel = ImGui::GetIO().MouseWheel;
+        float wheel = -ImGui::GetIO().MouseWheel;
         if(wheel != 0.0f){
             timeScale_ += wheel * 10.0f * ClockManager::DeltaTime(); // スケールを調整
             timeScale_ = (std::max)(timeScale_, 0.1f); // 最小値を設定
@@ -177,10 +179,13 @@ void NotesEditor::DisplayTempoData(){
         float height = (laneSize_.y * 0.5f) * t;
         float ratio = 4.0f / tempoData.timeSignature_denominator; // 4分音符を基準にする
         float beatTime = (60.0f / tempoData.bpm) * ratio;
-        float beatHeight = (laneSize_.y * 0.5f) * (beatTime / visibleTime);
+        float beatDuration = (laneSize_.y * 0.5f) * (beatTime / visibleTime);
         int loopCount = tempoData.barCount * tempoData.timeSignature_numerator;
 
         for(int i = 0; i < loopCount; i++){
+
+            // 情報を格納する用の構造体
+            DivisionData data;
 
             // 色と太さの設定
             ImColor color;
@@ -188,6 +193,7 @@ void NotesEditor::DisplayTempoData(){
             if(i % tempoData.timeSignature_numerator == 0){
                 color = IM_COL32(255, 255, 0, 255);// 黄色
                 fatness = 3.0f;
+                data.isStartOfSignature = true;
             } else{
                 color = IM_COL32(255, 255, 255, 255);// 白色
                 fatness = 1.0f;
@@ -195,8 +201,8 @@ void NotesEditor::DisplayTempoData(){
 
             // 描画位置を計算
             static ImVec2 points[2];
-            points[0] = p + ImVec2(0.0f, height + beatHeight * i);
-            points[1] = p + ImVec2(laneSize_.x, height + beatHeight * i);
+            points[0] = p + ImVec2(0.0f, height + beatDuration * i);
+            points[1] = p + ImVec2(laneSize_.x, height + beatDuration * i);
             if(points[0].y < p.y){ continue; }// 範囲外チェック
             if(points[0].y > worldLaneLTPos_.y + laneSize_.y){ break; }// 範囲外チェック
 
@@ -204,20 +210,22 @@ void NotesEditor::DisplayTempoData(){
             pDrawList_->AddLine(points[0], points[1], color, fatness);
 
             // 格納データの情報を設定
-            DivisionData data;
-            data.beatTime = beatTime;
+            data.beatDuration = beatTime;
             data.timeOnLane = tempoData.time + beatTime * i;
+            data.timeOfStartSignature = tempoData.time + beatTime * (i / tempoData.timeSignature_numerator) * tempoData.timeSignature_numerator;
             data.laneYPosition = points[0].y;
+            data.heightOfStartSignature = p.y + height + beatDuration * (i / tempoData.timeSignature_numerator) * tempoData.timeSignature_numerator;
             data.parent = &tempoData;
-            data.beatYHeight = beatHeight;
+            data.beatYHeight = beatDuration;
 
             downLayerBorders_.push_back(data); // 下半分の境界を保存
 
             // 描画(上半分)
-            points[0] = p + ImVec2(0.0f, -(height + beatHeight * i));
-            points[1] = p + ImVec2(laneSize_.x, -(height + beatHeight * i));
+            points[0] = p + ImVec2(0.0f, -(height + beatDuration * i));
+            points[1] = p + ImVec2(laneSize_.x, -(height + beatDuration * i));
             pDrawList_->AddLine(points[0], points[1], color, fatness);
             data.laneYPosition = points[0].y; // 上半分の位置はマイナス
+            data.heightOfStartSignature = p.y - (height + beatDuration * (i / tempoData.timeSignature_numerator) * tempoData.timeSignature_numerator);
             upLayerBorders_.push_back(data); // 上半分の境界を保存
 
         }
@@ -371,7 +379,13 @@ void NotesEditor::EditNotes(){
 void NotesEditor::CreateNoteOnLane(){
 
     if(!isEditOnLane_){
+        isScrollable_ = true;
         return; // レーン編集モードでないなら何もしない
+    } else{
+        isScrollable_ = false;
+        if(isHoveringNote_ or draggingNote_){
+            return;
+        }
     }
 
     // マウス座標がレーンの範囲外なら何もしない
@@ -390,6 +404,7 @@ void NotesEditor::CreateNoteOnLane(){
         return;
     }
 
+
     // 上下どちらにマウスがあるかを判定
     UpDown layer;
     if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
@@ -400,8 +415,9 @@ void NotesEditor::CreateNoteOnLane(){
 
     // どこのレーンに配置するかを判定
     int laneIndex = -1;
+    float clampedX = std::clamp(mousePos.x, worldLaneLTPos_.x, worldLaneRB.x);
     for(int i = 0; i < laneBorders_.size(); i++){
-        if(mousePos.x >= laneBorders_[i]){
+        if(clampedX >= laneBorders_[i]){
             laneIndex = i; // レーンのインデックスを取得
         }
     }
@@ -410,6 +426,7 @@ void NotesEditor::CreateNoteOnLane(){
     float timeLocation = 0.0f;
     float divisionRate = division_ / 4.0f;
     float navLineDrawPosY = 0.0f;
+    bool isContained = false;
 
     if(layer == UpDown::UP){
         for(int i = 0; i < upLayerBorders_.size(); i++){
@@ -422,15 +439,28 @@ void NotesEditor::CreateNoteOnLane(){
                 // さらに分割数に応じて位置を調整
                 float dividedHeight = upLayerBorders_[i].beatYHeight / divisionRate;
                 // マウスのY座標から分割位置を計算
-                float offsetY = mousePos.y - upLayerBorders_[i].laneYPosition;
+                float offsetY = mousePos.y - upLayerBorders_[i].heightOfStartSignature;
                 // 分割位置を計算
-                timeLocation = upLayerBorders_[i].timeOnLane
-                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
+                timeLocation = upLayerBorders_[i].timeOfStartSignature
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatDuration / divisionRate);
                 // ノーツの配置予定座標の計算
-                navLineDrawPosY = upLayerBorders_[i].laneYPosition
+                navLineDrawPosY = upLayerBorders_[i].heightOfStartSignature
                     + float(int(offsetY / dividedHeight)) * (upLayerBorders_[i].beatYHeight / divisionRate);
 
+                isContained = true; // 範囲内にあるフラグを立てる
                 break;
+            }
+        }
+
+        if(!isContained){
+            if(upLayerBorders_.size() != 0){
+                if(mousePos.y > upLayerBorders_[0].laneYPosition){
+                    timeLocation = upLayerBorders_[0].timeOnLane;
+                    navLineDrawPosY = upLayerBorders_[0].laneYPosition;
+                } else{
+                    timeLocation = upLayerBorders_.back().timeOnLane;
+                    navLineDrawPosY = upLayerBorders_.back().laneYPosition;
+                }
             }
         }
 
@@ -444,15 +474,28 @@ void NotesEditor::CreateNoteOnLane(){
                 // さらに分割数に応じて位置を調整
                 float dividedHeight = downLayerBorders_[i].beatYHeight / divisionRate;
                 // マウスのY座標から分割位置を計算
-                float offsetY = mousePos.y - downLayerBorders_[i].laneYPosition;
+                float offsetY = mousePos.y - downLayerBorders_[i].heightOfStartSignature;
                 // 分割位置を計算
-                timeLocation = downLayerBorders_[i].timeOnLane
-                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
+                timeLocation = downLayerBorders_[i].timeOfStartSignature
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (downLayerBorders_[i].beatDuration / divisionRate);
                 // ノーツの配置予定座標の計算
-                navLineDrawPosY = downLayerBorders_[i].laneYPosition
+                navLineDrawPosY = downLayerBorders_[i].heightOfStartSignature
                     + float(int(offsetY / dividedHeight)) * (downLayerBorders_[i].beatYHeight / divisionRate);
 
+                isContained = true;
                 break;
+            }
+        }
+
+        if(!isContained){
+            if(downLayerBorders_.size() != 0){
+                if(mousePos.y < downLayerBorders_[0].laneYPosition){
+                    timeLocation = downLayerBorders_[0].timeOnLane;
+                    navLineDrawPosY = downLayerBorders_[0].laneYPosition;
+                } else{
+                    timeLocation = downLayerBorders_.back().timeOnLane;
+                    navLineDrawPosY = downLayerBorders_.back().laneYPosition;
+                }
             }
         }
     }
@@ -523,6 +566,7 @@ void NotesEditor::CreateNoteOnLane(){
 void NotesEditor::DisplayNotes(){
 #ifdef _DEBUG
 
+    isHoveringNote_ = false;
     float judgeLineY = worldLaneLTPos_.y + laneSize_.y * 0.5f; // ジャッジラインのY座標
     float laneWidth = laneSize_.x / 5.0f; // レーンの幅
     float noteHeight = 20.0f;
@@ -570,6 +614,7 @@ void NotesEditor::DisplayNotes(){
 
             // ホバー時は不透明にする
             if(ImGui::IsItemHovered()){
+                isHoveringNote_ = true;
                 alpha = 255;
             }
 
@@ -579,6 +624,7 @@ void NotesEditor::DisplayNotes(){
             Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.get());
             float t2 = (holdNote->time_ + holdNote->kHoldTime_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
             float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (holdNote->layer_ == UpDown::UP ? -1.0f : 1.0f);
+            if(displayY2 == displayY){ displayY2 += 1.0f; }
 
             /*-------------- ボディの描画 -------------*/
             {
@@ -604,6 +650,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ホバー時は不透明にする
                 if(ImGui::IsItemHovered()){
+                    isHoveringNote_ = true;
                     alpha = 255;
                 }
 
@@ -635,6 +682,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ホバー時は不透明にする
                 if(ImGui::IsItemHovered()){
+                    isHoveringNote_ = true;
                     alpha = 255;
                 }
 
@@ -666,6 +714,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ホバー時は不透明にする
                 if(ImGui::IsItemHovered()){
+                    isHoveringNote_ = true;
                     alpha = 255;
                 }
                 pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
@@ -700,18 +749,26 @@ void NotesEditor::DraggingNote(){
     ImVec2 mousePos = ImGui::GetMousePos();
     ImVec2 windowPos = ImGui::GetWindowPos();
     ImVec2 worldLaneRB = worldLaneLTPos_ + laneSize_;
+    bool isOutOfLane = false; // レーン外フラグ
 
-    // レーンの範囲外なら終了
-    if(!ImGui::IsMouseDown(0)){
-        if(mousePos.x < worldLaneLTPos_.x || mousePos.x > worldLaneRB.x ||
-            mousePos.y < worldLaneLTPos_.y || mousePos.y > worldLaneRB.y){
-            return;
-        }
-    }
 
     // マウスを押していなければ何もしない
     if(!ImGui::IsMouseDown(0) && !ImGui::IsMouseReleased(0)){
         return;
+    }
+
+    // レーンの範囲外か確認
+    if(mousePos.x < worldLaneLTPos_.x || mousePos.x > worldLaneRB.x ||
+        mousePos.y < worldLaneLTPos_.y || mousePos.y > worldLaneRB.y){
+        isOutOfLane = true; // レーン外フラグを立てる
+    }
+
+    // レーン外ならドラッグ中のノーツをクリア
+    if(ImGui::IsMouseClicked(0)){
+        if(isOutOfLane){
+            draggingNote_ = nullptr;
+            return;
+        }
     }
 
     // 上下どちらにマウスがあるかを判定
@@ -724,8 +781,9 @@ void NotesEditor::DraggingNote(){
 
     // どこのレーンに配置するかを判定
     int laneIndex = -1;
+    float clampedX = std::clamp(mousePos.x, worldLaneLTPos_.x, worldLaneRB.x);
     for(int i = 0; i < laneBorders_.size(); i++){
-        if(mousePos.x >= laneBorders_[i]){
+        if(clampedX >= laneBorders_[i]){
             laneIndex = i; // レーンのインデックスを取得
         }
     }
@@ -733,7 +791,7 @@ void NotesEditor::DraggingNote(){
     // レーン上のどこに配置するかを計算
     float timeLocation = 0.0f;
     float divisionRate = division_ / 4.0f;
-    float navLineDrawPosY = 0.0f;
+    bool isContained = false;
 
     if(layer == UpDown::UP){
         for(int i = 0; i < upLayerBorders_.size(); i++){
@@ -746,15 +804,23 @@ void NotesEditor::DraggingNote(){
                 // さらに分割数に応じて位置を調整
                 float dividedHeight = upLayerBorders_[i].beatYHeight / divisionRate;
                 // マウスのY座標から分割位置を計算
-                float offsetY = mousePos.y - upLayerBorders_[i].laneYPosition;
+                float offsetY = mousePos.y - upLayerBorders_[i].heightOfStartSignature;
                 // 分割位置を計算
-                timeLocation = upLayerBorders_[i].timeOnLane
-                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
-                // ノーツの配置予定座標の計算
-                navLineDrawPosY = upLayerBorders_[i].laneYPosition
-                    + float(int(offsetY / dividedHeight)) * (upLayerBorders_[i].beatYHeight / divisionRate);
+                timeLocation = upLayerBorders_[i].timeOfStartSignature
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatDuration / divisionRate);
 
+                isContained = true;
                 break;
+            }
+        }
+
+        if(!isContained){
+            if(upLayerBorders_.size() != 0){
+                if(mousePos.y > upLayerBorders_[0].laneYPosition){
+                    timeLocation = upLayerBorders_[0].timeOnLane;
+                } else{
+                    timeLocation = upLayerBorders_.back().timeOnLane;
+                }
             }
         }
 
@@ -768,15 +834,23 @@ void NotesEditor::DraggingNote(){
                 // さらに分割数に応じて位置を調整
                 float dividedHeight = downLayerBorders_[i].beatYHeight / divisionRate;
                 // マウスのY座標から分割位置を計算
-                float offsetY = mousePos.y - downLayerBorders_[i].laneYPosition;
+                float offsetY = mousePos.y - downLayerBorders_[i].heightOfStartSignature;
                 // 分割位置を計算
-                timeLocation = downLayerBorders_[i].timeOnLane
-                    + std::fabsf(float(int(offsetY / dividedHeight))) * (upLayerBorders_[i].beatTime / divisionRate);
-                // ノーツの配置予定座標の計算
-                navLineDrawPosY = downLayerBorders_[i].laneYPosition
-                    + float(int(offsetY / dividedHeight)) * (downLayerBorders_[i].beatYHeight / divisionRate);
+                timeLocation = downLayerBorders_[i].timeOfStartSignature
+                    + std::fabsf(float(int(offsetY / dividedHeight))) * (downLayerBorders_[i].beatDuration / divisionRate);
 
+                isContained = true;
                 break;
+            }
+        }
+
+        if(!isContained){
+            if(downLayerBorders_.size() != 0){
+                if(mousePos.y < downLayerBorders_[0].laneYPosition){
+                    timeLocation = downLayerBorders_[0].timeOnLane;
+                } else{
+                    timeLocation = downLayerBorders_.back().timeOnLane;
+                }
             }
         }
     }
@@ -801,7 +875,7 @@ void NotesEditor::DraggingNote(){
             // ホールドノーツの移動・編集
             if(Note_Hold* note = dynamic_cast<Note_Hold*>(draggingNote_)){
 
-
+                // 両端をドラッグしながら上下に出たら、時間をずらす
                 if(note->isDraggingHoldEnd_ || note->isDraggingHoldStart_){
                     if(layer == UpDown::UP){
                         if(mousePos.y < worldLaneLTPos_.y){
@@ -881,5 +955,75 @@ void NotesEditor::DraggingNote(){
         }
     }
 
+    if(draggingNote_){
+        isScrollable_ = false;
+    } else{
+        isScrollable_ = true;
+    }
+
 #endif // _DEBUG
+}
+
+// 画面をスクロールする処理
+void NotesEditor::ScrollOnLane(){
+
+    // マウス座標がレーンの範囲外なら何もしない
+    ImVec2 mousePos = ImGui::GetMousePos();
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImVec2 worldLaneRB = worldLaneLTPos_ + laneSize_;
+    float laneCenterY = worldLaneLTPos_.y + laneSize_.y * 0.5f;
+    static bool isScrolling = false; // スクロール中フラグ
+    static UpDown scrollLayer = UpDown::NONE;
+    static ImVec2 prevMousePos; // 前回のマウス座標
+    static float savedTimeVelocity;
+
+    if(!isScrollable_){
+        return;
+    }
+
+    if(ImGui::IsMouseClicked(0)){
+
+        // レーンの範囲外なら終了
+        if(mousePos.x < worldLaneLTPos_.x || mousePos.x > worldLaneRB.x ||
+            mousePos.y < worldLaneLTPos_.y || mousePos.y > worldLaneRB.y){
+            return;
+        }
+
+
+        // 上下どちらにマウスがあるかを判定
+        if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
+            scrollLayer = UpDown::UP; // 上半分
+        } else{
+            scrollLayer = UpDown::DOWN; // 下半分
+        }
+
+        isScrolling = true;
+
+    } else if(ImGui::IsMouseDown(0)){
+
+        if(!isScrolling){ return; }
+        ImVec2 dif = mousePos - prevMousePos;
+        float t[2]{};
+
+        if(scrollLayer == UpDown::DOWN){
+            t[0] = (prevMousePos.y - laneCenterY) / (laneSize_.y * 0.5f);
+            t[1] = (mousePos.y - laneCenterY) / (laneSize_.y * 0.5f);
+        } else{
+            t[0] = (prevMousePos.y - laneCenterY) / (-laneSize_.y * 0.5f);
+            t[1] = (mousePos.y - laneCenterY) / (-laneSize_.y * 0.5f);
+        }
+
+        float difT = t[0] - t[1];
+        float timeVelocity = kVisibleTime_ * timeScale_ * difT;
+        curLaneTime_ += timeVelocity;
+        savedTimeVelocity = timeVelocity;
+
+    } else{
+        isScrolling = false;
+        savedTimeVelocity *= 0.9f;
+        curLaneTime_ += savedTimeVelocity;
+    }
+
+    prevMousePos = mousePos;
+    curLaneTime_ = std::clamp(curLaneTime_, 0.0f, duration_);
 }

@@ -43,9 +43,9 @@ struct TextBox2D{
 #ifdef _DEBUG
     bool textBoxVisible = true;
     void Edit();
+#endif // _DEBUG
     nlohmann::json GetJsonData() const;
     void LoadFromJson(const nlohmann::json& jsonData);
-#endif // _DEBUG
 
 private:// フォーマット解析
     std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)

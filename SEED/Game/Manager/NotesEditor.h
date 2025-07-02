@@ -50,8 +50,11 @@ private:
     struct DivisionData{
         float laneYPosition;
         float timeOnLane;
-        float beatTime; // 1拍の時間(秒)
+        float beatDuration; // 1拍の時間(秒)
         float beatYHeight;
+        float timeOfStartSignature;
+        float heightOfStartSignature;
+        bool isStartOfSignature = false;
         TempoData* parent = nullptr;
     };
 
@@ -70,6 +73,7 @@ private:
     void CreateNoteOnLane();
     void DisplayNotes();
     void DraggingNote();
+    void ScrollOnLane();
 
 private:
     // 基礎情報
@@ -80,6 +84,8 @@ private:
     bool isPlaying_ = false; // 再生中かどうか
     bool isEditOnLane_ = false; // レーン上での編集モードかどうか
     float division_ = 4;
+    bool isScrollable_ = true;
+    bool isHoveringNote_ = false; // ノート上にカーソルがあるかどうか
     ImVec2 laneLTPos_;
     ImVec2 laneSize_;
     ImVec2 worldLaneLTPos_;

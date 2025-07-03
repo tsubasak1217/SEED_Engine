@@ -262,7 +262,7 @@ void ColliderAnimationData::DrawCollider() const{
     std::vector<Vector3> scale;
 
     // 軸モデルの生成
-    Model axis = Model("DefaultAssets/axis.obj");
+    Model axis = Model("DefaultAssets/axis/axis.obj");
     axis.transform_.scale = Vector3(0.3f, 0.3f, 0.3f);
 
     // 要素を取り出し、行列を計算
@@ -300,7 +300,7 @@ void ColliderAnimationData::DrawCollider() const{
 void ColliderAnimationData::DrawCollider(float time, bool indexDraw){
 
     // 軸モデルの生成
-    Model axis = Model("DefaultAssets/axis.obj");
+    Model axis = Model("DefaultAssets/axis/axis.obj");
     axis.transform_.scale = Vector3(0.3f, 0.3f, 0.3f);
     axis.masterColor_ = Vector4(1.0f, 1.0f, 1.0f, 0.5f);
 

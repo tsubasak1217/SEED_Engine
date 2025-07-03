@@ -46,6 +46,10 @@ NotesEditor::NotesEditor(){
     laneTextureNameMap_[LaneBit::RECTFLICK_LB_EX] = "rf_LB_EX";
     laneTextureNameMap_[LaneBit::RECTFLICK_RB_EX] = "rf_RB_EX";
     laneTextureNameMap_[LaneBit::RECTFLICK_ALL] = "rf_ALL";
+
+    // アンサー音
+    answerSEFileName_ = "SE/answer.mp3";
+    metronomeSEFileName_ = "SE/metronome.mp3";
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -70,14 +74,14 @@ void NotesEditor::Edit(){
     EditTempoData();
     ImGui::EndChild();
     // 音声データの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220));
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 210));
     ImGui::BeginChild("楽曲情報", ImVec2(0, 100), true);
     SelectAudioFile();
     ImGui::EndChild();
     // 中心線の表示
     DisplayLine();
     // ノーツの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220) + ImVec2(0, 120));
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 210) + ImVec2(0, 110));
     ImGui::BeginChild("ノーツ編集", ImVec2(0, 300), true);
     EditNotes();
     ImGui::EndChild();
@@ -87,6 +91,9 @@ void NotesEditor::Edit(){
     DraggingNote();
     // スクロール処理
     ScrollOnLane();
+    // 効果音の再生
+    PlayMetronome();
+    PlayAnswerSE();
 
     // durationの更新
     if(!tempoDataList_.empty()){
@@ -114,15 +121,25 @@ void NotesEditor::Edit(){
 void NotesEditor::SelectAudioFile(){
 
     // 音声ファイルのリストを取得
-    static auto paths = MyFunc::GetFileList("Resources/Audios", { ".wav", ".mp3" }, true);
+    static auto paths = MyFunc::GetFileList("Resources/Audios/musics", { ".wav", ".mp3" }, true);
 
     if(ImGui::CollapsingHeader("音声ファイルの選択")){
         if(ImGui::IsItemClicked(0)){
             paths = MyFunc::GetFileList("Resources/Audios/musics", { ".wav", ".mp3" }, true); // 再取得
         }
 
-        ImFunc::ComboText("音声ファイル一覧", audioFileName_, paths);
+        if(ImFunc::ComboText("音声ファイル一覧", audioFileName_, paths)){
+            audioFileName_ = "musics/" + audioFileName_; // 音声ファイル名を設定
+
+            if(isPlaying_){
+                AudioManager::EndAudio(audioHandle_); // 再生中なら停止
+                audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+            }
+        }
     }
+
+    ImGui::DragFloat("アンサー音のオフセット", &answerOffsetTime, 0.01f);
+    ImGui::DragFloat("メトロノームのオフセット", &metronomeOffsetTime, 0.01f);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -263,11 +280,11 @@ void NotesEditor::DisplayTempoData(){
             ImColor color;
             float fatness;
             if(i % tempoData.timeSignature_numerator == 0){
-                color = IM_COL32(255, 255, 0, 255);// 黄色
+                color = IM_COL32(255, 255, 0, 128);// 黄色
                 fatness = 3.0f;
                 data.isStartOfSignature = true;
             } else{
-                color = IM_COL32(255, 255, 255, 255);// 白色
+                color = IM_COL32(255, 255, 255, 128);// 白色
                 fatness = 1.0f;
             }
 
@@ -348,54 +365,6 @@ void NotesEditor::EditTempoData(){
         selectedTempoData_ = &tempoDataList_.back(); // 追加したばかりのテンポデータを選択
     }
 
-    //std::string label;
-    //int idx = 0;
-
-    //// 一覧の表示
-    //ImGui::Separator();
-    //for(auto it = tempoDataList_.begin(); it != tempoDataList_.end(); ++it){
-    //    label = "テンポ情報_" + std::to_string(idx);
-    //    bool isColorPushed = false;
-
-    //    if(selectedTempoData_ == &(*it)){
-    //        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.5f, 0.2f, 1.0f)); // 選択中のボタンの色
-    //        isColorPushed = true; // 色を変更したフラグを立てる
-    //    }
-
-    //    if(ImGui::Button(label.c_str())){
-    //        selectedTempoData_ = &(*it); // ボタンが押されたら選択
-    //    }
-
-    //    ImGui::SameLine(); // ボタンの横にテキストを表示
-    //    ImGui::Text("(%d分%.3f秒~)", int(it->time / 60.0f), std::fmod(it->time, 60.0f));
-
-    //    if(isColorPushed){
-    //        ImGui::PopStyleColor(); // 色を元に戻す
-    //    }
-
-    //    // 右クリックでコンテキストメニューを表示
-    //    if(ImGui::BeginPopupContextItem(label.c_str())){
-    //        contextMenuTempoData_ = &(*it); // コンテキストメニューの対象を保存
-    //        if(ImGui::MenuItem("削除")){
-
-    //            // ポインタのクリア
-    //            if(selectedTempoData_ == &(*it)){
-    //                selectedTempoData_ = nullptr; // 選択中のテンポデータをクリア
-    //            }
-    //            contextMenuTempoData_ = nullptr; // コンテキストメニューの対象をクリア
-
-    //            // 削除処理
-    //            tempoDataList_.erase(it); // リストから削除
-
-    //            ImGui::EndPopup();
-    //            break;// ループを抜ける
-    //        }
-    //        ImGui::EndPopup();
-    //    }
-
-    //    idx++;
-    //}
-
     // 選択中のテンポデータの編集
     if(selectedTempoData_){
         ImGui::Separator();
@@ -413,6 +382,9 @@ void TempoData::Edit(){
     ImGui::DragInt("拍子の分子", &timeSignature_numerator, 0.1f, 1, 64);
     ImGui::DragInt("拍子の分母", &timeSignature_denominator, 0.1f, 1, 64);
     ImGui::DragInt("小節数", &barCount, 0.1f, 1);
+    if(ImGui::Button("削除")){
+        removeFlag = true;
+    }
 #endif // _DEBUG
 }
 
@@ -458,6 +430,9 @@ void NotesEditor::EditNotes(){
             edittingNote_ = nullptr; // 編集中のノーツをクリア
         }
     }
+
+    ImGui::SeparatorText("ファイル入出力");
+    FileControl();
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -653,6 +628,11 @@ void NotesEditor::CreateNoteOnLane(){
 
         // 作成したノーツを編集状態にする
         edittingNote_ = notes_.back().get();
+
+        // ノーツを時間でソートする
+        notes_.sort([](const std::unique_ptr<Note_Base>& a, const std::unique_ptr<Note_Base>& b){
+            return a->time_ < b->time_;
+        });
     }
 }
 
@@ -1196,8 +1176,11 @@ void NotesEditor::ScrollOnLane(){
 
         // 再生の停止
         AudioManager::EndAudio(audioHandle_);
-        isPause = true; // 一時停止フラグを立てる
-        isPlaying_ = false; // 再生中フラグを解除
+
+        if(isPlaying_){
+            isPause = true; // 一時停止フラグを立てる
+            isPlaying_ = false; // 再生中フラグを解除
+        }
 
         // 上下どちらにマウスがあるかを判定
         if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
@@ -1261,4 +1244,217 @@ void NotesEditor::EraseCheck(){
     notes_.remove_if([](const std::unique_ptr<Note_Base>& note){
         return note->isEnd_;
     });
+
+    tempoDataList_.remove_if([](const TempoData& data){return data.removeFlag; });
+}
+
+/////////////////////////////////////////////////////////////////////////
+// メトロノームの再生処理
+/////////////////////////////////////////////////////////////////////////
+void NotesEditor::PlayMetronome(){
+
+    static float preLanetime;
+
+    for(const TempoData& tempoData : tempoDataList_){
+
+        float borderTime = tempoData.time + metronomeOffsetTime;
+
+        // テンポデータの範囲内にいるか確認
+        if(borderTime <= curLaneTime_ && borderTime + tempoData.CalcDuration() > curLaneTime_){
+
+            // データが切り替わった瞬間の場合
+            if(preLanetime < tempoData.time){
+                AudioManager::PlayAudio(metronomeSEFileName_, false,2.0f); // メトロノーム音を再生
+            } else{
+                float beatDuration = 60.0f / tempoData.bpm; // 一拍の長さを計算
+                int beatCount[2] = {
+                    int((curLaneTime_ - borderTime) / beatDuration), // 現在のビート数を計算
+                    int((preLanetime - borderTime) / beatDuration) // 前回のビート数を計算
+                };
+
+                // ビート数が変わった場合のみメトロノーム音を再生
+                if(beatCount[0] != beatCount[1]){
+                    if(beatCount[0] % tempoData.timeSignature_numerator == 0){
+                        AudioManager::PlayAudio(metronomeSEFileName_, false, 2.0f); // メトロノーム音を再生
+                    } else {
+                        AudioManager::PlayAudio(metronomeSEFileName_, false, 1.0f); // メトロノーム音を再生（弱拍）
+                    }
+                }
+            }
+        }
+    }
+
+    preLanetime = curLaneTime_;
+}
+
+void NotesEditor::PlayAnswerSE(){
+
+    static float preLaneTime;
+
+    // 2分探索で近いノーツを探す
+    auto it = std::lower_bound(notes_.begin(), notes_.end(), curLaneTime_, [&](const std::unique_ptr<Note_Base>& note, float time){
+        return note->time_ + answerOffsetTime < time;
+    });
+
+    // 通り過ぎたばかりの判定のノーツの音を鳴らす
+    while(true){
+        if(it != notes_.begin()){
+            --it; // 1つ前のノーツを取得
+            if(it->get()->time_ + answerOffsetTime > preLaneTime){
+                AudioManager::PlayAudio(answerSEFileName_, false, 1.0f); // 判定音を再生
+            } else{
+                break;
+            }
+        } else{
+            break;
+        }
+    }
+
+    preLaneTime = curLaneTime_; // 前回のレーン時間を更新
+}
+
+///////////////////////////////////////////////////////////////////////
+// ファイル操作の処理
+///////////////////////////////////////////////////////////////////////
+void NotesEditor::FileControl(){
+
+    static auto noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" }); // 譜面データのパスを取得
+    if(ImGui::Button("保存")){
+        ImGui::OpenPopup("SaveFilePopup");
+    }
+
+
+    ImFunc::ComboText("譜面データの一覧", loadFileName_, noteDataPaths);
+    if(ImGui::Button("読み込む")){
+        if(!loadFileName_.empty()){
+            std::string filePath = "Resources/NoteDatas/" + std::string(loadFileName_); // 読み込み先のパスを設定
+            if(std::filesystem::exists(filePath)){
+                std::ifstream file(filePath);
+                nlohmann::json jsonData;
+                file >> jsonData; // JSONデータを読み込む
+                LoadFromJson(jsonData); // JSONから譜面データを読み込む
+                file.close();
+            } else{
+                ImGui::OpenPopup("ファイルが存在しません");
+            }
+        }
+    }
+
+    if(ImGui::BeginPopup("SaveFilePopup")){
+        
+        ImFunc::InputText("ファイル名", saveFileName_); // ファイル名の入力フィールド
+
+        if(ImGui::Button("保存")){
+            std::string filePath = "Resources/NoteDatas/" + std::string(saveFileName_) + ".json"; // 保存先のパスを設定
+            nlohmann::json jsonData = ToJson(); // JSONデータを取得
+
+            // 同じデータのファイルが存在するか確認
+            if(std::filesystem::exists(filePath)){
+                // ファイルが存在する場合、上書き確認ダイアログを表示
+                if(ImGui::BeginPopupModal("上書き確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+                    ImGui::Text("同じ名前のファイルが存在します。上書きしますか？");
+                    if(ImGui::Button("はい")){
+                        std::ofstream file(filePath);
+                        file << jsonData.dump(4); // JSONデータをファイルに書き出し
+                        file.close();
+                        noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
+                        ImGui::CloseCurrentPopup(); // ポップアップを閉じる
+                    }
+                    ImGui::SameLine();
+                    if(ImGui::Button("いいえ")){
+                        ImGui::CloseCurrentPopup(); // ポップアップを閉じる
+                    }
+                    ImGui::EndPopup();
+                }
+            } else{
+                // ファイルが存在しない場合はそのまま保存
+                std::ofstream file(filePath);
+                file << jsonData.dump(4); // JSONデータをファイルに書き出し
+                file.close();
+                noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
+                ImGui::CloseCurrentPopup();
+            }
+
+        }
+
+        // キャンセルボタン
+        ImGui::SameLine();
+        if(ImGui::Button("キャンセル")){
+            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////
+// JSONから譜面データを読み込む処理
+///////////////////////////////////////////////////////////////////////
+void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
+
+    notes_.clear(); // 既存のノーツデータをクリア
+    tempoDataList_.clear();
+
+    // ノーツデータの読み込み
+    if(jsonData.contains("notes")){
+        for(const auto& noteJson : jsonData["notes"]){
+            std::string noteType = noteJson["noteType"];
+
+            if(noteType == "tap"){
+                Note_Tap* note = new Note_Tap();
+                note->FromJson(noteJson);
+                notes_.emplace_back(note);
+            } else if(noteType == "hold" or noteType == "Hold"){
+                Note_Hold* note = new Note_Hold();
+                note->FromJson(noteJson);
+                notes_.emplace_back(note);
+            } else if(noteType == "rectFlick" or noteType == "RectFlick"){
+                Note_RectFlick* note = new Note_RectFlick();
+                note->FromJson(noteJson);
+                notes_.emplace_back(note);
+            } else if(noteType == "wheel"){
+                Note_Wheel* note = new Note_Wheel();
+                note->FromJson(noteJson);
+                notes_.emplace_back(note);
+            } else{
+                // 未知のノーツタイプは無視
+            }
+        }
+    }
+    // テンポデータの読み込み
+    if(jsonData.contains("tempoData")){
+        for(const auto& tempoJson : jsonData["tempoData"]){
+            TempoData tempoData;
+            tempoData.FromJson(tempoJson);
+            tempoDataList_.push_back(tempoData);
+        }
+    }
+
+    // 
+    audioFileName_ = jsonData["songName"];
+
+    //
+    edittingNote_ = nullptr; // 編集中のノーツをクリア
+    draggingNote_ = nullptr; // ドラッグ中のノーツをクリア
+}
+
+///////////////////////////////////////////////////////////////////////
+// JSONに譜面データを書き出す処理
+///////////////////////////////////////////////////////////////////////
+nlohmann::json NotesEditor::ToJson() const{
+    nlohmann::json jsonData;
+    // ノーツデータの書き出し
+    for(const auto& note : notes_){
+        jsonData["notes"].push_back(note->ToJson());
+    }
+    // テンポデータの書き出し
+    for(const auto& tempoData : tempoDataList_){
+        jsonData["tempoData"].push_back(tempoData.ToJson());
+    }
+
+    // その他のデータの書き出し
+    jsonData["songName"] = audioFileName_;
+
+    return jsonData;
 }

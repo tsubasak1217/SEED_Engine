@@ -10,6 +10,10 @@ public:
     Judgement::Evaluation Judge(float dif) override;
     Judgement::Evaluation JudgeHoldEnd();
 
+    // 入出力関数
+    nlohmann::json ToJson() override;
+    void FromJson(const nlohmann::json& json) override;
+
 public:
     float kHoldTime_;
     float releaseTime_ = 0.0f;

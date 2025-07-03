@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdint>
 #include <memory>
+#include <json.hpp>
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Judgement/Judgement.h>
@@ -25,10 +26,14 @@ public:
     virtual void Update() = 0;
     virtual void Draw(float currentTime,float appearLength);
     virtual Judgement::Evaluation Judge(float dif) = 0;
+
+    // 入出力関数
+    virtual nlohmann::json ToJson() = 0;
+    virtual void FromJson(const nlohmann::json& json) = 0;
+
 #ifdef _DEBUG
     virtual void Edit() = 0;
 #endif // _DEBUG
-
 
 public:
     NoteType noteType_ = NoteType::None;// ノーツの種類

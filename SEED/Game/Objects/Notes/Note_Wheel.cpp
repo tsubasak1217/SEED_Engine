@@ -106,6 +106,18 @@ Judgement::Evaluation Note_Wheel::Judge(float dif){
     return Judgement::Evaluation::MISS;
 }
 
+nlohmann::json Note_Wheel::ToJson(){
+    nlohmann::json json = Note_Base::ToJson();
+    json["noteType"] = "wheel"; // ノーツの種類を保存
+    json["direction"] = (int)direction_; // フリック方向を保存
+    return json;
+}
+
+void Note_Wheel::FromJson(const nlohmann::json& json){
+    Note_Base::FromJson(json);
+    direction_ = (UpDown)json["direction"];
+}
+
 #ifdef _DEBUG
 void Note_Wheel::Edit(){
     // 基本情報の編集
@@ -117,7 +129,7 @@ void Note_Wheel::Edit(){
             {"↑", UpDown::UP},
             {"↓", UpDown::DOWN},
         }
-    )){
+        )){
         // フリック方向が変更された場合、レーンビットを更新
         laneBit_ = direction_ == UpDown::UP ? LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
     }

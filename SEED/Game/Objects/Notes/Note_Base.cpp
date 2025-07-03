@@ -12,6 +12,25 @@ void Note_Base::Draw(float currentTime, float appearLength){
     SEED::DrawQuad(*noteQuad_.get());
 }
 
+nlohmann::json Note_Base::ToJson() {
+    nlohmann::json j;
+    j["lane"] = lane_;
+    j["layer"] = (int)layer_;
+    j["laneBit"] = (int)laneBit_;
+    j["time"] = time_;
+    j["isExtraNote"] = isExtraNote_;
+    return j;
+}
+
+void Note_Base::FromJson(const nlohmann::json& j) {
+    lane_ = j["lane"];
+    layer_ = (UpDown)j["layer"];
+    laneBit_ = (LaneBit)j["laneBit"];
+    time_ = j["time"];
+    isExtraNote_ = j["isExtraNote"];
+}
+
+
 #ifdef _DEBUG
 void Note_Base::Edit(){
     ImGui::Text("ノーツID: %d", noteID_);

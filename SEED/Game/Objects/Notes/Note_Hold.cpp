@@ -180,6 +180,23 @@ Judgement::Evaluation Note_Hold::JudgeHoldEnd(){
     }
 }
 
+// ホールドノーツのJSON変換
+nlohmann::json Note_Hold::ToJson(){
+    nlohmann::json j = Note_Base::ToJson();
+    // ホールドノーツの情報を追加
+    j["noteType"] = "Hold"; // ノーツの種類を追加
+    j["holdTime"] = kHoldTime_;
+    return j;
+}
+
+// jsonからホールドノーツの情報を読み込む
+void Note_Hold::FromJson(const nlohmann::json& json){
+    // 基本情報の読み込み
+    Note_Base::FromJson(json);
+    // ホールドノーツの情報の読み込み
+    kHoldTime_ = json["holdTime"];
+}
+
 #ifdef _DEBUG
 void Note_Hold::Edit(){
     // 基本情報の編集

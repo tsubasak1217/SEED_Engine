@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <json.hpp>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Range2D.h>
@@ -17,6 +18,7 @@ struct TempoData{
     int timeSignature_numerator = 4;// 拍子の分子
     int barCount = 1;// 拍子の総数
     float time;
+    bool removeFlag = false;
     float CalcDuration() const {
         // (一拍の秒数) * (四分音符の数) ←一般化式
         // (一拍の秒数) * (小節数) * (拍子の分子) * (4分に戻すための比率) ←少し展開した式
@@ -24,6 +26,23 @@ struct TempoData{
     }
 
     void Edit();
+    nlohmann::json ToJson() const {
+        nlohmann::json jsonData;
+        jsonData["bpm"] = bpm;
+        jsonData["timeSignature_denominator"] = timeSignature_denominator;
+        jsonData["timeSignature_numerator"] = timeSignature_numerator;
+        jsonData["barCount"] = barCount;
+        jsonData["time"] = time;
+        return jsonData;
+    }
+
+    void FromJson(const nlohmann::json& jsonData) {
+        bpm = jsonData["bpm"];
+        timeSignature_denominator = jsonData["timeSignature_denominator"];
+        timeSignature_numerator = jsonData["timeSignature_numerator"];
+        barCount = jsonData["barCount"];
+        time = jsonData["time"];
+    }
 };
 
 class NotesEditor{
@@ -77,6 +96,9 @@ private:
     void ScrollOnLane();
     void EditSelectNote();
     void EraseCheck();
+    void PlayMetronome();
+    void PlayAnswerSE();
+    void FileControl();
 
 private:
     // 基礎情報
@@ -89,6 +111,8 @@ private:
     float division_ = 4;
     bool isScrollable_ = true;
     bool isHoveringNote_ = false; // ノート上にカーソルがあるかどうか
+    float answerOffsetTime = -0.07f;
+    float metronomeOffsetTime = -0.04f; // メトロノームのオフセット時間
     ImVec2 laneLTPos_;
     ImVec2 laneSize_;
     ImVec2 worldLaneLTPos_;
@@ -120,6 +144,14 @@ private:
 
     // 音声情報
     std::string audioFileName_;
-    std::string answerAudioFileName_;
+    std::string answerSEFileName_;
+    std::string metronomeSEFileName_;
     AudioHandle audioHandle_;
+
+    // 入出力ファイル名
+    std::string saveFileName_;
+    std::string loadFileName_;
+
+    void LoadFromJson(const nlohmann::json& jsonData);
+    nlohmann::json ToJson() const;
 };

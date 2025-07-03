@@ -57,6 +57,18 @@ Judgement::Evaluation Note_RectFlick::Judge(float dif){
     }
 }
 
+// JSON変換関数
+nlohmann::json Note_RectFlick::ToJson(){
+    nlohmann::json json = Note_Base::ToJson(); // 基本情報を取得
+    json["noteType"] = "RectFlick"; // タイプを指定
+    return json; // JSONを返す
+}
+
+// jsonから読み込む関数
+void Note_RectFlick::FromJson(const nlohmann::json& json){
+    Note_Base::FromJson(json); // 基本情報を読み込む
+}
+
 
 // 範囲内のフリックか、ビットで確認する関数
 bool Note_RectFlick::CheckBit(DIRECTION8 dir) const{
@@ -89,10 +101,10 @@ void Note_RectFlick::Edit(){
     // ホールドノーツの情報の編集
     ImFunc::ComboPair("フリック方向", laneBit_,
         {
-            {"↖", LaneBit::RECTFLICK_LT},
-            {"↖(ワイド)", LaneBit::RECTFLICK_LT_EX},
-            {"↙", LaneBit::RECTFLICK_LB},
-            {"↙(ワイド)", LaneBit::RECTFLICK_LB_EX},
+            {"", LaneBit::RECTFLICK_LT},
+            {"左上(ワイド)", LaneBit::RECTFLICK_LT_EX},
+            {"左下", LaneBit::RECTFLICK_LB},
+            {"(ワイド)", LaneBit::RECTFLICK_LB_EX},
             {"↗", LaneBit::RECTFLICK_RT},
             {"↗(ワイド)", LaneBit::RECTFLICK_RT_EX},
             {"↘", LaneBit::RECTFLICK_RB},

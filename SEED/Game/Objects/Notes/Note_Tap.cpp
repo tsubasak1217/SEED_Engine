@@ -74,6 +74,16 @@ Judgement::Evaluation Note_Tap::Judge(float dif){
     return Judgement::Evaluation::MISS;
 }
 
+nlohmann::json Note_Tap::ToJson(){
+    nlohmann::json json = Note_Base::ToJson();
+    json["noteType"] = "tap"; // タイプを指定
+    return json;
+}
+
+void Note_Tap::FromJson(const nlohmann::json& json){
+    Note_Base::FromJson(json);
+}
+
 #ifdef _DEBUG
 void Note_Tap::Edit(){
     Note_Base::Edit();

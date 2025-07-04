@@ -110,9 +110,11 @@ void RythmGameManager::Update(){
     }
 
 #ifdef _DEBUG
-    ImFunc::CustomBegin("ComboText", MoveOnly_TitleBar);
-    comboObject_->comboText.Edit();
+    if(ImFunc::CustomBegin("ComboText", MoveOnly_TitleBar)){
+        comboObject_->comboText.Edit();
+    }
     ImGui::End();
+
     // ノーツの編集ウインドウ
     notesEditor_->Edit();
 #endif // _DEBUG
@@ -125,7 +127,7 @@ void RythmGameManager::Update(){
 void RythmGameManager::Draw(){
     // Inputのカーソル描画
     PlayerInput::GetInstance()->Draw();
-    
+
     // プレイフィールドの描画
     PlayField::GetInstance()->Draw();
 
@@ -137,7 +139,7 @@ void RythmGameManager::Draw(){
 
     // ゲームカメラ画面の描画
 #ifdef _DEBUG
-    ImFunc::SceneWindowBegin("GameScene", "gameCamera",MoveOnly_TitleBar);
+    ImFunc::SceneWindowBegin("GameScene", "gameCamera", MoveOnly_TitleBar);
     ImGui::End();
 #endif // _DEBUG
 }

@@ -13,6 +13,7 @@
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Structs/Range2D.h>
+#include <SEED/Lib/Structs/Transform.h>
 
 
 class MyFunc{
@@ -62,6 +63,10 @@ public:
     template <typename T>
     static int32_t ToBack(std::map<std::string,T>& myMap,const std::string& token);
 
+    // トランスフォームのLerp関数
+    static Transform Interpolate(const Transform& a, const Transform& b, float t);
+    static Transform2D Interpolate(const Transform2D& a, const Transform2D& b, float t);
+
    /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算
    /// </summary>
@@ -79,6 +84,14 @@ public:// ファイル・文字列関連 =======================================
     static std::wstring ConvertString(const std::string& str);
     static std::string ConvertString(const std::wstring& str);
 
+    // カテゴリ分け関数（0:英字, 1:かな, 2:数字, 3:その他）
+    static int CharCategory(wchar_t ch);
+
+    // 文字列の比較関数
+    static bool CompareStr(const std::string& str1, const std::string& str2);
+
+    // 指定したパスに存在するフォルダの一覧を取得する関数
+    static std::vector<std::string> GetFolderList(const std::string& entryPath,bool isRelative = true);
     // 指定したパス以降で拡張子の合致するファイル一覧を取得する関数
     static std::vector<std::string> GetFileList(
         const std::string& entryPath, std::initializer_list<std::string>extensions,bool isRelative = true

@@ -7,6 +7,11 @@
 
 
 NotesEditor::NotesEditor(){
+
+    // オフセット時間
+    answerOffsetTime_ = -0.03f;
+    metronomeOffsetTime_ = -0.03f;
+
     laneLTPos_ = { 30,30 };
     laneSize_ = { 300,900 };
     textureIDs_["laneField"] = TextureManager::GetImGuiTexture("PlayField/editorLane.png");
@@ -57,7 +62,17 @@ NotesEditor::NotesEditor(){
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::Edit(){
 #ifdef _DEBUG
-    ImFunc::CustomBegin("NotesEditor", MoveOnly_TitleBar);
+    // ウィンドウが表示されていない場合は終了
+    if(!ImFunc::CustomBegin("NotesEditor", MoveOnly_TitleBar)){
+        AudioManager::PauseAudio(audioHandle_); // ウィンドウがフォーカスされていない場合は音声を一時停止
+        ImGui::End();
+        return;
+
+    } else{
+        AudioManager::RestartAudio(audioHandle_); // ウィンドウがフォーカスされている場合は音声を再開
+    }
+
+
 
     // ドローリストの取得
     pDrawList_ = ImGui::GetWindowDrawList();
@@ -138,8 +153,8 @@ void NotesEditor::SelectAudioFile(){
         }
     }
 
-    ImGui::DragFloat("アンサー音のオフセット", &answerOffsetTime, 0.01f);
-    ImGui::DragFloat("メトロノームのオフセット", &metronomeOffsetTime, 0.01f);
+    ImGui::DragFloat("アンサー音のオフセット", &answerOffsetTime_, 0.01f);
+    ImGui::DragFloat("メトロノームのオフセット", &metronomeOffsetTime_, 0.01f);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -441,10 +456,8 @@ void NotesEditor::EditNotes(){
 void NotesEditor::CreateNoteOnLane(){
 
     if(!isEditOnLane_){
-        isScrollable_ = true;
         return; // レーン編集モードでないなら何もしない
     } else{
-        isScrollable_ = false;
         if(isHoveringNote_ or draggingNote_){
             return;
         }
@@ -1139,12 +1152,6 @@ void NotesEditor::DraggingNote(){
         }
     }
 
-    if(draggingNote_){
-        isScrollable_ = false;
-    } else{
-        isScrollable_ = true;
-    }
-
 #endif // _DEBUG
 }
 
@@ -1162,11 +1169,7 @@ void NotesEditor::ScrollOnLane(){
     static ImVec2 prevMousePos; // 前回のマウス座標
     static float savedTimeVelocity;
 
-    if(!isScrollable_){
-        return;
-    }
-
-    if(ImGui::IsMouseClicked(0)){
+    if(ImGui::IsMouseClicked(1)){
 
         // レーンの範囲外なら終了
         if(mousePos.x < worldLaneLTPos_.x || mousePos.x > worldLaneRB.x ||
@@ -1191,7 +1194,7 @@ void NotesEditor::ScrollOnLane(){
 
         isScrolling = true;
 
-    } else if(ImGui::IsMouseDown(0)){
+    } else if(ImGui::IsMouseDown(1)){
 
         if(!isScrolling){ return; }
         ImVec2 dif = mousePos - prevMousePos;
@@ -1257,14 +1260,14 @@ void NotesEditor::PlayMetronome(){
 
     for(const TempoData& tempoData : tempoDataList_){
 
-        float borderTime = tempoData.time + metronomeOffsetTime;
+        float borderTime = tempoData.time + metronomeOffsetTime_;
 
         // テンポデータの範囲内にいるか確認
         if(borderTime <= curLaneTime_ && borderTime + tempoData.CalcDuration() > curLaneTime_){
 
             // データが切り替わった瞬間の場合
             if(preLanetime < tempoData.time){
-                AudioManager::PlayAudio(metronomeSEFileName_, false,2.0f); // メトロノーム音を再生
+                AudioManager::PlayAudio(metronomeSEFileName_, false, 2.0f); // メトロノーム音を再生
             } else{
                 float beatDuration = 60.0f / tempoData.bpm; // 一拍の長さを計算
                 int beatCount[2] = {
@@ -1276,7 +1279,7 @@ void NotesEditor::PlayMetronome(){
                 if(beatCount[0] != beatCount[1]){
                     if(beatCount[0] % tempoData.timeSignature_numerator == 0){
                         AudioManager::PlayAudio(metronomeSEFileName_, false, 2.0f); // メトロノーム音を再生
-                    } else {
+                    } else{
                         AudioManager::PlayAudio(metronomeSEFileName_, false, 1.0f); // メトロノーム音を再生（弱拍）
                     }
                 }
@@ -1293,14 +1296,14 @@ void NotesEditor::PlayAnswerSE(){
 
     // 2分探索で近いノーツを探す
     auto it = std::lower_bound(notes_.begin(), notes_.end(), curLaneTime_, [&](const std::unique_ptr<Note_Base>& note, float time){
-        return note->time_ + answerOffsetTime < time;
+        return note->time_ + answerOffsetTime_ < time;
     });
 
     // 通り過ぎたばかりの判定のノーツの音を鳴らす
     while(true){
         if(it != notes_.begin()){
             --it; // 1つ前のノーツを取得
-            if(it->get()->time_ + answerOffsetTime > preLaneTime){
+            if(it->get()->time_ + answerOffsetTime_ > preLaneTime){
                 AudioManager::PlayAudio(answerSEFileName_, false, 1.0f); // 判定音を再生
             } else{
                 break;
@@ -1321,6 +1324,20 @@ void NotesEditor::FileControl(){
     static auto noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" }); // 譜面データのパスを取得
     if(ImGui::Button("保存")){
         ImGui::OpenPopup("SaveFilePopup");
+
+        // 拡張子、ディレクトリを除去して曲名を取得
+        std::string songName = audioFileName_;
+        if(!songName.empty()){
+            size_t lastSlash = songName.find_last_of("/\\");
+            if(lastSlash != std::string::npos){
+                songName = songName.substr(lastSlash + 1); // ディレクトリを除去
+            }
+            size_t lastDot = songName.find_last_of('.');
+            if(lastDot != std::string::npos){
+                songName = songName.substr(0, lastDot); // 拡張子を除去
+            }
+        }
+        saveSongName_ = songName; // 曲名を保存
     }
 
 
@@ -1341,11 +1358,18 @@ void NotesEditor::FileControl(){
     }
 
     if(ImGui::BeginPopup("SaveFilePopup")){
-        
-        ImFunc::InputText("ファイル名", saveFileName_); // ファイル名の入力フィールド
+
+        ImGui::SliderInt("難易度", &difficulty_, 1, 15);
+        ImFunc::InputText("曲名", saveSongName_);
+        ImFunc::ComboText("譜面難易度の選択", saveDifficultyName_, { "Basic","Expert","Master","Parallel", });
+        ImFunc::InputText("アーティスト名", artistName_);
+        ImFunc::InputText("譜面制作者名", notesDesignerName_);
+        ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
 
         if(ImGui::Button("保存")){
-            std::string filePath = "Resources/NoteDatas/" + std::string(saveFileName_) + ".json"; // 保存先のパスを設定
+            // 保存先のパスを設定
+            std::string directoryPath = "Resources/NoteDatas/" + saveSongName_ + "/";
+            std::string filePath = directoryPath + saveDifficultyName_ + ".json";
             nlohmann::json jsonData = ToJson(); // JSONデータを取得
 
             // 同じデータのファイルが存在するか確認
@@ -1368,13 +1392,13 @@ void NotesEditor::FileControl(){
                 }
             } else{
                 // ファイルが存在しない場合はそのまま保存
+                std::filesystem::create_directories(directoryPath); // ディレクトリを作成
                 std::ofstream file(filePath);
                 file << jsonData.dump(4); // JSONデータをファイルに書き出し
                 file.close();
                 noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
                 ImGui::CloseCurrentPopup();
             }
-
         }
 
         // キャンセルボタン
@@ -1395,6 +1419,7 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
 
     notes_.clear(); // 既存のノーツデータをクリア
     tempoDataList_.clear();
+    float timeOffset = 0.0f;
 
     // ノーツデータの読み込み
     if(jsonData.contains("notes")){
@@ -1431,30 +1456,101 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
         }
     }
 
-    // 
+    // その他のデータの読み込み
     audioFileName_ = jsonData["songName"];
+    difficulty_ = jsonData["difficulty"];
+    artistName_ = jsonData["artist"];
+    notesDesignerName_ = jsonData["notesDesigner"];
+    songGenre_ = (SongGenre)jsonData["genre"];
 
-    //
-    edittingNote_ = nullptr; // 編集中のノーツをクリア
-    draggingNote_ = nullptr; // ドラッグ中のノーツをクリア
+
+    // 譜面開始前の待機時間を削除(編集時には不要)
+    if(!tempoDataList_.empty()){
+        timeOffset = tempoDataList_.front().CalcDuration();
+        tempoDataList_.pop_front();
+
+        for(auto& note : notes_){
+            note->time_ -= timeOffset;
+        }
+
+        for(auto& tempoData : tempoDataList_){
+            tempoData.time -= timeOffset;
+        }
+    }
+
+    // 各種ポインタのクリア
+    edittingNote_ = nullptr;
+    draggingNote_ = nullptr;
+    selectedTempoData_ = nullptr;
+    contextMenuTempoData_ = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////
 // JSONに譜面データを書き出す処理
 ///////////////////////////////////////////////////////////////////////
-nlohmann::json NotesEditor::ToJson() const{
+nlohmann::json NotesEditor::ToJson(){
     nlohmann::json jsonData;
-    // ノーツデータの書き出し
-    for(const auto& note : notes_){
-        jsonData["notes"].push_back(note->ToJson());
+    float timeOffset = 0.0f;
+
+    // 譜面開始前の待機時間を追加
+    if(!tempoDataList_.empty()){
+        TempoData standbyTimeData = tempoDataList_.front();
+        standbyTimeData.barCount = 1;
+        standbyTimeData.time = 0.0f;
+        tempoDataList_.emplace_front(standbyTimeData);
+        timeOffset = standbyTimeData.CalcDuration();
     }
+
+    // ノーツデータの書き出し
+    for(auto& note : notes_){
+        note->time_ += timeOffset;
+        jsonData["notes"].push_back(note->ToJson());
+        note->time_ -= timeOffset;
+    }
+
     // テンポデータの書き出し
-    for(const auto& tempoData : tempoDataList_){
+    for(auto& tempoData : tempoDataList_){
+        tempoData.time += timeOffset;
         jsonData["tempoData"].push_back(tempoData.ToJson());
+        tempoData.time -= timeOffset;
+    }
+
+    tempoDataList_.pop_front(); // 譜面開始前の待機時間データを削除
+
+    // テンポ情報からもっとも時間割合の大きいBPMを取得
+    std::unordered_map<float, float> bpmDurationMap;
+    for(const TempoData& tempoData : tempoDataList_){
+        bpmDurationMap[tempoData.bpm] += tempoData.CalcDuration();
+    }
+
+    // 最も時間割合の大きいBPMを取得(secondが最大値のキー)
+    float bpm = 0.0f;
+    float maxDuration = 0.0f;
+    for(const auto& pair : bpmDurationMap){
+        if(pair.second > maxDuration){
+            maxDuration = pair.second;
+            bpm = pair.first;
+        }
+    }
+
+    // コンボ数の計算
+    int comboCount = 0;
+    for(const auto& note : notes_){
+        if(note->noteType_ != NoteType::Hold){
+            comboCount++; // タップノーツとホールドノーツの数をカウント
+        } else{
+            comboCount += 2; // ホールドノーツは開始と終了で2つカウント
+        }
     }
 
     // その他のデータの書き出し
     jsonData["songName"] = audioFileName_;
+    jsonData["difficulty"] = difficulty_;
+    jsonData["artist"] = artistName_;
+    jsonData["notesDesigner"] = notesDesignerName_;
+    jsonData["bpm"] = bpm;
+    jsonData["maxCombo"] = comboCount; // コンボ数を保存
+    jsonData["genre"] = (int32_t)songGenre_; // ジャンルを保存
 
     return jsonData;
 }

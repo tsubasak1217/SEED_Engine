@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/WindowManager/WindowManager.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/DxManager/DxManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////
 //                                static変数の初期化
@@ -156,22 +157,40 @@ LRESULT CALLBACK WindowProc(
         return true;
     }
 
+    int a = 0;
+
     switch(uMsg){
 
-    case WM_DESTROY:
+    case WM_NCRBUTTONDOWN:// マウス右ボタンが押されているとき
+        a = 0;
+        break;
+
+    case WM_NCRBUTTONUP:// マウス右ボタンが離されたとき
+        a = 0;
+        break;
+
+    case WM_NCLBUTTONDOWN:// マウス左ボタンが押されているとき
+        ClockManager::GetInstance()->Stop();
+        AudioManager::GetInstance()->PauseAll();
+        break;
+
+    case WM_NCLBUTTONUP:
+        ClockManager::GetInstance()->Restart();
+        AudioManager::GetInstance()->RestartAll();
+        break;
+
+    case WM_DESTROY:// ウィンドウが破棄されるとき
         PostQuitMessage(0);
         return 0;
 
+    case WM_NULL://特に何もないとき
+        a = 0;
+        break;
+
     default:
-
-        if(uMsg == WM_NCLBUTTONDOWN){
-            ClockManager::GetInstance()->Stop();
-        }/*else{
-            ClockManager::GetInstance()->Restart();
-        }*/
-
-        // 標準のメッセージ処理を行う
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+        a = 0;
+        break;
     }
 
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }

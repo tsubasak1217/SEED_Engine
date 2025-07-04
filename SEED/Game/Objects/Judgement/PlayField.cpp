@@ -1,7 +1,6 @@
 #include "PlayField.h"
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
-#include <SEED/Source/SEED.h>
 #include <Game/Objects/Notes/NotesData.h>
 #include <Game/Objects/Judgement/Judgement.h>
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
@@ -177,6 +176,12 @@ void PlayField::Initialize(){
 
     // エフェクトの初期化
     EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
+
+    // 背景の初期化
+    backImage_ = Sprite("PlayField/tempBack.png");
+    backImage_.drawLocation = DrawLocation::Back;
+    backImage_.isStaticDraw = false;
+    backImage_.size = kWindowSize;
 }
 
 
@@ -229,11 +234,7 @@ void PlayField::Draw(){
     }
 
     // 背景の描画
-    Sprite sprite = Sprite("PlayField/tempBack.png");
-    sprite.drawLocation = DrawLocation::Back;
-    sprite.isStaticDraw = false;
-    sprite.size = kWindowSize;
-    sprite.Draw();
+    backImage_.Draw();
 }
 
 

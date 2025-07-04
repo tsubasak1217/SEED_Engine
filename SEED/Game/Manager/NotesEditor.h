@@ -6,6 +6,7 @@
 #include <memory>
 #include <json.hpp>
 #include <SEED/Source/SEED.h>
+#include <Game/Objects/SongSelect/SongInfo.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
@@ -102,6 +103,7 @@ private:
 
 private:
     // 基礎情報
+    int32_t difficulty_ = 0; // 難易度
     float duration_ = 0.0f; // 曲の長さ
     float curLaneTime_ = 0.0;
     float timeScale_ = 1.0;
@@ -109,14 +111,16 @@ private:
     bool isPlaying_ = false; // 再生中かどうか
     bool isEditOnLane_ = false; // レーン上での編集モードかどうか
     float division_ = 4;
-    bool isScrollable_ = true;
     bool isHoveringNote_ = false; // ノート上にカーソルがあるかどうか
-    float answerOffsetTime = -0.07f;
-    float metronomeOffsetTime = -0.04f; // メトロノームのオフセット時間
+    float answerOffsetTime_;
+    float metronomeOffsetTime_; // メトロノームのオフセット時間
     ImVec2 laneLTPos_;
     ImVec2 laneSize_;
     ImVec2 worldLaneLTPos_;
     ImVec2 tempoDataDisplayPos_;
+    std::string artistName_; // アーティスト名
+    std::string notesDesignerName_; // ノーツ制作者名
+    SongGenre songGenre_; // 曲のジャンル
 
     // 表示する情報
     unordered_map<std::string, ImTextureID> textureIDs_;
@@ -149,9 +153,10 @@ private:
     AudioHandle audioHandle_;
 
     // 入出力ファイル名
-    std::string saveFileName_;
+    std::string saveDifficultyName_;
+    std::string saveSongName_;
     std::string loadFileName_;
 
     void LoadFromJson(const nlohmann::json& jsonData);
-    nlohmann::json ToJson() const;
+    nlohmann::json ToJson() ;
 };

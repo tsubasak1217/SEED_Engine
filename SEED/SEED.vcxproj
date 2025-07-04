@@ -126,9 +126,11 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   <ItemGroup>
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\SongSelector.cpp" />
     <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
@@ -237,9 +239,11 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Manager\NotesEditor.h" />
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
+    <ClInclude Include="Game\Manager\SongSelector.h" />
     <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
     <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
     <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />

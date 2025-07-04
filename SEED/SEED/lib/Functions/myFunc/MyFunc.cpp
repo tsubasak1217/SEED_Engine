@@ -222,6 +222,38 @@ Vector3 MyFunc::CalcRotateVec(const Vector3& vec){
     return rotate;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// トランスフォームの補間を行う関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 3D
+Transform MyFunc::Interpolate(const Transform& a, const Transform& b, float t){
+    Transform result;
+    // 位置の補間
+    result.translate = MyMath::Lerp(a.translate, b.translate, t);
+    // 回転の補間（球面線形補間を使用）
+    result.rotate = Quaternion::Slerp(a.rotate, b.rotate, t);
+    // スケールの補間
+    result.scale = MyMath::Lerp(a.scale, b.scale, t);
+    return result;
+}
+
+// 2D
+Transform2D MyFunc::Interpolate(const Transform2D& a, const Transform2D& b, float t){
+    Transform2D result;
+    // 位置の補間
+    result.translate = MyMath::Lerp(a.translate, b.translate, t);
+    // 回転の補間
+    result.rotate = MyMath::Lerp(a.rotate, b.rotate, t);
+    // スケールの補間
+    result.scale = MyMath::Lerp(a.scale, b.scale, t);
+    return result;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// 放物線の計算
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 Vector2 MyFunc::CalculateParabolic(const Vector2& _direction, float _speed, float _time, float _gravity){
     float x = _direction.x * _speed * _time;
     float y = _direction.y * _speed * _time - 0.5f * _gravity * _time * _time;
@@ -259,6 +291,57 @@ std::string MyFunc::ConvertString(const std::wstring& str){
     return result;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 文字のカテゴリを判定する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+int MyFunc::CharCategory(wchar_t ch){
+    if((ch >= L'a' && ch <= L'z') || (ch >= L'A' && ch <= L'Z')) return 0; // 英字
+    if((ch >= L'ぁ' && ch <= L'ん') || (ch >= L'ァ' && ch <= L'ン')) return 1; // ひらがな・カタカナ
+    if(ch >= L'0' && ch <= L'9') return 2; // 数字
+    return 3; // その他
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 文字列を比較する関数(str1の方が若いとtrue)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool MyFunc::CompareStr(const std::string& str1, const std::string& str2){
+    // wstring 変換
+    std::wstring wS1 = ConvertString(str1);
+    std::wstring wS2 = ConvertString(str2);
+
+    size_t len = (std::min)(wS1.size(), wS2.size());
+    for(size_t i = 0; i < len; ++i){
+        // 文字のカテゴリを取得
+        int ca = CharCategory(wS1[i]);
+        int cb = CharCategory(wS2[i]);
+        // カテゴリが違えばカテゴリ順
+        if(ca != cb) return ca < cb;
+        // 同カテゴリ内では文字コード順
+        if(wS1[i] != wS2[i]) return wS1[i] < wS2[i];
+    }
+
+    // 長さ順
+    return wS1.size() < wS2.size();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// entry階層以下のフォルダリストを取得する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, bool isRelative){
+    std::vector<std::string> folderList;
+    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+        // ディレクトリのみを探す
+        if(cur.is_directory()){
+            if(isRelative){
+                folderList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+            } else{
+                folderList.push_back(cur.path().string()); // 絶対パスを格納
+            }
+        }
+    }
+    return folderList;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // entry階層以下の拡張子の合致するファイルリストを取得する関数

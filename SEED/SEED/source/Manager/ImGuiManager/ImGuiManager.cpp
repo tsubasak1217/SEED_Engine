@@ -191,7 +191,7 @@ void ImGuiManager::PostDraw(){
 // カスタムウィンドウの開始関数
 /////////////////////////////////////////////////////////////////
 using WindowLocationData = std::pair<ImVec2, ImVec2>; // ウィンドウの位置とサイズ
-void ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiWindowFlags flags){
+bool ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiWindowFlags flags){
 
     static std::unordered_map<std::string, WindowLocationData> windowDatas;
     static std::unordered_map<std::string, bool> isDragging;
@@ -248,7 +248,7 @@ void ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiW
     }
 
     // ImGuiウィンドウを開始
-    ImGui::Begin(name, nullptr, flags);
+    bool isDisplayed = ImGui::Begin(name, nullptr, flags);
 
     // ウィンドウの位置とサイズを保存
     ImVec2 window_pos = ImGui::GetWindowPos();
@@ -259,6 +259,8 @@ void ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiW
     if(ImGui::IsMouseReleased(ImGuiMouseButton_Left)){
         isDragging[name] = false;
     }
+
+    return isDisplayed; // ウィンドウが表示されているかどうかを返す
 }
 
 /////////////////////////////////////////////////////////////////

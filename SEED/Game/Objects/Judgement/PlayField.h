@@ -7,6 +7,7 @@
 #include <Game/Objects/Judgement/AnswerLane.h>
 #include <Game/Objects/Judgement/LaneBit.h>
 #include <SEED/Lib/enums/Direction.h>
+#include <SEED/Source/SEED.h>
 
 // 前方宣言
 class NotesData;
@@ -77,4 +78,6 @@ private:
     std::array<std::array<Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
     std::unordered_map<LaneBit, Vector3>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
 
+    //
+    Sprite backImage_;
 };

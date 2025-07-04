@@ -78,7 +78,9 @@ public:// エンジンで利用できる関数
     static AudioHandle PlayAudio(const std::string& filename,bool loop,float volume = 1.0f,float time = 0.0f);
     static void EndAudio(AudioHandle handle);
     static void PauseAudio(AudioHandle handle);
-    static void RestertAudio(AudioHandle handle);
+    static void PauseAll();
+    static void RestartAudio(AudioHandle handle);
+    static void RestartAll();
     static void SetAudioVolume(AudioHandle handle, float volume);
     static bool IsPlayingAudio(AudioHandle handle);
     static void LoadAudio(const std::string& filename);
@@ -106,6 +108,7 @@ private:
     std::unordered_map<uint32_t, IXAudio2SourceVoice*>sourceVoices_;// 同じ音源でも、鳴らす数だけ必要
     std::unordered_map<AudioHandle, bool>isPlaying_;
     std::unordered_map<AudioHandle, float>volumeMap_;
+    std::unordered_map < AudioHandle, bool> isAlreadyPaused_;
 
 private:
     static const std::string directoryPath_;

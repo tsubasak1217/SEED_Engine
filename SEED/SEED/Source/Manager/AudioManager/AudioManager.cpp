@@ -148,7 +148,7 @@ AudioHandle AudioManager::PlayAudio(
     uint32_t bytesPerFrame = bytesPerSample * channels;
 
     uint32_t totalSamples = soundData.bufferSize / bytesPerFrame;
-    uint32_t sampleOffset = static_cast<uint32_t>(time * sampleRate);
+    uint32_t sampleOffset = static_cast<uint32_t>(std::clamp(time, 0.0f, FLT_MAX) * sampleRate);
 
     // 安全な上限チェック：再生可能な最大位置にクランプ
     if(sampleOffset >= totalSamples){
@@ -183,33 +183,6 @@ AudioHandle AudioManager::PlayAudio(
     assert(SUCCEEDED(hr));
 
     return nextAudioHandle_++;
-
-    //HRESULT hr;
-    //std::string tmpFilename = filename;
-
-    //// ソースボイスの作成
-    //hr = xAudio2->CreateSourceVoice(&sourceVoices_[nextAudioHandle_], &soundData.wfex);
-
-    //assert(SUCCEEDED(hr));
-
-    //// 再生する波形データの設定
-    //XAUDIO2_BUFFER buf{};
-    //buf.pAudioData = soundData.pBuffer;
-    //buf.AudioBytes = soundData.bufferSize;
-    //buf.Flags = XAUDIO2_END_OF_STREAM;
-    //if(loop){
-    //    buf.LoopCount = XAUDIO2_LOOP_INFINITE;
-    //}
-
-    //// 再生
-    //hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
-    //assert(SUCCEEDED(hr));
-    //hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume);
-    //assert(SUCCEEDED(hr));
-    //hr = sourceVoices_[nextAudioHandle_]->Start();
-    //assert(SUCCEEDED(hr));
-
-    //return nextAudioHandle_++;
 }
 
 /// <summary>
@@ -271,8 +244,11 @@ void AudioManager::EndAudio(AudioHandle handle){
 /// </summary>
 /// <param name="filename">ファイル名</param>
 void AudioManager::PauseAudio(AudioHandle handle){
-    // 指定要素がなければアサート
-    assert(instance_->sourceVoices_.find(handle) != instance_->sourceVoices_.end());
+    // 指定要素がなければ何もしない
+    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
+    // 既に停止中なら何もしない
+    if(!instance_->isPlaying_[handle]){ return; }
+
     //　停止
     HRESULT hr;
     hr = instance_->sourceVoices_[handle]->Stop();
@@ -282,14 +258,29 @@ void AudioManager::PauseAudio(AudioHandle handle){
     instance_->isPlaying_[handle] = false;
 }
 
+/// <summary>
+/// すべての音声を一時停止する
+/// </summary>
+void AudioManager::PauseAll(){
+    instance_->isAlreadyPaused_.clear(); // 一時停止済みフラグをクリア
+    for(auto& item : instance_->sourceVoices_){
+        if(instance_->isPlaying_[item.first]){ // 再生中の音声のみ一時停止
+            PauseAudio(item.first);
+        } else{
+            instance_->isAlreadyPaused_[item.first] = true;
+        }
+    }
+}
 
 /// <summary>
 /// 音声の再生を再開する
 /// </summary>
 /// <param name="filename">ファイル名</param>
-void AudioManager::RestertAudio(AudioHandle handle){
-    // 指定要素がなければアサート
-    assert(instance_->sourceVoices_.find(handle) != instance_->sourceVoices_.end());
+void AudioManager::RestartAudio(AudioHandle handle){
+    // 指定要素がなければ何もしない
+    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
+    // 既に再生中なら何もしない
+    if(instance_->isPlaying_[handle]){ return; }
 
     // 再開
     if(instance_->sourceVoices_[handle] != nullptr){
@@ -298,6 +289,19 @@ void AudioManager::RestertAudio(AudioHandle handle){
 
     // 再生フラグを立てる
     instance_->isPlaying_[handle] = true;
+}
+
+
+void AudioManager::RestartAll(){
+    for(auto& item : instance_->sourceVoices_){
+        // 元々停止していた音声は再開しない
+        if(instance_->isAlreadyPaused_.find(item.first) != instance_->isAlreadyPaused_.end()){
+            continue;
+        }
+
+        // 再開
+        RestartAudio(item.first);
+    }
 }
 
 
@@ -548,6 +552,7 @@ void AudioManager::UnloadAllAudio(){
     instance_->audios_.clear();
     instance_->sourceVoices_.clear();
 }
+
 
 void AudioManager::UnloadAudio(SoundData* soundData){
     delete[] soundData->pBuffer;

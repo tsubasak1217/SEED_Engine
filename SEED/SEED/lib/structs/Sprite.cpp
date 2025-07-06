@@ -15,7 +15,7 @@ Sprite::Sprite(){
     GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
     blendMode = BlendMode::NORMAL;
     uvTransform = IdentityMat4();
-    isStaticDraw = true;
+    isStaticDraw = false;
 }
 
 Sprite::Sprite(const std::string& filename) : Sprite::Sprite(){

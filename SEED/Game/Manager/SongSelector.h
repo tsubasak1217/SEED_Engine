@@ -51,17 +51,17 @@ private:
     void CreateGroup();// グループ分け
     void SortInGroup();// グループ内ソート
     void UpdateIndex(); // インデックス更新
-
+    void UpdateVisibleSongs(); // 表示されている楽曲の更新
     void SelectItems();
     void UpdateSongUI();
 
-    void EditItemPositions();
+    void Edit();
 
 private:
     SelectMode selectMode_;// 楽曲選択中かどうか
     std::list<std::unique_ptr<SongInfo>> songList; // 楽曲情報のリスト
-    int32_t currentGroupIndex; // 現在のグループインデックス
-    int32_t currentSongIndex; // 現在の楽曲インデックス
+    int32_t currentGroupIndex = 0; // 現在のグループインデックス
+    int32_t currentSongIndex = 0; // 現在の楽曲インデックス
     TrackDifficulty currentDifficulty; // 現在の難易度
     SongGroup* currentGroup = nullptr; // 現在選択中のグループ
     SongInfo* currentSong = nullptr; // 現在選択中の楽曲
@@ -71,6 +71,7 @@ private:
     static const int32_t centerIndex = kVisibleSongRadius; // 中心の楽曲インデックス
     static const int32_t kVisibleSongCount = 1 + kVisibleSongRadius * 2; // 表示する楽曲の総数
     std::array<SongInfo*, kVisibleSongCount> visibleSongs; // 表示されている楽曲のリスト
+    std::array<Transform2D, kVisibleSongCount> visibleSongTransforms; // 表示されている楽曲の位置の制御点
     GroupMode currentGroupMode; // グループ分け方法
     SortMode currentSortMode; // ソートモード
 
@@ -80,4 +81,5 @@ private:
     float itemChangeTimer = 0.0f; // アイテム変更タイマー
     float kItemChangeTime = 0.2f; // アイテム変更時間
     std::array<Transform2D, kVisibleSongCount + 2> itemAimTransforms; // アイテムの位置の制御点
+    bool splineCurveVisible = true; // ベジェ曲線の表示フラグ
 };

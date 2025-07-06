@@ -111,6 +111,7 @@
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Manager\SongSelector.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Game\Manager\NotesEditor.h" />
     <ClInclude Include="Game\Manager\SongSelector.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

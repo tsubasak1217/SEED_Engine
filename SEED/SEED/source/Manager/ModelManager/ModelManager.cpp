@@ -7,6 +7,8 @@
 #include <d3dx12.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <execution>
+#include <algorithm>
 
 // static変数初期化
 ModelManager* ModelManager::instance_ = nullptr;
@@ -213,7 +215,7 @@ void ModelManager::CreateMeshlet(ModelData* modelData){
     uint32_t kMaxIndexCount = 128;
 
     for(auto& mesh : modelData->meshes){
-        
+
         uint32_t curIndex = 0;
 
         while(true){
@@ -554,10 +556,12 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
 ){
     ModelSkeleton skeleton;
     skeleton.joints.resize(defaultSkeleton.joints.size());
-    int idx = 0;
 
     // 指定した時間の値を取得
-    for(auto& defaultJoint : defaultSkeleton.joints){
+    std::for_each(std::execution::par_unseq, defaultSkeleton.joints.begin(), defaultSkeleton.joints.end(), [&](auto& defaultJoint){
+
+        uint32_t idx = defaultJoint.index;
+
         if(auto it = modelAnimation.nodeAnimations.find(defaultJoint.name); it != modelAnimation.nodeAnimations.end()){
 
             // ノードアニメーションを取得
@@ -580,8 +584,9 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
         }
 
         skeleton.joints[idx].parent = defaultJoint.parent;
-        idx++;
-    }
+        //  indexを設定
+        skeleton.joints[idx].index = idx;
+    });
 
     // スケルトン行列を更新
     instance_->UpdateSkeleton(&skeleton);
@@ -634,8 +639,13 @@ ModelSkeleton ModelManager::InterpolateSkeleton(
 // スケルトン行列の更新
 /*-----------------------------------------------------------*/
 void ModelManager::UpdateSkeleton(ModelSkeleton* skeleton){
-    for(ModelJoint& joint : skeleton->joints){
+
+    std::for_each(std::execution::par_unseq, skeleton->joints.begin(), skeleton->joints.end(), [&](ModelJoint& joint){
+        // ローカル行列を更新
         joint.localMatrix = AffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+    });
+
+    for(ModelJoint& joint : skeleton->joints){
         if(joint.parent){
             joint.skeletonSpaceMatrix = joint.localMatrix * skeleton->joints[*joint.parent].skeletonSpaceMatrix;
         } else{

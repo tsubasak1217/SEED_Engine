@@ -1,0 +1,75 @@
+{
+    "artist": "a",
+    "bpm": 163.3000030517578,
+    "difficulty": 4,
+    "genre": 0,
+    "maxCombo": 6,
+    "notes": [
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 1.8371095657348633
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.204531669616699
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.571953535079956
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.571953535079956
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.939375400543213
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.939375400543213
+        }
+    ],
+    "notesDesigner": "b",
+    "songName": "musics/TinySummerKnight.wav",
+    "tempoData": [
+        {
+            "barCount": 1,
+            "bpm": 163.3000030517578,
+            "time": 1.4696877002716064,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        },
+        {
+            "barCount": 23,
+            "bpm": 163.3000030517578,
+            "time": 1.4696877002716064,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        }
+    ]
+}

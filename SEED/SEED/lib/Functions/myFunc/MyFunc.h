@@ -84,6 +84,10 @@ public:// ファイル・文字列関連 =======================================
     static std::wstring ConvertString(const std::string& str);
     static std::string ConvertString(const std::wstring& str);
 
+    // 文字列を変換するhash関数
+    static uint64_t Hash64(const std::string& str);
+    static uint32_t Hash32(const std::string& str);
+
     // カテゴリ分け関数（0:英字, 1:かな, 2:数字, 3:その他）
     static int CharCategory(wchar_t ch);
 

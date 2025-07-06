@@ -1,4 +1,7 @@
 #include "EffectSystem.h"
+#include <execution>
+#include <algorithm>
+
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/SEED.h>
 
@@ -137,9 +140,13 @@ void EffectSystem::Update(){
     // パーティクルの更新
     ////////////////////////////////////////////
 
-    for(auto& particle : instance_->particles_){
-        particle->Update();
-    }
+    std::for_each(std::execution::par_unseq, instance_->particles_.begin(), instance_->particles_.end(), [](auto& p){
+        p->Update();
+    });
+
+    //for(auto& particle : instance_->particles_){
+    //    particle->Update();
+    //}
 
     ////////////////////////////////////////////
     // パーティクルとフィールドの衝突判定

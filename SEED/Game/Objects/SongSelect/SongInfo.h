@@ -85,17 +85,15 @@ struct SongInfo{
     std::string notesDesignerName[diffcultySize];
     int32_t difficulty[diffcultySize];
     nlohmann::json noteDatas[diffcultySize];
-
-    // 描画位置とサイズ
-    Transform2D transform;
-
 };
 
 struct SongInfoDrawer{
     static void Initialize();
-    static void Draw(const SongInfo& songInfo,bool isSelected);
+    static void Draw(const SongInfo& songInfo,const Transform2D& transform,bool isSelected);
+    static void Edit();
 
     // 画像関連
     static inline std::unique_ptr<Sprite> backSprite = nullptr;
+    static inline std::unique_ptr<Sprite> jacketSprite = nullptr;
     static inline Vector2 kDrawSize;
 };

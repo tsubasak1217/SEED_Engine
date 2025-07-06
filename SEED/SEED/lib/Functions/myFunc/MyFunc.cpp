@@ -135,9 +135,14 @@ Vector3 MyFunc::CreateVector(float theta, float phi){
 
 int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 
-    if(max <= min){
+    if(max < min){
         assert(false);
     }
+
+    if(min == max){
+        return min; // minとmaxが同じ場合はその値を返す
+    }
+
 
     int32_t range = max - min;
 
@@ -158,8 +163,12 @@ int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 
 float MyFunc::Spiral(float input, float min, float max){
 
-    if(max <= min){
+    if(max < min){
         assert(false);
+    }
+
+    if(min == max){
+        return min; // minとmaxが同じ場合はその値を返す
     }
 
     float range = max - min;
@@ -289,6 +298,27 @@ std::string MyFunc::ConvertString(const std::wstring& str){
     std::string result(sizeNeeded, 0);
     WideCharToMultiByte(CP_UTF8, 0, str.data(), static_cast<int>(str.size()), result.data(), sizeNeeded, NULL, NULL);
     return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 文字列のハッシュ値を計算する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+uint64_t MyFunc::Hash64(const std::string& str){
+    uint64_t hash = 14695981039346656037ull; // FNV offset basis (64bit)
+    for(char c : str){
+        hash ^= static_cast<uint8_t>(c);
+        hash *= 1099511628211ull; // FNV prime (64bit)
+    }
+    return hash;
+}
+
+uint32_t MyFunc::Hash32(const std::string& str){
+    uint32_t hash = 2166136261u; // FNV offset basis (32bit)
+    for(char c : str){
+        hash ^= static_cast<uint8_t>(c);
+        hash *= 16777619u; // FNV prime (32bit)
+    }
+    return hash;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

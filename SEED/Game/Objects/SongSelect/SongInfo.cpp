@@ -11,7 +11,7 @@ void SongInfo::Initialize(const std::string& _songName){
 
     this->songName = _songName;
     std::string jsonNames[diffcultySize] = { "Basic.json", "Expert.json", "Master.json", "Parallel.json" };
-    std::string directoryPath = "NoteDatas/" + _songName + "/";
+    std::string directoryPath = "Resources/NoteDatas/" + _songName + "/";
 
     // jsonファイルの存在を確認し、読み込む
     for(int i = 0; i < diffcultySize; i++){
@@ -30,7 +30,7 @@ void SongInfo::Initialize(const std::string& _songName){
 
         // アーティスト名を取得
         if(artistName.empty()){
-            artistName = noteData["artistName"];
+            artistName = noteData["artist"];
         }
 
         // BPMを取得
@@ -55,7 +55,7 @@ void SongInfo::Initialize(const std::string& _songName){
     }
 
     // スコア情報を初期化
-    directoryPath = "Jsons/ScoreDatas/" + _songName + "/";
+    directoryPath = "Resources/Jsons/ScoreDatas/" + _songName + "/";
     // jsonファイルの存在を確認し、読み込む
     for(int i = 0; i < diffcultySize; i++){
         std::string filePath = directoryPath + jsonNames[i];
@@ -86,15 +86,46 @@ void SongInfoDrawer::Initialize(){
     backSprite = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
     backSprite->anchorPoint = { 0.5f,0.5f };
     backSprite->size = kDrawSize;
+
+    jacketSprite = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
+    jacketSprite->size = { kDrawSize.y * 0.7f,kDrawSize.y * 0.7f };
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // 楽曲情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfoDrawer::Draw(const SongInfo& songInfo, bool isSelected){
+void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, bool isSelected){
     // 背景部分を描画
-    backSprite->translate = songInfo.transform.translate;
-    backSprite->scale = songInfo.transform.scale;
-    backSprite->Draw();
-    isSelected;
+    if(isSelected){
+        backSprite->color = { 1.0f,1.0f,0.0f,1.0f };
+    } else{
+        backSprite->color = { 1.0f,1.0f,1.0f,1.0f };
+    }
+
+    backSprite->translate = transform.translate;
+    backSprite->scale = transform.scale;
+    //backSprite->Draw();
+    songInfo;
+    
+    static Vector2 leftTopPos{};
+    leftTopPos = transform.translate - (kDrawSize * transform.scale) * 0.5f;
+
+    // ジャケットのオフセット
+    Vector2 jacketOffset = { kDrawSize.y * 0.15f * transform.scale.x,kDrawSize.y * 0.15f * transform.scale.y };
+    jacketSprite->GH = TextureManager::LoadTexture("Jackets/" + songInfo.songName + ".png");
+    jacketSprite->translate = leftTopPos + jacketOffset;
+    jacketSprite->scale = backSprite->scale;
+    // ジャケット画像を描画
+    //jacketSprite->Draw();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// 編集を行う関数
+/////////////////////////////////////////////////////////////////////////////
+void SongInfoDrawer::Edit(){
+#ifdef _DEBUG
+
+    ImGui::DragFloat2("DrawSize", &kDrawSize.x, 1.0f, 100.0f, 1000.0f);
+
+#endif // _DEBUG
 }

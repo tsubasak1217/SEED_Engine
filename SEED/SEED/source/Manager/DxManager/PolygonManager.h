@@ -33,8 +33,9 @@ struct ID3D12Resource;
 // 全部の描画が種類ごとに最終的にこの形に情報をまとめられる
 struct ModelDrawData{
 
-    // 名前
+    // 識別情報
     std::string name;
+    uint64_t hash;
 
     // 各種データ
     ModelData* modelData;
@@ -52,11 +53,11 @@ struct ModelDrawData{
     static D3D12_INDEX_BUFFER_VIEW ibv;
 
     // モデルの種類が切り替わる番号(頂点)
-    static std::unordered_map<std::string, int32_t>modelSwitchIdx_Vertex;
+    static std::unordered_map<uint64_t, int32_t>modelSwitchIdx_Vertex;
     std::array<int32_t,128>meshSwitchIdx_Vertex;// メッシュの切り替わる番号(最大16meshまで)
 
     // モデルの種類が切り替わる番号(インデックス)
-    static std::unordered_map<std::string, int32_t>modelSwitchIdx_Index;
+    static std::unordered_map<uint64_t, int32_t>modelSwitchIdx_Index;
     std::array<int32_t,128>meshSwitchIdx_Index;// メッシュの切り替わる番号(最大16meshまで)
 
     // 描画する順番
@@ -83,7 +84,6 @@ class PolygonManager{
 
 private:// 内部で使用する定数や列挙型
 
-    static const int kPrimitiveVariation = 13;
     enum PRIMITIVE_TYPE : BYTE{
         PRIMITIVE_TRIANGLE = 0,
         PRIMITIVE_TRIANGLE2D,
@@ -102,8 +102,10 @@ private:// 内部で使用する定数や列挙型
         PRIMITIVE_STATIC_SPRITE,
         PRIMITIVE_STATIC_TEXT2D,
         PRIMITIVE_STATIC_LINE2D,
+        kPrimitiveCount
     };
 
+    static const int kPrimitiveVariation = kPrimitiveCount;
 
     enum class DrawOrder : BYTE{
         Model = 0,
@@ -260,7 +262,7 @@ private:// 現在の描画数や頂点数などを格納する変数
 private:// 実際に頂点情報や色などの情報が入っている変数
 
     // モデル用
-    std::unordered_map<std::string, std::unique_ptr<ModelDrawData>> modelDrawData_;
+    std::unordered_map<uint64_t, std::unique_ptr<ModelDrawData>> modelDrawData_;
     // プリミティブな描画に使用するデータ
     ModelData primitiveData_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];
     uint32_t primitiveDrawCount_[kPrimitiveVariation][(int)BlendMode::kBlendModeCount][3];

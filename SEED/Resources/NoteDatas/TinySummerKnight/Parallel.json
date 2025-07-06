@@ -1,0 +1,25 @@
+{
+    "artist": "tbs",
+    "bpm": 150.0,
+    "difficulty": 5,
+    "genre": 0,
+    "maxCombo": 0,
+    "notesDesigner": "tbs",
+    "songName": "musics/TinySummerKnight.wav",
+    "tempoData": [
+        {
+            "barCount": 1,
+            "bpm": 150.0,
+            "time": 1.600000023841858,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        },
+        {
+            "barCount": 14,
+            "bpm": 150.0,
+            "time": 1.600000023841858,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        }
+    ]
+}

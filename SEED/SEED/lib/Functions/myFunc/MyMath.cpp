@@ -270,9 +270,9 @@ Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, co
 
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
     if(t <= 0.0f){
-        return p0;
+        return p1;
     } else if(t >= 1.0f){
-        return p3;
+        return p2;
     }
     float t2 = t * t;
     float t3 = t2 * t;
@@ -281,6 +281,25 @@ Vector3 MyMath::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, co
     Vector3 e2 = (p3 * -1) + (p2 * 4) + (p1 * -5) + (p0 * 2);
     Vector3 e1 = (p2 * 1) + (p0 * -1);
     Vector3 e0 = p1 * 2;
+
+    return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
+}
+
+// 4点を直接指定してCatmull-Rom補間を行う関数 (2次元版)
+Vector2 MyMath::CatmullRomInterpolation(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t){
+    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+    if(t <= 0.0f){
+        return p1;
+    } else if(t >= 1.0f){
+        return p2;
+    }
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    Vector2 e3 = (p3 * 1) + (p2 * -3) + (p1 * 3) + (p0 * -1);
+    Vector2 e2 = (p3 * -1) + (p2 * 4) + (p1 * -5) + (p0 * 2);
+    Vector2 e1 = (p2 * 1) + (p0 * -1);
+    Vector2 e0 = p1 * 2;
 
     return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
 }
@@ -357,6 +376,34 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
     return result;
 }
 
+// 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数 (2次元版)
+Vector2 MyMath::CatmullRomPosition(const std::vector<Vector2>& controlPoints, float t){
+    if(controlPoints.size() == 0){ return{ 0.0f,0.0f }; }
+    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+    Vector2 result;
+    std::vector<Vector2> tmpControlPoints = controlPoints;
+    // 要素数が必要数に達するまでコピーして追加
+    while(tmpControlPoints.size() < 4){
+        // 要素数が必要数に達するまでコピーして追加
+        while(tmpControlPoints.size() < 4){
+            tmpControlPoints.push_back(tmpControlPoints.back());
+        }
+        // 等間隔に制御点を修正
+        //ToConstantControlPoints(&tmpControlPoints);
+    }
+    int size = int(tmpControlPoints.size() - 1);
+    float t2 = std::fmod(t * size, 1.0f);
+    int idx = int(t * size);
+    result = CatmullRomInterpolation(
+        tmpControlPoints[std::clamp(idx - 1, 0, size)],
+        tmpControlPoints[idx],
+        tmpControlPoints[std::clamp(idx + 1, 0, size)],
+        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        t2
+    );
+    return result;
+}
+
 // 制御点を等間隔に修正する関数
 void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
 
@@ -393,6 +440,39 @@ void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
         }
     }
 
+    if(pControlPoints->size() != original.size()){ assert(false); }
+}
+
+
+// 制御点を等間隔に修正する関数 (2次元版)
+void MyMath::ToConstantControlPoints(std::vector<Vector2>* pControlPoints){
+    // 全区間の大体の長さを求める
+    int kLoop = (int)pControlPoints->size() * 16;
+    float totalLength = 0.0f;
+    Vector2 prev = pControlPoints->front();
+    for(int i = 1; i <= kLoop; i++){
+        Vector2 next = CatmullRomPosition(*pControlPoints, (float)i / (float)kLoop);
+        totalLength += Length(next - prev);
+        prev = next;
+    }
+    // 1区間の長さを求める
+    float interval = totalLength / (float)(pControlPoints->size() - 1);// 1区間の長さ
+    // 制御点を等間隔に修正
+    std::vector<Vector2> original = *pControlPoints;
+    prev = original.front();
+    totalLength = 0.0f;
+    int prevIdx = 0;
+    for(int i = 0; i < kLoop; i++){
+        Vector2 next = CatmullRomPosition(original, (float)i / (float)kLoop);
+        totalLength += Length(next - prev);
+        prev = next;
+        // 区間が一つ進んだら制御点を修正
+        int idx = int(totalLength / interval);
+        if(prevIdx < idx){
+            (*pControlPoints)[idx] = next;
+            prevIdx = idx;
+        }
+    }
     if(pControlPoints->size() != original.size()){ assert(false); }
 }
 

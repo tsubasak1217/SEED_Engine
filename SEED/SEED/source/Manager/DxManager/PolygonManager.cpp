@@ -19,8 +19,8 @@ uint32_t PolygonManager::modelIndexCount_ = 0;
 uint32_t PolygonManager::spriteCount_ = 0;
 uint32_t PolygonManager::lineCount_ = 0;
 
-std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIdx_Vertex;
-std::unordered_map<std::string, int32_t> ModelDrawData::modelSwitchIdx_Index;
+std::unordered_map<uint64_t, int32_t> ModelDrawData::modelSwitchIdx_Vertex;
+std::unordered_map<uint64_t, int32_t> ModelDrawData::modelSwitchIdx_Index;
 
 D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_vertex;
 D3D12_VERTEX_BUFFER_VIEW ModelDrawData::vbv_instance;
@@ -29,12 +29,12 @@ D3D12_INDEX_BUFFER_VIEW ModelDrawData::ibv;
 
 
 std::string blendName[(int)BlendMode::kBlendModeCount] = {
-    "_Blend::NONE",
-    "_Blend::MUL",
-    "_Blend::SUB",
-    "_Blend::NORMAL",
-    "_Blend::ADD",
-    "_Blend::SCREEN"
+    "_NONE",
+    "_MUL",
+    "_SUB",
+    "_NORMAL",
+    "_ADD",
+    "_SCREEN"
 };
 
 std::string cullName[3] = {
@@ -86,7 +86,7 @@ void PolygonManager::InitResources(){
 
     // Camera
     cameraResource_ =
-        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU)* 16);
+        CreateBufferResource(pDxManager_->device.Get(), sizeof(CameraForGPU) * 16);
     cameraResource_->SetName(L"cameraResource");
 
     // Lighting
@@ -417,44 +417,46 @@ void PolygonManager::AddTriangle(
 
     // 描画データの取得
     static std::string drawDataName[2];
-    std::string curDrawDataName;
+    uint64_t hash;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
-    drawDataName[0] += "ENGINE_DRAW_TRIANGLE";
+    drawDataName[0] += "T";
     drawDataName[0] += blendName[(int)blendMode];
     drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
-    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TRIANGLE2D" : "ENGINE_DRAW_TRIANGLE2D";
+    drawDataName[1] += isStaticDraw ? "ST2" : "T2";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
     // もし該当する描画データがなければ作成する
-    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
-    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+    view3D ? hash = MyFunc::Hash64(drawDataName[0]) : hash = MyFunc::Hash64(drawDataName[1]);
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
 
         // 頂点データの取得
-        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[curDrawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[curDrawDataName]->pso =
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
-        modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+        modelDrawData_[hash]->drawOrder = view3D ?
             (int8_t)DrawOrder::Triangle : (int8_t)DrawOrder::Triangle2D;
-        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
-            (int8_t)DrawOrder::StaticTriangle2D : modelDrawData_[curDrawDataName]->drawOrder;
+        modelDrawData_[hash]->drawOrder = isStaticDraw ?
+            (int8_t)DrawOrder::StaticTriangle2D : modelDrawData_[hash]->drawOrder;
         // 名前の設定
-        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+        modelDrawData_[hash]->name = view3D ? drawDataName[0] : drawDataName[1];
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
     // indexCount
-    auto* drawData = modelDrawData_[curDrawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int indexCount = drawCount * 3;
     // vertexResource
@@ -550,30 +552,33 @@ void PolygonManager::AddTriangle3DPrimitive(
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
-    drawDataName += "ENGINE_DRAW_TRIANGLE";
+    drawDataName += "T";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
+    uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // 無かったら作成する
-    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[drawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[drawDataName]->pso =
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
-        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Triangle2D;
+        modelDrawData_[hash]->drawOrder = (int8_t)DrawOrder::Triangle2D;
         // 名前の設定
-        modelDrawData_[drawDataName]->name = drawDataName;
+        modelDrawData_[hash]->name = drawDataName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
-    auto* drawData = modelDrawData_[drawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
 
     // indexCount
     int drawCount = drawData->totalDrawCount;
@@ -699,7 +704,7 @@ void PolygonManager::AddQuad(
 
     ModelData* modelData;
     if(isText){
-        modelData = view3D ? &primitiveData_[PRIMITIVE_TEXT][(int)blendMode][(int)cullMode - 1]:
+        modelData = view3D ? &primitiveData_[PRIMITIVE_TEXT][(int)blendMode][(int)cullMode - 1] :
             &primitiveData_[PRIMITIVE_TEXT2D][(int)blendMode][(int)cullMode - 1];
     } else{
         modelData = view3D ? &primitiveData_[PRIMITIVE_QUAD][(int)blendMode][(int)cullMode - 1] :
@@ -715,38 +720,38 @@ void PolygonManager::AddQuad(
     }
 
     static std::string drawDataName[2];
-    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
-    drawDataName[0] += isText ? "ENGINE_DRAW_TEXT" : "ENGINE_DRAW_QUAD";
+    drawDataName[0] += isText ? "TX" : "Q";
     drawDataName[0] += blendName[(int)blendMode];
     drawDataName[0] += cullName[(int)cullMode - 1];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
     if(isText){
-        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_TEXT2D" : "ENGINE_DRAW_TEXT2D";
+        drawDataName[1] += isStaticDraw ? "STX2" : "TX2";
     } else{
-        drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_QUAD2D" : "ENGINE_DRAW_QUAD2D";
+        drawDataName[1] += isStaticDraw ? "SQ2" : "Q2";
     }
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[(int)cullMode - 1];
 
     // もし該当する描画データがなければ作成する
-    view3D ? curDrawDataName = drawDataName[0] : curDrawDataName = drawDataName[1];
-    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+    uint64_t hash = view3D ? MyFunc::Hash64(drawDataName[0]) : MyFunc::Hash64(drawDataName[1]);
+
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[curDrawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
         if(!isText){
-            modelDrawData_[curDrawDataName]->pso =
+            modelDrawData_[hash]->pso =
                 PSOManager::GetPSO(
                     "CommonVSPipeline.pip",
                     blendMode, cullMode, PolygonTopology::TRIANGLE
                 );
         } else{
-            modelDrawData_[curDrawDataName]->pso =
+            modelDrawData_[hash]->pso =
                 PSOManager::GetPSO(
                     "TextVSPipeline.pip",
                     blendMode, cullMode, PolygonTopology::TRIANGLE
@@ -755,23 +760,25 @@ void PolygonManager::AddQuad(
 
         // 描画種類の設定
         if(!isText){
-            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+            modelDrawData_[hash]->drawOrder = view3D ?
                 (int8_t)DrawOrder::Quad : (int8_t)DrawOrder::Quad2D;
-            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
-                (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[curDrawDataName]->drawOrder;
+            modelDrawData_[hash]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticQuad2D : modelDrawData_[hash]->drawOrder;
         } else{
-            modelDrawData_[curDrawDataName]->drawOrder = view3D ?
+            modelDrawData_[hash]->drawOrder = view3D ?
                 (int8_t)DrawOrder::Text : (int8_t)DrawOrder::Text2D;
-            modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
-                (int8_t)DrawOrder::StaticText2D : modelDrawData_[curDrawDataName]->drawOrder;
+            modelDrawData_[hash]->drawOrder = isStaticDraw ?
+                (int8_t)DrawOrder::StaticText2D : modelDrawData_[hash]->drawOrder;
         }
 
         // 名前の設定
-        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+        modelDrawData_[hash]->name = view3D ? drawDataName[0] : drawDataName[1];
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
     // Count
-    auto* drawData = modelDrawData_[curDrawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
@@ -891,31 +898,34 @@ void PolygonManager::AddQuad3DPrimitive(
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
-    drawDataName += "ENGINE_DRAW_QUAD";
+    drawDataName += "Q";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
+    uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // 無かったら作成する
-    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[drawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[drawDataName]->pso =
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
-        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Quad;
+        modelDrawData_[hash]->drawOrder = (int8_t)DrawOrder::Quad;
         // 名前の設定
-        modelDrawData_[drawDataName]->name = drawDataName;
+        modelDrawData_[hash]->name = drawDataName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
     // Count
-    auto* drawData = modelDrawData_[drawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
@@ -1089,35 +1099,38 @@ void PolygonManager::AddSprite(
     // 描画データの取得
     drawDataName.clear();
     drawDataName.reserve(128);
-    drawDataName += isStaticDraw ? "ENGINE_DRAW_STATIC_SPRITE" : "ENGINE_DRAW_SPRITE";
-    drawLocation == DrawLocation::Back ? drawDataName = "ENGINE_DRAW_BACKSPRITE" : drawDataName;
+    drawDataName += isStaticDraw ? "SSP" : "SP";
+    drawLocation == DrawLocation::Back ? drawDataName = "BSP" : drawDataName;
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[(int)cullMode - 1];
+    uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // もし該当する描画データがなければ作成する
-    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[drawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[drawDataName]->pso =
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, cullMode, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
-        modelDrawData_[drawDataName]->drawOrder = isStaticDraw ?
+        modelDrawData_[hash]->drawOrder = isStaticDraw ?
             (int8_t)DrawOrder::StaticSprite : (int8_t)DrawOrder::Sprite;
-        modelDrawData_[drawDataName]->drawOrder = drawLocation == DrawLocation::Back ?
-            (int8_t)DrawOrder::BackSprite : modelDrawData_[drawDataName]->drawOrder;
+        modelDrawData_[hash]->drawOrder = drawLocation == DrawLocation::Back ?
+            (int8_t)DrawOrder::BackSprite : modelDrawData_[hash]->drawOrder;
         // 名前の設定
-        modelDrawData_[drawDataName]->name = drawDataName;
+        modelDrawData_[hash]->name = drawDataName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
     //count
-    auto* drawData = modelDrawData_[drawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
@@ -1264,32 +1277,35 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     //                     モデル描画データがが存在しないときのみ
     //////////////////////////////////////////////////////////////////////////
-    if(modelDrawData_.find(modelName) == modelDrawData_.end()){
+    uint64_t hash = MyFunc::Hash64(modelName);
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[modelName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[modelName]->modelData = ModelManager::GetModelData(model->modelName_);
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = ModelManager::GetModelData(model->modelName_);
         // 名前の設定
-        modelDrawData_[modelName]->name = modelName;
+        modelDrawData_[hash]->name = modelName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
 
         // 描画種類の設定
         if(model->isAnimation_){
-            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::AnimationModel;
+            modelDrawData_[hash]->drawOrder = (int)DrawOrder::AnimationModel;
         } else{
-            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Model;
+            modelDrawData_[hash]->drawOrder = (int)DrawOrder::Model;
         }
         if(model->isParticle_){
-            modelDrawData_[modelName]->drawOrder = (int)DrawOrder::Particle;
+            modelDrawData_[hash]->drawOrder = (int)DrawOrder::Particle;
         }
 
         // パイプラインの設定
         if(model->isAnimation_){
-            modelDrawData_[modelName]->pso =
+            modelDrawData_[hash]->pso =
                 PSOManager::GetPSO(
                     "SkinningVSPipeline.pip",
                     model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
                 );
         } else{
-            modelDrawData_[modelName]->pso =
+            modelDrawData_[hash]->pso =
                 PSOManager::GetPSO(
                     "CommonVSPipeline.pip",
                     model->blendMode_, model->cullMode_, PolygonTopology::TRIANGLE
@@ -1298,7 +1314,7 @@ void PolygonManager::AddModel(Model* model){
     }
 
     // サイズ確保
-    auto& drawData = modelDrawData_[modelName];
+    auto& drawData = modelDrawData_[hash];
     int meshSize = (int)drawData->modelData->meshes.size();
 
     // count(instance数)
@@ -1339,11 +1355,11 @@ void PolygonManager::AddModel(Model* model){
 
         // transformの設定
         wvp = Multiply(
-            model->GetWorldMat(),
+            model->worldMat_,
             camera->GetViewProjectionMat()
         );
 
-        transform[drawCount].world = model->GetWorldMat();
+        transform[drawCount].world = model->worldMat_;
         transform[drawCount].WVP = wvp;
         transform[drawCount].worldInverseTranspose = worldInverseTranspose;
     }
@@ -1353,7 +1369,7 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
 
     // mesh数 * instance数分のoffsetを確保(各instanceごとにオフセットが必要なため)
-    modelDrawData_[modelName]->offsetData.resize(meshSize);
+    drawData->offsetData.resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
         auto& offsetData = drawData->offsetData[meshIdx];
         offsetData.resize(drawCount + 1);
@@ -1364,7 +1380,7 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     if(model->isAnimation_){
         // instance数分のpalette(行列などの入った配列)を確保
-        auto& palette = modelDrawData_[modelName]->paletteData;
+        auto& palette = drawData->paletteData;
         if(palette.size() <= drawCount){ palette.resize(drawCount + 1); }
         palette[drawCount] = model->palette_;
     }
@@ -1382,7 +1398,7 @@ void PolygonManager::AddModel(Model* model){
 
     objCountCull_[(int)model->cullMode_ - 1]++;
     objCountBlend_[(int)model->blendMode_]++;
-    modelDrawData_[modelName]->totalDrawCount++;
+    drawData->totalDrawCount++;
     modelIndexCount_++;
 
     //////////////////////////////////////////////////////////////////////////
@@ -1461,45 +1477,46 @@ void PolygonManager::AddLine(
 
     // 描画データの取得
     static std::string drawDataName[2];
-    std::string curDrawDataName;
     drawDataName[0].clear();
     drawDataName[0].reserve(128);
-    drawDataName[0] += "ENGINE_DRAW_LINE";
+    drawDataName[0] += "L";
     drawDataName[0] += blendName[(int)blendMode];
     drawDataName[0] += cullName[0];
     drawDataName[1].clear();
     drawDataName[1].reserve(128);
-    drawDataName[1] += isStaticDraw ? "ENGINE_DRAW_STATIC_LINE2D" : "ENGINE_DRAW_LINE2D";
+    drawDataName[1] += isStaticDraw ? "SL2" : "L2";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[0];
-    curDrawDataName = view3D ? drawDataName[0] : drawDataName[1];
+    uint64_t hash = view3D ? MyFunc::Hash64(drawDataName[0]) : MyFunc::Hash64(drawDataName[1]);
 
     // もし該当する描画データがなければ作成する
-    if(modelDrawData_.find(curDrawDataName) == modelDrawData_.end()){
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
-        modelDrawData_[curDrawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[curDrawDataName]->modelData = modelData;
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[curDrawDataName]->pso =
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE
             );
 
         // 描画種類の設定
-        modelDrawData_[curDrawDataName]->drawOrder = isStaticDraw ?
+        modelDrawData_[hash]->drawOrder = isStaticDraw ?
             (int8_t)DrawOrder::StaticLine2D : (int8_t)DrawOrder::Line2D;
         if(view3D){
-            modelDrawData_[curDrawDataName]->drawOrder = (int8_t)DrawOrder::Line;
+            modelDrawData_[hash]->drawOrder = (int8_t)DrawOrder::Line;
         }
         // 名前の設定
-        modelDrawData_[curDrawDataName]->name = curDrawDataName;
+        modelDrawData_[hash]->name = view3D ? drawDataName[0] : drawDataName[1];
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
 
     // Count
-    auto* drawData = modelDrawData_[curDrawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 2;
     int indexCount = drawCount * 2;
@@ -1612,25 +1629,28 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     static std::string drawDataName;
     drawDataName.clear();
     drawDataName.reserve(128);
-    drawDataName += "ENGINE_DRAW_OFFSCREEN";
+    drawDataName += "O";
     drawDataName += blendName[(int)blendMode];
     drawDataName += cullName[0];
+    uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // もし該当する描画データがなければ作成する
-    if(modelDrawData_.find(drawDataName) == modelDrawData_.end()){
-        modelDrawData_[drawDataName] = std::make_unique<ModelDrawData>();
-        modelDrawData_[drawDataName]->modelData = modelData;
-        modelDrawData_[drawDataName]->pso =
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        modelDrawData_[hash]->modelData = modelData;
+        modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
             );
-        modelDrawData_[drawDataName]->drawOrder = (int8_t)DrawOrder::Offscreen;
-        modelDrawData_[drawDataName]->name = drawDataName;
+        modelDrawData_[hash]->drawOrder = (int8_t)DrawOrder::Offscreen;
+        modelDrawData_[hash]->name = drawDataName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
     }
 
     // Count
-    auto* drawData = modelDrawData_[drawDataName].get();
+    auto* drawData = modelDrawData_[hash].get();
     int drawCount = drawData->totalDrawCount;
     int vertexCount = drawCount * 4;
     int indexCount = drawCount * 6;
@@ -1999,24 +2019,8 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
         // 描画リストが空ならcontinue
         auto& drawList = *pDrawList;
         if(drawList.size() == 0){ continue; }
+        bool isBinded = false;
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        /*                                  パイプラインの切り替え                                      */
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-
-        // キーがPSOなので、そこから取得し設定
-        auto* rootSignature = drawList.front()->pso->rootSignature.get();
-        auto* pipeline = drawList.front()->pso->pipeline.get();
-
-        pDxManager_->commandList->SetGraphicsRootSignature(
-            rootSignature->rootSignature.Get()
-        );
-        pDxManager_->commandList->SetPipelineState(
-            pipeline->pipeline_.Get()
-        );
-
-        // Resourceのバインドを行う
-        rootSignature->BindAll(pDxManager_->commandList.Get());
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
         /*                                     Modelごとに見ていく                                      */
@@ -2035,6 +2039,28 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                 meshCountAll += instanceCount * (int)drawData->modelData->meshes.size();
                 instanceCountAll += instanceCount;
                 continue;
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            /*                                  パイプラインの切り替え                                      */
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            if(!isBinded){
+
+                // キーがPSOなので、そこから取得し設定
+                auto* rootSignature = drawList.front()->pso->rootSignature.get();
+                auto* pipeline = drawList.front()->pso->pipeline.get();
+
+                pDxManager_->commandList->SetGraphicsRootSignature(
+                    rootSignature->rootSignature.Get()
+                );
+                pDxManager_->commandList->SetPipelineState(
+                    pipeline->pipeline_.Get()
+                );
+
+                // Resourceのバインドを行う
+                rootSignature->BindAll(pDxManager_->commandList.Get());
+
+                isBinded = true;
             }
 
 
@@ -2086,7 +2112,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     // Resource上の開始位置設定
                     vbv->BufferLocation =
                         modelVertexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Vertex[drawData->hash] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
                     vbv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].vertices.size();
@@ -2123,7 +2149,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     if(drawOrder == DrawOrder::AnimationModel){
                         D3D12_VERTEX_BUFFER_VIEW* vbv3 = &drawData->vbv_skinning;
                         size = sizeof(VertexInfluence);
-                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[drawData->name] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
+                        int ofst = ((ModelDrawData::modelSwitchIdx_Vertex[drawData->hash] + drawData->meshSwitchIdx_Vertex[meshIdx]) * size);
                         // Resource上の開始位置設定
                         vbv3->BufferLocation =
                             vertexInfluenceResource_.Get()->GetGPUVirtualAddress() + ofst;
@@ -2149,7 +2175,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     // Resource上の開始位置設定
                     ibv->BufferLocation =
                         modelIndexResource_.Get()->GetGPUVirtualAddress() +
-                        ((ModelDrawData::modelSwitchIdx_Index[drawData->name] + drawData->meshSwitchIdx_Index[meshIdx]) * size);
+                        ((ModelDrawData::modelSwitchIdx_Index[drawData->hash] + drawData->meshSwitchIdx_Index[meshIdx]) * size);
 
                     // 総サイズ、刻み幅の設定
                     ibv->SizeInBytes = size * (int)drawData->modelData->meshes[meshIdx].indices.size();

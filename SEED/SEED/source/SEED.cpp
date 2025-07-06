@@ -678,7 +678,7 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
 
     // 制御点の描画
     if(!isControlPointVisible){ return; }
-    Model controlPointModel = Model("DefaultAssets/cube.obj");
+    Model controlPointModel = Model("DefaultAssets/cube/cube.obj");
     controlPointModel.transform_.scale = { 0.5f,0.5f,0.5f };
     controlPointModel.masterColor_ = { 1.0f,0.0f,0.0f,1.0f };
 
@@ -686,6 +686,45 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
         controlPointModel.transform_.translate = points[i];
         controlPointModel.UpdateMatrix();
         DrawModel(&controlPointModel);
+    }
+}
+
+// スプライン曲線の描画（2D版）
+void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color, bool isControlPointVisible){
+
+    // 点が2つ未満の場合は描画しない
+    if(points.size() < 2){ return; }
+
+    // 必要な変数を用意
+    float t = 0;
+    uint32_t totalSubdivision = uint32_t(points.size() - 1) * subdivision;
+    std::optional<Vector2> previous = std::nullopt;
+
+    // スプライン曲線の描画
+    for(uint32_t i = 0; i <= totalSubdivision; i++){
+
+        // 現在の位置を求める
+        t = float(i) / totalSubdivision;
+
+        // 現在の区間の点を求める
+        Vector2 p = MyMath::CatmullRomPosition(points, t);
+
+        // 線を描画
+        if(previous != std::nullopt){
+            DrawLine2D(previous.value(), p, color);
+        }
+
+        // 現在の点を保存
+        previous = p;
+    }
+
+    // 制御点の描画
+    if(!isControlPointVisible){ return; }
+    Quad2D controlPointQuad = MakeEqualQuad2D(5.0f, { 1.0f,0.0f,1.0f,1.0f });
+
+    for(int i = 0; i < points.size(); i++){
+        controlPointQuad.translate = points[i];
+        DrawQuad2D(controlPointQuad);
     }
 }
 

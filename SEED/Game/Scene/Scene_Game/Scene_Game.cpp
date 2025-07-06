@@ -7,6 +7,7 @@
 
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Scene/Scene_Game/State/GameState_Select.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -35,7 +36,7 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     // Playステートに初期化
-    ChangeState(new GameState_Play(this));
+    ChangeState(new GameState_Select(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化

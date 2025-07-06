@@ -3,6 +3,8 @@
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
+#include <execution>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                          //
@@ -300,8 +302,9 @@ void Model::UpdatePalette(){
             // スキニング用のパレットの更新
             const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
             palette_.resize(lerpedSkeleton.joints.size());
-            for(size_t jointIndex = 0; jointIndex < lerpedSkeleton.joints.size(); ++jointIndex){
+            std::for_each(std::execution::par_unseq, skeleton.joints.begin(), skeleton.joints.end(), [&](const ModelJoint& joint){
 
+                uint32_t jointIndex = joint.index;
                 assert(jointIndex < inverseBindPoseMatrices.size());
 
                 // スケルトン空間行列の更新
@@ -311,7 +314,7 @@ void Model::UpdatePalette(){
                 // スケルトン空間行列の逆行列転置行列の更新
                 palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
                     Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
-            }
+            });
 
             return;
 
@@ -326,8 +329,9 @@ void Model::UpdatePalette(){
     // スキニング用のパレットの更新
     const auto& inverseBindPoseMatrices = ModelManager::GetModelData(modelName_)->defaultSkinClusterData.inverseBindPoseMatrices;
     palette_.resize(skeleton.joints.size());
-    for(size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex){
+    std::for_each(std::execution::par_unseq, skeleton.joints.begin(), skeleton.joints.end(), [&](const ModelJoint& joint){
 
+        uint32_t jointIndex = joint.index;
         assert(jointIndex < inverseBindPoseMatrices.size());
 
         // スケルトン空間行列の更新
@@ -337,7 +341,8 @@ void Model::UpdatePalette(){
         // スケルトン空間行列の逆行列転置行列の更新
         palette_[jointIndex].skeletonSpaceInverceTransposeMatrix =
             Transpose(InverseMatrix(palette_[jointIndex].skeletonSpaceMatrix));
-    }
+    
+    });
 }
 
 // アニメーションの名前一覧を取得

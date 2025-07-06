@@ -131,6 +131,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
@@ -244,6 +245,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
     <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />

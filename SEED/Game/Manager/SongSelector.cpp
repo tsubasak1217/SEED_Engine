@@ -2,6 +2,26 @@
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Lib/Structs/Transform.h>
+
+// コンストラクタ
+SongSelector::SongSelector(){
+}
+
+// デストラクタ
+SongSelector::~SongSelector(){
+
+    // 終了時にjsonに情報を保存
+    std::string savePath = "Resources/Jsons/Settings/song_selector.json";
+
+    // jsonファイルに保存
+    std::ofstream ofs(savePath);
+    if(ofs.is_open()){
+        nlohmann::json json = ToJson();
+        ofs << json.dump(4);
+        ofs.close();
+    }
+}
 
 void SongSelector::Initialize(){
 
@@ -18,13 +38,40 @@ void SongSelector::Initialize(){
     // 描画クラスの初期化
     SongInfoDrawer::Initialize();
 
+    // jsonから設定を読み込む
+    std::string loadPath = "Resources/Jsons/Settings/song_selector.json";
+    std::ifstream ifs(loadPath);
+    if(ifs.is_open()){
+        nlohmann::json json;
+        ifs >> json;
+        ifs.close();
+        FromJson(json);
+    } else{
+        // ファイルが存在しない場合はデフォルト値を設定
+        currentGroupIndex = 0;
+        currentSongIndex = 0;
+        currentGroupMode = GroupMode::None;
+        currentSortMode = SortMode::Difficulty;
+        currentDifficulty = TrackDifficulty::Basic;
+    }
+
     // ソート処理を実行
-    currentGroupMode = GroupMode::None; // 初期はグループ分けなし
-    currentSortMode = SortMode::Difficulty; // 初期は難易度順ソート
     Sort();
-    // 選択状態を初期化
-    currentGroup = &songGroups.front(); // 最初のグループを選択
-    currentSong = currentGroup->groupMembers.front(); // 最初の曲を選択
+
+    // 現在のグループを設定
+    auto it = songGroups.begin();
+    std::advance(it, currentGroupIndex);
+    currentGroup = &(*it);
+    
+    // 現在の曲を設定
+    if(currentGroup && !currentGroup->groupMembers.empty()){
+        auto songIt = currentGroup->groupMembers.begin();
+        std::advance(songIt, currentSongIndex);
+        currentSong = *songIt;
+    } else{
+        currentSong = nullptr; // グループが空の場合はnullに設定
+    }
+
     // 可視曲の初期化
     UpdateVisibleSongs();
 }
@@ -262,17 +309,18 @@ void SongSelector::UpdateIndex(){
     int32_t nextGroupIndex = 0;
 
     for(auto& group : songGroups){
-        int32_t nextIndex = 0;
-
-        // 各グループ内の曲のインデックスを更新
-        for(auto& song : group.groupMembers){
-            // 曲のインデックスを更新
-            song->sortIndex = nextIndex++;
-            song->groupIndex = nextGroupIndex;
-        }
 
         // グループのインデックスを更新
+        group.groupIdx = nextGroupIndex; // グループのインデックスを設定
         nextGroupIndex++;
+
+        // 各グループ内の曲のインデックスを更新
+        int32_t nextSongIndex = 0;
+        for(auto& song : group.groupMembers){
+            // 曲のインデックスを更新
+            song->sortIndex = nextSongIndex++;
+            song->groupIndex = group.groupIdx;
+        }
     }
 
     // 現在のインデックスを更新
@@ -287,7 +335,7 @@ void SongSelector::UpdateIndex(){
 /////////////////////////////////////////////////////////////////////////////////////
 void SongSelector::UpdateVisibleSongs(){
 
-    if(!currentGroup){return;}
+    if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
 
     // 可視オブジェクトの更新
@@ -471,4 +519,39 @@ void SongSelector::Edit(){
     }
 
 #endif // _DEBUG
+}
+
+nlohmann::json SongSelector::ToJson(){
+    nlohmann::ordered_json json;
+    // 現在の選択状態を保存
+    json["currentGroupIndex"] = currentGroupIndex;
+    json["currentSongIndex"] = currentSongIndex;
+    json["currentGroupMode"] = (int)currentGroupMode;
+    json["currentSortMode"] = (int)currentSortMode;
+    json["currentDifficulty"] = (int)currentDifficulty;
+
+    // アイテムの位置を保存
+    for(int i = 0; i < itemAimTransforms.size(); i++){
+        json["itemAimTransforms"].push_back(itemAimTransforms[i]);
+    }
+
+    return json;
+}
+
+void SongSelector::FromJson(const nlohmann::json& json){
+    // 現在の選択状態を復元
+    currentGroupIndex = json["currentGroupIndex"];
+    currentSongIndex = json["currentSongIndex"];
+    currentGroupMode = static_cast<GroupMode>(json["currentGroupMode"]);
+    currentSortMode = static_cast<SortMode>(json["currentSortMode"]);
+    currentDifficulty = static_cast<TrackDifficulty>(json["currentDifficulty"]);
+
+    // アイテムの位置を復元
+    for(int i = 0; i < itemAimTransforms.size(); i++){
+        if(i < json["itemAimTransforms"].size()){
+            itemAimTransforms[i] = json["itemAimTransforms"][i];
+        } else{
+            itemAimTransforms[i] = Transform2D(); // デフォルト値を設定
+        }
+    }
 }

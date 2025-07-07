@@ -29,17 +29,11 @@ enum class SelectMode{
     Group, // グループ選択
 };
 
-// 楽曲グループ情報
-struct SongGroup{ 
-    std::string groupName; // グループ名
-    std::list<SongInfo*> groupMembers; // グループに属する楽曲のリスト
-};
-
 // 楽曲選択の管理クラス
 class SongSelector{
 public:
-    SongSelector() = default;
-    ~SongSelector() = default;
+    SongSelector();
+    ~SongSelector();
     void Initialize();
     void Update();
     void Draw();
@@ -56,6 +50,8 @@ private:
     void UpdateSongUI();
 
     void Edit();
+    nlohmann::json ToJson();
+    void FromJson(const nlohmann::json& json);
 
 private:
     SelectMode selectMode_;// 楽曲選択中かどうか

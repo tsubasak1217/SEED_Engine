@@ -152,11 +152,11 @@ void ImGuiManager::PostDraw(){
     ImGui::End();
 
     // デフォルトカメラ画面描画ウインドウ
-    ImFunc::SceneWindowBegin("GameWindow", "default",MoveOnly_TitleBar);
+    ImFunc::SceneWindowBegin("GameWindow", "default", MoveOnly_TitleBar);
     ImGui::End();
 
     // デバッグカメラ視点描画ウインドウ
-    ImVec2 imageSize = ImFunc::SceneWindowBegin("DebugCameraWindow", "debug", MoveOnly_TitleBar);
+    ImVec2 imageSize = ImFunc::SceneWindowBegin("DebugCameraWindow", "debug", MoveOnly_TitleBar | SceneManipurate);
     {
         // Guizmo
         ImDrawList* pDrawList = ImGui::GetWindowDrawList();
@@ -191,7 +191,7 @@ void ImGuiManager::PostDraw(){
 // カスタムウィンドウの開始関数
 /////////////////////////////////////////////////////////////////
 using WindowLocationData = std::pair<ImVec2, ImVec2>; // ウィンドウの位置とサイズ
-bool ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiWindowFlags flags){
+bool ImFunc::CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWindowFlags flags){
 
     static std::unordered_map<std::string, WindowLocationData> windowDatas;
     static std::unordered_map<std::string, bool> isDragging;
@@ -266,10 +266,40 @@ bool ImFunc::CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiW
 /////////////////////////////////////////////////////////////////
 // シーン描画ウインドウ
 /////////////////////////////////////////////////////////////////
-ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName, CustomImWindowFlag customFlags, ImGuiWindowFlags normalFlags){
-    ImFunc::CustomBegin(label, customFlags,normalFlags);
+ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName, CustomWindowFlag customFlags, ImGuiWindowFlags normalFlags){
+    ImFunc::CustomBegin(label, customFlags, normalFlags);
     {
+        // static変数
+        static unordered_map<ImGuiID, float> scales; // スケールを保存するマップ
+
+        // 画面内でホイールを回してスケールを変更
+        ImGuiID id = ImGui::GetCurrentWindow()->ID;
+        float wheel = ImGui::GetIO().MouseWheel;
+
+        // シーン操作が有効な場合に操作
+        if(customFlags & SceneManipurate){
+            if(wheel != 0.0f){
+                // window範囲内にマウスがあるかチェック
+                ImVec2 mousePos = ImGui::GetMousePos();
+                ImVec2 windowPos = ImGui::GetWindowPos();
+                ImVec2 windowSize = ImGui::GetWindowSize();
+                bool isMouseInWindow = (mousePos.x >= windowPos.x && mousePos.x <= windowPos.x + windowSize.x &&
+                    mousePos.y >= windowPos.y && mousePos.y <= windowPos.y + windowSize.y);
+
+                if(isMouseInWindow){
+                    // マウスがウィンドウ内にある場合のみスケールを変更
+                    if(scales.find(id) == scales.end()){
+                        scales[id] = 1.0f; // 初期スケール
+                    }
+                    scales[id] += wheel * 0.05f; // ホイールの値でスケールを調整
+                    scales[id] = (std::max)(0.1f, scales[id]); // 最小スケールを0.1に制限
+                }
+            }
+        }
+
+
         // サイズの計算
+        float scale = scales.find(id) != scales.end() ? scales[id] : 1.0f;
         Vector2 displaySize = WindowManager::GetCurrentWindowSize(ImGuiManager::GetWindowName());
         ImVec2 availSize = ImGui::GetContentRegionAvail();
         ImVec2 imageSize;
@@ -285,8 +315,15 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
             imageSize = { availSize.x,availSize.x * (displaySize.y / displaySize.x) };
         }
 
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), imageSize);
-        return imageSize; // 画像サイズを返す
+        // スケールを適用した最終サイズ
+        ImVec2 finalSize = imageSize * scale;
+        ImVec2 windowCenter = ImGui::GetWindowPos() + availSize * 0.5f;
+        ImGui::SetCursorPos(windowCenter - finalSize * 0.5f); // ウィンドウの中央に配置
+
+        // 表示
+        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
+
+        return finalSize; // 画像サイズを返す
     }
 }
 

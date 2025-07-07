@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <unordered_map>
+#include <vector>
 #include <cstdint>
 #include <optional>
 #include <json.hpp>
+#include <SEED/Lib/Structs/TextBox.h>
 #include <SEED/Lib/Structs/Sprite.h>
 
 enum class TrackDifficulty : int32_t {
@@ -87,13 +90,38 @@ struct SongInfo{
     nlohmann::json noteDatas[diffcultySize];
 };
 
+// 楽曲グループ情報
+struct SongGroup{
+    uint32_t groupIdx; // グループ番号
+    std::string groupName; // グループ名
+    std::list<SongInfo*> groupMembers; // グループに属する楽曲のリスト
+};
+
 struct SongInfoDrawer{
     static void Initialize();
     static void Draw(const SongInfo& songInfo,const Transform2D& transform,bool isSelected);
+    static void Draw(const SongGroup& groupInfo, const Transform2D& transform, bool isSelected);
     static void Edit();
 
+private:
+    static void SaveSettings();
+    static void LoadSettings();
+    static nlohmann::json ToJson();
+
+private:
     // 画像関連
     static inline std::unique_ptr<Sprite> backSprite = nullptr;
     static inline std::unique_ptr<Sprite> jacketSprite = nullptr;
     static inline Vector2 kDrawSize;
+
+    // テキストボックス関連
+    static inline std::unordered_map<std::string, std::unique_ptr<TextBox2D>> textBox{};
+    static inline std::unordered_map<std::string, Vector2>  textBoxSizes{};
+    static inline std::unordered_map<std::string, Vector2>  textBoxPositions{};
+    static inline std::unordered_map<std::string, float> textBoxFontSizes{};
+    static inline std::vector<std::string> textBoxKeys = {
+        "SongName", "GroupName","ArtistName", "BPM","NotesDesigner","Difficulty","Score"
+    };
+
+    
 };

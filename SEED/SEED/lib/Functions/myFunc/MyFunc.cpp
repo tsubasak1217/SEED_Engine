@@ -143,21 +143,14 @@ int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
         return min; // minとmaxが同じ場合はその値を返す
     }
 
+    int32_t range = max - min + 1; // 🔧 範囲のサイズ
+    int32_t offset = input - min;
 
-    int32_t range = max - min;
+    // 正の mod を保つようにする（負数対応）
+    int32_t wrapped = ((offset % range) + range) % range;
 
-    if(input > max){
+    return min + wrapped;
 
-        int32_t sub = input - max;
-        return min + ((sub - 1) % range);
-
-    } else if(input < min){
-
-        int32_t sub = input - min;
-        return max + ((sub + 1) % range);
-    }
-
-    return input;
 }
 
 
@@ -167,9 +160,7 @@ float MyFunc::Spiral(float input, float min, float max){
         assert(false);
     }
 
-    if(min == max){
-        return min; // minとmaxが同じ場合はその値を返す
-    }
+
 
     float range = max - min;
 

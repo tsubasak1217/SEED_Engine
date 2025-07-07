@@ -79,16 +79,18 @@ private:
 ///////////////////////////////////////////////////////////////////
 
 // ImGuiのウィンドウフラグを拡張するための列挙型
-enum CustomImWindowFlag{
+typedef int CustomWindowFlag;
+enum CustomImWindowFlag_{
     MoveOnly_TitleBar = 1 << 0, // タイトルバーのみドラッグ可能
+    SceneManipurate = 1 << 1, // シーンウィンドウを操作できるようにするか
 };
 
 struct ImFunc{
 
     // カスタムウィンドウの開始関数
-    static bool CustomBegin(const char* name, CustomImWindowFlag customFlag, ImGuiWindowFlags flags = 0);
+    static bool CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWindowFlags flags = 0);
     // シーン描画ウィンドウの関数
-    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName, CustomImWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
+    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName, CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
 
     // コンボボックスの拡張関数
     template <typename EnumType>

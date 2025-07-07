@@ -1,4 +1,5 @@
 #pragma once
+#include <nlohmann/json.hpp>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
@@ -29,3 +30,33 @@ struct TransformMatrix{
     Matrix4x4 world;
     Matrix4x4 worldInverseTranspose;
 };
+
+
+// jsosnコンバート関数
+inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform){
+    j = {
+        {"scale",transform.scale},
+        {"rotate",transform.rotate},
+        {"translate",transform.translate},
+    };
+}
+
+inline void to_json(nlohmann::ordered_json& j, const Transform& transform){
+    j = {
+        {"scale",transform.scale},
+        {"rotate",transform.rotate},
+        {"translate",transform.translate},
+    };
+}
+
+inline void from_json(const nlohmann::ordered_json& j, Transform2D& transform){
+    if(j.contains("scale")){ transform.scale = j["scale"]; }
+    if(j.contains("rotate")){ transform.rotate = j["rotate"]; }
+    if(j.contains("translate")){ transform.translate = j["translate"]; }
+}
+
+inline void from_json(const nlohmann::ordered_json& j, Transform& transform){
+    if(j.contains("scale")){ transform.scale = j["scale"]; }
+    if(j.contains("rotate")){ transform.rotate = j["rotate"]; }
+    if(j.contains("translate")){ transform.translate = j["translate"]; }
+}

@@ -10,7 +10,7 @@ void TextBox2D::Edit(){
     auto fontNames = MyFunc::GetFileList("Resources/fonts", { ".ttf", ".otf" });
     ImFunc::ComboText("フォント", fontName, fontNames);
     ImFunc::Combo<TextAlign>("配置", align, { "LEFT","CENTER","RIGHT" });
-    ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 100.0f);
+    ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 1000.0f);
     ImGui::DragFloat2("テキスト位置", &transform.translate.x, 1.0f);
     ImGui::DragFloat2("ボックスサイズ", &size.x, 1.0f, 0.0f);
     ImGui::DragFloat2("アンカーポイント", &anchorPos.x, 0.01f);

@@ -29,7 +29,7 @@ struct TextBox2D{
     Transform2D transform;
     Vector2 size = { 128.0f,64.0f };
     Vector2 anchorPos = { 0.5f,0.5f };
-    float fontSize = 16.0f;
+    float fontSize = 100.0f;
     float lineSpacing = 8.0f;// 行間の間隔
     float glyphSpacing = 8.0f;// 字間の間隔
     TextAlign align = TextAlign::CENTER;// テキストの配置

@@ -188,6 +188,51 @@ void NotesEditor::DisplayLane(){
     ImGui::SetCursorScreenPos(windowPos + laneLTPos_);
     ImGui::Image(textureIDs_["laneField"], laneSize_);
 
+    // ドラッグしたアイテムをドロップで受け付ける
+    if(ImGui::BeginDragDropTarget()){
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")){
+            const char* path = static_cast<const char*>(payload->Data);
+            std::string droppedPath(path);
+
+            if(!droppedPath.empty()){
+
+                // "NoteDatas/"以降の階層にあるかチェック
+                if(droppedPath.find("NoteDatas") != std::string::npos){
+                    // ポップアップが開いていない場合は自動で開く
+                    ImGui::OpenPopup("ノーツデータの読み込み確認");
+                    loadFileName_ = droppedPath; // 読み込むファイル名を保存
+                }
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    // 読み込むかどうか確認するポップアップを出す
+    if(ImGui::BeginPopupModal("ノーツデータの読み込み確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+
+        ImGui::Text("ノーツデータを読み込みますか？\n%s", loadFileName_.c_str());
+
+        if(ImGui::Button("はい")){
+            // ノーツデータを読み込む
+            if(std::filesystem::exists(loadFileName_)){
+                std::ifstream file(loadFileName_);
+                nlohmann::json jsonData;
+                file >> jsonData;
+                LoadFromJson(jsonData); // JSONから譜面データを読み込む
+                file.close();
+            }
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if(ImGui::Button("いいえ")){
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+
     for(int i = 0; i < 5; i++){
         // レーンの境界線を計算
         float x = worldLaneLTPos_.x + (laneSize_.x / 5.0f) * i;
@@ -1341,7 +1386,10 @@ void NotesEditor::FileControl(){
     }
 
 
-    ImFunc::ComboText("譜面データの一覧", loadFileName_, noteDataPaths);
+    //ImFunc::ComboText("譜面データの一覧", loadFileName_, noteDataPaths);
+    static std::filesystem::path loadFilePath = "Resources/NoteDatas/"; // 読み込み先のパスを設定
+    std::string selectedFile = ImFunc::FolderView("譜面データ一覧", loadFilePath);
+    selectedFile;
     if(ImGui::Button("読み込む")){
         if(!loadFileName_.empty()){
             std::string filePath = "Resources/NoteDatas/" + std::string(loadFileName_); // 読み込み先のパスを設定

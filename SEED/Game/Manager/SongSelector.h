@@ -21,7 +21,9 @@ enum class GroupMode{
     None,
     Genre,     // ジャンルごと
     Difficulty, // 難易度ごと
-    Rank
+    Rank,
+    // ここまで
+    kMaxCount
 };
 
 enum class SelectMode{
@@ -45,7 +47,7 @@ private:
     void CreateGroup();// グループ分け
     void SortInGroup();// グループ内ソート
     void UpdateIndex(); // インデックス更新
-    void UpdateVisibleSongs(); // 表示されている楽曲の更新
+    void UpdateVisibleItems(); // 表示されている楽曲の更新
     void SelectItems();
     void UpdateSongUI();
 
@@ -63,11 +65,12 @@ private:
     SongInfo* currentSong = nullptr; // 現在選択中の楽曲
 
     std::list<SongGroup> songGroups; // 楽曲グループのリスト
-    static const int32_t kVisibleSongRadius = 4; // 表示する楽曲の数
-    static const int32_t centerIndex = kVisibleSongRadius; // 中心の楽曲インデックス
-    static const int32_t kVisibleSongCount = 1 + kVisibleSongRadius * 2; // 表示する楽曲の総数
+    static const int32_t kVisibleRadius = 4; // 表示する楽曲の数
+    static const int32_t centerIndex = kVisibleRadius; // 中心の楽曲インデックス
+    static const int32_t kVisibleSongCount = 1 + kVisibleRadius * 2; // 表示する楽曲の総数
     std::array<SongInfo*, kVisibleSongCount> visibleSongs; // 表示されている楽曲のリスト
-    std::array<Transform2D, kVisibleSongCount> visibleSongTransforms; // 表示されている楽曲の位置の制御点
+    std::array<SongGroup*, kVisibleSongCount> visibleGroups; // 表示されている楽曲のリスト
+    std::array<Transform2D, kVisibleSongCount> visibleItemTransforms; // 表示されている楽曲の位置の制御点
     GroupMode currentGroupMode; // グループ分け方法
     SortMode currentSortMode; // ソートモード
 

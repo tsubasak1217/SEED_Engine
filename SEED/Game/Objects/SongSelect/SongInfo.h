@@ -99,8 +99,8 @@ struct SongGroup{
 
 struct SongInfoDrawer{
     static void Initialize();
-    static void Draw(const SongInfo& songInfo,const Transform2D& transform,bool isSelected);
-    static void Draw(const SongGroup& groupInfo, const Transform2D& transform, bool isSelected);
+    static void Draw(const SongInfo& songInfo,const Transform2D& transform, TrackDifficulty difficulty,bool isSelected);
+    static void Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected);
     static void Edit();
 
 private:
@@ -116,9 +116,7 @@ private:
 
     // テキストボックス関連
     static inline std::unordered_map<std::string, std::unique_ptr<TextBox2D>> textBox{};
-    static inline std::unordered_map<std::string, Vector2>  textBoxSizes{};
-    static inline std::unordered_map<std::string, Vector2>  textBoxPositions{};
-    static inline std::unordered_map<std::string, float> textBoxFontSizes{};
+    static inline std::unordered_map<std::string, Vector2>  textBoxRelativePos{};// テキストボックスの位置(相対座標)
     static inline std::vector<std::string> textBoxKeys = {
         "SongName", "GroupName","ArtistName", "BPM","NotesDesigner","Difficulty","Score"
     };

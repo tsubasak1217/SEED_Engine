@@ -1,83 +1,349 @@
 {
     "ArtistName": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 261.0,
+            "y": 93.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 44.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 3.4000000953674316,
+            "size": {
+                "x": 250.0,
+                "y": 64.0
+            },
+            "text": "tbs",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 969.9108276367188,
+                    "y": 925.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "BPM": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 407.0,
+            "y": 97.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 31.0,
+            "glyphSpacing": 1.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 187.0,
+                "y": 64.0
+            },
+            "text": "150.000000",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1115.910888671875,
+                    "y": 929.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "Difficulty": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 505.0,
+            "y": 40.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 100.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 7.199999809265137,
+            "size": {
+                "x": 128.0,
+                "y": 64.0
+            },
+            "text": "1",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1213.910888671875,
+                    "y": 872.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "GroupName": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 258.0,
+            "y": 55.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 1,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 60.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 17,
+            "outlineWidth": 4.699999809265137,
+            "size": {
+                "x": 230.0,
+                "y": 64.0
+            },
+            "text": "全楽曲",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 966.9108276367188,
+                    "y": 887.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "NotesDesigner": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 324.0,
+            "y": 98.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 29.0,
+            "glyphSpacing": 3.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.700000047683716,
+            "size": {
+                "x": 128.0,
+                "y": 64.0
+            },
+            "text": "tbs",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1032.910888671875,
+                    "y": 930.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "Score": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 77.0,
+            "y": 70.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 100.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 128.0,
+                "y": 64.0
+            },
+            "text": "",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "useOutline": false
         }
     },
     "SongName": {
-        "fontSize": 100.0,
-        "position": {
-            "x": 0.0,
-            "y": 0.0
+        "RelativePos": {
+            "x": 317.0,
+            "y": 47.0
         },
-        "size": {
-            "x": 128.0,
-            "y": 64.0
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 36.0,
+            "glyphSpacing": 4.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.4000000953674316,
+            "size": {
+                "x": 404.0,
+                "y": 64.0
+            },
+            "text": "TinySummerKnight",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1025.910888671875,
+                    "y": 879.0383911132813
+                }
+            },
+            "useOutline": true
         }
     },
     "kDrawSize": {
-        "x": 544.0,
-        "y": 107.0
+        "x": 514.0,
+        "y": 109.0
     }
 }

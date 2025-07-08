@@ -62,7 +62,7 @@ void SongSelector::Initialize(){
     auto it = songGroups.begin();
     std::advance(it, currentGroupIndex);
     currentGroup = &(*it);
-    
+
     // 現在の曲を設定
     if(currentGroup && !currentGroup->groupMembers.empty()){
         auto songIt = currentGroup->groupMembers.begin();
@@ -73,7 +73,7 @@ void SongSelector::Initialize(){
     }
 
     // 可視曲の初期化
-    UpdateVisibleSongs();
+    UpdateVisibleItems();
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -99,11 +99,15 @@ void SongSelector::Draw(){
     if(selectMode_ == SelectMode::Song){
         for(int i = 0; i < visibleSongs.size(); i++){
             if(visibleSongs[i]){
-                SongInfoDrawer::Draw(*visibleSongs[i], visibleSongTransforms[i], i == centerIndex);
+                SongInfoDrawer::Draw(*visibleSongs[i], visibleItemTransforms[i], currentDifficulty, i == centerIndex);
             }
         }
     } else{
-
+        for(int i = 0; i < visibleGroups.size(); i++){
+            if(visibleGroups[i]){
+                SongInfoDrawer::Draw(*visibleGroups[i], visibleItemTransforms[i], currentDifficulty, i == centerIndex);
+            }
+        }
     }
 }
 
@@ -157,7 +161,7 @@ void SongSelector::CreateGroup(){
             if(it == songGroups.end()){
                 songGroups.emplace_back(SongGroup());
                 it = std::prev(songGroups.end());
-                songGroups.back().groupName = GroupNameUtils::genreNames[(int)genre.value()]; // グループ名を設定
+                songGroups.back().groupName = GroupNameUtils::genreNames[int(genre.value())]; // グループ名を設定
             }
 
             // グループに曲を追加
@@ -333,30 +337,54 @@ void SongSelector::UpdateIndex(){
 /////////////////////////////////////////////////////////////////////////////////////
 // 可視曲の更新処理
 /////////////////////////////////////////////////////////////////////////////////////
-void SongSelector::UpdateVisibleSongs(){
+void SongSelector::UpdateVisibleItems(){
 
     if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
 
-    // 可視オブジェクトの更新
-    auto it = currentGroup->groupMembers.begin();
-    std::advance(it, currentSongIndex);
-    visibleSongs[centerIndex] = *it; // 現在の曲を可視曲リストに設定
+    {
+        // 可視オブジェクトの更新
+        auto it = currentGroup->groupMembers.begin();
+        std::advance(it, currentSongIndex);
+        visibleSongs[centerIndex] = *it; // 現在の曲を可視曲リストに設定
 
-    for(int i = 0; i <= kVisibleSongRadius; i++){
+        for(int i = 0; i <= kVisibleRadius; i++){
 
-        int32_t index[2] = {
-            MyFunc::Spiral(currentSongIndex + i, 0, int(currentGroup->groupMembers.size()) - 1),
-            MyFunc::Spiral(currentSongIndex - i, 0, int(currentGroup->groupMembers.size()) - 1)
-        };
+            int32_t index[2] = {
+                MyFunc::Spiral(currentSongIndex + i, 0, int(currentGroup->groupMembers.size()) - 1),
+                MyFunc::Spiral(currentSongIndex - i, 0, int(currentGroup->groupMembers.size()) - 1)
+            };
 
-        auto it2 = currentGroup->groupMembers.begin();
-        std::advance(it2, index[0]);
-        visibleSongs[centerIndex + i] = *it2; // 前方の曲を可視曲リストに設定
+            auto it2 = currentGroup->groupMembers.begin();
+            std::advance(it2, index[0]);
+            visibleSongs[centerIndex + i] = *it2; // 前方の曲を可視曲リストに設定
 
-        auto it3 = currentGroup->groupMembers.begin();
-        std::advance(it3, index[1]);
-        visibleSongs[centerIndex - i] = *it3; // 後方の曲を可視曲リストに設定
+            auto it3 = currentGroup->groupMembers.begin();
+            std::advance(it3, index[1]);
+            visibleSongs[centerIndex - i] = *it3; // 後方の曲を可視曲リストに設定
+        }
+    }
+    {
+        // 可視オブジェクトの更新
+        auto it = songGroups.begin();
+        std::advance(it, currentGroupIndex);
+        visibleGroups[centerIndex] = &(*it); // 現在の曲を可視曲リストに設定
+
+        for(int i = 0; i <= kVisibleRadius; i++){
+
+            int32_t index[2] = {
+                MyFunc::Spiral(currentGroupIndex + i, 0, int(songGroups.size()) - 1),
+                MyFunc::Spiral(currentGroupIndex - i, 0, int(songGroups.size()) - 1)
+            };
+
+            auto it2 = songGroups.begin();
+            std::advance(it2, index[0]);
+            visibleGroups[centerIndex + i] = &(*it2); // 前方の曲を可視曲リストに設定
+
+            auto it3 = songGroups.begin();
+            std::advance(it3, index[1]);
+            visibleGroups[centerIndex - i] = &(*it3); // 後方の曲を可視曲リストに設定
+        }
     }
 }
 
@@ -404,7 +432,18 @@ void SongSelector::SelectItems(){
             selectMode_ = SelectMode::Group;
         }
     } else{
-        if(Input::IsTriggerKey({ DIK_D,DIK_RIGHT,DIK_SPACE })){
+
+        if(Input::IsTriggerKey(DIK_Q)){
+            currentGroupMode = GroupMode(MyFunc::Spiral(int(currentGroupMode) - 1, 0, int(GroupMode::kMaxCount) - 1));
+            Sort();
+            UpdateVisibleItems();
+
+        } else if(Input::IsTriggerKey(DIK_E)){
+            currentGroupMode = GroupMode(MyFunc::Spiral(int(currentGroupMode) + 1, 0, int(GroupMode::kMaxCount) - 1));
+            Sort();
+            UpdateVisibleItems();
+
+        } else if(Input::IsTriggerKey({ DIK_D,DIK_RIGHT,DIK_SPACE })){
             selectMode_ = SelectMode::Song;
         }
     }
@@ -456,11 +495,11 @@ void SongSelector::UpdateSongUI(){
         for(int i = 0; i < visibleSongs.size(); i++){
             if(visibleSongs[i]){
                 if(changeDirection == UpDown::UP){// 上を押したので下に移動
-                    visibleSongTransforms[i] =
+                    visibleItemTransforms[i] =
                         MyFunc::Interpolate(itemAimTransforms[1 + i], itemAimTransforms[2 + i], ease);
 
                 } else{// 下を押したので上に移動
-                    visibleSongTransforms[i] =
+                    visibleItemTransforms[i] =
                         MyFunc::Interpolate(itemAimTransforms[1 + i], itemAimTransforms[i], ease);
                 }
             }
@@ -474,7 +513,14 @@ void SongSelector::UpdateSongUI(){
             isItemChanged = false;
 
             // 可視曲を更新
-            UpdateVisibleSongs();
+            UpdateVisibleItems();
+
+            // アイテムの座標を設定(動いていないときの座標に設定)
+            for(int i = 0; i < visibleSongs.size(); i++){
+                if(visibleSongs[i]){
+                    visibleItemTransforms[i] = itemAimTransforms[1 + i];
+                }
+            }
 
         } else{
             // アイテム変更タイマーを更新
@@ -485,7 +531,7 @@ void SongSelector::UpdateSongUI(){
         // アイテムの座標を設定(動いていないときの座標に設定)
         for(int i = 0; i < visibleSongs.size(); i++){
             if(visibleSongs[i]){
-                visibleSongTransforms[i] = itemAimTransforms[1 + i];
+                visibleItemTransforms[i] = itemAimTransforms[1 + i];
             }
         }
     }
@@ -515,6 +561,22 @@ void SongSelector::Edit(){
     ImFunc::CustomBegin("SongSelecter", MoveOnly_TitleBar);
     {
         SongInfoDrawer::Edit();
+
+        ImGui::Separator();
+        if(ImGui::CollapsingHeader("選曲項目のトランスフォーム")){
+            ImGui::Indent();
+            for(int i = 0; i < itemAimTransforms.size(); i++){
+                ImGui::PushID(i);
+                ImGui::Text("Item %d", i);
+                ImGui::InputFloat2("Translate", &itemAimTransforms[i].translate.x);
+                ImGui::InputFloat2("Scale", &itemAimTransforms[i].scale.x);
+                ImGui::InputFloat("Rotation", &itemAimTransforms[i].rotate);
+                ImGui::PopID();
+                ImGui::Separator();
+            }
+            ImGui::Unindent();
+        }
+
         ImGui::End();
     }
 

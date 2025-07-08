@@ -327,6 +327,155 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
     }
 }
 
+/////////////////////////////////////////////////////////////////
+// フォルダビューの開始関数
+/////////////////////////////////////////////////////////////////
+std::string ImFunc::FolderView(const char* label, std::filesystem::path& currentPath){
+    static bool isLoaded = false;
+    static ImTextureID folderIcon;
+    static ImTextureID fileIcon;
+    static ImVec2 iconSize = { 64.0f, 64.0f };
+    std::string selectedFile = "";
+
+    if(ImGui::CollapsingHeader(label)){
+
+        if(!isLoaded){
+            folderIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/folderIcon.png");
+            fileIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/fileIcon.png");
+            isLoaded = true;
+        }
+
+
+        ImGui::Text("Current Path: %s", currentPath.string().c_str());
+        if(currentPath.has_parent_path()){
+            if(ImGui::Button("<< Back")){
+                currentPath = currentPath.parent_path();
+                return "";
+            }
+        }
+
+        float padding = 16.0f;
+        float cellWidth = iconSize.x + padding;
+
+        ImVec2 availRegion = ImGui::GetContentRegionAvail();
+        int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
+        int currentColumn = 0;
+
+        std::vector<std::filesystem::directory_entry> entries{
+            std::filesystem::directory_iterator(currentPath),
+            std::filesystem::directory_iterator()
+        };
+
+        for(size_t i = 0; i < entries.size(); ++i){
+            const auto& entry = entries[i];
+
+            ImGui::BeginGroup();
+
+            // テクスチャと名前
+            ImTextureID icon = entry.is_directory() ? folderIcon : fileIcon;
+            std::string name = entry.path().filename().string();
+            std::string id = "##" + entry.path().string();
+
+
+            // アイコン描画＋クリック判定
+            ImVec2 iconPos = ImGui::GetCursorScreenPos();
+            ImGui::Image(icon, iconSize);
+            bool isHovered = ImGui::IsItemHovered();
+            bool isClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
+
+            // ドラッグ処理
+            if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
+                std::string fullPathStr = entry.path().string();
+                ImGui::SetDragDropPayload("FILE_PATH", fullPathStr.c_str(), fullPathStr.size() + 1);
+                ImGui::Text("%s", name.c_str()); // ドラッグ中に表示されるテキスト
+                ImGui::EndDragDropSource();
+            }
+
+            // テキストの描画位置と幅制限
+            auto lines = WrapTextLines(name, iconSize.x, 2);
+            for(const auto& l : lines){
+                ImGui::TextUnformatted(l.c_str());
+            }
+
+
+            // アイコンのクリックイベント処理
+            if(isClicked){
+                if(entry.is_directory()){
+                    currentPath = entry.path();
+                    ImGui::EndGroup();
+                    return "";
+                } else{
+                    selectedFile = entry.path().string();
+                }
+            }
+
+            ImGui::EndGroup();
+
+            // 次の列へ
+            currentColumn++;
+            if(currentColumn < columns){
+                // 最後の要素か確認し、最後以外の要素ならSameLineで横並びにする
+                if(i < entries.size() - 1){
+                    ImGui::SameLine((currentColumn % columns) * cellWidth);
+                }
+
+            } else{
+                currentColumn = 0;
+            }
+        }
+    }
+
+    return selectedFile;
+}
+
+
+/////////////////////////////////////////////////////////////////
+// テキストを2行以内で切り、省略(...)付きで返す
+/////////////////////////////////////////////////////////////////
+std::vector<std::string> ImFunc::WrapTextLines(const std::string& text, float maxWidth, int maxLines){
+    std::vector<std::string> lines;
+    std::string line;
+
+    for(size_t i = 0; i < text.size(); ){
+        std::string ch;
+        unsigned char c = text[i];
+        if((c & 0x80) == 0x00){ ch = text.substr(i, 1); i += 1; }      // ASCII
+        else if((c & 0xE0) == 0xC0){ ch = text.substr(i, 2); i += 2; } // 2-byte UTF-8
+        else if((c & 0xF0) == 0xE0){ ch = text.substr(i, 3); i += 3; } // 3-byte UTF-8
+        else if((c & 0xF8) == 0xF0){ ch = text.substr(i, 4); i += 4; } // 4-byte UTF-8
+        else{ ch = "?"; i += 1; }
+
+        float width = ImGui::CalcTextSize((line + ch).c_str()).x;
+        if(width > maxWidth && !line.empty()){
+            lines.push_back(line);
+            line.clear();
+            if((int)lines.size() >= maxLines) break;
+        }
+
+        line += ch;
+    }
+
+    if((int)lines.size() < maxLines && !line.empty()){
+        lines.push_back(line);
+    }
+
+    // 2行目があるかつ、**幅オーバーしているときだけ** 省略する
+    if((int)lines.size() == maxLines){
+        float lastLineWidth = ImGui::CalcTextSize(lines.back().c_str()).x;
+        if(lastLineWidth > maxWidth){
+            while(!lines.back().empty()){
+                std::string test = lines.back() + "...";
+                if(ImGui::CalcTextSize(test.c_str()).x <= maxWidth){
+                    lines.back() = test;
+                    break;
+                }
+                lines.back().pop_back();
+            }
+        }
+    }
+
+    return lines;
+}
 
 /////////////////////////////////////////////////////////////////
 // stringのコンボボックスを作成

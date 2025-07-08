@@ -297,7 +297,6 @@ void TextBox2D::Draw()const{
                     quad.color = color;
                     // その他設定
                     quad.isText = true;
-                    quad.layer = 1;
 
                     if(useOutline){
                         Matrix3x3 rotateMat = RotateMatrix(transform.rotate);
@@ -305,7 +304,7 @@ void TextBox2D::Draw()const{
                         float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
                         Quad2D outlineQuad = quad;
                         outlineQuad.color = outlineColor;
-                        outlineQuad.layer = 0; // アウトラインは下に描画するためレイヤーを0に設定
+                        outlineQuad.layer = 1; // アウトラインは下に描画するためレイヤーを0に設定
 
                         // アウトラインを移動させて描画
                         for(int j = 0; j < outlineSplitCount; j++){
@@ -323,6 +322,7 @@ void TextBox2D::Draw()const{
                     }
 
                     // 描画
+                    quad.layer = 2;
                     SEED::DrawQuad2D(quad);
                     
                     // X座標オフセットを加算

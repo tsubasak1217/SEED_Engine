@@ -100,6 +100,10 @@ public:// ファイル・文字列関連 =======================================
     static std::vector<std::string> GetFileList(
         const std::string& entryPath, std::initializer_list<std::string>extensions,bool isRelative = true
     );
+    // 指定したパスに存在するすべてのオブジェクトの一覧を取得する関数
+    static std::vector<std::string> GetDirectoryNameList(const std::string& entryPath, bool isRelative = true, bool isRecursive = false);
+    static std::vector<std::filesystem::directory_entry> GetDirectoryEntryList(const std::string& entryPath, bool isRecursive = false);
+
     // 指定したパス以降で名前の一致するファイルがあればそのパスを返す関数
     static std::string FindFile(const std::string& entryPath, const std::string& filePath,bool isRelative = true);
     

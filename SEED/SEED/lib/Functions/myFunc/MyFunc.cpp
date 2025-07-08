@@ -322,6 +322,7 @@ int MyFunc::CharCategory(wchar_t ch){
     return 3; // その他
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 文字列を比較する関数(str1の方が若いとtrue)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -388,6 +389,58 @@ std::vector<std::string> MyFunc::GetFileList(
     }
 
     return fileList;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// entry階層以下のディレクトリオブジェクトを取得する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPath, bool isRelative, bool isRecursive){
+
+    std::vector<std::string> dirList;
+    if(isRecursive){
+        for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+            // ディレクトリのみを探す
+            if(cur.is_directory()){
+                if(isRelative){
+                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                } else{
+                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                }
+            }
+        }
+    } else{
+        for(const auto& cur : fs::directory_iterator(entryPath)){
+            // ディレクトリのみを探す
+            if(cur.is_directory()){
+                if(isRelative){
+                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                } else{
+                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                }
+            }
+        }
+    }
+    return dirList;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// entry階層以下のディレクトリエントリを取得する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(const std::string& entryPath, bool isRecursive){
+
+    std::vector<std::filesystem::directory_entry> entryList;
+    if(isRecursive){
+        for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+            // ディレクトリエントリを格納
+            entryList.push_back(cur);
+        }
+    } else{
+        for(const auto& cur : fs::directory_iterator(entryPath)){
+            // ディレクトリエントリを格納
+            entryList.push_back(cur);
+        }
+    }
+    return entryList;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

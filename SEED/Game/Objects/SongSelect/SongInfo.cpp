@@ -81,8 +81,6 @@ void SongInfo::Initialize(const std::string& _songName){
 //////////////////////////////////////////////////////////////////////////////
 void SongInfoDrawer::Initialize(){
     
-    // セッティングの読み込み
-    LoadSettings();
 
     // 背景画像の読み込み
     backSprite = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
@@ -95,14 +93,17 @@ void SongInfoDrawer::Initialize(){
     // テキストの初期化
     for(int i = 0; i < textBoxKeys.size(); i++){
         textBox[textBoxKeys[i]] = std::make_unique<TextBox2D>();
-        textBox[textBoxKeys[i]]->align = TextAlign::LEFT;
+        textBox[textBoxKeys[i]]->SetFont("DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf");
     }
+
+    // セッティングの読み込み
+    LoadSettings();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // 楽曲情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, bool isSelected){
+void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
     // 背景部分を描画
     if(isSelected){
         backSprite->color = { 1.0f,1.0f,0.0f,1.0f };
@@ -126,12 +127,47 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
     jacketSprite->scale = backSprite->scale;
     // ジャケット画像を描画
     jacketSprite->Draw();
+
+    for(auto & key : textBoxKeys){
+        if(key == "GroupName"){
+            continue;
+        }
+
+
+        // テキストの描画
+        int difficultyIndex = static_cast<int>(difficulty);
+        if(key == "SongName"){
+            textBox[key]->text = songInfo.songName;
+
+        } else if(key == "ArtistName"){
+            textBox[key]->text = songInfo.artistName;
+
+        } else if(key == "BPM"){
+            textBox[key]->text = std::to_string(songInfo.bpm);
+
+        } else if(key == "Difficulty"){
+            textBox[key]->text = std::to_string(songInfo.difficulty[difficultyIndex]);
+
+        } else if(key == "NotesDesigner"){
+            textBox[key]->text = songInfo.notesDesignerName[difficultyIndex];
+
+        } else if(key == "Score"){
+            if(songInfo.score[difficultyIndex] == 0){
+                continue; // スコアが0の場合は描画しない(未プレイ)
+            }
+            textBox[key]->text = std::to_string(songInfo.score[difficultyIndex]);
+        }
+
+        textBox[key]->transform.scale = transform.scale;
+        textBox[key]->transform.translate = leftTopPos + textBoxRelativePos[key] * transform.scale;
+        textBox[key]->Draw();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // 楽曲グループ情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transform, bool isSelected){
+void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
     // 背景部分を描画
     if(isSelected){
         backSprite->color = { 1.0f,1.0f,0.0f,1.0f };
@@ -149,10 +185,13 @@ void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transfo
 
     // グループ名を描画
     textBox["GroupName"]->text = groupInfo.groupName;
-    textBox["GroupName"]->fontSize = textBoxFontSizes["GroupName"];
-    textBox["GroupName"]->size = textBoxSizes["GroupName"] * transform.scale;
-    textBox["GroupName"]->transform.translate = leftTopPos + textBoxPositions["GroupName"] * transform.scale;
+    textBox["GroupName"]->transform.scale = transform.scale;
+    textBox["GroupName"]->transform.translate = leftTopPos + textBoxRelativePos["GroupName"] * transform.scale;
+    textBox["GroupName"]->Draw();
+
+    difficulty;
 }
+
 
 /////////////////////////////////////////////////////////////////////////////
 // 編集を行う関数
@@ -164,9 +203,10 @@ void SongInfoDrawer::Edit(){
 
     for(auto& key : textBoxKeys){
         if(ImGui::CollapsingHeader(key.c_str())){
-            ImGui::DragFloat("フォントサイズ", &textBoxFontSizes[key], 1.0f, 1.0f, 100.0f);
-            ImGui::DragFloat2("テキストボックスのサイズ", &textBoxSizes[key].x, 1.0f, 10.0f, 1000.0f);
-            ImGui::DragFloat2("座標", &textBoxPositions[key].x, 1.0f, -1000.0f, 1000.0f);
+            ImGui::Indent();
+            ImGui::DragFloat2("相対座標", &textBoxRelativePos[key].x, 1.0f, -1000.0f, 1000.0f);
+            textBox[key]->Edit();
+            ImGui::Unindent();
         }
     }
 
@@ -209,9 +249,12 @@ void SongInfoDrawer::LoadSettings(){
 
         for(auto key : textBoxKeys){
             if(settingsJson.contains(key)){
-                textBoxFontSizes[key] = settingsJson[key]["fontSize"];
-                textBoxSizes[key] = settingsJson[key]["size"];
-                textBoxPositions[key] = settingsJson[key]["position"];
+                if(settingsJson[key].contains("textBox")){
+                    textBox[key]->LoadFromJson(settingsJson[key]["textBox"]);
+                }
+                if(settingsJson[key].contains("RelativePos")){
+                    textBoxRelativePos[key] = settingsJson[key]["RelativePos"];
+                }
             }
         }
     }
@@ -220,11 +263,10 @@ void SongInfoDrawer::LoadSettings(){
 nlohmann::json SongInfoDrawer::ToJson(){
     nlohmann::json jsonData;
     jsonData["kDrawSize"] = kDrawSize;
-    
+   
     for(auto key : textBoxKeys){
-        jsonData[key]["fontSize"] = textBox[key]->fontSize;
-        jsonData[key]["size"] = textBox[key]->size;
-        jsonData[key]["position"] = textBox[key]->transform.translate;
+        jsonData[key]["textBox"] = textBox[key]->GetJsonData();
+        jsonData[key]["RelativePos"] = textBoxRelativePos[key];
     }
 
     return jsonData;

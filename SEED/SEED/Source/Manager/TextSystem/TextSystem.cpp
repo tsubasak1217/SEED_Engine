@@ -127,7 +127,7 @@ uint32_t TextSystem::CreateFontAtlas(
     std::vector<int32_t>& codePoints,
     std::unordered_map<int32_t, GlyphData>& outGlyphs
 ){
-    const int texWidth = 2048, texHeight = 2048;
+    const int texWidth = 4096, texHeight = 4096;
     int padding = 16;
     std::vector<unsigned char> atlasBitmap(texWidth * texHeight, 0);
 

@@ -2301,17 +2301,17 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::Line);
     SetRenderData(cameraName, DrawOrder::Model);
     SetRenderData(cameraName, DrawOrder::AnimationModel);
-    SetRenderData(cameraName, DrawOrder::Text);
     SetRenderData(cameraName, DrawOrder::Triangle);
     SetRenderData(cameraName, DrawOrder::Quad);
+    SetRenderData(cameraName, DrawOrder::Text);
     SetRenderData(cameraName, DrawOrder::Particle);
 
     // 2D
     SetRenderData(cameraName, DrawOrder::Line2D);
-    SetRenderData(cameraName, DrawOrder::Text2D);
     SetRenderData(cameraName, DrawOrder::Triangle2D);
     SetRenderData(cameraName, DrawOrder::Quad2D);
     SetRenderData(cameraName, DrawOrder::Sprite);
+    SetRenderData(cameraName, DrawOrder::Text2D);
 }
 
 void PolygonManager::DrawToBackBuffer(){

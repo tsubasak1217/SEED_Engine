@@ -899,7 +899,7 @@ void SongSelector::StartPlay(){
     // シーンのステートを遷移
     if(t == 1.0f){
         auto* scene = GameSystem::GetScene();
-        GameSystem::GetScene()->ChangeState(new GameState_Play(scene));
+        GameSystem::GetScene()->ChangeState(new GameState_Play(scene,currentSong.first->noteDatas[(int)currentDifficulty]));
     }
 }
 

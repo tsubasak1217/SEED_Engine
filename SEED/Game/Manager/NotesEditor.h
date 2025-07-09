@@ -20,6 +20,12 @@ struct TempoData{
     int barCount = 1;// 拍子の総数
     float time;
     bool removeFlag = false;
+
+    float GetBeatDuration() const {
+        // 1拍の時間(秒) = 60 / BPM
+        return 60.0f / bpm;
+    }
+
     float CalcDuration() const {
         // (一拍の秒数) * (四分音符の数) ←一般化式
         // (一拍の秒数) * (小節数) * (拍子の分子) * (4分に戻すための比率) ←少し展開した式
@@ -81,6 +87,7 @@ private:
 public:
     NotesEditor();
     ~NotesEditor() = default;
+    void Initialize(const std::string& path);
     void Edit();
 
 private:
@@ -156,6 +163,7 @@ private:
     std::string saveDifficultyName_ = "Basic";
     std::string saveSongName_;
     std::string loadFileName_;
+    std::string jsonFilePath_;
 
     void LoadFromJson(const nlohmann::json& jsonData);
     nlohmann::json ToJson() ;

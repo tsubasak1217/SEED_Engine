@@ -2,10 +2,11 @@
     "artist": "妖精さん",
     "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
     "bpm": 177.0,
-    "difficulty": 9,
+    "difficulty": 8,
     "difficultyName": "Parallel",
     "genre": 1,
-    "maxCombo": 17,
+    "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Parallel.json",
+    "maxCombo": 33,
     "notes": [
         {
             "direction": 0,
@@ -102,6 +103,93 @@
             "layer": 0,
             "noteType": "wheel",
             "time": 6.1016950607299805
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 6.779661178588867
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 8.13559341430664
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 8.813559532165527
+        },
+        {
+            "holdTime": 0.33898353576660156,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 9.491525650024414
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1280,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 9.830509185791016
+        },
+        {
+            "holdTime": 0.33898258209228516,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 10.1694917678833
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1280,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 10.508474349975586
+        },
+        {
+            "holdTime": 0.33898353576660156,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 10.847457885742188
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1280,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 11.186441421508789
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 11.525424003601074
         }
     ],
     "notesDesigner": "tbs",

@@ -5,6 +5,7 @@
     "difficulty": 4,
     "difficultyName": "Expert",
     "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Expert.json",
     "maxCombo": 28,
     "notes": [
         {

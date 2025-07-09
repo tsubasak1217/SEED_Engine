@@ -57,6 +57,21 @@ NotesEditor::NotesEditor(){
     metronomeSEFileName_ = "SE/metronome.mp3";
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// 初期化処理
+////////////////////////////////////////////////////////////////////////
+void NotesEditor::Initialize(const std::string& path){
+    // ノーツデータを読み込む
+    if(std::filesystem::exists(path)){
+        std::ifstream file(path);
+        nlohmann::json jsonData;
+        file >> jsonData;
+        LoadFromJson(jsonData); // JSONから譜面データを読み込む
+        file.close();
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////
 // 編集処理
 ////////////////////////////////////////////////////////////////////////
@@ -1387,10 +1402,8 @@ void NotesEditor::PlayAnswerSE(){
 ///////////////////////////////////////////////////////////////////////
 void NotesEditor::FileControl(){
 
-    static auto noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" }); // 譜面データのパスを取得
     static bool isOverwrite = false; // 上書き確認フラグ
     static std::string directoryPath{};
-    static std::string filePath{};
     static nlohmann::json jsonData{};
 
     if(ImGui::Button("保存")){
@@ -1447,21 +1460,20 @@ void NotesEditor::FileControl(){
 
             // 保存先のパスを設定
             directoryPath = "Resources/NoteDatas/" + songName + "/";
-            filePath = directoryPath + saveDifficultyName_ + ".json";
+            jsonFilePath_ = directoryPath + saveDifficultyName_ + ".json";
             jsonData = ToJson(); // JSONデータを取得
 
             // 同じデータのファイルが存在するか確認
-            if(std::filesystem::exists(filePath)){
+            if(std::filesystem::exists(jsonFilePath_)){
                 // ファイルが存在する場合、上書き確認ダイアログを表示
                 isOverwrite = true;
 
             } else{
                 // ファイルが存在しない場合はそのまま保存
                 std::filesystem::create_directories(directoryPath); // ディレクトリを作成
-                std::ofstream file(filePath);
+                std::ofstream file(jsonFilePath_);
                 file << jsonData.dump(4); // JSONデータをファイルに書き出し
                 file.close();
-                noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
                 ImGui::CloseCurrentPopup();
             }
         }
@@ -1486,10 +1498,9 @@ void NotesEditor::FileControl(){
     if(ImGui::BeginPopupModal("上書き確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
         ImGui::Text("同じ名前のファイルが存在します。上書きしますか？");
         if(ImGui::Button("はい")){
-            std::ofstream file(filePath);
+            std::ofstream file(jsonFilePath_);
             file << jsonData.dump(4); // JSONデータをファイルに書き出し
             file.close();
-            noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
             ImGui::CloseCurrentPopup(); // ポップアップを閉じる
         }
         ImGui::SameLine();
@@ -1546,6 +1557,10 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
     }
 
     // その他のデータの読み込み
+    if(jsonData.contains("jsonFilePath")){
+        jsonFilePath_ = jsonData["jsonFilePath"];
+    }
+
     if(jsonData.contains("songName")){
         saveSongName_ = jsonData["songName"];
     }
@@ -1644,6 +1659,7 @@ nlohmann::json NotesEditor::ToJson(){
     }
 
     // その他のデータの書き出し
+    jsonData["jsonFilePath"] = jsonFilePath_;
     jsonData["songName"] = saveSongName_;
     jsonData["audioPath"] = audioFilePath_;
     jsonData["difficulty"] = difficulty_;

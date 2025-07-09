@@ -5,6 +5,7 @@
     "difficulty": 5,
     "difficultyName": "Expert",
     "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Expert.json",
     "maxCombo": 17,
     "notes": [
         {

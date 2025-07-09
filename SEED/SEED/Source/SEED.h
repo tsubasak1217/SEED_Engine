@@ -197,6 +197,7 @@ public:
     static BaseCamera* GetMainCamera(){ return DxManager::GetInstance()->mainCamera_; }
     static BaseCamera* GetCamera(const std::string& cameraName){ return DxManager::GetInstance()->GetCamera(cameraName); }
     static void SetMainCamera(const std::string& cameraName){ DxManager::GetInstance()->SetMainCamera(cameraName); }
+    static std::string GetMainCameraName(){ return DxManager::GetInstance()->GetMainCameraName(); }
     static void RegisterCamera(const std::string& cameraName, BaseCamera* pCamera){ DxManager::GetInstance()->RegisterCamera(cameraName, pCamera); }
     static void RemoveCamera(const std::string& cameraName){ DxManager::GetInstance()->RemoveCamera(cameraName); }
     static void SetIsCameraActive(const std::string& cameraName, bool isActive){DxManager::GetInstance()->SetIsCameraActive(cameraName, isActive);}

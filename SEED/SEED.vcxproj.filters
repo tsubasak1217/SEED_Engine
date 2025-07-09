@@ -112,6 +112,7 @@
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Manager\SongSelector.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
+    <ClCompile Include="Game\Config\PlaySettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Game\Manager\SongSelector.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
+    <ClInclude Include="SEED\Lib\Structs\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

@@ -325,8 +325,10 @@ void AudioManager::SetAudioVolume(AudioHandle handle, float volume){
 /// <param name="filename">ファイル名</param>
 /// <returns>音声が再生されているか</returns>
 bool AudioManager::IsPlayingAudio(AudioHandle handle){
-    // 指定要素がなければアサート
-    assert(instance_->isPlaying_.find(handle) != instance_->isPlaying_.end());
+    // 指定要素がなければfalse
+    if(instance_->isPlaying_.find(handle) == instance_->isPlaying_.end()){
+        return false;
+    }
 
     // 再生しているかどうか返す
     return instance_->isPlaying_[handle];

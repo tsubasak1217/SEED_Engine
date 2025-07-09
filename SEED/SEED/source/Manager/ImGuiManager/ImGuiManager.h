@@ -90,7 +90,7 @@ struct ImFunc{
     // カスタムウィンドウの開始関数
     static bool CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWindowFlags flags = 0);
     // シーン描画ウィンドウの関数
-    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName, CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
+    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName = "", CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
     // フォルダ表示
     static std::string FolderView(const char* label, std::filesystem::path& currentPath);
     // 文字列を折り返す関数

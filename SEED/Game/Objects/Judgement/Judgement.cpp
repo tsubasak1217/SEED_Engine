@@ -3,6 +3,9 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <Game/Objects/Notes/Note_Hold.h>
 
+// setting
+#include <Game/Config/PlaySettings.h>
+
 // managerのインクルード
 #include <Game/Manager/RythmGameManager.h>
 
@@ -76,7 +79,7 @@ void Judgement::Judge(NotesData* noteGroup){
     std::list<std::pair<std::weak_ptr<Note_Base>, Judgement::Evaluation>> hitNotes;// 判定を拾ったノーツ一覧
     for(auto& note : nearNotes){
         // 正しい時間との差を取得
-        float dif = std::abs(note.lock()->time_ - time);
+        float dif = std::abs((note.lock()->time_ + PlaySettings::GetInstance()->GetOffsetJudge())-time);
 
         // 判定を拾ったノーツをリストにする
         Judgement::Evaluation evaluation = note.lock()->Judge(dif);

@@ -5,7 +5,8 @@
     "difficulty": 5,
     "difficultyName": "Parallel",
     "genre": 1,
-    "maxCombo": 24,
+    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Parallel.json",
+    "maxCombo": 35,
     "notes": [
         {
             "holdTime": 1.5,
@@ -150,6 +151,87 @@
             "layer": 1,
             "noteType": "wheel",
             "time": 10.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 10.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 10.6875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 10.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.0625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.15625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.34375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.4375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.53125
+        },
+        {
+            "holdTime": 0.375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 11.625
         }
     ],
     "notesDesigner": "tbs",

@@ -152,7 +152,7 @@ void ImGuiManager::PostDraw(){
     ImGui::End();
 
     // デフォルトカメラ画面描画ウインドウ
-    ImFunc::SceneWindowBegin("GameWindow", "default", MoveOnly_TitleBar);
+    ImFunc::SceneWindowBegin("GameWindow");
     ImGui::End();
 
     // デバッグカメラ視点描画ウインドウ
@@ -321,8 +321,11 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
         ImGui::SetCursorPos(windowCenter - finalSize * 0.5f); // ウィンドウの中央に配置
 
         // 表示
-        ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
-
+        if(cameraName == ""){
+            ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetInstance()->GetMainCameraName()), finalSize);
+        } else{
+            ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
+        }
         return finalSize; // 画像サイズを返す
     }
 }

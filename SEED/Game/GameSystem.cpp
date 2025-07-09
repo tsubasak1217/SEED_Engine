@@ -63,6 +63,8 @@ void GameSystem::Update() {
     instance_->pScene_->HandOverColliders();
     // 当たり判定
     CollisionManager::CheckCollision();
+    // エフェクトの更新
+    EffectSystem::Update();
     // すべての更新終了後にカメラを更新
     CameraManager::Update();
 }
@@ -77,6 +79,9 @@ void GameSystem::Draw() {
     if (instance_->pScene_) {
         instance_->pScene_->Draw();
     }
+
+    // エフェクトの描画
+    EffectSystem::Draw();
 
     // コリジョンの描画(デバッグ表示)
     CollisionManager::Draw();

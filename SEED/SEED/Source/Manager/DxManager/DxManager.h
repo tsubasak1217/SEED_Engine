@@ -218,6 +218,9 @@ private:/*============================ アクセッサ関数 ===================
             mainCamera_ = cameras_[name];
         }
     }
+    std::string GetMainCameraName() const {
+        return mainCameraName_;
+    }
     void RemoveCamera(const std::string& name){
         CameraManager::RemoveCamera(name);
         if(cameras_.find(name) != cameras_.end()){

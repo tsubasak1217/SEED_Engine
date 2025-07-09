@@ -40,11 +40,10 @@ RythmGameManager* RythmGameManager::GetInstance(){
 //////////////////////////////////////////////////////////////////////////////////
 // 初期化
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Initialize(){
+void RythmGameManager::Initialize(const nlohmann::json& songData){
     // カメラの初期化
     gameCamera_ = std::make_unique<BaseCamera>();
     gameCamera_->SetTranslation(Vector3(0.0f, 0.0f, 0.0f));
-    //gameCamera_->SetProjectionMode(PROJECTIONMODE::ORTHO);
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
@@ -58,7 +57,13 @@ void RythmGameManager::Initialize(){
     PlayerInput::GetInstance()->Initialize();
 
     // 譜面データの初期化
-    notesData_ = std::make_unique<NotesData>(true);
+    notesData_ = std::make_unique<NotesData>();
+    notesData_->Initialize(songData);
+
+    // エディタの初期化
+    if(songData.contains("jsonFilePath")){
+        notesEditor_->Initialize(songData["jsonFilePath"]);
+    }
 
     // プレイフィールドの初期化
     PlayField::GetInstance()->SetNoteData(notesData_.get());
@@ -141,5 +146,8 @@ void RythmGameManager::Draw(){
 #ifdef _DEBUG
     ImFunc::SceneWindowBegin("GameScene", "gameCamera", MoveOnly_TitleBar);
     ImGui::End();
+
+    PlaySettings::GetInstance()->Edit();
+
 #endif // _DEBUG
 }

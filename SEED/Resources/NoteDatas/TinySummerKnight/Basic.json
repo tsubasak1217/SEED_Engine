@@ -5,6 +5,7 @@
     "difficulty": 1,
     "difficultyName": "Basic",
     "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Basic.json",
     "maxCombo": 4,
     "notes": [
         {

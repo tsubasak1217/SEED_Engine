@@ -17,7 +17,7 @@ private:
 public:
     ~RythmGameManager();
     static RythmGameManager* GetInstance();
-    void Initialize();
+    void Initialize(const nlohmann::json& songData);
     void BeginFrame();
     void EndFrame();
     void Update();

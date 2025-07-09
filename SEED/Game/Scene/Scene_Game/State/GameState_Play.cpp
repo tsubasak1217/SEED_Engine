@@ -1,19 +1,20 @@
 #include "GameState_Play.h"
 
-GameState_Play::GameState_Play(){
-    // ゲームマネージャーの初期化
-    RythmGameManager::GetInstance()->Initialize();
-}
-
 GameState_Play::GameState_Play(Scene_Base* pScene){
     // シーンの設定
     pScene_ = pScene;
-    // ゲームマネージャーの初期化
-    RythmGameManager::GetInstance()->Initialize();
+}
+
+GameState_Play::GameState_Play(Scene_Base* pScene, const nlohmann::json& songData){
+    // シーンの設定
+    pScene_ = pScene;
+    // 曲データの設定
+    RythmGameManager::GetInstance()->Initialize(songData);
 }
 
 void GameState_Play::Initialize(){
 }
+
 
 void GameState_Play::Finalize(){
 }

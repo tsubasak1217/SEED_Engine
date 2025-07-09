@@ -15,116 +15,24 @@
 
 // managerのインクルード
 #include <Game/Manager/RythmGameManager.h>
+#include <Game/Manager/NotesEditor.h>
 
 ////////////////////////////////////////////////////////////////////
 // ノーツデータのコンストラクタ
 ////////////////////////////////////////////////////////////////////
 NotesData::NotesData(){
+
+    // タイマーの初期化
+    waitTimer_.Initialize(3.0f);
+    playEndTimer_.Initialize(3.0f);
+
+    // 音源情報の初期化
+    metronomeFilePath_ = "SE/metronome.mp3"; // メトロノームのファイルパス
+    answerSEFilePath_ = "SE/answer.mp3"; // 正解音のファイルパス
+    AudioManager::LoadAudio(metronomeFilePath_); // メトロノームのロード
+    AudioManager::LoadAudio(answerSEFilePath_); // アンサー音のロード
 }
 
-// テスト用にランダムノーツを生成するコンストラクタ
-NotesData::NotesData(bool isRandomNotes){
-    // 譜面の長さを初期化
-    duration_ = 64.0f;
-    currentTime_ = 0.0f;
-
-    // ノーツの初期化
-    notes_.clear();
-    activeHoldNotes_.clear();
-
-    // ランダムノーツを生成する(いったんタップのみ)
-    int numNotes = 1000;
-    if(isRandomNotes){
-        for(int i = 0; i < numNotes; i++){
-
-            {// Tapノーツ確認用
-                float time = 10.0f + 0.1f * i;
-                int32_t lane = i % PlayField::kKeyCount_;
-                UpDown layer = (UpDown)(rand() % 1);
-                std::shared_ptr<Note_Base> note = std::make_shared<Note_Tap>();
-                note->time_ = time;
-                note->lane_ = lane;
-                note->layer_ = layer;
-                note->laneBit_ = (LaneBit)(1 << lane);
-                notes_.emplace_back(std::make_pair(time, note));
-            }
-
-            {// Wheelノーツ確認用
-                float time = 10.0f + 1.0f * i;
-                UpDown layer = UpDown(i % 2);
-                std::shared_ptr<Note_Wheel> note = std::make_shared<Note_Wheel>();
-                note->time_ = time;
-                note->layer_ = layer;
-
-                if(i % 2 == 0){
-                    note->direction_ = UpDown::UP;
-                    note->laneBit_ = LaneBit::WHEEL_UP;
-                } else{
-                    note->direction_ = UpDown::DOWN;
-                    note->laneBit_ = LaneBit::WHEEL_DOWN;
-                }
-
-                notes_.emplace_back(std::make_pair(time, note));
-            }
-
-            {// RectFlickノーツ確認用
-                float time = 5.0f + 0.5f * i;
-                int32_t dir = i % 13;
-                std::shared_ptr<Note_Base> note = std::make_shared<Note_RectFlick>();
-                note->time_ = time;
-                if(dir == 0){
-                    note->laneBit_ = LaneBit::RECTFLICK_LT;
-                } else if(dir == 1){
-                    note->laneBit_ = LaneBit::RECTFLICK_RT;
-                } else if(dir == 2){
-                    note->laneBit_ = LaneBit::RECTFLICK_RB;
-                } else if(dir == 3){
-                    note->laneBit_ = LaneBit::RECTFLICK_LB;
-                } else if(dir == 4){
-                    note->laneBit_ = LaneBit::RECTFLICK_UP;
-                } else if(dir == 5){
-                    note->laneBit_ = LaneBit::RECTFLICK_RIGHT;
-                } else if(dir == 6){
-                    note->laneBit_ = LaneBit::RECTFLICK_DOWN;
-                } else if(dir == 7){
-                    note->laneBit_ = LaneBit::RECTFLICK_LEFT;
-                } else if(dir == 8){
-                    note->laneBit_ = LaneBit::RECTFLICK_LT_EX;
-                } else if(dir == 9){
-                    note->laneBit_ = LaneBit::RECTFLICK_RT_EX;
-                } else if(dir == 10){
-                    note->laneBit_ = LaneBit::RECTFLICK_RB_EX;
-                } else if(dir == 11){
-                    note->laneBit_ = LaneBit::RECTFLICK_LB_EX;
-                } else{
-                    note->laneBit_ = LaneBit::RECTFLICK_ALL;
-                }
-
-                notes_.emplace_back(std::make_pair(time, note));
-            }
-
-            {// Holdノーツ確認用
-                float time = 5.0f + 3.0f * i;
-                int32_t lane = i % PlayField::kKeyCount_;
-                UpDown layer = UpDown::UP;
-                std::shared_ptr<Note_Hold> note = std::make_shared<Note_Hold>();
-                note->time_ = time;
-                note->kHoldTime_ = MyFunc::Random(1.0f, 3.0f);
-                note->lane_ = lane;
-                note->layer_ = layer;
-                note->laneBit_ = (LaneBit)(1 << lane);
-                notes_.emplace_back(std::make_pair(time, note));
-            }
-        }
-
-        // ノーツを時間でソート
-        std::sort(notes_.begin(), notes_.end(),
-            [](const std::pair<float, std::shared_ptr<Note_Base>>& a,
-                const std::pair<float, std::shared_ptr<Note_Base>>& b){
-            return a.first < b.first;
-        });
-    }
-}
 
 ////////////////////////////////////////////////////////////////////
 // ノーツデータのデストラクタ
@@ -135,12 +43,17 @@ NotesData::~NotesData(){
 ////////////////////////////////////////////////////////////////////
 // ノーツデータの初期化
 ////////////////////////////////////////////////////////////////////
-void NotesData::Initialize(){
+void NotesData::Initialize(const nlohmann::json& songData){
     // 譜面の長さを初期化
-    currentTime_ = 0.0f;
+    songTimer_.Reset();
+
     // ノーツの初期化
     notes_.clear();
     activeHoldNotes_.clear();
+    onFieldNotes_.clear();
+
+    // jsonからノーツデータを読み込む
+    FromJson(songData);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -148,14 +61,36 @@ void NotesData::Initialize(){
 ////////////////////////////////////////////////////////////////////
 void NotesData::Update(){
 
-    // 時間を進める
-    currentTime_ += ClockManager::DeltaTime();
+    // ポーズ中は何もしない
+    if(isPauseMode_){
+        return;
+    }
 
-    // 条件を満たすノーツの削除
-    DeleteNotes();
+
+    if(waitTimer_.IsFinished()){
+
+        // 条件を満たすノーツの削除
+        DeleteNotes();
+
+        // 音源の再生
+        PlayAudio();
+
+        // 譜面の時間を進める
+        songTimer_.Update();
+
+    } else{
+        // 待機時間を進める
+        waitTimer_.Update();
+    }
 
     // 出現させるノーツの確認
     AppearNotes();
+
+
+#ifdef _DEBUG
+    // デバッグ用の編集
+    Edit();
+#endif // _DEBUG
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -166,7 +101,7 @@ void NotesData::Draw(){
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Hold){
-                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
             }
         }
     }
@@ -174,7 +109,7 @@ void NotesData::Draw(){
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Tap){
-                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
             }
         }
     }
@@ -182,7 +117,7 @@ void NotesData::Draw(){
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Wheel){
-                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
             }
         }
     }
@@ -190,7 +125,7 @@ void NotesData::Draw(){
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::RectFlick){
-                notePtr->Draw(currentTime_, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
             }
         }
     }
@@ -232,7 +167,7 @@ std::vector<std::weak_ptr<Note_Base>> NotesData::GetNearNotes(float time){
 void NotesData::DeleteNotes(){
 
     // ボーダーとなる時間を計算
-    float borderTime = currentTime_ - Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
+    float borderTime = songTimer_.currentTime - Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
 
     // 条件を満たすノーツを削除する
     for(auto it = notes_.begin(); it != notes_.end();){
@@ -302,8 +237,7 @@ void NotesData::DeleteNotes(){
 //////////////////////////////////////////////////////////////////////
 void NotesData::AppearNotes(){
     // ノーツの時間とレーンスピードから出現させるかどうか決める
-    float laneNotesBorderTime = currentTime_ + PlaySettings::GetInstance()->GetLaneNoteAppearTime();
-    //float outsideNotesBorderTime = currentTime_ + PlaySettings::GetInstance()->GetOutsideNoteAppearTime();
+    float laneNotesBorderTime = songTimer_.currentTime + PlaySettings::GetInstance()->GetLaneNoteAppearTime();
 
     // borderTimeになるまでのノーツを出現させる
     for(int i = 0; i < notes_.size(); i++){
@@ -320,3 +254,252 @@ void NotesData::AppearNotes(){
     }
 }
 
+//////////////////////////////////////////////////////////////////////
+// 音源のの再生処理
+//////////////////////////////////////////////////////////////////////
+void NotesData::PlayAudio(){
+
+    if(songTimer_.currentTime >= startOffsetTime_){
+        // 再生されていないなら再生
+        if(!isSongStarted_){
+            AudioManager::EndAudio(songAudioHandle_); // 前の音源を終了
+            songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
+            isSongStarted_ = true;
+        }
+
+    } else{
+        // 再生されているなら停止
+        isSongStarted_ = false;
+        if(AudioManager::IsPlayingAudio(songAudioHandle_)){
+            AudioManager::EndAudio(songAudioHandle_);
+        }
+
+        // メトロノームの再生
+        static float signatureTime = 0.0f;
+        signatureTime = tempoDataList_.front().GetBeatDuration();
+        int signatureCount[2] = {
+            (int)std::ceil(songTimer_.currentTime / signatureTime),
+            (int)std::ceil(songTimer_.prevTime / signatureTime)
+        };
+
+        if((signatureCount[0] != signatureCount[1])){
+            // メトロノームの再生
+            AudioManager::PlayAudio(metronomeFilePath_, false);
+        }
+    }
+
+
+    // アンサー音の再生
+    // ボーダーとなる時間を計算
+    float borderTime[2] = {
+        songTimer_.currentTime - PlaySettings::GetInstance()->GetOffsetAnswerSE(),
+        songTimer_.prevTime - PlaySettings::GetInstance()->GetOffsetAnswerSE()
+    };
+
+    // 条件を満たすノーツ
+    for(auto it = notes_.begin(); it != notes_.end(); ++it){
+
+        // 判定時間を超えていたら
+        if(it->first < borderTime[0] && it->first >= borderTime[1]){
+            // アンサー音を鳴らす
+            AudioManager::PlayAudio(answerSEFilePath_, false);
+
+        }
+    }
+
+    // 終点でも同様にアンサー音を鳴らす
+    for(auto it = activeHoldNotes_.begin(); it != activeHoldNotes_.end(); ++it){
+        Note_Base* note = it->lock().get();
+        if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note)){
+            float end = holdNote->time_ + holdNote->kHoldTime_;
+            if(end < borderTime[0] && end >= borderTime[1]){
+                AudioManager::PlayAudio(answerSEFilePath_, false);
+            }
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+// JSONからノーツデータを読み込む
+//////////////////////////////////////////////////////////////////////
+void NotesData::FromJson(const nlohmann::json& songData){
+
+    // JSONデータを保存
+    songData_ = songData;
+
+    // 曲のファイルパスを取得
+    if(songData.contains("audioPath")){
+        songFilePath_ = songData["audioPath"];
+        AudioManager::LoadAudio(songFilePath_); // オーディオをロード
+    }
+
+    // ノーツデータの読み込み
+    if(songData.contains("notes")){
+        for(const auto& noteJson : songData["notes"]){
+            std::string noteType = noteJson["noteType"];
+
+            if(noteType == "tap"){
+                Note_Tap* note = new Note_Tap();
+                note->FromJson(noteJson);
+                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                notes_.emplace_back(std::make_pair(note->time_, note));
+
+            } else if(noteType == "hold" or noteType == "Hold"){
+                Note_Hold* note = new Note_Hold();
+                note->FromJson(noteJson);
+                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                notes_.emplace_back(std::make_pair(note->time_, note));
+
+            } else if(noteType == "rectFlick" or noteType == "RectFlick"){
+                Note_RectFlick* note = new Note_RectFlick();
+                note->FromJson(noteJson);
+                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                notes_.emplace_back(std::make_pair(note->time_, note));
+
+            } else if(noteType == "wheel"){
+                Note_Wheel* note = new Note_Wheel();
+                note->FromJson(noteJson);
+                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                notes_.emplace_back(std::make_pair(note->time_, note));
+
+            } else{
+                // 未知のノーツタイプは無視
+                continue;
+            }
+
+            // 左右反転の設定が有効なら、ノーツのレーンを反転
+            if(PlaySettings::GetInstance()->GetIsReverseLR()){
+                notes_.back().second->lane_ -= 2;
+                notes_.back().second->lane_ *= -1; // レーンを反転
+                notes_.back().second->lane_ += 2;
+            }
+
+            // 上下反転の設定が有効なら、ノーツのレイヤーを反転
+            if(PlaySettings::GetInstance()->GetIsReverseUD()){
+                UpDown layer = notes_.back().second->layer_;
+                notes_.back().second->layer_ = layer == UpDown::UP ? UpDown::DOWN : UpDown::UP; // レイヤーを反転
+            }
+        }
+    }
+
+    // テンポデータの読み込み
+    if(songData.contains("tempoData")){
+        for(const auto& tempoJson : songData["tempoData"]){
+            TempoData tempoData;
+            tempoData.FromJson(tempoJson);
+            tempoDataList_.push_back(tempoData);
+        }
+    }
+
+    // ノーツを時間でソート
+    std::sort(notes_.begin(), notes_.end(),
+        [](const std::pair<float, std::shared_ptr<Note_Base>>& a,
+            const std::pair<float, std::shared_ptr<Note_Base>>& b){
+        return a.first < b.first;
+    });
+
+
+    // 時間を計算
+    if(tempoDataList_.size() != 0){
+        startOffsetTime_ = tempoDataList_.front().CalcDuration();
+        float duration = tempoDataList_.back().time + tempoDataList_.back().CalcDuration();
+        songTimer_.duration = duration; // 譜面の長さを設定
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
+// 譜面データのホットリロードを行う関数
+//////////////////////////////////////////////////////////////////////
+void NotesData::HotReload(){
+    // 譜面データがなければアサート
+    if(songData_.empty()){
+        assert(false);
+    }
+
+    // JSONファイルを読み込む
+    std::string jsonFilePath = songData_["jsonFilePath"];
+    songData_ = nlohmann::json::parse(std::ifstream(jsonFilePath));
+
+    // ノーツの初期化
+    notes_.clear();
+    activeHoldNotes_.clear();
+    onFieldNotes_.clear();
+
+    // jsonからノーツデータを読み込む
+    FromJson(songData_);
+}
+
+//////////////////////////////////////////////////////////////////////
+// ImGuiから触る用の関数
+//////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG
+void NotesData::Edit(){
+
+    static ImTextureID playIcon = nullptr;
+    static ImTextureID pauseIcon = nullptr;
+
+    if(!playIcon or !pauseIcon){
+        playIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
+        pauseIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+    }
+
+    ImFunc::CustomBegin("NotesData", MoveOnly_TitleBar);
+    {
+
+        // 再生・停止・時間変更
+        if(ImGui::ImageButton("playIcon", isStopped_ ? pauseIcon : playIcon, ImVec2(20, 20))){
+            isStopped_ = !isStopped_;
+
+            if(isStopped_){
+                songTimer_.Stop();
+                AudioManager::EndAudio(songAudioHandle_);
+            } else{
+                // 再生状態にする
+                songTimer_.Restart();
+                if(songTimer_.currentTime >= startOffsetTime_){
+                    songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
+                }
+            }
+        }
+
+        ImGui::SameLine();
+        if(ImGui::SliderFloat("曲時間", &songTimer_.currentTime, 0.0f, songTimer_.duration)){
+            AudioManager::EndAudio(songAudioHandle_);
+
+            // ノーツの初期化
+            notes_.clear();
+            activeHoldNotes_.clear();
+            onFieldNotes_.clear();
+
+            // jsonからノーツデータを読み込む
+            FromJson(songData_);
+
+        } else{
+            if(!isStopped_){
+                if(songTimer_.currentTime >= startOffsetTime_){
+                    if(!AudioManager::IsPlayingAudio(songAudioHandle_)){
+                        songAudioHandle_ =
+                            AudioManager::PlayAudio(
+                                songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_
+                            );
+                    }
+                }
+            }
+        }
+
+
+        // ホットリロードのボタン
+        if(ImGui::Button("譜面をホットリロード")){
+            HotReload();
+        }
+
+        ImGui::End();
+    }
+
+
+    // 
+    if(Input::IsTriggerKey(DIK_RIGHT)){
+
+    }
+}
+#endif // _DEBUG

@@ -1,11 +1,13 @@
 #pragma once
 #include <SEED/Source/Basic/Scene/State_Base.h>
 #include <Game/Manager/RythmGameManager.h>
+#include <json.hpp>
 
 class GameState_Play : public State_Base{
 public:
-    GameState_Play();
+    GameState_Play() = default;
     GameState_Play(Scene_Base* pScene);
+    GameState_Play(Scene_Base* pScene, const nlohmann::json& songData);
     ~GameState_Play() override = default;
 
 public:

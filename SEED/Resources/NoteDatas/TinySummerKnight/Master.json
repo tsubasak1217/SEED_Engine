@@ -5,6 +5,7 @@
     "difficulty": 8,
     "difficultyName": "Master",
     "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Master.json",
     "maxCombo": 24,
     "notes": [
         {

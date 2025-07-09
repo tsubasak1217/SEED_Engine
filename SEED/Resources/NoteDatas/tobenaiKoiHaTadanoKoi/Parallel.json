@@ -1,0 +1,125 @@
+{
+    "artist": "妖精さん",
+    "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
+    "bpm": 177.0,
+    "difficulty": 9,
+    "difficultyName": "Parallel",
+    "genre": 1,
+    "maxCombo": 17,
+    "notes": [
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 1.3559322357177734
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 1.3559322357177734
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 2.711864471435547
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 3.3898305892944336
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 4.06779670715332
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 4.406779766082764
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 4.745762825012207
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 5.08474588394165
+        },
+        {
+            "holdTime": 0.33898305892944336,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 5.423728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 5.762712001800537
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 6.1016950607299805
+        }
+    ],
+    "notesDesigner": "tbs",
+    "songName": "飛べない鯉はただの鯉",
+    "tempoData": [
+        {
+            "barCount": 1,
+            "bpm": 177.0,
+            "time": 1.3559322357177734,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        },
+        {
+            "barCount": 109,
+            "bpm": 177.0,
+            "time": 1.3559322357177734,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        }
+    ]
+}

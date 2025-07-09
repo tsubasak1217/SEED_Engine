@@ -65,6 +65,7 @@ private:
     void DisplaySongDetail(); // 曲決定の際のUIがはけて行く動き
     void CreateDifficultyList(); // 難易度のリストを作成
     void UpdateDifficultyList(); // 難易度のリストを更新
+    void StartPlay(); // プレイ開始
 
     void Edit();
     nlohmann::json ToJson();
@@ -113,4 +114,7 @@ private:
     float slideOutWidth = 800.0f; // スライドアウト(曲決定の際のUIがはけて行く動き)の幅
     float slideOutTimer = 0.0f;
     float kMaxSlideOutTime = 0.8f; // スライドアウトの最大時間
+    bool isStartPlay = false; // プレイ開始フラグ
+    float playWaitTimer = 0.0f; // プレイ待機タイマー
+    float kPlayWaitTime = 2.0f; // プレイ待機時間
 };

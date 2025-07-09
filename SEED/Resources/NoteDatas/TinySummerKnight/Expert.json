@@ -1,8 +1,10 @@
 {
     "artist": "カマキリ楽団",
+    "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
     "bpm": 160.0,
-    "difficulty": 8,
-    "genre": 0,
+    "difficulty": 4,
+    "difficultyName": "Expert",
+    "genre": 1,
     "maxCombo": 28,
     "notes": [
         {
@@ -196,7 +198,7 @@
         }
     ],
     "notesDesigner": "tbs",
-    "songName": "musics/TinySummerKnight.wav",
+    "songName": "TinySummerKnight",
     "tempoData": [
         {
             "barCount": 1,

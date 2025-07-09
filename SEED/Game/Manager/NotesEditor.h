@@ -147,13 +147,13 @@ private:
     std::list<std::unique_ptr<Note_Base>> notes_;
 
     // 音声情報
-    std::string audioFileName_;
+    std::string audioFilePath_;
     std::string answerSEFileName_;
     std::string metronomeSEFileName_;
     AudioHandle audioHandle_;
 
     // 入出力ファイル名
-    std::string saveDifficultyName_;
+    std::string saveDifficultyName_ = "Basic";
     std::string saveSongName_;
     std::string loadFileName_;
 

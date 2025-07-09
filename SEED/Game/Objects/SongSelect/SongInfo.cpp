@@ -7,11 +7,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // 曲名でSongInfoを初期化する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfo::Initialize(const std::string& _songName){
+void SongInfo::Initialize(const std::string& _folderName){
 
-    this->songName = _songName;
+    folderName = _folderName;
     std::string jsonNames[diffcultySize] = { "Basic.json", "Expert.json", "Master.json", "Parallel.json" };
-    std::string directoryPath = "Resources/NoteDatas/" + _songName + "/";
+    std::string directoryPath = "Resources/NoteDatas/" + _folderName + "/";
 
     // jsonファイルの存在を確認し、読み込む
     for(int i = 0; i < diffcultySize; i++){
@@ -42,6 +42,11 @@ void SongInfo::Initialize(const std::string& _songName){
         if(genre == std::nullopt){
             genre = (SongGenre)noteData["genre"];
         }
+
+        // 楽曲名を取得
+        if(songName.empty()){
+            songName = noteData["songName"];
+        }
     }
 
 
@@ -55,7 +60,7 @@ void SongInfo::Initialize(const std::string& _songName){
     }
 
     // スコア情報を初期化
-    directoryPath = "Resources/Jsons/ScoreDatas/" + _songName + "/";
+    directoryPath = "Resources/NoteDatas/" + _folderName + "/" + "scoreData.json";
     // jsonファイルの存在を確認し、読み込む
     for(int i = 0; i < diffcultySize; i++){
         std::string filePath = directoryPath + jsonNames[i];
@@ -103,13 +108,14 @@ void SongInfoDrawer::Initialize(){
 /////////////////////////////////////////////////////////////////////////////
 // 楽曲情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
+void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected, float alpha){
     // 背景部分を描画
     if(isSelected){
         backSprite->color = backColors[(int)difficulty];
+        backSprite->color.w = alpha;
     } else{
         backSprite->color = backColors[(int)difficulty] * 0.8f;
-        backSprite->color.w = 1.0f; // 選択時は不透明
+        backSprite->color.w = alpha;
     }
 
     backSprite->size = kDrawSize;
@@ -123,10 +129,11 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
     // ジャケットのオフセット
     Vector2 jacketOffset = { kDrawSize.y * 0.15f * transform.scale.x,kDrawSize.y * 0.15f * transform.scale.y };
     jacketSprite->size = { kDrawSize.y * 0.7f,kDrawSize.y * 0.7f };
-    jacketSprite->GH = TextureManager::LoadTexture("Jackets/" + songInfo.songName + ".png");
+    jacketSprite->GH = TextureManager::LoadTexture("../../Resources/NoteDatas/" + songInfo.folderName + "/" + songInfo.folderName + ".png");
     jacketSprite->translate = leftTopPos + jacketOffset;
     jacketSprite->scale = backSprite->scale;
     // ジャケット画像を描画
+    jacketSprite->color.w = alpha; // 透明度を適用
     jacketSprite->Draw();
 
     for(auto& key : textBoxKeys){
@@ -144,7 +151,8 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
             textBox[key]->text = songInfo.artistName;
 
         } else if(key == "BPM"){
-            textBox[key]->text = std::to_string(songInfo.bpm);
+            int bpm = static_cast<int>(songInfo.bpm);
+            textBox[key]->text = "BPM" + std::to_string(bpm);
 
         } else if(key == "Difficulty"){
             textBox[key]->text = std::to_string(songInfo.difficulty[difficultyIndex]);
@@ -161,6 +169,7 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
 
         textBox[key]->transform.scale = transform.scale;
         textBox[key]->transform.translate = leftTopPos + textBoxRelativePos[key] * transform.scale;
+        textBox[key]->color.w = alpha; // 透明度を適用
         textBox[key]->Draw();
     }
 }
@@ -168,15 +177,16 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
 /////////////////////////////////////////////////////////////////////////////
 // 楽曲グループ情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
-void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
+void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected, float alpha){
 
 
     // 背景部分を描画
     if(isSelected){
         backSprite->color = backColors[(int)difficulty];
+        backSprite->color.w = alpha; // 選択時は透明度を適用
     } else{
         backSprite->color = backColors[(int)difficulty] * 0.8f;
-        backSprite->color.w = 1.0f; // 選択時は不透明
+        backSprite->color.w = alpha; // 選択時は不透明
     }
 
     backSprite->size = kDrawSize;
@@ -191,6 +201,7 @@ void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transfo
     textBox["GroupName"]->text = groupInfo.groupName;
     textBox["GroupName"]->transform.scale = transform.scale;
     textBox["GroupName"]->transform.translate = leftTopPos + textBoxRelativePos["GroupName"] * transform.scale;
+    textBox["GroupName"]->color.w = alpha; // 透明度を適用
     textBox["GroupName"]->Draw();
 
     difficulty;

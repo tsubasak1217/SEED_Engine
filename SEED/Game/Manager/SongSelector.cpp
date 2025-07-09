@@ -3,6 +3,8 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Transform.h>
+#include <Game/GameSystem.h>
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
 
 // コンストラクタ
 SongSelector::SongSelector(){
@@ -81,19 +83,23 @@ void SongSelector::Initialize(){
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Update(){
 
-    // UIの更新
-    UpdateSongUI();
-    // 項目の選択
-    SelectItems();
+    if(!isStartPlay){
+        // UIの更新
+        UpdateSongUI();
+        // 項目の選択
+        SelectItems();
 
-    // 曲の詳細表示
-    if(slideOutTimer > 0.0f){
-        // 曲の詳細画面を表示
-        DisplaySongDetail();
+        // 曲の詳細表示
+        if(slideOutTimer > 0.0f){
+            // 曲の詳細画面を表示
+            DisplaySongDetail();
+        }
+        // 制御点の位置を編集
+        Edit();
+
+    } else{
+        StartPlay(); // ゲームのプレイを開始
     }
-
-    // 制御点の位置を編集
-    Edit();
 }
 
 
@@ -113,15 +119,43 @@ void SongSelector::Draw(){
         }
 
         if(slideOutTimer > 0.0f){
-            // 難易度のリストを描画
-            for(int i = 0; i < songAllDifficulty.size(); i++){
-                if(songAllDifficulty[i].first){
-                    SongInfoDrawer::Draw(
-                        *songAllDifficulty[i].first,
-                        songAllDifficultyTransforms[i],
-                        songAllDifficulty[i].second,
-                        i == difficultyTransformCenterIdx
-                    );
+
+            if(!isStartPlay){
+                // 難易度のリストを描画
+                for(int i = 0; i < songAllDifficulty.size(); i++){
+                    if(songAllDifficulty[i].first){
+                        SongInfoDrawer::Draw(
+                            *songAllDifficulty[i].first,
+                            songAllDifficultyTransforms[i],
+                            songAllDifficulty[i].second,
+                            aimIndices[i] == difficultyTransformCenterIdx
+                        );
+                    }
+                }
+            } else{
+                // 難易度のリストを描画
+                float t = std::clamp(playWaitTimer / (kPlayWaitTime * 0.5f), 0.0f, 1.0f);
+                for(int i = 0; i < songAllDifficulty.size(); i++){
+                    if(songAllDifficulty[i].first){
+                        if(aimIndices[i] == difficultyTransformCenterIdx){
+                            // 選択局はそのまま描画
+                            SongInfoDrawer::Draw(
+                                *songAllDifficulty[i].first,
+                                songAllDifficultyTransforms[i],
+                                songAllDifficulty[i].second,
+                                aimIndices[i] == difficultyTransformCenterIdx
+                            );
+                        } else{
+                            // それ以外は透明にして消していく
+                            SongInfoDrawer::Draw(
+                                *songAllDifficulty[i].first,
+                                songAllDifficultyTransforms[i],
+                                songAllDifficulty[i].second,
+                                aimIndices[i] == difficultyTransformCenterIdx,
+                                1.0f - t
+                            );
+                        }
+                    }
                 }
             }
         }
@@ -384,6 +418,11 @@ void SongSelector::UpdateVisibleItems(){
     if(currentGroup->groupMembers.empty()){ return; }
 
     {
+
+        auto itGroup = songGroups.begin();
+        std::advance(itGroup, currentGroupIndex);
+        currentGroup = &(*itGroup); // 現在のグループを更新
+
         // 可視オブジェクトの更新
         auto it = currentGroup->groupMembers.begin();
         std::advance(it, currentSongIndex);
@@ -514,8 +553,13 @@ void SongSelector::SelectItems(){
                 selectMode_ = SelectMode::Group;
             }
         } else{
-            // 楽曲選択に戻る
-            if(Input::IsTriggerKey({ DIK_ESCAPE })){
+            // プレイ開始
+            if(Input::IsTriggerKey({ DIK_SPACE })){
+                // 楽曲を決定して詳細画面へ
+                isStartPlay = true;
+                playWaitTimer = 0.0f; // プレイ待機タイマーをリセット
+
+            } else if(Input::IsTriggerKey({ DIK_ESCAPE })){// 楽曲選択に戻る
                 isDecideSong = false;
                 Sort();
             }
@@ -579,10 +623,11 @@ void SongSelector::SelectItems(){
                     0, int(songGroups.size()) - 1
                 );
 
-                // 現在の曲を更新
+                // 現在のグループを更新
                 auto it = songGroups.begin();
                 std::advance(it, currentGroupIndex);
                 currentGroup = &(*it);
+                currentSongIndex = 0; // グループ変更時は曲のインデックスをリセット
             }
         }
 
@@ -810,6 +855,7 @@ void SongSelector::UpdateDifficultyList(){
         for(int i = 0; i < aimIndices.size(); i++){
             if(aimIndices[i] == difficultyTransformCenterIdx){
                 currentSong = songAllDifficulty[i]; // 現在の曲を更新
+                currentDifficulty = currentSong.second; // 現在の難易度を更新
             }
         }
     }
@@ -825,6 +871,36 @@ void SongSelector::UpdateDifficultyList(){
     }
 
     difficultySelectTimer = std::clamp(difficultySelectTimer + ClockManager::DeltaTime(), 0.0f, kItemChangeTime);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// ゲームのプレイを開始
+/////////////////////////////////////////////////////////////////////////////////////
+void SongSelector::StartPlay(){
+
+    static Transform2D centerTransform = Transform2D({ 1.5f,1.5f, }, 0.0f, kWindowCenter);
+
+    // プレイ待機時間を更新
+    playWaitTimer = std::clamp(playWaitTimer + ClockManager::DeltaTime(), 0.0f, kPlayWaitTime);
+    float t = std::clamp(playWaitTimer / kPlayWaitTime, 0.0f, 1.0f);
+    float ease = EaseInOutExpo(t);
+
+    // 選択アイテムの位置を中央へ
+    for(int i = 0; i < aimIndices.size(); i++){
+        if(aimIndices[i] == difficultyTransformCenterIdx){
+            // 中心の難易度はそのまま
+            songAllDifficultyTransforms[i] = MyFunc::Interpolate(
+                songAllDifficultyTransforms[i], centerTransform, ease
+            );
+        }
+    }
+
+    // シーンのステートを遷移
+    if(t == 1.0f){
+        auto* scene = GameSystem::GetScene();
+        GameSystem::GetScene()->ChangeState(new GameState_Play(scene));
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

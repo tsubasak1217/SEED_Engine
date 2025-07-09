@@ -68,10 +68,11 @@ namespace ScoreRankUtils {
 }
 
 struct SongInfo{
-    void Initialize(const std::string& songName);
+    void Initialize(const std::string& _folderName);
 
 
     // 曲の共通情報
+    std::string folderName;
     std::string songName;
     std::string artistName;
     std::optional<SongGenre> genre;
@@ -99,8 +100,8 @@ struct SongGroup{
 
 struct SongInfoDrawer{
     static void Initialize();
-    static void Draw(const SongInfo& songInfo,const Transform2D& transform, TrackDifficulty difficulty,bool isSelected);
-    static void Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected);
+    static void Draw(const SongInfo& songInfo,const Transform2D& transform, TrackDifficulty difficulty,bool isSelected,float alpha = 1.0f);
+    static void Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected, float alpha = 1.0f);
     static void Edit();
 
 private:

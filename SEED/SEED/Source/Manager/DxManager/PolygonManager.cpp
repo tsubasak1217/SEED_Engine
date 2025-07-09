@@ -1739,6 +1739,24 @@ void PolygonManager::WriteRenderData(){
     // 一列に格納する用の配列
     std::vector<MaterialForGPU> materialArray;
 
+
+    for(auto& drawData : modelDrawData_){
+
+        // カメラごとのtransformのサイズが違う場合、小さいほうに合わせる
+        int max = 0;
+        for(const auto& [cameraName, transforms] : drawData.second->transforms){
+            if(transforms.size() > max){ max = (int)transforms.size(); }
+        }
+
+        // 各カメラのtransformのサイズを揃える
+        for(auto& [cameraName, transforms] : drawData.second->transforms){
+            if(transforms.size() < max){
+                transforms.resize(max);
+            }
+        }
+
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /*                                ライティング・カメラ情報を書き込む                              */

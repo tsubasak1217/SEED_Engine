@@ -1,7 +1,7 @@
 {
-    "artist": "カマキリ楽団",
-    "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
-    "bpm": 160.0,
+    "artist": "妖精さん",
+    "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
+    "bpm": 177.0,
     "difficulty": 1,
     "difficultyName": "Basic",
     "genre": 1,
@@ -13,7 +13,7 @@
             "laneBit": 1,
             "layer": 0,
             "noteType": "tap",
-            "time": 1.5
+            "time": 1.3559322357177734
         },
         {
             "isExtraNote": false,
@@ -21,7 +21,7 @@
             "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
-            "time": 1.875
+            "time": 1.6949152946472168
         },
         {
             "isExtraNote": false,
@@ -29,7 +29,7 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
-            "time": 2.25
+            "time": 2.03389835357666
         },
         {
             "isExtraNote": false,
@@ -37,23 +37,23 @@
             "laneBit": 16,
             "layer": 0,
             "noteType": "tap",
-            "time": 2.625
+            "time": 2.3728814125061035
         }
     ],
     "notesDesigner": "tbs",
-    "songName": "TinySummerKnight",
+    "songName": "飛べない鯉はただの鯉",
     "tempoData": [
         {
             "barCount": 1,
-            "bpm": 160.0,
-            "time": 1.5,
+            "bpm": 177.0,
+            "time": 1.3559322357177734,
             "timeSignature_denominator": 4,
             "timeSignature_numerator": 4
         },
         {
-            "barCount": 14,
-            "bpm": 160.0,
-            "time": 1.5,
+            "barCount": 109,
+            "bpm": 177.0,
+            "time": 1.3559322357177734,
             "timeSignature_denominator": 4,
             "timeSignature_numerator": 4
         }

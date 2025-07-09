@@ -135,22 +135,43 @@ void NotesEditor::Edit(){
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::SelectAudioFile(){
 
-    // 音声ファイルのリストを取得
-    static auto paths = MyFunc::GetFileList("Resources/Audios/musics", { ".wav", ".mp3" }, true);
+    // 音声ファイルを取得
+    static std::filesystem::path audioFileBasePath = "Resources/NoteDatas"; // 音声ファイル名の
+    static std::string nextPathName{};
+    std::string selectedFile = ImFunc::FolderView("音声ファイル選択", audioFileBasePath); // 音声ファイルの選択
 
-    if(ImGui::CollapsingHeader("音声ファイルの選択")){
-        if(ImGui::IsItemClicked(0)){
-            paths = MyFunc::GetFileList("Resources/Audios/musics", { ".wav", ".mp3" }, true); // 再取得
-        }
+    if(!selectedFile.empty()){
 
-        if(ImFunc::ComboText("音声ファイル一覧", audioFileName_, paths)){
-            audioFileName_ = "musics/" + audioFileName_; // 音声ファイル名を設定
+        // "NoteDatas"以降の階層にあるかチェック
+        if(selectedFile.find("NoteDatas") != std::string::npos){
 
-            if(isPlaying_){
-                AudioManager::EndAudio(audioHandle_); // 再生中なら停止
-                audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+            // ".wav", ".mp3"の拡張子を持つファイル名かチェック
+            if(selectedFile.ends_with(".wav") || selectedFile.ends_with(".mp3")){
+                nextPathName = "../../" + selectedFile; // パスを設定
+                ImGui::OpenPopup("音声ファイルの変更確認"); // ポップアップを開く
             }
         }
+    }
+
+    // ポップアップの表示
+    if(ImGui::BeginPopupModal("音声ファイルの変更確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+        ImGui::Text("音声ファイルを変更しますか？\n %s", nextPathName.c_str());
+        if(ImGui::Button("はい")){
+            audioFilePath_ = nextPathName; // 音声ファイル名を設定
+            // 音声の変更
+            if(isPlaying_){
+                AudioManager::EndAudio(audioHandle_); // 再生中なら停止
+                audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
+            }
+
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+        if(ImGui::Button("いいえ")){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
 
     ImGui::DragFloat("アンサー音のオフセット", &answerOffsetTime_, 0.01f);
@@ -249,8 +270,8 @@ void NotesEditor::DisplayLane(){
     if(ImGui::ImageButton("playIcon", playIcon, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1))){
         isPlaying_ = !isPlaying_; // 再生/停止の切り替え
         if(isPlaying_){
-            if(!audioFileName_.empty()){
-                audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+            if(!audioFilePath_.empty()){
+                audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
             }
         } else{
             AudioManager::EndAudio(audioHandle_); // 音声を停止
@@ -268,8 +289,8 @@ void NotesEditor::DisplayLane(){
         if(isSliderActive){
             isSliderActive = false;
             if(isPlaying_){
-                if(!audioFileName_.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+                if(!audioFilePath_.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
                 }
             }
         }
@@ -1266,8 +1287,8 @@ void NotesEditor::ScrollOnLane(){
         // 動きが小さくなったら再生を再開
         if(isPause){
             if(std::fabsf(savedTimeVelocity) < 0.001f){
-                if(!audioFileName_.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(audioFileName_, false, 1.0f, curLaneTime_); // 音声を再生
+                if(!audioFilePath_.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
                 }
                 isPause = false; // 再生中フラグを設定
                 isPlaying_ = true; // 再生中フラグを設定
@@ -1377,7 +1398,7 @@ void NotesEditor::FileControl(){
         isEditOnLane_ = false; // レーン上の編集を無効化
 
         // 拡張子、ディレクトリを除去して曲名を取得
-        std::string songName = audioFileName_;
+        std::string songName = audioFilePath_;
         if(!songName.empty()){
             size_t lastSlash = songName.find_last_of("/\\");
             if(lastSlash != std::string::npos){
@@ -1388,28 +1409,16 @@ void NotesEditor::FileControl(){
                 songName = songName.substr(0, lastDot); // 拡張子を除去
             }
         }
-        saveSongName_ = songName; // 曲名を保存
+
+        if(saveDifficultyName_.empty()){
+            saveSongName_ = songName; // 曲名を保存
+        }
     }
 
 
-    //ImFunc::ComboText("譜面データの一覧", loadFileName_, noteDataPaths);
     static std::filesystem::path loadFilePath = "Resources/NoteDatas/"; // 読み込み先のパスを設定
     std::string selectedFile = ImFunc::FolderView("譜面データ一覧", loadFilePath);
     selectedFile;
-    if(ImGui::Button("読み込む")){
-        if(!loadFileName_.empty()){
-            filePath = "Resources/NoteDatas/" + std::string(loadFileName_); // 読み込み先のパスを設定
-            if(std::filesystem::exists(filePath)){
-                std::ifstream file(filePath);
-                jsonData.clear(); // JSONデータをクリア
-                file >> jsonData; // JSONデータを読み込む
-                LoadFromJson(jsonData); // JSONから譜面データを読み込む
-                file.close();
-            } else{
-                ImGui::OpenPopup("ファイルが存在しません");
-            }
-        }
-    }
 
 
     if(ImGui::BeginPopup("SaveFilePopup")){
@@ -1422,8 +1431,22 @@ void NotesEditor::FileControl(){
         ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
 
         if(ImGui::Button("保存")){
+
+            // 拡張子、ディレクトリを除去して曲名を取得
+            std::string songName = audioFilePath_;
+            if(!songName.empty()){
+                size_t lastSlash = songName.find_last_of("/\\");
+                if(lastSlash != std::string::npos){
+                    songName = songName.substr(lastSlash + 1); // ディレクトリを除去
+                }
+                size_t lastDot = songName.find_last_of('.');
+                if(lastDot != std::string::npos){
+                    songName = songName.substr(0, lastDot); // 拡張子を除去
+                }
+            }
+
             // 保存先のパスを設定
-            directoryPath = "Resources/NoteDatas/" + saveSongName_ + "/";
+            directoryPath = "Resources/NoteDatas/" + songName + "/";
             filePath = directoryPath + saveDifficultyName_ + ".json";
             jsonData = ToJson(); // JSONデータを取得
 
@@ -1523,7 +1546,17 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
     }
 
     // その他のデータの読み込み
-    audioFileName_ = jsonData["songName"];
+    if(jsonData.contains("songName")){
+        saveSongName_ = jsonData["songName"];
+    }
+    if(jsonData.contains("audioPath")){
+        audioFilePath_ = jsonData["audioPath"];
+    }
+
+    if(jsonData.contains("difficultyName")){
+        saveDifficultyName_ = jsonData["difficultyName"];
+    }
+
     difficulty_ = jsonData["difficulty"];
     artistName_ = jsonData["artist"];
     notesDesignerName_ = jsonData["notesDesigner"];
@@ -1611,8 +1644,10 @@ nlohmann::json NotesEditor::ToJson(){
     }
 
     // その他のデータの書き出し
-    jsonData["songName"] = audioFileName_;
+    jsonData["songName"] = saveSongName_;
+    jsonData["audioPath"] = audioFilePath_;
     jsonData["difficulty"] = difficulty_;
+    jsonData["difficultyName"] = saveDifficultyName_;
     jsonData["artist"] = artistName_;
     jsonData["notesDesigner"] = notesDesignerName_;
     jsonData["bpm"] = bpm;

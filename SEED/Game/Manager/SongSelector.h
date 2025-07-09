@@ -14,6 +14,8 @@ enum class SortMode{
     Score,      // スコア順
     ClearIcon,  // クリアアイコン順(FC,APなど)
     BPM,        // BPM順
+    //ここまで
+    kMaxCount
 };
 
 // まとまり分け方法
@@ -30,6 +32,16 @@ enum class SelectMode{
     Song, // 楽曲選択
     Group, // グループ選択
 };
+
+namespace SelectUtil{
+    inline std::string groupModeNames[(int)GroupMode::kMaxCount] = {
+        "全曲", "ジャンル", "難易度", "ランク"
+    };
+
+    inline std::string sortModeNames[(int)SortMode::kMaxCount] = {
+        "タイトル", "アーティスト名", "難易度", "スコア", "クリアアイコン", "BPM"
+    };
+}
 
 // 楽曲選択の管理クラス
 class SongSelector{
@@ -50,6 +62,9 @@ private:
     void UpdateVisibleItems(); // 表示されている楽曲の更新
     void SelectItems();
     void UpdateSongUI();
+    void DisplaySongDetail(); // 曲決定の際のUIがはけて行く動き
+    void CreateDifficultyList(); // 難易度のリストを作成
+    void UpdateDifficultyList(); // 難易度のリストを更新
 
     void Edit();
     nlohmann::json ToJson();
@@ -58,27 +73,44 @@ private:
 private:
     SelectMode selectMode_;// 楽曲選択中かどうか
     std::list<std::unique_ptr<SongInfo>> songList; // 楽曲情報のリスト
+    std::list<SongGroup> songGroups; // 楽曲グループのリスト
     int32_t currentGroupIndex = 0; // 現在のグループインデックス
     int32_t currentSongIndex = 0; // 現在の楽曲インデックス
     TrackDifficulty currentDifficulty; // 現在の難易度
     SongGroup* currentGroup = nullptr; // 現在選択中のグループ
-    SongInfo* currentSong = nullptr; // 現在選択中の楽曲
+    GroupMode currentGroupMode; // グループ分け方法
+    SortMode currentSortMode; // ソートモード
+    SongAndDiffidulty currentSong; // 現在選択中の楽曲
 
-    std::list<SongGroup> songGroups; // 楽曲グループのリスト
+    // 表示される楽曲の数
     static const int32_t kVisibleRadius = 4; // 表示する楽曲の数
     static const int32_t centerIndex = kVisibleRadius; // 中心の楽曲インデックス
     static const int32_t kVisibleSongCount = 1 + kVisibleRadius * 2; // 表示する楽曲の総数
-    std::array<SongInfo*, kVisibleSongCount> visibleSongs; // 表示されている楽曲のリスト
+
+    // 表示曲・グループのリスト
+    std::array<SongAndDiffidulty*, kVisibleSongCount> visibleSongs; // 表示されている楽曲のリスト
     std::array<SongGroup*, kVisibleSongCount> visibleGroups; // 表示されている楽曲のリスト
     std::array<Transform2D, kVisibleSongCount> visibleItemTransforms; // 表示されている楽曲の位置の制御点
-    GroupMode currentGroupMode; // グループ分け方法
-    SortMode currentSortMode; // ソートモード
+
+    // 楽曲の難易度のリスト
+    std::vector<SongAndDiffidulty> songAllDifficulty; // 楽曲の難易度のリスト
+    std::vector<Transform2D> songAllDifficultyTransforms; // 楽曲の難易度の位置の制御点
+    std::vector<int32_t> aimIndices; // 楽曲の難易度の位置の制御点のインデックス
+    std::array<Transform2D, int(TrackDifficulty::kMaxDifficulty) + 3> difficultyAimTransforms; // 難易度の位置の制御点
+    int32_t difficultyTransformCenterIdx = 3;
+    float difficultySelectTimer = 0.0f; // 難易度選択のタイマー
 
     // UI関連
     bool isItemChanged = false; // アイテムが変更されたかどうか
     UpDown changeDirection; // アイテム変更の方向
     float itemChangeTimer = 0.0f; // アイテム変更タイマー
-    float kItemChangeTime = 0.2f; // アイテム変更時間
+    float kItemChangeTime = 0.9f; // アイテム変更時間
     std::array<Transform2D, kVisibleSongCount + 2> itemAimTransforms; // アイテムの位置の制御点
-    bool splineCurveVisible = true; // ベジェ曲線の表示フラグ
+    bool isEditSongTransform = false; // ベジェ曲線の表示フラグ
+    bool isEditDifficultyTransform = false; // 難易度のベジェ曲線の表示フラグ
+    bool isDecideSong = false; // 楽曲決定フラグ
+    // 曲決定の際のUIがはけて行く動き
+    float slideOutWidth = 800.0f; // スライドアウト(曲決定の際のUIがはけて行く動き)の幅
+    float slideOutTimer = 0.0f;
+    float kMaxSlideOutTime = 0.8f; // スライドアウトの最大時間
 };

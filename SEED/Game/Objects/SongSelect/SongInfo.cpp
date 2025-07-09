@@ -80,7 +80,7 @@ void SongInfo::Initialize(const std::string& _songName){
 // 曲描画の初期化関数
 //////////////////////////////////////////////////////////////////////////////
 void SongInfoDrawer::Initialize(){
-    
+
 
     // 背景画像の読み込み
     backSprite = std::make_unique<Sprite>("DefaultAssets/white1x1.png");
@@ -106,9 +106,10 @@ void SongInfoDrawer::Initialize(){
 void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
     // 背景部分を描画
     if(isSelected){
-        backSprite->color = { 1.0f,1.0f,0.0f,1.0f };
+        backSprite->color = backColors[(int)difficulty];
     } else{
-        backSprite->color = { 1.0f,1.0f,0.5f,1.0f };
+        backSprite->color = backColors[(int)difficulty] * 0.8f;
+        backSprite->color.w = 1.0f; // 選択時は不透明
     }
 
     backSprite->size = kDrawSize;
@@ -128,7 +129,7 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
     // ジャケット画像を描画
     jacketSprite->Draw();
 
-    for(auto & key : textBoxKeys){
+    for(auto& key : textBoxKeys){
         if(key == "GroupName"){
             continue;
         }
@@ -168,11 +169,14 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
 // 楽曲グループ情報を描画する関数
 /////////////////////////////////////////////////////////////////////////////
 void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected){
+
+
     // 背景部分を描画
     if(isSelected){
-        backSprite->color = { 1.0f,1.0f,0.0f,1.0f };
+        backSprite->color = backColors[(int)difficulty];
     } else{
-        backSprite->color = { 1.0f,1.0f,1.0f,1.0f };
+        backSprite->color = backColors[(int)difficulty] * 0.8f;
+        backSprite->color.w = 1.0f; // 選択時は不透明
     }
 
     backSprite->size = kDrawSize;
@@ -208,6 +212,12 @@ void SongInfoDrawer::Edit(){
             textBox[key]->Edit();
             ImGui::Unindent();
         }
+    }
+
+    // 背景色の設定
+    ImGui::Separator();
+    for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+        ImGui::ColorEdit4(("背景色 " + std::to_string(i)).c_str(), &backColors[i].x);
     }
 
     if(ImGui::Button("セッティングの保存")){
@@ -257,16 +267,28 @@ void SongInfoDrawer::LoadSettings(){
                 }
             }
         }
+
+        // 背景色の読み込み
+        if(settingsJson.contains("backColors")){
+            for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+                backColors[i] = settingsJson["backColors"][i];
+            }
+        }
     }
 }
 
 nlohmann::json SongInfoDrawer::ToJson(){
     nlohmann::json jsonData;
     jsonData["kDrawSize"] = kDrawSize;
-   
+
     for(auto key : textBoxKeys){
         jsonData[key]["textBox"] = textBox[key]->GetJsonData();
         jsonData[key]["RelativePos"] = textBoxRelativePos[key];
+    }
+
+    // 背景色の保存
+    for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+        jsonData["backColors"][i] = backColors[i];
     }
 
     return jsonData;

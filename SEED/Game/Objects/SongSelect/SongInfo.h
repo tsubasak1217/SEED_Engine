@@ -70,9 +70,6 @@ namespace ScoreRankUtils {
 struct SongInfo{
     void Initialize(const std::string& songName);
 
-    // 並び替え後のインデックス
-    int32_t sortIndex = -1;
-    int32_t groupIndex = -1;
 
     // 曲の共通情報
     std::string songName;
@@ -88,13 +85,16 @@ struct SongInfo{
     std::string notesDesignerName[diffcultySize];
     int32_t difficulty[diffcultySize];
     nlohmann::json noteDatas[diffcultySize];
+    int32_t sortIndex[diffcultySize] = { -1,-1,-1,-1 };
+    int32_t groupIndex[diffcultySize] = { -1,-1,-1,-1 };
 };
 
 // 楽曲グループ情報
+using SongAndDiffidulty = std::pair<SongInfo*, TrackDifficulty>;
 struct SongGroup{
     uint32_t groupIdx; // グループ番号
     std::string groupName; // グループ名
-    std::list<SongInfo*> groupMembers; // グループに属する楽曲のリスト
+    std::list<SongAndDiffidulty> groupMembers; // グループに属する楽曲とその難易度のリスト
 };
 
 struct SongInfoDrawer{
@@ -113,6 +113,7 @@ private:
     static inline std::unique_ptr<Sprite> backSprite = nullptr;
     static inline std::unique_ptr<Sprite> jacketSprite = nullptr;
     static inline Vector2 kDrawSize;
+    static inline Vector4 backColors[(int)TrackDifficulty::kMaxDifficulty];
 
     // テキストボックス関連
     static inline std::unordered_map<std::string, std::unique_ptr<TextBox2D>> textBox{};

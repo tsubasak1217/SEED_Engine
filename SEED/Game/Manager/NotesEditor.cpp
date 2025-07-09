@@ -89,15 +89,15 @@ void NotesEditor::Edit(){
     EditTempoData();
     ImGui::EndChild();
     // 音声データの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 210));
-    ImGui::BeginChild("楽曲情報", ImVec2(0, 100), true);
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220));
+    ImGui::BeginChild("楽曲情報", ImVec2(0, 180), true);
     SelectAudioFile();
     ImGui::EndChild();
     // 中心線の表示
     DisplayLine();
     // ノーツの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 210) + ImVec2(0, 110));
-    ImGui::BeginChild("ノーツ編集", ImVec2(0, 300), true);
+    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220) + ImVec2(0, 200));
+    ImGui::BeginChild("ノーツ編集", ImVec2(0, 0), true);
     EditNotes();
     ImGui::EndChild();
     // ノーツの表示処理
@@ -1577,7 +1577,8 @@ nlohmann::json NotesEditor::ToJson(){
     for(const auto& pair : bpmDurationMap){
         if(pair.second > maxDuration){
             maxDuration = pair.second;
-            bpm = pair.first;
+            // 小数点以下を切り捨ててBPMを取得
+            bpm = float(int(pair.first));
         }
     }
 

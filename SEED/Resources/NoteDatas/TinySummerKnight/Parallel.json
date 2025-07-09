@@ -1,23 +1,169 @@
 {
-    "artist": "tbs",
-    "bpm": 150.0,
+    "artist": "カマキリ楽団",
+    "bpm": 160.0,
     "difficulty": 5,
     "genre": 0,
-    "maxCombo": 0,
+    "maxCombo": 24,
+    "notes": [
+        {
+            "holdTime": 1.5,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 1.5
+        },
+        {
+            "holdTime": 1.5,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 3.0
+        },
+        {
+            "holdTime": 1.5,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 3.0
+        },
+        {
+            "holdTime": 1.5,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 4.5
+        },
+        {
+            "holdTime": 0.375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 6.0
+        },
+        {
+            "holdTime": 0.375,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 6.375
+        },
+        {
+            "holdTime": 0.375,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 6.75
+        },
+        {
+            "holdTime": 0.375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 7.125
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 7.5
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 7.875
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 8.25
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 8.625
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 9.0
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 9.375
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 9.75
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 10.125
+        }
+    ],
     "notesDesigner": "tbs",
     "songName": "musics/TinySummerKnight.wav",
     "tempoData": [
         {
             "barCount": 1,
-            "bpm": 150.0,
-            "time": 1.600000023841858,
+            "bpm": 160.0,
+            "time": 1.5,
             "timeSignature_denominator": 4,
             "timeSignature_numerator": 4
         },
         {
             "barCount": 14,
-            "bpm": 150.0,
-            "time": 1.600000023841858,
+            "bpm": 160.0,
+            "time": 1.5,
             "timeSignature_denominator": 4,
             "timeSignature_numerator": 4
         }

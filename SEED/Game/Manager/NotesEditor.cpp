@@ -1367,8 +1367,14 @@ void NotesEditor::PlayAnswerSE(){
 void NotesEditor::FileControl(){
 
     static auto noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" }); // 譜面データのパスを取得
+    static bool isOverwrite = false; // 上書き確認フラグ
+    static std::string directoryPath{};
+    static std::string filePath{};
+    static nlohmann::json jsonData{};
+
     if(ImGui::Button("保存")){
         ImGui::OpenPopup("SaveFilePopup");
+        isEditOnLane_ = false; // レーン上の編集を無効化
 
         // 拡張子、ディレクトリを除去して曲名を取得
         std::string songName = audioFileName_;
@@ -1392,10 +1398,10 @@ void NotesEditor::FileControl(){
     selectedFile;
     if(ImGui::Button("読み込む")){
         if(!loadFileName_.empty()){
-            std::string filePath = "Resources/NoteDatas/" + std::string(loadFileName_); // 読み込み先のパスを設定
+            filePath = "Resources/NoteDatas/" + std::string(loadFileName_); // 読み込み先のパスを設定
             if(std::filesystem::exists(filePath)){
                 std::ifstream file(filePath);
-                nlohmann::json jsonData;
+                jsonData.clear(); // JSONデータをクリア
                 file >> jsonData; // JSONデータを読み込む
                 LoadFromJson(jsonData); // JSONから譜面データを読み込む
                 file.close();
@@ -1404,6 +1410,7 @@ void NotesEditor::FileControl(){
             }
         }
     }
+
 
     if(ImGui::BeginPopup("SaveFilePopup")){
 
@@ -1416,28 +1423,15 @@ void NotesEditor::FileControl(){
 
         if(ImGui::Button("保存")){
             // 保存先のパスを設定
-            std::string directoryPath = "Resources/NoteDatas/" + saveSongName_ + "/";
-            std::string filePath = directoryPath + saveDifficultyName_ + ".json";
-            nlohmann::json jsonData = ToJson(); // JSONデータを取得
+            directoryPath = "Resources/NoteDatas/" + saveSongName_ + "/";
+            filePath = directoryPath + saveDifficultyName_ + ".json";
+            jsonData = ToJson(); // JSONデータを取得
 
             // 同じデータのファイルが存在するか確認
             if(std::filesystem::exists(filePath)){
                 // ファイルが存在する場合、上書き確認ダイアログを表示
-                if(ImGui::BeginPopupModal("上書き確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
-                    ImGui::Text("同じ名前のファイルが存在します。上書きしますか？");
-                    if(ImGui::Button("はい")){
-                        std::ofstream file(filePath);
-                        file << jsonData.dump(4); // JSONデータをファイルに書き出し
-                        file.close();
-                        noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
-                        ImGui::CloseCurrentPopup(); // ポップアップを閉じる
-                    }
-                    ImGui::SameLine();
-                    if(ImGui::Button("いいえ")){
-                        ImGui::CloseCurrentPopup(); // ポップアップを閉じる
-                    }
-                    ImGui::EndPopup();
-                }
+                isOverwrite = true;
+
             } else{
                 // ファイルが存在しない場合はそのまま保存
                 std::filesystem::create_directories(directoryPath); // ディレクトリを作成
@@ -1455,6 +1449,30 @@ void NotesEditor::FileControl(){
             ImGui::CloseCurrentPopup(); // ポップアップを閉じる
         }
 
+        ImGui::EndPopup();
+
+
+    }
+
+    // 上書き確認ダイアログの表示
+    if(isOverwrite){
+        ImGui::OpenPopup("上書き確認");
+        isOverwrite = false; // フラグをリセット
+    }
+
+    if(ImGui::BeginPopupModal("上書き確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
+        ImGui::Text("同じ名前のファイルが存在します。上書きしますか？");
+        if(ImGui::Button("はい")){
+            std::ofstream file(filePath);
+            file << jsonData.dump(4); // JSONデータをファイルに書き出し
+            file.close();
+            noteDataPaths = MyFunc::GetFileList("Resources/NoteDatas", { ".json" });
+            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
+        }
+        ImGui::SameLine();
+        if(ImGui::Button("いいえ")){
+            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
+        }
         ImGui::EndPopup();
     }
 }

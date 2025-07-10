@@ -31,6 +31,15 @@ struct TransformMatrix{
     Matrix4x4 worldInverseTranspose;
 };
 
+struct TransformSegment{
+    Transform start;
+    Transform end;
+};
+
+struct TransformSegment2D{
+    Transform2D start;
+    Transform2D end;
+};
 
 // jsosnコンバート関数
 inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform){

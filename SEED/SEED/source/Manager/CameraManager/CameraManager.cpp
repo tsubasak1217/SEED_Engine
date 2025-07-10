@@ -39,8 +39,8 @@ BaseCamera* CameraManager::GetCamera(const std::string& name){
 }
 
 void CameraManager::RegisterCamera(const std::string& name, BaseCamera* camera){
-    // 指定要素が既にあるとアサート
-    if(instance_->cameras_.find(name) != instance_->cameras_.end()){ assert(false); }
+    // 指定要素が既にあれば何もしない
+    if(instance_->cameras_.find(name) != instance_->cameras_.end()){ return; }
     // カメラを追加
     instance_->cameras_[name] = camera;
 }

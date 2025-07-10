@@ -21,6 +21,7 @@ public:
     float GetCurMusicTime(){ return songTimer_.currentTime; }
     std::vector<std::weak_ptr<Note_Base>> GetNearNotes(float time);
     float GetDuration(){ return songTimer_.duration; }
+    bool GetIsEnd(){ return isEnd_; }
     void AddActiveHoldNote(std::weak_ptr<Note_Base> note){activeHoldNotes_.push_back(note);}
     void Pause(){ isPauseMode_ = true; }
     void Resume(){ isPauseMode_ = false; }
@@ -45,6 +46,7 @@ private:
     float startOffsetTime_ = 0.0f;// 曲の開始オフセット時間(メトロノーム流す時間)
     bool isStopped_ = false;// 曲が停止しているかどうか
     bool isPauseMode_ = false;// 一時停止モードかどうか
+    bool isEnd_ = false;// 曲が終了したかどうか
 
     // 音源関連
     std::string songFilePath_;// 曲のファイルパス

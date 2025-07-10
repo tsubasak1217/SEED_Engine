@@ -83,6 +83,16 @@ void NotesData::Update(){
         waitTimer_.Update();
     }
 
+    // 譜面が終了したらプレイ終了タイマーを加算
+    if(songTimer_.IsFinished()){
+        playEndTimer_.Update();
+
+        if(playEndTimer_.IsFinished()){
+            // プレイ終了フラグを立てる
+            isEnd_ = true;
+        }
+    }
+
     // 出現させるノーツの確認
     AppearNotes();
 

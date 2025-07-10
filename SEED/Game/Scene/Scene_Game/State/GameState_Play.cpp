@@ -35,6 +35,8 @@ void GameState_Play::BeginFrame(){
 }
 
 void GameState_Play::EndFrame(){
+    // ゲームマネージャーのフレーム終了処理
+    RythmGameManager::GetInstance()->EndFrame();
 }
 
 void GameState_Play::HandOverColliders(){

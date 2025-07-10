@@ -1,7 +1,9 @@
 #include "RythmGameManager.h"
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/SEED.h>
+#include <Game/GameSystem.h>
 #include <Game/Config/PlaySettings.h>
+#include <Game/Scene/Scene_Game/State/GameState_Select.h>
 
 /////////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -91,6 +93,17 @@ void RythmGameManager::BeginFrame(){
 // フレーム終了処理
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::EndFrame(){
+
+    // 譜面が終わったらクリアシーンへ移行
+    if(notesData_->GetIsEnd()){
+        GameSystem::ChangeScene("Clear");
+    }
+
+    // escapeでセレクトに戻る
+    if(Input::IsTriggerKey(DIK_ESCAPE)){
+        auto* scene = GameSystem::GetScene();
+        scene->ChangeState(new GameState_Select(scene));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +124,7 @@ void RythmGameManager::Update(){
 
     // escapeキーでカーソルのフラグを切り替え
     if(Input::IsPressKey(DIK_ESCAPE)){
-        SEED::ToggleRepeatCursor();
+        //SEED::ToggleRepeatCursor();
     }
 
 #ifdef _DEBUG

@@ -160,7 +160,8 @@ void ImGuiManager::PostDraw(){
     {
         // Guizmo
         ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-        ImVec2 imageLeftTop = ImGui::GetCursorScreenPos() - ImVec2(0.0f, imageSize.y);
+        ImVec2 imageLeftTop = ImGui::GetItemRectMin();
+
         Range2D rectRange = {
             {imageLeftTop.x,imageLeftTop.y},
             {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
@@ -317,8 +318,9 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 
         // スケールを適用した最終サイズ
         ImVec2 finalSize = imageSize * scale;
-        ImVec2 windowCenter = ImGui::GetWindowPos() + availSize * 0.5f;
-        ImGui::SetCursorPos(windowCenter - finalSize * 0.5f); // ウィンドウの中央に配置
+        ImVec2 windowCenter = ImGui::GetCursorPos() + availSize * 0.5f; // ウィンドウの中央位置を計算
+        ImVec2 offset = finalSize * 0.5f;
+        ImGui::SetCursorPos(windowCenter - offset); // ウィンドウの中央に配置
 
         // 表示
         if(cameraName == ""){
@@ -326,6 +328,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
         } else{
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
         }
+
         return finalSize; // 画像サイズを返す
     }
 }

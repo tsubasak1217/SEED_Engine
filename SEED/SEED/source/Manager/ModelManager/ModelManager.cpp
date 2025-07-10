@@ -551,11 +551,10 @@ ModelSkeleton ModelManager::CreateSkeleton(const ModelNode& rootNode){
 /*-----------------------------------------------------------*/
 // スケルトンにアニメーションを適用
 /*-----------------------------------------------------------*/
-ModelSkeleton ModelManager::AnimatedSkeleton(
-    const ModelAnimation& modelAnimation, const ModelSkeleton& defaultSkeleton, float time
+void ModelManager::AnimatedSkeleton(
+    const ModelAnimation& modelAnimation, const ModelSkeleton& defaultSkeleton, ModelSkeleton* pSkeleton, float time
 ){
-    ModelSkeleton skeleton;
-    skeleton.joints.resize(defaultSkeleton.joints.size());
+    pSkeleton->joints.resize(defaultSkeleton.joints.size());
 
     // 指定した時間の値を取得
     std::for_each(std::execution::par_unseq, defaultSkeleton.joints.begin(), defaultSkeleton.joints.end(), [&](auto& defaultJoint){
@@ -574,24 +573,22 @@ ModelSkeleton ModelManager::AnimatedSkeleton(
             Vector3 scale = CalcMomentValue(nodeAnim.scale.keyframes, time);
 
             // トランスフォーム情報を更新
-            skeleton.joints[idx].transform.translate = translate;
-            skeleton.joints[idx].transform.rotate = rotate;
-            skeleton.joints[idx].transform.scale = scale;
+            pSkeleton->joints[idx].transform.translate = translate;
+            pSkeleton->joints[idx].transform.rotate = rotate;
+            pSkeleton->joints[idx].transform.scale = scale;
         } else{
             // ノードアニメーションがない場合はデフォルトの値を設定
-            skeleton.joints[idx].transform = defaultJoint.transform;
-            skeleton.joints[idx].skeletonSpaceMatrix = IdentityMat4();
+            pSkeleton->joints[idx].transform = defaultJoint.transform;
+            pSkeleton->joints[idx].skeletonSpaceMatrix = IdentityMat4();
         }
 
-        skeleton.joints[idx].parent = defaultJoint.parent;
+        pSkeleton->joints[idx].parent = defaultJoint.parent;
         //  indexを設定
-        skeleton.joints[idx].index = idx;
+        pSkeleton->joints[idx].index = idx;
     });
 
     // スケルトン行列を更新
-    instance_->UpdateSkeleton(&skeleton);
-
-    return skeleton;
+    instance_->UpdateSkeleton(pSkeleton);
 }
 
 // スケルトンの補間

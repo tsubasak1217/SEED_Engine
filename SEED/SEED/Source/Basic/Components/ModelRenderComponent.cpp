@@ -63,7 +63,6 @@ void ModelRenderComponent::Finalize(){
 ////////////////////////////////////////////////////////////////////////////
 void ModelRenderComponent::EditGUI(){
 #ifdef _DEBUG
-    static std::vector<std::string> modelFiles;
     std::string label;
     ImGui::Indent();
 
@@ -71,18 +70,22 @@ void ModelRenderComponent::EditGUI(){
     label = "モデル変更##" + std::to_string(componentID_);
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
-        // クリック時のみ更新
-        if(ImGui::IsMouseClicked(0)){
-            // モデルのファイル一覧を取得
-            modelFiles = MyFunc::GetFileList("Resources/models", { ".obj",".gltf",".glb" });
-        }
 
-        // モデルファイルの一覧を表示
-        for(const auto& modelFile : modelFiles){
-            if(ImGui::Button(modelFile.c_str())){
-                ChangeModel(modelFile);
+        // モデルの選択 
+        static std::filesystem::path modelDir = "Resources/models/";
+        std::string selectedModel = ImFunc::FolderView("モデル選択", modelDir, false, {".obj",".gltf",".glb"});
+
+        if(!selectedModel.empty()){
+            //"models"階層以降の文字列を取得
+            if(selectedModel.find("models/") != std::string::npos){
+                selectedModel = selectedModel.substr(selectedModel.find("models/") + 7);
+                // モデルの初期化
+                ChangeModel(selectedModel);
+                // モデルのワールド行列を更新
+                model_->UpdateMatrix();
             }
         }
+
         ImGui::Unindent();
     }
 
@@ -134,6 +137,31 @@ void ModelRenderComponent::EditGUI(){
 
             ImGui::Unindent();
         }
+
+        // ジョイントの取得
+        label = "ジョイント情報##" + std::to_string(componentID_);
+        if(ImGui::CollapsingHeader(label.c_str())){
+            ImGui::Indent();
+
+            // スケルトンの可視フラグ設定
+            ImGui::Checkbox("スケルトン表示", &model_->isSkeletonVisible_);
+
+            // ジョイントの情報を表示
+            for(auto& [jointName,index] : model_->animetedSkeleton_->jointMap){
+                ImGui::Button(jointName.c_str());
+                ModelJoint* joint = &model_->animetedSkeleton_->joints[index];
+
+                // ドラッグでジョイントのポインタを取得
+                if(ImGui::BeginDragDropSource()){
+                    ImGui::SetDragDropPayload("MY_OBJECT", &joint, sizeof(ModelJoint*)); // ポインタのアドレスを渡す
+                    ImGui::Text("%s", jointName.c_str());
+                    ImGui::EndDragDropSource();
+                }
+            }
+
+            ImGui::Unindent();
+        }
+
     }
 
     ImGui::Unindent();

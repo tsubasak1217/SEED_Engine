@@ -76,17 +76,6 @@
     <ClCompile Include="SEED\Source\Basic\Collision\Collider_Plane.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
-    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
-    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
@@ -105,15 +94,6 @@
     <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
-    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
-    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
-    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
-    <ClCompile Include="Game\Manager\SongSelector.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
-    <ClCompile Include="Game\Config\PlaySettings.cpp" />
-    <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -229,19 +209,6 @@
     <ClInclude Include="SEED\Source\Basic\Collision\Collider_Plane.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
-    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
-    <ClInclude Include="Game\Manager\RythmGameManager.h" />
-    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
-    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="Game\Config\PlaySettings.h" />
-    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
@@ -266,16 +233,7 @@
     <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
-    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
-    <ClInclude Include="Game\Manager\NotesEditor.h" />
-    <ClInclude Include="Game\Manager\SongSelector.h" />
-    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
-    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
-    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />
@@ -284,6 +242,7 @@
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Text.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Object3dAlwaysWrite.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -117,15 +117,17 @@ public:
 private:
     bool hasAnimation_ = false;// アニメーションが存在するか
     bool isAnimation_ = false;// アニメーションを行うか
-    bool isSkeletonVisible_ = false;// スケルトンを表示するか
     float animationDuration_ = 0.0f;// アニメーション自体の時間
     float totalAnimationTime_ = 0.0f;// アニメーションの総再生時間
     bool isAnimationLoop_ = false;// アニメーションをループさせるか
     int32_t animationLoopCount_ = 0;// アニメーションのループ回数
     std::string animationName_;// アニメーションの名前
     std::vector<WellForGPU> palette_;// スキニング情報
-    // 補間用変数
+    // スケルトン
+    std::unique_ptr<ModelSkeleton> animetedSkeleton_ = nullptr;// アニメーションを適用したスケルトン
     std::unique_ptr<ModelSkeleton> preSkeleton_ = nullptr;// アニメーションが切り替わる前のスケルトン
+    bool isSkeletonVisible_ = false;// スケルトンを表示するか
+    // 補間用変数
     float kAnimLerpTime_ = 0.2f;// アニメーションの固定補間時間
     float animLerpTime_ = 0.0f;// アニメーションの補間時間
     float progressOfAnimLerp_ = 0.0f;// アニメーションの補間進捗度

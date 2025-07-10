@@ -13,6 +13,11 @@ struct PixelShaderOutput {
     float4 color : SV_TARGET0;
 };
 
+struct PixelShaderOutput_DepthWrite {
+    float4 color : SV_TARGET0;
+    float depth : SV_Depth;
+};
+
 struct Int {
     int value;
 };

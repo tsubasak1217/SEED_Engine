@@ -249,6 +249,18 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
 
+    // AlwaysWriteVSPipeline
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
     // SkinningVSPipeline
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gMatrixPalette", gpuHandles_[(int)HANDLE_TYPE::SkinningResource_Palette]);
@@ -279,10 +291,12 @@ void PolygonManager::InitResources(){
 void PolygonManager::BindCameraDatas(const std::string& cameraName){
     // カメラのインデックスを設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     // カメラが切り替わるインスタンス数を設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
 }
@@ -1404,30 +1418,25 @@ void PolygonManager::AddModel(Model* model){
     //////////////////////////////////////////////////////////////////////////
     //                  モデルのスケルトンを描画(オプションがあれば)
     //////////////////////////////////////////////////////////////////////////
-    //if(model->isSkeletonVisible_){
+    if(model->isSkeletonVisible_){
 
-    //    const auto& modeldata = ModelManager::GetModelData(model->modelName_);
-    //    const ModelSkeleton& skeleton = ModelManager::AnimatedSkeleton(
-    //        modeldata->animations[model->animationName_],
-    //        modeldata->defaultSkeleton,
-    //        model->animationTime_
-    //    );
+        auto& skeleton = model->animetedSkeleton_;
+        static Vector3 point[2]{};
 
-    //    for(int i = 0; i < skeleton.joints.size(); i++){
+        for(int i = 0; i < skeleton->joints.size(); i++){
 
-    //        if(skeleton.joints[i].parent){
-    //            Vector3 point[2];
-    //            point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[i].skeletonSpaceMatrix;
-    //            point[0] = Multiply(point[0], wvp);
-
-    //            point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton.joints[skeleton.joints[i].parent.value()].skeletonSpaceMatrix;
-    //            point[1] = Multiply(point[1], wvp);
-
-
-    //            SEED::DrawLine(point[0], point[1], { 0.0f,0.0f,1.0f,1.0f });
-    //        }
-    //    }
-    //}
+            if(skeleton->joints[i].parent){
+                point[0] = Vector3(0.0f, 0.0f, 0.0f) * skeleton->joints[i].skeletonSpaceMatrix;
+                point[1] = Vector3(0.0f, 0.0f, 0.0f) * skeleton->joints[skeleton->joints[i].parent.value()].skeletonSpaceMatrix;
+                
+                // 線の追加
+                AddLine(point[0].ToVec4(), point[1].ToVec4(), 
+                    model->worldMat_, {1.0f,1.0f,1.0f,1.0f},true,
+                    BlendMode::NORMAL,false,DrawLocation::Not2D,0,true
+                );
+            }
+        }
+    }
 }
 
 
@@ -1442,7 +1451,7 @@ void PolygonManager::AddModel(Model* model){
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
     const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    DrawLocation drawLocation, uint32_t layer, bool alwaysWrite
 ){
 
     assert(lineCount_ < kMaxLineCount_);
@@ -1487,16 +1496,24 @@ void PolygonManager::AddLine(
     drawDataName[1] += isStaticDraw ? "SL2" : "L2";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[0];
-    uint64_t hash = view3D ? MyFunc::Hash64(drawDataName[0]) : MyFunc::Hash64(drawDataName[1]);
+    if(alwaysWrite){
+        drawDataName[0] += "_ALW";
+        drawDataName[1] += "_ALW";
+    }
 
     // もし該当する描画データがなければ作成する
+    uint64_t hash = view3D ? MyFunc::Hash64(drawDataName[0]) : MyFunc::Hash64(drawDataName[1]);
     if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
         modelDrawData_[hash] = std::make_unique<ModelDrawData>();
         modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[hash]->pso =
+        modelDrawData_[hash]->pso = alwaysWrite ?
+            PSOManager::GetPSO(
+                "AlwaysWriteVSPipeline.pip",
+                blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE
+            ) :
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE

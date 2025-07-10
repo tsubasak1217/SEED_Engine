@@ -214,7 +214,7 @@ public:// 頂点情報の追加に関わる関数
         const Vector4& v1, const Vector4& v2,
         const Matrix4x4& worldMat, const Vector4& color,
         bool view3D, BlendMode blendMode, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0, bool alwaysWrite = false
     );
 
 private:

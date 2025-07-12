@@ -336,10 +336,19 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 /////////////////////////////////////////////////////////////////
 // フォルダビューの開始関数
 /////////////////////////////////////////////////////////////////
-std::string ImFunc::FolderView(const char* label, std::filesystem::path& currentPath){
+/////////////////////////////////////////////////////////////////
+// フォルダビューの開始関数
+/////////////////////////////////////////////////////////////////
+std::string ImFunc::FolderView(
+    const char* label,
+    std::filesystem::path& currentPath,
+    bool isFileNameOnly,
+    std::initializer_list<std::string> filterExts
+){
     static bool isLoaded = false;
     static ImTextureID folderIcon;
     static ImTextureID fileIcon;
+    static float rowStartX = 0.0f;
     static ImVec2 iconSize = { 64.0f, 64.0f };
     std::string selectedFile = "";
 
@@ -351,7 +360,6 @@ std::string ImFunc::FolderView(const char* label, std::filesystem::path& current
             isLoaded = true;
         }
 
-
         ImGui::Text("Current Path: %s", currentPath.string().c_str());
         if(currentPath.has_parent_path()){
             if(ImGui::Button("<< Back")){
@@ -362,70 +370,84 @@ std::string ImFunc::FolderView(const char* label, std::filesystem::path& current
 
         float padding = 16.0f;
         float cellWidth = iconSize.x + padding;
-
         ImVec2 availRegion = ImGui::GetContentRegionAvail();
         int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
         int currentColumn = 0;
 
-        std::vector<std::filesystem::directory_entry> entries{
-            std::filesystem::directory_iterator(currentPath),
-            std::filesystem::directory_iterator()
-        };
+        std::vector<std::filesystem::directory_entry> entries;
+
+        for(const auto& entry : std::filesystem::directory_iterator(currentPath)){
+
+            if(entry.is_directory()){
+                entries.push_back(entry); // ディレクトリは常に表示
+            } else{
+                std::string ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(),
+                    [](unsigned char c) -> char{ return static_cast<char>(std::tolower(c)); });
+
+                if(filterExts.size() == 1 && *filterExts.begin() == ""){
+                    entries.push_back(entry); // フィルターが空なら全てのファイルを表示
+                } else{
+                    for(const auto& filter : filterExts){
+                        if(ext == filter){
+                            entries.push_back(entry);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         for(size_t i = 0; i < entries.size(); ++i){
             const auto& entry = entries[i];
 
+            if(currentColumn == 0){
+                rowStartX = ImGui::GetCursorPosX();
+            } else{
+                ImGui::SameLine(rowStartX + currentColumn * cellWidth);
+            }
+
             ImGui::BeginGroup();
 
-            // テクスチャと名前
             ImTextureID icon = entry.is_directory() ? folderIcon : fileIcon;
             std::string name = entry.path().filename().string();
             std::string id = "##" + entry.path().string();
 
-
-            // アイコン描画＋クリック判定
             ImVec2 iconPos = ImGui::GetCursorScreenPos();
             ImGui::Image(icon, iconSize);
             bool isHovered = ImGui::IsItemHovered();
             bool isClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
 
-            // ドラッグ処理
             if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
                 std::string fullPathStr = entry.path().string();
                 ImGui::SetDragDropPayload("FILE_PATH", fullPathStr.c_str(), fullPathStr.size() + 1);
-                ImGui::Text("%s", name.c_str()); // ドラッグ中に表示されるテキスト
+                ImGui::Text("%s", name.c_str());
                 ImGui::EndDragDropSource();
             }
 
-            // テキストの描画位置と幅制限
             auto lines = WrapTextLines(name, iconSize.x, 2);
             for(const auto& l : lines){
                 ImGui::TextUnformatted(l.c_str());
             }
 
-
-            // アイコンのクリックイベント処理
             if(isClicked){
                 if(entry.is_directory()){
                     currentPath = entry.path();
                     ImGui::EndGroup();
                     return "";
                 } else{
-                    selectedFile = entry.path().string();
+                    if(!isFileNameOnly){
+                        selectedFile = entry.path().string();
+                    } else{
+                        selectedFile = entry.path().filename().string();
+                    }
                 }
             }
 
             ImGui::EndGroup();
 
-            // 次の列へ
             currentColumn++;
-            if(currentColumn < columns){
-                // 最後の要素か確認し、最後以外の要素ならSameLineで横並びにする
-                if(i < entries.size() - 1){
-                    ImGui::SameLine((currentColumn % columns) * cellWidth);
-                }
-
-            } else{
+            if(currentColumn >= columns){
                 currentColumn = 0;
             }
         }
@@ -433,6 +455,7 @@ std::string ImFunc::FolderView(const char* label, std::filesystem::path& current
 
     return selectedFile;
 }
+
 
 
 /////////////////////////////////////////////////////////////////

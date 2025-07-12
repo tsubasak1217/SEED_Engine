@@ -12,23 +12,44 @@ enum class ResultStep : int32_t{
     Exit
 };
 
+struct TextItem{
+    Vector2 offset;
+    std::string typeName;
+    TextBox2D textBox;
+};
+
 struct ResultItem{
     TransformSegment2D transformSegment;
+    Transform2D finalTransform;
     Sprite backSprite;
-    std::unordered_map<std::string, TextBox2D> textBoxes;
+    std::vector<TextItem> textItems;
+    float t;
+    bool isAlphaMove = false;
+    float maxAlpha = 1.0f;
 };
+
+namespace ResultTextUtils{
+    static inline std::vector<std::string> textTypes = {
+        "None","Score","Combo","Perfect","PerfectCount","Great","GreatCount","Good","GoodCount","Miss","MissCount",
+        "SongName","Difficulty","Fast","FastCount","Late","LateCount"
+    };
+}
+
 
 // リザルト描画クラス
 struct ResultDrawer{
-    static PlayResult result;
     static void Initialize();
     static void DrawResult(ResultStep step, float progress);
+    static inline void SetResult(const PlayResult& newResult){
+        result = newResult;
+    }
 
 #ifdef _DEBUG
     static void Edit();
 #endif // _DEBUG
 
 private:
+    static inline PlayResult result{};
     static inline bool initialized = false;
     static inline std::unordered_map<std::string, ResultItem> resultItems{};
     static inline bool isEditTransform = false;
@@ -36,4 +57,5 @@ private:
 private:
     static void SaveToJson();
     static void LoadFromJson();
+    static std::string DecideText(const std::string& typeName);
 };

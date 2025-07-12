@@ -92,7 +92,13 @@ struct ImFunc{
     // シーン描画ウィンドウの関数
     static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName = "", CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
     // フォルダ表示
-    static std::string FolderView(const char* label, std::filesystem::path& currentPath);
+    static std::string FolderView(
+        const char* label,
+        std::filesystem::path& currentPath,
+        bool isFileNameOnly = false,
+        std::initializer_list<std::string> filterExts = {""}
+    );
+
     // 文字列を折り返す関数
     static std::vector<std::string> WrapTextLines(const std::string& text, float maxWidth, int maxLines = 2);
 

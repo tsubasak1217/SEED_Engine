@@ -95,11 +95,6 @@ void Scene_Game::Update(){
 
     /*========================== ImGui =============================*/
 
-#ifdef _DEBUG
-    ImFunc::CustomBegin("テキスト", MoveOnly_TitleBar);
-
-    ImGui::End();
-#endif
 
     /*======================= 各状態固有の更新 ========================*/
 

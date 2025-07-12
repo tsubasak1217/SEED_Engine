@@ -81,6 +81,8 @@ void ResultDrawer::Edit(){
 
             for(auto& resultItem : resultItems){
                 auto& segment = resultItem.second.transformSegment;
+                auto& finalTransform = resultItem.second.finalTransform;
+                finalTransform = MyFunc::Interpolate(segment.start, segment.end, resultItem.second.t);
 
                 // guizmo
                 ImGuiManager::RegisterGuizmoItem(&segment.start);
@@ -91,14 +93,31 @@ void ResultDrawer::Edit(){
                 textBox.text = resultItem.first.c_str();
                 textBox.transform.translate = segment.start.translate + Vector2(10.0f, 10.0f);
                 textBox.Draw();
+                auto& textItems = resultItem.second.textItems;
+                for(int i = 0; i < textItems.size(); i++){
+                    textItems[i].textBox.transform.translate = finalTransform.translate + textItems[i].offset;
+                    textItems[i].textBox.text = DecideText(textItems[i].typeName);
+                    textItems[i].textBox.Draw();
+                }
+
 
                 // sprite
                 auto& sprite = resultItem.second.backSprite;
-                sprite.translate = segment.end.translate;
-                sprite.scale = segment.end.scale;
+                sprite.translate = finalTransform.translate;
+                sprite.scale = finalTransform.scale;
+                sprite.anchorPoint = { 0.5f, 0.5f };
+                if(resultItem.second.isAlphaMove){
+                    sprite.color.w = resultItem.second.maxAlpha * resultItem.second.t;
+                } else{
+                    sprite.color.w = resultItem.second.maxAlpha;
+                }
+                sprite.Draw();
 
                 if(ImGui::CollapsingHeader(resultItem.first.c_str())){
                     ImGui::Indent();
+
+                    // 媒介変数のスライダーを表示
+                    ImGui::SliderFloat("媒介変数", &resultItem.second.t, 0.0f, 1.0f);
 
                     // 各トランスフォームのGUI編集
                     if(ImGui::CollapsingHeader("Transform")){
@@ -132,11 +151,46 @@ void ResultDrawer::Edit(){
 
                         // 画像の変更
                         static std::filesystem::path basePath = "Resources/Textures/";
-                        std::string selectedFile = ImFunc::FolderView("画像選択", basePath);
+                        std::string selectedFile = ImFunc::FolderView("画像選択", basePath, false, { ".png",".jpg" });
+                        if(!selectedFile.empty()){
+                            sprite.GH = TextureManager::LoadTexture(selectedFile);
+                        }
 
                         ImGui::Unindent();
                     }
 
+                    if(ImGui::CollapsingHeader("透明度")){
+                        ImGui::Indent();
+                        // 透明度のスライダーを表示
+                        ImGui::SliderFloat("透明度", &resultItem.second.maxAlpha, 0.0f, 1.0f);
+                        // 透明度の色編集
+                        ImGui::Checkbox("時間に合わせて透明度を変化させる", &resultItem.second.isAlphaMove);
+                        ImGui::Unindent();
+                    }
+
+                    if(ImGui::CollapsingHeader("テキスト")){
+                        ImGui::Indent();
+
+                        if(ImGui::Button("テキストを追加")){
+                            textItems.push_back(TextItem());
+                        }
+
+                        for(int i = 0; i < textItems.size(); i++){
+
+                            std::string label = "テキスト" + std::to_string(i);
+                            if(ImGui::CollapsingHeader(label.c_str())){
+                                ImGui::Indent();
+
+                                ImGui::DragFloat2("オフセット", &textItems[i].offset.x, 0.1f);
+                                ImFunc::ComboText("テキストタイプ", textItems[i].typeName, ResultTextUtils::textTypes);
+                                textItems[i].textBox.Edit();
+
+                                ImGui::Unindent();
+                            }
+                        }
+
+                        ImGui::Unindent();
+                    }
 
 
                     ImGui::Unindent();
@@ -188,4 +242,76 @@ void ResultDrawer::LoadFromJson(){
             segment.end = jsonData["controlPoints"][resultItem.first]["end"];
         }
     }
+}
+
+// テキストの決定処理
+std::string ResultDrawer::DecideText(const std::string& typeName){
+
+    auto& json = result.songData;
+    std::string output;
+
+    if(typeName == "None"){
+        output = "None";
+
+    } else if(typeName == "Score"){
+        //少数第4位以下を切り捨てて文字列に変換
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(4) << result.score;
+        output = oss.str();
+
+    } else if(typeName == "Combo"){
+        if(json.contains("Combo")){
+            output = std::to_string(result.maxCombo);
+        }
+
+    } else if(typeName == "Perfect"){
+        output = "Perfect";
+
+    } else if(typeName == "PerfectCount"){
+        output = std::to_string(result.evalutionCount[0]);
+
+    } else if(typeName == "Great"){
+        output = "Great";
+
+    } else if(typeName == "GreatCount"){
+        output = std::to_string(result.evalutionCount[1]);
+
+    } else if(typeName == "Good"){
+        output = "Good";
+
+    } else if(typeName == "GoodCount"){
+        output = std::to_string(result.evalutionCount[2]);
+
+    } else if(typeName == "Miss"){
+        output = "Miss";
+
+    } else if(typeName == "MissCount"){
+        if(json.contains("Miss")){
+            output = std::to_string(result.evalutionCount[3]);
+        }
+
+    } else if(typeName == "SongName"){
+        if(json.contains("SongName")){
+            output = json["SongName"].get<std::string>();
+        }
+
+    } else if(typeName == "Difficulty"){
+        if(json.contains("difficulty")){
+            output = json["difficulty"].get<std::string>();
+        }
+
+    } else if(typeName == "Fast"){
+        output = "Fast";
+
+    } else if(typeName == "FastCount"){
+        output = std::to_string(result.fastCount);
+
+    } else if(typeName == "Late"){
+        output = "Late";
+
+    } else if(typeName == "LateCount"){
+        output = std::to_string(result.lateCount);
+    }
+
+    return output;
 }

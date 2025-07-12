@@ -120,7 +120,14 @@ void GameObject::UpdateMatrix(){
     // ワールド行列の更新
     if(parent_){
 
-        Matrix4x4 parentMat = parent_->worldMat_;
+        Matrix4x4 parentMat;
+        
+        // コンポーネントに親子付けするかどうかで処理を分ける
+        if(parentComponentInfo_.pComponent){
+            parentMat = *parentComponentInfo_.pMatrix;
+        } else{
+            parentMat = parent_->worldMat_;
+        }
 
         if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
             worldMat_ = localMat_ * parentMat;
@@ -475,6 +482,16 @@ void GameObject::ContextMenu(){
                     return comp.get() == contextMenuComponent_;
                 });
                 if(it != components_.end()){
+                    IComponent* component = it->get();
+
+                    // 自身の子供がこのコンポーネントを参照している場合子の参照を解除
+                    for(auto& child : children_){
+                        if(child->parentComponentInfo_.pComponent == component){
+                            child->parentComponentInfo_.pComponent = nullptr;
+                            child->parentComponentInfo_.pMatrix = nullptr;
+                        }
+                    }
+
                     components_.erase(it);
                 }
                 contextMenuComponent_ = nullptr; // コンテキストメニューオブジェクトをクリア

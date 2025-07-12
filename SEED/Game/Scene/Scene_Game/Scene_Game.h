@@ -34,4 +34,8 @@ private:
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
+
+    GameObject* player_ = nullptr;
+    GameObject* brainStem_ = nullptr;
+    std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 };

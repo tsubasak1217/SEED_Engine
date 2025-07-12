@@ -17,6 +17,11 @@
 class Scene_Base;
 class Hierarchy;
 
+struct ParentComponentInfo{
+    IComponent* pComponent = nullptr;
+    Matrix4x4* pMatrix = nullptr;
+};
+
 class GameObject{
 
     ////////////////////////////////////////////////////////////////////////////
@@ -104,6 +109,7 @@ public:
     // 親子付け関連
     //=====================================
     void SetParent(GameObject* parent);
+    void SetParentComponentInfo(const ParentComponentInfo& info){ parentComponentInfo_ = info; }
     GameObject* GetParent(){ return parent_; }
     const std::list<GameObject*>& GetChildren() const{ return children_; }
     void RemoveChild(GameObject* child);
@@ -121,11 +127,13 @@ public:
     /*------ scale -------*/
     Vector3 GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
+    void SetLocalScale(const Vector3& scale){ localTransform_.scale = scale; }
     /*------ rotate -------*/
     const Quaternion& GetWorldRotate() const{ return worldTransform_.rotate; }
     const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
     Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
     Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
+    void SetLocalRotate(const Quaternion& rotate){ localTransform_.rotate = rotate; }
     /*------ translate -------*/
     Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
@@ -167,6 +175,8 @@ protected:
 public:
     //---------- 親子付け情報 ---------//
     GameObject* parent_ = nullptr;
+    ParentComponentInfo parentComponentInfo_;
+    Matrix4x4* parentJointMat_ = nullptr;
     std::list<GameObject*> children_;
     bool isParentRotate_ = true;
     bool isParentScale_ = true;

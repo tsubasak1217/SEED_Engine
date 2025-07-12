@@ -1,5 +1,6 @@
 #include "Hierarchy.h"
 #include <Game/GameSystem.h>
+#include <SEED/Source/Basic/Components/utils/DragInfo_Joint.h>
 
 /////////////////////////////////////////////////////////////////////
 // ゲームオブジェクトの登録・削除
@@ -195,7 +196,7 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
     bool open = ImGui::TreeNode(nodeName.c_str());
 
     // ダブルクリックで
-    if(ImGui::IsMouseDoubleClicked(0)){
+    if(ImGui::IsItemClicked(0)){
         selectedObject_ = gameObject;
     }
 
@@ -231,6 +232,26 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
                 }
             }
         }
+        
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("JOINT")){
+            if(payload->DataSize == sizeof(DragInfo_Joint*)){
+                DragInfo_Joint* draggedObj = *(DragInfo_Joint**)payload->Data;
+                GameObject* owner = draggedObj->pComponent->GetOwner();
+
+                // 自分自身や子孫を親にしないようチェック
+                if(owner != gameObject && !gameObject->IsDescendant(owner)){
+                    // 親子draggedObj付けを変更する処理
+                    gameObject->SetParent(owner);  // あなたの GameObject クラスに応じて関数を調整
+
+                    // コンポーネントを親子付け情報に追加
+                    ParentComponentInfo parentInfo;
+                    parentInfo.pComponent = draggedObj->pComponent;
+                    parentInfo.pMatrix = &draggedObj->pJoint->skeletonSpaceMatrix;
+                    gameObject->SetParentComponentInfo(parentInfo);
+                }
+            }
+        }
+
         ImGui::EndDragDropTarget();
     }
 

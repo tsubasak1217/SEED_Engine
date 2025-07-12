@@ -126,6 +126,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   <ItemGroup>
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
@@ -222,11 +223,13 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\utils\DragInfo_Joint.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />

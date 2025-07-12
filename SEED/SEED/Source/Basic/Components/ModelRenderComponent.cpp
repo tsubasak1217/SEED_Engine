@@ -1,4 +1,5 @@
 #include "ModelRenderComponent.h"
+#include "utils/DragInfo_Joint.h"
 
 ////////////////////////////////////////////////////////////////////////////
 // コンストラクタ
@@ -73,7 +74,7 @@ void ModelRenderComponent::EditGUI(){
 
         // モデルの選択 
         static std::filesystem::path modelDir = "Resources/models/";
-        std::string selectedModel = ImFunc::FolderView("モデル選択", modelDir, false, {".obj",".gltf",".glb"});
+        std::string selectedModel = ImFunc::FolderView("モデル選択", modelDir, false, { ".obj",".gltf",".glb" });
 
         if(!selectedModel.empty()){
             //"models"階層以降の文字列を取得
@@ -147,13 +148,15 @@ void ModelRenderComponent::EditGUI(){
             ImGui::Checkbox("スケルトン表示", &model_->isSkeletonVisible_);
 
             // ジョイントの情報を表示
-            for(auto& [jointName,index] : model_->animetedSkeleton_->jointMap){
+            for(auto& [jointName, index] : model_->animetedSkeleton_->jointMap){
                 ImGui::Button(jointName.c_str());
-                ModelJoint* joint = &model_->animetedSkeleton_->joints[index];
+                static DragInfo_Joint jointInfo;
+                jointInfo.pComponent = this;
+                jointInfo.pJoint = &model_->animetedSkeleton_->joints[index];
 
                 // ドラッグでジョイントのポインタを取得
                 if(ImGui::BeginDragDropSource()){
-                    ImGui::SetDragDropPayload("MY_OBJECT", &joint, sizeof(ModelJoint*)); // ポインタのアドレスを渡す
+                    ImGui::SetDragDropPayload("JOINT", &jointInfo, sizeof(DragInfo_Joint*)); // ポインタのアドレスを渡す
                     ImGui::Text("%s", jointName.c_str());
                     ImGui::EndDragDropSource();
                 }

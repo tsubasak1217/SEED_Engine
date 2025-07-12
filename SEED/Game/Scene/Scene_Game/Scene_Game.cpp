@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
+// Components
+#include <SEED/Source/Basic/Components/MoveComponent.h>
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -51,6 +54,30 @@ void Scene_Game::Initialize(){
     //  オブジェクトの初期化
     ////////////////////////////////////////////////////
 
+    player_ = new GameObject(this);
+    brainStem_ = new GameObject(this);
+    brainStem_->SetLocalScale({ 2.0f, 2.0f, 2.0f });
+
+    // カメラの設定
+    followCamera_ = std::make_unique<FollowCamera>();
+    followCamera_->SetTarget(player_);
+    SEED::RegisterCamera("Follow", followCamera_.get());
+    SEED::SetMainCamera("Follow");
+
+    // モデル描画
+    ModelRenderComponent* modelComponent = player_->AddComponent<ModelRenderComponent>("man");
+    modelComponent->ChangeModel("DefaultAssets/Man/Man.gltf");
+    modelComponent->Update();
+    modelComponent->StartAnimation("idle", true);
+    modelComponent->SetIsSkeletonVisible(true);
+
+    modelComponent = brainStem_->AddComponent<ModelRenderComponent>("BrainStem");
+    modelComponent->ChangeModel("DefaultAssets/BrainStem/BrainStem.glb");
+    modelComponent->StartAnimation(0, true);
+
+    // 移動
+    MoveComponent* moveComponent = player_->AddComponent<MoveComponent>("move");
+    moveComponent->SetCameraPtr(followCamera_.get());
 
     ////////////////////////////////////////////////////
     // スプライトの初期化
@@ -76,7 +103,7 @@ void Scene_Game::Initialize(){
     EffectSystem::DeleteAll();
 }
 
-void Scene_Game::Finalize() {
+void Scene_Game::Finalize(){
     Scene_Base::Finalize();
 }
 
@@ -111,7 +138,21 @@ void Scene_Game::Update(){
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
+    MoveComponent* moveComponent = player_->GetComponent<MoveComponent>("move");
+    ModelRenderComponent* modelComponent = player_->GetComponent<ModelRenderComponent>("man");
+    static bool isRunnning = false;
 
+    if(moveComponent->IsMoving()){
+        if(!isRunnning){
+            modelComponent->StartAnimation("running", true);
+            isRunnning = true;
+        }
+    } else{
+        if(isRunnning){
+            modelComponent->StartAnimation("idle", true);
+            isRunnning = false;
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +181,9 @@ void Scene_Game::Draw(){
 
     // ライトをセット
     directionalLight_->SendData();
+
+    // グリッド描画
+    SEED::DrawGrid();
 
 }
 

@@ -12,20 +12,28 @@ enum class ResultStep : int32_t{
     Exit
 };
 
+struct ResultItem{
+    TransformSegment2D transformSegment;
+    Sprite backSprite;
+    std::unordered_map<std::string, TextBox2D> textBoxes;
+};
+
 // リザルト描画クラス
 struct ResultDrawer{
     static PlayResult result;
+    static void Initialize();
     static void DrawResult(ResultStep step, float progress);
+
+#ifdef _DEBUG
+    static void Edit();
+#endif // _DEBUG
 
 private:
     static inline bool initialized = false;
-    static inline std::unordered_map<std::string, TransformSegment2D> transformSegments{};
+    static inline std::unordered_map<std::string, ResultItem> resultItems{};
+    static inline bool isEditTransform = false;
 
 private:
-    static void Initialize();
-
-#ifdef _DEBUG
-    void Edit();
-#endif // _DEBUG
-
+    static void SaveToJson();
+    static void LoadFromJson();
 };

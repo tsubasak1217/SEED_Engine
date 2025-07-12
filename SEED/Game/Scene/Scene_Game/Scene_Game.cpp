@@ -172,13 +172,13 @@ void Scene_Game::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
 
+    // ヒエラルキー内のオブジェクトのフレーム終了処理
+    hierarchy_->EndFrame();
+
     // 現在のステートがあればフレーム終了処理を行う
     if(currentState_){
         currentState_->EndFrame();
     }
-
-    // ヒエラルキー内のオブジェクトのフレーム終了処理
-    hierarchy_->EndFrame();
 }
 
 

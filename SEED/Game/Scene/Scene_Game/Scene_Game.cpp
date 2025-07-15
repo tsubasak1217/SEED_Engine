@@ -22,6 +22,7 @@ Scene_Game::Scene_Game() : Scene_Base(){
 Scene_Game::~Scene_Game(){
     Scene_Base::Finalize();
     SEED::RemoveCamera("gameCamera");
+    SEED::SetMainCamera("default");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

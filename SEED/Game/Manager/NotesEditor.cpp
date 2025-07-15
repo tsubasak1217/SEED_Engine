@@ -489,6 +489,8 @@ void TempoData::Edit(){
 ////////////////////////////////////////////////////////////////////////
 void NotesEditor::EditNotes(){
 
+#ifdef _DEBUG
+
     // 編集ノーツ種の選択
     ImGui::Checkbox("レーン編集", &isEditOnLane_);
     ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール" });
@@ -529,6 +531,8 @@ void NotesEditor::EditNotes(){
 
     ImGui::SeparatorText("ファイル入出力");
     FileControl();
+
+#endif // _DEBUG
 }
 
 ////////////////////////////////////////////////////////////////////////

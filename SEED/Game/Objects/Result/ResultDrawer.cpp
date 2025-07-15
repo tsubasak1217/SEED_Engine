@@ -36,7 +36,6 @@ void ResultDrawer::DrawResult(ResultStep step, float progress){
         auto& textItems = resultItem.second.textItems;
         for(int i = 0; i < textItems.size(); i++){
             textItems[i].textBox.transform.translate = finalTransform.translate + textItems[i].offset;
-            textItems[i].textBox.textBoxVisible = false; // テキストボックスの表示はしない
             std::string text = DecideText(textItems[i].typeName);
             textItems[i].textBox.text = text == "" ? textItems[i].textBox.text : text;
             textItems[i].textBox.transform.scale = finalTransform.scale;

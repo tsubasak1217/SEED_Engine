@@ -1,49 +1,5 @@
 {
     "items": {
-        "Rank": {
-            "controlPoints": {
-                "start": {
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "rotate": 0.0,
-                    "translate": {
-                        "x": 302.1513977050781,
-                        "y": 487.5361022949219
-                    }
-                },
-                "end": {
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "rotate": 0.0,
-                    "translate": {
-                        "x": 303.4263000488281,
-                        "y": 491.2545471191406
-                    }
-                }
-            },
-            "step": 4,
-            "sprite": {
-                "size": {
-                    "x": 100.0,
-                    "y": 100.0
-                },
-                "color": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0,
-                    "w": 1.0
-                },
-                "texturePath": ""
-            },
-            "alpha": {
-                "maxAlpha": 1.0,
-                "isAlphaMove": false
-            }
-        },
         "SongName": {
             "controlPoints": {
                 "start": {
@@ -112,7 +68,7 @@
                                 "rotate": 0.0,
                                 "scale": {
                                     "x": 1.0,
-                                    "y": 0.0
+                                    "y": 1.0
                                 },
                                 "translate": {
                                     "x": 640.0,
@@ -164,7 +120,7 @@
                                 "rotate": 0.0,
                                 "scale": {
                                     "x": 1.0,
-                                    "y": 0.0
+                                    "y": 1.0
                                 },
                                 "translate": {
                                     "x": 71.5,
@@ -194,6 +150,50 @@
                 "isAlphaMove": false
             }
         },
+        "Rank": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 302.1513977050781,
+                        "y": 487.5361022949219
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 303.4263000488281,
+                        "y": 491.2545471191406
+                    }
+                }
+            },
+            "step": 4,
+            "sprite": {
+                "size": {
+                    "x": 100.0,
+                    "y": 100.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "texturePath": ""
+            },
+            "alpha": {
+                "maxAlpha": 1.0,
+                "isAlphaMove": false
+            }
+        },
         "Score": {
             "controlPoints": {
                 "start": {
@@ -209,8 +209,8 @@
                 },
                 "end": {
                     "scale": {
-                        "x": 1.0,
-                        "y": 1.0
+                        "x": 1.0099999904632568,
+                        "y": 1.0099999904632568
                     },
                     "rotate": 0.0,
                     "translate": {
@@ -223,8 +223,8 @@
             "textItems": [
                 {
                     "offset": {
-                        "x": 2.700000047683716,
-                        "y": -32.70000076293945
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "typeName": "Score",
                     "textBox": [
@@ -255,18 +255,18 @@
                             "outlineWidth": 10.699999809265137,
                             "size": {
                                 "x": 501.0,
-                                "y": 64.0
+                                "y": 118.0
                             },
                             "text": "0.0000",
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
-                                    "x": 0.0,
-                                    "y": 0.0
+                                    "x": 1.0099999904632568,
+                                    "y": 1.0099999904632568
                                 },
                                 "translate": {
-                                    "x": 285.91015625,
-                                    "y": 259.278564453125
+                                    "x": 281.9352111816406,
+                                    "y": 291.01690673828125
                                 }
                             },
                             "useOutline": true
@@ -290,156 +290,6 @@
             "alpha": {
                 "maxAlpha": 0.0,
                 "isAlphaMove": false
-            }
-        },
-        "Miss": {
-            "controlPoints": {
-                "start": {
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "rotate": 0.0,
-                    "translate": {
-                        "x": 1553.1468505859375,
-                        "y": 469.0
-                    }
-                },
-                "end": {
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "rotate": 0.0,
-                    "translate": {
-                        "x": 1170.10498046875,
-                        "y": 469.0
-                    }
-                }
-            },
-            "step": 1,
-            "textItems": [
-                {
-                    "offset": {
-                        "x": -355.3999938964844,
-                        "y": -41.79999923706055
-                    },
-                    "typeName": "Miss",
-                    "textBox": [
-                        {
-                            "align": 0,
-                            "anchorPos": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "blendMode": 3,
-                            "color": {
-                                "w": 0.0,
-                                "x": 0.5960784554481506,
-                                "y": 0.5960784554481506,
-                                "z": 0.5960784554481506
-                            },
-                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
-                            "fontSize": 84.0,
-                            "glyphSpacing": 8.0,
-                            "lineSpacing": 8.0,
-                            "outlineColor": {
-                                "w": 1.0,
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            },
-                            "outlineSplitCount": 16,
-                            "outlineWidth": 4.199999809265137,
-                            "size": {
-                                "x": 417.0,
-                                "y": 109.0
-                            },
-                            "text": "Miss",
-                            "transform": {
-                                "rotate": 0.0,
-                                "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "translate": {
-                                    "x": 1197.746826171875,
-                                    "y": 427.20001220703125
-                                }
-                            },
-                            "useOutline": true
-                        }
-                    ]
-                },
-                {
-                    "offset": {
-                        "x": -8.0,
-                        "y": -40.099998474121094
-                    },
-                    "typeName": "MissCount",
-                    "textBox": [
-                        {
-                            "align": 1,
-                            "anchorPos": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "blendMode": 3,
-                            "color": {
-                                "w": 0.0,
-                                "x": 0.5945945978164673,
-                                "y": 0.5945945978164673,
-                                "z": 0.5945945978164673
-                            },
-                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
-                            "fontSize": 84.0,
-                            "glyphSpacing": 8.0,
-                            "lineSpacing": 8.0,
-                            "outlineColor": {
-                                "w": 1.0,
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            },
-                            "outlineSplitCount": 16,
-                            "outlineWidth": 4.199999809265137,
-                            "size": {
-                                "x": 128.0,
-                                "y": 64.0
-                            },
-                            "text": "0",
-                            "transform": {
-                                "rotate": 0.0,
-                                "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "translate": {
-                                    "x": 1545.1468505859375,
-                                    "y": 428.8999938964844
-                                }
-                            },
-                            "useOutline": true
-                        }
-                    ]
-                }
-            ],
-            "sprite": {
-                "size": {
-                    "x": 861.0,
-                    "y": 87.0
-                },
-                "color": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "w": 0.0
-                },
-                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
-            },
-            "alpha": {
-                "maxAlpha": 0.6309999823570251,
-                "isAlphaMove": true
             }
         },
         "Combo": {
@@ -513,8 +363,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 307.4888610839844,
-                                    "y": 659.4487915039063
+                                    "x": 260.3643493652344,
+                                    "y": 657.0601196289063
                                 }
                             },
                             "useOutline": false
@@ -540,7 +390,7 @@
                 "isAlphaMove": false
             }
         },
-        "Great": {
+        "Miss": {
             "controlPoints": {
                 "start": {
                     "scale": {
@@ -549,8 +399,8 @@
                     },
                     "rotate": 0.0,
                     "translate": {
-                        "x": 1422.798828125,
-                        "y": 266.0
+                        "x": 1553.1468505859375,
+                        "y": 469.0
                     }
                 },
                 "end": {
@@ -560,8 +410,8 @@
                     },
                     "rotate": 0.0,
                     "translate": {
-                        "x": 1031.10498046875,
-                        "y": 266.0
+                        "x": 1170.10498046875,
+                        "y": 469.0
                     }
                 }
             },
@@ -569,10 +419,10 @@
             "textItems": [
                 {
                     "offset": {
-                        "x": -372.5,
-                        "y": -39.400001525878906
+                        "x": -355.3999938964844,
+                        "y": -41.79999923706055
                     },
-                    "typeName": "Great",
+                    "typeName": "Miss",
                     "textBox": [
                         {
                             "align": 0,
@@ -582,10 +432,10 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
-                                "x": 1.0,
-                                "y": 0.19776087999343872,
-                                "z": 0.09266406297683716
+                                "w": 1.0,
+                                "x": 0.5960784554481506,
+                                "y": 0.5960784554481506,
+                                "z": 0.5960784554481506
                             },
                             "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
                             "fontSize": 84.0,
@@ -603,7 +453,7 @@
                                 "x": 417.0,
                                 "y": 109.0
                             },
-                            "text": "Great",
+                            "text": "Miss",
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -611,8 +461,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1050.298828125,
-                                    "y": 226.60000610351563
+                                    "x": 814.7049560546875,
+                                    "y": 427.20001220703125
                                 }
                             },
                             "useOutline": true
@@ -621,10 +471,10 @@
                 },
                 {
                     "offset": {
-                        "x": -19.700000762939453,
+                        "x": -8.0,
                         "y": -40.099998474121094
                     },
-                    "typeName": "GreatCount",
+                    "typeName": "MissCount",
                     "textBox": [
                         {
                             "align": 1,
@@ -634,10 +484,10 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
-                                "x": 1.0,
-                                "y": 0.19607843458652496,
-                                "z": 0.0941176488995552
+                                "w": 1.0,
+                                "x": 0.5945945978164673,
+                                "y": 0.5945945978164673,
+                                "z": 0.5945945978164673
                             },
                             "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
                             "fontSize": 84.0,
@@ -663,8 +513,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1403.098876953125,
-                                    "y": 225.89999389648438
+                                    "x": 1162.10498046875,
+                                    "y": 428.8999938964844
                                 }
                             },
                             "useOutline": true
@@ -681,7 +531,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.6309999823570251
                 },
                 "texturePath": "Resources/Textures/DefaultAssets\\white.png"
             },
@@ -732,7 +582,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.8880308866500854,
                                 "y": 1.0,
                                 "z": 0.0
@@ -761,7 +611,7 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 972.5123291015625,
+                                    "x": 580.47998046875,
                                     "y": 123.5999984741211
                                 }
                             },
@@ -784,7 +634,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.886274516582489,
                                 "y": 1.0,
                                 "z": 0.0
@@ -813,7 +663,7 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1339.412353515625,
+                                    "x": 947.3800048828125,
                                     "y": 126.0
                                 }
                             },
@@ -831,7 +681,157 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Great": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1422.798828125,
+                        "y": 266.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1031.10498046875,
+                        "y": 266.0
+                    }
+                }
+            },
+            "step": 1,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -372.5,
+                        "y": -39.400001525878906
+                    },
+                    "typeName": "Great",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.19776087999343872,
+                                "z": 0.09266406297683716
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 417.0,
+                                "y": 109.0
+                            },
+                            "text": "Great",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 658.60498046875,
+                                    "y": 226.60000610351563
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -19.700000762939453,
+                        "y": -40.099998474121094
+                    },
+                    "typeName": "GreatCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.19607843458652496,
+                                "z": 0.0941176488995552
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 1011.4049682617188,
+                                    "y": 225.89999389648438
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 861.0,
+                    "y": 87.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
                 },
                 "texturePath": "Resources/Textures/DefaultAssets\\white.png"
             },
@@ -882,7 +882,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.0,
                                 "y": 1.0,
                                 "z": 0.038609981536865234
@@ -911,7 +911,7 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1125.6920166015625,
+                                    "x": 738.0050048828125,
                                     "y": 327.5
                                 }
                             },
@@ -934,7 +934,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.0,
                                 "y": 1.0,
                                 "z": 0.03921568766236305
@@ -963,7 +963,7 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1468.1920166015625,
+                                    "x": 1080.5050048828125,
                                     "y": 328.6000061035156
                                 }
                             },
@@ -981,7 +981,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.6309999823570251
                 },
                 "texturePath": "Resources/Textures/DefaultAssets\\white.png"
             },
@@ -1032,7 +1032,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.0,
                                 "y": 0.2239382266998291,
                                 "z": 1.0
@@ -1061,8 +1061,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 583.7489624023438,
-                                    "y": 694.1412963867188
+                                    "x": 583.5519409179688,
+                                    "y": 628.3099365234375
                                 }
                             },
                             "useOutline": true
@@ -1084,7 +1084,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 0.0,
                                 "y": 0.2235294133424759,
                                 "z": 1.0
@@ -1113,8 +1113,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 772.8489990234375,
-                                    "y": 695.2413330078125
+                                    "x": 772.6519775390625,
+                                    "y": 629.4099731445313
                                 }
                             },
                             "useOutline": true
@@ -1131,7 +1131,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.6309999823570251
                 },
                 "texturePath": "Resources/Textures/DefaultAssets\\white.png"
             },
@@ -1182,7 +1182,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 1.0,
                                 "y": 0.03861004114151001,
                                 "z": 0.14996778964996338
@@ -1211,8 +1211,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 942.9923706054688,
-                                    "y": 692.5440673828125
+                                    "x": 942.3412475585938,
+                                    "y": 627.9092407226563
                                 }
                             },
                             "useOutline": true
@@ -1234,7 +1234,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 1.0,
                                 "y": 0.03921568766236305,
                                 "z": 0.14901961386203766
@@ -1263,8 +1263,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 877.0924072265625,
-                                    "y": 694.14404296875
+                                    "x": 876.4412841796875,
+                                    "y": 629.5092163085938
                                 }
                             },
                             "useOutline": true
@@ -1286,7 +1286,7 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.0,
+                                "w": 1.0,
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
@@ -1315,8 +1315,8 @@
                                     "y": 1.0
                                 },
                                 "translate": {
-                                    "x": 1022.9923706054688,
-                                    "y": 732.9440307617188
+                                    "x": 1022.3412475585938,
+                                    "y": 668.3092041015625
                                 }
                             },
                             "useOutline": false
@@ -1333,7 +1333,7 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0,
-                    "w": 0.0
+                    "w": 0.6309999823570251
                 },
                 "texturePath": "Resources/Textures/DefaultAssets\\white.png"
             },

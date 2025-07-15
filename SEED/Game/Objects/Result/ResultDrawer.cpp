@@ -9,49 +9,78 @@ void ResultDrawer::DrawResult(ResultStep step, float progress){
         Initialize();
     }
 
-    // 描画の進行状況に応じて描画処理を分岐
-    switch(step){
-    case ResultStep::Appear:// リザルトが表示される段階
-    {
-        break;
-    }
-    case ResultStep::CountUp:// 各種カウントを数え上げる
-    {
-        break;
-    }
-    case ResultStep::Display:// すべての結果が表示されている状態
-    {
-        break;
-    }
-    case ResultStep::Exit:// リザルトを閉じる段階
-    {
-        break;
-    }
-    default:
-    {
-        // 何もしない
-        break;
-    }
-    }
+    for(auto& resultItem : resultItems){
+        auto& segment = resultItem.second.transformSegment;
+        auto& finalTransform = resultItem.second.finalTransform;
 
-    progress;
+        float t = 0.0f;
+        if(int(step) > resultItem.second.step){
+            // ステップが進んでいる場合は、tを1.0fに設定
+            t = 1.0f;
+        } else if(int(step) == resultItem.second.step){
+            // 現在のステップの場合は、進行度に応じてtを設定
+            t = progress;
+        } else{
+            // それ以外の場合は、tを0.0fに設定
+            t = 0.0f;
+        }
+
+        finalTransform = MyFunc::Interpolate(segment.start, segment.end, t);
+
+        // guizmo
+        ImGuiManager::RegisterGuizmoItem(&segment.start);
+        ImGuiManager::RegisterGuizmoItem(&segment.end);
+        SEED::DrawLine2D(segment.start.translate, segment.end.translate);
+
+        // text
+        auto& textItems = resultItem.second.textItems;
+        for(int i = 0; i < textItems.size(); i++){
+            textItems[i].textBox.transform.translate = finalTransform.translate + textItems[i].offset;
+            textItems[i].textBox.textBoxVisible = false; // テキストボックスの表示はしない
+            std::string text = DecideText(textItems[i].typeName);
+            textItems[i].textBox.text = text == "" ? textItems[i].textBox.text : text;
+            textItems[i].textBox.transform.scale = finalTransform.scale;
+            if(resultItem.second.isAlphaMove){
+                textItems[i].textBox.color.w = t;
+            } else{
+                textItems[i].textBox.color.w = 1.0f;
+            }
+            textItems[i].textBox.Draw();
+        }
+
+        // sprite
+        auto& sprite = resultItem.second.backSprite;
+        sprite.translate = finalTransform.translate;
+        sprite.scale = finalTransform.scale;
+        sprite.anchorPoint = { 0.5f, 0.5f };
+        if(resultItem.second.isAlphaMove){
+            sprite.color.w = resultItem.second.maxAlpha * t;
+        } else{
+            sprite.color.w = resultItem.second.maxAlpha;
+        }
+
+        sprite.Draw();
+    }
 }
 
 void ResultDrawer::Initialize(){
 
     // 新しい項目を追加
-    resultItems.emplace("SongName", ResultItem());
-    resultItems.emplace("Score", ResultItem());
-    resultItems.emplace("Rank", ResultItem());
-    resultItems.emplace("Combo", ResultItem());
-    resultItems.emplace("Perfect", ResultItem());
-    resultItems.emplace("Great", ResultItem());
-    resultItems.emplace("Good", ResultItem());
-    resultItems.emplace("Miss", ResultItem());
-    resultItems.emplace("Fast", ResultItem());
-    resultItems.emplace("Late", ResultItem());
-
     LoadFromJson();
+
+    if(resultItems.empty()){
+        resultItems.emplace("SongName", ResultItem());
+        resultItems.emplace("Score", ResultItem());
+        resultItems.emplace("Rank", ResultItem());
+        resultItems.emplace("Combo", ResultItem());
+        resultItems.emplace("Perfect", ResultItem());
+        resultItems.emplace("Great", ResultItem());
+        resultItems.emplace("Good", ResultItem());
+        resultItems.emplace("Miss", ResultItem());
+        resultItems.emplace("Fast", ResultItem());
+        resultItems.emplace("Late", ResultItem());
+    }
+
     initialized = true;
 }
 
@@ -65,6 +94,9 @@ void ResultDrawer::Edit(){
         if(ImGui::Button("保存")){
             SaveToJson();
         }
+
+        // 媒介変数のスライダーを表示
+        ImGui::SliderFloat("媒介変数", &editT, 0.0f, 1.0f);
 
         if(isEditTransform){
             static TextBox2D textBox;
@@ -82,7 +114,7 @@ void ResultDrawer::Edit(){
             for(auto& resultItem : resultItems){
                 auto& segment = resultItem.second.transformSegment;
                 auto& finalTransform = resultItem.second.finalTransform;
-                finalTransform = MyFunc::Interpolate(segment.start, segment.end, resultItem.second.t);
+                finalTransform = MyFunc::Interpolate(segment.start, segment.end, editT);
 
                 // guizmo
                 ImGuiManager::RegisterGuizmoItem(&segment.start);
@@ -93,10 +125,18 @@ void ResultDrawer::Edit(){
                 textBox.text = resultItem.first.c_str();
                 textBox.transform.translate = segment.start.translate + Vector2(10.0f, 10.0f);
                 textBox.Draw();
+
                 auto& textItems = resultItem.second.textItems;
                 for(int i = 0; i < textItems.size(); i++){
                     textItems[i].textBox.transform.translate = finalTransform.translate + textItems[i].offset;
-                    textItems[i].textBox.text = DecideText(textItems[i].typeName);
+                    std::string text = DecideText(textItems[i].typeName);
+                    textItems[i].textBox.text = text == "" ? textItems[i].textBox.text : text;
+                    textItems[i].textBox.transform.scale = finalTransform.scale;
+                    if(resultItem.second.isAlphaMove){
+                        textItems[i].textBox.color.w = editT;
+                    } else{
+                        textItems[i].textBox.color.w = 1.0f;
+                    }
                     textItems[i].textBox.Draw();
                 }
 
@@ -107,17 +147,36 @@ void ResultDrawer::Edit(){
                 sprite.scale = finalTransform.scale;
                 sprite.anchorPoint = { 0.5f, 0.5f };
                 if(resultItem.second.isAlphaMove){
-                    sprite.color.w = resultItem.second.maxAlpha * resultItem.second.t;
+                    sprite.color.w = resultItem.second.maxAlpha * editT;
                 } else{
                     sprite.color.w = resultItem.second.maxAlpha;
                 }
                 sprite.Draw();
 
-                if(ImGui::CollapsingHeader(resultItem.first.c_str())){
-                    ImGui::Indent();
+                static bool isOpenHeader;
+                isOpenHeader = ImGui::CollapsingHeader(resultItem.first.c_str());
 
-                    // 媒介変数のスライダーを表示
-                    ImGui::SliderFloat("媒介変数", &resultItem.second.t, 0.0f, 1.0f);
+                // 送信側
+                if(ImGui::BeginDragDropSource()){
+                    ResultItem* ptr = &resultItem.second;
+                    ImGui::SetDragDropPayload("ResultItem", &ptr, sizeof(ResultItem*)); // ← ポインタのアドレスを送る
+                    ImGui::EndDragDropSource();
+                }
+
+                // 受信側
+                if(ImGui::BeginDragDropTarget()){
+                    if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ResultItem")){
+                        if(payload->DataSize == sizeof(ResultItem*)){
+                            auto droppedPtr = *static_cast<ResultItem* const*>(payload->Data); // ← 二重ポインタの逆キャスト
+                            resultItem.second = *droppedPtr; // コピー
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                if(isOpenHeader){
+                    ImGui::Indent();
+                    ImGui::InputInt("動く段階", &resultItem.second.step);
 
                     // 各トランスフォームのGUI編集
                     if(ImGui::CollapsingHeader("Transform")){
@@ -129,8 +188,8 @@ void ResultDrawer::Edit(){
 
                         // Scale
                         ImGui::Text("Scale");
-                        ImGui::DragFloat2("始点: Scale", &segment.start.scale.x, 0.05f);
-                        ImGui::DragFloat2("終点: Scale", &segment.end.scale.x, 0.05f);
+                        ImGui::DragFloat2("始点: Scale", &segment.start.scale.x, 0.1f);
+                        ImGui::DragFloat2("終点: Scale", &segment.end.scale.x, 0.1f);
 
                         // Rotation
                         ImGui::Text("Rotation");
@@ -144,7 +203,7 @@ void ResultDrawer::Edit(){
 
                         // 画像サイズの設定
                         ImGui::Text("Image Size");
-                        ImGui::DragFloat2("始点: Image Size", &sprite.size.x, 0.1f);
+                        ImGui::DragFloat2("始点: Image Size", &sprite.size.x, 1.0f);
 
                         // 画像の色編集
                         ImGui::ColorEdit4("色", &sprite.color.x);
@@ -153,7 +212,7 @@ void ResultDrawer::Edit(){
                         static std::filesystem::path basePath = "Resources/Textures/";
                         std::string selectedFile = ImFunc::FolderView("画像選択", basePath, false, { ".png",".jpg" });
                         if(!selectedFile.empty()){
-                            sprite.GH = TextureManager::LoadTexture(selectedFile);
+                            sprite.SetTexture(selectedFile);
                         }
 
                         ImGui::Unindent();
@@ -162,13 +221,13 @@ void ResultDrawer::Edit(){
                     if(ImGui::CollapsingHeader("透明度")){
                         ImGui::Indent();
                         // 透明度のスライダーを表示
-                        ImGui::SliderFloat("透明度", &resultItem.second.maxAlpha, 0.0f, 1.0f);
+                        ImGui::SliderFloat("透明度スライダー", &resultItem.second.maxAlpha, 0.0f, 1.0f);
                         // 透明度の色編集
                         ImGui::Checkbox("時間に合わせて透明度を変化させる", &resultItem.second.isAlphaMove);
                         ImGui::Unindent();
                     }
 
-                    if(ImGui::CollapsingHeader("テキスト")){
+                    if(ImGui::CollapsingHeader("テキスト一覧")){
                         ImGui::Indent();
 
                         if(ImGui::Button("テキストを追加")){
@@ -211,9 +270,29 @@ void ResultDrawer::SaveToJson(){
 
     nlohmann::ordered_json jsonData;
     for(auto& resultItem : resultItems){
+        auto& itemJson = jsonData["items"][resultItem.first];
         auto& segment = resultItem.second.transformSegment;
-        jsonData["controlPoints"][resultItem.first]["start"] = segment.start;
-        jsonData["controlPoints"][resultItem.first]["end"] = segment.end;
+        itemJson["controlPoints"]["start"] = segment.start;
+        itemJson["controlPoints"]["end"] = segment.end;
+        itemJson["step"] = resultItem.second.step;
+
+        // textItemsの情報をjsonに追加
+        for(const auto& textItem : resultItem.second.textItems){
+            itemJson["textItems"].emplace_back();
+            auto& textJson = itemJson["textItems"].back();
+            textJson["offset"] = textItem.offset;
+            textJson["typeName"] = textItem.typeName;
+            textJson["textBox"].push_back(textItem.textBox.GetJsonData());
+        }
+
+        // spriteの情報をjsonに追加
+        itemJson["sprite"]["size"] = resultItem.second.backSprite.size;
+        itemJson["sprite"]["color"] = resultItem.second.backSprite.color;
+        itemJson["sprite"]["texturePath"] = resultItem.second.backSprite.texturePath;
+
+        // 透明度の情報をjsonに追加
+        itemJson["alpha"]["maxAlpha"] = resultItem.second.maxAlpha;
+        itemJson["alpha"]["isAlphaMove"] = resultItem.second.isAlphaMove;
     }
 
     // JSONデータをファイルに保存
@@ -235,11 +314,59 @@ void ResultDrawer::LoadFromJson(){
         nlohmann::ordered_json jsonData;
         file >> jsonData;
         file.close();
-        // 各セグメントの制御点を設定
-        for(auto& resultItem : resultItems){
-            auto& segment = resultItem.second.transformSegment;
-            segment.start = jsonData["controlPoints"][resultItem.first]["start"];
-            segment.end = jsonData["controlPoints"][resultItem.first]["end"];
+
+        if(!jsonData.contains("items")){
+            return;
+        }
+
+        // 各アイテムを追加
+        for(auto& resultItem : jsonData["items"].items()){
+
+            auto& itemData = resultItem.value();
+
+            // アイテムを追加
+            resultItems.emplace(resultItem.key(), ResultItem());
+            auto& item = resultItems[resultItem.key()];
+
+            // セグメントの制御点を設定
+            auto& segment = item.transformSegment;
+            segment.start = itemData["controlPoints"]["start"];
+            segment.end = itemData["controlPoints"]["end"];
+
+            // ステップを設定
+            if(itemData.contains("step")){
+                item.step = itemData["step"];
+            } else{
+                item.step = 0; // デフォルト値
+            }
+
+            // テキストアイテムの情報を読み込む
+            if(itemData.contains("textItems")){
+                for(const auto& textJson : itemData["textItems"]){
+                    TextItem textItem;
+                    textItem.offset = textJson["offset"];
+                    textItem.typeName = textJson["typeName"];
+                    textItem.textBox.LoadFromJson(textJson["textBox"].back());
+                    item.textItems.push_back(textItem);
+                }
+            }
+
+            // スプライトの情報を読み込む
+            if(itemData.contains("sprite")){
+                auto& spriteJson = itemData["sprite"];
+                item.backSprite.size = spriteJson["size"];
+                item.backSprite.color = spriteJson["color"];
+                if(spriteJson["texturePath"] != ""){
+                    item.backSprite.SetTexture(spriteJson["texturePath"]);
+                }
+            }
+
+            // 透明度の情報を読み込む
+            if(itemData.contains("alpha")){
+                auto& alphaJson = itemData["alpha"];
+                item.maxAlpha = alphaJson["maxAlpha"];
+                item.isAlphaMove = alphaJson["isAlphaMove"];
+            }
         }
     }
 }
@@ -248,21 +375,16 @@ void ResultDrawer::LoadFromJson(){
 std::string ResultDrawer::DecideText(const std::string& typeName){
 
     auto& json = result.songData;
-    std::string output;
+    std::string output = "";
 
-    if(typeName == "None"){
-        output = "None";
-
-    } else if(typeName == "Score"){
+    if(typeName == "Score"){
         //少数第4位以下を切り捨てて文字列に変換
         std::ostringstream oss;
         oss << std::fixed << std::setprecision(4) << result.score;
         output = oss.str();
 
     } else if(typeName == "Combo"){
-        if(json.contains("Combo")){
-            output = std::to_string(result.maxCombo);
-        }
+        output = std::to_string(result.maxCombo) + "/" + std::to_string(result.totalCombo);
 
     } else if(typeName == "Perfect"){
         output = "Perfect";
@@ -286,18 +408,20 @@ std::string ResultDrawer::DecideText(const std::string& typeName){
         output = "Miss";
 
     } else if(typeName == "MissCount"){
-        if(json.contains("Miss")){
-            output = std::to_string(result.evalutionCount[3]);
-        }
+        output = std::to_string(result.evalutionCount[3]);
 
     } else if(typeName == "SongName"){
-        if(json.contains("SongName")){
-            output = json["SongName"].get<std::string>();
+        if(json.contains("songName")){
+            output = json["songName"].get<std::string>();
+        } else{
+            output = "Unnamed";
         }
 
     } else if(typeName == "Difficulty"){
         if(json.contains("difficulty")){
-            output = json["difficulty"].get<std::string>();
+            output = std::to_string(json["difficulty"].get<int>());
+        } else{
+            output = "0";
         }
 
     } else if(typeName == "Fast"){

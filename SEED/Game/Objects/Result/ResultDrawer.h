@@ -23,9 +23,9 @@ struct ResultItem{
     Transform2D finalTransform;
     Sprite backSprite;
     std::vector<TextItem> textItems;
-    float t;
     bool isAlphaMove = false;
     float maxAlpha = 1.0f;
+    int32_t step = 0;
 };
 
 namespace ResultTextUtils{
@@ -53,6 +53,7 @@ private:
     static inline bool initialized = false;
     static inline std::unordered_map<std::string, ResultItem> resultItems{};
     static inline bool isEditTransform = false;
+    static inline float editT = 0.0f;
 
 private:
     static void SaveToJson();

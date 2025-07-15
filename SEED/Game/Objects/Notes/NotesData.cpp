@@ -38,6 +38,7 @@ NotesData::NotesData(){
 // ノーツデータのデストラクタ
 ////////////////////////////////////////////////////////////////////
 NotesData::~NotesData(){
+    AudioManager::EndAudio(songAudioHandle_); // 音源の終了
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -172,6 +173,22 @@ std::vector<std::weak_ptr<Note_Base>> NotesData::GetNearNotes(float time){
 }
 
 ////////////////////////////////////////////////////////////////////
+// 最大コンボ数を取得
+////////////////////////////////////////////////////////////////////
+int32_t NotesData::GetTotalCombo(){
+    int32_t totalCombo = 0;
+    for(auto& note : notes_){
+        if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.second.get())){
+            totalCombo += 2;
+        } else{
+            totalCombo++;
+        }
+    }
+
+    return totalCombo;
+}
+
+////////////////////////////////////////////////////////////////////
 // 条件を満たしたノーツを削除する
 ////////////////////////////////////////////////////////////////////
 void NotesData::DeleteNotes(){
@@ -206,6 +223,8 @@ void NotesData::DeleteNotes(){
                         // 先頭を押せなかった場合
                         if(holdNote->headEvaluation_ == Judgement::Evaluation::NONE){
                             RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
+                            RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
+
                         }
                     }
 
@@ -223,6 +242,7 @@ void NotesData::DeleteNotes(){
                 it = notes_.erase(it);
                 // 押せずに通り過ぎたノーツなのでコンボを切る
                 RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
+                RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
             }
         } else{
             ++it;

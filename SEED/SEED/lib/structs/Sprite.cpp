@@ -56,3 +56,8 @@ Matrix4x4 Sprite::GetWorldMatrix() const{
         AffineMatrix({ scale.x,scale.y,1.0f }, { 0.0f, 0.0f, rotate }, { translate.x + offset.x,translate.y + offset.y,0.0f });
     return worldMat;
 }
+
+void Sprite::SetTexture(const std::string& filename){
+    texturePath = filename;
+    GH = TextureManager::LoadTexture(filename);
+}

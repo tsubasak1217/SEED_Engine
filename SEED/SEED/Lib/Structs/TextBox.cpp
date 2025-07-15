@@ -324,7 +324,7 @@ void TextBox2D::Draw()const{
                     // 描画
                     quad.layer = 2;
                     SEED::DrawQuad2D(quad);
-                    
+
                     // X座標オフセットを加算
                     float height = fontSize * lineGlyph->yRatio;
                     curX += height * lineGlyph->xRatio + glyphSpacing;
@@ -425,8 +425,14 @@ void TextBox3D::Draw()const{
 // フォントを設定
 //////////////////////////////////////////////////////////////////
 void TextBox2D::SetFont(const std::string& fileName){
-    TextSystem::GetInstance()->LoadFont(fileName);
-    this->fontName = fileName;
+    if(!fileName.empty()){
+        TextSystem::GetInstance()->LoadFont(fileName);
+        this->fontName = fileName;
+    } else{
+        std::string defaulFont = "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf";
+        TextSystem::GetInstance()->LoadFont(defaulFont);
+        this->fontName = defaulFont;
+    }
 }
 
 //////////////////////////////////////////////////////////////////

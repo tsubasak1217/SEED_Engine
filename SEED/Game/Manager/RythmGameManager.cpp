@@ -4,6 +4,7 @@
 #include <Game/GameSystem.h>
 #include <Game/Config/PlaySettings.h>
 #include <Game/Scene/Scene_Game/State/GameState_Select.h>
+#include <Game/Objects/Result/ResultDrawer.h>
 
 /////////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -58,9 +59,15 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     // Inputの初期化
     PlayerInput::GetInstance()->Initialize();
 
+    // リザルトの初期化
+    playResult_ = PlayResult();
+    playResult_.songData = songData;
+
     // 譜面データの初期化
     notesData_ = std::make_unique<NotesData>();
     notesData_->Initialize(songData);
+    playResult_.totalCombo = notesData_->GetTotalCombo();
+    
 
     // エディタの初期化
     if(songData.contains("jsonFilePath")){
@@ -96,6 +103,15 @@ void RythmGameManager::EndFrame(){
 
     // 譜面が終わったらクリアシーンへ移行
     if(notesData_->GetIsEnd()){
+
+        // スコア,ランクの計算
+        playResult_.score = CalculateScore();
+        playResult_.rank = ScoreRankUtils::GetScoreRank(playResult_.score);
+
+        // プレイ結果の保存
+        ResultDrawer::SetResult(playResult_);
+
+        // リザルト画面へ移行
         GameSystem::ChangeScene("Clear");
     }
 
@@ -163,4 +179,19 @@ void RythmGameManager::Draw(){
     PlaySettings::GetInstance()->Edit();
 
 #endif // _DEBUG
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// スコアの計算
+//////////////////////////////////////////////////////////////////////////////////
+float RythmGameManager::CalculateScore(){
+    float result;
+    float scorePerNote = 100.0f / playResult_.totalCombo;
+    float scoreSubtractRateGreat = 0.5f;
+    float scoreSubtractRateGood = 0.75f;
+    float subtractGreat = playResult_.evalutionCount[(int)Judgement::Evaluation::GREAT] * scorePerNote * scoreSubtractRateGreat;
+    float subtractGood = playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] * scorePerNote * scoreSubtractRateGood;
+    float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] * scorePerNote;
+    result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
+    return result;
 }

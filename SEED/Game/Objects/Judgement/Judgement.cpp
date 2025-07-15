@@ -76,15 +76,30 @@ void Judgement::Judge(NotesData* noteGroup){
     /*--------------------------*/
     // ノーツの判定
     /*--------------------------*/
-    std::list<std::pair<std::weak_ptr<Note_Base>, Judgement::Evaluation>> hitNotes;// 判定を拾ったノーツ一覧
+    struct NoteJudgeInfo{
+        std::weak_ptr<Note_Base> note;
+        float signedDif; // 正しい時間との差
+        float dif; // 差の絶対値
+        Judgement::Evaluation evaluation; // 判定結果
+    };
+
+    std::list<NoteJudgeInfo> hitNotes;// 判定を拾ったノーツ一覧
     for(auto& note : nearNotes){
         // 正しい時間との差を取得
-        float dif = std::abs((note.lock()->time_ + PlaySettings::GetInstance()->GetOffsetJudge())-time);
+        float signedDif = note.lock()->time_ + PlaySettings::GetInstance()->GetOffsetJudge() - time;
+        float dif = std::abs(signedDif);
 
         // 判定を拾ったノーツをリストにする
         Judgement::Evaluation evaluation = note.lock()->Judge(dif);
         if(evaluation != Evaluation::MISS){
-            hitNotes.push_back({ note,evaluation });
+
+            NoteJudgeInfo info;
+            info.note = note;
+            info.signedDif = signedDif;
+            info.dif = dif;
+            info.evaluation = evaluation;
+
+            hitNotes.push_back(info);
         }
     }
 
@@ -94,7 +109,7 @@ void Judgement::Judge(NotesData* noteGroup){
     uint32_t hitBits = 0;
     for(auto& note : hitNotes){
 
-        Note_Base* notePtr = note.first.lock().get();
+        Note_Base* notePtr = note.note.lock().get();
 
         // すでにビットが立っているなら、重複しているのでスルー
         if(hitBits & notePtr->laneBit_){
@@ -104,13 +119,26 @@ void Judgement::Judge(NotesData* noteGroup){
                 notePtr->isEnd_ = true;// ノーツを終了させる
             }
             hitBits |= notePtr->laneBit_;// ビットを立てる
-            pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.second]);// レーンを押下状態にする
+            pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.evaluation]);// レーンを押下状態にする
 
             // エフェクトを出す
-            pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.second);
+            pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.evaluation);
 
             // コンボを加算
             RythmGameManager::GetInstance()->AddCombo();
+
+            // 評価を追加
+            RythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
+
+            // fast,lateの計算
+            if(note.signedDif > judgeTime_[(int)Evaluation::PERFECT]){
+                // 遅れすぎた場合
+                RythmGameManager::GetInstance()->AddLateCount();
+
+            } else if(note.signedDif < -judgeTime_[(int)Evaluation::PERFECT]){
+                // 早すぎた場合
+                RythmGameManager::GetInstance()->AddFastCount();
+            }
         }
     }
 }
@@ -124,8 +152,10 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
     // コンボの管理
     if(evaluation != Evaluation::MISS){
         RythmGameManager::GetInstance()->AddCombo();// コンボを加算
+        RythmGameManager::GetInstance()->AddEvaluation(evaluation);// 評価を追加
     } else{
         RythmGameManager::GetInstance()->BreakCombo();// コンボを切る
+        RythmGameManager::GetInstance()->AddEvaluation(Evaluation::MISS);// ミスを追加
     }
 
     // 終点の判定に応じてエフェクトとか出す

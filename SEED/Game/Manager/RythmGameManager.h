@@ -36,9 +36,17 @@ public:
         playResult_.evalutionCount[(int)evalution]++;
     }
 
-    void AddScore(float score){
-        playResult_.score += score;
+    // fast, lateのカウントを追加
+    void AddFastCount(int count = 1){
+        playResult_.fastCount += count;
     }
+
+    void AddLateCount(int count = 1){
+        playResult_.lateCount += count;
+    }
+
+private:
+    float CalculateScore();
 
 private:
     std::unique_ptr<BaseCamera> gameCamera_;// カメラ

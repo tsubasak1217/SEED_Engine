@@ -28,12 +28,5 @@ public:
     void HandOverColliders()override;
 
 private:
-    void CheckStep();
 
-private:
-    int32_t step_ = 0;
-    int32_t kMaxStep_ = 4;// 最大ステップ数
-    Timer stepTimer_ = Timer(0.7f);
-
-    bool sceneChangeOrder = false; // シーン変更のオーダーが出ているかどうか
 };

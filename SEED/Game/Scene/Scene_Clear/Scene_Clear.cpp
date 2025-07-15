@@ -2,7 +2,6 @@
 
 ///etc
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <Game/Objects/Result/ResultDrawer.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -23,7 +22,6 @@ Scene_Clear::~Scene_Clear(){}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
     SEED::SetMainCamera("default");
-    ResultDrawer::Initialize();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,24 +45,6 @@ void Scene_Clear::Update(){
     if(currentEventState_){
         currentEventState_->Update();
     }
-
-    // タイマーの更新
-    if(Input::IsTriggerKey(DIK_SPACE)){
-        step_++;
-        stepTimer_.Reset();
-    
-    } else if(stepTimer_.IsFinishedNow()){
-        step_++;
-        stepTimer_.Reset();
-    
-    }
-
-    // 時間の更新
-    stepTimer_.Update();
-
-#ifdef _DEBUG
-    ResultDrawer::Edit();
-#endif // _DEBUG
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,9 +60,6 @@ void Scene_Clear::Draw(){
     if(currentEventState_){
         currentEventState_->Draw();
     }
-
-    //
-    ResultDrawer::DrawResult(ResultStep(step_), stepTimer_.GetProgress());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,17 +82,10 @@ void Scene_Clear::BeginFrame(){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::EndFrame(){
 
-    // ステップのチェック
-    CheckStep();
-
     if(currentState_){
         currentState_->EndFrame();
     }
 
-    if(sceneChangeOrder){
-        ChangeScene("Game");
-        return;
-    }
 }
 
 
@@ -127,16 +97,5 @@ void Scene_Clear::EndFrame(){
 void Scene_Clear::HandOverColliders(){
     if(currentState_){
         currentState_->HandOverColliders();
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// ステップのチェック
-/////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Clear::CheckStep(){
-    if(step_ >= kMaxStep_){
-        if(Input::IsTriggerKey(DIK_SPACE)){
-            sceneChangeOrder = true;
-        }
     }
 }

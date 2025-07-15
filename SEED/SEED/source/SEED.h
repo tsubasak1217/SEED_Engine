@@ -220,7 +220,7 @@ private:// インスタンス
     bool isCursorVisible_ = true;
     bool isDebugCamera_ = false;
     float resolutionRate_ = 1.0f;
-    bool isGridVisible_ = false;
+    bool isGridVisible_ = true;
     Vector4 clearColor_;
 
 private:// object

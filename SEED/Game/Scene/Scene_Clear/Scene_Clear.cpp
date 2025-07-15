@@ -45,7 +45,6 @@ void Scene_Clear::Update(){
     if(currentEventState_){
         currentEventState_->Update();
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +81,11 @@ void Scene_Clear::BeginFrame(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::EndFrame(){
+
     if(currentState_){
         currentState_->EndFrame();
     }
+
 }
 
 

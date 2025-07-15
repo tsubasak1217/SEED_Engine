@@ -804,7 +804,13 @@ void SEED::StartUpLoad(){
 Vector2 SEED::GetImageSize(const std::wstring& fileName){
 
     // パスの結合
-    std::wstring filePath = L"resources/textures/" + fileName;
+    std::wstring filePath;
+    
+    if(fileName.starts_with(L"Resources")){
+        filePath = fileName;
+    } else{
+       filePath = L"resources/textures/" + fileName;
+    }
 
     // 画像をロード
     Gdiplus::Image image(filePath.c_str());

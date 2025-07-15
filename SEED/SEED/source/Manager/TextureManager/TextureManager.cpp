@@ -47,13 +47,19 @@ uint32_t TextureManager::LoadTexture(const std::string& filename, const aiTextur
         return instance_->graphHandle_[filename];
     }
 
+    // filenameが"Resources/"から始まる場合、basePathを空に
+    std::string basePath = "Resources/textures/";
+    if(filename.starts_with("Resources/")){
+        basePath = "";
+    }
+
     // 埋め込みテクスチャでない場合
     if(!embeddedTexture){
         // 読み込み
-        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename);
+        instance_->graphHandle_[filename] = instance_->CreateTexture(basePath + filename);
     } else{
         // 埋め込みテクスチャの場合
-        instance_->graphHandle_[filename] = instance_->CreateTexture("resources/textures/" + filename, embeddedTexture);
+        instance_->graphHandle_[filename] = instance_->CreateTexture(basePath + filename, embeddedTexture);
     }
 
     return instance_->graphHandle_[filename];

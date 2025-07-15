@@ -25,6 +25,7 @@ public:
 
     // 色；マテリアル
     uint32_t GH;
+    std::string texturePath;
     Vector4 color;
     BlendMode blendMode;
 
@@ -54,5 +55,5 @@ public:
 
 public:
     Matrix4x4 GetWorldMatrix()const;
-
+    void SetTexture(const std::string& filename);
 };

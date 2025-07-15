@@ -18,6 +18,7 @@ Scene_Game::Scene_Game() : Scene_Base(){
 
 Scene_Game::~Scene_Game(){
     Scene_Base::Finalize();
+    SEED::RemoveCamera("gameCamera");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -37,8 +38,6 @@ void Scene_Game::Initialize(){
     //  カメラ初期化
     ////////////////////////////////////////////////////
 
-    auto* scene = this;
-    scene;
 
     ////////////////////////////////////////////////////
     //  ライトの初期化
@@ -90,11 +89,6 @@ void Scene_Game::Update(){
 
     /*========================== ImGui =============================*/
 
-#ifdef _DEBUG
-    ImFunc::CustomBegin("テキスト", MoveOnly_TitleBar);
-
-    ImGui::End();
-#endif
 
     /*======================= 各状態固有の更新 ========================*/
 
@@ -166,13 +160,13 @@ void Scene_Game::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
 
+    // ヒエラルキー内のオブジェクトのフレーム終了処理
+    hierarchy_->EndFrame();
+
     // 現在のステートがあればフレーム終了処理を行う
     if(currentState_){
         currentState_->EndFrame();
     }
-
-    // ヒエラルキー内のオブジェクトのフレーム終了処理
-    hierarchy_->EndFrame();
 }
 
 

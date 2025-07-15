@@ -96,7 +96,7 @@ struct ImFunc{
         const char* label,
         std::filesystem::path& currentPath,
         bool isFileNameOnly = false,
-        std::initializer_list<std::string> filterExts = { "" }
+        std::initializer_list<std::string> filterExts = {""}
     );
 
     // 文字列を折り返す関数

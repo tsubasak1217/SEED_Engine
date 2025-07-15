@@ -235,6 +235,7 @@
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Source\Basic\Components\utils\DragInfo_Joint.h" />
+    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

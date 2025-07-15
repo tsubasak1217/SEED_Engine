@@ -11,6 +11,7 @@ public:
     float GetProgress() const;
     float GetPrevProgress() const;
     bool IsFinished() const;
+    bool IsFinishedNow() const;
     void Reset();
     void Stop();
     void Restart();
@@ -49,6 +50,11 @@ inline float Timer::GetPrevProgress() const {
 // 完了しているかどうか
 inline bool Timer::IsFinished() const {
     return currentTime >= duration;
+}
+
+// 今完了したばかりかどうか
+inline bool Timer::IsFinishedNow() const {
+    return prevTime < duration && currentTime >= duration;
 }
 
 // リセット

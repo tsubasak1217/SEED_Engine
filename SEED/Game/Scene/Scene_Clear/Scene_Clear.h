@@ -12,6 +12,7 @@
 //objects
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Lib/Structs/Timer.h>
 
 class Scene_Clear
     : public Scene_Base{
@@ -25,4 +26,7 @@ public:
     void BeginFrame()override;
     void EndFrame()override;
     void HandOverColliders()override;
+
+private:
+
 };

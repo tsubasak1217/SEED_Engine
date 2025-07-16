@@ -19,7 +19,7 @@ struct GlyphData{
 // フォントアトラスデータ
 struct FontAtlas{
     uint32_t textureHandle;
-    std::unordered_map<int32_t, GlyphData> glyphs;
+    std::unordered_map<int32_t, GlyphData> glyphs;// 文字コードでグリフデータを管理
 };
 
 // フォントデータ

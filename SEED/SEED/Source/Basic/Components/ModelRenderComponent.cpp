@@ -69,21 +69,10 @@ void ModelRenderComponent::EditGUI(){
 
     // モデルの変更
     label = "モデル変更##" + std::to_string(componentID_);
-    if(ImGui::CollapsingHeader(label.c_str())){
-        ImGui::Indent();
-        // クリック時のみ更新
-        if(ImGui::IsMouseClicked(0)){
-            // モデルのファイル一覧を取得
-            modelFiles = MyFunc::GetFileList("Resources/models", { ".obj",".gltf",".glb" });
-        }
-
-        // モデルファイルの一覧を表示
-        for(const auto& modelFile : modelFiles){
-            if(ImGui::Button(modelFile.c_str())){
-                ChangeModel(modelFile);
-            }
-        }
-        ImGui::Unindent();
+    static std::filesystem::path modelPath = "Resources/Models/";
+    std::string path = ImFunc::FolderView(label.c_str(), modelPath, false, { "obj","gltf","glb" });
+    if(path != ""){
+        ChangeModel(path);
     }
 
     // localなTransformの編集

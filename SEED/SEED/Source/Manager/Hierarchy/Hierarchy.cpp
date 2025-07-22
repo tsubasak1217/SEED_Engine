@@ -37,6 +37,38 @@ void Hierarchy::RemoveGameObject(GameObject* gameObject){
     }
 }
 
+void Hierarchy::EraseObject(GameObject* gameObject){
+    auto childrenCopy = gameObject->GetAllChildren();
+
+    for(auto* child : childrenCopy){
+        // selfCreatedObjectにあるか確認
+        auto it = std::find_if(selfCreateObjects_.begin(), selfCreateObjects_.end(),
+            [child](const std::unique_ptr<GameObject>& obj){ return obj.get() == child; });
+
+        // selfCreateObjects_から解放
+        if(it != selfCreateObjects_.end()){
+            selfCreateObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
+
+        } else{// 直接解放
+            delete child; // 子オブジェクトを削除
+            child = nullptr; // ポインタをクリア
+        }
+    }
+
+    // selfCreatedObjectにあるか確認
+    auto it = std::find_if(selfCreateObjects_.begin(), selfCreateObjects_.end(),
+        [gameObject](const std::unique_ptr<GameObject>& obj){ return obj.get() == gameObject; });
+
+    // selfCreateObjects_から解放
+    if(it != selfCreateObjects_.end()){
+        selfCreateObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
+    
+    } else{// 直接解放
+        delete gameObject; // 自分自身を削除
+        gameObject = nullptr; // ポインタをクリア
+    }
+}
+
 ///////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ///////////////////////////////////////////////////////////////////
@@ -169,6 +201,8 @@ void Hierarchy::EditGUI(){
         } else{
             ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_);
         }
+
+        OutputPrefab(selectedObject_);
     }
     ImGui::End();
 #endif // _DEBUG
@@ -195,8 +229,10 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
     bool open = ImGui::TreeNode(nodeName.c_str());
 
     // ダブルクリックで
-    if(ImGui::IsMouseDoubleClicked(0)){
-        selectedObject_ = gameObject;
+    if(ImGui::IsItemClicked(0)){
+        if(ImGui::IsMouseDoubleClicked(0)){
+            selectedObject_ = gameObject;
+        }
     }
 
     // 右クリックでコンテキストメニューを開く
@@ -288,7 +324,7 @@ void Hierarchy::InOutOnGUI(){
 
             // 出力ボタン
             if(ImGui::Button("出力", ImVec2(120, 0))){
-                OutputToJson(outputFileDirectory + filename + ".json");
+                OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects_);
                 ImGui::CloseCurrentPopup();
             }
 
@@ -300,20 +336,75 @@ void Hierarchy::InOutOnGUI(){
             ImGui::EndPopup();
         }
     }
+
+
     // Jsonファイルからの読み込み
     if(ImGui::CollapsingHeader("Jsonファイルから読み込み")){
-        auto filenames = MyFunc::GetFileList("Resources/jsons/Scenes", { ".json" }, false);
 
         // ファイルを選択して読み込み
-        ImGui::Text("読み込むファイルを選択");
-        for(auto& fileName : filenames){
-            if(ImGui::Button(fileName.c_str())){
-                LoadFromJson(fileName);
+        {
+            ImGui::Text("シーンの読み込み");
+            static std::filesystem::path prefabPath = "Resources/jsons/Scenes/";
+            std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, false, { ".json" }, "Resources/jsons/Scenes/");
+
+            if(selectedFile != ""){
+                LoadFromJson(selectedFile);
+            }
+        }
+        {
+            ImGui::Text("Prefabの読み込み");
+            static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
+            std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".json" }, "Resources/jsons/Prefabs/");
+            if(selectedFile != ""){
+                LoadFromJson(selectedFile);
             }
         }
     }
 
 
+
+
+#endif
+}
+
+void Hierarchy::OutputPrefab(GameObject* gameObject){
+#ifdef _DEBUG
+    // Jsonファイルへの出力
+    {
+        static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
+        static std::string filename = "";
+        static bool isSaveOnWorldOrigin = true;// 
+
+        if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
+            // 最前面表示
+            filename.clear();
+            ImGui::SetNextWindowFocus();
+            ImGui::OpenPopup("PrefabToJson");
+        }
+
+        // ポップアップの表示
+        if(ImGui::BeginPopupModal("PrefabToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+
+            ImGui::Text("オブジェクトをJsonファイルへ出力します。");
+            // 出力先のパスを入力
+            ImFunc::InputText(".json", filename);
+
+            // 出力ボタン
+            if(ImGui::Button("出力", ImVec2(120, 0))){
+                std::list<GameObject*> outputObject;
+                outputObject.push_back(gameObject);
+                OutputToJson(outputFileDirectory + filename + ".json", outputObject);
+                ImGui::CloseCurrentPopup();
+            }
+
+            // キャンセルボタン
+            ImGui::SameLine();
+            if(ImGui::Button("キャンセル", ImVec2(120, 0))){
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
 
 #endif
 }
@@ -324,7 +415,7 @@ void Hierarchy::ExecuteContextMenu(){
     if(contextMenuObject_){
         // オブジェクトの削除
         if(executeMenuName_ == "Delete Object"){
-            RemoveGameObject(contextMenuObject_);
+            EraseObject(contextMenuObject_);
             contextMenuObject_ = nullptr;
             RebuildParentInfo();
             executeMenuName_ = "";
@@ -337,12 +428,12 @@ void Hierarchy::ExecuteContextMenu(){
 /////////////////////////////////////////////////////////////////////
 // Jsonファイルへの出力
 /////////////////////////////////////////////////////////////////////
-nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath) const{
+nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const{
     static nlohmann::json sceneData;
     sceneData.clear(); // 既存のデータをクリア
 
     // 各オブジェクトのjsonデータを取得
-    for(const auto& grandParent : grandParentObjects_){
+    for(const auto& grandParent : grandParentObjects){
         sceneData["gameObjects"].push_back(grandParent->GetJsonData(0));
     }
 

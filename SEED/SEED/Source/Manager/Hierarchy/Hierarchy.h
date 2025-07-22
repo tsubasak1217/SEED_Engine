@@ -13,6 +13,7 @@ public:
     // ゲームオブジェクトの登録・削除
     void RegisterGameObject(GameObject* gameObject);
     void RemoveGameObject(GameObject* gameObject);
+    void EraseObject(GameObject* gameObject);
 
 public:
     // フレームの開始時処理
@@ -32,10 +33,12 @@ private:
     void RecursiveTreeNode(GameObject* gameObject, int32_t depth);
     void CreateEmptyObject();
     void InOutOnGUI();
+    void OutputPrefab(GameObject* gameObject);
     void ExecuteContextMenu();
 
+public:
     // json
-    nlohmann::json OutputToJson(const std::string& outputFilePath) const;
+    nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const;
     void LoadFromJson(const std::string& filePath);
 
 private:

@@ -27,7 +27,8 @@ void GameSystem::Initialize() {
     // シーンの登録
     SceneRegister::RegisterScenes();
     // 最初のシーンを設定
-    ChangeScene("Clear");
+    //ChangeScene("Clear");
+    ChangeScene("Game");
 }
 
 /////////////////////////////////////////////////////////////////
@@ -127,4 +128,5 @@ void GameSystem::DrawGUI(){
 /////////////////////////////////////////////////////////////////
 void GameSystem::ChangeScene(const std::string& sceneName) {
     instance_->pScene_.reset(SceneManager::CreateScene(sceneName));
+    instance_->pScene_->Initialize();
 }

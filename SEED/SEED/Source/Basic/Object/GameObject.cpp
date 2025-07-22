@@ -169,6 +169,17 @@ void GameObject::SetParent(GameObject* parent){
     parent->children_.push_back(this);
 }
 
+std::list<GameObject*> GameObject::GetAllChildren() const{
+    // 全ての子孫を取得する
+    std::list<GameObject*> allChildren;
+    for(const auto& child : children_){
+        allChildren.push_back(child);
+        auto descendants = child->GetAllChildren();
+        allChildren.insert(allChildren.end(), descendants.begin(), descendants.end());
+    }
+    return allChildren;
+}
+
 void GameObject::RemoveChild(GameObject* child){
     if(child){
         child->ReleaseParent();

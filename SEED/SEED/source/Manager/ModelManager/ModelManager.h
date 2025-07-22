@@ -68,8 +68,17 @@ private:
 
 public:
     static ModelData* GetModelData(const std::string& fileName){
-        assert(instance_->modelData_.find(fileName) != instance_->modelData_.end());
-        return instance_->modelData_[fileName];
+
+        std::string path = fileName;
+
+        // "Resources/"の階層からのパスなら"Moswls/"階層以降のパスに変換する
+        if(path.starts_with("Resources/Models")){
+            // "Resources/Models/"を削除
+            path = path.substr(17); // "Resources/Models"の長さは17
+        }
+
+        assert(instance_->modelData_.find(path) != instance_->modelData_.end());
+        return instance_->modelData_[path];
     }
 
     static std::vector<std::string> GetModelNames(){

@@ -1,0 +1,28 @@
+#pragma once
+#include <SEED/Source/Basic/Scene/State_Base.h>
+#include <Game/Manager/RythmGameManager.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
+#include <memory>
+#include <list>
+
+class GameState_Strolling : public State_Base{
+public:
+    GameState_Strolling();
+    GameState_Strolling(Scene_Base* pScene);
+    ~GameState_Strolling() override = default;
+
+public:
+    void Initialize() override;
+    void Finalize() override;
+    void Update() override;
+    void Draw() override;
+    void BeginFrame() override;
+    void EndFrame() override;
+    void HandOverColliders() override;
+    void ManageState() override;
+
+private:
+    std::list<GameObject*> gameObjects_; // ゲームオブジェクトのリスト
+    
+
+};

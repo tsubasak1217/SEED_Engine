@@ -27,6 +27,7 @@ public:
     bool HasEvent(){ return currentEventState_ != nullptr; };
     void RegisterToHierarchy(GameObject* gameObject);
     void RemoveFromHierarchy(GameObject* gameObject);
+    Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
 
 protected:
     std::unique_ptr<State_Base> currentState_;

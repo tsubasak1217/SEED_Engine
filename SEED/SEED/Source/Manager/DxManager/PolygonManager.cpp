@@ -2280,7 +2280,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
         // オフスクリーンの描画依頼をここで出しておく
         if(isActivePostEffect_){
-            AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
+            AddOffscreenResult(ViewManager::GetTextureHandle("postEffect_0"), BlendMode::NONE);
             //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
         } else{
             AddOffscreenResult(

@@ -549,9 +549,14 @@ void DxManager::DrawPolygonAll(){
 
     /*----------------------ポストエフェクトを行う-------------------*/
 
-    // 被写界深度
-    //PostEffect::GetInstance()->DoF();
+    // ポストエフェクト用に状態を遷移
+    PostEffect::GetInstance()->StartTransition();
 
+    // 被写界深度
+    PostEffect::GetInstance()->DoF();
+
+    // グレースケール
+    PostEffect::GetInstance()->Grayscale();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
@@ -596,7 +601,7 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
 
 
-    PostEffect::GetInstance()->BeforeBackBufferDrawTransition();
+    PostEffect::GetInstance()->EndTransition();
 
     // オフスクリーンのリソースを参照するために状態を遷移させる
     for(const auto& [cameraName, camera] : cameras_){
@@ -615,8 +620,6 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
     // すべてのリソースを基本の状態に戻す
     //////////////////////////////////////////////////////////////////
-
-    PostEffect::GetInstance()->EndTransition();
 
     /*---------- メインゲーム画面 -> ImGui用のSystem画面に描画を切り替え----------*/
 #ifdef USE_SUB_WINDOW

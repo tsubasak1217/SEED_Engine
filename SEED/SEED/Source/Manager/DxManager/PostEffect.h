@@ -39,16 +39,22 @@ private:
 
 private:// PostEffectの処理
 
+    // グレースケール
+    void Grayscale();
+
     // 被写界深度
     void DoF();
 
     // ResourceのTransition関連
-    void BeforeBackBufferDrawTransition();
     void EndTransition();
+    void StartTransition();
 
 private:
     // PostEffectに必要なリソース
     float resolutionRate_;
-    DxResource blurTextureResource;// ぼかし画像
+    DxResource postEffectTextureResource[2];// ポストエフェクト画像
     DxResource depthTextureResource;// 深度情報の白黒画像
+
+    // 
+    int currentBufferIndex_ = 0; // 現在のバッファインデックス
 };

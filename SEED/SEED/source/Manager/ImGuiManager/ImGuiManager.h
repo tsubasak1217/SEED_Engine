@@ -100,6 +100,7 @@ struct ImFunc{
         std::filesystem::path rootPath = ""
     );
 
+
     // 文字列を折り返す関数
     static std::vector<std::string> WrapTextLines(const std::string& text, float maxWidth, int maxLines = 2);
 
@@ -111,6 +112,9 @@ struct ImFunc{
     template <typename EnumType>
     static bool ComboPair(const char* label, EnumType& currentValue, initializer_list<pair<string, EnumType>>items);
     static bool ComboText(const char* label, string& str, const vector<string>& items);
+    // ビットマスク
+    template <typename EnumType>
+    static bool BitMask(const char* label, EnumType& bit, initializer_list<string> bitNames);
 
     // inputTextに直接stringを渡せるように
     static bool InputTextMultiLine(const char* label, string& str);
@@ -173,5 +177,36 @@ inline bool ImFunc::ComboPair(const char* label, EnumType& currentValue, initial
         currentValue = it->second; // 選択された値を設定
     }
 
+    return changed;
+}
+
+
+/////////////////////////////////////////////////////////////////
+// ビットマスクのチェックボックスを作成
+/////////////////////////////////////////////////////////////////
+template<typename EnumType>
+inline bool ImFunc::BitMask(const char* label, EnumType& bit, initializer_list<string> bitNames){
+    bool changed = false;
+    int bitValue = static_cast<int>(bit); // EnumTypeをintに変換
+    ImGui::Text("%s", label);
+
+    // ビットマスクのチェックボックスを作成
+    for(int i = 0; i < static_cast<int>(bitNames.size()); i++){
+        bool isChecked = (bitValue & (1 << i)) != 0; // ビットが立っているかチェック
+        if(ImGui::Checkbox(bitNames.begin()[i].c_str(), &isChecked)){
+            if(isChecked){
+                bitValue |= (1 << i); // ビットを立てる
+            } else{
+                bitValue &= ~(1 << i); // ビットを下げる
+            }
+            changed = true;
+        }
+    }
+
+    // 変更があった場合、値を適用
+    if(changed){
+        bit = static_cast<EnumType>(bitValue);
+    }
+    
     return changed;
 }

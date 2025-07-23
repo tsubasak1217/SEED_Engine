@@ -325,5 +325,4 @@ private:// GPUハンドルまとめ
 
 private:
     bool isWrited_ = false; // 描画データを書き込んだかどうか
-    bool isActivePostEffect_ = false;
 };

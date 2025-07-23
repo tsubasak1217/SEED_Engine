@@ -4,6 +4,7 @@
 #include "ImGlyph.h"
 #include <DirectXMath.h>
 #include <DirectXMathMatrix.inl>
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 using namespace DirectX;
 
 // シングルトンインスタンス
@@ -324,7 +325,11 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 
         // 表示
         if(cameraName == ""){
-            ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetInstance()->GetMainCameraName()), finalSize);
+            if((int)PostEffect::GetInstance()->postEffectBit_ != 0){
+                ImGui::Image(TextureManager::GetImGuiTexture("postEffectResult"), finalSize);
+            } else{
+                ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetMainCameraName()), finalSize);
+            }
         } else{
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
         }

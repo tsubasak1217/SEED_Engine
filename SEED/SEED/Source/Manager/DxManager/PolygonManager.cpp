@@ -7,6 +7,7 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 
 // external
 #include <assert.h>
@@ -2272,16 +2273,11 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
 void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
     if(!isWrited_){
-    #ifdef _DEBUG
-        ImFunc::CustomBegin("PostEffect", MoveOnly_TitleBar);
-        ImGui::Checkbox("active", &isActivePostEffect_);
-        ImGui::End();
-    #endif // _DEBUG
 
         // オフスクリーンの描画依頼をここで出しておく
-        if(isActivePostEffect_){
-            AddOffscreenResult(ViewManager::GetTextureHandle("postEffect_0"), BlendMode::NONE);
-            //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
+        if((int)PostEffect::GetInstance()->postEffectBit_ != 0){
+            AddOffscreenResult(ViewManager::GetTextureHandle("postEffectResult"), BlendMode::NONE);
+
         } else{
             AddOffscreenResult(
                 ViewManager::GetTextureHandle(pDxManager_->offScreenNames[pDxManager_->mainCameraName_]),

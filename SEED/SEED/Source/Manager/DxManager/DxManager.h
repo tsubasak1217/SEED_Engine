@@ -18,7 +18,6 @@
 #include <SEED/Source/Manager/DxManager/PSO/RootSignature.h>
 // managers
 #include <SEED/Source/Manager/DxManager/PolygonManager.h>
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
 #include <SEED/Source/Manager/DxManager/ShaderDictionary.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
@@ -49,8 +48,8 @@ struct LeakChecker{
 class DxManager{
 
     friend PolygonManager;
-    friend PostEffect;
     friend DxResource;
+    friend class PostEffect;
     friend class SEED;
     friend class TextureManager;
     friend class TextSystem;

@@ -65,15 +65,8 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     
     // ============================== 深度情報と照らし合わせて最終的な色を決定 ===========================//
     
-    
-    outputColor = (focusLevel * currentPixelColor) + ((1.0f - focusLevel) * blurredColor);
-    
-    // fog
-    //float4 fogColor = (blurredColor * 0.7f) + (float4(0.3f, 0.3f, 0.3f, 0.3f) * focusLevel);
-    //outputColor = (focusLevel * currentPixelColor) + ((1.0f - focusLevel) * fogColor);
-        
-
     // 加工
+    outputColor = (focusLevel * currentPixelColor) + ((1.0f - focusLevel) * blurredColor);
     outputTexture[pixelCoord] = outputColor;
     
     // 深度情報の計算

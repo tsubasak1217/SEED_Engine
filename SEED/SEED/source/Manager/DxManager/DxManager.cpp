@@ -6,6 +6,7 @@
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 
 DxManager* DxManager::instance_ = nullptr;
 
@@ -550,13 +551,11 @@ void DxManager::DrawPolygonAll(){
     /*----------------------ポストエフェクトを行う-------------------*/
 
     // ポストエフェクト用に状態を遷移
-    PostEffect::GetInstance()->StartTransition();
+    //PostEffect::GetInstance()->CopyOffScreen();
+    //PostEffect::GetInstance()->StartTransition();
 
-    // 被写界深度
-    PostEffect::GetInstance()->DoF();
-
-    // グレースケール
-    PostEffect::GetInstance()->Grayscale();
+    // 有効なポストエフェクトを適用
+    PostEffect::GetInstance()->PostProcess();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
@@ -601,7 +600,7 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
 
 
-    PostEffect::GetInstance()->EndTransition();
+    //PostEffect::GetInstance()->EndTransition();
 
     // オフスクリーンのリソースを参照するために状態を遷移させる
     for(const auto& [cameraName, camera] : cameras_){

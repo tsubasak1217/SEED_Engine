@@ -105,6 +105,18 @@ Vector4 MyFunc::RandomColor(){
     return { Random(0.0f,1.0f),Random(0.0f,1.0f),Random(0.0f,1.0f),1.0f };
 }
 
+Vector4 MyFunc::RandomColor(std::initializer_list<uint32_t> colorList,bool isCorrectionToLiner){
+    if(colorList.size() == 0){
+        return { 1.0f,1.0f,1.0f,1.0f }; // デフォルトの白色
+    }
+
+    // ランダムに選択
+    auto it = std::next(colorList.begin(), Random(0, static_cast<int>(colorList.size()) - 1));
+    uint32_t color = *it;
+    // RGBA成分を抽出して返す
+    return MyMath::FloatColor(color,isCorrectionToLiner);
+}
+
 //----------------- ランダムな方向を返す関数 -----------------//
 Vector3 MyFunc::RandomDirection(const Vector3& baseDirection, float angle){
     // ランダムなthetaとphiの範囲

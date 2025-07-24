@@ -172,7 +172,7 @@ public:// 頂点情報の追加に関わる関数
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
         uint32_t GH, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0
     );
 
     void AddTriangle3DPrimitive(
@@ -189,7 +189,7 @@ public:// 頂点情報の追加に関わる関数
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
         uint32_t GH, BlendMode blendMode,bool isText = false,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0
     );
 
     void AddQuad3DPrimitive(
@@ -204,7 +204,7 @@ public:// 頂点情報の追加に関わる関数
         uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
         const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
-        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0,
+        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0,
         bool isSystemDraw = false
     );
 
@@ -214,7 +214,7 @@ public:// 頂点情報の追加に関わる関数
         const Vector4& v1, const Vector4& v2,
         const Matrix4x4& worldMat, const Vector4& color,
         bool view3D, BlendMode blendMode, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0
     );
 
 private:

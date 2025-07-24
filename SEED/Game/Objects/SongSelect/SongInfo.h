@@ -75,6 +75,7 @@ struct SongInfo{
     std::string folderName;
     std::string songName;
     std::string artistName;
+    std::string audioFilePath;
     std::optional<SongGenre> genre;
     float bpm;
 

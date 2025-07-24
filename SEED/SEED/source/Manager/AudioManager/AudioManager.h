@@ -77,6 +77,7 @@ public:// エンジンで利用できる関数
 
     static AudioHandle PlayAudio(const std::string& filename,bool loop,float volume = 1.0f,float time = 0.0f);
     static void EndAudio(AudioHandle handle);
+    static void EndAllAudio();
     static void PauseAudio(AudioHandle handle);
     static void PauseAll();
     static void RestartAudio(AudioHandle handle);

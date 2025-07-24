@@ -47,7 +47,7 @@ void CameraManager::RegisterCamera(const std::string& name, BaseCamera* camera){
 
 // カメラの削除
 void CameraManager::RemoveCamera(const std::string& name){
-    // 指定要素がなければアサート
+    // 指定要素がなければ何もしない
     if(instance_->cameras_.find(name) == instance_->cameras_.end()){ return; }
     // カメラを削除
     instance_->cameras_.erase(name);

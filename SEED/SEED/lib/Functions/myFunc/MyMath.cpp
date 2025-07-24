@@ -547,7 +547,7 @@ uint32_t MyMath::GrayScale(uint32_t color){
 
 
 // RGBA形式のカラーコードをVector4形式に変換する関数 (各要素は0~1に収まる)
-Vector4 MyMath::FloatColor(uint32_t color){
+Vector4 MyMath::FloatColor(uint32_t color, bool isCorrectionToLiner){
     float delta = 1.0f / 255.0f;
 
     Vector4 colorf = {
@@ -557,10 +557,17 @@ Vector4 MyMath::FloatColor(uint32_t color){
         float(Alpha(color)) * delta
     };
 
+    if(isCorrectionToLiner){
+        // ガンマ補正を行う
+        colorf.x = std::pow(colorf.x, 2.2f);
+        colorf.y = std::pow(colorf.y, 2.2f);
+        colorf.z = std::pow(colorf.z, 2.2f);
+    }
+
     return colorf;
 }
 
-Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
+Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a, bool isCorrectionToLiner){
     float delta = 1.0f / 255.0f;
 
     Vector4 colorf = {
@@ -569,6 +576,14 @@ Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
         float(b) * delta,
         float(a) * delta
     };
+
+
+    if(isCorrectionToLiner){
+        // ガンマ補正を行う
+        colorf.x = std::pow(colorf.x, 2.2f);
+        colorf.y = std::pow(colorf.y, 2.2f);
+        colorf.z = std::pow(colorf.z, 2.2f);
+    }
 
     return colorf;
 }
@@ -621,6 +636,41 @@ Vector4 MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 }
 
 
-Vector4 MyMath::HSV_to_RGB(Vector4 HSVA_color){
+
+Vector4 MyMath::HSV_to_RGB(const Vector4& HSVA_color){
     return HSV_to_RGB(HSVA_color.x, HSVA_color.y, HSVA_color.z, HSVA_color.w);
+}
+
+// RGBをHSV形式に変換する関数
+Vector4 MyMath::RGB_to_HSV(const Vector4& rgbColor){
+    float r = rgbColor.x;
+    float g = rgbColor.y;
+    float b = rgbColor.z;
+    float max = std::max({ r, g, b });
+    float min = std::min({ r, g, b });
+    float delta = max - min;
+    float h, s, v = max;
+    if(max == 0.0f){
+        s = 0.0f; // 彩度が0
+        h = 0.0f; // 色相は定義されない
+    } else{
+        s = delta / max; // 彩度の計算
+        if(delta == 0.0f){
+            h = 0.0f; // 色相は定義されない
+        } else if(max == r){
+            h = (g - b) / delta + (g < b ? 6.0f : 0.0f);
+        } else if(max == g){
+            h = (b - r) / delta + 2.0f;
+        } else{
+            h = (r - g) / delta + 4.0f;
+        }
+        h /= 6.0f; // 色相を[0,1]に正規化
+    }
+    return Vector4(h, s, v, rgbColor.w);
+}
+
+// RGB形式のカラーコードをHSV形式に変換する関数
+Vector4 MyMath::RGB_to_HSV(uint32_t colorCode){
+    Vector4 rgbColor = FloatColor(colorCode);
+    return RGB_to_HSV(rgbColor);
 }

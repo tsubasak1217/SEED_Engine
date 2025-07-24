@@ -47,6 +47,11 @@ void SongInfo::Initialize(const std::string& _folderName){
         if(songName.empty()){
             songName = noteData["songName"];
         }
+
+        // 音声ファイルのパスを設定
+        if(audioFilePath.empty()){
+            audioFilePath = noteData["audioPath"];
+        }
     }
 
 

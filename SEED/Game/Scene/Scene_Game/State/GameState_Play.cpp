@@ -12,6 +12,12 @@ GameState_Play::GameState_Play(Scene_Base* pScene, const nlohmann::json& songDat
     RythmGameManager::GetInstance()->Initialize(songData);
 }
 
+GameState_Play::~GameState_Play(){
+    SEED::RemoveCamera("gameCamera");
+    SEED::SetMainCamera("default");
+    AudioManager::EndAllAudio();
+}
+
 void GameState_Play::Initialize(){
 }
 

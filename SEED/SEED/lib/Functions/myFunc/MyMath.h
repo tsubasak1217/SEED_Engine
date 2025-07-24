@@ -161,13 +161,15 @@ public:
     static uint32_t GrayScale(uint32_t color);
 
     // カラーコードからVector4に変換する関数 (0~1に収められる)
-    static Vector4 FloatColor(uint32_t color);
-    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a = 255);
+    static Vector4 FloatColor(uint32_t color,bool isCorrectionToLiner = true);
+    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a = 255, bool isCorrectionToLiner = true);
     // Vector4からカラーコードに変換する関数
     static uint32_t IntColor(const Vector4& color);
     static uint32_t IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 255);
 
     // HSVをRGBに変換する関数
     static Vector4 HSV_to_RGB(float h, float s, float v, float alpha);
-    static Vector4 HSV_to_RGB(Vector4 HSVA_color);
+    static Vector4 HSV_to_RGB(const Vector4& HSVA_color);
+    static Vector4 RGB_to_HSV(const Vector4& rgbColor);
+    static Vector4 RGB_to_HSV(uint32_t colorCode);
 };

@@ -22,8 +22,14 @@ enum class TextAlign{
 };
 
 struct TextBox2D{
+
     TextBox2D() = default;
     TextBox2D(const std::string& _text) : text(_text){}
+    void Draw()const;
+    void SetFont(const std::string& fileName);
+    void BindDatas(std::initializer_list<BindData> datas);
+
+public:// パラメータなど
     std::string text;
     std::string fontName;
     Transform2D transform;
@@ -40,21 +46,17 @@ struct TextBox2D{
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
+private:// フォーマット解析
+    std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)
+    std::vector<std::string> AnalyzeFormatToken(const std::string& sourceText)const;
+
+public:// 編集・入出力関連
 #ifdef _DEBUG
     bool textBoxVisible = true;
     void Edit();
 #endif // _DEBUG
     nlohmann::json GetJsonData() const;
     void LoadFromJson(const nlohmann::json& jsonData);
-
-private:// フォーマット解析
-    std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)
-    std::vector<std::string> AnalyzeFormatToken(const std::string& sourceText)const;
-
-public:// 関数
-    void Draw()const;
-    void SetFont(const std::string& fileName);
-    void BindDatas(std::initializer_list<BindData> datas);
 };
 
 struct TextBox3D{

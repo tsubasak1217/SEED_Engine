@@ -240,6 +240,25 @@ void AudioManager::EndAudio(AudioHandle handle){
 }
 
 /// <summary>
+/// すべての音声を終了する
+/// </summary>
+void AudioManager::EndAllAudio(){
+    // すべての音声を停止
+    
+    for(auto& sourceVoice : instance_->sourceVoices_){
+        HRESULT hr;
+        hr = sourceVoice.second->Stop();
+        hr = sourceVoice.second->FlushSourceBuffers();
+        sourceVoice.second->DestroyVoice();
+    }
+
+    // 要素の削除
+    instance_->sourceVoices_.clear();
+    instance_->isPlaying_.clear();
+    instance_->volumeMap_.clear();
+}
+
+/// <summary>
 /// 再生中の音声を一時停止する
 /// </summary>
 /// <param name="filename">ファイル名</param>

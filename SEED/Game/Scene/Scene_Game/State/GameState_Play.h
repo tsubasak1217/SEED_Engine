@@ -8,7 +8,7 @@ public:
     GameState_Play() = default;
     GameState_Play(Scene_Base* pScene);
     GameState_Play(Scene_Base* pScene, const nlohmann::json& songData);
-    ~GameState_Play() override = default;
+    ~GameState_Play() override;
 
 public:
     void Initialize() override;

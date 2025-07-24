@@ -5,6 +5,7 @@
 #include <Game/Objects/SongSelect/SongInfo.h>
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
 #include <SEED/Lib/enums/Direction.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
 // ソート方法
 enum class SortMode{
@@ -117,4 +118,8 @@ private:
     bool isStartPlay = false; // プレイ開始フラグ
     float playWaitTimer = 0.0f; // プレイ待機タイマー
     float kPlayWaitTime = 2.0f; // プレイ待機時間
+    // 音声
+    AudioHandle songHandle_;
+
+    
 };

@@ -372,7 +372,7 @@ void PolygonManager::AddTriangle(
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
     BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    DrawLocation drawLocation, int32_t layer
 ){
 
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -663,7 +663,7 @@ void PolygonManager::AddQuad(
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
     BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    DrawLocation drawLocation, int32_t layer
 ){
 
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -1014,7 +1014,7 @@ void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
     const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
-    bool isStaticDraw, DrawLocation drawLocation, uint32_t layer, bool isSystemDraw
+    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     blendMode;
@@ -1443,7 +1443,7 @@ void PolygonManager::AddModel(Model* model){
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
     const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    DrawLocation drawLocation, int32_t layer
 ){
 
     assert(lineCount_ < kMaxLineCount_);

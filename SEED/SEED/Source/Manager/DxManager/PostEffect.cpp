@@ -186,6 +186,9 @@ void PostEffect::Release(){
     if(depthTextureResource.resource){
         depthTextureResource.resource->Release();
     }
+    if(postEffectResultResource.resource){
+        postEffectResultResource.resource->Release();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

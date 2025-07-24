@@ -40,6 +40,7 @@ public:
 
     // ランダムな色
     static Vector4 RandomColor();
+    static Vector4 RandomColor(std::initializer_list<uint32_t>colorList,bool isCorrectionToLiner = true);
 
     // ランダムな方向(基準方向と許容角度から)
     static Vector3 RandomDirection(const Vector3& baseDirection, float angle);

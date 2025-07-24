@@ -5,6 +5,7 @@
 #include <SEED/Lib/Structs/Transform.h>
 #include <Game/GameSystem.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
 
 // コンストラクタ
 SongSelector::SongSelector(){
@@ -529,6 +530,7 @@ void SongSelector::SelectItems(){
                 if(!currentSong.first->noteDatas[(int)nextDifficulty].empty()){
                     currentDifficulty = nextDifficulty; // 難易度を更新
                     currentSong.second = nextDifficulty; // 現在の曲の難易度も更新
+                    SelectBackGroundDrawer::currentDifficulty = nextDifficulty; // 背景の難易度を更新
                     Sort();
                 }
 
@@ -539,6 +541,7 @@ void SongSelector::SelectItems(){
                 if(!currentSong.first->noteDatas[(int)nextDifficulty].empty()){
                     currentDifficulty = nextDifficulty; // 難易度を更新
                     currentSong.second = nextDifficulty; // 現在の曲の難易度も更新
+                    SelectBackGroundDrawer::currentDifficulty = nextDifficulty; // 背景の難易度を更新
                     Sort();
                 }
 
@@ -614,6 +617,9 @@ void SongSelector::SelectItems(){
                 auto it = currentGroup->groupMembers.begin();
                 std::advance(it, currentSongIndex);
                 currentSong = *it;
+                // 再生する曲のハンドルを更新
+                AudioManager::EndAudio(songHandle_); // 曲を停止
+                songHandle_ = AudioManager::PlayAudio(currentSong.first->audioFilePath, true);
             }
 
         } else{
@@ -637,6 +643,7 @@ void SongSelector::SelectItems(){
         // 難易度の更新
         if(currentSong.first){
             currentDifficulty = currentSong.second; // 現在の曲の難易度を更新
+            SelectBackGroundDrawer::currentDifficulty = currentDifficulty; // 背景の難易度を更新
         }
     }
 }
@@ -856,6 +863,7 @@ void SongSelector::UpdateDifficultyList(){
             if(aimIndices[i] == difficultyTransformCenterIdx){
                 currentSong = songAllDifficulty[i]; // 現在の曲を更新
                 currentDifficulty = currentSong.second; // 現在の難易度を更新
+                SelectBackGroundDrawer::currentDifficulty = currentDifficulty; // 背景の難易度を更新
             }
         }
     }
@@ -1019,6 +1027,7 @@ void SongSelector::FromJson(const nlohmann::json& json){
     currentGroupMode = static_cast<GroupMode>(json["currentGroupMode"]);
     currentSortMode = static_cast<SortMode>(json["currentSortMode"]);
     currentDifficulty = static_cast<TrackDifficulty>(json["currentDifficulty"]);
+    SelectBackGroundDrawer::currentDifficulty = currentDifficulty; // 背景の難易度を更新
 
     // アイテムの位置を復元
     for(int i = 0; i < itemAimTransforms.size(); i++){

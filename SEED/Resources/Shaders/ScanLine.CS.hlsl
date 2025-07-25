@@ -1,0 +1,27 @@
+#include "Object3D.hlsli"
+
+Texture2D<float4> inputTexture : register(t0); // 入力画像
+RWTexture2D<float4> outputTexture : register(u0); // 出力画像
+ConstantBuffer<Float> time : register(b0); // 時間（秒）
+SamplerState gSampler : register(s0); // 使用しないけど必須なら残す
+
+[numthreads(16, 16, 1)]
+void CSMain(uint3 DTid : SV_DispatchThreadID) {
+    uint2 pixelCoord = DTid.xy;
+
+    if (pixelCoord.x >= 1280 || pixelCoord.y >= 720) {
+        return;
+    }
+
+    // 入力画像からそのままピクセルカラー取得（Load使用）
+    float4 color = inputTexture.Load(int3(pixelCoord, 0));
+
+    // スキャンライン効果の適用
+    float stripeFrequency = 0.6; // ← ここを変えるとライン幅が変わる
+    float scanline = sin(pixelCoord.y * stripeFrequency + time.value * 30.0);
+    scanline = 0.8 + 0.2 * scanline;
+
+    color.rgb *= scanline;
+
+    outputTexture[pixelCoord] = color;
+}

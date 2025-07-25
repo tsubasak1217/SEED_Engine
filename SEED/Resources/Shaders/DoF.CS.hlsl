@@ -1,75 +1,63 @@
 #include "Object3d.hlsli"
 
-Texture2D<float4> inputTexture : register(t0);// スクショ
+Texture2D<float4> inputTexture : register(t0); // スクショ
 RWTexture2D<float4> outputTexture : register(u0); // 出力画像
-Texture2D<float4> inputDepthTexture : register(t1);// depthStencilのほう
-RWTexture2D<float4> outputDepthTexture : register(u1);// depthTextureのほう
+Texture2D<float4> inputDepthTexture : register(t1); // depthStencilのほう
+RWTexture2D<float4> outputDepthTexture : register(u1); // 深度値を画像として書き込む用
 
 ConstantBuffer<Float> resolutionRate : register(b0);
 SamplerState gSampler : register(s0);
 
+// ガウシアン重み計算関数
+float Gaussian(float x, float sigma) {
+    return exp(-0.5 * (x * x) / (sigma * sigma)) / (sqrt(2.0 * 3.141592) * sigma);
+}
 
 [numthreads(16, 16, 1)]
-void CSMain(uint3 DTid : SV_DispatchThreadID)
-{
-    // ピクセル座標の取得
+void CSMain(uint3 DTid : SV_DispatchThreadID) {
     uint2 pixelCoord = DTid.xy;
-    
     if (pixelCoord.x >= 1280 || pixelCoord.y >= 720)
-    {
         return;
-    }
-    
-    // 色の取得
-    float4 currentPixelColor = inputTexture.Load(int3(pixelCoord, 0));
-    int radius = int(ceil(8.0f * resolutionRate.value));
-    uint2 currentPixelCoord = uint2(0, 0);
-    float pixelCount = 0;
-    float4 blurredColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float4 outputColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
 
-    // テクスチャから深度データを取得
-    float depthData = inputDepthTexture.Load(int3(DTid.xy, 0)).x;
-    depthData = DepthToLinear(depthData, 0.01f, 1000.0f);
-    float focusLevel = CalcFocusLevel(depthData);
-    
-    
-    // ============================= 大ボケ画像の作成 ================================ //
-    // BOX型に一定範囲の色を足す
-    for (int row = -radius; row < radius; row++)
-    {
-        currentPixelCoord.x = pixelCoord.x + row;
-        currentPixelCoord.x = clamp(currentPixelCoord.x, 1, 1280);
-        
-        for (int col = -radius; col < radius; col++)
-        {
-            currentPixelCoord.y = pixelCoord.y + col;
-            currentPixelCoord.y = clamp(currentPixelCoord.y, 1, 720);
-            
-            // 今のピクセルの深度情報を参照して、ボケていない部分はあまり色に影響を与えないようにする
-            float currentDepth = inputDepthTexture.Load(int3(currentPixelCoord, 0)).x;
-            currentDepth = DepthToLinear(currentDepth, 0.1f, 1000.0f);
-            currentDepth = CalcFocusLevel(currentDepth);
-            
-            
-            float blurLevel = 1.0f - currentDepth;
-            
-            blurredColor += inputTexture.Load(int3(currentPixelCoord, 0)) * blurLevel;
-            pixelCount += blurLevel;
+    float4 currentPixelColor = inputTexture.Load(int3(pixelCoord, 0));
+    float depth = inputDepthTexture.Load(int3(pixelCoord, 0)).x;
+    depth = DepthToLinear(depth, 0.01f, 1000.0f);
+    float focusLevel = CalcFocusLevel(depth);
+
+    int radius = int(ceil(8.0f * resolutionRate.value));
+    float sigma = radius / 2.0f;
+
+    float4 blurredColor = float4(0, 0, 0, 0);
+    float totalWeight = 0.0f;
+
+    for (int dy = -radius; dy <= radius; dy++) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            int2 offset = int2(dx, dy);
+            int2 sampleCoord = int2(pixelCoord) + offset;
+
+            // 範囲外アクセス防止
+            sampleCoord = clamp(sampleCoord, int2(0, 0), int2(1279, 719));
+
+            float dist = length(float2(dx, dy));
+            float weight = Gaussian(dist, sigma);
+
+            float sampleDepth = inputDepthTexture.Load(int3(sampleCoord, 0)).x;
+            sampleDepth = DepthToLinear(sampleDepth, 0.01f, 1000.0f);
+            float sampleFocus = CalcFocusLevel(sampleDepth);
+
+            // ピクセルごとにボケ度合いに応じて重みを調整（遠くのピクセルはボケる）
+            float blurWeight = weight * (1.0f - sampleFocus);
+            blurredColor += inputTexture.Load(int3(sampleCoord, 0)) * blurWeight;
+            totalWeight += blurWeight;
         }
     }
-    
-    // 数で割る
-    blurredColor /= pixelCount;
-    
-    // ============================== 深度情報と照らし合わせて最終的な色を決定 ===========================//
-    
-    // 加工
-    outputColor = (focusLevel * currentPixelColor) + ((1.0f - focusLevel) * blurredColor);
-    outputTexture[pixelCoord] = outputColor;
-    
-    // 深度情報の計算
-    outputDepthTexture[pixelCoord] = float4(1.0f, 0.0f, 0.0f, 1.0f) * focusLevel;
 
+    blurredColor = totalWeight > 0 ? blurredColor / totalWeight : currentPixelColor;
+
+    // 焦点深度によって元画像とブラー画像をブレンド
+    float4 finalColor = lerp(blurredColor, currentPixelColor, focusLevel);
+    outputTexture[pixelCoord] = finalColor;
+
+    // デバッグ用：フォーカスレベルを可視化
+    outputDepthTexture[pixelCoord] = float4(1.0f, 0.0f, 0.0f, 1.0f) * focusLevel;
 }

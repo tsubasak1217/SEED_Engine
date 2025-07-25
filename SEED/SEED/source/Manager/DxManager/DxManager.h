@@ -56,6 +56,7 @@ class DxManager{
     friend class ImGuiManager;
     friend class PSOManager;
     friend class ViewManager;
+    friend class IPostProcess;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();

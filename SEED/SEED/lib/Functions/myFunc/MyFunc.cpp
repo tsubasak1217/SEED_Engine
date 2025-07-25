@@ -368,9 +368,9 @@ std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, boo
         // ディレクトリのみを探す
         if(cur.is_directory()){
             if(isRelative){
-                folderList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                folderList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
             } else{
-                folderList.push_back(cur.path().string()); // 絶対パスを格納
+                folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
             }
         }
     }
@@ -392,9 +392,9 @@ std::vector<std::string> MyFunc::GetFileList(
             if(cur.is_regular_file() && cur.path().extension() == ext){
                 // ファイル名を格納
                 if(isRelative){
-                    fileList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    fileList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    fileList.push_back(cur.path().string()); // 絶対パスを格納
+                    fileList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -414,9 +414,9 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -425,9 +425,9 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -464,9 +464,9 @@ std::string MyFunc::FindFile(const std::string& entryPath, const std::string& fi
         if(cur.is_regular_file() && cur.path().filename() == filePath){
             // 存在する場合はパスを返す
             if(isRelative){
-                return fs::relative(cur.path(), entryPath).string(); // 相対パスを返す
+                return fs::relative(cur.path(), entryPath).generic_string(); // 相対パスを返す
             } else{
-                return cur.path().string(); // 絶対パスを返す
+                return cur.path().generic_string(); // 絶対パスを返す
             }
         }
     }
@@ -490,13 +490,13 @@ std::filesystem::path MyFunc::GetProjectDirectory(){
 // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::string MyFunc::ToFullPath(const std::string& relativePath){
-    std::string fullPath = GetProjectDirectory().string() + "/" + relativePath;
+    std::string fullPath = GetProjectDirectory().generic_string() + "/" + relativePath;
     // フルパスを正規化して返す
-    return std::filesystem::canonical(fullPath).string();
+    return std::filesystem::canonical(fullPath).generic_string();
 }
 
 std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
-    std::wstring fullPath = GetProjectDirectory().wstring() + L"/" + relativePath;
+    std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
     // フルパスを正規化して返す
-    return std::filesystem::canonical(fullPath).wstring();
+    return std::filesystem::canonical(fullPath).generic_wstring();
 }

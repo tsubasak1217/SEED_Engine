@@ -38,8 +38,8 @@ void Scene_Game::Initialize(){
     ////////////////////////////////////////////////////
 
     // Playステートに初期化
-    //ChangeState(new GameState_Strolling(this));
-    ChangeState(new GameState_Select(this));
+    ChangeState(new GameState_Strolling(this));
+    //ChangeState(new GameState_Select(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化

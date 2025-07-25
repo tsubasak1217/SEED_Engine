@@ -116,6 +116,8 @@
     <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -280,6 +282,10 @@
     <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
     <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />
@@ -289,6 +295,11 @@
     <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Text.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\GrayScale.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Vignette.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\RGBShift.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\ScanLine.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

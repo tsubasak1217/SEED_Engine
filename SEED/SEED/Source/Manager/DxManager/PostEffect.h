@@ -19,15 +19,10 @@ enum class DX_RESOURCE_TYPE{
     BUFFER
 };
 
-enum class PostEffectBit{
-    None = 0,
-    Grayscale = 1 << 0, // グレースケール
-    DoF = 1 << 1, // 被写界深度
-};
-
 class PostEffect{
     friend class DxManager;// DxManagerからアクセスを許可
     friend class PolygonManager; // PolygonManagerからアクセスを許可
+    friend class IPostProcess; // IPostProcessからアクセスを許可
     friend struct ImFunc; // ImGuiManagerからアクセスを許可
 private:
     PostEffect() = default;
@@ -36,11 +31,10 @@ private:
     void operator=(PostEffect&) = delete;
     static PostEffect* instance_;
     static PostEffect* GetInstance();
+    static void Update();
 
 private:
     void InitPSO();
-    void MapOnce();
-    void SetBindInfo();
     void CreateResources();
     void Initialize();
     void Release();
@@ -52,28 +46,40 @@ private:// PostEffectの処理
     // 有効なポストエフェクトを適用する関数
     void PostProcess();
 
-    // グレースケール
-    void Grayscale();
-
-    // 被写界深度
-    void DoF();
-
     // ResourceのTransition関連
     void EndTransition();
     void StartTransition();
 
-    std::string GetCurrentBufferName() const{
-        return "postEffect_" + std::to_string(currentBufferIndex_);
+    // バッファ関連の関数
+    void ChangeBufferIndex(){
+        currentBufferIndex_ = (currentBufferIndex_ + 1) % 2;
     }
 
+    static std::string GetCurSRVBufferName(){
+        return instance_->currentBufferIndex_ == 0 ? "postEffect_0" : "postEffect_1";
+    }
+
+    static std::string GetCurUAVBufferName(){
+        return instance_->currentBufferIndex_ == 0 ? "postEffect_1_UAV" : "postEffect_0_UAV";
+    }
+
+
 private:
-    // PostEffectに必要なリソース
+    // ポストエフェクトに使用するパラメータなど
     float resolutionRate_;
+    float time_ = 0.0f; // 時間の経過を記録する変数
+
+    // PostEffectに必要なリソース
     DxResource postEffectTextureResource[2];// ポストエフェクト画像
     DxResource depthTextureResource;// 深度情報の白黒画像
     DxResource postEffectResultResource; // ポストエフェクトの結果を格納するリソース
 
     // 
     int currentBufferIndex_ = 0; // 現在のバッファインデックス
-    PostEffectBit postEffectBit_ = PostEffectBit::None; // 適��するポストエフェクトのビットフラグ
+
+    // ポストプロセスのリスト
+    std::list<std::unique_ptr<IPostProcess>> postProcesses_;
+
+private:
+    void Edit();
 };

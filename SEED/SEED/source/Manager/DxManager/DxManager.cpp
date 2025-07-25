@@ -550,9 +550,8 @@ void DxManager::DrawPolygonAll(){
 
     /*----------------------ポストエフェクトを行う-------------------*/
 
-    // ポストエフェクト用に状態を遷移
-    //PostEffect::GetInstance()->CopyOffScreen();
-    //PostEffect::GetInstance()->StartTransition();
+    // ポストエフェクト用のパラメーターを更新
+    PostEffect::Update();
 
     // 有効なポストエフェクトを適用
     PostEffect::GetInstance()->PostProcess();
@@ -632,6 +631,7 @@ void DxManager::DrawPolygonAll(){
 void DxManager::DrawGUI(){
 #ifdef USE_SUB_WINDOW
 
+    PostEffect::instance_->Edit();
 
 #endif // USE_SUB_WINDOW
 }

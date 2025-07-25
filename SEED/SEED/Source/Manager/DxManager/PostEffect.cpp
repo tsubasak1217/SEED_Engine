@@ -5,9 +5,13 @@
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
+#include <SEED/Source/Basic/PostProcess/IPostProcess.h>
 
 // external
 #include <cmath>
+
+// postProcess
+#include <SEED/Source/Basic/PostProcess/GaussianFilter/GaussianFilter.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //                          static変数初期化
@@ -27,49 +31,32 @@ PostEffect::~PostEffect(){}
 ////////////////////////////////////////////////////////////////////////////////////////
 
 void PostEffect::Initialize(){
-    // パイプラインの作成
-    InitPSO();
-    // Resourceの作成
     CreateResources();
-    // リソースのマッピング
-    MapOnce();
-    // バインド情報の設定
-    SetBindInfo();
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// 更新処理
+//////////////////////////////////////////////////////////////////////////////////////////
+void PostEffect::Update(){
+    for(auto& postProcess : instance_->postProcesses_){
+        if(postProcess->GetIsActive()){
+            postProcess->Update();
+        }
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // ファイルからポストエフェクトに必要なパイプラインを読み込み作成
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 void PostEffect::InitPSO(){
-
-    // 被写界深度パイプライン
-    PSOManager::CreatePipelines("DoFPipeline.pip");
-    PSOManager::CreatePipelines("GrayScale.pip");
+    PSOManager::CreatePipelines("DoFPipeline.pip");// 被写界深度パイプライン
+    PSOManager::CreatePipelines("GrayScale.pip");// グレースケールパイプライン
+    PSOManager::CreatePipelines("Vignette.pip");// ビネットパイプライン
+    PSOManager::CreatePipelines("RGBShift.pip");// RGBシフトパイプライン
+    PSOManager::CreatePipelines("ScanLine.pip");// スキャンラインパイプライン
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-// 必要なリソースをマップする
-//////////////////////////////////////////////////////////////////////////////////////////////
-
-void PostEffect::MapOnce(){
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// リソースのバインド情報を設定する
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-void PostEffect::SetBindInfo(){
-
-    // DoFPipeline.pip
-    std::string name = "DoFPipeline.pip";
-    PSOManager::SetBindInfo(name, "outputDepthTexture", ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, "depth_1_UAV"));
-    PSOManager::SetBindInfo(name, "resolutionRate", &resolutionRate_);
-}
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +154,7 @@ void PostEffect::CreateResources(){
         // Viewの生成
         ViewManager::CreateView(VIEW_TYPE::SRV, postEffectResultResource.resource.Get(), &srvDesc, "postEffectResult");
     }
-    
+
 }
 
 
@@ -177,7 +164,12 @@ void PostEffect::CreateResources(){
 ////////////////////////////////////////////////////////////////////////////////////////
 
 void PostEffect::Release(){
+
     // リソースの解放
+    for(auto& postProcess : postProcesses_){
+        postProcess->Release();
+    }
+
     for(int i = 0; i < 2; i++){
         if(postEffectTextureResource[i].resource){
             postEffectTextureResource[i].resource->Release();
@@ -194,7 +186,7 @@ void PostEffect::Release(){
 ////////////////////////////////////////////////////////////////////////////////////////
 // ポストエフェクトのディスパッチ
 ////////////////////////////////////////////////////////////////////////////////////////
-void PostEffect::Dispatch(std::string pipelineName,int32_t gridX,int32_t gridY){
+void PostEffect::Dispatch(std::string pipelineName, int32_t gridX, int32_t gridY){
     // ポストエフェクトの出力テクスチャをバインド
     std::string resourceName = currentBufferIndex_ == 0 ? "postEffect_1_UAV" : "postEffect_0_UAV";
     PSOManager::SetBindInfo(pipelineName, "outputTexture", ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, resourceName));
@@ -208,9 +200,6 @@ void PostEffect::Dispatch(std::string pipelineName,int32_t gridX,int32_t gridY){
     auto& commandList = DxManager::GetInstance()->commandList;
     commandList->SetComputeRootSignature(pso->rootSignature.get()->rootSignature.Get());
     commandList->SetPipelineState(pso->pipeline.get()->pipeline_.Get());
-
-    // 解像度を更新
-    resolutionRate_ = DxManager::GetInstance()->resolutionRate_;
 
     // リソースのバインド
     pso->rootSignature->BindAll(commandList.Get(), true);
@@ -274,53 +263,21 @@ PostEffect* PostEffect::GetInstance(){
 ////////////////////////////////////////////////////////////////////////////////////////
 void PostEffect::PostProcess(){
 
-#ifdef _DEBUG
-    ImFunc::CustomBegin("ポストエフェクト", MoveOnly_TitleBar);
-    ImFunc::BitMask("有効ポストエフェクト", postEffectBit_, {"グレースケール", "被写界深度"});
-    ImGui::End();
-#endif // _DEBUG
-
     // ポストエフェクトの開始
     CopyOffScreen();
     StartTransition();
 
-    // グレースケール処理
-    if((int)postEffectBit_ & (int)PostEffectBit::Grayscale){
-        Grayscale();
-    }
-
-    // 被写界深度処理
-    if((int)postEffectBit_ & (int)PostEffectBit::DoF){
-        DoF();
+    // 有効なポストエフェクトを適用
+    for(auto& postProcess : postProcesses_){
+        if(postProcess->GetIsActive()){
+            postProcess->Apply();
+        }
     }
 
     // ポストエフェクトの終了
     EndTransition();
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-// グレースケール
-////////////////////////////////////////////////////////////////////////////////////////
-
-
-void PostEffect::Grayscale(){
-    // ディスパッチ
-    Dispatch("GrayScale.pip");
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-// 被写界深度の処理
-////////////////////////////////////////////////////////////////////////////////////////
-
-void PostEffect::DoF(){
-
-    // メインカメラに応じて変わる情報をバインド
-    std::string resourceName = DxManager::instance_->depthStencilNames[SEED::GetMainCameraName()];
-    PSOManager::SetBindInfo("DoFPipeline.pip", "inputDepthTexture", ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV,resourceName));
-
-    // ディスパッチ
-    Dispatch("DoFPipeline.pip", 16, 16);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // ポストエフェクト開始時の遷移
@@ -366,3 +323,44 @@ void PostEffect::EndTransition(){
     }
 }
 
+
+void PostEffect::Edit(){
+#ifdef _DEBUG
+    ImFunc::CustomBegin("ポストエフェクト", MoveOnly_TitleBar);
+    {
+        // 新しいポストエフェクトの追加
+        if(ImGui::CollapsingHeader("新しいポストエフェクトの追加")){
+            ImGui::Indent();
+            {
+                //if(ImGui::Button("グレースケール")){
+                //    postProcesses_.emplace_back(std::make_unique<GrayScale>());
+                //}
+                if(ImGui::Button("ガウスぼかし")){
+                    postProcesses_.emplace_back(std::make_unique<GaussianFilter>());
+                    postProcesses_.back()->Initialize();
+                }
+                //if(ImGui::Button("被写界深度")){
+                //    postProcesses_.emplace_back(std::make_unique<DoF>());
+                //}
+                //if(ImGui::Button("ビネット")){
+                //    postProcesses_.emplace_back(std::make_unique<Vignette>());
+                //}
+                //if(ImGui::Button("RGBシフト")){
+                //    postProcesses_.emplace_back(std::make_unique<RGBShift>());
+                //}
+                //if(ImGui::Button("スキャンライン")){
+                //    postProcesses_.emplace_back(std::make_unique<ScanLine>());
+                //}
+
+
+            }ImGui::Unindent();
+        }
+
+
+        for(auto& postProcess : postProcesses_){
+            postProcess->Edit();
+        }
+
+    }ImGui::End();
+#endif // _DEBUG
+}

@@ -4,6 +4,7 @@
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <memory>
 #include <list>
+#include <SEED/Lib/Structs/TextBox.h>
 
 class GameState_Strolling : public State_Base{
 public:
@@ -23,6 +24,6 @@ public:
 
 private:
     std::list<GameObject*> gameObjects_; // ゲームオブジェクトのリスト
-    
+    TextBox2D text_;
 
 };

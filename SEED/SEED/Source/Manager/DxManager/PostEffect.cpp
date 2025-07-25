@@ -13,6 +13,11 @@
 // postProcess
 #include <SEED/Source/Basic/PostProcess/GaussianFilter/GaussianFilter.h>
 #include <SEED/Source/Basic/PostProcess/DoF/DoF.h>
+#include <SEED/Source/Basic/PostProcess/ScanLine/ScanLine.h>
+#include <SEED/Source/Basic/PostProcess/RGBShift/RGBShift.h>
+#include <SEED/Source/Basic/PostProcess/GrayScale/GrayScale.h>
+#include <SEED/Source/Basic/PostProcess/Vignette/Vignette.h>
+#include <SEED/Source/Basic/PostProcess/Fog/Fog.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //                          static変数初期化
@@ -259,9 +264,10 @@ void PostEffect::Edit(){
         if(ImGui::CollapsingHeader("新しいポストエフェクトの追加")){
             ImGui::Indent();
             {
-                //if(ImGui::Button("グレースケール")){
-                //    postProcesses_.emplace_back(std::make_unique<GrayScale>());
-                //}
+                if(ImGui::Button("グレースケール")){
+                    postProcesses_.emplace_back(std::make_unique<GrayScale>());
+                    postProcesses_.back()->Initialize();
+                }
                 if(ImGui::Button("ガウスぼかし")){
                     postProcesses_.emplace_back(std::make_unique<GaussianFilter>());
                     postProcesses_.back()->Initialize();
@@ -270,15 +276,22 @@ void PostEffect::Edit(){
                     postProcesses_.emplace_back(std::make_unique<DoF>());
                     postProcesses_.back()->Initialize();
                 }
-                //if(ImGui::Button("ビネット")){
-                //    postProcesses_.emplace_back(std::make_unique<Vignette>());
-                //}
-                //if(ImGui::Button("RGBシフト")){
-                //    postProcesses_.emplace_back(std::make_unique<RGBShift>());
-                //}
-                //if(ImGui::Button("スキャンライン")){
-                //    postProcesses_.emplace_back(std::make_unique<ScanLine>());
-                //}
+                if(ImGui::Button("ビネット")){
+                    postProcesses_.emplace_back(std::make_unique<Vignette>());
+                    postProcesses_.back()->Initialize();
+                }
+                if(ImGui::Button("RGBシフト")){
+                    postProcesses_.emplace_back(std::make_unique<RGBShift>());
+                    postProcesses_.back()->Initialize();
+                }
+                if(ImGui::Button("スキャンライン")){
+                    postProcesses_.emplace_back(std::make_unique<ScanLine>());
+                    postProcesses_.back()->Initialize();
+                }
+                if(ImGui::Button("フォグ")){
+                    postProcesses_.emplace_back(std::make_unique<Fog>());
+                    postProcesses_.back()->Initialize();
+                }
 
 
             }ImGui::Unindent();

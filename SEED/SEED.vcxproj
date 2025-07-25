@@ -154,8 +154,13 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
@@ -279,9 +284,15 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
@@ -423,6 +434,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.6</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.6</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Fog.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

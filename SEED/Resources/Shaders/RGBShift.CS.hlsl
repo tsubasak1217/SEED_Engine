@@ -1,5 +1,7 @@
+#include "Object3d.hlsli"
 Texture2D<float4> inputTexture : register(t0); // 入力画像
 RWTexture2D<float4> outputTexture : register(u0); // 出力画像
+ConstantBuffer<Int> gap : register(b0); // シフト量（画素単位）
 SamplerState gSampler : register(s0); // サンプラ
 
 [numthreads(16, 16, 1)]
@@ -11,7 +13,7 @@ void CSMain(uint3 DTid : SV_DispatchThreadID) {
     }
 
     // シフト量（画素単位）
-    int2 shift = int2(2, 0);
+    int2 shift = int2(gap.value, 0);
 
     // R, G, B 成分をそれぞれずらして取得
     float3 colorR = inputTexture.Load(int3(pixelCoord + shift, 0)).rgb;

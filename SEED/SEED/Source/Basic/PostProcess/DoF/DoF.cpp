@@ -48,14 +48,16 @@ void DoF::Release(){
 void DoF::Edit(){
 #ifdef _DEBUG
     static std::string label;
-    label = "GaussianFilter" + std::to_string(id_);
+    label = "DoF_" + std::to_string(id_);
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
         {
             IPostProcess::Edit();
-            SEED::GetMainCamera()->GetZFar();
-            ImGui::SliderFloat("焦点距離", &focusDistance_, SEED::GetMainCamera()->GetZNear(), SEED::GetMainCamera()->GetZFar(), "%.2f");
-            ImGui::SliderFloat("フォーカス範囲", &focusRange_, 0.0f, 1.0f, "%.2f");
+            label = "焦点距離##" + std::to_string(id_);
+            ImGui::SliderFloat(label.c_str(), &focusDistance_, SEED::GetMainCamera()->GetZNear(), SEED::GetMainCamera()->GetZFar(), "%.2f");
+            
+            label = "フォーカス範囲##" + std::to_string(id_);
+            ImGui::SliderFloat(label.c_str(), &focusRange_, 0.0f, 1.0f, "%.2f");
         }
         ImGui::Unindent();
     }

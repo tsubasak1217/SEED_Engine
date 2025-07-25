@@ -77,12 +77,13 @@ void GaussianFilter::Release(){
 void GaussianFilter::Edit(){
 #ifdef _DEBUG
     static std::string label;
-    label = "GaussianFilter" + std::to_string(id_);
+    label = "GaussianFilter_" + std::to_string(id_);
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
         {
             IPostProcess::Edit();
-            ImGui::SliderInt("ブラー半径", &blurParamsBuffer_.data->blurRadius, 1, 10);
+            label = "ブラー半径##" + std::to_string(id_);
+            ImGui::SliderInt(label.c_str(), &blurParamsBuffer_.data->blurRadius, 1, 10);
         }
         ImGui::Unindent();
     }

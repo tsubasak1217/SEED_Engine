@@ -119,6 +119,11 @@
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -288,6 +293,12 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />
@@ -302,6 +313,7 @@
     <FxCompile Include="Resources\Shaders\ScanLine.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Fog.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

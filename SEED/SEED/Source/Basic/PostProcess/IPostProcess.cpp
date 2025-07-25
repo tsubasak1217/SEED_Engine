@@ -61,7 +61,10 @@ std::string IPostProcess::GetCurDepthBufferName(){
 void IPostProcess::Edit(){
 #ifdef _DEBUG
 
-    ImGui::Checkbox("有効", &isActive_);
+    static std::string label;
+    
+    label = "有効##" + std::to_string(id_);
+    ImGui::Checkbox(label.c_str(), &isActive_);
 
 #endif // _DEBUG
 }

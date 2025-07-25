@@ -20,6 +20,11 @@ public:
     virtual void Apply() = 0;
     // ポストプロセスのリソースを解放
     virtual void Release() = 0;
+    // リソースの開始遷移
+    virtual void StartTransition() = 0;
+    // リソースの終了遷移
+    virtual void EndTransition() = 0;
+
 
 public:
     bool GetIsActive() const {
@@ -36,6 +41,7 @@ protected:
     // 代わりにバッファの名前を取得する関数
     std::string GetCurUAVBufferName();
     std::string GetCurSRVBufferName();
+    std::string GetCurDepthBufferName();
 
 protected:
     static inline int nextId_ = 0;

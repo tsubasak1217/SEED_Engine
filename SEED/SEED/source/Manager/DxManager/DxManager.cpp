@@ -599,8 +599,6 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
 
 
-    //PostEffect::GetInstance()->EndTransition();
-
     // オフスクリーンのリソースを参照するために状態を遷移させる
     for(const auto& [cameraName, camera] : cameras_){
         offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

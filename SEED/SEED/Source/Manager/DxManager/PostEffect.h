@@ -38,7 +38,6 @@ private:
     void CreateResources();
     void Initialize();
     void Release();
-    void Dispatch(std::string pipelineName, int32_t gridX = 16, int32_t gridY = 16);
     void CopyOffScreen();
 
 private:// PostEffectの処理
@@ -71,7 +70,6 @@ private:
 
     // PostEffectに必要なリソース
     DxResource postEffectTextureResource[2];// ポストエフェクト画像
-    DxResource depthTextureResource;// 深度情報の白黒画像
     DxResource postEffectResultResource; // ポストエフェクトの結果を格納するリソース
 
     // 

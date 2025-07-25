@@ -51,6 +51,11 @@ std::string IPostProcess::GetCurSRVBufferName(){
     return PostEffect::GetCurSRVBufferName();
 }
 
+// 深度バッファ名取得関数
+std::string IPostProcess::GetCurDepthBufferName(){
+    return DxManager::instance_->depthStencilNames[SEED::GetMainCameraName()];
+}
+
 
 // ポストプロセスの編集用関数
 void IPostProcess::Edit(){

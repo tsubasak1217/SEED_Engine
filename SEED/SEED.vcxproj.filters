@@ -118,6 +118,7 @@
     <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\DoF.CS.hlsl" />

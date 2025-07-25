@@ -1,11 +1,10 @@
 #pragma once
 #include "../IPostProcess.h"
-#include "BlurParam.h"
 
-class GaussianFilter : public IPostProcess{
+class DoF : public IPostProcess{
 public:
-    GaussianFilter();
-    ~GaussianFilter() override = default;
+    DoF();
+    ~DoF() override = default;
 
 public:
     void Initialize() override;
@@ -16,7 +15,10 @@ public:
     void EndTransition() override{};
 
 private:
-    DxBuffer<BlurParams> blurParamsBuffer_; // ブラーのパラメータを格納するバッファ
+    float resolutionRate_ = 1.0f; // 解像度レート
+    float focusDistance_ = 0.1f;
+    float focusDepth_ = 0.01f; // フォーカス深度
+    float focusRange_ = 0.01f; // フォーカス範囲
 
 public:
     void Edit() override;

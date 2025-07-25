@@ -153,6 +153,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
@@ -277,6 +278,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />

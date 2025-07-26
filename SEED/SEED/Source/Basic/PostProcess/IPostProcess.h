@@ -5,6 +5,7 @@
 #include <SEED/Source/Manager/DxManager/DxBuffer.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <Environment/Environment.h>
 
 class IPostProcess{
 public:
@@ -36,7 +37,11 @@ protected:
     ID3D12Device10* GetDevice() {
         return DxManager::GetInstance()->device.Get();
     }
-    void Dispatch(const std::string& pipelineName, int32_t gridX = 16, int32_t gridY = 16);
+    void Dispatch(
+        const std::string& pipelineName, int32_t gridX = 16, int32_t gridY = 16,
+        int32_t texWidth = kWindowSizeX, int32_t texHeight = kWindowSizeY,
+        bool isSwapBuffer = true
+    );
 
     // 代わりにバッファの名前を取得する関数
     std::string GetCurUAVBufferName();

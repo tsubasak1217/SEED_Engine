@@ -301,7 +301,7 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="resources\shaders\DoF.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\Object3d.MS.hlsl" />
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
@@ -314,6 +314,7 @@
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\Fog.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -5,13 +5,15 @@ RWTexture2D<float4> outputTexture : register(u0); // 出力画像
 ConstantBuffer<Float> time : register(b0); // 時間（秒）
 ConstantBuffer<Float> stripeFrequency : register(b1); // 縞の頻度
 ConstantBuffer<Float> scanLineStrength : register(b2); // 縞の頻度
+ConstantBuffer<Int> textureWidth : register(b3); // テクスチャの幅
+ConstantBuffer<Int> textureHeight : register(b4); // テクスチャの高さ
 SamplerState gSampler : register(s0); // 使用しないけど必須なら残す
 
 [numthreads(16, 16, 1)]
 void CSMain(uint3 DTid : SV_DispatchThreadID) {
     uint2 pixelCoord = DTid.xy;
 
-    if (pixelCoord.x >= 1280 || pixelCoord.y >= 720) {
+    if (pixelCoord.x >= textureWidth.value || pixelCoord.y >= textureHeight.value) {
         return;
     }
 

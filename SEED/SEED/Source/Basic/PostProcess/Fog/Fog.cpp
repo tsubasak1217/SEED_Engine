@@ -41,6 +41,8 @@ void Fog::Apply(){
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, GetCurDepthBufferName()));
     PSOManager::SetBindInfo("Fog.pip", "FogParams",
         fogParamsBuffer_.bufferResource.resource->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("Fog.pip", "textureWidth", &kWindowSizeX);
+    PSOManager::SetBindInfo("Fog.pip", "textureHeight", &kWindowSizeY);
     // X方向のブラー適用
     Dispatch("Fog.pip", 16, 16);
 

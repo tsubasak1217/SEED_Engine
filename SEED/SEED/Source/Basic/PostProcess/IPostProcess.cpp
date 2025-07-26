@@ -16,7 +16,12 @@ IPostProcess::IPostProcess(){
 }
 
 // 共通のdispatch関数
-void IPostProcess::Dispatch(const std::string& pipelineName, int32_t gridX, int32_t gridY){
+void IPostProcess::Dispatch(
+    const std::string& pipelineName, 
+    int32_t gridX, int32_t gridY, 
+    int32_t texWidth, int32_t texHeight,
+    bool isSwapBuffer
+){
 
     // PSOの切り替え
     auto* pso = PSOManager::GetPSO_Compute(pipelineName);
@@ -28,17 +33,19 @@ void IPostProcess::Dispatch(const std::string& pipelineName, int32_t gridX, int3
     pso->rootSignature->BindAll(commandList.Get(), true);
 
     // 画面をグリッドに分割して、縦横それぞれのGroup数を計算
-    UINT dispatchX = (SEED::GetInstance()->kClientWidth_ + (gridX - 1)) / gridX;
-    UINT dispatchY = (SEED::GetInstance()->kClientHeight_ + (gridY - 1)) / gridY;
+    UINT dispatchX = (texWidth + (gridX - 1)) / gridX;
+    UINT dispatchY = (texHeight + (gridY - 1)) / gridY;
 
     // 実行
     commandList->Dispatch(dispatchX, dispatchY, 1);
 
-    // バッファインデックスを更新
-    PostEffect::instance_->ChangeBufferIndex();
+    if(isSwapBuffer){
+        // バッファインデックスを更新
+        PostEffect::instance_->ChangeBufferIndex();
 
-    // リソースの状態を更新
-    PostEffect::instance_->StartTransition();
+        // リソースの状態を更新
+        PostEffect::instance_->StartTransition();
+    }
 }
 
 // 名前取得関数

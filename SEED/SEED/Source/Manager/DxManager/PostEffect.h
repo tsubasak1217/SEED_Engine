@@ -64,16 +64,13 @@ private:// PostEffectの処理
 
 
 private:
-    // ポストエフェクトに使用するパラメータなど
-    float resolutionRate_;
-    float time_ = 0.0f; // 時間の経過を記録する変数
 
     // PostEffectに必要なリソース
     DxResource postEffectTextureResource[2];// ポストエフェクト画像
     DxResource postEffectResultResource; // ポストエフェクトの結果を格納するリソース
 
-    // 
-    int currentBufferIndex_ = 0; // 現在のバッファインデックス
+    // 現在のバッファインデックス
+    int currentBufferIndex_ = 0;
 
     // ポストプロセスのリスト
     std::list<std::unique_ptr<IPostProcess>> postProcesses_;

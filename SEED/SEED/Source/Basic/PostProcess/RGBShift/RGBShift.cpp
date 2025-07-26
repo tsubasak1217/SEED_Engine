@@ -20,6 +20,8 @@ void RGBShift::Apply(){
     PSOManager::SetBindInfo("RGBShift.pip", "outputTexture",
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, GetCurUAVBufferName()));
     PSOManager::SetBindInfo("RGBShift.pip", "gap", &gap_);
+    PSOManager::SetBindInfo("RGBShift.pip", "textureWidth", &kWindowSizeX);
+    PSOManager::SetBindInfo("RGBShift.pip", "textureHeight", &kWindowSizeY);
 
     // ディスパッチ
     Dispatch("RGBShift.pip");

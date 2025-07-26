@@ -29,6 +29,8 @@ void ScanLine::Apply(){
     PSOManager::SetBindInfo("ScanLine.pip", "time", &time_);
     PSOManager::SetBindInfo("ScanLine.pip", "stripeFrequency", &stripeFrequency_);
     PSOManager::SetBindInfo("ScanLine.pip", "scanLineStrength", &scanLineStrength_);
+    PSOManager::SetBindInfo("ScanLine.pip", "textureWidth", &kWindowSizeX);
+    PSOManager::SetBindInfo("ScanLine.pip", "textureHeight", &kWindowSizeY);
 
     // ディスパッチ
     Dispatch("ScanLine.pip");

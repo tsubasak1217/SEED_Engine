@@ -19,6 +19,8 @@ void GrayScale::Apply(){
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, GetCurSRVBufferName()));
     PSOManager::SetBindInfo("GrayScale.pip", "outputTexture",
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, GetCurUAVBufferName()));
+    PSOManager::SetBindInfo("GrayScale.pip", "textureWidth", &kWindowSizeX);
+    PSOManager::SetBindInfo("GrayScale.pip", "textureHeight", &kWindowSizeY);
 
     // ディスパッチ
     Dispatch("GrayScale.pip");

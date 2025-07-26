@@ -20,6 +20,8 @@ void Vignette::Apply(){
     PSOManager::SetBindInfo("Vignette.pip", "outputTexture",
         ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, GetCurUAVBufferName()));
     PSOManager::SetBindInfo("Vignette.pip", "vignetteStrength", &vignetteStrength_);
+    PSOManager::SetBindInfo("Vignette.pip", "textureWidth", &kWindowSizeX);
+    PSOManager::SetBindInfo("Vignette.pip", "textureHeight", &kWindowSizeY);
 
     // ディスパッチ
     Dispatch("Vignette.pip");

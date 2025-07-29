@@ -2,10 +2,10 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <Environment/Physics.h>
 
-class PhysicsComponent : public IComponent{
+class GravityComponent : public IComponent{
 public:
-    PhysicsComponent(GameObject* pOwner, const std::string& tagName = "");
-    ~PhysicsComponent() = default;
+    GravityComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~GravityComponent() = default;
     void Initialize()override;
     void BeginFrame() override;
     void Update() override;
@@ -30,7 +30,7 @@ public:
 private:
     /*----------- 物理 ----------*/
     bool isUseCostomGravity_ = false;
-    float customGravity_ = 9.8f;
+    float customGravity_ = Physics::kGravity;
     bool isDrop_ = false;
     float dropSpeed_ = 0.0f;
     Vector3 gravityDirection_ = Vector3(0.0f, -1.0f, 0.0f);

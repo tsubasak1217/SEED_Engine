@@ -202,7 +202,7 @@
                     "animationName": "running",
                     "animationSpeedRate": 1.0,
                     "blendMode": 3,
-                    "componentID": 5,
+                    "componentID": 4,
                     "componentTag": "ModelRender_ID:5",
                     "componentType": "ModelRender",
                     "cullMode": 3,
@@ -235,6 +235,46 @@
                             "z": 0.0
                         }
                     }
+                },
+                {
+                    "backKeys": [
+                        31,
+                        208
+                    ],
+                    "backPadButtons": [
+                        4,
+                        128
+                    ],
+                    "componentID": 9,
+                    "componentTag": "Move_ID:9",
+                    "componentType": "Move",
+                    "frontKeys": [
+                        17,
+                        200
+                    ],
+                    "frontPadButtons": [
+                        1,
+                        128
+                    ],
+                    "isRotateByDirection": true,
+                    "isUseRotateX": false,
+                    "leftKeys": [
+                        30,
+                        203
+                    ],
+                    "leftPadButtons": [
+                        8,
+                        128
+                    ],
+                    "rightKeys": [
+                        32,
+                        205
+                    ],
+                    "rightPadButtons": [
+                        16,
+                        128
+                    ],
+                    "speed": 8.0
                 }
             ],
             "isParentRotate": true,
@@ -244,10 +284,10 @@
             "objectType": 0,
             "transform": {
                 "rotate": {
-                    "w": 1.0,
+                    "w": -4.371138828673793e-08,
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 1.0,
+                    "z": -0.0
                 },
                 "scale": {
                     "x": 1.0,
@@ -257,7 +297,7 @@
                 "translate": {
                     "x": 5.823243141174316,
                     "y": -0.46462440490722656,
-                    "z": 77.505126953125
+                    "z": 75.61636352539063
                 }
             }
         },
@@ -267,7 +307,7 @@
                     "animationName": "",
                     "animationSpeedRate": 0.17000000178813934,
                     "blendMode": 3,
-                    "componentID": 6,
+                    "componentID": 5,
                     "componentTag": "ModelRender_ID:2",
                     "componentType": "ModelRender",
                     "cullMode": 3,
@@ -360,7 +400,7 @@
                     "animationName": "",
                     "animationSpeedRate": 1.3600000143051147,
                     "blendMode": 3,
-                    "componentID": 8,
+                    "componentID": 7,
                     "componentTag": "ModelRender_ID:2",
                     "componentType": "ModelRender",
                     "cullMode": 3,

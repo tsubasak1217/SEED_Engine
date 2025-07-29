@@ -55,12 +55,15 @@ public:// キーの状態を返す関数
     /*------------- キーボード ------------*/
     static bool IsPressKey(uint8_t key);
     static bool IsPressKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsPressKey(const std::vector<uint8_t>& keys);
     static bool IsPressAnyKey();
     static bool IsTriggerKey(uint8_t key);
     static bool IsTriggerKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsTriggerKey(const std::vector<uint8_t>& keys);
     static bool IsTriggerAnyKey();
     static bool IsReleaseKey(uint8_t key);
     static bool IsReleaseKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsReleaseKey(const std::vector<uint8_t>& keys);
     static bool IsReleaseAnyKey();
 
     /*-------------- マウス --------------*/

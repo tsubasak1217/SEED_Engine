@@ -35,7 +35,7 @@ public:// アクセッサ
     const Vector3& GetTranslation() const{ return transform_.translate; }
     void SetTranslation(const Vector3& translation){ transform_.translate = translation; }
     const Quaternion& GetRotation() const{ return transform_.rotate; }
-    const Vector3& GetEulerRotation() const{ return Quaternion::ToEuler(transform_.rotate); }
+    Vector3 GetEulerRotation() const{ return Quaternion::ToEuler(transform_.rotate); }
     void SetRotation(const Vector3& rotation){ transform_.rotate = Quaternion::ToQuaternion(rotation); }
     void SetRotation(const Quaternion& rotation){ transform_.rotate = rotation; }
     const Vector3& GetScale() const{ return transform_.scale; }

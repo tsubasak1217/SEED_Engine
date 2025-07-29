@@ -5,4 +5,5 @@
 #include <SEED/Source/Basic/Components/CollisionComponent.h>
 #include <SEED/Source/Basic/Components/TextComponent.h>
 #include <SEED/Source/Basic/Components/SpotLightComponent.h>
-#include <SEED/Source/Basic/Components/PhysicsComponent.h>
+#include <SEED/Source/Basic/Components/GravityComponent.h>
+#include <SEED/Source/Basic/Components/MoveComponent.h>

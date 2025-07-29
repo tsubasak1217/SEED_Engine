@@ -214,6 +214,24 @@ bool GameObject::IsDescendant(GameObject* obj) const{
     return false;
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// Rotateの設定
+//////////////////////////////////////////////////////////////////////////
+void GameObject::SetWorldRotate(const Quaternion& rotate){
+    // 親の回転を考慮してワールド軸基準で回転を設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.rotate = rotate * Quaternion::MatrixToQuaternion(invParentMat);
+    } else{
+        localTransform_.rotate = rotate;
+    }
+}
+
+void GameObject::SetLocalRotate(const Quaternion& rotate){
+    localTransform_.rotate = rotate;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
 //////////////////////////////////////////////////////////////////////////
@@ -347,6 +365,13 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
             auto* spotLightComponent = AddComponent<SpotLightComponent>();
             spotLightComponent->LoadFromJson(componentJson);
 
+        } else if(componentType == "Gravity"){
+            auto* gravityComponent = AddComponent<GravityComponent>();
+            gravityComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "Move"){
+            auto* moveComponent = AddComponent<MoveComponent>();
+            moveComponent->LoadFromJson(componentJson);
         }
     }
 }
@@ -447,6 +472,7 @@ void GameObject::EditGUI(){
     }
 
     if(ImGui::BeginPopup("AddComponentPopup")){
+        ImGui::Indent();
         // コンポーネントの追加
         if(ImGui::Button("ModelRenderComponent / モデル描画")){
             AddComponent<ModelRenderComponent>();
@@ -464,6 +490,16 @@ void GameObject::EditGUI(){
             AddComponent<SpotLightComponent>();
             ImGui::CloseCurrentPopup();
         }
+        if(ImGui::Button("GravityComponent / 重力")){
+            AddComponent<GravityComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("MoveComponent / 移動")){
+            AddComponent<MoveComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::Unindent();
         ImGui::EndPopup();
     }
 

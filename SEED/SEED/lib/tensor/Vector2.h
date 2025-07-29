@@ -124,6 +124,7 @@ struct Vector2 final {
 
 
     Vector3 ToVec3() const;
+    void Normalize();
 };
 
 // Vector2をJSONに変換する関数

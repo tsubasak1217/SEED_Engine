@@ -127,6 +127,8 @@ public:
     const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
     Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
     Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
+    void SetWorldRotate(const Quaternion& rotate);
+    void SetLocalRotate(const Quaternion& rotate);
     /*------ translate -------*/
     Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }

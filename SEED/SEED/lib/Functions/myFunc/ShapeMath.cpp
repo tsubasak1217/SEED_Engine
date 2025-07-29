@@ -1,5 +1,6 @@
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <Environment/Environment.h>
 
 //---------------------- 正三角形 -------------------------
 
@@ -62,6 +63,13 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
         { 0.0f,0.0f },
         color
     );
+}
+
+Quad2D MakeBackgroundQuad2D(int32_t layer,const Vector4& color){
+    Quad2D quad = MakeQuad2D(kWindowSize,color);
+    quad.drawLocation = DrawLocation::Back;
+    quad.layer = layer;
+    return quad;
 }
 
 Quad MakeQuad(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){

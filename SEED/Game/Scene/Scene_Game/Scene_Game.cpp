@@ -33,13 +33,16 @@ Scene_Game::~Scene_Game(){
 
 void Scene_Game::Initialize(){
 
+    // パーティクルの初期化
+    EffectSystem::DeleteAll();
+
     ////////////////////////////////////////////////////
     // State初期化
     ////////////////////////////////////////////////////
 
     // Playステートに初期化
-    ChangeState(new GameState_Strolling(this));
-    //ChangeState(new GameState_Select(this));
+    //ChangeState(new GameState_Strolling(this));
+    ChangeState(new GameState_Select(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -80,8 +83,6 @@ void Scene_Game::Initialize(){
     //  関連付けや初期値の設定
     /////////////////////////////////////////////////
 
-    // パーティクルの初期化
-    EffectSystem::DeleteAll();
 }
 
 void Scene_Game::Finalize() {

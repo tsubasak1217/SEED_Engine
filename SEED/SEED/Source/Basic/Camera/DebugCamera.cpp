@@ -66,7 +66,7 @@ void DebugCamera::MoveByKeyboard(){
     float additionalSpeedRate = 1.0f + (shiftPressedTime / doubleSpeedTime);
     if(Input::IsPressKey(DIK_LSHIFT)){
         shiftPressedTime += ClockManager::DeltaTime();
-    } else{
+    } else {
         shiftPressedTime = 0.0f;
     }
 
@@ -94,6 +94,11 @@ void DebugCamera::MoveByKeyboard(){
 
     // 移動量の計算
     Vector3 velocity = (moveDirection_ * moveSpeed_ * additionalSpeedRate) * RotateMatrix(localEulerRotate);
+
+    // lctrlで減速
+    if(Input::IsPressKey(DIK_LCONTROL)){
+        velocity *= 0.05f;
+    }
 
     // トランスフォームの更新
     transform_.rotate = Quaternion::ToQuaternion(localEulerRotate);

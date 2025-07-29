@@ -45,6 +45,8 @@ void GameState_Select::BeginFrame(){
 }
 
 void GameState_Select::EndFrame(){
+    // ゲームマネージャーのフレーム終了処理
+    songSelector_->EndFrame();
 }
 
 void GameState_Select::HandOverColliders(){

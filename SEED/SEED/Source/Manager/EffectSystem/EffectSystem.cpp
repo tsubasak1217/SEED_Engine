@@ -284,6 +284,7 @@ void EffectSystem::DeleteAll(){
     instance_->particles_.clear();
     instance_->emitterGroups_.clear();
     instance_->onceEffects_.clear();
+    instance_->endlessEffects_.clear();
     instance_->effectData_.clear();
     instance_->accelerationFields_.clear();
 }

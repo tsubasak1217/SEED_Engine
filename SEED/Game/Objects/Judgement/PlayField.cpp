@@ -175,6 +175,7 @@ void PlayField::Initialize(){
     CalcEffectEmitPoints();
 
     // エフェクトの初期化
+    EffectSystem::DeleteAll();// 既存のエフェクトを削除
     EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
 
     // 背景の初期化

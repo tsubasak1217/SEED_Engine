@@ -106,7 +106,7 @@ private:
 
 private:
     std::unordered_map<std::string, SoundData>audios_;// データそのもの。複数鳴らしても1つでOK
-    std::unordered_map<uint32_t, IXAudio2SourceVoice*>sourceVoices_;// 同じ音源でも、鳴らす数だけ必要
+    std::unordered_map<AudioHandle, IXAudio2SourceVoice*>sourceVoices_;// 同じ音源でも、鳴らす数だけ必要
     std::unordered_map<AudioHandle, bool>isPlaying_;
     std::unordered_map<AudioHandle, float>volumeMap_;
     std::unordered_map < AudioHandle, bool> isAlreadyPaused_;

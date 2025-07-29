@@ -6,6 +6,8 @@
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Lib/Shapes/Quad.h>
+#include <SEED/Source/Basic/Camera/BaseCamera.h>
 
 // ソート方法
 enum class SortMode{
@@ -52,6 +54,7 @@ public:
     void Initialize();
     void Update();
     void Draw();
+    void EndFrame();
 
 public:
     void Sort(); // ソート
@@ -67,6 +70,8 @@ private:
     void CreateDifficultyList(); // 難易度のリストを作成
     void UpdateDifficultyList(); // 難易度のリストを更新
     void StartPlay(); // プレイ開始
+    void CameraControl();
+    void UpdateJacket(); // ジャケットの更新
 
     void Edit();
     nlohmann::json ToJson();
@@ -74,6 +79,7 @@ private:
 
 private:
     SelectMode selectMode_;// 楽曲選択中かどうか
+    bool changeSceneOrder_ = false;
     std::list<std::unique_ptr<SongInfo>> songList; // 楽曲情報のリスト
     std::list<SongGroup> songGroups; // 楽曲グループのリスト
     int32_t currentGroupIndex = 0; // 現在のグループインデックス
@@ -121,5 +127,10 @@ private:
     // 音声
     AudioHandle songHandle_;
 
-    
+    // 3Dのもの
+    Transform cameraControlTransforms_[4]; // カメラ制御用のトランスフォーム
+    Transform preCameraControlTransform_;
+    BaseCamera* camera_ = nullptr; // カメラ
+    Quad jacket3D_;
+
 };

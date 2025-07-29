@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 
 struct Timer{
     Timer() = default;
@@ -9,6 +10,7 @@ struct Timer{
 public:
     void Initialize(float _duration);
     float GetProgress() const;
+    float GetEase(Easing::Type easeType);
     float GetPrevProgress() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
@@ -42,6 +44,12 @@ inline void Timer::Initialize(float _duration) {
 inline float Timer::GetProgress() const {
     return currentTime / duration;
 }
+
+// 進捗度をイージングして返す
+inline float Timer::GetEase(Easing::Type easeType) {
+    return Easing::Ease[easeType](GetProgress());
+}
+
 
 inline float Timer::GetPrevProgress() const {
     return prevTime / duration;

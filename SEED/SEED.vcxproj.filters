@@ -124,6 +124,7 @@
     <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
+    <ClCompile Include="SEED\Source\Manager\Video\VideoDecoder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -299,6 +300,7 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
+    <ClInclude Include="SEED\Source\Manager\Video\VideoDecoder.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

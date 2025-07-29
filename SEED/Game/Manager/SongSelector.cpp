@@ -77,6 +77,35 @@ void SongSelector::Initialize(){
 
     // 可視曲の初期化
     UpdateVisibleItems();
+
+    // ジャケット矩形の初期化
+    jacket3D_ = MakeEqualQuad(3.0f);
+    jacket3D_.cullMode = D3D12_CULL_MODE_NONE; // カリングなし
+    jacket3D_.lightingType = LIGHTINGTYPE_NONE; // ライティングなし
+    jacket3D_.GH = TextureManager::LoadTexture(
+        "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
+    );
+
+    // カメラの取得
+    SEED::RemoveCamera("gameCamera");
+    SEED::SetMainCamera("default");
+    camera_ = SEED::GetMainCamera();
+
+    // パーティクルを出す
+    EffectSystem::DeleteAll();// 既存のエフェクトを削除
+    EffectSystem::AddEffectEndless("selectScene.json", { 0.0f,0.0f,0.0f }, nullptr);
+}
+
+
+/////////////////////////////////////////////////////////////////////
+// フレーム終了時処理
+/////////////////////////////////////////////////////////////////////
+void SongSelector::EndFrame(){
+    // 曲の選択が完了したら、曲の詳細を非表示にする
+    if(changeSceneOrder_){
+        auto* scene = GameSystem::GetScene();
+        GameSystem::GetScene()->ChangeState(new GameState_Play(scene, currentSong.first->noteDatas[(int)currentDifficulty]));
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -95,12 +124,19 @@ void SongSelector::Update(){
             // 曲の詳細画面を表示
             DisplaySongDetail();
         }
+
         // 制御点の位置を編集
         Edit();
 
     } else{
         StartPlay(); // ゲームのプレイを開始
     }
+
+    // カメラの制御
+    CameraControl();
+
+    // ジャケットの更新
+    UpdateJacket();
 }
 
 
@@ -168,6 +204,10 @@ void SongSelector::Draw(){
             }
         }
     }
+
+
+    // ジャケットの描画
+    SEED::DrawQuad(jacket3D_);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -620,6 +660,11 @@ void SongSelector::SelectItems(){
                 // 再生する曲のハンドルを更新
                 AudioManager::EndAudio(songHandle_); // 曲を停止
                 songHandle_ = AudioManager::PlayAudio(currentSong.first->audioFilePath, true);
+
+                // ジャケットの更新
+                jacket3D_.GH = TextureManager::LoadTexture(
+                    "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
+                );
             }
 
         } else{
@@ -906,8 +951,133 @@ void SongSelector::StartPlay(){
 
     // シーンのステートを遷移
     if(t == 1.0f){
-        auto* scene = GameSystem::GetScene();
-        GameSystem::GetScene()->ChangeState(new GameState_Play(scene,currentSong.first->noteDatas[(int)currentDifficulty]));
+        changeSceneOrder_ = true;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// カメラの制御
+/////////////////////////////////////////////////////////////////////////////////////
+void SongSelector::CameraControl(){
+
+    //
+    static int controlIndex = 0;
+    static int preControlIndex = 0;
+    static float kCameraControlTime = 0.8f; // カメラ制御の時間
+    static Timer cameraTimer = Timer(kCameraControlTime);
+
+    if(!isStartPlay){
+        if(selectMode_ == SelectMode::Song){
+
+            // 曲選択画面---------------------------------------------
+            if(!isDecideSong){
+
+                controlIndex = 1;
+
+                if(controlIndex != preControlIndex){// 入った瞬間
+                    preCameraControlTransform_ = camera_->GetTransform();
+                    cameraTimer = Timer(kCameraControlTime);
+                }
+
+                // カメラ補間
+                camera_->SetTransform(
+                    MyFunc::Interpolate(
+                        preCameraControlTransform_,
+                        cameraControlTransforms_[controlIndex],
+                        cameraTimer.GetEase(Easing::InOutExpo)
+                    )
+                );
+
+
+            } else{// 選曲詳細画面-------------------------------------
+
+                controlIndex = 2;
+
+                if(controlIndex != preControlIndex){// 出た瞬間
+                    preCameraControlTransform_ = camera_->GetTransform();
+                    cameraTimer = Timer(kCameraControlTime);
+                }
+
+                // カメラ補間
+                camera_->SetTransform(
+                    MyFunc::Interpolate(
+                        preCameraControlTransform_,
+                        cameraControlTransforms_[controlIndex],
+                        cameraTimer.GetEase(Easing::InOutExpo)
+                    )
+                );
+            }
+
+
+        } else{// グループ選択画面---------------------------------------
+
+            controlIndex = 0;
+
+            if(controlIndex != preControlIndex){// 入った瞬間
+                preCameraControlTransform_ = camera_->GetTransform();
+                cameraTimer = Timer(kCameraControlTime);
+            }
+
+
+            // カメラ補間
+            camera_->SetTransform(
+                MyFunc::Interpolate(
+                    preCameraControlTransform_,
+                    cameraControlTransforms_[controlIndex],
+                    cameraTimer.GetEase(Easing::InOutExpo)
+                )
+            );
+        }
+    } else{
+
+        controlIndex = 3; // プレイ開始時のカメラ制御
+
+        if(controlIndex != preControlIndex){// 入った瞬間
+            preCameraControlTransform_ = camera_->GetTransform();
+            cameraTimer = Timer(1.0f);
+        }
+
+        //カメラ補間
+        camera_->SetTransform(
+            MyFunc::Interpolate(
+                preCameraControlTransform_,
+                cameraControlTransforms_[controlIndex],
+                cameraTimer.GetEase(Easing::InOutSine)
+            )
+        );
+    }
+
+    cameraTimer.Update();
+    preControlIndex = controlIndex; // 前回のインデックスを保存
+
+
+#ifdef _DEBUG
+
+    for(int i = 0; i < 4; i++){
+        // guizmoに登録
+        ImGuiManager::RegisterGuizmoItem(&cameraControlTransforms_[i]);
+    }
+
+#endif // _DEBUG
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// ジャケットの更新
+/////////////////////////////////////////////////////////////////////////////////////
+void SongSelector::UpdateJacket(){
+
+    if(currentSong.first){
+
+        // ジャケットを回転
+        float rotateSpeed = 3.14f * 0.25f;
+        jacket3D_.rotate.y += rotateSpeed * ClockManager::DeltaTime();
+
+        // 上下に揺らす
+        float swingHeight = 0.1f; // 揺らす高さ
+        float t = std::sin(ClockManager::TotalTime() * 2.0f) * swingHeight; // サイン波で上下に揺らす
+        jacket3D_.translate.y = t; // ジャケットのY座標を更新
+
     }
 }
 
@@ -992,6 +1162,16 @@ void SongSelector::Edit(){
         ImGui::Text("現在の難易度: %d", int(currentDifficulty));
         ImGui::Text("楽曲番号: %d", currentSongIndex + 1);
         ImGui::Text("slideOutTimer: %.2f", slideOutTimer);
+
+        //カメラ制御点の編集
+        ImGui::Separator();
+        static int currentEdittingCameraControlIndex = 0;
+        ImFunc::Combo("カメラ制御点", currentEdittingCameraControlIndex, { "グループ選択時","曲選択時","難易度選択時","決定時" });
+        if(ImGui::Button("カメラのトランスフォームを保存")){
+            auto* debugCamera = SEED::GetCamera("debug");
+            cameraControlTransforms_[currentEdittingCameraControlIndex] = debugCamera->GetTransform();
+        }
+
         ImGui::End();
     }
 
@@ -1015,6 +1195,11 @@ nlohmann::json SongSelector::ToJson(){
     // 難易度の位置を保存
     for(int i = 0; i < difficultyAimTransforms.size(); i++){
         json["difficultyTransforms"].push_back(difficultyAimTransforms[i]);
+    }
+
+    // カメラのトランスフォーム
+    for(int i = 0; i < 4; i++){
+        json["cameraControlTransforms"].push_back(cameraControlTransforms_[i]);
     }
 
     return json;
@@ -1045,6 +1230,17 @@ void SongSelector::FromJson(const nlohmann::json& json){
                 difficultyAimTransforms[i] = json["difficultyTransforms"][i];
             } else{
                 difficultyAimTransforms[i] = Transform2D(); // デフォルト値を設定
+            }
+        }
+    }
+
+    // カメラのトランスフォームを復元
+    if(json.contains("cameraControlTransforms")){
+        for(int i = 0; i < 4; i++){
+            if(i < json["cameraControlTransforms"].size()){
+                cameraControlTransforms_[i] = json["cameraControlTransforms"][i];
+            } else{
+                cameraControlTransforms_[i] = Transform(); // デフォルト値を設定
             }
         }
     }

@@ -6,7 +6,7 @@
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Parallel.json",
-    "maxCombo": 126,
+    "maxCombo": 130,
     "notes": [
         {
             "direction": 0,
@@ -835,6 +835,38 @@
             "layer": 0,
             "noteType": "wheel",
             "time": 37.966102600097656
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 39.32203674316406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1280,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 39.66101837158203
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 40.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 40.33898162841797
         }
     ],
     "notesDesigner": "tbs",

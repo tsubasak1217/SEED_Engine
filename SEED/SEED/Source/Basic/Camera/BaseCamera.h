@@ -30,6 +30,8 @@ private:
 
 public:// アクセッサ
 
+    const Transform& GetTransform() const{ return transform_; }
+    void SetTransform(const Transform& transform){ transform_ = transform; }
     const Vector3& GetTranslation() const{ return transform_.translate; }
     void SetTranslation(const Vector3& translation){ transform_.translate = translation; }
     const Quaternion& GetRotation() const{ return transform_.rotate; }

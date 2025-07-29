@@ -227,6 +227,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\Video\VideoDecoder.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\BaseCamera.cpp" />
@@ -402,6 +403,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
+    <ClInclude Include="SEED\Source\Manager\Video\VideoDecoder.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\BaseCamera.h" />

@@ -53,7 +53,15 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     }
 
     // uvをスクロールする
-    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,2.0f,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate);
+    float directionScale = 2.0f;
+    if(direction_ == UpDown::DOWN){
+        directionScale *= -1.0f; // 下方向ならUVを反転
+    }
+    if(layer_ == UpDown::DOWN){
+        directionScale *= -1.0f; // レイヤーが下ならUVを反転
+    }
+
+    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,directionScale,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate);
 
     // テクスチャの設定
     noteAuraRect.GH = wheelAuraGH_;

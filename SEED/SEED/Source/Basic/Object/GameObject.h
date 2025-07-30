@@ -122,6 +122,8 @@ public:
     /*------ scale -------*/
     Vector3 GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
+    void SetWorldScale(const Vector3& scale);
+    void SetLocalScale(const Vector3& scale);
     /*------ rotate -------*/
     const Quaternion& GetWorldRotate() const{ return worldTransform_.rotate; }
     const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
@@ -133,6 +135,8 @@ public:
     Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
     void AddWorldTranslate(const Vector3& addValue);
+    void SetWorldTranslate(const Vector3& translate);
+    void SetLocalTranslate(const Vector3& translate);
     const Vector3& GetPrePos() const{ return prePos_; }
     /*------ matrix -------*/
     const Matrix4x4& GetLocalMat() const{ return localMat_; }

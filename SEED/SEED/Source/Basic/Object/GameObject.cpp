@@ -20,6 +20,7 @@ GameObject::GameObject(Scene_Base* pScene){
     Initialize();
     // シーンのヒエラルキーに登録
     pScene->RegisterToHierarchy(this);
+    UpdateMatrix();
 }
 
 GameObject::~GameObject(){
@@ -216,6 +217,24 @@ bool GameObject::IsDescendant(GameObject* obj) const{
 
 
 //////////////////////////////////////////////////////////////////////////
+// スケールの設定
+//////////////////////////////////////////////////////////////////////////
+
+void GameObject::SetWorldScale(const Vector3& scale){
+    // 親のスケールを考慮してワールド軸基準でスケールを設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.scale = scale * invParentMat;
+    } else{
+        localTransform_.scale = scale;
+    }
+}
+
+void GameObject::SetLocalScale(const Vector3& scale){
+    localTransform_.scale = scale;
+}
+
+//////////////////////////////////////////////////////////////////////////
 // Rotateの設定
 //////////////////////////////////////////////////////////////////////////
 void GameObject::SetWorldRotate(const Quaternion& rotate){
@@ -243,6 +262,20 @@ void GameObject::AddWorldTranslate(const Vector3& addValue){
     } else{
         localTransform_.translate += addValue;
     }
+}
+
+void GameObject::SetWorldTranslate(const Vector3& translate){
+    // 親の位置を考慮してワールド軸基準で位置を設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.translate = translate * invParentMat;
+    } else{
+        localTransform_.translate = translate;
+    }
+}
+
+void GameObject::SetLocalTranslate(const Vector3& translate){
+    localTransform_.translate = translate;
 }
 
 
@@ -375,6 +408,9 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Jump"){
             auto* jumpComponent = AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(componentJson);
+        } else if(componentType == "Routine"){
+            auto* routineComponent = AddComponent<RoutineComponent>();
+            routineComponent->LoadFromJson(componentJson);
         }
     }
 }
@@ -503,6 +539,10 @@ void GameObject::EditGUI(){
         }
         if(ImGui::Button("JumpComponent / ジャンプ")){
             AddComponent<JumpComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("RoutineComponent / ルーチン")){
+            AddComponent<RoutineComponent>();
             ImGui::CloseCurrentPopup();
         }
 

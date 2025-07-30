@@ -8,3 +8,4 @@
 #include <SEED/Source/Basic/Components/GravityComponent.h>
 #include <SEED/Source/Basic/Components/MoveComponent.h>
 #include <SEED/Source/Basic/Components/JumpComponent.h>
+#include <SEED/Source/Basic/Components/RoutineComponent.h>

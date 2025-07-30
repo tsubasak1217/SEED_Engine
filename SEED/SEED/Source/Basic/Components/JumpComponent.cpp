@@ -94,9 +94,9 @@ void JumpComponent::Finalize(){
 /////////////////////////////////////////////////////////////////////////
 void JumpComponent::EditGUI(){
 #ifdef _DEBUG
-
+    ImGui::Indent();
     ImGui::DragFloat("ジャンプ速度", &jumpSpeed_, 0.1f);
-
+    ImGui::Unindent();
 
 #endif // _DEBUG
 }

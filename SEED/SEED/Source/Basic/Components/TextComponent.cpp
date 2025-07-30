@@ -20,11 +20,6 @@ void TextComponent::BeginFrame(){
 }
 
 void TextComponent::Update(){
-    if(textBox_){
-    #ifdef _DEBUG
-        ImGuiManager::RegisterGuizmoItem(&textBox_->transform);
-    #endif // _DEBUG
-    }
 }
 
 void TextComponent::Draw(){
@@ -51,6 +46,8 @@ void TextComponent::EditGUI(){
     if(textBox_){
         textBox_->Edit();
     }
+
+    ImGuiManager::RegisterGuizmoItem(&textBox_->transform);
 
     ImGui::Unindent();
 

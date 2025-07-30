@@ -16,7 +16,7 @@
 class GameObject;
 
 class ColliderEditor{
-
+    friend class CollisionComponent;
 private:// 基本関数
     ColliderEditor() = default;
 public:
@@ -34,6 +34,7 @@ private:
     void InputOnGUI();
 
     static void LoadColliderData(const std::string fileName);
+    static std::vector<Collider*> LoadColliderData(const nlohmann::json& json);
     void OutputToJson();
     void LoadFromJson(const std::string& fileName);
 

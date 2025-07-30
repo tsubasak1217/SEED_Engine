@@ -23,7 +23,5 @@ public:
     void ManageState() override;
 
 private:
-    std::list<GameObject*> gameObjects_; // ゲームオブジェクトのリスト
-    TextBox2D text_;
 
 };

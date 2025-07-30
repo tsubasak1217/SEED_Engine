@@ -49,6 +49,7 @@ nlohmann::json TextBox2D::GetJsonData() const{
     jsonData["outlineSplitCount"] = outlineSplitCount;
     jsonData["color"] = color;
     jsonData["outlineColor"] = outlineColor;
+    jsonData["textBoxVisible"] = textBoxVisible;
     return jsonData; // JSONデータを返す
 }
 
@@ -71,6 +72,7 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     outlineSplitCount = jsonData["outlineSplitCount"];
     color = jsonData["color"];
     outlineColor = jsonData["outlineColor"];
+    textBoxVisible = jsonData.value("textBoxVisible", true);
     // フォントを設定
     SetFont(fontName);
 }

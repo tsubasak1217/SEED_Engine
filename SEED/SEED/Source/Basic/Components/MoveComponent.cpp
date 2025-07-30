@@ -228,12 +228,13 @@ void MoveComponent::Finalize(){
 /////////////////////////////////////////////////////////////////////////
 void MoveComponent::EditGUI(){
 #ifdef _DEBUG
-
+    ImGui::Indent();
     ImGui::DragFloat("移動速度", &speed_, 0.1f);
     ImGui::Checkbox("移動方向に合わせて回転", &isRotateByDirection_);
     if(isRotateByDirection_){
         ImGui::Checkbox("X軸の回転を使用", &isUseRotateX);
     }
+    ImGui::Unindent();
 
 #endif // _DEBUG
 }

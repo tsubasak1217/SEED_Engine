@@ -22,10 +22,10 @@ public:
 
 public:
     virtual void HandOverColliders();
-    void InitColliders(const std::string& fileName, ObjectType objectType);
+    void InitColliders(nlohmann::json json, ObjectType objectType);
     void ResetCollider();
     void AddCollider(Collider* collider);
-    void LoadColliders(const std::string& fileName, ObjectType objectType);
+    void LoadColliders(nlohmann::json json, ObjectType objectType);
     void EraseCheckColliders();
 
     // アクセッサ
@@ -44,5 +44,6 @@ protected:
     bool isActive_ = true;
     bool isColliderVisible_ = false;
     Vector3 prePos_;
+    ObjectType objectType_ = ObjectType::All; // オブジェクトの種類
     std::unique_ptr<ColliderEditor> colliderEditor_;
 };

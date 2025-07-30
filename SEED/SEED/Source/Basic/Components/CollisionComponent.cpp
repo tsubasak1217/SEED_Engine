@@ -110,9 +110,18 @@ void CollisionComponent::AddCollider(Collider* collider){
 //////////////////////////////////////////////////////////////////////////
 // コライダーの読み込み
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::LoadColliders(const std::string& fileName, ObjectType objectType){
+void CollisionComponent::LoadColliders(nlohmann::json json, ObjectType objectType){
     // コライダーの読み込み
-    ColliderEditor::LoadColliders(fileName, owner_, &colliders_);
+    auto colliders = ColliderEditor::LoadColliderData(json);
+
+    for(auto& collider : colliders){
+        // コライダーの所有者を設定
+        collider->SetOwnerObject(owner_);
+        collider->SetParentMatrix(owner_->GetWorldMatPtr());
+        // コライダーを追加
+        colliders_.emplace_back(std::move(collider));
+    }
+
     // オブジェクトの属性を取得
     for(auto& collider : colliders_){
         collider->SetObjectType(objectType);
@@ -124,9 +133,9 @@ void CollisionComponent::LoadColliders(const std::string& fileName, ObjectType o
 //////////////////////////////////////////////////////////////////////////
 // コライダーの初期化
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::InitColliders(const std::string& fileName, ObjectType objectType){
+void CollisionComponent::InitColliders(nlohmann::json json, ObjectType objectType){
     colliders_.clear();
-    LoadColliders(fileName, objectType);
+    LoadColliders(json, objectType);
 }
 
 
@@ -186,7 +195,15 @@ void CollisionComponent::AddSkipPushBackType(ObjectType skipType){
 // Jsonデータの読み込み
 //////////////////////////////////////////////////////////////////////////
 void CollisionComponent::LoadFromJson(const nlohmann::json& jsonData){
-    jsonData;//あとで定義します
+
+    IComponent::LoadFromJson(jsonData);
+    if(jsonData.contains("objectType")){
+        objectType_ = static_cast<ObjectType>(jsonData["objectType"].get<uint32_t>());
+    }
+
+    if(jsonData.contains("colliders")){
+        LoadColliders(jsonData,objectType_);
+    }
 }
 
 
@@ -194,5 +211,19 @@ void CollisionComponent::LoadFromJson(const nlohmann::json& jsonData){
 // Jsonデータの出力
 //////////////////////////////////////////////////////////////////////////
 nlohmann::json CollisionComponent::GetJsonData() const{
-    return nlohmann::json();//あとで定義します
+    nlohmann::ordered_json jsonData;
+    jsonData["componentType"] = "Collision";
+    jsonData.update(IComponent::GetJsonData());
+    jsonData["objectType"] = static_cast<uint32_t>(objectType_);
+
+    // コライダーのデータを出力
+    for(const auto& collider : colliders_){
+        jsonData["colliders"].push_back(collider->GetJsonData());
+    }
+
+    for(const auto& collider : colliderEditor_->colliders_){
+        jsonData["colliders"].push_back(collider->GetJsonData());
+    }
+
+    return jsonData;
 }

@@ -169,7 +169,7 @@ int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 float MyFunc::Spiral(float input, float min, float max){
 
     if(max < min){
-        assert(false);
+        return Spiral(input, max, min);
     }
 
 

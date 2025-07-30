@@ -127,6 +127,7 @@
     <ClCompile Include="SEED\Source\Manager\Video\VideoDecoder.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\JumpComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\RoutineComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="SEED\Source\Manager\Video\VideoDecoder.h" />
     <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\JumpComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\RoutineComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

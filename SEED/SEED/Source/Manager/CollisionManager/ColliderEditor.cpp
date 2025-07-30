@@ -460,6 +460,36 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
 }
 
 
+std::vector<Collider*> ColliderEditor::LoadColliderData(const nlohmann::json& json){
+
+    std::vector<Collider*> colliders;
+
+    // コライダーの数
+    for(int i = 0; i < json["colliders"].size(); i++){
+        // コライダーの形状
+        std::string colliderType = json["colliders"][i]["colliderType"];
+        if(colliderType == "Sphere"){
+            colliders.push_back(new Collider_Sphere());
+        } else if(colliderType == "AABB"){
+            colliders.push_back(new Collider_AABB());
+        } else if(colliderType == "OBB"){
+            colliders.push_back(new Collider_OBB());
+        } else if(colliderType == "Line"){
+            colliders.push_back(new Collider_Line());
+        } else if(colliderType == "Capsule"){
+            colliders.push_back(new Collider_Capsule());
+        } else if(colliderType == "Plane"){
+            colliders.push_back(new Collider_Plane());
+        }
+
+        // コライダーの読み込み
+        colliders.back()->LoadFromJson(json["colliders"][i]);
+    }
+
+    return colliders;
+}
+
+
 ////////////////////////////////////////////////////////////
 // コライダーをCollisionManagerに渡す
 ////////////////////////////////////////////////////////////

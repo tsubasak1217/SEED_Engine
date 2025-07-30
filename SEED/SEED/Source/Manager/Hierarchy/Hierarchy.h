@@ -39,7 +39,7 @@ private:
 public:
     // json
     nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const;
-    void LoadFromJson(const std::string& filePath);
+    void LoadFromJson(const std::string& filePath, bool resetObjects = true);
 
 private:
     std::list<GameObject*> gameObjects_;// 登録されているゲームオブジェクトのリスト

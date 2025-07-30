@@ -356,7 +356,7 @@ void Hierarchy::InOutOnGUI(){
             static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
             std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".json" }, "Resources/jsons/Prefabs/");
             if(selectedFile != ""){
-                LoadFromJson(selectedFile);
+                LoadFromJson(selectedFile,false);
             }
         }
     }
@@ -448,7 +448,7 @@ nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath, std::l
 /////////////////////////////////////////////////////////////////////////
 // Jsonファイルからの読み込み
 /////////////////////////////////////////////////////////////////////////
-void Hierarchy::LoadFromJson(const std::string& filePath){
+void Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
 
     // ファイルを開く
     std::ifstream ifs(filePath);
@@ -461,6 +461,11 @@ void Hierarchy::LoadFromJson(const std::string& filePath){
     nlohmann::json jsonData;
     ifs >> jsonData;
     ifs.close();
+
+    // 現在のシーンをクリアする
+    if(resetObjects){
+        selfCreateObjects_.clear();
+    }
 
     // 読み込む
     for(const auto& gameObjectJson : jsonData["gameObjects"]){

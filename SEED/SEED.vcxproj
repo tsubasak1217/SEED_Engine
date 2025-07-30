@@ -138,6 +138,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\JumpComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\GravityComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
@@ -267,6 +268,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\JumpComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\GravityComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />

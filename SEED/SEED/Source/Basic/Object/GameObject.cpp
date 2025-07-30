@@ -372,6 +372,9 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Move"){
             auto* moveComponent = AddComponent<MoveComponent>();
             moveComponent->LoadFromJson(componentJson);
+        } else if(componentType == "Jump"){
+            auto* jumpComponent = AddComponent<JumpComponent>();
+            jumpComponent->LoadFromJson(componentJson);
         }
     }
 }
@@ -496,6 +499,10 @@ void GameObject::EditGUI(){
         }
         if(ImGui::Button("MoveComponent / 移動")){
             AddComponent<MoveComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("JumpComponent / ジャンプ")){
+            AddComponent<JumpComponent>();
             ImGui::CloseCurrentPopup();
         }
 

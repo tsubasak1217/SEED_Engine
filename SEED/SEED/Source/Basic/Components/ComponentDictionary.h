@@ -7,3 +7,4 @@
 #include <SEED/Source/Basic/Components/SpotLightComponent.h>
 #include <SEED/Source/Basic/Components/GravityComponent.h>
 #include <SEED/Source/Basic/Components/MoveComponent.h>
+#include <SEED/Source/Basic/Components/JumpComponent.h>

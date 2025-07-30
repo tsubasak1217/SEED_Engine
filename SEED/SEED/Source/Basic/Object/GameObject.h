@@ -144,6 +144,9 @@ public:
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
     void SetVelocityZ(float z){ velocity_.z = z; }
+    /*-------- state --------*/
+    bool GetIsOnGrounnd()const{ return isOnGround_; }
+    void SetIsOnGround(bool flag){ isOnGround_ = flag; }
 
     //=====================================
     // json
@@ -187,5 +190,6 @@ private:
 protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
+    bool isOnGround_ = true;
     Vector3 prePos_;
 };

@@ -57,11 +57,12 @@ void GravityComponent::EndFrame(){
     // 落下フラグの更新(一時的にy0で止めるようにしておく)
     if(owner_->GetWorldTranslate().y <= 0.0f){
         isDrop_ = false;
+        owner_->SetIsOnGround(true);
     }
 
     // 終了時の落下フラグに応じた処理
     if(isDrop_){
-        float downAccel = isUseCostomGravity_? customGravity_ : Physics::kGravity * ClockManager::DeltaTime();
+        float downAccel = (isUseCostomGravity_? customGravity_ : Physics::kGravity) * ClockManager::DeltaTime();
         dropSpeed_ += downAccel;
         velocity_ = gravityDirection_ * dropSpeed_;
     } else{

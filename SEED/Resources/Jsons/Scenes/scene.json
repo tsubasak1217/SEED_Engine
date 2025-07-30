@@ -275,6 +275,23 @@
                         128
                     ],
                     "speed": 8.0
+                },
+                {
+                    "componentID": 10,
+                    "componentTag": "Jump_ID:10",
+                    "componentType": "Jump"
+                },
+                {
+                    "componentID": 11,
+                    "componentTag": "Physics_ID:11",
+                    "componentType": "Gravity",
+                    "customGravity": 9.800000190734863,
+                    "gravityDirection": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "isUseCustomGravity": false
                 }
             ],
             "isParentRotate": true,
@@ -297,7 +314,7 @@
                 "translate": {
                     "x": 5.823243141174316,
                     "y": -0.46462440490722656,
-                    "z": 75.61636352539063
+                    "z": 74.75943756103516
                 }
             }
         },
@@ -307,7 +324,7 @@
                     "animationName": "",
                     "animationSpeedRate": 0.17000000178813934,
                     "blendMode": 3,
-                    "componentID": 5,
+                    "componentID": 6,
                     "componentTag": "ModelRender_ID:2",
                     "componentType": "ModelRender",
                     "cullMode": 3,
@@ -400,7 +417,7 @@
                     "animationName": "",
                     "animationSpeedRate": 1.3600000143051147,
                     "blendMode": 3,
-                    "componentID": 7,
+                    "componentID": 8,
                     "componentTag": "ModelRender_ID:2",
                     "componentType": "ModelRender",
                     "cullMode": 3,

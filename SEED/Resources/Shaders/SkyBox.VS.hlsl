@@ -1,14 +1,10 @@
-﻿#include "Object3d.hlsli"
-
-/////////////////////////////////////// Transform //////////////////////////////////////////////
+﻿#include "Object3D.hlsli"
 
 struct TransformationMatrix {
     float4x4 WVP;
     float4x4 world;
     float4x4 worldInverseTranspose;
 };
-
-///////////////////////////////////////// Input ////////////////////////////////////////////////
 
 struct VertexShaderInput {
     // VBV_0 (VertexData)
@@ -20,41 +16,28 @@ struct VertexShaderInput {
     int indexOffset : S1_I_INDEX_OFFSET0;
     int meshOffset : S1_I_MESH_OFFSET0;
     int jointIndexOffset : S1_I_JOINT_INDEX_OFFSET0;
-    int jointInterval : S1_I_JOINT_INTERVAL0;
     int interval : S1_I_INTERVAL0; //line->2,triangle->3,quad->4
 };
 
-
-StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 ConstantBuffer<Int> cameraIndexOffset : register(b0);
+StructuredBuffer<TransformationMatrix> transforms : register(t0, space0);
 
-///////////////////////////////////////// main ////////////////////////////////////////////////
 
-// Output
 SkyBoxVSOutput main(VertexShaderInput input, uint instanceID : SV_InstanceID, uint vertexID : SV_VertexID) {
-    
     SkyBoxVSOutput output;
-    int transformIdx = 0;
     
-    // Caluculate InstanceIdx
-    if (input.interval == 0) { // model
-        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value;
-    } else { // primitive
-        transformIdx = instanceID + input.indexOffset + cameraIndexOffset.value + (vertexID / input.interval);
-    }
+    // Caluculate InstanceID
+    int index = 0;
+    index = instanceID + input.indexOffset + cameraIndexOffset.value;
     
     // Apply Transformation
-    output.position = mul(input.position, transforms[transformIdx].WVP).xyzw;
-    output.worldPosition = mul(input.position, transforms[transformIdx].world).xyz;
+    output.position = mul(input.position, transforms[index].WVP).xyww;
+    output.worldPosition = mul(input.position, transforms[index].world).xyz;
     output.texcoord = input.position.xyz;
-    output.normal = normalize(mul(input.normal, (float3x3) transforms[transformIdx].world));
+    output.normal = normalize(mul(input.normal, (float3x3) transforms[index].worldInverseTranspose));
     
-    // Caluculate MaterialIdx
-    if (input.interval == 0) { // model
-        output.instanceID = input.meshOffset + instanceID;
-    } else { // primitive
-        output.instanceID = input.meshOffset + instanceID + (vertexID / input.interval);
-    }
+    // Caluculate MaterialID
+    output.instanceID = input.meshOffset + instanceID;
     
     return output;
 }

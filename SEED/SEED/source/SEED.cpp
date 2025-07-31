@@ -791,6 +791,7 @@ void SEED::DrawLight(const BaseLight* light){
 
 void SEED::SetSkyBox(const std::string& textureName, const Vector4& color){
     SkyBox::textureGH_ = TextureManager::LoadTexture(textureName);
+    SkyBox::textureGH_;
     SkyBox::color_ = color;
 }
 

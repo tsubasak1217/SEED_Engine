@@ -138,7 +138,7 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
-    SEED::DrawSkyBox();
+    SEED::DrawSkyBox(true);
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 

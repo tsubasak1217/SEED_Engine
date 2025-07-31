@@ -84,6 +84,8 @@ uint32_t TextureManager::CreateTexture(const std::string& filename, const aiText
     // 作成
     const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
     textureResources.push_back(CreateTextureResource(DxManager::GetInstance()->GetDevice(), metadata));
+    textureResources.back()->SetName(MyFunc::ConvertString(filename).c_str());
+
     // 転送
     intermediateResources.push_back(
         UploadTextureData(

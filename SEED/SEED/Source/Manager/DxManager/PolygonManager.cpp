@@ -1740,19 +1740,15 @@ void PolygonManager::AddSkyBox(){
     //////////////////////////////////////////////////////////////////////////
     // モデルの名前の決定
     //////////////////////////////////////////////////////////////////////////
-    static std::string modelName = "System_SkyBox";
 
-    //////////////////////////////////////////////////////////////////////////
-    //                     モデル描画データがが存在しないときのみ
-    //////////////////////////////////////////////////////////////////////////
-    uint64_t hash = MyFunc::Hash64(modelName);
+    uint64_t hash = MyFunc::Hash64("System_SkyBox");
     if(modelDrawData_.find(hash) == modelDrawData_.end()){
         // 頂点データの取得
         modelDrawData_[hash] = std::make_unique<ModelDrawData>();
         ModelManager::LoadModel("DefaultAssets/SkyBox/SkyBox.obj");
         modelDrawData_[hash]->modelData = ModelManager::GetModelData("DefaultAssets/SkyBox/SkyBox.obj");
         // 名前の設定
-        modelDrawData_[hash]->name = modelName;
+        modelDrawData_[hash]->name = "System_SkyBox";
         // hashの設定
         modelDrawData_[hash]->hash = hash;
 
@@ -1765,28 +1761,34 @@ void PolygonManager::AddSkyBox(){
                 "SkyBoxVSPipeline.pip",
                 BlendMode::NORMAL, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
             );
-
     }
 
     // サイズ確保
     auto& drawData = modelDrawData_[hash];
+    int meshSize = (int)drawData->modelData->meshes.size();
+
+    // count(instance数)
+    int drawCount = drawData->totalDrawCount;
 
     /////////////////////////////////////////////////////////////////////////
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
     // 各meshごとにinstance数分のマテリアルを持つ。ここではmesh数分の配列を確保
-    drawData->materials.resize(1);
+    drawData->materials.resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
 
-    // ここではinstance数分のマテリアルを確保
-    auto& material = drawData->materials[0];
-    material.resize(1);
+        // ここではinstance数分のマテリアルを確保
+        auto& material = drawData->materials[meshIdx];
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
 
-    // マテリアルの設定
-    material[0].color_ = SkyBox::color_;
-    material[0].lightingType_ = LIGHTINGTYPE_NONE;
-    material[0].uvTransform_ = IdentityMat4();
-    material[0].GH_ = SkyBox::textureGH_;
+        // マテリアルの設定
+        material[drawCount].color_ = SkyBox::color_;
+        material[drawCount].shininess_ = 1.0f;
+        material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
+        material[drawCount].uvTransform_ = IdentityMat4();
+        material[drawCount].GH_ = SkyBox::textureGH_;
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //                          transformResourceの設定
@@ -1795,28 +1797,29 @@ void PolygonManager::AddSkyBox(){
     // instance数分のtransformを確保(meshごとには必要ない)
     Matrix4x4 wvp;
     Matrix4x4 worldInverseTranspose = IdentityMat4();
-    Matrix4x4 skyBoxScaleMat = ScaleMatrix(Vector3(SkyBox::scale_));
-    Matrix4x4 skyBoxTranslateMat = TranslateMatrix(SkyBox::translate_);
-
+    Matrix4x4 skyBoxMat = AffineMatrix(Vector3(SkyBox::scale_), Quaternion(), SkyBox::translate_);
     for(const auto& [cameraName, camera] : pDxManager_->cameras_){
 
         auto& transform = drawData->transforms[cameraName];
-        transform.resize(1);
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+
+        Matrix4x4 worldMat;
+        if(SkyBox::isFollowCameraPos_){
+            Matrix4x4 cameraTranslateMat = TranslateMatrix(camera->GetTranslation());
+            worldMat = skyBoxMat * cameraTranslateMat;
+        } else{
+            worldMat = skyBoxMat;
+        }
 
         // transformの設定
         wvp = Multiply(
-            camera->GetWorldMat(),
+            worldMat,
             camera->GetViewProjectionMat()
         );
 
-        if(SkyBox::isFollowCameraPos_){
-            transform[0].world = skyBoxScaleMat * camera->GetWorldMat();
-        } else{
-            transform[0].world = skyBoxScaleMat * skyBoxTranslateMat;
-        }
-
-        transform[0].WVP = wvp;
-        transform[0].worldInverseTranspose = worldInverseTranspose;
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = wvp;
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -1824,20 +1827,22 @@ void PolygonManager::AddSkyBox(){
     //////////////////////////////////////////////////////////////////////////
 
     // mesh数 * instance数分のoffsetを確保(各instanceごとにオフセットが必要なため)
-    drawData->offsetData.resize(1);
-    auto& offsetData = drawData->offsetData[0];
-    offsetData.resize(1);
+    drawData->offsetData.resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
+        auto& offsetData = drawData->offsetData[meshIdx];
+        offsetData.resize(drawCount + 1);
+    }
 
     //////////////////////////////////////////////////////////////////////////
     //                              カウントの更新
     //////////////////////////////////////////////////////////////////////////
 
     // 要素数を更新
-    objCounts_[(int)DrawOrder::SkyBox] = 1;
+    objCounts_[(int)DrawOrder::SkyBox]++;
 
     objCountCull_[(int)D3D12_CULL_MODE_BACK - 1]++;
     objCountBlend_[(int)BlendMode::NORMAL]++;
-    drawData->totalDrawCount = 1;
+    drawData->totalDrawCount++;
     modelIndexCount_++;
 }
 
@@ -2271,7 +2276,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                         offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                     // 総サイズ、刻み幅の設定
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or 
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or
                         drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
                         ){
                         vbv2->SizeInBytes = size * drawData->totalDrawCount;
@@ -2334,7 +2339,7 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     /*/////////////////////////////////////////////////////////////////*/
 
                     // 描画
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel 
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel
                         or drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
                         ){
 

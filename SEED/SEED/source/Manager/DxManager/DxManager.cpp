@@ -523,6 +523,10 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
+
+    // 毎フレーム一度セットする情報
+    polygonManager_->BindFrameDatas();
+
     for(const auto& [cameraName, camera] : cameras_){
         if(!camera->isActive_){ continue; }
 

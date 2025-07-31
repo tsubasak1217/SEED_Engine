@@ -149,6 +149,7 @@ public:// 根幹をなす関数
     PolygonManager(DxManager* pDxManager);
     ~PolygonManager();
     void InitResources();
+    void BindFrameDatas();
     void BindCameraDatas(const std::string& cameraName);
     void Finalize();
     void Reset();

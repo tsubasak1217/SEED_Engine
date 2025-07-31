@@ -16,7 +16,8 @@ ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 ConstantBuffer<Int> gPointLightCount : register(b2);
 ConstantBuffer<Int> gSpotLightCount : register(b3);
 // texture
-Texture2D<float4> gTexture[128] : register(t5, space0);
+TextureCube<float4> gEnvironmentTexture : register(t5, space0);
+Texture2D<float4> gTexture[128] : register(t6, space0);
 SamplerState gSampler : register(s0);
 
 
@@ -58,11 +59,20 @@ PixelShaderOutput main(MeshShaderOutput input) {
         
         output.color.rgb = diffuse + specular;
         output.color.a = gMaterial[input.instanceID].color.a * textureColor.a;
+        
+        float3 reflectVector = reflect(-toEye, input.normal);
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectVector);
+        output.color.rgb += gMaterial[input.instanceID].environmentCoef * environmentColor.rgb;
     
     }
     // ライティングが無効な場合------------------------------------------------------------------
     else {
+        float3 cameraToPosition = normalize(input.worldPosition - gCamera[gCameraIndex.value].position);
+        float3 reflectVector = reflect(cameraToPosition, input.normal);
+        float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectVector);
+    
         output.color = gMaterial[input.instanceID].color * textureColor;
+        output.color.rgb += gMaterial[input.instanceID].environmentCoef * environmentColor.rgb;
     }
     
     

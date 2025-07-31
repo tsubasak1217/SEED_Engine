@@ -43,8 +43,8 @@ struct RootSignature{
 
     ComPtr<ID3D12RootSignature> rootSignature;
     D3D12_ROOT_SIGNATURE_DESC desc;
-    std::array<D3D12_ROOT_PARAMETER, 16> parameters{};
-    std::array<D3D12_DESCRIPTOR_RANGE, 8> ranges{};
+    std::array<D3D12_ROOT_PARAMETER, 32> parameters{};
+    std::array<D3D12_DESCRIPTOR_RANGE, 16> ranges{};
     std::array<D3D12_STATIC_SAMPLER_DESC, 4> samplers{};
 
 private:

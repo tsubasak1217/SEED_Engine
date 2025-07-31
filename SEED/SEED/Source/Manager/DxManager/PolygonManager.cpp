@@ -278,8 +278,17 @@ void PolygonManager::InitResources(){
     // SkyBoxVSPipeline
     PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
     PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
-    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
 
+}
+
+// 毎フレームセットする情報
+void PolygonManager::BindFrameDatas(){
+    // CommonVSPipeline
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
+    // SkinningVSPipeline
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
+    // SkyBoxVSPipeline
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
 }
 
 // カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
@@ -1347,6 +1356,7 @@ void PolygonManager::AddModel(Model* model){
         material[drawCount].lightingType_ = model->lightingType_;
         material[drawCount].uvTransform_ = model->materials_[meshIdx].uvTransform;
         material[drawCount].GH_ = model->materials_[meshIdx].GH;
+        material[drawCount].environmentCoef_ = model->materials_[meshIdx].environmentCoef;
     }
 
     //////////////////////////////////////////////////////////////////////////

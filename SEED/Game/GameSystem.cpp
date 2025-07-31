@@ -60,10 +60,6 @@ void GameSystem::Run() {
 void GameSystem::Update() {
     // シーンの更新
     instance_->pScene_->Update();
-    // Colliderの追加
-    instance_->pScene_->HandOverColliders();
-    // 当たり判定
-    CollisionManager::CheckCollision();
     // エフェクトの更新
     EffectSystem::Update();
     // すべての更新終了後にカメラを更新
@@ -83,9 +79,6 @@ void GameSystem::Draw() {
 
     // エフェクトの描画
     EffectSystem::Draw();
-
-    // コリジョンの描画(デバッグ表示)
-    CollisionManager::Draw();
     
     // ImGuiの描画
     DrawGUI();
@@ -100,6 +93,12 @@ void GameSystem::BeginFrame() {
     CollisionManager::ResetColliderList();
     // シーンのフレーム開始処理
     instance_->pScene_->BeginFrame();
+    // Colliderの追加
+    instance_->pScene_->HandOverColliders();
+    // 当たり判定
+    CollisionManager::CheckCollision();
+    // コリジョンの描画だけ先に行う
+    CollisionManager::Draw();
 }
 
 

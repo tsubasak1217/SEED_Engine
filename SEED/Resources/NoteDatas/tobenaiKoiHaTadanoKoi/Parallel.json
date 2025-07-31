@@ -6,7 +6,7 @@
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Parallel.json",
-    "maxCombo": 130,
+    "maxCombo": 143,
     "notes": [
         {
             "direction": 0,
@@ -867,6 +867,99 @@
             "layer": 0,
             "noteType": "RectFlick",
             "time": 40.33898162841797
+        },
+        {
+            "holdTime": 4.0677947998046875,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 40.67797088623047
+        },
+        {
+            "holdTime": 1.3559303283691406,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 40.67797088623047
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "tap",
+            "time": 42.37287902832031
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "tap",
+            "time": 42.71186828613281
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 43.05084991455078
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 43.38983154296875
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 43.72881317138672
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 44.745765686035156
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 45.084747314453125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 45.423728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1280,
+            "layer": 1,
+            "noteType": "RectFlick",
+            "time": 45.76271057128906
         }
     ],
     "notesDesigner": "tbs",

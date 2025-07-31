@@ -1,0 +1,213 @@
+{
+    "gameObjects": [
+        {
+            "children": [
+                {
+                    "components": [
+                        {
+                            "animationName": "",
+                            "animationSpeedRate": 1.0,
+                            "blendMode": 3,
+                            "componentID": 11,
+                            "componentTag": "ModelRender_ID:2",
+                            "componentType": "ModelRender",
+                            "cullMode": 3,
+                            "isAnimation": false,
+                            "isAnimationLoop": false,
+                            "kAnimLerpTime": 0.20000000298023224,
+                            "lightingType": 2,
+                            "masterColor": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "modelFilePath": "Resources/Models/DefaultAssets\\Boy\\Boy.gltf",
+                            "transform": {
+                                "rotate": {
+                                    "w": 1.0,
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "BaseObject1",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 8.046642960835015e-07,
+                            "y": 3.218657184334006e-06,
+                            "z": -2.3989490949283265e-14
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.9999935626983643
+                        },
+                        "translate": {
+                            "x": -11.834238052368164,
+                            "y": 10.233664512634277,
+                            "z": 0.000110626220703125
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 0.5600000023841858,
+                    "blendMode": 3,
+                    "componentID": 0,
+                    "componentTag": "ModelRender_ID:2",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": true,
+                    "isAnimationLoop": true,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\BrainStem\\BrainStem.glb",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 10.0,
+                            "y": 10.0,
+                            "z": 10.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "color": [
+                        0.9731369614601135,
+                        1.0,
+                        0.8687258958816528,
+                        1.0
+                    ],
+                    "componentID": 4,
+                    "componentTag": "SpotLight_ID:4",
+                    "componentType": "SpotLight",
+                    "cosAngle": 0.9300000071525574,
+                    "cosFallofStart": 1.0,
+                    "decay": 1.7000000476837158,
+                    "direction": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "distance": 136.0,
+                    "intensity": 10.0,
+                    "isParentRotate": true,
+                    "position": {
+                        "x": 0.0,
+                        "y": 41.231998443603516,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "componentID": 12,
+                    "componentTag": "TextComponent_ID:12",
+                    "componentType": "Text",
+                    "textBox": {
+                        "align": 1,
+                        "anchorPos": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "blendMode": 3,
+                        "color": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf",
+                        "fontSize": 75.0,
+                        "glyphSpacing": 8.0,
+                        "lineSpacing": 8.0,
+                        "outlineColor": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "outlineSplitCount": 16,
+                        "outlineWidth": 6.400000095367432,
+                        "size": {
+                            "x": 433.0,
+                            "y": 135.0
+                        },
+                        "text": "テンプレート化",
+                        "textBoxVisible": true,
+                        "transform": {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 242.0,
+                                "y": 124.0
+                            }
+                        },
+                        "useOutline": true
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "bs1",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 0.9911179542541504,
+                    "x": 0.07898304611444473,
+                    "y": 0.10665149986743927,
+                    "z": -0.008499138057231903
+                },
+                "scale": {
+                    "x": 1.059999704360962,
+                    "y": 1.0599989891052246,
+                    "z": 1.059999942779541
+                },
+                "translate": {
+                    "x": 8.590044021606445,
+                    "y": -1.9722959995269775,
+                    "z": -8.51160717010498
+                }
+            }
+        }
+    ]
+}

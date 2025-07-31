@@ -323,6 +323,8 @@
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\Fog.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\SkyBox.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\SkyBox.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -9,6 +9,22 @@ struct MeshShaderOutput {
     uint instanceID : Index0;
 };
 
+struct VertexShaderOutput {
+    float4 position : SV_POSITION;
+    float2 texcoord : TEXCOORD0;
+    float3 normal : NORMAL0;
+    float3 worldPosition : WORLDPOSITION0;
+    uint instanceID : Index0;
+};
+
+struct SkyBoxVSOutput {
+    float4 position : SV_POSITION;
+    float3 texcoord : TEXCOORD0;
+    float3 normal : NORMAL0;
+    float3 worldPosition : WORLDPOSITION0;
+    uint instanceID : Index0;
+};
+
 struct PixelShaderOutput {
     float4 color : SV_TARGET0;
 };

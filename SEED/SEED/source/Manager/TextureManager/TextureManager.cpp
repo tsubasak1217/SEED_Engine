@@ -101,14 +101,14 @@ uint32_t TextureManager::CreateTexture(const std::string& filename, const aiText
     srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
     // キューブマップかどうか
-    if(!metadata.IsCubemap()){
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-        srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-    } else{
+    if(metadata.IsCubemap()){
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;//キューブマップ
         srvDesc.TextureCube.MipLevels = UINT_MAX;
         srvDesc.TextureCube.MostDetailedMip = 0;
         srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+    } else{
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
+        srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
     }
 
     // SRVの作成(グラフハンドルを返す)

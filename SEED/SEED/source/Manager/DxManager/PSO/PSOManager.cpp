@@ -98,6 +98,7 @@ void PSOManager::CreatePipelines(const std::string& filename){
     // パイプラインの情報を格納する変数
     PipelineType pipelineType = PipelineType::VSPipeline;
     D3D12_COMPARISON_FUNC depthFunc = D3D12_COMPARISON_FUNC::D3D12_COMPARISON_FUNC_LESS_EQUAL;
+    std::optional<D3D12_DEPTH_WRITE_MASK> depthWriteMask = std::nullopt;
 
     struct TmpShaderInfo{
         std::string name;
@@ -211,6 +212,19 @@ void PSOManager::CreatePipelines(const std::string& filename){
             asInfo.blob = ShaderDictionary::GetInstance()->GetShaderBlob(shaderName);
             // Reflectionの取得
             asInfo.reflection = ShaderDictionary::GetInstance()->GetReflection(shaderName);
+            continue;
+        }
+        // "#8" を見つけた時: 深度書き込みを行うかを設定
+        if(line.find("#8") != std::string::npos){
+            // = より後ろを取得
+            std::string value = line.substr(line.find("=") + 1);
+            // 空白なら何もしない
+            if(value.empty()){
+                continue;
+            }
+
+            // DepthMaskを設定
+            depthWriteMask = static_cast<D3D12_DEPTH_WRITE_MASK>(std::stoi(value));
             continue;
         }
     }

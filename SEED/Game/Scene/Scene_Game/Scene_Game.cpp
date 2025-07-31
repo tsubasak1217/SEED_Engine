@@ -40,9 +40,11 @@ void Scene_Game::Initialize(){
     // State初期化
     ////////////////////////////////////////////////////
 
+    SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
+
     // Playステートに初期化
-    //ChangeState(new GameState_Strolling(this));
-    ChangeState(new GameState_Select(this));
+    ChangeState(new GameState_Strolling(this));
+    //ChangeState(new GameState_Select(this));
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -136,6 +138,7 @@ void Scene_Game::Draw(){
         currentState_->Draw();
     }
 
+    SEED::DrawSkyBox();
 
     /*==================== 各オブジェクトの基本描画 =====================*/
 

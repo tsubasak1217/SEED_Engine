@@ -366,8 +366,7 @@ ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX
     // 利用するHeapの設定
     D3D12_HEAP_PROPERTIES heapProperties{};
     heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // デフォルト
-    //heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; // WriteBackポリシーでCPUアクセス可能
-    //heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
+
 
     // リソースの作成
     ComPtr<ID3D12Resource> resource = nullptr;

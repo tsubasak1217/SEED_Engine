@@ -165,9 +165,9 @@ public:
     static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     // ライトのデバッグ用描画
     static void DrawLight(const BaseLight* light);
-    // CubeMapの描画関数
-    static void SetCubeMap(const std::string& textureName, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawCubeMap(bool isFollowCameraPos,const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 1.0f);
+    // SkyBoxの描画関数
+    static void SetSkyBox(const std::string& textureName, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSkyBox(bool isFollowCameraPos = true,const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 100.0f);
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                その他細かい関数                                   */

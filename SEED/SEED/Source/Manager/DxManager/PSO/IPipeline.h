@@ -1,6 +1,7 @@
 #pragma once
 #pragma warning(disable: 4324)// 自動アライメントの警告を無視する
 #include <vector>
+#include <optional>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 using Microsoft::WRL::ComPtr;
@@ -21,6 +22,7 @@ struct IPipeline{
 
     ComPtr<ID3D12PipelineState> pipeline_;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology_;
+    std::optional<D3D12_DEPTH_WRITE_MASK> depthWriteMask_ = std::nullopt;
     D3D12_COMPARISON_FUNC depthFunc_;
     BlendMode blendMode_;
     // シェーダー

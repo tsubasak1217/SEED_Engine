@@ -1,0 +1,36 @@
+#1 パイプラインの種類 = 0
+[
+	VSPipeline	= 0
+	MSPipeline	= 1
+	CSPipeline	= 2
+]
+
+#2 深度関数 = 4
+[
+        D3D12_COMPARISON_FUNC_NEVER 		= 1
+        D3D12_COMPARISON_FUNC_LESS		= 2
+        D3D12_COMPARISON_FUNC_EQUAL		= 3
+        D3D12_COMPARISON_FUNC_LESS_EQUAL	= 4
+        D3D12_COMPARISON_FUNC_GREATER		= 5
+        D3D12_COMPARISON_FUNC_NOT_EQUAL		= 6
+        D3D12_COMPARISON_FUNC_GREATER_EQUAL	= 7
+        D3D12_COMPARISON_FUNC_ALWAYS		= 8
+]
+
+
+(↓使わないシェーダーは何も書かなくてOK)
+#3 シェーダー名_VS = SkyBox.VS.hlsl
+#4 シェーダー名_MS = 
+#5 シェーダー名_PS = SkyBox.PS.hlsl
+#6 シェーダー名_CS = 
+#7 シェーダー名_AS = 
+
+
+// 以下はカスタム設定。デフォルトで自動決定されるパラメータを強制したい場合などに設定。
+// 必要なければ何も書かなくてOK
+
+#8 深度の書き込みを行うか = 0
+[
+        D3D12_DEPTH_WRITE_MASK_ZERO	= 0// 行う
+        D3D12_DEPTH_WRITE_MASK_ALL	= 1// 行わない
+]

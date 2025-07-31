@@ -274,6 +274,12 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // SkyBoxVSPipeline
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+
 }
 
 // カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
@@ -286,6 +292,7 @@ void PolygonManager::BindCameraDatas(const std::string& cameraName){
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
 }
 
 void PolygonManager::Finalize(){}
@@ -323,6 +330,7 @@ void PolygonManager::Reset(){
 
     // フラグの初期化
     isWrited_ = false;
+    skyBoxAdded_ = false;
 }
 
 
@@ -1720,6 +1728,119 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     drawData->totalDrawCount++;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                     SkyBoxの追加                                                        //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddSkyBox(){
+
+    //////////////////////////////////////////////////////////////////////////
+    // モデルの名前の決定
+    //////////////////////////////////////////////////////////////////////////
+    static std::string modelName = "System_SkyBox";
+
+    //////////////////////////////////////////////////////////////////////////
+    //                     モデル描画データがが存在しないときのみ
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t hash = MyFunc::Hash64(modelName);
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        ModelManager::LoadModel("DefaultAssets/SkyBox/SkyBox.obj");
+        modelDrawData_[hash]->modelData = ModelManager::GetModelData("DefaultAssets/SkyBox/SkyBox.obj");
+        // 名前の設定
+        modelDrawData_[hash]->name = modelName;
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
+
+        // 描画種類の設定
+        modelDrawData_[hash]->drawOrder = (int)DrawOrder::SkyBox;
+
+        // パイプラインの設定
+        modelDrawData_[hash]->pso =
+            PSOManager::GetPSO(
+                "SkyBoxVSPipeline.pip",
+                BlendMode::NORMAL, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
+            );
+
+    }
+
+    // サイズ確保
+    auto& drawData = modelDrawData_[hash];
+
+    /////////////////////////////////////////////////////////////////////////
+    //                          materialResourceの設定
+    /////////////////////////////////////////////////////////////////////////
+
+    // 各meshごとにinstance数分のマテリアルを持つ。ここではmesh数分の配列を確保
+    drawData->materials.resize(1);
+
+    // ここではinstance数分のマテリアルを確保
+    auto& material = drawData->materials[0];
+    material.resize(1);
+
+    // マテリアルの設定
+    material[0].color_ = SkyBox::color_;
+    material[0].lightingType_ = LIGHTINGTYPE_NONE;
+    material[0].uvTransform_ = IdentityMat4();
+    material[0].GH_ = SkyBox::textureGH_;
+
+    //////////////////////////////////////////////////////////////////////////
+    //                          transformResourceの設定
+    //////////////////////////////////////////////////////////////////////////
+
+    // instance数分のtransformを確保(meshごとには必要ない)
+    Matrix4x4 wvp;
+    Matrix4x4 worldInverseTranspose = IdentityMat4();
+    Matrix4x4 skyBoxScaleMat = ScaleMatrix(Vector3(SkyBox::scale_));
+    Matrix4x4 skyBoxTranslateMat = TranslateMatrix(SkyBox::translate_);
+
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+
+        auto& transform = drawData->transforms[cameraName];
+        transform.resize(1);
+
+        // transformの設定
+        wvp = Multiply(
+            camera->GetWorldMat(),
+            camera->GetViewProjectionMat()
+        );
+
+        if(SkyBox::isFollowCameraPos_){
+            transform[0].world = skyBoxScaleMat * camera->GetWorldMat();
+        } else{
+            transform[0].world = skyBoxScaleMat * skyBoxTranslateMat;
+        }
+
+        transform[0].WVP = wvp;
+        transform[0].worldInverseTranspose = worldInverseTranspose;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                              offset情報の設定
+    //////////////////////////////////////////////////////////////////////////
+
+    // mesh数 * instance数分のoffsetを確保(各instanceごとにオフセットが必要なため)
+    drawData->offsetData.resize(1);
+    auto& offsetData = drawData->offsetData[0];
+    offsetData.resize(1);
+
+    //////////////////////////////////////////////////////////////////////////
+    //                              カウントの更新
+    //////////////////////////////////////////////////////////////////////////
+
+    // 要素数を更新
+    objCounts_[(int)DrawOrder::SkyBox] = 1;
+
+    objCountCull_[(int)D3D12_CULL_MODE_BACK - 1]++;
+    objCountBlend_[(int)BlendMode::NORMAL]++;
+    drawData->totalDrawCount = 1;
+    modelIndexCount_++;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2150,7 +2271,9 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                         offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                     // 総サイズ、刻み幅の設定
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or 
+                        drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
+                        ){
                         vbv2->SizeInBytes = size * drawData->totalDrawCount;
                     } else{
                         vbv2->SizeInBytes = size;
@@ -2211,7 +2334,9 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     /*/////////////////////////////////////////////////////////////////*/
 
                     // 描画
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel 
+                        or drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
+                        ){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)drawData->modelData->meshes[meshIdx].indices.size(),
@@ -2285,6 +2410,11 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
             );
         }
 
+        // skyBoxの描画フラグが立っていれば描画
+        if(skyBoxAdded_){
+            AddSkyBox();
+        }
+
         // Resourceに情報を書き込む
         WriteRenderData();
         isWrited_ = true;
@@ -2294,6 +2424,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::BackSprite);
 
     // 3D
+    SetRenderData(cameraName, DrawOrder::SkyBox);
     SetRenderData(cameraName, DrawOrder::Line);
     SetRenderData(cameraName, DrawOrder::Model);
     SetRenderData(cameraName, DrawOrder::AnimationModel);

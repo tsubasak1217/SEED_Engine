@@ -108,7 +108,8 @@ private:// 内部で使用する定数や列挙型
     static const int kPrimitiveVariation = kPrimitiveCount;
 
     enum class DrawOrder : BYTE{
-        Model = 0,
+        SkyBox = 0,
+        Model,
         AnimationModel,
         Triangle,
         Quad,
@@ -158,6 +159,7 @@ public:
 
 public:
     void AddLight(BaseLight* light);
+    void AddSkyBoxDrawCommand(){ skyBoxAdded_ = true; }
 
 private:
 
@@ -219,6 +221,7 @@ public:// 頂点情報の追加に関わる関数
 
 private:
     void AddOffscreenResult(uint32_t GH, BlendMode blendMode);
+    void AddSkyBox();
 
 private:
 
@@ -325,4 +328,5 @@ private:// GPUハンドルまとめ
 
 private:
     bool isWrited_ = false; // 描画データを書き込んだかどうか
+    bool skyBoxAdded_ = false; // SkyBoxが追加されたかどうか
 };

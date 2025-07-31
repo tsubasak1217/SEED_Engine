@@ -789,13 +789,16 @@ void SEED::DrawLight(const BaseLight* light){
 // cubeMapの描画
 /////////////////////////////////////////////////////////////
 
-void SEED::SetCubeMap(const std::string& textureName, const Vector4& color){
+void SEED::SetSkyBox(const std::string& textureName, const Vector4& color){
     SkyBox::textureGH_ = TextureManager::LoadTexture(textureName);
     SkyBox::color_ = color;
 }
 
-void SEED::DrawCubeMap(bool isFollowCameraPos, const Vector3& position, float scale){
-
+void SEED::DrawSkyBox(bool isFollowCameraPos, const Vector3& position, float scale){
+    SkyBox::scale_ = scale;
+    SkyBox::translate_ = position;
+    SkyBox::isFollowCameraPos_ = isFollowCameraPos;
+    instance_->pPolygonManager_->AddSkyBoxDrawCommand();
 }
 
 

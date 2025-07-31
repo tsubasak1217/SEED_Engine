@@ -382,6 +382,7 @@ void DxManager::InitPSO(){
     PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
     PSOManager::CreatePipelines("TextVSPipeline.pip");// テキストのパイプライン。
+    PSOManager::CreatePipelines("SkyBoxVSPipeline.pip");// スカイボックス用のパイプライン。
 
     /*==================================================================================*/
     //                              CSのパイプラインの初期化

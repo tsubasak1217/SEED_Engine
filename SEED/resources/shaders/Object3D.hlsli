@@ -37,4 +37,8 @@ struct Float {
     float value;
 };
 
+struct Float4x4 {
+    float4x4 value;
+};
+
 #endif// Object3D_INCLUDED

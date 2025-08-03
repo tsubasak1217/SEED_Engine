@@ -128,6 +128,7 @@
     <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\JumpComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\RoutineComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -307,6 +308,9 @@
     <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\JumpComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\RoutineComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
@@ -325,11 +329,21 @@
     <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\SkyBox.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\SkyBox.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GPUParticle\ParticleUpdate.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GPUParticle\EmitterUpdate.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GPUParticle\GPUParticleInit.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />
     <None Include="Resources\Shaders\Lighting.hlsli" />
     <None Include="Resources\Shaders\Material.hlsli" />
     <None Include="resources\shaders\Object3d.hlsli" />
+    <None Include="Resources\Shaders\GPUParticle\GPUParticle.hlsli" />
+    <None Include="Resources\Shaders\Random\Random.hlsli" />
+    <None Include="Resources\Shaders\Math\Math.hlsli" />
+    <None Include="Resources\Shaders\Math\Quaternion.hlsli" />
+    <None Include="Resources\Shaders\Math\Numbers.hlsli" />
   </ItemGroup>
 </Project>

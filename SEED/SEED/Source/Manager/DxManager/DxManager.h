@@ -57,6 +57,7 @@ class DxManager{
     friend class PSOManager;
     friend class ViewManager;
     friend class IPostProcess;
+    friend class GPUParticleSystem;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();

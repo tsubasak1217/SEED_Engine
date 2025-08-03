@@ -1,5 +1,6 @@
 #pragma once
 #include "DxResource.h"
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 
 template<typename T>
 struct DxBuffer{
@@ -10,5 +11,57 @@ public:
     // Mapする
     void Map(){
         bufferResource.resource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&data));
+    }
+
+    // バッファリソースの作成
+    void CreateBuffer(ID3D12Device* device, size_t sizeInBytes, D3D12_HEAP_TYPE heapLocation, D3D12_RESOURCE_FLAGS resourceFlag){
+        bufferResource.resource = CreateBufferResource(device, sizeInBytes,heapLocation, resourceFlag);
+    }
+
+    // 解放されているかどうか
+    bool Released() const {
+        return bufferResource.resource == nullptr;
+    }
+
+    // 作成されているかどうか
+    bool IsCreated() const {
+        return bufferResource.resource != nullptr;
+    }
+
+    // viewの作成
+    void CreateSRV(const std::string& viewName) {
+        bufferResource.CreateSRV(viewName);
+    }
+
+    void CreateUAV(const std::string& viewName) {
+        bufferResource.CreateUAV(viewName);
+    }
+
+
+public:// アクセッサ
+    D3D12_SHADER_RESOURCE_VIEW_DESC& GetSRVDesc() {
+        return bufferResource.srvDesc;
+    }
+
+    D3D12_UNORDERED_ACCESS_VIEW_DESC& GetUAVDesc() {
+        return bufferResource.uavDesc;
+    }
+
+    // handleの取得
+    D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const {
+        return bufferResource.GetSRVHandle();
+    }
+
+    D3D12_GPU_DESCRIPTOR_HANDLE GetUAVHandle() const {
+        return bufferResource.GetUAVHandle();
+    }
+
+    // 名前の取得
+    const std::string& GetSRVName() const {
+        return bufferResource.GetSRVName();
+    }
+
+    const std::string& GetUAVName() const {
+        return bufferResource.GetUAVName();
     }
 };

@@ -96,109 +96,6 @@
         {
             "components": [
                 {
-                    "animationName": "",
-                    "animationSpeedRate": 1.0,
-                    "blendMode": 3,
-                    "componentID": 2,
-                    "componentTag": "ModelRender_ID:0",
-                    "componentType": "ModelRender",
-                    "cullMode": 3,
-                    "isAnimation": false,
-                    "isAnimationLoop": false,
-                    "kAnimLerpTime": 0.20000000298023224,
-                    "lightingType": 2,
-                    "masterColor": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "modelFilePath": "Resources/Models/DefaultAssets\\ground\\ground.obj",
-                    "transform": {
-                        "rotate": {
-                            "w": 1.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "scale": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "translate": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    }
-                },
-                {
-                    "animationName": "",
-                    "animationSpeedRate": 1.0,
-                    "blendMode": 3,
-                    "componentID": 3,
-                    "componentTag": "ModelRender_ID:2",
-                    "componentType": "ModelRender",
-                    "cullMode": 3,
-                    "isAnimation": false,
-                    "isAnimationLoop": false,
-                    "kAnimLerpTime": 0.20000000298023224,
-                    "lightingType": 0,
-                    "masterColor": {
-                        "w": 1.0,
-                        "x": 1.0,
-                        "y": 1.0,
-                        "z": 1.0
-                    },
-                    "modelFilePath": "Resources/Models/DefaultAssets\\skydome\\skydome.obj",
-                    "transform": {
-                        "rotate": {
-                            "w": 1.0,
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "scale": {
-                            "x": 250.0,
-                            "y": 250.0,
-                            "z": 250.0
-                        },
-                        "translate": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        }
-                    }
-                }
-            ],
-            "isParentRotate": true,
-            "isParentScale": true,
-            "isParentTranslate": true,
-            "objectName": "world",
-            "objectType": 0,
-            "transform": {
-                "rotate": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "translate": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            }
-        },
-        {
-            "components": [
-                {
                     "animationName": "running",
                     "animationSpeedRate": 1.0,
                     "blendMode": 3,
@@ -329,20 +226,20 @@
             "objectType": 0,
             "transform": {
                 "rotate": {
-                    "w": 0.9712413549423218,
-                    "x": 0.0,
-                    "y": 0.23809704184532166,
+                    "w": 0.9410532116889954,
+                    "x": -0.0,
+                    "y": -0.3382585644721985,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.999999463558197,
-                    "y": 1.0,
+                    "x": 0.9999988675117493,
+                    "y": 0.9999992847442627,
                     "z": 0.9999998211860657
                 },
                 "translate": {
-                    "x": -1.510439157485962,
+                    "x": -2.105192184448242,
                     "y": 0.0,
-                    "z": 25.195287704467773
+                    "z": 21.42599868774414
                 }
             }
         },

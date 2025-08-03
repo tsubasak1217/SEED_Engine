@@ -8,6 +8,7 @@
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 
 // external
 #include <assert.h>
@@ -291,7 +292,7 @@ void PolygonManager::BindFrameDatas(){
     PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
 }
 
-// カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
+// 毎フレームかつカメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
 void PolygonManager::BindCameraDatas(const std::string& cameraName){
     // カメラのインデックスを設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
@@ -2447,6 +2448,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::Quad);
     SetRenderData(cameraName, DrawOrder::Text);
     SetRenderData(cameraName, DrawOrder::Particle);
+    GPUParticleSystem::Draw(cameraName);
 
     // 2D
     SetRenderData(cameraName, DrawOrder::Line2D);

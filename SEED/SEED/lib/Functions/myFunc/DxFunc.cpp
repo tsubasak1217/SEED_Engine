@@ -312,11 +312,16 @@ ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t 
 // ------------------------------リソース作成に関する関数---------------------------------------//
 
 // バッファ用
-ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
+ComPtr<ID3D12Resource> CreateBufferResource(
+    ID3D12Device* device, 
+    size_t sizeInBytes,
+    D3D12_HEAP_TYPE heapLocation, 
+    D3D12_RESOURCE_FLAGS resourceFlag
+){
 
     //頂点リソース用のヒープの設定
     D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-    uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // UploadHeap
+    uploadHeapProperties.Type = heapLocation;
 
     //頂点リソースの設定
     D3D12_RESOURCE_DESC bufferResourceDesc{};
@@ -328,6 +333,7 @@ ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInB
     bufferResourceDesc.DepthOrArraySize = 1;
     bufferResourceDesc.MipLevels = 1;
     bufferResourceDesc.SampleDesc.Count = 1;
+    bufferResourceDesc.Flags = resourceFlag;
     // バッファの場合はこれにする決まり
     bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 

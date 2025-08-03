@@ -8,6 +8,7 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
+#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -174,6 +175,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     EffectSystem::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
+    GPUParticleSystem::Initialize();
 
     // カメラの作成と追加
     instance_->defaultCamera_ = std::make_unique<BaseCamera>();

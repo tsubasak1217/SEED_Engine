@@ -429,7 +429,7 @@ void PSOManager::GenerateRootParameters(
             param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;// t
             rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 
-        } else if(bindDesc.Type == D3D_SIT_UAV_RWTYPED){
+        } else if(bindDesc.Type == D3D_SIT_UAV_RWTYPED || bindDesc.Type == D3D_SIT_UAV_RWSTRUCTURED){
             param.ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;// u
             rangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
 

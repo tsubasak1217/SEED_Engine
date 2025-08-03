@@ -7,6 +7,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 
 DxManager* DxManager::instance_ = nullptr;
 
@@ -524,6 +525,9 @@ void DxManager::DrawPolygonAll(){
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
 
+    // GPUパーティクルシステムの更新
+    GPUParticleSystem::Update();
+
     // 毎フレーム一度セットする情報
     polygonManager_->BindFrameDatas();
 
@@ -767,6 +771,7 @@ void DxManager::Release(){
         depthStencilResources[cameraName].resource.Reset();
     }
     PostEffect::GetInstance()->Release();
+    GPUParticleSystem::Release();
     delete polygonManager_;
     polygonManager_ = nullptr;
 

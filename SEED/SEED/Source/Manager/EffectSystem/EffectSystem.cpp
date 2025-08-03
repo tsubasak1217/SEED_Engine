@@ -144,10 +144,6 @@ void EffectSystem::Update(){
         p->Update();
     });
 
-    //for(auto& particle : instance_->particles_){
-    //    particle->Update();
-    //}
-
     ////////////////////////////////////////////
     // パーティクルとフィールドの衝突判定
     ////////////////////////////////////////////

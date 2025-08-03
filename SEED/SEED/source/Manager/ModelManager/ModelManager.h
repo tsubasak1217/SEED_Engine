@@ -77,7 +77,12 @@ public:
             path = path.substr(17); // "Resources/Models"の長さは17
         }
 
-        assert(instance_->modelData_.find(path) != instance_->modelData_.end());
+        // 見つからないなら読み込む
+        if(instance_->modelData_.find(path) == instance_->modelData_.end()){
+            // モデルを読み込む
+            instance_->LoadModel(path);
+        }
+
         return instance_->modelData_[path];
     }
 

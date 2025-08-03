@@ -19,4 +19,6 @@ private:
 
 public:
     void Edit() override;
+    nlohmann::json ToJson() override;
+    void FromJson(const nlohmann::json& json) override;
 };

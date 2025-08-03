@@ -89,3 +89,22 @@ void GaussianFilter::Edit(){
     }
 #endif // _DEBUG
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json GaussianFilter::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "GaussianFilter";
+    j["blurRadius"] = blurParamsBuffer_.data->blurRadius;
+
+    return j;
+}
+
+void GaussianFilter::FromJson(const nlohmann::json& json){
+    if(json.contains("blurRadius")){
+        blurParamsBuffer_.data->blurRadius = json["blurRadius"].get<int>();
+    }
+}

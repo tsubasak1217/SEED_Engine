@@ -368,7 +368,6 @@ void Hierarchy::InOutOnGUI(){
 }
 
 void Hierarchy::OutputPrefab(GameObject* gameObject){
-#ifdef _DEBUG
     // Jsonファイルへの出力
     {
         static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
@@ -405,8 +404,6 @@ void Hierarchy::OutputPrefab(GameObject* gameObject){
             ImGui::EndPopup();
         }
     }
-
-#endif
 }
 
 void Hierarchy::ExecuteContextMenu(){

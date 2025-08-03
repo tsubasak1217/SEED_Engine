@@ -49,3 +49,22 @@ void Vignette::Edit(){
     }
 #endif // _DEBUG
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json Vignette::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "Vignette";
+    j["vignetteStrength"] = vignetteStrength_;
+
+    return j;
+}
+
+void Vignette::FromJson(const nlohmann::json& json){
+    if(json.contains("vignetteStrength")){
+        vignetteStrength_ = json["vignetteStrength"].get<float>();
+    }
+}

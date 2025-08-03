@@ -78,3 +78,30 @@ void Fog::Edit(){
     }
 #endif // _DEBUG
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json Fog::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "Fog";
+    j["fogStrength"] = fogParamsBuffer_.data->fogStrength;
+    j["fogStartDistance"] = fogParamsBuffer_.data->fogStartDistance;
+    j["fogColor"] = fogParamsBuffer_.data->fogColor;
+
+    return j;
+}
+
+void Fog::FromJson(const nlohmann::json& json){
+    if(json.contains("fogStrength")){
+        fogParamsBuffer_.data->fogStrength = json["fogStrength"];
+    }
+    if(json.contains("fogStartDistance")){
+        fogParamsBuffer_.data->fogStartDistance = json["fogStartDistance"];
+    }
+    if(json.contains("fogColor")){
+        fogParamsBuffer_.data->fogColor = json["fogColor"];
+    }
+}

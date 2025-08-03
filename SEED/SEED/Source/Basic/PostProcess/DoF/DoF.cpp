@@ -204,3 +204,43 @@ void DoF::Edit(){
     }
 #endif // _DEBUG
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json DoF::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "DoF";
+    j["resolutionRate"] = resolutionRate_;
+    j["focusDistance"] = focusDistance_;
+    j["focusDepth"] = focusDepth_;
+    j["focusRange"] = focusRange_;
+    j["blurRadius"] = blurParamsBuffer_.data->blurRadius;
+
+    return j;
+}
+
+void DoF::FromJson(const nlohmann::json& json){
+    if(json.contains("resolutionRate")){
+        resolutionRate_ = json["resolutionRate"].get<float>();
+    }
+    if(json.contains("focusDistance")){
+        focusDistance_ = json["focusDistance"].get<float>();
+    }
+    if(json.contains("focusDepth")){
+        focusDepth_ = json["focusDepth"].get<float>();
+    }
+    if(json.contains("focusRange")){
+        focusRange_ = json["focusRange"].get<float>();
+    }
+    if(json.contains("blurRadius")){
+        blurParamsBuffer_.data->blurRadius = json["blurRadius"].get<int>();
+    }
+    // バッファの更新
+    blurParamsBuffer_.data->texelSize = {
+        1.0f / downSampledWidth_,
+        1.0f / downSampledHeight_
+    };
+}

@@ -60,3 +60,26 @@ void ScanLine::Edit(){
     }
 #endif // _DEBUG
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json ScanLine::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "ScanLine";
+    j["stripeFrequency"] = stripeFrequency_;
+    j["scanLineStrength"] = scanLineStrength_;
+
+    return j;
+}
+
+void ScanLine::FromJson(const nlohmann::json& json){
+    if(json.contains("stripeFrequency")){
+        stripeFrequency_ = json["stripeFrequency"].get<float>();
+    }
+    if(json.contains("scanLineStrength")){
+        scanLineStrength_ = json["scanLineStrength"].get<float>();
+    }
+}

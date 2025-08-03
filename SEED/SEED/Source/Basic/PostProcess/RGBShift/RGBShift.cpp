@@ -48,3 +48,21 @@ void RGBShift::Edit(){
     }
 #endif // _DEBUG
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// 入出力
+////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json RGBShift::ToJson(){
+    nlohmann::json j;
+
+    j["type"] = "RGBShift";
+    j["gap"] = gap_;
+
+    return j;
+}
+
+void RGBShift::FromJson(const nlohmann::json& json){
+    if(json.contains("gap")){
+        gap_ = json["gap"].get<int>();
+    }
+}

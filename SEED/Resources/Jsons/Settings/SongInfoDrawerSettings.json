@@ -34,6 +34,7 @@
                 "y": 64.0
             },
             "text": "カマキリ楽団",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -83,6 +84,7 @@
                 "y": 64.0
             },
             "text": "BPM160",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -132,6 +134,7 @@
                 "y": 64.0
             },
             "text": "5",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -181,6 +184,7 @@
                 "y": 63.0
             },
             "text": "ゲームミュージック",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -230,6 +234,7 @@
                 "y": 64.0
             },
             "text": "tbs",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -279,6 +284,7 @@
                 "y": 64.0
             },
             "text": "",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -328,6 +334,7 @@
                 "y": 64.0
             },
             "text": "TinySummerKnight",
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {

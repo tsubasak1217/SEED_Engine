@@ -6,8 +6,10 @@
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <Environment/Environment.h>
+#include <json.hpp>
 
 class IPostProcess{
+    friend class PostEffect;
 public:
     IPostProcess();
     virtual ~IPostProcess() = default;
@@ -28,6 +30,9 @@ public:
 
 
 public:
+    int GetId() const {
+        return id_;
+    }
     bool GetIsActive() const {
         return isActive_;
     }
@@ -55,4 +60,6 @@ protected:
 
 public:
     virtual void Edit() = 0;
+    virtual nlohmann::json ToJson() = 0;
+    virtual void FromJson(const nlohmann::json& json) = 0;
 };

@@ -2,6 +2,7 @@
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
+#include <json.hpp>
 
 class DxManager;
 class SEED;
@@ -73,8 +74,13 @@ private:
     int currentBufferIndex_ = 0;
 
     // ポストプロセスのリスト
-    std::list<std::unique_ptr<IPostProcess>> postProcesses_;
+    std::list<std::pair<std::unique_ptr<IPostProcess>,bool>> postProcesses_;
 
 private:
     void Edit();
+    nlohmann::json ToJson() const;
+    void FromJson(const nlohmann::json& json);
+
+public:
+    static void Load(const std::string& fileName);
 };

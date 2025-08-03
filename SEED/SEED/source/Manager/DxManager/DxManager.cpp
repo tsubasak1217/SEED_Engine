@@ -525,9 +525,6 @@ void DxManager::DrawPolygonAll(){
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
 
-    // GPUパーティクルシステムの更新
-    GPUParticleSystem::Update();
-
     // 毎フレーム一度セットする情報
     polygonManager_->BindFrameDatas();
 

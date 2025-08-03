@@ -347,6 +347,7 @@ void ResultDrawer::LoadFromJson(){
                     textItem.typeName = textJson["typeName"];
                     textItem.textBox.LoadFromJson(textJson["textBox"].back());
                     item.textItems.push_back(textItem);
+                    item.textItems.back().textBox.textBoxVisible = false;
                 }
             }
 

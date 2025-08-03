@@ -111,6 +111,9 @@ public:// ファイル・文字列関連 =======================================
     // projectのディレクトリまでのフルパスを取得する関数
     static std::filesystem::path GetProjectDirectory();
 
+    // ファイル名のみ抜き出す関数
+    static std::string ExtractFileName(const std::string& filePath,bool isContainExt);
+
     // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
     static std::string ToFullPath(const std::string& relativePath);
     static std::wstring ToFullPath(const std::wstring& relativePath);

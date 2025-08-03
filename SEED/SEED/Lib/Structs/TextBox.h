@@ -45,6 +45,7 @@ public:// パラメータなど
     int outlineSplitCount = 16;
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+    bool textBoxVisible = true;
 
 private:// フォーマット解析
     std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)
@@ -52,7 +53,6 @@ private:// フォーマット解析
 
 public:// 編集・入出力関連
 #ifdef _DEBUG
-    bool textBoxVisible = true;
     void Edit();
 #endif // _DEBUG
     nlohmann::json GetJsonData() const;

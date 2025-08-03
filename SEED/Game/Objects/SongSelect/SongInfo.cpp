@@ -103,6 +103,7 @@ void SongInfoDrawer::Initialize(){
     // テキストの初期化
     for(int i = 0; i < textBoxKeys.size(); i++){
         textBox[textBoxKeys[i]] = std::make_unique<TextBox2D>();
+        textBox[textBoxKeys[i]]->textBoxVisible = false;
         textBox[textBoxKeys[i]]->SetFont("DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf");
     }
 

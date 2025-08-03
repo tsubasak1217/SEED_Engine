@@ -1,4 +1,5 @@
 #include "GameState_Select.h"
+#include "SEED/Source/Manager/DxManager/PostEffect.h"
 
 GameState_Select::GameState_Select(){
     // ゲームマネージャーの初期化
@@ -13,6 +14,9 @@ GameState_Select::GameState_Select(Scene_Base* pScene){
     songSelector_->Initialize();
 
     backGroundDrawer_ = std::make_unique<SelectBackGroundDrawer>();
+
+    // ポストプロセスの設定
+    PostEffect::Load("SelectScene.json");
 }
 
 GameState_Select::~GameState_Select(){

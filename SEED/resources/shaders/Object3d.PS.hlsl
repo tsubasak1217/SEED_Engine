@@ -72,7 +72,6 @@ PixelShaderOutput main(MeshShaderOutput input) {
         float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectVector);
     
         output.color = gMaterial[input.instanceID].color * textureColor;
-        output.color.rgb += gMaterial[input.instanceID].environmentCoef * environmentColor.rgb;
     }
     
     

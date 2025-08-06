@@ -316,7 +316,8 @@ ComPtr<ID3D12Resource> CreateBufferResource(
     ID3D12Device* device, 
     size_t sizeInBytes,
     D3D12_HEAP_TYPE heapLocation, 
-    D3D12_RESOURCE_FLAGS resourceFlag
+    D3D12_RESOURCE_FLAGS resourceFlag,
+    D3D12_RESOURCE_STATES initialState
 ){
 
     //頂点リソース用のヒープの設定
@@ -346,7 +347,7 @@ ComPtr<ID3D12Resource> CreateBufferResource(
 
     hr = device->CreateCommittedResource(
         &uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
-        &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+        &bufferResourceDesc, initialState, nullptr,
         IID_PPV_ARGS(&bufferResource)
     );
 

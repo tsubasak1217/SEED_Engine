@@ -18,14 +18,21 @@ public:
         bufferResource.resource = CreateBufferResource(device, sizeInBytes,heapLocation, resourceFlag);
     }
 
-    // 解放されているかどうか
-    bool Released() const {
-        return bufferResource.resource == nullptr;
+    // 解放
+    void Release() {
+        if (bufferResource.resource) {
+            bufferResource.resource.Reset();
+            data = nullptr; // Mapしたデータもnullptrにする
+        }
     }
 
-    // 作成されているかどうか
-    bool IsCreated() const {
-        return bufferResource.resource != nullptr;
+    // State関連
+    void InitState(D3D12_RESOURCE_STATES _state) {
+        bufferResource.InitState(_state);
+    }
+
+    void TransitionState(D3D12_RESOURCE_STATES stateAfter) {
+        bufferResource.TransitionState(stateAfter);
     }
 
     // viewの作成
@@ -45,6 +52,11 @@ public:// アクセッサ
 
     D3D12_UNORDERED_ACCESS_VIEW_DESC& GetUAVDesc() {
         return bufferResource.uavDesc;
+    }
+
+    // virtualAddressの取得
+    D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const {
+        return bufferResource.resource->GetGPUVirtualAddress();
     }
 
     // handleの取得

@@ -12,104 +12,86 @@ RWStructuredBuffer<Particle> gParticles : register(u0, space0); // ‚±‚±‚Éƒp[ƒeƒ
 RWStructuredBuffer<int> gFreeListIndex : register(u1, space0); // Ÿ‚Ìg—p‚·‚éƒtƒŠ[ƒŠƒXƒg‚Ì—v‘f”Ô†
 StructuredBuffer<int> gFreeList : register(t1, space0);
 
+// ƒp[ƒeƒBƒNƒ‹‚Ì”
+RWStructuredBuffer<int> gParticleCount : register(u2, space0); // Ÿ‚Ìg—p‚·‚éƒtƒŠ[ƒŠƒXƒg‚Ì—v‘f”Ô†
+
 // ’è”
-ConstantBuffer<Int> gEmitterCount : register(b0); // ƒGƒ~ƒbƒ^[‚Ì”
-ConstantBuffer<Float> gDeltaTime : register(b1); // DeltaTime
-ConstantBuffer<Float> gCurrentTime : register(b2); // Œ»İ‚ÌŠÔ(—”—p)
+ConstantBuffer<Float> gDeltaTime : register(b0); // DeltaTime(—”—p)
+ConstantBuffer<Float> gTotalTime : register(b1); // (—”—p)
+ConstantBuffer<Int> gMaxParticleCount : register(b2); // Å‘åƒp[ƒeƒBƒNƒ‹”
 
 ///////////////////////////////////////////////////////////////////////
 // ƒGƒ~ƒbƒ^[‚Ìî•ñ‚ğ‚à‚Æ‚Éƒp[ƒeƒBƒNƒ‹‚ğ”­¶‚³‚¹‚éŠÖ”
 ///////////////////////////////////////////////////////////////////////
-void Emit(Emitter emitter, float seed) {
+void Emit(Emitter emitter,float seed) {
 
-    // —”¶¬Ší‚Ì‰Šú‰»
-    rand.Init(seed);
+    // ––”ö‚©‚çŒ¸‚ç‚µ‚Ä‚¢‚­•û®‚ÅƒtƒŠ[ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+    int freeIndex;
+    InterlockedAdd(gFreeListIndex[0], -1, freeIndex);
 
-    for (uint i = 0; i < emitter.numEmitEvery; ++i) {
-
-        // ––”ö‚©‚çŒ¸‚ç‚µ‚Ä‚¢‚­•û®‚ÅƒtƒŠ[ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
-        int freeIndex;
-        InterlockedAdd(gFreeListIndex[0], -1, freeIndex);
-
-        // ”ÍˆÍŠO‚Å”­¶‚³‚¹‚ç‚ê‚È‚¢ê‡,”Ô†‚ğ–ß‚µ‚ÄI—¹
-        if (freeIndex < 0 || freeIndex >= MAX_PARTICLE_COUNT) {
-            InterlockedAdd(gFreeListIndex[0], 1);
-            continue;
-        }
-        
-        // ƒtƒŠ[ƒŠƒXƒg‚©‚çƒp[ƒeƒBƒNƒ‹‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
-        uint freeListIndex = gFreeList[freeIndex];
-        
-        // ƒp[ƒeƒBƒNƒ‹‚Ì‰Šú‰»
-        // translate
-        float3 minPos = emitter.position - (emitter.emitRange * 0.5);
-        float3 maxPos = emitter.position + (emitter.emitRange * 0.5);
-        gParticles[freeListIndex].position = rand.Random3D(minPos, maxPos);
-        
-        // scale
-        gParticles[freeListIndex].kScale = rand.Random3D(emitter.minScale, emitter.maxScale);
-        gParticles[freeListIndex].scale = gParticles[freeListIndex].kScale;
-        
-        // ‰ñ“]‚Ì‰Šú‰»
-        if (emitter.isBillboard) {
-            gParticles[freeListIndex].isBillboard = true;
-        }
-        
-        if (emitter.useRotateAxis) {
-            gParticles[freeListIndex].rotateAxis = emitter.rotateAxis;
-        } else {
-            gParticles[freeListIndex].localRotation = Quaternion::ToQuaternion(rand.Random3D(emitter.minRotation, emitter.maxRotation));
-            gParticles[freeListIndex].rotateAxis = normalize(rand.Random3D(-1.0f, 1.0f)); // ƒ‰ƒ“ƒ_ƒ€‚È‰ñ“]²‚ğ¶¬
-        }
-        
-        gParticles[freeListIndex].rotateSpeed = rand.Random(emitter.minRotateSpeed, emitter.maxRotateSpeed);
-        
-        // Šî–{•ûŒü‚Æƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚ğ‘g‚İ‡‚í‚¹‚ÄÅI“I‚È•ûŒü‚ğŒˆ’è
-        gParticles[freeListIndex].direction = emitter.baseDirection;
-        float angleRange = 3.14f * clamp(emitter.directionRange, 0.0f, 1.0f);
-        float theta = rand.Random(-angleRange, angleRange); // …•½‰ñ“]
-        float phi = rand.Random(-angleRange / 2.0f, angleRange / 2.0f); // ‚’¼‰ñ“] (”ÍˆÍ‚ğ§ŒÀ)
-        float3 rotateVec = CreateVector(theta, phi); // ‹…–Êã‚ÌƒxƒNƒgƒ‹‚ğ¶¬
-        gParticles[freeListIndex].direction = Mul(rotateVec, Quaternion::DirectionToDirection(float3(1, 0, 0), gParticles[freeListIndex].direction)); // ‰ñ“]‚ğ“K—p
-    
-        // ‚»‚Ì‘¼
-        gParticles[freeListIndex].speed = rand.Random(emitter.minSpeed, emitter.maxSpeed);
-        gParticles[freeListIndex].lifeTime = rand.Random(emitter.minLifeTime, emitter.maxLifeTime);
-        gParticles[freeListIndex].currentTime = 0;
-        gParticles[freeListIndex].alive = true;
-        gParticles[freeListIndex].color = emitter.color;
-        
-        // ‘‚«‚İ
-        gParticles[freeListIndex].particleIndex = freeListIndex;
-        gParticles[freeListIndex].textureIdx = emitter.textureIndex;
+    // ”ÍˆÍŠO‚Å”­¶‚³‚¹‚ç‚ê‚È‚¢ê‡,”Ô†‚ğ–ß‚µ‚ÄI—¹
+    if (freeIndex < 0 || freeIndex >= gMaxParticleCount.value) {
+        InterlockedAdd(gFreeListIndex[0], 1);
+        return;
     }
+    
+    // —”¶¬Ší‚Ì‰Šú‰»
+    Random rand;
+    rand.Init(seed);
+    
+    // ƒtƒŠ[ƒŠƒXƒg‚©‚çƒp[ƒeƒBƒNƒ‹‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+    uint freeListIndex = gFreeList[freeIndex];
+    
+    // ƒp[ƒeƒBƒNƒ‹‚Ì‰Šú‰»
+    // translate
+    float3 minPos = emitter.position - (emitter.emitRange * 0.5);
+    float3 maxPos = emitter.position + (emitter.emitRange * 0.5);
+    gParticles[freeListIndex].position = rand.Get3D(minPos, maxPos);
+    
+    // scale
+    gParticles[freeListIndex].kScale = rand.Get3D(emitter.minScale, emitter.maxScale);
+    gParticles[freeListIndex].scale = gParticles[freeListIndex].kScale;
+    
+    // ‰ñ“]‚Ì‰Šú‰»
+    gParticles[freeListIndex].rotation = rand.Get1D(emitter.minRotation, emitter.maxRotation);
+    gParticles[freeListIndex].rotateSpeed = rand.Get1D(emitter.minRotateSpeed, emitter.maxRotateSpeed);
+    
+    // ”­Ë•ûŒü‚ğİ’è
+    gParticles[freeListIndex].direction = emitter.baseDirection;
+    float angleRange = PI * clamp(emitter.angleRange, 0.0f, 2.0f);
+    float theta = rand.Get1D(-angleRange, angleRange); // …•½‰ñ“]
+    float phi = rand.Get1D(-angleRange, angleRange); // ‚’¼‰ñ“] (”ÍˆÍ‚ğ§ŒÀ)
+    float3 rotateVec = CreateVector(theta, phi); // ‹…–Êã‚ÌƒxƒNƒgƒ‹‚ğ¶¬
+    gParticles[freeListIndex].direction = Mul(rotateVec, Quaternion::DirectionToDirection(float3(1, 0, 0), gParticles[freeListIndex].direction)); // ‰ñ“]‚ğ“K—p
+    
+    // ‚»‚Ì‘¼
+    gParticles[freeListIndex].color = emitter.color;
+    gParticles[freeListIndex].speed = rand.Get1D(emitter.minSpeed, emitter.maxSpeed);
+    gParticles[freeListIndex].lifeTime = rand.Get1D(emitter.minLifeTime, emitter.maxLifeTime);
+    gParticles[freeListIndex].currentTime = 0;
+    gParticles[freeListIndex].alive = true;
+    gParticles[freeListIndex].textureIdx = emitter.textureIndex;
+    gParticles[freeListIndex].particleIndex = freeListIndex;
+    
+    // ƒp[ƒeƒBƒNƒ‹‚Ì”‚ğ‘‚â‚·
+    InterlockedAdd(gParticleCount[0], 1);
 }
 
 
 ///////////////////////////////////////////////////////////////////////
 // ƒƒCƒ“ŠÖ”
 ///////////////////////////////////////////////////////////////////////
-[numthreads(MAX_EMITTER_COUNT, 1, 1)]
+[numthreads(256, 4, 1)]
 void CSMain(uint3 DTid : SV_DispatchThreadID) {
-
-    // ƒGƒ~ƒbƒ^[‚Ì”‚ğ’´‚¦‚½ê‡‚Í‰½‚à‚µ‚È‚¢
-    if (DTid.x >= gEmitterCount.value) {
-        return;
-    }
-
-    // I‚í‚Á‚Ä‚¢‚ê‚Îˆ—‚µ‚È‚¢
-    if (gEmitters[DTid.x].alive != 1) {
+    
+    // ”­¶”‚ğ’´‚¦‚½ê‡‚Í‰½‚à‚µ‚È‚¢
+    if (DTid.x >= gEmitters[DTid.y].numEmitEvery) {
         return;
     }
     
-    // seed‚ğŒvZ
-    float seed = (DTid.x * gCurrentTime.value) * gDeltaTime.value;
+    // —”—p‚ÌƒV[ƒh‚ğ¶¬
+    float seed = gTotalTime.value + gDeltaTime.value * DTid.x;
     
-    // ŠÔ‚ª—ˆ‚½‚ç”­¶
-    if (gEmitters[DTid.x].currentTime >= gEmitters[DTid.x].interval) {
-        
-        // ŒJ‚è•Ô‚·‚©‚Ç‚¤‚©‚Åˆ—‚ğ•ªŠò
-        Emit(gEmitters[DTid.x], seed);
-
-    }
+    // oŒ»‚³‚¹‚é
+    Emit(gEmitters[DTid.y],seed);
 }

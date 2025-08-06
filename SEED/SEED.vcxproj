@@ -336,6 +336,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />

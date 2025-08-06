@@ -14,7 +14,6 @@ PixelShaderOutput main(GPUParticleVSOutput input) {
         discard;
     }
 
-    //int GH = gMaterial[input.instanceID].GH;
     float4 textureColor = gTexture[input.particleTextureIdx].Sample(gSampler, input.texcoord);
     
      // “ü—Í‚ª“§–¾‚Ìê‡‚ÍŠü‹p

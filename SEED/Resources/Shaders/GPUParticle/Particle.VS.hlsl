@@ -36,18 +36,32 @@ GPUParticleVSOutput main(VertexShaderInput input, uint instanceID : SV_InstanceI
         return output;
     }
     
-    // billboardの場合はカメラの回転を掛ける
-    Quaternion finalRot = particles[instanceID].rotation;
-    //if(particles[instanceID].isBillboard) {
-    //    finalRot = cameraInfo.cameraRotation.Multiply(particles[instanceID].localRotation);
-    //}
-    
-    // ワールド行列の計算
-    float4x4 worldMat;
-    worldMat = AffineMatrix(
-        particles[instanceID].scale,
-        finalRot.ToFloat4(),
-        particles[instanceID].position
+    // カメラの方向（カメラ座標系のZ軸 = -forward）
+    float3 toCamera = normalize(cameraInfo.cameraPosition - particles[instanceID].position);
+
+    // 常にカメラの方を向くための基底
+    float3 up = float3(0, 1, 0);
+    float3 right = normalize(cross(up, -toCamera));
+    float3 forward = normalize(cross(right, up)); // or just toCamera
+
+    // Z軸回転（パーティクルのローカル回転）
+    float angle = particles[instanceID].rotation;
+    float cosA = cos(angle);
+    float sinA = sin(angle);
+
+    // Z回転行列を right と up に適用（回転軸は forward）
+    float3 rotatedRight = cosA * right + sinA * up;
+    float3 rotatedUp = -sinA * right + cosA * up;
+
+    // ワールド行列を構成
+    float3 scale = particles[instanceID].scale;
+    float3 pos = particles[instanceID].position;
+
+    float4x4 worldMat = float4x4(
+        float4(rotatedRight * scale.x, 0),
+        float4(rotatedUp * scale.y, 0),
+        float4(forward * scale.z, 0),
+        float4(pos, 1)
     );
     
     // WVP行列の計算

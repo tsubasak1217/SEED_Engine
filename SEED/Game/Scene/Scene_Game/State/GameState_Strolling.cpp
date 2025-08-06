@@ -7,7 +7,7 @@ GameState_Strolling::GameState_Strolling(){
 
 GameState_Strolling::GameState_Strolling(Scene_Base* pScene){
     pScene_ = pScene;
-    pScene_->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/scene.json");
+    //pScene_->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/scene.json");
     SEED::SetMainCamera("debug");
 }
 

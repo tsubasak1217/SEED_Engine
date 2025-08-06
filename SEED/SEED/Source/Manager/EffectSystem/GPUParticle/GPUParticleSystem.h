@@ -3,6 +3,7 @@
 #include <memory>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/DxBuffer.h>
+#include <SEED/Source/Manager/DxManager/DxReadbackBuffer.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <SEED/Lib/Structs/VertexData.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
@@ -47,10 +48,14 @@ private:
     void BindPerFrame();
     void Dispatch(const std::string& pipelineName, int32_t dispatchX, int32_t dispatchY);
 
+public:
+    void DrawGUI();
+
 private:
     // 最大数
-    int32_t maxParticleCount_ = 1024;
+    int32_t maxParticleCount_ = 1000000;
     int32_t maxEmitterCount_ = 0xff;
+    int32_t kMaxEmitEvery_ = 0xffff; // 1エミッターが一度に出せる最大発生数
     int32_t maxVertexCount_ = 10240000; // 最大頂点数
 
     // エミッター一覧
@@ -62,6 +67,8 @@ private:
     DxBuffer<uint32_t> particleFreeListBuffer_;
     DxBuffer<int32_t> particleFreeListIndexBuffer_;
     DxBuffer<GPUCameraInfo> cameraInfoBuffer_;
+    // デバッグ用の値確認バッファ
+    DxReadbackBuffer<int32_t> particleCountBuffer_;
     // 描画用のバッファ
     DxBuffer<VertexData> vertexBuffer_;
     DxBuffer<uint32_t> indexBuffer_;
@@ -69,7 +76,8 @@ private:
     D3D12_VERTEX_BUFFER_VIEW vbv_vertex;
     D3D12_INDEX_BUFFER_VIEW ibv;
 
+    // 32ビット定数用
     int32_t emitterCount_ = 0;
     float deltaTime_;
-    float totalTime_;
+    float totalTime_;// 現在の時刻
 };

@@ -94,4 +94,29 @@ float4x4 AffineMatrix(float3 scale, float4 quaternion, float3 translation) {
     return mul(mul(S, R), T);
 }
 
+float4x4 RotateMatrix(float3 rotationEuler) {
+    float cx = cos(rotationEuler.x);
+    float sx = sin(rotationEuler.x);
+    float cy = cos(rotationEuler.y);
+    float sy = sin(rotationEuler.y);
+    float cz = cos(rotationEuler.z);
+    float sz = sin(rotationEuler.z);
+    return float4x4(
+        cy * cz, -cy * sz, sy, 0,
+        sx * sy * cz + cx * sz, -sx * sy * sz + cx * cz, -sx * cy, 0,
+        -cx * sy * cz + sx * sz, cx * sy * sz + sx * cz, cx * cy, 0,
+        0, 0, 0, 1
+    );
+}
+
+float4x4 RotateMatrix(float4 quaternion) {
+    float x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
+    return float4x4(
+        1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w), 0,
+            2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w), 0,
+            2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y), 0,
+                            0, 0, 0, 1
+    );
+}
+
 #endif

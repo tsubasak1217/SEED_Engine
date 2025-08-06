@@ -9,16 +9,13 @@ struct GPUEmitter{
     Vector3 minScale;
     Vector3 maxScale;
     // rotate
-    Vector3 minRotation;
-    Vector3 maxRotation;
-    Vector3 rotateAxis;
-    int32_t useRotateAxis;// bool
+    float minRotation;
+    float maxRotation;
     float minRotateSpeed;
     float maxRotateSpeed;
-    int32_t isBillboard;// bool
     // direction
     Vector3 baseDirection;
-    float directionRange;
+    float angleRange;
     // speed
     float minSpeed;
     float maxSpeed;

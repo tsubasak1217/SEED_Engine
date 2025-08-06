@@ -14,6 +14,7 @@ struct DxResource{
 
     // stateの変更を行うための関数
     void TransitionState(D3D12_RESOURCE_STATES stateAfter);
+    void RevertState();
     void InitState(D3D12_RESOURCE_STATES _state);
 
     // viewの作成

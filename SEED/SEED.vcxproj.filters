@@ -311,6 +311,7 @@
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

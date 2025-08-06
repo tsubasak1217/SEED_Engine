@@ -26,6 +26,9 @@ struct Quaternion {
     static Quaternion AngleAxis(float angle, float3 axis);
     static Quaternion MatrixToQuaternion(inout float4x4 mat);
     static Quaternion ToQuaternion(float3 eulerRotate);
+    static Quaternion ToQuaternionX(float eulerX);
+    static Quaternion ToQuaternionY(float eulerY);
+    static Quaternion ToQuaternionZ(float eulerZ);
     static float3 ToEuler(inout Quaternion q);
     float3 ToEuler();
     float4 ToFloat4();
@@ -260,6 +263,23 @@ Quaternion Quaternion::ToQuaternion(float3 eulerRotate) {
     return MakeQuaternion(qx, qy, qz, qw);
 }
 
+// オイラー角からX軸のクォータニオンを作成
+Quaternion Quaternion::ToQuaternionX(float eulerX) {
+    float halfAngle = eulerX * 0.5f;
+    return MakeQuaternion(sin(halfAngle), 0.0f, 0.0f, cos(halfAngle));
+}
+
+// オイラー角からY軸のクォータニオンを作成
+Quaternion Quaternion::ToQuaternionY(float eulerY) {
+    float halfAngle = eulerY * 0.5f;
+    return MakeQuaternion(0.0f, sin(halfAngle), 0.0f, cos(halfAngle));
+}
+
+// オイラー角からZ軸のクォータニオンを作成
+Quaternion Quaternion::ToQuaternionZ(float eulerZ) {
+    float halfAngle = eulerZ * 0.5f;
+    return MakeQuaternion(0.0f, 0.0f, sin(halfAngle), cos(halfAngle));
+}
 
 // クォータニオンからオイラー角に変換
 float3 Quaternion::ToEuler(inout Quaternion q) {

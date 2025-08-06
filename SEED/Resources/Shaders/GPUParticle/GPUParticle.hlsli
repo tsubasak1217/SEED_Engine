@@ -2,9 +2,7 @@
 #define GPUPARTICLE_INCLUDED
 #include "../Math/Quaternion.hlsli"
 
-static const int MAX_PARTICLE_COUNT = 1024;
-static const int MAX_EMITTER_COUNT = 0xff;
-
+// GPUParticleはPlaneのみに機能を絞る。デフォルトでビルボード。
 struct Emitter {
     // position
     float3 position;
@@ -13,16 +11,13 @@ struct Emitter {
     float3 minScale;
     float3 maxScale;
     // rotate
-    float3 minRotation;
-    float3 maxRotation;
-    float3 rotateAxis;
-    bool useRotateAxis;
+    float minRotation;
+    float maxRotation;
     float minRotateSpeed;
     float maxRotateSpeed;
-    bool isBillboard;
     // direction
     float3 baseDirection;
-    float directionRange;
+    float angleRange;
     // speed
     float minSpeed;
     float maxSpeed;
@@ -43,21 +38,18 @@ struct Emitter {
 
 struct Particle {
     float3 position;
-    Quaternion rotation;
-    Quaternion localRotation;
+    float rotation;
     float3 kScale;
     float3 scale;
     float3 direction;
     float speed;
-    float3 rotateAxis;
     float rotateSpeed;
     float lifeTime;
     float currentTime;
     float4 color;
-    bool isBillboard;
-    bool alive;
     int textureIdx;
     int particleIndex;
+    bool alive;
 };
 
 struct GPUParticleVSOutput {

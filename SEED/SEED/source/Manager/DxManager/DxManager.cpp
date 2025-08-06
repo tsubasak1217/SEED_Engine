@@ -636,6 +636,7 @@ void DxManager::DrawGUI(){
 #ifdef USE_SUB_WINDOW
 
     PostEffect::instance_->Edit();
+    GPUParticleSystem::GetInstance()->DrawGUI();
 
 #endif // USE_SUB_WINDOW
 }

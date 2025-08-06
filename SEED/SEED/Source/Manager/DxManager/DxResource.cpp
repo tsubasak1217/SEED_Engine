@@ -21,6 +21,12 @@ void DxResource::TransitionState(D3D12_RESOURCE_STATES stateAfter){
     state = stateAfter;
 }
 
+// リソースの状態を元に戻す
+void DxResource::RevertState(){
+    // stateを遷移
+    TransitionState(stateBefore);
+}
+
 /// 初期化時に呼び出す関数
 void DxResource::InitState(D3D12_RESOURCE_STATES _state){
     // 初期化時のstateを保存

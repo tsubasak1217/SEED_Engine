@@ -16,6 +16,11 @@ DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
         kMaxViewCount_,// ディスクリプタ数
         true
     );
+
+    // フリーリストに全てのインデックスを追加(imguiが先頭を使うため1から)
+    for(uint32_t i = 1; i < kMaxViewCount_; ++i){
+        freeIndices_.push(i);
+    }
 }
 
 
@@ -30,7 +35,7 @@ uint32_t DescriptorHeap_SRV_CBV_UAV::CreateView(
 ){
 
     D3D12_CPU_DESCRIPTOR_HANDLE handleCPU;
-    handleCPU = GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, viewCount_);
+    handleCPU = GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, freeIndices_.front());
 
     // 形式に応じたviewを作成する
     if(viewType == VIEW_TYPE::SRV){
@@ -49,5 +54,8 @@ uint32_t DescriptorHeap_SRV_CBV_UAV::CreateView(
         assert(false);
     }
 
-    return viewCount_++;
+    viewCount_++;
+    uint32_t index = freeIndices_.front();
+    freeIndices_.pop();
+    return index;
 }

@@ -378,6 +378,9 @@ void AudioManager::LoadAudio(const std::string& filename){
         } else if(extention == "mp3" or extention == "m4a"){
             instance_->audios_[filename] = instance_->LoadMP3(MyFunc::ConvertString(correctPath).c_str());
 
+        } else if(extention == "mp4"){
+            instance_->audios_[filename] = instance_->LoadMP4(MyFunc::ConvertString(correctPath).c_str());
+
         } else{
             assert(false);
         }
@@ -548,6 +551,79 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename){
     pReader->Release();
     MFShutdown();
 
+    return soundData;
+}
+
+// mp4ファイルから音声を取り出して読み込む関数
+SoundData AudioManager::LoadMP4(const wchar_t* filename){
+    // MP4ファイルの読み込みはMedia Foundationを利用する
+    HRESULT hr = InitializeMediaFoundation();
+    if(FAILED(hr)){
+        throw std::runtime_error("Media Foundation initialization failed.");
+    }
+    IMFSourceReader* pReader = nullptr;
+    IMFMediaType* pOutputType = nullptr;
+    // MP4ファイルのSource Readerを作成
+    hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
+    if(FAILED(hr)){
+        MFShutdown();
+        throw std::runtime_error("Failed to create Source Reader.");
+    }
+    // 出力タイプをPCM (WAV) に設定
+    hr = MFCreateMediaType(&pOutputType);
+    if(FAILED(hr)){
+        pReader->Release();
+        MFShutdown();
+        throw std::runtime_error("Failed to create output media type.");
+    }
+    hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+    hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+    hr = pReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, pOutputType);
+    if(FAILED(hr)){
+        pOutputType->Release();
+        pReader->Release();
+        MFShutdown();
+        throw std::runtime_error("Failed to set media type.");
+    }
+    pOutputType->Release();
+    pOutputType = nullptr;
+    pReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutputType);
+    // サンプルを読み取ってデータを抽出
+    std::vector<BYTE> audioData;
+    while(true){
+        IMFSample* pMFSample{ nullptr };
+        DWORD dwStreamFlags{ 0 };
+        pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
+        if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
+            break;
+        }
+        IMFMediaBuffer* pMFMediaBuffer{ nullptr };
+        pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+        BYTE* pBuffer{ nullptr };
+        DWORD cbCurrentLength{ 0 };
+        pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
+        audioData.resize(audioData.size() + cbCurrentLength);
+        memcpy(audioData.data() + audioData.size() - cbCurrentLength, pBuffer, cbCurrentLength);
+        pMFMediaBuffer->Unlock();
+        pMFMediaBuffer->Release();
+        pMFSample->Release();
+    }
+    // SoundDataにデータを格納
+    SoundData soundData;
+    soundData.pBuffer = new BYTE[audioData.size()];
+    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer);
+    soundData.bufferSize = static_cast<uint32_t>(audioData.size());
+    // フォーマット情報を取得
+    hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
+    hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
+    hr = pOutputType->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, (UINT32*)&soundData.wfex.wBitsPerSample);
+    soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
+    soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
+    soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
+    // 後始末
+    pOutputType->Release();
+    pReader->Release();
+    MFShutdown();
     return soundData;
 }
 

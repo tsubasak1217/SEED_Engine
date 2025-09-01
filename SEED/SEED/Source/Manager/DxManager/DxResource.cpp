@@ -36,7 +36,7 @@ void DxResource::InitState(D3D12_RESOURCE_STATES _state){
 
 // SRVの作成
 void DxResource::CreateSRV(const std::string& viewName){
-    ViewManager::CreateView(
+    srvIndex = ViewManager::CreateView(
         VIEW_TYPE::SRV,
         resource.Get(),
         &srvDesc,
@@ -49,7 +49,7 @@ void DxResource::CreateSRV(const std::string& viewName){
 
 // UAVの作成
 void DxResource::CreateUAV(const std::string& viewName){
-    ViewManager::CreateView(
+    uavIndex = ViewManager::CreateView(
         VIEW_TYPE::UAV,
         resource.Get(),
         &uavDesc,

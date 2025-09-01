@@ -3,6 +3,7 @@
 #include <Game/Manager/RythmGameManager.h>
 #include <Game/Manager/SongSelector.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
+#include <SEED/Lib/Structs/VideoPlayer.h>
 #include <memory>
 
 class GameState_Select : public State_Base{
@@ -24,4 +25,5 @@ public:
 private:
     std::unique_ptr<SongSelector> songSelector_;
     std::unique_ptr< SelectBackGroundDrawer> backGroundDrawer_;
+    std::unique_ptr<VideoPlayer> video_;
 };

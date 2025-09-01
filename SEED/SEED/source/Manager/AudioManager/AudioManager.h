@@ -95,6 +95,7 @@ private:
     );
     SoundData LoadWave(const char* filename);
     SoundData LoadMP3(const wchar_t* filename);
+    SoundData LoadMP4(const wchar_t* filename);
     void UnloadAudio(SoundData* soundData);
 
 private:

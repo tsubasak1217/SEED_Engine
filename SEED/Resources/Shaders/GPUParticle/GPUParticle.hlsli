@@ -6,10 +6,14 @@
 struct Emitter {
     // position
     float3 position;
+    float pad1;
     float3 emitRange;
+    float pad2;
     // scale
     float3 minScale;
+    float pad3;
     float3 maxScale;
+    float pad4;
     // rotate
     float minRotation;
     float maxRotation;
@@ -17,10 +21,12 @@ struct Emitter {
     float maxRotateSpeed;
     // direction
     float3 baseDirection;
+    float pad5;
     float angleRange;
     // speed
     float minSpeed;
     float maxSpeed;
+    float pad6;
     // 色
     float4 color;
     // parameter
@@ -30,9 +36,10 @@ struct Emitter {
     float currentTime;
     int numEmitEvery;
     int textureIndex;
-    bool emit;
-    bool loop;
-    bool alive;
+    bool emit; // bool
+    bool loop; // bool
+    bool alive; // bool
+    float padding[3]; // 16バイト境界のためのパディング
 };
 
 

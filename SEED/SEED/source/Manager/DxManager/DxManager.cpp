@@ -8,6 +8,7 @@
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Manager/DxManager/PostEffect.h>
 #include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 DxManager* DxManager::instance_ = nullptr;
 
@@ -109,6 +110,7 @@ void DxManager::Initialize(SEED* pSEED){
 
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
+
 }
 
 
@@ -252,6 +254,14 @@ void DxManager::CreateCommanders(){
         0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator.Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf())
     );
     // コマンドリストの生成がうまくいかなかったので起動できない
+    assert(SUCCEEDED(hr));
+
+    hr = commandList->Close();// コマンドリスト閉じる
+    assert(SUCCEEDED(hr));
+    // リセットして次のフレーム用のコマンドリストを準備
+    hr = commandAllocator->Reset();
+    assert(SUCCEEDED(hr));
+    hr = commandList->Reset(commandAllocator.Get(), nullptr);
     assert(SUCCEEDED(hr));
 }
 
@@ -770,6 +780,7 @@ void DxManager::Release(){
     }
     PostEffect::GetInstance()->Release();
     GPUParticleSystem::Release();
+    VideoManager::GetInstance()->Release();
     delete polygonManager_;
     polygonManager_ = nullptr;
 

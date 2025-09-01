@@ -58,6 +58,7 @@ class DxManager{
     friend class ViewManager;
     friend class IPostProcess;
     friend class GPUParticleSystem;
+    friend class VideoPlayer;
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();

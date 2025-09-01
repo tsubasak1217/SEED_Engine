@@ -9,9 +9,11 @@ SamplerState gSampler : register(s0);
 // Particleのピクセルシェーダー
 PixelShaderOutput main(GPUParticleVSOutput input) {
 
+    PixelShaderOutput output;
+    
     // 無効なパーティクルは棄却
     if (input.particleTextureIdx == -1) {
-        discard;
+        output.color = float4(1,1,1,1);
     }
 
     float4 textureColor = gTexture[input.particleTextureIdx].Sample(gSampler, input.texcoord);
@@ -21,7 +23,6 @@ PixelShaderOutput main(GPUParticleVSOutput input) {
         discard;
     }
     
-    PixelShaderOutput output;
     output.color = input.particleColor * textureColor;
 
     

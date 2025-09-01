@@ -213,6 +213,8 @@ public:
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
     static void SetIsRepeatCursor(bool flag){instance_->isRepeatCursor_ = flag;}
     static void ToggleRepeatCursor(){ instance_->isRepeatCursor_ = !instance_->isRepeatCursor_; }
+    // アプリケーション終了フラグ
+    static bool GetIsEndAplication(){ return instance_->isEndAplication_; }
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */
@@ -225,6 +227,7 @@ private:// インスタンス
     bool isDebugCamera_ = false;
     float resolutionRate_ = 1.0f;
     bool isGridVisible_ = false;
+    bool isEndAplication_ = false;
     Vector4 clearColor_;
 
 private:// object

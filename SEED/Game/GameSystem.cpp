@@ -2,6 +2,7 @@
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Basic/Scene/SceneRegister.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 /////////////////////////////////////////////////////////////////
 // 静的メンバ変数の初期化
@@ -60,6 +61,8 @@ void GameSystem::Run() {
 void GameSystem::Update() {
     // シーンの更新
     instance_->pScene_->Update();
+    // ビデオの更新
+    VideoManager::GetInstance()->Update();
     // エフェクトの更新
     EffectSystem::Update();
     // すべての更新終了後にカメラを更新

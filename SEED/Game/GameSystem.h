@@ -18,13 +18,13 @@ public:
     static void Initialize();
     static void Finalize();
     static void Run();
+    static void BeginFrame();
+    static void EndFrame();
     static void ChangeScene(const std::string& sceneName);
 
 private:
     void Update();
     void Draw();
-    void BeginFrame();
-    void EndFrame();
     void DrawGUI();
 
 public:

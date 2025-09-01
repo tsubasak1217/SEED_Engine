@@ -7,7 +7,6 @@
 class DescriptorHeap;
 
 class ViewManager{
-
 private:
     // privateコンストラクタ
     ViewManager() = default;
@@ -41,6 +40,7 @@ public:
     static D3D12_GPU_DESCRIPTOR_HANDLE GetHandleGPU(HEAP_TYPE heapType, const std::string& viewName);
     static ID3D12DescriptorHeap* GetHeap(HEAP_TYPE heapType);
     static uint32_t GetDescriptorSize(HEAP_TYPE heapType);
+    static void UnloadView(HEAP_TYPE heapType, uint32_t index);
 
 private:
     std::unordered_map<std::string,std::unique_ptr<DescriptorHeap>>descriptorHeaps_;

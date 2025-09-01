@@ -9,6 +9,7 @@
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -204,6 +205,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
 void SEED::Finalize(){
     ImGuiManager::Finalize();
     DxManager::Finalize();
+    instance_->isEndAplication_ = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +255,9 @@ void SEED::EndFrame(){
     ImGuiManager::PostDraw();
     DxManager::GetInstance()->PostDraw();
 
+    // videoの終了時処理
+    VideoManager::GetInstance()->EndFrame();
+
     // 経過時間を取得
     ClockManager::EndFrame();
 }
@@ -268,12 +273,18 @@ void SEED::EndFrame(){
 
 void SEED::DrawTriangle(const Triangle& triangle){
     Matrix4x4 worldMat = AffineMatrix(triangle.scale, triangle.rotate, triangle.translate);
+    int GH = triangle.GH;
+
+    if(triangle.GH == -1){
+        GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    }
+
     instance_->pPolygonManager_->AddTriangle(
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
-        triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
+        GH,//triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         triangle.blendMode, triangle.cullMode
     );
 }

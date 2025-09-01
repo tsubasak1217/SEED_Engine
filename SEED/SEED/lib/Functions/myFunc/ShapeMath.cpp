@@ -67,7 +67,22 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
 
 Quad2D MakeBackgroundQuad2D(int32_t layer,const Vector4& color){
     Quad2D quad = MakeQuad2D(kWindowSize,color);
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x += kWindowSize.x * 0.5f;
+        quad.localVertex[i].y += kWindowSize.y * 0.5f;
+    }
     quad.drawLocation = DrawLocation::Back;
+    quad.layer = layer;
+    return quad;
+}
+
+Quad2D MakeFrontQuad2D(int32_t layer, const Vector4& color){
+    Quad2D quad = MakeQuad2D(kWindowSize,color);
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x += kWindowSize.x * 0.5f;
+        quad.localVertex[i].y += kWindowSize.y * 0.5f;
+    }
+    quad.drawLocation = DrawLocation::Front;
     quad.layer = layer;
     return quad;
 }

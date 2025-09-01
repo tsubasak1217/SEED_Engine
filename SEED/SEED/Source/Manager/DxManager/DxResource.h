@@ -9,8 +9,8 @@ struct DxResource{
     ComPtr<ID3D12Resource> resource;
 
     // desc
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = D3D12_SHADER_RESOURCE_VIEW_DESC{};
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = D3D12_UNORDERED_ACCESS_VIEW_DESC{};
 
     // stateの変更を行うための関数
     void TransitionState(D3D12_RESOURCE_STATES stateAfter);
@@ -22,6 +22,15 @@ struct DxResource{
     void CreateUAV(const std::string& viewName);
 
 public:
+    // viewのindexの取得
+    int32_t GetSRVIndex() const {
+        return srvIndex;
+    }
+
+    int32_t GetUAVIndex() const {
+        return uavIndex;
+    }
+
     // viewのハンドルの取得
     D3D12_GPU_DESCRIPTOR_HANDLE GetSRVHandle() const {
         return srvHandle;
@@ -50,6 +59,8 @@ private:
     std::string uavName; // UAVの名前
 
     // handle
+    int32_t srvIndex = -1;
+    int32_t uavIndex = -1;
     D3D12_GPU_DESCRIPTOR_HANDLE srvHandle;
     D3D12_GPU_DESCRIPTOR_HANDLE uavHandle;
 };

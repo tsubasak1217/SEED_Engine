@@ -124,11 +124,12 @@
     <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
-    <ClCompile Include="SEED\Source\Manager\Video\VideoDecoder.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\JumpComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\RoutineComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
+    <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -304,7 +305,6 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
-    <ClInclude Include="SEED\Source\Manager\Video\VideoDecoder.h" />
     <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\JumpComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\RoutineComponent.h" />
@@ -312,6 +312,8 @@
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
+    <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
+    <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
@@ -335,6 +337,7 @@
     <FxCompile Include="Resources\Shaders\GPUParticle\GPUParticleInit.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -54,19 +54,19 @@ uint32_t ViewManager::CreateView(
     if(viewType == VIEW_TYPE::SRV or viewType == VIEW_TYPE::CBV or viewType == VIEW_TYPE::UAV){
 
         handle = instance_->descriptorHeaps_["SRV_CBV_UAV"]->CreateView(viewType, pResource, pDesc);
-        instance_->handles_[(uint32_t)HEAP_TYPE::SRV_CBV_UAV].try_emplace(viewName, handle);
+        instance_->handles_[(uint32_t)HEAP_TYPE::SRV_CBV_UAV][viewName] = handle;
         return handle;
 
     } else if(viewType == VIEW_TYPE::RTV){
 
         handle = instance_->descriptorHeaps_["RTV"]->CreateView(viewType, pResource, pDesc);
-        instance_->handles_[(uint32_t)HEAP_TYPE::RTV].try_emplace(viewName, handle);
+        instance_->handles_[(uint32_t)HEAP_TYPE::RTV][viewName] = handle;
         return handle;
 
     } else if(viewType == VIEW_TYPE::DSV){
 
         handle = instance_->descriptorHeaps_["DSV"]->CreateView(viewType, pResource, pDesc);
-        instance_->handles_[(uint32_t)HEAP_TYPE::DSV].try_emplace(viewName, handle);
+        instance_->handles_[(uint32_t)HEAP_TYPE::DSV][viewName] = handle;
         return handle;
     }
 
@@ -251,5 +251,26 @@ uint32_t ViewManager::GetDescriptorSize(HEAP_TYPE heapType){
     } else{
         assert(false);
         return 0;
+    }
+}
+
+/// <summary>
+/// viewをアンロードする関数
+/// </summary>
+/// <param name="heapType"></param>
+/// <param name="index"></param>
+void ViewManager::UnloadView(HEAP_TYPE heapType, uint32_t index){
+
+    if(!instance_){ return; }
+
+    if(heapType == HEAP_TYPE::SRV_CBV_UAV){
+        instance_->descriptorHeaps_["SRV_CBV_UAV"]->UnloadView(index);
+        return;
+    } else if(heapType == HEAP_TYPE::RTV){
+        instance_->descriptorHeaps_["RTV"]->UnloadView(index);
+        return;
+    } else if(heapType == HEAP_TYPE::DSV){
+        instance_->descriptorHeaps_["DSV"]->UnloadView(index);
+        return;
     }
 }

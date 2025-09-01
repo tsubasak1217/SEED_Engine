@@ -17,6 +17,10 @@ GameState_Select::GameState_Select(Scene_Base* pScene){
 
     // ポストプロセスの設定
     PostEffect::Load("SelectScene.json");
+
+    // videoの初期化
+    video_ = std::make_unique<VideoPlayer>("xx.mp4");
+    video_->Play(0.0f, 1.0f, true);
 }
 
 GameState_Select::~GameState_Select(){
@@ -43,6 +47,14 @@ void GameState_Select::Draw(){
 
     // 背景描画クラスの描画
     backGroundDrawer_->Draw();
+
+    Quad2D quad = MakeBackgroundQuad2D(10);
+    //Quad2D quad = MakeFrontQuad2D(10);
+    video_->Draw(quad);
+    video_->DrawGUI();
+
+    quad = MakeEqualQuad2D(30.0f);
+    SEED::DrawQuad2D(quad);
 }
 
 void GameState_Select::BeginFrame(){

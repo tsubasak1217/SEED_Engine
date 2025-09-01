@@ -1,0 +1,119 @@
+#pragma once
+//stl
+#include <deque>
+#include <optional>
+// Media Foundation
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+#pragma comment(lib, "Mf.lib")
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "Mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
+// DirectX用
+#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+
+// SEED
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Lib/Shapes/Quad.h>
+#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Source/Manager/DxManager/DxResource.h>
+#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+
+// file
+#include <fstream>
+// ComPtr
+#include <wrl/client.h>
+
+using Microsoft::WRL::ComPtr;
+using VideoHandle = uint32_t;
+
+
+struct VideoData{
+    std::string filePath;
+    uint32_t widthY = 0;
+    uint32_t heightY = 0;
+    uint32_t widthUV = 0;
+    uint32_t heightUV = 0;
+    float frameRate = 0.0f;
+    float duration = 0.0f;
+    uint64_t frameCount = 0;
+    GUID videoFormat;
+};
+
+struct Frame{
+    double timePoint; // 表示時刻(秒)
+    ComPtr<IMFSample> sample;
+};
+
+struct VideoPlayerContext{
+    float decodedTime = 0.0f; // デコード済みの時間
+    float currentTime = 0.0f;
+    float frameAccumulator = 0.0f; // フレームの累積時間
+    bool isLoop = false;
+    bool isPlaying = true;
+    bool isAudioStarted = false; // 音声が開始されたかどうか
+    bool isUseAudio = true; // 音声を再生するかどうか
+    float playSpeedRate = 1.0f;
+};
+
+struct VideoItems{
+    bool removeOrder = false;
+    ComPtr<IMFSourceReader> reader_;
+    // Defaultヒープに設置するYUVテクスチャ
+    DxResource frameTextureY_;
+    DxResource frameTextureUV_;
+    // CPU側からGPU側にアップロードするためのテクスチャ
+    DxResource uploadTextureY_;
+    DxResource uploadTextureUV_;
+    // 最終結果結合用のテクスチャ
+    DxResource frameTextureRGBA_;
+    // 音声再生用のハンドル
+    std::string audioFilePath;
+    std::optional<AudioHandle> audioHandle;
+};
+
+
+class VideoPlayer{
+    friend class DxManager;
+    friend class VideoManager;
+
+public:
+    VideoPlayer() = default;
+    VideoPlayer(const std::string& filename,bool isUseAudio = true) : VideoPlayer() {
+        LoadVideo(filename,isUseAudio);
+    }
+    ~VideoPlayer();
+
+public: // 操作用
+    void LoadVideo(const std::string& filename,bool isUseAudio = true);
+    void Draw(Quad2D quad);
+    void Draw(Quad quad);
+    void DrawGUI();
+
+private:// VideoManagerが呼び出す
+    void Update();
+    void StartAudio();
+
+public:// 操作用
+
+    void Play(float time = 0.0f, float speedRate = 1.0f,bool loop = false);
+    void Pause();
+    void Resume();
+
+private:// 内部関数
+    void CreateReader(ID3D12Device* pDevice,const std::string& filePath);
+    void SetMediaFormat(GUID format);
+    void GetVideoInfo();
+    void SetStartPosition(float time);
+    void CreateResources(ID3D12Device* pDevice);
+    void CopyFrameToTextures(IMFSample* sample);
+    void NV12ToRGBA();
+
+private:
+    static inline std::string directory_ = "Resources/Videos/";
+    VideoData videoData_;
+    VideoPlayerContext context_;
+    VideoItems* videoItem_;
+};

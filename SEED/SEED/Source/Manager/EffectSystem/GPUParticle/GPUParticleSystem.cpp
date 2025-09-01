@@ -25,15 +25,14 @@ void GPUParticleSystem::Initialize(){
     instance_->InitPSO();
     // リソースの作成
     instance_->CreateResources();
-    // 初期化状態の設定
-    instance_->InitState();
     // 情報のバインド
     instance_->BindInfo();
     // 初期化CSの実行
     int32_t dispatchX = (instance_->maxParticleCount_ + 1023) / 1024;
     instance_->Dispatch("GPUParticle/GPUParticleInitCS.pip", dispatchX, 1);
     // モデルの初期化
-    instance_->currentModelData_ = ModelManager::GetInstance()->GetModelData("DefaultAssets/plane/plane.obj");
+    //instance_->currentModelData_ = ModelManager::GetInstance()->GetModelData("DefaultAssets/plane/plane.obj");
+    instance_->currentModelData_ = ModelManager::GetInstance()->GetModelData("DefaultAssets/cube/cube.obj");
 }
 
 
@@ -61,54 +60,34 @@ void GPUParticleSystem::CreateResources(){
             D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_FLAG_NONE
         );
 
-        // SRVとして初期化
-        emitterBuffer_.bufferResource.InitState(D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-
         // Mapする
         emitterBuffer_.Map();
 
-        // SRVのdescの設定
-        auto& srvDesc = emitterBuffer_.GetSRVDesc();
-        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-        srvDesc.Buffer.NumElements = 1;
-        srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-        srvDesc.Buffer.StructureByteStride = sizeof(GPUEmitter);
-
-        // ヒープをセット
-        ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV) };
-        DxManager::instance_->commandList->SetDescriptorHeaps(1, ppHeaps);
-
-        // Viewを作成
-        emitterBuffer_.CreateSRV("EmitterBuffer_SRV");
-
-        // emitterを追加
-        for(int32_t i = 0; i < 1; ++i){
-            auto& emitter = instance_->emitters_.emplace_back(GPUEmitter());
-            emitter.position = Vector3(0.0f, 0.0f, 0.0f);
-            emitter.emitRange = Vector3(3.0f, 3.0f, 3.0f);
-            emitter.minScale = Vector3(0.1f, 0.1f, 0.1f);
-            emitter.maxScale = Vector3(1.0f, 1.0f, 1.0f);
-            emitter.minRotation = 0.0f;
-            emitter.maxRotation = 0.0f;
-            emitter.minRotateSpeed = -10.0f;
-            emitter.maxRotateSpeed = 10.0f;
-            emitter.baseDirection = Vector3(0.0f, 1.0f, 0.0f);
-            emitter.angleRange = 1.0f;
-            emitter.minSpeed = 10.0f;
-            emitter.maxSpeed = 10.0f;
-            emitter.color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-            emitter.minLifeTime = 1.0f;
-            emitter.maxLifeTime = 2.0f;
-            emitter.interval = 1.0f / 60.0f;
-            emitter.currentTime = 0.0f;
-            emitter.numEmitEvery = 500;
-            emitter.emit = false;
-            emitter.loop = true;
-            emitter.alive = true;
-            emitter.textureIndex = TextureManager::LoadTexture("ParticleTextures/particle.png");
-            //emitter.textureIndex = TextureManager::LoadTexture("ParticleTextures/white.png");
-        }
+        // emitterを初期化
+        auto& emitter = instance_->emitter_;
+        emitter.position = Vector3(0.0f, 0.0f, 0.0f);
+        emitter.emitRange = Vector3(3.0f, 3.0f, 3.0f);
+        emitter.minScale = Vector3(0.1f, 0.1f, 0.1f);
+        emitter.maxScale = Vector3(1.0f, 1.0f, 1.0f);
+        emitter.minRotation = 0.0f;
+        emitter.maxRotation = 0.0f;
+        emitter.minRotateSpeed = -10.0f;
+        emitter.maxRotateSpeed = 10.0f;
+        emitter.baseDirection = Vector3(0.0f, 1.0f, 0.0f);
+        emitter.angleRange = 1.0f;
+        emitter.minSpeed = 10.0f;
+        emitter.maxSpeed = 10.0f;
+        emitter.color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        emitter.minLifeTime = 1.0f;
+        emitter.maxLifeTime = 2.0f;
+        emitter.interval = 1.0f / 60.0f;
+        emitter.currentTime = 0.0f;
+        emitter.numEmitEvery = 50;
+        emitter.emit = false;
+        emitter.loop = true;
+        emitter.alive = true;
+        //emitter.textureIndex = TextureManager::LoadTexture("ParticleTextures/particle.png");
+        emitter.textureIndex = TextureManager::LoadTexture("ParticleTextures/white.png");
     }
 
 
@@ -258,17 +237,6 @@ void GPUParticleSystem::CreateResources(){
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// 初期化状態の設定
-//////////////////////////////////////////////////////////////////////////
-void GPUParticleSystem::InitState(){
-
-
-    // UAVとして初期化
-
-
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 // 情報のバインド
@@ -282,7 +250,7 @@ void GPUParticleSystem::BindInfo(){
     PSOManager::SetBindInfo("GPUParticle/GPUParticleInitCS.pip", "gMaxParticleCount", &maxParticleCount_);
 
     // EmitterUpdateCS
-    PSOManager::SetBindInfo("GPUParticle/EmitterUpdateCS.pip", "gEmitters", emitterBuffer_.GetSRVHandle());
+    PSOManager::SetBindInfo("GPUParticle/EmitterUpdateCS.pip", "gEmitter", emitterBuffer_.GetGPUVirtualAddress());
     PSOManager::SetBindInfo("GPUParticle/EmitterUpdateCS.pip", "gParticles", particleBuffer_.GetUAVHandle());
     PSOManager::SetBindInfo("GPUParticle/EmitterUpdateCS.pip", "gFreeListIndex", particleFreeListIndexBuffer_.GetUAVHandle());
     PSOManager::SetBindInfo("GPUParticle/EmitterUpdateCS.pip", "gFreeList", particleFreeListBuffer_.GetSRVHandle());
@@ -301,8 +269,13 @@ void GPUParticleSystem::BindInfo(){
 
     // GPUParticleVS
     PSOManager::SetBindInfo("GPUParticle/GPUParticleVS.pip", "particles", particleBuffer_.GetSRVHandle());
-    PSOManager::SetBindInfo("GPUParticle/GPUParticleVS.pip", "cameraInfo", cameraInfoBuffer_.bufferResource.resource->GetGPUVirtualAddress());
+    PSOManager::SetBindInfo("GPUParticle/GPUParticleVS.pip", "cameraInfo", cameraInfoBuffer_.GetGPUVirtualAddress());
     PSOManager::SetBindInfo("GPUParticle/GPUParticleVS.pip", "gTexture", ViewManager::GetHandleGPU(HEAP_TYPE::SRV_CBV_UAV, 0));
+
+    // descriptorHeapのセット
+    ID3D12DescriptorHeap* ppHeaps[] = { ViewManager::GetHeap(HEAP_TYPE::SRV_CBV_UAV) };
+    DxManager::instance_->commandList->SetDescriptorHeaps(1, ppHeaps);
+
 }
 
 
@@ -329,6 +302,109 @@ void GPUParticleSystem::Dispatch(const std::string& pipelineName, int32_t dispat
 
     // 実行
     commandList->Dispatch(dispatchX, dispatchY, 1);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// 更新
+//////////////////////////////////////////////////////////////////////////
+void GPUParticleSystem::Update(){
+
+    // エミッターの時間を更新-----------------------------------------------
+
+    auto& emitter = instance_->emitter_;
+    emitter.currentTime += ClockManager::DeltaTime();
+
+    if(emitter.currentTime >= emitter.interval){
+        emitter.emit = true; // エミットフラグを立てる
+    }
+
+
+
+    // hlsl用の変数やバッファの更新------------------------------------------
+
+    // 時間の更新
+    instance_->deltaTime_ = ClockManager::DeltaTime();
+    instance_->totalTime_ += instance_->deltaTime_;
+
+    // 頂点情報、インデックス情報を書き込む
+    if(instance_->currentModelData_){
+        int vertexCount = 0;
+        int indexCount = 0;
+
+        for(auto& mesh : instance_->currentModelData_->meshes){
+            // 頂点情報の書き込み
+            std::memcpy(
+                instance_->vertexBuffer_.data + vertexCount,
+                mesh.vertices.data(),
+                sizeof(VertexData) * mesh.vertices.size()
+            );
+
+            // インデックス情報の書き込み
+            std::memcpy(
+                instance_->indexBuffer_.data + indexCount,
+                mesh.indices.data(),
+                sizeof(uint32_t) * mesh.indices.size()
+            );
+
+            // 頂点数とインデックス数を更新
+            vertexCount += (int32_t)mesh.vertices.size();
+            indexCount += (int32_t)mesh.indices.size();
+        }
+    }
+
+    // CSのDispatch処理--------------------------------------------------------
+
+    // UAVの状態に変更
+    instance_->particleBuffer_.bufferResource.TransitionState(
+        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+    );
+
+    // SRVの状態に変更
+    instance_->particleFreeListBuffer_.bufferResource.TransitionState(
+        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+    );
+
+
+    // エミットフラグが立っている時だけ
+    if(emitter.emit){
+
+        // エミッターの情報をリソースに書き込む
+        auto* data = instance_->emitterBuffer_.data;
+        std::memcpy(
+            data,
+            &emitter,
+            sizeof(GPUEmitter)
+        );
+
+        // エミッターのフラグや時間を元に戻す
+        if(emitter.loop){
+            emitter.currentTime -= emitter.interval;
+            emitter.emit = false;
+        } else{
+            emitter.alive = false;
+            emitter.emit = false;
+        }
+
+        // dispatch
+        int32_t dispatchX = (emitter.numEmitEvery + 1023) / 1024;
+        instance_->Dispatch("GPUParticle/EmitterUpdateCS.pip", dispatchX, 1);
+    }
+
+
+    // UAVの状態に変更
+    instance_->particleFreeListBuffer_.bufferResource.TransitionState(
+        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+    );
+
+    // パーティクルの更新
+    int32_t dispatchX = (instance_->maxParticleCount_ + 1023) / 1024;
+    if(dispatchX != 0){
+        instance_->Dispatch("GPUParticle/ParticleUpdateCS.pip", dispatchX, 1);
+    }
+
+    // コピーする
+    instance_->particleCountBuffer_.CopyToReadbackBuffer(DxManager::instance_->commandList.Get());
 }
 
 
@@ -399,125 +475,6 @@ void GPUParticleSystem::Draw(const std::string& cameraName){
 
 
 //////////////////////////////////////////////////////////////////////////
-// 更新
-//////////////////////////////////////////////////////////////////////////
-void GPUParticleSystem::Update(){
-
-    // エミッターの時間を更新-----------------------------------------------
-    for(auto& emitter : instance_->emitters_){
-
-        if(emitter.alive == false){
-            continue; // エミッターが生存していない場合はスキップ
-        }
-
-        // エミッターの更新
-        emitter.currentTime += ClockManager::DeltaTime();
-
-        if(emitter.currentTime >= emitter.interval){
-            emitter.emit = true; // エミットフラグを立てる
-        }
-    }
-
-
-    // hlsl用の変数やバッファの更新------------------------------------------
-
-    // 時間の更新
-    instance_->deltaTime_ = ClockManager::DeltaTime();
-    instance_->totalTime_ += instance_->deltaTime_;
-
-    // 頂点情報、インデックス情報を書き込む
-    if(instance_->currentModelData_){
-        int vertexCount = 0;
-        int indexCount = 0;
-
-        for(auto& mesh : instance_->currentModelData_->meshes){
-            // 頂点情報の書き込み
-            std::memcpy(
-                instance_->vertexBuffer_.data + vertexCount,
-                mesh.vertices.data(),
-                sizeof(VertexData) * mesh.vertices.size()
-            );
-
-            // インデックス情報の書き込み
-            std::memcpy(
-                instance_->indexBuffer_.data + indexCount,
-                mesh.indices.data(),
-                sizeof(uint32_t) * mesh.indices.size()
-            );
-
-            // 頂点数とインデックス数を更新
-            vertexCount += (int32_t)mesh.vertices.size();
-            indexCount += (int32_t)mesh.indices.size();
-        }
-    }
-
-    // CSのDispatch処理--------------------------------------------------------
-
-    // UAVの状態に変更
-    instance_->particleBuffer_.bufferResource.TransitionState(
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-    );
-
-    // SRVの状態に変更
-    instance_->particleFreeListBuffer_.bufferResource.TransitionState(
-        D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
-    );
-
-
-    // エミットフラグが立っているものだけを抽出
-    std::vector<GPUEmitter> emitFlaggedEmitters;
-    for(auto& emitter : instance_->emitters_){
-        if(emitter.emit){
-            // エミッターがエミットフラグを立てている場合は、emitFlaggedEmittersに追加
-            emitFlaggedEmitters.push_back(emitter);
-
-            // エミッターのフラグや時間を元に戻す
-            if(emitter.loop){
-                emitter.currentTime -= emitter.interval;
-                emitter.emit = false;
-            } else{
-                emitter.alive = false;
-                emitter.emit = false;
-            }
-        }
-    }
-
-    // エミットするエミッターがあれば
-    if(!emitFlaggedEmitters.empty()){
-        // エミッターの情報をリソースに書き込む
-        instance_->emitterCount_ = (int32_t)emitFlaggedEmitters.size();
-        auto* data = instance_->emitterBuffer_.data;
-        std::memcpy(
-            data,
-            emitFlaggedEmitters.data(),
-            sizeof(GPUEmitter) * instance_->emitterCount_
-        );
-
-        // dispatch
-        int32_t dispatchX = (instance_->kMaxEmitEvery_ + 255) / 256;
-        int32_t dispatchY = (instance_->emitterCount_ + 3) / 4;
-        instance_->Dispatch("GPUParticle/EmitterUpdateCS.pip", dispatchX, dispatchY);
-    }
-
-
-    // UAVの状態に変更
-    instance_->particleFreeListBuffer_.bufferResource.TransitionState(
-        D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-    );
-
-    // パーティクルの更新
-    int32_t dispatchX = (instance_->maxParticleCount_ + 1023) / 1024;
-    if(dispatchX != 0){
-        instance_->Dispatch("GPUParticle/ParticleUpdateCS.pip", dispatchX, 1);
-    }
-
-    // コピーする
-    instance_->particleCountBuffer_.CopyToReadbackBuffer(DxManager::instance_->commandList.Get());
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
 // 解放
 //////////////////////////////////////////////////////////////////////////
 void GPUParticleSystem::Release(){
@@ -546,27 +503,40 @@ void GPUParticleSystem::DrawGUI(){
     ImFunc::CustomBegin("GPUParticleSystem", MoveOnly_TitleBar);
     {
         ImGui::Text("パーティクル数: %d / %d", particleCountBuffer_.GetValue(), instance_->maxParticleCount_);
-        ImGui::Text("エミッター数: %d / %d", instance_->emitters_.size(), instance_->maxEmitterCount_);
+        
+        if(currentModelData_){
+            ImGui::Text("頂点数: %d", (int)currentModelData_->meshes[0].vertices.size());
+            ImGui::Text("インデックス数: %d", (int)currentModelData_->meshes[0].indices.size());
+        }
 
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
 
-        for(auto& emitter : instance_->emitters_){
-            ImGui::DragFloat3("Position", &emitter.position.x, 0.01f);
-            ImGui::DragFloat3("EmitRange", &emitter.emitRange.x, 0.01f);
-            ImGui::DragFloat3("MinScale", &emitter.minScale.x, 0.01f);
-            ImGui::DragFloat3("MaxScale", &emitter.maxScale.x, 0.01f);
-            ImGui::DragFloat("MinRotation", &emitter.minRotation, 0.01f);
-            ImGui::DragFloat("MaxRotation", &emitter.maxRotation, 0.01f);
-            ImGui::DragFloat("MinRotateSpeed", &emitter.minRotateSpeed, 0.01f);
-            ImGui::DragFloat("MaxRotateSpeed", &emitter.maxRotateSpeed, 0.01f);
-            ImGui::DragFloat("AngleRange", &emitter.angleRange, 0.01f);
-            ImGui::DragFloat("MinSpeed", &emitter.minSpeed, 0.01f);
-            ImGui::DragFloat("MaxSpeed", &emitter.maxSpeed, 0.01f);
-            ImGui::ColorEdit4("Color", &emitter.color.x);
-            ImGui::DragFloat("MinLifeTime", &emitter.minLifeTime, 0.01f);
-            ImGui::DragFloat("MaxLifeTime", &emitter.maxLifeTime, 0.01f);
-            ImGui::DragFloat("Interval", &emitter.interval, 0.01f,0.0f,100.0f);
-            ImGui::DragInt("NumEmitEvery", &emitter.numEmitEvery, 1, 1, instance_->kMaxEmitEvery_);
+        ImGui::DragFloat3("Position", &emitter_.position.x, 0.01f);
+        ImGui::DragFloat3("EmitRange", &emitter_.emitRange.x, 0.01f);
+        ImGui::DragFloat3("MinScale", &emitter_.minScale.x, 0.01f);
+        ImGui::DragFloat3("MaxScale", &emitter_.maxScale.x, 0.01f);
+        ImGui::DragFloat("MinRotation", &emitter_.minRotation, 0.01f);
+        ImGui::DragFloat("MaxRotation", &emitter_.maxRotation, 0.01f);
+        ImGui::DragFloat("MinRotateSpeed", &emitter_.minRotateSpeed, 0.01f);
+        ImGui::DragFloat("MaxRotateSpeed", &emitter_.maxRotateSpeed, 0.01f);
+        ImGui::DragFloat("AngleRange", &emitter_.angleRange, 0.01f);
+        ImGui::DragFloat("MinSpeed", &emitter_.minSpeed, 0.01f);
+        ImGui::DragFloat("MaxSpeed", &emitter_.maxSpeed, 0.01f);
+        ImGui::ColorEdit4("Color", &emitter_.color.x);
+        ImGui::DragFloat("MinLifeTime", &emitter_.minLifeTime, 0.01f);
+        ImGui::DragFloat("MaxLifeTime", &emitter_.maxLifeTime, 0.01f);
+        ImGui::DragFloat("Interval", &emitter_.interval, 0.01f, 0.0f, 100.0f);
+        ImGui::DragInt("NumEmitEvery", &emitter_.numEmitEvery, 1, 1);
 
+        // モデル形状の選択
+        static std::filesystem::path modelPath = "Resources/Models/";
+        static std::filesystem::path rootPath = "Resources/Models/";
+        std::string selected = ImFunc::FolderView("エミットモデル選択", modelPath, false, { ".obj", ".gltf",".glb"}, rootPath);
+        if(!selected.empty()){
+            // 選択されたモデルを読み込む
+            instance_->currentModelData_ = ModelManager::GetInstance()->GetModelData(selected);
         }
 
         ImGui::End();

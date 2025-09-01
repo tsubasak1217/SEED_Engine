@@ -30,9 +30,10 @@ GPUParticleVSOutput main(VertexShaderInput input, uint instanceID : SV_InstanceI
     
     GPUParticleVSOutput output;
     output.instanceID = instanceID;
-    
+
     if (particles[instanceID].alive == false) {
         output.particleTextureIdx = -1; // パーティクルが死んでいる場合はテクスチャインデックスを無効にする
+        output.position = float4(0, 0, 0, 1); // 無効な位置にしておく
         return output;
     }
     

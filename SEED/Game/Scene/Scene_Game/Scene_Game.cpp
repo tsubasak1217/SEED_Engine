@@ -7,8 +7,6 @@
 
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
-#include <Game/Scene/Scene_Game/State/GameState_Select.h>
-#include <Game/Scene/Scene_Game/State/GameState_Strolling.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -43,8 +41,7 @@ void Scene_Game::Initialize(){
     SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
 
     // Playステートに初期化
-    //ChangeState(new GameState_Strolling(this));
-    ChangeState(new GameState_Select(this));
+    ChangeState(new GameState_Play(this));
 
     if(currentState_){
         currentState_->Initialize();

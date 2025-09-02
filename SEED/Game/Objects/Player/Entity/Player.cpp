@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 
 // inputDevice
@@ -36,6 +37,10 @@ void Player::Initialize() {
 
     // json適応
     ApplyJson();
+
+    // 初期化値
+    // 最初は右向き
+    moveDirection_ = LR::RIGHT;
 }
 
 bool Player::IsPutBorder() const {
@@ -63,6 +68,22 @@ void Player::Update() {
 
     // 状態を更新
     stateController_->Update(*this);
+
+    // 向いている方向を更新
+    UpdateMoveDirection();
+}
+
+void Player::UpdateMoveDirection() {
+
+    // 入力値に応じて向きを更新
+    float vector = inputMapper_->GetVector(PlayerInputAction::MoveX);
+    if (vector < 0.0f) {
+
+        moveDirection_ = LR::LEFT;
+    } else if (0.0f < vector) {
+
+        moveDirection_ = LR::RIGHT;
+    }
 }
 
 void Player::Draw() {
@@ -84,7 +105,12 @@ void Player::Edit() {
         if (ImGui::BeginTabBar("PlayerTab")) {
             if (ImGui::BeginTabItem("PlayerParam")) {
 
+                ImGui::Text("moveDirection: %s", EnumAdapter<LR>::ToString(moveDirection_));
+
+                ImGui::Separator();
+
                 ImGui::DragFloat2("spriteSize", &sprite_.size.x, 0.1f);
+                ImGui::DragFloat2("spriteAnchor", &sprite_.anchorPoint.x, 0.1f);
                 ImGui::DragFloat2("spriteTranslate", &sprite_.translate.x, 0.1f);
                 ImGui::EndTabItem();
             }

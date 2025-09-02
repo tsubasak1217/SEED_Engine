@@ -8,7 +8,6 @@
 
 // c++
 #include <unordered_map>
-// front
 
 //============================================================================
 //	PlayerStateController class

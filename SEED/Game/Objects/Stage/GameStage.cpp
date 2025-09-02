@@ -71,7 +71,7 @@ void GameStage::UpdateBorderLine() {
     if (!borderLine_->IsActive() && player_->IsPutBorder()) {
 
         // 境界線をアクティブ状態にする
-        borderLine_->SetActivate(player_->GetSprite().translate,
+        borderLine_->SetActivate(player_->GetSprite().translate, player_->GetMoveDirection(),
             player_->GetSprite().translate.y + player_->GetSprite().size.y);
     } else if (borderLine_->IsActive() && player_->IsRemoveBorder()) {
 

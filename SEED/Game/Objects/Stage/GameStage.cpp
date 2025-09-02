@@ -137,7 +137,7 @@ void GameStage::CreateHologramBlock() {
         BlockComponent* component = block->GetComponent<BlockComponent>(block->GetName());
 
         const Vector2 sourcePos = component->GetBlockTranslate();
-        const BlockType sourceType = component->GetBlockType();
+        //const BlockType sourceType = component->GetBlockType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
         if (!(playerY < sourcePos.y)) {
             continue;

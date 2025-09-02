@@ -49,7 +49,8 @@ private:
     // プレイヤー
     std::unique_ptr<Player> player_;
     // ブロックのリスト
-    std::list<GameObject*> blocks_;
+    std::list<GameObject*> blocks_;         // 通常
+    std::list<GameObject*> hologramBlocks_; // ホログラム
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
 
@@ -61,7 +62,12 @@ private:
 
     // init
     void InitializeBlock(BlockType blockType, uint32_t index);
+    void CreateDebugBlock();
 
     // update
     void UpdateBorderLine();
+
+    // helper
+    void CreateHologramBlock();
+    void RemoveHologramBlock();
 };

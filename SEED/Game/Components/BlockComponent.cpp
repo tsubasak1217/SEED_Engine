@@ -18,6 +18,8 @@ void BlockComponent::Initialize() {
 
 void BlockComponent::Initialize(BlockType blockType, const Vector2& translate) {
 
+    blockType_ = blockType;
+
     // インスタンスを作成
     block_ = CreateBlockInstance(blockType);
     // 座標を設定

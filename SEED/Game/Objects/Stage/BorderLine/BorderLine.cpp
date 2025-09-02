@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
-#include <Environment/Environment.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>

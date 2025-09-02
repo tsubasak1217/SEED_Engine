@@ -36,8 +36,11 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    // 座標の設定
     void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    void SetCommonState(BlockCommonState state) { commonState_ = state; }
+
+    const Vector2& GetTranslate() const { return sprite_.translate; }
+    BlockCommonState GetCommonState() const { return commonState_; }
 protected:
     //========================================================================
     //	protected Methods

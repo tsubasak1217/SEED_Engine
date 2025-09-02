@@ -22,6 +22,8 @@ void Player::Initialize() {
     sprite_ = Sprite("DefaultAssets/ellipse.png");
     // 仮初期位置(X適当、Yブロックの上位置)
     sprite_.translate = Vector2(128.0f, 612.0f);
+    // 見にくいので赤
+    sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 
     // json適応
     ApplyJson();

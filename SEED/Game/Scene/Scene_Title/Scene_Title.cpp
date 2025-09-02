@@ -9,7 +9,6 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Title::Scene_Title(){
-    Initialize();
     SEED::SetMainCamera("default");
 }
 
@@ -49,8 +48,11 @@ void Scene_Title::Update(){
     if(currentEventState_){
         currentEventState_->Update();
     }
-}
 
+    if(Input::IsTriggerKey(DIK_SPACE)){
+        ChangeScene("Select");
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //

@@ -125,6 +125,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Components\BlockComponent.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
       <SubType>
       </SubType>
@@ -247,6 +248,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
     <ClInclude Include="Game\Components\BlockComponent.h" />
     <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h">
       <SubType>

@@ -85,6 +85,7 @@ void Player::Edit() {
             if (ImGui::BeginTabItem("PlayerParam")) {
 
                 ImGui::DragFloat2("spriteSize", &sprite_.size.x, 0.1f);
+                ImGui::DragFloat2("spriteTranslate", &sprite_.translate.x, 0.1f);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("State")) {

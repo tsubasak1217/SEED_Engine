@@ -9,7 +9,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear(){
-    Initialize();
+
 }
 
 Scene_Clear::~Scene_Clear(){}
@@ -105,7 +105,10 @@ void Scene_Clear::EndFrame(){
     }
 
     if(sceneChangeOrder){
-        ChangeScene("Game");
+        //ステップとorderをリセットしてシーン変更
+        step_ = 0;
+        sceneChangeOrder = false;
+        ChangeScene("Select");
         return;
     }
 }

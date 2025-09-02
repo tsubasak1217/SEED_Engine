@@ -14,10 +14,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game() : Scene_Base(){
+Scene_Game::Scene_Game() : Scene_Base() {
 };
 
-Scene_Game::~Scene_Game(){
+Scene_Game::~Scene_Game() {
+
     Scene_Base::Finalize();
     SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
@@ -29,7 +30,7 @@ Scene_Game::~Scene_Game(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize(){
+void Scene_Game::Initialize() {
 
     // パーティクルの初期化
     EffectSystem::DeleteAll();
@@ -43,7 +44,7 @@ void Scene_Game::Initialize(){
     // Playステートに初期化
     ChangeState(new GameState_Play(this));
 
-    if(currentState_){
+    if (currentState_) {
         currentState_->Initialize();
     }
 
@@ -70,6 +71,12 @@ void Scene_Game::Initialize(){
     // スプライトの初期化
     ////////////////////////////////////////////////////
 
+    //========================================================================
+    //	ステージ
+    //========================================================================
+
+    stage_ = std::make_unique<GameStage>();
+    stage_->Initialize();
 
     ////////////////////////////////////////////////////
     // Audio の 初期化
@@ -98,7 +105,7 @@ void Scene_Game::Finalize() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update(){
+void Scene_Game::Update() {
 
     /*========================== ImGui =============================*/
 
@@ -108,17 +115,26 @@ void Scene_Game::Update(){
     // ヒエラルキー内のオブジェクトの更新
     hierarchy_->Update();
 
-    if(currentState_){
+    if (currentState_) {
         currentState_->Update();
     }
 
-    if(currentEventState_){
+    if (currentEventState_) {
         currentEventState_->Update();
+    }
+
+    if (Input::IsTriggerKey(DIK_RETURN)) {
+        ChangeScene("Clear");
     }
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
+    //========================================================================
+    //	ステージ
+    //========================================================================
 
+    stage_->Update();
+    stage_->Edit();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -127,19 +143,19 @@ void Scene_Game::Update(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw(){
+void Scene_Game::Draw() {
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if(currentEventState_){
+    if (currentEventState_) {
         currentEventState_->Draw();
     }
 
-    if(currentState_){
+    if (currentState_) {
         currentState_->Draw();
     }
 
-    //SEED::DrawSkyBox(true);
+    SEED::DrawSkyBox(true);
     //SEED::DrawGrid();
 
     /*==================== 各オブジェクトの基本描画 =====================*/
@@ -150,6 +166,8 @@ void Scene_Game::Draw(){
     // ライトをセット
     directionalLight_->SendData();
 
+    // ステージ
+    stage_->Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -157,13 +175,13 @@ void Scene_Game::Draw(){
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame(){
+void Scene_Game::BeginFrame() {
 
     // ヒエラルキー内のオブジェクトの描画
     hierarchy_->BeginFrame();
 
     // 現在のステートがあればフレーム開始処理を行う
-    if(currentState_){
+    if (currentState_) {
         currentState_->BeginFrame();
     }
 }
@@ -174,13 +192,13 @@ void Scene_Game::BeginFrame(){
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame(){
+void Scene_Game::EndFrame() {
 
     // ヒエラルキー内のオブジェクトのフレーム終了処理
     hierarchy_->EndFrame();
 
     // 現在のステートがあればフレーム終了処理を行う
-    if(currentState_){
+    if (currentState_) {
         currentState_->EndFrame();
     }
 }
@@ -191,9 +209,9 @@ void Scene_Game::EndFrame(){
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::HandOverColliders(){
+void Scene_Game::HandOverColliders() {
 
-    if(currentState_){
+    if (currentState_) {
         currentState_->HandOverColliders();
     }
 }

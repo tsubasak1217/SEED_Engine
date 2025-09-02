@@ -1,11 +1,20 @@
 #pragma once
+
+//============================================================================
+//	include
+//============================================================================
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <Game/Objects/Stage/Block/Interface/IBlock.h>
 
-class BlockComponent : public IComponent{
+//============================================================================
+//	BlockComponent class
+//============================================================================
+class BlockComponent : public IComponent {
 public:
     BlockComponent(GameObject2D* pOwner, const std::string& tagName = "");
     ~BlockComponent() = default;
+
     void Initialize()override;
     void BeginFrame() override;
     void Update() override;
@@ -18,7 +27,19 @@ public:
     nlohmann::json GetJsonData() const override;
     void LoadFromJson(const nlohmann::json& jsonData) override;
 
+    void Initialize(BlockType blockType, const Vector2& translate);
 private:
+    //========================================================================
+    //	private Methods
+    //========================================================================
+
+    //--------- variables ----------------------------------------------------
+
     // IBlockを継承したブロックのインスタンスを持つ
-    //std::unique_ptr<IBlock*> block_ = nullptr;
+    std::unique_ptr<IBlock> block_ = nullptr;
+
+    //--------- functions ----------------------------------------------------
+
+    // helper
+    std::unique_ptr<IBlock> CreateBlockInstance(BlockType blockType) const;
 };

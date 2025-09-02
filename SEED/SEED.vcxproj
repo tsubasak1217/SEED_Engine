@@ -125,6 +125,55 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Components\BlockComponent.cpp" />
+    <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Entity\Player.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerMoveState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\GameStage.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Collider2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
@@ -239,7 +288,84 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
     <ClInclude Include="Game\Components\BlockComponent.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\PlayerInputActionEnum.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Entity\Player.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerJumpState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerMoveState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Block\Enum\BlockType.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Block\Interface\IBlock.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\GameStage.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Input\InputMapper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
@@ -289,7 +415,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />

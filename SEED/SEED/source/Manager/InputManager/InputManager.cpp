@@ -24,7 +24,7 @@ std::unordered_map<PAD_BUTTON, uint32_t>Input::buttonMap_ = {
     {PAD_BUTTON::LT,VK_PAD_LTRIGGER},
     {PAD_BUTTON::RT,VK_PAD_RTRIGGER}
 };
-
+float Input::deadZone_=1600.0f;
 
 // デストラクタ
 Input::~Input(){

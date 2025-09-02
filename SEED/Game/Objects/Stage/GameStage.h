@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject.h>
+#include <Game/Objects/Player/Entity/Player.h>
 
 // c++
 #include <list>
@@ -43,7 +44,9 @@ private:
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
-
+    
+    // プレイヤー
+    std::unique_ptr<Player> player_;
     // ブロックのリスト
     std::list<GameObject*> blocks_;
 
@@ -58,7 +61,4 @@ private:
 
     // init
     void InitializeBlock(BlockType blockType, uint32_t index);
-
-    // helper
-    std::string GetBlockTextureName(BlockType blockType) const;
 };

@@ -115,6 +115,12 @@
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
     <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp" />
     <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp" />
+    <ClCompile Include="Game\Objects\Player\Entity\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerMoveState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -286,6 +292,13 @@
     <ClInclude Include="SEED\Lib\Input\InputMapper.h" />
     <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h" />
     <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h" />
+    <ClInclude Include="Game\Objects\Player\Entity\Player.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h" />
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerMoveState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerJumpState.h" />
+    <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

@@ -133,6 +133,30 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Entity\Player.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerMoveState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
       <SubType>
       </SubType>
@@ -265,6 +289,34 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\Input\PlayerInputActionEnum.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Entity\Player.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerJumpState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerMoveState.h">
       <SubType>
       </SubType>
     </ClInclude>

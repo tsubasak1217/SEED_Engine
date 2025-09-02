@@ -126,7 +126,7 @@ private:
     XINPUT_STATE xInputState_[XUSER_MAX_COUNT];
     XINPUT_STATE preXInputState_[XUSER_MAX_COUNT];
     bool connected_[XUSER_MAX_COUNT];
-    float deadZone_;
+    static float deadZone_;
 
     // ボタン管理用変数
     static std::unordered_map<PAD_BUTTON, uint32_t>buttonMap_;

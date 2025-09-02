@@ -134,6 +134,10 @@ inline void to_json(nlohmann::json& j, const Vector2& vec){
 
 // JSONをVector2に変換する関数
 inline void from_json(const nlohmann::json& j, Vector2& vec){
+
+    if (j.empty()) {
+        return;
+    }
     if(!j.contains("x") || !j.contains("y")){
         vec.x = j[0].get<float>();
         vec.y = j[1].get<float>();

@@ -12,10 +12,19 @@
 float PlayerGamePadInput::GetVector(PlayerInputAction axis) const {
 
     float value = Input::GetStickValue(LR::LEFT).x;
+    if (std::abs(value) < std::numeric_limits<float>::epsilon()) {
+        return 0.0f;
+    }
     switch (axis) {
     case PlayerInputAction::MoveX: {
+        // プラス値かマイナス値で返す値を決定する
+        if (value < 0.0f) {
 
-        return value;
+            return -1.0f;
+        } else {
+
+            return 1.0f;
+        }
     }
     }
     return 0.0f;

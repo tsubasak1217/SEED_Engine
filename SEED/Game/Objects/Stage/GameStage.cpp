@@ -35,6 +35,7 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
 
 void GameStage::Initialize() {
 
+    // ブロック(テスト用)
     // 指定数分作成して並べる
     const uint32_t kMaxBlockNum = 64;
     for (uint32_t index = 0; index < kMaxBlockNum; ++index) {
@@ -42,13 +43,18 @@ void GameStage::Initialize() {
         InitializeBlock(BlockType::Normal, index);
     }
 
+    // プレイヤー
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
+
     // json適応
     ApplyJson();
 }
 
 void GameStage::Update() {
 
-
+    // プレイヤーの更新処理
+    player_->Update();
 }
 
 void GameStage::Draw() {
@@ -58,6 +64,9 @@ void GameStage::Draw() {
 
         block->Draw();
     }
+
+    // プレイヤーの描画
+    player_->Draw();
 }
 
 void GameStage::Edit() {
@@ -85,18 +94,4 @@ void GameStage::SaveJson() {
     nlohmann::json data;
 
     JsonAdapter::Save(kJsonPath_, data);
-}
-
-std::string GameStage::GetBlockTextureName(BlockType blockType) const {
-
-    // ブロックごとに使用するテクスチャのファイルパスを返す
-    std::string textureName{};
-    switch (blockType) {
-    case BlockType::Normal: {
-
-        textureName = "Scene_Game/normalBlock.png";
-        break;
-    }
-    }
-    return textureName;
 }

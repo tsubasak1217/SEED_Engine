@@ -3,11 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-
-// engine
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Tensor/Vector2.h>
-// game
 #include <Game/Objects/Stage/Block/Enum/BlockType.h>
 
 // c++

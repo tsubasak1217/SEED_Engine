@@ -1,9 +1,12 @@
 #pragma once
 #include <SEED/Source/Basic/Scene/State_Base.h>
 #include <json.hpp>
+#include <memory>
 
+#include <SEED/Lib/Input/InputMapper.h>
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/TextBox.h>
+#include <Game/Scene/Input/PauseMenuInputActionEnum.h>
 
 class GameState_Pause : public State_Base {
 public:
@@ -30,4 +33,7 @@ private:
 
     Vector2 menuPos_[3];
     Vector2 menuSize_;
+
+    std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
+    bool changeStateRequest_ = false;
 };

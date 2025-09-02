@@ -1,7 +1,7 @@
 {
     "BorderLine": {
         "sprite_.anchorPoint": {
-            "x": 1.0,
+            "x": 0.5,
             "y": 0.949999988079071
         },
         "sprite_.size.x": 8.0

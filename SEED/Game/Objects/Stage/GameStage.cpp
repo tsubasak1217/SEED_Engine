@@ -147,10 +147,6 @@ void GameStage::Draw() {
 
         object->Draw();
     }
-    for (const auto& block : hologramBlocks_) {
-
-        block->Draw();
-    }
 
     // 境界線の描画
     borderLine_->Draw();
@@ -170,11 +166,6 @@ void GameStage::Edit() {
             if (ImGui::BeginTabItem("BorderLine")) {
 
                 borderLine_->Edit();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Hologram")) {
-
-                ImGui::Text("blockCount: %d", static_cast<uint32_t>(hologramBlocks_.size()));
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

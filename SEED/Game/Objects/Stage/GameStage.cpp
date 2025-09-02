@@ -48,7 +48,7 @@ void GameStage::CreateDebugBlock() {
         const float x = centerX + i * stepX;
         const float y = bottomTranslateY - i * stepY;
         // 0.0fまで行ったら終了
-        if (y < 0.0f) {
+        if (y < 256.0f) {
             break;
         }
 
@@ -136,10 +136,11 @@ void GameStage::CreateHologramBlock() {
         // オブジェクトのブロックコンポーネントを取得
         BlockComponent* component = block->GetComponent<BlockComponent>();
 
+        // コピー対象のブロック情報
         const Vector2 sourcePos = component->GetBlockTranslate();
-        //const BlockType sourceType = component->GetBlockType();
+        const BlockType sourceType = component->GetBlockType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
-        if (!(playerY < sourcePos.y)) {
+        if (!(playerY > sourcePos.y)) {
             continue;
         }
 
@@ -155,13 +156,20 @@ void GameStage::CreateHologramBlock() {
         dstPos.y = roundToTile(sourcePos.y);
 
         // 元のタイプでブロックを作成
-        //GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+        GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+        BlockComponent* newComponent = newBlock->AddComponent<BlockComponent>();
+        newComponent->Initialize(sourceType, dstPos);
+        newComponent->SetBlockCommonState(BlockCommonState::Hologram);
+        hologramBlocks_.push_back(std::move(newBlock));
     }
 }
 
 void GameStage::RemoveHologramBlock() {
 
     // 作成したホログラムオブジェクトをすべて破棄する
+    for (GameObject2D* object : hologramBlocks_) {
+        delete object;
+    }
     hologramBlocks_.clear();
 }
 
@@ -169,6 +177,10 @@ void GameStage::Draw() {
 
     // 全てのブロックを描画
     for (const auto& block : blocks_) {
+
+        block->Draw();
+    }
+    for (const auto& block : hologramBlocks_) {
 
         block->Draw();
     }
@@ -194,6 +206,11 @@ void GameStage::Edit() {
             if (ImGui::BeginTabItem("BorderLine")) {
 
                 borderLine_->Edit();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Hologram")) {
+
+                ImGui::Text("blockCount: %d", static_cast<uint32_t>(hologramBlocks_.size()));
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

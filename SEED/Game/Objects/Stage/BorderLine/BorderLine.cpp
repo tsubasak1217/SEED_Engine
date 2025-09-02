@@ -16,6 +16,7 @@ void BorderLine::Initialize() {
 
     // スプライトを初期化
     sprite_ = Sprite("DefaultAssets/checkerBoard.png");
+    sprite_.color.w = 0.8f;
 
     // 初期状態を設定
     currentState_ = State::Disable;

@@ -48,7 +48,7 @@ void GameStage::CreateDebugBlock() {
         const float x = centerX + i * stepX;
         const float y = bottomTranslateY - i * stepY;
         // 0.0fまで行ったら終了
-        if (y < 0.0f) {
+        if (y < 256.0f) {
             break;
         }
 
@@ -98,9 +98,13 @@ void GameStage::UpdateBorderLine() {
     // 境界線がまだ置かれていないとき
     if (!borderLine_->IsActive() && player_->IsPutBorder()) {
 
+        // 境界線のX座標を一番占有率の高いブロックの端に設定する
+        const float axisX = ComputeBorderAxisXFromContact();
+        Vector2 placePos = player_->GetSprite().translate;
+        placePos.x = axisX;
+
         // 境界線をアクティブ状態にする
-        borderLine_->SetActivate(player_->GetSprite().translate, player_->GetMoveDirection(),
-            player_->GetSprite().translate.y + player_->GetSprite().size.y);
+        borderLine_->SetActivate(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
 
         // ホログラムブロックを生成する
         CreateHologramBlock();
@@ -123,7 +127,7 @@ void GameStage::CreateHologramBlock() {
 
     // ブロック幅
     const float tile = 32.0f;
-    const float axisX = player_->GetSprite().translate.x;
+    const float axisX = borderLine_->GetSprite().translate.x;
     const float playerY = player_->GetSprite().translate.y;
     const int direction = static_cast<int>(player_->GetMoveDirection());
 
@@ -136,10 +140,11 @@ void GameStage::CreateHologramBlock() {
         // オブジェクトのブロックコンポーネントを取得
         BlockComponent* component = block->GetComponent<BlockComponent>();
 
+        // コピー対象のブロック情報
         const Vector2 sourcePos = component->GetBlockTranslate();
-        //const BlockType sourceType = component->GetBlockType();
+        const BlockType sourceType = component->GetBlockType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
-        if (!(playerY < sourcePos.y)) {
+        if (!(playerY > sourcePos.y)) {
             continue;
         }
 
@@ -155,13 +160,20 @@ void GameStage::CreateHologramBlock() {
         dstPos.y = roundToTile(sourcePos.y);
 
         // 元のタイプでブロックを作成
-        //GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+        GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+        BlockComponent* newComponent = newBlock->AddComponent<BlockComponent>();
+        newComponent->Initialize(sourceType, dstPos);
+        newComponent->SetBlockCommonState(BlockCommonState::Hologram);
+        hologramBlocks_.push_back(std::move(newBlock));
     }
 }
 
 void GameStage::RemoveHologramBlock() {
 
     // 作成したホログラムオブジェクトをすべて破棄する
+    for (GameObject2D* object : hologramBlocks_) {
+        delete object;
+    }
     hologramBlocks_.clear();
 }
 
@@ -169,6 +181,10 @@ void GameStage::Draw() {
 
     // 全てのブロックを描画
     for (const auto& block : blocks_) {
+
+        block->Draw();
+    }
+    for (const auto& block : hologramBlocks_) {
 
         block->Draw();
     }
@@ -196,6 +212,11 @@ void GameStage::Edit() {
                 borderLine_->Edit();
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("Hologram")) {
+
+                ImGui::Text("blockCount: %d", static_cast<uint32_t>(hologramBlocks_.size()));
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
@@ -220,4 +241,57 @@ void GameStage::SaveJson() {
     borderLine_->ToJson(data["BorderLine"]);
 
     JsonAdapter::Save(kJsonPath_, data);
+}
+
+float GameStage::ComputeBorderAxisXFromContact() const {
+
+    // 1枚のマップサイズ
+    const float tile = 32.0f;
+
+    // プレイヤーAABBを設定
+    const auto& ps = player_->GetSprite();
+    const float px0 = ps.translate.x - ps.size.x * ps.anchorPoint.x;
+    const float py0 = ps.translate.y - ps.size.y * ps.anchorPoint.y;
+    RectFloat playerRect{ px0, px0 + ps.size.x, py0, py0 + ps.size.y };
+
+    float bestArea = 0.0f;
+    Vector2 bestBlk = { std::nanf(""), std::nanf("") };
+
+    // 面積が最大に重なっているブロックを探す
+    for (GameObject2D* block : blocks_) {
+
+        BlockComponent* component = block->GetComponent<BlockComponent>();
+        // 左上頂点でAABBを設定
+        const Vector2 blockTranslate = component->GetBlockTranslate();
+        RectFloat blockRect{ blockTranslate.x, blockTranslate.x + tile,
+                     blockTranslate.y, blockTranslate.y + tile };
+
+        const float area = OverlapArea(playerRect, blockRect);
+        if (bestArea < area) {
+
+            bestArea = area;
+            bestBlk = blockTranslate;
+        }
+    }
+
+    if (!(bestArea > 0.0f)) {
+        return std::round(ps.translate.x / tile) * tile;
+    }
+
+    // 左右半分で判定して、端xを決める
+    RectFloat blkLeft{ bestBlk.x, bestBlk.x + tile * 0.5f,bestBlk.y, bestBlk.y + tile };
+    RectFloat blkRight{ bestBlk.x + tile * 0.5f, bestBlk.x + tile,bestBlk.y, bestBlk.y + tile };
+    const float areaL = OverlapArea(playerRect, blkLeft);
+    const float areaR = OverlapArea(playerRect, blkRight);
+
+    // 多く触れている方の端の座標を返す
+    const float axisX = (areaL >= areaR) ? bestBlk.x : (bestBlk.x + tile);
+    return axisX;
+}
+
+float GameStage::OverlapArea(const RectFloat& rectA, const RectFloat& rectB) const {
+
+    const float w = (std::max)(0.0f, (std::min)(rectA.right, rectB.right) - (std::max)(rectA.left, rectB.left));
+    const float h = (std::max)(0.0f, (std::min)(rectA.bottom, rectB.bottom) - (std::max)(rectA.top, rectB.top));
+    return w * h;
 }

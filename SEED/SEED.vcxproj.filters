@@ -317,6 +317,8 @@
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="SEED\Lib\Structs\Rect.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />

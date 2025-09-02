@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <SEED/Lib/Structs/Rect.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
@@ -70,4 +71,6 @@ private:
     // helper
     void CreateHologramBlock();
     void RemoveHologramBlock();
+    float ComputeBorderAxisXFromContact() const;
+    float OverlapArea(const RectFloat& rectA,const RectFloat& rectB) const;
 };

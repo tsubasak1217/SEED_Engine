@@ -9,3 +9,6 @@
 #include <SEED/Source/Basic/Components/MoveComponent.h>
 #include <SEED/Source/Basic/Components/JumpComponent.h>
 #include <SEED/Source/Basic/Components/RoutineComponent.h>
+
+// Game固有のコンポーネントを以下に追加してください
+#include <Game/Components/BlockComponent.h>

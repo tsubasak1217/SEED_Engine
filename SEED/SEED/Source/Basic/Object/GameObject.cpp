@@ -412,6 +412,12 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
             auto* routineComponent = AddComponent<RoutineComponent>();
             routineComponent->LoadFromJson(componentJson);
         }
+
+        // ゲーム固有のコンポーネントの場合
+        if(componentType == "Block"){
+            auto* blockComponent = AddComponent<BlockComponent>();
+            blockComponent->LoadFromJson(componentJson);
+        }
     }
 }
 
@@ -543,6 +549,12 @@ void GameObject::EditGUI(){
         }
         if(ImGui::Button("RoutineComponent / ルーチン")){
             AddComponent<RoutineComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        // ゲーム固有のコンポーネントをここに追加していく
+        if(ImGui::Button("BlockComponent / ブロック")){
+            AddComponent<BlockComponent>();
             ImGui::CloseCurrentPopup();
         }
 

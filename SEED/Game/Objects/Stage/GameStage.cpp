@@ -82,7 +82,7 @@ void GameStage::CreateHologramBlock() {
     // ホログラムを生成する
 
     // オブジェクト幅
-    const float tile = 32.0f;
+    const float tile = stageObjectMapTileSize_;
     const float axisX = borderLine_->GetSprite().translate.x;
     const float playerY = player_->GetSprite().translate.y;
     const int direction = static_cast<int>(player_->GetMoveDirection());
@@ -103,7 +103,7 @@ void GameStage::CreateHologramBlock() {
         const Vector2 sourcePos = component->GetBlockTranslate();
         const StageObjectType sourceType = component->GetStageObjectType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
-        if (!(playerY > sourcePos.y)) {
+        if (!(playerY >= sourcePos.y)) {
             continue;
         }
 
@@ -116,7 +116,7 @@ void GameStage::CreateHologramBlock() {
         // 境界線Xを軸に左右対称に反転した座標を設定する
         Vector2 dstPos;
         dstPos.x = roundToTile(2.0f * axisX - sourcePos.x);
-        dstPos.y = roundToTile(sourcePos.y);
+        dstPos.y = sourcePos.y;
 
         // 元のタイプでオブジェクトを作成
         GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
@@ -230,7 +230,7 @@ void GameStage::SaveJson() {
 float GameStage::ComputeBorderAxisXFromContact() const {
 
     // 1枚のマップサイズ
-    const float tile = 32.0f;
+    const float tile = stageObjectMapTileSize_;
 
     // プレイヤーAABBを設定
     const auto& ps = player_->GetSprite();

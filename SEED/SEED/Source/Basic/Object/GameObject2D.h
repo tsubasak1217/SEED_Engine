@@ -48,16 +48,42 @@ public:// コンポーネントの管理関数
         return static_cast<TComponent*>(components_.back().get());
     }
 
+    // 型と名前で取得
     template<typename TComponent>
-    TComponent* GetComponent(const std::string& tagName){
+    TComponent* GetComponent(const std::string& tagName = ""){
         static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
         for(auto& component : components_){
             // 名前が一致しているか
-            if(component->GetTagName() == tagName){
+            if(!tagName.empty()){
+                if(component->GetTagName() == tagName){
+                    // 型が一致しているか
+                    if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
+                        return foundComponent;
+                    }
+                }
+            } else{
                 // 型が一致しているか
                 if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
                     return foundComponent;
                 }
+            }
+        }
+        return nullptr;
+    }
+
+    // 型とインデックスで取得
+    template<typename TComponent>
+    TComponent* GetComponent(uint32_t index){
+        static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
+        uint32_t count = 0;
+        for(auto& component : components_){
+            // 型が一致しているか
+            if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
+                // インデックスが一致しているか
+                if(count == index){
+                    return foundComponent;
+                }
+                count++;
             }
         }
         return nullptr;

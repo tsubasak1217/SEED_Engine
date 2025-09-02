@@ -37,10 +37,11 @@ public:
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
-    void SetActivate(const Vector2& translate, LR moveDirection, float sizeY);
+    void SetActivate(const Vector2& translate, float sizeY);
     // 非アクティブ状態にする
     void SetDeactivate();
 
+    const Sprite& GetSprite() const { return sprite_; }
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
 private:

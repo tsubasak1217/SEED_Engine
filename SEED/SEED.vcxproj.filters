@@ -314,6 +314,8 @@
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="SEED\Lib\Structs\Rect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

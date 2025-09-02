@@ -369,6 +369,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
+    <ClInclude Include="SEED\Lib\Structs\Rect.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Collider2D.h" />

@@ -37,8 +37,8 @@ public:
     const Sprite& GetSprite() const { return sprite_; }
 
     // 入力検知
-    bool IsPutBorder() const { }
-    bool IsRemoveBorder() const { }
+    bool IsPutBorder() const;
+    bool IsRemoveBorder() const;
 private:
     //========================================================================
     //	private Methods

@@ -34,6 +34,11 @@ public:
     // json
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
+
+	//--------- accessor -----------------------------------------------------
+
+    // 境界線を操作できる状態かどうか
+    bool IsCanOperateBorder() const;
 private:
 	//========================================================================
 	//	private Methods

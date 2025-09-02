@@ -61,6 +61,25 @@ void GameStage::Update() {
     player_->Update();
 
     // 境界線の更新処理
+    UpdateBorderLine();
+}
+
+void GameStage::UpdateBorderLine() {
+
+    // プレイヤーの入力処理に応じて境界線を置いたり外したりする
+    // 境界線がまだ置かれていないとき
+    if (!borderLine_->IsActive() && player_->IsPutBorder()) {
+
+        // 境界線をアクティブ状態にする
+        borderLine_->SetActivate(player_->GetSprite().translate,
+            player_->GetSprite().translate.y + player_->GetSprite().size.y);
+    } else if (borderLine_->IsActive() && player_->IsRemoveBorder()) {
+
+        // 境界線を非アクティブ状態にする
+        borderLine_->SetDeactivate();
+    }
+
+    // 境界線の更新処理
     borderLine_->Update();
 }
 

@@ -38,6 +38,24 @@ void Player::Initialize() {
     ApplyJson();
 }
 
+bool Player::IsPutBorder() const {
+
+    // 境界線を操作できる状態かチェック
+    if (!stateController_->IsCanOperateBorder()) {
+        return false;
+    }
+    return inputMapper_->IsTriggered(PlayerInputAction::PutBorder);
+}
+
+bool Player::IsRemoveBorder() const {
+
+    // 境界線を操作できる状態かチェック
+    if (!stateController_->IsCanOperateBorder()) {
+        return false;
+    }
+    return inputMapper_->IsTriggered(PlayerInputAction::RemoveBorder);
+}
+
 void Player::Update() {
 
     // エディターを更新

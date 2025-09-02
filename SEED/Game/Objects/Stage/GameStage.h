@@ -53,9 +53,6 @@ private:
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
 
-    // エディター用
-
-
     //--------- functions ----------------------------------------------------
 
     // json
@@ -64,4 +61,7 @@ private:
 
     // init
     void InitializeBlock(BlockType blockType, uint32_t index);
+
+    // update
+    void UpdateBorderLine();
 };

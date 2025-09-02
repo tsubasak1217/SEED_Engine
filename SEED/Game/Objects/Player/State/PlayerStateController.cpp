@@ -126,6 +126,16 @@ void PlayerStateController::CheckJumpState(Player& owner) {
     }
 }
 
+
+bool PlayerStateController::IsCanOperateBorder() const {
+
+    // ジャンプ中は境界線を操作できない
+    if (current_ == PlayerState::Jump) {
+        return false;
+    }
+    return true;
+}
+
 void PlayerStateController::Edit(const Player& owner) {
 
     // 現在の状態を表示

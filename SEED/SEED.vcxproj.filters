@@ -123,6 +123,7 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Collider2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
@@ -307,6 +308,7 @@
     <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
     <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Collider2D.h" />
     <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />

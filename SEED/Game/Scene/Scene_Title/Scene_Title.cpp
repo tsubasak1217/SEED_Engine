@@ -49,7 +49,7 @@ void Scene_Title::Update(){
         currentEventState_->Update();
     }
 
-    if(Input::IsTriggerKey(DIK_SPACE)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         ChangeScene("Select");
     }
 }

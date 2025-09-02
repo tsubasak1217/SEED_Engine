@@ -119,6 +119,7 @@ void AudioManager::BeginFrame(){
 
 void AudioManager::StartUpLoad(){
     // 以下にロード処理をまとめる
+    LoadAudio("SE/turnoverPaper.mp3");
 }
 
 

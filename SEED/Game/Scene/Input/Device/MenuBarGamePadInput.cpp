@@ -13,9 +13,9 @@ float MenuBarGamePadInput::GetVector(PauseMenuInputAction axis) const {
     float vector = 0.0f;
     if (axis == PauseMenuInputAction::MoveY) {
         if (Input::IsTriggerStick(LR::LEFT,DIRECTION4::UP) || Input::IsTriggerPadButton(PAD_BUTTON::UP)) {
-            vector += 1.0f;
-        } else if (Input::IsTriggerStick(LR::LEFT,DIRECTION4::DOWN) || Input::IsTriggerPadButton(PAD_BUTTON::DOWN)) {
             vector -= 1.0f;
+        } else if (Input::IsTriggerStick(LR::LEFT,DIRECTION4::DOWN) || Input::IsTriggerPadButton(PAD_BUTTON::DOWN)) {
+            vector += 1.0f;
         }
         return vector;
     }

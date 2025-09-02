@@ -47,7 +47,7 @@ void Scene_Clear::Update(){
     }
 
     // タイマーの更新
-    if(Input::IsTriggerKey(DIK_SPACE)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         step_++;
         stepTimer_.Reset();
     

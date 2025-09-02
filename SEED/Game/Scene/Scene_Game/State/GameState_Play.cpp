@@ -2,6 +2,8 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <Game/Scene/Scene_Game/State/GameState_Pause.h>
+#include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
+#include <Game/Scene/Input/Device/MenuBarKeyInput.h>
 
 /////////////////////////////////////////////////////////////////////////////////
 //
@@ -26,6 +28,11 @@ GameState_Play::~GameState_Play(){
 //
 /////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::Initialize(){
+
+    // menuBar入力クラスを初期化
+    menuBarInputMapper_ = std::make_unique<InputMapper<PauseMenuInputAction>>();
+    menuBarInputMapper_->AddDevice(std::make_unique<MenuBarKeyInput>());     // キー操作
+    menuBarInputMapper_->AddDevice(std::make_unique<MenuBarGamePadInput>()); // パッド操作
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +93,7 @@ void GameState_Play::HandOverColliders(){
 /////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::ManageState(){
     // ポーズ
-    if(Input::IsTriggerPadButton(PAD_BUTTON::START)){
+    if(menuBarInputMapper_->IsTriggered(PauseMenuInputAction::Pause)) {
         pScene_->ChangeState(new GameState_Pause(pScene_));
         return;
     }

@@ -171,6 +171,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Scene\Input\Device\MenuBarKeyInput.cpp" />
+    <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
       </SubType>
@@ -293,6 +295,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
     <ClInclude Include="Game\Components\BlockComponent.h" />
@@ -352,6 +355,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
+    <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>
       </SubType>

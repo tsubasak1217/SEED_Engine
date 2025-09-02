@@ -123,6 +123,10 @@ void Scene_Game::Update() {
         currentEventState_->Update();
     }
 
+    if (Input::IsTriggerKey(DIK_SPACE)) {
+        ChangeScene("Clear");
+    }
+
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     //========================================================================
@@ -151,7 +155,7 @@ void Scene_Game::Draw() {
         currentState_->Draw();
     }
 
-    //SEED::DrawSkyBox(true);
+    SEED::DrawSkyBox(true);
     //SEED::DrawGrid();
 
     /*==================== 各オブジェクトの基本描画 =====================*/

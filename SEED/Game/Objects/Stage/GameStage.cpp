@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <Environment/Environment.h>
 #include <Game/Objects/Stage/Block/Blocks/BlockNormal.h>
 #include <Game/GameSystem.h>
 
@@ -33,6 +34,31 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
     }
 }
 
+void GameStage::CreateDebugBlock() {
+
+    // 一番下のブロックの座標
+    const float bottomTranslateY = 720.0f - 48.0f;
+    const float centerX = kWindowCenter.x;
+    const float stepX = 32.0f;
+    const float stepY = 32.0f;
+
+    for (uint32_t i = 0;; ++i) {
+
+        // 階段状に進める
+        const float x = centerX + i * stepX;
+        const float y = bottomTranslateY - i * stepY;
+        // 0.0fまで行ったら終了
+        if (y < 0.0f) {
+            break;
+        }
+
+        GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+        BlockComponent* component = object->AddComponent<BlockComponent>();
+        component->Initialize(BlockType::Normal, Vector2(x, y));
+        blocks_.push_back(std::move(object));
+    }
+}
+
 void GameStage::Initialize() {
 
     // プレイヤー
@@ -46,6 +72,8 @@ void GameStage::Initialize() {
 
         InitializeBlock(BlockType::Normal, index);
     }
+    // 境界線デバッグ用ブロックの作成
+    CreateDebugBlock();
 
     // 境界線
     borderLine_ = std::make_unique<BorderLine>();
@@ -71,16 +99,70 @@ void GameStage::UpdateBorderLine() {
     if (!borderLine_->IsActive() && player_->IsPutBorder()) {
 
         // 境界線をアクティブ状態にする
-        borderLine_->SetActivate(player_->GetSprite().translate,
+        borderLine_->SetActivate(player_->GetSprite().translate, player_->GetMoveDirection(),
             player_->GetSprite().translate.y + player_->GetSprite().size.y);
+
+        // ホログラムブロックを生成する
+        CreateHologramBlock();
     } else if (borderLine_->IsActive() && player_->IsRemoveBorder()) {
 
         // 境界線を非アクティブ状態にする
         borderLine_->SetDeactivate();
+
+        // ホログラムブロックをすべて破棄する
+        RemoveHologramBlock();
     }
 
     // 境界線の更新処理
     borderLine_->Update();
+}
+
+void GameStage::CreateHologramBlock() {
+
+    // ホログラムブロックを生成する
+
+    // ブロック幅
+    const float tile = 32.0f;
+    const float axisX = player_->GetSprite().translate.x;
+    const float playerY = player_->GetSprite().translate.y;
+    const int direction = static_cast<int>(player_->GetMoveDirection());
+
+    // タイルに合うように切り上げた座標を設定する
+    auto roundToTile = [tile](float pos) {return std::round(pos / tile) * tile; };
+
+    // ブロック内で範囲内のオブジェクトをホログラムとして作成する
+    for (GameObject2D* block : blocks_) {
+
+        // オブジェクトのブロックコンポーネントを取得
+        BlockComponent* component = block->GetComponent<BlockComponent>();
+
+        const Vector2 sourcePos = component->GetBlockTranslate();
+        //const BlockType sourceType = component->GetBlockType();
+        // プレイヤーのY座標より下のオブジェクトは作成しない
+        if (!(playerY < sourcePos.y)) {
+            continue;
+        }
+
+        // プレイヤーの向いている方向の逆のオブジェクトをホログラム作成対象にする
+        const bool isOppositeSide = (direction > 0) ? (sourcePos.x < axisX) : (sourcePos.x > axisX);
+        if (!isOppositeSide) {
+            continue;
+        }
+
+        // 境界線Xを軸に左右対称に反転した座標を設定する
+        Vector2 dstPos;
+        dstPos.x = roundToTile(2.0f * axisX - sourcePos.x);
+        dstPos.y = roundToTile(sourcePos.y);
+
+        // 元のタイプでブロックを作成
+        //GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+    }
+}
+
+void GameStage::RemoveHologramBlock() {
+
+    // 作成したホログラムオブジェクトをすべて破棄する
+    hologramBlocks_.clear();
 }
 
 void GameStage::Draw() {

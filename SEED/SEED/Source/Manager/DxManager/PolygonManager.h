@@ -240,7 +240,7 @@ private:// 描画上限や頂点数などの定数
     static const int32_t kMaxMeshCount_ = 0xffff;
     static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 5000000;
-    static const int32_t kMaxSpriteCount = 256;
+    static const int32_t kMaxSpriteCount = 1024;
     static const int32_t kMaxLineCount_ = 512000;
     static const int32_t kMeshletIndexCount = 64;
 

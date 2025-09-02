@@ -57,6 +57,9 @@ private:
     // リストから貰って使用する
     Player* player_ = nullptr;
 
+    // パラメータ
+    float stageObjectMapTileSize_;
+
     //--------- functions ----------------------------------------------------
 
     // json

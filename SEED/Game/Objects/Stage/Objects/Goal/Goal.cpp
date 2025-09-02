@@ -8,8 +8,6 @@ void Goal::Initialize(const std::string& filename) {
 
     // スプライトの初期化
     sprite_ = Sprite(filename);
-    // とりあえずブロックとサイズを合わせる
-    sprite_.size = Vector2(32.0f, 32.0f);
 }
 
 void Goal::Update() {

@@ -19,9 +19,16 @@
 
 void GameStage::Initialize() {
 
+    // 境界線
+    borderLine_ = std::make_unique<BorderLine>();
+    borderLine_->Initialize();
+
+    // json適応
+    ApplyJson();
+
     // オブジェクトを構築
     GameStageBuilder stageBuilder{};
-    objects_ = stageBuilder.Create("testStage.csv");
+    objects_ = stageBuilder.Create("testStage.csv", stageObjectMapTileSize_);
 
     // リストからプレイヤーのポインタを渡す
     for (GameObject2D* object : objects_) {
@@ -33,13 +40,6 @@ void GameStage::Initialize() {
             }
         }
     }
-
-    // 境界線
-    borderLine_ = std::make_unique<BorderLine>();
-    borderLine_->Initialize();
-
-    // json適応
-    ApplyJson();
 }
 
 void GameStage::Update() {
@@ -121,7 +121,7 @@ void GameStage::CreateHologramBlock() {
         // 元のタイプでオブジェクトを作成
         GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
-        newComponent->Initialize(sourceType, dstPos);
+        newComponent->Initialize(sourceType, dstPos, stageObjectMapTileSize_);
         newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
         hologramObjects_.push_back(std::move(newBlock));
     }
@@ -163,6 +163,37 @@ void GameStage::Edit() {
         }
 
         if (ImGui::BeginTabBar("GameStageTab")) {
+            if (ImGui::BeginTabItem("Stage")) {
+
+                if (ImGui::Button("ReBuildStage")) {
+
+                    for (GameObject2D* object : objects_) {
+                        delete object;
+                    }
+                    objects_.clear();
+                    for (GameObject2D* object : hologramObjects_) {
+                        delete object;
+                    }
+                    hologramObjects_.clear();
+                    // 再構築
+                    GameStageBuilder stageBuilder{};
+                    objects_ = stageBuilder.Create("testStage.csv", stageObjectMapTileSize_);
+                    // リストからプレイヤーのポインタを渡す
+                    player_ = nullptr;
+                    for (GameObject2D* object : objects_) {
+                        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+                            if (component->GetStageObjectType() == StageObjectType::Player) {
+
+                                player_ = component->GetPlayer();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
+                ImGui::EndTabItem();
+            }
             if (ImGui::BeginTabItem("BorderLine")) {
 
                 borderLine_->Edit();
@@ -182,6 +213,7 @@ void GameStage::ApplyJson() {
         return;
     }
 
+    stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
     borderLine_->FromJson(data["BorderLine"]);
 }
 
@@ -190,6 +222,7 @@ void GameStage::SaveJson() {
     nlohmann::json data;
 
     borderLine_->ToJson(data["BorderLine"]);
+    data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
 
     JsonAdapter::Save(kJsonPath_, data);
 }

@@ -24,14 +24,16 @@ StageObjectComponent::StageObjectComponent(GameObject2D* pOwner, const std::stri
 void StageObjectComponent::Initialize() {
 }
 
-void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2& translate) {
+void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2& translate,
+    const Vector2& size) {
 
     objectType_ = objectType;
 
     // インスタンスを作成
     object_ = CreateInstance(objectType);
-    // 座標を設定
+    // 座標、サイズを設定
     object_->SetTranslate(translate);
+    object_->SetSize(size);
 }
 
 Player* StageObjectComponent::GetPlayer() const {

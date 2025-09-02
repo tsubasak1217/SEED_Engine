@@ -107,7 +107,6 @@ void Player::Edit() {
 
                 ImGui::Separator();
 
-                ImGui::DragFloat2("spriteSize", &sprite_.size.x, 0.1f);
                 ImGui::DragFloat2("spriteAnchor", &sprite_.anchorPoint.x, 0.1f);
                 ImGui::DragFloat2("spriteTranslate", &sprite_.translate.x, 0.1f);
                 ImGui::EndTabItem();
@@ -132,8 +131,6 @@ void Player::ApplyJson() {
         return;
     }
 
-    from_json(data.value("sprite_.size", nlohmann::json()), sprite_.size);
-
     // 状態
     stateController_->FromJson(data["StateParam"]);
 }
@@ -141,8 +138,6 @@ void Player::ApplyJson() {
 void Player::SaveJson() {
 
     nlohmann::json data;
-
-    to_json(data["sprite_.size"], sprite_.size);
 
     // 状態
     stateController_->ToJson(data["StateParam"]);

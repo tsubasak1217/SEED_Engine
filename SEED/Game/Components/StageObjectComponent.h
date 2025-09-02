@@ -30,7 +30,7 @@ public:
     nlohmann::json GetJsonData() const override;
     void LoadFromJson(const nlohmann::json& jsonData) override;
 
-    void Initialize(StageObjectType objectType, const Vector2& translate);
+    void Initialize(StageObjectType objectType, const Vector2& translate, const Vector2& size);
 
     //--------- accessor -----------------------------------------------------
 

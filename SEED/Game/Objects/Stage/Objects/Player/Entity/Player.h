@@ -34,7 +34,8 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    void SetTranslate(const Vector2& translate) override { sprite_.translate = translate; }
+    void SetSize(const Vector2& size) override { sprite_.size = size; }
 
     const Sprite& GetSprite() const { return sprite_; }
     LR GetMoveDirection() const { return moveDirection_; }

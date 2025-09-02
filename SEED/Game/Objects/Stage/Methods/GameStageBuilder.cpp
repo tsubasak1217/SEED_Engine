@@ -12,20 +12,21 @@
 //	GameStageBuilder classMethods
 //============================================================================
 
-std::list<GameObject2D*> GameStageBuilder::Create(const std::string& fileName) {
+std::list<GameObject2D*> GameStageBuilder::Create(
+    const std::string& fileName, float stageObjectMapTileSize) {
 
     // CSVデータ解析
     std::vector<std::vector<int>> grid = GetCSVData(fileName);
 
     // オブジェクトの幅
-    const float tile = 32.0f;
     const int rows = static_cast<int>(grid.size());
     const int cols = static_cast<int>(grid.front().size());
 
     // ウィンドウの中心になるようにする
     const float windowW = kWindowSize.x;
     const float centerX = windowW * 0.5f;
-    const float startX = std::round((centerX - (cols * tile) * 0.5f) / tile) * tile;
+    const float startX = std::round((centerX - (cols *
+        stageObjectMapTileSize) * 0.5f) / stageObjectMapTileSize) * stageObjectMapTileSize;
 
     const float startY = 360.0f;
     std::list<GameObject2D*> objectList{};
@@ -44,13 +45,13 @@ std::list<GameObject2D*> GameStageBuilder::Create(const std::string& fileName) {
             }
 
             // タイル左上を原点とした配置
-            const float x = startX + c * tile;
-            const float y = startY + r * tile;
+            const float x = startX + c * stageObjectMapTileSize;
+            const float y = startY + r * stageObjectMapTileSize;
 
             // オブジェクトを作成
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
-            component->Initialize(static_cast<StageObjectType>(id), Vector2(x, y));
+            component->Initialize(static_cast<StageObjectType>(id), Vector2(x, y), stageObjectMapTileSize);
             objectList.push_back(object);
         }
     }

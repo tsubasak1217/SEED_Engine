@@ -26,7 +26,7 @@ public:
     GameStageBuilder() = default;
 	~GameStageBuilder() = default;
 
-    std::list<GameObject2D*> Create(const std::string& fileName);
+    std::list<GameObject2D*> Create(const std::string& fileName, float stageObjectMapTileSize);
 private:
 	//========================================================================
 	//	private Methods

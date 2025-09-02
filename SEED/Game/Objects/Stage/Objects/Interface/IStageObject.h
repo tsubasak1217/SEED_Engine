@@ -36,7 +36,8 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    virtual void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    virtual void SetSize(const Vector2& size) { sprite_.size = size; }
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
 
     const Vector2& GetTranslate() const { return sprite_.translate; }

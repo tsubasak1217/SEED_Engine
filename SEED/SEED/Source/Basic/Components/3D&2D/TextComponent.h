@@ -4,7 +4,7 @@
 
 class TextComponent : public IComponent{
 public:
-    TextComponent(GameObject* pOwner, const std::string& tagName = "");
+    TextComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");
     ~TextComponent() = default;
     void Initialize(const std::string& text, const Vector2& position, const Vector4& color);
     void BeginFrame() override;

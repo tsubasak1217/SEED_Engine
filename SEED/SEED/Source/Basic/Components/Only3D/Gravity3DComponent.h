@@ -2,10 +2,10 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <Environment/Physics.h>
 
-class GravityComponent : public IComponent{
+class Gravity3DComponent : public IComponent{
 public:
-    GravityComponent(GameObject* pOwner, const std::string& tagName = "");
-    ~GravityComponent() = default;
+    Gravity3DComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~Gravity3DComponent() = default;
     void Initialize()override;
     void BeginFrame() override;
     void Update() override;

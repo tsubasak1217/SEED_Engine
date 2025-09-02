@@ -1,25 +1,25 @@
-#include "CollisionComponent.h"
+#include "Collision3DComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 //////////////////////////////////////////////////////////////////////////
-CollisionComponent::CollisionComponent(GameObject* pOwner, const std::string& tagName)
+Collision3DComponent::Collision3DComponent(GameObject* pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
 
     if(tagName == ""){
-        componentTag_ = "ModelRender_ID:" + std::to_string(componentID_);
+        componentTag_ = "Collision3D_ID:" + std::to_string(componentID_);
     }
 
 #ifdef _DEBUG
-    // コライダーエディターの初期化
-    colliderEditor_ = std::make_unique<ColliderEditor>(owner_->GetName(), owner_);
+    // コライダーエディターの初期
+    colliderEditor_ = std::make_unique<ColliderEditor>(owner_.owner3D->GetName(), owner_.owner3D);
 #endif // _DEBUG
 }
 
 //////////////////////////////////////////////////////////////////////////
 // 初期化
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::Initialize(const std::string& fileName, ObjectType objectType){
+void Collision3DComponent::Initialize(const std::string& fileName, ObjectType objectType){
     // コライダーの初期化
     InitColliders(fileName, objectType);
 }
@@ -28,7 +28,7 @@ void CollisionComponent::Initialize(const std::string& fileName, ObjectType obje
 //////////////////////////////////////////////////////////////////////////
 // フレーム開始時の処理
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::BeginFrame(){
+void Collision3DComponent::BeginFrame(){
     // コライダーの開始処理
     for(auto& collider : colliders_){
         collider->BeginFrame();
@@ -47,7 +47,7 @@ void CollisionComponent::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::Update(){
+void Collision3DComponent::Update(){
     // コライダーの更新
     for(auto& collider : colliders_){
         collider->Update();
@@ -57,7 +57,7 @@ void CollisionComponent::Update(){
 //////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::Draw(){
+void Collision3DComponent::Draw(){
     // コライダーの描画
     if(isColliderVisible_){
         for(auto& collider : colliders_){
@@ -69,7 +69,7 @@ void CollisionComponent::Draw(){
 //////////////////////////////////////////////////////////////////////////
 // フレーム終了時の処理
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::EndFrame(){
+void Collision3DComponent::EndFrame(){
     // コライダーの更新
     EraseCheckColliders();
     // コライダーをCollisionManagerに渡す
@@ -80,13 +80,13 @@ void CollisionComponent::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 // 終了処理
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::Finalize(){
+void Collision3DComponent::Finalize(){
 }
 
 //////////////////////////////////////////////////////////////////////////
 // GUI編集
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::EditGUI(){
+void Collision3DComponent::EditGUI(){
 #ifdef _DEBUG
     ImGui::Indent();
 
@@ -101,7 +101,7 @@ void CollisionComponent::EditGUI(){
 //////////////////////////////////////////////////////////////////////////
 // コライダーの追加
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::AddCollider(Collider* collider){
+void Collision3DComponent::AddCollider(Collider* collider){
     colliders_.emplace_back(std::make_unique<Collider>());
     colliders_.back().reset(collider);
 }
@@ -110,14 +110,15 @@ void CollisionComponent::AddCollider(Collider* collider){
 //////////////////////////////////////////////////////////////////////////
 // コライダーの読み込み
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::LoadColliders(nlohmann::json json, ObjectType objectType){
+void Collision3DComponent::LoadColliders(nlohmann::json json, ObjectType objectType){
     // コライダーの読み込み
     auto colliders = ColliderEditor::LoadColliderData(json);
 
     for(auto& collider : colliders){
+
         // コライダーの所有者を設定
-        collider->SetOwnerObject(owner_);
-        collider->SetParentMatrix(owner_->GetWorldMatPtr());
+        collider->SetOwnerObject(owner_.owner3D);
+        collider->SetParentMatrix(owner_.owner3D->GetWorldMatPtr());
         // コライダーを追加
         colliders_.emplace_back(std::move(collider));
     }
@@ -133,7 +134,7 @@ void CollisionComponent::LoadColliders(nlohmann::json json, ObjectType objectTyp
 //////////////////////////////////////////////////////////////////////////
 // コライダーの初期化
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::InitColliders(nlohmann::json json, ObjectType objectType){
+void Collision3DComponent::InitColliders(nlohmann::json json, ObjectType objectType){
     colliders_.clear();
     LoadColliders(json, objectType);
 }
@@ -143,7 +144,7 @@ void CollisionComponent::InitColliders(nlohmann::json json, ObjectType objectTyp
 //////////////////////////////////////////////////////////////////////////
 // コライダーの削除チェック
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::EraseCheckColliders(){
+void Collision3DComponent::EraseCheckColliders(){
 
     // 終了した要素の削除
     for(int i = 0; i < colliders_.size(); ++i){
@@ -158,7 +159,7 @@ void CollisionComponent::EraseCheckColliders(){
 //////////////////////////////////////////////////////////////////////////
 // コライダーのリセット
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::ResetCollider(){
+void Collision3DComponent::ResetCollider(){
     colliders_.clear();
 }
 
@@ -166,7 +167,7 @@ void CollisionComponent::ResetCollider(){
 //////////////////////////////////////////////////////////////////////////
 // コライダーをCollisionManagerに渡す
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::HandOverColliders(){
+void Collision3DComponent::HandOverColliders(){
 
     // 衝突情報の保存・初期化
     preIsCollide_ = isCollide_;
@@ -184,7 +185,7 @@ void CollisionComponent::HandOverColliders(){
 //////////////////////////////////////////////////////////////////////////
 // コライダーの判定スキップリストの追加
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::AddSkipPushBackType(ObjectType skipType){
+void Collision3DComponent::AddSkipPushBackType(ObjectType skipType){
     for(auto& collider : colliders_){
         collider->AddSkipPushBackType(skipType);
     }
@@ -194,7 +195,7 @@ void CollisionComponent::AddSkipPushBackType(ObjectType skipType){
 //////////////////////////////////////////////////////////////////////////
 // Jsonデータの読み込み
 //////////////////////////////////////////////////////////////////////////
-void CollisionComponent::LoadFromJson(const nlohmann::json& jsonData){
+void Collision3DComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     IComponent::LoadFromJson(jsonData);
     if(jsonData.contains("objectType")){
@@ -202,7 +203,7 @@ void CollisionComponent::LoadFromJson(const nlohmann::json& jsonData){
     }
 
     if(jsonData.contains("colliders")){
-        LoadColliders(jsonData,objectType_);
+        LoadColliders(jsonData, objectType_);
     }
 }
 
@@ -210,9 +211,9 @@ void CollisionComponent::LoadFromJson(const nlohmann::json& jsonData){
 //////////////////////////////////////////////////////////////////////////
 // Jsonデータの出力
 //////////////////////////////////////////////////////////////////////////
-nlohmann::json CollisionComponent::GetJsonData() const{
+nlohmann::json Collision3DComponent::GetJsonData() const{
     nlohmann::ordered_json jsonData;
-    jsonData["componentType"] = "Collision";
+    jsonData["componentType"] = "Collision3D";
     jsonData.update(IComponent::GetJsonData());
     jsonData["objectType"] = static_cast<uint32_t>(objectType_);
 

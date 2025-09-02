@@ -377,6 +377,16 @@ Vector4 TransformToVec4(const Vector2& vec){
     return Vector4(vec.x, vec.y, 0.0f, 1.0f);
 }
 
+Matrix4x4 ToMat4x4(const Matrix3x3& mat){
+    Matrix4x4 result = IdentityMat4();
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            result.m[i][j] = mat.m[i][j];
+        }
+    }
+    return result;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -693,9 +703,19 @@ Matrix4x4 AffineMatrix(const Transform& transform){
 // 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Vector2 ExtractTranslation(const Matrix3x3& matrix){
+    return Vector2(matrix.m[2][0], matrix.m[2][1]);
+}
+
 // 行列から平行移動成分を取り出す
 Vector3 ExtractTranslation(const Matrix4x4& matrix){
     return Vector3(matrix.m[3][0], matrix.m[3][1], matrix.m[3][2]);
+}
+
+Vector2 ExtractScale(const Matrix3x3& matrix){
+    float scaleX = MyMath::Length(Vector2(matrix.m[0][0], matrix.m[0][1]));
+    float scaleY = MyMath::Length(Vector2(matrix.m[1][0], matrix.m[1][1]));
+    return Vector2(scaleX, scaleY);
 }
 
 // 行列から拡大縮小成分を取り出す
@@ -704,6 +724,18 @@ Vector3 ExtractScale(const Matrix4x4& matrix){
     float scaleY = MyMath::Length(Vector3(matrix.m[1][0], matrix.m[1][1], matrix.m[1][2]));
     float scaleZ = MyMath::Length(Vector3(matrix.m[2][0], matrix.m[2][1], matrix.m[2][2]));
     return Vector3(scaleX, scaleY, scaleZ);
+}
+
+float ExtractRotation(const Matrix3x3& matrix){
+    // スケールを取り除くために各軸を正規化
+    Vector2 scale = ExtractScale(matrix);
+    Matrix3x3 rotationMatrix = matrix;
+    rotationMatrix.m[0][0] /= scale.x;
+    rotationMatrix.m[0][1] /= scale.x;
+    rotationMatrix.m[1][0] /= scale.y;
+    rotationMatrix.m[1][1] /= scale.y;
+    // 回転角を抽出
+    return atan2(rotationMatrix.m[0][1], rotationMatrix.m[0][0]);
 }
 
 // 行列から回転成分を取り出す

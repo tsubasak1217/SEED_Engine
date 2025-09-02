@@ -1,9 +1,10 @@
 #pragma once
 #include <SEED/Source/Basic/Components/IComponent.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 
 class BlockComponent : public IComponent{
 public:
-    BlockComponent(GameObject* pOwner, const std::string& tagName = "");
+    BlockComponent(GameObject2D* pOwner, const std::string& tagName = "");
     ~BlockComponent() = default;
     void Initialize()override;
     void BeginFrame() override;

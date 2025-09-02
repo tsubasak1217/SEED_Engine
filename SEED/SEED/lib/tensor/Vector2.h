@@ -66,6 +66,9 @@ struct Vector2 final {
 		x -= obj;
 		y -= obj;
 	}
+    Vector2 operator-() const{
+        return Vector2(-x, -y);
+    }
 
 	// MULTIPLY-----------------------
 	Vector2 operator*(const Vector2& obj) const {

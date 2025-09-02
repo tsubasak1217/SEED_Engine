@@ -17,7 +17,7 @@
 class Scene_Base;
 class Hierarchy;
 
-class GameObject{
+class GameObject2D{
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー関数
@@ -25,8 +25,8 @@ class GameObject{
 
     /*----------- 基本関数 ----------*/
 public:
-    GameObject(Scene_Base* pScene);
-    ~GameObject();
+    GameObject2D(Scene_Base* pScene);
+    ~GameObject2D();
     void Initialize();
     void Update();
     void Draw();
@@ -69,11 +69,11 @@ public:
 
     /*-------- 当たり判定時関数 --------*/
 public:
-    void OnCollision(GameObject* other);
+    void OnCollision(GameObject2D* other);
 protected:
-    void OnCollisionEnter(GameObject* other);
-    void OnCollisionStay(GameObject* other);
-    void OnCollisionExit(GameObject* other);
+    void OnCollisionEnter(GameObject2D* other);
+    void OnCollisionStay(GameObject2D* other);
+    void OnCollisionExit(GameObject2D* other);
 
     /*----------- デバッグ用 ----------*/
 public:
@@ -102,51 +102,48 @@ public:
     //=====================================
     // 親子付け関連
     //=====================================
-    void SetParent(GameObject* parent);
-    GameObject* GetParent(){ return parent_; }
-    const std::list<GameObject*>& GetChildren() const{ return children_; }
-    std::list<GameObject*> GetAllChildren()const;
-    void RemoveChild(GameObject* child);
+    void SetParent(GameObject2D* parent);
+    GameObject2D* GetParent(){ return parent_; }
+    const std::list<GameObject2D*>& GetChildren() const{ return children_; }
+    std::list<GameObject2D*> GetAllChildren()const;
+    void RemoveChild(GameObject2D* child);
     void ReleaseParent();
     void ReleaseChildren();
-    bool IsDescendant(GameObject* obj) const;
-    Vector3 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
+    bool IsDescendant(GameObject2D* obj) const;
+    Vector2 GetTargetPos()const{ return GetWorldTranslate() + targetOffset_; }
 
 
     //=====================================
     // トランスフォーム
     //=====================================
-    Transform GetLocalTransform(){ return localTransform_; }
-    Transform GetWorldTransform(){ return worldTransform_; }
+    Transform2D GetLocalTransform(){ return localTransform_; }
+    Transform2D GetWorldTransform(){ return worldTransform_; }
     /*------ scale -------*/
-    Vector3 GetWorldScale() const{ return worldTransform_.scale; }
-    const Vector3& GetLocalScale() const{ return localTransform_.scale; }
-    void SetWorldScale(const Vector3& scale);
-    void SetLocalScale(const Vector3& scale);
+    Vector2 GetWorldScale() const{ return worldTransform_.scale; }
+    const Vector2& GetLocalScale() const{ return localTransform_.scale; }
+    void SetWorldScale(const Vector2& scale);
+    void SetLocalScale(const Vector2& scale);
     /*------ rotate -------*/
-    const Quaternion& GetWorldRotate() const{ return worldTransform_.rotate; }
-    const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
-    Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
-    Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
-    void SetWorldRotate(const Quaternion& rotate);
-    void SetLocalRotate(const Quaternion& rotate);
+    float GetWorldRotate() const{ return worldTransform_.rotate; }
+    float GetLocalRotate() const{ return localTransform_.rotate; }
+    void SetWorldRotate(float rotate);
+    void SetLocalRotate(float rotate);
     /*------ translate -------*/
-    Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
-    const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
-    void AddWorldTranslate(const Vector3& addValue);
-    void SetWorldTranslate(const Vector3& translate);
-    void SetLocalTranslate(const Vector3& translate);
-    const Vector3& GetPrePos() const{ return prePos_; }
+    Vector2 GetWorldTranslate() const{ return worldTransform_.translate; }
+    const Vector2& GetLocalTranslate() const{ return localTransform_.translate; }
+    void AddWorldTranslate(const Vector2& addValue);
+    void SetWorldTranslate(const Vector2& translate);
+    void SetLocalTranslate(const Vector2& translate);
+    const Vector2& GetPrePos() const{ return prePos_; }
     /*------ matrix -------*/
-    const Matrix4x4& GetLocalMat() const{ return localMat_; }
-    const Matrix4x4& GetWorldMat() const{ return worldMat_; }
-    const Matrix4x4* GetWorldMatPtr() const{ return &worldMat_; }
+    const Matrix3x3& GetLocalMat() const{ return localMat_; }
+    const Matrix3x3& GetWorldMat() const{ return worldMat_; }
+    const Matrix3x3* GetWorldMatPtr() const{ return &worldMat_; }
     /*------- velocity ------*/
-    Vector3 GetVelocity()const{ return velocity_; }
-    void SetVelocity(const Vector3& velocity){ velocity_ = velocity; }
+    Vector2 GetVelocity()const{ return velocity_; }
+    void SetVelocity(const Vector2& velocity){ velocity_ = velocity; }
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
-    void SetVelocityZ(float z){ velocity_.z = z; }
     /*-------- state --------*/
     bool GetIsOnGrounnd()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
@@ -156,8 +153,8 @@ public:
     //=====================================
     nlohmann::json GetJsonData(int32_t depth);
     void LoadFromJson(const nlohmann::json& jsonData);
-    static GameObject* CreateFromJson(const nlohmann::json& jsonData);
-    static std::vector<GameObject*> CreateFamily(const nlohmann::json& jsonData, GameObject* parent = nullptr);
+    static GameObject2D* CreateFromJson(const nlohmann::json& jsonData);
+    static std::vector<GameObject2D*> CreateFamily(const nlohmann::json& jsonData, GameObject2D* parent = nullptr);
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー変数
@@ -169,30 +166,30 @@ protected:
     uint32_t objectID_;
     ObjectType objectType_;
     std::string objectName_;
-    Vector3 targetOffset_;
+    Vector2 targetOffset_;
     bool isActive_ = true;
     std::list<std::unique_ptr<IComponent>> components_;
 
 public:
     //---------- 親子付け情報 ---------//
-    GameObject* parent_ = nullptr;
-    std::list<GameObject*> children_;
+    GameObject2D* parent_ = nullptr;
+    std::list<GameObject2D*> children_;
     bool isParentRotate_ = true;
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
 
     //------- トランスフォーム情報 ------//
-    Transform localTransform_;
+    Transform2D localTransform_;
 private:
-    Transform worldTransform_;
-    Matrix4x4 localMat_;
-    Matrix4x4 worldMat_;
-    Vector3 velocity_;
+    Transform2D worldTransform_;
+    Matrix3x3 localMat_;
+    Matrix3x3 worldMat_;
+    Vector2 velocity_;
 
     /*----------- 衝突判定 ----------*/
 protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;
-    Vector3 prePos_;
+    Vector2 prePos_;
 };

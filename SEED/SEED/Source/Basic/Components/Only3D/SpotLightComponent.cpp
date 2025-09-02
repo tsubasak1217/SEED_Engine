@@ -40,13 +40,13 @@ void SpotLightComponent::Update(){
 
     // 親の回転を反映する場合
     if(isParentRotate_){
-        positionVec *= RotateMatrix(owner_->GetWorldRotate());
-        worldRotMat = localRotMat * RotateMatrix(owner_->GetWorldRotate());
+        positionVec *= RotateMatrix(owner_.owner3D->GetWorldRotate());
+        worldRotMat = localRotMat * RotateMatrix(owner_.owner3D->GetWorldRotate());
     }
 
     // 最終結果を反映
     rotated *= worldRotMat;
-    light_->position = owner_->GetWorldTranslate() + positionVec;
+    light_->position = owner_.owner3D->GetWorldTranslate() + positionVec;
     light_->direction = rotated;
 }
 
@@ -85,7 +85,7 @@ void SpotLightComponent::Finalize(){
 void SpotLightComponent::EditGUI(){
 #ifdef _DEBUG
     // guizmoに登録
-    ImGuiManager::RegisterGuizmoItem(&localTransform_, owner_->GetWorldMat());
+    ImGuiManager::RegisterGuizmoItem(&localTransform_, owner_.owner3D->GetWorldMat());
 
     ImGui::Indent();
 

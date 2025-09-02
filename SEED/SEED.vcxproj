@@ -124,6 +124,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="Game\Components\BlockComponent.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp">
       <SubType>
@@ -288,6 +289,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
     <ClInclude Include="Game\Components\BlockComponent.h" />
     <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h">

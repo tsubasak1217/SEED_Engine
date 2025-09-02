@@ -7,6 +7,7 @@
 
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Scene/Scene_Game/State/GameState_Pause.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -123,9 +124,7 @@ void Scene_Game::Update() {
         currentEventState_->Update();
     }
 
-    if (Input::IsTriggerKey(DIK_RETURN)) {
-        ChangeScene("Clear");
-    }
+   
 
     /*==================== 各オブジェクトの基本更新 =====================*/
 
@@ -135,6 +134,8 @@ void Scene_Game::Update() {
 
     stage_->Update();
     stage_->Edit();
+
+    ManageState();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

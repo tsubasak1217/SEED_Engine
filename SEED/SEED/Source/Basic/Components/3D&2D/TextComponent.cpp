@@ -1,7 +1,7 @@
 #include "TextComponent.h"
 
 
-TextComponent::TextComponent(GameObject* pOwner, const std::string& tagName) : IComponent(pOwner, tagName){
+TextComponent::TextComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName) : IComponent(pOwner, tagName){
     // テキストボックスの初期化
     textBox_ = std::make_unique<TextBox2D>("テキスト");
     textBox_->SetFont("DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf");

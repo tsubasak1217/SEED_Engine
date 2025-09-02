@@ -1,14 +1,19 @@
-#include "MoveComponent.h"
+#include "Move3DComponent.h"
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/SEED.h>
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-MoveComponent::MoveComponent(GameObject* pOwner, const std::string& tagName)
+Move3DComponent::Move3DComponent(GameObject* pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
     if(tagName == ""){
-        componentTag_ = "Move_ID:" + std::to_string(componentID_);
+        componentTag_ = "Move3D_ID:" + std::to_string(componentID_);
+    }
+
+    // 2Dは受け付けない
+    if(owner_.is2D or !owner_.owner3D){
+        assert(false);
     }
 
     // 入力を受け付けるボタン配列の初期化(keyboard)
@@ -27,14 +32,14 @@ MoveComponent::MoveComponent(GameObject* pOwner, const std::string& tagName)
 /////////////////////////////////////////////////////////////////////////
 // 初期化処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::Initialize(){
+void Move3DComponent::Initialize(){
 
 }
 
 /////////////////////////////////////////////////////////////////////////
 // フレーム開始時の処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::BeginFrame(){
+void Move3DComponent::BeginFrame(){
 
 
     // 入力状態の取得
@@ -172,7 +177,7 @@ void MoveComponent::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////
 // 更新処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::Update(){
+void Move3DComponent::Update(){
 
     // 移動中かどうかの判定
     isMoving_ = (direction_.x != 0.0f || direction_.y != 0.0f || direction_.z != 0.0f);
@@ -193,25 +198,25 @@ void MoveComponent::Update(){
         Vector3 eulerRotate = MyFunc::CalcRotateVec(velocity_);
         isUseRotateX ? eulerRotate.x : eulerRotate.x = 0.0f;
         Quaternion rotation = Quaternion::ToQuaternion(eulerRotate);
-        owner_->SetWorldRotate(rotation);
+        owner_.owner3D->SetWorldRotate(rotation);
     }
 
     // オーナーの位置を更新
-    owner_->AddWorldTranslate(velocity_);
+    owner_.owner3D->AddWorldTranslate(velocity_);
 }
 
 
 /////////////////////////////////////////////////////////////////////////
 // 描画処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::Draw(){
+void Move3DComponent::Draw(){
 }
 
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::EndFrame(){
+void Move3DComponent::EndFrame(){
 
 }
 
@@ -219,14 +224,14 @@ void MoveComponent::EndFrame(){
 /////////////////////////////////////////////////////////////////////////
 // フレーム終了時の処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::Finalize(){
+void Move3DComponent::Finalize(){
 }
 
 
 /////////////////////////////////////////////////////////////////////////
 // GUI上での編集処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::EditGUI(){
+void Move3DComponent::EditGUI(){
 #ifdef _DEBUG
     ImGui::Indent();
     ImGui::DragFloat("移動速度", &speed_, 0.1f);
@@ -243,9 +248,9 @@ void MoveComponent::EditGUI(){
 /////////////////////////////////////////////////////////////////////////
 // jsonへの書き出し
 /////////////////////////////////////////////////////////////////////////
-nlohmann::json MoveComponent::GetJsonData() const{
+nlohmann::json Move3DComponent::GetJsonData() const{
     nlohmann::json jsonData;
-    jsonData["componentType"] = "Move";
+    jsonData["componentType"] = "Move3D";
     jsonData.update(IComponent::GetJsonData());
     jsonData["speed"] = speed_;
     jsonData["isRotateByDirection"] = isRotateByDirection_;
@@ -295,7 +300,7 @@ nlohmann::json MoveComponent::GetJsonData() const{
 /////////////////////////////////////////////////////////////////////////
 // jsonからの読み込み処理
 /////////////////////////////////////////////////////////////////////////
-void MoveComponent::LoadFromJson(const nlohmann::json& jsonData){
+void Move3DComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     IComponent::LoadFromJson(jsonData);
     speed_ = jsonData.value("speed", speed_);

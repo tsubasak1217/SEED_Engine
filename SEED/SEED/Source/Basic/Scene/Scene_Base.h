@@ -26,7 +26,9 @@ public:
     void EndEvent() { currentEventState_ = nullptr; };
     bool HasEvent(){ return currentEventState_ != nullptr; };
     void RegisterToHierarchy(GameObject* gameObject);
+    void RegisterToHierarchy(GameObject2D* gameObject);
     void RemoveFromHierarchy(GameObject* gameObject);
+    void RemoveFromHierarchy(GameObject2D* gameObject);
     Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
 
 protected:

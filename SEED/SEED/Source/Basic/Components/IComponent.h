@@ -1,20 +1,31 @@
 #pragma once 
 #include <string>
 #include <json.hpp>
+#include <variant>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+
+class GameObject; // GameObjectからのみアクセス可能にする
+class GameObject2D;
+
+struct ComponentOwner{
+    bool is2D = false; // 2Dか3Dか
+    GameObject* owner3D = nullptr; // GameObject3D*
+    GameObject2D* owner2D = nullptr; // GameObject2D*
+};
 
 // コンポーネントのインターフェース
 class IComponent{
-    friend class GameObject; // GameObjectからのみアクセス可能にする
+    friend GameObject; // GameObjectからのみアクセス可能にする
+    friend GameObject2D;
 protected:
-    GameObject* owner_ = nullptr; // コンポーネントの所有者
+    ComponentOwner owner_; // コンポーネントの所有者(2D or 3D)
     std::string componentTag_; // コンポーネントのタグ
     inline static uint32_t nextComponentID_ = 0; // コンポーネントのID
     uint32_t componentID_ = 0; // コンポーネントのインスタンスID
     bool isActive_ = true; // コンポーネントが有効かどうか
 public:
     IComponent() = default;
-    IComponent(GameObject* pOwner,const std::string& tagName = "");
+    IComponent(std::variant<GameObject*,GameObject2D*> pOwner,const std::string& tagName = "");
     virtual ~IComponent() = default;
     // コンポーネントの初期化
     virtual void Initialize(){};
@@ -34,8 +45,11 @@ public:
 #pragma warning(disable:4100)
     // 当たり判定が発生したときの処理
     virtual void OnCollisionEnter(GameObject* other){};
+    virtual void OnCollisionEnter(GameObject2D* other){};
     virtual void OnCollisionStay(GameObject* other){};
+    virtual void OnCollisionStay(GameObject2D* other){};
     virtual void OnCollisionExit(GameObject* other){};
+    virtual void OnCollisionExit(GameObject2D* other){};
 #pragma warning(pop)
 
     // GUIで編集を行う関数
@@ -47,7 +61,7 @@ public:
 
 public:
     // アクセッサ
-    GameObject* GetOwner() const{ return owner_; }
+    ComponentOwner GetOwner() const{ return owner_; }
     const std::string& GetTagName() const{ return componentTag_; }
     void SetTagName(const std::string& tagName){ componentTag_ = tagName; }
     void SetIsActive(bool isActive){ isActive_ = isActive; }

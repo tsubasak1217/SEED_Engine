@@ -87,13 +87,13 @@
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\GravityComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
@@ -103,9 +103,9 @@
     <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\MoveComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\JumpComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\RoutineComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
     <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
@@ -124,6 +124,10 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\Collider2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -252,14 +256,14 @@
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\GravityComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
@@ -274,9 +278,9 @@
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\MoveComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\JumpComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\RoutineComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
@@ -305,6 +309,11 @@
     <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
     <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\Collider2D.h" />
+    <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
+    <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

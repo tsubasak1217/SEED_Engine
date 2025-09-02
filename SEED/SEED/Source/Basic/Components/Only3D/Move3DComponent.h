@@ -2,10 +2,10 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
-class MoveComponent : public IComponent{
+class Move3DComponent : public IComponent{
 public:
-    MoveComponent(GameObject* pOwner, const std::string& tagName = "");
-    ~MoveComponent() = default;
+    Move3DComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~Move3DComponent() = default;
     void Initialize()override;
     void BeginFrame() override;
     void Update() override;

@@ -11,21 +11,21 @@
 // local
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/Collider2D.h>
 
-class GameObject;
+class GameObject2D;
 
-class ColliderEditor{
-    friend class Collision3DComponent;
+class ColliderEditor2D{
+    friend class Collision2DComponent;
 private:// 基本関数
-    ColliderEditor() = default;
+    ColliderEditor2D() = default;
 public:
-    ColliderEditor(const std::string& className, GameObject* parent);
-    ~ColliderEditor();
+    ColliderEditor2D(const std::string& className, GameObject2D* parent);
+    ~ColliderEditor2D();
 
 public:// 編集・ファイル操作関数
     void Edit();
-    static void LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray);
+    static void LoadColliders(const std::string& fileName, GameObject2D* parentObject, std::vector<std::unique_ptr<Collider2D>>* pColliderArray);
 
 private:
     void AddColliderOnGUI();
@@ -34,7 +34,7 @@ private:
     void InputOnGUI();
 
     static void LoadColliderData(const std::string fileName);
-    static std::vector<Collider*> LoadColliderData(const nlohmann::json& json);
+    static std::vector<Collider2D*> LoadColliderData(const nlohmann::json& json);
     void OutputToJson();
     void LoadFromJson(const std::string& fileName);
 
@@ -42,17 +42,17 @@ public:// コライダー関連
     void HandOverColliders();
 
 public:// アクセッサ
-    void SetParentMat(const Matrix4x4* parentMat){ parentMat_ = parentMat; }
+    void SetParentMat(const Matrix3x3* parentMat){ parentMat_ = parentMat; }
 
 private:
     std::string className_;
-    ColliderType addColliderType_ = ColliderType::OBB;
-    GameObject* parentObject_ = nullptr;
-    const Matrix4x4* parentMat_ = nullptr;
-    std::vector<std::unique_ptr<Collider>>colliders_;
+    ColliderType2D addColliderType_ = ColliderType2D::Circle;
+    GameObject2D* parentObject_ = nullptr;
+    const Matrix3x3* parentMat_ = nullptr;
+    std::vector<std::unique_ptr<Collider2D>>colliders_;
 
     // ロードしたコライダーのデータ
-    inline static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_{};
+    inline static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider2D>>>colliderData_{};
     inline static std::vector<std::string> colliderFileNames_{};
     int32_t selectedColliderIndex_ = 0;
 };

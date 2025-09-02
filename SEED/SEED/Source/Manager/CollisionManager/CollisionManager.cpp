@@ -46,7 +46,7 @@ void CollisionManager::Initialize(){
 void CollisionManager::Draw(){
 #ifdef _DEBUG
     if(instance_->isDrawCollider_){
-        for(auto& collider : instance_->colliderList_){
+        for(auto& collider : instance_->colliderList3D_){
             collider.second->Draw();
         }
     }
@@ -60,42 +60,42 @@ void CollisionManager::Draw(){
 void CollisionManager::CheckCollision(){
 
     // 渡されたコライダーの更新
-    for(auto& collider : instance_->colliderList_){
+    for(auto& collider : instance_->colliderList3D_){
         collider.second->BeginFrame();
         collider.second->Update();
     }
 
 
     // 当たり判定(フィールド vs フィールド上のもの)
-    for(int i = 0; i < instance_->onFieldObjectColliders_.size(); i++){
-        for(int j = 0; j < instance_->fieldColliders_.size(); j++){
-            instance_->onFieldObjectColliders_[i]->CheckCollision(instance_->fieldColliders_[j]);
+    for(int i = 0; i < instance_->onFieldObjectColliders3D_.size(); i++){
+        for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
+            instance_->onFieldObjectColliders3D_[i]->CheckCollision(instance_->fieldColliders3D_[j]);
         }
     }
 
     // 当たり判定(フィールド上のもの同士)
-    for(int i = 0; i < instance_->onFieldObjectColliders_.size(); i++){
-        for(int j = i + 1; j < instance_->onFieldObjectColliders_.size(); j++){
-            instance_->onFieldObjectColliders_[i]->CheckCollision(instance_->onFieldObjectColliders_[j]);
+    for(int i = 0; i < instance_->onFieldObjectColliders3D_.size(); i++){
+        for(int j = i + 1; j < instance_->onFieldObjectColliders3D_.size(); j++){
+            instance_->onFieldObjectColliders3D_[i]->CheckCollision(instance_->onFieldObjectColliders3D_[j]);
         }
     }
    
     // エディターのコライダーはすべてと当たり判定を取る
-    for(int i = 0; i < instance_->editorColliders_.size(); i++){
-        for(int j = 0; j < instance_->onFieldObjectColliders_.size(); j++){
-            instance_->editorColliders_[i]->CheckCollision(instance_->onFieldObjectColliders_[j]);
+    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+        for(int j = 0; j < instance_->onFieldObjectColliders3D_.size(); j++){
+            instance_->editorColliders3D_[i]->CheckCollision(instance_->onFieldObjectColliders3D_[j]);
         }
     }
 
-    for(int i = 0; i < instance_->editorColliders_.size(); i++){
-        for(int j = 0; j < instance_->fieldColliders_.size(); j++){
-            instance_->editorColliders_[i]->CheckCollision(instance_->fieldColliders_[j]);
+    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+        for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
+            instance_->editorColliders3D_[i]->CheckCollision(instance_->fieldColliders3D_[j]);
         }
     }
 
-    for(int i = 0; i < instance_->editorColliders_.size(); i++){
-        for(int j = i + 1; j < instance_->editorColliders_.size(); j++){
-            instance_->editorColliders_[i]->CheckCollision(instance_->editorColliders_[j]);
+    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+        for(int j = i + 1; j < instance_->editorColliders3D_.size(); j++){
+            instance_->editorColliders3D_[i]->CheckCollision(instance_->editorColliders3D_[j]);
         }
     }
 
@@ -110,10 +110,10 @@ void CollisionManager::CheckCollision(){
 
 void CollisionManager::ResetColliderList(){
     instance_->octree_->ResetColiderList();
-    instance_->colliderList_.clear();
-    instance_->fieldColliders_.clear();
-    instance_->onFieldObjectColliders_.clear();
-    instance_->editorColliders_.clear();
+    instance_->colliderList3D_.clear();
+    instance_->fieldColliders3D_.clear();
+    instance_->onFieldObjectColliders3D_.clear();
+    instance_->editorColliders3D_.clear();
 }
 
 void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
@@ -121,20 +121,36 @@ void CollisionManager::ResetOctree(const AABB& range, int32_t depth){
 }
 
 void CollisionManager::AddCollider(Collider* object){
-    if(instance_->colliderList_.find(object->GetColliderID()) == instance_->colliderList_.end()){
+    if(instance_->colliderList3D_.find(object->GetColliderID()) == instance_->colliderList3D_.end()){
         //instance_->octree_->AddCollider(object);
-        instance_->colliderList_[object->GetColliderID()] = object;
+        instance_->colliderList3D_[object->GetColliderID()] = object;
 
         // フィールドの場合
         if((int)object->GetObjectType() & (int)ObjectType::Field){
-            instance_->fieldColliders_.push_back(object);
+            instance_->fieldColliders3D_.push_back(object);
 
         } // フィールド上のオブジェクトの場合(フィールドと当たり判定を取る場合)
         else if ((int)object->GetObjectType() & (int)ObjectType::OnFieldObject)
         {
-            instance_->onFieldObjectColliders_.push_back(object);
+            instance_->onFieldObjectColliders3D_.push_back(object);
         } else{
-            instance_->editorColliders_.push_back(object);
+            instance_->editorColliders3D_.push_back(object);
+        }
+    }
+}
+
+void CollisionManager::AddCollider(Collider2D* object){
+    if(instance_->colliderList2D_.find(object->GetColliderID()) == instance_->colliderList2D_.end()){
+        instance_->colliderList2D_[object->GetColliderID()] = object;
+        // フィールドの場合
+        if((int)object->GetObjectType() & (int)ObjectType::Field){
+            instance_->fieldColliders2D_.push_back(object);
+        } // フィールド上のオブジェクトの場合(フィールドと当たり判定を取る場合)
+        else if ((int)object->GetObjectType() & (int)ObjectType::OnFieldObject)
+        {
+            instance_->onFieldObjectColliders2D_.push_back(object);
+        } else{
+            instance_->editorColliders2D_.push_back(object);
         }
     }
 }

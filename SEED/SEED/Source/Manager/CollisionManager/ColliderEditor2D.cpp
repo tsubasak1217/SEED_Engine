@@ -1,19 +1,13 @@
-#include "ColliderEditor.h"
+#include "ColliderEditor2D.h"
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
-#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
-#include <SEED/Source/Basic/Collision/Collider_AABB.h>
-#include <SEED/Source/Basic/Collision/Collider_OBB.h>
-#include <SEED/Source/Basic/Collision/Collider_Line.h>
-#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
-#include <SEED/Source/Basic/Collision/Collider_Plane.h>
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
 ////////////////////////////////////////////////////////////
 
-ColliderEditor::ColliderEditor(const std::string& className, GameObject* parent){
+ColliderEditor2D::ColliderEditor2D(const std::string& className, GameObject2D* parent){
     className_ = className;
     parentObject_ = parent;
     if(parent){
@@ -23,18 +17,18 @@ ColliderEditor::ColliderEditor(const std::string& className, GameObject* parent)
     // ファイルの一覧を取得
     colliderFileNames_.clear();
     // ファイルの一覧を取得
-    std::string path = "Resources/jsons/Colliders/3D";
+    std::string path = "Resources/jsons/Colliders/2D";
     for(const auto& entry : std::filesystem::directory_iterator(path)){
         colliderFileNames_.push_back(entry.path().filename().string());
     }
 }
 
-ColliderEditor::~ColliderEditor(){}
+ColliderEditor2D::~ColliderEditor2D(){}
 
 ////////////////////////////////////////////////////////////
 // コライダーの編集
 ////////////////////////////////////////////////////////////
-void ColliderEditor::Edit(){
+void ColliderEditor2D::Edit(){
 
 #ifdef _DEBUG
 
@@ -75,12 +69,6 @@ void ColliderEditor::Edit(){
             colliders_[i]->Edit();
 
             ImGui::Unindent();
-
-            // アニメーションの編集
-            if(colliders_[i]->isAnimation_){
-                colliders_[i]->EditAnimation();
-            }
-
             ImGui::Separator();
         }
     }
@@ -94,7 +82,7 @@ void ColliderEditor::Edit(){
 ////////////////////////////////////////////////////////////
 // コライダーの追加関連のGUI
 ////////////////////////////////////////////////////////////
-void ColliderEditor::AddColliderOnGUI(){
+void ColliderEditor2D::AddColliderOnGUI(){
 #ifdef _DEBUG
     // 追加するコライダーの形状を選択
     ImGui::Combo(
@@ -104,47 +92,18 @@ void ColliderEditor::AddColliderOnGUI(){
 
     if(ImGui::Button("Add Collider")){
         switch(addColliderType_){
-        case ColliderType::Sphere:
+        case ColliderType2D::Circle:
         {
-            colliders_.push_back(std::make_unique<Collider_Sphere>());
-            Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(colliders_.back().get());
-            sphere->SetRadius(1.0f);
+            //colliders_.push_back(std::make_unique<Collider_Sphere>());
+            //Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(colliders_.back().get());
+            //sphere->SetRadius(1.0f);
             break;
         }
-        case ColliderType::AABB:
+        case ColliderType2D::Quad:
         {
-            colliders_.push_back(std::make_unique<Collider_AABB>());
-            Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(colliders_.back().get());
-            aabb->SetSize(Vector3(1.0f, 1.0f, 1.0f));
-            break;
-        }
-        case ColliderType::OBB:
-        {
-            colliders_.push_back(std::make_unique<Collider_OBB>());
-            Collider_OBB* obb = dynamic_cast<Collider_OBB*>(colliders_.back().get());
-            obb->SetSize(Vector3(1.0f, 1.0f, 1.0f));
-            break;
-        }
-        case ColliderType::Line:
-        {
-            colliders_.push_back(std::make_unique<Collider_Line>());
-            Collider_Line* line = dynamic_cast<Collider_Line*>(colliders_.back().get());
-            line->SetLocalPosition({ 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-            break;
-        }
-        case ColliderType::Capsule:
-        {
-            colliders_.push_back(std::make_unique<Collider_Capsule>());
-            Collider_Capsule* capsule = dynamic_cast<Collider_Capsule*>(colliders_.back().get());
-            capsule->SetRadius(1.0f);
-            capsule->SetLocalPosition({ 0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f });
-            break;
-        }
-        case ColliderType::Plane:
-        {
-            colliders_.push_back(std::make_unique<Collider_Plane>());
-            Collider_Plane* plane = dynamic_cast<Collider_Plane*>(colliders_.back().get());
-            plane->SetLocalVertices({ -1.0f,0.0f,-1.0f }, { 1.0f,0.0f,-1.0f }, { 1.0f,0.0f,1.0f }, { -1.0f,0.0f,1.0f });
+            //colliders_.push_back(std::make_unique<Collider_AABB>());
+            //Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(colliders_.back().get());
+            //aabb->SetSize(Vector3(1.0f, 1.0f, 1.0f));
             break;
         }
         default:
@@ -165,7 +124,7 @@ void ColliderEditor::AddColliderOnGUI(){
 ////////////////////////////////////////////////////////////
 // コライダーの削除関連のGUI
 ////////////////////////////////////////////////////////////
-bool ColliderEditor::DeleteColliderOnGUI(uint32_t index){
+bool ColliderEditor2D::DeleteColliderOnGUI(uint32_t index){
     // コライダーの削除
     if(ImGui::Button("Delete Collider")){
         ImGui::OpenPopup("Delete Collider");
@@ -199,7 +158,7 @@ bool ColliderEditor::DeleteColliderOnGUI(uint32_t index){
 // Jsonファイルへの出力関連のGUI
 ////////////////////////////////////////////////////////////
 
-void ColliderEditor::OutputOnGUI(){
+void ColliderEditor2D::OutputOnGUI(){
     if(ImGui::Button("Output to Json")){
         OutputToJson();
         // ウィンドウで成功ログを表示
@@ -221,7 +180,7 @@ void ColliderEditor::OutputOnGUI(){
 ////////////////////////////////////////////////////////////
 // Jsonファイルからの読み込み関連のGUI
 ////////////////////////////////////////////////////////////
-void ColliderEditor::InputOnGUI(){
+void ColliderEditor2D::InputOnGUI(){
 
     // ファイルの一覧を表示
     if(ImGui::Button("Load Collider")){
@@ -269,7 +228,7 @@ void ColliderEditor::InputOnGUI(){
 ////////////////////////////////////////////////////////////
 // Jsonファイルへの出力
 ////////////////////////////////////////////////////////////
-void ColliderEditor::OutputToJson(){
+void ColliderEditor2D::OutputToJson(){
 
     nlohmann::json j;
 
@@ -279,7 +238,7 @@ void ColliderEditor::OutputToJson(){
     }
 
     // ファイルへの書き込み
-    std::ofstream ofs("Resources/jsons/Colliders/3D/" + className_ + ".json");
+    std::ofstream ofs("Resources/jsons/Colliders/2D/" + className_ + ".json");
     ofs << j.dump(4);
     ofs.close();
 }
@@ -288,7 +247,7 @@ void ColliderEditor::OutputToJson(){
 // Jsonファイルからの読み込み
 ////////////////////////////////////////////////////////////
 
-void ColliderEditor::LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray){
+void ColliderEditor2D::LoadColliders(const std::string& fileName, GameObject2D* parentObject, std::vector<std::unique_ptr<Collider2D>>* pColliderArray){
     // 無ければ読み込む
     if(colliderData_.find(fileName) == colliderData_.end()){
         LoadColliderData(fileName);
@@ -296,62 +255,26 @@ void ColliderEditor::LoadColliders(const std::string& fileName, GameObject* pare
 
     for(auto& collider : colliderData_[fileName]){
 
-        int colliderID = 0;
+        //int colliderID = 0;
 
         // コライダーの形状に応じて生成
         switch(collider->GetColliderType()){
-        case ColliderType::Sphere:
+        case ColliderType2D::Circle:
         {
-            pColliderArray->push_back(std::make_unique<Collider_Sphere>());
-            Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(pColliderArray->back().get());
-            colliderID = sphere->GetColliderID();
-            *sphere = *dynamic_cast<Collider_Sphere*>(collider.get());
-            sphere->SetColliderID(colliderID);
+            //pColliderArray->push_back(std::make_unique<Collider_Sphere>());
+            //Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(pColliderArray->back().get());
+            //colliderID = sphere->GetColliderID();
+            //*sphere = *dynamic_cast<Collider_Sphere*>(collider.get());
+            //sphere->SetColliderID(colliderID);
             break;
         }
-        case ColliderType::AABB:
+        case ColliderType2D::Quad:
         {
-            pColliderArray->push_back(std::make_unique<Collider_AABB>());
-            Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(pColliderArray->back().get());
-            colliderID = aabb->GetColliderID();
-            *aabb = *dynamic_cast<Collider_AABB*>(collider.get());
-            aabb->SetColliderID(colliderID);
-            break;
-        }
-        case ColliderType::OBB:
-        {
-            pColliderArray->push_back(std::make_unique<Collider_OBB>());
-            Collider_OBB* obb = dynamic_cast<Collider_OBB*>(pColliderArray->back().get());
-            colliderID = obb->GetColliderID();
-            *obb = *dynamic_cast<Collider_OBB*>(collider.get());
-            obb->SetColliderID(colliderID);
-            break;
-        }
-        case ColliderType::Line:
-        {
-            pColliderArray->push_back(std::make_unique<Collider_Line>());
-            Collider_Line* line = dynamic_cast<Collider_Line*>(pColliderArray->back().get());
-            colliderID = line->GetColliderID();
-            *line = *dynamic_cast<Collider_Line*>(collider.get());
-            line->SetColliderID(colliderID);
-            break;
-        }
-        case ColliderType::Capsule:
-        {
-            pColliderArray->push_back(std::make_unique<Collider_Capsule>());
-            Collider_Capsule* capsule = dynamic_cast<Collider_Capsule*>(pColliderArray->back().get());
-            colliderID = capsule->GetColliderID();
-            *capsule = *dynamic_cast<Collider_Capsule*>(collider.get());
-            capsule->SetColliderID(colliderID);
-            break;
-        }
-        case ColliderType::Plane:
-        {
-            pColliderArray->push_back(std::make_unique<Collider_Plane>());
-            Collider_Plane* plane = dynamic_cast<Collider_Plane*>(pColliderArray->back().get());
-            colliderID = plane->GetColliderID();
-            *plane = *dynamic_cast<Collider_Plane*>(collider.get());
-            plane->SetColliderID(colliderID);
+            //pColliderArray->push_back(std::make_unique<Collider_AABB>());
+            //Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(pColliderArray->back().get());
+            //colliderID = aabb->GetColliderID();
+            //*aabb = *dynamic_cast<Collider_AABB*>(collider.get());
+            //aabb->SetColliderID(colliderID);
             break;
         }
         }
@@ -367,9 +290,9 @@ void ColliderEditor::LoadColliders(const std::string& fileName, GameObject* pare
 }
 
 // エディター用の読み込み関数
-void ColliderEditor::LoadFromJson(const std::string& fileName){
+void ColliderEditor2D::LoadFromJson(const std::string& fileName){
     // ファイルの読み込み
-    std::ifstream ifs("Resources/jsons/Colliders/3D/" + fileName);
+    std::ifstream ifs("Resources/jsons/Colliders/2D/" + fileName);
     if(ifs.fail()){
         return;
     }
@@ -382,18 +305,10 @@ void ColliderEditor::LoadFromJson(const std::string& fileName){
     for(int i = 0; i < j["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = j["colliders"][i]["colliderType"];
-        if(colliderType == "Sphere"){
-            colliders_.push_back(std::make_unique<Collider_Sphere>());
-        } else if(colliderType == "AABB"){
-            colliders_.push_back(std::make_unique<Collider_AABB>());
-        } else if(colliderType == "OBB"){
-            colliders_.push_back(std::make_unique<Collider_OBB>());
-        } else if(colliderType == "Line"){
-            colliders_.push_back(std::make_unique<Collider_Line>());
-        } else if(colliderType == "Capsule"){
-            colliders_.push_back(std::make_unique<Collider_Capsule>());
-        } else if(colliderType == "Plane"){
-            colliders_.push_back(std::make_unique<Collider_Plane>());
+        if(colliderType == "Circle"){
+            //colliders_.push_back(std::make_unique<Collider2D_Circle>());
+        } else if(colliderType == "Quad"){
+            //colliders_.push_back(std::make_unique<Collider2D_Quad>());
         }
 
         // コライダーの読み込み
@@ -406,17 +321,17 @@ void ColliderEditor::LoadFromJson(const std::string& fileName){
 
 
 // 外部から呼び出せる読み込み関数
-void ColliderEditor::LoadColliderData(const std::string fileName){
+void ColliderEditor2D::LoadColliderData(const std::string fileName){
 
     // すでに読み込んでいたらリターン
     if(colliderData_.find(fileName) != colliderData_.end()){
         return;
     }
 
-    std::vector<Collider*> colliders;
+    std::vector<Collider2D*> colliders;
 
     // ファイルの読み込み
-    std::ifstream ifs("Resources/jsons/Colliders/3D/" + fileName);
+    std::ifstream ifs("Resources/jsons/Colliders/2D/" + fileName);
     if(ifs.fail()){
         return;
     }
@@ -429,18 +344,10 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
     for(int i = 0; i < j["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = j["colliders"][i]["colliderType"];
-        if(colliderType == "Sphere"){
-            colliders.push_back(new Collider_Sphere());
-        } else if(colliderType == "AABB"){
-            colliders.push_back(new Collider_AABB());
-        } else if(colliderType == "OBB"){
-            colliders.push_back(new Collider_OBB());
-        } else if(colliderType == "Line"){
-            colliders.push_back(new Collider_Line());
-        } else if(colliderType == "Capsule"){
-            colliders.push_back(new Collider_Capsule());
-        } else if(colliderType == "Plane"){
-            colliders.push_back(new Collider_Plane());
+        if(colliderType == "Circle"){
+            //colliders.push_back(new Collider2D_Circle());
+        } else if(colliderType == "Quad"){
+            //colliders.push_back(new Collider2D_Quad());
         }
 
         // コライダーの読み込み
@@ -454,26 +361,18 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
 }
 
 
-std::vector<Collider*> ColliderEditor::LoadColliderData(const nlohmann::json& json){
+std::vector<Collider2D*> ColliderEditor2D::LoadColliderData(const nlohmann::json& json){
 
-    std::vector<Collider*> colliders;
+    std::vector<Collider2D*> colliders;
 
     // コライダーの数
     for(int i = 0; i < json["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = json["colliders"][i]["colliderType"];
-        if(colliderType == "Sphere"){
-            colliders.push_back(new Collider_Sphere());
-        } else if(colliderType == "AABB"){
-            colliders.push_back(new Collider_AABB());
-        } else if(colliderType == "OBB"){
-            colliders.push_back(new Collider_OBB());
-        } else if(colliderType == "Line"){
-            colliders.push_back(new Collider_Line());
-        } else if(colliderType == "Capsule"){
-            colliders.push_back(new Collider_Capsule());
-        } else if(colliderType == "Plane"){
-            colliders.push_back(new Collider_Plane());
+        if(colliderType == "Circle"){
+            //colliders.push_back(new Collider2D_Circle());
+        } else if(colliderType == "Quad"){
+            //colliders.push_back(new Collider2D_Quad());
         }
 
         // コライダーの読み込み
@@ -487,7 +386,7 @@ std::vector<Collider*> ColliderEditor::LoadColliderData(const nlohmann::json& js
 ////////////////////////////////////////////////////////////
 // コライダーをCollisionManagerに渡す
 ////////////////////////////////////////////////////////////
-void ColliderEditor::HandOverColliders(){
+void ColliderEditor2D::HandOverColliders(){
     // コライダーをCollisionManagerに渡す
     for(int i = 0; i < colliders_.size(); i++){
         //colliders_[i]->Update();

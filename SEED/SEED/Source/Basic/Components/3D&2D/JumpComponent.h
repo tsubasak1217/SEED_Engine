@@ -4,7 +4,7 @@
 
 class JumpComponent : public IComponent{
 public:
-    JumpComponent(GameObject* pOwner, const std::string& tagName = "");
+    JumpComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");
     ~JumpComponent() = default;
     void Initialize()override;
     void BeginFrame() override;

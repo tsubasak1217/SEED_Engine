@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-JumpComponent::JumpComponent(GameObject* pOwner, const std::string& tagName)
+JumpComponent::JumpComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
     if(tagName == ""){
         componentTag_ = "Jump_ID:" + std::to_string(componentID_);
@@ -30,22 +30,26 @@ void JumpComponent::Initialize(){
 /////////////////////////////////////////////////////////////////////////
 void JumpComponent::BeginFrame(){
 
-    if(owner_->GetIsOnGrounnd()){
+    if(owner_.is2D == false){
+        if(owner_.owner3D->GetIsOnGrounnd()){
 
-        if(!isJumping_){
-            if(Input::IsPressKey(jumpKeys_)){
-                isJumping_ = true;
-                owner_->SetIsOnGround(false); // ジャンプ開始時に地面から離れる
-            }
-
-            for(const PAD_BUTTON& buttton : jumpPadButtons_){
-                if(Input::IsPressPadButton(buttton)){
+            if(!isJumping_){
+                if(Input::IsPressKey(jumpKeys_)){
                     isJumping_ = true;
-                    owner_->SetIsOnGround(false); // ジャンプ開始時に地面から離れる
-                    break;
+                    owner_.owner3D->SetIsOnGround(false); // ジャンプ開始時に地面から離れる
+                }
+
+                for(const PAD_BUTTON& buttton : jumpPadButtons_){
+                    if(Input::IsPressPadButton(buttton)){
+                        isJumping_ = true;
+                        owner_.owner3D->SetIsOnGround(false); // ジャンプ開始時に地面から離れる
+                        break;
+                    }
                 }
             }
         }
+    } else{
+        // 2Dジャンプ処理(未実装)
     }
 }
 
@@ -55,13 +59,17 @@ void JumpComponent::BeginFrame(){
 void JumpComponent::Update(){
 
     if(isJumping_){
-        if(!owner_->GetIsOnGrounnd()){
-            // ジャンプ中の処理
-            Vector3 velocity = Vector3(0.0f, jumpSpeed_, 0.0f) * ClockManager::DeltaTime();
-            owner_->AddWorldTranslate(velocity);
+        if(owner_.is2D == false){
+            if(!owner_.owner3D->GetIsOnGrounnd()){
+                // ジャンプ中の処理
+                Vector3 velocity = Vector3(0.0f, jumpSpeed_, 0.0f) * ClockManager::DeltaTime();
+                owner_.owner3D->AddWorldTranslate(velocity);
+            } else{
+                // ジャンプが終了したらフラグをリセット
+                isJumping_ = false;
+            }
         } else{
-            // ジャンプが終了したらフラグをリセット
-            isJumping_ = false;
+            // 2Dジャンプ処理(未実装)
         }
     }
 }

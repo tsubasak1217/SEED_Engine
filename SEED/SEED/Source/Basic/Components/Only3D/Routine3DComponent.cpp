@@ -1,35 +1,35 @@
-#include "RoutineComponent.h"
+#include "Routine3DComponent.h"
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/SEED.h>
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-RoutineComponent::RoutineComponent(GameObject* pOwner, const std::string& tagName)
+Routine3DComponent::Routine3DComponent(GameObject* pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
     if(tagName == ""){
-        componentTag_ = "Routine_ID:" + std::to_string(componentID_);
+        componentTag_ = "Routine3D_ID:" + std::to_string(componentID_);
     }
 }
 
 /////////////////////////////////////////////////////////////////////////
 // 初期化処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::Initialize(){
+void Routine3DComponent::Initialize(){
 
 }
 
 /////////////////////////////////////////////////////////////////////////
 // フレーム開始時の処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::BeginFrame(){
+void Routine3DComponent::BeginFrame(){
 
 }
 
 /////////////////////////////////////////////////////////////////////////
 // 更新処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::Update(){
+void Routine3DComponent::Update(){
 
     if(!isActive_ || points_.empty() || duration_ == 0.0f){
         return; // ルーチンが無効または制御点がない場合は何もしない
@@ -66,14 +66,14 @@ void RoutineComponent::Update(){
         if(it != points_.end() && points_.size() > 1){
             float divisionEvery = 1.0f / points_.size();
             float t2 = (t - (index * divisionEvery)) / divisionEvery;
-            owner_->SetLocalTranslate(nextTranslate);
-            owner_->SetLocalRotate(Quaternion::Slerp(it->rotate, std::next(it)->rotate, t2));
-            owner_->SetLocalScale(MyMath::Lerp(it->scale, std::next(it)->scale, t2));
+            owner_.owner3D->SetLocalTranslate(nextTranslate);
+            owner_.owner3D->SetLocalRotate(Quaternion::Slerp(it->rotate, std::next(it)->rotate, t2));
+            owner_.owner3D->SetLocalScale(MyMath::Lerp(it->scale, std::next(it)->scale, t2));
         } else{
             // 最後の制御点に到達した場合
-            owner_->SetLocalTranslate(points_.back().translate);
-            owner_->SetLocalRotate(points_.back().rotate);
-            owner_->SetLocalScale(points_.back().scale);
+            owner_.owner3D->SetLocalTranslate(points_.back().translate);
+            owner_.owner3D->SetLocalRotate(points_.back().rotate);
+            owner_.owner3D->SetLocalScale(points_.back().scale);
         }
 
     } else{
@@ -97,23 +97,23 @@ void RoutineComponent::Update(){
 
             if(index < scales.size() - 1){
                 // 通常の補完
-                owner_->SetLocalTranslate(nextTranslate);
-                owner_->SetLocalRotate(Quaternion::Slerp(rotates[index], rotates[index + 1], t2));
-                owner_->SetLocalScale(MyMath::Lerp(scales[index], scales[index + 1], t2));
+                owner_.owner3D->SetLocalTranslate(nextTranslate);
+                owner_.owner3D->SetLocalRotate(Quaternion::Slerp(rotates[index], rotates[index + 1], t2));
+                owner_.owner3D->SetLocalScale(MyMath::Lerp(scales[index], scales[index + 1], t2));
             } else{
                 // 最後の制御点に到達した場合
-                owner_->SetLocalTranslate(points_.back().translate);
-                owner_->SetLocalRotate(points_.back().rotate);
-                owner_->SetLocalScale(points_.back().scale);
+                owner_.owner3D->SetLocalTranslate(points_.back().translate);
+                owner_.owner3D->SetLocalRotate(points_.back().rotate);
+                owner_.owner3D->SetLocalScale(points_.back().scale);
             }
         }
     }
 
     if(isRotateByDirection_){
         // 方向に応じて回転する場合
-        Vector3 moveVec = nextTranslate - owner_->GetPrePos();
+        Vector3 moveVec = nextTranslate - owner_.owner3D->GetPrePos();
         Vector3 eulerRotate = MyFunc::CalcRotateVec(moveVec);
-        owner_->SetLocalRotate(Quaternion::ToQuaternion(eulerRotate));
+        owner_.owner3D->SetLocalRotate(Quaternion::ToQuaternion(eulerRotate));
     }
 }
 
@@ -121,14 +121,14 @@ void RoutineComponent::Update(){
 /////////////////////////////////////////////////////////////////////////
 // 描画処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::Draw(){
+void Routine3DComponent::Draw(){
 }
 
 
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::EndFrame(){
+void Routine3DComponent::EndFrame(){
 
 }
 
@@ -136,14 +136,14 @@ void RoutineComponent::EndFrame(){
 /////////////////////////////////////////////////////////////////////////
 // フレーム終了時の処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::Finalize(){
+void Routine3DComponent::Finalize(){
 }
 
 
 /////////////////////////////////////////////////////////////////////////
 // GUI上での編集処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::EditGUI(){
+void Routine3DComponent::EditGUI(){
 #ifdef _DEBUG
     ImGui::Indent();
 
@@ -261,9 +261,9 @@ void RoutineComponent::EditGUI(){
 /////////////////////////////////////////////////////////////////////////
 // jsonへの書き出し
 /////////////////////////////////////////////////////////////////////////
-nlohmann::json RoutineComponent::GetJsonData() const{
+nlohmann::json Routine3DComponent::GetJsonData() const{
     nlohmann::ordered_json jsonData;
-    jsonData["componentType"] = "Routine";
+    jsonData["componentType"] = "Routine3D";
     jsonData.update(IComponent::GetJsonData());
 
     for(const auto& point : points_){
@@ -284,7 +284,7 @@ nlohmann::json RoutineComponent::GetJsonData() const{
 /////////////////////////////////////////////////////////////////////////
 // jsonからの読み込み処理
 /////////////////////////////////////////////////////////////////////////
-void RoutineComponent::LoadFromJson(const nlohmann::json& jsonData){
+void Routine3DComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     IComponent::LoadFromJson(jsonData);
 

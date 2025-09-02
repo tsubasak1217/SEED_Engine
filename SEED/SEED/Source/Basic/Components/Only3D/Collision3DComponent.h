@@ -1,5 +1,6 @@
 #pragma once
 #include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Basic/Collision/Collider.h>
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
@@ -8,10 +9,10 @@
 #include <vector>
 
 /*----------- 衝突判定をするやつ ----------*/
-class CollisionComponent : public IComponent{
+class Collision3DComponent : public IComponent{
 public:
-    CollisionComponent(GameObject* pOwner, const std::string& tagName = "");
-    ~CollisionComponent() = default;
+    Collision3DComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~Collision3DComponent() = default;
     void Initialize(const std::string& fileName, ObjectType objectType);
     void BeginFrame()override;
     void Update()override;

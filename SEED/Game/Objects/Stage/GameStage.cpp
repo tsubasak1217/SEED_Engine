@@ -24,7 +24,7 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
     switch (blockType) {
     case BlockType::Normal: {
 
-        GameObject* object = new GameObject(GameSystem::GetScene());
+        GameObject2D* object = new GameObject2D(GameSystem::GetScene());
         BlockComponent* component = object->AddComponent<BlockComponent>();
         component->Initialize(BlockType::Normal, Vector2(index * blockOffsetX, translateY));
         blocks_.push_back(std::move(object));

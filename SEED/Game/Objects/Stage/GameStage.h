@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
@@ -49,7 +49,7 @@ private:
     // プレイヤー
     std::unique_ptr<Player> player_;
     // ブロックのリスト
-    std::list<GameObject*> blocks_;
+    std::list<GameObject2D*> blocks_;
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
 

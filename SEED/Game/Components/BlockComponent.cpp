@@ -5,7 +5,7 @@
 //============================================================================
 #include <Game/Objects/Stage/Block/Blocks/BlockNormal.h>
 
-BlockComponent::BlockComponent(GameObject* pOwner, const std::string& tagName) : IComponent(pOwner, tagName) {
+BlockComponent::BlockComponent(GameObject2D* pOwner, const std::string& tagName) : IComponent(pOwner, tagName){
 
     // タグの名前が指定されていなければIDをタグ名にする
     if (tagName == "") {

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Components/IComponent.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Stage/Block/Interface/IBlock.h>
 
 //============================================================================
@@ -11,11 +12,7 @@
 //============================================================================
 class BlockComponent : public IComponent {
 public:
-    //========================================================================
-    //	public Methods
-    //========================================================================
-
-    BlockComponent(GameObject* pOwner, const std::string& tagName = "");
+    BlockComponent(GameObject2D* pOwner, const std::string& tagName = "");
     ~BlockComponent() = default;
 
     void Initialize()override;

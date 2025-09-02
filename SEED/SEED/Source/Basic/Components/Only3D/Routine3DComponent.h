@@ -4,10 +4,10 @@
 #include <SEED/Lib/Structs/Transform.h>
 #include <list>
 
-class RoutineComponent : public IComponent{
+class Routine3DComponent : public IComponent{
 public:
-    RoutineComponent(GameObject* pOwner, const std::string& tagName = "");
-    ~RoutineComponent() = default;
+    Routine3DComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~Routine3DComponent() = default;
     void Initialize()override;
     void BeginFrame() override;
     void Update() override;

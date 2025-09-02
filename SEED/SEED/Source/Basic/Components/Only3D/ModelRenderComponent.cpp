@@ -7,7 +7,13 @@ ModelRenderComponent::ModelRenderComponent(GameObject* pOwner, const std::string
     : IComponent(pOwner, tagName){
     // モデルの初期化
     model_ = std::make_unique<Model>("DefaultAssets/cube/cube.obj");
-    model_->parentMat_ = owner_->GetWorldMatPtr();
+
+    // 2Dオブジェクトにはアタッチできない
+    if(owner_.is2D or !owner_.owner3D){
+        assert(false);
+    }
+
+    model_->parentMat_ = owner_.owner3D->GetWorldMatPtr();
     model_->UpdateMatrix();
 
     if(tagName == ""){
@@ -21,7 +27,7 @@ ModelRenderComponent::ModelRenderComponent(GameObject* pOwner, const std::string
 void ModelRenderComponent::Initialize(const std::string& modelPath){
     // モデルの初期化
     model_ = std::make_unique<Model>(modelPath);
-    model_->parentMat_ = owner_->GetWorldMatPtr();
+    model_->parentMat_ = owner_.owner3D->GetWorldMatPtr();
     model_->UpdateMatrix();
 }
 

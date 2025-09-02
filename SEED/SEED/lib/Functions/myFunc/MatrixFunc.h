@@ -58,6 +58,9 @@ Vector3 Expand1ToVec3(const Vector2& vec);
 Vector4 TransformToVec4(const Vector3& vec);
 Vector4 TransformToVec4(const Vector2& vec);
 
+// 行列の変換
+Matrix4x4 ToMat4x4(const Matrix3x3& mat);
+
 // 単位行列を返す関数
 Matrix2x2 IdentityMat2();
 Matrix3x3 IdentityMat3();
@@ -93,10 +96,13 @@ Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vec
 Matrix4x4 AffineMatrix(const Transform& transform);
 
 // 行列から平行移動成分を取り出す
+Vector2 ExtractTranslation(const Matrix3x3& matrix);
 Vector3 ExtractTranslation(const Matrix4x4& matrix);
 // 行列から拡大縮小成分を取り出す
+Vector2 ExtractScale(const Matrix3x3& matrix);
 Vector3 ExtractScale(const Matrix4x4& matrix);
 // 行列から回転成分を取り出す
+float ExtractRotation(const Matrix3x3& matrix);
 Vector3 ExtractRotation(const Matrix4x4& matrix);
 // 行列からクォータニオンを取り出す
 Quaternion ExtractQuaternion(const Matrix4x4& matrix);

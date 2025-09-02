@@ -56,6 +56,14 @@ void Scene_Base::RegisterToHierarchy(GameObject* gameObject){
     hierarchy_->RegisterGameObject(gameObject);
 }
 
+void Scene_Base::RegisterToHierarchy(GameObject2D* gameObject){
+    hierarchy_->RegisterGameObject(gameObject);
+}
+
 void Scene_Base::RemoveFromHierarchy(GameObject* gameObject){
+    hierarchy_->RemoveGameObject(gameObject);
+}
+
+void Scene_Base::RemoveFromHierarchy(GameObject2D* gameObject){
     hierarchy_->RemoveGameObject(gameObject);
 }

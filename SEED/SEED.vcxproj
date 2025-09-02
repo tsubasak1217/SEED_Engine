@@ -124,46 +124,51 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Stage\Methods\GameStageBuilder.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Goal\Goal.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
-    <ClCompile Include="Game\Components\BlockComponent.cpp" />
+    <ClCompile Include="Game\Components\StageObjectComponent.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
-    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerKeyInput.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Entity\Player.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\Entity\Player.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\Interface\PlayerIState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\PlayerStateController.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerIdleState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerJumpState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\States\PlayerMoveState.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerMoveState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
+    <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockNormal.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -291,63 +296,71 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Stage\Objects\Goal\Goal.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Methods\GameStageBuilder.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
-    <ClInclude Include="Game\Components\BlockComponent.h" />
-    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h">
+    <ClInclude Include="Game\Components\StageObjectComponent.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerGamePadInput.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerKeyInput.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\Input\PlayerInputActionEnum.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\PlayerInputActionEnum.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\Entity\Player.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\Entity\Player.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\Enum\PlayerStateEnum.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\Interface\PlayerIState.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\PlayerStateController.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerIdleState.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\States\PlayerJumpState.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerJumpState.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Player\State\States\PlayerMoveState.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerMoveState.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockNormal.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Block\Enum\BlockType.h">
+    <ClInclude Include="Game\Objects\Stage\Enum\StageObjectType.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Block\Interface\IBlock.h">
+    <ClInclude Include="Game\Objects\Stage\Objects\Interface\IStageObject.h">
       <SubType>
       </SubType>
     </ClInclude>

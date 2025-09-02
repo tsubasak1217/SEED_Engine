@@ -320,6 +320,8 @@
     <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="SEED\Lib\Structs\Rect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

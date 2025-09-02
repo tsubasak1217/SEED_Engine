@@ -28,7 +28,6 @@ void GameSystem::Initialize() {
     // シーンの登録
     SceneRegister::RegisterScenes();
     // 最初のシーンを設定
-    //ChangeScene("Clear");
     ChangeScene("Game");
 }
 

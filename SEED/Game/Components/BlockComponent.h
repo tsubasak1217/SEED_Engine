@@ -3,37 +3,34 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Basic/Object/GameObject.h>
-
-// c++
-#include <list>
+#include <SEED/Source/Basic/Components/IComponent.h>
+#include <Game/Objects/Stage/Block/Interface/IBlock.h>
 
 //============================================================================
-//	GameStage class
+//	BlockComponent class
 //============================================================================
-class GameStage {
+class BlockComponent : public IComponent {
 public:
     //========================================================================
     //	public Methods
     //========================================================================
 
-    GameStage() = default;
-    ~GameStage() = default;
+    BlockComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~BlockComponent() = default;
 
-    // 初期化処理
-    void Initialize();
+    void Initialize()override;
+    void BeginFrame() override;
+    void Update() override;
+    void Draw() override;
+    void EndFrame() override;
+    void Finalize() override;
+    // GUI編集
+    void EditGUI() override;
+    // json
+    nlohmann::json GetJsonData() const override;
+    void LoadFromJson(const nlohmann::json& jsonData) override;
 
-    // 更新処理
-    void Update();
-
-    // 描画処理
-    void Draw();
-
-    // エディター
-    void Edit();
-
-    //--------- accessor -----------------------------------------------------
-
+    void Initialize(BlockType blockType, const Vector2& translate);
 private:
     //========================================================================
     //	private Methods
@@ -41,24 +38,11 @@ private:
 
     //--------- variables ----------------------------------------------------
 
-    // jsonパス
-    const std::string kJsonPath_ = "GameStage/stageParameter.json";
-
-    // ブロックのリスト
-    std::list<GameObject*> blocks_;
-
-    // エディター用
-
+    // IBlockを継承したブロックのインスタンスを持つ
+    std::unique_ptr<IBlock> block_ = nullptr;
 
     //--------- functions ----------------------------------------------------
 
-    // json
-    void ApplyJson();
-    void SaveJson();
-
-    // init
-    void InitializeBlock(BlockType blockType, uint32_t index);
-
     // helper
-    std::string GetBlockTextureName(BlockType blockType) const;
+    std::unique_ptr<IBlock> CreateBlockInstance(BlockType blockType) const;
 };

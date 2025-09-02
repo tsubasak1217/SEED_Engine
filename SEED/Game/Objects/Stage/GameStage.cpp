@@ -3,8 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Stage/Block/Blocks/BlockNormal.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <Game/Objects/Stage/Block/Blocks/BlockNormal.h>
+#include <Game/GameSystem.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -23,10 +24,10 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
     switch (blockType) {
     case BlockType::Normal: {
 
-        std::unique_ptr<BlockNormal> block = std::make_unique<BlockNormal>();
-        block->Initialize(GetBlockTextureName(blockType));
-        block->SetTranslate(Vector2(index * blockOffsetX, translateY));
-        blocks_.push_back(std::move(block));
+        GameObject* object = new GameObject(GameSystem::GetScene());
+        BlockComponent* component = object->AddComponent<BlockComponent>();
+        component->Initialize(BlockType::Normal, Vector2(index * blockOffsetX, translateY));
+        blocks_.push_back(std::move(object));
         break;
     }
     }

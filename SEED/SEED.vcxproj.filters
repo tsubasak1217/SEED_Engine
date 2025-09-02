@@ -109,6 +109,7 @@
     <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
     <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
+    <ClCompile Include="Game\Components\BlockComponent.cpp" />
     <ClCompile Include="Game\Objects\Stage\GameStage.cpp" />
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
     <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h" />
+    <ClInclude Include="Game\Components\BlockComponent.h" />
     <ClInclude Include="Game\Objects\Stage\GameStage.h" />
     <ClInclude Include="Game\Objects\Stage\Block\Interface\IBlock.h" />
     <ClInclude Include="Game\Objects\Stage\Block\Enum\BlockType.h" />

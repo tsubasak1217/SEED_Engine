@@ -103,7 +103,7 @@ public:// キーの状態を返す関数
 
     // スティックのデッドゾーン設定
     static void SetDeadZone(float deadZone){ instance_->deadZone_ = deadZone; }
-
+    static float GetDeadZone() { return deadZone_; }
 private:
 
     bool IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE padState);

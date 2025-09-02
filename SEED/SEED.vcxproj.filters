@@ -113,6 +113,8 @@
     <ClCompile Include="Game\Objects\Stage\GameStage.cpp" />
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp" />
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -279,6 +281,11 @@
     <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h" />
     <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h" />
     <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h" />
+    <ClInclude Include="Game\Objects\Player\Input\PlayerInputActionEnum.h" />
+    <ClInclude Include="SEED\Lib\Input\IInputDevice.h" />
+    <ClInclude Include="SEED\Lib\Input\InputMapper.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

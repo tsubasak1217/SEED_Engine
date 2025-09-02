@@ -125,6 +125,14 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Components\BlockComponent.cpp" />
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
       <SubType>
       </SubType>
@@ -248,6 +256,18 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Components\BlockComponent.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\PlayerInputActionEnum.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h">
       <SubType>
       </SubType>
@@ -261,6 +281,14 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Stage\GameStage.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Input\InputMapper.h">
       <SubType>
       </SubType>
     </ClInclude>

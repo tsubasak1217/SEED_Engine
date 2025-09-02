@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/enums/Direction.h>
 
 //============================================================================
 //	BorderLine class
@@ -36,7 +37,7 @@ public:
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
-    void SetActivate(const Vector2& translate, float sizeY);
+    void SetActivate(const Vector2& translate, LR moveDirection, float sizeY);
     // 非アクティブ状態にする
     void SetDeactivate();
 

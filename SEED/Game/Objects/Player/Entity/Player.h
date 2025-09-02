@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Player/State/PlayerStateController.h>
 
 //============================================================================
@@ -35,6 +36,7 @@ public:
     void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
 
     const Sprite& GetSprite() const { return sprite_; }
+    LR GetMoveDirection() const { return moveDirection_; }
 
     // 入力検知
     bool IsPutBorder() const;
@@ -51,6 +53,8 @@ private:
 
     // 描画情報
     Sprite sprite_;
+    // 向いている方向
+    LR moveDirection_;
 
     // 入力管理
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
@@ -62,4 +66,7 @@ private:
     // json
     void ApplyJson();
     void SaveJson();
+
+    // update
+    void UpdateMoveDirection();
 };

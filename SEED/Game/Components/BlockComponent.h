@@ -28,6 +28,13 @@ public:
     void LoadFromJson(const nlohmann::json& jsonData) override;
 
     void Initialize(BlockType blockType, const Vector2& translate);
+
+    //--------- accessor -----------------------------------------------------
+
+    void SetBlockCommonState(BlockCommonState state) { block_->SetCommonState(state); }
+
+    BlockType GetBlockType() const { return blockType_; }
+    const Vector2& GetBlockTranslate() const { return block_->GetTranslate(); }
 private:
     //========================================================================
     //	private Methods
@@ -35,6 +42,8 @@ private:
 
     //--------- variables ----------------------------------------------------
 
+    // タイプ
+    BlockType blockType_;
     // IBlockを継承したブロックのインスタンスを持つ
     std::unique_ptr<IBlock> block_ = nullptr;
 

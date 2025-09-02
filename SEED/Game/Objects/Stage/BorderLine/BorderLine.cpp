@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
-#include <Environment/Environment.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -22,13 +21,22 @@ void BorderLine::Initialize() {
     currentState_ = State::Disable;
 }
 
-void BorderLine::SetActivate(const Vector2& translate, float sizeY) {
+void BorderLine::SetActivate(const Vector2& translate, LR moveDirection, float sizeY) {
 
     // アクティブ状態を設定
     currentState_ = State::Active;
     sprite_.translate = translate;
     // ウィンドウの一番上にサイズを合わせる
     sprite_.size.y = sizeY;
+
+    // 向いている方向に応じてアンカーを変更
+    if (moveDirection == LR::RIGHT) {
+
+        sprite_.anchorPoint.x = -1.0f;
+    } else if (moveDirection == LR::LEFT) {
+
+        sprite_.anchorPoint.x = 1.0f;
+    }
 }
 
 void BorderLine::SetDeactivate() {

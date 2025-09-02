@@ -34,11 +34,11 @@ void Scene_Select::Initialize() {
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Select::Update() {
 
-    if(Input::IsTriggerKey(DIK_SPACE)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
         ChangeScene("Game");
     }
 
-    if(Input::IsTriggerKey(DIK_ESCAPE)){
+    if(Input::IsTriggerPadButton(PAD_BUTTON::B)){
         ChangeScene("Title");
     }
 }

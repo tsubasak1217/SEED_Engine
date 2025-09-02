@@ -114,6 +114,7 @@
     <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
     <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -281,6 +282,7 @@
     <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h" />
     <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h" />
     <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

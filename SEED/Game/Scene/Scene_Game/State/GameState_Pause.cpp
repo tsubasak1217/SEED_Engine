@@ -84,6 +84,7 @@ void GameState_Pause::Update() {
         if (currentMenu_ < 0) {
             currentMenu_ = 2;
         }
+        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
     //下移動
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
@@ -91,6 +92,7 @@ void GameState_Pause::Update() {
          if (currentMenu_ > 2) {
              currentMenu_ = 0;
          }
+         AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
 
     // 選択中のメニューの色を変える

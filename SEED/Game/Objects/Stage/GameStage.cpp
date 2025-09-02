@@ -134,7 +134,7 @@ void GameStage::CreateHologramBlock() {
     for (GameObject2D* block : blocks_) {
 
         // オブジェクトのブロックコンポーネントを取得
-        BlockComponent* component = block->GetComponent<BlockComponent>(block->GetName());
+        BlockComponent* component = block->GetComponent<BlockComponent>();
 
         const Vector2 sourcePos = component->GetBlockTranslate();
         //const BlockType sourceType = component->GetBlockType();
@@ -153,12 +153,16 @@ void GameStage::CreateHologramBlock() {
         Vector2 dstPos;
         dstPos.x = roundToTile(2.0f * axisX - sourcePos.x);
         dstPos.y = roundToTile(sourcePos.y);
+
+        // 元のタイプでブロックを作成
+        //GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
     }
 }
 
 void GameStage::RemoveHologramBlock() {
 
     // 作成したホログラムオブジェクトをすべて破棄する
+    hologramBlocks_.clear();
 }
 
 void GameStage::Draw() {

@@ -3,41 +3,45 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <SEED/Lib/Structs/Rect.h>
-#include <Game/Objects/Stage/BorderLine/BorderLine.h>
-
-// c++
-#include <list>
-// front
-class Player;
+#include <SEED/Lib/enums/Direction.h>
+#include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
+#include <Game/Objects/Stage/Objects/Player/State/PlayerStateController.h>
 
 //============================================================================
-//	GameStage class
+//	Player class
 //============================================================================
-class GameStage {
+class Player :
+    public IStageObject {
 public:
     //========================================================================
     //	public Methods
     //========================================================================
 
-    GameStage() = default;
-    ~GameStage() = default;
+    Player() = default;
+    ~Player() = default;
 
     // 初期化処理
-    void Initialize();
+    void Initialize(const std::string& filename) override;
 
     // 更新処理
-    void Update();
+    void Update() override;
 
     // 描画処理
-    void Draw();
+    void Draw() override;
 
     // エディター
-    void Edit();
+    void Edit() override;
 
     //--------- accessor -----------------------------------------------------
 
+    void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+
+    const Sprite& GetSprite() const { return sprite_; }
+    LR GetMoveDirection() const { return moveDirection_; }
+
+    // 入力検知
+    bool IsPutBorder() const;
+    bool IsRemoveBorder() const;
 private:
     //========================================================================
     //	private Methods
@@ -45,17 +49,18 @@ private:
 
     //--------- variables ----------------------------------------------------
 
-    // jsonパス
-    const std::string kJsonPath_ = "GameStage/stageParameter.json";
-    
-    // オブジェクトのリスト
-    std::list<GameObject2D*> objects_;         // 通常
-    std::list<GameObject2D*> hologramObjects_; // ホログラム
-    // 境界線
-    std::unique_ptr<BorderLine> borderLine_;
+     // jsonパス
+    const std::string kJsonPath_ = "Player/playerParameter.json";
 
-    // リストから貰って使用する
-    Player* player_ = nullptr;
+    // 描画情報
+    Sprite sprite_;
+    // 向いている方向
+    LR moveDirection_;
+
+    // 入力管理
+    std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
+    // 状態管理
+    std::unique_ptr<PlayerStateController> stateController_;
 
     //--------- functions ----------------------------------------------------
 
@@ -64,11 +69,5 @@ private:
     void SaveJson();
 
     // update
-    void UpdateBorderLine();
-
-    // helper
-    void CreateHologramBlock();
-    void RemoveHologramBlock();
-    float ComputeBorderAxisXFromContact() const;
-    float OverlapArea(const RectFloat& rectA,const RectFloat& rectB) const;
+    void UpdateMoveDirection();
 };

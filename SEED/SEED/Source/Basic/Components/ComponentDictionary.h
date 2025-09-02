@@ -18,4 +18,4 @@
 #include <SEED/Source/Basic/Components/3D&2D/JumpComponent.h>
 
 // Game固有のコンポーネントを以下に追加してください
-#include <Game/Components/BlockComponent.h>
+#include <Game/Components/StageObjectComponent.h>

@@ -76,8 +76,6 @@ void GameObject2D::Draw(){
     }
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////
@@ -396,8 +394,8 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
         }
 
         // ゲーム固有のコンポーネントの場合
-        if(componentType == "Block"){
-            auto* blockComponent = AddComponent<BlockComponent>();
+        if(componentType == "StageObject"){
+            auto* blockComponent = AddComponent<StageObjectComponent>();
             blockComponent->LoadFromJson(componentJson);
         }
     }
@@ -510,8 +508,8 @@ void GameObject2D::EditGUI(){
         }
 
         // ゲーム固有のコンポーネントをここに追加していく
-        if(ImGui::Button("BlockComponent / ブロック")){
-            AddComponent<BlockComponent>();
+        if(ImGui::Button("StageObjectComponent / オブジェクト")){
+            AddComponent<StageObjectComponent>();
             ImGui::CloseCurrentPopup();
         }
 

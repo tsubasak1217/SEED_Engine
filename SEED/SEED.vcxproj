@@ -124,6 +124,18 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Stage\Block\Blocks\BlockNormal.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\GameStage.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
@@ -234,6 +246,30 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Stage\Block\Blocks\BlockNormal.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Block\Enum\BlockType.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Block\Interface\IBlock.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\GameStage.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
     <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
@@ -248,7 +284,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
@@ -278,7 +313,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />

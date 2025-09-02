@@ -37,6 +37,14 @@ bool PlayerGamePadInput::IsPressed(PlayerInputAction button) const {
 
         return Input::IsPressPadButton({ PAD_BUTTON::A });
     }
+    case PlayerInputAction::PutBorder: {
+
+        return Input::IsPressPadButton({ PAD_BUTTON::RB });
+    }
+    case PlayerInputAction::RemoveBorder: {
+
+        return Input::IsPressPadButton({ PAD_BUTTON::RB });
+    }
     }
     return false;
 }
@@ -47,6 +55,14 @@ bool PlayerGamePadInput::IsTriggered(PlayerInputAction button) const {
     case PlayerInputAction::Jump: {
 
         return Input::IsTriggerPadButton({ PAD_BUTTON::A });
+    }
+    case PlayerInputAction::PutBorder: {
+
+        return Input::IsTriggerPadButton({ PAD_BUTTON::RB });
+    }
+    case PlayerInputAction::RemoveBorder: {
+
+        return Input::IsTriggerPadButton({ PAD_BUTTON::RB });
     }
     }
     return false;

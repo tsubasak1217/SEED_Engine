@@ -5,6 +5,10 @@
 //============================================================================
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 
+// inputDevice
+#include <Game/Objects/Player/Input/Device/PlayerKeyInput.h>
+#include <Game/Objects/Player/Input/Device/PlayerGamePadInput.h>
+
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
@@ -14,9 +18,14 @@
 
 void Player::Initialize() {
 
+    // 入力クラスを初期化
+    inputMapper_ = std::make_unique<InputMapper<PlayerInputAction>>();
+    inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>());     // キー操作
+    inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>()); // パッド操作
+
     // 状態を初期化
     stateController_ = std::make_unique<PlayerStateController>();
-    stateController_->Initialize();
+    stateController_->Initialize(inputMapper_.get());
 
     // スプライトを初期化
     sprite_ = Sprite("DefaultAssets/ellipse.png");
@@ -57,7 +66,7 @@ void Player::Edit() {
         if (ImGui::BeginTabBar("PlayerTab")) {
             if (ImGui::BeginTabItem("PlayerParam")) {
 
-                ImGui::DragFloat2("size", &sprite_.size.x, 0.1f);
+                ImGui::DragFloat2("spriteSize", &sprite_.size.x, 0.1f);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("State")) {

@@ -35,6 +35,10 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
 
 void GameStage::Initialize() {
 
+    // プレイヤー
+    player_ = std::make_unique<Player>();
+    player_->Initialize();
+
     // ブロック(テスト用)
     // 指定数分作成して並べる
     const uint32_t kMaxBlockNum = 64;
@@ -43,9 +47,9 @@ void GameStage::Initialize() {
         InitializeBlock(BlockType::Normal, index);
     }
 
-    // プレイヤー
-    player_ = std::make_unique<Player>();
-    player_->Initialize();
+    // 境界線
+    borderLine_ = std::make_unique<BorderLine>();
+    borderLine_->Initialize();
 
     // json適応
     ApplyJson();
@@ -55,6 +59,9 @@ void GameStage::Update() {
 
     // プレイヤーの更新処理
     player_->Update();
+
+    // 境界線の更新処理
+    borderLine_->Update();
 }
 
 void GameStage::Draw() {
@@ -65,6 +72,9 @@ void GameStage::Draw() {
         block->Draw();
     }
 
+    // 境界線の描画
+    borderLine_->Draw();
+
     // プレイヤーの描画
     player_->Draw();
 }
@@ -73,10 +83,21 @@ void GameStage::Edit() {
 
     ImFunc::CustomBegin("GameStage", MoveOnly_TitleBar);
     {
+        ImGui::PushItemWidth(192.0f);
         if (ImGui::Button("Save Json")) {
 
             SaveJson();
         }
+
+        if (ImGui::BeginTabBar("GameStageTab")) {
+            if (ImGui::BeginTabItem("BorderLine")) {
+
+                borderLine_->Edit();
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+        ImGui::PopItemWidth();
         ImGui::End();
     }
 }
@@ -87,11 +108,15 @@ void GameStage::ApplyJson() {
     if (!JsonAdapter::LoadCheck(kJsonPath_, data)) {
         return;
     }
+
+    borderLine_->FromJson(data["BorderLine"]);
 }
 
 void GameStage::SaveJson() {
 
     nlohmann::json data;
+
+    borderLine_->ToJson(data["BorderLine"]);
 
     JsonAdapter::Save(kJsonPath_, data);
 }

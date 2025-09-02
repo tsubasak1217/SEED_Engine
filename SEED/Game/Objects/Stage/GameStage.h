@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <Game/Objects/Player/Entity/Player.h>
+#include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
 // c++
 #include <list>
@@ -49,6 +50,8 @@ private:
     std::unique_ptr<Player> player_;
     // ブロックのリスト
     std::list<GameObject*> blocks_;
+    // 境界線
+    std::unique_ptr<BorderLine> borderLine_;
 
     // エディター用
 

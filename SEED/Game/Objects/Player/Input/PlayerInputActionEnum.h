@@ -15,6 +15,8 @@
 enum class PlayerInputAction :
     uint8_t {
 
-    MoveX, // X移動
-    Jump,  // ジャンプ
+    MoveX,        // X移動
+    Jump,         // ジャンプ
+    PutBorder,    // 境界線を置く
+    RemoveBorder, // 境界線を外す
 };

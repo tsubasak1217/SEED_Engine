@@ -23,7 +23,7 @@ public:
 	~PlayerStateController() = default;
 
     // 初期化処理
-    void Initialize();
+    void Initialize(const InputMapper<PlayerInputAction>* inputMapper);
 
     // 更新処理
     void Update(Player& owner);
@@ -34,9 +34,6 @@ public:
     // json
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods
@@ -48,8 +45,7 @@ private:
     std::optional<PlayerState> requested_; // 次の状態
 
     // 入力管理
-    std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
-
+    const InputMapper<PlayerInputAction>* inputMapper_;
     // 全ての状態
     std::unordered_map<PlayerState, std::unique_ptr<PlayerIState>> states_;
 

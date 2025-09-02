@@ -5,9 +5,6 @@
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 
-// inputDevice
-#include <Game/Objects/Player/Input/Device/PlayerKeyInput.h>
-#include <Game/Objects/Player/Input/Device/PlayerGamePadInput.h>
 // state
 #include <Game/Objects/Player/State/States/PlayerIdleState.h>
 #include <Game/Objects/Player/State/States/PlayerMoveState.h>
@@ -20,12 +17,10 @@
 //	PlayerStateController classMethods
 //============================================================================
 
-void PlayerStateController::Initialize() {
+void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inputMapper) {
 
-    // 入力クラスを初期化
-    inputMapper_ = std::make_unique<InputMapper<PlayerInputAction>>();
-    inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>());     // キー操作
-    inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>()); // パッド操作
+    inputMapper_ = nullptr;
+    inputMapper_ = inputMapper;
 
     // 各状態を初期化
     states_.emplace(PlayerState::Idle, std::make_unique<PlayerIdleState>());
@@ -35,7 +30,7 @@ void PlayerStateController::Initialize() {
     // 各状態に入力をセット
     for (const auto& state : std::views::values(states_)) {
 
-        state->SetInputMapper(inputMapper_.get());
+        state->SetInputMapper(inputMapper);
     }
 
     // 初期状態を設定

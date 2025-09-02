@@ -122,6 +122,7 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerMoveState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\States\PlayerJumpState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp" />
+    <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="Game\Objects\Player\State\States\PlayerJumpState.h" />
     <ClInclude Include="Game\Objects\Player\State\Enum\PlayerStateEnum.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
+    <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

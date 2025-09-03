@@ -26,9 +26,20 @@ void GameStage::InitializeBlock(BlockType blockType, uint32_t index) {
     case BlockType::Normal: {
 
         GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+        object->SetWorldTranslate(Vector2(index * blockOffsetX, translateY));
         BlockComponent* component = object->AddComponent<BlockComponent>();
-        component->Initialize(BlockType::Normal, Vector2(index * blockOffsetX, translateY));
+        component->Initialize(BlockType::Normal, Vector2(0, 0));
         blocks_.push_back(std::move(object));
+
+        Collision2DComponent* collision = object->AddComponent<Collision2DComponent>();
+        Collider_AABB2D* aabb = new Collider_AABB2D();
+        aabb->SetCenter({ blockOffsetX * 0.5f,blockOffsetX * 0.5f });
+        aabb->SetSize({ blockOffsetX,blockOffsetX });
+        aabb->SetParentMatrix(object->GetWorldMatPtr());
+        aabb->isMovable_ = false;
+        aabb->SetObjectType(ObjectType::Field);
+        collision->AddCollider(aabb);
+
         break;
     }
     }
@@ -53,9 +64,20 @@ void GameStage::CreateDebugBlock() {
         }
 
         GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+        object->SetWorldTranslate(Vector2(x, y));
         BlockComponent* component = object->AddComponent<BlockComponent>();
-        component->Initialize(BlockType::Normal, Vector2(x, y));
+        component->Initialize(BlockType::Normal, Vector2(0.0f, 0.0f));
         blocks_.push_back(std::move(object));
+
+        // Collisionの追加
+        Collision2DComponent* collision = object->AddComponent<Collision2DComponent>();
+        Collider_AABB2D* aabb = new Collider_AABB2D();
+        aabb->SetCenter({ stepX * 0.5f,stepY * 0.5f });
+        aabb->SetSize({ stepX,stepY });
+        aabb->SetParentMatrix(object->GetWorldMatPtr());
+        aabb->isMovable_ = false;
+        aabb->SetObjectType(ObjectType::Field);
+        collision->AddCollider(aabb);
     }
 }
 

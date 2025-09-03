@@ -46,6 +46,7 @@ void BlockComponent::BeginFrame() {
 void BlockComponent::Update() {
 
     // blockの更新
+    block_->SetTranslate(owner_.owner2D->GetWorldTranslate());
     block_->Update();
 }
 

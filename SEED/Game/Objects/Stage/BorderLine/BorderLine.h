@@ -28,7 +28,7 @@ public:
     void Draw();
 
     // エディター
-    void Edit();
+    void Edit(const Sprite& playerSprite);
 
     // json
     void FromJson(const nlohmann::json& data);
@@ -44,6 +44,8 @@ public:
     const Sprite& GetSprite() const { return sprite_; }
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
+    // 非アクティブ状態に遷移可能かどうか
+    bool CanTransitionDisable(float playerX) const;
 private:
     //========================================================================
     //	private Methods
@@ -66,7 +68,12 @@ private:
     // 描画情報
     Sprite sprite_;
 
+    // parameters
+    float playerToDistance_; // プレイヤーとの判定を取るまで距離
+
     //--------- functions ----------------------------------------------------
 
-
+    // helper
+    // プレイヤーと一定距離近づいたか
+    bool CheckPlayerToDistance(float playerX) const;
 };

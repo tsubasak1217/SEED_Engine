@@ -3,9 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
@@ -127,7 +127,8 @@ void GameStage::UpdateBorderLine() {
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->IsActive() && player_->IsRemoveBorder()) {
+    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate.x) &&
+        player_->IsRemoveBorder()) {
 
         // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
         RemoveBorderLine();
@@ -262,7 +263,7 @@ void GameStage::Edit() {
             }
             if (ImGui::BeginTabItem("BorderLine")) {
 
-                borderLine_->Edit();
+                borderLine_->Edit(player_->GetSprite());
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

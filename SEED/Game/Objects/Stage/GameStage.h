@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <SEED/Lib/Structs/Rect.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
 // c++
@@ -43,7 +42,20 @@ private:
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // ステージ進行状態
+    enum class State {
+
+        Play,  // プレイ中...
+        Clear, // クリア
+        Retry  // リトライ
+    };
+
     //--------- variables ----------------------------------------------------
+
+    State currentState_;         // 現在の状態
+    uint32_t currentStageIndex_; // 現在のステージ番号
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -58,7 +70,7 @@ private:
     Player* player_ = nullptr;
 
     // パラメータ
-    float stageObjectMapTileSize_;
+    float stageObjectMapTileSize_; // マップ一個分のサイズ
 
     //--------- functions ----------------------------------------------------
 
@@ -66,12 +78,14 @@ private:
     void ApplyJson();
     void SaveJson();
 
+    // create
+    void BuildStage();
+
     // update
     void UpdateBorderLine();
+    void PutBorderLine();
+    void RemoveBorderLine();
 
     // helper
-    void CreateHologramBlock();
-    void RemoveHologramBlock();
-    float ComputeBorderAxisXFromContact() const;
-    float OverlapArea(const RectFloat& rectA,const RectFloat& rectB) const;
+    void GetListsPlayerPtr();
 };

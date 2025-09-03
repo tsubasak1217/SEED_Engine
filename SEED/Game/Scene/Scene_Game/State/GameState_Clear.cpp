@@ -163,7 +163,7 @@ void GameState_Clear::ManageState() {
             
             if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
                 gameScene->GetStage()->Update();
-                gameScene->ChangeScene("Game");
+                gameScene->ChangeState(new GameState_Play(pScene_));
             }
             break;
         case 1: // Back in the SelectMenu...セレクト画面に戻る

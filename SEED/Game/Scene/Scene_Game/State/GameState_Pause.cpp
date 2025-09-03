@@ -49,6 +49,7 @@ void GameState_Pause::Initialize() {
         MenuBack_[i].leftTop = menuPos_[i];
         MenuBack_[i].anchorPoint = { 0.5f,0.5f };
         MenuBack_[i].drawLocation = DrawLocation::Front;
+        MenuBack_[i].layer = 1;
 
         MenuText_[i].transform.translate = menuPos_[i];
         MenuText_[i].SetFont("");

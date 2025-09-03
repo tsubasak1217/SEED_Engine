@@ -139,23 +139,11 @@ void GameStage::UpdateBorderLine() {
 
 void GameStage::UpdateClear() {
 
-    // デバッグ用
-    // 2|START...次のステージに進む
-    if (Input::IsTriggerKey({ DIK_2 }) ||
-        Input::IsTriggerPadButton({ PAD_BUTTON::START })) {
+    // インデックスを進める
+    currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
+    BuildStage();
+    return;
 
-        // インデックスを進める
-        currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
-        BuildStage();
-        return;
-    }
-    //1|BACK...セレクト画面に戻る
-    if (Input::IsTriggerKey({ DIK_2 }) ||
-        Input::IsTriggerPadButton({ PAD_BUTTON::BACK })) {
-
-        currentState_ = State::Select;
-        return;
-    }
 }
 
 void GameStage::UpdateDeath() {

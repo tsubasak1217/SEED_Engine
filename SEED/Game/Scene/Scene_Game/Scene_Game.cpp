@@ -8,6 +8,7 @@
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/Scene/Scene_Game/State/GameState_Pause.h>
+#include <Game/Scene/Scene_Game/State/GameState_Clear.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -138,14 +139,24 @@ void Scene_Game::Update() {
     if (dynamic_cast<GameState_Play*>(currentState_.get())) {
         stage_->SetIsActive(true);
         stage_->Update();
+
+        
     } else {
         stage_->SetIsActive(false);
     }
     
     stage_->Edit();
    
+    // ステージクリアならクリアステートに遷移
+    if(stage_->GetCurrentState() == GameStage::State::Clear && 
+        dynamic_cast<GameState_Play*>(currentState_.get())){
+        ChangeState(new GameState_Clear(this));
+    }
 
+    //ステートクラス内の遷移処理を実行
     ManageState();
+
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

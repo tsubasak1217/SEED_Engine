@@ -158,6 +158,7 @@ void GameState_Pause::ManageState() {
 
     if (changeStateRequest_) {
         pScene_->ChangeState(new GameState_Play(pScene_));
+        changeStateRequest_ = false;
         return;
     }
 

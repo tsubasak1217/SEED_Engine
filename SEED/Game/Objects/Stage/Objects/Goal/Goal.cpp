@@ -8,6 +8,7 @@ void Goal::Initialize(const std::string& filename) {
 
     // スプライトの初期化
     sprite_ = Sprite(filename);
+    sprite_.anchorPoint = Vector2(0.5f);
 }
 
 void Goal::Update() {

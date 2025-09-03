@@ -143,9 +143,22 @@ void GameStage::UpdateBorderLine(){
     }
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
     Vector2 placePos = player_->GetSprite().translate;
+
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
     placePos.x = axisX;
     // 境界線の更新処理
     borderLine_->Update(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
@@ -153,23 +166,11 @@ void GameStage::UpdateBorderLine(){
 
 void GameStage::UpdateClear(){
 
-    // デバッグ用
-    // 2|START...次のステージに進む
-    if(Input::IsTriggerKey({ DIK_2 }) ||
-        Input::IsTriggerPadButton({ PAD_BUTTON::START })){
+    // インデックスを進める
+    currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
+    BuildStage();
+    return;
 
-        // インデックスを進める
-        currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
-        BuildStage();
-        return;
-    }
-    //1|BACK...セレクト画面に戻る
-    if(Input::IsTriggerKey({ DIK_2 }) ||
-        Input::IsTriggerPadButton({ PAD_BUTTON::BACK })){
-
-        currentState_ = State::Select;
-        return;
-    }
 }
 
 void GameStage::UpdateDeath(){
@@ -190,10 +191,20 @@ void GameStage::UpdateReturnSelect(){
 void GameStage::PutBorderLine(){
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
-    Vector2 placePos = player_->GetSprite().translate;
-    placePos.x = axisX;
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
 
     // 境界線をアクティブ状態にする
     borderLine_->SetActivate();
@@ -335,25 +346,21 @@ void GameStage::CreateColliders(){
 
             switch(type){
             case StageObjectType::Empty:
-                aabb->SetCenter({ stageObjectMapTileSize_ * 0.5f,stageObjectMapTileSize_ * 0.5f });
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = false;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::NormalBlock:
-                aabb->SetCenter({ stageObjectMapTileSize_ * 0.5f,stageObjectMapTileSize_ * 0.5f });
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = false;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::Goal:
-                aabb->SetCenter({ stageObjectMapTileSize_ * 0.5f,stageObjectMapTileSize_ * 0.5f });
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = false;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::Player:
-                aabb->SetCenter({ stageObjectMapTileSize_ * 0.5f,stageObjectMapTileSize_ * 0.5f });
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = true;
                 aabb->SetObjectType(ObjectType::Player);

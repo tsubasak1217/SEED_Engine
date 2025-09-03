@@ -67,7 +67,7 @@ void BorderLine::Update(const Vector2& translate, float sizeY) {
     case BorderLine::State::Disable: {
 
         // 非アクティブ状態中に常に座標を更新する
-        sprite_.translate = translate + offsetTranslateY_;
+        sprite_.translate = Vector2(translate.x, translate.y + offsetTranslateY_);
         // ウィンドウの一番上にサイズを合わせる
         sprite_.size.y = sizeY;
         break;

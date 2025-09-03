@@ -3,15 +3,11 @@
         "Idle": null,
         "Jump": {
             "gravity_": 720.0,
-            "groundY_": 612.0,
+            "groundY_": 552.0,
             "jumpPower_": -480.0
         },
         "Move": {
             "moveSpeed_": 320.0
         }
-    },
-    "sprite_.size": {
-        "x": 32.0,
-        "y": 32.0
     }
 }

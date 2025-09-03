@@ -19,8 +19,6 @@ GameState_Pause::GameState_Pause(Scene_Base* pScene) {
 GameState_Pause::~GameState_Pause() {
     // メインカメラをデフォルトに戻す
     SEED::SetMainCamera("default");
-    // 全ての音声を停止
-    AudioManager::EndAllAudio();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -164,6 +162,7 @@ void GameState_Pause::ManageState() {
 
     // 決定
     if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+        AudioManager::PlayAudio("SE/iceSound.mp3", false, 0.3f, 1.0f);
         switch (currentMenu_) {
         case 0:// 続ける
             changeStateRequest_ = true;
@@ -173,6 +172,7 @@ void GameState_Pause::ManageState() {
             break;
         case 2:// タイトルへ戻る
             pScene_->ChangeScene("Title");
+            AudioManager::EndAllAudio();
             break;
         default:
             break;

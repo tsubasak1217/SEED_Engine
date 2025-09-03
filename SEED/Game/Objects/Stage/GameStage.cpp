@@ -42,6 +42,18 @@ void GameStage::Initialize() {
     }
 }
 
+void GameStage::SetIsActive(bool isActive) {
+
+    for (const auto& object : objects_) {
+
+        object->SetIsActive(isActive);
+    }
+    for (const auto& object : hologramObjects_) {
+
+        object->SetIsActive(isActive);
+    }
+}
+
 void GameStage::Update() {
 
     // 境界線の更新処理

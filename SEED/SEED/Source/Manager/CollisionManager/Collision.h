@@ -9,7 +9,9 @@
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/Shapes/Triangle.h>
 #include <SEED/Lib/Shapes/Capsule.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Lib/Shapes/Circle.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
+#include <SEED/Source/Basic/Collision/2D/Collider2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionData.h>
 
 namespace Collision{
@@ -30,6 +32,11 @@ namespace Collision{
         CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider);
     }
 
+    namespace AABB2D{
+        bool AABB2D(const ::AABB2D& aabb1, const ::AABB2D& aabb2);
+        CollisionData2D AABB2D(Collider2D* aabb1, Collider2D* aabb2);
+    }
+
     namespace Line{
         bool OBB(const ::Line& line, const ::OBB& obb);
         bool AABB(const ::Line& line, const ::AABB& aabb);
@@ -46,12 +53,30 @@ namespace Collision{
         CollisionData Sphere(Collider* sphereCollider1, Collider* sphereCollider2);
     }
 
+    namespace Circle{
+        bool Circle(const ::Circle& circle1, const ::Circle& circle2);
+        CollisionData2D Circle(Collider2D* circle1, Collider2D* circle2);
+        bool Quad2D(const ::Circle& circle, const ::Quad2D& quad);
+        CollisionData2D Quad2D(Collider2D* circle, Collider2D* quad);
+    }
+
     namespace Quad{
         CollisionData Line(const ::Quad& quad, const ::Line& line);
     }
 
+    namespace Quad2D{
+        bool Circle(const ::Quad2D& quad, const ::Circle& circle);
+        CollisionData2D Circle(Collider2D* quad, Collider2D* circle);
+        bool Quad2D(const ::Quad2D& quad1, const ::Quad2D& quad2);
+        CollisionData2D Quad2D(Collider2D* quad1, Collider2D* quad2);
+    }
+
     namespace Capsule{
         bool Capsule(const ::Capsule& capsule1, const ::Capsule& capsule2);
+    }
+
+    namespace Capsule2D{
+        bool Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2);
     }
 }
 

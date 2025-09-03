@@ -87,23 +87,16 @@ void ColliderEditor2D::AddColliderOnGUI(){
     // 追加するコライダーの形状を選択
     ImGui::Combo(
         "ColliderType", (int*)&addColliderType_,
-        "Sphere\0AABB\0OBB\0Line\0Capsule\0Plane\0"
+        "AABB\0"
     );
 
     if(ImGui::Button("Add Collider")){
         switch(addColliderType_){
         case ColliderType2D::Circle:
         {
-            //colliders_.push_back(std::make_unique<Collider_Sphere>());
-            //Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(colliders_.back().get());
-            //sphere->SetRadius(1.0f);
-            break;
-        }
-        case ColliderType2D::Quad:
-        {
-            //colliders_.push_back(std::make_unique<Collider_AABB>());
-            //Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(colliders_.back().get());
-            //aabb->SetSize(Vector3(1.0f, 1.0f, 1.0f));
+            colliders_.push_back(std::make_unique<Collider_AABB2D>());
+            Collider_AABB2D* aabb = dynamic_cast<Collider_AABB2D*>(colliders_.back().get());
+            aabb->SetSize(Vector2(1.0f, 1.0f));
             break;
         }
         default:
@@ -255,26 +248,17 @@ void ColliderEditor2D::LoadColliders(const std::string& fileName, GameObject2D* 
 
     for(auto& collider : colliderData_[fileName]){
 
-        //int colliderID = 0;
+        int colliderID = 0;
 
         // コライダーの形状に応じて生成
         switch(collider->GetColliderType()){
-        case ColliderType2D::Circle:
+        case ColliderType2D::AABB:
         {
-            //pColliderArray->push_back(std::make_unique<Collider_Sphere>());
-            //Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(pColliderArray->back().get());
-            //colliderID = sphere->GetColliderID();
-            //*sphere = *dynamic_cast<Collider_Sphere*>(collider.get());
-            //sphere->SetColliderID(colliderID);
-            break;
-        }
-        case ColliderType2D::Quad:
-        {
-            //pColliderArray->push_back(std::make_unique<Collider_AABB>());
-            //Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(pColliderArray->back().get());
-            //colliderID = aabb->GetColliderID();
-            //*aabb = *dynamic_cast<Collider_AABB*>(collider.get());
-            //aabb->SetColliderID(colliderID);
+            pColliderArray->push_back(std::make_unique<Collider_AABB2D>());
+            Collider_AABB2D* aabb = dynamic_cast<Collider_AABB2D*>(pColliderArray->back().get());
+            colliderID = aabb->GetColliderID();
+            *aabb = *dynamic_cast<Collider_AABB2D*>(collider.get());
+            aabb->SetColliderID(colliderID);
             break;
         }
         }
@@ -305,10 +289,8 @@ void ColliderEditor2D::LoadFromJson(const std::string& fileName){
     for(int i = 0; i < j["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = j["colliders"][i]["colliderType"];
-        if(colliderType == "Circle"){
-            //colliders_.push_back(std::make_unique<Collider2D_Circle>());
-        } else if(colliderType == "Quad"){
-            //colliders_.push_back(std::make_unique<Collider2D_Quad>());
+        if(colliderType == "AABB2D"){
+            colliders_.push_back(std::make_unique<Collider_AABB2D>());
         }
 
         // コライダーの読み込み
@@ -344,10 +326,8 @@ void ColliderEditor2D::LoadColliderData(const std::string fileName){
     for(int i = 0; i < j["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = j["colliders"][i]["colliderType"];
-        if(colliderType == "Circle"){
-            //colliders.push_back(new Collider2D_Circle());
-        } else if(colliderType == "Quad"){
-            //colliders.push_back(new Collider2D_Quad());
+        if(colliderType == "AABB2D"){
+            colliders.push_back(new Collider_AABB2D());
         }
 
         // コライダーの読み込み
@@ -369,10 +349,8 @@ std::vector<Collider2D*> ColliderEditor2D::LoadColliderData(const nlohmann::json
     for(int i = 0; i < json["colliders"].size(); i++){
         // コライダーの形状
         std::string colliderType = json["colliders"][i]["colliderType"];
-        if(colliderType == "Circle"){
-            //colliders.push_back(new Collider2D_Circle());
-        } else if(colliderType == "Quad"){
-            //colliders.push_back(new Collider2D_Quad());
+        if(colliderType == "AABB2D"){
+            colliders.push_back(new Collider_AABB2D());
         }
 
         // コライダーの読み込み

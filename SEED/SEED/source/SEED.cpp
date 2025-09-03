@@ -442,6 +442,19 @@ void SEED::DrawAABB(const AABB& aabb, const Vector4& color){
     DrawOBB(obb, color);
 }
 
+void SEED::DrawAABB2D(const AABB2D& aabb, const Vector4& color){
+    Vector2 vertex[4] = {
+        Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
+        Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
+        Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y + aabb.halfSize.y),
+        Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y + aabb.halfSize.y)
+    };
+    DrawLine2D(vertex[0], vertex[1], color);
+    DrawLine2D(vertex[1], vertex[2], color);
+    DrawLine2D(vertex[2], vertex[3], color);
+    DrawLine2D(vertex[3], vertex[0], color);
+}
+
 void SEED::DrawOBB(const OBB& obb, const Vector4& color){
 
     //ローカルな頂点を計算

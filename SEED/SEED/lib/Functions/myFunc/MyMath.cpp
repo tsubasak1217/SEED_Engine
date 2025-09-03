@@ -195,6 +195,55 @@ Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, 
     return seg_origin + proj;
 }
 
+std::array<Vector2, 2> MyMath::LineClosestPoints(const Line2D& l1, const Line2D& l2){
+    // 2直線の方向ベクトル
+    Vector2 dir1 = l1.end_ - l1.origin_;
+    Vector2 dir2 = l2.end_ - l2.origin_;
+    
+    // 2直線の長さ
+    float length1 = MyMath::Length(dir1);
+    float length2 = MyMath::Length(dir2);
+    
+    // 点が同じ場所の場合
+    if(length1 == 0.0f){
+        if(length2 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { l1.origin_,MyMath::ClosestPoint(l2.origin_,l2.end_,l1.origin_) };
+        }
+    } else if(length2 == 0.0f){
+        if(length1 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { MyMath::ClosestPoint(l1.origin_,l1.end_,l2.origin_),l2.origin_ };
+        }
+    }
+    
+    // 2直線の始点間のベクトル
+    Vector2 originVec = l2.origin_ - l1.origin_;
+    
+    // 2直線の方向ベクトルの外積
+    float cross = MyMath::Cross(dir1, dir2);
+    
+    // 2直線が平行な場合
+    if(std::abs(cross) < 1e-6f){
+        return { l1.origin_,l2.origin_ };
+    }
+    
+    // 最近傍点を計算
+    float crossLengthSq = cross * cross;
+    float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
+    float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
+    
+    // t1, t2 を [0, 1] に制限
+    t1 = std::clamp(t1, 0.0f, 1.0f);
+    t2 = std::clamp(t2, 0.0f, 1.0f);
+
+    Vector2 closest1 = l1.origin_ + dir1 * t1;
+    Vector2 closest2 = l2.origin_ + dir2 * t2;
+    return { closest1, closest2 };
+}
+
 
 //================================================================
 //                      個人用な便利関数

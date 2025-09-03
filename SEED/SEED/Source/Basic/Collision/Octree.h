@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
 #include <SEED/Lib/Shapes/AABB.h>
 

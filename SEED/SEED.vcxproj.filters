@@ -68,13 +68,13 @@
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_AABB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Capsule.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Line.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_OBB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Plane.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Sphere.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_AABB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Line.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_OBB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
@@ -124,10 +124,13 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -233,13 +236,13 @@
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionData.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionManager.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_AABB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Capsule.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Line.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_OBB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Plane.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Sphere.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_AABB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Line.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_OBB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
@@ -309,11 +312,15 @@
     <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
     <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h" />
     <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
+    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

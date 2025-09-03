@@ -1,36 +1,31 @@
-#include "Collider_Sphere.h"
+#include "Collider_Circle.h"
 #include <SEED/Source/Basic/Object/GameObject.h>
-#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
-#include <SEED/Source/Basic/Collision/Collider_AABB.h>
-#include <SEED/Source/Basic/Collision/Collider_OBB.h>
-#include <SEED/Source/Basic/Collision/Collider_Line.h>
-#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
-#include <SEED/Source/Basic/Collision/Collider_Plane.h>
+#include <SEED/Source/Basic/Collision/2D/Collider_Quad2D.h>
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
 #include <SEED/Source/SEED.h>
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////
-Collider_Sphere::Collider_Sphere() : Collider(){
-    colliderType_ = ColliderType::Sphere;
+Collider_Circle::Collider_Circle() : Collider2D(){
+    colliderType_ = ColliderType2D::Circle;
 }
 
-Collider_Sphere::~Collider_Sphere(){}
+Collider_Circle::~Collider_Circle(){}
 
 ////////////////////////////////////////////////////////////
 // 行列の更新
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::UpdateMatrix(){
+void Collider_Circle::UpdateMatrix(){
 
     // 行列の更新
-    Collider::UpdateMatrix();
+    Collider2D::UpdateMatrix();
     // 本体の更新
     body_.center = local_.center * worldMat_ + offset_;
     
     if(ownerObject_){
-        Vector3 parentScale = ownerObject_->GetWorldScale();
-        float averageScale = (parentScale.x + parentScale.y + parentScale.z) / 3.0f;
+        Vector2 parentScale = ownerObject_->GetWorldScale();
+        float averageScale = (parentScale.x + parentScale.y) / 2.0f;
         body_.radius = local_.radius * averageScale;
     }
 
@@ -42,36 +37,36 @@ void Collider_Sphere::UpdateMatrix(){
 ////////////////////////////////////////////////////////////
 // 描画
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::Draw(){
-    SEED::DrawSphere(body_.center, body_.radius, 6, color_);
+void Collider_Circle::Draw(){
+    //SEED::DrawSphere(body_.center, body_.radius, 6, color_);
 }
 
 
 ////////////////////////////////////////////////////////////
 // フレーム開始時処理
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::BeginFrame(){
+void Collider_Circle::BeginFrame(){
     // 前回のAABBを保存
     preBody_ = body_;
 
-    Collider::BeginFrame();
+    Collider2D::BeginFrame();
 }
 
 ////////////////////////////////////////////////////////////
 // 衝突判定
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::CheckCollision(Collider* collider){
+void Collider_Circle::CheckCollision(Collider2D* collider){
 
     // すでに衝突している場合は処理を行わない
     if(collisionList_.find(collider->GetColliderID()) != collisionList_.end()){ return; }
 
-    CollisionData collisionData;
+    CollisionData2D collisionData;
 
     switch(collider->GetColliderType()){
-    case ColliderType::Sphere:
+    case ColliderType2D::Circle:
     {
-        Collider_Sphere* sphere = dynamic_cast<Collider_Sphere*>(collider);
-        collisionData = Collision::Sphere::Sphere(this, sphere);
+        Collider_Circle* circle = dynamic_cast<Collider_Circle*>(collider);
+        collisionData = Collision::Circle::Circle(this, circle);
 
         // 衝突した場合
         if(collisionData.isCollide){
@@ -84,51 +79,23 @@ void Collider_Sphere::CheckCollision(Collider* collider){
         }
         break;
     }
-    case ColliderType::AABB:
+    case ColliderType2D::Quad:
     {
-        Collider_AABB* aabb = dynamic_cast<Collider_AABB*>(collider);
-        if(IsMoved()){
-            collisionData = Collision::Sphere::AABB(this, aabb);
-        } else{
-            collisionData = Collision::AABB::Sphere(aabb, this);
-        }
+        //Collider_Quad2D* aabb = dynamic_cast<Collider_Quad2D*>(collider);
+        //if(IsMoved()){
+        //    collisionData = Collision::Sphere::AABB(this, aabb);
+        //} else{
+        //    collisionData = Collision::AABB::Sphere(aabb, this);
+        //}
 
-        if(collisionData.isCollide){
-            // 押し戻しを行う
-            PushBack(this, collider, collisionData);
+        //if(collisionData.isCollide){
+        //    // 押し戻しを行う
+        //    PushBack(this, collider, collisionData);
 
-            // 衝突時の処理
-            OnCollision(collider, collider->GetObjectType());
-            collider->OnCollision(this, objectType_);
-        }
-        break;
-    }
-    case ColliderType::OBB:
-    {
-        Collider_OBB* obb = dynamic_cast<Collider_OBB*>(collider);
-        if(IsMoved()){
-            collisionData = Collision::Sphere::OBB(this, obb);
-        } else{
-            collisionData = Collision::OBB::Sphere(obb, this);
-        }
-
-        if(collisionData.isCollide){
-            // 押し戻しを行う
-            PushBack(this, collider, collisionData);
-
-            // 衝突時の処理
-            OnCollision(collider, collider->GetObjectType());
-            collider->OnCollision(this, objectType_);
-        }
-        break;
-    }
-    case ColliderType::Line:
-    {
-        Collider_Line* line = dynamic_cast<Collider_Line*>(collider);
-        if(Collision::Sphere::Line(body_, line->GetLine())){
-            OnCollision(collider, collider->GetObjectType());
-            collider->OnCollision(this, objectType_);
-        }
+        //    // 衝突時の処理
+        //    OnCollision(collider, collider->GetObjectType());
+        //    collider->OnCollision(this, objectType_);
+        //}
         break;
     }
     }
@@ -143,30 +110,24 @@ void Collider_Sphere::CheckCollision(Collider* collider){
 //////////////////////////////////////////////////////////////////
 // トンネリングを考慮しないtrue or falseの衝突判定
 //////////////////////////////////////////////////////////////////
-bool Collider_Sphere::CheckCollision(const AABB& aabb){
-    return Collision::Sphere::AABB(body_, aabb);
+bool Collider_Circle::CheckCollision(const Circle& aabb){
+    aabb;
+    return false;//Collision::Sphere::AABB(body_, aabb);
 }
 
-bool Collider_Sphere::CheckCollision(const OBB& obb){
-    return Collision::Sphere::OBB(body_, obb);
-}
-
-bool Collider_Sphere::CheckCollision(const Line& line){
-    return Collision::Sphere::Line(body_, line);
-}
-
-bool Collider_Sphere::CheckCollision(const Sphere& sphere){
-    return Collision::Sphere::Sphere(body_, sphere);
+bool Collider_Circle::CheckCollision(const Quad2D& obb){
+    obb;
+    return false;// Collision::Sphere::OBB(body_, obb);
 }
 
 ////////////////////////////////////////////////////////////
 // 八分木用のAABB更新
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::UpdateBox(){
+void Collider_Circle::UpdateBox(){
 
-    AABB aabb[2] = {
-        AABB(body_.center,{body_.radius,body_.radius,body_.radius}),
-        AABB(preBody_.center,{preBody_.radius,preBody_.radius,preBody_.radius})
+    AABB2D aabb[2] = {
+        AABB2D(body_.center,{body_.radius,body_.radius}),
+        AABB2D(preBody_.center,{preBody_.radius,preBody_.radius})
     };
 
     coverAABB_ = MaxAABB(aabb[0], aabb[1]);
@@ -176,26 +137,26 @@ void Collider_Sphere::UpdateBox(){
 ////////////////////////////////////////////////////////////
 // 前回のコライダーを破棄
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::DiscardPreCollider(){
+void Collider_Circle::DiscardPreCollider(){
     UpdateMatrix();
 }
 
 ////////////////////////////////////////////////////////////
 // ImGuiでのパラメーター編集
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::Edit(){
+void Collider_Circle::Edit(){
 #ifdef _DEBUG
 
     std::string colliderID = "##" + std::to_string(colliderID_);// コライダーID
     color_ = { 1.0f,1.0f,0.0f,1.0f };// 編集中のコライダーの色(黄色)
 
     // 全般情報
-    Collider::Edit();
+    Collider2D::Edit();
 
     // 中心座標
     ImGui::Text("------ Center ------");
     ImGui::Indent();
-    ImGui::DragFloat3(std::string("Center" + colliderID).c_str(), &local_.center.x, 0.1f);
+    ImGui::DragFloat2(std::string("Center" + colliderID).c_str(), &local_.center.x, 0.1f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -211,12 +172,8 @@ void Collider_Sphere::Edit(){
     // オフセット
     ImGui::Text("------ Offset ------");
     ImGui::Indent();
-    ImGui::DragFloat3(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
+    ImGui::DragFloat2(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
-
-    // アニメーションフラグ
-    ImGui::Text("------ Animation ------");
-    ImGui::Checkbox("Animation", &isAnimation_);
 
 #endif // _DEBUG
 }
@@ -224,14 +181,14 @@ void Collider_Sphere::Edit(){
 ////////////////////////////////////////////////////////////
 // コライダーの情報をjson形式でまとめる
 ////////////////////////////////////////////////////////////
-nlohmann::json Collider_Sphere::GetJsonData(){
-    nlohmann::json json = Collider::GetJsonData();
+nlohmann::json Collider_Circle::GetJsonData(){
+    nlohmann::json json = Collider2D::GetJsonData();
 
     // コライダーの種類
     json["colliderType"] = "Sphere";
 
     // 全般の情報
-    json.merge_patch(Collider::GetJsonData());
+    json.merge_patch(Collider2D::GetJsonData());
 
     // 球の情報
     json["center"] = local_.center;
@@ -243,9 +200,9 @@ nlohmann::json Collider_Sphere::GetJsonData(){
 ////////////////////////////////////////////////////////////
 // jsonデータから読み込み
 ////////////////////////////////////////////////////////////
-void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
+void Collider_Circle::LoadFromJson(const nlohmann::json& jsonData){
     // 全般情報の読み込み
-    Collider::LoadFromJson(jsonData);
+    Collider2D::LoadFromJson(jsonData);
 
     // 球の情報
     local_.center = jsonData["center"];
@@ -259,13 +216,13 @@ void Collider_Sphere::LoadFromJson(const nlohmann::json& jsonData){
 ////////////////////////////////////////////////////////////
 // 移動したかどうか
 ////////////////////////////////////////////////////////////
-bool Collider_Sphere::IsMoved(){
-    Sphere sphere[2] = {
-        GetSphere(),
-        GetPreSphere()
+bool Collider_Circle::IsMoved(){
+    Circle circle[2] = {
+        GetCircle(),
+        GetPreCircle()
     };
 
-    if(sphere[0].center != sphere[1].center or sphere[0].radius != sphere[1].radius){
+    if(circle[0].center != circle[1].center or circle[0].radius != circle[1].radius){
         return true;
     }
 

@@ -49,6 +49,10 @@ void CollisionManager::Draw(){
         for(auto& collider : instance_->colliderList3D_){
             collider.second->Draw();
         }
+
+        for(auto& collider : instance_->colliderList2D_){
+            collider.second->Draw();
+        }
     }
 #endif // _DEBUG
 }
@@ -65,11 +69,22 @@ void CollisionManager::CheckCollision(){
         collider.second->Update();
     }
 
+    for(auto& collider : instance_->colliderList2D_){
+        collider.second->BeginFrame();
+        collider.second->Update();
+    }
+
 
     // 当たり判定(フィールド vs フィールド上のもの)
     for(int i = 0; i < instance_->onFieldObjectColliders3D_.size(); i++){
         for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
             instance_->onFieldObjectColliders3D_[i]->CheckCollision(instance_->fieldColliders3D_[j]);
+        }
+    }
+
+    for(int i = 0; i < instance_->onFieldObjectColliders2D_.size(); i++){
+        for(int j = 0; j < instance_->fieldColliders2D_.size(); j++){
+            instance_->onFieldObjectColliders2D_[i]->CheckCollision(instance_->fieldColliders2D_[j]);
         }
     }
 
@@ -79,26 +94,51 @@ void CollisionManager::CheckCollision(){
             instance_->onFieldObjectColliders3D_[i]->CheckCollision(instance_->onFieldObjectColliders3D_[j]);
         }
     }
+
+    for(int i = 0; i < instance_->onFieldObjectColliders2D_.size(); i++){
+        for(int j = i + 1; j < instance_->onFieldObjectColliders2D_.size(); j++){
+            instance_->onFieldObjectColliders2D_[i]->CheckCollision(instance_->onFieldObjectColliders2D_[j]);
+        }
+    }
    
     // エディターのコライダーはすべてと当たり判定を取る
-    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
-        for(int j = 0; j < instance_->onFieldObjectColliders3D_.size(); j++){
-            instance_->editorColliders3D_[i]->CheckCollision(instance_->onFieldObjectColliders3D_[j]);
+    {
+        for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+            for(int j = 0; j < instance_->onFieldObjectColliders3D_.size(); j++){
+                instance_->editorColliders3D_[i]->CheckCollision(instance_->onFieldObjectColliders3D_[j]);
+            }
+        }
+
+
+        for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+            for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
+                instance_->editorColliders3D_[i]->CheckCollision(instance_->fieldColliders3D_[j]);
+            }
+        }
+
+        for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
+            for(int j = i + 1; j < instance_->editorColliders3D_.size(); j++){
+                instance_->editorColliders3D_[i]->CheckCollision(instance_->editorColliders3D_[j]);
+            }
         }
     }
-
-    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
-        for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
-            instance_->editorColliders3D_[i]->CheckCollision(instance_->fieldColliders3D_[j]);
+    {
+        for(int i = 0; i < instance_->editorColliders2D_.size(); i++){
+            for(int j = 0; j < instance_->onFieldObjectColliders2D_.size(); j++){
+                instance_->editorColliders2D_[i]->CheckCollision(instance_->onFieldObjectColliders2D_[j]);
+            }
+        }
+        for(int i = 0; i < instance_->editorColliders2D_.size(); i++){
+            for(int j = 0; j < instance_->fieldColliders2D_.size(); j++){
+                instance_->editorColliders2D_[i]->CheckCollision(instance_->fieldColliders2D_[j]);
+            }
+        }
+        for(int i = 0; i < instance_->editorColliders2D_.size(); i++){
+            for(int j = i + 1; j < instance_->editorColliders2D_.size(); j++){
+                instance_->editorColliders2D_[i]->CheckCollision(instance_->editorColliders2D_[j]);
+            }
         }
     }
-
-    for(int i = 0; i < instance_->editorColliders3D_.size(); i++){
-        for(int j = i + 1; j < instance_->editorColliders3D_.size(); j++){
-            instance_->editorColliders3D_[i]->CheckCollision(instance_->editorColliders3D_[j]);
-        }
-    }
-
     //instance_->octree_->CheckCollision();
 
 }

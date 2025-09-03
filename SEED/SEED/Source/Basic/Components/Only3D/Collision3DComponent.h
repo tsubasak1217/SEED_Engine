@@ -1,7 +1,7 @@
 #pragma once
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 // stl

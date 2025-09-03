@@ -2,12 +2,12 @@
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
-#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
-#include <SEED/Source/Basic/Collision/Collider_AABB.h>
-#include <SEED/Source/Basic/Collision/Collider_OBB.h>
-#include <SEED/Source/Basic/Collision/Collider_Line.h>
-#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
-#include <SEED/Source/Basic/Collision/Collider_Plane.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Sphere.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_AABB.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_OBB.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Line.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Plane.h>
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ

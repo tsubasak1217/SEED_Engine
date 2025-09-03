@@ -3,7 +3,7 @@
         "Idle": null,
         "Jump": {
             "gravity_": 720.0,
-            "groundY_": 576.0,
+            "groundY_": 552.0,
             "jumpPower_": -480.0
         },
         "Move": {

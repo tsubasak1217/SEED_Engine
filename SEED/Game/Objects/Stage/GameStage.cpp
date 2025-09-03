@@ -140,9 +140,22 @@ void GameStage::UpdateBorderLine() {
     }
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
     Vector2 placePos = player_->GetSprite().translate;
+
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
     placePos.x = axisX;
     // 境界線の更新処理
     borderLine_->Update(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
@@ -175,10 +188,20 @@ void GameStage::UpdateReturnSelect() {
 void GameStage::PutBorderLine() {
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
-    Vector2 placePos = player_->GetSprite().translate;
-    placePos.x = axisX;
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
 
     // 境界線をアクティブ状態にする
     borderLine_->SetActivate();

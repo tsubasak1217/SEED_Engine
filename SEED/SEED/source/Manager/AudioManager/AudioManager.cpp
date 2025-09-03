@@ -120,6 +120,8 @@ void AudioManager::BeginFrame(){
 void AudioManager::StartUpLoad(){
     // 以下にロード処理をまとめる
     LoadAudio("SE/turnoverPaper.mp3");
+    LoadAudio("SE/iceSound.mp3");
+    LoadAudio("BGM/2_23_AM.wav");
 }
 
 

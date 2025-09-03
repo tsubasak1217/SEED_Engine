@@ -30,6 +30,7 @@ void Player::Initialize(const std::string& filename) {
 
     // スプライトを初期化
     sprite_ = Sprite(filename);
+    sprite_.anchorPoint = Vector2(0.5f);
     // 見にくいので赤
     sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 

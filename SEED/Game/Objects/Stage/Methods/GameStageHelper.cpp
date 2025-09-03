@@ -75,9 +75,15 @@ float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> ob
     }
     // どこにも属していない場合
     if (!(bestArea > 0.0f)) {
+        if (playerMoveDirection == LR::RIGHT) {
 
-        // プレイヤー中心をタイル境界に丸める
-        return std::round(playerSprite.translate.x / tileSize) * tileSize;
+            // 右向き
+            return std::ceil((centerX - std::numeric_limits<float>::epsilon()) / tileSize) * tileSize;
+        } else {
+
+            // 左向き
+            return std::floor((centerX + std::numeric_limits<float>::epsilon()) / tileSize) * tileSize;
+        }
     }
 
     // 半分比較 + 同面積は向き優先で処理

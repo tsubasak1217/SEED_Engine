@@ -13,31 +13,32 @@
 #include <cassert>
 // front
 class GameObject2D;
+class StageObjectComponent;
 
 //============================================================================
 //	GameStageBuilder class
 //============================================================================
 class GameStageBuilder {
 public:
-	//========================================================================
-	//	public Methods
-	//========================================================================
+    //========================================================================
+    //	public Methods
+    //========================================================================
 
     GameStageBuilder() = default;
-	~GameStageBuilder() = default;
+    ~GameStageBuilder() = default;
 
-    std::list<GameObject2D*> Create(const std::string& fileName, float stageObjectMapTileSize);
+    // CSVファイルからオブジェクトを構築するs
+    std::list<GameObject2D*> CreateFromCSVFile(const std::string& fileName, float tileSize);
+
+    // 境界線で線対称にホログラムオブジェクトを構築する
+    std::list<GameObject2D*> CreateFromBorderLine(std::list<GameObject2D*> objects,
+        float axisX, float playerY, int direction, float tileSize);
 private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
+    //========================================================================
+    //	private Methods
+    //========================================================================
 
-	//--------- variables ----------------------------------------------------
-
-    // fileNameの前のパス
-    const std::string kCSVPath_ = "Resources/Stage/";
-
-	//--------- functions ----------------------------------------------------
+    //--------- functions ----------------------------------------------------
 
     // helper
     std::vector<std::vector<int>> GetCSVData(const std::string& fileName);

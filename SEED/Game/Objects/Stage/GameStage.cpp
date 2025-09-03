@@ -3,12 +3,15 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
-#include <Game/Objects/Stage/Methods/GameStageBuilder.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
+#include <Game/Objects/Stage/Methods/GameStageBuilder.h>
+#include <Game/Objects/Stage/Methods/GameStageHelper.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -26,20 +29,35 @@ void GameStage::Initialize() {
     // json適応
     ApplyJson();
 
-    // オブジェクトを構築
+    // 最初のステージを構築する
+    maxStageCount_ = GameStageHelper::GetCSVFileCount(); // 最大ステージ数をCSVファイル数から取得
+    currentStageIndex_ = 0;                              // 最初のステージインデックス
+    BuildStage();
+}
+
+void GameStage::BuildStage() {
+
+    // 全てのオブジェクトを破棄
+    for (GameObject2D* object : objects_) {
+        delete object;
+    }
+    objects_.clear();
+    for (GameObject2D* object : hologramObjects_) {
+        delete object;
+    }
+    hologramObjects_.clear();
+
+    // 現在のステージ番号でステージの構築
+    std::string fileName = "stage_" + std::to_string(currentStageIndex_) + ".csv";
+
     GameStageBuilder stageBuilder{};
-    objects_ = stageBuilder.Create("testStage.csv", stageObjectMapTileSize_);
+    objects_ = stageBuilder.CreateFromCSVFile(fileName, stageObjectMapTileSize_);
 
     // リストからプレイヤーのポインタを渡す
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-            if (component->GetStageObjectType() == StageObjectType::Player) {
+    GetListsPlayerPtr();
 
-                player_ = component->GetPlayer();
-                break;
-            }
-        }
-    }
+    // 状態をプレイ中に遷移させる
+    currentState_ = State::Play;
 }
 
 void GameStage::SetIsActive(bool isActive) {
@@ -56,8 +74,49 @@ void GameStage::SetIsActive(bool isActive) {
 
 void GameStage::Update() {
 
-    // 境界線の更新処理
+    switch (currentState_) {
+        //============================================================================
+        //	ゲームプレイ中の更新処理
+        //============================================================================
+    case GameStage::State::Play:
+
+        UpdatePlay();
+        break;
+        //============================================================================
+        //	クリア時の処理
+        //============================================================================
+    case GameStage::State::Clear:
+
+        UpdateClear();
+        break;
+        //============================================================================
+        //	プレイヤーがやられた時の処理
+        //============================================================================
+    case GameStage::State::Death:
+
+        break;
+        //============================================================================
+        //	リトライ時の処理
+        //============================================================================
+    case GameStage::State::Retry:
+
+        break;
+        //============================================================================
+        //	セレクト画面に戻る時の処理
+        //============================================================================
+    case GameStage::State::Select:
+
+        break;
+    }
+}
+
+void GameStage::UpdatePlay() {
+
+    // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
+
+    // クリア判定
+    CheckClear();
 }
 
 void GameStage::UpdateBorderLine() {
@@ -66,86 +125,90 @@ void GameStage::UpdateBorderLine() {
     // 境界線がまだ置かれていないとき
     if (!borderLine_->IsActive() && player_->IsPutBorder()) {
 
-        // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-        const float axisX = ComputeBorderAxisXFromContact();
-        Vector2 placePos = player_->GetSprite().translate;
-        placePos.x = axisX;
-
-        // 境界線をアクティブ状態にする
-        borderLine_->SetActivate(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
-
-        // ホログラムオブジェクトを生成する
-        CreateHologramBlock();
+        // 境界線を置いてホログラムオブジェクトを構築する
+        PutBorderLine();
     } else if (borderLine_->IsActive() && player_->IsRemoveBorder()) {
 
-        // 境界線を非アクティブ状態にする
-        borderLine_->SetDeactivate();
-
-        // ホログラムオブジェクトをすべて破棄する
-        RemoveHologramBlock();
+        // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
+        RemoveBorderLine();
     }
 
     // 境界線の更新処理
     borderLine_->Update();
 }
 
-void GameStage::CreateHologramBlock() {
+void GameStage::UpdateClear() {
 
-    // ホログラムを生成する
+    // デバッグ用
+    // 2|START...次のステージに進む
+    if (Input::IsTriggerKey({ DIK_2 }) ||
+        Input::IsTriggerPadButton({ PAD_BUTTON::START })) {
 
-    // オブジェクト幅
-    const float tile = stageObjectMapTileSize_;
-    const float axisX = borderLine_->GetSprite().translate.x;
-    const float playerY = player_->GetSprite().translate.y;
-    const int direction = static_cast<int>(player_->GetMoveDirection());
+        // インデックスを進める
+        currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
+        BuildStage();
+        return;
+    }
+    //1|BACK...セレクト画面に戻る
+    if (Input::IsTriggerKey({ DIK_2 }) ||
+        Input::IsTriggerPadButton({ PAD_BUTTON::BACK })) {
 
-    // タイルに合うように切り上げた座標を設定する
-    auto roundToTile = [tile](float pos) {return std::round(pos / tile) * tile; };
-
-    // オブジェクト内で範囲内のオブジェクトをホログラムとして作成する
-    for (GameObject2D* object : objects_) {
-
-        // オブジェクトコンポーネントを取得
-        StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
-        if (component->GetStageObjectType() == StageObjectType::Player) {
-            continue;
-        }
-
-        // コピー対象のオブジェクト情報
-        const Vector2 sourcePos = component->GetBlockTranslate();
-        const StageObjectType sourceType = component->GetStageObjectType();
-        // プレイヤーのY座標より下のオブジェクトは作成しない
-        if (!(playerY >= sourcePos.y)) {
-            continue;
-        }
-
-        // プレイヤーの向いている方向の逆のオブジェクトをホログラム作成対象にする
-        const bool isOppositeSide = (direction > 0) ? (sourcePos.x < axisX) : (sourcePos.x > axisX);
-        if (!isOppositeSide) {
-            continue;
-        }
-
-        // 境界線Xを軸に左右対称に反転した座標を設定する
-        Vector2 dstPos{};
-        dstPos.x = roundToTile(2.0f * axisX - sourcePos.x);
-        dstPos.y = sourcePos.y;
-
-        // 元のタイプでオブジェクトを作成
-        GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
-        StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
-        newComponent->Initialize(sourceType, dstPos, stageObjectMapTileSize_);
-        newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
-        hologramObjects_.push_back(std::move(newBlock));
+        currentState_ = State::Select;
+        return;
     }
 }
 
-void GameStage::RemoveHologramBlock() {
+void GameStage::UpdateDeath() {
+
+
+}
+
+void GameStage::UpdateRetry() {
+
+
+}
+
+void GameStage::UpdateReturnSelect() {
+
+
+}
+
+void GameStage::PutBorderLine() {
+
+    // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
+    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+        player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
+    Vector2 placePos = player_->GetSprite().translate;
+    placePos.x = axisX;
+
+    // 境界線をアクティブ状態にする
+    borderLine_->SetActivate(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
+
+    // ホログラムオブジェクトを生成する
+    GameStageBuilder stageBuilder{};
+    hologramObjects_ = stageBuilder.CreateFromBorderLine(objects_, axisX, player_->GetSprite().translate.y,
+        static_cast<int>(player_->GetMoveDirection()), stageObjectMapTileSize_);
+}
+
+void GameStage::RemoveBorderLine() {
+
+    // 境界線を非アクティブ状態にする
+    borderLine_->SetDeactivate();
 
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
         delete object;
     }
     hologramObjects_.clear();
+}
+
+void GameStage::CheckClear() {
+
+    // デバッグ用
+    if (Input::IsTriggerKey({ DIK_F9 })) {
+
+        currentState_ = State::Clear;
+    }
 }
 
 void GameStage::Draw() {
@@ -188,20 +251,11 @@ void GameStage::Edit() {
                     }
                     hologramObjects_.clear();
                     // 再構築
-                    GameStageBuilder stageBuilder{};
-                    objects_ = stageBuilder.Create("testStage.csv", stageObjectMapTileSize_);
-                    // リストからプレイヤーのポインタを渡す
-                    player_ = nullptr;
-                    for (GameObject2D* object : objects_) {
-                        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                            if (component->GetStageObjectType() == StageObjectType::Player) {
-
-                                player_ = component->GetPlayer();
-                                break;
-                            }
-                        }
-                    }
+                    BuildStage();
                 }
+
+                ImGui::Text("currentStage / max: %d/%d", currentStageIndex_, maxStageCount_);
+                ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
 
                 ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
                 ImGui::EndTabItem();
@@ -239,90 +293,17 @@ void GameStage::SaveJson() {
     JsonAdapter::Save(kJsonPath_, data);
 }
 
-float GameStage::ComputeBorderAxisXFromContact() const {
+void GameStage::GetListsPlayerPtr() {
 
-    // 1枚のマップサイズ
-    const float tile = stageObjectMapTileSize_;
-
-    // プレイヤーAABBと、底面を計算
-    const auto& ps = player_->GetSprite();
-    const float px0 = ps.translate.x - ps.size.x * ps.anchorPoint.x;
-    const float py0 = ps.translate.y - ps.size.y * ps.anchorPoint.y;
-    const float centerX = px0 + ps.size.x * 0.5f;
-    const float bottomY = py0 + ps.size.y;
-
-    // プレイヤーの足元タイルを探す
-    Vector2 supportTL(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
+    // リストからプレイヤーのポインタを渡す
+    player_ = nullptr;
     for (GameObject2D* object : objects_) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            if (component->GetStageObjectType() == StageObjectType::Player) {
 
-        StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
-        // プレイヤーは判定しない
-        if (component->GetStageObjectType() == StageObjectType::Player) {
-            continue;
-        }
-        // タイル原点を取得
-        const Vector2 tl = component->GetBlockTranslate();
-        const float l = tl.x, r = tl.x + tile;
-        const float t = tl.y, b = tl.y + tile;
-
-        const bool xInside = (centerX >= l && centerX < r);
-        const bool yInside = (bottomY >= t && bottomY <= b);
-        if (xInside && yInside) { 
-            supportTL = tl;
-            break;
+                player_ = component->GetPlayer();
+                break;
+            }
         }
     }
-
-    // 向きが同じ場合向いている方向のブロックの端の座標を返す
-    if (supportTL.x == supportTL.x) {
-
-        const int dir = static_cast<int>(player_->GetMoveDirection());
-        return (dir > 0) ? (supportTL.x + tile) : supportTL.x;
-    }
-
-    float bestArea = 0.0f;
-    RectFloat playerRect{ px0, px0 + ps.size.x, py0, py0 + ps.size.y };
-    Vector2 bestBlk{ std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() };
-    for (GameObject2D* object : objects_) {
-        
-        StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
-        // プレイヤーは判定しない
-        if (component->GetStageObjectType() == StageObjectType::Player) {
-            continue;
-        }
-
-        const Vector2 bp = component->GetBlockTranslate();
-        RectFloat blk{ bp.x, bp.x + tile, bp.y, bp.y + tile };
-
-        const float area = OverlapArea(playerRect, blk);
-        if (area > bestArea) {
-            bestArea = area;
-            bestBlk = bp;
-        }
-    }
-    // どこにも属していない場合
-    if (!(bestArea > 0.0f)) {
-
-        // プレイヤー中心をタイル境界に丸める
-        return std::round(ps.translate.x / tile) * tile;
-    }
-
-    // 半分比較 + 同面積は向き優先で処理
-    RectFloat blkL{ bestBlk.x, bestBlk.x + tile * 0.5f, bestBlk.y, bestBlk.y + tile };
-    RectFloat blkR{ bestBlk.x + tile * 0.5f, bestBlk.x + tile,     bestBlk.y, bestBlk.y + tile };
-    const float areaL = OverlapArea(playerRect, blkL);
-    const float areaR = OverlapArea(playerRect, blkR);
-    const float eps = std::numeric_limits<float>::epsilon();
-    if (areaL > areaR + eps)  return bestBlk.x;
-    if (areaR > areaL + eps)  return bestBlk.x + tile;
-
-    const int dir = static_cast<int>(player_->GetMoveDirection());
-    return (dir > 0) ? (bestBlk.x + tile) : bestBlk.x;
-}
-
-float GameStage::OverlapArea(const RectFloat& rectA, const RectFloat& rectB) const {
-
-    const float w = (std::max)(0.0f, (std::min)(rectA.right, rectB.right) - (std::max)(rectA.left, rectB.left));
-    const float h = (std::max)(0.0f, (std::min)(rectA.bottom, rectB.bottom) - (std::max)(rectA.top, rectB.top));
-    return w * h;
 }

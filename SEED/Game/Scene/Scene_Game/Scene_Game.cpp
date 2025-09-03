@@ -130,8 +130,6 @@ void Scene_Game::Update() {
         currentEventState_->Update();
     }
 
-   
-
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     //========================================================================
@@ -144,6 +142,7 @@ void Scene_Game::Update() {
     }
     
     stage_->Edit();
+    stage_->Update();
 
     ManageState();
 }

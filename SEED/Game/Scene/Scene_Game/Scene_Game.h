@@ -32,6 +32,8 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
+    GameStage* GetStage() { return stage_.get(); }
+
 private:
 
     // EngineObjects

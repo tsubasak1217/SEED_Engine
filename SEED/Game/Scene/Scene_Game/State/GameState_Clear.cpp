@@ -57,7 +57,7 @@ void GameState_Clear::Initialize() {
     ClearText_.transform.translate = { 640.0f,150.0f };
     ClearText_.SetFont("");
     ClearText_.size = { 400.0f,100.0f };
-    ClearText_.color = { 0.0f,0.0f,0.0f,1.0f };
+    ClearText_.color = { 1.0f,1.0f,0.0f,1.0f };
     ClearText_.fontSize = 48;
     ClearText_.textBoxVisible = false;
 }
@@ -96,6 +96,15 @@ void GameState_Clear::Update() {
         }
         AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
+
+    if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
+        if (gameScene->GetStage()->GetCurrentStageIndex() == gameScene->GetStage()->GetMaxStageCount() - 1) {
+            //現在のステージが最大ステージ数なら次のステージに進むメニューを選択できないようにする
+            if (currentMenu_ == 0) {
+                currentMenu_ = 1;
+            }
+        }
+    }
     // 選択中のメニューの色を変える
     for (size_t i = 0; i < 2; i++) {
         if (i == currentMenu_) {
@@ -114,11 +123,19 @@ void GameState_Clear::Update() {
 //
 /////////////////////////////////////////////////////////////////////////////
 void GameState_Clear::Draw() {
-
-    for(int i = 0; i < 2; i++){
-        MenuBack_[i].Draw();
-        MenuText_[i].Draw();
+    if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
+        if (gameScene->GetStage()->GetCurrentStageIndex() != gameScene->GetStage()->GetMaxStageCount() - 1) {
+            //現在のステージが最大ステージ数でないなら次のステージに進むメニューを表示
+            MenuBack_[0].Draw();
+            MenuText_[0].Draw();
+        }
     }
+
+    //セレクト画面に戻るメニューは常に表示
+    MenuBack_[1].Draw();
+    MenuText_[1].Draw();
+    
+    //クリアテキストの描画
     ClearText_.Draw();
 }
 

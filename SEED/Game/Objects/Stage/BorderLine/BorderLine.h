@@ -22,13 +22,13 @@ public:
     void Initialize();
 
     // 更新処理
-    void Update();
+    void Update(const Vector2& translate, float sizeY);
 
     // 描画処理
     void Draw();
 
     // エディター
-    void Edit();
+    void Edit(const Sprite& playerSprite);
 
     // json
     void FromJson(const nlohmann::json& data);
@@ -37,13 +37,15 @@ public:
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
-    void SetActivate(const Vector2& translate, float sizeY);
+    void SetActivate();
     // 非アクティブ状態にする
     void SetDeactivate();
 
     const Sprite& GetSprite() const { return sprite_; }
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
+    // 非アクティブ状態に遷移可能かどうか
+    bool CanTransitionDisable(float playerX) const;
 private:
     //========================================================================
     //	private Methods
@@ -65,8 +67,16 @@ private:
 
     // 描画情報
     Sprite sprite_;
+    uint32_t transparentTextureGH_; // 非アクティブ状態のテクスチャ
+    uint32_t opaqueTextureGH_;      // アクティブ状態のテクスチャ
+
+    // parameters
+    float playerToDistance_; // プレイヤーとの判定を取るまで距離
+    float offsetTranslateY_; // プレイヤーのY座標からのオフセット
 
     //--------- functions ----------------------------------------------------
 
-
+    // helper
+    // プレイヤーと一定距離近づいたか
+    bool CheckPlayerToDistance(float playerX) const;
 };

@@ -1,5 +1,7 @@
 {
     "BorderLine": {
+        "offsetTranslateY_": 16.0,
+        "playerToDistance_": 32.0,
         "sprite_.anchorPoint": {
             "x": 0.5,
             "y": 0.949999988079071

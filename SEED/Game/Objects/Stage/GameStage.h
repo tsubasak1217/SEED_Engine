@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <SEED/Lib/Structs/Rect.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
 // c++
@@ -45,7 +44,23 @@ private:
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // ステージ進行状態
+    enum class State {
+
+        Play,   // プレイ中...
+        Clear,  // クリア
+        Death,  // プレイヤーがやられた
+        Retry,  // リトライ
+        Select, // セレクト画面に戻る
+    };
+
     //--------- variables ----------------------------------------------------
+
+    State currentState_;         // 現在の状態
+    uint32_t currentStageIndex_; // 現在のステージ番号
+    uint32_t maxStageCount_;     // 最大ステージ数
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -55,12 +70,11 @@ private:
     std::list<GameObject2D*> hologramObjects_; // ホログラム
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
-
     // リストから貰って使用する
     Player* player_ = nullptr;
 
     // パラメータ
-    float stageObjectMapTileSize_;
+    float stageObjectMapTileSize_; // マップ一個分のサイズ
 
     //--------- functions ----------------------------------------------------
 
@@ -68,12 +82,25 @@ private:
     void ApplyJson();
     void SaveJson();
 
+    // create
+    void BuildStage();
+
     // update
+    /// Play
+    void UpdatePlay();
     void UpdateBorderLine();
+    /// Clear
+    void UpdateClear();
+    /// Death
+    void UpdateDeath();
+    /// Retry
+    void UpdateRetry();
+    /// Select
+    void UpdateReturnSelect();
 
     // helper
-    void CreateHologramBlock();
-    void RemoveHologramBlock();
-    float ComputeBorderAxisXFromContact() const;
-    float OverlapArea(const RectFloat& rectA,const RectFloat& rectB) const;
+    void GetListsPlayerPtr();
+    void PutBorderLine();
+    void RemoveBorderLine();
+    void CheckClear();
 };

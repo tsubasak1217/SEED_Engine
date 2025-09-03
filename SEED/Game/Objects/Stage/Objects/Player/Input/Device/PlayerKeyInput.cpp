@@ -30,15 +30,15 @@ bool PlayerKeyInput::IsPressed(PlayerInputAction button) const {
     switch (button) {
     case PlayerInputAction::Jump: {
 
-        return Input::IsPressKey({ DIK_SPACE });
+        return Input::IsPressKey({ DIK_W });
     }
     case PlayerInputAction::PutBorder: {
 
-        return Input::IsPressKey({ DIK_E });
+        return Input::IsPressKey({ DIK_SPACE });
     }
     case PlayerInputAction::RemoveBorder: {
 
-        return Input::IsPressKey({ DIK_E });
+        return Input::IsPressKey({ DIK_SPACE });
     }
     }
     return false;
@@ -49,15 +49,15 @@ bool PlayerKeyInput::IsTriggered(PlayerInputAction button) const {
     switch (button) {
     case PlayerInputAction::Jump: {
 
-        return Input::IsTriggerKey({ DIK_SPACE });
+        return Input::IsTriggerKey({ DIK_W });
     }
     case PlayerInputAction::PutBorder: {
 
-        return Input::IsTriggerKey({ DIK_E });
+        return Input::IsTriggerKey({ DIK_SPACE });
     }
     case PlayerInputAction::RemoveBorder: {
 
-        return Input::IsTriggerKey({ DIK_E });
+        return Input::IsTriggerKey({ DIK_SPACE });
     }
     }
     return false;

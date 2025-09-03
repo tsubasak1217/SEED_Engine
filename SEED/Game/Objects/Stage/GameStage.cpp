@@ -288,8 +288,10 @@ float GameStage::ComputeBorderAxisXFromContact() const {
             bestBlk = bp;
         }
     }
+    // どこにも属していない場合
     if (!(bestArea > 0.0f)) {
-        // 何にも乗っていない等：プレイヤー中心をタイル境界に丸める
+
+        // プレイヤー中心をタイル境界に丸める
         return std::round(ps.translate.x / tile) * tile;
     }
 
@@ -298,7 +300,7 @@ float GameStage::ComputeBorderAxisXFromContact() const {
     RectFloat blkR{ bestBlk.x + tile * 0.5f, bestBlk.x + tile,     bestBlk.y, bestBlk.y + tile };
     const float areaL = OverlapArea(playerRect, blkL);
     const float areaR = OverlapArea(playerRect, blkR);
-    const float eps = 1e-4f;
+    const float eps = std::numeric_limits<float>::epsilon();
     if (areaL > areaR + eps)  return bestBlk.x;
     if (areaR > areaL + eps)  return bestBlk.x + tile;
 

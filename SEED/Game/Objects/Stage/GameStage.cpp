@@ -3,7 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
@@ -28,7 +30,8 @@ void GameStage::Initialize() {
     ApplyJson();
 
     // 最初のステージを構築する
-    currentStageIndex_ = 0; // 最初のステージインデックス
+    maxStageCount_ = GameStageHelper::GetCSVFileCount(); // 最大ステージ数をCSVファイル数から取得
+    currentStageIndex_ = 0;                              // 最初のステージインデックス
     BuildStage();
 }
 
@@ -42,12 +45,56 @@ void GameStage::BuildStage() {
 
     // リストからプレイヤーのポインタを渡す
     GetListsPlayerPtr();
+
+    // 状態をプレイ中に遷移させる
+    currentState_ = State::Play;
 }
 
 void GameStage::Update() {
 
+    switch (currentState_) {
+        //============================================================================
+        //	ゲームプレイ中の更新処理
+        //============================================================================
+    case GameStage::State::Play:
+
+        UpdatePlay();
+        break;
+        //============================================================================
+        //	クリア時の処理
+        //============================================================================
+    case GameStage::State::Clear:
+
+        UpdateClear();
+        break;
+        //============================================================================
+        //	プレイヤーがやられた時の処理
+        //============================================================================
+    case GameStage::State::Death:
+
+        break;
+        //============================================================================
+        //	リトライ時の処理
+        //============================================================================
+    case GameStage::State::Retry:
+
+        break;
+        //============================================================================
+        //	セレクト画面に戻る時の処理
+        //============================================================================
+    case GameStage::State::Select:
+
+        break;
+    }
+}
+
+void GameStage::UpdatePlay() {
+
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
+
+    // クリア判定
+    CheckClear();
 }
 
 void GameStage::UpdateBorderLine() {
@@ -66,6 +113,42 @@ void GameStage::UpdateBorderLine() {
 
     // 境界線の更新処理
     borderLine_->Update();
+}
+
+void GameStage::UpdateClear() {
+
+    // デバッグ用
+    // 2|START...次のステージに進む
+    if (Input::IsTriggerKey({ DIK_2 }) ||
+        Input::IsTriggerPadButton({ PAD_BUTTON::START })) {
+
+        // インデックスを進める
+        currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
+        BuildStage();
+        return;
+    }
+    //1|BACK...セレクト画面に戻る
+    if (Input::IsTriggerKey({ DIK_2 }) ||
+        Input::IsTriggerPadButton({ PAD_BUTTON::BACK })) {
+
+        currentState_ = State::Select;
+        return;
+    }
+}
+
+void GameStage::UpdateDeath() {
+
+
+}
+
+void GameStage::UpdateRetry() {
+
+
+}
+
+void GameStage::UpdateReturnSelect() {
+
+
 }
 
 void GameStage::PutBorderLine() {
@@ -95,6 +178,15 @@ void GameStage::RemoveBorderLine() {
         delete object;
     }
     hologramObjects_.clear();
+}
+
+void GameStage::CheckClear() {
+
+    // デバッグ用
+    if (Input::IsTriggerKey({ DIK_F9 })) {
+
+        currentState_ = State::Clear;
+    }
 }
 
 void GameStage::Draw() {
@@ -137,11 +229,11 @@ void GameStage::Edit() {
                     }
                     hologramObjects_.clear();
                     // 再構築
-                    GameStageBuilder stageBuilder{};
-                    objects_ = stageBuilder.CreateFromCSVFile("testStage.csv", stageObjectMapTileSize_);
-                    // リストからプレイヤーのポインタを渡す
-                    GetListsPlayerPtr();
+                    BuildStage();
                 }
+
+                ImGui::Text("currentStage / max: %d/%d", currentStageIndex_, maxStageCount_);
+                ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
 
                 ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
                 ImGui::EndTabItem();

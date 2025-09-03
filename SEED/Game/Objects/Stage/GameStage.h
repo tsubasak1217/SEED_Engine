@@ -47,15 +47,18 @@ private:
     // ステージ進行状態
     enum class State {
 
-        Play,  // プレイ中...
-        Clear, // クリア
-        Retry  // リトライ
+        Play,   // プレイ中...
+        Clear,  // クリア
+        Death,  // プレイヤーがやられた
+        Retry,  // リトライ
+        Select, // セレクト画面に戻る
     };
 
     //--------- variables ----------------------------------------------------
 
     State currentState_;         // 現在の状態
     uint32_t currentStageIndex_; // 現在のステージ番号
+    uint32_t maxStageCount_;     // 最大ステージ数
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -65,7 +68,6 @@ private:
     std::list<GameObject2D*> hologramObjects_; // ホログラム
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
-
     // リストから貰って使用する
     Player* player_ = nullptr;
 
@@ -82,10 +84,21 @@ private:
     void BuildStage();
 
     // update
+    /// Play
+    void UpdatePlay();
     void UpdateBorderLine();
-    void PutBorderLine();
-    void RemoveBorderLine();
+    /// Clear
+    void UpdateClear();
+    /// Death
+    void UpdateDeath();
+    /// Retry
+    void UpdateRetry();
+    /// Select
+    void UpdateReturnSelect();
 
     // helper
     void GetListsPlayerPtr();
+    void PutBorderLine();
+    void RemoveBorderLine();
+    void CheckClear();
 };

@@ -7,7 +7,9 @@
 #include <SEED/Lib/Structs/Rect.h>
 
 // c++
+#include <cstdint>
 #include <list>
+#include <filesystem>
 // front
 class StageObjectComponent;
 class GameObject2D;
@@ -32,4 +34,7 @@ public:
     static float ComputeBorderAxisXFromContact(std::list<GameObject2D*> objects,
         const Sprite& playerSprite, LR playerMoveDirection, float tileSize);
     static float OverlapArea(const RectFloat& rectA, const RectFloat& rectB);
+
+    // CSVファイル数を取得する
+    static uint32_t GetCSVFileCount();
 };

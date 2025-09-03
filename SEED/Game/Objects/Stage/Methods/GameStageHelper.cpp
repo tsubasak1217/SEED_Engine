@@ -103,3 +103,15 @@ float GameStageHelper::OverlapArea(const RectFloat& rectA, const RectFloat& rect
     const float h = (std::max)(0.0f, (std::min)(rectA.bottom, rectB.bottom) - (std::max)(rectA.top, rectB.top));
     return w * h;
 }
+
+uint32_t GameStageHelper::GetCSVFileCount() {
+
+    const std::string baseDirectoryPath = "Resources/Stage/";
+    uint32_t count = 0;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".csv") {
+            ++count;
+        }
+    }
+    return count;
+}

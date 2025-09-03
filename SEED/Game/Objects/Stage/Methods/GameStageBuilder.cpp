@@ -107,7 +107,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
 std::vector<std::vector<int>> GameStageBuilder::GetCSVData(const std::string& fileName) {
 
     // 読み込めなければエラー
-    std::ifstream ifs(kCSVPath_ + fileName);
+    std::ifstream ifs("Resources/Stage/" + fileName);
     if (!ifs) {
         assert(false && "Failed to open CSV");
     }

@@ -134,8 +134,18 @@ void GameStage::UpdateBorderLine() {
         RemoveBorderLine();
     }
 
+    // アクティブ中は更新しない
+    if (borderLine_->IsActive()) {
+        return;
+    }
+
+    // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
+    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+        player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
+    Vector2 placePos = player_->GetSprite().translate;
+    placePos.x = axisX;
     // 境界線の更新処理
-    borderLine_->Update();
+    borderLine_->Update(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
 }
 
 void GameStage::UpdateClear() {
@@ -183,7 +193,7 @@ void GameStage::PutBorderLine() {
     placePos.x = axisX;
 
     // 境界線をアクティブ状態にする
-    borderLine_->SetActivate(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
+    borderLine_->SetActivate();
 
     // ホログラムオブジェクトを生成する
     GameStageBuilder stageBuilder{};

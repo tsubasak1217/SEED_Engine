@@ -22,7 +22,7 @@ public:
     void Initialize();
 
     // 更新処理
-    void Update();
+    void Update(const Vector2& translate, float sizeY);
 
     // 描画処理
     void Draw();
@@ -37,7 +37,7 @@ public:
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
-    void SetActivate(const Vector2& translate, float sizeY);
+    void SetActivate();
     // 非アクティブ状態にする
     void SetDeactivate();
 
@@ -67,9 +67,12 @@ private:
 
     // 描画情報
     Sprite sprite_;
+    uint32_t transparentTextureGH_; // 非アクティブ状態のテクスチャ
+    uint32_t opaqueTextureGH_;      // アクティブ状態のテクスチャ
 
     // parameters
     float playerToDistance_; // プレイヤーとの判定を取るまで距離
+    float offsetTranslateY_; // プレイヤーのY座標からのオフセット
 
     //--------- functions ----------------------------------------------------
 

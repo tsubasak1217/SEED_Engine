@@ -337,7 +337,6 @@ void GameStage::CreateColliders(){
     for(GameObject2D* object : objects_){
         if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
 
-
             StageObjectType type = component->GetStageObjectType();
 
             // Collisionの追加

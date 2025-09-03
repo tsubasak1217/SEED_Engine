@@ -18,4 +18,5 @@ enum class ObjectType : int32_t{
     Goal = 0b1 << 10,
     Event = 0b1 << 11,
     // 組み合わせ
+    Player = OnFieldObject | Move | Friendly,
 };

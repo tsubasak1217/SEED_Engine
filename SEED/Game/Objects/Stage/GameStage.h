@@ -4,11 +4,12 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 
 // c++
 #include <list>
+// front
+class Player;
 
 //============================================================================
 //	GameStage class
@@ -36,23 +37,44 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
+    // アクティブ状態を設定する
+    void SetIsActive(bool isActive);
 private:
     //========================================================================
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // ステージ進行状態
+    enum class State {
+
+        Play,   // プレイ中...
+        Clear,  // クリア
+        Death,  // プレイヤーがやられた
+        Retry,  // リトライ
+        Select, // セレクト画面に戻る
+    };
+
     //--------- variables ----------------------------------------------------
+
+    State currentState_;         // 現在の状態
+    uint32_t currentStageIndex_; // 現在のステージ番号
+    uint32_t maxStageCount_;     // 最大ステージ数
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
     
-    // プレイヤー
-    std::unique_ptr<Player> player_;
-    // ブロックのリスト
-    std::list<GameObject2D*> blocks_;         // 通常
-    std::list<GameObject2D*> hologramBlocks_; // ホログラム
+    // オブジェクトのリスト
+    std::list<GameObject2D*> objects_;         // 通常
+    std::list<GameObject2D*> hologramObjects_; // ホログラム
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
+    // リストから貰って使用する
+    Player* player_ = nullptr;
+
+    // パラメータ
+    float stageObjectMapTileSize_; // マップ一個分のサイズ
 
     //--------- functions ----------------------------------------------------
 
@@ -60,14 +82,26 @@ private:
     void ApplyJson();
     void SaveJson();
 
-    // init
-    void InitializeBlock(BlockType blockType, uint32_t index);
-    void CreateDebugBlock();
+    // create
+    void BuildStage();
 
     // update
+    /// Play
+    void UpdatePlay();
     void UpdateBorderLine();
+    /// Clear
+    void UpdateClear();
+    /// Death
+    void UpdateDeath();
+    /// Retry
+    void UpdateRetry();
+    /// Select
+    void UpdateReturnSelect();
 
     // helper
-    void CreateHologramBlock();
-    void RemoveHologramBlock();
+    void GetListsPlayerPtr();
+    void CreateColliders();
+    void PutBorderLine();
+    void RemoveBorderLine();
+    void CheckClear();
 };

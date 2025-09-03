@@ -39,4 +39,7 @@ private:
 
     // ゲームステージ
     std::unique_ptr<GameStage> stage_;
+
+    //BGMのハンドル
+    AudioHandle BGMHandle_ = 0;
 };

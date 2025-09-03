@@ -1,6 +1,10 @@
 #pragma once
 #include <SEED/Source/Basic/Scene/State_Base.h>
 #include <json.hpp>
+#include <memory>
+
+#include <SEED/Lib/Input/InputMapper.h>
+#include <Game/Scene/Input/PauseMenuInputActionEnum.h>
 
 class GameState_Play : public State_Base{
 public:
@@ -19,5 +23,7 @@ public:
     void ManageState() override;
 
 private:
+
+    std::unique_ptr<InputMapper<PauseMenuInputAction>> menuBarInputMapper_;
 
 };

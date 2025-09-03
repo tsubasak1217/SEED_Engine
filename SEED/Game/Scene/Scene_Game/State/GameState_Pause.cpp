@@ -1,7 +1,9 @@
 #include "GameState_Pause.h"
+#include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
-#include <SEED/Source/SEED.h>
+#include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
+#include <Game/Scene/Input/Device/MenuBarKeyInput.h>
 
 //////////////////////////////////////////////////////////////////////////////////
 //
@@ -17,8 +19,6 @@ GameState_Pause::GameState_Pause(Scene_Base* pScene) {
 GameState_Pause::~GameState_Pause() {
     // メインカメラをデフォルトに戻す
     SEED::SetMainCamera("default");
-    // 全ての音声を停止
-    AudioManager::EndAllAudio();
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,11 @@ GameState_Pause::~GameState_Pause() {
 //
 //////////////////////////////////////////////////////////////////////////////////
 void GameState_Pause::Initialize() {
+
+    // 入力クラスを初期化
+    inputMapper_ = std::make_unique<InputMapper<PauseMenuInputAction>>();
+    inputMapper_->AddDevice(std::make_unique<MenuBarKeyInput>());     // キー操作
+    inputMapper_->AddDevice(std::make_unique<MenuBarGamePadInput>()); // パッド操作
 
     for(int i = 0; i < 3; i++){
         menuPos_[i] = { 640.0f,200.0f + i * 100.0f };
@@ -44,6 +49,7 @@ void GameState_Pause::Initialize() {
         MenuBack_[i].leftTop = menuPos_[i];
         MenuBack_[i].anchorPoint = { 0.5f,0.5f };
         MenuBack_[i].drawLocation = DrawLocation::Front;
+        MenuBack_[i].layer = 1;
 
         MenuText_[i].transform.translate = menuPos_[i];
         MenuText_[i].SetFont("");
@@ -72,18 +78,20 @@ void GameState_Pause::Update() {
 
     // メニューの選択
     //上移動
-    if(Input::IsTriggerStick(LR::LEFT,DIRECTION4::UP) || Input::IsTriggerPadButton(PAD_BUTTON::UP)) {
+    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
         currentMenu_--;
         if (currentMenu_ < 0) {
             currentMenu_ = 2;
         }
+        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
     //下移動
-    if (Input::IsTriggerStick(LR::LEFT,DIRECTION4::DOWN) || Input::IsTriggerPadButton(PAD_BUTTON::DOWN)) {
+    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
          currentMenu_++;
          if (currentMenu_ > 2) {
              currentMenu_ = 0;
          }
+         AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
 
     // 選択中のメニューの色を変える
@@ -141,26 +149,36 @@ void GameState_Pause::HandOverColliders() {
 //
 //////////////////////////////////////////////////////////////////////////////////
 void GameState_Pause::ManageState() {
+
+    //State_Playに戻る
+    if(inputMapper_->IsTriggered(PauseMenuInputAction::Pause)){
+        changeStateRequest_ = true;
+        return;
+    }
+
+    if (changeStateRequest_) {
+        pScene_->ChangeState(new GameState_Play(pScene_));
+        return;
+    }
+
     // 決定
-    if (Input::IsTriggerPadButton(PAD_BUTTON::A)) {
+    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+        AudioManager::PlayAudio("SE/iceSound.mp3", false, 0.3f, 1.0f);
         switch (currentMenu_) {
         case 0:// 続ける
-            pScene_->ChangeState(new GameState_Play(pScene_));
+            changeStateRequest_ = true;
             break;
         case 1:// やり直す
             pScene_->ChangeScene("Game");
             break;
         case 2:// タイトルへ戻る
             pScene_->ChangeScene("Title");
+            AudioManager::EndAllAudio();
             break;
         default:
             break;
         }
     }
 
-    //State_Playに戻る
-    if(Input::IsTriggerPadButton(PAD_BUTTON::START)){
-        pScene_->ChangeState(new GameState_Play(pScene_));
-        return;
-    }
+   
 }

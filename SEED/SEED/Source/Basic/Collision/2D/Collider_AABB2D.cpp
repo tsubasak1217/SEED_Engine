@@ -155,6 +155,9 @@ void Collider_AABB2D::Edit(){
     ImGui::DragFloat2(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
 
+    // ワールド座標
+    ImGui::Text("World: %.2f, %.2f", body_.center.x, body_.center.y);
+
 #endif // _DEBUG
 }
 

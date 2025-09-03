@@ -20,7 +20,7 @@ Scene_Game::Scene_Game() : Scene_Base() {
 
 Scene_Game::~Scene_Game() {
 
-    Scene_Base::Finalize();
+    Finalize();
     SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
 }
@@ -48,6 +48,9 @@ void Scene_Game::Initialize() {
     if (currentState_) {
         currentState_->Initialize();
     }
+
+    //BGMHandle初期化
+    BGMHandle_ = AudioManager::PlayAudio("BGM/2_23_AM.wav", true, 0.3f, 0.0f);
 
     ////////////////////////////////////////////////////
     //  カメラ初期化
@@ -98,6 +101,8 @@ void Scene_Game::Initialize() {
 
 void Scene_Game::Finalize() {
     Scene_Base::Finalize();
+    // 全ての音声を停止
+    AudioManager::EndAllAudio();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +117,7 @@ void Scene_Game::Update() {
 
 
     /*======================= 各状態固有の更新 ========================*/
+    
 
     // ヒエラルキー内のオブジェクトの更新
     hierarchy_->Update();
@@ -124,16 +130,20 @@ void Scene_Game::Update() {
         currentEventState_->Update();
     }
 
-   
-
     /*==================== 各オブジェクトの基本更新 =====================*/
 
     //========================================================================
     //	ステージ
     //========================================================================
-
-    stage_->Update();
+    if (dynamic_cast<GameState_Play*>(currentState_.get())) {
+        stage_->SetIsActive(true);
+        stage_->Update();
+    } else {
+        stage_->SetIsActive(false);
+    }
+    
     stage_->Edit();
+   
 
     ManageState();
 }
@@ -156,7 +166,7 @@ void Scene_Game::Draw() {
         currentState_->Draw();
     }
 
-    SEED::DrawSkyBox(true);
+    //SEED::DrawSkyBox(true);
     //SEED::DrawGrid();
 
     /*==================== 各オブジェクトの基本描画 =====================*/

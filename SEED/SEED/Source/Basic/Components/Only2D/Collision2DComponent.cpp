@@ -92,6 +92,10 @@ void Collision2DComponent::EditGUI(){
     // コライダーエディターのGUI編集
     colliderEditor_->Edit();
 
+    for(auto& collider : colliders_){
+        collider->Edit();
+    }
+
     ImGui::Unindent();
 #endif
 }

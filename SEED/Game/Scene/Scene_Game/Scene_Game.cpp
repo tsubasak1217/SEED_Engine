@@ -137,12 +137,13 @@ void Scene_Game::Update() {
     //========================================================================
     if (dynamic_cast<GameState_Play*>(currentState_.get())) {
         stage_->SetIsActive(true);
+        stage_->Update();
     } else {
         stage_->SetIsActive(false);
     }
     
     stage_->Edit();
-    stage_->Update();
+   
 
     ManageState();
 }

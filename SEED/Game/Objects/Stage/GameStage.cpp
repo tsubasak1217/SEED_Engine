@@ -114,7 +114,7 @@ void GameStage::CreateHologramBlock() {
         }
 
         // 境界線Xを軸に左右対称に反転した座標を設定する
-        Vector2 dstPos;
+        Vector2 dstPos{};
         dstPos.x = roundToTile(2.0f * axisX - sourcePos.x);
         dstPos.y = sourcePos.y;
 
@@ -232,45 +232,78 @@ float GameStage::ComputeBorderAxisXFromContact() const {
     // 1枚のマップサイズ
     const float tile = stageObjectMapTileSize_;
 
-    // プレイヤーAABBを設定
+    // プレイヤーAABBと、底面を計算
     const auto& ps = player_->GetSprite();
     const float px0 = ps.translate.x - ps.size.x * ps.anchorPoint.x;
     const float py0 = ps.translate.y - ps.size.y * ps.anchorPoint.y;
-    RectFloat playerRect{ px0, px0 + ps.size.x, py0, py0 + ps.size.y };
+    const float centerX = px0 + ps.size.x * 0.5f;
+    const float bottomY = py0 + ps.size.y;
 
-    float bestArea = 0.0f;
-    Vector2 bestBlk = { std::nanf(""), std::nanf("") };
-
-    // 面積が最大に重なっているオブジェクト探す
+    // プレイヤーの足元タイルを探す
+    Vector2 supportTL(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
     for (GameObject2D* object : objects_) {
 
         StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
-        // 左上頂点でAABBを設定
-        const Vector2 blockTranslate = component->GetBlockTranslate();
-        RectFloat blockRect{ blockTranslate.x, blockTranslate.x + tile,
-                     blockTranslate.y, blockTranslate.y + tile };
+        // プレイヤーは判定しない
+        if (component->GetStageObjectType() == StageObjectType::Player) {
+            continue;
+        }
+        // タイル原点を取得
+        const Vector2 tl = component->GetBlockTranslate();
+        const float l = tl.x, r = tl.x + tile;
+        const float t = tl.y, b = tl.y + tile;
 
-        const float area = OverlapArea(playerRect, blockRect);
-        if (bestArea < area) {
-
-            bestArea = area;
-            bestBlk = blockTranslate;
+        const bool xInside = (centerX >= l && centerX < r);
+        const bool yInside = (bottomY >= t && bottomY <= b);
+        if (xInside && yInside) { 
+            supportTL = tl;
+            break;
         }
     }
 
+    // 向きが同じ場合向いている方向のブロックの端の座標を返す
+    if (supportTL.x == supportTL.x) {
+
+        const int dir = static_cast<int>(player_->GetMoveDirection());
+        return (dir > 0) ? (supportTL.x + tile) : supportTL.x;
+    }
+
+    float bestArea = 0.0f;
+    RectFloat playerRect{ px0, px0 + ps.size.x, py0, py0 + ps.size.y };
+    Vector2 bestBlk{ std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() };
+    for (GameObject2D* object : objects_) {
+        
+        StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
+        // プレイヤーは判定しない
+        if (component->GetStageObjectType() == StageObjectType::Player) {
+            continue;
+        }
+
+        const Vector2 bp = component->GetBlockTranslate();
+        RectFloat blk{ bp.x, bp.x + tile, bp.y, bp.y + tile };
+
+        const float area = OverlapArea(playerRect, blk);
+        if (area > bestArea) {
+            bestArea = area;
+            bestBlk = bp;
+        }
+    }
     if (!(bestArea > 0.0f)) {
+        // 何にも乗っていない等：プレイヤー中心をタイル境界に丸める
         return std::round(ps.translate.x / tile) * tile;
     }
 
-    // 左右半分で判定して、端xを決める
-    RectFloat blkLeft{ bestBlk.x, bestBlk.x + tile * 0.5f,bestBlk.y, bestBlk.y + tile };
-    RectFloat blkRight{ bestBlk.x + tile * 0.5f, bestBlk.x + tile,bestBlk.y, bestBlk.y + tile };
-    const float areaL = OverlapArea(playerRect, blkLeft);
-    const float areaR = OverlapArea(playerRect, blkRight);
+    // 半分比較 + 同面積は向き優先で処理
+    RectFloat blkL{ bestBlk.x, bestBlk.x + tile * 0.5f, bestBlk.y, bestBlk.y + tile };
+    RectFloat blkR{ bestBlk.x + tile * 0.5f, bestBlk.x + tile,     bestBlk.y, bestBlk.y + tile };
+    const float areaL = OverlapArea(playerRect, blkL);
+    const float areaR = OverlapArea(playerRect, blkR);
+    const float eps = 1e-4f;
+    if (areaL > areaR + eps)  return bestBlk.x;
+    if (areaR > areaL + eps)  return bestBlk.x + tile;
 
-    // 多く触れている方の端の座標を返す
-    const float axisX = (areaL >= areaR) ? bestBlk.x : (bestBlk.x + tile);
-    return axisX;
+    const int dir = static_cast<int>(player_->GetMoveDirection());
+    return (dir > 0) ? (bestBlk.x + tile) : bestBlk.x;
 }
 
 float GameStage::OverlapArea(const RectFloat& rectA, const RectFloat& rectB) const {

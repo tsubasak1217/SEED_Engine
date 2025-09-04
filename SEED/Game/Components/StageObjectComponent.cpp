@@ -6,6 +6,7 @@
 
 // objects
 #include <Game/Objects/Stage/Objects/Block/BlockNormal.h>
+#include <Game/Objects/Stage/Objects/Block/BlockEmpty.h>
 #include <Game/Objects/Stage/Objects/Goal/Goal.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
@@ -46,21 +47,34 @@ void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
 
     // オブジェクトごとに処理を変える
     switch (objectType_) {
-    case StageObjectType::NormalBlock: {
+    case StageObjectType::None:
+    {
+        break;
+    }
+    case StageObjectType::NormalBlock:
+    {
 
         break;
     }
-    case StageObjectType::Goal: {
+    case StageObjectType::Goal:
+    {
 
         break;
     }
-    case StageObjectType::Player: {
+    case StageObjectType::Player:
+    {
 
         break;
     }
-    case StageObjectType::Warp: {
+    case StageObjectType::Warp:
+    {
 
         // ワープを行わせるように通知
+
+        break;
+    }
+    case StageObjectType::EmptyBlock:
+    {
 
         break;
     }
@@ -119,6 +133,11 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
         std::unique_ptr<Warp> warp = std::make_unique<Warp>(owner_.owner2D);
         warp->Initialize("Scene_Game/StageObject/dottedLine.png");
         return warp;
+    }
+    case StageObjectType::EmptyBlock: {
+        std::unique_ptr<BlockEmpty> block = std::make_unique<BlockEmpty>(owner_.owner2D);
+        block->Initialize("DefaultAssets/white.png");
+        return block;
     }
     }
     return nullptr;

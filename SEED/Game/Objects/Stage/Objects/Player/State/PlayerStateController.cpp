@@ -117,6 +117,11 @@ float PlayerStateController::GetJumpVelocity() const {
 
 void PlayerStateController::UpdateInputState() {
 
+    // ワープ状態の時は処理しない
+    if (current_ == PlayerState::Warp) {
+        return;
+    }
+
     // ジャンプ入力
     if (inputMapper_->IsTriggered(PlayerInputAction::Jump)) {
         if (current_ != PlayerState::Jump) {
@@ -220,8 +225,9 @@ void PlayerStateController::CheckWarpState(Player& owner) {
 
 bool PlayerStateController::IsCanOperateBorder() const {
 
-    // ジャンプ中は境界線を操作できない
-    if (current_ == PlayerState::Jump) {
+    // ジャンプ中、ワープ処理中は境界線を操作できない
+    if (current_ == PlayerState::Jump ||
+        current_ == PlayerState::Warp) {
         return false;
     }
     return true;

@@ -75,6 +75,7 @@ private:
     uint32_t currentStageIndex_; // 現在のステージ番号
     uint32_t maxStageCount_;     // 最大ステージ数
     bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
+    bool isClear_ = false;       // クリアしたかどうか
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";

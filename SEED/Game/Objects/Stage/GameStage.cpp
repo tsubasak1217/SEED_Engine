@@ -241,8 +241,7 @@ void GameStage::RemoveBorderLine() {
 void GameStage::CheckClear() {
 
     // デバッグ用
-    if (Input::IsTriggerKey({ DIK_F9 })) {
-
+    if (isClear_) {
         currentState_ = State::Clear;
     }
 }

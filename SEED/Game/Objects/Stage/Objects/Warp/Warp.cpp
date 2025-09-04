@@ -25,17 +25,20 @@ void Warp::SetWarpIndex(uint32_t warpIndex) {
     case 0: {
 
         // 赤
-        sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+        sprite_.color = MyMath::FloatColor(0xe62f8bff);
+        break;
     }
     case 1: {
 
-        // 青
-        sprite_.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+        // シアン
+        sprite_.color = MyMath::FloatColor(0x00ffffff);
+        break;
     }
     case 2: {
 
-        // 緑
-        sprite_.color = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        // 黄色
+        sprite_.color = MyMath::FloatColor(0xffdc00ff);
+        break;
     }
     }
 }

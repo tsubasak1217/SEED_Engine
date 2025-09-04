@@ -138,6 +138,11 @@ bool GameStageWarpController::CheckWarpTarget() {
     // Noneの相手はHologram
     if (executingWarpStart_->GetCommonState() == StageObjectCommonState::None) {
         for (const auto& hologramWarp : hologramWarps_) {
+
+            // ワープ不可なら処理しない
+            if (hologramWarp->IsStateWarpNotPossible()) {
+                continue;
+            }
             // インデックスが同じならワープ先として指定
             if (hologramWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
 
@@ -152,6 +157,11 @@ bool GameStageWarpController::CheckWarpTarget() {
     // Hologramの相手はNone
     else if (executingWarpStart_->GetCommonState() == StageObjectCommonState::Hologram) {
         for (const auto& noneWarp : noneWarps_) {
+
+            // ワープ不可なら処理しない
+            if (noneWarp->IsStateWarpNotPossible()) {
+                continue;
+            }
             // インデックスが同じならワープ先として指定
             if (noneWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
 

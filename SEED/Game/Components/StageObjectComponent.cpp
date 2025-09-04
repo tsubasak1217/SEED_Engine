@@ -43,7 +43,7 @@ void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2&
     object_->SetSize(size);
 }
 
-void StageObjectComponent::OnCollisionEnter([[maybe_used]] GameObject2D* other) {
+void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
 
     // オブジェクトごとに処理を変える
     switch (objectType_) {
@@ -53,7 +53,6 @@ void StageObjectComponent::OnCollisionEnter([[maybe_used]] GameObject2D* other) 
     }
     case StageObjectType::NormalBlock:
     {
-
         break;
     }
     case StageObjectType::Goal:
@@ -80,7 +79,7 @@ void StageObjectComponent::OnCollisionEnter([[maybe_used]] GameObject2D* other) 
     }
 }
 
-void StageObjectComponent::OnCollisionExit([[maybe_used]] GameObject2D* other) {
+void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
 
     // オブジェクトごとに処理を変える
     switch (objectType_) {
@@ -119,6 +118,7 @@ void StageObjectComponent::OnCollisionStay(GameObject2D* other) {
 
     // プレイヤーインスタンスを持っている場合
     if (objectType_ == StageObjectType::Player) {
+
         Player* player = dynamic_cast<Player*>(object_.get());
 
         // 着地した瞬間を検知
@@ -140,6 +140,12 @@ void StageObjectComponent::OnCollisionStay(GameObject2D* other) {
                 Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene());
                 pScene->GetStage()->SetIsClear(true);
             }
+        }
+    } else if (objectType_ == StageObjectType::Warp) {
+        if (other->GetObjectType() == ObjectType::Field) {
+
+            // フィールドオブジェクトと重なっている場合はワープ不可
+            GetStageObject<Warp>()->SetWarpNotPossible();
         }
     }
 }

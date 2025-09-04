@@ -154,7 +154,7 @@ void GameStage::UpdateBorderLine() {
         player_->IsRemoveBorder()) {
 
         // ワープ中は境界線を消せない
-        if (warpController_->IsWarping()) {
+        if (!warpController_->IsWarping()) {
 
             // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
             isRemoveHologram_ = true;

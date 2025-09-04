@@ -49,6 +49,16 @@ void PlayerStateController::SetWarpState(const Vector2& start, const Vector2& ta
     Request(PlayerState::Warp);
 }
 
+bool PlayerStateController::IsFinishedWarp() const {
+
+    PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_.at(PlayerState::Warp).get());
+    // ワープ終了したか
+    if (warp->IsWarpFinishTrigger()) {
+        return true;
+    }
+    return false;
+}
+
 void PlayerStateController::Update(Player& owner) {
 
     // 入力に応じた状態の遷移

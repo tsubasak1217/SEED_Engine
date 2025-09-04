@@ -42,18 +42,15 @@ void GameStageWarpController::SetWarps(StageObjectCommonState state,
 
 void GameStageWarpController::Update() {
 
+    // ワープ処理中の更新処理
+    UpdateWarping();
+
     // 状態毎にワープの更新処理を行う
     switch (currentState_) {
     case GameStageWarpController::State::WarpPossible: {
 
         // ワープを行うかチェックする
         UpdateWarpPossible();
-        break;
-    }
-    case GameStageWarpController::State::Warping: {
-
-        // ワープ処理中の更新処理
-        UpdateWarping();
         break;
     }
     case GameStageWarpController::State::WarpNotPossible: {
@@ -91,8 +88,6 @@ void GameStageWarpController::UpdateWarping() {
     // 座標補間が終了したら一度ワープ不可状態にして完全にプレイヤーが離れたら再ワープ可能にする
     if (player_->IsFinishedWarp()) {
 
-        // 座標を目標座標に固定する
-        player_->GetOwner()->SetWorldTranslate(executingWarpTarget_->GetOwner()->GetWorldTranslate());
         currentState_ = State::WarpNotPossible;
     }
 }

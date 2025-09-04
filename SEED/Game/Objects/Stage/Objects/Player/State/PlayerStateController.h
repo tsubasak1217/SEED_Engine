@@ -40,7 +40,7 @@ public:
     // ワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);
     // ワープ状態じゃなくなったか
-    bool IsFinishedWarp() const { return  current_ == PlayerState::Warp; }
+    bool IsFinishedWarp() const;
 
     // 境界線を操作できる状態かどうか
     bool IsCanOperateBorder() const;

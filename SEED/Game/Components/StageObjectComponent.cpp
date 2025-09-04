@@ -41,7 +41,7 @@ void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2&
 void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
 
     // プレイヤーと衝突したとき
-    if (other->GetComponent<StageObjectComponent>()->GetStageObjectType() != StageObjectType::Player) {
+    if (other->GetObjectType() == ObjectType::Player) {
         return;
     }
 
@@ -84,7 +84,7 @@ void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
 void StageObjectComponent::OnCollisionExit(GameObject2D* other) {
 
     // プレイヤーと衝突したとき
-    if (other->GetComponent<StageObjectComponent>()->GetStageObjectType() != StageObjectType::Player) {
+    if (other->GetObjectType() == ObjectType::Player) {
         return;
     }
 
@@ -128,12 +128,12 @@ void StageObjectComponent::OnCollisionStay(GameObject2D* other) {
         }
 
         // 天井に頭をぶつけた瞬間を検知
-        if(owner_.owner2D->GetIsCeilingTrigger()){
+        if (owner_.owner2D->GetIsCeilingTrigger()) {
             player->OnCeilingTrigger();
         }
 
         // ゴールに触れている場合
-        if(other->GetObjectType() == ObjectType::Goal){
+        if (other->GetObjectType() == ObjectType::Goal) {
             player->IncreaseGoalTouchTime();
         }
     }

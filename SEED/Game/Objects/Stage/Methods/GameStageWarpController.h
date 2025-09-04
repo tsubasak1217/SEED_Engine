@@ -3,35 +3,68 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/Structs/Timer.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 
 // c++
 #include <vector>
+// json
+#include <SEED/External/nlohmann/json.hpp>
 // front
 class Player;
 class Warp;
 
 //============================================================================
-//	GameStageWarpManager class
+//	GameStageWarpController class
 //============================================================================
-class GameStageWarpManager {
+class GameStageWarpController {
 public:
     //========================================================================
     //	public Methods
     //========================================================================
 
-    GameStageWarpManager() = default;
-    ~GameStageWarpManager() = default;
+    GameStageWarpController() = default;
+    ~GameStageWarpController() = default;
+
+    // 初期化処理
+    void Initialize();
+
+    // 更新処理
+    void Update();
+
+    // エディター
+    void Edit();
+
+    // json
+    void FromJson(const nlohmann::json& data);
+    void ToJson(nlohmann::json& data);
 
     //--------- accessor -----------------------------------------------------
+    
+    // プレイヤーのセット
+    void SetPlayer(Player* player) { player_ = player; }
 
+    // ワープのセット
     void SetWarps(StageObjectCommonState state, const std::vector<Warp*> warps);
 private:
     //========================================================================
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // 状態
+    enum class State {
+
+        WarpPossible,    // ワープ可能
+        Warping,         // ワープ中...
+        WarpNotPossible, // ワープ不可
+    };
+
     //--------- variables ----------------------------------------------------
+
+    // 現在の状態
+    State currentState_;
 
     // プレイヤー
     Player* player_;
@@ -41,6 +74,16 @@ private:
     // ホログラムワープ
     std::vector<Warp*> hologramWarps_;
 
+    // パラメータ
+    Timer warpTimer_; // ワープにかかる時間
+
     //--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateWarpPossible();
+    void UpdateWarping();
+    void UpdateWarpNotPossible();
+    
+    // helper
+    bool IsWarpCameNotification();
 };

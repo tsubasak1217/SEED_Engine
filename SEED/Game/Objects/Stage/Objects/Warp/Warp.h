@@ -30,8 +30,11 @@ public:
 
     // 自身のワープインデックスを作成時に設定
     void SetWarpIndex(uint32_t warpIndex);
+    // 通知を行わせる
+    void SetNotification() { currentState_ = State::Notification; }
 
     uint32_t GetWarpIndex() const { return warpIndex_; }
+    bool IsStateNotification()const { return currentState_ == State::Notification; }
 private:
 	//========================================================================
 	//	private Methods
@@ -42,9 +45,10 @@ private:
     // 状態
     enum class State {
 
-        None,    // 通常更新中(ワープ可能)
-        Warping, // ワープ中
-        Warped   // ワープ完了
+        None,         // 通常更新中(ワープ可能)
+        Notification, // ワープ通知
+        Warping,      // ワープ中
+        Warped,       // ワープ完了
     };
 
 	//--------- variables ----------------------------------------------------

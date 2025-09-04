@@ -45,6 +45,7 @@ public:
 
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
+    bool IsDead() const { return isDead_; }
 
     // 入力検知
     bool IsFinishedWarp() const;
@@ -79,6 +80,9 @@ private:
     // ゴールに関わる変数
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
+
+    //生存フラグ
+    bool isDead_ = true;
 
     //--------- functions ----------------------------------------------------
 

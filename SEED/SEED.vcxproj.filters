@@ -145,6 +145,7 @@
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -355,6 +356,7 @@
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

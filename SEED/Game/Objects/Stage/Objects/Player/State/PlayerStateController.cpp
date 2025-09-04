@@ -11,6 +11,7 @@
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerMoveState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerJumpState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerWarpState.h>
+#include <Game/Objects/Stage/Objects/Player/State/States/PlayerDeadState.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -29,6 +30,7 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
     states_.emplace(PlayerState::Move, std::make_unique<PlayerMoveState>());
     states_.emplace(PlayerState::Jump, std::make_unique<PlayerJumpState>());
     states_.emplace(PlayerState::Warp, std::make_unique<PlayerWarpState>());
+    states_.emplace(PlayerState::Dead, std::make_unique<PlayerDeadState>());
 
     // 各状態に入力をセット
     for (const auto& state : std::views::values(states_)) {
@@ -81,7 +83,7 @@ void PlayerStateController::Update(Player& owner) {
     CheckWarpState(owner);
     // ジャンプ状態が終了したかチェック
     CheckJumpState(owner);
-
+ 
     // 前回の状態を更新
     pre_ = current_;
 }

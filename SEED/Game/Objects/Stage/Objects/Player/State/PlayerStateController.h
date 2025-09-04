@@ -81,4 +81,5 @@ private:
     void ChangeState(Player& owner);
     void CheckJumpState(Player& owner);
     void CheckWarpState(Player& owner);
+    void CheckDeadState(Player& owner);
 };

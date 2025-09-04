@@ -25,6 +25,9 @@ void GameStage::Initialize(int currentStageIndex) {
     // 境界線
     borderLine_ = std::make_unique<BorderLine>();
     borderLine_->Initialize();
+    // ワープ管理
+    warpController_ = std::make_unique<GameStageWarpController>();
+    warpController_->Initialize();
 
     // json適応
     ApplyJson();
@@ -298,6 +301,11 @@ void GameStage::Edit() {
                 borderLine_->Edit(player_->GetOwner()->GetWorldTranslate());
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("Warp")) {
+
+                warpController_->Edit();
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
@@ -315,14 +323,16 @@ void GameStage::ApplyJson() {
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
     playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
+    warpController_->FromJson(data.value("WarpController", nlohmann::json()));
 }
 
 void GameStage::SaveJson() {
 
     nlohmann::json data;
 
-    borderLine_->ToJson(data["BorderLine"]);
     data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
+    borderLine_->ToJson(data["BorderLine"]);
+    warpController_->ToJson(data["WarpController"]);
 
     JsonAdapter::Save(kJsonPath_, data);
 }

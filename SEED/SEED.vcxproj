@@ -124,7 +124,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpManager.cpp">
+    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -192,6 +192,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ClCompile>
     <ClCompile Include="Game\Scene\Input\Device\MenuBarKeyInput.cpp" />
     <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
       </SubType>
@@ -313,7 +314,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpManager.h">
+    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -401,6 +402,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ClInclude>
     <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>
       </SubType>

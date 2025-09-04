@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
+#include <Game/Objects/Stage/Methods/GameStageWarpController.h>
 
 // c++
 #include <list>
@@ -85,6 +86,9 @@ private:
     std::unique_ptr<BorderLine> borderLine_;
     // リストから貰って使用する
     Player* player_ = nullptr;
+
+    // メソッド
+    std::unique_ptr<GameStageWarpController> warpController_; // ワープ管理
 
     // パラメータ
     float stageObjectMapTileSize_; // マップ一個分のサイズ

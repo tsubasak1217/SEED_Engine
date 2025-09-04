@@ -213,7 +213,7 @@ void StageObjectComponent::BeginFrame() {
 void StageObjectComponent::Update() {
 
     // objectの更新
-    object_->SetTranslate(owner_.owner2D->GetWorldTranslate());
+    UpdateBlockTranslate();
     object_->Update();
 }
 

@@ -61,6 +61,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             // オブジェクトを作成
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
             object->SetWorldTranslate({ x, y });
+            object->UpdateMatrix();
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
 
             if (id == static_cast<int>(StageObjectType::Player)) {
@@ -119,9 +120,11 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         // 元のタイプでオブジェクトを作成
         GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
         newBlock->SetWorldTranslate(dstPos);
+        newBlock->UpdateMatrix();
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
         newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize);
         newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
+        newComponent->UpdateBlockTranslate();
 
         // オブジェクトごとの個別処理
         IndividualSetting(*newComponent, *sourceComponent);
@@ -208,6 +211,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
     for (GameObject2D* object : objects) {
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
 
+            component->UpdateBlockTranslate(); // Transform更新
             StageObjectType type = component->GetStageObjectType();
 
             // Collisionの追加

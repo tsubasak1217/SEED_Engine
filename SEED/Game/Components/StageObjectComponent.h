@@ -46,6 +46,7 @@ public:
 
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
+    void UpdateBlockTranslate(){ object_->SetTranslate(owner_.owner2D->GetWorldTranslate()); }
 
     template <typename T>
     T* GetStageObject() const;

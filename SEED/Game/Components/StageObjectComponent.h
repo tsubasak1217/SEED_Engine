@@ -39,6 +39,14 @@ public:
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
     Player* GetPlayer() const;
+
+public:
+    //========================================================================
+    //	Collision Methods
+    //========================================================================
+
+    void OnCollisionStay(GameObject2D* other) override;
+
 private:
     //========================================================================
     //	private Methods

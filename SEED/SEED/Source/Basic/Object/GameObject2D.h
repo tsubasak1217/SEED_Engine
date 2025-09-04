@@ -171,8 +171,10 @@ public:
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
     /*-------- state --------*/
-    bool GetIsOnGrounnd()const{ return isOnGround_; }
+    bool GetIsOnGround()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
+    bool GetIsOnGroundTrigger()const{ return isOnGround_ && !preIsOnGround_; }
+    bool IsStartFalling()const{ return notOnGroundCount_ >= 2; }
 
     //=====================================
     // json
@@ -217,5 +219,7 @@ protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;
+    bool preIsOnGround_ = true;
+    int notOnGroundCount_ = 0;
     Vector2 prePos_;
 };

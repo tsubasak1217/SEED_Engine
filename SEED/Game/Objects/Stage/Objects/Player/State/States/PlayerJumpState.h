@@ -45,6 +45,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
     bool isJumping_;  // ジャンプ中かどうか
+    bool isFalling_;  // 落下中かどうか
     float velocityY_; // 現在のY方向速度
 
     float jumpPower_; // ジャンプ力

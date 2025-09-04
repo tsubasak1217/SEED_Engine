@@ -60,6 +60,10 @@ bool Player::IsRemoveBorder() const {
     return inputMapper_->IsTriggered(PlayerInputAction::RemoveBorder);
 }
 
+bool Player::IsJumpInput() const{
+    return inputMapper_->IsTriggered(PlayerInputAction::Jump);
+}
+
 void Player::Update() {
 
     // エディターを更新
@@ -83,6 +87,11 @@ void Player::UpdateMoveDirection() {
 
         moveDirection_ = LR::RIGHT;
     }
+}
+
+void Player::OnGroundTrigger(){
+    // 着地した瞬間
+    stateController_->OnGroundTrigger();
 }
 
 void Player::Draw() {
@@ -120,6 +129,11 @@ void Player::Edit() {
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
+
+        if(owner_->IsStartFalling()){
+            ImGui::Text("Falling...");
+        }
+
         ImGui::End();
     }
 #endif // _DEBUG

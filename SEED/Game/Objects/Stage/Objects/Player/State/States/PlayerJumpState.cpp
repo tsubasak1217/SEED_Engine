@@ -13,17 +13,23 @@
 //	PlayerJumpState classMethods
 //============================================================================
 
-void PlayerJumpState::Enter([[maybe_unused]] Player& player) {
+void PlayerJumpState::Enter([[maybe_unused]] Player& player){
 
-    // ジャンプ開始
-    isJumping_ = true;
-    // 初期速度を設定
-    velocityY_ = jumpPower_;
+    // 入力していた時のみジャンプ
+    if(player.IsJumpInput()){
+        // ジャンプ開始
+        isJumping_ = true;
+        // 初期速度を設定
+        velocityY_ = jumpPower_;
+    }
+
+    // 落下フラグを立てる
+    isFalling_ = true;
 }
 
 void PlayerJumpState::Update(Player& player) {
 
-    if (!isJumping_) {
+    if (!isJumping_ && !isFalling_) {
         return;
     }
 
@@ -34,18 +40,6 @@ void PlayerJumpState::Update(Player& player) {
 
     // 位置を更新
     player.GetOwner()->AddWorldTranslate({ 0.0f, velocityY_* deltaTime });
-
-    // 着地判定
-    const bool falling = (velocityY_ > 0.0f);
-    if (falling && player.GetOwner()->GetWorldTranslate().y >= groundY_){
-
-        // 地面より下に行かないようにする
-        player.GetOwner()->SetWorldTranslate({ player.GetOwner()->GetWorldTranslate().x, groundY_ });
-
-        // ジャンプ終了
-        isJumping_ = false;
-        velocityY_ = 0.0f;
-    }
 }
 
 void PlayerJumpState::Exit([[maybe_unused]] Player& player) {

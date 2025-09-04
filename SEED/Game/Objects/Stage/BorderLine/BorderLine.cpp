@@ -84,7 +84,7 @@ void BorderLine::Draw() {
     sprite_.Draw();
 }
 
-void BorderLine::Edit(const Sprite& playerSprite) {
+void BorderLine::Edit(const Vector2& playerTranslate) {
 
     // 現在の状態を表示
     ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
@@ -99,7 +99,7 @@ void BorderLine::Edit(const Sprite& playerSprite) {
     // プレイヤーと境界線
     Vector2 left(sprite_.translate.x - playerToDistance_, sprite_.translate.y);
     Vector2 right(sprite_.translate.x + playerToDistance_, sprite_.translate.y);
-    if (CheckPlayerToDistance(playerSprite.translate.x)) {
+    if (CheckPlayerToDistance(playerTranslate.x)) {
 
         SEED::DrawLine2D(left, right, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     } else {

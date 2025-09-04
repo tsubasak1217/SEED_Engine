@@ -28,7 +28,7 @@ public:
     void Draw();
 
     // エディター
-    void Edit(const Sprite& playerSprite);
+    void Edit(const Vector2& playerTranslate);
 
     // json
     void FromJson(const nlohmann::json& data);

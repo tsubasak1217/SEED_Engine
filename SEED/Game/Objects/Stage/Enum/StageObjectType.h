@@ -15,6 +15,7 @@ enum class StageObjectType {
     NormalBlock = 1, // 通常ブロック
     Goal = 2,        // ゴール
     Player = 3,      // プレイヤー
+    Warp = 4,        // ワープ
 };
 
 // 共通の状態

@@ -78,7 +78,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         }
 
         // コピー対象のオブジェクト情報
-        const Vector2 sourcePos = component->GetBlockTranslate();
+        const Vector2 sourcePos = object->GetWorldTranslate();
         const StageObjectType sourceType = component->GetStageObjectType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
         if (!(playerY >= sourcePos.y)) {
@@ -98,8 +98,9 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
 
         // 元のタイプでオブジェクトを作成
         GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
+        newBlock->SetWorldTranslate(dstPos);
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
-        newComponent->Initialize(sourceType, dstPos, tileSize);
+        newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize);
         newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
         objectList.push_back(std::move(newBlock));
     }

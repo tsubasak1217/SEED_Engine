@@ -167,7 +167,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
                 requestedJump_ = true;
             }
         }
-        if (!owner.GetOwner()->GetIsCollide()) {
+        if (!owner.GetOwner()->GetIsCollideSolid()) {
             if (current_ != PlayerState::Jump) {
 
                 Request(PlayerState::Jump);

@@ -96,8 +96,8 @@ void Collider2D::Draw(){}
 void Collider2D::BeginFrame(){
 
     // 衝突フラグの更新
-    preIsCollision_ = isCollision_;
-    isCollision_ = false;
+    preIsCollide_ = isCollide_;
+    isCollide_ = false;
 
     // 衝突リストのクリア
     collisionList_.clear();
@@ -137,12 +137,13 @@ void Collider2D::OnCollision(Collider2D* collider,ObjectType objectType){
     if(CanSkipPushBack(objectType)){ return; }
 
     // 衝突フラグを立てる
-    isCollision_ = true;
+    isCollide_ = true;
+
     // 赤色に変更
     color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
     // 親オブジェクトにも衝突を通知
     if(ownerObject_){
-        ownerObject_->OnCollision(collider->ownerObject_);
+        ownerObject_->OnCollision(collider->ownerObject_,collider);
     }
 
     // 衝突リストに追加

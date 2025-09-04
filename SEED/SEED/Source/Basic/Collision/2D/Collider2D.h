@@ -108,8 +108,8 @@ protected:// 基礎情報-------------------------------------------------------
     ObjectType objectType_ = ObjectType::Editor;
     static uint32_t nextID_;
     uint32_t colliderID_;
-    bool isCollision_ = false;
-    bool preIsCollision_ = false;
+    bool isCollide_ = false;
+    bool preIsCollide_ = false;
     Vector2 collidedPosition_;
     Vector4 color_;
 

@@ -83,6 +83,14 @@ void GameStage::SetIsActive(bool isActive) {
     }
 }
 
+// 非アクティブオブジェクトの再アクティブ化
+void GameStage::ReActivateDisActiveObjects(){
+    for (const auto& object : disActiveObjects_) {
+        object->SetIsActive(true);
+    }
+    disActiveObjects_.clear();
+}
+
 void GameStage::Update() {
 
     switch (currentState_) {
@@ -282,6 +290,9 @@ void GameStage::RemoveBorderLine() {
     }
     hologramObjects_.clear();
 
+    // 非アクティブオブジェクトを再アクティブ化する
+    ReActivateDisActiveObjects();
+
     // 削除完了
     isRemoveHologram_ = false;
 }
@@ -295,16 +306,6 @@ void GameStage::CheckClear() {
 }
 
 void GameStage::Draw() {
-
-    // 全てのオブジェクトを描画
-    for (const auto& object : objects_) {
-
-        object->Draw();
-    }
-    for (const auto& object : hologramObjects_) {
-
-        object->Draw();
-    }
 
     // 境界線の描画
     borderLine_->Draw();

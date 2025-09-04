@@ -8,6 +8,7 @@
 #include <SEED/Lib/Structs/Model.h>
 #include <Environment/Physics.h>
 #include <SEED/Source/Basic/Collision/3D/Collider.h>
+#include <SEED/Source/Basic/Collision/2D/Collider2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
@@ -96,7 +97,7 @@ public:
 
     /*-------- 当たり判定時関数 --------*/
 public:
-    void OnCollision(GameObject2D* other);
+    void OnCollision(GameObject2D* other,Collider2D* collider);
     void CheckCollisionExit();
 protected:
     void OnCollisionEnter(GameObject2D* other);
@@ -181,8 +182,12 @@ public:
     bool GetIsCeiling()const{ return isCeiling_; }
     void SetIsCeiling(bool flag){ isCeiling_ = flag; }
     bool GetIsCeilingTrigger()const{ return isCeiling_ && !preIsCeiling_; }
-    bool GetIsCollide()const{ return isCollide_; }
-    bool GetIsCollideTrigger()const{ return isCollide_ && !preIsCollide_; }
+    bool GetIsCollideAny()const{ return isCollideAny_; }
+    bool GetIsCollideAnyTrigger()const{ return isCollideAny_ && !preIsCollideAny_; }
+    bool GetIsCollideGhost()const{ return isCollideGhost_; }
+    bool GetIsCollideGhostTrigger()const{ return isCollideGhost_ && !preIsCollideGhost_; }
+    bool GetIsCollideSolid()const{ return isCollideSolid_; }
+    bool GetIsCollideSolidTrigger()const{ return isCollideSolid_ && !preIsCollideSolid_; }
 
     //=====================================
     // json
@@ -225,12 +230,20 @@ private:
     /*----------- 衝突判定 ----------*/
 protected:
 
+    bool isCollideAny_ = false;// 何かしらのオブジェクトと衝突したかどうか
+    bool preIsCollideAny_ = false;
+    bool isCollideGhost_ = false;// すり抜けるオブジェクトと衝突したかどうか
+    bool preIsCollideGhost_ = false;
+    bool isCollideSolid_ = false;// すり抜けないオブジェクトと衝突したかどうか
+    bool preIsCollideSolid_ = false;
     std::unordered_set<GameObject2D*>preCollideObjects_;
-    bool isCollide_ = false;
-    bool preIsCollide_ = false;
+
+    // 接地などの判定
     bool isOnGround_ = true;
     bool preIsOnGround_ = true;
     bool isCeiling_ = false;
     bool preIsCeiling_ = false;
+
+    // 前の座標
     Vector2 prePos_;
 };

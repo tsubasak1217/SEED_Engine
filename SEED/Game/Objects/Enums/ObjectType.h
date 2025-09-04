@@ -20,4 +20,5 @@ enum class ObjectType : int32_t{
     // 組み合わせ
     Goal = (0b1 << 10) | Field,
     Player = OnFieldObject | Move | Friendly,
+    EmptyBlock = OnFieldObject | NotMove,
 };

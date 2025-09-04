@@ -63,11 +63,11 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             object->SetWorldTranslate({ x, y });
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
 
-            if(id == static_cast<int>(StageObjectType::Player)){
+            if (id == static_cast<int>(StageObjectType::Player)) {
                 // プレイヤーはサイズを少し小さくする
                 float playerTileSize = tileSize * 0.8f;
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), playerTileSize);
-            } else{
+            } else {
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
             }
 
@@ -248,7 +248,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             }
             case StageObjectType::Warp:
             {
-                aabb->SetSize({ tileSize,tileSize });
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
                 object->SetObjectType(ObjectType::Field);

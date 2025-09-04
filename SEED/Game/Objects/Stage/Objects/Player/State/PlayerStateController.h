@@ -61,6 +61,7 @@ private:
     PlayerState current_;                  // 現在の状態
     PlayerState pre_;                      // 前回の状態
     std::optional<PlayerState> requested_; // 次の状態
+    bool requestedJump_;                   // ジャンプをリクエストしたか
 
     // 入力管理
     const InputMapper<PlayerInputAction>* inputMapper_;

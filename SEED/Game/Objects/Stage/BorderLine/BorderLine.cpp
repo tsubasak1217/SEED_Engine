@@ -43,7 +43,7 @@ void BorderLine::SetDeactivate() {
     sprite_.color = Vector4(1.0f, 1.0, 1.0f, 0.04f);
 }
 
-bool BorderLine::CheckPlayerToDistance(float playerX) const {
+bool BorderLine::CheckPlayerToDistance(const Vector2& playerTranslate, float tileSize) const {
 
     // 状態がアクティブじゃないときは判定しない
     if (currentState_ == State::Disable) {
@@ -51,13 +51,23 @@ bool BorderLine::CheckPlayerToDistance(float playerX) const {
     }
 
     // プレイヤーとの距離が近ければtrueを返す
-    float distance = playerX - sprite_.translate.x;
-    return std::fabs(distance) < playerToDistance_;
+    float distance = playerTranslate.x - sprite_.translate.x;
+    bool checkDistance = std::fabs(distance) < playerToDistance_;
+    // 距離がそもそも遠ければfalseを返す
+    if (!checkDistance) {
+        return false;
+    }
+    // Y座標がほぼ同じならtrueを返す
+    float diff = sprite_.translate.y - playerTranslate.y;
+    if (std::fabs(diff) < tileSize / 2.0f) {
+        return true;
+    }
+    return false;
 }
 
-bool BorderLine::CanTransitionDisable(float playerX) const {
+bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const {
 
-    return IsActive() && CheckPlayerToDistance(playerX);
+    return IsActive() && CheckPlayerToDistance(playerTranslate, tileSize);
 }
 
 void BorderLine::Update(const Vector2& translate, float sizeY) {
@@ -84,7 +94,7 @@ void BorderLine::Draw() {
     sprite_.Draw();
 }
 
-void BorderLine::Edit(const Vector2& playerTranslate) {
+void BorderLine::Edit(const Vector2& playerTranslate, float tileSize) {
 
     // 現在の状態を表示
     ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
@@ -99,7 +109,7 @@ void BorderLine::Edit(const Vector2& playerTranslate) {
     // プレイヤーと境界線
     Vector2 left(sprite_.translate.x - playerToDistance_, sprite_.translate.y);
     Vector2 right(sprite_.translate.x + playerToDistance_, sprite_.translate.y);
-    if (CheckPlayerToDistance(playerTranslate.x)) {
+    if (CheckPlayerToDistance(playerTranslate, tileSize)) {
 
         SEED::DrawLine2D(left, right, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     } else {

@@ -150,8 +150,8 @@ void GameStage::UpdateBorderLine() {
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->CanTransitionDisable(playerWorldTranslate.x) &&
-        player_->IsRemoveBorder()) {
+    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate,
+        stageObjectMapTileSize_) && player_->IsRemoveBorder()) {
 
         // ワープ中は境界線を消せない
         if (!warpController_->IsWarping()) {
@@ -345,7 +345,7 @@ void GameStage::Edit() {
             }
             if (ImGui::BeginTabItem("BorderLine")) {
 
-                borderLine_->Edit(player_->GetOwner()->GetWorldTranslate());
+                borderLine_->Edit(player_->GetOwner()->GetWorldTranslate(), stageObjectMapTileSize_);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Warp")) {

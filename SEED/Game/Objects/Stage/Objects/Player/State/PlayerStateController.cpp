@@ -39,6 +39,7 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
     // 初期状態を設定
     current_ = PlayerState::Idle;
     requested_ = std::nullopt;
+    requestedJump_ = false;
 }
 
 void PlayerStateController::SetWarpState(const Vector2& start, const Vector2& target) {
@@ -148,6 +149,14 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
         return;
     }
 
+    // ワープ後にジャンプをリクエストしたか
+    if (requestedJump_) {
+
+        // フラグをリセットする
+        static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())->ResetWarpFinishTrigger();
+        requestedJump_ = false;
+    }
+
     // 落下している場合はジャンプ状態にする
     if (!owner.GetOwner()->GetIsOnGround()) {
         // ワープ処理が終了した瞬間にジャンプ状態に遷移させる
@@ -155,7 +164,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
             if (warp->IsWarpFinishTrigger()) {
 
                 Request(PlayerState::Jump);
-                warp->ResetWarpFinishTrigger();
+                requestedJump_ = true;
             }
         }
         if (!owner.GetOwner()->GetIsCollide()) {

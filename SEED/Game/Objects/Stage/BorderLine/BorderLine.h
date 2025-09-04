@@ -28,7 +28,7 @@ public:
     void Draw();
 
     // エディター
-    void Edit(const Vector2& playerTranslate);
+    void Edit(const Vector2& playerTranslate, float tileSize);
 
     // json
     void FromJson(const nlohmann::json& data);
@@ -45,7 +45,7 @@ public:
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
     // 非アクティブ状態に遷移可能かどうか
-    bool CanTransitionDisable(float playerX) const;
+    bool CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const;
 private:
     //========================================================================
     //	private Methods
@@ -78,5 +78,5 @@ private:
 
     // helper
     // プレイヤーと一定距離近づいたか
-    bool CheckPlayerToDistance(float playerX) const;
+    bool CheckPlayerToDistance(const Vector2& playerTranslate, float tileSize) const;
 };

@@ -23,7 +23,6 @@ void PlayerWarpState::Enter([[maybe_unused]] Player& player) {
     // 補間処理開始
     warpTimer_.Reset();
     isWarping_ = true;
-    isWarpFinishTrigger_ = false;
 }
 
 void PlayerWarpState::Update(Player& player) {

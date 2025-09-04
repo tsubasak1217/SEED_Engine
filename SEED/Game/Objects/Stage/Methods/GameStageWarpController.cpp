@@ -42,9 +42,6 @@ void GameStageWarpController::SetWarps(StageObjectCommonState state,
 
 void GameStageWarpController::Update() {
 
-    // ワープ処理中の更新処理
-    UpdateWarping();
-
     // 状態毎にワープの更新処理を行う
     switch (currentState_) {
     case GameStageWarpController::State::WarpPossible: {
@@ -60,6 +57,9 @@ void GameStageWarpController::Update() {
         break;
     }
     }
+
+    // ワープ処理中の更新処理
+    UpdateWarping();
 }
 
 void GameStageWarpController::UpdateWarpPossible() {

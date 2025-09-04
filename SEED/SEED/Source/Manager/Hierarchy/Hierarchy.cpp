@@ -183,7 +183,9 @@ void Hierarchy::Draw(){
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive()){ continue; }
+        if(!gameObject2D->GetIsActive()){ 
+            continue; 
+        }
         gameObject2D->Draw();
     }
 }

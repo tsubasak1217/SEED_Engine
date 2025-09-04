@@ -256,16 +256,17 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             }
             case StageObjectType::EmptyBlock:
             {
-                aabb->SetSize({ tileSize,tileSize });
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f});
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true; // 当たり判定を無効にする
-                object->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::EmptyBlock);
                 break;
             }
             default:
                 break;
             }
 
+            object->UpdateMatrix();
             aabb->UpdateMatrix();
             aabb->SetOwnerObject(object);
             collision->AddCollider(aabb);

@@ -151,9 +151,13 @@ void CollisionManager::CheckCollision(){
 void CollisionManager::ResetColliderList(){
     instance_->octree_->ResetColiderList();
     instance_->colliderList3D_.clear();
+    instance_->colliderList2D_.clear();
     instance_->fieldColliders3D_.clear();
+    instance_->fieldColliders2D_.clear();
     instance_->onFieldObjectColliders3D_.clear();
+    instance_->onFieldObjectColliders2D_.clear();
     instance_->editorColliders3D_.clear();
+    instance_->editorColliders2D_.clear();
 }
 
 void CollisionManager::ResetOctree(const AABB& range, int32_t depth){

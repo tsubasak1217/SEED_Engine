@@ -31,6 +31,9 @@ public:
     void RemoveFromHierarchy(GameObject2D* gameObject);
     Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
 
+    static inline int currentStageIndex_ = 0; // 現在のステージ番号
+    static inline int maxStageCount_ = 0; // 最大ステージ数
+
 protected:
     std::unique_ptr<State_Base> currentState_;
     std::unique_ptr<EventState_Base> currentEventState_;

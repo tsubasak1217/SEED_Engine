@@ -2,6 +2,7 @@
 
 ///etc
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <Game/Scene/Scene_Clear/State/ClearState_MenuSelect.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -22,6 +23,13 @@ Scene_Clear::~Scene_Clear(){}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
     SEED::SetMainCamera("default");
+
+    // Playステートに初期化
+    ChangeState(new ClearState_MenuSelect(this));
+
+    if (currentState_) {
+        currentState_->Initialize();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,19 +54,7 @@ void Scene_Clear::Update(){
         currentEventState_->Update();
     }
 
-    // タイマーの更新
-    if(Input::IsTriggerPadButton(PAD_BUTTON::A)){
-        step_++;
-        stepTimer_.Reset();
-    
-    } else if(stepTimer_.IsFinishedNow()){
-        step_++;
-        stepTimer_.Reset();
-    
-    }
-
-    // 時間の更新
-    stepTimer_.Update();
+    ManageState();
 
 }
 
@@ -98,19 +94,19 @@ void Scene_Clear::BeginFrame(){
 void Scene_Clear::EndFrame(){
 
     // ステップのチェック
-    CheckStep();
+    //CheckStep();
 
-    if(currentState_){
-        currentState_->EndFrame();
-    }
+    //if(currentState_){
+    //    currentState_->EndFrame();
+    //}
 
-    if(sceneChangeOrder){
-        //ステップとorderをリセットしてシーン変更
-        step_ = 0;
-        sceneChangeOrder = false;
-        ChangeScene("Select");
-        return;
-    }
+    //if(sceneChangeOrder){
+    //    //ステップとorderをリセットしてシーン変更
+    //    step_ = 0;
+    //    sceneChangeOrder = false;
+    //    ChangeScene("Select");
+    //    return;
+    //}
 }
 
 

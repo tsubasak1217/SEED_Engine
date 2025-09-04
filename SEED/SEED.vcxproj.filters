@@ -134,6 +134,7 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Goal\Goal.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageHelper.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

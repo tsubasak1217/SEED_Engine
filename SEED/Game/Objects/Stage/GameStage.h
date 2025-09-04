@@ -24,7 +24,7 @@ public:
     ~GameStage() = default;
 
     // 初期化処理
-    void Initialize();
+    void Initialize(int currentStageIndex);
 
     // 更新処理
     void Update();
@@ -51,6 +51,12 @@ public:
 
     // 現在の状態を取得する
     State GetCurrentState() const { return currentState_; }
+
+    // 現在のステージ番号を取得する
+    uint32_t GetCurrentStageIndex() const { return currentStageIndex_; }
+
+    // 最大ステージ数を取得する
+    uint32_t GetMaxStageCount() const { return maxStageCount_; }
 
     // アクティブ状態を設定する
     void SetIsActive(bool isActive);

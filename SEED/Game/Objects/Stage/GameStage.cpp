@@ -32,7 +32,6 @@ void GameStage::Initialize(int currentStageIndex) {
     // 最初のステージを構築する
     maxStageCount_ = GameStageHelper::GetCSVFileCount(); // 最大ステージ数をCSVファイル数から取得
     currentStageIndex_ = currentStageIndex;             // 最初のステージインデックス
-    currentStageIndex_ = 0;                              // 最初のステージインデックス
     isRemoveHologram_ = false;
     BuildStage();
 }

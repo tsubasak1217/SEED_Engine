@@ -107,6 +107,55 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
     return objectList;
 }
 
+void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float tileSize) {
+
+    for (GameObject2D* object : objects) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+
+            StageObjectType type = component->GetStageObjectType();
+
+            // Collisionの追加
+            Collision2DComponent* collision = object->AddComponent<Collision2DComponent>();
+            Collider_AABB2D* aabb = new Collider_AABB2D();
+            aabb->SetParentMatrix(object->GetWorldMatPtr());
+
+            switch (type) {
+            case StageObjectType::Empty:
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::NormalBlock:
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::Goal:
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::Player:
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = true;
+                aabb->SetObjectType(ObjectType::Player);
+                break;
+            case StageObjectType::Warp:
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            default:
+                break;
+            }
+
+            aabb->UpdateMatrix();
+            aabb->SetOwnerObject(object);
+            collision->AddCollider(aabb);
+        }
+    }
+}
+
 std::vector<std::vector<int>> GameStageBuilder::GetCSVData(const std::string& fileName) {
 
     // 読み込めなければエラー

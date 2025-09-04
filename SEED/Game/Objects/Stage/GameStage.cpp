@@ -32,6 +32,8 @@ void GameStage::Initialize(int currentStageIndex) {
     // 最初のステージを構築する
     maxStageCount_ = GameStageHelper::GetCSVFileCount(); // 最大ステージ数をCSVファイル数から取得
     currentStageIndex_ = currentStageIndex;             // 最初のステージインデックス
+    currentStageIndex_ = 0;                              // 最初のステージインデックス
+    isRemoveHologram_ = false;
     BuildStage();
 }
 
@@ -57,7 +59,7 @@ void GameStage::BuildStage() {
     GetListsPlayerPtr();
 
     // コライダーの登録
-    CreateColliders();
+    stageBuilder.CreateColliders(objects_, stageObjectMapTileSize_);
 
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
@@ -137,7 +139,7 @@ void GameStage::UpdateBorderLine() {
         player_->IsRemoveBorder()) {
 
         // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
-        RemoveBorderLine();
+        isRemoveHologram_ = true;
     }
 
     // アクティブ中は更新しない
@@ -198,9 +200,15 @@ void GameStage::PutBorderLine() {
     GameStageBuilder stageBuilder{};
     hologramObjects_ = stageBuilder.CreateFromBorderLine(objects_, axisX, playerWorldTranslate.y,
         static_cast<int>(playerDirection), stageObjectMapTileSize_);
+    // コライダーの登録
+    stageBuilder.CreateColliders(hologramObjects_, stageObjectMapTileSize_);
 }
 
 void GameStage::RemoveBorderLine() {
+
+    if (!isRemoveHologram_) {
+        return;
+    }
 
     // 境界線を非アクティブ状態にする
     borderLine_->SetDeactivate();
@@ -208,8 +216,12 @@ void GameStage::RemoveBorderLine() {
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
         delete object;
+        object = nullptr;
     }
     hologramObjects_.clear();
+
+    // 削除完了
+    isRemoveHologram_ = false;
 }
 
 void GameStage::CheckClear() {
@@ -314,54 +326,6 @@ void GameStage::GetListsPlayerPtr() {
                 player_ = component->GetPlayer();
                 break;
             }
-        }
-    }
-}
-
-void GameStage::CreateColliders() {
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-
-            StageObjectType type = component->GetStageObjectType();
-
-            // Collisionの追加
-            Collision2DComponent* collision = object->AddComponent<Collision2DComponent>();
-            Collider_AABB2D* aabb = new Collider_AABB2D();
-            aabb->SetParentMatrix(object->GetWorldMatPtr());
-
-            switch (type) {
-            case StageObjectType::Empty:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
-                aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
-                break;
-            case StageObjectType::NormalBlock:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
-                aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
-                break;
-            case StageObjectType::Goal:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
-                aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
-                break;
-            case StageObjectType::Player:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
-                aabb->isMovable_ = true;
-                aabb->SetObjectType(ObjectType::Player);
-                break;
-            case StageObjectType::Warp:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
-                aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Warp);
-                break;
-            default:
-                break;
-            }
-
-            aabb->UpdateMatrix();
-            aabb->SetOwnerObject(object);
-            collision->AddCollider(aabb);
         }
     }
 }

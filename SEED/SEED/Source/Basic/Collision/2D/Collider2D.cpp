@@ -210,6 +210,11 @@ void Collider2D::PushBack(Collider2D* collider1, Collider2D* collider2, Collisio
         // ある程度平らな面に衝突した場合は落下フラグをオフにする
         if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,-1.0f }) > 0.7f){
             collider1->ownerObject_->SetIsOnGround(true);
+        
+        }
+        // 天井判定
+        else if(MyMath::Dot(collisionData.hitNormal.value(), { 0.0f,1.0f }) > 0.7f){
+            collider1->ownerObject_->SetIsCeiling(true);
         }
 
         // 親の行列を更新する
@@ -228,6 +233,10 @@ void Collider2D::PushBack(Collider2D* collider1, Collider2D* collider2, Collisio
         // ある程度平らな面に衝突した場合は落下フラグをオフにする
         if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,-1.0f }) > 0.7f){
             collider2->ownerObject_->SetIsOnGround(true);
+        }
+        // 天井判定
+        else if(MyMath::Dot(-collisionData.hitNormal.value(), { 0.0f,1.0f }) > 0.7f){
+            collider2->ownerObject_->SetIsCeiling(true);
         }
 
         // 親の行列を更新する

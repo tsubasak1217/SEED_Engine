@@ -175,6 +175,9 @@ public:
     bool GetIsOnGround()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
     bool GetIsOnGroundTrigger()const{ return isOnGround_ && !preIsOnGround_; }
+    bool GetIsCeiling()const{ return isCeiling_; }
+    void SetIsCeiling(bool flag){ isCeiling_ = flag; }
+    bool GetIsCeilingTrigger()const{ return isCeiling_ && !preIsCeiling_; }
     bool GetIsCollide()const{ return isCollide_; }
     bool GetIsCollideTrigger()const{ return isCollide_ && !preIsCollide_; }
 
@@ -222,5 +225,7 @@ protected:
     bool preIsCollide_ = false;
     bool isOnGround_ = true;
     bool preIsOnGround_ = true;
+    bool isCeiling_ = false;
+    bool preIsCeiling_ = false;
     Vector2 prePos_;
 };

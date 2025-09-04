@@ -96,6 +96,13 @@ void Player::OnGroundTrigger(){
     }
 }
 
+void Player::OnCeilingTrigger(){
+    // 天井に当たった瞬間
+    if(stateController_->GetJumpVelocity() <= 0.0f){
+        stateController_->OnCeilingTrigger();
+    }
+}
+
 void Player::Draw() {
 
     // 描画

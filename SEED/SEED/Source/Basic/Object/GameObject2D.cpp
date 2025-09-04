@@ -92,6 +92,10 @@ void GameObject2D::BeginFrame(){
     preIsOnGround_ = isOnGround_;
     isOnGround_ = false;
 
+    //　天井に当たっているかのフラグのリセット
+    preIsCeiling_ = isCeiling_;
+    isCeiling_ = false;
+  
     // コンポーネントの開始処理
     for(auto& component : components_){
         if(!component->isActive_){ continue; }

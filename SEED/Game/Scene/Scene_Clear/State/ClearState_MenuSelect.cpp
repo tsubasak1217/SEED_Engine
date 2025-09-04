@@ -36,8 +36,8 @@ void ClearState_MenuSelect::Initialize() {
         menuPos_[i] = { 640.0f,300.0f + i * 100.0f };
     }
     menuSize_ = { 400.0f,50.0f };
-    MenuText_[0] = TextBox2D("next stage");
-    MenuText_[1] = TextBox2D("Back in the SelectMenu");
+    MenuText_[0] = TextBox2D("ステージ" + std::to_string(pScene_->currentStageIndex_ + 1) + "へ");
+    MenuText_[1] = TextBox2D("ステージ選択へ戻る");
     for (int i = 0; i < 2; i++) {
         MenuBack_[i] = Sprite("DefaultAssets/white1x1.png");
         MenuBack_[i].size = menuSize_;
@@ -52,6 +52,7 @@ void ClearState_MenuSelect::Initialize() {
         MenuText_[i].color = { 0.0f,0.0f,0.0f,1.0f };
         MenuText_[i].fontSize = 32;
         MenuText_[i].textBoxVisible = false; // テキストボックスの枠を非表示
+
     }
     ClearText_ = TextBox2D("Stage Clear!");
     ClearText_.transform.translate = { 640.0f,150.0f };
@@ -83,7 +84,7 @@ void ClearState_MenuSelect::Update() {
         if (currentMenu_ < 0) {
             currentMenu_ = 1;
         }
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 1.0f, 0.0f);
     }
     //下移動
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
@@ -91,17 +92,17 @@ void ClearState_MenuSelect::Update() {
         if (currentMenu_ > 1) {
             currentMenu_ = 0;
         }
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 1.0f, 0.0f);
     }
 
 
-        if (pScene_->currentStageIndex_ == pScene_->maxStageCount_ - 1) {
-            //現在のステージが最大ステージ数なら次のステージに進むメニューを選択できないようにする
-            if (currentMenu_ == 0) {
-                currentMenu_ = 1;
-            }
+    if (pScene_->currentStageIndex_ == pScene_->maxStageCount_ - 1) {
+        //現在のステージが最大ステージ数なら次のステージに進むメニューを選択できないようにする
+        if (currentMenu_ == 0) {
+            currentMenu_ = 1;
         }
- 
+    }
+
     // 選択中のメニューの色を変える
     for (size_t i = 0; i < 2; i++) {
         if (i == currentMenu_) {

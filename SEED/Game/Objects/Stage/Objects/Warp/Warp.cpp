@@ -14,6 +14,9 @@ void Warp::Initialize(const std::string& filename) {
     // スプライトの初期化
     sprite_ = Sprite(filename);
     sprite_.anchorPoint = Vector2(0.5f);
+
+    // 初期化値
+    currentState_ = State::None;
 }
 
 void Warp::SetWarpIndex(uint32_t warpIndex) {
@@ -47,6 +50,10 @@ void Warp::Update() {
 
     // 常に行う更新処理
     UpdateAlways();
+}
+
+void Warp::UpdateState() {
+
 }
 
 void Warp::UpdateAlways() {

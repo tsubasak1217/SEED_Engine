@@ -37,6 +37,36 @@ void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2&
     object_->SetSize(size);
 }
 
+void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
+
+    // プレイヤーと衝突したとき
+    if (other->GetComponent<StageObjectComponent>()->GetStageObjectType() != StageObjectType::Player) {
+        return;
+    }
+
+    // オブジェクトごとに処理を変える
+    switch (objectType_) {
+    case StageObjectType::NormalBlock: {
+
+        break;
+    }
+    case StageObjectType::Goal: {
+
+        break;
+    }
+    case StageObjectType::Player: {
+
+        break;
+    }
+    case StageObjectType::Warp: {
+
+        // ワープを行わせるように通知
+
+        break;
+    }
+    }
+}
+
 std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectType objectType) const {
 
     // タイプで作成するインスタンスを作成する

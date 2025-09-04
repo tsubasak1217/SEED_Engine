@@ -32,6 +32,12 @@ public:
 
     void Initialize(StageObjectType objectType, const Vector2& translate, const Vector2& size);
 
+
+
+    //--------- collision ----------------------------------------------------
+
+    void OnCollisionEnter(GameObject2D* other) override;
+
     //--------- accessor -----------------------------------------------------
 
     void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }

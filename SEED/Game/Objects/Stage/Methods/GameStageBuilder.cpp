@@ -203,6 +203,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             case StageObjectType::Goal:
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::Player:
@@ -213,6 +214,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             case StageObjectType::Warp:
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             default:

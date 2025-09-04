@@ -139,6 +139,7 @@
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Warp.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -342,6 +343,7 @@
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Warp\Warp.h" />
+    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpManager.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
   </ItemGroup>
   <ItemGroup>

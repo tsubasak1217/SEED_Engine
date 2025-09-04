@@ -78,6 +78,7 @@ private:
 
     // パラメータ
     float stageObjectMapTileSize_; // マップ一個分のサイズ
+    float playerSize_;
 
     //--------- functions ----------------------------------------------------
 

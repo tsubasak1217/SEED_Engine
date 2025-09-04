@@ -45,6 +45,11 @@ void PlayerJumpState::Update(Player& player) {
 void PlayerJumpState::Exit([[maybe_unused]] Player& player) {
 
     // 着地した瞬間
+    if (isJumping_) {
+        isJumping_ = false;
+        isFalling_ = false;
+        velocityY_ = 0.0f;
+    }
 }
 
 void PlayerJumpState::Edit([[maybe_unused]] const Player& player) {

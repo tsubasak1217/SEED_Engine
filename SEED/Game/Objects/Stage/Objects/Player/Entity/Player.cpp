@@ -91,7 +91,9 @@ void Player::UpdateMoveDirection() {
 
 void Player::OnGroundTrigger(){
     // 着地した瞬間
-    stateController_->OnGroundTrigger();
+    if(stateController_->GetJumpVelocity() > 0.0f){
+        stateController_->OnGroundTrigger();
+    }
 }
 
 void Player::Draw() {
@@ -130,8 +132,8 @@ void Player::Edit() {
         }
         ImGui::PopItemWidth();
 
-        if(owner_->IsStartFalling()){
-            ImGui::Text("Falling...");
+        if(owner_->GetIsOnGround()){
+            ImGui::Text("OnGround");
         }
 
         ImGui::End();

@@ -76,6 +76,18 @@ void PlayerStateController::OnGroundTrigger(){
     }
 }
 
+
+float PlayerStateController::GetJumpVelocity() const{
+    if(current_ == PlayerState::Jump){
+        if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){
+            return jump->GetJumpVelocityY();
+        }
+    }
+
+    return 0.0f;
+}
+
+
 void PlayerStateController::UpdateInputState() {
 
     // ジャンプ入力
@@ -90,9 +102,11 @@ void PlayerStateController::UpdateInputState() {
 void PlayerStateController::CheckOwnerState(Player& owner){
 
     // 落下している場合はジャンプ状態にする
-    if (owner.GetOwner()->IsStartFalling()) {
-        if (current_ != PlayerState::Jump) {
-            Request(PlayerState::Jump);
+    if (!owner.GetOwner()->GetIsOnGround()) {
+        if(!owner.GetOwner()->GetIsCollide()){
+            if(current_ != PlayerState::Jump){
+                Request(PlayerState::Jump);
+            }
         }
     }
 }

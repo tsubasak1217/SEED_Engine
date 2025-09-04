@@ -42,6 +42,8 @@ public:
     // 着地した瞬間の処理
     void OnGroundTrigger();
 
+    float GetJumpVelocity() const;
+
 private:
 	//========================================================================
 	//	private Methods

@@ -89,11 +89,6 @@ void GameObject2D::BeginFrame(){
     isCollide_ = false;
 
     // 接地フラグのリセット
-    if(!isOnGround_){
-        notOnGroundCount_++;
-    } else{
-        notOnGroundCount_ = 0;
-    }
     preIsOnGround_ = isOnGround_;
     isOnGround_ = false;
 

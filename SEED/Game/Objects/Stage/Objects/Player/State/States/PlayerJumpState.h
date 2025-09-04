@@ -36,7 +36,8 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    bool IsJumping() const { return isJumping_; }
+    bool IsJumping() const { return isJumping_ or isFalling_; }
+    float GetJumpVelocityY() const{ return velocityY_; }
 private:
 	//========================================================================
 	//	private Methods

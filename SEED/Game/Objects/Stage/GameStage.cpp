@@ -305,6 +305,7 @@ void GameStage::ApplyJson(){
     }
 
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
+    playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
 }
 
@@ -348,6 +349,7 @@ void GameStage::CreateColliders(){
             case StageObjectType::Empty:
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::NormalBlock:
@@ -358,10 +360,11 @@ void GameStage::CreateColliders(){
             case StageObjectType::Goal:
                 aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
                 aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             case StageObjectType::Player:
-                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
+                aabb->SetSize({ playerSize_,playerSize_ });
                 aabb->isMovable_ = true;
                 aabb->SetObjectType(ObjectType::Player);
                 break;

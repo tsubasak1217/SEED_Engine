@@ -54,7 +54,15 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
             object->SetWorldTranslate({ x, y });
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
-            component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
+
+            if(id == static_cast<int>(StageObjectType::Player)){
+                // プレイヤーはサイズを少し小さくする
+                float playerTileSize = tileSize * 0.8f;
+                component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), playerTileSize);
+            } else{
+                component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
+            }
+            
             objectList.push_back(object);
         }
     }

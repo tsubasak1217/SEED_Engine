@@ -81,19 +81,15 @@ void GameStageWarpController::UpdateWarpPossible() {
     }
 
     // ワープを行えるので状態をワープ中に遷移させてワープさせる
+    player_->SetWarpState(executingWarpStart_->GetOwner()->GetWorldTranslate(),
+        executingWarpTarget_->GetOwner()->GetWorldTranslate());
     currentState_ = State::Warping;
 }
 
 void GameStageWarpController::UpdateWarping() {
 
-    // ワープ中はプレイヤーの座標を補間する
-    warpTimer_.Update();
-    Vector2 playerPos = MyMath::Lerp(executingWarpStart_->GetOwner()->GetWorldTranslate(),
-        executingWarpTarget_->GetOwner()->GetWorldTranslate(), warpTimer_.GetEase(Easing::None));
-    player_->GetOwner()->SetWorldTranslate(playerPos);
-
     // 座標補間が終了したら一度ワープ不可状態にして完全にプレイヤーが離れたら再ワープ可能にする
-    if (warpTimer_.IsFinishedNow()) {
+    if (player_->IsFinishedWarp()) {
 
         // 座標を目標座標に固定する
         player_->GetOwner()->SetWorldTranslate(executingWarpTarget_->GetOwner()->GetWorldTranslate());
@@ -108,7 +104,6 @@ void GameStageWarpController::UpdateWarpNotPossible() {
 
         // リセット
         ResetWarp();
-        warpTimer_.Reset();
         currentState_ = State::WarpPossible;
     }
 }
@@ -190,14 +185,6 @@ void GameStageWarpController::Edit() {
             executingWarpTarget_->Edit();
         }
     }
-    ImGui::SeparatorText("WarpProgress");
-    {
-        ImGui::ProgressBar(warpTimer_.GetProgress());
-    }
-    ImGui::SeparatorText("Edit");
-    {
-        ImGui::DragFloat("warpDuration", &warpTimer_.duration, 0.01f);
-    }
 }
 
 void GameStageWarpController::FromJson(const nlohmann::json& data) {
@@ -205,11 +192,7 @@ void GameStageWarpController::FromJson(const nlohmann::json& data) {
     if (data.empty()) {
         return;
     }
-
-    warpTimer_.duration = data.value("warpDuration", 1.0f);
 }
 
-void GameStageWarpController::ToJson(nlohmann::json& data) {
-
-    data["warpDuration"] = warpTimer_.duration;
+void GameStageWarpController::ToJson([[maybe_unused]] nlohmann::json& data) {
 }

@@ -81,9 +81,6 @@ private:
     Warp* executingWarpStart_;  // ワープ開始
     Warp* executingWarpTarget_; // ワープ目標
 
-    // パラメータ
-    Timer warpTimer_; // ワープにかかる時間
-
     //--------- functions ----------------------------------------------------
 
     // update

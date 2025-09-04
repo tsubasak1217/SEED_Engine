@@ -42,6 +42,18 @@ void Player::Initialize(const std::string& filename) {
     moveDirection_ = LR::RIGHT;
 }
 
+void Player::SetWarpState(const Vector2& start, const Vector2& target) {
+
+    // 状態管理クラスに通知
+    stateController_->SetWarpState(start, target);
+}
+
+bool Player::IsFinishedWarp() const {
+
+    // ワープ状態かどうか
+    return stateController_->IsFinishedWarp();
+}
+
 bool Player::IsPutBorder() const {
 
     // 境界線を操作できる状態かチェック
@@ -60,7 +72,7 @@ bool Player::IsRemoveBorder() const {
     return inputMapper_->IsTriggered(PlayerInputAction::RemoveBorder);
 }
 
-bool Player::IsJumpInput() const{
+bool Player::IsJumpInput() const {
     return inputMapper_->IsTriggered(PlayerInputAction::Jump);
 }
 
@@ -89,9 +101,9 @@ void Player::UpdateMoveDirection() {
     }
 }
 
-void Player::OnGroundTrigger(){
+void Player::OnGroundTrigger() {
     // 着地した瞬間
-    if(stateController_->GetJumpVelocity() > 0.0f){
+    if (stateController_->GetJumpVelocity() > 0.0f) {
         stateController_->OnGroundTrigger();
     }
 }
@@ -139,7 +151,7 @@ void Player::Edit() {
         }
         ImGui::PopItemWidth();
 
-        if(owner_->GetIsOnGround()){
+        if (owner_->GetIsOnGround()) {
             ImGui::Text("OnGround");
         }
 

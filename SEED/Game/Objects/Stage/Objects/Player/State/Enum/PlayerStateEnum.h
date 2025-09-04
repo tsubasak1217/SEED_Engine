@@ -13,5 +13,6 @@ enum class PlayerState {
 
     Idle, // 何もしていない状態
     Move, // 横移動
-    Jump  // ジャンプ
+    Jump, // ジャンプ
+    Warp, // ワープ
 };

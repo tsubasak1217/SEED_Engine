@@ -17,7 +17,7 @@ public:
     //	public Methods
     //========================================================================
 
-    Player(GameObject2D* owner) : IStageObject(owner){}
+    Player(GameObject2D* owner) : IStageObject(owner) {}
     Player() = default;
     ~Player() = default;
 
@@ -37,6 +37,8 @@ public:
 
     void SetTranslate(const Vector2& translate) override { sprite_.translate = translate; }
     void SetSize(const Vector2& size) override { sprite_.size = size; }
+    // プレイヤーをワープ状態にする
+    void SetWarpState(const Vector2& start, const Vector2& target);
 
     const Sprite& GetSprite() const { return sprite_; }
     LR GetMoveDirection() const { return moveDirection_; }
@@ -45,6 +47,7 @@ public:
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
 
     // 入力検知
+    bool IsFinishedWarp() const;
     bool IsPutBorder() const;
     bool IsRemoveBorder() const;
     bool IsJumpInput() const;

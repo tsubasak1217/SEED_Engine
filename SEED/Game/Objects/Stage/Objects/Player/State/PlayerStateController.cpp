@@ -10,6 +10,7 @@
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerIdleState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerMoveState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerJumpState.h>
+#include <Game/Objects/Stage/Objects/Player/State/States/PlayerWarpState.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -27,6 +28,7 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
     states_.emplace(PlayerState::Idle, std::make_unique<PlayerIdleState>());
     states_.emplace(PlayerState::Move, std::make_unique<PlayerMoveState>());
     states_.emplace(PlayerState::Jump, std::make_unique<PlayerJumpState>());
+    states_.emplace(PlayerState::Warp, std::make_unique<PlayerWarpState>());
 
     // 各状態に入力をセット
     for (const auto& state : std::views::values(states_)) {
@@ -37,6 +39,14 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
     // 初期状態を設定
     current_ = PlayerState::Idle;
     requested_ = std::nullopt;
+}
+
+void PlayerStateController::SetWarpState(const Vector2& start, const Vector2& target) {
+
+    // 補間先の座標を設定
+    static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())->SetLerpValue(
+        start, target);
+    Request(PlayerState::Warp);
 }
 
 void PlayerStateController::Update(Player& owner) {
@@ -53,10 +63,12 @@ void PlayerStateController::Update(Player& owner) {
         ChangeState(owner);
     }
 
-    // 横移動は常に行えるようにする
-    if (auto* move = states_[PlayerState::Move].get()) {
+    // 横移動はワープ状態以外の時に処理可能
+    if (current_ != PlayerState::Warp) {
+        if (auto* move = states_[PlayerState::Move].get()) {
 
-        move->Update(owner);
+            move->Update(owner);
+        }
     }
 
     // 現在の状態を更新
@@ -65,13 +77,15 @@ void PlayerStateController::Update(Player& owner) {
         currentState->Update(owner);
     }
 
+    // ワープ状態が終了したかチェック
+    CheckWarpState(owner);
     // ジャンプ状態が終了したかチェック
     CheckJumpState(owner);
 }
 
-void PlayerStateController::OnGroundTrigger(){
+void PlayerStateController::OnGroundTrigger() {
     // 今がジャンプ状態ならアイドル状態にする
-    if(current_ == PlayerState::Jump){
+    if (current_ == PlayerState::Jump) {
         requested_ = PlayerState::Idle;
     }
 }
@@ -109,12 +123,18 @@ void PlayerStateController::UpdateInputState() {
     }
 }
 
-void PlayerStateController::CheckOwnerState(Player& owner){
+void PlayerStateController::CheckOwnerState(Player& owner) {
+
+    // ワープ状態の時は処理しない
+    if (current_ == PlayerState::Warp) {
+        return;
+    }
 
     // 落下している場合はジャンプ状態にする
     if (!owner.GetOwner()->GetIsOnGround()) {
-        if(!owner.GetOwner()->GetIsCollide()){
-            if(current_ != PlayerState::Jump){
+        if (!owner.GetOwner()->GetIsCollide()) {
+            if (current_ != PlayerState::Jump) {
+
                 Request(PlayerState::Jump);
             }
         }
@@ -171,6 +191,21 @@ void PlayerStateController::CheckJumpState(Player& owner) {
     }
 }
 
+void PlayerStateController::CheckWarpState(Player& owner) {
+
+    if (current_ == PlayerState::Warp) {
+        if (PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())) {
+            // ワープが終了したかどうか判定
+            if (!warp->IsWarping()) {
+
+                // ワープ終了後アイドル状態にする
+                requested_ = PlayerState::Idle;
+                ChangeState(owner);
+                requested_ = std::nullopt;
+            }
+        }
+    }
+}
 
 bool PlayerStateController::IsCanOperateBorder() const {
 

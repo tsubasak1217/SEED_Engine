@@ -139,6 +139,8 @@
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Warp.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
@@ -346,6 +348,8 @@
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Warp\Warp.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
+    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />

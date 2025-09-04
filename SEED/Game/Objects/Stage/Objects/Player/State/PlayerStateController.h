@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/Tensor/Vector2.h>
 #include <Game/Objects/Stage/Objects/Player/State/Interface/PlayerIState.h>
 #include <Game/Objects/Stage/Objects/Player/State/Enum/PlayerStateEnum.h>
 
@@ -14,12 +15,12 @@
 //============================================================================
 class PlayerStateController {
 public:
-	//========================================================================
-	//	public Methods
-	//========================================================================
+    //========================================================================
+    //	public Methods
+    //========================================================================
 
-	PlayerStateController() = default;
-	~PlayerStateController() = default;
+    PlayerStateController() = default;
+    ~PlayerStateController() = default;
 
     // 初期化処理
     void Initialize(const InputMapper<PlayerInputAction>* inputMapper);
@@ -34,7 +35,12 @@ public:
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
 
-	//--------- accessor -----------------------------------------------------
+    //--------- accessor -----------------------------------------------------
+
+    // ワープ状態にする
+    void SetWarpState(const Vector2& start, const Vector2& target);
+    // ワープ状態じゃなくなったか
+    bool IsFinishedWarp() const { return  current_ == PlayerState::Warp; }
 
     // 境界線を操作できる状態かどうか
     bool IsCanOperateBorder() const;
@@ -45,13 +51,12 @@ public:
     void OnCeilingTrigger();
 
     float GetJumpVelocity() const;
-
 private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
+    //========================================================================
+    //	private Methods
+    //========================================================================
 
-	//--------- variables ----------------------------------------------------
+    //--------- variables ----------------------------------------------------
 
     PlayerState current_;                  // 現在の状態
     std::optional<PlayerState> requested_; // 次の状態
@@ -64,7 +69,7 @@ private:
     // エディター用
     PlayerState editState_;
 
-	//--------- functions ----------------------------------------------------
+    //--------- functions ----------------------------------------------------
 
     // update
     void UpdateInputState();
@@ -74,4 +79,5 @@ private:
     void Request(PlayerState state);
     void ChangeState(Player& owner);
     void CheckJumpState(Player& owner);
+    void CheckWarpState(Player& owner);
 };

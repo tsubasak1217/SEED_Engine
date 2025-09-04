@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <algorithm>
+#include <unordered_set>
 
 #include <SEED/Lib/Structs/Model.h>
 #include <Environment/Physics.h>
@@ -96,6 +97,7 @@ public:
     /*-------- 当たり判定時関数 --------*/
 public:
     void OnCollision(GameObject2D* other);
+    void CheckCollisionExit();
 protected:
     void OnCollisionEnter(GameObject2D* other);
     void OnCollisionStay(GameObject2D* other);
@@ -221,6 +223,8 @@ private:
 
     /*----------- 衝突判定 ----------*/
 protected:
+
+    std::unordered_set<GameObject2D*>preCollideObjects_;
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;

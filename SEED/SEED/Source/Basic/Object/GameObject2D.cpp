@@ -95,7 +95,7 @@ void GameObject2D::BeginFrame(){
     //　天井に当たっているかのフラグのリセット
     preIsCeiling_ = isCeiling_;
     isCeiling_ = false;
-  
+
     // コンポーネントの開始処理
     for(auto& component : components_){
         if(!component->isActive_){ continue; }
@@ -311,10 +311,19 @@ void GameObject2D::OnCollision(GameObject2D* other){
         OnCollisionEnter(other);
     }
 
+    // 衝突したオブジェクトを保存
+    preCollideObjects_.insert(other);
+}
+
+void GameObject2D::CheckCollisionExit(){
     // 衝突終了時の処理
     if(!isCollide_ && preIsCollide_){
-        OnCollisionExit(other);
+        for(auto* other : preCollideObjects_){
+            OnCollisionExit(other);
+        }
+        preCollideObjects_.clear();
     }
+
 }
 
 void GameObject2D::OnCollisionEnter(GameObject2D* other){

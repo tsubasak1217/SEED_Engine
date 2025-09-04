@@ -1,5 +1,7 @@
 #include "CollisionManager.h"
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
+#include <SEED//Source/Basic/Object/GameObject2D.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 
 /////////////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -141,6 +143,15 @@ void CollisionManager::CheckCollision(){
     }
     //instance_->octree_->CheckCollision();
 
+    // exit判定
+    {
+        for(auto& collider : instance_->colliderList2D_){
+            GameObject2D* owner = collider.second->GetOwnerObject();
+            if(owner){
+                owner->CheckCollisionExit();
+            }
+        }
+    }
 }
 
 

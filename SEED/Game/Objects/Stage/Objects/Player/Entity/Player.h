@@ -41,6 +41,9 @@ public:
     const Sprite& GetSprite() const { return sprite_; }
     LR GetMoveDirection() const { return moveDirection_; }
 
+    void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
+    bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
+
     // 入力検知
     bool IsPutBorder() const;
     bool IsRemoveBorder() const;
@@ -69,6 +72,10 @@ private:
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
     // 状態管理
     std::unique_ptr<PlayerStateController> stateController_;
+
+    // ゴールに関わる変数
+    float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
+    float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
 
     //--------- functions ----------------------------------------------------
 

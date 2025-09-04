@@ -102,6 +102,11 @@ void StageObjectComponent::OnCollisionStay(GameObject2D* other){
         if(owner_.owner2D->GetIsCeilingTrigger()){
             player->OnCeilingTrigger();
         }
+
+        // ゴールに触れている場合
+        if(other->GetObjectType() == ObjectType::Goal){
+            player->IncreaseGoalTouchTime();
+        }
     }
 }
 

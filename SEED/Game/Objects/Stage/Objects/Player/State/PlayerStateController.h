@@ -38,6 +38,12 @@ public:
 
     // 境界線を操作できる状態かどうか
     bool IsCanOperateBorder() const;
+
+    // 着地した瞬間の処理
+    void OnGroundTrigger();
+
+    float GetJumpVelocity() const;
+
 private:
 	//========================================================================
 	//	private Methods
@@ -60,6 +66,7 @@ private:
 
     // update
     void UpdateInputState();
+    void CheckOwnerState(Player& owner);
 
     // helper
     void Request(PlayerState state);

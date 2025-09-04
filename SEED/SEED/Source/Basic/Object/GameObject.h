@@ -220,5 +220,6 @@ protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;
+    bool preIsOnGround_ = true;
     Vector3 prePos_;
 };

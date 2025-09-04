@@ -178,6 +178,20 @@ void GameStage::UpdateReturnSelect() {
 
 }
 
+void GameStage::GetListsPlayerPtr(){
+    // リストからプレイヤーのポインタを渡す
+    player_ = nullptr;
+    for(GameObject2D* object : objects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+            if(component->GetStageObjectType() == StageObjectType::Player){
+
+                player_ = component->GetStageObject<Player>();
+                break;
+            }
+        }
+    }
+}
+
 void GameStage::PutBorderLine() {
 
     // プレイヤーの向き
@@ -299,6 +313,7 @@ void GameStage::ApplyJson() {
     }
 
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
+    playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
 }
 
@@ -310,19 +325,4 @@ void GameStage::SaveJson() {
     data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
 
     JsonAdapter::Save(kJsonPath_, data);
-}
-
-void GameStage::GetListsPlayerPtr() {
-
-    // リストからプレイヤーのポインタを渡す
-    player_ = nullptr;
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-            if (component->GetStageObjectType() == StageObjectType::Player) {
-
-                player_ = component->GetStageObject<Player>();
-                break;
-            }
-        }
-    }
 }

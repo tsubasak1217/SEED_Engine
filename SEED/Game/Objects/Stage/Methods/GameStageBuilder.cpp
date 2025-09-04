@@ -62,7 +62,15 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
             object->SetWorldTranslate({ x, y });
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
-            component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
+
+            if(id == static_cast<int>(StageObjectType::Player)){
+                // プレイヤーはサイズを少し小さくする
+                float playerTileSize = tileSize * 0.8f;
+                component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), playerTileSize);
+            } else{
+                component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
+            }
+
 
             // オブジェクトごとの個別処理
             IndividualSetting(*component, objectIndex[id]);
@@ -191,32 +199,43 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
 
             switch (type) {
             case StageObjectType::Empty:
+            {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
+            }
             case StageObjectType::NormalBlock:
+            {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
+            }
             case StageObjectType::Goal:
+            {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
+            }
             case StageObjectType::Player:
-                aabb->SetSize({ tileSize,tileSize });
+            {
+                float playerSize = tileSize * 0.8f;
+                aabb->SetSize({ playerSize,playerSize });
                 aabb->isMovable_ = true;
                 aabb->SetObjectType(ObjectType::Player);
                 break;
+            }
             case StageObjectType::Warp:
+            {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Field);
                 break;
+            }
             default:
                 break;
             }

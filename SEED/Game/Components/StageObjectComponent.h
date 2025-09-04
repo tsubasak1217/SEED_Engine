@@ -47,6 +47,15 @@ public:
 
     template <typename T>
     T* GetStageObject() const;
+    Player* GetPlayer() const;
+
+public:
+    //========================================================================
+    //	Collision Methods
+    //========================================================================
+
+    void OnCollisionStay(GameObject2D* other) override;
+
 private:
     //========================================================================
     //	private Methods

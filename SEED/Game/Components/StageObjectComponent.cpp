@@ -67,6 +67,26 @@ void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
     }
 }
 
+
+//============================================================================
+// 衝突時の処理
+//============================================================================
+void StageObjectComponent::OnCollisionStay(GameObject2D* other){
+    
+    other;
+
+    // プレイヤーインスタンスを持っている場合
+    if(objectType_ == StageObjectType::Player){
+        Player* player = dynamic_cast<Player*>(object_.get());
+
+        // 着地した瞬間を検知
+        if(owner_.owner2D->GetIsOnGroundTrigger()){
+            player->OnGroundTrigger();
+        }
+    }
+}
+
+
 std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectType objectType) const {
 
     // タイプで作成するインスタンスを作成する

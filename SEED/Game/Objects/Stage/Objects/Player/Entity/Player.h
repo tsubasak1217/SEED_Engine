@@ -44,6 +44,11 @@ public:
     // 入力検知
     bool IsPutBorder() const;
     bool IsRemoveBorder() const;
+    bool IsJumpInput() const;
+
+    // 状態通知
+    void OnGroundTrigger();
+
 private:
     //========================================================================
     //	private Methods

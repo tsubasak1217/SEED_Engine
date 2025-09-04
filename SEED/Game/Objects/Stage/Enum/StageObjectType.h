@@ -11,11 +11,12 @@
 // オブジェクトの種類
 enum class StageObjectType {
 
-    Empty = 0,       // 空白
+    None = 0,       // 空白
     NormalBlock = 1, // 通常ブロック
     Goal = 2,        // ゴール
     Player = 3,      // プレイヤー
     Warp = 4,        // ワープ
+    EmptyBlock = 5   // 非表示ブロック
 };
 
 // 共通の状態

@@ -50,7 +50,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             int id = grid[r][c];
 
             // Emptyは作成しない
-            if (id == static_cast<int>(StageObjectType::Empty)) {
+            if (id == static_cast<int>(StageObjectType::None)) {
                 continue;
             }
 
@@ -135,26 +135,40 @@ void GameStageBuilder::IndividualSetting(StageObjectComponent& component, uint32
 
     StageObjectType objectType = component.GetStageObjectType();
     switch (objectType) {
-    case StageObjectType::NormalBlock: {
+    case StageObjectType::None:
+    {
+
+        break;
+    }
+    case StageObjectType::NormalBlock:
+    {
 
         ++objectIndex;
         break;
     }
-    case StageObjectType::Goal: {
+    case StageObjectType::Goal:
+    {
 
         ++objectIndex;
         break;
     }
-    case StageObjectType::Player: {
+    case StageObjectType::Player:
+    {
 
         ++objectIndex;
         break;
     }
-    case StageObjectType::Warp: {
+    case StageObjectType::Warp:
+    {
 
         Warp* warp = component.GetStageObject<Warp>();
         warp->SetWarpIndex(objectIndex);
 
+        ++objectIndex;
+        break;
+    }
+    case StageObjectType::EmptyBlock:
+    {
         ++objectIndex;
         break;
     }
@@ -182,6 +196,10 @@ void GameStageBuilder::IndividualSetting(StageObjectComponent& dstComponent, con
         dstWarp->SetWarpIndex(sourceWarp->GetWarpIndex());
         break;
     }
+    case StageObjectType::EmptyBlock:
+    {
+        break;
+    }
     }
 }
 
@@ -198,7 +216,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             aabb->SetParentMatrix(object->GetWorldMatPtr());
 
             switch (type) {
-            case StageObjectType::Empty:
+            case StageObjectType::None:
             {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
@@ -233,6 +251,14 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            }
+            case StageObjectType::EmptyBlock:
+            {
+                aabb->SetSize({ tileSize,tileSize });
+                aabb->isMovable_ = false;
+                aabb->isGhost_ = true; // 当たり判定を無効にする
                 aabb->SetObjectType(ObjectType::Field);
                 break;
             }

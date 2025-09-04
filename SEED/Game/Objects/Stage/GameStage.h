@@ -24,7 +24,7 @@ public:
     ~GameStage() = default;
 
     // 初期化処理
-    void Initialize();
+    void Initialize(int currentStageIndex);
 
     // 更新処理
     void Update();

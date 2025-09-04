@@ -81,7 +81,8 @@ void Scene_Game::Initialize() {
     //========================================================================
 
     stage_ = std::make_unique<GameStage>();
-    stage_->Initialize();
+    stage_->Initialize(currentStageIndex_);
+    maxStageCount_ = stage_->GetMaxStageCount();
 
     ////////////////////////////////////////////////////
     // Audio の 初期化
@@ -150,6 +151,9 @@ void Scene_Game::Update() {
     // ステージクリアならクリアステートに遷移
     if(stage_->GetCurrentState() == GameStage::State::Clear && 
         dynamic_cast<GameState_Play*>(currentState_.get())){
+        //clear時のステージの更新処理を実行してからステート遷移
+        stage_->Update();
+        currentStageIndex_ = stage_->GetCurrentStageIndex();
         ChangeState(new GameState_Clear(this));
     }
 

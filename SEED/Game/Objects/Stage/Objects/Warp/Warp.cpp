@@ -58,6 +58,12 @@ void Warp::SetNotification() {
     currentState_ = State::Notification;
 }
 
+void Warp::SetNone() {
+
+    // 通常状態に戻す
+    currentState_ = State::None;
+}
+
 void Warp::Update() {
 
     // 常に行う更新処理

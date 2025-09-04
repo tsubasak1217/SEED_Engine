@@ -35,7 +35,7 @@ public:
     // ワープ中にする
     void SetWarping() { currentState_ = State::Warping; }
     // 通常更新状態にする
-    void SetNone() { currentState_ = State::None; }
+    void SetNone();
 
     uint32_t GetWarpIndex() const { return warpIndex_; }
     bool IsStateNotification()const { return currentState_ == State::Notification; }
@@ -53,7 +53,6 @@ private:
         None,         // 通常更新中(ワープ可能)
         Notification, // ワープ通知
         Warping,      // ワープ中
-        Warped,       // ワープ完了
     };
 
     //--------- variables ----------------------------------------------------

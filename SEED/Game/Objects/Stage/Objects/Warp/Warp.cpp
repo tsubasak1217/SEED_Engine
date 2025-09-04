@@ -16,19 +16,31 @@ void Warp::Initialize(const std::string& filename) {
     sprite_.anchorPoint = Vector2(0.5f);
 }
 
-void Warp::Update() {
+void Warp::SetWarpIndex(uint32_t warpIndex) {
 
-    // オブジェクトの更新を行う
-    switch (commonState_) {
-    case StageObjectCommonState::None:
+    // ワープインデックスを設定
+    warpIndex_ = warpIndex;
+    // ワープインデックスで色を決定する
+    switch (warpIndex) {
+    case 0: {
 
+        // 赤
         sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-        break;
-    case StageObjectCommonState::Hologram:
-
-        sprite_.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-        break;
     }
+    case 1: {
+
+        // 青
+        sprite_.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+    }
+    case 2: {
+
+        // 緑
+        sprite_.color = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    }
+    }
+}
+
+void Warp::Update() {
 
     // 常に行う更新処理
     UpdateAlways();

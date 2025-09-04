@@ -5,10 +5,16 @@
 //============================================================================
 #include <Environment/Environment.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/GameSystem.h>
-#include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Stage/Methods/GameStageHelper.h>
 #include <Game/Components/StageObjectComponent.h>
+
+// objects
+#include <Game/Objects/Stage/Objects/Block/BlockNormal.h>
+#include <Game/Objects/Stage/Objects/Goal/Goal.h>
+#include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 //============================================================================
 //	GameStageBuilder classMethods
@@ -33,6 +39,8 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
     const float startY = 360.0f;
     std::list<GameObject2D*> objectList{};
 
+    // オブジェクトのインデックス
+    std::array<uint32_t, EnumAdapter<StageObjectType>::GetEnumCount()> objectIndex{};
     for (int r = 0; r < rows; ++r) {
 
         // 行ごとの列数がズレていたら安全側で合わせる
@@ -42,7 +50,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             int id = grid[r][c];
 
             // Emptyは作成しない
-            if (id == 0) {
+            if (id == static_cast<int>(StageObjectType::Empty)) {
                 continue;
             }
 
@@ -55,6 +63,10 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             object->SetWorldTranslate({ x, y });
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
             component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
+
+            // オブジェクトごとの個別処理
+            IndividualSetting(*component, objectIndex[id]);
+
             objectList.push_back(object);
         }
     }
@@ -72,14 +84,14 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
     for (const auto& object : objects) {
 
         // オブジェクトコンポーネントを取得
-        StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
-        if (GameStageHelper::IsSkipHologramObject(component)) {
+        StageObjectComponent* sourceComponent = object->GetComponent<StageObjectComponent>();
+        if (GameStageHelper::IsSkipHologramObject(sourceComponent)) {
             continue;
         }
 
         // コピー対象のオブジェクト情報
         const Vector2 sourcePos = object->GetWorldTranslate();
-        const StageObjectType sourceType = component->GetStageObjectType();
+        const StageObjectType sourceType = sourceComponent->GetStageObjectType();
         // プレイヤーのY座標より下のオブジェクトは作成しない
         if (!(playerY >= sourcePos.y)) {
             continue;
@@ -102,9 +114,67 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
         newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize);
         newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
+
+        // オブジェクトごとの個別処理
+        IndividualSetting(*newComponent, *sourceComponent);
+
         objectList.push_back(std::move(newBlock));
     }
     return objectList;
+}
+
+void GameStageBuilder::IndividualSetting(StageObjectComponent& component, uint32_t& objectIndex) {
+
+    StageObjectType objectType = component.GetStageObjectType();
+    switch (objectType) {
+    case StageObjectType::NormalBlock: {
+
+        ++objectIndex;
+        break;
+    }
+    case StageObjectType::Goal: {
+
+        ++objectIndex;
+        break;
+    }
+    case StageObjectType::Player: {
+
+        ++objectIndex;
+        break;
+    }
+    case StageObjectType::Warp: {
+
+        Warp* warp = component.GetStageObject<Warp>();
+        warp->SetWarpIndex(objectIndex);
+
+        ++objectIndex;
+        break;
+    }
+    }
+}
+
+void GameStageBuilder::IndividualSetting(StageObjectComponent& dstComponent, const StageObjectComponent& sourceComponent) {
+
+    StageObjectType objectType = sourceComponent.GetStageObjectType();
+    switch (objectType) {
+    case StageObjectType::NormalBlock: {
+        break;
+    }
+    case StageObjectType::Goal: {
+        break;
+    }
+    case StageObjectType::Player: {
+        break;
+    }
+    case StageObjectType::Warp: {
+
+        // ワープのインデックスを共有する
+        Warp* dstWarp = dstComponent.GetStageObject<Warp>();
+        Warp* sourceWarp = sourceComponent.GetStageObject<Warp>();
+        dstWarp->SetWarpIndex(sourceWarp->GetWarpIndex());
+        break;
+    }
+    }
 }
 
 void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float tileSize) {

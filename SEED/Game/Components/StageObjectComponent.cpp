@@ -37,11 +37,6 @@ void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2&
     object_->SetSize(size);
 }
 
-Player* StageObjectComponent::GetPlayer() const {
-
-    return dynamic_cast<Player*>(object_.get());
-}
-
 std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectType objectType) const {
 
     // タイプで作成するインスタンスを作成する

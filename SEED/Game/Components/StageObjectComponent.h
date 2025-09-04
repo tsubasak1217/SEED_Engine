@@ -38,7 +38,9 @@ public:
 
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
-    Player* GetPlayer() const;
+
+    template <typename T>
+    T* GetStageObject() const;
 private:
     //========================================================================
     //	private Methods
@@ -56,3 +58,13 @@ private:
     // helper
     std::unique_ptr<IStageObject> CreateInstance(StageObjectType objectType) const;
 };
+
+//============================================================================
+//	StageObjectComponent templateMethods
+//============================================================================
+
+template<typename T>
+inline T* StageObjectComponent::GetStageObject() const {
+
+    return static_cast<T*>(object_.get());
+}

@@ -122,6 +122,7 @@ public:
     //=====================================
     uint32_t GetObjectID() const{ return objectID_; }
     ObjectType GetObjectType() const{ return objectType_; }
+    void SetObjectType(ObjectType type){ objectType_ = type; }
     std::string GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
     void SetIsActive(bool isActive){ isActive_ = isActive; }

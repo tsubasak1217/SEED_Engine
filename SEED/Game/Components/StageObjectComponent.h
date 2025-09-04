@@ -36,6 +36,7 @@ public:
 
     //--------- collision ----------------------------------------------------
 
+    void OnCollisionStay(GameObject2D* other) override;
     void OnCollisionEnter(GameObject2D* other) override;
     void OnCollisionExit(GameObject2D* other) override;
 
@@ -50,12 +51,6 @@ public:
     T* GetStageObject() const;
     Player* GetPlayer() const;
 
-public:
-    //========================================================================
-    //	Collision Methods
-    //========================================================================
-
-    void OnCollisionStay(GameObject2D* other) override;
 
 private:
     //========================================================================

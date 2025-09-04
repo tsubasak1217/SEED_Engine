@@ -59,6 +59,7 @@ private:
     //--------- variables ----------------------------------------------------
 
     PlayerState current_;                  // 現在の状態
+    PlayerState pre_;                      // 前回の状態
     std::optional<PlayerState> requested_; // 次の状態
 
     // 入力管理

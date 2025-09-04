@@ -39,8 +39,10 @@ public:
     //--------- accessor -----------------------------------------------------
 
     void SetLerpValue(const Vector2& start, const Vector2& target);
+    void ResetWarpFinishTrigger() { isWarpFinishTrigger_ = false; }
 
     bool IsWarping() const { return isWarping_; }
+    bool IsWarpFinishTrigger() const { return isWarpFinishTrigger_; }
 private:
     //========================================================================
     //	private Methods
@@ -48,7 +50,8 @@ private:
 
     //--------- variables ----------------------------------------------------
 
-    bool isWarping_; // ワープ中かどうか
+    bool isWarpFinishTrigger_; // ワープ終了判定
+    bool isWarping_;           // ワープ中かどうか
 
     // 補間座標
     Vector2 warpStart_;  // 開始

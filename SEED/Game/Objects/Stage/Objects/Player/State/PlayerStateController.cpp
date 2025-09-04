@@ -81,6 +81,9 @@ void PlayerStateController::Update(Player& owner) {
     CheckWarpState(owner);
     // ジャンプ状態が終了したかチェック
     CheckJumpState(owner);
+
+    // 前回の状態を更新
+    pre_ = current_;
 }
 
 void PlayerStateController::OnGroundTrigger() {
@@ -91,19 +94,19 @@ void PlayerStateController::OnGroundTrigger() {
 }
 
 
-void PlayerStateController::OnCeilingTrigger(){
+void PlayerStateController::OnCeilingTrigger() {
     // 今がジャンプ状態なら上方向の速度を0にする
-    if(current_ == PlayerState::Jump){
-        if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){
+    if (current_ == PlayerState::Jump) {
+        if (PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())) {
             jump->SetJumpVelocityY(0.0f);
         }
     }
 }
 
 
-float PlayerStateController::GetJumpVelocity() const{
-    if(current_ == PlayerState::Jump){
-        if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){
+float PlayerStateController::GetJumpVelocity() const {
+    if (current_ == PlayerState::Jump) {
+        if (PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())) {
             return jump->GetJumpVelocityY();
         }
     }
@@ -132,6 +135,14 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
     // 落下している場合はジャンプ状態にする
     if (!owner.GetOwner()->GetIsOnGround()) {
+        // ワープ処理が終了した瞬間にジャンプ状態に遷移させる
+        if (PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())) {
+            if (warp->IsWarpFinishTrigger()) {
+
+                Request(PlayerState::Jump);
+                warp->ResetWarpFinishTrigger();
+            }
+        }
         if (!owner.GetOwner()->GetIsCollide()) {
             if (current_ != PlayerState::Jump) {
 

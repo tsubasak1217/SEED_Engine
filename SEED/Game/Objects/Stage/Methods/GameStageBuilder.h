@@ -45,4 +45,6 @@ private:
 
     // helper
     std::vector<std::vector<int>> GetCSVData(const std::string& fileName);
+    void IndividualSetting(StageObjectComponent& component, uint32_t& objectIndex);
+    void IndividualSetting(StageObjectComponent& dstComponent, const StageObjectComponent& sourceComponent);
 };

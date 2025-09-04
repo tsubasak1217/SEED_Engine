@@ -323,7 +323,7 @@ void GameStage::GetListsPlayerPtr() {
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
             if (component->GetStageObjectType() == StageObjectType::Player) {
 
-                player_ = component->GetPlayer();
+                player_ = component->GetStageObject<Player>();
                 break;
             }
         }

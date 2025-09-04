@@ -161,6 +161,7 @@ public:
     void SetWorldTranslate(const Vector2& translate);
     void SetLocalTranslate(const Vector2& translate);
     const Vector2& GetPrePos() const{ return prePos_; }
+    Vector2 GetMoveVector() const{ return GetWorldTranslate() - prePos_; }
     /*------ matrix -------*/
     const Matrix3x3& GetLocalMat() const{ return localMat_; }
     const Matrix3x3& GetWorldMat() const{ return worldMat_; }
@@ -171,8 +172,11 @@ public:
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
     /*-------- state --------*/
-    bool GetIsOnGrounnd()const{ return isOnGround_; }
+    bool GetIsOnGround()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
+    bool GetIsOnGroundTrigger()const{ return isOnGround_ && !preIsOnGround_; }
+    bool GetIsCollide()const{ return isCollide_; }
+    bool GetIsCollideTrigger()const{ return isCollide_ && !preIsCollide_; }
 
     //=====================================
     // json
@@ -217,5 +221,6 @@ protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;
+    bool preIsOnGround_ = true;
     Vector2 prePos_;
 };

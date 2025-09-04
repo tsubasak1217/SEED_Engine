@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // state
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerIdleState.h>
@@ -43,6 +44,9 @@ void PlayerStateController::Update(Player& owner) {
     // 入力に応じた状態の遷移
     UpdateInputState();
 
+    // オーナーの状態に応じた状態の遷移
+    CheckOwnerState(owner);
+
     // 何か設定されていれば遷移させる
     if (requested_.has_value()) {
 
@@ -65,6 +69,25 @@ void PlayerStateController::Update(Player& owner) {
     CheckJumpState(owner);
 }
 
+void PlayerStateController::OnGroundTrigger(){
+    // 今がジャンプ状態ならアイドル状態にする
+    if(current_ == PlayerState::Jump){
+        requested_ = PlayerState::Idle;
+    }
+}
+
+
+float PlayerStateController::GetJumpVelocity() const{
+    if(current_ == PlayerState::Jump){
+        if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){
+            return jump->GetJumpVelocityY();
+        }
+    }
+
+    return 0.0f;
+}
+
+
 void PlayerStateController::UpdateInputState() {
 
     // ジャンプ入力
@@ -72,6 +95,18 @@ void PlayerStateController::UpdateInputState() {
         if (current_ != PlayerState::Jump) {
 
             Request(PlayerState::Jump);
+        }
+    }
+}
+
+void PlayerStateController::CheckOwnerState(Player& owner){
+
+    // 落下している場合はジャンプ状態にする
+    if (!owner.GetOwner()->GetIsOnGround()) {
+        if(!owner.GetOwner()->GetIsCollide()){
+            if(current_ != PlayerState::Jump){
+                Request(PlayerState::Jump);
+            }
         }
     }
 }

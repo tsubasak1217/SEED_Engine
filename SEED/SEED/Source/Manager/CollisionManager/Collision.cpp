@@ -1721,25 +1721,27 @@ bool Collision_AABB2D(const::AABB2D& aabb1, const::AABB2D& aabb2){
 CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* aabb2){
     CollisionData2D result;
 
-    // 形状が違う場合エラー
-    if(aabb1->GetColliderType() != ColliderType2D::AABB or
+    // 形状が違う場合は無効
+    if(aabb1->GetColliderType() != ColliderType2D::AABB ||
         aabb2->GetColliderType() != ColliderType2D::AABB){
         return result;
     }
 
-    // 最大AABBが衝突していなけ得れば当たっていない
+    // 最大AABBで衝突していなければ当たっていない
     if(Collision_AABB2D(aabb1->GetBox(), aabb2->GetBox()) == false){
         return result;
     }
 
-    // AABBの情報を取得
-    Collider_AABB2D* convertedAABB1 = dynamic_cast<Collider_AABB2D*>(aabb1);
-    Collider_AABB2D* convertedAABB2 = dynamic_cast<Collider_AABB2D*>(aabb2);
+    // AABBを取得
+    auto* convertedAABB1 = dynamic_cast<Collider_AABB2D*>(aabb1);
+    auto* convertedAABB2 = dynamic_cast<Collider_AABB2D*>(aabb2);
     AABB2D moving = convertedAABB1->GetAABB();
     AABB2D target = convertedAABB2->GetAABB();
     Vector2 vel = moving.center - convertedAABB1->GetPreAABB().center;
 
-    // --- まずは静的衝突チェック（すでに重なっている場合） ---
+    // =============================
+    // 静的衝突チェック（すでに重なっている場合）
+    // =============================
     float dx = (target.center.x - moving.center.x);
     float px = (target.halfSize.x + moving.halfSize.x) - std::fabs(dx);
 
@@ -1747,7 +1749,6 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
     float py = (target.halfSize.y + moving.halfSize.y) - std::fabs(dy);
 
     if(px > 0 && py > 0){
-        // 重なっている → 静的解決
         result.isCollide = true;
 
         if(px < py){
@@ -1762,7 +1763,9 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
         return result;
     }
 
-    // --- 動的衝突チェック（swept AABB） ---
+    // =============================
+    // 動的衝突チェック（Swept AABB）
+    // =============================
     AABB2D expanded = target;
     expanded.halfSize.x += moving.halfSize.x;
     expanded.halfSize.y += moving.halfSize.y;
@@ -1770,13 +1773,16 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
     Vector2 pos = moving.center;
     float tFirst = 0.0f;
     float tLast = 1.0f;
-    Vector2 outNormal{ 0,0 };
+    Vector2 bestNormal{ 0,0 }; // ← 最終的に採用する法線
 
-    auto checkAxis = [&](float pos, float vel, float minB, float maxB, Vector2 nMin, Vector2 nMax) -> bool{
+    auto checkAxis = [&](float pos, float vel, float minB, float maxB,
+        Vector2 nMin, Vector2 nMax) -> bool{
         if(std::fabs(vel) < 1e-6f){
+            // 速度がゼロなら範囲内にあるかどうか
             if(pos < minB || pos > maxB) return false;
             else return true;
         }
+
         float t1 = (minB - pos) / vel;
         float t2 = (maxB - pos) / vel;
         Vector2 n1 = nMin;
@@ -1784,8 +1790,13 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
 
         if(t1 > t2){ std::swap(t1, t2); std::swap(n1, n2); }
 
-        if(t1 > tFirst){ tFirst = t1; outNormal = -n1; }
-        if(t2 < tLast){ tLast = t2; }
+        if(t1 > tFirst){
+            tFirst = t1;
+            bestNormal = -n1; // 更新
+        }
+        if(t2 < tLast){
+            tLast = t2;
+        }
 
         if(tFirst > tLast) return false;
         return true;
@@ -1803,9 +1814,11 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
 
     if(tFirst < 0.0f || tFirst > 1.0f) return result;
 
-    // 衝突あり
+    // =============================
+    // 衝突あり（動的）
+    // =============================
     result.isCollide = true;
-    result.hitNormal = outNormal;
+    result.hitNormal = bestNormal; // ← 確定
     float time = tFirst;
     result.collideDepth = MyMath::Length(vel) * (1.0f - time);
 
@@ -1813,6 +1826,7 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
 
     return result;
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 円同士の衝突判定 =========================================//

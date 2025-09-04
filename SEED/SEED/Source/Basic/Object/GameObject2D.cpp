@@ -84,6 +84,14 @@ void GameObject2D::BeginFrame(){
     // 座標の保存
     prePos_ = GetWorldTranslate();
 
+    // 当たり判定フラグのリセットと保存
+    preIsCollide_ = isCollide_;
+    isCollide_ = false;
+
+    // 接地フラグのリセット
+    preIsOnGround_ = isOnGround_;
+    isOnGround_ = false;
+
     // コンポーネントの開始処理
     for(auto& component : components_){
         if(!component->isActive_){ continue; }

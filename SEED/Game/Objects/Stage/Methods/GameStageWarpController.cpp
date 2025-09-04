@@ -112,19 +112,10 @@ void GameStageWarpController::ResetWarp() {
 
 bool GameStageWarpController::IsWarpCameNotification() {
 
-    // ワープ通知が来ていたらワープさせる
-    for (const auto& warp : noneWarps_) {
+    // どちらかのワープから通知が来ていたら開始地点として設定する
+    for (Warp* warp : std::views::join(std::array{ std::span{noneWarps_}, std::span{hologramWarps_} })) {
         if (warp->IsStateNotification()) {
 
-            // trueになった時点でループを終了
-            executingWarpStart_ = warp;
-            return true;
-        }
-    }
-    for (const auto& warp : hologramWarps_) {
-        if (warp->IsStateNotification()) {
-
-            // trueになった時点でループを終了
             executingWarpStart_ = warp;
             return true;
         }
@@ -134,46 +125,35 @@ bool GameStageWarpController::IsWarpCameNotification() {
 
 bool GameStageWarpController::CheckWarpTarget() {
 
-    // ワープ先がいるかチェック
-    // Noneの相手はHologram
-    if (executingWarpStart_->GetCommonState() == StageObjectCommonState::None) {
-        for (const auto& hologramWarp : hologramWarps_) {
+    // ワープ先を取得
+    const std::vector<Warp*>* targetWarps = GetWarpTarget(executingWarpStart_->GetCommonState());
 
-            // ワープ不可なら処理しない
-            if (hologramWarp->IsStateWarpNotPossible()) {
-                continue;
-            }
-            // インデックスが同じならワープ先として指定
-            if (hologramWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
-
-                // ターゲットが見つかったのでワープ中にする
-                hologramWarp->SetWarping();
-                executingWarpStart_->SetWarping();
-                executingWarpTarget_ = hologramWarp;
-                return true;
-            }
-        }
+    // ワープ不可、インデックス不一致ならfalseを返す
+    auto it = std::ranges::find_if(*targetWarps, [&](Warp* warp) {
+        return !warp->IsStateWarpNotPossible() && warp->GetWarpIndex() == executingWarpStart_->GetWarpIndex(); });
+    if (it == targetWarps->end()) {
+        return false;
     }
-    // Hologramの相手はNone
-    else if (executingWarpStart_->GetCommonState() == StageObjectCommonState::Hologram) {
-        for (const auto& noneWarp : noneWarps_) {
 
-            // ワープ不可なら処理しない
-            if (noneWarp->IsStateWarpNotPossible()) {
-                continue;
-            }
-            // インデックスが同じならワープ先として指定
-            if (noneWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
+    // ターゲットを設定し、ワープ開始させる
+    (*it)->SetWarping();
+    executingWarpTarget_ = *it;
+    return true;
+}
 
-                // ターゲットが見つかったのでワープ中にする
-                noneWarp->SetWarping();
-                executingWarpStart_->SetWarping();
-                executingWarpTarget_ = noneWarp;
-                return true;
-            }
-        }
+const std::vector<Warp*>* GameStageWarpController::GetWarpTarget(StageObjectCommonState state) const {
+
+    switch (state) {
+    case StageObjectCommonState::None: {
+
+        return &hologramWarps_;
     }
-    return false;
+    case StageObjectCommonState::Hologram: {
+
+        return &noneWarps_;
+    }
+    }
+    return nullptr;
 }
 
 void GameStageWarpController::Edit() {

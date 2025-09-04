@@ -161,8 +161,6 @@ void GameStage::UpdateClear() {
     // インデックスを進める
     currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
     BuildStage();
-    return;
-
 }
 
 void GameStage::UpdateDeath() {

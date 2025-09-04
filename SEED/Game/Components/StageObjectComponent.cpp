@@ -47,19 +47,19 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
     switch (objectType) {
     case StageObjectType::NormalBlock: {
 
-        std::unique_ptr<BlockNormal> block = std::make_unique<BlockNormal>();
+        std::unique_ptr<BlockNormal> block = std::make_unique<BlockNormal>(owner_.owner2D);
         block->Initialize("Scene_Game/normalBlock.png");
         return block;
     }
     case StageObjectType::Goal: {
 
-        std::unique_ptr<Goal> goal = std::make_unique<Goal>();
+        std::unique_ptr<Goal> goal = std::make_unique<Goal>(owner_.owner2D);
         goal->Initialize("DefaultAssets/monsterBall.png");
         return goal;
     }
     case StageObjectType::Player: {
 
-        std::unique_ptr<Player> player = std::make_unique<Player>();
+        std::unique_ptr<Player> player = std::make_unique<Player>(owner_.owner2D);
         player->Initialize("DefaultAssets/ellipse.png");
         return player;
     }
@@ -73,6 +73,7 @@ void StageObjectComponent::BeginFrame() {
 void StageObjectComponent::Update() {
 
     // objectの更新
+    object_->SetTranslate(owner_.owner2D->GetWorldTranslate());
     object_->Update();
 }
 

@@ -11,7 +11,7 @@
 // local
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Source/Basic/Collision/Collider2D.h>
+#include <SEED/Source/Basic/Collision/2D/Collider2D.h>
 
 class GameObject2D;
 

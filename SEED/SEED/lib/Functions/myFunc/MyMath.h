@@ -96,6 +96,8 @@ public:
     static Vector2 ClosestPoint(const Vector2& seg_origin,const Vector2& seg_end,const Vector2& point);
     // 直線への最近傍点を求める関数 (3D)
     static Vector3 ClosestPoint(const Vector3& seg_origin,const Vector3& seg_end,const Vector3& point);
+    // 線分同士の最近傍点を求める関数 (2D)
+    static std::array<Vector2, 2> LineClosestPoints(const Line2D& l1, const Line2D& l2);
 
     //================================================================
     //                      個人用な便利関数

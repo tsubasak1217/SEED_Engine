@@ -6,6 +6,7 @@
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 
 // c++
 #include <string>
@@ -19,6 +20,7 @@ public:
     //	public Methods
     //========================================================================
 
+    IStageObject(GameObject2D* owner) : owner_(owner){}
     IStageObject() = default;
     virtual ~IStageObject() = default;
 
@@ -42,6 +44,9 @@ public:
 
     const Vector2& GetTranslate() const { return sprite_.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
+
+    GameObject2D* GetOwner() const{ return owner_; }
+
 protected:
     //========================================================================
     //	protected Methods
@@ -51,4 +56,5 @@ protected:
 
     Sprite sprite_;                      // 描画情報
     StageObjectCommonState commonState_; // オブジェクトの状態
+    GameObject2D* owner_ = nullptr;            // 所有者
 };

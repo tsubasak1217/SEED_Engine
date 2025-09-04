@@ -8,6 +8,7 @@
 #include <Game/GameSystem.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Stage/Methods/GameStageHelper.h>
+#include <Game/Components/StageObjectComponent.h>
 
 //============================================================================
 //	GameStageBuilder classMethods
@@ -51,8 +52,9 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
 
             // オブジェクトを作成
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+            object->SetWorldTranslate({ x, y });
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
-            component->Initialize(static_cast<StageObjectType>(id), Vector2(x, y), tileSize);
+            component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
             objectList.push_back(object);
         }
     }

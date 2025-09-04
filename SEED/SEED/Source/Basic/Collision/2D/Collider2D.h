@@ -11,7 +11,6 @@
 #include <SEED/Lib/Shapes/Line.h>
 #include <SEED/Lib/Shapes/Quad.h>
 #include <SEED/Lib/Shapes/Circle.h>
-#include <SEED/Lib/Shapes/Sphere.h>
 #include <SEED/Lib/Shapes/AABB.h>
 #include <SEED/Source/Basic/Collision/ColliderAnimationData.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionData.h>
@@ -23,6 +22,7 @@ class GameObject2D;
 // コライダーの種類
 enum class ColliderType2D : uint32_t{
     Circle = 0,
+    AABB,
     Quad,
 };
 

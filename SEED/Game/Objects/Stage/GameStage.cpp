@@ -35,14 +35,14 @@ void GameStage::Initialize(int currentStageIndex) {
     BuildStage();
 }
 
-void GameStage::BuildStage() {
+void GameStage::BuildStage(){
 
     // 全てのオブジェクトを破棄
-    for (GameObject2D* object : objects_) {
+    for(GameObject2D* object : objects_){
         delete object;
     }
     objects_.clear();
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
     }
     hologramObjects_.clear();
@@ -56,25 +56,28 @@ void GameStage::BuildStage() {
     // リストからプレイヤーのポインタを渡す
     GetListsPlayerPtr();
 
+    // コライダーの登録
+    CreateColliders();
+
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
 }
 
-void GameStage::SetIsActive(bool isActive) {
+void GameStage::SetIsActive(bool isActive){
 
-    for (const auto& object : objects_) {
+    for(const auto& object : objects_){
 
         object->SetIsActive(isActive);
     }
-    for (const auto& object : hologramObjects_) {
+    for(const auto& object : hologramObjects_){
 
         object->SetIsActive(isActive);
     }
 }
 
-void GameStage::Update() {
+void GameStage::Update(){
 
-    switch (currentState_) {
+    switch(currentState_){
         //============================================================================
         //	ゲームプレイ中の更新処理
         //============================================================================
@@ -110,7 +113,7 @@ void GameStage::Update() {
     }
 }
 
-void GameStage::UpdatePlay() {
+void GameStage::UpdatePlay(){
 
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
@@ -119,36 +122,49 @@ void GameStage::UpdatePlay() {
     CheckClear();
 }
 
-void GameStage::UpdateBorderLine() {
+void GameStage::UpdateBorderLine(){
 
     // プレイヤーの入力処理に応じて境界線を置いたり外したりする
     // 境界線がまだ置かれていないとき
-    if (!borderLine_->IsActive() && player_->IsPutBorder()) {
+    if(!borderLine_->IsActive() && player_->IsPutBorder()){
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate.x) &&
-        player_->IsRemoveBorder()) {
+    } else if(borderLine_->CanTransitionDisable(player_->GetSprite().translate.x) &&
+        player_->IsRemoveBorder()){
 
         // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
         RemoveBorderLine();
     }
 
     // アクティブ中は更新しない
-    if (borderLine_->IsActive()) {
+    if(borderLine_->IsActive()){
         return;
     }
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
     Vector2 placePos = player_->GetSprite().translate;
+
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
     placePos.x = axisX;
     // 境界線の更新処理
     borderLine_->Update(placePos, player_->GetSprite().translate.y + player_->GetSprite().size.y);
 }
 
-void GameStage::UpdateClear() {
+void GameStage::UpdateClear(){
 
     // インデックスを進める
     currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
@@ -157,28 +173,38 @@ void GameStage::UpdateClear() {
 
 }
 
-void GameStage::UpdateDeath() {
+void GameStage::UpdateDeath(){
 
 
 }
 
-void GameStage::UpdateRetry() {
+void GameStage::UpdateRetry(){
 
 
 }
 
-void GameStage::UpdateReturnSelect() {
+void GameStage::UpdateReturnSelect(){
 
 
 }
 
-void GameStage::PutBorderLine() {
+void GameStage::PutBorderLine(){
 
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
-    const float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+    float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), player_->GetMoveDirection(), stageObjectMapTileSize_);
-    Vector2 placePos = player_->GetSprite().translate;
-    placePos.x = axisX;
+    switch (player_->GetMoveDirection()) {
+    case LR::RIGHT: {
+
+        axisX += stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        axisX -= stageObjectMapTileSize_ / 2.0f;
+        break;
+    }
+    }
 
     // 境界線をアクティブ状態にする
     borderLine_->SetActivate();
@@ -189,35 +215,35 @@ void GameStage::PutBorderLine() {
         static_cast<int>(player_->GetMoveDirection()), stageObjectMapTileSize_);
 }
 
-void GameStage::RemoveBorderLine() {
+void GameStage::RemoveBorderLine(){
 
     // 境界線を非アクティブ状態にする
     borderLine_->SetDeactivate();
 
     // 作成したホログラムオブジェクトをすべて破棄する
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
     }
     hologramObjects_.clear();
 }
 
-void GameStage::CheckClear() {
+void GameStage::CheckClear(){
 
     // デバッグ用
-    if (Input::IsTriggerKey({ DIK_F9 })) {
+    if(Input::IsTriggerKey({ DIK_F9 })){
 
         currentState_ = State::Clear;
     }
 }
 
-void GameStage::Draw() {
+void GameStage::Draw(){
 
     // 全てのオブジェクトを描画
-    for (const auto& object : objects_) {
+    for(const auto& object : objects_){
 
         object->Draw();
     }
-    for (const auto& object : hologramObjects_) {
+    for(const auto& object : hologramObjects_){
 
         object->Draw();
     }
@@ -226,26 +252,26 @@ void GameStage::Draw() {
     borderLine_->Draw();
 }
 
-void GameStage::Edit() {
+void GameStage::Edit(){
 
     ImFunc::CustomBegin("GameStage", MoveOnly_TitleBar);
     {
         ImGui::PushItemWidth(192.0f);
-        if (ImGui::Button("Save Json")) {
+        if(ImGui::Button("Save Json")){
 
             SaveJson();
         }
 
-        if (ImGui::BeginTabBar("GameStageTab")) {
-            if (ImGui::BeginTabItem("Stage")) {
+        if(ImGui::BeginTabBar("GameStageTab")){
+            if(ImGui::BeginTabItem("Stage")){
 
-                if (ImGui::Button("ReBuildStage")) {
+                if(ImGui::Button("ReBuildStage")){
 
-                    for (GameObject2D* object : objects_) {
+                    for(GameObject2D* object : objects_){
                         delete object;
                     }
                     objects_.clear();
-                    for (GameObject2D* object : hologramObjects_) {
+                    for(GameObject2D* object : hologramObjects_){
                         delete object;
                     }
                     hologramObjects_.clear();
@@ -259,7 +285,7 @@ void GameStage::Edit() {
                 ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("BorderLine")) {
+            if(ImGui::BeginTabItem("BorderLine")){
 
                 borderLine_->Edit(player_->GetSprite());
                 ImGui::EndTabItem();
@@ -271,10 +297,10 @@ void GameStage::Edit() {
     }
 }
 
-void GameStage::ApplyJson() {
+void GameStage::ApplyJson(){
 
     nlohmann::json data;
-    if (!JsonAdapter::LoadCheck(kJsonPath_, data)) {
+    if(!JsonAdapter::LoadCheck(kJsonPath_, data)){
         return;
     }
 
@@ -282,7 +308,7 @@ void GameStage::ApplyJson() {
     borderLine_->FromJson(data["BorderLine"]);
 }
 
-void GameStage::SaveJson() {
+void GameStage::SaveJson(){
 
     nlohmann::json data;
 
@@ -292,17 +318,60 @@ void GameStage::SaveJson() {
     JsonAdapter::Save(kJsonPath_, data);
 }
 
-void GameStage::GetListsPlayerPtr() {
+void GameStage::GetListsPlayerPtr(){
 
     // リストからプレイヤーのポインタを渡す
     player_ = nullptr;
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-            if (component->GetStageObjectType() == StageObjectType::Player) {
+    for(GameObject2D* object : objects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+            if(component->GetStageObjectType() == StageObjectType::Player){
 
                 player_ = component->GetPlayer();
                 break;
             }
+        }
+    }
+}
+
+void GameStage::CreateColliders(){
+    for(GameObject2D* object : objects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+
+            StageObjectType type = component->GetStageObjectType();
+
+            // Collisionの追加
+            Collision2DComponent* collision = object->AddComponent<Collision2DComponent>();
+            Collider_AABB2D* aabb = new Collider_AABB2D();
+            aabb->SetParentMatrix(object->GetWorldMatPtr());
+
+            switch(type){
+            case StageObjectType::Empty:
+                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::NormalBlock:
+                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::Goal:
+                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
+                aabb->isMovable_ = false;
+                aabb->SetObjectType(ObjectType::Field);
+                break;
+            case StageObjectType::Player:
+                aabb->SetSize({ stageObjectMapTileSize_,stageObjectMapTileSize_ });
+                aabb->isMovable_ = true;
+                aabb->SetObjectType(ObjectType::Player);
+                break;
+            default:
+                break;
+            }
+
+            aabb->UpdateMatrix();
+            aabb->SetOwnerObject(object);
+            collision->AddCollider(aabb);
         }
     }
 }

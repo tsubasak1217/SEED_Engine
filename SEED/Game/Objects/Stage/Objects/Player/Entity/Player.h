@@ -17,6 +17,7 @@ public:
     //	public Methods
     //========================================================================
 
+    Player(GameObject2D* owner) : IStageObject(owner){}
     Player() = default;
     ~Player() = default;
 

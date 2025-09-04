@@ -146,6 +146,7 @@ public:
 
     // AABB, OBBの描画関数
     static void DrawAABB(const AABB& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawAABB2D(const AABB2D& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
 
     // 球の描画関数

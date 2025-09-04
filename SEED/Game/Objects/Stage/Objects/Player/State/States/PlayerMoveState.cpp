@@ -25,9 +25,7 @@ void PlayerMoveState::Update(Player& player) {
     }
 
     // 現在の座標に速度を足す
-    Vector2 translate = player.GetSprite().translate;
-    translate += inputValue * moveSpeed_ * ClockManager::DeltaTime();
-    player.SetTranslate(translate);
+    player.GetOwner()->AddWorldTranslate(inputValue * moveSpeed_ * ClockManager::DeltaTime());
 }
 
 void PlayerMoveState::Exit([[maybe_unused]] Player& player) {

@@ -16,6 +16,3 @@
 // 3D・2D共通のコンポーネント
 #include <SEED/Source/Basic/Components/3D&2D/TextComponent.h>
 #include <SEED/Source/Basic/Components/3D&2D/JumpComponent.h>
-
-// Game固有のコンポーネントを以下に追加してください
-#include <Game/Components/StageObjectComponent.h>

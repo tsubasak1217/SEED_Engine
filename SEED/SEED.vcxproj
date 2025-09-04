@@ -189,7 +189,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
@@ -285,14 +288,14 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\Camera\BaseCamera.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\DebugCamera.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\FollowCamera.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_AABB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Capsule.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Line.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_OBB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Plane.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Sphere.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_AABB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Line.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_OBB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp" />
@@ -405,7 +408,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
@@ -550,14 +556,14 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Camera\BaseCamera.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\FollowCamera.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_AABB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Capsule.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Line.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_OBB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Plane.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Sphere.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_AABB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Line.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_OBB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h" />

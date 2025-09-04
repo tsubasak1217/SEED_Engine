@@ -6,7 +6,7 @@
 
 #include <SEED/Lib/Structs/Model.h>
 #include <Environment/Physics.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>

@@ -15,6 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
+    Goal(GameObject2D* owner) : IStageObject(owner){}
     Goal() = default;
 	~Goal() = default;
 

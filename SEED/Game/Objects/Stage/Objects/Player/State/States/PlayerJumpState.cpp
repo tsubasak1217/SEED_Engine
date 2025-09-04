@@ -33,17 +33,14 @@ void PlayerJumpState::Update(Player& player) {
     velocityY_ += gravity_ * deltaTime;
 
     // 位置を更新
-    Vector2 translate = player.GetSprite().translate;
-    translate.y += velocityY_ * deltaTime;
-    player.SetTranslate(translate);
+    player.GetOwner()->AddWorldTranslate({ 0.0f, velocityY_* deltaTime });
 
     // 着地判定
     const bool falling = (velocityY_ > 0.0f);
-    if (falling && translate.y >= groundY_) {
+    if (falling && player.GetOwner()->GetWorldTranslate().y >= groundY_){
 
         // 地面より下に行かないようにする
-        translate.y = groundY_;
-        player.SetTranslate(translate);
+        player.GetOwner()->SetWorldTranslate({ player.GetOwner()->GetWorldTranslate().x, groundY_ });
 
         // ジャンプ終了
         isJumping_ = false;

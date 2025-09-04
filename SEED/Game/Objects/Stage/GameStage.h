@@ -109,6 +109,7 @@ private:
 
     // helper
     void GetListsPlayerPtr();
+    void CreateColliders();
     void PutBorderLine();
     void RemoveBorderLine();
     void CheckClear();

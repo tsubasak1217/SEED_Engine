@@ -222,6 +222,27 @@ AABB MaxAABB(const AABB& aabb1, const AABB& aabb2){
     return AABB(mostMin + halfSize, halfSize);
 }
 
+AABB2D MaxAABB(const AABB2D& aabb1, const AABB2D& aabb2){
+    Vector2 min[2] = {
+        aabb1.center - aabb1.halfSize,
+        aabb2.center - aabb2.halfSize
+    };
+    Vector2 max[2] = {
+        aabb1.center + aabb1.halfSize,
+        aabb2.center + aabb2.halfSize
+    };
+    Vector2 mostMin = {
+        (std::min)(min[0].x, min[1].x),
+        (std::min)(min[0].y, min[1].y)
+    };
+    Vector2 mostMax = {
+        (std::max)(max[0].x, max[1].x),
+        (std::max)(max[0].y, max[1].y)
+    };
+    Vector2 halfSize = (mostMax - mostMin) * 0.5f;
+    return AABB2D(mostMin + halfSize, halfSize);
+}
+
 //----------------------BOX頂点を作成する関数-------------------
 std::array<Vector3, 8> MakeBox(const Vector3& center, const Vector3& halfSize){
     static std::array<Vector4, 8> vertices = {

@@ -392,12 +392,6 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
             auto* jumpComponent = AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(componentJson);
         }
-
-        // ゲーム固有のコンポーネントの場合
-        if(componentType == "StageObject"){
-            auto* blockComponent = AddComponent<StageObjectComponent>();
-            blockComponent->LoadFromJson(componentJson);
-        }
     }
 }
 
@@ -504,12 +498,6 @@ void GameObject2D::EditGUI(){
         }
         if(ImGui::Button("JumpComponent / ジャンプ")){
             AddComponent<JumpComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        // ゲーム固有のコンポーネントをここに追加していく
-        if(ImGui::Button("StageObjectComponent / オブジェクト")){
-            AddComponent<StageObjectComponent>();
             ImGui::CloseCurrentPopup();
         }
 

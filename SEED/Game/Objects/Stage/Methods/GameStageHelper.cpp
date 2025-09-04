@@ -20,10 +20,10 @@ bool GameStageHelper::IsSkipHologramObject(StageObjectComponent* component) {
 }
 
 float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> objects,
-    const Sprite& playerSprite, LR playerMoveDirection, float tileSize) {
+    const Sprite& playerSprite, const Vector2& playerTranslate, LR playerMoveDirection, float tileSize) {
 
-    const float px0 = playerSprite.translate.x - playerSprite.size.x * playerSprite.anchorPoint.x;
-    const float py0 = playerSprite.translate.y - playerSprite.size.y * playerSprite.anchorPoint.y;
+    const float px0 = playerTranslate.x - playerSprite.size.x * playerSprite.anchorPoint.x;
+    const float py0 = playerTranslate.y - playerSprite.size.y * playerSprite.anchorPoint.y;
     const float centerX = px0 + playerSprite.size.x * 0.5f;
     const float bottomY = py0 + playerSprite.size.y;
 
@@ -36,14 +36,15 @@ float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> ob
             continue;
         }
         // タイル原点を取得
-        const Vector2 tl = component->GetBlockTranslate();
-        const float l = tl.x, r = tl.x + tileSize;
-        const float t = tl.y, b = tl.y + tileSize;
+        const Vector2 tileTranslate = object->GetWorldTranslate();
+        const float l = tileTranslate.x, r = tileTranslate.x + tileSize;
+        const float t = tileTranslate.y, b = tileTranslate.y + tileSize;
 
         const bool xInside = (centerX >= l && centerX < r);
         const bool yInside = (bottomY >= t && bottomY <= b);
         if (xInside && yInside) {
-            supportTL = tl;
+
+            supportTL = tileTranslate;
             break;
         }
     }
@@ -57,7 +58,7 @@ float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> ob
 
     float bestArea = 0.0f;
     RectFloat playerRect{ px0, px0 + playerSprite.size.x, py0, py0 + playerSprite.size.y };
-    Vector2 bestBlk{ std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() };
+    Vector2 bestBlock{ std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() };
     for (GameObject2D* object : objects) {
 
         StageObjectComponent* component = object->GetComponent<StageObjectComponent>();
@@ -65,13 +66,13 @@ float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> ob
             continue;
         }
 
-        const Vector2 bp = component->GetBlockTranslate();
-        RectFloat blk{ bp.x, bp.x + tileSize, bp.y, bp.y + tileSize };
-
+        const Vector2 blockTranslate = object->GetWorldTranslate();
+        RectFloat blk{ blockTranslate.x, blockTranslate.x + tileSize, blockTranslate.y, blockTranslate.y + tileSize };
         const float area = OverlapArea(playerRect, blk);
         if (area > bestArea) {
+
             bestArea = area;
-            bestBlk = bp;
+            bestBlock = blockTranslate;
         }
     }
     // どこにも属していない場合
@@ -88,20 +89,20 @@ float GameStageHelper::ComputeBorderAxisXFromContact(std::list<GameObject2D*> ob
     }
 
     // 半分比較 + 同面積は向き優先で処理
-    RectFloat blkL{ bestBlk.x, bestBlk.x + tileSize * 0.5f, bestBlk.y, bestBlk.y + tileSize };
-    RectFloat blkR{ bestBlk.x + tileSize * 0.5f, bestBlk.x + tileSize, bestBlk.y, bestBlk.y + tileSize };
-    const float areaL = OverlapArea(playerRect, blkL);
-    const float areaR = OverlapArea(playerRect, blkR);
+    RectFloat blockLeft{ bestBlock.x, bestBlock.x + tileSize * 0.5f, bestBlock.y, bestBlock.y + tileSize };
+    RectFloat blockRight{ bestBlock.x + tileSize * 0.5f, bestBlock.x + tileSize, bestBlock.y, bestBlock.y + tileSize };
+    const float areaLeft = OverlapArea(playerRect, blockLeft);
+    const float areaRight = OverlapArea(playerRect, blockRight);
     // 右に置くか左に置くか判定
-    if (areaL > areaR + std::numeric_limits<float>::epsilon()) {
-        return bestBlk.x;
+    if (areaLeft > areaRight + std::numeric_limits<float>::epsilon()) {
+        return bestBlock.x;
     }
-    if (areaR > areaL + std::numeric_limits<float>::epsilon()) {
-        return bestBlk.x + tileSize;
+    if (areaRight > areaLeft + std::numeric_limits<float>::epsilon()) {
+        return bestBlock.x + tileSize;
     }
 
-    const int dir = static_cast<int>(playerMoveDirection);
-    return (dir > 0) ? (bestBlk.x + tileSize) : bestBlk.x;
+    const int direction = static_cast<int>(playerMoveDirection);
+    return (direction > 0) ? (bestBlock.x + tileSize) : bestBlock.x;
 }
 
 float GameStageHelper::OverlapArea(const RectFloat& rectA, const RectFloat& rectB) {
@@ -121,4 +122,23 @@ uint32_t GameStageHelper::GetCSVFileCount() {
         }
     }
     return count;
+}
+
+float GameStageHelper::BorderAxisXFromPlayerDirection(float axisX,
+    LR playerMoveDirection, float tileSize) {
+
+    float result = axisX;
+    switch (playerMoveDirection) {
+    case LR::RIGHT: {
+
+        result += tileSize / 2.0f;
+        break;
+    }
+    case LR::LEFT: {
+
+        result -= tileSize / 2.0f;
+        break;
+    }
+    }
+    return result;
 }

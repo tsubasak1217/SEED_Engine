@@ -7,6 +7,7 @@
 // objects
 #include <Game/Objects/Stage/Objects/Block/BlockNormal.h>
 #include <Game/Objects/Stage/Objects/Goal/Goal.h>
+#include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 //============================================================================
@@ -48,7 +49,7 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
     case StageObjectType::NormalBlock: {
 
         std::unique_ptr<BlockNormal> block = std::make_unique<BlockNormal>(owner_.owner2D);
-        block->Initialize("Scene_Game/normalBlock.png");
+        block->Initialize("Scene_Game/StageObject/normalBlock.png");
         return block;
     }
     case StageObjectType::Goal: {
@@ -62,6 +63,12 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
         std::unique_ptr<Player> player = std::make_unique<Player>(owner_.owner2D);
         player->Initialize("DefaultAssets/ellipse.png");
         return player;
+    }
+    case StageObjectType::Warp: {
+
+        std::unique_ptr<Warp> warp = std::make_unique<Warp>(owner_.owner2D);
+        warp->Initialize("Scene_Game/StageObject/dottedLine.png");
+        return warp;
     }
     }
     return nullptr;

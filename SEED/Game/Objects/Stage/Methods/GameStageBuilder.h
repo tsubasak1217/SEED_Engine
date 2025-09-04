@@ -27,12 +27,15 @@ public:
     GameStageBuilder() = default;
     ~GameStageBuilder() = default;
 
-    // CSVファイルからオブジェクトを構築するs
+    // CSVファイルからオブジェクトを構築する
     std::list<GameObject2D*> CreateFromCSVFile(const std::string& fileName, float tileSize);
 
     // 境界線で線対称にホログラムオブジェクトを構築する
     std::list<GameObject2D*> CreateFromBorderLine(std::list<GameObject2D*> objects,
         float axisX, float playerY, int direction, float tileSize);
+
+    // 作成しらオブジェクトに衝突コライダーを付ける
+    void CreateColliders(std::list<GameObject2D*>& objects, float tileSize);
 private:
     //========================================================================
     //	private Methods

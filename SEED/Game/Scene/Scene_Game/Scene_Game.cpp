@@ -216,6 +216,9 @@ void Scene_Game::BeginFrame() {
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame() {
 
+    // シーン開始時にホログラムオブジェクトの削除を行う
+    stage_->RemoveBorderLine();
+
     // ヒエラルキー内のオブジェクトのフレーム終了処理
     hierarchy_->EndFrame();
 

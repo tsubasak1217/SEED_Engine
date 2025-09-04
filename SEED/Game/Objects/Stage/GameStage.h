@@ -35,6 +35,9 @@ public:
     // エディター
     void Edit();
 
+    // ホログラムオブジェクトの削除
+    void RemoveBorderLine();
+
     //--------- structure ----------------------------------------------------
 
     // ステージ進行状態
@@ -64,6 +67,7 @@ private:
     State currentState_;         // 現在の状態
     uint32_t currentStageIndex_; // 現在のステージ番号
     uint32_t maxStageCount_;     // 最大ステージ数
+    bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -103,8 +107,6 @@ private:
 
     // helper
     void GetListsPlayerPtr();
-    void CreateColliders();
     void PutBorderLine();
-    void RemoveBorderLine();
     void CheckClear();
 };

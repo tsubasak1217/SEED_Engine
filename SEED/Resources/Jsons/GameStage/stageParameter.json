@@ -1,5 +1,7 @@
 {
     "BorderLine": {
+        "lerpXDuration_": 0.10000000149011612,
+        "lerpXEasing_": "OutExpo",
         "offsetTranslateY_": 22.0,
         "playerToDistance_": 80.0,
         "sprite_.anchorPoint": {
@@ -8,8 +10,6 @@
         },
         "sprite_.size.x": 8.0
     },
-    "WarpController": {
-        "warpDuration": 1.0
-    },
+    "WarpController": null,
     "stageObjectMapTileSize_": 48.0
 }

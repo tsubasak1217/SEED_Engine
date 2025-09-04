@@ -41,7 +41,9 @@ public:
     const Sprite& GetSprite() const { return sprite_; }
     LR GetMoveDirection() const { return moveDirection_; }
 
+    // クリア判定
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
+    void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
 
     // 入力検知

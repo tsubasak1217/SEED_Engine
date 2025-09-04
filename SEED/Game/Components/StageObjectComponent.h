@@ -55,6 +55,7 @@ public:
     //========================================================================
 
     void OnCollisionStay(GameObject2D* other) override;
+    void OnCollisionExit(GameObject2D* other) override;
 
 private:
     //========================================================================

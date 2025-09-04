@@ -64,6 +64,11 @@ public:
 
     // アクティブ状態を設定する
     void SetIsActive(bool isActive);
+
+    // クリアしたかどうか
+    bool IsClear() const{ return isClear_; }
+    void SetIsClear(bool isClear){ isClear_ = isClear; }
+
 private:
     //========================================================================
     //	private Methods

@@ -220,14 +220,14 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             case StageObjectType::NormalBlock:
             {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             case StageObjectType::Goal:
@@ -235,7 +235,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Goal);
                 break;
             }
             case StageObjectType::Player:
@@ -243,7 +243,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 float playerSize = tileSize * 0.8f;
                 aabb->SetSize({ playerSize,playerSize });
                 aabb->isMovable_ = true;
-                aabb->SetObjectType(ObjectType::Player);
+                object->SetObjectType(ObjectType::Player);
                 break;
             }
             case StageObjectType::Warp:
@@ -251,7 +251,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             case StageObjectType::EmptyBlock:
@@ -259,7 +259,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true; // 当たり判定を無効にする
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             default:

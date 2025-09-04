@@ -83,6 +83,11 @@ void StageObjectComponent::OnCollisionStay(GameObject2D* other){
         if(owner_.owner2D->GetIsOnGroundTrigger()){
             player->OnGroundTrigger();
         }
+
+        // 天井に頭をぶつけた瞬間を検知
+        if(owner_.owner2D->GetIsCeilingTrigger()){
+            player->OnCeilingTrigger();
+        }
     }
 }
 

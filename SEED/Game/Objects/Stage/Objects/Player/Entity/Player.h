@@ -48,6 +48,7 @@ public:
 
     // 状態通知
     void OnGroundTrigger();
+    void OnCeilingTrigger();
 
 private:
     //========================================================================

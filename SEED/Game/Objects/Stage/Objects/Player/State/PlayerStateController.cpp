@@ -77,6 +77,16 @@ void PlayerStateController::OnGroundTrigger(){
 }
 
 
+void PlayerStateController::OnCeilingTrigger(){
+    // 今がジャンプ状態なら上方向の速度を0にする
+    if(current_ == PlayerState::Jump){
+        if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){
+            jump->SetJumpVelocityY(0.0f);
+        }
+    }
+}
+
+
 float PlayerStateController::GetJumpVelocity() const{
     if(current_ == PlayerState::Jump){
         if(PlayerJumpState* jump = static_cast<PlayerJumpState*>(states_.at(PlayerState::Jump).get())){

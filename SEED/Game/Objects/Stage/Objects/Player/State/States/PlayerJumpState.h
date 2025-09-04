@@ -38,6 +38,8 @@ public:
 
     bool IsJumping() const { return isJumping_ or isFalling_; }
     float GetJumpVelocityY() const{ return velocityY_; }
+    void SetJumpVelocityY(float velocityY){ velocityY_ = velocityY; }
+
 private:
 	//========================================================================
 	//	private Methods

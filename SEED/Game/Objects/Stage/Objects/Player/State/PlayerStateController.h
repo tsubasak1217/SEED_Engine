@@ -41,6 +41,8 @@ public:
 
     // 着地した瞬間の処理
     void OnGroundTrigger();
+    // 天井に当たった瞬間の処理
+    void OnCeilingTrigger();
 
     float GetJumpVelocity() const;
 

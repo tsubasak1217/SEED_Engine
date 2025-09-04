@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 
 //============================================================================
 //	Warp classMethods
@@ -46,6 +47,17 @@ void Warp::SetWarpIndex(uint32_t warpIndex) {
     }
 }
 
+void Warp::SetNotification() {
+
+    // ワープ可能状態の時のみ通知可能
+    if (currentState_ != State::None) {
+        return;
+    }
+
+    // 通知させる
+    currentState_ = State::Notification;
+}
+
 void Warp::Update() {
 
     // 常に行う更新処理
@@ -66,4 +78,11 @@ void Warp::Draw() {
 
     // スプライトの描画
     sprite_.Draw();
+}
+
+void Warp::Edit() {
+
+    // 現在の状態を表示
+    ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
+    ImGui::Text("ownType: %s:", EnumAdapter<StageObjectCommonState>::ToString(commonState_));
 }

@@ -10,6 +10,7 @@
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
+#include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Methods/GameStageBuilder.h>
 #include <Game/Objects/Stage/Methods/GameStageHelper.h>
 
@@ -54,14 +55,17 @@ void GameStage::BuildStage() {
     // 現在のステージ番号でステージの構築
     std::string fileName = "stage_" + std::to_string(currentStageIndex_) + ".csv";
 
+    // ステージの構築
     GameStageBuilder stageBuilder{};
     objects_ = stageBuilder.CreateFromCSVFile(fileName, stageObjectMapTileSize_);
+    // コライダーの登録
+    stageBuilder.CreateColliders(objects_, stageObjectMapTileSize_);
 
     // リストからプレイヤーのポインタを渡す
     GetListsPlayerPtr();
-
-    // コライダーの登録
-    stageBuilder.CreateColliders(objects_, stageObjectMapTileSize_);
+    // リストから必要なポインタを渡す
+    warpController_->SetPlayer(player_);
+    SetListsWarpPtr(StageObjectCommonState::None);
 
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
@@ -119,11 +123,20 @@ void GameStage::Update() {
 
 void GameStage::UpdatePlay() {
 
+    // ワープの更新処理
+    UpdateWarp();
+
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
 
     // クリア判定
     CheckClear();
+}
+
+void GameStage::UpdateWarp() {
+
+    // ワープの更新処理
+    warpController_->Update();
 }
 
 void GameStage::UpdateBorderLine() {
@@ -140,8 +153,12 @@ void GameStage::UpdateBorderLine() {
     } else if (borderLine_->CanTransitionDisable(playerWorldTranslate.x) &&
         player_->IsRemoveBorder()) {
 
-        // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
-        isRemoveHologram_ = true;
+        // ワープ中は境界線を消せない
+        if (warpController_->IsWarping()) {
+
+            // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
+            isRemoveHologram_ = true;
+        }
     }
 
     // アクティブ中は更新しない
@@ -181,18 +198,46 @@ void GameStage::UpdateReturnSelect() {
 
 }
 
-void GameStage::GetListsPlayerPtr(){
+void GameStage::GetListsPlayerPtr() {
     // リストからプレイヤーのポインタを渡す
     player_ = nullptr;
-    for(GameObject2D* object : objects_){
-        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
-            if(component->GetStageObjectType() == StageObjectType::Player){
+    for (GameObject2D* object : objects_) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            if (component->GetStageObjectType() == StageObjectType::Player) {
 
                 player_ = component->GetStageObject<Player>();
                 break;
             }
         }
     }
+}
+
+void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
+
+    std::vector<Warp*> warps{};
+    if (state == StageObjectCommonState::None) {
+        for (GameObject2D* object : objects_) {
+            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+                if (component->GetStageObjectType() == StageObjectType::Warp) {
+
+                    // ワープのポインタを追加
+                    warps.push_back(component->GetStageObject<Warp>());
+                }
+            }
+        }
+    } else if (state == StageObjectCommonState::Hologram) {
+        for (GameObject2D* object : hologramObjects_) {
+            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+                if (component->GetStageObjectType() == StageObjectType::Warp) {
+
+                    // ワープのポインタを追加
+                    warps.push_back(component->GetStageObject<Warp>());
+                }
+            }
+        }
+    }
+    // ワープのポインタを渡す
+    warpController_->SetWarps(state, warps);
 }
 
 void GameStage::PutBorderLine() {
@@ -216,6 +261,9 @@ void GameStage::PutBorderLine() {
         static_cast<int>(playerDirection), stageObjectMapTileSize_);
     // コライダーの登録
     stageBuilder.CreateColliders(hologramObjects_, stageObjectMapTileSize_);
+    // リストから必要なポインタを渡す
+    warpController_->SetPlayer(player_);
+    SetListsWarpPtr(StageObjectCommonState::Hologram);
 }
 
 void GameStage::RemoveBorderLine() {

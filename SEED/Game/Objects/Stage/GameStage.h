@@ -107,6 +107,7 @@ private:
     // update
     /// Play
     void UpdatePlay();
+    void UpdateWarp();
     void UpdateBorderLine();
     /// Clear
     void UpdateClear();
@@ -119,6 +120,7 @@ private:
 
     // helper
     void GetListsPlayerPtr();
+    void SetListsWarpPtr(StageObjectCommonState state);
     void PutBorderLine();
     void CheckClear();
 };

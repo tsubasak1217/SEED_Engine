@@ -8,5 +8,8 @@
         },
         "sprite_.size.x": 8.0
     },
+    "WarpController": {
+        "warpDuration": 1.0
+    },
     "stageObjectMapTileSize_": 48.0
 }

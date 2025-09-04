@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -70,33 +71,106 @@ void GameStageWarpController::UpdateWarpPossible() {
     if (!IsWarpCameNotification()) {
         return;
     }
+
+    // 通知が来ていたらワープを行える相手がいるかチェック
+    if (!CheckWarpTarget()) {
+
+        // ワープ処理を行う実体をリセット
+        ResetWarp();
+        return;
+    }
+
+    // ワープを行えるので状態をワープ中に遷移させてワープさせる
+    currentState_ = State::Warping;
 }
 
 void GameStageWarpController::UpdateWarping() {
 
+    // ワープ中はプレイヤーの座標を補間する
+    warpTimer_.Update();
+    Vector2 playerPos = MyMath::Lerp(executingWarpStart_->GetOwner()->GetWorldTranslate(),
+        executingWarpTarget_->GetOwner()->GetWorldTranslate(), warpTimer_.GetEase(Easing::None));
+    player_->GetOwner()->SetWorldTranslate(playerPos);
+
+    // 座標補間が終了したら一度ワープ不可状態にして完全にプレイヤーが離れたら再ワープ可能にする
+    if (warpTimer_.IsFinishedNow()) {
+
+        // 座標を目標座標に固定する
+        player_->GetOwner()->SetWorldTranslate(executingWarpTarget_->GetOwner()->GetWorldTranslate());
+        currentState_ = State::WarpNotPossible;
+    }
 }
 
 void GameStageWarpController::UpdateWarpNotPossible() {
 
+    // ワープ先から離れたら再ワープ可能にする
+    if (executingWarpTarget_->IsStateNone()) {
 
+        // リセット
+        ResetWarp();
+        warpTimer_.Reset();
+        currentState_ = State::WarpPossible;
+    }
+}
+
+void GameStageWarpController::ResetWarp() {
+
+    // ワープ対象をリセット
+    executingWarpStart_ = nullptr;
+    executingWarpTarget_ = nullptr;
 }
 
 bool GameStageWarpController::IsWarpCameNotification() {
 
+    // ワープ通知が来ていたらワープさせる
     for (const auto& warp : noneWarps_) {
-        // ワープ通知が来ていたらワープさせる
         if (warp->IsStateNotification()) {
 
             // trueになった時点でループを終了
+            executingWarpStart_ = warp;
             return true;
         }
     }
     for (const auto& warp : hologramWarps_) {
-        // ワープ通知が来ていたらワープさせる
         if (warp->IsStateNotification()) {
 
             // trueになった時点でループを終了
+            executingWarpStart_ = warp;
             return true;
+        }
+    }
+    return false;
+}
+
+bool GameStageWarpController::CheckWarpTarget() {
+
+    // ワープ先がいるかチェック
+    // Noneの相手はHologram
+    if (executingWarpStart_->GetCommonState() == StageObjectCommonState::None) {
+        for (const auto& hologramWarp : hologramWarps_) {
+            // インデックスが同じならワープ先として指定
+            if (hologramWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
+
+                // ターゲットが見つかったのでワープ中にする
+                hologramWarp->SetWarping();
+                executingWarpStart_->SetWarping();
+                executingWarpTarget_ = hologramWarp;
+                return true;
+            }
+        }
+    }
+    // Hologramの相手はNone
+    else if (executingWarpStart_->GetCommonState() == StageObjectCommonState::Hologram) {
+        for (const auto& noneWarp : noneWarps_) {
+            // インデックスが同じならワープ先として指定
+            if (noneWarp->GetWarpIndex() == executingWarpStart_->GetWarpIndex()) {
+
+                // ターゲットが見つかったのでワープ中にする
+                noneWarp->SetWarping();
+                executingWarpStart_->SetWarping();
+                executingWarpTarget_ = noneWarp;
+                return true;
+            }
         }
     }
     return false;
@@ -109,11 +183,16 @@ void GameStageWarpController::Edit() {
         ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
         ImGui::Text("noneWarps: %d", noneWarps_.size());
         ImGui::Text("hologramWarps: %d", hologramWarps_.size());
+
+        if (currentState_ == State::Warping) {
+
+            executingWarpStart_->Edit();
+            executingWarpTarget_->Edit();
+        }
     }
     ImGui::SeparatorText("WarpProgress");
     {
         ImGui::ProgressBar(warpTimer_.GetProgress());
-
     }
     ImGui::SeparatorText("Edit");
     {

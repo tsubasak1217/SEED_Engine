@@ -46,6 +46,9 @@ public:
 
     // ワープのセット
     void SetWarps(StageObjectCommonState state, const std::vector<Warp*> warps);
+
+    // ワープ中かどうか
+    bool IsWarping() const { return currentState_ == State::Warping; }
 private:
     //========================================================================
     //	private Methods
@@ -74,6 +77,10 @@ private:
     // ホログラムワープ
     std::vector<Warp*> hologramWarps_;
 
+    // ワープを行う実体
+    Warp* executingWarpStart_;  // ワープ開始
+    Warp* executingWarpTarget_; // ワープ目標
+
     // パラメータ
     Timer warpTimer_; // ワープにかかる時間
 
@@ -85,5 +92,7 @@ private:
     void UpdateWarpNotPossible();
     
     // helper
+    void ResetWarp();
     bool IsWarpCameNotification();
+    bool CheckWarpTarget();
 };

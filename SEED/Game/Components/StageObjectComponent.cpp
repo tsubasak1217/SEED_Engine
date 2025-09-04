@@ -70,7 +70,7 @@ void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
     {
 
         // ワープを行わせるように通知
-
+        GetStageObject<Warp>()->SetNotification();
         break;
     }
     case StageObjectType::EmptyBlock:
@@ -81,20 +81,49 @@ void StageObjectComponent::OnCollisionEnter(GameObject2D* other) {
     }
 }
 
+void StageObjectComponent::OnCollisionExit(GameObject2D* other) {
+
+    // プレイヤーと衝突したとき
+    if (other->GetComponent<StageObjectComponent>()->GetStageObjectType() != StageObjectType::Player) {
+        return;
+    }
+
+    // オブジェクトごとに処理を変える
+    switch (objectType_) {
+    case StageObjectType::NormalBlock: {
+
+        break;
+    }
+    case StageObjectType::Goal: {
+
+        break;
+    }
+    case StageObjectType::Player: {
+
+        break;
+    }
+    case StageObjectType::Warp: {
+
+        // ワープ可能状態に戻す
+        GetStageObject<Warp>()->SetNone();
+        break;
+    }
+    }
+}
 
 //============================================================================
 // 衝突時の処理
 //============================================================================
-void StageObjectComponent::OnCollisionStay(GameObject2D* other){
-    
+void StageObjectComponent::OnCollisionStay(GameObject2D* other) {
+
     other;
 
     // プレイヤーインスタンスを持っている場合
-    if(objectType_ == StageObjectType::Player){
+    if (objectType_ == StageObjectType::Player) {
         Player* player = dynamic_cast<Player*>(object_.get());
 
         // 着地した瞬間を検知
-        if(owner_.owner2D->GetIsOnGroundTrigger()){
+        if (owner_.owner2D->GetIsOnGroundTrigger()) {
             player->OnGroundTrigger();
         }
 

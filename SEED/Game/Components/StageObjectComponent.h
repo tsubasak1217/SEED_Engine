@@ -37,6 +37,7 @@ public:
     //--------- collision ----------------------------------------------------
 
     void OnCollisionEnter(GameObject2D* other) override;
+    void OnCollisionExit(GameObject2D* other) override;
 
     //--------- accessor -----------------------------------------------------
 

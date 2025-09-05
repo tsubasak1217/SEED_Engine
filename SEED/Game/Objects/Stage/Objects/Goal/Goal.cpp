@@ -4,10 +4,10 @@
 //	Goal classMethods
 //============================================================================
 
-void Goal::Initialize(const std::string& filename) {
+void Goal::Initialize() {
 
     // スプライトの初期化
-    sprite_ = Sprite(filename);
+    sprite_ = Sprite("DefaultAssets/monsterBall.png");
     sprite_.anchorPoint = Vector2(0.5f);
 }
 

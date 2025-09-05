@@ -18,7 +18,7 @@ public:
     Warp(GameObject2D* owner) : IStageObject(owner) {}
     ~Warp() = default;
 
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
 
     void Update() override;
 

@@ -19,7 +19,7 @@ public:
     BlockEmpty(GameObject2D* owner) : IStageObject(owner){}
     BlockEmpty() = default;
     ~BlockEmpty() = default;
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
     void Update() override;
     void Draw() override;
     void Edit() override {};

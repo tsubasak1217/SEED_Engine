@@ -4,10 +4,10 @@
 //	BlockNormal classMethods
 //============================================================================
 
-void BlockNormal::Initialize(const std::string& filename) {
+void BlockNormal::Initialize() {
 
     // スプライトの初期化
-    sprite_ = Sprite(filename);
+    sprite_ = Sprite("Scene_Game/StageObject/normalBlock.png");
     sprite_.anchorPoint = Vector2(0.5f);
 }
 

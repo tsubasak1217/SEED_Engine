@@ -1,8 +1,8 @@
 #include "BlockEmpty.h"
 
-void BlockEmpty::Initialize(const std::string& filename) {
+void BlockEmpty::Initialize() {
     // スプライトの初期化
-    sprite_ = Sprite(filename);
+    sprite_ = Sprite("Scene_Game/StageObject/dottedLine.png");
     sprite_.anchorPoint = Vector2(0.5f);
 }
 

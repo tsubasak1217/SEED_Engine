@@ -1,9 +1,9 @@
 #include "Laser.h"
 
-void Laser::Initialize(const std::string& filename) {
+void Laser::Initialize() {
 
     // スプライトの初期化
-    sprite_ = Sprite(filename);
+    sprite_ = Sprite("DefaultAssets/white1x1.png");
     sprite_.anchorPoint = Vector2(0.5f);
 }
 

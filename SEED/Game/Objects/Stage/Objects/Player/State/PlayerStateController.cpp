@@ -132,6 +132,18 @@ float PlayerStateController::GetJumpVelocity() const {
     return 0.0f;
 }
 
+bool PlayerStateController::GetIsMoving() const{
+    if(current_ == PlayerState::Warp){
+        return false;
+    }
+
+    if(PlayerMoveState* move = static_cast<PlayerMoveState*>(states_.at(PlayerState::Move).get())){
+        return move->GetIsMoving();
+    }
+
+    return false;
+}
+
 
 void PlayerStateController::UpdateInputState() {
 

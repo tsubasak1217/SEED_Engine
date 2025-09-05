@@ -15,7 +15,7 @@ public:
     Laser() = default;
     ~Laser() = default;
 
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
 
     void Update() override;
 

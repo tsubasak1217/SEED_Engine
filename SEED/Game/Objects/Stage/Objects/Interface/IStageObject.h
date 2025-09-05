@@ -25,7 +25,7 @@ public:
     virtual ~IStageObject() = default;
 
     // 初期化処理
-    virtual void Initialize(const std::string& filename) = 0;
+    virtual void Initialize() = 0;
 
     // 更新処理
     virtual void Update() = 0;

@@ -1,10 +1,10 @@
 #include "LaserLauncher.h"
 
-void LaserLauncher::Initialize(const std::string& fileName) {
+void LaserLauncher::Initialize() {
 
 
     // スプライトの初期化
-    sprite_ = Sprite(fileName);
+    sprite_ = Sprite("DefaultAssets/white1x1.png");
     sprite_.anchorPoint = Vector2(0.5f);
 }
 

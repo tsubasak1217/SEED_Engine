@@ -33,5 +33,5 @@ public:
     Vector2 GetTranslatedByDirection(DIRECTION4 direction, const Vector2& translate, float laserSize);
 
     // 作成したオブジェクトに衝突コライダーを付ける
-    void CreateLaserColliders(std::list<GameObject2D*>& lasers, float laserSize);
+    void CreateLaserColliders(std::list<GameObject2D*>& lasers);
 };

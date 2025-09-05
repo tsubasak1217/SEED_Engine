@@ -41,4 +41,7 @@ private:
 
     //--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateExtend();
+    void UpdateStop();
 };

@@ -39,14 +39,19 @@ public:
 
     //--------- collision ----------------------------------------------------
 
-    void OnCollisionStay(GameObject2D* other) override;
     void OnCollisionEnter(GameObject2D* other) override;
+    void OnCollisionStay(GameObject2D* other) override;
     void OnCollisionExit(GameObject2D* other) override;
 
     //--------- accessor -----------------------------------------------------
 
     void SetSize(const Vector2& size) { object_->SetSize(size); }
 
+    // 状態の設定
+   // 伸び始める
+    void ReExtend() { object_->ReExtend(); }
+    // 伸びるのを終了
+    void StopExtend() { object_->StopExtend(); }
     void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }
     void SetLaserDirection(DIRECTION4 direction) { object_->SetDirection(direction); }
 
@@ -70,6 +75,7 @@ private:
 
     // helper
     std::unique_ptr<ILaserObject> CreateInstance(LaserObjectType objectType) const;
+    bool CheckEndExtend(GameObject2D* other);
 };
 
 //============================================================================

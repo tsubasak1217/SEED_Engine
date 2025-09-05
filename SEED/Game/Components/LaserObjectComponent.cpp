@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Objects/Stage/Objects/Laser/Methods/LaserHelper.h>
 
 // lasers
 #include <Game/Objects/Stage/Objects/Laser/Laser.h>
@@ -44,6 +45,17 @@ std::unique_ptr<ILaserObject> LaserObjectComponent::CreateInstance(LaserObjectTy
     return nullptr;
 }
 
+bool LaserObjectComponent::CheckEndExtend(GameObject2D* other) {
+
+    const auto type = other->GetObjectType();
+    if (LaserHelper::HasObejctType(type, ObjectType::Player) ||
+        LaserHelper::HasObejctType(type, ObjectType::Goal) ||
+        LaserHelper::HasObejctType(type, ObjectType::LaserLauncher)) {
+        return true;
+    }
+    return false;
+}
+
 //============================================================================
 //	LaserObjectComponent loopMethods
 //============================================================================
@@ -61,19 +73,40 @@ void LaserObjectComponent::Draw() {
     object_->Draw();
 }
 
+void LaserObjectComponent::OnCollisionEnter(GameObject2D* other) {
+
+    // 他のフィールドオブジェクトと衝突したらレーザーの伸びる処理を止める
+    // プレイヤー、ゴール以外
+    if (CheckEndExtend(other)) {
+        return;
+    }
+
+    // レーザーの伸びる処理を停止させる
+    object_->StopExtend();
+}
+
 void LaserObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
 
+    // 他のフィールドオブジェクトと衝突したらレーザーの伸びる処理を止める
+    // プレイヤー、ゴール以外
+    if (CheckEndExtend(other)) {
+        return;
+    }
 
+    int test = 0;
+    ++test;
 }
 
-void LaserObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
+void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {
 
+    // 他のフィールドオブジェクトと衝突したらレーザーの伸びる処理を止める
+   // プレイヤー、ゴール以外
+    if (CheckEndExtend(other)) {
+        return;
+    }
 
-}
-
-void LaserObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
-
-
+    // 当たらなくなったので伸びる処理を再開
+    object_->ReExtend();
 }
 
 //============================================================================

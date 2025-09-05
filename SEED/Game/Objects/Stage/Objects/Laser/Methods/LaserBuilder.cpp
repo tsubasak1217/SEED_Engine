@@ -5,6 +5,10 @@
 //============================================================================
 #include <Game/GameSystem.h>
 #include <Game/Components/LaserObjectComponent.h>
+#include <Game/Objects/Stage/Objects/Laser/Methods/LaserHelper.h>
+
+// lasers
+#include <Game/Objects/Stage/Objects/Laser/Laser.h>
 
 //============================================================================
 //	LaserBuilder classMethods
@@ -31,7 +35,12 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         // 必要な値を設定
         component->SetObjectCommonState(commonState);
         component->SetLaserDirection(direction);
-        component->SetSize(laserSize);
+
+        // サイズYは小さい値から開始して伸びさせる
+        const float initSizeY = 0.4f;
+        component->SetSize(Vector2(laserSize, initSizeY));
+        // 伸びる状態を設定
+        component->ReExtend();
 
         // リストの追加
         laserList.push_back(object);
@@ -70,7 +79,7 @@ Vector2 LaserBuilder::GetTranslatedByDirection(DIRECTION4 direction,
     return result;
 }
 
-void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers, float laserSize) {
+void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers) {
 
     for (GameObject2D* laser : lasers) {
         if (LaserObjectComponent* component = laser->GetComponent<LaserObjectComponent>()) {
@@ -87,7 +96,10 @@ void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers, float 
             case LaserObjectType::Normaml: {
 
                 // 初期サイズ、更新される
-                aabb->SetSize(Vector2(laserSize));
+                const Vector2 size = component->GetLaserObject<Laser>()->GetSize();
+                aabb->SetSize(size);
+                aabb->SetCenter(Vector2(0.0f, -size.y * 1.0f));
+                aabb->SetAnchor(Vector2(0.5f, -1.0f));
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Laser);

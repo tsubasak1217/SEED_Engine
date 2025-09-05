@@ -41,6 +41,7 @@ public:// アクセッサ
     const Vector3& GetScale() const{ return transform_.scale; }
     void SetScale(const Vector3& scale){ transform_.scale = scale; }
     const Vector2& GetClipRange() const{ return clipRange_; }
+    void SetClipRange(const Vector2& clipRange) { clipRange_ = clipRange; }
     float GetZNear() const{ return znear_; }
     void SetZNear(float znear){ znear_ = znear; }
     float GetZFar() const{ return zfar_; }

@@ -77,6 +77,8 @@ void LaserLauncher::InitializeLasers() {
     LaserBuilder laserBuilder{};
     lasers_ = laserBuilder.CreateLasersFromDirection(launchDirections_, commonState_,
         GetOwner()->GetWorldTranslate(), laserSize_);
+    // コライダーの登録
+    laserBuilder.CreateLaserColliders(lasers_, laserSize_);
 }
 
 void LaserLauncher::Update() {

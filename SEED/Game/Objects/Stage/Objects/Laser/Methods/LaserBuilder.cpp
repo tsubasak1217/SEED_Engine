@@ -69,3 +69,37 @@ Vector2 LaserBuilder::GetTranslatedByDirection(DIRECTION4 direction,
     }
     return result;
 }
+
+void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers, float laserSize) {
+
+    for (GameObject2D* laser : lasers) {
+        if (LaserObjectComponent* component = laser->GetComponent<LaserObjectComponent>()) {
+
+            LaserObjectType laserType = component->GetLaserObjectType();
+
+            // Collisionの追加
+            Collision2DComponent* collision = laser->AddComponent<Collision2DComponent>();
+            Collider_AABB2D* aabb = new Collider_AABB2D();
+            aabb->SetParentMatrix(laser->GetWorldMatPtr());
+
+            // タイプ別で作成
+            switch (laserType) {
+            case LaserObjectType::Normaml: {
+
+                // 初期サイズ、更新される
+                aabb->SetSize(Vector2(laserSize));
+                aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
+                aabb->SetObjectType(ObjectType::Laser);
+                break;
+            }
+            }
+
+            // 必要な値の更新
+            laser->UpdateMatrix();
+            aabb->UpdateMatrix();
+            aabb->SetOwnerObject(laser);
+            collision->AddCollider(aabb);
+        }
+    }
+}

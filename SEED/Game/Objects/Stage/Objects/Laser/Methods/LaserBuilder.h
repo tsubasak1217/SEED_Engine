@@ -31,4 +31,7 @@ public:
 
     // 方向ごとにオフセットをかけた座標にレーザーを配置する
     Vector2 GetTranslatedByDirection(DIRECTION4 direction, const Vector2& translate, float laserSize);
+
+    // 作成したオブジェクトに衝突コライダーを付ける
+    void CreateLaserColliders(std::list<GameObject2D*>& lasers, float laserSize);
 };

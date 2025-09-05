@@ -34,7 +34,7 @@ public:
     std::list<GameObject2D*> CreateFromBorderLine(std::list<GameObject2D*> objects,
         float axisX, float playerY, int direction, float tileSize);
 
-    // 作成しらオブジェクトに衝突コライダーを付ける
+    // 作成したオブジェクトに衝突コライダーを付ける
     void CreateColliders(std::list<GameObject2D*>& objects, float tileSize);
 private:
     //========================================================================

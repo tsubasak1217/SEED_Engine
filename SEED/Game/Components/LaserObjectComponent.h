@@ -50,6 +50,8 @@ public:
     void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }
     void SetLaserDirection(DIRECTION4 direction) { object_->SetDirection(direction); }
 
+    LaserObjectType GetLaserObjectType() const { return objectType_; }
+
     template <typename T>
     T* GetLaserObject() const;
 private:

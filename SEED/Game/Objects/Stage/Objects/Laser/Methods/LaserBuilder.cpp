@@ -22,7 +22,7 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         // オブジェクトを作成
         GameObject2D* object = new GameObject2D(GameSystem::GetScene());
         // レーザー発生位置を設定
-        object->SetWorldTranslate(translate);
+        object->SetWorldTranslate(GetTranslatedByDirection(direction, translate, laserSize));
         object->UpdateMatrix();
 
         // コンポーネントを初期化
@@ -37,4 +37,35 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         laserList.push_back(object);
     }
     return laserList;
+}
+
+Vector2 LaserBuilder::GetTranslatedByDirection(DIRECTION4 direction,
+    const Vector2& translate, float laserSize) {
+
+    Vector2 result = translate;
+
+    // 向きごとにオフセットをかける
+    switch (direction) {
+    case DIRECTION4::UP: {
+
+        result.y -= laserSize;
+        break;
+    }
+    case DIRECTION4::DOWN: {
+
+        result.y += laserSize;
+        break;
+    }
+    case DIRECTION4::LEFT: {
+
+        result.x -= laserSize;
+        break;
+    }
+    case DIRECTION4::RIGHT: {
+
+        result.x += laserSize;
+        break;
+    }
+    }
+    return result;
 }

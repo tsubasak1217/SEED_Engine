@@ -19,7 +19,7 @@ public:
     BlockNormal() = default;
     ~BlockNormal() = default;
 
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
 
     void Update() override;
 

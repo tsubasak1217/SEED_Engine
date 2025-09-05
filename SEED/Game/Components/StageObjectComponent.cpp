@@ -173,34 +173,34 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
     {
 
         std::unique_ptr<BlockNormal> block = std::make_unique<BlockNormal>(owner_.owner2D);
-        block->Initialize("Scene_Game/StageObject/normalBlock.png");
+        block->Initialize();
         return block;
     }
     case StageObjectType::Goal:
     {
 
         std::unique_ptr<Goal> goal = std::make_unique<Goal>(owner_.owner2D);
-        goal->Initialize("DefaultAssets/monsterBall.png");
+        goal->Initialize();
         return goal;
     }
     case StageObjectType::Player:
     {
 
         std::unique_ptr<Player> player = std::make_unique<Player>(owner_.owner2D);
-        player->Initialize("DefaultAssets/ellipse.png");
+        player->Initialize();
         return player;
     }
     case StageObjectType::Warp:
     {
 
         std::unique_ptr<Warp> warp = std::make_unique<Warp>(owner_.owner2D);
-        warp->Initialize("Scene_Game/StageObject/dottedLine.png");
+        warp->Initialize();
         return warp;
     }
     case StageObjectType::EmptyBlock:
     {
         std::unique_ptr<BlockEmpty> block = std::make_unique<BlockEmpty>(owner_.owner2D);
-        block->Initialize("Scene_Game/StageObject/dottedLine.png");
+        block->Initialize();
         return block;
     }
     }

@@ -312,6 +312,7 @@ void GameStage::Draw() {
 }
 
 void GameStage::Edit() {
+#ifdef _DEBUG
 
     ImFunc::CustomBegin("GameStage", MoveOnly_TitleBar);
     {
@@ -359,6 +360,7 @@ void GameStage::Edit() {
         ImGui::PopItemWidth();
         ImGui::End();
     }
+#endif // _DEBUG
 }
 
 void GameStage::ApplyJson() {

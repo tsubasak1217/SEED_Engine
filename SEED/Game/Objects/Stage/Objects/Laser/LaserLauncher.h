@@ -15,7 +15,7 @@ public:
     LaserLauncher(GameObject2D* owner) : IStageObject(owner) {}
     LaserLauncher() = default;
     ~LaserLauncher() = default;
-    void Initialize(const std::string& fileName) override;
+    void Initialize() override;
     void Update() override;
 
     void Draw() override;

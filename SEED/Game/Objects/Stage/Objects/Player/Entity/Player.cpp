@@ -10,14 +10,25 @@
 #include <Game/Objects/Stage/Objects/Player/Input/Device/PlayerKeyInput.h>
 #include <Game/Objects/Stage/Objects/Player/Input/Device/PlayerGamePadInput.h>
 
-// imgui
+// manager
+#include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 //============================================================================
 //	Player classMethods
 //============================================================================
 
-void Player::Initialize(const std::string& filename) {
+void Player::Initialize() {
+
+    // 画像ハンドルの初期化
+    static bool isFirstInitialize = true;
+    if(isFirstInitialize){
+        imageMap_["Body"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerBody.png");
+        imageMap_["Body_Hologram"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerBody_Hologram.png");
+        imageMap_["Leg"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerLeg.png");
+        imageMap_["Leg_Hologram"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerLeg_Hologram.png");
+        isFirstInitialize = false;
+    }
 
     // 入力クラスを初期化
     inputMapper_ = std::make_unique<InputMapper<PlayerInputAction>>();
@@ -28,11 +39,18 @@ void Player::Initialize(const std::string& filename) {
     stateController_ = std::make_unique<PlayerStateController>();
     stateController_->Initialize(inputMapper_.get());
 
-    // スプライトを初期化
-    sprite_ = Sprite(filename);
-    sprite_.anchorPoint = Vector2(0.5f);
-    // 見にくいので赤
-    sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+    // 胴体のスプライトを初期化
+    body_ = Sprite(imageMap_["Body"]);
+    body_.anchorPoint = Vector2(0.5f);
+    body_.layer = baseLayer_;
+
+    // 足のスプライトを初期化
+    for(int i = 0; i < 2; i++){
+        legs_[i] = Sprite(imageMap_["Leg"]);
+        legs_[i].anchorPoint = Vector2(0.5f, 0.0f);
+        legs_[i].layer = baseLayer_ + (i == 0 ? 1 : -1);
+        legs_[i].uvTransform = ScaleMatrix({ i == 0 ? 1.0f : -1.0f, 1.0f, 1.0f });
+    }
 
     // json適応
     ApplyJson();
@@ -40,6 +58,13 @@ void Player::Initialize(const std::string& filename) {
     // 初期化値
     // 最初は右向き
     moveDirection_ = LR::RIGHT;
+}
+
+// spriteのサイズ設定
+void Player::SetSize(const Vector2& size){
+    body_.size = size;
+    legs_[0].size = Vector2(size.x * 0.5f, size.y * 0.5f);
+    legs_[1].size = Vector2(size.x * 0.5f, size.y * 0.5f);
 }
 
 void Player::SetWarpState(const Vector2& start, const Vector2& target) {
@@ -101,6 +126,10 @@ void Player::UpdateMoveDirection() {
     }
 }
 
+// スプライトの動きを更新
+void Player::SpriteMotion(){
+}
+
 void Player::OnGroundTrigger() {
     // 着地した瞬間
     if (stateController_->GetJumpVelocity() > 0.0f) {
@@ -117,8 +146,13 @@ void Player::OnCeilingTrigger(){
 
 void Player::Draw() {
 
-    // 描画
-    sprite_.Draw();
+    // 胴体の描画
+    body_.Draw();
+
+    // 足を描画
+    for(int i = 0; i < 2; i++){
+        legs_[i].Draw();
+    }
 }
 
 void Player::Edit() {
@@ -138,8 +172,8 @@ void Player::Edit() {
 
                 ImGui::Separator();
 
-                ImGui::DragFloat2("spriteAnchor", &sprite_.anchorPoint.x, 0.1f);
-                ImGui::DragFloat2("spriteTranslate", &sprite_.translate.x, 0.1f);
+                ImGui::DragFloat2("spriteAnchor", &body_.anchorPoint.x, 0.1f);
+                ImGui::DragFloat2("spriteTranslate", &body_.translate.x, 0.1f);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("State")) {

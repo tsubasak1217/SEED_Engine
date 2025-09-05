@@ -36,6 +36,7 @@ public:
 
     //--------- collision ----------------------------------------------------
 
+    void OnCollisionStay(GameObject2D* other) override;
     void OnCollisionEnter(GameObject2D* other) override;
     void OnCollisionExit(GameObject2D* other) override;
 
@@ -45,17 +46,12 @@ public:
 
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
+    void UpdateBlockTranslate(){ object_->SetTranslate(owner_.owner2D->GetWorldTranslate()); }
 
     template <typename T>
     T* GetStageObject() const;
     Player* GetPlayer() const;
 
-public:
-    //========================================================================
-    //	Collision Methods
-    //========================================================================
-
-    void OnCollisionStay(GameObject2D* other) override;
 
 private:
     //========================================================================

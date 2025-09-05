@@ -23,7 +23,6 @@ void PlayerWarpState::Enter([[maybe_unused]] Player& player) {
     // 補間処理開始
     warpTimer_.Reset();
     isWarping_ = true;
-    isWarpFinishTrigger_ = false;
 }
 
 void PlayerWarpState::Update(Player& player) {
@@ -49,6 +48,7 @@ void PlayerWarpState::Exit([[maybe_unused]] Player& player) {
 void PlayerWarpState::Edit([[maybe_unused]] const Player& player) {
 
     ImGui::Text(std::format("isWarping: {}", isWarping_).c_str());
+    ImGui::Text(std::format("isWarpFinishTrigger: {}", isWarpFinishTrigger_).c_str());
     ImGui::DragFloat("warpDuration", &warpTimer_.duration, 0.01f);
     ImGui::ProgressBar(warpTimer_.GetProgress());
 }

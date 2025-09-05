@@ -64,6 +64,15 @@ public:
 
     // アクティブ状態を設定する
     void SetIsActive(bool isActive);
+
+    // クリアしたかどうか
+    bool IsClear() const{ return isClear_; }
+    void SetIsClear(bool isClear){ isClear_ = isClear; }
+
+    // オブジェクトリスト関連
+    static void AddDisActiveObject(GameObject2D* object){disActiveObjects_.push_back(object);}
+    static void ReActivateDisActiveObjects();
+
 private:
     //========================================================================
     //	private Methods
@@ -83,6 +92,10 @@ private:
     // オブジェクトのリスト
     std::list<GameObject2D*> objects_;         // 通常
     std::list<GameObject2D*> hologramObjects_; // ホログラム
+
+    // 空白ブロックに重なって一時的に非アクティブになっているオブジェクトのリスト
+    static inline std::list<GameObject2D*> disActiveObjects_{};
+
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
     // リストから貰って使用する

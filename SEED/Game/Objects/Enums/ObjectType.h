@@ -15,8 +15,10 @@ enum class ObjectType : int32_t{
     Item = 0b1 << 7,
     Attack = 0b1 << 8,
     Start = 0b1 << 9,
-    Goal = 0b1 << 10,
     Event = 0b1 << 11,
+    Warp = 0b1 << 12,
     // 組み合わせ
+    Goal = (0b1 << 10) | Field,
     Player = OnFieldObject | Move | Friendly,
+    EmptyBlock = OnFieldObject | NotMove,
 };

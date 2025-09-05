@@ -8,6 +8,9 @@
 
 // c++
 #include <vector>
+#include <ranges>
+#include <array>
+#include <span>
 // json
 #include <SEED/External/nlohmann/json.hpp>
 // front
@@ -92,4 +95,5 @@ private:
     void ResetWarp();
     bool IsWarpCameNotification();
     bool CheckWarpTarget();
+    const std::vector<Warp*>* GetWarpTarget(StageObjectCommonState state) const;
 };

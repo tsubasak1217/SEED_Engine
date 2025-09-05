@@ -85,8 +85,12 @@ void GameObject2D::BeginFrame(){
     prePos_ = GetWorldTranslate();
 
     // 当たり判定フラグのリセットと保存
-    preIsCollide_ = isCollide_;
-    isCollide_ = false;
+    preIsCollideAny_ = isCollideAny_;
+    preIsCollideGhost_ = isCollideGhost_;
+    preIsCollideSolid_ = isCollideSolid_;
+    isCollideAny_ = false;
+    isCollideGhost_ = false;
+    isCollideSolid_ = false;
 
     // 接地フラグのリセット
     preIsOnGround_ = isOnGround_;
@@ -295,19 +299,24 @@ void GameObject2D::SetLocalTranslate(const Vector2& translate){
 // 衝突処理
 //////////////////////////////////////////////////////////////////////////  
 
-void GameObject2D::OnCollision(GameObject2D* other){
+void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
 
     if(other == nullptr){ return; }
     // 衝突フラグを立てる
-    isCollide_ = true;
+    isCollideAny_ = true;
+    if(collider->isGhost_){
+        isCollideGhost_ = true;
+    } else{
+        isCollideSolid_ = true;
+    }
 
     // 衝突中の処理
-    if(isCollide_){
+    if(isCollideAny_){
         OnCollisionStay(other);
     }
 
     // 衝突開始時の処理
-    if(isCollide_ && !preIsCollide_){
+    if(isCollideAny_ && !preIsCollideAny_){
         OnCollisionEnter(other);
     }
 
@@ -317,7 +326,7 @@ void GameObject2D::OnCollision(GameObject2D* other){
 
 void GameObject2D::CheckCollisionExit(){
     // 衝突終了時の処理
-    if(!isCollide_ && preIsCollide_){
+    if(!isCollideAny_ && preIsCollideAny_){
         for(auto* other : preCollideObjects_){
             OnCollisionExit(other);
         }

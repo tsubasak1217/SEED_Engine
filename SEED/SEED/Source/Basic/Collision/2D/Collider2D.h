@@ -64,9 +64,9 @@ protected:
 public:// アクセッサ--------------------------------------------------------------
 
     // 基礎情報
-    void SetOwnerObject(GameObject2D* parentObject){ ownerObject_ = parentObject; }
+    void SetOwnerObject(GameObject2D* parentObject);
     GameObject2D* GetOwnerObject()const{ return ownerObject_; }
-    void SetObjectType(ObjectType objectType){ objectType_ = objectType; }
+    void SetObjectType(ObjectType objectType){ objectType_ = objectType;}
     ObjectType GetObjectType()const{ return objectType_; }
     ColliderType2D GetColliderType()const{ return colliderType_; }
     uint32_t GetColliderID()const{ return colliderID_; }
@@ -108,8 +108,8 @@ protected:// 基礎情報-------------------------------------------------------
     ObjectType objectType_ = ObjectType::Editor;
     static uint32_t nextID_;
     uint32_t colliderID_;
-    bool isCollision_ = false;
-    bool preIsCollision_ = false;
+    bool isCollide_ = false;
+    bool preIsCollide_ = false;
     Vector2 collidedPosition_;
     Vector4 color_;
 

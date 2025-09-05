@@ -83,6 +83,14 @@ void GameStage::SetIsActive(bool isActive) {
     }
 }
 
+// 非アクティブオブジェクトの再アクティブ化
+void GameStage::ReActivateDisActiveObjects(){
+    for (const auto& object : disActiveObjects_) {
+        object->SetIsActive(true);
+    }
+    disActiveObjects_.clear();
+}
+
 void GameStage::Update() {
 
     switch (currentState_) {
@@ -150,8 +158,8 @@ void GameStage::UpdateBorderLine() {
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->CanTransitionDisable(playerWorldTranslate.x) &&
-        player_->IsRemoveBorder()) {
+    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate,
+        stageObjectMapTileSize_) && player_->IsRemoveBorder()) {
 
         // ワープ中は境界線を消せない
         if (!warpController_->IsWarping()) {
@@ -282,6 +290,9 @@ void GameStage::RemoveBorderLine() {
     }
     hologramObjects_.clear();
 
+    // 非アクティブオブジェクトを再アクティブ化する
+    ReActivateDisActiveObjects();
+
     // 削除完了
     isRemoveHologram_ = false;
 }
@@ -295,16 +306,6 @@ void GameStage::CheckClear() {
 }
 
 void GameStage::Draw() {
-
-    // 全てのオブジェクトを描画
-    for (const auto& object : objects_) {
-
-        object->Draw();
-    }
-    for (const auto& object : hologramObjects_) {
-
-        object->Draw();
-    }
 
     // 境界線の描画
     borderLine_->Draw();
@@ -345,7 +346,7 @@ void GameStage::Edit() {
             }
             if (ImGui::BeginTabItem("BorderLine")) {
 
-                borderLine_->Edit(player_->GetOwner()->GetWorldTranslate());
+                borderLine_->Edit(player_->GetOwner()->GetWorldTranslate(), stageObjectMapTileSize_);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Warp")) {

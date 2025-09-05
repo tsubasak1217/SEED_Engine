@@ -34,12 +34,14 @@ public:
     void SetNotification();
     // ワープ中にする
     void SetWarping() { currentState_ = State::Warping; }
+    void SetWarpNotPossible() { currentState_ = State::WarpNotPossible; }
     // 通常更新状態にする
-    void SetNone() { currentState_ = State::None; }
+    void SetNone();
 
     uint32_t GetWarpIndex() const { return warpIndex_; }
     bool IsStateNotification()const { return currentState_ == State::Notification; }
     bool IsStateNone()const { return currentState_ == State::None; }
+    bool IsStateWarpNotPossible()const { return currentState_ == State::WarpNotPossible; }
 private:
     //========================================================================
     //	private Methods
@@ -50,10 +52,10 @@ private:
     // 状態
     enum class State {
 
-        None,         // 通常更新中(ワープ可能)
-        Notification, // ワープ通知
-        Warping,      // ワープ中
-        Warped,       // ワープ完了
+        None,            // 通常更新中(ワープ可能)
+        Notification,    // ワープ通知
+        Warping,         // ワープ中
+        WarpNotPossible, // ワープ不可
     };
 
     //--------- variables ----------------------------------------------------

@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/enums/Direction.h>
+#include <SEED/Lib/Functions/myFunc/Easing.h>
 
 //============================================================================
 //	BorderLine class
@@ -28,7 +29,7 @@ public:
     void Draw();
 
     // エディター
-    void Edit(const Vector2& playerTranslate);
+    void Edit(const Vector2& playerTranslate, float tileSize);
 
     // json
     void FromJson(const nlohmann::json& data);
@@ -45,7 +46,7 @@ public:
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
     // 非アクティブ状態に遷移可能かどうか
-    bool CanTransitionDisable(float playerX) const;
+    bool CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const;
 private:
     //========================================================================
     //	private Methods
@@ -60,6 +61,17 @@ private:
         Active,  // アクティブ状態
     };
 
+    // 補間構造体
+    struct LerpParam {
+
+        float startX;   // 開始X座標
+        float targetX;  // 補間先X座標
+        float elapsed;  // 経過時間
+        float duration; // 補間時間
+        Easing::Type easing; // x座標の補間処理
+        bool running; // 補間中か
+    };
+
     //--------- variables ----------------------------------------------------
 
     // 現在の状態
@@ -71,12 +83,16 @@ private:
     uint32_t opaqueTextureGH_;      // アクティブ状態のテクスチャ
 
     // parameters
-    float playerToDistance_; // プレイヤーとの判定を取るまで距離
-    float offsetTranslateY_; // プレイヤーのY座標からのオフセット
+    float playerToDistance_;   // プレイヤーとの判定を取るまで距離
+    float offsetTranslateY_;   // プレイヤーのY座標からのオフセット
+    LerpParam lerpXParam_;
 
     //--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateSprite(const Vector2& translate, float sizeY);
+
     // helper
     // プレイヤーと一定距離近づいたか
-    bool CheckPlayerToDistance(float playerX) const;
+    bool CheckPlayerToDistance(const Vector2& playerTranslate, float tileSize) const;
 };

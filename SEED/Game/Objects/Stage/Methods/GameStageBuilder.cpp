@@ -61,13 +61,14 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             // オブジェクトを作成
             GameObject2D* object = new GameObject2D(GameSystem::GetScene());
             object->SetWorldTranslate({ x, y });
+            object->UpdateMatrix();
             StageObjectComponent* component = object->AddComponent<StageObjectComponent>();
 
-            if(id == static_cast<int>(StageObjectType::Player)){
+            if (id == static_cast<int>(StageObjectType::Player)) {
                 // プレイヤーはサイズを少し小さくする
                 float playerTileSize = tileSize * 0.8f;
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), playerTileSize);
-            } else{
+            } else {
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
             }
 
@@ -119,9 +120,11 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         // 元のタイプでオブジェクトを作成
         GameObject2D* newBlock = new GameObject2D(GameSystem::GetScene());
         newBlock->SetWorldTranslate(dstPos);
+        newBlock->UpdateMatrix();
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
         newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize);
         newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
+        newComponent->UpdateBlockTranslate();
 
         // オブジェクトごとの個別処理
         IndividualSetting(*newComponent, *sourceComponent);
@@ -208,6 +211,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
     for (GameObject2D* object : objects) {
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
 
+            component->UpdateBlockTranslate(); // Transform更新
             StageObjectType type = component->GetStageObjectType();
 
             // Collisionの追加
@@ -220,14 +224,14 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             case StageObjectType::NormalBlock:
             {
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             case StageObjectType::Goal:
@@ -235,7 +239,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 aabb->SetSize({ tileSize,tileSize });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Goal);
                 break;
             }
             case StageObjectType::Player:
@@ -243,29 +247,30 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
                 float playerSize = tileSize * 0.8f;
                 aabb->SetSize({ playerSize,playerSize });
                 aabb->isMovable_ = true;
-                aabb->SetObjectType(ObjectType::Player);
+                object->SetObjectType(ObjectType::Player);
                 break;
             }
             case StageObjectType::Warp:
             {
-                aabb->SetSize({ tileSize,tileSize });
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::Warp);
                 break;
             }
             case StageObjectType::EmptyBlock:
             {
-                aabb->SetSize({ tileSize,tileSize });
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f});
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true; // 当たり判定を無効にする
-                aabb->SetObjectType(ObjectType::Field);
+                object->SetObjectType(ObjectType::EmptyBlock);
                 break;
             }
             default:
                 break;
             }
 
+            object->UpdateMatrix();
             aabb->UpdateMatrix();
             aabb->SetOwnerObject(object);
             collision->AddCollider(aabb);

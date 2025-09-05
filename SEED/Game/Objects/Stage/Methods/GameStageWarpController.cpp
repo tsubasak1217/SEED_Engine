@@ -77,6 +77,15 @@ void GameStageWarpController::UpdateWarpPossible() {
         return;
     }
 
+    // オーナーがいなければ処理しない
+    if (!executingWarpTarget_->GetOwner() ||
+        !executingWarpStart_->GetOwner()) {
+
+        // ワープ処理を行う実体をリセット
+        ResetWarp();
+        return;
+    }
+
     // ワープを行えるので状態をワープ中に遷移させてワープさせる
     player_->SetWarpState(executingWarpStart_->GetOwner()->GetWorldTranslate(),
         executingWarpTarget_->GetOwner()->GetWorldTranslate());

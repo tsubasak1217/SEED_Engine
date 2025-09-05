@@ -1,13 +1,14 @@
 {
     "StateParam": {
+        "Dead": null,
         "Idle": null,
         "Jump": {
-            "gravity_": 720.0,
+            "gravity_": 892.0,
             "groundY_": 552.0,
-            "jumpPower_": -480.0
+            "jumpPower_": -427.1000061035156
         },
         "Move": {
-            "moveSpeed_": 320.0
+            "moveSpeed_": 180.0
         },
         "Warp": {
             "warpDuration": 0.4000000059604645

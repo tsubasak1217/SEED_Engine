@@ -51,9 +51,6 @@ void Collider_AABB2D::UpdateMatrix() {
 //////////////////////////////////////////////////////////////////
 void Collider_AABB2D::Draw() {
 
-    Quad2D quad = MakeEqualQuad2D(10.0f);
-    quad.translate = body_.center;
-    SEED::DrawQuad2D(quad);
     SEED::DrawAABB2D(body_, color_);
 }
 

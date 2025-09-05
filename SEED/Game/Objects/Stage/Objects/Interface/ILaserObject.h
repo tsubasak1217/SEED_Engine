@@ -53,6 +53,7 @@ public:
 
     const Vector2& GetTranslate() const { return sprite_.translate; }
     const Vector2& GetSize() const { return sprite_.size; }
+    const Vector2& GetAnchorPoint() const { return sprite_.anchorPoint; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }

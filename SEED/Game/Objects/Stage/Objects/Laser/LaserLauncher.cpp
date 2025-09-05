@@ -40,7 +40,7 @@ void LaserLauncher::SetTranslate(const Vector2& translate) {
 void LaserLauncher::SetSize(const Vector2& size) {
 
     // 発射台と同じサイズ
-    laserSize_ = MyMath::Length(size) / 2.0f;
+    laserSize_ = size;
 
     // 全てのスプライトに対して処理を行う
     for (auto& sprite : launchSprites_) {
@@ -64,10 +64,13 @@ void LaserLauncher::InitializeLaunchSprites() {
     // 方向別で初期化
     for (const auto& direction : launchDirections_) {
 
+        // ホログラムかどうかで向きを決定する
+        DIRECTION4 stateDirection = LaserHelper::GetStateDirection(commonState_, direction);
+
         // スプライトを初期化
         Sprite& sprite = launchSprites_.emplace_back(Sprite(fileName_));
         sprite.anchorPoint = Vector2(0.5f);
-        sprite.rotate = LaserHelper::GetRotateFromDirection(direction);
+        sprite.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
     }
 }
 
@@ -96,14 +99,4 @@ void LaserLauncher::Draw() {
 }
 
 void LaserLauncher::Edit() {
-
-    // 発射方向を表示
-    uint32_t index = 0;
-    for (const auto& direction : launchDirections_) {
-
-        std::string text = "direction" + std::to_string(index) +
-            ":" + EnumAdapter<DIRECTION4>::ToString(direction);
-        ImGui::Text(text.c_str());
-        ++index;
-    }
 }

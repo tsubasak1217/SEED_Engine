@@ -50,7 +50,7 @@ private:
 
     // 値保持用
     std::string fileName_;    // スプライト
-    float laserSize_;         // レーザーのサイズ
+    Vector2 laserSize_;       // レーザーのサイズ
 
     // 発射台スプライト
     std::vector<Sprite> launchSprites_;

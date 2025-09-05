@@ -15,7 +15,7 @@
 //============================================================================
 
 std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vector<DIRECTION4>& directions,
-    StageObjectCommonState commonState, const Vector2& translate, float laserSize) {
+    StageObjectCommonState commonState, const Vector2& translate, const Vector2& laserSize) {
 
     // 追加するリスト
     std::list<GameObject2D*> laserList{};
@@ -23,10 +23,14 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
     // 向きごとにインスタンスを作成する
     for (const auto& direction : directions) {
 
+        // ホログラムかどうかで向きを決定する
+        DIRECTION4 stateDirection = LaserHelper::GetStateDirection(commonState, direction);
+
         // オブジェクトを作成
         GameObject2D* object = new GameObject2D(GameSystem::GetScene());
         // レーザー発生位置を設定
-        object->SetWorldTranslate(GetTranslatedByDirection(direction, translate, laserSize));
+        const float gap = 0.08f; // 発射台と当たらないように少し離す
+        object->SetWorldTranslate(LaserHelper::GetTranslatedByDirection(stateDirection, translate, laserSize.x, gap));
         object->UpdateMatrix();
 
         // コンポーネントを初期化
@@ -34,11 +38,11 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         component->Initialize(LaserObjectType::Normaml, Vector2(0.0f, 0.0f));
         // 必要な値を設定
         component->SetObjectCommonState(commonState);
-        component->SetLaserDirection(direction);
+        component->SetLaserDirection(stateDirection);
 
         // サイズYは小さい値から開始して伸びさせる
         const float initSizeY = 0.4f;
-        component->SetSize(Vector2(laserSize, initSizeY));
+        component->SetSize(Vector2(MyMath::Length(laserSize) / 2.0f, initSizeY));
         // 伸びる状態を設定
         component->ReExtend();
 
@@ -46,37 +50,6 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         laserList.push_back(object);
     }
     return laserList;
-}
-
-Vector2 LaserBuilder::GetTranslatedByDirection(DIRECTION4 direction,
-    const Vector2& translate, float laserSize) {
-
-    Vector2 result = translate;
-
-    // 向きごとにオフセットをかける
-    switch (direction) {
-    case DIRECTION4::UP: {
-
-        result.y -= laserSize;
-        break;
-    }
-    case DIRECTION4::DOWN: {
-
-        result.y += laserSize;
-        break;
-    }
-    case DIRECTION4::LEFT: {
-
-        result.x -= laserSize;
-        break;
-    }
-    case DIRECTION4::RIGHT: {
-
-        result.x += laserSize;
-        break;
-    }
-    }
-    return result;
 }
 
 void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers) {
@@ -96,12 +69,9 @@ void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers) {
             case LaserObjectType::Normaml: {
 
                 // 初期サイズ、更新される
-                const Vector2 size = component->GetLaserObject<Laser>()->GetSize();
-                aabb->SetSize(size);
-                aabb->SetCenter(Vector2(0.0f, -size.y * 1.0f));
-                aabb->SetAnchor(Vector2(0.5f, -1.0f));
+                aabb->SetSize(component->GetLaserObject<Laser>()->GetSize());
+                aabb->SetAnchor(component->GetLaserObject<Laser>()->GetAnchorPoint());
                 aabb->isMovable_ = false;
-                aabb->isGhost_ = true;
                 aabb->SetObjectType(ObjectType::Laser);
                 break;
             }

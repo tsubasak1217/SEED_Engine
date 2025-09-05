@@ -35,6 +35,7 @@ public:
 
     void SetTranslate(const Vector2& translate) override;
     void SetSize(const Vector2& size) override;
+    void SetIsLaserActive(bool isActive);
 
     // 発射方向を設定
     void SetLaunchDirections(uint8_t directions);

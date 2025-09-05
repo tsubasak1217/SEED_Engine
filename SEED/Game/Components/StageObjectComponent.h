@@ -80,5 +80,9 @@ private:
 template<typename T>
 inline T* StageObjectComponent::GetStageObject() const {
 
-    return static_cast<T*>(object_.get());
+    static_assert(std::is_base_of<IStageObject, T>::value, "T must derive from IStageObject");
+    if (!object_) {
+        return nullptr;
+    }
+    return dynamic_cast<T*>(object_.get());
 }

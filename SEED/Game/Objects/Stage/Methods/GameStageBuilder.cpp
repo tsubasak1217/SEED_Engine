@@ -346,7 +346,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             {
                 aabb->SetSize({ tileSize ,tileSize });
                 aabb->isMovable_ = false;
-                object->SetObjectType(ObjectType::LaserLauncher);
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             default:

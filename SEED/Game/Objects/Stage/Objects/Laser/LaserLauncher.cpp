@@ -59,6 +59,15 @@ void LaserLauncher::SetLaunchDirections(uint8_t directions) {
     launchDirections_ = LaserHelper::GetLaserDirections(directions);
 }
 
+void LaserLauncher::SetIsLaserActive(bool isActive) {
+
+    // レーザーのアクティブ状態を設定する
+    for (auto& laser : lasers_) {
+
+        laser->SetIsActive(isActive);
+    }
+}
+
 void LaserLauncher::InitializeLaunchSprites() {
 
     // 方向別で初期化
@@ -85,8 +94,6 @@ void LaserLauncher::InitializeLasers() {
 }
 
 void LaserLauncher::Update() {
-
-
 }
 
 void LaserLauncher::Draw() {

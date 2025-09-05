@@ -17,8 +17,7 @@ enum class ObjectType : int32_t {
     Start = 0b1 << 9,
     Event = 0b1 << 11,
     Warp = 0b1 << 12,
-    LaserLauncher = (0b1 << 13) | Field,
-    Laser = (0b1 << 14) | OnFieldObject,
+    Laser = (0b1 << 13) | OnFieldObject,
     // 組み合わせ
     Goal = (0b1 << 10) | Field,
     Player = OnFieldObject | Move | Friendly,

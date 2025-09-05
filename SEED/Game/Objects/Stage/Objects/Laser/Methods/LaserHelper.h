@@ -38,6 +38,7 @@ public:
 
     // オブジェクトタイプチェック
     static bool HasObejctType(ObjectType value, ObjectType flag);
+    static bool HasObejctTypeAny(ObjectType value, ObjectType flag);
 
     // 衝突時に使用するサイズを取得
     static Vector2 GetCollisionSize(DIRECTION4 direction, float sizeY, float initSizeY);

@@ -85,5 +85,9 @@ private:
 template<typename T>
 inline T* LaserObjectComponent::GetLaserObject() const {
 
-    return static_cast<T*>(object_.get());
+    static_assert(std::is_base_of<ILaserObject, T>::value, "T must derive from ILaserObject");
+    if (!object_) {
+        return nullptr;
+    }
+    return dynamic_cast<T*>(object_.get());
 }

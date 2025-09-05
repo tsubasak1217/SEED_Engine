@@ -50,7 +50,7 @@ bool LaserObjectComponent::CheckEndExtend(GameObject2D* other) {
     const auto type = other->GetObjectType();
     if (LaserHelper::HasObejctType(type, ObjectType::Player) ||
         LaserHelper::HasObejctType(type, ObjectType::Goal) ||
-        LaserHelper::HasObejctType(type, ObjectType::LaserLauncher)) {
+        LaserHelper::HasObejctType(type, ObjectType::Laser)) {
         return true;
     }
     return false;
@@ -85,7 +85,7 @@ void LaserObjectComponent::OnCollisionEnter(GameObject2D* other) {
     object_->StopExtend();
 }
 
-void LaserObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+void LaserObjectComponent::OnCollisionStay(GameObject2D* other) {
 
     // 他のフィールドオブジェクトと衝突したらレーザーの伸びる処理を止める
     // プレイヤー、ゴール以外
@@ -93,8 +93,8 @@ void LaserObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
         return;
     }
 
-    int test = 0;
-    ++test;
+    // レーザーの伸びる処理を停止させる
+    object_->StopExtend();
 }
 
 void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {

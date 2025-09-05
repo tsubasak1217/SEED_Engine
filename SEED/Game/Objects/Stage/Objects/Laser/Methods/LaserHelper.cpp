@@ -66,9 +66,14 @@ void LaserHelper::UpdateLaserSprite(Sprite& sprite, float sizeExtendSpeed) {
 
 bool LaserHelper::HasObejctType(ObjectType value, ObjectType flag) {
 
-    auto v = static_cast<int32_t>(value);
-    auto vf = static_cast<int32_t>(flag);
-    return (v & vf) == vf;
+    using U = std::underlying_type_t<ObjectType>;
+    return (static_cast<U>(value) & static_cast<U>(flag)) == static_cast<U>(flag);
+}
+
+bool LaserHelper::HasObejctTypeAny(ObjectType value, ObjectType flag) {
+
+    using U = std::underlying_type_t<ObjectType>;
+    return (static_cast<U>(value) & static_cast<U>(flag)) != 0;
 }
 
 Vector2 LaserHelper::GetCollisionSize(DIRECTION4 direction, float sizeY, float initSizeY) {

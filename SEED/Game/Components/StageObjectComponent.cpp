@@ -31,13 +31,19 @@ StageObjectComponent::StageObjectComponent(GameObject2D* pOwner, const std::stri
 void StageObjectComponent::Initialize() {
 }
 
-void StageObjectComponent::Initialize(StageObjectType objectType, const Vector2& translate,
-    const Vector2& size) {
+void StageObjectComponent::Initialize(
+    StageObjectType objectType, const Vector2& translate,
+    const Vector2& size,StageObjectCommonState state
+) {
 
     objectType_ = objectType;
 
     // インスタンスを作成
     object_ = CreateInstance(objectType);
+
+    // stateを設定
+    object_->SetCommonState(state);
+
     // 座標、サイズを設定
     object_->SetTranslate(translate);
     object_->SetSize(size);
@@ -91,6 +97,9 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
             GetStageObject<Warp>()->SetWarpNotPossible();
         }
     }
+
+    // blockに衝突通知
+    object_->OnCollisionStay(other);
 }
 
 
@@ -128,6 +137,9 @@ void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other
         break;
     }
     }
+
+    // blockに衝突通知
+    object_->OnCollisionEnter(other);
 }
 
 void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
@@ -162,6 +174,9 @@ void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other)
         break;
     }
     }
+
+    // blockに衝突通知
+    object_->OnCollisionExit(other);
 }
 
 

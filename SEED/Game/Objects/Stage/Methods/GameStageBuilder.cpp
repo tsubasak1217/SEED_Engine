@@ -122,8 +122,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         newBlock->SetWorldTranslate(dstPos);
         newBlock->UpdateMatrix();
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
-        newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize);
-        newComponent->SetObjectCommonState(StageObjectCommonState::Hologram);
+        newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize, StageObjectCommonState::Hologram);
         newComponent->UpdateBlockTranslate();
 
         // オブジェクトごとの個別処理

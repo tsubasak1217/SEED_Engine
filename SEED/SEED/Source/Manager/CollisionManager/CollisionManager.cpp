@@ -37,7 +37,7 @@ void CollisionManager::Initialize(){
     ResetColliderList();
 
 #ifdef _DEBUG
-    instance_->isDrawCollider_ = true;
+    //instance_->isDrawCollider_ = true;
 #endif // _DEBUG
 
 }

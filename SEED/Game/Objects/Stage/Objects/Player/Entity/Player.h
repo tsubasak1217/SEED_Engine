@@ -47,13 +47,16 @@ public:
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
     void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
-    bool IsDead() const { return isDead_; }
+    // 死亡判定
+    bool IsDead() const;
+   
 
     // 入力検知
     bool IsFinishedWarp() const;
     bool IsPutBorder() const;
     bool IsRemoveBorder() const;
     bool IsJumpInput() const;
+
 
     // 状態通知
     void OnGroundTrigger();
@@ -82,9 +85,6 @@ private:
     // ゴールに関わる変数
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
-
-    //生存フラグ
-    bool isDead_ = true;
 
     //--------- functions ----------------------------------------------------
 

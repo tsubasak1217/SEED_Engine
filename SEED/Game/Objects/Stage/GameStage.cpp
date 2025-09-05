@@ -40,6 +40,12 @@ void GameStage::Initialize(int currentStageIndex) {
     BuildStage();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// ステージ構築処理
+//
+///////////////////////////////////////////////////////////////////////////////
+
 void GameStage::BuildStage() {
 
     // 全てのオブジェクトを破棄
@@ -71,6 +77,7 @@ void GameStage::BuildStage() {
     currentState_ = State::Play;
 }
 
+//Objectのアクティブ・非アクティブ設定
 void GameStage::SetIsActive(bool isActive) {
 
     for (const auto& object : objects_) {
@@ -91,6 +98,11 @@ void GameStage::ReActivateDisActiveObjects(){
     disActiveObjects_.clear();
 }
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 全体の更新処理
+//
+/////////////////////////////////////////////////////////////////////////
 void GameStage::Update() {
 
     switch (currentState_) {
@@ -111,8 +123,9 @@ void GameStage::Update() {
         //============================================================================
         //	プレイヤーがやられた時の処理
         //============================================================================
-    case GameStage::State::Death:
+    case GameStage::State::Dead:
 
+        UpdateDead();
         break;
         //============================================================================
         //	リトライ時の処理
@@ -129,6 +142,12 @@ void GameStage::Update() {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+// 各状態の更新処理
+//
+//////////////////////////////////////////////////////////////////////////
+
 void GameStage::UpdatePlay() {
 
     // ワープの更新処理
@@ -139,6 +158,8 @@ void GameStage::UpdatePlay() {
 
     // クリア判定
     CheckClear();
+    // 死亡判定
+    CheckPlayerDead();
 }
 
 void GameStage::UpdateWarp() {
@@ -191,9 +212,16 @@ void GameStage::UpdateClear() {
     BuildStage();
 }
 
-void GameStage::UpdateDeath() {
+void GameStage::UpdateDead() {
 
-
+    // ホログラムを非アクティブ状態に
+    isRemoveHologram_ = true;
+    //境界線を削除
+    RemoveBorderLine();
+    //ステージを再構築
+    BuildStage();
+    //stateをPlayに戻す
+    currentState_ = State::Play;
 }
 
 void GameStage::UpdateRetry() {
@@ -206,8 +234,13 @@ void GameStage::UpdateReturnSelect() {
 
 }
 
+/////////////////////////////////////////////////////////////////////////
+//
+// リストからプレイヤーのポインタを取得して渡す
+//
+/////////////////////////////////////////////////////////////////////////
+
 void GameStage::GetListsPlayerPtr() {
-    // リストからプレイヤーのポインタを渡す
     player_ = nullptr;
     for (GameObject2D* object : objects_) {
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
@@ -219,6 +252,12 @@ void GameStage::GetListsPlayerPtr() {
         }
     }
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+// ワープのポインタをリストから取得して渡す
+//
+//////////////////////////////////////////////////////////////////////////
 
 void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
 
@@ -248,6 +287,12 @@ void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
     warpController_->SetWarps(state, warps);
 }
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 境界線設置
+//
+/////////////////////////////////////////////////////////////////////////
+
 void GameStage::PutBorderLine() {
 
     // プレイヤーの向き
@@ -273,6 +318,12 @@ void GameStage::PutBorderLine() {
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::Hologram);
 }
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 境界線削除
+//
+/////////////////////////////////////////////////////////////////////////
 
 void GameStage::RemoveBorderLine() {
 
@@ -305,11 +356,30 @@ void GameStage::CheckClear() {
     }
 }
 
+void GameStage::CheckPlayerDead() {
+    // 死亡判定
+    if (player_->IsDead()) {
+        currentState_ = State::Dead;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 描画
+//
+/////////////////////////////////////////////////////////////////////////
+
 void GameStage::Draw() {
 
     // 境界線の描画
     borderLine_->Draw();
 }
+
+/////////////////////////////////////////////////////////////////////////
+//
+// ImGui編集
+//
+/////////////////////////////////////////////////////////////////////////
 
 void GameStage::Edit() {
 
@@ -360,6 +430,12 @@ void GameStage::Edit() {
         ImGui::End();
     }
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Json保存・読み込み
+//
+//////////////////////////////////////////////////////////////////////////
 
 void GameStage::ApplyJson() {
 

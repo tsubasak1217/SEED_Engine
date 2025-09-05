@@ -46,7 +46,7 @@ public:
 
         Play,   // プレイ中...
         Clear,  // クリア
-        Death,  // プレイヤーがやられた
+        Dead,  // プレイヤーがやられた
         Retry,  // リトライ
         Select, // セレクト画面に戻る
     };
@@ -85,6 +85,7 @@ private:
     uint32_t maxStageCount_;     // 最大ステージ数
     bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
     bool isClear_ = false;       // クリアしたかどうか
+    bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -125,7 +126,7 @@ private:
     /// Clear
     void UpdateClear();
     /// Death
-    void UpdateDeath();
+    void UpdateDead();
     /// Retry
     void UpdateRetry();
     /// Select
@@ -133,7 +134,10 @@ private:
 
     // helper
     void GetListsPlayerPtr();
+    //
     void SetListsWarpPtr(StageObjectCommonState state);
     void PutBorderLine();
     void CheckClear();
+    //死亡判定
+    void CheckPlayerDead();
 };

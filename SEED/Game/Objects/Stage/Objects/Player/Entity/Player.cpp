@@ -48,6 +48,11 @@ void Player::SetWarpState(const Vector2& start, const Vector2& target) {
     stateController_->SetWarpState(start, target);
 }
 
+bool Player::IsDead() const {
+    // 死亡状態かどうか
+    return stateController_->IsDead();
+}
+
 bool Player::IsFinishedWarp() const {
 
     // ワープ状態かどうか

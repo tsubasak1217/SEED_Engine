@@ -62,6 +62,10 @@ bool PlayerStateController::IsFinishedWarp() const {
     return false;
 }
 
+bool PlayerStateController::IsDead() const {
+    return current_ == PlayerState::Dead;
+}
+
 void PlayerStateController::Update(Player& owner) {
 
     // 入力に応じた状態の遷移
@@ -169,6 +173,15 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
                 requestedJump_ = true;
             }
         }
+
+        // 死亡判定: 画面下に落ちたら死亡
+        //PlayerクラスのSpriteの座標を参照
+        if(owner.GetSprite().translate.y > 750.0f) {
+            Request(PlayerState::Dead);
+            return;
+        }
+
+        // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
             if (current_ != PlayerState::Jump) {
 

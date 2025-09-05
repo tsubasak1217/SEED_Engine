@@ -47,12 +47,16 @@ public:
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
     void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
+    // 死亡判定
+    bool IsDead() const;
+   
 
     // 入力検知
     bool IsFinishedWarp() const;
     bool IsPutBorder() const;
     bool IsRemoveBorder() const;
     bool IsJumpInput() const;
+
 
     // 状態通知
     void OnGroundTrigger();

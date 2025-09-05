@@ -1,6 +1,6 @@
 #include "GameState_Play.h"
 #include <SEED/Source/SEED.h>
-#include <SEED/Source/Basic/Scene/Scene_Base.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Pause.h>
 #include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
 #include <Game/Scene/Input/Device/MenuBarKeyInput.h>
@@ -49,7 +49,6 @@ void GameState_Play::Finalize(){
 //
 /////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::Update(){
-
 
 }
 

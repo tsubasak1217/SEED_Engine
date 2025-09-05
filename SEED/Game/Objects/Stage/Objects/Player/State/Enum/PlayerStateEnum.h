@@ -15,4 +15,5 @@ enum class PlayerState {
     Move, // 横移動
     Jump, // ジャンプ
     Warp, // ワープ
+    Dead, // 死亡
 };

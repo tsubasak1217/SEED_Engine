@@ -11,6 +11,7 @@
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerMoveState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerJumpState.h>
 #include <Game/Objects/Stage/Objects/Player/State/States/PlayerWarpState.h>
+#include <Game/Objects/Stage/Objects/Player/State/States/PlayerDeadState.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -29,6 +30,7 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
     states_.emplace(PlayerState::Move, std::make_unique<PlayerMoveState>());
     states_.emplace(PlayerState::Jump, std::make_unique<PlayerJumpState>());
     states_.emplace(PlayerState::Warp, std::make_unique<PlayerWarpState>());
+    states_.emplace(PlayerState::Dead, std::make_unique<PlayerDeadState>());
 
     // 各状態に入力をセット
     for (const auto& state : std::views::values(states_)) {
@@ -58,6 +60,10 @@ bool PlayerStateController::IsFinishedWarp() const {
         return true;
     }
     return false;
+}
+
+bool PlayerStateController::IsDead() const {
+    return current_ == PlayerState::Dead;
 }
 
 void PlayerStateController::Update(Player& owner) {
@@ -92,7 +98,7 @@ void PlayerStateController::Update(Player& owner) {
     CheckWarpState(owner);
     // ジャンプ状態が終了したかチェック
     CheckJumpState(owner);
-
+ 
     // 前回の状態を更新
     pre_ = current_;
 }
@@ -167,6 +173,15 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
                 requestedJump_ = true;
             }
         }
+
+        // 死亡判定: 画面下に落ちたら死亡
+        //PlayerクラスのSpriteの座標を参照
+        if(owner.GetSprite().translate.y > 750.0f) {
+            Request(PlayerState::Dead);
+            return;
+        }
+
+        // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
             if (current_ != PlayerState::Jump) {
 

@@ -1,40 +1,107 @@
 #include "LaserLauncher.h"
 
-void LaserLauncher::Initialize() {
+//============================================================================
+//	include
+//============================================================================
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <Game/Objects/Stage/Objects/Laser/Methods/LaserBuilder.h>
+#include <Game/Objects/Stage/Objects/Laser/Methods/LaserHelper.h>
 
+//============================================================================
+//	LaserLauncher classMethods
+//============================================================================
 
-    // スプライトの初期化
-    sprite_ = Sprite("DefaultAssets/white1x1.png");
-    sprite_.anchorPoint = Vector2(0.5f);
+LaserLauncher::~LaserLauncher() {
+
+    // レーザーをすべて破棄
+    for (auto& laser : lasers_) {
+
+        delete laser;
+        laser = nullptr;
+    }
+    lasers_.clear();
+}
+
+void LaserLauncher::Initialize(const std::string& filename) {
+
+    // ファイル名を保持
+    fileName_ = filename;
+}
+
+void LaserLauncher::SetTranslate(const Vector2& translate) {
+
+    // 全てのスプライトに対して処理を行う
+    for (auto& sprite : launchSprites_) {
+
+        sprite.translate = translate;
+    }
+}
+
+void LaserLauncher::SetSize(const Vector2& size) {
+
+    // 発射台と同じサイズ
+    laserSize_ = MyMath::Length(size) / 2.0f;
+
+    // 全てのスプライトに対して処理を行う
+    for (auto& sprite : launchSprites_) {
+
+        sprite.size = size;
+    }
+}
+
+void LaserLauncher::SetLaunchDirections(uint8_t directions) {
+
+    // 値を保持
+    bitDirection_ = directions;
+
+    // ビット値で方向を追加
+    launchDirections_.clear();
+    launchDirections_ = LaserHelper::GetLaserDirections(directions);
+}
+
+void LaserLauncher::InitializeLaunchSprites() {
+
+    // 方向別で初期化
+    for (const auto& direction : launchDirections_) {
+
+        // スプライトを初期化
+        Sprite& sprite = launchSprites_.emplace_back(Sprite(fileName_));
+        sprite.anchorPoint = Vector2(0.5f);
+        sprite.rotate = LaserHelper::GetRotateFromDirection(direction);
+    }
+}
+
+void LaserLauncher::InitializeLasers() {
+
+    // レーザーのインスタンスを作成する
+    LaserBuilder laserBuilder{};
+    lasers_ = laserBuilder.CreateLasersFromDirection(launchDirections_, commonState_,
+        GetOwner()->GetWorldTranslate(), laserSize_);
 }
 
 void LaserLauncher::Update() {
 
 
-    // オブジェクトの更新を行う
-    switch (commonState_) {
-    case StageObjectCommonState::None:
-        break;
-    case StageObjectCommonState::Hologram:
-
-        sprite_.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-        break;
-    }
 }
 
 void LaserLauncher::Draw() {
 
     // スプライトの描画
-    sprite_.Draw();
+    for (auto& launchSprite : launchSprites_) {
+
+        launchSprite.Draw();
+    }
 }
 
+void LaserLauncher::Edit() {
 
-void LaserLauncher::SetEmitDirections(const std::unordered_map<Direction, int>& directionsCount) {
+    // 発射方向を表示
+    uint32_t index = 0;
+    for (const auto& direction : launchDirections_) {
 
-    emitDirectionsCount_ = directionsCount;
-}
-
-const std::unordered_map<LaserLauncher::Direction, int>& LaserLauncher::GetEmitDirections() const {
-    // TODO: return ステートメントをここに挿入します
-    return emitDirectionsCount_;
+        std::string text = "direction" + std::to_string(index) +
+            ":" + EnumAdapter<DIRECTION4>::ToString(direction);
+        ImGui::Text(text.c_str());
+        ++index;
+    }
 }

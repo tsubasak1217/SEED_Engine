@@ -15,7 +15,7 @@ public:
     //	public Methods
     //========================================================================
 
-    BlockNormal(GameObject2D* owner) : IStageObject(owner){}
+    BlockNormal(GameObject2D* owner) : IStageObject(owner) {}
     BlockNormal() = default;
     ~BlockNormal() = default;
 

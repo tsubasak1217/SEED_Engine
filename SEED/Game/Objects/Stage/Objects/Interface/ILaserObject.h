@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/enums/Direction.h>
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
@@ -12,20 +13,20 @@
 #include <string>
 
 //============================================================================
-//	IStageObject class
+//	ILaserObject class
 //============================================================================
-class IStageObject {
+class ILaserObject {
 public:
     //========================================================================
     //	public Methods
     //========================================================================
 
-    IStageObject(GameObject2D* owner) : owner_(owner) {}
-    IStageObject() = default;
-    virtual ~IStageObject() = default;
+    ILaserObject(GameObject2D* owner) : owner_(owner) {}
+    ILaserObject() = default;
+    virtual ~ILaserObject() = default;
 
     // 初期化処理
-    virtual void Initialize() = 0;
+    virtual void Initialize(const std::string& filename) = 0;
 
     // 更新処理
     virtual void Update() = 0;
@@ -38,22 +39,16 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    virtual void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
-    virtual void SetSize(const Vector2& size) { sprite_.size = size; }
+    void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    void SetSize(const Vector2& size) { sprite_.size = size; }
+
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
+    virtual void SetDirection(DIRECTION4 direction) = 0;
 
     const Vector2& GetTranslate() const { return sprite_.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }
-    GameObject2D* GetOwner() const{ return owner_; }
-
-    // Collision
-    virtual void OnCollisionEnter([[maybe_unused]]GameObject2D* other){}
-    virtual void OnCollisionStay([[maybe_unused]] GameObject2D* other){}
-    virtual void OnCollisionExit([[maybe_unused]] GameObject2D* other){}
-
-
 protected:
     //========================================================================
     //	protected Methods
@@ -63,9 +58,6 @@ protected:
 
     Sprite sprite_;                      // 描画情報
     StageObjectCommonState commonState_; // オブジェクトの状態
-    GameObject2D* owner_ = nullptr;            // 所有者
-
-    // 色
-    static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);
-    static inline const Vector4 hologramColor_ = MyMath::FloatColor(255, 43, 245, 255);
+    DIRECTION4 direction_;               // レーザーの向き
+    GameObject2D* owner_ = nullptr;      // 所有者
 };

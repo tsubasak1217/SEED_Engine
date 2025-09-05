@@ -141,10 +141,13 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Warp.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp" />
+    <ClCompile Include="Game\Components\LaserObjectComponent.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -352,10 +355,14 @@
     <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h" />
+    <ClInclude Include="Game\Components\LaserObjectComponent.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Interface\ILaserObject.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.h" />
   </ItemGroup>
   <ItemGroup>

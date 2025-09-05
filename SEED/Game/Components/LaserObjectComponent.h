@@ -4,36 +4,38 @@
 //	include
 //============================================================================
 #include <SEED/Source/Basic/Components/IComponent.h>
-#include <SEED/Source/Basic/Object/GameObject2D.h>
-#include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
-
-// front
-class Player;
+#include <Game/Objects/Stage/Objects/Interface/ILaserObject.h>
 
 //============================================================================
-//	StageObjectComponent class
+//	LaserObjectComponent class
 //============================================================================
-class StageObjectComponent : public IComponent {
+class LaserObjectComponent :
+    public IComponent {
 public:
-    StageObjectComponent(GameObject2D* pOwner, const std::string& tagName = "");
-    ~StageObjectComponent() = default;
+    //========================================================================
+    //	public Methods
+    //========================================================================
 
-    void Initialize()override;
+    LaserObjectComponent(GameObject2D* pOwner, const std::string& tagName = "");
+    ~LaserObjectComponent() = default;
+
+    //--------- IComponent ---------------------------------------------------
+
+    void Initialize()override {}
     void BeginFrame() override;
     void Update() override;
     void Draw() override;
     void EndFrame() override;
-    void Finalize() override;
+    void Finalize() override {}
     // GUI編集
     void EditGUI() override;
     // json
     nlohmann::json GetJsonData() const override;
     void LoadFromJson(const nlohmann::json& jsonData) override;
 
-    void Initialize(
-        StageObjectType objectType, const Vector2& translate, const Vector2& size, 
-        StageObjectCommonState state = StageObjectCommonState::None
-    );
+    //-------  LaserObject ---------------------------------------------------
+
+    void Initialize(LaserObjectType objectType, const Vector2& translate);
 
     //--------- collision ----------------------------------------------------
 
@@ -43,15 +45,13 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }
+    void SetSize(const Vector2& size) { object_->SetSize(size); }
 
-    StageObjectType GetStageObjectType() const { return objectType_; }
-    const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
-    void UpdateBlockTranslate(){ object_->SetTranslate(owner_.owner2D->GetWorldTranslate()); }
-    const Vector2& GetMapSize() const { return mapSize_; }
+    void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }
+    void SetLaserDirection(DIRECTION4 direction) { object_->SetDirection(direction); }
 
     template <typename T>
-    T* GetStageObject() const;
+    T* GetLaserObject() const;
 private:
     //========================================================================
     //	private Methods
@@ -60,25 +60,22 @@ private:
     //--------- variables ----------------------------------------------------
 
     // タイプ
-    StageObjectType objectType_;
-    // IStageObjectを継承したオブジェクトのインスタンスを持つ
-    std::unique_ptr<IStageObject> object_ = nullptr;
-
-    // サイズを保持
-    Vector2 mapSize_;
+    LaserObjectType objectType_;
+    // ILaserObjectを継承したオブジェクトのインスタンスを持つ
+    std::unique_ptr<ILaserObject> object_ = nullptr;
 
     //--------- functions ----------------------------------------------------
 
     // helper
-    std::unique_ptr<IStageObject> CreateInstance(StageObjectType objectType) const;
+    std::unique_ptr<ILaserObject> CreateInstance(LaserObjectType objectType) const;
 };
 
 //============================================================================
-//	StageObjectComponent templateMethods
+//	LaserObjectComponent templateMethods
 //============================================================================
 
 template<typename T>
-inline T* StageObjectComponent::GetStageObject() const {
+inline T* LaserObjectComponent::GetLaserObject() const {
 
     return static_cast<T*>(object_.get());
 }

@@ -44,7 +44,11 @@ private:
     //--------- functions ----------------------------------------------------
 
     // helper
+    // CSV解析
     std::vector<std::vector<int>> GetCSVData(const std::string& fileName);
-    void IndividualSetting(StageObjectComponent& component, uint32_t& objectIndex);
+    std::vector<std::vector<std::string>> GetCSVDataRaw(const std::string& fileName);
+
+    // 個別設定
+    void IndividualSetting(StageObjectComponent& component, uint32_t& objectIndex, uint8_t directions);
     void IndividualSetting(StageObjectComponent& dstComponent, const StageObjectComponent& sourceComponent);
 };

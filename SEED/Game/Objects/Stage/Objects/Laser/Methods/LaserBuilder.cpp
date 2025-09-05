@@ -1,0 +1,40 @@
+#include "LaserBuilder.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Game/GameSystem.h>
+#include <Game/Components/LaserObjectComponent.h>
+
+//============================================================================
+//	LaserBuilder classMethods
+//============================================================================
+
+std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vector<DIRECTION4>& directions,
+    StageObjectCommonState commonState, const Vector2& translate, float laserSize) {
+
+    // 追加するリスト
+    std::list<GameObject2D*> laserList{};
+
+    // 向きごとにインスタンスを作成する
+    for (const auto& direction : directions) {
+
+        // オブジェクトを作成
+        GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+        // レーザー発生位置を設定
+        object->SetWorldTranslate(translate);
+        object->UpdateMatrix();
+
+        // コンポーネントを初期化
+        LaserObjectComponent* component = object->AddComponent<LaserObjectComponent>();
+        component->Initialize(LaserObjectType::Normaml, Vector2(0.0f, 0.0f));
+        // 必要な値を設定
+        component->SetObjectCommonState(commonState);
+        component->SetLaserDirection(direction);
+        component->SetSize(laserSize);
+
+        // リストの追加
+        laserList.push_back(object);
+    }
+    return laserList;
+}

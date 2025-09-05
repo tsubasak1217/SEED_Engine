@@ -9,12 +9,12 @@
 #include <Game/Objects/Stage/Objects/Block/BlockEmpty.h>
 #include <Game/Objects/Stage/Objects/Goal/Goal.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // scene
 #include <Game/GameSystem.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
-
 
 //============================================================================
 //	StageObjectComponent classMethods
@@ -46,6 +46,7 @@ void StageObjectComponent::Initialize(
 
     // 座標、サイズを設定
     object_->SetTranslate(translate);
+    mapSize_ = size;
     object_->SetSize(size);
 }
 
@@ -217,6 +218,12 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
         std::unique_ptr<BlockEmpty> block = std::make_unique<BlockEmpty>(owner_.owner2D);
         block->Initialize();
         return block;
+    }
+    case StageObjectType::LaserLauncher:
+    {
+        std::unique_ptr<LaserLauncher> laserLauncher = std::make_unique<LaserLauncher>(owner_.owner2D);
+        laserLauncher->Initialize("Scene_Game/StageObject/laserLauncherForward.png");
+        return laserLauncher;
     }
     }
     return nullptr;

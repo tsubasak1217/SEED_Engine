@@ -42,6 +42,10 @@ public:// アクセッサ
     void SetScale(const Vector3& scale){ transform_.scale = scale; }
     const Vector2& GetClipRange() const{ return clipRange_; }
     void SetClipRange(const Vector2& clipRange) { clipRange_ = clipRange; }
+    float GetClipRangeLeft() const { return clipRangeLeft_; }
+    void SetClipRangeLeft(float left) { clipRangeLeft_ = left; }
+    float GetClipRangeTop() const { return clipRangeTop_; }
+    void SetClipRangeTop(float top) { clipRangeTop_ = top; }
     float GetZNear() const{ return znear_; }
     void SetZNear(float znear){ znear_ = znear; }
     float GetZFar() const{ return zfar_; }
@@ -67,7 +71,9 @@ protected:
 
     bool isActive_ = true;
     Transform transform_;
-    Vector2 clipRange_;
+    Vector2 clipRange_; // カメラのクリップ範囲(幅、高さ)
+    float clipRangeLeft_; // clip範囲左端
+    float clipRangeTop_; // clip範囲Top
     float znear_;
     float zfar_;
     float fov_;

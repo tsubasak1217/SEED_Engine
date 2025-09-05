@@ -1,8 +1,10 @@
+#define NOMINMAX
 #include "GameStage.h"
 
 //============================================================================
 //	include
 //============================================================================
+
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
@@ -13,6 +15,7 @@
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Methods/GameStageBuilder.h>
 #include <Game/Objects/Stage/Methods/GameStageHelper.h>
+#include <limits>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -29,7 +32,7 @@ void GameStage::Initialize(int currentStageIndex) {
     // ワープ管理
     warpController_ = std::make_unique<GameStageWarpController>();
     warpController_->Initialize();
-
+    SEED::GetMainCamera()->SetProjectionMode(PROJECTIONMODE::ORTHO); // 2Dなので正射影
     // json適応
     ApplyJson();
 
@@ -73,8 +76,12 @@ void GameStage::BuildStage() {
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::None);
 
-    //cameraの初期位置を設定
-    //SEED::GetCamera("default")
+    //
+    //CulculateStageSize();
+    ////ステージの幅によってカメラのCilpRangeを更新する
+   /* const float centerX = kWindowSize.x * 0.5f;
+    /const float centerY = kWindowSize.y * 0.5f;*/
+    //SEED::GetMainCamera()->SetClipRange(stageSize_);
 
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
@@ -359,6 +366,32 @@ void GameStage::CheckClear() {
     }
 }
 
+void GameStage::CulculateStageSize() {
+
+    // ステージの幅・高さを計算する
+    float minX = std::numeric_limits<float>::max();
+    float maxX = std::numeric_limits<float>::lowest();
+    float minY = std::numeric_limits<float>::max();
+    float maxY = std::numeric_limits<float>::lowest();
+
+    for (const auto& object : objects_) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            if (component->GetStageObjectType() != StageObjectType::Player) {
+                const Vector2 worldTranslate = object->GetWorldTranslate();
+
+                minX = std::min(minX, worldTranslate.x);
+                maxX = std::max(maxX, worldTranslate.x + stageObjectMapTileSize_);
+
+                minY = std::min(minY, worldTranslate.y);
+                maxY = std::max(maxY, worldTranslate.y + stageObjectMapTileSize_);
+            }
+        }
+    }
+    stageSize_.x = maxX - minX;
+    stageSize_.y = maxY - minY;
+
+}
+
 void GameStage::CheckPlayerDead() {
     // 死亡判定
     if (player_->IsDead()) {
@@ -397,6 +430,11 @@ void GameStage::Edit() {
         if (ImGui::BeginTabBar("GameStageTab")) {
             if (ImGui::BeginTabItem("Stage")) {
 
+                // ステージ番号入力
+                int stageIndex = static_cast<int>(currentStageIndex_);
+                ImGui::InputInt("stageIndex", &stageIndex);
+                currentStageIndex_ = std::clamp(stageIndex, 0, static_cast<int>(maxStageCount_));
+
                 if (ImGui::Button("ReBuildStage")) {
 
                     for (GameObject2D* object : objects_) {
@@ -428,12 +466,22 @@ void GameStage::Edit() {
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Camera")) {
-                float cameraFov = SEED::GetMainCamera()->GetFov();
                 Vector2 clipRange = SEED::GetMainCamera()->GetClipRange();
-                ImGui::DragFloat("CameraFov", &cameraFov, 0.1f, 1.0f, 179.0f);
+                float clipLeft = SEED::GetMainCamera()->GetClipRangeLeft();
+                float clipTop = SEED::GetMainCamera()->GetClipRangeTop();
+                Vector3 cameraPos = SEED::GetMainCamera()->GetTranslation();
+                Vector3 scale = SEED::GetMainCamera()->GetScale();
+                
                 ImGui::DragFloat2("CameraClipRange", &clipRange.x, 0.1f, 0.1f, 10000.0f);
-                SEED::GetMainCamera()->SetFov(cameraFov);
+                ImGui::DragFloat("CameraClipLeft", &clipLeft, 0.1f, -10000.0f, 10000.0f);
+                ImGui::DragFloat("CameraClipTop", &clipTop, 0.1f, -10000.0f, 10000.0f);
+                ImGui::DragFloat3("CameraPos", &cameraPos.x, 0.1f);
+                ImGui::DragFloat3("CameraScale", &scale.x, 0.1f, 0.1f, 10.0f);
                 SEED::GetMainCamera()->SetClipRange(clipRange);
+                SEED::GetMainCamera()->SetClipRangeLeft(clipLeft);
+                SEED::GetMainCamera()->SetClipRangeTop(clipTop);
+                SEED::GetMainCamera()->SetTranslation(cameraPos);
+                SEED::GetMainCamera()->SetScale(scale);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

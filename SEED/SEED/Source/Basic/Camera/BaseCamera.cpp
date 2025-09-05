@@ -18,6 +18,8 @@ void BaseCamera::Initialize(){
     transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
     projectionMode_ = PERSPECTIVE;
     clipRange_ = kWindowSize;
+    clipRangeLeft_ = 0.0f;
+    clipRangeTop_ = 0.0f;
     znear_ = 0.1f;
     zfar_ = 1000.0f;
     fov_ = 0.45f;
@@ -50,8 +52,8 @@ void BaseCamera::UpdateMatrix(){
     );
 
     projectionMat2D_ = OrthoMatrix(
-        0.0f, clipRange_.x,
-        0.0f, clipRange_.y,
+        clipRangeLeft_, clipRange_.x,
+        clipRangeTop_, clipRange_.y,
         adjustedZnear, zfar_
     );
 

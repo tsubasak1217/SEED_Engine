@@ -1228,7 +1228,7 @@ void PolygonManager::AddSprite(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = IdentityMat4();
-        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].WVP = camera->GetViewProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 

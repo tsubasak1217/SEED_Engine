@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Environment/Environment.h>
+#include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/GameSystem.h>
@@ -36,9 +37,18 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
     const float startX = std::round((centerX - (cols *
         tileSize) * 0.5f) / tileSize) * tileSize;
 
-    const float startY = 360.0f;
-    std::list<GameObject2D*> objectList{};
+    const float windowH = kWindowSize.y;
+    //ステージ中心のY座標を少し下にずらす
+    const float centerY = windowH * 0.6f;
+    const float startY = std::round((centerY - (rows *
+        tileSize) * 0.5f) / tileSize) * tileSize;
 
+    //カメラのクリップ範囲をステージの大きさに合わせて更新する
+    //SEED::GetMainCamera()->SetClipRange({ static_cast<float>(cols) * tileSize,
+    //    static_cast<float>(rows)* tileSize });
+
+
+    std::list<GameObject2D*> objectList{};
     // オブジェクトのインデックス
     std::array<uint32_t, EnumAdapter<StageObjectType>::GetEnumCount()> objectIndex{};
     for (int r = 0; r < rows; ++r) {

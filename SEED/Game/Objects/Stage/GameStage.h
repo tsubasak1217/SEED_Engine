@@ -107,7 +107,8 @@ private:
 
     // パラメータ
     float stageObjectMapTileSize_; // マップ一個分のサイズ
-    float playerSize_;
+    float playerSize_;             // プレイヤーのサイズ
+    Vector2 stageSize_;             // ステージの幅
 
     //--------- functions ----------------------------------------------------
 
@@ -134,10 +135,10 @@ private:
 
     // helper
     void GetListsPlayerPtr();
-    //
     void SetListsWarpPtr(StageObjectCommonState state);
     void PutBorderLine();
     void CheckClear();
+    void CulculateStageSize(); // ステージの幅を計算する
     //死亡判定
     void CheckPlayerDead();
 };

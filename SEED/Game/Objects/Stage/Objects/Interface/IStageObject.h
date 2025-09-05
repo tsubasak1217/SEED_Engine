@@ -63,4 +63,8 @@ protected:
     Sprite sprite_;                      // 描画情報
     StageObjectCommonState commonState_; // オブジェクトの状態
     GameObject2D* owner_ = nullptr;            // 所有者
+
+    // 色
+    static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);
+    static inline const Vector4 hologramColor_ = MyMath::FloatColor(255, 43, 245, 255);
 };

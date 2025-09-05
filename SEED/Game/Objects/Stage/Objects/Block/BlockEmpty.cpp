@@ -9,12 +9,14 @@ void BlockEmpty::Initialize() {
 void BlockEmpty::Update() {
 
     // オブジェクトの更新を行う
-    switch (commonState_) {
-    case StageObjectCommonState::None:
-        break;
-    case StageObjectCommonState::Hologram:
+    switch(commonState_){
 
-        sprite_.color = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+    case StageObjectCommonState::None:
+        sprite_.color = normalColor_;
+        break;
+
+    case StageObjectCommonState::Hologram:
+        sprite_.color = hologramColor_;
         break;
     }
 }

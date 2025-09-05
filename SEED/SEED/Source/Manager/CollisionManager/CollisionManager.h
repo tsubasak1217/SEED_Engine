@@ -28,6 +28,7 @@ public:
     static CollisionManager* GetInstance();
     static void Initialize();
     static void Draw();
+    static void GUI();
 
 public:// 当たり判定関数-------------------------------------------------------------------
     static void CheckCollision();

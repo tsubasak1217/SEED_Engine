@@ -39,12 +39,12 @@ void BlockNormal::Update(){
     switch(commonState_){
 
     case StageObjectCommonState::None:
-        sprite_.color = MyMath::FloatColor(255, 198, 57, 255);
+        sprite_.color = normalColor_;
         sprite_.layer = 2;
         break;
 
     case StageObjectCommonState::Hologram:
-        sprite_.color = MyMath::FloatColor(255, 43, 245, 255);
+        sprite_.color = hologramColor_;
         sprite_.layer = 0;
         break;
     }

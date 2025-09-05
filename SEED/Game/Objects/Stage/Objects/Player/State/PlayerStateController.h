@@ -51,6 +51,11 @@ public:
     void OnCeilingTrigger();
 
     float GetJumpVelocity() const;
+
+    // 現在の状態を取得
+    PlayerState GetCurrentState() const{ return current_; }
+    bool GetIsMoving()const;
+
 private:
     //========================================================================
     //	private Methods

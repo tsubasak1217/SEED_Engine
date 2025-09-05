@@ -75,6 +75,7 @@ private:
     Sprite body_;
     Sprite legs_[2];
     static const int32_t baseLayer_ = 10;
+    bool isMove_ = false; // 動き始めた瞬間か
     bool isHologram_ = false; // ホログラム状態か
     // 向いている方向
     LR moveDirection_;

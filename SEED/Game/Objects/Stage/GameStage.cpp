@@ -73,6 +73,9 @@ void GameStage::BuildStage() {
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::None);
 
+    //cameraの初期位置を設定
+    //SEED::GetCamera("default")
+
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
 }
@@ -422,6 +425,15 @@ void GameStage::Edit() {
             if (ImGui::BeginTabItem("Warp")) {
 
                 warpController_->Edit();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Camera")) {
+                float cameraFov = SEED::GetMainCamera()->GetFov();
+                Vector2 clipRange = SEED::GetMainCamera()->GetClipRange();
+                ImGui::DragFloat("CameraFov", &cameraFov, 0.1f, 1.0f, 179.0f);
+                ImGui::DragFloat2("CameraClipRange", &clipRange.x, 0.1f, 0.1f, 10000.0f);
+                SEED::GetMainCamera()->SetFov(cameraFov);
+                SEED::GetMainCamera()->SetClipRange(clipRange);
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

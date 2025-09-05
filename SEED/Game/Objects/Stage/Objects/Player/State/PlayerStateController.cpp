@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/SEED.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
@@ -176,7 +177,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
         // 死亡判定: 画面下に落ちたら死亡
         //PlayerクラスのSpriteの座標を参照
-        if(owner.GetSprite().translate.y > 750.0f) {
+        if(owner.GetSprite().translate.y > SEED::GetMainCamera()->GetClipRange().y + 30.0f) {
             Request(PlayerState::Dead);
             return;
         }

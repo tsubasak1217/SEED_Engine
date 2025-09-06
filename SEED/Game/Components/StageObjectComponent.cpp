@@ -158,12 +158,7 @@ void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other)
     }
     case StageObjectType::Player:
     {
-        Player* player = dynamic_cast<Player*>(object_.get());
 
-        // ゴールから離れた場合,タイマーをリセット
-        if (other->GetObjectType() == ObjectType::Goal) {
-            player->ResetGoalTouchTime();
-        }
         break;
     }
     case StageObjectType::Warp:

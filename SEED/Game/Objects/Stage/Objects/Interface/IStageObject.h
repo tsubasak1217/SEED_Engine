@@ -67,4 +67,6 @@ protected:
     // 色
     static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);
     static inline const Vector4 hologramColor_ = MyMath::FloatColor(255, 43, 245, 255);
+    // サイズ
+    static inline const Vector2 defaultTileSize_ = Vector2(46.0f, 46.0f);
 };

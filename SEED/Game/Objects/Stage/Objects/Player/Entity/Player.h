@@ -46,6 +46,7 @@ public:
     // クリア判定
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
     void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
+    float GetGoalT()const{ return std::clamp(goalTouchTime_ / requiredGoalTime_,0.0f,1.0f); }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
     bool IsDead() const;

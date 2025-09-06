@@ -79,9 +79,6 @@ void GameStage::BuildStage() {
     SetListsWarpPtr(StageObjectCommonState::None);
     SetListsLaserLaunchersPtr(StageObjectCommonState::None);
 
-    //cameraの初期位置を設定
-    //SEED::GetCamera("default")
-
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
 }
@@ -107,17 +104,24 @@ void GameStage::SetIsActive(bool isActive) {
 // 非アクティブオブジェクトの再アクティブ化
 void GameStage::ReActivateDisActiveObjects() {
 
-    for (const auto& object : disActiveObjects_) {
+    for (auto& object : disActiveObjects_) {
 
         object->SetIsActive(true);
 
-        // レーザーは別でアクティブを設定する
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            // レーザーは別でアクティブを設定する
             if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
 
                 laserLauncher->SetIsActive(true);
             }
+            // ワープも別でアクティブを設定する
+            if (Warp* laserLauncher = component->GetStageObject<Warp>()) {
+
+                // 状態を元に戻す
+                laserLauncher->SetNone();
+            }
         }
+        object = nullptr;
     }
     disActiveObjects_.clear();
 }
@@ -400,15 +404,15 @@ void GameStage::RemoveBorderLine() {
     // ホログラム側のワープにアクセスできないようにする
     warpController_->ResetWarps(StageObjectCommonState::Hologram);
 
+    // 非アクティブオブジェクトを再アクティブ化する
+    ReActivateDisActiveObjects();
+
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
         delete object;
         object = nullptr;
     }
     hologramObjects_.clear();
-
-    // 非アクティブオブジェクトを再アクティブ化する
-    ReActivateDisActiveObjects();
 
     // 削除完了
     isRemoveHologram_ = false;

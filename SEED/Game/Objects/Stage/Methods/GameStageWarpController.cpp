@@ -203,8 +203,10 @@ void GameStageWarpController::ResetWarp() {
 bool GameStageWarpController::IsWarpCameNotification() {
 
     // どちらかのワープから通知が来ていたら開始地点として設定する
+    // ++条件
+    // 空白ブロックに埋もれていないか
     for (Warp* warp : std::views::join(std::array{ std::span{noneWarps_}, std::span{hologramWarps_} })) {
-        if (warp->IsStateNotification()) {
+        if (warp->IsStateNotification() && !warp->IsStateWarpEmpty()) {
 
             executingWarpStart_ = warp;
             return true;
@@ -219,8 +221,11 @@ bool GameStageWarpController::CheckWarpTarget() {
     const std::vector<Warp*>* targetWarps = GetWarpTarget(executingWarpStart_->GetCommonState());
 
     // ワープ不可、インデックス不一致ならfalseを返す
+    // ++条件
+    // 空白ブロックに埋もれていないか
     auto it = std::ranges::find_if(*targetWarps, [&](Warp* warp) {
-        return !warp->IsStateWarpNotPossible() && warp->GetWarpIndex() == executingWarpStart_->GetWarpIndex(); });
+        return !warp->IsStateWarpNotPossible() &&
+            warp->GetWarpIndex() == executingWarpStart_->GetWarpIndex() && !warp->IsStateWarpEmpty(); });
     if (it == targetWarps->end()) {
         return false;
     }

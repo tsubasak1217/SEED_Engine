@@ -7,6 +7,9 @@
 #include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
 #include <Game/Objects/Stage/Objects/Laser/Laser.h>
 
+// c++
+#include <span>
+
 //============================================================================
 //	LaserLauncher class
 //============================================================================

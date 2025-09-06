@@ -95,6 +95,11 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
 
                 laserLauncher->SetIsActive(false);
             }
+            // ワープ制御処理
+            if (Warp* warp = GetStageObject<Warp>()) {
+
+                warp->SetWarpEmpty();
+            }
         }
     }
 

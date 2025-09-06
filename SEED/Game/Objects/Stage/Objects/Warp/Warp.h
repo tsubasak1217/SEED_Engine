@@ -35,6 +35,7 @@ public:
     // ワープ中にする
     void SetWarping() { currentState_ = State::Warping; }
     void SetWarpNotPossible() { currentState_ = State::WarpNotPossible; }
+    void SetWarpEmpty() { currentState_ = State::WarpEmpty; }
     // 通常更新状態にする
     void SetNone();
 
@@ -42,6 +43,7 @@ public:
     bool IsStateNotification()const { return currentState_ == State::Notification; }
     bool IsStateNone()const { return currentState_ == State::None; }
     bool IsStateWarpNotPossible()const { return currentState_ == State::WarpNotPossible; }
+    bool IsStateWarpEmpty()const { return currentState_ == State::WarpEmpty; }
 private:
     //========================================================================
     //	private Methods
@@ -56,6 +58,7 @@ private:
         Notification,    // ワープ通知
         Warping,         // ワープ中
         WarpNotPossible, // ワープ不可
+        WarpEmpty,       // 空白に埋もれている状態
     };
 
     //--------- variables ----------------------------------------------------

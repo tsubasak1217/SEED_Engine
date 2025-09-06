@@ -3,59 +3,77 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
-#include <cstdint>
-#include <unordered_map>
+#include <Game/Objects/Stage/Objects/Laser/Laser.h>
 
 //============================================================================
 //	LaserLauncher class
 //============================================================================
-class LaserLauncher : public IStageObject {
+class LaserLauncher :
+    public IStageObject {
 public:
+    //========================================================================
+    //	public Methods
+    //========================================================================
+
     LaserLauncher(GameObject2D* owner) : IStageObject(owner) {}
     LaserLauncher() = default;
-    ~LaserLauncher() = default;
-    void Initialize(const std::string& fileName) override;
+    ~LaserLauncher();
+
+    void Initialize() override;
+    void InitializeLaunchSprites();
+    void InitializeLasers();
+
     void Update() override;
 
     void Draw() override;
 
-    void Edit() override {};
+    void Edit() override;
 
-private:
-
-    //--------- structure ----------------------------------------------------
-
-    // 発射方向
-    enum class Direction {
-        Up,
-        Down,
-        Left,
-        Right,
-    };
-
-public:
+    // ワープレーザー処理
+    void WarpLaserFromController(const Vector2& translate, const GameObject2D* sourceLaserObject);
+    // ワープ後にできたオブジェクトを破棄
+    void RemoveWarpLasers();
 
     //--------- accessor -----------------------------------------------------
 
-    // 発射方向ごとの本数をセット
-    void SetEmitDirections(const std::unordered_map<Direction, int>& directionsCount);
-    // 現在の設定を取得
-    const std::unordered_map<Direction, int>& GetEmitDirections() const;
+    void SetTranslate(const Vector2& translate) override;
+    void SetSize(const Vector2& size) override;
+    void SetIsLaserActive(bool isActive);
 
+    // 発射方向を設定
+    void SetLaunchDirections(uint8_t directions);
+
+    const Vector2& GetTranslate() const override { return translate_; }
+
+    // 方向をビット値で取得
+    uint8_t GetBitDirection() const { return bitDirection_; }
+    // レーザーを取得する
+    const std::list<GameObject2D*> GetLasers() const { return lasers_; }
 private:
     //========================================================================
     //	private Methods
     //========================================================================
 
-    
-
     //--------- variables ----------------------------------------------------
 
-    // 各方向に何本レーザーを発射するか
-    std::unordered_map<Direction, int> emitDirectionsCount_;
-    // レーザー発射フラグ
-    bool isEmit_ = false;
+    // 値保持用
+    std::string fileName_; // スプライト
+    Vector2 laserSize_;    // レーザーのサイズ
+    Vector2 translate_;    // 発射台の座標
+
+    // 発射台スプライト
+    std::vector<Sprite> launchSprites_;
+    // 発射方向
+    uint8_t bitDirection_;
+    std::vector<DIRECTION4> launchDirections_;
+
+    // レーザー本体
+    std::list<GameObject2D*> lasers_;
+    std::list<GameObject2D*> warpedLasers_;
 
     //--------- functions ----------------------------------------------------
+
+
 };

@@ -27,6 +27,9 @@ public:
     // 状態終了時
     void Exit(Player& player) override;
 
+    // アクセッサ
+    bool GetIsMoving() const{ return std::fabsf(inputMapper_->GetVector(PlayerInputAction::MoveX)) > 0.0f; }
+
     // エディター
     void Edit(const Player& player) override;
 

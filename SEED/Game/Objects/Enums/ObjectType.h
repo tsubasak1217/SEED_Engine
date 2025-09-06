@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-enum class ObjectType : int32_t{
+enum class ObjectType : int32_t {
     // 全般
     All = 0,
     Editor = All,
@@ -17,6 +17,7 @@ enum class ObjectType : int32_t{
     Start = 0b1 << 9,
     Event = 0b1 << 11,
     Warp = 0b1 << 12,
+    Laser = (0b1 << 13) | OnFieldObject,
     // 組み合わせ
     Goal = (0b1 << 10) | Field,
     Player = OnFieldObject | Move | Friendly,

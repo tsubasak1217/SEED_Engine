@@ -20,12 +20,12 @@ public:
     //	public Methods
     //========================================================================
 
-    IStageObject(GameObject2D* owner) : owner_(owner){}
+    IStageObject(GameObject2D* owner) : owner_(owner) {}
     IStageObject() = default;
     virtual ~IStageObject() = default;
 
     // 初期化処理
-    virtual void Initialize(const std::string& filename) = 0;
+    virtual void Initialize() = 0;
 
     // 更新処理
     virtual void Update() = 0;
@@ -42,10 +42,16 @@ public:
     virtual void SetSize(const Vector2& size) { sprite_.size = size; }
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
 
-    const Vector2& GetTranslate() const { return sprite_.translate; }
+    virtual const Vector2& GetTranslate() const { return sprite_.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
-    GameObject2D* GetOwner() const{ return owner_; }
+    GameObject2D* GetOwner() const { return owner_; }
+
+    // Collision
+    virtual void OnCollisionEnter([[maybe_unused]]GameObject2D* other){}
+    virtual void OnCollisionStay([[maybe_unused]] GameObject2D* other){}
+    virtual void OnCollisionExit([[maybe_unused]] GameObject2D* other){}
+
 
 protected:
     //========================================================================
@@ -57,4 +63,10 @@ protected:
     Sprite sprite_;                      // 描画情報
     StageObjectCommonState commonState_; // オブジェクトの状態
     GameObject2D* owner_ = nullptr;            // 所有者
+
+    // 色
+    static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);
+    static inline const Vector4 hologramColor_ = MyMath::FloatColor(255, 43, 245, 255);
+    // サイズ
+    static inline const Vector2 defaultTileSize_ = Vector2(46.0f, 46.0f);
 };

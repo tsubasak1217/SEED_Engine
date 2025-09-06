@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
 #include <SEED//Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Basic/Object/GameObject.h>
@@ -55,6 +56,22 @@ void CollisionManager::Draw(){
         for(auto& collider : instance_->colliderList2D_){
             collider.second->Draw();
         }
+    }
+#endif // _DEBUG
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// GUI表示関数
+/////////////////////////////////////////////////////////////////////////////////////
+void CollisionManager::GUI(){
+#ifdef _DEBUG
+    ImFunc::CustomBegin("CollisionManager", MoveOnly_TitleBar);
+    {
+        ImGui::Checkbox("コライダーの表示", &instance_->isDrawCollider_);
+        ImGui::Text("コライダー数(3D): %d", instance_->colliderList3D_.size());
+        ImGui::Text("コライダー数(2D): %d", instance_->colliderList2D_.size());
+
+        ImGui::End();
     }
 #endif // _DEBUG
 }

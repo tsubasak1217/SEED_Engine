@@ -45,7 +45,8 @@ void VideoPlayer::LoadVideo(const std::string& filename, bool isUseAudio){
     }
 
     // Media Foundationの初期化
-    HRESULT hr = MFStartup(MF_VERSION);
+    HRESULT hr;
+    hr = MFStartup(MF_VERSION);
     assert(SUCCEEDED(hr));
 
     // ソースリーダーの作成

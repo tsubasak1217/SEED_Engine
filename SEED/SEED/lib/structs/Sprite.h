@@ -13,6 +13,7 @@ struct Sprite{
 
 public:
     Sprite();
+    Sprite(uint32_t GH);
     Sprite(const std::string& filename);
     Sprite(const std::string& filename, const Vector2& leftTop, const Vector2& size);
 

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Structs/Timer.h>
+#include <SEED/Lib/Tensor/Vector2.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 
 // c++
@@ -42,8 +43,14 @@ public:
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
 
+    // リセット
+    void ResetWarps(StageObjectCommonState state);
+
+    // 対象のワープの相手がいるかどうかチェック
+    bool CheckWarpPartner(StageObjectCommonState state, uint32_t warpIndex);
+
     //--------- accessor -----------------------------------------------------
-    
+
     // プレイヤーのセット
     void SetPlayer(Player* player) { player_ = player; }
 
@@ -52,6 +59,9 @@ public:
 
     // ワープ中かどうか
     bool IsWarping() const { return currentState_ == State::Warping; }
+
+    // ワープ先座標をインデックスから取得する
+    Vector2 GetWarpTargetTranslateFromIndex(StageObjectCommonState state, uint32_t warpIndex) const;
 private:
     //========================================================================
     //	private Methods
@@ -75,10 +85,9 @@ private:
     // プレイヤー
     Player* player_;
 
-    // 通常ワープ
-    std::vector<Warp*> noneWarps_;
-    // ホログラムワープ
-    std::vector<Warp*> hologramWarps_;
+    // ワープオブジェクト
+    std::vector<Warp*> noneWarps_;     // 通常ワープ
+    std::vector<Warp*> hologramWarps_; // ホログラムワープ
 
     // ワープを行う実体
     Warp* executingWarpStart_;  // ワープ開始
@@ -90,7 +99,7 @@ private:
     void UpdateWarpPossible();
     void UpdateWarping();
     void UpdateWarpNotPossible();
-    
+
     // helper
     void ResetWarp();
     bool IsWarpCameNotification();

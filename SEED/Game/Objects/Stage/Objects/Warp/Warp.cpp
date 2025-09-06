@@ -10,10 +10,10 @@
 //	Warp classMethods
 //============================================================================
 
-void Warp::Initialize(const std::string& filename) {
+void Warp::Initialize() {
 
     // スプライトの初期化
-    sprite_ = Sprite(filename);
+    sprite_ = Sprite("Scene_Game/StageObject/dottedLine.png");
     sprite_.anchorPoint = Vector2(0.5f);
 
     // 初期化値

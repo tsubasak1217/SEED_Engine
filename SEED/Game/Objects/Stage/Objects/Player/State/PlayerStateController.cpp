@@ -132,6 +132,18 @@ float PlayerStateController::GetJumpVelocity() const {
     return 0.0f;
 }
 
+bool PlayerStateController::GetIsMoving() const{
+    if(current_ == PlayerState::Warp){
+        return false;
+    }
+
+    if(PlayerMoveState* move = static_cast<PlayerMoveState*>(states_.at(PlayerState::Move).get())){
+        return move->GetIsMoving();
+    }
+
+    return false;
+}
+
 
 void PlayerStateController::UpdateInputState() {
 
@@ -177,7 +189,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
         // 死亡判定: 画面下に落ちたら死亡
         //PlayerクラスのSpriteの座標を参照
-        if(owner.GetSprite().translate.y > SEED::GetMainCamera()->GetClipRange().y + 30.0f) {
+        if(owner.GetSprite().translate.y > SEED::GetMainCamera()->GetClipRange().bottom + 30.0f) {
             Request(PlayerState::Dead);
             return;
         }

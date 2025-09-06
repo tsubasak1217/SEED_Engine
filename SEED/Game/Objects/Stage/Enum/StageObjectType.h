@@ -11,12 +11,19 @@
 // オブジェクトの種類
 enum class StageObjectType {
 
-    None = 0,       // 空白
-    NormalBlock = 1, // 通常ブロック
-    Goal = 2,        // ゴール
-    Player = 3,      // プレイヤー
-    Warp = 4,        // ワープ
-    EmptyBlock = 5   // 非表示ブロック
+    None = 0,          // 空白
+    NormalBlock = 1,   // 通常ブロック
+    Goal = 2,          // ゴール
+    Player = 3,        // プレイヤー
+    Warp = 4,          // ワープ
+    EmptyBlock = 5,    // 非表示ブロック
+    LaserLauncher = 6, // レーザー発射台
+};
+
+// レーザーの種類
+enum class LaserObjectType {
+
+    Normaml, // 通常レーザー
 };
 
 // 共通の状態

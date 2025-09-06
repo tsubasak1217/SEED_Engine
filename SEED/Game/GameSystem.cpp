@@ -119,7 +119,7 @@ void GameSystem::EndFrame() {
 /////////////////////////////////////////////////////////////////
 void GameSystem::DrawGUI(){
 #ifdef _DEBUG
-
+    CollisionManager::GUI();
 #endif // _DEBUG
 }
 

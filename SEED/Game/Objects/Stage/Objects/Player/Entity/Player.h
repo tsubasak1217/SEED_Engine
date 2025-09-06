@@ -22,7 +22,7 @@ public:
     ~Player() = default;
 
     // 初期化処理
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
 
     // 更新処理
     void Update() override;
@@ -35,17 +35,18 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetTranslate(const Vector2& translate) override { sprite_.translate = translate; }
-    void SetSize(const Vector2& size) override { sprite_.size = size; }
+    void SetTranslate(const Vector2& translate) override { body_.translate = translate; }
+    void SetSize(const Vector2& size) override;
     // プレイヤーをワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);
 
-    const Sprite& GetSprite() const { return sprite_; }
+    const Sprite& GetSprite() const { return body_; }
     LR GetMoveDirection() const { return moveDirection_; }
 
     // クリア判定
     void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
     void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
+    float GetGoalT()const{ return std::clamp(goalTouchTime_ / requiredGoalTime_,0.0f,1.0f); }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
     bool IsDead() const;
@@ -72,8 +73,15 @@ private:
      // jsonパス
     const std::string kJsonPath_ = "Player/playerParameter.json";
 
+    // 画像ハンドルのマップ
+    static inline std::unordered_map<std::string, int32_t> imageMap_;
+
     // 描画情報
-    Sprite sprite_;
+    Sprite body_;
+    Sprite legs_[2];
+    static const int32_t baseLayer_ = 10;
+    bool isMove_ = false; // 動き始めた瞬間か
+    bool isHologram_ = false; // ホログラム状態か
     // 向いている方向
     LR moveDirection_;
 
@@ -94,4 +102,5 @@ private:
 
     // update
     void UpdateMoveDirection();
+    void SpriteMotion();
 };

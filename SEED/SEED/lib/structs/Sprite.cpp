@@ -18,6 +18,10 @@ Sprite::Sprite(){
     isStaticDraw = false;
 }
 
+Sprite::Sprite(uint32_t GH) : Sprite::Sprite(){
+    this->GH = GH;
+}
+
 Sprite::Sprite(const std::string& filename) : Sprite::Sprite(){
     GH = TextureManager::LoadTexture(filename);
     size = SEED::GetImageSize(MyFunc::ConvertString(filename));

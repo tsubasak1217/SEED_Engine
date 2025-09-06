@@ -17,9 +17,8 @@ void BaseCamera::Initialize(){
     transform_.rotate = Quaternion();
     transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
     projectionMode_ = PERSPECTIVE;
-    clipRange_ = kWindowSize;
-    clipRangeLeft_ = 0.0f;
-    clipRangeTop_ = 0.0f;
+    clipRange_.right = kWindowSize.x;
+    clipRange_.bottom = kWindowSize.y;
     znear_ = 0.1f;
     zfar_ = 1000.0f;
     fov_ = 0.45f;
@@ -47,13 +46,13 @@ void BaseCamera::UpdateMatrix(){
     //射影行列の生成
     projectionMat_ = PerspectiveMatrix(
         fov_,
-        clipRange_.x / clipRange_.y,
+        clipRange_.right / clipRange_.bottom,
         znear_, zfar_
     );
 
     projectionMat2D_ = OrthoMatrix(
-        clipRangeLeft_, clipRange_.x,
-        clipRangeTop_, clipRange_.y,
+        clipRange_.left, clipRange_.right,
+        clipRange_.top, clipRange_.bottom,
         adjustedZnear, zfar_
     );
 
@@ -119,8 +118,8 @@ Vector2 BaseCamera::ToScreenPosition(const Vector3& worldPos){
 // znearとzfar間のレイを取得
 Line BaseCamera::GetRay(const Vector2& screenPos){
     Vector3 ndcNear = {
-        (2.0f * screenPos.x) / clipRange_.x - 1.0f,
-        1.0f - (2.0f * screenPos.y) / clipRange_.y,
+        (2.0f * screenPos.x) / clipRange_.right - 1.0f,
+        1.0f - (2.0f * screenPos.y) / clipRange_.bottom,
         -1.0f,
     };
 

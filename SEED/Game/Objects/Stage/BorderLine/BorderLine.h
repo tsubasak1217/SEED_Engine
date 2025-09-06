@@ -86,6 +86,8 @@ private:
     float playerToDistance_;   // プレイヤーとの判定を取るまで距離
     float offsetTranslateY_;   // プレイヤーのY座標からのオフセット
     LerpParam lerpXParam_;
+    Vector2 initialSize_;// 初期サイズ
+    float scrollValue_ = 0.0f;// スクロール値
 
     //--------- functions ----------------------------------------------------
 

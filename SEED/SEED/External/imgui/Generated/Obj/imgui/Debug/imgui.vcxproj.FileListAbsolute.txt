@@ -1,2 +1,2 @@
 C:\Users\k023g\source\repos\SEED_Engine\SEED\SEED\External\imgui\Generated\Obj\imgui\Debug\imgui.lib
-C:\Users\k023g\school\10Days\SEED\SEED\External\imgui\Generated\Obj\imgui\Debug\imgui.lib
+C:\Users\bluec\OneDrive\デスクトップ\Kamata\10days_3\SEED\SEED\External\imgui\Generated\Obj\imgui\Debug\imgui.lib

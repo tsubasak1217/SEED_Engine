@@ -42,7 +42,7 @@ public:
     virtual void SetSize(const Vector2& size) { sprite_.size = size; }
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
 
-    const Vector2& GetTranslate() const { return sprite_.translate; }
+    virtual const Vector2& GetTranslate() const { return sprite_.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }

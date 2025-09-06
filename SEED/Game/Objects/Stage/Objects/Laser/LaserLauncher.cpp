@@ -30,6 +30,8 @@ void LaserLauncher::Initialize() {
 
 void LaserLauncher::SetTranslate(const Vector2& translate) {
 
+    translate_ = translate;
+
     // 全てのスプライトに対して処理を行う
     for (auto& sprite : launchSprites_) {
 

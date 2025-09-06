@@ -72,6 +72,7 @@ void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers) {
                 aabb->SetSize(component->GetLaserObject<Laser>()->GetSize());
                 aabb->SetAnchor(component->GetLaserObject<Laser>()->GetAnchorPoint());
                 aabb->isMovable_ = false;
+                aabb->isGhost_ = true;
                 laser->SetObjectType(ObjectType::Laser);
                 break;
             }

@@ -67,6 +67,17 @@ private:
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // 衝突相手
+    struct Blocker {
+
+        bool isFound = false;
+        Vector2 translate;
+        Vector2 size;
+        float frontDistance = std::numeric_limits<float>::infinity();
+    };
+
     //--------- variables ----------------------------------------------------
 
     // タイプ
@@ -74,11 +85,16 @@ private:
     // ILaserObjectを継承したオブジェクトのインスタンスを持つ
     std::unique_ptr<ILaserObject> object_ = nullptr;
 
+    // 衝突相手
+    Blocker blocker_;
+
     //--------- functions ----------------------------------------------------
 
     // helper
     std::unique_ptr<ILaserObject> CreateInstance(LaserObjectType objectType) const;
     bool CheckEndExtend(GameObject2D* other);
+    Vector2 AxisFrom(DIRECTION4 direction);
+    float ComputeFrontDistance(const Vector2& center, const Vector2& size);
 };
 
 //============================================================================

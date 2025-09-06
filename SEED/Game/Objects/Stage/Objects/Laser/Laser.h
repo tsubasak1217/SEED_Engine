@@ -30,6 +30,12 @@ public:
     //--------- accessor -----------------------------------------------------
 
     void SetDirection(DIRECTION4 direction) override;
+
+    // 状態の設定
+    // 伸び始める
+    void ReExtend() override;
+    // 伸びるのを終了
+    void StopExtend() override;
 private:
     //========================================================================
     //	private Methods

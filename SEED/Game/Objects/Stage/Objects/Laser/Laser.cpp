@@ -25,6 +25,18 @@ void Laser::SetDirection(DIRECTION4 direction) {
     owner_->SetWorldRotate(sprite_.rotate);
 }
 
+void Laser::ReExtend() {
+
+    // 再起動する
+    currentState_ = State::Extend;
+}
+
+void Laser::StopExtend() {
+
+    // 停止させる
+    currentState_ = State::Stop;
+}
+
 void Laser::Update() {
 
     // 状態に応じて更新処理
@@ -50,10 +62,13 @@ void Laser::UpdateExtend() {
 
     // オブジェクトに衝突するまで伸びつ続ける
     LaserHelper::UpdateLaserSprite(sprite_, sizeExtendSpeed_);
+    // スケーリング値の更新
     owner_->SetWorldScale(Vector2(1.0f, sprite_.size.y / initSizeY_));
 }
 
 void Laser::UpdateStop() {
+
+
 }
 
 void Laser::Draw() {

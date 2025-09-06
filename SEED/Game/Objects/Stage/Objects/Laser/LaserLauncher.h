@@ -40,6 +40,8 @@ public:
     // 発射方向を設定
     void SetLaunchDirections(uint8_t directions);
 
+    const Vector2& GetTranslate() const override { return translate_; }
+
     // 方向をビット値で取得
     uint8_t GetBitDirection() const { return bitDirection_; }
 private:
@@ -52,6 +54,7 @@ private:
     // 値保持用
     std::string fileName_; // スプライト
     Vector2 laserSize_;    // レーザーのサイズ
+    Vector2 translate_;    // 発射台の座標
 
     // 発射台スプライト
     std::vector<Sprite> launchSprites_;

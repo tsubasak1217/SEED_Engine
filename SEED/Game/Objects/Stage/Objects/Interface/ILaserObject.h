@@ -45,9 +45,9 @@ public:
 
     // 状態の設定
     // 伸び始める
-    void ReExtend() { currentState_ = State::Extend; }
+    virtual void ReExtend() = 0;
     // 伸びるのを終了
-    void StopExtend() { currentState_ = State::Stop; }
+    virtual void StopExtend() = 0;
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
     virtual void SetDirection(DIRECTION4 direction) = 0;
 

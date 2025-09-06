@@ -212,11 +212,6 @@ void GameStage::UpdateBorderLine() {
         }
     }
 
-    // アクティブ中は更新しない
-    //if (borderLine_->IsActive()) {
-    //    return;
-    //}
-
     // 境界線のX座標を一番占有率の高いオブジェクトの端に設定する
     float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
         player_->GetSprite(), playerWorldTranslate, player_->GetMoveDirection(), stageObjectMapTileSize_);

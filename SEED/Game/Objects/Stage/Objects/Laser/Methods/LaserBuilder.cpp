@@ -70,6 +70,7 @@ GameObject2D* LaserBuilder::CopyLaser(const Vector2& translate, GameObject2D* so
 
     // ワープデータを共有する
     WarpLaserParam param = sourceComponent->GetLaserObject<Laser>()->GetWarpParam();
+    param.isHit = false;
     dstComponent->GetLaserObject<Laser>()->SetHitWarpParam(param);
     // 系統IDを継承
     dstComponent->GetLaserObject<Laser>()->SetFamilyId(sourceComponent->GetLaserObject<Laser>()->GetFamilyId());

@@ -40,6 +40,12 @@ public:
 
     void Initialize(LaserObjectType objectType, const Vector2& translate);
 
+    // 予約開始
+    void SetPendingWarpStop(const Vector2& translate, const Vector2& size);
+    // 予約されたレーザーの停止を実行する
+    void ApplyPendingWarpStop();
+    void ClearPendingWarpStop();
+
     //--------- collision ----------------------------------------------------
 
     void OnCollisionEnter(GameObject2D* other) override;
@@ -78,6 +84,14 @@ private:
         float frontDistance = std::numeric_limits<float>::infinity();
     };
 
+    // 停止予約用
+    struct PendingStop {
+
+        bool has = false;
+        Vector2 translate;
+        Vector2 size;
+    };
+
     //--------- variables ----------------------------------------------------
 
     // タイプ
@@ -87,6 +101,9 @@ private:
 
     // 衝突相手
     Blocker blocker_;
+    // 停止予約用
+    PendingStop pendingWarpStop_;
+    bool keepStoppedByWarp_ = false;
 
     //--------- functions ----------------------------------------------------
 

@@ -393,6 +393,8 @@ void GameStage::RemoveBorderLine() {
     borderLine_->SetDeactivate();
     // ホログラム側のレーザーをすべて破棄する
     laserController_->ResetLauncheres(StageObjectCommonState::Hologram);
+    // ホログラム側のワープにアクセスできないようにする
+    warpController_->ResetWarps(StageObjectCommonState::Hologram);
 
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {

@@ -87,10 +87,8 @@ bool LaserObjectComponent::CheckWarp(GameObject2D* other) {
             param.warpCommonState = warp->GetCommonState();
             object_->SetHitWarpParam(param);
 
-            // ワープ地点でレーザーを止める
-            // これを書くと他のフィールドオブジェクトで止まらなくなる。
-            // ここで止めるんじゃなくてレーザーがワープすることが決まってからじゃないと矛盾する
-            //ConsiderBlocker(component->GetBlockTranslate(), component->GetMapSize(), true);
+            // レーザー停止予約、ワープするなら止める
+            SetPendingWarpStop(component->GetBlockTranslate(), component->GetMapSize());
             return true;
         }
     }
@@ -180,11 +178,41 @@ void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {
 
     // ワープと離れたらfalseにする
     if (LaserHelper::HasObejctType(other->GetObjectType(), ObjectType::Warp)) {
-       
+
         auto param = object_->GetWarpParam();
         param.isHit = false;
         object_->SetHitWarpParam(param);
+
+        // レーザー停止処理終了
+        keepStoppedByWarp_ = false;
     }
+}
+
+void LaserObjectComponent::SetPendingWarpStop(const Vector2& translate, const Vector2& size) {
+
+    // 予約開始
+    pendingWarpStop_.has = true;
+    pendingWarpStop_.translate = translate;
+    pendingWarpStop_.size = size;
+}
+
+void LaserObjectComponent::ApplyPendingWarpStop() {
+
+    // 予約されたレーザーの停止を実行する
+    if (pendingWarpStop_.has) {
+
+        ConsiderBlocker(pendingWarpStop_.translate, pendingWarpStop_.size, true);
+        pendingWarpStop_.has = false;
+
+        // レーザー停止処理を実行させる
+        keepStoppedByWarp_ = true;
+    }
+}
+
+void LaserObjectComponent::ClearPendingWarpStop() {
+
+    pendingWarpStop_.has = false;
+    keepStoppedByWarp_ = false;
 }
 
 //============================================================================
@@ -200,6 +228,12 @@ void LaserObjectComponent::BeginFrame() {
 
 void LaserObjectComponent::EndFrame() {
 
+    // ワープ中は停止させる
+    if (keepStoppedByWarp_) {
+
+        object_->StopExtend();
+        return;
+    }
     if (blocker_.isFound) {
 
         // 近い方の前面まででClampして停止

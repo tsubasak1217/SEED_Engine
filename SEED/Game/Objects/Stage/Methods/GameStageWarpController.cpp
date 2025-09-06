@@ -23,6 +23,9 @@ void GameStageWarpController::Initialize() {
 void GameStageWarpController::SetWarps(StageObjectCommonState state,
     const std::vector<Warp*> warps) {
 
+    // ワープペアをリセット
+    ResetWarp();
+
     // タイプ別でワープを設定
     switch (state) {
     case StageObjectCommonState::None: {
@@ -35,6 +38,23 @@ void GameStageWarpController::SetWarps(StageObjectCommonState state,
 
         hologramWarps_.clear();
         hologramWarps_ = warps;
+        break;
+    }
+    }
+}
+
+
+void GameStageWarpController::ResetWarps(StageObjectCommonState state) {
+
+    switch (state) {
+    case StageObjectCommonState::None: {
+
+        noneWarps_.clear();
+        break;
+    }
+    case StageObjectCommonState::Hologram: {
+
+        hologramWarps_.clear();
         break;
     }
     }

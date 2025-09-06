@@ -43,6 +43,9 @@ public:
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
 
+    // リセット
+    void ResetWarps(StageObjectCommonState state);
+
     // 対象のワープの相手がいるかどうかチェック
     bool CheckWarpPartner(StageObjectCommonState state, uint32_t warpIndex);
 

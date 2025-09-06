@@ -18,7 +18,10 @@ void GameStageLaserController::Initialize() {
 
 void GameStageLaserController::ResetLauncheres(StageObjectCommonState state) {
 
+    // 全てクリアする
     usedWarpIndexByFamily_.clear();
+    inWarpLasers_.clear();
+    pendingSpawns_.clear();
 
     // ワープで出来たレーザーを破棄する
     for (const auto& launcher : noneLaserLauncheres_) {
@@ -93,11 +96,17 @@ void GameStageLaserController::CheckWarpLasers() {
                         // ワープに衝突していなければ処理しない
                         if (param.isHit) {
 
-                            // ワープと衝突していたので対象のワープの相手がいるかチェックする
+                            // ワープ相手がいなければ処理しない
                             if (!warpController_->CheckWarpPartner(param.warpCommonState, param.warpIndex)) {
+
+                                // ヒット判定を取り消す
+                                inWarpLasers_.erase(laserObject);
+                                WarpLaserParam endParam = param;
+                                endParam.isHit = false;
+                                laser->SetHitWarpParam(endParam);
+                                component->ClearPendingWarpStop();
                                 continue;
                             }
-
                             if (!inWarpLasers_.contains(laserObject)) {
 
                                 // 同じレーザーで同じワープIndexなら2回目以降は処理しない
@@ -139,6 +148,12 @@ void GameStageLaserController::UpdateLaserLauncheres() {
 
         // 1度だけ発生させる
         spawn.launcher->WarpLaserFromController(spawn.target, spawn.sourceLaserObject);
+
+        // レーザーを停止させる
+        if (LaserObjectComponent* component = spawn.sourceLaserObject->GetComponent<LaserObjectComponent>()) {
+
+            component->ApplyPendingWarpStop();
+        }
     }
     // 全てクリアする
     pendingSpawns_.clear();

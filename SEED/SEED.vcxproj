@@ -162,6 +162,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Warp.cpp">
       <SubType>
       </SubType>
@@ -383,6 +387,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.h">
       <SubType>
       </SubType>
     </ClInclude>

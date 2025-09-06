@@ -45,6 +45,7 @@ public:// パラメータなど
     int outlineSplitCount = 16;
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+    bool isApplyViewMat = true;// ビュー行列を適用するかどうか
     bool textBoxVisible = true;
 
 private:// フォーマット解析

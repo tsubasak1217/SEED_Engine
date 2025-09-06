@@ -54,6 +54,9 @@ public:
     DrawLocation drawLocation = DrawLocation::Front;
     int32_t layer = 0;// 描画順。大きいほど手前に描画
 
+    // 2D描画時にビュー行列を適用するかどうか
+    bool isApplyViewMat = true;
+
 public:
     Matrix4x4 GetWorldMatrix()const;
     void SetTexture(const std::string& filename);

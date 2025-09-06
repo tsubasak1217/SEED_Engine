@@ -284,8 +284,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
         worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
-        GH,//triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
-        triangle.blendMode, triangle.cullMode
+        true,GH,triangle.blendMode, triangle.cullMode
     );
 }
 
@@ -309,7 +308,8 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, triangle.uvTransform, false,
+        triangle.GetWorldMatrix(), triangle.color, LIGHTINGTYPE_NONE, 
+        triangle.uvTransform, false, triangle.isApplyViewMat,
         triangle.GH != -1 ? triangle.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         triangle.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         triangle.isStaticDraw, triangle.drawLocation, triangle.layer
@@ -327,7 +327,7 @@ void SEED::DrawQuad(const Quad& quad){
         quad.localVertex[2],
         quad.localVertex[3],
         quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, true,
+        worldMat, quad.color, quad.lightingType, quad.uvTransform, true,true,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         quad.blendMode, quad.isText, quad.cullMode
     );
@@ -355,7 +355,8 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
         quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
-        worldMat, quad.color, quad.lightingType, quad.uvTransform, false,
+        worldMat, quad.color, quad.lightingType,
+        quad.uvTransform, false, quad.isApplyViewMat,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         quad.blendMode, quad.isText, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         quad.isStaticDraw, quad.drawLocation, quad.layer
@@ -379,6 +380,7 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.clipLT,
         sprite.clipSize,
         sprite.blendMode,
+        sprite.isApplyViewMat,
         D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
         sprite.isStaticDraw,
         sprite.drawLocation,
@@ -401,7 +403,7 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, 
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, true, blendMode, false
+        IdentityMat4(), color, true,true, blendMode, false
     );
 }
 
@@ -409,7 +411,7 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, blendMode, false, DrawLocation::Front, 0
+        IdentityMat4(), color, false, true,blendMode, false, DrawLocation::Front, 0
     );
 }
 

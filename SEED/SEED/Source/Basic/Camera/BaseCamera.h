@@ -76,7 +76,9 @@ protected:
     Vector3 normal_;
 
     Matrix4x4 worldMat_;
+    Matrix4x4 worldMat2D_;
     Matrix4x4 viewMat_;
+    Matrix4x4 viewMat2D_;
     Matrix4x4 projectionMat_;
     Matrix4x4 projectionMat2D_;
     Matrix4x4 viewProjectionMat_;
@@ -89,4 +91,7 @@ protected:
     float kShakeTime_ = 1.0f;
     float shakePower_;
     Vector3 shakeLevel_;
+
+public:
+    virtual void Edit();
 };

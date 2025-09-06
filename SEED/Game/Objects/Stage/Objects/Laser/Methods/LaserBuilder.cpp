@@ -29,7 +29,7 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
         // オブジェクトを作成
         GameObject2D* object = new GameObject2D(GameSystem::GetScene());
         // レーザー発生位置を設定
-        const float gap = 0.08f; // 発射台と当たらないように少し離す
+        const float gap = 0.16f; // 発射台と当たらないように少し離す
         object->SetWorldTranslate(LaserHelper::GetTranslatedByDirection(stateDirection, translate, laserSize.x, gap));
         object->UpdateMatrix();
 

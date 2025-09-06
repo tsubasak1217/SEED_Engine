@@ -9,11 +9,11 @@
 //	Laser classMethods
 //============================================================================
 
-void Laser::Initialize(const std::string& filename) {
+void Laser::Initialize() {
 
     // スプライトの初期化
-    sprite_ = Sprite("DefaultAssets/white1x1.png");
-    sprite_.anchorPoint = Vector2(0.5f);
+    sprite_ = Sprite("Scene_Game/StageObject/laserForward.png");
+    sprite_.anchorPoint = Vector2(0.5f, 1.0f);
 }
 
 void Laser::SetDirection(DIRECTION4 direction) {
@@ -54,7 +54,6 @@ void Laser::UpdateExtend() {
 }
 
 void Laser::UpdateStop() {
-
 }
 
 void Laser::Draw() {

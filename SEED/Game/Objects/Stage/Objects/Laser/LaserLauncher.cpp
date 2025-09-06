@@ -22,10 +22,10 @@ LaserLauncher::~LaserLauncher() {
     lasers_.clear();
 }
 
-void LaserLauncher::Initialize(const std::string& filename) {
+void LaserLauncher::Initialize() {
 
     // ファイル名を保持
-    fileName_ = filename;
+    fileName_ = "Scene_Game/StageObject/laserLauncherForward.png";
 }
 
 void LaserLauncher::SetTranslate(const Vector2& translate) {

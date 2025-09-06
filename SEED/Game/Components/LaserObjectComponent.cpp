@@ -38,7 +38,7 @@ std::unique_ptr<ILaserObject> LaserObjectComponent::CreateInstance(LaserObjectTy
     case LaserObjectType::Normaml: {
 
         std::unique_ptr<Laser> laser = std::make_unique<Laser>(owner_.owner2D);
-        laser->Initialize("Scene_Game/StageObject/laserForward.png");
+        laser->Initialize();
         return laser;
     }
     }

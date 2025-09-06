@@ -27,7 +27,7 @@ public:
     virtual ~ILaserObject() = default;
 
     // 初期化処理
-    virtual void Initialize(const std::string& filename) = 0;
+    virtual void Initialize() = 0;
 
     // 更新処理
     virtual void Update() = 0;
@@ -55,6 +55,7 @@ public:
     const Vector2& GetSize() const { return sprite_.size; }
     const Vector2& GetAnchorPoint() const { return sprite_.anchorPoint; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
+    DIRECTION4 GetDirection() const { return direction_; }
 
     GameObject2D* GetOwner() const { return owner_; }
 protected:

@@ -46,7 +46,6 @@ public:
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }
-    GameObject2D* GetOwner() const{ return owner_; }
 
     // Collision
     virtual void OnCollisionEnter([[maybe_unused]]GameObject2D* other){}

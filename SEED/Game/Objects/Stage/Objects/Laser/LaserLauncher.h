@@ -21,7 +21,7 @@ public:
 	LaserLauncher() = default;
 	~LaserLauncher();
 
-    void Initialize(const std::string& filename) override;
+    void Initialize() override;
     void InitializeLaunchSprites();
     void InitializeLasers();
 
@@ -50,8 +50,8 @@ private:
 	//--------- variables ----------------------------------------------------
 
     // 値保持用
-    std::string fileName_;    // スプライト
-    Vector2 laserSize_;       // レーザーのサイズ
+    std::string fileName_; // スプライト
+    Vector2 laserSize_;    // レーザーのサイズ
 
     // 発射台スプライト
     std::vector<Sprite> launchSprites_;

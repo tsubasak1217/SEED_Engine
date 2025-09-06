@@ -6,6 +6,9 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <Game/Objects/Stage/Objects/Interface/ILaserObject.h>
 
+// c++
+#include <unordered_set>
+
 //============================================================================
 //	LaserObjectComponent class
 //============================================================================

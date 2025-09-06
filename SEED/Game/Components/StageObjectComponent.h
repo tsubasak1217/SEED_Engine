@@ -52,6 +52,7 @@ public:
 
     template <typename T>
     T* GetStageObject() const;
+    IStageObject* GetTypeStageObject() const;
 private:
     //========================================================================
     //	private Methods

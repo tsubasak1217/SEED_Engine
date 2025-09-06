@@ -29,6 +29,9 @@ public:
     // 更新処理
     virtual void Update(Player& player) = 0;
 
+    // 描画処理
+    virtual void Draw([[maybe_unused]] Player& player) {};
+
     // 状態終了時
     virtual void Exit(Player& player) = 0;
 

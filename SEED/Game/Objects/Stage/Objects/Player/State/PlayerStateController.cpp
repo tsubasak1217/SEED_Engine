@@ -104,6 +104,15 @@ void PlayerStateController::Update(Player& owner) {
     pre_ = current_;
 }
 
+void PlayerStateController::Draw(Player& owner) {
+
+    // 各状態の描画処理
+    for (const auto& ptr : std::views::values(states_)) {
+
+        ptr->Draw(owner);
+    }
+}
+
 void PlayerStateController::OnGroundTrigger() {
     // 今がジャンプ状態ならアイドル状態にする
     if (current_ == PlayerState::Jump) {

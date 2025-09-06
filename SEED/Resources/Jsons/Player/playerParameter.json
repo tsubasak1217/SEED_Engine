@@ -11,6 +11,10 @@
             "moveSpeed_": 180.0
         },
         "Warp": {
+            "baseSpriteSize_": {
+                "x": 10.0,
+                "y": 10.0
+            },
             "beginDuration": 0.20000000298023224,
             "beginScaling_.easing": "InBack",
             "beginScaling_.start": 1.600000023841858,
@@ -20,7 +24,12 @@
             "endScaling_.easing": "OutBack",
             "endScaling_.start": 0.0,
             "endScaling_.target": 1.0,
-            "warpDuration": 0.10000000149011612
+            "maxTrailSpriteCount_": 63,
+            "randomRotate_": 3.0,
+            "randomSpriteSize_": 5.400000095367432,
+            "trailLifeTime_": 0.4399999976158142,
+            "trailSpawnInterval_": 0.004999999888241291,
+            "warpDuration": 0.1899999976158142
         }
     }
 }

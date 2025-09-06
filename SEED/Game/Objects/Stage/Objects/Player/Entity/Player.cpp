@@ -302,6 +302,9 @@ void Player::OnCeilingTrigger() {
 
 void Player::Draw() {
 
+    // 各状態の描画
+    stateController_->Draw(*this);
+
     // 胴体の描画
     body_.Draw();
 

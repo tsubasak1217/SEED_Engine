@@ -28,6 +28,9 @@ public:
     // 更新処理
     void Update(Player& owner);
 
+    // 描画処理
+    void Draw(Player& owner);
+
     // エディター
     void Edit(const Player& owner);
 

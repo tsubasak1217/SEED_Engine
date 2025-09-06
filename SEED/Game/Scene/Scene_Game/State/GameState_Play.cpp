@@ -32,6 +32,12 @@ void GameState_Play::Initialize(){
     menuBarInputMapper_ = std::make_unique<InputMapper<PauseMenuInputAction>>();
     menuBarInputMapper_->AddDevice(std::make_unique<MenuBarKeyInput>());     // キー操作
     menuBarInputMapper_->AddDevice(std::make_unique<MenuBarGamePadInput>()); // パッド操作
+
+    Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+    GameStage* stage = gameScene->GetStage();
+    if(stage){
+        gameScene->GetStage()->SetIsActive(true);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////

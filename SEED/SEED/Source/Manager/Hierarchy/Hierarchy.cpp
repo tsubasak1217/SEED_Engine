@@ -95,7 +95,7 @@ void Hierarchy::EraseObject(GameObject* gameObject){
     // selfCreateObjects_から解放
     if(it != selfCreateObjects_.end()){
         selfCreateObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
-    
+
     } else{// 直接解放
         delete gameObject; // 自分自身を削除
         gameObject = nullptr; // ポインタをクリア
@@ -178,14 +178,12 @@ void Hierarchy::Update(){
 void Hierarchy::Draw(){
     // ゲームオブジェクトの描画
     for(auto& gameObject : gameObjects_){
-        if(!gameObject->GetIsActive()){ continue; }
+        if(!gameObject->GetIsActive() && !gameObject->GetIsMustDraw()){ continue; }
         gameObject->Draw();
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive()){ 
-            continue; 
-        }
+        if(!gameObject2D->GetIsActive() && !gameObject2D->GetIsMustDraw()){ continue; }
         gameObject2D->Draw();
     }
 }
@@ -580,7 +578,7 @@ void Hierarchy::InOutOnGUI(){
             static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
             std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".json" }, "Resources/jsons/Prefabs/");
             if(selectedFile != ""){
-                LoadFromJson(selectedFile,false);
+                LoadFromJson(selectedFile, false);
             }
         }
     }

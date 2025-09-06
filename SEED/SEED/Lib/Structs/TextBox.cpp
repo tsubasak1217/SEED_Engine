@@ -326,6 +326,7 @@ void TextBox2D::Draw()const{
                     // 描画
                     quad.layer = 2;
                     quad.isApplyViewMat = isApplyViewMat;
+                    quad.layer = layer;
                     SEED::DrawQuad2D(quad);
 
                     // X座標オフセットを加算

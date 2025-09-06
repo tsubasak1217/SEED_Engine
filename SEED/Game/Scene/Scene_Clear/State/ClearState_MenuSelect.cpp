@@ -45,13 +45,16 @@ void ClearState_MenuSelect::Initialize() {
         MenuBack_[i].leftTop = menuPos_[i];
         MenuBack_[i].anchorPoint = { 0.5f,0.5f };
         MenuBack_[i].drawLocation = DrawLocation::Front;
-        MenuBack_[i].layer = 1;
+        MenuBack_[i].layer = 20;
+        MenuBack_[i].isApplyViewMat = false;
         MenuText_[i].transform.translate = menuPos_[i];
         MenuText_[i].SetFont("");
         MenuText_[i].size = menuSize_;
         MenuText_[i].color = { 0.0f,0.0f,0.0f,1.0f };
         MenuText_[i].fontSize = 32;
         MenuText_[i].textBoxVisible = false; // テキストボックスの枠を非表示
+        MenuText_[i].isApplyViewMat = false;
+        MenuText_[i].layer = 21;
 
     }
     ClearText_ = TextBox2D("Stage Clear!");
@@ -61,6 +64,8 @@ void ClearState_MenuSelect::Initialize() {
     ClearText_.color = { 1.0f,1.0f,0.0f,1.0f };
     ClearText_.fontSize = 48;
     ClearText_.textBoxVisible = false;
+    ClearText_.isApplyViewMat = false;
+    ClearText_.layer = 21;
 }
 
 //////////////////////////////////////////////////////////////////////////////

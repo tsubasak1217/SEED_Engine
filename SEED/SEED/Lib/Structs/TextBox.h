@@ -47,6 +47,7 @@ public:// パラメータなど
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
     bool isApplyViewMat = true;// ビュー行列を適用するかどうか
     bool textBoxVisible = true;
+    int32_t layer = 0; // 描画順。大きいほど手前に描画
 
 private:// フォーマット解析
     std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)

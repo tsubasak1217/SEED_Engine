@@ -49,7 +49,8 @@ void GameState_Pause::Initialize() {
         MenuBack_[i].leftTop = menuPos_[i];
         MenuBack_[i].anchorPoint = { 0.5f,0.5f };
         MenuBack_[i].drawLocation = DrawLocation::Front;
-        MenuBack_[i].layer = 1;
+        MenuBack_[i].layer = 20;
+        MenuBack_[i].isApplyViewMat = false;
 
         MenuText_[i].transform.translate = menuPos_[i];
         MenuText_[i].SetFont("");
@@ -57,6 +58,8 @@ void GameState_Pause::Initialize() {
         MenuText_[i].color = { 0.0f,0.0f,0.0f,1.0f };
         MenuText_[i].fontSize = 32;
         MenuText_[i].textBoxVisible = false; // テキストボックスの枠を非表示
+        MenuText_[i].isApplyViewMat = false;
+        MenuText_[i].layer = 21;
     }
 }
 

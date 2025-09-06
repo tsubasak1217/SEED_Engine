@@ -94,6 +94,12 @@ void GameStage::SetIsActive(bool isActive) {
 
         object->SetIsActive(isActive);
 
+        if(!isActive){
+            object->SetIsMustDraw(true);
+        } else{
+            object->SetIsMustDraw(false);
+        }
+
         // レーザーは別でアクティブを設定する
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
             if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {

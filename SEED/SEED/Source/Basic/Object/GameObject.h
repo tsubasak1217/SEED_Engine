@@ -124,6 +124,8 @@ public:
     void SetName(const std::string& name){ objectName_ = name; }
     void SetIsActive(bool isActive){ isActive_ = isActive; }
     bool GetIsActive() const{ return isActive_; }
+    void SetIsMustDraw(bool isMustDraw){ isMustDraw_ = isMustDraw; }
+    bool GetIsMustDraw() const{ return isMustDraw_; }
 
     //=====================================
     // 親子付け関連
@@ -197,6 +199,7 @@ protected:
     std::string objectName_;
     Vector3 targetOffset_;
     bool isActive_ = true;
+    bool isMustDraw_ = false;
     std::list<std::unique_ptr<IComponent>> components_;
 
 public:

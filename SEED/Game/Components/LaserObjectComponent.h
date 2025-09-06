@@ -93,8 +93,7 @@ private:
     // helper
     std::unique_ptr<ILaserObject> CreateInstance(LaserObjectType objectType) const;
     bool CheckEndExtend(GameObject2D* other);
-    Vector2 AxisFrom(DIRECTION4 direction);
-    float ComputeFrontDistance(const Vector2& center, const Vector2& size);
+    void ConsiderBlocker(const Vector2& center, const Vector2& size, bool apply);
 };
 
 //============================================================================

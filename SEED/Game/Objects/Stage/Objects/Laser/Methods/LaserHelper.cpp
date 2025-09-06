@@ -58,11 +58,47 @@ float LaserHelper::GetRotateFromDirection(DIRECTION4 direction) {
     return 0.0f;
 }
 
+Vector2 LaserHelper::GetAxisFromDirection(DIRECTION4 direction) {
+
+    switch (direction) {
+    case DIRECTION4::UP:    return { 0.0f, -1.0f };
+    case DIRECTION4::DOWN:  return { 0.0f,1.0f };
+    case DIRECTION4::RIGHT: return { 1.0f, 0.0f };
+    case DIRECTION4::LEFT:  return { -1.0f,0.0f };
+    }
+    return { 0.0f,1.0f };
+}
+
 void LaserHelper::UpdateLaserSprite(Sprite& sprite, float sizeExtendSpeed) {
 
     // サイズを伸ばす
     sprite.size.y += sizeExtendSpeed;
 }
+
+float LaserHelper::ComputeFrontDistance(DIRECTION4 direction, const Vector2& translate,
+    const Vector2& center, const Vector2& size) {
+
+    const Vector2 origin = translate;
+    const Vector2 half = size * 0.5f;
+
+    // 向き別で面の距離を計算する
+    switch (direction) {
+    case DIRECTION4::UP:
+
+        return origin.y - (center.y + half.y);
+    case DIRECTION4::DOWN:
+
+        return (center.y - half.y) - origin.y;
+    case DIRECTION4::RIGHT:
+
+        return (center.x - half.x) - origin.x;
+    case DIRECTION4::LEFT:
+
+        return origin.x - (center.x + half.x);
+    }
+    return std::numeric_limits<float>::infinity();
+}
+
 
 bool LaserHelper::HasObejctType(ObjectType value, ObjectType flag) {
 

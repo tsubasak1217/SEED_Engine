@@ -32,9 +32,15 @@ public:
 
     // 向きから回転を取得する
     static float GetRotateFromDirection(DIRECTION4 direction);
+    // 方向ベクトルを取得する
+    static Vector2 GetAxisFromDirection(DIRECTION4 direction);
 
     // 向いている向きにサイズを伸ばして見た目が変らないように見た目を維持する
     static void UpdateLaserSprite(Sprite& sprite, float sizeExtendSpeed);
+
+    // 前面のブロックとの距離を取得する
+    static float ComputeFrontDistance(DIRECTION4 direction, const Vector2& translate,
+        const Vector2& center, const Vector2& size);
 
     // オブジェクトタイプチェック
     static bool HasObejctType(ObjectType value, ObjectType flag);

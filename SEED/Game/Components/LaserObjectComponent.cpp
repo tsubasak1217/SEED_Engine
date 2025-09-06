@@ -58,38 +58,36 @@ bool LaserObjectComponent::CheckEndExtend(GameObject2D* other) {
     return false;
 }
 
-Vector2 LaserObjectComponent::AxisFrom(DIRECTION4 direction) {
+void LaserObjectComponent::ConsiderBlocker(const Vector2& center, const Vector2& size, bool apply) {
 
-    switch (direction) {
-    case DIRECTION4::UP:    return { 0.0f, -1.0f };
-    case DIRECTION4::DOWN:  return { 0.0f,1.0f };
-    case DIRECTION4::RIGHT: return { 1.0f, 0.0f };
-    case DIRECTION4::LEFT:  return { -1.0f,0.0f };
-    }
-    return { 0.0f,1.0f };
-}
+    // 方向を考慮した前面までの距離を取得
+    const float distance = LaserHelper::ComputeFrontDistance(
+        object_->GetDirection(), owner_.owner2D->GetWorldTranslate(), center, size);
 
-float LaserObjectComponent::ComputeFrontDistance(const Vector2& center, const Vector2& size) {
-
-    const Vector2 origin = owner_.owner2D->GetWorldTranslate();
+    // 軸方向半サイズ
+    const Vector2 axis = LaserHelper::GetAxisFromDirection(object_->GetDirection());
     const Vector2 half = size * 0.5f;
+    const float padding = std::fabs(half.x * axis.x) + std::fabs(half.y * axis.y);
+    const float eps = 1e-4f;
 
-    // 向き別で面の距離を計算する
-    switch (object_->GetDirection()) {
-    case DIRECTION4::UP:
+    // 後ろ側は除外しつつ最短を更新
+    if (distance >= -padding - eps && distance < blocker_.frontDistance) {
 
-        return origin.y - (center.y + half.y);
-    case DIRECTION4::DOWN:
+        // 衝突相手を設定
+        blocker_.isFound = true;
+        blocker_.frontDistance = distance;
+        blocker_.translate = center;
+        blocker_.size = size;
 
-        return (center.y - half.y) - origin.y;
-    case DIRECTION4::RIGHT:
+        // 即時適応を行う
+        if (apply) {
 
-        return (center.x - half.x) - origin.x;
-    case DIRECTION4::LEFT:
-
-        return origin.x - (center.x + half.x);
+            Vector2 setSize = object_->GetSize();
+            setSize.y = (std::max)(0.0f, distance);
+            object_->SetSize(setSize);
+            object_->StopExtend();
+        }
     }
-    return std::numeric_limits<float>::infinity();
 }
 
 //============================================================================
@@ -109,7 +107,19 @@ void LaserObjectComponent::Draw() {
     object_->Draw();
 }
 
-void LaserObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
+void LaserObjectComponent::OnCollisionEnter(GameObject2D* other) {
+
+    // 他のフィールドオブジェクトと衝突したらレーザーの伸びる処理を止める
+    // プレイヤー、ゴール以外
+    if (CheckEndExtend(other)) {
+        return;
+    }
+
+    // 衝突した瞬間にレーザーを止める
+    if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+
+        ConsiderBlocker(component->GetBlockTranslate(), component->GetMapSize(), true);
+    }
 }
 
 void LaserObjectComponent::OnCollisionStay(GameObject2D* other) {
@@ -120,27 +130,10 @@ void LaserObjectComponent::OnCollisionStay(GameObject2D* other) {
         return;
     }
 
-    // 他のオブジェクトと衝突したら
+    // 衝突相手を検索して新しく近い相手と衝突していたらサイズを調整する
     if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
 
-        const Vector2 center = component->GetBlockTranslate(); // ブロック中心
-        const Vector2 size = component->GetMapSize();          // ブロックサイズ
-
-        // 前面距離を比較して近い方を設定する
-        const float fd = ComputeFrontDistance(center, size);
-        const Vector2 axis = AxisFrom(object_->GetDirection());
-        const Vector2 half = size * 0.5f;
-        // 軸方向半サイズ
-        const float padding = std::fabs(half.x * axis.x) + std::fabs(half.y * axis.y);
-        const float eps = 1e-4f;
-        if (fd >= -padding - eps && fd < blocker_.frontDistance) {
-
-            // 衝突相手を設定
-            blocker_.isFound = true;
-            blocker_.frontDistance = fd;
-            blocker_.translate = center;
-            blocker_.size = size;
-        }
+        ConsiderBlocker(component->GetBlockTranslate(), component->GetMapSize(), false);
     }
 }
 

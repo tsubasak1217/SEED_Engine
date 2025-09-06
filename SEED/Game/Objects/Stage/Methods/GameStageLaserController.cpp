@@ -52,7 +52,9 @@ void GameStageLaserController::SetLaserLauncheres(StageObjectCommonState state,
     const std::vector<LaserLauncher*> launcheres) {
 
     // 全てリセット
-    ResetLauncheres(state);
+    usedWarpIndexByFamily_.clear();
+    inWarpLasers_.clear();
+    pendingSpawns_.clear();
 
     // タイプ別で発射台を設定
     switch (state) {

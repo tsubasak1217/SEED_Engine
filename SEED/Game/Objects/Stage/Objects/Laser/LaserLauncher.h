@@ -13,13 +13,13 @@
 class LaserLauncher :
     public IStageObject {
 public:
-	//========================================================================
-	//	public Methods
-	//========================================================================
+    //========================================================================
+    //	public Methods
+    //========================================================================
 
-	LaserLauncher(GameObject2D* owner) : IStageObject(owner) {}
-	LaserLauncher() = default;
-	~LaserLauncher();
+    LaserLauncher(GameObject2D* owner) : IStageObject(owner) {}
+    LaserLauncher() = default;
+    ~LaserLauncher();
 
     void Initialize() override;
     void InitializeLaunchSprites();
@@ -31,7 +31,12 @@ public:
 
     void Edit() override;
 
-	//--------- accessor -----------------------------------------------------
+    // ワープレーザー処理
+    void WarpLaserFromController(const Vector2& translate, const GameObject2D* sourceLaserObject);
+    // ワープ後にできたオブジェクトを破棄
+    void RemoveWarpLasers();
+
+    //--------- accessor -----------------------------------------------------
 
     void SetTranslate(const Vector2& translate) override;
     void SetSize(const Vector2& size) override;
@@ -44,12 +49,14 @@ public:
 
     // 方向をビット値で取得
     uint8_t GetBitDirection() const { return bitDirection_; }
+    // レーザーを取得する
+    const std::list<GameObject2D*> GetLasers() const { return lasers_; }
 private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
+    //========================================================================
+    //	private Methods
+    //========================================================================
 
-	//--------- variables ----------------------------------------------------
+    //--------- variables ----------------------------------------------------
 
     // 値保持用
     std::string fileName_; // スプライト
@@ -64,8 +71,9 @@ private:
 
     // レーザー本体
     std::list<GameObject2D*> lasers_;
+    std::list<GameObject2D*> warpedLasers_;
 
-	//--------- functions ----------------------------------------------------
+    //--------- functions ----------------------------------------------------
 
 
 };

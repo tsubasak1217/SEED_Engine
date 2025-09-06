@@ -127,9 +127,11 @@ void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other
     }
     case StageObjectType::Warp:
     {
+        if (other->GetObjectType() == ObjectType::Player) {
 
-        // ワープを行わせるように通知
-        GetStageObject<Warp>()->SetNotification();
+            // ワープを行わせるように通知
+            GetStageObject<Warp>()->SetNotification();
+        }
         break;
     }
     case StageObjectType::EmptyBlock:

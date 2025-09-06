@@ -128,6 +128,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Methods\GameStageLaserController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp">
       <SubType>
@@ -340,6 +344,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Components\LaserObjectComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Methods\GameStageLaserController.h">
       <SubType>
       </SubType>
     </ClInclude>

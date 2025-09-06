@@ -6,6 +6,7 @@
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 #include <Game/Objects/Stage/Methods/GameStageWarpController.h>
+#include <Game/Objects/Stage/Methods/GameStageLaserController.h>
 
 // c++
 #include <list>
@@ -103,7 +104,8 @@ private:
     Player* player_ = nullptr;
 
     // メソッド
-    std::unique_ptr<GameStageWarpController> warpController_; // ワープ管理
+    std::unique_ptr<GameStageWarpController> warpController_;   // ワープ管理
+    std::unique_ptr<GameStageLaserController> laserController_; // レーザー管理
 
     // パラメータ
     float stageObjectMapTileSize_; // マップ一個分のサイズ
@@ -122,6 +124,7 @@ private:
     /// Play
     void UpdatePlay();
     void UpdateWarp();
+    void UpdateLaserLauncher();
     void UpdateBorderLine();
     /// Clear
     void UpdateClear();
@@ -136,6 +139,7 @@ private:
     void GetListsPlayerPtr();
     //
     void SetListsWarpPtr(StageObjectCommonState state);
+    void SetListsLaserLaunchersPtr(StageObjectCommonState state);
     void PutBorderLine();
     void CheckClear();
     //死亡判定

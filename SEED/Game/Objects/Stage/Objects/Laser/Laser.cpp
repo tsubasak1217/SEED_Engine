@@ -9,11 +9,22 @@
 //	Laser classMethods
 //============================================================================
 
+static uint64_t gLaserFamilyIdSequence = 1;
+
 void Laser::Initialize() {
 
     // スプライトの初期化
     sprite_ = Sprite("Scene_Game/StageObject/laserForward.png");
     sprite_.anchorPoint = Vector2(0.5f, 1.0f);
+
+    // 初期化値
+    warpParam_.isHit = false;
+
+    // 初期レーザー作成時に新しい系統IDを設定
+    if (familyId_ == 0) {
+
+        familyId_ = gLaserFamilyIdSequence++;
+    }
 }
 
 void Laser::SetDirection(DIRECTION4 direction) {
@@ -35,6 +46,14 @@ void Laser::StopExtend() {
 
     // 停止させる
     currentState_ = State::Stop;
+}
+
+void Laser::SetHitWarpParam(const WarpLaserParam& param) {
+
+    // 値を設定
+    warpParam_.isHit = param.isHit;
+    warpParam_.warpIndex = param.warpIndex;
+    warpParam_.warpCommonState = param.warpCommonState;
 }
 
 void Laser::Update() {

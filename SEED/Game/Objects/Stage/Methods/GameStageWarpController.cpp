@@ -40,6 +40,67 @@ void GameStageWarpController::SetWarps(StageObjectCommonState state,
     }
 }
 
+Vector2 GameStageWarpController::GetWarpTargetTranslateFromIndex(
+    StageObjectCommonState state, uint32_t warpIndex) const {
+
+    Vector2 result{};
+    switch (state) {
+    case StageObjectCommonState::None: {
+
+        for (const auto& warp : noneWarps_) {
+            // 相手が見つかれば座標を渡す
+            if (warp->GetWarpIndex() == warpIndex) {
+
+                result = warp->GetOwner()->GetWorldTranslate();
+            }
+        }
+        break;
+    }
+    case StageObjectCommonState::Hologram: {
+
+        for (const auto& warp : hologramWarps_) {
+            // 相手が見つかれば座標を渡す
+            if (warp->GetWarpIndex() == warpIndex) {
+
+                result = warp->GetOwner()->GetWorldTranslate();
+            }
+        }
+        break;
+    }
+    }
+    return result;
+}
+
+bool GameStageWarpController::CheckWarpPartner(StageObjectCommonState state, uint32_t warpIndex) {
+
+    // タイプ別で判定、引き数の状態とは反対の状態が相手になる
+    switch (state) {
+    case StageObjectCommonState::None: {
+
+        for (const auto& warp : hologramWarps_) {
+            // 相手が見つかればtrueを返す
+            if (warp->GetWarpIndex() == warpIndex) {
+
+                return true;
+            }
+        }
+        return false;
+    }
+    case StageObjectCommonState::Hologram: {
+
+        for (const auto& warp : noneWarps_) {
+            // 相手が見つかればtrueを返す
+            if (warp->GetWarpIndex() == warpIndex) {
+
+                return true;
+            }
+        }
+        return false;
+    }
+    }
+    return false;
+}
+
 void GameStageWarpController::Update() {
 
     // 状態毎にワープの更新処理を行う

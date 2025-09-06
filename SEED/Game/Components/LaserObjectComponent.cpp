@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Stage/Objects/Laser/Methods/LaserHelper.h>
+#include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Components/StageObjectComponent.h>
 
 // lasers
@@ -49,11 +50,49 @@ std::unique_ptr<ILaserObject> LaserObjectComponent::CreateInstance(LaserObjectTy
 bool LaserObjectComponent::CheckEndExtend(GameObject2D* other) {
 
     const auto type = other->GetObjectType();
+
+    // ワープ処理のチェック
+    if (CheckWarp(other)) {
+        return true;
+    }
+
     if (LaserHelper::HasObejctType(type, ObjectType::Player) ||
         LaserHelper::HasObejctType(type, ObjectType::Goal) ||
         LaserHelper::HasObejctType(type, ObjectType::EmptyBlock) ||
         LaserHelper::HasObejctType(type, ObjectType::Laser)) {
         return true;
+    }
+    return false;
+}
+
+bool LaserObjectComponent::CheckWarp(GameObject2D* other) {
+
+    // ワープでないなら次の処理に進ませる
+    if (!LaserHelper::HasObejctType(other->GetObjectType(), ObjectType::Warp)) {
+        return false;
+    }
+
+    // すでに衝突している場合は処理しない
+    if (object_->GetWarpParam().isHit) {
+        return true;
+    }
+    // レーザーにワープと衝突したことを通知する
+    if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+        if (Warp* warp = component->GetStageObject<Warp>()) {
+
+            // パラメータを設定
+            WarpLaserParam param{};
+            param.isHit = true;
+            param.warpIndex = warp->GetWarpIndex();
+            param.warpCommonState = warp->GetCommonState();
+            object_->SetHitWarpParam(param);
+
+            // ワープ地点でレーザーを止める
+            // これを書くと他のフィールドオブジェクトで止まらなくなる。
+            // ここで止めるんじゃなくてレーザーがワープすることが決まってからじゃないと矛盾する
+            //ConsiderBlocker(component->GetBlockTranslate(), component->GetMapSize(), true);
+            return true;
+        }
     }
     return false;
 }
@@ -137,7 +176,15 @@ void LaserObjectComponent::OnCollisionStay(GameObject2D* other) {
     }
 }
 
-void LaserObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
+void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {
+
+    // ワープと離れたらfalseにする
+    if (LaserHelper::HasObejctType(other->GetObjectType(), ObjectType::Warp)) {
+       
+        auto param = object_->GetWarpParam();
+        param.isHit = false;
+        object_->SetHitWarpParam(param);
+    }
 }
 
 //============================================================================

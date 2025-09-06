@@ -203,3 +203,17 @@ DIRECTION4 LaserHelper::GetStateDirection(StageObjectCommonState commonState, DI
     }
     return result;
 }
+
+StageObjectCommonState LaserHelper::GetInverseCommonState(StageObjectCommonState state) {
+
+    // 逆の状態を返す
+    switch (state) {
+    case StageObjectCommonState::None:
+
+        return StageObjectCommonState::Hologram;
+    case StageObjectCommonState::Hologram:
+
+        return StageObjectCommonState::None;
+    }
+    return StageObjectCommonState::None;
+}

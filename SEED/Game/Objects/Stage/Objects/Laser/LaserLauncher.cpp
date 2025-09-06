@@ -6,6 +6,7 @@
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/Objects/Stage/Objects/Laser/Methods/LaserBuilder.h>
 #include <Game/Objects/Stage/Objects/Laser/Methods/LaserHelper.h>
+#include <Game/Components/LaserObjectComponent.h>
 
 //============================================================================
 //	LaserLauncher classMethods
@@ -20,6 +21,12 @@ LaserLauncher::~LaserLauncher() {
         laser = nullptr;
     }
     lasers_.clear();
+    for (auto& laser : warpedLasers_) {
+
+        delete laser;
+        laser = nullptr;
+    }
+    warpedLasers_.clear();
 }
 
 void LaserLauncher::Initialize() {
@@ -68,6 +75,10 @@ void LaserLauncher::SetIsLaserActive(bool isActive) {
 
         laser->SetIsActive(isActive);
     }
+    for (auto& laser : warpedLasers_) {
+
+        laser->SetIsActive(isActive);
+    }
 }
 
 void LaserLauncher::InitializeLaunchSprites() {
@@ -93,6 +104,30 @@ void LaserLauncher::InitializeLasers() {
         GetOwner()->GetWorldTranslate(), laserSize_);
     // コライダーの登録
     laserBuilder.CreateLaserColliders(lasers_);
+}
+
+void LaserLauncher::WarpLaserFromController(
+    const Vector2& translate, const GameObject2D* sourceLaserObject) {
+
+    // 対象のレーザーをワープの場所に複製する
+    for (const auto& laserObject : lasers_) {
+        if (laserObject == sourceLaserObject) {
+
+            LaserBuilder laserBuilder{};
+            warpedLasers_.push_back(laserBuilder.CopyLaser(translate, laserObject));
+            break;
+        }
+    }
+}
+
+void LaserLauncher::RemoveWarpLasers() {
+
+    for (auto& laser : warpedLasers_) {
+
+        delete laser;
+        laser = nullptr;
+    }
+    warpedLasers_.clear();
 }
 
 void LaserLauncher::Update() {

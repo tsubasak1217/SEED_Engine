@@ -93,6 +93,8 @@ private:
     // helper
     std::unique_ptr<ILaserObject> CreateInstance(LaserObjectType objectType) const;
     bool CheckEndExtend(GameObject2D* other);
+    bool CheckWarp(GameObject2D* other);
+    // フィールドオブジェクトと衝突時にレーザーをその場で止める
     void ConsiderBlocker(const Vector2& center, const Vector2& size, bool apply);
 };
 

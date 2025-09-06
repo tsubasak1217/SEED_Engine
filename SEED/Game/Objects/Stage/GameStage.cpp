@@ -30,13 +30,18 @@ void GameStage::Initialize(int currentStageIndex) {
     // ワープ管理
     warpController_ = std::make_unique<GameStageWarpController>();
     warpController_->Initialize();
+    // レーザー管理
+    laserController_ = std::make_unique<GameStageLaserController>();
+    laserController_->Initialize();
+    laserController_->SetWarpController(warpController_.get());
 
     // json適応
     ApplyJson();
 
     // 最初のステージを構築する
     maxStageCount_ = GameStageHelper::GetCSVFileCount(); // 最大ステージ数をCSVファイル数から取得
-    currentStageIndex_ = currentStageIndex;             // 最初のステージインデックス
+    currentStageIndex;
+    currentStageIndex_ = 2;              // 最初のステージインデックス
     isRemoveHologram_ = false;
     BuildStage();
 }
@@ -73,6 +78,7 @@ void GameStage::BuildStage() {
     // リストから必要なポインタを渡す
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::None);
+    SetListsLaserLaunchersPtr(StageObjectCommonState::None);
 
     //cameraの初期位置を設定
     //SEED::GetCamera("default")
@@ -161,6 +167,8 @@ void GameStage::UpdatePlay() {
 
     // ワープの更新処理
     UpdateWarp();
+    // レーザーの更新処理
+    UpdateLaserLauncher();
 
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
@@ -175,6 +183,12 @@ void GameStage::UpdateWarp() {
 
     // ワープの更新処理
     warpController_->Update();
+}
+
+void GameStage::UpdateLaserLauncher() {
+
+    // レーザーの更新処理
+    laserController_->Update();
 }
 
 void GameStage::UpdateBorderLine() {
@@ -296,6 +310,40 @@ void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
     warpController_->SetWarps(state, warps);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//
+// レーザー発射台のポインタをリストから取得して渡す
+//
+//////////////////////////////////////////////////////////////////////////
+
+void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state) {
+
+    std::vector<LaserLauncher*> launcheres{};
+    if (state == StageObjectCommonState::None) {
+        for (GameObject2D* object : objects_) {
+            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+
+                    // レーザー発射台のポインタを追加
+                    launcheres.push_back(component->GetStageObject<LaserLauncher>());
+                }
+            }
+        }
+    } else if (state == StageObjectCommonState::Hologram) {
+        for (GameObject2D* object : hologramObjects_) {
+            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+
+                    // レーザー発射台のポインタを追加
+                    launcheres.push_back(component->GetStageObject<LaserLauncher>());
+                }
+            }
+        }
+    }
+    // レーザー発射台のポインタを渡す
+    laserController_->SetLaserLauncheres(state, launcheres);
+}
+
 /////////////////////////////////////////////////////////////////////////
 //
 // 境界線設置
@@ -326,6 +374,7 @@ void GameStage::PutBorderLine() {
     // リストから必要なポインタを渡す
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::Hologram);
+    SetListsLaserLaunchersPtr(StageObjectCommonState::Hologram);
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -342,6 +391,8 @@ void GameStage::RemoveBorderLine() {
 
     // 境界線を非アクティブ状態にする
     borderLine_->SetDeactivate();
+    // ホログラム側のレーザーをすべて破棄する
+    laserController_->ResetLauncheres(StageObjectCommonState::Hologram);
 
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
@@ -432,6 +483,11 @@ void GameStage::Edit() {
             if (ImGui::BeginTabItem("Warp")) {
 
                 warpController_->Edit();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Laser")) {
+
+                laserController_->Edit();
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Camera")) {

@@ -52,6 +52,42 @@ std::list<GameObject2D*> LaserBuilder::CreateLasersFromDirection(const std::vect
     return laserList;
 }
 
+GameObject2D* LaserBuilder::CopyLaser(const Vector2& translate, GameObject2D* sourceLaser) {
+
+    // 新しいオブジェクトを作成
+    GameObject2D* object = new GameObject2D(GameSystem::GetScene());
+    object->SetWorldTranslate(translate);
+    object->UpdateMatrix();
+
+    // 元レーザーのコンポーネントを参照
+    const LaserObjectComponent* sourceComponent = sourceLaser->GetComponent<LaserObjectComponent>();
+
+    // 新しいレーザーコンポーネントを作成
+    LaserObjectComponent* dstComponent = object->AddComponent<LaserObjectComponent>();
+    dstComponent->Initialize(LaserObjectType::Normaml, Vector2(0.0f, 0.0f));
+    dstComponent->SetObjectCommonState(sourceComponent->GetLaserObject<Laser>()->GetCommonState());
+    dstComponent->SetLaserDirection(sourceComponent->GetLaserObject<Laser>()->GetDirection());
+
+    // ワープデータを共有する
+    WarpLaserParam param = sourceComponent->GetLaserObject<Laser>()->GetWarpParam();
+    dstComponent->GetLaserObject<Laser>()->SetHitWarpParam(param);
+    // 系統IDを継承
+    dstComponent->GetLaserObject<Laser>()->SetFamilyId(sourceComponent->GetLaserObject<Laser>()->GetFamilyId());
+
+    // サイズYは小さい値から開始して伸びさせる
+    const float initSizeY = 0.4f;
+    const Vector2 sourceSize = sourceComponent->GetLaserObject<Laser>()->GetSize();
+    dstComponent->SetSize(Vector2(sourceSize.x, initSizeY));
+    // 伸びる状態を設定
+    dstComponent->ReExtend();
+
+    // コライダーを作成
+    std::list<GameObject2D*> dstCollider{ object };
+    CreateLaserColliders(dstCollider);
+
+    return object;
+}
+
 void LaserBuilder::CreateLaserColliders(std::list<GameObject2D*>& lasers) {
 
     for (GameObject2D* laser : lasers) {

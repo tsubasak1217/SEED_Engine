@@ -54,4 +54,7 @@ public:
         const Vector2& translate, const Vector2& launcherSize, float gap);
     // 状態に応じた向きを取得する
     static DIRECTION4 GetStateDirection(StageObjectCommonState commonState, DIRECTION4 direction);
+
+    // 逆の状態を返す
+    static StageObjectCommonState GetInverseCommonState(StageObjectCommonState state);
 };

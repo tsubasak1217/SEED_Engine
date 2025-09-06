@@ -14,6 +14,18 @@
 #include <string>
 
 //============================================================================
+//	Laser structure
+//============================================================================
+
+// ワープするレーザー処理
+struct WarpLaserParam {
+
+    bool isHit;                             // ワープと衝突したかどうか
+    uint32_t warpIndex;                     // 衝突したワープのインデックス
+    StageObjectCommonState warpCommonState; // 通常かホログラムか
+};
+
+//============================================================================
 //	ILaserObject class
 //============================================================================
 class ILaserObject {
@@ -50,12 +62,19 @@ public:
     virtual void StopExtend() = 0;
     void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
     virtual void SetDirection(DIRECTION4 direction) = 0;
+    // ヒット先のワープの情報を設定する
+    virtual void SetHitWarpParam(const WarpLaserParam& param) = 0;
+    void SetFamilyId(uint64_t id) { familyId_ = id; }
 
     const Vector2& GetTranslate() const { return sprite_.translate; }
     const Vector2& GetSize() const { return sprite_.size; }
     const Vector2& GetAnchorPoint() const { return sprite_.anchorPoint; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
     DIRECTION4 GetDirection() const { return direction_; }
+
+    // ヒット先のワープの情報を取得する
+    const WarpLaserParam& GetWarpParam() const { return warpParam_; }
+    uint64_t GetFamilyId() const { return familyId_; }
 
     GameObject2D* GetOwner() const { return owner_; }
 protected:
@@ -83,4 +102,8 @@ protected:
     // パラメータ
     float initSizeY_;       // 初期化時のサイズY
     float sizeExtendSpeed_; // レーザーが伸びる速度
+    // ワープするレーザー処理に使用する
+    WarpLaserParam warpParam_;
+    //  発射系統を識別するID
+    uint64_t familyId_ = 0;
 };

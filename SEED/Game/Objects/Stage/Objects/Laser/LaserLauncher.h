@@ -35,6 +35,8 @@ public:
     void WarpLaserFromController(const Vector2& translate, const GameObject2D* sourceLaserObject);
     // ワープ後にできたオブジェクトを破棄
     void RemoveWarpLasers();
+    // 所持ているレーザーに対してアクティブを設定する
+    void SetIsActive(bool isActive);
 
     //--------- accessor -----------------------------------------------------
 

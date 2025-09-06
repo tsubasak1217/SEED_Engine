@@ -106,8 +106,18 @@ void GameStage::SetIsActive(bool isActive) {
 
 // 非アクティブオブジェクトの再アクティブ化
 void GameStage::ReActivateDisActiveObjects() {
+
     for (const auto& object : disActiveObjects_) {
+
         object->SetIsActive(true);
+
+        // レーザーは別でアクティブを設定する
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+
+                laserLauncher->SetIsActive(true);
+            }
+        }
     }
     disActiveObjects_.clear();
 }

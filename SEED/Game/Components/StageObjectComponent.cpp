@@ -9,12 +9,12 @@
 #include <Game/Objects/Stage/Objects/Block/BlockEmpty.h>
 #include <Game/Objects/Stage/Objects/Goal/Goal.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // scene
 #include <Game/GameSystem.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
-
 
 //============================================================================
 //	StageObjectComponent classMethods
@@ -33,7 +33,7 @@ void StageObjectComponent::Initialize() {
 
 void StageObjectComponent::Initialize(
     StageObjectType objectType, const Vector2& translate,
-    const Vector2& size,StageObjectCommonState state
+    const Vector2& size, StageObjectCommonState state
 ) {
 
     objectType_ = objectType;
@@ -46,34 +46,35 @@ void StageObjectComponent::Initialize(
 
     // 座標、サイズを設定
     object_->SetTranslate(translate);
+    mapSize_ = size;
     object_->SetSize(size);
 }
 
 //============================================================================
 // 衝突時の処理
 //============================================================================
-void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other){
+void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
 
     // プレイヤーインスタンスを持っている場合
-    if(objectType_ == StageObjectType::Player){
+    if (objectType_ == StageObjectType::Player) {
         Player* player = dynamic_cast<Player*>(object_.get());
 
         // 着地した瞬間を検知
-        if(owner_.owner2D->GetIsOnGroundTrigger()){
+        if (owner_.owner2D->GetIsOnGroundTrigger()) {
             player->OnGroundTrigger();
         }
 
         // 天井に頭をぶつけた瞬間を検知
-        if(owner_.owner2D->GetIsCeilingTrigger()){
+        if (owner_.owner2D->GetIsCeilingTrigger()) {
             player->OnCeilingTrigger();
         }
 
         // ゴールに触れている場合
-        if(other->GetObjectType() == ObjectType::Goal){
+        if (other->GetObjectType() == ObjectType::Goal) {
             player->IncreaseGoalTouchTime();
 
             // ステージクリア処理
-            if(player->IsClearStage()){
+            if (player->IsClearStage()) {
                 Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene());
                 pScene->GetStage()->SetIsClear(true);
             }
@@ -82,16 +83,16 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
     }
 
     // 自身が空白ブロック,Player以外だった時の処理
-    if(objectType_ != StageObjectType::EmptyBlock && objectType_ != StageObjectType::Player){
+    if (objectType_ != StageObjectType::EmptyBlock && objectType_ != StageObjectType::Player) {
         // 空白ブロックと衝突していたらオブジェクトを非アクティブにする
-        if(other->GetObjectType() == ObjectType::EmptyBlock){
+        if (other->GetObjectType() == ObjectType::EmptyBlock) {
             owner_.owner2D->SetIsActive(false);
             GameStage::AddDisActiveObject(owner_.owner2D);
         }
     }
 
-    if(objectType_ == StageObjectType::Warp){
-        if(other->GetObjectType() == ObjectType::Field){
+    if (objectType_ == StageObjectType::Warp) {
+        if (other->GetObjectType() == ObjectType::Field) {
 
             // フィールドオブジェクトと重なっている場合はワープ不可
             GetStageObject<Warp>()->SetWarpNotPossible();
@@ -103,7 +104,7 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
 }
 
 
-void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other){
+void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
 
     // オブジェクトごとに処理を変える
     switch (objectType_) {
@@ -145,7 +146,7 @@ void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other
 void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
 
     // オブジェクトごとに処理を変える
-    switch(objectType_){
+    switch (objectType_) {
     case StageObjectType::NormalBlock:
     {
 
@@ -172,6 +173,31 @@ void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other)
 
     // blockに衝突通知
     object_->OnCollisionExit(other);
+}
+
+IStageObject* StageObjectComponent::GetTypeStageObject() const {
+
+    switch (objectType_) {
+    case StageObjectType::NormalBlock:
+        
+        return GetStageObject<BlockNormal>();
+    case StageObjectType::Goal:
+        
+        return GetStageObject<Goal>();
+    case StageObjectType::Player:
+        
+        return GetStageObject<Player>();
+    case StageObjectType::Warp:
+        
+        return GetStageObject<Warp>();
+    case StageObjectType::EmptyBlock:
+        
+        return GetStageObject<BlockEmpty>();
+    case StageObjectType::LaserLauncher:
+
+        return GetStageObject<LaserLauncher>();
+    }
+    return nullptr;
 }
 
 
@@ -212,6 +238,12 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
         std::unique_ptr<BlockEmpty> block = std::make_unique<BlockEmpty>(owner_.owner2D);
         block->Initialize();
         return block;
+    }
+    case StageObjectType::LaserLauncher:
+    {
+        std::unique_ptr<LaserLauncher> laserLauncher = std::make_unique<LaserLauncher>(owner_.owner2D);
+        laserLauncher->Initialize();
+        return laserLauncher;
     }
     }
     return nullptr;

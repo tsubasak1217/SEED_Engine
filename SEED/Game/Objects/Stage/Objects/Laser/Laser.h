@@ -3,15 +3,19 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
+#include <Game/Objects/Stage/Objects/Interface/ILaserObject.h>
 
 //============================================================================
 //	Laser class
 //============================================================================
-class Laser : public IStageObject {
+class Laser :
+    public ILaserObject {
 public:
+    //========================================================================
+    //	public Methods
+    //========================================================================
 
-    Laser(GameObject2D* owner) : IStageObject(owner) {}
+    Laser(GameObject2D* owner) : ILaserObject(owner) {}
     Laser() = default;
     ~Laser() = default;
 
@@ -25,6 +29,13 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
+    void SetDirection(DIRECTION4 direction) override;
+
+    // 状態の設定
+    // 伸び始める
+    void ReExtend() override;
+    // 伸びるのを終了
+    void StopExtend() override;
 private:
     //========================================================================
     //	private Methods
@@ -35,4 +46,8 @@ private:
 
 
     //--------- functions ----------------------------------------------------
+
+    // update
+    void UpdateExtend();
+    void UpdateStop();
 };

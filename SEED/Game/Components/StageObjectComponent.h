@@ -35,8 +35,6 @@ public:
         StageObjectCommonState state = StageObjectCommonState::None
     );
 
-
-
     //--------- collision ----------------------------------------------------
 
     void OnCollisionStay(GameObject2D* other) override;
@@ -50,12 +48,11 @@ public:
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
     void UpdateBlockTranslate(){ object_->SetTranslate(owner_.owner2D->GetWorldTranslate()); }
+    const Vector2& GetMapSize() const { return mapSize_; }
 
     template <typename T>
     T* GetStageObject() const;
-    Player* GetPlayer() const;
-
-
+    IStageObject* GetTypeStageObject() const;
 private:
     //========================================================================
     //	private Methods
@@ -67,6 +64,9 @@ private:
     StageObjectType objectType_;
     // IStageObjectを継承したオブジェクトのインスタンスを持つ
     std::unique_ptr<IStageObject> object_ = nullptr;
+
+    // サイズを保持
+    Vector2 mapSize_;
 
     //--------- functions ----------------------------------------------------
 
@@ -81,5 +81,9 @@ private:
 template<typename T>
 inline T* StageObjectComponent::GetStageObject() const {
 
-    return static_cast<T*>(object_.get());
+    static_assert(std::is_base_of<IStageObject, T>::value, "T must derive from IStageObject");
+    if (!object_) {
+        return nullptr;
+    }
+    return dynamic_cast<T*>(object_.get());
 }

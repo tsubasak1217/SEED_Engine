@@ -11,6 +11,7 @@
 #include <Game/Components/StageObjectComponent.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
 #include <Game/Objects/Stage/Methods/GameStageBuilder.h>
 #include <Game/Objects/Stage/Methods/GameStageHelper.h>
 
@@ -83,18 +84,23 @@ void GameStage::BuildStage() {
 //Objectのアクティブ・非アクティブ設定
 void GameStage::SetIsActive(bool isActive) {
 
-    for (const auto& object : objects_) {
+    // アクティブを設定する
+    for (GameObject2D* object : std::views::join(std::array{ objects_, hologramObjects_ })) {
 
         object->SetIsActive(isActive);
-    }
-    for (const auto& object : hologramObjects_) {
 
-        object->SetIsActive(isActive);
+        // レーザーは別でアクティブを設定する
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+
+                laserLauncher->SetIsLaserActive(isActive);
+            }
+        }
     }
 }
 
 // 非アクティブオブジェクトの再アクティブ化
-void GameStage::ReActivateDisActiveObjects(){
+void GameStage::ReActivateDisActiveObjects() {
     for (const auto& object : disActiveObjects_) {
         object->SetIsActive(true);
     }

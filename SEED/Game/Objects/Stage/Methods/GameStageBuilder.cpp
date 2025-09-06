@@ -14,17 +14,59 @@
 #include <Game/Objects/Stage/Objects/Block/BlockNormal.h>
 #include <Game/Objects/Stage/Objects/Goal/Goal.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
+#include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 //============================================================================
 //	GameStageBuilder classMethods
 //============================================================================
 
+namespace {
+
+    // レーザーの向き
+    enum LaserDirection : uint8_t {
+
+        Up = 1,   // 0b0001
+        Down = 2, // 0b0010
+        Left = 4, // 0b0100
+        Right = 8 // 0b1000
+    };
+
+    bool ParseCell(const std::string& cell, int& outId, uint8_t& outDirs) {
+
+        // 先頭の連続数字をIDとして読む
+        size_t i = 0;
+        while (i < cell.size() && std::isdigit(static_cast<unsigned char>(cell[i]))) {
+
+            ++i;
+        }
+        if (i == 0) {
+            return false;
+        }
+        outId = std::stoi(cell.substr(0, i));
+        outDirs = 0;
+
+        // 残りは方向サフィックス
+        for (char ch : cell.substr(i)) {
+
+            char u = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+            switch (u) {
+            case 'U': case 'T': outDirs |= Up;    break;
+            case 'D': case 'B': outDirs |= Down;  break;
+            case 'L':           outDirs |= Left;  break;
+            case 'R':           outDirs |= Right; break;
+            default: break;
+            }
+        }
+        return true;
+    }
+}
+
 std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
     const std::string& fileName, float tileSize) {
 
     // CSVデータ解析
-    std::vector<std::vector<int>> grid = GetCSVData(fileName);
+    auto grid = GetCSVDataRaw(fileName);
 
     // オブジェクトの幅
     const int rows = static_cast<int>(grid.size());
@@ -36,7 +78,7 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
     const float startX = std::round((centerX - (cols *
         tileSize) * 0.5f) / tileSize) * tileSize;
 
-    const float startY = 360.0f;
+    const float startY = 320.0f;
     std::list<GameObject2D*> objectList{};
 
     // オブジェクトのインデックス
@@ -47,9 +89,13 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
         const int colsThisRow = static_cast<int>(grid[r].size());
         for (int c = 0; c < colsThisRow; ++c) {
 
-            int id = grid[r][c];
+            int id = 0;
+            uint8_t directions = 0;
+            if (!ParseCell(grid[r][c], id, directions)) {
+                continue;
+            }
 
-            // Emptyは作成しない
+            // Noneは作成しない
             if (id == static_cast<int>(StageObjectType::None)) {
                 continue;
             }
@@ -72,9 +118,8 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
             }
 
-
             // オブジェクトごとの個別処理
-            IndividualSetting(*component, objectIndex[id]);
+            IndividualSetting(*component, objectIndex[id], directions);
 
             objectList.push_back(object);
         }
@@ -133,7 +178,8 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
     return objectList;
 }
 
-void GameStageBuilder::IndividualSetting(StageObjectComponent& component, uint32_t& objectIndex) {
+void GameStageBuilder::IndividualSetting(StageObjectComponent& component,
+    uint32_t& objectIndex, uint8_t directions) {
 
     StageObjectType objectType = component.GetStageObjectType();
     switch (objectType) {
@@ -163,14 +209,30 @@ void GameStageBuilder::IndividualSetting(StageObjectComponent& component, uint32
     case StageObjectType::Warp:
     {
 
+        // 対応するワープを設定するためのインデックスを設定
         Warp* warp = component.GetStageObject<Warp>();
         warp->SetWarpIndex(objectIndex);
-
         ++objectIndex;
         break;
     }
     case StageObjectType::EmptyBlock:
     {
+        ++objectIndex;
+        break;
+    }
+    case StageObjectType::LaserLauncher:
+    {
+
+        // 発射方向をビットで設定する
+        LaserLauncher* laserLauncher = component.GetStageObject<LaserLauncher>();
+        // 向きを設定
+        laserLauncher->SetLaunchDirections(directions);
+        // 発射台スプライトの作成
+        laserLauncher->InitializeLaunchSprites();
+        // 必要な値を設定
+        laserLauncher->SetSize(component.GetMapSize());
+        // レーザー本体の作成
+        laserLauncher->InitializeLasers();
         ++objectIndex;
         break;
     }
@@ -200,6 +262,21 @@ void GameStageBuilder::IndividualSetting(StageObjectComponent& dstComponent, con
     }
     case StageObjectType::EmptyBlock:
     {
+        break;
+    }
+    case StageObjectType::LaserLauncher: {
+
+        // 発射方向を共有する
+        LaserLauncher* dstLauncher = dstComponent.GetStageObject<LaserLauncher>();
+        LaserLauncher* sourceLauncher = sourceComponent.GetStageObject<LaserLauncher>();
+        // 向きを設定
+        dstLauncher->SetLaunchDirections(sourceLauncher->GetBitDirection());
+        // 発射台スプライトの作成
+        dstLauncher->InitializeLaunchSprites();
+        // 必要な値を設定
+        dstLauncher->SetSize(sourceComponent.GetMapSize());
+        // レーザー本体の作成
+        dstLauncher->InitializeLasers();
         break;
     }
     }
@@ -259,10 +336,17 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             }
             case StageObjectType::EmptyBlock:
             {
-                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f});
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true; // 当たり判定を無効にする
                 object->SetObjectType(ObjectType::EmptyBlock);
+                break;
+            }
+            case StageObjectType::LaserLauncher:
+            {
+                aabb->SetSize({ tileSize ,tileSize });
+                aabb->isMovable_ = false;
+                object->SetObjectType(ObjectType::Field);
                 break;
             }
             default:
@@ -297,6 +381,34 @@ std::vector<std::vector<int>> GameStageBuilder::GetCSVData(const std::string& fi
             // 空セル対策
             if (cell.empty()) cell = "0";
             row.push_back(std::stoi(cell));
+        }
+        if (!row.empty()) {
+            grid.push_back(std::move(row));
+        }
+    }
+    return grid;
+}
+
+std::vector<std::vector<std::string>> GameStageBuilder::GetCSVDataRaw(const std::string& fileName) {
+
+    // 読み込めなければエラー
+    std::ifstream ifs("Resources/Stage/" + fileName);
+    if (!ifs) {
+        assert(false && "Failed to open CSV");
+    }
+
+    std::vector<std::vector<std::string>> grid;
+    std::string line;
+    while (std::getline(ifs, line)) {
+
+        std::vector<std::string> row;
+        std::stringstream ss(line);
+        std::string cell;
+        while (std::getline(ss, cell, ',')) {
+
+            // 空セル対策
+            if (cell.empty()) cell = "0";
+            row.push_back(cell);
         }
         if (!row.empty()) {
             grid.push_back(std::move(row));

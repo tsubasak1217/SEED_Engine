@@ -124,8 +124,28 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Components\LaserObjectComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -197,8 +217,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ClCompile>
     <ClCompile Include="Game\Scene\Input\Device\MenuBarKeyInput.cpp" />
     <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
@@ -321,8 +339,32 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Components\LaserObjectComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Interface\ILaserObject.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -414,8 +456,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ClInclude>
     <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>

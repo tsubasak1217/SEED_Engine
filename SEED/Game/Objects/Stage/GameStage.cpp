@@ -100,11 +100,18 @@ void GameStage::SetIsActive(bool isActive) {
             object->SetIsMustDraw(false);
         }
 
-        // レーザーは別でアクティブを設定する
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+
+            // レーザーは別でアクティブを設定する
             if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
 
                 laserLauncher->SetIsLaserActive(isActive);
+            }
+            // ワープも別でアクティブを設定する
+            if (Warp* warp = component->GetStageObject<Warp>()) {
+
+                // 状態を元に戻す
+                warp->ResetAnimation();
             }
         }
     }
@@ -124,10 +131,10 @@ void GameStage::ReActivateDisActiveObjects() {
                 laserLauncher->SetIsActive(true);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* laserLauncher = component->GetStageObject<Warp>()) {
+            if (Warp* warp = component->GetStageObject<Warp>()) {
 
                 // 状態を元に戻す
-                laserLauncher->SetNone();
+                warp->SetNone();
             }
         }
         object = nullptr;

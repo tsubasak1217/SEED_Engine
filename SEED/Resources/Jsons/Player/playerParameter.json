@@ -11,7 +11,16 @@
             "moveSpeed_": 180.0
         },
         "Warp": {
-            "warpDuration": 0.4000000059604645
+            "beginDuration": 0.20000000298023224,
+            "beginScaling_.easing": "InBack",
+            "beginScaling_.start": 1.600000023841858,
+            "beginScaling_.target": 0.0,
+            "beginTranslate_.easing": "OutExpo",
+            "endDuration": 0.2800000011920929,
+            "endScaling_.easing": "OutBack",
+            "endScaling_.start": 0.0,
+            "endScaling_.target": 1.0,
+            "warpDuration": 0.10000000149011612
         }
     }
 }

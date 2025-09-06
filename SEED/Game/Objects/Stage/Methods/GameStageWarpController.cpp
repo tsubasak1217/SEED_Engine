@@ -259,10 +259,21 @@ void GameStageWarpController::Edit() {
         ImGui::Text("noneWarps: %d", noneWarps_.size());
         ImGui::Text("hologramWarps: %d", hologramWarps_.size());
 
-        if (currentState_ == State::Warping) {
+        ImGui::SeparatorText("None");
 
-            executingWarpStart_->Edit();
-            executingWarpTarget_->Edit();
+        if (!noneWarps_.empty()) {
+
+            ImGui::PushID("noneWarps_.front()");
+            noneWarps_.front()->Edit();
+            ImGui::PopID();
+        }
+        ImGui::SeparatorText("Hologram");
+
+        if (!hologramWarps_.empty()) {
+
+            ImGui::PushID("hologramWarps_.front()");
+            hologramWarps_.front()->Edit();
+            ImGui::PopID();
         }
     }
 }

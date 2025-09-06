@@ -549,7 +549,7 @@ void PolygonManager::AddTriangle(
     drawData->totalDrawCount++;
 }
 
-void PolygonManager::AddTriangle3DPrimitive(
+void PolygonManager::AddTrianglePrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
     uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
@@ -892,7 +892,7 @@ void PolygonManager::AddQuad(
 }
 
 
-void PolygonManager::AddQuad3DPrimitive(
+void PolygonManager::AddQuadPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,

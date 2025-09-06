@@ -149,6 +149,23 @@ public:
     static void DrawAABB2D(const AABB2D& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
 
+    // 六角形の描画
+    static void DrawHexagon(
+        const Vector2& center, float radius, float theta, 
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        BlendMode blendMode = BlendMode::NORMAL,
+        DrawLocation drawLocation = DrawLocation::Front, 
+        int32_t layer = 0
+    );
+
+    static void DrawHexagonFrame(
+        const Vector2& center, float radius, float theta, float frameWidthRate, 
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        BlendMode blendMode = BlendMode::NORMAL,
+        DrawLocation drawLocation = DrawLocation::Front, 
+        int32_t layer = 0
+    );
+
     // 球の描画関数
     static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });

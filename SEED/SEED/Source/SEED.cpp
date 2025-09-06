@@ -295,7 +295,7 @@ void SEED::AddTriangle3DPrimitive(
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
-    instance_->pPolygonManager_->AddTriangle3DPrimitive(
+    instance_->pPolygonManager_->AddTrianglePrimitive(
         v1, v2, v3,
         texCoordV1, texCoordV2, texCoordV3,
         color, GH, blendMode, lightingType, uvTransform, cullMode
@@ -339,7 +339,7 @@ void SEED::AddQuad3DPrimitive(
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
-    instance_->pPolygonManager_->AddQuad3DPrimitive(
+    instance_->pPolygonManager_->AddQuadPrimitive(
         v1, v2, v3, v4,
         texCoordV1, texCoordV2, texCoordV3, texCoordV4,
         color, GH, blendMode, lightingType, uvTransform, cullMode
@@ -496,6 +496,70 @@ void SEED::DrawOBB(const OBB& obb, const Vector4& color){
     DrawLine(vertex[1], vertex[5], color);
     DrawLine(vertex[2], vertex[6], color);
     DrawLine(vertex[3], vertex[7], color);
+}
+
+/////////////////////////////////////////////////////////////
+// 六角形の描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawHexagon(
+    const Vector2& center, float radius, float theta,
+    const Vector4& color, BlendMode blendMode,
+    DrawLocation drawLocation, int32_t layer
+){
+    Triangle2D tri;
+    tri.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    tri.color = color;
+    tri.drawLocation = drawLocation;
+    tri.layer = layer;
+    tri.blendMode = blendMode;
+    tri.rotate = 0.0f;
+    tri.isStaticDraw = false;
+
+    static std::array<Vector2,6> vertices;
+    for(int i = 0; i < 6; ++i){
+        float angle = i * ((float)std::numbers::pi / 3.0f) + theta; // 60度ごと
+        Vector2 point = { radius * std::cos(angle), radius * std::sin(angle) };
+        vertices[i] = center + point;
+    }
+
+    // 描画
+    for(int i = 0; i < 6; ++i){
+        tri.localVertex[0] = center;
+        tri.localVertex[1] = vertices[i];
+        tri.localVertex[2] = vertices[(i + 1) % 6]; // 次の頂点（最後は最初に戻る）
+        DrawTriangle2D(tri);
+    }
+}
+
+void SEED::DrawHexagonFrame(
+    const Vector2& center, float radius, float theta, float frameWidthRate, 
+    const Vector4& color, BlendMode blendMode,
+    DrawLocation drawLocation, int32_t layer
+){
+    Quad2D quad;
+    quad.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    quad.color = color;
+    quad.drawLocation = drawLocation;
+    quad.layer = layer;
+    quad.blendMode = blendMode;
+
+    static std::array<Vector2,6> vertices[2];
+    for(int i = 0; i < 6; ++i){
+        float angle = i * ((float)std::numbers::pi / 3.0f) + theta; // 60度ごと
+        Vector2 outSidePos = { radius * std::cos(angle), radius * std::sin(angle) };
+        Vector2 inSidePos = { (radius * (1.0f - frameWidthRate)) * std::cos(angle), (radius * (1.0f - frameWidthRate)) * std::sin(angle) };
+        vertices[0][i] = center + outSidePos;
+        vertices[1][i] = center + inSidePos;
+    }
+
+    // 描画
+    for(int i = 0; i < 6; ++i){
+        quad.localVertex[0] = vertices[0][i];
+        quad.localVertex[1] = vertices[0][(i + 1) % 6];
+        quad.localVertex[2] = vertices[1][i];
+        quad.localVertex[3] = vertices[1][(i + 1) % 6];
+        DrawQuad2D(quad);
+    }
 }
 
 

@@ -6,6 +6,7 @@
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/SEED.h>
+#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 
 // imgui
 #include <SEED/External/imgui/imgui.h>
@@ -18,9 +19,11 @@ void BorderLine::Initialize() {
 
     // スプライトを初期化
     sprite_ = Sprite("DefaultAssets/white.png");
+
     // テクスチャGHを取得
     transparentTextureGH_ = sprite_.GH;
-    opaqueTextureGH_ = TextureManager::LoadTexture("DefaultAssets/checkerBoard.png");
+    opaqueTextureGH_ = TextureManager::LoadTexture("Scene_Game/StageObject/borderLine.png");
+    initialSize_ = SEED::GetImageSize(L"Scene_Game/StageObject/borderLine.png");
 
     // 初期状態を設定
     SetDeactivate();
@@ -32,7 +35,7 @@ void BorderLine::SetActivate() {
     currentState_ = State::Active;
     // 画像をアクティブにする
     sprite_.GH = opaqueTextureGH_;
-    sprite_.color = Vector4(1.0f, 1.0, 1.0f, 1.0f);
+    sprite_.color = MyMath::FloatColor(255, 43, 245, 255);
 }
 
 void BorderLine::SetDeactivate() {
@@ -82,6 +85,28 @@ void BorderLine::Update(const Vector2& translate, float sizeY) {
         break;
     }
     case BorderLine::State::Active: {
+
+        // サイズからscaleを計算して更新
+        Vector2 scale = sprite_.size / initialSize_;
+        Vector2 exScale = { 0.25f,0.25f };
+        // scaleXに応じてscaleYを調整
+        float initialAspect = initialSize_.y / initialSize_.x;
+        float currentAspect = (sprite_.size.y/scale.y) / sprite_.size.x;
+        float aspectRatio = currentAspect / initialAspect;
+        scale.y *= aspectRatio;
+
+        // スクロール値を更新
+        scrollValue_ += 1.0f * ClockManager::DeltaTime();
+
+        // uvTransformを設定
+        Matrix4x4 uvTransform = AffineMatrix(
+            Vector3(exScale.x, scale.y * exScale.y,1.0f), // scale
+            Vector3(0),                   // rotation
+            Vector3(0.0f,scrollValue_,0.0f) // translate
+        );
+
+        sprite_.uvTransform = uvTransform;
+
         break;
     }
     }

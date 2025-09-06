@@ -233,7 +233,7 @@ void GameStage::UpdateBorderLine() {
     placePos.x = GameStageHelper::BorderAxisXFromPlayerDirection(axisX, player_->GetMoveDirection(), stageObjectMapTileSize_);
 
     // 境界線の更新処理
-    borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y);
+    borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y, stageObjectMapTileSize_);
 }
 
 void GameStage::UpdateClear() {

@@ -72,14 +72,14 @@ bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tile
     return IsActive() && CheckPlayerToDistance(playerTranslate, tileSize);
 }
 
-void BorderLine::Update(const Vector2& translate, float sizeY) {
+void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
 
     // 状態に応じて更新
     switch (currentState_) {
     case BorderLine::State::Disable: {
 
         // 座標補間、サイズを更新
-        UpdateSprite(translate, sizeY);
+        UpdateSprite(translate, sizeY, tileSize);
         break;
     }
     case BorderLine::State::Active: {
@@ -110,12 +110,12 @@ void BorderLine::Update(const Vector2& translate, float sizeY) {
     }
 }
 
-void BorderLine::UpdateSprite(const Vector2& translate, float sizeY) {
+void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileSize) {
 
     // Y座標とサイズは補間なしで設定
     const float targetX = translate.x;
-    sprite_.translate.y = translate.y + offsetTranslateY_;
-    sprite_.size.y = sizeY;
+    sprite_.translate.y = translate.y + offsetTranslateY_ + tileSize;
+    sprite_.size.y = sizeY + tileSize;
 
     // 補間が必要になったら値をリセットして補間する
     const bool needRestart = (!lerpXParam_.running) || (std::fabs(lerpXParam_.targetX - targetX) > 1e-3f);

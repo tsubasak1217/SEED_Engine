@@ -23,7 +23,7 @@ public:
     void Initialize();
 
     // 更新処理
-    void Update(const Vector2& translate, float sizeY);
+    void Update(const Vector2& translate, float sizeY, float tileSize);
 
     // 描画処理
     void Draw();
@@ -92,7 +92,7 @@ private:
     //--------- functions ----------------------------------------------------
 
     // update
-    void UpdateSprite(const Vector2& translate, float sizeY);
+    void UpdateSprite(const Vector2& translate, float sizeY, float tileSize);
 
     // helper
     // プレイヤーと一定距離近づいたか

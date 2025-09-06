@@ -70,12 +70,8 @@ void LaserLauncher::SetLaunchDirections(uint8_t directions) {
 
 void LaserLauncher::SetIsLaserActive(bool isActive) {
 
-    // レーザーのアクティブ状態を設定する
-    for (auto& laser : lasers_) {
-
-        laser->SetIsActive(isActive);
-    }
-    for (auto& laser : warpedLasers_) {
+    // レーザーにアクティブを設定する
+    for (const auto& laser : std::views::join(std::array{ lasers_, warpedLasers_ })) {
 
         laser->SetIsActive(isActive);
     }

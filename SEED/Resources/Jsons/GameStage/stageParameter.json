@@ -2,7 +2,7 @@
     "BorderLine": {
         "lerpXDuration_": 0.10000000149011612,
         "lerpXEasing_": "OutExpo",
-        "offsetTranslateY_": 22.0,
+        "offsetTranslateY_": 19.100000381469727,
         "playerToDistance_": 80.0,
         "sprite_.anchorPoint": {
             "x": 0.5,

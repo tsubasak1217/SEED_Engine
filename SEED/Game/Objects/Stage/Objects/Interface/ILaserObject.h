@@ -12,6 +12,7 @@
 
 // c++
 #include <string>
+#include <optional>
 
 //============================================================================
 //	Laser structure
@@ -53,7 +54,7 @@ public:
     //--------- accessor -----------------------------------------------------
 
     void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
-    void SetSize(const Vector2& size) { initSizeY_ = size.y; sprite_.size = size; }
+    void SetSize(const Vector2& size);
 
     // 状態の設定
     // 伸び始める
@@ -100,8 +101,8 @@ protected:
     GameObject2D* owner_ = nullptr;      // 所有者
 
     // パラメータ
-    float initSizeY_;       // 初期化時のサイズY
-    float sizeExtendSpeed_; // レーザーが伸びる速度
+    std::optional<float> initSizeY_; // 初期化時のサイズY
+    float sizeExtendSpeed_;          // レーザーが伸びる速度
     // ワープするレーザー処理に使用する
     WarpLaserParam warpParam_;
     //  発射系統を識別するID

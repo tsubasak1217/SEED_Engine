@@ -150,6 +150,7 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageLaserController.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Interface\ILaserObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />

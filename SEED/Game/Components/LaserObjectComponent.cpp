@@ -127,6 +127,74 @@ void LaserObjectComponent::ConsiderBlocker(const Vector2& center, const Vector2&
     }
 }
 
+void LaserObjectComponent::SetPendingWarpStop(const Vector2& translate, const Vector2& size) {
+
+    // 予約開始
+    pendingWarpStop_.has = true;
+    // ワープは中心で止める
+    pendingWarpStop_.byCenter = true;
+    pendingWarpStop_.translate = translate;
+    pendingWarpStop_.size = size;
+}
+
+void LaserObjectComponent::ApplyPendingWarpStop() {
+
+    // 予約されたレーザーの停止を実行する
+    if (pendingWarpStop_.has) {
+
+        // 衝突していた相手を記録しておく
+        if (!keepStoppedByWarp_) {
+
+            savedBlocker_ = blocker_;
+            hasSavedBlocker_ = blocker_.isFound;
+        }
+
+        // 中心で止めるかどうか
+        if (pendingWarpStop_.byCenter) {
+
+            // 中心に対する前面距離を手計算
+            const Vector2 origin = owner_.owner2D->GetWorldTranslate();
+            const Vector2 axis = LaserHelper::GetAxisFromDirection(object_->GetDirection());
+            const Vector2 to = pendingWarpStop_.translate - origin;
+            const float   dist = to.x * axis.x + to.y * axis.y;
+            const float   eps = 1e-4f;
+            if (dist >= -eps && dist < blocker_.frontDistance) {
+
+                blocker_.isFound = true;
+                blocker_.frontDistance = dist;
+                blocker_.translate = pendingWarpStop_.translate;
+                // 即時Clampして停止
+                Vector2 setSize = object_->GetSize();
+                setSize.y = (std::max)(0.0f, dist);
+                object_->SetSize(setSize);
+                object_->StopExtend();
+            }
+        } else {
+
+            // 中心からブロックのサイズ分流れた部分で停止させる
+            ConsiderBlocker(pendingWarpStop_.translate, pendingWarpStop_.size, true);
+        }
+
+        // レーザー停止処理を実行させる
+        pendingWarpStop_.byCenter = false;
+        pendingWarpStop_.has = false;
+        keepStoppedByWarp_ = true;
+    }
+}
+
+void LaserObjectComponent::ClearPendingWarpStop() {
+
+    pendingWarpStop_.has = false;
+    keepStoppedByWarp_ = false;
+
+    // 保存されていた衝突相手を設定する
+    if (hasSavedBlocker_) {
+
+        blocker_ = savedBlocker_;
+    }
+    hasSavedBlocker_ = false;
+}
+
 //============================================================================
 //	LaserObjectComponent loopMethods
 //============================================================================
@@ -188,33 +256,6 @@ void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {
     }
 }
 
-void LaserObjectComponent::SetPendingWarpStop(const Vector2& translate, const Vector2& size) {
-
-    // 予約開始
-    pendingWarpStop_.has = true;
-    pendingWarpStop_.translate = translate;
-    pendingWarpStop_.size = size;
-}
-
-void LaserObjectComponent::ApplyPendingWarpStop() {
-
-    // 予約されたレーザーの停止を実行する
-    if (pendingWarpStop_.has) {
-
-        ConsiderBlocker(pendingWarpStop_.translate, pendingWarpStop_.size, true);
-        pendingWarpStop_.has = false;
-
-        // レーザー停止処理を実行させる
-        keepStoppedByWarp_ = true;
-    }
-}
-
-void LaserObjectComponent::ClearPendingWarpStop() {
-
-    pendingWarpStop_.has = false;
-    keepStoppedByWarp_ = false;
-}
-
 //============================================================================
 //	LaserObjectComponent otherMethods
 //============================================================================
@@ -234,18 +275,26 @@ void LaserObjectComponent::EndFrame() {
         object_->StopExtend();
         return;
     }
+
     if (blocker_.isFound) {
 
-        // 近い方の前面まででClampして停止
-        auto size = object_->GetSize();
-        size.y = (std::max)(0.0f, blocker_.frontDistance);
-        object_->SetSize(size);
+        // フィールドオブジェクトにのめり込んだかチェック
+        const float current = object_->GetSize().y;
+        const float stopAtSize = blocker_.frontDistance;
+        const float eps = 1e-4f;
+        if (current + eps >= stopAtSize) {
 
-        // 伸びる処理を停止させる
-        object_->StopExtend();
+            Vector2 size = object_->GetSize();
+            size.y = (std::max)(0.0f, stopAtSize);
+            object_->SetSize(size);
+            object_->StopExtend();
+        } else {
+
+            object_->ReExtend();
+        }
     } else {
 
-        // レーザーをもう一度動かす
+        // レーザーを再起動する
         object_->ReExtend();
     }
 }

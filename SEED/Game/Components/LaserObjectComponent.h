@@ -40,8 +40,6 @@ public:
 
     void Initialize(LaserObjectType objectType, const Vector2& translate);
 
-    // 予約開始
-    void SetPendingWarpStop(const Vector2& translate, const Vector2& size);
     // 予約されたレーザーの停止を実行する
     void ApplyPendingWarpStop();
     void ClearPendingWarpStop();
@@ -88,6 +86,7 @@ private:
     struct PendingStop {
 
         bool has = false;
+        bool byCenter = false;
         Vector2 translate;
         Vector2 size;
     };
@@ -101,6 +100,8 @@ private:
 
     // 衝突相手
     Blocker blocker_;
+    Blocker savedBlocker_;
+    bool hasSavedBlocker_ = false;
     // 停止予約用
     PendingStop pendingWarpStop_;
     bool keepStoppedByWarp_ = false;
@@ -113,6 +114,8 @@ private:
     bool CheckWarp(GameObject2D* other);
     // フィールドオブジェクトと衝突時にレーザーをその場で止める
     void ConsiderBlocker(const Vector2& center, const Vector2& size, bool apply);
+    // 予約開始
+    void SetPendingWarpStop(const Vector2& translate, const Vector2& size);
 };
 
 //============================================================================

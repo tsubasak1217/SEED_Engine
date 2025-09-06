@@ -77,17 +77,15 @@ void Laser::Update() {
 
 void Laser::UpdateExtend() {
 
-    sizeExtendSpeed_ = 16.0f;
+    sizeExtendSpeed_ = 18.0f;
 
     // オブジェクトに衝突するまで伸びつ続ける
     LaserHelper::UpdateLaserSprite(sprite_, sizeExtendSpeed_);
     // スケーリング値の更新
-    owner_->SetWorldScale(Vector2(1.0f, sprite_.size.y / initSizeY_));
+    owner_->SetWorldScale(Vector2(1.0f, sprite_.size.y / initSizeY_.value()));
 }
 
 void Laser::UpdateStop() {
-
-
 }
 
 void Laser::Draw() {

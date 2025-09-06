@@ -43,6 +43,9 @@ void GameStage::Initialize(int currentStageIndex) {
     currentStageIndex_ = currentStageIndex;              // 最初のステージインデックス
     isRemoveHologram_ = false;
     BuildStage();
+
+    // ステージのサイズを計算
+    CalculateCurrentStageRange();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -190,6 +193,9 @@ void GameStage::UpdatePlay() {
     CheckClear();
     // 死亡判定
     CheckPlayerDead();
+
+    // カメラの調整
+    cameraAdjuster_.Update();
 }
 
 void GameStage::UpdateWarp() {
@@ -383,6 +389,9 @@ void GameStage::PutBorderLine() {
     warpController_->SetPlayer(player_);
     SetListsWarpPtr(StageObjectCommonState::Hologram);
     SetListsLaserLaunchersPtr(StageObjectCommonState::Hologram);
+
+    // ステージのサイズを計算
+    CalculateCurrentStageRange();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -416,6 +425,9 @@ void GameStage::RemoveBorderLine() {
 
     // 削除完了
     isRemoveHologram_ = false;
+
+    // ステージのサイズを計算
+    CalculateCurrentStageRange();
 }
 
 void GameStage::CheckClear() {
@@ -431,6 +443,50 @@ void GameStage::CheckPlayerDead() {
     if (player_->IsDead()) {
         currentState_ = State::Dead;
     }
+}
+
+// ステージの範囲を計算する
+void GameStage::CalculateCurrentStageRange(){
+
+    // リセット
+    currentStageRange_ = std::nullopt;
+
+    for(GameObject2D* object : std::views::join(std::array{ objects_,hologramObjects_ })){
+        Vector2 pos = object->GetWorldTranslate();
+
+        // 範囲の初期化
+        if(currentStageRange_ == std::nullopt){
+            currentStageRange_ = Range2D(pos, pos);
+        }
+
+        // x,yそれぞれの最小値・最大値を更新
+        if(pos.x < currentStageRange_.value().min.x){
+            currentStageRange_.value().min.x = pos.x;
+        
+        } else if(currentStageRange_.value().max.x < pos.x){
+            currentStageRange_.value().max.x = pos.x;
+        }
+
+        if(pos.y < currentStageRange_.value().min.y){
+            currentStageRange_.value().min.y = pos.y;
+        
+        } else if(currentStageRange_.value().max.y < pos.y){
+            currentStageRange_.value().max.y = pos.y;
+        }
+    }
+
+    // ステージ範囲に少し余裕を持たせる
+    float margin = stageObjectMapTileSize_;
+    if(currentStageRange_ == std::nullopt){
+        currentStageRange_ = Range2D({0.0f,0.0f},{0.0f,0.0f});
+    }
+    currentStageRange_.value().min.x -= margin;
+    currentStageRange_.value().min.y -= margin;
+    currentStageRange_.value().max.x += margin;
+    currentStageRange_.value().max.y += margin;
+
+    // カメラ調整に範囲を渡す
+    cameraAdjuster_.SetStageRange(currentStageRange_.value());
 }
 
 /////////////////////////////////////////////////////////////////////////

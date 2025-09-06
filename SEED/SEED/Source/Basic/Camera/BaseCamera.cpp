@@ -5,6 +5,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 float znearOffsetForLayer = 0.09f;
 
@@ -39,8 +40,16 @@ void BaseCamera::UpdateMatrix(){
         transform_.translate + CalcShake()
     );
 
+    Vector3 eulerRot = Quaternion::ToEuler(transform_.rotate);
+    worldMat2D_ = AffineMatrix(
+        { transform_.scale.x,transform_.scale.y,1.0f },
+        { 0.0f,0.0f,eulerRot.z },
+        { transform_.translate.x,transform_.translate.y,transform_.translate.z + CalcShake().z }
+    );
+
     // カメラの逆行列
     viewMat_ = InverseMatrix(worldMat_);
+    viewMat2D_ = InverseMatrix(worldMat2D_);
 
     //射影行列の生成
     projectionMat_ = PerspectiveMatrix(
@@ -65,7 +74,7 @@ void BaseCamera::UpdateMatrix(){
 
     // ViewProjectionMatrixの計算
     viewProjectionMat_ = Multiply(viewMat_, projectionMat_);
-    viewProjectionMat2D_ = Multiply(viewMat_, projectionMat2D_);
+    viewProjectionMat2D_ = Multiply(viewMat2D_, projectionMat2D_);
 
     // viewport行列
     viewportMat_ = ViewportMatrix(kWindowSize, { 0.0f,0.0f }, znear_, zfar_);
@@ -130,4 +139,17 @@ Line BaseCamera::GetRay(const Vector2& screenPos){
     };
 
     return Line(worldPos[0], worldPos[1]);
+}
+
+
+// 編集
+void BaseCamera::Edit(){
+#ifdef _DEBUG
+
+    ImGui::DragFloat2("ClipRange", &clipRange_.x, 1.0f, 1.0f, 3840.0f);
+    ImGui::DragFloat("Fov", &fov_, 0.01f, 0.1f, 3.0f);
+    ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
+    ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+
+#endif // _DEBUG
 }

@@ -388,8 +388,8 @@ void PolygonManager::MapOnce(){
 void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
+    uint32_t GH,BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
 ){
 
@@ -520,7 +520,8 @@ void PolygonManager::AddTriangle(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : 
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -679,8 +680,8 @@ void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat, 
+    uint32_t GH,BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
 ){
 
@@ -850,7 +851,8 @@ void PolygonManager::AddQuad(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : 
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -1031,7 +1033,8 @@ void PolygonManager::AddQuadPrimitive(
 void PolygonManager::AddSprite(
     const Vector2& size, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
+    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, 
+    bool isApplyViewMat,D3D12_CULL_MODE cullMode,
     bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -1228,7 +1231,7 @@ void PolygonManager::AddSprite(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = IdentityMat4();
-        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].WVP = isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -1461,8 +1464,8 @@ void PolygonManager::AddModel(Model* model){
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw,
-    DrawLocation drawLocation, int32_t layer
+    const Vector4& color, bool view3D, bool isApplyViewMat, BlendMode blendMode, 
+    bool isStaticDraw,DrawLocation drawLocation, int32_t layer
 ){
 
     assert(lineCount_ < kMaxLineCount_);
@@ -1583,7 +1586,8 @@ void PolygonManager::AddLine(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = worldInverseTranspose;
     }
 

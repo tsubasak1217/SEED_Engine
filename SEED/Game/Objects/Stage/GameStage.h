@@ -7,6 +7,7 @@
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 #include <Game/Objects/Stage/Methods/GameStageWarpController.h>
 #include <Game/Objects/Stage/Methods/GameStageLaserController.h>
+#include <Game/Objects/Stage/Methods/StageCameraAdjuster.h>
 
 // c++
 #include <list>
@@ -111,6 +112,10 @@ private:
     float stageObjectMapTileSize_; // マップ一個分のサイズ
     float playerSize_;
 
+    // 現在のステージの範囲を格納
+    std::optional<Range2D> currentStageRange_;
+    StageCameraAdjuster cameraAdjuster_; // カメラ調整
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -144,4 +149,7 @@ private:
     void CheckClear();
     //死亡判定
     void CheckPlayerDead();
+
+    // ステージ範囲計算
+    void CalculateCurrentStageRange();
 };

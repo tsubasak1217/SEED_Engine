@@ -7,6 +7,9 @@
 #include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
 #include <Game/Objects/Stage/Objects/Laser/Laser.h>
 
+// c++
+#include <span>
+
 //============================================================================
 //	LaserLauncher class
 //============================================================================
@@ -35,6 +38,8 @@ public:
     void WarpLaserFromController(const Vector2& translate, const GameObject2D* sourceLaserObject);
     // ワープ後にできたオブジェクトを破棄
     void RemoveWarpLasers();
+    // 所持ているレーザーに対してアクティブを設定する
+    void SetIsActive(bool isActive);
 
     //--------- accessor -----------------------------------------------------
 

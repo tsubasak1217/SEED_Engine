@@ -130,6 +130,15 @@ void LaserLauncher::RemoveWarpLasers() {
     warpedLasers_.clear();
 }
 
+void LaserLauncher::SetIsActive(bool isActive) {
+
+    // レーザーにアクティブを設定する
+    for (const auto& laser : std::views::join(std::array{ lasers_, warpedLasers_ })) {
+
+        laser->SetIsActive(isActive);
+    }
+}
+
 void LaserLauncher::Update() {
 }
 

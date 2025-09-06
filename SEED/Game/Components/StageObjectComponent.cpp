@@ -86,8 +86,20 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
     if (objectType_ != StageObjectType::EmptyBlock && objectType_ != StageObjectType::Player) {
         // 空白ブロックと衝突していたらオブジェクトを非アクティブにする
         if (other->GetObjectType() == ObjectType::EmptyBlock) {
+
             owner_.owner2D->SetIsActive(false);
             GameStage::AddDisActiveObject(owner_.owner2D);
+
+            // レーザー制御処理
+            if (LaserLauncher* laserLauncher = GetStageObject<LaserLauncher>()) {
+
+                laserLauncher->SetIsActive(false);
+            }
+            // ワープ制御処理
+            if (Warp* warp = GetStageObject<Warp>()) {
+
+                warp->SetWarpEmpty();
+            }
         }
     }
 
@@ -181,19 +193,19 @@ IStageObject* StageObjectComponent::GetTypeStageObject() const {
 
     switch (objectType_) {
     case StageObjectType::NormalBlock:
-        
+
         return GetStageObject<BlockNormal>();
     case StageObjectType::Goal:
-        
+
         return GetStageObject<Goal>();
     case StageObjectType::Player:
-        
+
         return GetStageObject<Player>();
     case StageObjectType::Warp:
-        
+
         return GetStageObject<Warp>();
     case StageObjectType::EmptyBlock:
-        
+
         return GetStageObject<BlockEmpty>();
     case StageObjectType::LaserLauncher:
 

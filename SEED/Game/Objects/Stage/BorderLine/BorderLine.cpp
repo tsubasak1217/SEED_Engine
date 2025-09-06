@@ -61,12 +61,10 @@ bool BorderLine::CheckPlayerToDistance(const Vector2& playerTranslate, float til
     if (!checkDistance) {
         return false;
     }
-    // Y座標がほぼ同じならtrueを返す
-    float diff = sprite_.translate.y - playerTranslate.y;
-    if (std::fabs(diff) < tileSize / 2.0f) {
-        return true;
-    }
-    return false;
+    tileSize;
+
+    // プレイヤーの座標がスプライトの座標よりも高ければ
+    return playerTranslate.y <= sprite_.translate.y;
 }
 
 bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const {
@@ -91,7 +89,7 @@ void BorderLine::Update(const Vector2& translate, float sizeY) {
         Vector2 exScale = { 0.25f,0.25f };
         // scaleXに応じてscaleYを調整
         float initialAspect = initialSize_.y / initialSize_.x;
-        float currentAspect = (sprite_.size.y/scale.y) / sprite_.size.x;
+        float currentAspect = (sprite_.size.y / scale.y) / sprite_.size.x;
         float aspectRatio = currentAspect / initialAspect;
         scale.y *= aspectRatio;
 
@@ -100,9 +98,9 @@ void BorderLine::Update(const Vector2& translate, float sizeY) {
 
         // uvTransformを設定
         Matrix4x4 uvTransform = AffineMatrix(
-            Vector3(exScale.x, scale.y * exScale.y,1.0f), // scale
+            Vector3(exScale.x, scale.y * exScale.y, 1.0f), // scale
             Vector3(0),                   // rotation
-            Vector3(0.0f,scrollValue_,0.0f) // translate
+            Vector3(0.0f, scrollValue_, 0.0f) // translate
         );
 
         sprite_.uvTransform = uvTransform;

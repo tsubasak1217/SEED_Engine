@@ -146,8 +146,8 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         // コピー対象のオブジェクト情報
         const Vector2 sourcePos = object->GetWorldTranslate();
         const StageObjectType sourceType = sourceComponent->GetStageObjectType();
-        // プレイヤーのY座標より下のオブジェクトは作成しない
-        if (!(playerY >= sourcePos.y)) {
+        // プレイヤーの乗っているブロックよりも下は作成しない
+        if (!((playerY + tileSize) >= sourcePos.y)) {
             continue;
         }
 

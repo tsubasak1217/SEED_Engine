@@ -113,7 +113,6 @@
     <ClCompile Include="Game\Objects\Stage\GameStage.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockNormal.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerKeyInput.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerGamePadInput.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\Entity\Player.cpp" />
@@ -154,6 +153,13 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp" />
+    <ClCompile Include="Game\Objects\Select\Background\SelectBackground.cpp" />
+    <ClCompile Include="Game\Objects\Select\Drawer\SelectStageDrawer.cpp" />
+    <ClCompile Include="Game\Objects\Select\SelectStage.cpp" />
+    <ClCompile Include="Game\Objects\Select\Methods\SelectStageBuilder.cpp" />
+    <ClCompile Include="Game\Objects\Select\Input\Device\SelectGamePadInput.cpp" />
+    <ClCompile Include="Game\Objects\Select\Input\Device\SelectKeyInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -313,7 +319,6 @@
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
     <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h" />
-    <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
     <ClInclude Include="Game\Components\StageObjectComponent.h" />
     <ClInclude Include="Game\Objects\Stage\GameStage.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Interface\IStageObject.h" />
@@ -373,6 +378,14 @@
     <ClInclude Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
+    <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h" />
+    <ClInclude Include="Game\Objects\Select\Background\SelectBackground.h" />
+    <ClInclude Include="Game\Objects\Select\Drawer\SelectStageDrawer.h" />
+    <ClInclude Include="Game\Objects\Select\SelectStage.h" />
+    <ClInclude Include="Game\Objects\Select\Methods\SelectStageBuilder.h" />
+    <ClInclude Include="Game\Objects\Select\Input\Device\SelectGamePadInput.h" />
+    <ClInclude Include="Game\Objects\Select\Input\Device\SelectKeyInput.h" />
+    <ClInclude Include="Game\Objects\Select\Input\SelectInputEnum.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

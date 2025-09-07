@@ -3,39 +3,28 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Basic/Scene/Scene_Base.h>
-
-// c++
-#include <memory>
-
-// objects
-#include <Game/Objects/Select/Background/SelectBackground.h>
-#include <Game/Objects/Select/SelectStage.h>
+#include <Game/Objects/Stage/Methods/StageBackDrawer.h>
 
 //============================================================================
-//	Scene_Select class
+//	SelectBackground class
 //============================================================================
-class Scene_Select :
-    public Scene_Base {
+class SelectBackground {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-    Scene_Select();
-	~Scene_Select();
+	SelectBackground() = default;
+	~SelectBackground() = default;
 
-    void Initialize() override;
-    void Finalize() override {}
+    // 初期化
+    void Initialize();
 
-    void Update() override;
+    // 更新処理
+    void Update();
 
-    void Draw() override;
-
-    void BeginFrame() override;
-    void EndFrame() override;
-
-    void HandOverColliders() override {}
+    // 描画処理
+    void Draw();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -46,10 +35,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-    // 背景描画
-    std::unique_ptr<SelectBackground> background_;
-    // ステージ選択
-    std::unique_ptr<SelectStage> selectStage_;
+    // 背景
+    StageBackDrawer drawer_; // 放射状六角形s
+    Range2D screenRange_;    //描画範囲
 
 	//--------- functions ----------------------------------------------------
 

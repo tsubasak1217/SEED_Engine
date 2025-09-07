@@ -3,39 +3,32 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Basic/Scene/Scene_Base.h>
-
-// c++
-#include <memory>
-
-// objects
-#include <Game/Objects/Select/Background/SelectBackground.h>
-#include <Game/Objects/Select/SelectStage.h>
+#include <SEED/Lib/enums/Direction.h>
+#include <Game/Objects/Select/Drawer/SelectStageDrawer.h>
 
 //============================================================================
-//	Scene_Select class
+//	SelectStage class
 //============================================================================
-class Scene_Select :
-    public Scene_Base {
+class SelectStage {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-    Scene_Select();
-	~Scene_Select();
+	SelectStage() = default;
+	~SelectStage() = default;
 
-    void Initialize() override;
-    void Finalize() override {}
+    // 初期化
+    void Initialize(uint32_t firstFocusStage);
 
-    void Update() override;
+    // 更新処理
+    void Update();
 
-    void Draw() override;
+    // 描画処理
+    void Draw();
 
-    void BeginFrame() override;
-    void EndFrame() override;
-
-    void HandOverColliders() override {}
+    // エディター
+    void Edit();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -46,11 +39,18 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-    // 背景描画
-    std::unique_ptr<SelectBackground> background_;
-    // ステージ選択
-    std::unique_ptr<SelectStage> selectStage_;
+    // 入力状態
+    LR stickDirection_; // スティック入力
+    bool stickLatched_; // スティック入力暴発防止
+
+    // 入力管理
+    std::unique_ptr<InputMapper<SelectInputEnum>> inputMapper_;
+
+    // ステージ描画を初期化
+    std::unique_ptr<SelectStageDrawer> stageDrawer_;
 
 	//--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateSelectInput();
 };

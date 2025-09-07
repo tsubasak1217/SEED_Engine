@@ -1,6 +1,8 @@
 {
     "StateParam": {
-        "Dead": null,
+        "Dead": {
+          "deadDuration_": 1.0
+        },
         "Idle": null,
         "Jump": {
             "gravity_": 892.0,

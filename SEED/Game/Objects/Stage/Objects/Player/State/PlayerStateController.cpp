@@ -64,7 +64,13 @@ bool PlayerStateController::IsFinishedWarp() const {
 }
 
 bool PlayerStateController::IsDead() const {
-    return current_ == PlayerState::Dead;
+
+    PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
+    //死亡処理が完了したか
+    if(dead->IsDeadFinishTrigger()) {
+        return true;
+    }
+    return false;
 }
 
 void PlayerStateController::Update(Player& owner) {
@@ -177,6 +183,12 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
         return;
     }
 
+    // レーザーに触れたら死亡状態にする
+    if(owner.TouchLaser() == true){
+        Request(PlayerState::Dead);
+        return;
+    }
+
     // ワープ後にジャンプをリクエストしたか
     if (requestedJump_) {
 
@@ -209,8 +221,6 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
             }
         }
     }
-
-
 }
 
 void PlayerStateController::Request(PlayerState state) {

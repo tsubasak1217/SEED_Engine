@@ -22,6 +22,12 @@
 //	Player classMethods
 //============================================================================
 
+
+//////////////////////////////////////////////////////////////////
+//
+// 初期化処理
+//
+//////////////////////////////////////////////////////////////////
 void Player::Initialize() {
 
     // 画像ハンドルの初期化
@@ -121,6 +127,12 @@ bool Player::IsRemoveBorder() const {
 bool Player::IsJumpInput() const {
     return inputMapper_->IsTriggered(PlayerInputAction::Jump);
 }
+
+//////////////////////////////////////////////////////////////
+//
+// 更新処理
+//
+//////////////////////////////////////////////////////////////
 
 void Player::Update() {
 
@@ -313,6 +325,18 @@ void Player::OnCeilingTrigger() {
     }
 }
 
+bool Player::TouchLaser() const {
+    // レーザーに触れた
+    if(istouchedLaser_){
+        return true;
+    }
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////
+// 描画
+/////////////////////////////////////////////////////////////////////////////
+
 void Player::Draw() {
 
     // 各状態の描画
@@ -363,6 +387,21 @@ void Player::Edit() {
         ImGui::End();
     }
 #endif // _DEBUG
+}
+
+void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
+    if (other->GetObjectType() == ObjectType::Laser) {
+        istouchedLaser_ = true;
+    }
+}
+
+void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+}
+
+void Player::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
+    if (other->GetObjectType() == ObjectType::Laser) {
+        istouchedLaser_ = false;
+    }
 }
 
 void Player::ApplyJson() {

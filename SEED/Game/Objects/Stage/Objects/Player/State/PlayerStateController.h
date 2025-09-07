@@ -55,6 +55,8 @@ public:
     void OnGroundTrigger();
     // 天井に当たった瞬間の処理
     void OnCeilingTrigger();
+    // レーザーに当たった瞬間の処理
+    void TouchLaser();
 
     float GetJumpVelocity() const;
 

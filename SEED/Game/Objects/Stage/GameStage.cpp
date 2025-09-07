@@ -459,6 +459,11 @@ void GameStage::RemoveBorderLine() {
 
     // 背景描画を非アクティブにする
     backDrawer_.SetActive(false);
+
+    // プレイヤーがホログラム状態だったら死亡処理を行う
+    if(player_->GetIsHologram()){
+        player_->RequestDeadState();
+    }
 }
 
 void GameStage::CheckClear() {

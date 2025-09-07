@@ -205,6 +205,10 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
         // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
+            //requestedに死亡状態が設定されている場合はジャンプ状態にしない
+            if(requested_ == PlayerState::Dead){
+                return;
+            }
             if (current_ != PlayerState::Jump) {
 
                 Request(PlayerState::Jump);

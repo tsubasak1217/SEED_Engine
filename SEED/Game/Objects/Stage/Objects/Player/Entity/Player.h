@@ -39,6 +39,9 @@ public:
     void SetSize(const Vector2& size) override;
     // プレイヤーをワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);
+
+    // ホログラム状態の取得
+    bool GetIsHologram() const { return isHologram_; }
     // ホログラム状態の設定
     void SetIsHologram(bool isHologram) { isHologram_ = isHologram; }
 
@@ -52,7 +55,7 @@ public:
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
     bool IsDead() const;
-   
+    void RequestDeadState() { stateController_->RequestDeadState(); }
 
     // 入力検知
     bool IsFinishedWarp() const;

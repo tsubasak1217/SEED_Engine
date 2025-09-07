@@ -29,6 +29,9 @@ void SelectStage::Initialize(uint32_t firstFocusStage) {
 
 void SelectStage::Update() {
 
+    // エディターの更新
+    Edit();
+
     // ステージ描画を更新
     stageDrawer_->Update();
 }
@@ -44,6 +47,7 @@ void SelectStage::Edit() {
     ImFunc::CustomBegin("SelectStage", MoveOnly_TitleBar);
     {
 
+        stageDrawer_->Edit();
         ImGui::End();
     }
 }

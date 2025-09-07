@@ -15,43 +15,160 @@
 
 void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
-    firstFocusStage;
-
     centerTranslate_ = { 640.0f, 360.0f };
-    leftTranslate_ = { 120.0f, 360.0f }; // 0番の左基準
-    rightTranslate_ = { 0.0f,   0.0f }; // 使わない
-    focusSize_ = { 300.0f, 300.0f };
+    leftTranslate_ = { 320.0f, 360.0f };
+    rightTranslate_ = { 960.0f, 360.0f };
+    focusSize_ = { 480.0f, 270.0f };
     outSize_ = { 320.0f, 180.0f };
 
     // すべてのステージを構築する
     BuildAllStage();
-
     // 初期化値設定
+    // 最初のフォーカス先を設定
+    focusIndex_ = std::min<uint32_t>(firstFocusStage, static_cast<uint32_t>(stages_.size()) - 1);
+    animFrom_ = static_cast<float>(focusIndex_);
+    animTo_ = static_cast<float>(focusIndex_);
+    moveTimer_.Initialize(0.24f);
     currentState_ = State::Select;
 }
 
 void SelectStageDrawer::Update() {
+
+    if (currentState_ == State::Move) {
+
+        // 補間中にのみタイマーを進める
+        moveTimer_.Update();
+        // 補間終了後選択可能にする
+        if (moveTimer_.IsFinished()) {
+
+            currentState_ = State::Select;
+            animFrom_ = animTo_;
+        }
+    }
 }
 
 void SelectStageDrawer::Draw() {
 
     // 各ステージを描画する
-    for (auto& stage : stages_) {
+    float f = (currentState_ == State::Move)
+        ? animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(Easing::Type::InOutCubic)
+        : static_cast<float>(focusIndex_);
+    for (size_t i = 0; i < stages_.size(); ++i) {
 
-        stage.frame.Draw();
-        for (auto& sprite : stage.objects) {
+        float off = static_cast<float>(i) - f;
+        if (off < -1.01f || off > 1.01f) {
+            continue;
+        }
+
+        // アニメーション後の値を参照で渡す
+        Vector2 translate, size;
+        PoseFromOffset(off, translate, size);
+        ApplyPoseToStage(stages_[i], translate, size);
+
+        // フレーム描画
+        stages_[i].frame.Draw();
+        // ステージ描画
+        for (auto& sprite : stages_[i].objects) {
 
             sprite.Draw();
         }
     }
+
 }
 
 void SelectStageDrawer::Edit() {
 
-    ImFunc::CustomBegin("SelectStageDrawer", MoveOnly_TitleBar);
-    {
+    int idx = (int)focusIndex_;
+    if (ImGui::ArrowButton("##prev", ImGuiDir_Left))  StartMoveToNext(focusIndex_ - 1);
+    ImGui::SameLine();
+    ImGui::Text("Focus %u / %zu", focusIndex_, stages_.size());
+    ImGui::SameLine();
+    if (ImGui::ArrowButton("##next", ImGuiDir_Right)) StartMoveToNext(focusIndex_ + 1);
 
-        ImGui::End();
+    if (ImGui::InputInt("FocusIndex", &idx)) {
+
+        idx = std::clamp(idx, 0, (int)stages_.size() - 1);
+        StartMoveToNext((uint32_t)idx);
+    }
+}
+
+void SelectStageDrawer::StartMoveToNext(uint32_t next) {
+
+    next = (std::min)(next, (uint32_t)stages_.size() - 1);
+    // 同じ場所に補間できないようにする
+    if (next == focusIndex_) {
+        return;
+    }
+
+    // 補間途中位置を開始点にする
+    float t = (currentState_ == State::Move) ? moveTimer_.GetEase(Easing::Type::OutCubic) : 1.0f;
+    animFrom_ = animFrom_ + (animTo_ - animFrom_) * t;
+    animTo_ = static_cast<float>(next);
+    focusIndex_ = next;
+
+    // タイマーを初期化する
+    moveTimer_.Reset();
+    currentState_ = State::Move;
+}
+
+void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size) {
+
+    // 座標、サイズを設定する
+    stage.translate = center;
+    stage.size = size;
+    stage.frame.translate = center;
+    stage.frame.size = size;
+
+    // タイル位置からサイズを求める
+    Vector2 tileSize = Vector2(size.x / static_cast<float>(stage.cols),
+        size.y / static_cast<float>(stage.rows));
+    float left = center.x - size.x * 0.5f;
+    float top = center.y - size.y * 0.5f;
+    for (size_t k = 0; k < stage.objects.size(); ++k) {
+
+        const uint32_t id = stage.objectIds[k];
+        const Vector2 uv = stage.objectUVs[k];
+
+        // 現在のフレームサイズから今のフレーム内の位置を設定する
+        Vector2 cpos = Vector2(left + uv.x * size.x, top + uv.y * size.y);
+        stage.objects[k].translate = cpos;
+        stage.objects[k].size = tileSize;
+
+        // 個別のサイズ設定
+        if (static_cast<StageObjectType>(id) == StageObjectType::Player) {
+
+            stage.objects[k].size = stage.objects[k].size * 0.8f;
+        }
+    }
+}
+
+void SelectStageDrawer::PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize) {
+
+    // 処理が終了している時は目標値を返す
+    if (offset <= -1.0f) {
+        outPos = leftTranslate_;
+        outSize = outSize_;
+        return;
+    }
+    if (offset >= 1.0f) {
+        outPos = rightTranslate_;
+        outSize = outSize_;
+        return;
+    }
+
+    // 左から真ん中へ補間
+    if (offset < 0.0f) {
+
+        float t = offset + 1.0f;
+        outPos = MyMath::Lerp(leftTranslate_, centerTranslate_, t);
+        outSize = MyMath::Lerp(outSize_, focusSize_, t);
+    }
+    // 真ん中から右へ補間する
+    else {
+
+        float t = offset;
+        outPos = MyMath::Lerp(centerTranslate_, rightTranslate_, t);
+        outSize = MyMath::Lerp(focusSize_, outSize_, t);
     }
 }
 
@@ -80,6 +197,8 @@ void SelectStageDrawer::BuildAllStage() {
         // このステージ描画情報
         Stage stage;
         stage.index = index;
+        stage.rows = rows;
+        stage.cols = cols;
         // 全体のサイズ
         stage.size = outSize_;
         stage.translate = Vector2(cursorX + stage.size.x * 0.5f, leftTranslate_.y);
@@ -90,13 +209,6 @@ void SelectStageDrawer::BuildAllStage() {
         stage.frame.size = stage.size;
         stage.frame.anchorPoint = 0.5f;
         stage.frame.translate = stage.translate;
-
-        // グリッドを描画サイズでぴったり埋まるようにタイルサイズを設定する
-        Vector2 tileSize = Vector2(stage.size.x / static_cast<float>(cols),
-            stage.size.y / static_cast<float>(rows));
-        // 左上原点座標
-        const float left = stage.translate.x - stage.size.x * 0.5f;
-        const float top = stage.translate.y - stage.size.y * 0.5f;
         for (int r = 0; r < rows; ++r) {
 
             const int colsThis = static_cast<int>(grid[r].size());
@@ -108,10 +220,11 @@ void SelectStageDrawer::BuildAllStage() {
                 if (id == 0) {
                     continue;
                 }
-                // 表示座標を設定
-                Vector2 translate = Vector2(left + (c + 0.5f) * tileSize.x,
-                    top + (r + 0.5f) * tileSize.y);
-                stage.objects.emplace_back(CreateTileSprite(id, translate, tileSize));
+
+                // ステージ位置を記録
+                stage.objectIds.push_back(id);
+                stage.objectUVs.push_back(Vector2((c + 0.5f) / (float)cols, (r + 0.5f) / (float)rows));
+                stage.objects.emplace_back(CreateTileSprite(id, Vector2(0.0f), Vector2(1.0f)));
             }
         }
         // 配列に追加

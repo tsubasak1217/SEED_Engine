@@ -30,5 +30,5 @@ void SelectBackground::Update() {
 void SelectBackground::Draw() {
 
     // 六角形sを描画
-    drawer_.Draw();
+    drawer_.Draw(false);
 }

@@ -161,8 +161,9 @@ void SelectStageDrawer::Edit() {
         EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
 
         ImGui::SeparatorText("TextEdit");
-
+#ifdef _DEBUG
         stages_.front().stageIndexText.Edit();
+#endif // _DEBUG
     }
 }
 
@@ -442,6 +443,7 @@ void SelectStageDrawer::BuildAllStage() {
         stage.frame.anchorPoint = 0.5f;
         stage.frame.translate = stage.translate;
         stage.frame.color = frameColor_;
+        stage.frame.isApplyViewMat = false;
         // 背景描画初期化
         // 背景は全体のサイズで設定する
         stage.background = Sprite("Scene_Select/bgCheckerboard.png");
@@ -450,11 +452,13 @@ void SelectStageDrawer::BuildAllStage() {
         stage.background.translate = stage.translate;
         stage.background.color = backgroundColor_;
         stage.background.uvTransform = AffineMatrix(Vector3(80.0f, 45.0f, 1.0f), Vector3(0.0f), Vector3(0.0f));
+        stage.background.isApplyViewMat = false;
         // ステージ番号背景
         stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
         stage.stageIndexBack.size = stageIndexTextSize_;
         stage.stageIndexBack.anchorPoint = 0.5f;
         stage.stageIndexBack.color = stageIndexBackColor_;
+        stage.stageIndexBack.isApplyViewMat = false;
         // ステージ番号
         stage.stageIndexText = TextBox2D(std::to_string(index));
         stage.stageIndexText.SetFont("");
@@ -464,6 +468,7 @@ void SelectStageDrawer::BuildAllStage() {
         stage.stageIndexText.color = stageIndexTextColor_;
         stage.stageIndexText.size = 256.0f;
         stage.stageIndexText.textBoxVisible = false;
+        stage.stageIndexText.isApplyViewMat = false;
         for (int r = 0; r < rows; ++r) {
 
             const int colsThis = static_cast<int>(grid[r].size());
@@ -502,6 +507,7 @@ Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     sprite.anchorPoint = 0.5f;
     sprite.translate = translate;
     sprite.size = size;
+    sprite.isApplyViewMat = false;
 
     // 個別のサイズ設定
     if (static_cast<StageObjectType>(index) == StageObjectType::Player) {

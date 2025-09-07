@@ -507,7 +507,7 @@ void SEED::DrawOBB(const OBB& obb, const Vector4& color){
 void SEED::DrawHexagon(
     const Vector2& center, float radius, float theta,
     const Vector4& color, BlendMode blendMode,
-    DrawLocation drawLocation, int32_t layer
+    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
 ){
     Triangle2D tri;
     tri.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
@@ -517,6 +517,7 @@ void SEED::DrawHexagon(
     tri.blendMode = blendMode;
     tri.rotate = 0.0f;
     tri.isStaticDraw = false;
+    tri.isApplyViewMat = isApplyViewMat;
 
     static std::array<Vector2,6> vertices;
     for(int i = 0; i < 6; ++i){
@@ -537,7 +538,7 @@ void SEED::DrawHexagon(
 void SEED::DrawHexagonFrame(
     const Vector2& center, float radius, float theta, float frameWidthRate, 
     const Vector4& color, BlendMode blendMode,
-    DrawLocation drawLocation, int32_t layer
+    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
 ){
     Quad2D quad;
     quad.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
@@ -545,6 +546,7 @@ void SEED::DrawHexagonFrame(
     quad.drawLocation = drawLocation;
     quad.layer = layer;
     quad.blendMode = blendMode;
+    quad.isApplyViewMat = isApplyViewMat;
 
     static std::array<Vector2,6> vertices[2];
     for(int i = 0; i < 6; ++i){

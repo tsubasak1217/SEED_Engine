@@ -155,15 +155,15 @@ public:
         const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
         BlendMode blendMode = BlendMode::NORMAL,
         DrawLocation drawLocation = DrawLocation::Front, 
-        int32_t layer = 0
+        int32_t layer = 0, bool isApplyViewMat = true
     );
 
     static void DrawHexagonFrame(
-        const Vector2& center, float radius, float theta, float frameWidthRate, 
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        const Vector2& center, float radius, float theta, float frameWidthRate,
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL,
-        DrawLocation drawLocation = DrawLocation::Front, 
-        int32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Front,
+        int32_t layer = 0, bool isApplyViewMat = true
     );
 
     // 球の描画関数

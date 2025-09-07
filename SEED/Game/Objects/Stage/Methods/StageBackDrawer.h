@@ -29,7 +29,7 @@ public:
     StageBackDrawer() = default;
     ~StageBackDrawer() = default;
     void Update(const Vector2& playerPos, float animTime = HexagonInfo::kMaxTime);
-    void Draw();
+    void Draw(bool isApplyViewMat = true);
 
 public:
     void SetActive(bool isActive) { isActive_ = isActive; }

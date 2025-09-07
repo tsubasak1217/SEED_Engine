@@ -107,7 +107,7 @@ void StageBackDrawer::Update(const Vector2& playerPos, float animTime) {
     playerPos;
 }
 
-void StageBackDrawer::Draw() {
+void StageBackDrawer::Draw(bool isApplyViewMat) {
     if (putTimer_.GetProgress() == 0.0f) return;
     // 六角形の描画
     for (auto& row : hexagons_) {
@@ -121,7 +121,8 @@ void StageBackDrawer::Draw() {
                 hex.color,
                 BlendMode::NORMAL,
                 DrawLocation::Back,
-                0
+                0,
+                isApplyViewMat
             );
         }
     }

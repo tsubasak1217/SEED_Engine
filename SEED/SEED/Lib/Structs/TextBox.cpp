@@ -317,6 +317,8 @@ void TextBox2D::Draw()const{
                             outlineQuad.localVertex[2] = quad.localVertex[2] + offset;
                             outlineQuad.localVertex[3] = quad.localVertex[3] + offset;
                             // アウトラインの色を設定
+                            outlineQuad.layer = layer - 1;
+                            outlineQuad.isApplyViewMat = isApplyViewMat;
                             SEED::DrawQuad2D(outlineQuad);
                             // 回転ベクトルを更新
                             rotatedVec *= RotateMatrix(radianEvery);
@@ -324,7 +326,6 @@ void TextBox2D::Draw()const{
                     }
 
                     // 描画
-                    quad.layer = 2;
                     quad.isApplyViewMat = isApplyViewMat;
                     quad.layer = layer;
                     SEED::DrawQuad2D(quad);

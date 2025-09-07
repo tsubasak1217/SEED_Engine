@@ -100,11 +100,18 @@ void GameStage::SetIsActive(bool isActive) {
             object->SetIsMustDraw(false);
         }
 
-        // レーザーは別でアクティブを設定する
         if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+
+            // レーザーは別でアクティブを設定する
             if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
 
                 laserLauncher->SetIsLaserActive(isActive);
+            }
+            // ワープも別でアクティブを設定する
+            if (Warp* warp = component->GetStageObject<Warp>()) {
+
+                // 状態を元に戻す
+                warp->ResetAnimation();
             }
         }
     }
@@ -124,10 +131,10 @@ void GameStage::ReActivateDisActiveObjects() {
                 laserLauncher->SetIsActive(true);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* laserLauncher = component->GetStageObject<Warp>()) {
+            if (Warp* warp = component->GetStageObject<Warp>()) {
 
                 // 状態を元に戻す
-                laserLauncher->SetNone();
+                warp->SetNone();
             }
         }
         object = nullptr;
@@ -194,6 +201,9 @@ void GameStage::UpdatePlay(){
 
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     UpdateBorderLine();
+
+    //プレイヤーが境界線を越えたか判定
+    CheckPlayerCrossedBorderLine();
 
     // クリア判定
     CheckClear();
@@ -389,6 +399,8 @@ void GameStage::PutBorderLine() {
 
     // 境界線をアクティブ状態にする
     borderLine_->SetActivate();
+    //向きの設定
+    borderLine_->SetDirection(playerDirection);
 
     // ホログラムオブジェクトを生成する
     GameStageBuilder stageBuilder{};
@@ -461,6 +473,33 @@ void GameStage::CheckPlayerDead() {
     // 死亡判定
     if (player_->IsDead()) {
         currentState_ = State::Dead;
+    }
+}
+
+// プレイヤーが境界線を越えたかどうか
+void GameStage::CheckPlayerCrossedBorderLine() {
+    if(borderLine_->IsActive()){
+        // プレイヤーのワールド座標
+        const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
+        //向きごとの境界線を越えたかどうかの判定をする
+        if (borderLine_->GetDirection() == LR::LEFT) {
+            /*--- LEFT ---*/
+            if (borderLine_->GetSprite().translate.x > playerWorldTranslate.x) {
+                player_->SetIsHologram(true);
+            } else {
+                player_->SetIsHologram(false);
+            }
+        } else {
+            /*--- RIGHT ---*/
+            if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x) {
+                player_->SetIsHologram(true);
+            } else {
+                player_->SetIsHologram(false);
+            }
+        }
+    } else {
+        // 境界線が置かれていないときはホログラム状態を解除する
+        player_->SetIsHologram(false);
     }
 }
 

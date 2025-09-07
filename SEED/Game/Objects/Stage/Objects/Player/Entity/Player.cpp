@@ -302,6 +302,9 @@ void Player::OnCeilingTrigger() {
 
 void Player::Draw() {
 
+    // 各状態の描画
+    stateController_->Draw(*this);
+
     // 胴体の描画
     body_.Draw();
 
@@ -330,6 +333,7 @@ void Player::Edit() {
 
                 ImGui::DragFloat2("spriteAnchor", &body_.anchorPoint.x, 0.1f);
                 ImGui::DragFloat2("spriteTranslate", &body_.translate.x, 0.1f);
+                ImGui::Checkbox("isHologram", &isHologram_);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("State")) {

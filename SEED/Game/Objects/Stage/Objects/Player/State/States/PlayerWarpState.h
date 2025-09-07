@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Structs/Timer.h>
+#include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Functions/myFunc/Easing.h>
 #include <Game/Objects/Stage/Objects/Player/State/Interface/PlayerIState.h>
@@ -26,6 +27,9 @@ public:
 
     // 更新処理
     void Update(Player& player) override;
+
+    // 描画処理
+    void Draw(Player& player) override;
 
     // 状態終了時
     void Exit(Player& player) override;
@@ -93,13 +97,31 @@ private:
     Timer endTimer_;
     AnimParam<float> endScaling_; // 終了スケーリング
 
+    // エフェクト
+    std::vector<Timer> trailLifeTimers_;
+    Timer trailSpawnTimer_;            // スポーン間隔タイマー
+    std::vector<Sprite> trailSprites_; // ワープ時に後ろに付いていく
+    Vector2 baseSpriteSize_;           // ベースサイズ
+    float randomSpriteSize_;           // ランダム値
+    int maxTrailSpriteCount_;          // 表示最大数
+    float trailLifeTime_;              // スプライトの生存時間
+    float trailSpawnInterval_;        // 何秒毎に1つ出すか
+    float randomRotate_;               // ランダム回転
+
     // エディター
     State editState_ = State::Begin;
 
     //--------- functions ----------------------------------------------------
 
+    // init
+    void InitializeCommonSprite(Sprite& sprite);
+
     // update
     void UpdateBeginAnimation(Player& player);
     void UpdateWarp(Player& player);
+    void UpdateWarpTrail(Player& player);
     void UpdateEndAdnimation(Player& player);
+
+    // helper
+    float RandRange(float min, float max);
 };

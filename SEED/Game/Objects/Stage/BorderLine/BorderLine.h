@@ -41,8 +41,12 @@ public:
     void SetActivate();
     // 非アクティブ状態にする
     void SetDeactivate();
+    // 向きを設定
+    void SetDirection(LR direction) { direction_ = direction; }
 
     const Sprite& GetSprite() const { return sprite_; }
+    // 向きを取得
+    LR GetDirection() const { return direction_; }
     // 現在アクティブ状態かどうか(アクティブ == 置かれている状態)
     bool IsActive() const { return currentState_ == State::Active; }
     // 非アクティブ状態に遷移可能かどうか
@@ -88,6 +92,7 @@ private:
     LerpParam lerpXParam_;
     Vector2 initialSize_;// 初期サイズ
     float scrollValue_ = 0.0f;// スクロール値
+    LR direction_; // 向き
 
     //--------- functions ----------------------------------------------------
 

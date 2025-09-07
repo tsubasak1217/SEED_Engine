@@ -43,6 +43,7 @@ public:
     void SetWarpEmpty() { currentState_ = State::WarpEmpty; }
     // 通常更新状態にする
     void SetNone();
+    void ResetAnimation();
 
     uint32_t GetWarpIndex() const { return warpIndex_; }
     bool IsStateNotification()const { return currentState_ == State::Notification; }

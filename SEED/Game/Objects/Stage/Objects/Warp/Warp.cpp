@@ -109,13 +109,19 @@ void Warp::SetNone() {
     currentState_ = State::None;
 }
 
-void Warp::Update() {
+void Warp::ResetAnimation() {
 
-    // 状態別の更新処理
-    UpdateState();
+    // アニメーション表示初期化
+    InitializeFrameSprites();
+}
+
+void Warp::Update() {
 
     // 常に行う更新処理
     UpdateAlways();
+
+    // 状態別の更新処理
+    UpdateState();
 }
 
 void Warp::UpdateState() {

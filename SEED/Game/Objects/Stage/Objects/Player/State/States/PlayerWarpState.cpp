@@ -13,6 +13,14 @@
 //	PlayerWarpState classMethods
 //============================================================================
 
+void PlayerWarpState::InitializeCommonSprite(Sprite& sprite) {
+
+    // 共通の初期化設定
+    sprite = Sprite("Scene_Game/Effect/trailTriangle.png");
+    sprite.anchorPoint = 0.5f;
+    sprite.blendMode = BlendMode::ADD;
+}
+
 void PlayerWarpState::SetLerpValue(const Vector2& start, const Vector2& target) {
 
     warpStart_ = start;
@@ -33,6 +41,12 @@ void PlayerWarpState::Enter(Player& player) {
 
     // 開始座標を設定する
     beginTranslate_.start = player.GetOwner()->GetWorldTranslate();
+
+    // エフェクトリセット
+    trailSprites_.clear();
+    trailLifeTimers_.clear();
+    trailSpawnTimer_.duration = trailSpawnInterval_;
+    trailSpawnTimer_.Reset();
 }
 
 void PlayerWarpState::Update(Player& player) {
@@ -51,6 +65,18 @@ void PlayerWarpState::Update(Player& player) {
 
         UpdateEndAdnimation(player);
         break;
+    }
+}
+
+void PlayerWarpState::Draw([[maybe_unused]] Player& player) {
+
+    // トレイルエフェクト発生
+    UpdateWarpTrail(player);
+
+    // スプライトの描画
+    for (auto& sprite : trailSprites_) {
+
+        sprite.Draw();
     }
 }
 
@@ -93,6 +119,77 @@ void PlayerWarpState::UpdateWarp(Player& player) {
     }
 }
 
+void PlayerWarpState::UpdateWarpTrail(Player& player) {
+
+    for (int i = static_cast<int>(trailSprites_.size()) - 1; i >= 0; --i) {
+
+        Timer& life = trailLifeTimers_[i];
+        life.Update();
+
+        // 見た目の減衰
+        float scale = 1.0f - life.GetProgress();
+        trailSprites_[i].scale = Vector2(scale);
+        trailSprites_[i].color.w = scale;
+        trailSprites_[i].rotate += std::numbers::pi_v<float> / 18.0f;
+
+        if (life.IsFinishedNow()) {
+
+            // 古いものから削除
+            trailSprites_.erase(trailSprites_.begin() + i);
+            trailLifeTimers_.erase(trailLifeTimers_.begin() + i);
+        }
+    }
+
+    if (currentState_ != State::Warp) {
+        return;
+    }
+
+    // スポーン間隔管理
+    trailSpawnTimer_.Update();
+    if (!trailSpawnTimer_.IsFinishedNow()) {
+        return;
+    }
+    // 次回のためにリセット
+    trailSpawnTimer_.Reset();
+
+    // ±範囲をプレイヤー中心で作成
+    const Vector2 playerPos = player.GetOwner()->GetWorldTranslate();
+    Range2D spawnAABB(playerPos - baseSpriteSize_, playerPos + baseSpriteSize_);
+    Vector2 spawnPos{ RandRange(spawnAABB.min.x, spawnAABB.max.x),RandRange(spawnAABB.min.y, spawnAABB.max.y) };
+
+    // スプライト生成
+    Sprite sprite;
+    InitializeCommonSprite(sprite);
+
+    // サイズ設定
+    Vector2 sizeJitter{
+        RandRange(-randomSpriteSize_, +randomSpriteSize_),
+        RandRange(-randomSpriteSize_, +randomSpriteSize_)
+    };
+    sprite.size = baseSpriteSize_ + sizeJitter;
+
+    // SRT設定
+    sprite.translate = spawnPos;
+    sprite.rotate = RandRange(-randomRotate_, +randomRotate_);
+    sprite.scale = Vector2(1.0f);
+
+    // 追加
+    trailSprites_.emplace_back(std::move(sprite));
+
+    // 寿命タイマーを設定
+    Timer life;
+    life.duration = trailLifeTime_;
+    life.Reset();
+    trailLifeTimers_.emplace_back(life);
+
+    // 最大数を超えたら古いものから削除
+    if (static_cast<int>(trailSprites_.size()) > maxTrailSpriteCount_) {
+
+        trailSprites_.erase(trailSprites_.begin());
+        trailLifeTimers_.erase(trailLifeTimers_.begin());
+    }
+}
+
 void PlayerWarpState::UpdateEndAdnimation(Player& player) {
 
     // スケーリングさせる
@@ -110,6 +207,13 @@ void PlayerWarpState::UpdateEndAdnimation(Player& player) {
         isWarping_ = false;
         isWarpFinishTrigger_ = true;
     }
+}
+
+float PlayerWarpState::RandRange(float min, float max) {
+
+    static thread_local std::mt19937 rng{ std::random_device{}() };
+    std::uniform_real_distribution<float> dist(min, max);
+    return dist(rng);
 }
 
 void PlayerWarpState::Exit([[maybe_unused]] Player& player) {
@@ -135,6 +239,15 @@ void PlayerWarpState::Edit([[maybe_unused]] const Player& player) {
         ImGui::Text(std::format("isWarpFinishTrigger: {}", isWarpFinishTrigger_).c_str());
         ImGui::DragFloat("warpDuration", &warpTimer_.duration, 0.01f);
         ImGui::ProgressBar(warpTimer_.GetProgress());
+
+        ImGui::SeparatorText("Trail");
+
+        ImGui::DragFloat2("baseSpriteSize", &baseSpriteSize_.x, 0.1f);
+        ImGui::DragFloat("randomSpriteSize", &randomSpriteSize_, 0.1f);
+        ImGui::DragFloat("trailLifeTime", &trailLifeTime_, 0.01f);
+        ImGui::DragFloat("spawnInterval", &trailSpawnInterval_, 0.005f);
+        ImGui::DragInt("maxTrailCount", &maxTrailSpriteCount_, 1);
+        ImGui::DragFloat("randomRotate", &randomRotate_, 1.0f);
         break;
     case PlayerWarpState::State::End:
 
@@ -168,6 +281,13 @@ void PlayerWarpState::FromJson(const nlohmann::json& data) {
     endScaling_.target = data.value("endScaling_.target", 0.0f);
     endScaling_.easing = EnumAdapter<Easing::Type>::FromString(
         data.value("endScaling_.easing", "InSine")).value();
+
+    from_json(data.value("baseSpriteSize_", nlohmann::json()), baseSpriteSize_);
+    randomSpriteSize_ = data.value("randomSpriteSize_", 0.0f);
+    trailLifeTime_ = data.value("trailLifeTime_", 0.0f);
+    trailSpawnInterval_ = data.value("trailSpawnInterval_", 0.0f);
+    maxTrailSpriteCount_ = data.value("maxTrailSpriteCount_", 4);
+    randomRotate_ = data.value("randomRotate_", 0.0f);
 }
 
 void PlayerWarpState::ToJson(nlohmann::json& data) {
@@ -184,4 +304,11 @@ void PlayerWarpState::ToJson(nlohmann::json& data) {
     data["endScaling_.start"] = endScaling_.start;
     data["endScaling_.target"] = endScaling_.target;
     data["endScaling_.easing"] = EnumAdapter<Easing::Type>::ToString(endScaling_.easing);
+
+    to_json(data["baseSpriteSize_"], baseSpriteSize_);
+    data["randomSpriteSize_"] = randomSpriteSize_;
+    data["trailLifeTime_"] = trailLifeTime_;
+    data["trailSpawnInterval_"] = trailSpawnInterval_;
+    data["maxTrailSpriteCount_"] = maxTrailSpriteCount_;
+    data["randomRotate_"] = randomRotate_;
 }

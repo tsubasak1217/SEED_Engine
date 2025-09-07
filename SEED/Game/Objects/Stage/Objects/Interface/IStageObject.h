@@ -49,9 +49,9 @@ public:
     GameObject2D* GetOwner() const { return owner_; }
 
     // Collision
-    virtual void OnCollisionEnter([[maybe_unused]]GameObject2D* other){}
-    virtual void OnCollisionStay([[maybe_unused]] GameObject2D* other){}
-    virtual void OnCollisionExit([[maybe_unused]] GameObject2D* other){}
+    virtual void OnCollisionEnter([[maybe_unused]] GameObject2D* other) {}
+    virtual void OnCollisionStay([[maybe_unused]] GameObject2D* other) {}
+    virtual void OnCollisionExit([[maybe_unused]] GameObject2D* other) {}
 
 
 protected:

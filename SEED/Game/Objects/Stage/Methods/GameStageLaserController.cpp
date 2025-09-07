@@ -170,6 +170,15 @@ void GameStageLaserController::Edit() {
         ImGui::Text("noneLaserLauncheres: %d", noneLaserLauncheres_.size());
         ImGui::Text("hologramLaserLauncheres: %d", hologramLaserLauncheres_.size());
     }
+    ImGui::SeparatorText("Edit");
+    {
+        if (!noneLaserLauncheres_.empty()) {
+
+            ImGui::PushID("noneLaserLauncheres_.front()");
+            noneLaserLauncheres_.front()->Edit();
+            ImGui::PopID();
+        }
+    }
 }
 
 void GameStageLaserController::FromJson([[maybe_unused]] const nlohmann::json& data) {

@@ -57,6 +57,11 @@ void Laser::SetHitWarpParam(const WarpLaserParam& param) {
     warpParam_.warpCommonState = param.warpCommonState;
 }
 
+bool Laser::IsStopAll() const {
+
+    return currentState_ == State::Stop && sprite_.size.y <= initSizeY_.value() / 2.0f;
+}
+
 void Laser::Update() {
 
     // 状態に応じて更新処理

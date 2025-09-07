@@ -39,6 +39,8 @@ public:
 
     // ヒット先のワープの情報を設定する
     void SetHitWarpParam(const WarpLaserParam& param) override;
+
+    bool IsStopAll() const;
 private:
     //========================================================================
     //	private Methods

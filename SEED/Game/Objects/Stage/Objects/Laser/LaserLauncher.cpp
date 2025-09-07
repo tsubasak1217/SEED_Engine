@@ -38,6 +38,68 @@ void LaserLauncher::Initialize() {
     // 星
     centerStarSprite_ = Sprite("Scene_Game/StageObject/laserLauncherStar.png");
     centerStarSprite_.anchorPoint = 0.5f;
+
+    // EmitState
+    {
+        // 星
+        isStarGrowing_ = true;
+        centerStarTimer_.duration = 0.64f;
+        centerStarTimer_.Reset();
+
+        // ユニット
+        commonUnit_.spriteCount = 8;
+        commonUnit_.duration = 1.6f;
+        commonUnit_.phaseSpacing = 0.4f;
+        commonUnit_.moveDistance = 16.0f;
+        commonUnit_.gapFromBlock = 1.2f;
+        commonUnit_.startScale = 0.8f;
+        commonUnit_.targetScale = 0.0f;
+        commonUnit_.scalineEasing = Easing::InCubic;
+        commonUnit_.translateEasing = Easing::InSine;
+    }
+}
+
+void LaserLauncher::InitializeLaunchSprites() {
+
+    // 全てクリア
+    units_.clear();
+
+    // 方向を反映（
+    for (const auto& direction : launchDirections_) {
+
+        // 状態に応じた向きを取得
+        DIRECTION4 stateDirection = LaserHelper::GetStateDirection(commonState_, direction);
+
+        LaserUnit unit = commonUnit_;
+        unit.direction = stateDirection;
+
+        // ユニットの見た目生成
+        unit.laserUnitSprite.clear();
+        unit.timers.clear();
+        unit.laserUnitSprite.resize(unit.spriteCount);
+        unit.timers.resize(unit.spriteCount);
+        for (int i = 0; i < unit.spriteCount; ++i) {
+
+            // スプライトを初期化
+            Sprite sprite("Scene_Game/StageObject/laserUnit.png");
+            sprite.anchorPoint = 0.5f;
+            sprite.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
+            // 発射台の色に合わせる
+            sprite.color = frameSprite_.color;
+
+            // 一定間隔でずらす
+            Timer timer;
+            timer.duration = unit.duration;
+            float phase = std::fmod(unit.phaseSpacing * i, 1.0f);
+            timer.currentTime = timer.duration * phase;
+            timer.prevTime = timer.currentTime;
+
+            // 配列に追加
+            unit.laserUnitSprite[i] = sprite;
+            unit.timers[i] = timer;
+        }
+        units_.push_back(std::move(unit));
+    }
 }
 
 void LaserLauncher::SetTranslate(const Vector2& translate) {
@@ -99,9 +161,6 @@ void LaserLauncher::SetIsLaserActive(bool isActive) {
     }
 }
 
-void LaserLauncher::InitializeLaunchSprites() {
-}
-
 void LaserLauncher::InitializeLasers() {
 
     // レーザーのインスタンスを作成する
@@ -138,6 +197,138 @@ void LaserLauncher::RemoveWarpLasers() {
 
 void LaserLauncher::Update() {
 
+    // 中心の星の更新
+    if (commonState_ == StageObjectCommonState::Hologram) {
+
+        UpdateCenterStar();
+    }
+
+    // ユニットの更新処理
+    UpdateUnits();
+}
+
+void LaserLauncher::UpdateCenterStar() {
+
+    // 時間経過で大きくなったり小さくしたりする
+    // 時間を進める
+    centerStarTimer_.Update();
+
+    // 拡大中か縮小中かでイージングと補間の向きを切替え
+    float t = isStarGrowing_ ?
+        centerStarTimer_.GetEase(Easing::OutSine) : centerStarTimer_.GetEase(Easing::InSine);
+
+    // スケーリング
+    const float scaleMin = 0.8f;
+    const float scaleMax = 1.2f;
+    float scale = isStarGrowing_ ? std::lerp(scaleMin, scaleMax, t) : std::lerp(scaleMax, scaleMin, t);
+    centerStarSprite_.scale = Vector2(scale);
+
+    // 反転してループさせる
+    if (centerStarTimer_.IsFinishedNow()) {
+
+        isStarGrowing_ = !isStarGrowing_;
+        centerStarTimer_.Reset();
+    }
+}
+
+void LaserLauncher::UpdateUnits() {
+
+    // 空、サイズ以上の場合は処理しない
+    if (units_.empty()) {
+        return;
+    }
+
+    // 方向ごとに1本だけ更新
+    for (auto& unit : units_) {
+
+        switch (unit.currentState) {
+        case State::Emit: {
+
+            // 発生中の処理
+            UpdateEmit(unit);
+            break;
+        }
+        case State::EmitNotPossible: {
+
+            // 発生できないときの処理
+            UpdateEmitNotPossible(unit);
+            break;
+        }
+        }
+    }
+}
+
+void LaserLauncher::UpdateEmit(LaserUnit& unit) {
+
+    // 発生起点座標
+    const Vector2 origin = LaserHelper::GetTranslatedByDirection(
+        unit.direction, translate_, laserSize_, unit.gapFromBlock);
+
+    // 進行方向の軸と目標点
+    const Vector2 axis = LaserHelper::GetAxisFromDirection(unit.direction);
+    const Vector2 target = origin + axis * unit.moveDistance;
+
+    // スプライトを更新
+    for (size_t i = 0; i < unit.laserUnitSprite.size(); ++i) {
+
+        // 発生できない場合は状態を変える
+        if (!IsDirectionReadyForUnit(unit)) {
+            
+            // 表示を消す
+            for (auto& sprite : unit.laserUnitSprite) {
+
+                sprite.scale = Vector2(0.0f);
+            }
+            unit.currentState = State::EmitNotPossible;
+            continue;
+        }
+
+        Timer& timer = unit.timers[i];
+        Sprite& sprite = unit.laserUnitSprite[i];
+
+        // 時間を進める
+        timer.Update();
+
+        // 座標補間
+        float tEasedT = timer.GetEase(unit.translateEasing);
+        sprite.translate = MyMath::Lerp(origin, target, tEasedT);
+
+        // スケール補間
+        float sEasedT = timer.GetEase(unit.scalineEasing);
+        sprite.scale = std::lerp(unit.startScale, unit.targetScale, sEasedT);
+
+        // 完了したらリスタート
+        if (timer.IsFinishedNow()) {
+
+            timer.Reset();
+        }
+    }
+}
+
+void LaserLauncher::UpdateEmitNotPossible(LaserUnit& unit) {
+
+    // 再起動されたらリセットしてもう一度発生
+    if (IsDirectionReadyForUnit(unit)) {
+
+        InitializeLaunchSprites();
+        unit.currentState = State::Emit;
+    }
+}
+
+bool LaserLauncher::IsDirectionReadyForUnit(const LaserUnit& unit) const {
+
+    for (const auto& laserObject : lasers_) {
+
+        LaserObjectComponent* component = laserObject->GetComponent<LaserObjectComponent>();
+        if (Laser* laser = component->GetLaserObject<Laser>()) {
+
+            // このユニットの向きと一致するレーザーをチェック
+            if (laser->GetDirection() == unit.direction) {
+                return !laser->IsStopAll();
+            }
+        }
+    }
+    return false;
 }
 
 void LaserLauncher::Draw() {
@@ -148,6 +339,14 @@ void LaserLauncher::Draw() {
         laser->GetComponent<LaserObjectComponent>()->GetLaserObject<Laser>()->Draw();
     }
 
+    // ユニット描画
+    for (auto& unit : units_) {
+        for (auto& sprite : unit.laserUnitSprite) {
+
+            sprite.Draw();
+        }
+    }
+
     // フレーム
     frameSprite_.Draw();
 
@@ -156,4 +355,20 @@ void LaserLauncher::Draw() {
 }
 
 void LaserLauncher::Edit() {
+
+    if (ImGui::Button("ReStart Param")) {
+
+        InitializeLaunchSprites();
+    }
+
+    ImGui::DragInt("spriteCount", &commonUnit_.spriteCount, 1, 1, 128);
+    ImGui::DragFloat("duration", &commonUnit_.duration, 0.01f);
+    ImGui::DragFloat("phaseSpacing", &commonUnit_.phaseSpacing, 0.01f);
+    ImGui::DragFloat("moveDistance", &commonUnit_.moveDistance, 0.01f);
+    ImGui::DragFloat("gapFromBlock", &commonUnit_.gapFromBlock, 0.01f);
+    ImGui::DragFloat("startScale", &commonUnit_.startScale, 0.01f);
+    ImGui::DragFloat("targetScale", &commonUnit_.targetScale, 0.01f);
+
+    EnumAdapter<Easing::Type>::Combo("scalineEasing", &commonUnit_.scalineEasing);
+    EnumAdapter<Easing::Type>::Combo("translateEasing", &commonUnit_.translateEasing);
 }

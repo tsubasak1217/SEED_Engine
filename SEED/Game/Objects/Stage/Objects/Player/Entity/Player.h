@@ -60,7 +60,7 @@ public:
     float GetGoalT()const{ return std::clamp(goalTouchTime_ / requiredGoalTime_,0.0f,1.0f); }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
-    bool IsDead() const;
+    bool IsDeadFinishTrigger() const;
     void RequestDeadState() { stateController_->RequestDeadState(); }
    
     //カメラ範囲から出たか判定

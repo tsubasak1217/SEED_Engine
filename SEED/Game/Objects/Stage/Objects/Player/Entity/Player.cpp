@@ -83,9 +83,9 @@ void Player::SetWarpState(const Vector2& start, const Vector2& target) {
     stateController_->SetWarpState(start, target);
 }
 
-bool Player::IsDead() const {
+bool Player::IsDeadFinishTrigger() const {
     // 死亡状態かどうか
-    return stateController_->IsDead();
+    return stateController_->IsDeadFinishTrigger();
 }
 
 bool Player::IsOutOfCamera(const Range2D& cameraRange) const {
@@ -343,12 +343,15 @@ void Player::Draw() {
     stateController_->Draw(*this);
 
     // 胴体の描画
-    body_.Draw();
+    if (stateController_->IsDead() == false ) {
+        body_.Draw();
 
-    // 足を描画
-    for (int i = 0; i < 2; i++) {
-        legs_[i].Draw();
+        // 足を描画
+        for (int i = 0; i < 2; i++) {
+            legs_[i].Draw();
+        }
     }
+   
 }
 
 void Player::Edit() {

@@ -46,6 +46,7 @@ public:
     bool IsFinishedWarp() const;
     //死亡判定
     bool IsDead() const;
+    bool IsDeadFinishTrigger() const;
     void RequestDeadState() { Request(PlayerState::Dead); }
 
     // 境界線を操作できる状態かどうか
@@ -55,8 +56,6 @@ public:
     void OnGroundTrigger();
     // 天井に当たった瞬間の処理
     void OnCeilingTrigger();
-    // レーザーに当たった瞬間の処理
-    void TouchLaser();
 
     float GetJumpVelocity() const;
 

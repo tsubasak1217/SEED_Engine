@@ -480,7 +480,7 @@ void GameStage::CheckClear() {
 
 void GameStage::CheckPlayerDead() {
     // 死亡判定
-    if (player_->IsDead()) {
+    if (player_->IsDeadFinishTrigger()) {
         currentState_ = State::Dead;
     }
 }

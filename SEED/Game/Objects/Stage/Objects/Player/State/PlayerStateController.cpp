@@ -64,6 +64,15 @@ bool PlayerStateController::IsFinishedWarp() const {
 }
 
 bool PlayerStateController::IsDead() const {
+    PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
+    //死亡状態か
+    if(dead->IsDead()){
+        return true;
+    }
+    return false;
+}
+
+bool PlayerStateController::IsDeadFinishTrigger() const {
 
     PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
     //死亡処理が完了したか
@@ -189,6 +198,14 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
         return;
     }
 
+    if(requested_ == PlayerState::Dead){
+        return;
+    }
+
+    if(current_ == PlayerState::Dead){
+        return;
+    }
+
     // ワープ後にジャンプをリクエストしたか
     if (requestedJump_) {
 
@@ -211,16 +228,14 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
         // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
-            //requestedに死亡状態が設定されている場合はジャンプ状態にしない
-            if(requested_ == PlayerState::Dead){
-                return;
-            }
             if (current_ != PlayerState::Jump) {
 
                 Request(PlayerState::Jump);
             }
         }
     }
+
+   
 }
 
 void PlayerStateController::Request(PlayerState state) {

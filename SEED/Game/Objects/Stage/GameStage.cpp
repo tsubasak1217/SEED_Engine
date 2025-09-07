@@ -74,6 +74,8 @@ void GameStage::BuildStage() {
     objects_ = stageBuilder.CreateFromCSVFile(fileName, stageObjectMapTileSize_);
     // コライダーの登録
     stageBuilder.CreateColliders(objects_, stageObjectMapTileSize_);
+    // ステージのサイズを計算
+    CalculateCurrentStageRange();
 
     // リストからプレイヤーのポインタを渡す
     GetListsPlayerPtr();

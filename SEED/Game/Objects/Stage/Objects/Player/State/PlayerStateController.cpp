@@ -96,11 +96,15 @@ void PlayerStateController::Update(Player& owner) {
         ChangeState(owner);
     }
 
-    // 横移動はワープ状態以外の時に処理可能
-    if (current_ != PlayerState::Warp) {
+    // 横移動はワープ状態,死亡状態以外の時に処理可能
+    if (current_ != PlayerState::Warp && current_ != PlayerState::Dead) {
         if (auto* move = states_[PlayerState::Move].get()) {
 
             move->Update(owner);
+        }
+
+        if (auto* jump = states_[PlayerState::Jump].get()) {
+            jump->Update(owner);
         }
     }
 
@@ -173,6 +177,11 @@ void PlayerStateController::UpdateInputState() {
 
     // ワープ状態の時は処理しない
     if (current_ == PlayerState::Warp) {
+        return;
+    }
+
+    //死亡時は処理しない
+    if(current_ == PlayerState::Dead){
         return;
     }
 

@@ -333,6 +333,7 @@ void Player::Edit() {
 
                 ImGui::DragFloat2("spriteAnchor", &body_.anchorPoint.x, 0.1f);
                 ImGui::DragFloat2("spriteTranslate", &body_.translate.x, 0.1f);
+                ImGui::Checkbox("isHologram", &isHologram_);
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("State")) {

@@ -39,6 +39,8 @@ public:
     void SetSize(const Vector2& size) override;
     // プレイヤーをワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);
+    // ホログラム状態の設定
+    void SetIsHologram(bool isHologram) { isHologram_ = isHologram; }
 
     const Sprite& GetSprite() const { return body_; }
     LR GetMoveDirection() const { return moveDirection_; }

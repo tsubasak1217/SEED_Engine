@@ -176,14 +176,15 @@ void Scene_Title::UpdateTitleLogo(){
 
     logoTimer_ += ClockManager::DeltaTime();
 
-
+#ifdef _DEBUG
     ImFunc::CustomBegin("Title", MoveOnly_TitleBar);
     {
         ImGui::DragFloat2("titlePos", &sprites_["title"].translate.x);
-        ImGui::DragFloat2("titleScale", &sprites_["title"].scale.x,0.05f);
+        ImGui::DragFloat2("titleScale", &sprites_["title"].scale.x, 0.05f);
         ImGui::DragFloat2("titleOffset", &titleOffset_.x);
         ImGui::DragFloat2("basePos", &basePos_.x);
 
         ImGui::End();
     }
+#endif // _DEBUG
 }

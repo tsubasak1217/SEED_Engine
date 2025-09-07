@@ -8,6 +8,8 @@ Scene_Select::Scene_Select() {
 }
 
 Scene_Select::~Scene_Select() {
+    // すべてのエフェクトを削除
+    EffectSystem::DeleteAll();
 }
 
 void Scene_Select::Initialize() {
@@ -18,6 +20,9 @@ void Scene_Select::Initialize() {
 
     SEED::SetMainCamera("default");
     SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
+
+    // エフェクトの追加
+    EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f },nullptr);
 
     //============================================================================
     //	objects

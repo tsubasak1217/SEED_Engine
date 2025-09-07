@@ -7,8 +7,15 @@
 void TextBox2D::Edit(){
     // beginされているウインドウ内で使うこと
     ImFunc::InputTextMultiLine("テキスト", text);
-    auto fontNames = MyFunc::GetFileList("Resources/fonts", { ".ttf", ".otf" });
-    ImFunc::ComboText("フォント", fontName, fontNames);
+
+    // フォント設定
+    static std::filesystem::path currentDir = "Resources/Fonts";
+    std::string selectedFont = ImFunc::FolderView("フォント一覧", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
+    if(!selectedFont.empty()){
+        SetFont(selectedFont);
+    }
+
+    // 各種パラメータ設定
     ImFunc::Combo<TextAlign>("配置", align, { "LEFT","CENTER","RIGHT" });
     ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 1000.0f);
     ImGui::DragFloat2("テキスト位置", &transform.translate.x, 1.0f);
@@ -18,8 +25,10 @@ void TextBox2D::Edit(){
     ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f, 0.0f);
     ImGui::DragFloat("行間", &lineSpacing, 0.1f);
     ImGui::DragFloat("文字間隔", &glyphSpacing, 0.1f);
+    ImGui::DragInt("描画レイヤー", &layer);
     ImGui::ColorEdit4("文字色", (float*)&color);
     ImGui::Checkbox("テキストボックス表示", &textBoxVisible);
+    ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
     ImGui::Checkbox("アウトライン", &useOutline);
     if(useOutline){
         ImGui::DragFloat("アウトライン幅", &outlineWidth, 0.1f, 0.0f);
@@ -50,6 +59,8 @@ nlohmann::json TextBox2D::GetJsonData() const{
     jsonData["color"] = color;
     jsonData["outlineColor"] = outlineColor;
     jsonData["textBoxVisible"] = textBoxVisible;
+    jsonData["isApplyViewMat"] = isApplyViewMat;
+    jsonData["layer"] = layer;
     return jsonData; // JSONデータを返す
 }
 
@@ -73,6 +84,8 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     color = jsonData["color"];
     outlineColor = jsonData["outlineColor"];
     textBoxVisible = jsonData.value("textBoxVisible", true);
+    isApplyViewMat = jsonData.value("isApplyViewMat", true);
+    layer = jsonData.value("layer", 0);
     // フォントを設定
     SetFont(fontName);
 }

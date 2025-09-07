@@ -105,7 +105,7 @@ Vector4 MyFunc::RandomColor(){
     return { Random(0.0f,1.0f),Random(0.0f,1.0f),Random(0.0f,1.0f),1.0f };
 }
 
-Vector4 MyFunc::RandomColor(std::initializer_list<uint32_t> colorList,bool isCorrectionToLiner){
+Vector4 MyFunc::RandomColor(std::initializer_list<uint32_t> colorList, bool isCorrectionToLiner){
     if(colorList.size() == 0){
         return { 1.0f,1.0f,1.0f,1.0f }; // デフォルトの白色
     }
@@ -114,7 +114,7 @@ Vector4 MyFunc::RandomColor(std::initializer_list<uint32_t> colorList,bool isCor
     auto it = std::next(colorList.begin(), Random(0, static_cast<int>(colorList.size()) - 1));
     uint32_t color = *it;
     // RGBA成分を抽出して返す
-    return MyMath::FloatColor(color,isCorrectionToLiner);
+    return MyMath::FloatColor(color, isCorrectionToLiner);
 }
 
 //----------------- ランダムな方向を返す関数 -----------------//
@@ -514,4 +514,52 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
     std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
     // フルパスを正規化して返す
     return std::filesystem::canonical(fullPath).generic_wstring();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Jsonファイル関連
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json MyFunc::GetJson(const std::string& filePath){
+
+    if(!filePath.ends_with(".json")){
+        assert(false && "Jsonファイルの拡張子が不正");
+        return nlohmann::json();
+    }
+
+    // ファイルを開く
+    std::ifstream file(filePath);
+    if(!file.is_open()){
+        return nlohmann::json();
+    }
+
+    // JSONデータをパース
+    nlohmann::json jsonData;
+    file >> jsonData;
+    return jsonData;
+}
+
+// Jsonファイルを作成する関数
+void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData){
+
+    if(!filePath.ends_with(".json")){
+        assert(false && "Jsonファイルの拡張子が不正");
+        return;
+    }
+
+    // 親ディレクトリを作成（なければ）
+    fs::path path(filePath);
+    if(path.has_parent_path()){
+        fs::create_directories(path.parent_path());
+    }
+
+    // ファイルを開く
+    std::ofstream file(filePath);
+    if(!file.is_open()){
+        assert(false && "Jsonファイルの作成に失敗");
+        return;
+    }
+    
+    // JSONデータを書き込む
+    file << jsonData.dump(4); // インデント幅を4に設定して書き込む
 }

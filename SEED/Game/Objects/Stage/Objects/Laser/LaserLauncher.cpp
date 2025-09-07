@@ -31,16 +31,22 @@ LaserLauncher::~LaserLauncher() {
 
 void LaserLauncher::Initialize() {
 
-    // ファイル名を保持
-    fileName_ = "Scene_Game/StageObject/laserLauncherForward.png";
+    // スプライトの初期化
+    // フレーム
+    frameSprite_ = Sprite("Scene_Game/StageObject/normalBlock.png");
+    frameSprite_.anchorPoint = 0.5f;
+    // 星
+    centerStarSprite_ = Sprite("Scene_Game/StageObject/laserLauncherStar.png");
+    centerStarSprite_.anchorPoint = 0.5f;
 }
 
 void LaserLauncher::SetTranslate(const Vector2& translate) {
 
+    // 座標の保持
     translate_ = translate;
 
     // 全てのスプライトに対して処理を行う
-    for (auto& sprite : launchSprites_) {
+    for (Sprite& sprite : std::array{ std::ref(frameSprite_), std::ref(centerStarSprite_) }) {
 
         sprite.translate = translate;
     }
@@ -52,9 +58,25 @@ void LaserLauncher::SetSize(const Vector2& size) {
     laserSize_ = size;
 
     // 全てのスプライトに対して処理を行う
-    for (auto& sprite : launchSprites_) {
+    frameSprite_.size = size;
+    centerStarSprite_.size = size;
+}
 
-        sprite.size = size;
+void LaserLauncher::SetCommonState(StageObjectCommonState state) {
+
+    // 状態に応じて色を設定
+    commonState_ = state;
+    switch (state) {
+    case StageObjectCommonState::None:
+
+        frameSprite_.color = normalColor_;
+        centerStarSprite_.color = normalColor_;
+        break;
+    case StageObjectCommonState::Hologram:
+
+        frameSprite_.color = hologramColor_;
+        centerStarSprite_.color = hologramColor_;
+        break;
     }
 }
 
@@ -78,18 +100,6 @@ void LaserLauncher::SetIsLaserActive(bool isActive) {
 }
 
 void LaserLauncher::InitializeLaunchSprites() {
-
-    // 方向別で初期化
-    for (const auto& direction : launchDirections_) {
-
-        // ホログラムかどうかで向きを決定する
-        DIRECTION4 stateDirection = LaserHelper::GetStateDirection(commonState_, direction);
-
-        // スプライトを初期化
-        Sprite& sprite = launchSprites_.emplace_back(Sprite(fileName_));
-        sprite.anchorPoint = Vector2(0.5f);
-        sprite.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
-    }
 }
 
 void LaserLauncher::InitializeLasers() {
@@ -126,25 +136,23 @@ void LaserLauncher::RemoveWarpLasers() {
     warpedLasers_.clear();
 }
 
-void LaserLauncher::SetIsActive(bool isActive) {
-
-    // レーザーにアクティブを設定する
-    for (const auto& laser : std::views::join(std::array{ lasers_, warpedLasers_ })) {
-
-        laser->SetIsActive(isActive);
-    }
-}
-
 void LaserLauncher::Update() {
+
 }
 
 void LaserLauncher::Draw() {
 
-    // スプライトの描画
-    for (auto& launchSprite : launchSprites_) {
+    // レーザーの描画
+    for (const auto& laser : std::views::join(std::array{ lasers_, warpedLasers_ })) {
 
-        launchSprite.Draw();
+        laser->GetComponent<LaserObjectComponent>()->GetLaserObject<Laser>()->Draw();
     }
+
+    // フレーム
+    frameSprite_.Draw();
+
+    // 星
+    centerStarSprite_.Draw();
 }
 
 void LaserLauncher::Edit() {

@@ -46,6 +46,9 @@ void GameStage::Initialize(int currentStageIndex) {
 
     // ステージのサイズを計算
     CalculateCurrentStageRange();
+    // カメラ調整の初期化
+    cameraAdjuster_.SetStageRange(currentStageRange_.value());
+    cameraAdjuster_.Update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

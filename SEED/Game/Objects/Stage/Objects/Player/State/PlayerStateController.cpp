@@ -197,11 +197,10 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
         Request(PlayerState::Dead);
         return;
     }
-
+    // 死亡状態の時は処理しない
     if(requested_ == PlayerState::Dead){
         return;
     }
-
     if(current_ == PlayerState::Dead){
         return;
     }

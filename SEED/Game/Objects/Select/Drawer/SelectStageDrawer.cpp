@@ -17,6 +17,9 @@
 
 void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
+    // json適応
+    ApplyJson();
+
     // すべてのステージを構築する
     BuildAllStage();
     // 初期化値設定
@@ -26,9 +29,6 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     animTo_ = static_cast<float>(focusIndex_);
     moveTimer_.Reset();
     currentState_ = State::Select;
-
-    // json適応
-    ApplyJson();
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -82,6 +82,8 @@ void SelectStageDrawer::Draw() {
         PoseFromOffset(off, translate, size);
         ApplyPoseToStage(stages_[i], translate, size);
 
+        // 背景描画
+        stages_[i].background.Draw();
         // フレーム描画
         stages_[i].frame.Draw();
         // ステージ描画
@@ -109,6 +111,24 @@ void SelectStageDrawer::Edit() {
 
         ImGui::DragFloat2("focusSize", &focusSize_.x, 1.0f);
         ImGui::DragFloat2("outSize", &outSize_.x, 1.0f);
+        ImGui::DragFloat("tileScale", &tileScale_, 0.01f);
+
+        if (ImGui::ColorEdit4("frameColor", &frameColor_.x)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.frame.color = frameColor_;
+            }
+        }
+        if (ImGui::ColorEdit4("backgroundColor", &backgroundColor_.x)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.background.color = backgroundColor_;
+            }
+        }
 
         EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
     }
@@ -122,12 +142,15 @@ void SelectStageDrawer::ApplyJson() {
     }
 
     moveTimer_.duration = data.value("moveTimer_.duration", 0.32f);
+    tileScale_ = data.value("tileScale_", 1.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
     from_json(data["leftTranslate_"], leftTranslate_);
     from_json(data["rightTranslate_"], rightTranslate_);
     from_json(data["focusSize_"], focusSize_);
     from_json(data["outSize_"], outSize_);
+    from_json(data.value("frameColor_", nlohmann::json()), frameColor_);
+    from_json(data.value("backgroundColor_", nlohmann::json()), backgroundColor_);
 
     moveEasing_ = EnumAdapter<Easing::Type>::FromString(data["moveEasing_"]).value();
 }
@@ -137,12 +160,15 @@ void SelectStageDrawer::SaveJson() {
     nlohmann::json data;
 
     data["moveTimer_.duration"] = moveTimer_.duration;
+    data["tileScale_"] = tileScale_;
 
     to_json(data["centerTranslate_"], centerTranslate_);
     to_json(data["leftTranslate_"], leftTranslate_);
     to_json(data["rightTranslate_"], rightTranslate_);
     to_json(data["focusSize_"], focusSize_);
     to_json(data["outSize_"], outSize_);
+    to_json(data["frameColor_"], frameColor_);
+    to_json(data["backgroundColor_"], backgroundColor_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
 
@@ -175,27 +201,30 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     stage.size = size;
     stage.frame.translate = center;
     stage.frame.size = size;
+    stage.background.translate = center;
+    stage.background.size = size;
 
-    // タイル位置からサイズを求める
-    Vector2 tileSize = Vector2(size.x / static_cast<float>(stage.cols),
-        size.y / static_cast<float>(stage.rows));
-    float left = center.x - size.x * 0.5f;
-    float top = center.y - size.y * 0.5f;
+    // タイルを最大の正方形の最大サイズにする
+    const float cols = static_cast<float>(stage.cols);
+    const float rows = static_cast<float>(stage.rows);
+    const float cell = (std::min)(size.x / cols, size.y / rows);
+
+    // このステージのグリッドサイズ
+    const float gridWidth = cell * cols * tileScale_;
+    const float gridHeight = cell * rows * tileScale_;
+
+    // フレーム内で中央に配置
+    const float left = center.x - gridWidth * 0.5f;
+    const float top = center.y - gridHeight * 0.5f;
+
+    // 各タイルを配置
     for (size_t k = 0; k < stage.objects.size(); ++k) {
 
-        const uint32_t id = stage.objectIds[k];
-        const Vector2 uv = stage.objectUVs[k];
+        const Vector2  uv = stage.objectUVs[k];
 
-        // 現在のフレームサイズから今のフレーム内の位置を設定する
-        Vector2 cpos = Vector2(left + uv.x * size.x, top + uv.y * size.y);
-        stage.objects[k].translate = cpos;
-        stage.objects[k].size = tileSize;
-
-        // 個別のサイズ設定
-        if (static_cast<StageObjectType>(id) == StageObjectType::Player) {
-
-            stage.objects[k].size = stage.objects[k].size * 0.8f;
-        }
+        // uvをグリッドサイズに変換して左上オフセットを足す
+        stage.objects[k].translate = Vector2(left + uv.x * gridWidth, top + uv.y * gridHeight);
+        stage.objects[k].size = cell;
     }
 }
 
@@ -304,6 +333,9 @@ void SelectStageDrawer::DrawActivate(float f) {
 
     // ステージへ適用して描画
     ApplyPoseToStage(stages_[enterIndex], pos, size);
+
+    // 背景描画
+    stages_[enterIndex].background.Draw();
     // フレーム描画
     stages_[enterIndex].frame.Draw();
     for (auto& sprite : stages_[enterIndex].objects) {
@@ -332,6 +364,7 @@ void SelectStageDrawer::BuildAllStage() {
             continue;
         }
 
+        uint32_t warpIndex = 0;
         const int rows = static_cast<int>(grid.size());
         const int cols = static_cast<int>(grid.front().size());
 
@@ -350,6 +383,15 @@ void SelectStageDrawer::BuildAllStage() {
         stage.frame.size = stage.size;
         stage.frame.anchorPoint = 0.5f;
         stage.frame.translate = stage.translate;
+        stage.frame.color = frameColor_;
+        // 背景描画初期化
+        // 背景は全体のサイズで設定する
+        stage.background = Sprite("Scene_Select/bgCheckerboard.png");
+        stage.background.size = stage.size;
+        stage.background.anchorPoint = 0.5f;
+        stage.background.translate = stage.translate;
+        stage.background.color = backgroundColor_;
+        stage.background.uvTransform = AffineMatrix(Vector3(80.0f, 45.0f, 1.0f), Vector3(0.0f), Vector3(0.0f));
         for (int r = 0; r < rows; ++r) {
 
             const int colsThis = static_cast<int>(grid[r].size());
@@ -358,14 +400,20 @@ void SelectStageDrawer::BuildAllStage() {
                 // CSVのインデックスからスプライトを作成する
                 const int id = grid[r][c];
                 // Noneは処理しない
-                if (id == 0) {
+                if (static_cast<StageObjectType>(id) == StageObjectType::None) {
                     continue;
                 }
 
                 // ステージ位置を記録
                 stage.objectIds.push_back(id);
-                stage.objectUVs.push_back(Vector2((c + 0.5f) / (float)cols, (r + 0.5f) / (float)rows));
-                stage.objects.emplace_back(CreateTileSprite(id, Vector2(0.0f), Vector2(1.0f)));
+                stage.objectUVs.push_back(Vector2((c + 0.5f) / static_cast<float>(cols),
+                    (r + 0.5f) / static_cast<float>(rows)));
+                stage.objects.emplace_back(CreateTileSprite(id, Vector2(0.0f), Vector2(1.0f), warpIndex));
+
+                // インデックスを進める
+                if (static_cast<StageObjectType>(id) == StageObjectType::Warp) {
+                    ++warpIndex;
+                }
             }
         }
         // 配列に追加
@@ -374,10 +422,10 @@ void SelectStageDrawer::BuildAllStage() {
 }
 
 Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
-    const Vector2& translate, const Vector2& size) {
+    const Vector2& translate, const Vector2& size, uint32_t warpIndex) {
 
     // スプライトをパスから作成
-    Sprite sprite = Sprite(GetFileNameFromIndex(index));
+    Sprite sprite = Sprite(GetFileNameFromIndex(index, warpIndex));
     // 設定
     sprite.anchorPoint = 0.5f;
     sprite.translate = translate;
@@ -391,16 +439,21 @@ Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     return sprite;
 }
 
-std::string SelectStageDrawer::GetFileNameFromIndex(uint32_t index) const {
+std::string SelectStageDrawer::GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const {
 
     // 番号からスプライト画像のパスを取得する
     switch (index) {
-    case 1:  return "Scene_Game/StageObject/normalBlock.png";       // NormalBlock
-    case 2:  return "Scene_Game/StageObject/crown.png";             // Goal
-    case 3:  return "Scene_Game/StageObject/Player/PlayerBody.png"; // Player
-    case 4:  return "Scene_Game/StageObject/frameRect.png";         // Warp
-    case 5:  return "Scene_Game/StageObject/dottedLine.png";        // EmptyBlock
-    case 6:  return "Scene_Game/StageObject/normalBlock.png";       // LaserLauncher
+    case 1:  return "Scene_Select/stageBlockNormal.png";   // NormalBlock
+    case 2:  return "Scene_Select/stageGoal.png";          // Goal
+    case 3:  return "Scene_Select/stagePlayer.png";        // Player
+    case 5:  return "Scene_Select/stageEmptyBlock.png";    // EmptyBlock
+    case 6:  return "Scene_Select/stageLaserLauncher.png"; // LaserLauncher
+    case 4: {
+
+        // Warpはインデックスに応じて使用する画像を変更する
+        std::string path = "Scene_Select/stageWarp" + std::to_string(warpIndex) + ".png";
+        return path;
+    }
     }
     return "";
 }

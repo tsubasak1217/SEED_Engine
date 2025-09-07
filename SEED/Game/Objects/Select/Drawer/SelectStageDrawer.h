@@ -62,6 +62,7 @@ private:
         uint32_t index;              // ステージ番号
         std::vector<Sprite> objects; // オブジェクト番号に対応するスプライト
         Sprite frame;                // ステージを囲うフレーム
+        Sprite background;           // ステージとフレームの背景
 
         // 全体の表示
         Vector2 translate; // 中心座標
@@ -92,6 +93,9 @@ private:
     uint32_t focusIndex_; // 目標フォーカスインデックス
     float animFrom_;      // 補間開始の連続フォーカス
     float animTo_;        // 補間終了の連続フォーカス
+    // 色
+    Vector4 frameColor_;      // フレームの色
+    Vector4 backgroundColor_; // 背景の色
     // 座標
     Vector2 centerTranslate_; // 真ん中のステージ表示(フォーカス位置)
     Vector2 leftTranslate_;   // 左のステージ表示位置
@@ -99,6 +103,7 @@ private:
     // サイズ
     Vector2 focusSize_; // フォーカス時のサイズ
     Vector2 outSize_;   // フォーカスされていないときのサイズ
+    float tileScale_;   // フレーム内のブロックサイズのスケーリング
 
     //--------- functions ----------------------------------------------------
 
@@ -108,12 +113,13 @@ private:
 
     // init
     void BuildAllStage();
-    Sprite CreateTileSprite(uint32_t index, const Vector2& translate, const Vector2& size);
+    Sprite CreateTileSprite(uint32_t index, const Vector2& translate,\
+        const Vector2& size, uint32_t warpIndex);
 
     // helper
     void StartMoveToNext(uint32_t next);
     void ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size);
     void PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize);
     void DrawActivate(float f);
-    std::string GetFileNameFromIndex(uint32_t index) const;
+    std::string GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const;
 };

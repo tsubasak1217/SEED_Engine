@@ -3,6 +3,8 @@
 
 // stl
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 // object
 #include <SEED/Lib/Structs/Sprite.h>
@@ -22,4 +24,14 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
+private:
+    void UpdateTitleLogo();
+
+private:
+    std::unordered_map<std::string, Sprite> sprites_;
+    Vector2 basePos_ = { 640.0f,360.0f };
+
+    // タイトルロゴ用の変数
+    float logoTimer_ = 0.0f;
+    Vector2 titleOffset_;
 };

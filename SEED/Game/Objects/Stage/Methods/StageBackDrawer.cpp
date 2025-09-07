@@ -72,11 +72,13 @@ void StageBackDrawer::Draw(){
         }
     }
 
+#ifdef _DEBUG
     ImFunc::CustomBegin("color", MoveOnly_TitleBar);
     {
         ImGui::ColorEdit4("Default Color", &defaultColor_.x);
         ImGui::End();
     }
+#endif // _DEBUG
 }
 
 

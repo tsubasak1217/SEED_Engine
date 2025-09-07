@@ -204,6 +204,8 @@ void GameStage::UpdatePlay(){
 
     //プレイヤーが境界線を越えたか判定
     CheckPlayerCrossedBorderLine();
+    //プレイヤーがカメラの範囲外に出たか判定
+    CheckPlayerOutOfCamera();
 
     // クリア判定
     CheckClear();
@@ -481,6 +483,7 @@ void GameStage::CheckPlayerDead() {
     }
 }
 
+
 // プレイヤーが境界線を越えたかどうか
 void GameStage::CheckPlayerCrossedBorderLine() {
     if(borderLine_->IsActive()){
@@ -507,6 +510,19 @@ void GameStage::CheckPlayerCrossedBorderLine() {
         player_->SetIsHologram(false);
     }
 }
+
+void GameStage::CheckPlayerOutOfCamera() {
+    // プレイヤーがカメラ範囲から出たかどうか
+    if (currentStageRange_ != std::nullopt && player_ != nullptr) {
+        // カメラの範囲
+        const Range2D cameraRange = cameraAdjuster_.GetCameraRange();
+        // プレイヤーがカメラ範囲から出たか
+        if (player_->IsOutOfCamera(cameraRange)) {
+            player_->RequestDeadState();
+        }
+    }
+}
+
 
 // ステージの範囲を計算する
 void GameStage::CalculateCurrentStageRange(){

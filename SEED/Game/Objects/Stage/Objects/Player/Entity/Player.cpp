@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Source/SEED.h>
 
 // inputDevice
 #include <Game/Objects/Stage/Objects/Player/Input/Device/PlayerKeyInput.h>
@@ -79,6 +80,18 @@ void Player::SetWarpState(const Vector2& start, const Vector2& target) {
 bool Player::IsDead() const {
     // 死亡状態かどうか
     return stateController_->IsDead();
+}
+
+bool Player::IsOutOfCamera(const Range2D& cameraRange) const {
+    bool isOut = false;
+
+    if (cameraRange.min.x > body_.translate.x + body_.size.x * 1.5f ||
+        cameraRange.max.x < body_.translate.x - body_.size.x * 1.5f ||
+        cameraRange.min.y > body_.translate.y + body_.size.y * 1.5f ||
+        cameraRange.max.y < body_.translate.y - body_.size.y * 1.5f) {
+        isOut = true;
+    }
+    return isOut;
 }
 
 bool Player::IsFinishedWarp() const {

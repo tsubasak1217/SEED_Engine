@@ -1,0 +1,24 @@
+{
+    "centerTranslate_": {
+        "x": 640.0,
+        "y": 400.0
+    },
+    "focusSize_": {
+        "x": 448.0,
+        "y": 252.0
+    },
+    "leftTranslate_": {
+        "x": 160.0,
+        "y": 500.0
+    },
+    "moveEasing_": "OutExpo",
+    "moveTimer_.duration": 0.36000001430511475,
+    "outSize_": {
+        "x": 224.0,
+        "y": 126.0
+    },
+    "rightTranslate_": {
+        "x": 1120.0,
+        "y": 500.0
+    }
+}

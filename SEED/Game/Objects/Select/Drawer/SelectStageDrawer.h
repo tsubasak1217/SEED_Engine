@@ -37,6 +37,9 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
+    // フォーカスするステージを設定
+    void SetNextFocus();
+    void SetPrevFocus();
 private:
     //========================================================================
     //	private Methods
@@ -75,6 +78,8 @@ private:
 
     // 現在の状態
     State currentState_;
+    // 最大ステージ数
+    uint32_t maxStageCount_;
 
     // ステージを描画する用の配列
     std::vector<Stage> stages_;
@@ -109,5 +114,6 @@ private:
     void StartMoveToNext(uint32_t next);
     void ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size);
     void PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize);
+    void DrawActivate(float f);
     std::string GetFileNameFromIndex(uint32_t index) const;
 };

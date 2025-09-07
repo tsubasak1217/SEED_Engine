@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Select/Drawer/SelectStageDrawer.h>
 
 //============================================================================
@@ -38,6 +39,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+    // 入力状態
+    LR stickDirection_; // スティック入力
+    bool stickLatched_; // スティック入力暴発防止
+
     // 入力管理
     std::unique_ptr<InputMapper<SelectInputEnum>> inputMapper_;
 
@@ -46,4 +51,6 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateSelectInput();
 };

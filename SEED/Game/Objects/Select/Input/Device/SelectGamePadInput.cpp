@@ -67,11 +67,11 @@ bool SelectGamePadInput::IsTriggered(SelectInputEnum button) const {
     }
     case SelectInputEnum::Right: {
 
-        return Input::IsTriggerPadButton({ PAD_BUTTON::RIGHT });
+        return Input::IsTriggerPadButton({ PAD_BUTTON::RIGHT | PAD_BUTTON::RB | PAD_BUTTON::RT });
     }
     case SelectInputEnum::Left: {
 
-        return Input::IsTriggerPadButton({ PAD_BUTTON::LEFT });
+        return Input::IsTriggerPadButton({ PAD_BUTTON::LEFT | PAD_BUTTON::LB | PAD_BUTTON::LT });
     }
     case SelectInputEnum::Return: {
 

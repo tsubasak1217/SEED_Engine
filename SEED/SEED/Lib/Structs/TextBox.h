@@ -24,7 +24,7 @@ enum class TextAlign{
 struct TextBox2D{
 
     TextBox2D() = default;
-    TextBox2D(const std::string& _text) : text(_text){}
+    TextBox2D(const std::string& _text) : text(_text){ SetFont(""); }
     void Draw()const;
     void SetFont(const std::string& fileName);
     void BindDatas(std::initializer_list<BindData> datas);

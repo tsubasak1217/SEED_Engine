@@ -412,7 +412,7 @@ void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, true,blendMode, false, DrawLocation::Front, 0
+        IdentityMat4(), color, false, true,blendMode, false, DrawLocation::Front, 100
     );
 }
 

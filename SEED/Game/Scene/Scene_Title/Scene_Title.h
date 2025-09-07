@@ -34,4 +34,7 @@ private:
     // タイトルロゴ用の変数
     float logoTimer_ = 0.0f;
     Vector2 titleOffset_;
+
+    // Text
+    TextBox2D uiText_;
 };

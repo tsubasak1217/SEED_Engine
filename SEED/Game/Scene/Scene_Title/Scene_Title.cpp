@@ -53,12 +53,23 @@ void Scene_Title::Initialize(){
         sprites_["leftLeg"].translate = basePos_;
 
         sprites_["title"].anchorPoint = {0.5f,0.5f};
-        sprites_["title"].scale = { 1.65f,1.3f };
+        sprites_["title"].scale = { 2.75f,2.1f };
         sprites_["title"].translate = basePos_;
 
-        basePos_ = { 640.0f,421.0f };
-        titleOffset_ = { 0.0f,43.0f };
+        basePos_ = { 640.0f,493.0f };
+        titleOffset_ = { 0.0f,-261.0f };
 
+    }
+
+    for(auto& [name, sprite] : sprites_){
+        sprite.isApplyViewMat = false;
+    }
+
+    // textの初期化
+    uiText_ = TextBox2D("[A] or [Space]");
+    nlohmann::json uijson = MyFunc::GetJson("Resources/Jsons/Scene_Title/UIText.json");
+    if(not uijson.is_null()){
+        uiText_.LoadFromJson(uijson);
     }
 }
 
@@ -114,6 +125,9 @@ void Scene_Title::Draw(){
     for(auto& [name, sprite] : sprites_){
         sprite.Draw();
     }
+
+    //===================== text =====================//
+    uiText_.Draw();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +197,11 @@ void Scene_Title::UpdateTitleLogo(){
         ImGui::DragFloat2("titleScale", &sprites_["title"].scale.x, 0.05f);
         ImGui::DragFloat2("titleOffset", &titleOffset_.x);
         ImGui::DragFloat2("basePos", &basePos_.x);
+
+        uiText_.Edit();
+        if(ImGui::Button("uiText to json")){
+            MyFunc::CreateJsonFile("Resources/Jsons/Scene_Title/UIText.json", uiText_.GetJsonData());
+        }
 
         ImGui::End();
     }

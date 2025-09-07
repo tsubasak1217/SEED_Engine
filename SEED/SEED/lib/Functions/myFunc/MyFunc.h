@@ -8,6 +8,7 @@
 #include <sstream>
 #include <filesystem>
 #include <initializer_list>
+#include <json.hpp>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Structs/Range1D.h>
@@ -117,6 +118,10 @@ public:// ファイル・文字列関連 =======================================
     // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
     static std::string ToFullPath(const std::string& relativePath);
     static std::wstring ToFullPath(const std::wstring& relativePath);
+
+    // jsonふぁあいる関連の関数
+    static nlohmann::json GetJson(const std::string& filePath);
+    static void CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData);
 };
 
 

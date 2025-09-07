@@ -18,7 +18,7 @@ void SelectBackground::Initialize() {
     drawer_.SetDefaultColorAlpha(0.08f);
     drawer_.SetAnimaionMode(HexagonAnimaionMode::Radial);
     drawer_.SetBorder(screenRange_.min.x, LR::RIGHT, screenRange_);
-    drawer_.EnableAmbientPurpleFade(8, 320.0f, 4.0f, screenRange_);
+    drawer_.EnableAmbientPurpleFade(8, 320.0f, 2.0f, screenRange_);
 }
 
 void SelectBackground::Update() {

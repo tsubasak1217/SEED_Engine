@@ -48,14 +48,12 @@ void Scene_Select::Update() {
     //	sceneEvenets
     //============================================================================
 
-    if (Input::IsTriggerPadButton(PAD_BUTTON::A)) {
+    // 次のシーンに進めるかチェック
+    if (selectStage_->GetStageInfo().isNextScene) {
 
+        // ゲームシーンに進ませる
+        currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
         ChangeScene("Game");
-    }
-
-    if (Input::IsTriggerPadButton(PAD_BUTTON::B)) {
-
-        ChangeScene("Title");
     }
 }
 

@@ -36,11 +36,18 @@ void TextSystem::Release(){
 /////////////////////////////////////////////////////////////////
 const GlyphData* TextSystem::GetGlyphData(const std::string& fontName, int32_t codePoint){
     // フォントデータが存在しない場合はnullptrを返す
-    if(fontDataMap_.find(directory_ + fontName) == fontDataMap_.end()){
+    std::string fullFontName;
+    if(fontName.starts_with("Resources")){
+        fullFontName = fontName;
+    } else{
+        fullFontName = directory_ + fontName;
+    }
+
+    if(fontDataMap_.find(fullFontName) == fontDataMap_.end()){
         assert(false);
     }
     // フォントデータを取得
-    const FontData& fontData = *fontDataMap_[directory_ + fontName];
+    const FontData& fontData = *fontDataMap_[fullFontName];
 
     // 文字コードに対応するグリフデータを取得
     auto it = fontData.glyphDatas.find(codePoint);
@@ -259,7 +266,14 @@ uint32_t TextSystem::CreateFontTexture(const std::string& fontName, const uint8_
 ///////////////////////////////////////////////////////////////////
 const FontData* TextSystem::LoadFont(const std::string& filename){
     // すでに読み込まれている場合はそのポインタを返す
-    std::string fullPath = directory_ + filename; // ディレクトリを付加
+    std::string fullPath;
+    
+    if(filename.starts_with("Resources")){
+        fullPath = filename; // すでにディレクトリが付加されている場合
+    } else{
+        fullPath = directory_ + filename; // ディレクトリを付加
+    }
+
     auto it = fontDataMap_.find(fullPath);
     if(it != fontDataMap_.end()){
         return it->second.get();
@@ -321,11 +335,18 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
 ///////////////////////////////////////////////////////////////////
 const FontData& TextSystem::GetFont(const std::string& filename){
     
-    if(fontDataMap_.find(directory_ + filename) == fontDataMap_.end()){
+    std::string fullPath;
+    if(filename.starts_with("Resources")){
+        fullPath = filename; // すでにディレクトリが付加されている場合
+    } else{
+        fullPath = directory_ + filename; // ディレクトリを付加
+    }
+
+    if(fontDataMap_.find(fullPath) == fontDataMap_.end()){
         // フォントが読み込まれていない場合はロードを試みる
         LoadFont(filename);
     }
 
     // フォントデータを取得
-    return *fontDataMap_[directory_ + filename];
+    return *fontDataMap_[fullPath];
 }

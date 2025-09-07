@@ -13,6 +13,17 @@
 #include <vector>
 
 //============================================================================
+//	SelectStageDrawer structure
+//============================================================================
+
+// 選択ステージ情報
+struct SelectStageInfo {
+
+    bool isNextScene;     // 次のシーンに進めるかどうか
+    uint32_t decideStage; // 決定したステージ番号
+};
+
+//============================================================================
 //	SelectStageDrawer class
 //============================================================================
 class SelectStageDrawer {
@@ -41,6 +52,13 @@ public:
     // フォーカスするステージを設定
     void SetNextFocus();
     void SetPrevFocus();
+    // ステージの決定入力
+    void SetEndFocus();
+
+    // 決定入力が確定したかどうか
+    bool IsDecideStage() const { return currentState_ == State::End; }
+    // 選択ステージ情報
+    const SelectStageInfo& GetStageInfo() const { return stageInfo_; }
 private:
     //========================================================================
     //	private Methods
@@ -55,6 +73,13 @@ private:
         Select, // 選択画面(この時にのみステージを選択できる)
         Move,   // 移動中
         End,    // 選択アニメーション
+    };
+
+    // End時のフェーズ
+    enum class EndPhase {
+
+        Decide, // 決定
+        Zoom    // ズーム
     };
 
     // ステージ描画
@@ -82,6 +107,8 @@ private:
 
     // 現在の状態
     State currentState_;
+    EndPhase endPhase_;
+    SelectStageInfo stageInfo_;
     // 最大ステージ数
     uint32_t maxStageCount_;
 
@@ -111,7 +138,24 @@ private:
     Vector2 focusSize_; // フォーカス時のサイズ
     Vector2 outSize_;   // フォーカスされていないときのサイズ
     float tileScale_;   // フレーム内のブロックサイズのスケーリング
+    float stageIndexBackSize_; // ステージ番号背景サイズ
     float stageIndexTextSize_; // ステージ番号サイズ
+
+    // 中央フレームアニメーション
+    Sprite focusAnimFrame_; // 中央だけに被せるフレーム
+    Timer focusAnimTimer_;  // ループ用タイマー
+    Easing::Type focusAnimEasing_;
+    float focusAnimFrom_;   // 開始スケール
+    float focusAnimTo_;     // 目標スケール
+    bool focusAnimForward_; // 補間先の設定
+    // ステージ番号背景アニメーション
+    Sprite stageIndexBackAnim_;
+
+    // 決定後のズームアニメーション
+    Timer endZoomTimer_;         // ズーム時間
+    Easing::Type endZoomEasing_;
+    float focusAnimBaseDuration_; // フォーカス速度の保存用
+    float endZoomToScale_;        // 最後のズームスケール倍率
 
     //--------- functions ----------------------------------------------------
 
@@ -121,8 +165,15 @@ private:
 
     // init
     void BuildAllStage();
-    Sprite CreateTileSprite(uint32_t index, const Vector2& translate,\
+    Sprite CreateTileSprite(uint32_t index, const Vector2& translate, \
         const Vector2& size, uint32_t warpIndex);
+
+    // update
+    void UpdateFocusAnim();
+
+    // draw
+    void DrawFocusAnim();
+    void DrawEndZoom();
 
     // helper
     void StartMoveToNext(uint32_t next);

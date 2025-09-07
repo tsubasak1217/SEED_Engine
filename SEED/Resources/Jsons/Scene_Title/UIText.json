@@ -1,0 +1,46 @@
+{
+    "align": 1,
+    "anchorPos": {
+        "x": 0.5,
+        "y": 0.5
+    },
+    "blendMode": 3,
+    "color": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.9884169101715088
+    },
+    "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+    "fontSize": 70.0,
+    "glyphSpacing": 12.199999809265137,
+    "isApplyViewMat": false,
+    "layer": 0,
+    "lineSpacing": 8.0,
+    "outlineColor": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "outlineSplitCount": 16,
+    "outlineWidth": 3.5,
+    "size": {
+        "x": 587.0,
+        "y": 94.0
+    },
+    "text": "[A] or [Space]",
+    "textBoxVisible": false,
+    "transform": {
+        "rotate": 0.0,
+        "scale": {
+            "x": 1.0,
+            "y": 1.0
+        },
+        "translate": {
+            "x": 640.0,
+            "y": 527.0
+        }
+    },
+    "useOutline": true
+}

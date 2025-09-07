@@ -9,6 +9,13 @@
         "x": 640.0,
         "y": 400.0
     },
+    "endZoomEasing_": "OutExpo",
+    "endZoomTimer_.duration": 1.9199999570846558,
+    "endZoomToScale_": 2.4000000953674316,
+    "focusAnimDuration_": 0.800000011920929,
+    "focusAnimEasing_": "OutExpo",
+    "focusAnimFrom_": 0.9589999914169312,
+    "focusAnimTo_": 1.059999942779541,
     "focusSize_": {
         "x": 448.0,
         "y": 252.0
@@ -39,7 +46,8 @@
         "y": 0.0,
         "z": 0.25482654571533203
     },
-    "stageIndexBackOffsetY_": -188.0,
+    "stageIndexBackOffsetY_": -192.0,
+    "stageIndexBackSize_": 100.0,
     "stageIndexTextColor_": {
         "w": 1.0,
         "x": 0.8883213400840759,
@@ -47,6 +55,6 @@
         "z": 0.915057897567749
     },
     "stageIndexTextOffsetY_": -238.0,
-    "stageIndexTextSize_": 100.0,
+    "stageIndexTextSize_": 80.0,
     "tileScale_": 0.8999999761581421
 }

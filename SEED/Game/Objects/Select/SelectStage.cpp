@@ -41,6 +41,16 @@ void SelectStage::Update() {
 
 void SelectStage::UpdateSelectInput() {
 
+    // 決定入力
+    if (inputMapper_->IsTriggered(SelectInputEnum::Decide)) {
+
+        stageDrawer_->SetEndFocus();
+    }
+    // ステージ決定後は入力を受け付けない
+    if (stageDrawer_->IsDecideStage()) {
+        return;
+    }
+
     // 入力に応じたステージの選択
     // 1つ前のステージの選択
     if (inputMapper_->IsTriggered(SelectInputEnum::Left)) {

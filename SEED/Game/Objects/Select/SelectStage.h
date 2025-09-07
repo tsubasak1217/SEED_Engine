@@ -32,6 +32,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+    // 選択ステージ情報
+    const SelectStageInfo& GetStageInfo() const { return stageDrawer_->GetStageInfo(); }
 private:
 	//========================================================================
 	//	private Methods

@@ -28,7 +28,21 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     animFrom_ = static_cast<float>(focusIndex_);
     animTo_ = static_cast<float>(focusIndex_);
     moveTimer_.Reset();
+    stageInfo_.isNextScene = false;
     currentState_ = State::Select;
+
+    // 中央のアニメーションフレームの初期化
+    focusAnimFrame_ = Sprite("Scene_Select/selectStageRect.png");
+    focusAnimFrame_.anchorPoint = 0.5f;
+    focusAnimFrame_.isApplyViewMat = false;
+    focusAnimFrame_.color = frameColor_;
+    focusAnimTimer_.Reset();
+    focusAnimForward_ = true;
+    // ステージ番号背景アニメーションの初期化
+    stageIndexBackAnim_ = Sprite("Scene_Select/hexagonDesign.png");
+    stageIndexBackAnim_.anchorPoint = 0.5f;
+    stageIndexBackAnim_.isApplyViewMat = false;
+    stageIndexBackAnim_.color = stageIndexBackColor_;
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -49,9 +63,41 @@ void SelectStageDrawer::SetPrevFocus() {
     StartMoveToNext(focusIndex_ - 1);
 }
 
+void SelectStageDrawer::SetEndFocus() {
+
+    // なにか処理中でなければステージの決定にする
+    if (currentState_ != State::Select) {
+        return;
+    }
+    // 決定アニメーションに移る
+    currentState_ = State::End;
+    endPhase_ = EndPhase::Decide;
+
+    // フォーカスフレームを2倍速で再生させる
+    focusAnimTimer_.duration = focusAnimBaseDuration_ * 0.5f;
+    focusAnimTimer_.Reset();
+    focusAnimForward_ = true;
+
+    // ステージ番号を記録
+    stageInfo_.decideStage = focusIndex_;
+}
+
 void SelectStageDrawer::Update() {
 
-    if (currentState_ == State::Move) {
+    // 次のシーンに進ませるので処理しない
+    if (stageInfo_.isNextScene) {
+        return;
+    }
+
+    switch (currentState_) {
+    case SelectStageDrawer::State::Start:
+        break;
+    case SelectStageDrawer::State::Select:
+
+        // 中央フォーカスの更新
+        UpdateFocusAnim();
+        break;
+    case SelectStageDrawer::State::Move:
 
         // 補間中にのみタイマーを進める
         moveTimer_.Update();
@@ -61,10 +107,51 @@ void SelectStageDrawer::Update() {
             currentState_ = State::Select;
             animFrom_ = animTo_;
         }
+
+        // 動いているときはフォーカスタイマーをリセットする
+        focusAnimTimer_.Reset();
+        break;
+    case SelectStageDrawer::State::End:
+
+        // 決定処理
+        switch (endPhase_) {
+        case SelectStageDrawer::EndPhase::Decide:
+
+            // 2倍速フォーカス
+            focusAnimTimer_.Update();
+            if (focusAnimTimer_.IsFinished()) {
+
+                // 終了後値を元に戻してリセットしてズーム処理に移る
+                focusAnimTimer_.duration = focusAnimBaseDuration_;
+                endZoomTimer_.Reset();
+                endPhase_ = EndPhase::Zoom;
+            }
+            break;
+        case SelectStageDrawer::EndPhase::Zoom:
+
+            // ズーム処理を進める
+            endZoomTimer_.Update();
+
+            if (endZoomTimer_.IsFinishedNow()) {
+
+                // 次のシーンに進める
+                stageInfo_.isNextScene = true;
+            }
+            break;
+        }
+        break;
     }
 }
 
 void SelectStageDrawer::Draw() {
+
+    // ズーム処理中
+    if (currentState_ == State::End &&
+        endPhase_ == EndPhase::Zoom) {
+
+        DrawEndZoom();
+        return;
+    }
 
     // 各ステージを描画する
     float f = (currentState_ == State::Move)
@@ -84,6 +171,8 @@ void SelectStageDrawer::Draw() {
 
         // 背景描画
         stages_[i].background.Draw();
+        // 背景アニメーションを描画
+        DrawFocusAnim();
         // フレーム描画
         stages_[i].frame.Draw();
         // ステージ番号描画
@@ -118,6 +207,14 @@ void SelectStageDrawer::Edit() {
         ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
         ImGui::DragFloat("stageIndexBackOffsetY_", &stageIndexBackOffsetY_, 1.0f);
 
+        if (ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.stageIndexBack.size = stageIndexBackSize_;
+            }
+        }
         if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
 
             // 全てのフレームに適応
@@ -160,10 +257,23 @@ void SelectStageDrawer::Edit() {
         }
         EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
 
-        ImGui::SeparatorText("TextEdit");
-#ifdef _DEBUG
-        stages_.front().stageIndexText.Edit();
-#endif // _DEBUG
+        ImGui::SeparatorText("FocusAnim");
+
+        ImGui::DragFloat("animDuration", &focusAnimTimer_.duration, 0.01f);
+        ImGui::DragFloat("animFrom", &focusAnimFrom_, 0.001f);
+        ImGui::DragFloat("animTo", &focusAnimTo_, 0.001f);
+        EnumAdapter<Easing::Type>::Combo("focusAnimEasing", &focusAnimEasing_);
+
+        ImGui::SeparatorText("EndAnim");
+
+        if (ImGui::Button("SetEndFocus")) {
+
+            SetEndFocus();
+        }
+
+        ImGui::DragFloat("endZoomDuration", &endZoomTimer_.duration, 0.01f);
+        ImGui::DragFloat("endZoomToScale", &endZoomToScale_, 0.01f);
+        EnumAdapter<Easing::Type>::Combo("endZoomEasing", &endZoomEasing_);
     }
 }
 
@@ -178,6 +288,7 @@ void SelectStageDrawer::ApplyJson() {
     tileScale_ = data.value("tileScale_", 1.0f);
     stageIndexTextOffsetY_ = data.value("stageIndexTextOffsetY_", 128.0f);
     stageIndexBackOffsetY_ = data.value("stageIndexBackOffsetY_", 128.0f);
+    stageIndexBackSize_ = data.value("stageIndexBackSize_", 128.0f);
     stageIndexTextSize_ = data.value("stageIndexTextSize_", 128.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
@@ -191,6 +302,16 @@ void SelectStageDrawer::ApplyJson() {
     from_json(data.value("backgroundColor_", nlohmann::json()), backgroundColor_);
 
     moveEasing_ = EnumAdapter<Easing::Type>::FromString(data["moveEasing_"]).value();
+
+    focusAnimTimer_.duration = data.value("focusAnimDuration_", 0.9f);
+    focusAnimBaseDuration_ = focusAnimTimer_.duration;
+    focusAnimFrom_ = data.value("focusAnimFrom_", 1.0f);
+    focusAnimTo_ = data.value("focusAnimTo_", 1.0f);
+    focusAnimEasing_ = EnumAdapter<Easing::Type>::FromString(data["focusAnimEasing_"]).value();
+
+    endZoomTimer_.duration = data.value("endZoomTimer_.duration", 0.9f);
+    endZoomToScale_ = data.value("endZoomToScale_", 1.0f);
+    endZoomEasing_ = EnumAdapter<Easing::Type>::FromString(data["endZoomEasing_"]).value();
 }
 
 void SelectStageDrawer::SaveJson() {
@@ -211,11 +332,128 @@ void SelectStageDrawer::SaveJson() {
     to_json(data["stageIndexBackColor_"], stageIndexBackColor_);
     to_json(data["frameColor_"], frameColor_);
     to_json(data["backgroundColor_"], backgroundColor_);
+    to_json(data["stageIndexBackSize_"], stageIndexBackSize_);
     to_json(data["stageIndexTextSize_"], stageIndexTextSize_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
 
+    data["focusAnimDuration_"] = focusAnimTimer_.duration;
+    data["focusAnimFrom_"] = focusAnimFrom_;
+    data["focusAnimTo_"] = focusAnimTo_;
+    data["focusAnimEasing_"] = EnumAdapter<Easing::Type>::ToString(focusAnimEasing_);
+
+    data["endZoomTimer_.duration"] = endZoomTimer_.duration;
+    data["endZoomToScale_"] = endZoomToScale_;
+    data["endZoomEasing_"] = EnumAdapter<Easing::Type>::ToString(endZoomEasing_);
+
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
+}
+
+void SelectStageDrawer::UpdateFocusAnim() {
+
+    focusAnimTimer_.Update();
+    if (focusAnimTimer_.IsFinished()) {
+
+        //focusAnimForward_ = !focusAnimForward_;
+        focusAnimTimer_.Reset();
+    }
+}
+
+void SelectStageDrawer::DrawFocusAnim() {
+
+    // 移動中は描画しない
+    if (currentState_ == State::Move) {
+        return;
+    }
+
+    // 中央のステージ情報
+    const Stage& center = stages_[focusIndex_];
+
+    // フラグで補間先を切り替え
+    float from = focusAnimForward_ ? focusAnimFrom_ : focusAnimTo_;
+    float to = focusAnimForward_ ? focusAnimTo_ : focusAnimFrom_;
+    float easedT = focusAnimTimer_.GetEase(focusAnimEasing_);
+    // スケール補間
+    float scale = from + (to - from) * easedT;
+    // アルファ補間
+    float alpha = std::clamp(1.0f - easedT, 0.0f, 1.0f);
+
+    // フレーム
+    focusAnimFrame_.translate = center.translate;
+    focusAnimFrame_.size = Vector2(center.size.x * scale, center.size.y * scale);
+    focusAnimFrame_.color.w = alpha;
+    // 描画
+    focusAnimFrame_.Draw();
+
+    // ステージ番号背景
+    stageIndexBackAnim_.translate = center.stageIndexBack.translate;
+    stageIndexBackAnim_.size = center.stageIndexBack.size * (scale + 0.08f);
+    stageIndexBackAnim_.color = stageIndexBackColor_;
+    stageIndexBackAnim_.color.w = alpha;
+    stageIndexBackAnim_.Draw();
+}
+
+void SelectStageDrawer::DrawEndZoom() {
+
+    // 進行度
+    float t = endZoomTimer_.GetEase(endZoomEasing_);
+
+    // フォーカス中のステージの処理
+    {
+        // サイズ補間処理を行う
+        float scale = 1.0f + (endZoomToScale_ - 1.0f) * t;
+        Vector2 size = Vector2(focusSize_.x * scale, focusSize_.y * scale);
+        ApplyPoseToStage(stages_[focusIndex_], centerTranslate_, size);
+        // 全ての描画処理
+        stages_[focusIndex_].background.Draw();
+        stages_[focusIndex_].frame.Draw();
+        stages_[focusIndex_].stageIndexBack.Draw();
+        stages_[focusIndex_].stageIndexText.Draw();
+        for (auto& spite : stages_[focusIndex_].objects) {
+
+            spite.Draw();
+        }
+    }
+
+    // 左ステージ処理
+    if (focusIndex_ > 0) {
+
+        // サイズ補間処理を行う
+        float scale = 1.0f - t;
+        Vector2 size = Vector2(outSize_.x * scale, outSize_.y * scale);
+        ApplyPoseToStage(stages_[focusIndex_ - 1], leftTranslate_, size);
+        if (0.0f < scale) {
+
+            // 全ての描画処理
+            stages_[focusIndex_ - 1].background.Draw();
+            stages_[focusIndex_ - 1].frame.Draw();
+            stages_[focusIndex_ - 1].stageIndexBack.Draw();
+            stages_[focusIndex_ - 1].stageIndexText.Draw();
+            for (auto& spite : stages_[focusIndex_ - 1].objects) {
+
+                spite.Draw();
+            }
+        }
+    }
+    // 右
+    if (focusIndex_ + 1 < stages_.size()) {
+
+        float scale = 1.0f - t;
+        Vector2 size = Vector2(outSize_.x * scale, outSize_.y * scale);
+        ApplyPoseToStage(stages_[focusIndex_ + 1], rightTranslate_, size);
+        if (0.0f < scale) {
+
+            // 全ての描画処理
+            stages_[focusIndex_ + 1].background.Draw();
+            stages_[focusIndex_ + 1].frame.Draw();
+            stages_[focusIndex_ + 1].stageIndexBack.Draw();
+            stages_[focusIndex_ + 1].stageIndexText.Draw();
+            for (auto& spite : stages_[focusIndex_ + 1].objects) {
+
+                spite.Draw();
+            }
+        }
+    }
 }
 
 void SelectStageDrawer::StartMoveToNext(uint32_t next) {
@@ -257,7 +495,7 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
         const float scaleY = size.y / focusSize_.y;
         const float offsetY = stageIndexBackOffsetY_ * scaleY;
         stage.stageIndexBack.translate = Vector2(center.x, center.y + offsetY);
-        stage.stageIndexBack.size = stageIndexTextSize_ * scaleY;
+        stage.stageIndexBack.size = stageIndexBackSize_ * scaleY;
     }
 
     // タイルを最大の正方形の最大サイズにする
@@ -455,13 +693,13 @@ void SelectStageDrawer::BuildAllStage() {
         stage.background.isApplyViewMat = false;
         // ステージ番号背景
         stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
-        stage.stageIndexBack.size = stageIndexTextSize_;
+        stage.stageIndexBack.size = stageIndexBackSize_;
         stage.stageIndexBack.anchorPoint = 0.5f;
         stage.stageIndexBack.color = stageIndexBackColor_;
         stage.stageIndexBack.isApplyViewMat = false;
         // ステージ番号
-        stage.stageIndexText = TextBox2D(std::to_string(index));
-        stage.stageIndexText.SetFont("");
+        stage.stageIndexText = TextBox2D(std::to_string(index + 1));
+        stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
         stage.stageIndexText.fontSize = stageIndexTextSize_;
         stage.stageIndexText.anchorPos = Vector2(0.5f, 0.0f);
         stage.stageIndexText.glyphSpacing = 0.0f;

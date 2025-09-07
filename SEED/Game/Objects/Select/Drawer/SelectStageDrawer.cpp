@@ -86,6 +86,9 @@ void SelectStageDrawer::Draw() {
         stages_[i].background.Draw();
         // フレーム描画
         stages_[i].frame.Draw();
+        // ステージ番号描画
+        stages_[i].stageIndexBack.Draw();
+        stages_[i].stageIndexText.Draw();
         // ステージ描画
         for (auto& sprite : stages_[i].objects) {
 
@@ -112,7 +115,33 @@ void SelectStageDrawer::Edit() {
         ImGui::DragFloat2("focusSize", &focusSize_.x, 1.0f);
         ImGui::DragFloat2("outSize", &outSize_.x, 1.0f);
         ImGui::DragFloat("tileScale", &tileScale_, 0.01f);
+        ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
+        ImGui::DragFloat("stageIndexBackOffsetY_", &stageIndexBackOffsetY_, 1.0f);
 
+        if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.stageIndexText.fontSize = stageIndexTextSize_;
+            }
+        }
+        if (ImGui::ColorEdit4("stageIndexTextColor", &stageIndexTextColor_.x)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.stageIndexText.color = stageIndexTextColor_;
+            }
+        }
+        if (ImGui::ColorEdit4("stageIndexBackColor", &stageIndexBackColor_.x)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.stageIndexBack.color = stageIndexBackColor_;
+            }
+        }
         if (ImGui::ColorEdit4("frameColor", &frameColor_.x)) {
 
             // 全てのフレームに適応
@@ -129,8 +158,11 @@ void SelectStageDrawer::Edit() {
                 stage.background.color = backgroundColor_;
             }
         }
-
         EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
+
+        ImGui::SeparatorText("TextEdit");
+
+        stages_.front().stageIndexText.Edit();
     }
 }
 
@@ -143,12 +175,17 @@ void SelectStageDrawer::ApplyJson() {
 
     moveTimer_.duration = data.value("moveTimer_.duration", 0.32f);
     tileScale_ = data.value("tileScale_", 1.0f);
+    stageIndexTextOffsetY_ = data.value("stageIndexTextOffsetY_", 128.0f);
+    stageIndexBackOffsetY_ = data.value("stageIndexBackOffsetY_", 128.0f);
+    stageIndexTextSize_ = data.value("stageIndexTextSize_", 128.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
     from_json(data["leftTranslate_"], leftTranslate_);
     from_json(data["rightTranslate_"], rightTranslate_);
     from_json(data["focusSize_"], focusSize_);
     from_json(data["outSize_"], outSize_);
+    from_json(data.value("stageIndexTextColor_", nlohmann::json()), stageIndexTextColor_);
+    from_json(data.value("stageIndexBackColor_", nlohmann::json()), stageIndexBackColor_);
     from_json(data.value("frameColor_", nlohmann::json()), frameColor_);
     from_json(data.value("backgroundColor_", nlohmann::json()), backgroundColor_);
 
@@ -161,14 +198,19 @@ void SelectStageDrawer::SaveJson() {
 
     data["moveTimer_.duration"] = moveTimer_.duration;
     data["tileScale_"] = tileScale_;
+    data["stageIndexTextOffsetY_"] = stageIndexTextOffsetY_;
+    data["stageIndexBackOffsetY_"] = stageIndexBackOffsetY_;
 
     to_json(data["centerTranslate_"], centerTranslate_);
     to_json(data["leftTranslate_"], leftTranslate_);
     to_json(data["rightTranslate_"], rightTranslate_);
     to_json(data["focusSize_"], focusSize_);
     to_json(data["outSize_"], outSize_);
+    to_json(data["stageIndexTextColor_"], stageIndexTextColor_);
+    to_json(data["stageIndexBackColor_"], stageIndexBackColor_);
     to_json(data["frameColor_"], frameColor_);
     to_json(data["backgroundColor_"], backgroundColor_);
+    to_json(data["stageIndexTextSize_"], stageIndexTextSize_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
 
@@ -203,6 +245,19 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     stage.frame.size = size;
     stage.background.translate = center;
     stage.background.size = size;
+    // ステージ番号はフレームY座標からオフセットをかける
+    {
+        const float scaleY = size.y / focusSize_.y;
+        const float offsetY = stageIndexTextOffsetY_ * scaleY;
+        stage.stageIndexText.transform.translate = Vector2(center.x, center.y + offsetY);
+        stage.stageIndexText.fontSize = stageIndexTextSize_ * scaleY;
+    }
+    {
+        const float scaleY = size.y / focusSize_.y;
+        const float offsetY = stageIndexBackOffsetY_ * scaleY;
+        stage.stageIndexBack.translate = Vector2(center.x, center.y + offsetY);
+        stage.stageIndexBack.size = stageIndexTextSize_ * scaleY;
+    }
 
     // タイルを最大の正方形の最大サイズにする
     const float cols = static_cast<float>(stage.cols);
@@ -338,6 +393,9 @@ void SelectStageDrawer::DrawActivate(float f) {
     stages_[enterIndex].background.Draw();
     // フレーム描画
     stages_[enterIndex].frame.Draw();
+    // ステージ番号描画
+    stages_[enterIndex].stageIndexBack.Draw();
+    stages_[enterIndex].stageIndexText.Draw();
     for (auto& sprite : stages_[enterIndex].objects) {
 
         // ステージ描画
@@ -392,6 +450,20 @@ void SelectStageDrawer::BuildAllStage() {
         stage.background.translate = stage.translate;
         stage.background.color = backgroundColor_;
         stage.background.uvTransform = AffineMatrix(Vector3(80.0f, 45.0f, 1.0f), Vector3(0.0f), Vector3(0.0f));
+        // ステージ番号背景
+        stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
+        stage.stageIndexBack.size = stageIndexTextSize_;
+        stage.stageIndexBack.anchorPoint = 0.5f;
+        stage.stageIndexBack.color = stageIndexBackColor_;
+        // ステージ番号
+        stage.stageIndexText = TextBox2D(std::to_string(index));
+        stage.stageIndexText.SetFont("");
+        stage.stageIndexText.fontSize = stageIndexTextSize_;
+        stage.stageIndexText.anchorPos = Vector2(0.5f, 0.0f);
+        stage.stageIndexText.glyphSpacing = 0.0f;
+        stage.stageIndexText.color = stageIndexTextColor_;
+        stage.stageIndexText.size = 256.0f;
+        stage.stageIndexText.textBoxVisible = false;
         for (int r = 0; r < rows; ++r) {
 
             const int colsThis = static_cast<int>(grid[r].size());

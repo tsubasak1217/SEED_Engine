@@ -33,5 +33,20 @@
         "x": 1120.0,
         "y": 500.0
     },
+    "stageIndexBackColor_": {
+        "w": 1.0,
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.25482654571533203
+    },
+    "stageIndexBackOffsetY_": -188.0,
+    "stageIndexTextColor_": {
+        "w": 1.0,
+        "x": 0.8883213400840759,
+        "y": 0.7172075510025024,
+        "z": 0.915057897567749
+    },
+    "stageIndexTextOffsetY_": -238.0,
+    "stageIndexTextSize_": 100.0,
     "tileScale_": 0.8999999761581421
 }

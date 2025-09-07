@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Timer.h>
+#include <SEED/Lib/Structs/TextBox.h>
 #include <SEED/Lib/Input/InputMapper.h>
 #include <Game/Objects/Select/Input/SelectInputEnum.h>
 
@@ -63,6 +64,8 @@ private:
         std::vector<Sprite> objects; // オブジェクト番号に対応するスプライト
         Sprite frame;                // ステージを囲うフレーム
         Sprite background;           // ステージとフレームの背景
+        TextBox2D stageIndexText;    // ステージ番号
+        Sprite stageIndexBack;       // ステージ番号背景
 
         // 全体の表示
         Vector2 translate; // 中心座標
@@ -94,16 +97,21 @@ private:
     float animFrom_;      // 補間開始の連続フォーカス
     float animTo_;        // 補間終了の連続フォーカス
     // 色
-    Vector4 frameColor_;      // フレームの色
-    Vector4 backgroundColor_; // 背景の色
+    Vector4 frameColor_;          // フレームの色
+    Vector4 backgroundColor_;     // 背景の色
+    Vector4 stageIndexBackColor_; // ステージ番号背景の色
+    Vector4 stageIndexTextColor_; // ステージ番号の色
     // 座標
-    Vector2 centerTranslate_; // 真ん中のステージ表示(フォーカス位置)
-    Vector2 leftTranslate_;   // 左のステージ表示位置
-    Vector2 rightTranslate_;  // 右のステージ表示位置
+    Vector2 centerTranslate_;     // 真ん中のステージ表示(フォーカス位置)
+    Vector2 leftTranslate_;       // 左のステージ表示位置
+    Vector2 rightTranslate_;      // 右のステージ表示位置
+    float stageIndexBackOffsetY_; // ステージ番号インデックス背景のオフセットY
+    float stageIndexTextOffsetY_; // ステージ番号インデックスのオフセットY
     // サイズ
     Vector2 focusSize_; // フォーカス時のサイズ
     Vector2 outSize_;   // フォーカスされていないときのサイズ
     float tileScale_;   // フレーム内のブロックサイズのスケーリング
+    float stageIndexTextSize_; // ステージ番号サイズ
 
     //--------- functions ----------------------------------------------------
 

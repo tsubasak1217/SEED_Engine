@@ -1,16 +1,16 @@
 {
     "StateParam": {
         "Dead": {
-          "deadDuration_": 1.0
+            "deadDuration_": 1.0
         },
         "Idle": null,
         "Jump": {
-            "gravity_": 892.0,
+            "gravity_": 753.0999755859375,
             "groundY_": 552.0,
             "jumpPower_": -427.1000061035156
         },
         "Move": {
-            "moveSpeed_": 180.0
+            "moveSpeed_": 238.60000610351563
         },
         "Warp": {
             "baseSpriteSize_": {

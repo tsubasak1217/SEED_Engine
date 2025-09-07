@@ -5,6 +5,7 @@
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Source/SEED.h>
 
 // inputDevice
 #include <Game/Objects/Stage/Objects/Player/Input/Device/PlayerKeyInput.h>
@@ -21,6 +22,12 @@
 //	Player classMethods
 //============================================================================
 
+
+//////////////////////////////////////////////////////////////////
+//
+// 初期化処理
+//
+//////////////////////////////////////////////////////////////////
 void Player::Initialize() {
 
     // 画像ハンドルの初期化
@@ -76,9 +83,21 @@ void Player::SetWarpState(const Vector2& start, const Vector2& target) {
     stateController_->SetWarpState(start, target);
 }
 
-bool Player::IsDead() const {
+bool Player::IsDeadFinishTrigger() const {
     // 死亡状態かどうか
-    return stateController_->IsDead();
+    return stateController_->IsDeadFinishTrigger();
+}
+
+bool Player::IsOutOfCamera(const Range2D& cameraRange) const {
+    bool isOut = false;
+
+    if (cameraRange.min.x > body_.translate.x + body_.size.x * 1.5f ||
+        cameraRange.max.x < body_.translate.x - body_.size.x * 1.5f ||
+        cameraRange.min.y > body_.translate.y + body_.size.y * 1.5f ||
+        cameraRange.max.y < body_.translate.y - body_.size.y * 1.5f) {
+        isOut = true;
+    }
+    return isOut;
 }
 
 bool Player::IsFinishedWarp() const {
@@ -108,6 +127,12 @@ bool Player::IsRemoveBorder() const {
 bool Player::IsJumpInput() const {
     return inputMapper_->IsTriggered(PlayerInputAction::Jump);
 }
+
+//////////////////////////////////////////////////////////////
+//
+// 更新処理
+//
+//////////////////////////////////////////////////////////////
 
 void Player::Update() {
 
@@ -300,18 +325,33 @@ void Player::OnCeilingTrigger() {
     }
 }
 
+bool Player::TouchLaser() const {
+    // レーザーに触れた
+    if(istouchedLaser_){
+        return true;
+    }
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////
+// 描画
+/////////////////////////////////////////////////////////////////////////////
+
 void Player::Draw() {
 
     // 各状態の描画
     stateController_->Draw(*this);
 
     // 胴体の描画
-    body_.Draw();
+    if (stateController_->IsDead() == false ) {
+        body_.Draw();
 
-    // 足を描画
-    for (int i = 0; i < 2; i++) {
-        legs_[i].Draw();
+        // 足を描画
+        for (int i = 0; i < 2; i++) {
+            legs_[i].Draw();
+        }
     }
+   
 }
 
 void Player::Edit() {
@@ -350,6 +390,21 @@ void Player::Edit() {
         ImGui::End();
     }
 #endif // _DEBUG
+}
+
+void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
+    if (other->GetObjectType() == ObjectType::Laser) {
+        istouchedLaser_ = true;
+    }
+}
+
+void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+}
+
+void Player::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
+    if (other->GetObjectType() == ObjectType::Laser) {
+        istouchedLaser_ = false;
+    }
 }
 
 void Player::ApplyJson() {

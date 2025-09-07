@@ -33,6 +33,12 @@ public:
     // エディター
     void Edit() override;
 
+    //--------- collision ----------------------------------------------------
+
+    void OnCollisionEnter(GameObject2D* other) override;
+    void OnCollisionStay(GameObject2D* other) override;
+    void OnCollisionExit(GameObject2D* other) override;
+
     //--------- accessor -----------------------------------------------------
 
     void SetTranslate(const Vector2& translate) override { body_.translate = translate; }
@@ -54,8 +60,12 @@ public:
     float GetGoalT()const{ return std::clamp(goalTouchTime_ / requiredGoalTime_,0.0f,1.0f); }
     bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
-    bool IsDead() const;
+    bool IsDeadFinishTrigger() const;
     void RequestDeadState() { stateController_->RequestDeadState(); }
+   
+    //カメラ範囲から出たか判定
+    bool IsOutOfCamera(const Range2D& cameraRange) const;
+    bool TouchLaser() const;
 
     // 入力検知
     bool IsFinishedWarp() const;
@@ -67,6 +77,7 @@ public:
     // 状態通知
     void OnGroundTrigger();
     void OnCeilingTrigger();
+    
 
 private:
     //========================================================================
@@ -87,8 +98,7 @@ private:
     static const int32_t baseLayer_ = 10;
     bool isMove_ = false; // 動き始めた瞬間か
     bool isHologram_ = false; // ホログラム状態か
-    // 向いている方向
-    LR moveDirection_;
+    bool istouchedLaser_ = false; // レーザーに触れたか
 
     // 入力管理
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
@@ -98,6 +108,9 @@ private:
     // ゴールに関わる変数
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
+
+    // 向いている方向
+    LR moveDirection_;
 
     //--------- functions ----------------------------------------------------
 

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Stage/Objects/Player/State/Interface/PlayerIState.h>
+#include <SEED/Lib/Structs/Timer.h>
 
 //============================================================================
 //	PlayerDeadState class
@@ -31,6 +32,7 @@ public:
     //--------- accessor -----------------------------------------------------
 
     bool IsDead() const { return isDead_; }
+    bool IsDeadFinishTrigger() const { return isFinishedDeadTrigger_; }
 
 private:
     //========================================================================
@@ -40,5 +42,9 @@ private:
     //--------- variables ----------------------------------------------------
 
     bool isDead_; // 死んだかどうか
+    bool isFinishedDeadTrigger_; // 死亡時の処理が終わったか
+
+    Timer deadTimer_;
+    float deadDuration_; // 死亡アニメーションの時間
 };
 

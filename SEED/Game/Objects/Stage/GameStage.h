@@ -154,6 +154,8 @@ private:
     void CheckPlayerDead();
     //プレイヤーが境界線を越えたかどうかの判定
     void CheckPlayerCrossedBorderLine();
+    //カメラ範囲から出たか判定
+    void CheckPlayerOutOfCamera();
 
     // ステージ範囲計算
     void CalculateCurrentStageRange();

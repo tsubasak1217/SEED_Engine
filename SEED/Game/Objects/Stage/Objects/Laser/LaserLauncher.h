@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <SEED/Lib/enums/Direction.h>
+#include <SEED/Lib/Functions/myFunc/Easing.h>
+#include <SEED/Lib/Structs/Timer.h>
 #include <Game/Objects/Stage/Objects/Interface/IStageObject.h>
 #include <Game/Objects/Stage/Objects/Laser/Laser.h>
 
@@ -60,16 +62,51 @@ private:
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // 発射状態
+    enum class State {
+
+        Emit,            // 発射中...
+        EmitNotPossible, // 発生不可(真隣になにかあってレーザーが進めない)
+    };
+
+    // 発生位置
+    struct LaserUnit {
+
+        State currentState;                  // 現在の状態
+        DIRECTION4 direction;                // 方向
+        std::vector<Sprite> laserUnitSprite; // 表示スプライト
+        std::vector<Timer> timers;           // 時間管理
+        int spriteCount;                     // 使用スプライト数
+        float phaseSpacing;                  // 発生間隔
+        float gapFromBlock;                  // 発射台との距離
+        float moveDistance;                  // 各方向の移動量
+
+        float duration;               // 補間にかける時間
+        Easing::Type scalineEasing;   // スケーリング処理を行う際のイージング
+        Easing::Type translateEasing; // 座標移動処理を行う際のイージング
+
+        // 補間に使用する値
+        // スケール
+        float startScale;
+        float targetScale;
+    };
+
     //--------- variables ----------------------------------------------------
 
     // 値保持用
-    std::string fileName_; // スプライト
     Vector2 laserSize_;    // レーザーのサイズ
     Vector2 translate_;    // 発射台の座標
 
     // 発射台スプライト
-    Sprite frameSprite_;      // 通常描画
-    Sprite centerStarSprite_; // 中心の星
+    Sprite frameSprite_;
+
+    // 中心の星
+    Sprite centerStarSprite_;
+    Timer centerStarTimer_; // 時間経過
+    bool isStarGrowing_;    // 拡大中か
+
     // 発射方向
     uint8_t bitDirection_;
     std::vector<DIRECTION4> launchDirections_;
@@ -78,7 +115,19 @@ private:
     std::list<GameObject2D*> lasers_;
     std::list<GameObject2D*> warpedLasers_;
 
+    // ユニット
+    // 方向ごとに表示する
+    LaserUnit commonUnit_;         // 共通パラメータ
+    std::vector<LaserUnit> units_; // commonUnit_で調節した値で動かす
+
     //--------- functions ----------------------------------------------------
 
+    // update
+    void UpdateCenterStar();
+    void UpdateUnits();
+    void UpdateEmit(LaserUnit& unit);
+    void UpdateEmitNotPossible(LaserUnit& unit);
 
+    // helper
+    bool IsDirectionReadyForUnit(const LaserUnit& unit) const;
 };

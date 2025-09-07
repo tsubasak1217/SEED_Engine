@@ -46,6 +46,7 @@ public:
     bool IsFinishedWarp() const;
     //死亡判定
     bool IsDead() const;
+    bool IsDeadFinishTrigger() const;
     void RequestDeadState() { Request(PlayerState::Dead); }
 
     // 境界線を操作できる状態かどうか

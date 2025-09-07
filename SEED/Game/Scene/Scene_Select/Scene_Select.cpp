@@ -59,6 +59,13 @@ void Scene_Select::Update() {
         // ゲームシーンに進ませる
         currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
         ChangeScene("Game");
+        return;
+    }
+    // タイトルに戻るかチェック
+    if (selectStage_->IsReturnScene()) {
+
+        // タイトルシーンに戻す
+        ChangeScene("Title");
     }
 }
 

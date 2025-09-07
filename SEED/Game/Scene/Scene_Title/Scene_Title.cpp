@@ -87,12 +87,12 @@ void Scene_Title::Update(){
         currentEventState_->Update();
     }
 
+    // spriteの更新
+    UpdateTitleLogo();
+
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
         ChangeScene("Select");
     }
-
-    // spriteの更新
-    UpdateTitleLogo();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

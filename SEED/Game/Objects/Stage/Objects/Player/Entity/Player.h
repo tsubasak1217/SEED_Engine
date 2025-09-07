@@ -56,6 +56,8 @@ public:
     // 死亡判定
     bool IsDead() const;
     void RequestDeadState() { stateController_->RequestDeadState(); }
+    //カメラ範囲から出たか判定
+    bool IsOutOfCamera(const Range2D& cameraRange) const;
 
     // 入力検知
     bool IsFinishedWarp() const;
@@ -87,8 +89,6 @@ private:
     static const int32_t baseLayer_ = 10;
     bool isMove_ = false; // 動き始めた瞬間か
     bool isHologram_ = false; // ホログラム状態か
-    // 向いている方向
-    LR moveDirection_;
 
     // 入力管理
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
@@ -98,6 +98,9 @@ private:
     // ゴールに関わる変数
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
+
+    // 向いている方向
+    LR moveDirection_;
 
     //--------- functions ----------------------------------------------------
 

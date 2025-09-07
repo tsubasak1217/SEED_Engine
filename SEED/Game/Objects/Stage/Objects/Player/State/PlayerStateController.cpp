@@ -196,12 +196,6 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
             }
         }
 
-        // 死亡判定: 画面下に落ちたら死亡
-        //PlayerクラスのSpriteの座標を参照
-        if(owner.GetSprite().translate.y > SEED::GetMainCamera()->GetClipRange().y + 30.0f) {
-            Request(PlayerState::Dead);
-            return;
-        }
 
         // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
@@ -215,6 +209,8 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
             }
         }
     }
+
+
 }
 
 void PlayerStateController::Request(PlayerState state) {

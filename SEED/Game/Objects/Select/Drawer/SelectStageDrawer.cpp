@@ -3,7 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Stage/Enum/StageObjectType.h> 
+#include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
 
 // imgui
@@ -15,11 +17,11 @@
 
 void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
-    centerTranslate_ = { 640.0f, 360.0f };
-    leftTranslate_ = { 320.0f, 360.0f };
-    rightTranslate_ = { 960.0f, 360.0f };
-    focusSize_ = { 480.0f, 270.0f };
-    outSize_ = { 320.0f, 180.0f };
+    centerTranslate_ = Vector2(640.0f, 400.0f);
+    leftTranslate_ = Vector2(196.0f, 596.0f);
+    rightTranslate_ = Vector2(1084.0f, 596.0f);
+    focusSize_ = Vector2(480.0f, 270.0f);
+    outSize_ = Vector2(320.0f, 180.0f);
 
     // すべてのステージを構築する
     BuildAllStage();
@@ -28,8 +30,11 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     focusIndex_ = std::min<uint32_t>(firstFocusStage, static_cast<uint32_t>(stages_.size()) - 1);
     animFrom_ = static_cast<float>(focusIndex_);
     animTo_ = static_cast<float>(focusIndex_);
-    moveTimer_.Initialize(0.24f);
+    moveTimer_.Reset();
     currentState_ = State::Select;
+
+    // json適応
+    ApplyJson();
 }
 
 void SelectStageDrawer::Update() {
@@ -51,7 +56,7 @@ void SelectStageDrawer::Draw() {
 
     // 各ステージを描画する
     float f = (currentState_ == State::Move)
-        ? animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(Easing::Type::InOutCubic)
+        ? animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(moveEasing_)
         : static_cast<float>(focusIndex_);
     for (size_t i = 0; i < stages_.size(); ++i) {
 
@@ -78,18 +83,62 @@ void SelectStageDrawer::Draw() {
 
 void SelectStageDrawer::Edit() {
 
-    int idx = (int)focusIndex_;
-    if (ImGui::ArrowButton("##prev", ImGuiDir_Left))  StartMoveToNext(focusIndex_ - 1);
-    ImGui::SameLine();
-    ImGui::Text("Focus %u / %zu", focusIndex_, stages_.size());
-    ImGui::SameLine();
-    if (ImGui::ArrowButton("##next", ImGuiDir_Right)) StartMoveToNext(focusIndex_ + 1);
+    if (ImGui::Button("Save Json")) {
 
-    if (ImGui::InputInt("FocusIndex", &idx)) {
-
-        idx = std::clamp(idx, 0, (int)stages_.size() - 1);
-        StartMoveToNext((uint32_t)idx);
+        SaveJson();
     }
+    {
+        if (ImGui::ArrowButton("##prev", ImGuiDir_Left)) {
+            StartMoveToNext(focusIndex_ - 1);
+        }
+        ImGui::SameLine();
+        ImGui::Text("Focus %u / %zu", focusIndex_, stages_.size());
+        ImGui::SameLine();
+        if (ImGui::ArrowButton("##next", ImGuiDir_Right)) {
+            StartMoveToNext(focusIndex_ + 1);
+        }
+    }
+    {
+        ImGui::DragFloat("moveDuration", &moveTimer_.duration, 0.01f);
+        ImGui::DragFloat2("centerTranslate", &centerTranslate_.x, 1.0f);
+        ImGui::DragFloat2("centerTranslate", &centerTranslate_.x, 1.0f);
+        ImGui::DragFloat2("leftTranslate", &leftTranslate_.x, 1.0f);
+        ImGui::DragFloat2("rightTranslate", &rightTranslate_.x, 1.0f);
+
+        ImGui::DragFloat2("focusSize", &focusSize_.x, 1.0f);
+        ImGui::DragFloat2("outSize", &outSize_.x, 1.0f);
+
+        EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
+    }
+}
+
+void SelectStageDrawer::ApplyJson() {
+
+    nlohmann::json data;
+    if (!JsonAdapter::LoadCheck("SelectScene/selectStageDrawer.json", data)) {
+        return;
+    }
+
+    from_json(data["centerTranslate_"], centerTranslate_);
+    from_json(data["leftTranslate_"], leftTranslate_);
+    from_json(data["rightTranslate_"], rightTranslate_);
+    from_json(data["focusSize_"], focusSize_);
+    from_json(data["outSize_"], outSize_);
+
+    moveEasing_ = EnumAdapter<Easing::Type>::FromString(data["moveEasing_"]).value();
+}
+
+void SelectStageDrawer::SaveJson() {
+
+    nlohmann::json data;
+
+    to_json(data["centerTranslate_"], centerTranslate_);
+    to_json(data["leftTranslate_"], leftTranslate_);
+    to_json(data["rightTranslate_"], rightTranslate_);
+    to_json(data["focusSize_"], focusSize_);
+    to_json(data["outSize_"], outSize_);
+
+    JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
 }
 
 void SelectStageDrawer::StartMoveToNext(uint32_t next) {
@@ -101,7 +150,7 @@ void SelectStageDrawer::StartMoveToNext(uint32_t next) {
     }
 
     // 補間途中位置を開始点にする
-    float t = (currentState_ == State::Move) ? moveTimer_.GetEase(Easing::Type::OutCubic) : 1.0f;
+    float t = (currentState_ == State::Move) ? moveTimer_.GetEase(moveEasing_) : 1.0f;
     animFrom_ = animFrom_ + (animTo_ - animFrom_) * t;
     animTo_ = static_cast<float>(next);
     focusIndex_ = next;
@@ -182,7 +231,6 @@ void SelectStageDrawer::BuildAllStage() {
 
     // 1番左の表示
     float cursorX = leftTranslate_.x;
-
     for (uint32_t index = 0; index < csvFiles.size(); ++index) {
 
         // CSVファイルを読み込む
@@ -229,8 +277,6 @@ void SelectStageDrawer::BuildAllStage() {
         }
         // 配列に追加
         stages_.push_back(std::move(stage));
-        // 次のステージの開始座標を設定
-        cursorX += outSize_.x + 32.0f;
     }
 }
 

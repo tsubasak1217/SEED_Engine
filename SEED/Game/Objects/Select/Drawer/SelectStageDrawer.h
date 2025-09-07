@@ -83,6 +83,7 @@ private:
 
     // パラメータ
     Timer moveTimer_;     // 移動にかかる時間
+    Easing::Type moveEasing_;
     uint32_t focusIndex_; // 目標フォーカスインデックス
     float animFrom_;      // 補間開始の連続フォーカス
     float animTo_;        // 補間終了の連続フォーカス
@@ -95,6 +96,10 @@ private:
     Vector2 outSize_;   // フォーカスされていないときのサイズ
 
     //--------- functions ----------------------------------------------------
+
+    // json
+    void ApplyJson();
+    void SaveJson();
 
     // init
     void BuildAllStage();

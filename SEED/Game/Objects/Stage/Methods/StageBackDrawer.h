@@ -42,9 +42,30 @@ public:
     }
     void SetAnimaionMode(HexagonAnimaionMode mode) { animationMode_ = mode; }
     void SetDefaultColorAlpha(float alpha) { defaultColor_.w = alpha; }
-private:
-    void CreateHexagonInfo();
 
+    void EnableAmbientPurpleFade(int count,
+        float radius, float period, const Range2D& area,
+        bool relocateEachCycle = true, float purpleAmp = 0.6f, float alphaAmp = 0.12f);
+private:
+
+    struct AmbientSpot {
+        Vector2 pos;
+        float   radius;
+        float   period;
+        float   t;
+        bool    relocate;
+    };
+
+    Vector2 RandomPointInArea(const Range2D& area);
+
+    std::vector<AmbientSpot> ambientSpots_;
+    Range2D ambientArea_;
+    bool ambientEnabled_ = false;
+    float ambientPurpleAmp_ = 0.6f; // 紫の加算強度
+    float ambientAlphaAmp_ = 0.12f; // αの加算強度
+private:
+
+    void CreateHexagonInfo();
 private:
 
     HexagonAnimaionMode animationMode_ = HexagonAnimaionMode::Border;

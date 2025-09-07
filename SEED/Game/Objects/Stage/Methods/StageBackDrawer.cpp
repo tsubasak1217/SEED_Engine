@@ -32,6 +32,21 @@ void StageBackDrawer::Update(const Vector2& playerPos, float animTime) {
         }
     }
 
+    if (ambientEnabled_ && putTimer_.IsFinished()) {
+        for (auto& spot : ambientSpots_) {
+
+            spot.t += ClockManager::DeltaTime();
+            if (spot.t >= spot.period) {
+
+                spot.t = std::fmod(spot.t, spot.period);
+                if (spot.relocate) {
+
+                    spot.pos = RandomPointInArea(ambientArea_);
+                }
+            }
+        }
+    }
+
     for (int i = 0; i < hexagons_.size(); ++i) {
         for (int j = 0; j < hexagons_[i].size(); ++j) {
 
@@ -55,6 +70,21 @@ void StageBackDrawer::Update(const Vector2& playerPos, float animTime) {
             hexagons_[i][j].color.x = defaultColor_.x - 0.8f * distanceRate;
             hexagons_[i][j].color.z = defaultColor_.z + 1.0f * distanceRate;
             hexagons_[i][j].color.w = defaultColor_.w + 0.35f * distanceRate;
+
+            // 指定エリア以外をグラデーションする
+            if (ambientEnabled_ && putTimer_.IsFinished()) {
+
+                float extra = 0.0f;
+                for (const auto& s : ambientSpots_) {
+
+                    float d = MyMath::Length(hexagons_[i][j].pos - s.pos);
+                    float prox = std::clamp(1.0f - (d / s.radius), 0.0f, 1.0f);
+                    float lfo = 0.5f * (1.0f - std::cos((s.t / s.period) * 2.0f * std::numbers::pi_v<float>));
+                    extra += prox * lfo;
+                }
+                hexagons_[i][j].color.z = std::clamp(hexagons_[i][j].color.z + ambientPurpleAmp_ * extra, 0.0f, 1.0f);
+                hexagons_[i][j].color.w = std::clamp(hexagons_[i][j].color.w + ambientAlphaAmp_ * extra, 0.0f, 1.0f);
+            }
 
             if (isActive_) {
                 if (shouldGrow) {
@@ -105,6 +135,36 @@ void StageBackDrawer::Draw() {
 #endif // _DEBUG
 }
 
+
+void StageBackDrawer::EnableAmbientPurpleFade(int count, float radius, float period,
+    const Range2D& area, bool relocateEachCycle, float purpleAmp, float alphaAmp) {
+
+    ambientSpots_.clear();
+    ambientSpots_.reserve((std::max)(0, count));
+    ambientArea_ = area;
+    ambientEnabled_ = true;
+    ambientPurpleAmp_ = purpleAmp;
+    ambientAlphaAmp_ = alphaAmp;
+
+    for (int i = 0; i < count; ++i) {
+
+        AmbientSpot spot;
+        spot.pos = RandomPointInArea(area);
+        spot.radius = radius;
+        spot.period = (std::max)(0.1f, period);
+        spot.t = 0.0f;
+        spot.relocate = relocateEachCycle;
+        ambientSpots_.push_back(spot);
+    }
+}
+
+Vector2 StageBackDrawer::RandomPointInArea(const Range2D& area) {
+
+    float rx = (float)std::rand() / (float)RAND_MAX;
+    float ry = (float)std::rand() / (float)RAND_MAX;
+    return { area.min.x + rx * (area.max.x - area.min.x),
+        area.min.y + ry * (area.max.y - area.min.y) };
+}
 
 // 画面に敷き詰める六角形の情報を作成
 void StageBackDrawer::CreateHexagonInfo() {

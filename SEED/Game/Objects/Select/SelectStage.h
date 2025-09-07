@@ -3,28 +3,31 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Stage/Methods/StageBackDrawer.h>
+#include <Game/Objects/Select/Drawer/SelectStageDrawer.h>
 
 //============================================================================
-//	SelectBackground class
+//	SelectStage class
 //============================================================================
-class SelectBackground {
+class SelectStage {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SelectBackground() = default;
-	~SelectBackground() = default;
+	SelectStage() = default;
+	~SelectStage() = default;
 
     // 初期化
-    void Initialize();
+    void Initialize(uint32_t firstFocusStage);
 
     // 更新処理
     void Update();
 
     // 描画処理
     void Draw();
+
+    // エディター
+    void Edit();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -35,9 +38,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-    // 背景
-    StageBackDrawer drawer_; // 放射状六角形s
-    Range2D screenRange_;    //描画範囲
+    // 入力管理
+    std::unique_ptr<InputMapper<SelectInputEnum>> inputMapper_;
+
+    // ステージ描画を初期化
+    std::unique_ptr<SelectStageDrawer> stageDrawer_;
 
 	//--------- functions ----------------------------------------------------
 

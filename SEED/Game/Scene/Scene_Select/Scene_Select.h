@@ -10,6 +10,7 @@
 
 // objects
 #include <Game/Objects/Select/Background/SelectBackground.h>
+#include <Game/Objects/Select/SelectStage.h>
 
 //============================================================================
 //	Scene_Select class
@@ -47,6 +48,8 @@ private:
 
     // 背景描画
     std::unique_ptr<SelectBackground> background_;
+    // ステージ選択
+    std::unique_ptr<SelectStage> selectStage_;
 
 	//--------- functions ----------------------------------------------------
 

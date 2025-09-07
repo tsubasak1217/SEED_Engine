@@ -18,6 +18,7 @@
 #include <SEED/Source/Basic/PostProcess/GrayScale/GrayScale.h>
 #include <SEED/Source/Basic/PostProcess/Vignette/Vignette.h>
 #include <SEED/Source/Basic/PostProcess/Fog/Fog.h>
+#include <SEED/Source/Basic/PostProcess/Bloom/Bloom.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //                          static変数初期化
@@ -300,6 +301,10 @@ void PostEffect::Edit(){
                     postProcesses_.push_back({ std::make_unique<Fog>(),false });
                     postProcesses_.back().first->Initialize();
                 }
+                if(ImGui::Button("ブルーム")){
+                    postProcesses_.push_back({ std::make_unique<Bloom>(),false });
+                    postProcesses_.back().first->Initialize();
+                }
 
 
             }ImGui::Unindent();
@@ -525,6 +530,12 @@ void PostEffect::FromJson(const nlohmann::json& json){
 
         } else if(type == "Fog"){
             auto postProcess = std::make_unique<Fog>();
+            postProcess->Initialize();
+            postProcess->FromJson(postProcessJson);
+            postProcesses_.emplace_back(std::make_pair(std::move(postProcess), false));
+
+        }else if(type == "Bloom"){
+            auto postProcess = std::make_unique<Bloom>();
             postProcess->Initialize();
             postProcess->FromJson(postProcessJson);
             postProcesses_.emplace_back(std::make_pair(std::move(postProcess), false));

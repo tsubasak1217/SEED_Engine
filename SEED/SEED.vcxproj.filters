@@ -160,6 +160,7 @@
     <ClCompile Include="Game\Objects\Select\Methods\SelectStageBuilder.cpp" />
     <ClCompile Include="Game\Objects\Select\Input\Device\SelectGamePadInput.cpp" />
     <ClCompile Include="Game\Objects\Select\Input\Device\SelectKeyInput.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -386,6 +387,7 @@
     <ClInclude Include="Game\Objects\Select\Input\Device\SelectGamePadInput.h" />
     <ClInclude Include="Game\Objects\Select\Input\Device\SelectKeyInput.h" />
     <ClInclude Include="Game\Objects\Select\Input\SelectInputEnum.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
@@ -410,6 +412,7 @@
     <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Bloom.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

@@ -78,6 +78,9 @@ ComPtr<IDxcBlob> CompileShader(
     if(shaderError != nullptr && shaderError->GetStringLength() != 0) {
         Log(shaderError->GetStringPointer());
         // 警告・エラーダメゼッタイ
+        // エラーの内容
+        const char* errorMessage = reinterpret_cast<const char*>(shaderError->GetBufferPointer());
+        errorMessage;
         assert(false);
     }
 

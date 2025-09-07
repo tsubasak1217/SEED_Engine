@@ -1,5 +1,6 @@
 #include <Game/Scene/Scene_Title/Scene_Title.h>
 
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 //lib
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
@@ -20,6 +21,9 @@ Scene_Title::~Scene_Title(){}
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Initialize(){
+
+    // ブルームの初期化
+    //PostEffect::Load("bloom.json");
 
     // spriteの初期化
     sprites_["body"] = Sprite("Scene_Title/titleLogo_Body.png");

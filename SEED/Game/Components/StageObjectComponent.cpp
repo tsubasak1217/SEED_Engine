@@ -93,7 +93,7 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
             // レーザー制御処理
             if (LaserLauncher* laserLauncher = GetStageObject<LaserLauncher>()) {
 
-                laserLauncher->SetIsActive(false);
+                laserLauncher->SetIsLaserActive(false);
             }
             // ワープ制御処理
             if (Warp* warp = GetStageObject<Warp>()) {

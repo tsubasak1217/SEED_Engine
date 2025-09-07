@@ -41,7 +41,7 @@ public:
     virtual void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
     virtual void SetSize(const Vector2& size) { sprite_.size = size; }
     void SetScale(float scale) { sprite_.scale = scale; }
-    void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
+    virtual void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
 
     virtual const Vector2& GetTranslate() const { return sprite_.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }

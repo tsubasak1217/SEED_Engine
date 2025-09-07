@@ -128,7 +128,7 @@ void GameStage::ReActivateDisActiveObjects() {
             // レーザーは別でアクティブを設定する
             if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
 
-                laserLauncher->SetIsActive(true);
+                laserLauncher->SetIsLaserActive(true);
             }
             // ワープも別でアクティブを設定する
             if (Warp* warp = component->GetStageObject<Warp>()) {

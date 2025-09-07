@@ -208,8 +208,7 @@ void LaserObjectComponent::Update() {
 
 void LaserObjectComponent::Draw() {
 
-    // objectの描画
-    object_->Draw();
+    // 描画は発射台が行います
 }
 
 void LaserObjectComponent::OnCollisionEnter(GameObject2D* other) {

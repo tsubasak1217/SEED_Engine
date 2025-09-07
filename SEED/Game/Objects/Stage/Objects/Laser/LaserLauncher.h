@@ -38,13 +38,12 @@ public:
     void WarpLaserFromController(const Vector2& translate, const GameObject2D* sourceLaserObject);
     // ワープ後にできたオブジェクトを破棄
     void RemoveWarpLasers();
-    // 所持ているレーザーに対してアクティブを設定する
-    void SetIsActive(bool isActive);
 
     //--------- accessor -----------------------------------------------------
 
     void SetTranslate(const Vector2& translate) override;
     void SetSize(const Vector2& size) override;
+    void SetCommonState(StageObjectCommonState state) override;
     void SetIsLaserActive(bool isActive);
 
     // 発射方向を設定
@@ -69,7 +68,8 @@ private:
     Vector2 translate_;    // 発射台の座標
 
     // 発射台スプライト
-    std::vector<Sprite> launchSprites_;
+    Sprite frameSprite_;      // 通常描画
+    Sprite centerStarSprite_; // 中心の星
     // 発射方向
     uint8_t bitDirection_;
     std::vector<DIRECTION4> launchDirections_;

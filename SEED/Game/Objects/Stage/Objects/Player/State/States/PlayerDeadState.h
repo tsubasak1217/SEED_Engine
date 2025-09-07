@@ -31,6 +31,7 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
+    bool IsDead() const { return isDead_; }
     bool IsDeadFinishTrigger() const { return isFinishedDeadTrigger_; }
 
 private:

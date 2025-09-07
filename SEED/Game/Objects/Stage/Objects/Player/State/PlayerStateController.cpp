@@ -64,6 +64,15 @@ bool PlayerStateController::IsFinishedWarp() const {
 }
 
 bool PlayerStateController::IsDead() const {
+    PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
+    //死亡状態か
+    if(dead->IsDead()){
+        return true;
+    }
+    return false;
+}
+
+bool PlayerStateController::IsDeadFinishTrigger() const {
 
     PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
     //死亡処理が完了したか
@@ -87,11 +96,15 @@ void PlayerStateController::Update(Player& owner) {
         ChangeState(owner);
     }
 
-    // 横移動はワープ状態以外の時に処理可能
-    if (current_ != PlayerState::Warp) {
+    // 横移動はワープ状態,死亡状態以外の時に処理可能
+    if (current_ != PlayerState::Warp && current_ != PlayerState::Dead) {
         if (auto* move = states_[PlayerState::Move].get()) {
 
             move->Update(owner);
+        }
+
+        if (auto* jump = states_[PlayerState::Jump].get()) {
+            jump->Update(owner);
         }
     }
 
@@ -167,6 +180,11 @@ void PlayerStateController::UpdateInputState() {
         return;
     }
 
+    //死亡時は処理しない
+    if(current_ == PlayerState::Dead){
+        return;
+    }
+
     // ジャンプ入力
     if (inputMapper_->IsTriggered(PlayerInputAction::Jump)) {
         if (current_ != PlayerState::Jump) {
@@ -186,6 +204,13 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
     // レーザーに触れたら死亡状態にする
     if(owner.TouchLaser() == true){
         Request(PlayerState::Dead);
+        return;
+    }
+    // 死亡状態の時は処理しない
+    if(requested_ == PlayerState::Dead){
+        return;
+    }
+    if(current_ == PlayerState::Dead){
         return;
     }
 
@@ -211,16 +236,14 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
 
         // 壁にぶつかっている場合はジャンプ状態にしない
         if (!owner.GetOwner()->GetIsCollideSolid()) {
-            //requestedに死亡状態が設定されている場合はジャンプ状態にしない
-            if(requested_ == PlayerState::Dead){
-                return;
-            }
             if (current_ != PlayerState::Jump) {
 
                 Request(PlayerState::Jump);
             }
         }
     }
+
+   
 }
 
 void PlayerStateController::Request(PlayerState state) {

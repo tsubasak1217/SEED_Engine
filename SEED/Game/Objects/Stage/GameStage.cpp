@@ -492,20 +492,25 @@ void GameStage::CheckPlayerCrossedBorderLine() {
         // プレイヤーのワールド座標
         const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
         //向きごとの境界線を越えたかどうかの判定をする
-        if (borderLine_->GetDirection() == LR::LEFT) {
-            /*--- LEFT ---*/
-            if (borderLine_->GetSprite().translate.x > playerWorldTranslate.x) {
-                player_->SetIsHologram(true);
+        if (borderLine_->GetSprite().translate.y > playerWorldTranslate.y) {
+            if (borderLine_->GetDirection() == LR::LEFT) {
+                /*--- LEFT ---*/
+                if (borderLine_->GetSprite().translate.x > playerWorldTranslate.x) {
+                    player_->SetIsHologram(true);
+                } else {
+                    player_->SetIsHologram(false);
+                }
             } else {
-                player_->SetIsHologram(false);
+                /*--- RIGHT ---*/
+                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x) {
+                    player_->SetIsHologram(true);
+                } else {
+                    player_->SetIsHologram(false);
+                }
             }
         } else {
-            /*--- RIGHT ---*/
-            if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x) {
-                player_->SetIsHologram(true);
-            } else {
-                player_->SetIsHologram(false);
-            }
+            player_->SetIsHologram(false);
+            return;
         }
     } else {
         // 境界線が置かれていないときはホログラム状態を解除する

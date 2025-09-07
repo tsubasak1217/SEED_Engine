@@ -41,8 +41,8 @@ private:
 
     //--------- variables ----------------------------------------------------
 
-    bool isDead_; // 死んだかどうか
-    bool isFinishedDeadTrigger_; // 死亡時の処理が終わったか
+    bool isDead_ = false; // 死んだかどうか
+    bool isFinishedDeadTrigger_ = false; // 死亡時の処理が終わったか
 
     Timer deadTimer_;
     float deadDuration_; // 死亡アニメーションの時間

@@ -10,6 +10,7 @@ struct Timer{
 public:
     void Initialize(float _duration);
     float GetProgress() const;
+    float GetDuration() const{ return duration; }
     float GetEase(Easing::Type easeType);
     float GetPrevProgress() const;
     bool IsFinished() const;

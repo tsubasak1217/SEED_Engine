@@ -132,6 +132,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp">
@@ -360,6 +361,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h">

@@ -57,3 +57,16 @@ void StageCameraAdjuster::SetStageRange(const Range2D& range){
     startScale_ = camera->GetScale();
     startTranslate_ = camera->GetTranslation();
 }
+
+
+Range2D StageCameraAdjuster::GetCameraRange() const{
+
+    // targetTranslate_とtargetScale_からカメラの範囲を計算して返す
+    Vector2 defaultSize = kWindowSize;
+    Vector2 halfSize = (defaultSize * targetScale_.x) * 0.5f;
+    Range2D cameraRange;
+    cameraRange.min = { targetTranslate_.x, targetTranslate_.y };
+    cameraRange.max = { targetTranslate_.x + halfSize.x * 2.0f, targetTranslate_.y + halfSize.y * 2.0f };
+
+    return cameraRange;
+}

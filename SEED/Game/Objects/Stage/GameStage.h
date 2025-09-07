@@ -8,6 +8,7 @@
 #include <Game/Objects/Stage/Methods/GameStageWarpController.h>
 #include <Game/Objects/Stage/Methods/GameStageLaserController.h>
 #include <Game/Objects/Stage/Methods/StageCameraAdjuster.h>
+#include <Game/Objects/Stage/Methods/StageBackDrawer.h>
 
 // c++
 #include <list>
@@ -101,6 +102,8 @@ private:
 
     // 境界線
     std::unique_ptr<BorderLine> borderLine_;
+    // 背景描画
+    StageBackDrawer backDrawer_;
     // リストから貰って使用する
     Player* player_ = nullptr;
 

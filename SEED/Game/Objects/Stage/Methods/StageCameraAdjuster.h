@@ -10,7 +10,7 @@ public:
 
 public://アクセッサ
     void SetStageRange(const Range2D& range);
-
+    Range2D GetCameraRange()const;
 private:
     Range2D stageRange_;
 

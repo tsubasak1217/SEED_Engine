@@ -185,7 +185,7 @@ void GameStage::Update() {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::UpdatePlay() {
+void GameStage::UpdatePlay(){
 
     // ワープの更新処理
     UpdateWarp();
@@ -202,6 +202,11 @@ void GameStage::UpdatePlay() {
 
     // カメラの調整
     cameraAdjuster_.Update();
+
+    // 背景描画
+    if(player_){
+        backDrawer_.Update(player_->GetOwner()->GetWorldTranslate());
+    }
 }
 
 void GameStage::UpdateWarp() {
@@ -398,6 +403,11 @@ void GameStage::PutBorderLine() {
 
     // ステージのサイズを計算
     CalculateCurrentStageRange();
+    cameraAdjuster_.Update();
+
+    // 背景描画に境界線の情報を渡す
+    backDrawer_.SetActive(true);
+    backDrawer_.SetBorder(axisX, playerDirection, cameraAdjuster_.GetCameraRange());
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -434,6 +444,9 @@ void GameStage::RemoveBorderLine() {
 
     // ステージのサイズを計算
     CalculateCurrentStageRange();
+
+    // 背景描画を非アクティブにする
+    backDrawer_.SetActive(false);
 }
 
 void GameStage::CheckClear() {
@@ -505,6 +518,9 @@ void GameStage::Draw() {
 
     // 境界線の描画
     borderLine_->Draw();
+
+    // 背景描画
+    backDrawer_.Draw();
 }
 
 /////////////////////////////////////////////////////////////////////////

@@ -195,6 +195,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     instance_->offscreenWrapper_->color = MyMath::FloatColor(0, 0, 0, 256);
     instance_->offscreenWrapper_->blendMode = BlendMode::ADD;// 深度書き込みをしないため、加算合成で描画
     instance_->offscreenWrapper_->isStaticDraw = false;
+    instance_->offscreenWrapper_->isApplyViewMat = false;
     instance_->offscreenWrapper_->layer = 100;
     // Vec4版の色の計算
     instance_->clearColor_ = MyMath::FloatColor(windowBackColor_);

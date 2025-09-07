@@ -153,6 +153,7 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Interface\ILaserObject.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -371,6 +372,7 @@
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageLaserController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />
+    <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

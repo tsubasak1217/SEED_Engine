@@ -38,6 +38,11 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     focusAnimFrame_.color = frameColor_;
     focusAnimTimer_.Reset();
     focusAnimForward_ = true;
+    // ステージ番号背景アニメーションの初期化
+    stageIndexBackAnim_ = Sprite("Scene_Select/hexagonDesign.png");
+    stageIndexBackAnim_.anchorPoint = 0.5f;
+    stageIndexBackAnim_.isApplyViewMat = false;
+    stageIndexBackAnim_.color = stageIndexBackColor_;
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -166,8 +171,9 @@ void SelectStageDrawer::Draw() {
 
         // 背景描画
         stages_[i].background.Draw();
-        // フレーム描画
+        // 背景アニメーションを描画
         DrawFocusAnim();
+        // フレーム描画
         stages_[i].frame.Draw();
         // ステージ番号描画
         stages_[i].stageIndexBack.Draw();
@@ -201,6 +207,14 @@ void SelectStageDrawer::Edit() {
         ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
         ImGui::DragFloat("stageIndexBackOffsetY_", &stageIndexBackOffsetY_, 1.0f);
 
+        if (ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)) {
+
+            // 全てのフレームに適応
+            for (auto& stage : stages_) {
+
+                stage.stageIndexBack.size = stageIndexBackSize_;
+            }
+        }
         if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
 
             // 全てのフレームに適応
@@ -274,6 +288,7 @@ void SelectStageDrawer::ApplyJson() {
     tileScale_ = data.value("tileScale_", 1.0f);
     stageIndexTextOffsetY_ = data.value("stageIndexTextOffsetY_", 128.0f);
     stageIndexBackOffsetY_ = data.value("stageIndexBackOffsetY_", 128.0f);
+    stageIndexBackSize_ = data.value("stageIndexBackSize_", 128.0f);
     stageIndexTextSize_ = data.value("stageIndexTextSize_", 128.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
@@ -317,6 +332,7 @@ void SelectStageDrawer::SaveJson() {
     to_json(data["stageIndexBackColor_"], stageIndexBackColor_);
     to_json(data["frameColor_"], frameColor_);
     to_json(data["backgroundColor_"], backgroundColor_);
+    to_json(data["stageIndexBackSize_"], stageIndexBackSize_);
     to_json(data["stageIndexTextSize_"], stageIndexTextSize_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
@@ -356,13 +372,25 @@ void SelectStageDrawer::DrawFocusAnim() {
     // フラグで補間先を切り替え
     float from = focusAnimForward_ ? focusAnimFrom_ : focusAnimTo_;
     float to = focusAnimForward_ ? focusAnimTo_ : focusAnimFrom_;
+    float easedT = focusAnimTimer_.GetEase(focusAnimEasing_);
     // スケール補間
-    float scale = from + (to - from) * focusAnimTimer_.GetEase(focusAnimEasing_);
+    float scale = from + (to - from) * easedT;
+    // アルファ補間
+    float alpha = std::clamp(1.0f - easedT, 0.0f, 1.0f);
+
+    // フレーム
     focusAnimFrame_.translate = center.translate;
     focusAnimFrame_.size = Vector2(center.size.x * scale, center.size.y * scale);
-    focusAnimFrame_.color.w = std::clamp(1.0f - focusAnimTimer_.GetEase(focusAnimEasing_), 0.0f, 1.0f);
+    focusAnimFrame_.color.w = alpha;
     // 描画
     focusAnimFrame_.Draw();
+
+    // ステージ番号背景
+    stageIndexBackAnim_.translate = center.stageIndexBack.translate;
+    stageIndexBackAnim_.size = center.stageIndexBack.size * (scale + 0.08f);
+    stageIndexBackAnim_.color = stageIndexBackColor_;
+    stageIndexBackAnim_.color.w = alpha;
+    stageIndexBackAnim_.Draw();
 }
 
 void SelectStageDrawer::DrawEndZoom() {
@@ -467,7 +495,7 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
         const float scaleY = size.y / focusSize_.y;
         const float offsetY = stageIndexBackOffsetY_ * scaleY;
         stage.stageIndexBack.translate = Vector2(center.x, center.y + offsetY);
-        stage.stageIndexBack.size = stageIndexTextSize_ * scaleY;
+        stage.stageIndexBack.size = stageIndexBackSize_ * scaleY;
     }
 
     // タイルを最大の正方形の最大サイズにする
@@ -665,13 +693,13 @@ void SelectStageDrawer::BuildAllStage() {
         stage.background.isApplyViewMat = false;
         // ステージ番号背景
         stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
-        stage.stageIndexBack.size = stageIndexTextSize_;
+        stage.stageIndexBack.size = stageIndexBackSize_;
         stage.stageIndexBack.anchorPoint = 0.5f;
         stage.stageIndexBack.color = stageIndexBackColor_;
         stage.stageIndexBack.isApplyViewMat = false;
         // ステージ番号
         stage.stageIndexText = TextBox2D(std::to_string(index + 1));
-        stage.stageIndexText.SetFont("");
+        stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
         stage.stageIndexText.fontSize = stageIndexTextSize_;
         stage.stageIndexText.anchorPos = Vector2(0.5f, 0.0f);
         stage.stageIndexText.glyphSpacing = 0.0f;

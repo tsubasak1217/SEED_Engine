@@ -138,6 +138,7 @@ private:
     Vector2 focusSize_; // フォーカス時のサイズ
     Vector2 outSize_;   // フォーカスされていないときのサイズ
     float tileScale_;   // フレーム内のブロックサイズのスケーリング
+    float stageIndexBackSize_; // ステージ番号背景サイズ
     float stageIndexTextSize_; // ステージ番号サイズ
 
     // 中央フレームアニメーション
@@ -147,7 +148,10 @@ private:
     float focusAnimFrom_;   // 開始スケール
     float focusAnimTo_;     // 目標スケール
     bool focusAnimForward_; // 補間先の設定
+    // ステージ番号背景アニメーション
+    Sprite stageIndexBackAnim_;
 
+    // 決定後のズームアニメーション
     Timer endZoomTimer_;         // ズーム時間
     Easing::Type endZoomEasing_;
     float focusAnimBaseDuration_; // フォーカス速度の保存用

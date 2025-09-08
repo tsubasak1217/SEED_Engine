@@ -40,13 +40,13 @@
             },
             "blendMode": 3,
             "color": {
-                "w": 1.0,
+                "w": 0.4000000059604645,
                 "x": 1.0,
                 "y": 0.6023165583610535,
                 "z": 0.0
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 68.0,
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 58.0,
             "glyphSpacing": 8.0,
             "isApplyViewMat": false,
             "layer": 21,
@@ -61,7 +61,7 @@
             "outlineWidth": 2.0,
             "size": {
                 "x": 565.0,
-                "y": 71.0
+                "y": 61.0
             },
             "text": "ゲームに戻る",
             "textBoxVisible": true,
@@ -120,14 +120,14 @@
             },
             "blendMode": 3,
             "color": {
-                "w": 1.0,
+                "w": 0.4000000059604645,
                 "x": 1.0,
                 "y": 0.0,
                 "z": 0.7413129806518555
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 68.0,
-            "glyphSpacing": 8.0,
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 55.0,
+            "glyphSpacing": 4.900000095367432,
             "isApplyViewMat": false,
             "layer": 21,
             "lineSpacing": 8.0,
@@ -141,15 +141,15 @@
             "outlineWidth": 2.0,
             "size": {
                 "x": 565.0,
-                "y": 71.0
+                "y": 57.0
             },
             "text": "リトライ",
             "textBoxVisible": true,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
-                    "x": 1.2000000476837158,
-                    "y": 1.2000000476837158
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "translate": {
                     "x": 920.907958984375,
@@ -205,9 +205,9 @@
                 "y": 1.0,
                 "z": 0.0
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 68.0,
-            "glyphSpacing": 8.0,
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 55.0,
+            "glyphSpacing": 4.900000095367432,
             "isApplyViewMat": false,
             "layer": 21,
             "lineSpacing": 8.0,
@@ -221,15 +221,15 @@
             "outlineWidth": 2.0,
             "size": {
                 "x": 565.0,
-                "y": 71.0
+                "y": 57.0
             },
             "text": "ステージセレクトへ",
             "textBoxVisible": true,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 1.2000000476837158,
+                    "y": 1.2000000476837158
                 },
                 "translate": {
                     "x": 897.6936645507813,

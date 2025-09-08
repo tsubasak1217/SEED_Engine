@@ -83,4 +83,5 @@ private:
 
 public:
     static void Load(const std::string& fileName);
+    static void DeleteAll();
 };

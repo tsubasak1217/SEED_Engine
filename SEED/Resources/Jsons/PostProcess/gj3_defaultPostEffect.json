@@ -1,0 +1,19 @@
+{
+    "postProcesses": [
+        {
+            "type": "Vignette",
+            "vignetteStrength": 0.6000000238418579
+        },
+        {
+            "scanLineStrength": 0.03400000184774399,
+            "stripeFrequency": 0.6100000143051147,
+            "type": "ScanLine"
+        },
+        {
+            "radius_": 8,
+            "sigma_": 1.7200000286102295,
+            "threshold_": 0.05000000074505806,
+            "type": "Bloom"
+        }
+    ]
+}

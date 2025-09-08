@@ -11,6 +11,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Title::Scene_Title(){
     SEED::SetMainCamera("default");
+    PostEffect::DeleteAll();
+    PostEffect::Load("gj3_defaultPostEffect.json");
 }
 
 Scene_Title::~Scene_Title(){}

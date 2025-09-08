@@ -9,9 +9,9 @@
         "w": 1.0,
         "x": 0.0,
         "y": 1.0,
-        "z": 0.9884169101715088
+        "z": 0.015444040298461914
     },
-    "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+    "fontName": "Resources/Fonts\\DefaultAssets\\Dot\\x10y12pxDonguriDuel.ttf",
     "fontSize": 70.0,
     "glyphSpacing": 12.199999809265137,
     "isApplyViewMat": false,
@@ -39,7 +39,7 @@
         },
         "translate": {
             "x": 640.0,
-            "y": 527.0
+            "y": 536.0
         }
     },
     "useOutline": true

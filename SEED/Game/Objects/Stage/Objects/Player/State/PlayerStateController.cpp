@@ -66,7 +66,7 @@ bool PlayerStateController::IsFinishedWarp() const {
 bool PlayerStateController::IsDead() const {
     PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
     //死亡状態か
-    if(dead->IsDead()){
+    if (dead->IsDead()) {
         return true;
     }
     return false;
@@ -76,7 +76,7 @@ bool PlayerStateController::IsDeadFinishTrigger() const {
 
     PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get());
     //死亡処理が完了したか
-    if(dead->IsDeadFinishTrigger()) {
+    if (dead->IsDeadFinishTrigger()) {
         return true;
     }
     return false;
@@ -118,7 +118,7 @@ void PlayerStateController::Update(Player& owner) {
     CheckWarpState(owner);
     // ジャンプ状態が終了したかチェック
     CheckJumpState(owner);
- 
+
     // 前回の状態を更新
     pre_ = current_;
 }
@@ -160,16 +160,21 @@ float PlayerStateController::GetJumpVelocity() const {
     return 0.0f;
 }
 
-bool PlayerStateController::GetIsMoving() const{
-    if(current_ == PlayerState::Warp){
+bool PlayerStateController::GetIsMoving() const {
+    if (current_ == PlayerState::Warp) {
         return false;
     }
 
-    if(PlayerMoveState* move = static_cast<PlayerMoveState*>(states_.at(PlayerState::Move).get())){
+    if (PlayerMoveState* move = static_cast<PlayerMoveState*>(states_.at(PlayerState::Move).get())) {
         return move->GetIsMoving();
     }
 
     return false;
+}
+
+bool PlayerStateController::OnGround() const {
+
+    return current_ != PlayerState::Jump;
 }
 
 
@@ -181,7 +186,7 @@ void PlayerStateController::UpdateInputState() {
     }
 
     //死亡時は処理しない
-    if(current_ == PlayerState::Dead){
+    if (current_ == PlayerState::Dead) {
         return;
     }
 
@@ -202,15 +207,15 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
     }
 
     // レーザーに触れたら死亡状態にする
-    if(owner.TouchLaser() == true){
+    if (owner.TouchLaser() == true) {
         Request(PlayerState::Dead);
         return;
     }
     // 死亡状態の時は処理しない
-    if(requested_ == PlayerState::Dead){
+    if (requested_ == PlayerState::Dead) {
         return;
     }
-    if(current_ == PlayerState::Dead){
+    if (current_ == PlayerState::Dead) {
         return;
     }
 
@@ -243,7 +248,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
         }
     }
 
-   
+
 }
 
 void PlayerStateController::Request(PlayerState state) {

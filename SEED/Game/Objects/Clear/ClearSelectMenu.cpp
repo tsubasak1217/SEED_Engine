@@ -69,6 +69,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
     stageIndexText_.layer = 21;
     stageIndexText_.isApplyViewMat = false;
     stageIndexText_.transform.scale = 0.0f;
+    stageIndexText_.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
     stageIndexBackTranslate_ = Vector2(872.0f, 255.0f);
     stageIndexTextTranslate_ = Vector2(876.3f, 230.88f);
 }

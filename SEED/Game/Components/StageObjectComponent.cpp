@@ -61,6 +61,7 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
 
         // 着地した瞬間を検知
         if (owner_.owner2D->GetIsOnGroundTrigger()) {
+
             player->OnGroundTrigger();
         }
 

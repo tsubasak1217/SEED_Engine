@@ -104,6 +104,10 @@ public:// キーの状態を返す関数
     // スティックのデッドゾーン設定
     static void SetDeadZone(float deadZone){ instance_->deadZone_ = deadZone; }
     static float GetDeadZone() { return deadZone_; }
+
+    // アクティブかどうか
+    static void SetIsActive(bool isActive){ instance_->isActive_ = isActive; }
+
 private:
 
     bool IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE padState);
@@ -130,4 +134,7 @@ private:
 
     // ボタン管理用変数
     static std::unordered_map<PAD_BUTTON, uint32_t>buttonMap_;
+
+    // アクティブかどうか
+    bool isActive_ = true;
 };

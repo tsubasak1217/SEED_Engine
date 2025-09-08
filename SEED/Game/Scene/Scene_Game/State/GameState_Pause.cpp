@@ -11,13 +11,13 @@
 // コンストラクタ・デストラクタ
 // 
 //////////////////////////////////////////////////////////////////////////////////
-GameState_Pause::GameState_Pause(Scene_Base* pScene) {
+GameState_Pause::GameState_Pause(Scene_Base* pScene){
     // シーンの設定
     pScene_ = pScene;
     Initialize();
 }
 
-GameState_Pause::~GameState_Pause() {
+GameState_Pause::~GameState_Pause(){
     // メインカメラをデフォルトに戻す
     SEED::SetMainCamera("default");
 }
@@ -27,41 +27,38 @@ GameState_Pause::~GameState_Pause() {
 // 初期化
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::Initialize() {
+void GameState_Pause::Initialize(){
 
     // 入力クラスを初期化
     inputMapper_ = std::make_unique<InputMapper<PauseMenuInputAction>>();
     inputMapper_->AddDevice(std::make_unique<MenuBarKeyInput>());     // キー操作
     inputMapper_->AddDevice(std::make_unique<MenuBarGamePadInput>()); // パッド操作
 
-    for(int i = 0; i < 3; i++){
-        menuPos_[i] = { 640.0f,200.0f + i * 100.0f };
-    }
-    menuSize_ = { 400.0f,50.0f };
+    // menuItwm
+    pauseItems_.clear();
+    pauseItems_.resize(3);
+    nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Pause/PauseMenu.json");
+    for(int i = 0; i < kMenuCount; i++){
 
-    MenuText_[0] = TextBox2D("Return to the Game");
-    MenuText_[1] = TextBox2D("Restart");
-    MenuText_[2] = TextBox2D("Back in the Title");
-    
-    for (int i = 0; i < 3; i++) {
-        MenuBack_[i] = Sprite("DefaultAssets/white1x1.png");
-        MenuBack_[i].size = menuSize_;
-        MenuBack_[i].color = { 1.0f,1.0f,1.0f,1.0f };
-        MenuBack_[i].leftTop = menuPos_[i];
-        MenuBack_[i].anchorPoint = { 0.5f,0.5f };
-        MenuBack_[i].drawLocation = DrawLocation::Front;
-        MenuBack_[i].layer = 20;
-        MenuBack_[i].isApplyViewMat = false;
+        // 基本初期化
+        pauseItems_[i].backSprite = Sprite("DefaultAssets/white1x1.png");
+        pauseItems_[i].backSprite.size = { 200.0f, 50.0f };
+        pauseItems_[i].backSprite.layer = 20;
+        pauseItems_[i].backSprite.anchorPoint = { 0.5f, 0.5f };
+        pauseItems_[i].backSprite.isApplyViewMat = false;
 
-        MenuText_[i].transform.translate = menuPos_[i];
-        MenuText_[i].SetFont("");
-        MenuText_[i].size = menuSize_;
-        MenuText_[i].color = { 0.0f,0.0f,0.0f,1.0f };
-        MenuText_[i].fontSize = 32;
-        MenuText_[i].textBoxVisible = false; // テキストボックスの枠を非表示
-        MenuText_[i].isApplyViewMat = false;
-        MenuText_[i].layer = 21;
+        // テキスト
+        pauseItems_[i].text = TextBox2D("text");
+        pauseItems_[i].text.layer = 21;
+        pauseItems_[i].text.isApplyViewMat = false;
+
+        if(!data.empty()){
+            if(data.size() > i){
+                pauseItems_[i].FromJson(data[i]);
+            }
+        }
     }
+
 }
 
 
@@ -70,7 +67,7 @@ void GameState_Pause::Initialize() {
 // 終了処理
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::Finalize() {
+void GameState_Pause::Finalize(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -78,37 +75,73 @@ void GameState_Pause::Finalize() {
 // 更新
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::Update() {
+void GameState_Pause::Update(){
 
     // メニューの選択
     //上移動
-    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
-        currentMenu_--;
-        if (currentMenu_ < 0) {
-            currentMenu_ = 2;
-        }
+    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f){
+        currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kMenuCount - 1);
         AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
     }
     //下移動
-    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
-         currentMenu_++;
-         if (currentMenu_ > 2) {
-             currentMenu_ = 0;
-         }
-         AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f){
+        currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kMenuCount - 1);
+        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+    }
+
+    // メニュータイマーの更新
+    float t = menuTimer_.GetProgress();
+    float ease;
+    if(isExit_){
+        menuTimer_.Update(-1.0f);
+        ease = EaseInQuint(t);
+    } else{
+        menuTimer_.Update(1.0f);
+        ease = EaseOutQuint(t);
     }
 
     // 選択中のメニューの色を変える
-    for (size_t i = 0; i < 3; i++) {
-        if (i == currentMenu_) {
-            MenuBack_[i].color = { 1.0f,0.5f,0.5f,1.0f };
-        }
-        else {
-            MenuBack_[i].color = { 1.0f,1.0f,1.0f,1.0f };
-        }
+    for(size_t i = 0; i < 3; i++){
+        // 時間の更新
+        pauseItems_[i].selectTime.Update(i == currentMenu_ ? 1.0f : -1.0f);
+
+        // パラメーターの更新
+        pauseItems_[i].backSprite.translate = MyMath::Lerp(pauseItems_[i].start.translate, pauseItems_[i].end.translate, ease);
+        pauseItems_[i].text.transform.translate = MyMath::Lerp(pauseItems_[i].start.translate, pauseItems_[i].end.translate, ease);
+        pauseItems_[i].backSprite.size = pauseItems_[i].backSpriteSize;
+
+        float t2 = pauseItems_[i].selectTime.GetProgress();
+        float ease2 = EaseOutBack(t2);
+        pauseItems_[i].backSprite.scale = 1.0f + 0.2f * ease2;
+        pauseItems_[i].text.transform.scale = 1.0f + 0.2f * ease2;
+        pauseItems_[i].backSprite.color.w = 0.5f + 0.5f * t2;
     }
 
-    
+#ifdef _DEBUG
+    ImFunc::CustomBegin("Pause", MoveOnly_TitleBar);
+    {
+
+        std::string label;
+
+        for(int i = 0; i < 3; i++){
+            label = "Menu" + std::to_string(i);
+            if(ImGui::CollapsingHeader(label.c_str())){
+                pauseItems_[i].Edit();
+            }
+        }
+
+        ImGui::Separator();
+
+        // jsonに保存
+        if(ImGui::Button("Save Json")){
+            MenuItemsToJson();
+        }
+
+        ImGui::End();
+    }
+#endif // _DEBUG
+
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -116,10 +149,10 @@ void GameState_Pause::Update() {
 // 描画
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::Draw() {
+void GameState_Pause::Draw(){
     for(int i = 0; i < 3; i++){
-        MenuBack_[i].Draw();
-        MenuText_[i].Draw();
+        pauseItems_[i].backSprite.Draw();
+        pauseItems_[i].text.Draw();
     }
 }
 
@@ -128,7 +161,7 @@ void GameState_Pause::Draw() {
 // フレーム開始処理
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::BeginFrame() {
+void GameState_Pause::BeginFrame(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +169,7 @@ void GameState_Pause::BeginFrame() {
 // フレーム終了処理
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::EndFrame() {
+void GameState_Pause::EndFrame(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +177,7 @@ void GameState_Pause::EndFrame() {
 // コリジョン情報の受け渡し
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::HandOverColliders() {
+void GameState_Pause::HandOverColliders(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -152,30 +185,30 @@ void GameState_Pause::HandOverColliders() {
 // ステートの管理
 //
 //////////////////////////////////////////////////////////////////////////////////
-void GameState_Pause::ManageState() {
+void GameState_Pause::ManageState(){
 
     Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
     GameStage* stage_ = gameScene->GetStage();
 
     //State_Playに戻る
     if(inputMapper_->IsTriggered(PauseMenuInputAction::Pause)){
-        changeStateRequest_ = true;
+        isExit_ = true;
         stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
         return;
     }
 
-    if (changeStateRequest_) {
+    if(isExit_ && menuTimer_.GetPrevProgress() <= 0.0f){
         pScene_->ChangeState(new GameState_Play(pScene_));
-        changeStateRequest_ = false;
+        isExit_ = false;
         return;
     }
 
     // 決定
-    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+    if(inputMapper_->IsTriggered(PauseMenuInputAction::Enter)){
         AudioManager::PlayAudio("SE/iceSound.mp3", false, 0.3f, 1.0f);
-        switch (currentMenu_) {
+        switch(currentMenu_){
         case 0:// 続ける
-            changeStateRequest_ = true;
+            isExit_ = true;
             stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
             break;
         case 1:// やり直す
@@ -190,5 +223,56 @@ void GameState_Pause::ManageState() {
         }
     }
 
-   
+
+}
+
+
+/////////////////////////////////////////////////////////////////////
+// json
+/////////////////////////////////////////////////////////////////////
+
+nlohmann::json PauseItem::ToJson() const{
+    nlohmann::json data;
+    data["start"] = start;
+    data["end"] = end;
+    data["backColor"] = backColor;
+    data["backSpriteSize"] = backSpriteSize;
+    data["text"] = text.GetJsonData();
+    return data;
+}
+
+void PauseItem::FromJson(const nlohmann::json& data){
+    start = data.value("start", Transform2D());
+    end = data.value("end", Transform2D());
+    backColor = data.value("backColor", Vector4(1.0f));
+    backSpriteSize = data.value("backSpriteSize", Vector2(200.0f, 50.0f));
+    text.LoadFromJson(data["text"]);
+}
+
+void GameState_Pause::MenuItemsToJson(){
+    nlohmann::ordered_json data = nlohmann::ordered_json::array();
+    for(const PauseItem& item : pauseItems_){
+        data.push_back(item.ToJson());
+    }
+
+    // JSONファイルに保存
+    MyFunc::CreateJsonFile("Resources/Jsons/Pause/PauseMenu.json", data);
+}
+
+/////////////////////////////////////////////////////////////////////
+// ImGuiで編集
+/////////////////////////////////////////////////////////////////////
+void PauseItem::Edit(){
+#ifdef _DEBUG
+    ImGuiManager::RegisterGuizmoItem(&start);
+    ImGuiManager::RegisterGuizmoItem(&end);
+    ImGui::DragFloat2("BackSpriteSize", &backSpriteSize.x, 1.0f, 1.0f, 1000.0f);
+    ImGui::ColorEdit4("BackColor", &backColor.x);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    text.Edit();
+#endif // _DEBUG
 }

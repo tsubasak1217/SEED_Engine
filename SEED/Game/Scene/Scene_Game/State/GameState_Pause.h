@@ -6,7 +6,22 @@
 #include <SEED/Lib/Input/InputMapper.h>
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/TextBox.h>
+#include <SEED/Lib/Structs/Timer.h>
 #include <Game/Scene/Input/PauseMenuInputActionEnum.h>
+
+struct PauseItem{
+    Transform2D start;
+    Transform2D end;
+    Sprite backSprite;
+    TextBox2D text;
+    Vector2 backSpriteSize;
+    Vector4 backColor;
+    Timer selectTime = Timer(0.2f);
+    static inline float kSelectTimeMax = 0.2f;
+    nlohmann::json ToJson() const;
+    void FromJson(const nlohmann::json& data);
+    void Edit();
+};
 
 class GameState_Pause : public State_Base {
 public:
@@ -27,13 +42,15 @@ public:
 
 private:
 
-    Sprite MenuBack_[3];
-    TextBox2D MenuText_[3];
-    int32_t currentMenu_ = 0;
-
-    Vector2 menuPos_[3];
-    Vector2 menuSize_;
-
     std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
-    bool changeStateRequest_ = false;
+    bool isExit_ = false;
+
+    std::vector<PauseItem> pauseItems_;
+    PauseItem* currentItem_ = nullptr;
+    int32_t currentMenu_ = 0;
+    int32_t kMenuCount = 3;
+    Timer menuTimer_ = Timer(1.0f);
+
+private:
+    void MenuItemsToJson();
 };

@@ -42,7 +42,23 @@ struct TransformSegment2D{
 };
 
 // jsosnコンバート関数
+inline void to_json(nlohmann::json& j, const Transform2D& transformMatrix){
+    j = {
+        {"scale",transformMatrix.scale},
+        {"rotate",transformMatrix.rotate},
+        {"translate",transformMatrix.translate},
+    };
+}
+
 inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform){
+    j = {
+        {"scale",transform.scale},
+        {"rotate",transform.rotate},
+        {"translate",transform.translate},
+    };
+}
+
+inline void to_json(nlohmann::json& j, const Transform& transform){
     j = {
         {"scale",transform.scale},
         {"rotate",transform.rotate},

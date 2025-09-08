@@ -5,6 +5,8 @@
 #include <DirectXMath.h>
 #include <DirectXMathMatrix.inl>
 #include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+
 using namespace DirectX;
 
 // シングルトンインスタンス
@@ -563,6 +565,14 @@ bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     if(changed){
         str = buffer.data();  // 更新
     }
+
+    // ImGuiの入力中は他の入力を受け付けないようにする
+    if(ImGui::IsItemActive()){
+        Input::SetIsActive(false);
+    } else{
+        Input::SetIsActive(true);
+    }
+
     return changed;
 }
 
@@ -575,6 +585,14 @@ bool ImFunc::InputText(const char* label, string& str){
     if(changed){
         str = buffer.data();  // 更新
     }
+
+    // ImGuiの入力中は他の入力を受け付けないようにする
+    if(ImGui::IsItemActive()){
+        Input::SetIsActive(false);
+    } else{
+        Input::SetIsActive(true);
+    }
+
     return changed;
 }
 

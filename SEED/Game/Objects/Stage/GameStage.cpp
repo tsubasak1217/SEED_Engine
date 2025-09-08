@@ -152,7 +152,7 @@ void GameStage::ReActivateDisActiveObjects(){
 // 全体の更新処理
 //
 /////////////////////////////////////////////////////////////////////////
-void GameStage::Update(){
+void GameStage::Update(bool isUpdateBorderLine){
 
     switch(currentState_){
         //============================================================================
@@ -160,7 +160,7 @@ void GameStage::Update(){
         //============================================================================
     case GameStage::State::Play:
 
-        UpdatePlay();
+        UpdatePlay(isUpdateBorderLine);
         break;
         //============================================================================
         //	クリア時の処理
@@ -197,7 +197,7 @@ void GameStage::Update(){
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::UpdatePlay(){
+void GameStage::UpdatePlay(bool isUpdateBorderLine){
 
     // ワープの更新処理
     UpdateWarp();
@@ -205,7 +205,9 @@ void GameStage::UpdatePlay(){
     UpdateLaserLauncher();
 
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
-    UpdateBorderLine();
+    if(isUpdateBorderLine){
+        UpdateBorderLine();
+    }
 
     //プレイヤーが境界線を越えたか判定
     CheckPlayerCrossedBorderLine();

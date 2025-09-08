@@ -52,6 +52,7 @@ public:// アクセッサ
     void SetProjectionMode(PROJECTIONMODE mode){ projectionMode_ = mode; }
     const Vector3& GetNormal() const{ return normal_; }
     const Matrix4x4& GetWorldMat() const{ return worldMat_; }
+    const Matrix4x4* GetWorldMatPtr(){ return &worldMat_; }
     const Matrix4x4& GetViewMat() const{ return viewMat_; }
     const Matrix4x4& GetProjectionMat() const{ return projectionMat_; }
     const Matrix4x4& GetProjectionMat2D() const{ return projectionMat2D_; }

@@ -33,7 +33,7 @@ public:
     void Initialize(int currentStageIndex);
 
     // 更新処理
-    void Update();
+    void Update(bool isUpdateBorderLine = true);
 
     // 描画処理
     void Draw();
@@ -132,7 +132,7 @@ private:
 
     // update
     /// Play
-    void UpdatePlay();
+    void UpdatePlay(bool isUpdateBorderLine = true);
     void UpdateWarp();
     void UpdateLaserLauncher();
     void UpdateBorderLine();

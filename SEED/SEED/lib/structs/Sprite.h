@@ -60,4 +60,6 @@ public:
 public:
     Matrix4x4 GetWorldMatrix()const;
     void SetTexture(const std::string& filename);
+
+
 };

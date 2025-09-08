@@ -1,0 +1,12 @@
+{
+    "animTimer_.duration": 0.8399999737739563,
+    "inAnimEasing_": "OutBack",
+    "outAnimEasing_": "OutSine",
+    "targetTranslate_": {
+        "x": 889.0,
+        "y": 336.0
+    },
+    "textAngle_": -17.0,
+    "textDistance_": 1400.0,
+    "textScale_": 0.9599999785423279
+}

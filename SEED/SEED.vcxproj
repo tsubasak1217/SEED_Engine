@@ -128,6 +128,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
+    <ClCompile Include="Game\Objects\Clear\ClearTextAnimation.cpp" />
     <ClCompile Include="Game\Objects\Select\Background\SelectBackground.cpp">
       <SubType>
       </SubType>
@@ -195,8 +197,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageBuilder.cpp">
       <SubType>
       </SubType>
@@ -206,6 +206,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Objects\Goal\Goal.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="Game\Components\StageObjectComponent.cpp" />
     <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp">
@@ -313,7 +314,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
@@ -389,6 +389,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
+    <ClInclude Include="Game\Objects\Clear\ClearTextAnimation.h" />
     <ClInclude Include="Game\Objects\Select\Background\SelectBackground.h">
       <SubType>
       </SubType>
@@ -460,8 +462,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageHelper.h">
       <SubType>
       </SubType>
@@ -479,6 +479,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h">
       <SubType>
@@ -626,7 +627,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />

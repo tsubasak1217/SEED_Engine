@@ -78,7 +78,8 @@ public:
     void OnGroundTrigger();
     void OnCeilingTrigger();
     
-
+    // 何か入力があるか
+    bool IsTriggredAnyDevice() const;
 private:
     //========================================================================
     //	private Methods

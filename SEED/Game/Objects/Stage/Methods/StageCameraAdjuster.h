@@ -11,6 +11,8 @@ public:
 public://アクセッサ
     void SetStageRange(const Range2D& range);
     Range2D GetCameraRange()const;
+
+    bool IsFinishedAdjust() const { return currentTime_ >= interpolateTime_; }
 private:
     Range2D stageRange_;
 

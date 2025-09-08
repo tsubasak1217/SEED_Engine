@@ -10,7 +10,6 @@
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
@@ -131,9 +130,7 @@
     <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageBuilder.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Goal\Goal.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\GameStageHelper.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
@@ -162,6 +159,9 @@
     <ClCompile Include="Game\Objects\Select\Input\Device\SelectKeyInput.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.cpp" />
+    <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
+    <ClCompile Include="Game\Objects\Clear\ClearTextAnimation.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -177,7 +177,6 @@
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
@@ -357,14 +356,12 @@
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageBuilder.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="SEED\Lib\Structs\Rect.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageHelper.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Warp\Warp.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\State\ClearState_MenuSelect.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
@@ -390,6 +387,9 @@
     <ClInclude Include="Game\Objects\Select\Input\SelectInputEnum.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.h" />
+    <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
+    <ClInclude Include="Game\Objects\Clear\ClearTextAnimation.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

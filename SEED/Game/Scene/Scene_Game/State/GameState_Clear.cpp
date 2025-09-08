@@ -57,6 +57,9 @@ void GameState_Clear::Initialize() {
     // メニュー
     menu_ = std::make_unique<ClearSelectMenu>();
     menu_->Initialize(stage->GetCurrentStageIndex());
+
+    // タイマーをリセット
+    outTextTimer_.Reset();
 }
 
 void GameState_Clear::Update() {
@@ -112,11 +115,9 @@ void GameState_Clear::UpdateInText() {
         return;
     }
 
-    Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
-    GameStage* stage = gameScene->GetStage();
-
-    // なにか入力があればテキストを退場させる
-    if (stage->IsTriggredAnyDevice()) {
+    // テキスト退場アニメーションまでの時間
+    outTextTimer_.Update();
+    if (outTextTimer_.IsFinished()) {
 
         clearText_->StartOut();
         currentState_ = State::OutText;

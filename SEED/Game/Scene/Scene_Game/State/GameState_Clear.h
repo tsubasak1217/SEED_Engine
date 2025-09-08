@@ -61,6 +61,7 @@ private:
 
     // クリア文字
     std::unique_ptr<ClearTextAnimation> clearText_;
+    Timer outTextTimer_ = Timer(0.64f);
 
     // メニュー
     std::unique_ptr<ClearSelectMenu> menu_;

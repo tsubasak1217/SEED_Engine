@@ -74,7 +74,15 @@ inline void to_json(nlohmann::json& j, const Transform& transform){
     };
 }
 
-inline void to_json(nlohmann::ordered_json& j, const Transform& transform){
+inline void to_json(nlohmann::json& j, const Transform& transform) {
+    j = {
+        {"scale",transform.scale},
+        {"rotate",transform.rotate},
+        {"translate",transform.translate},
+    };
+}
+
+inline void to_json(nlohmann::ordered_json& j, const Transform& transform) {
     j = {
         {"scale",transform.scale},
         {"rotate",transform.rotate},

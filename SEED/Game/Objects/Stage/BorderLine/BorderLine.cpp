@@ -55,7 +55,7 @@ bool BorderLine::CheckPlayerToDistance(const Vector2& playerTranslate, float til
     }
 
     // プレイヤーとの距離が近ければtrueを返す
-    float distance = playerTranslate.x - sprite_.translate.x;
+    float distance = playerTranslate.x - sprite_.transform.translate.x;
     bool checkDistance = std::fabs(distance) < playerToDistance_;
     // 距離がそもそも遠ければfalseを返す
     if (!checkDistance) {
@@ -64,7 +64,7 @@ bool BorderLine::CheckPlayerToDistance(const Vector2& playerTranslate, float til
     tileSize;
 
     // プレイヤーの座標がスプライトの座標よりも高ければ
-    return playerTranslate.y <= sprite_.translate.y;
+    return playerTranslate.y <= sprite_.transform.translate.y;
 }
 
 bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const {
@@ -97,13 +97,8 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
         scrollValue_ += 1.0f * ClockManager::DeltaTime();
 
         // uvTransformを設定
-        Matrix4x4 uvTransform = AffineMatrix(
-            Vector3(exScale.x, scale.y * exScale.y, 1.0f), // scale
-            Vector3(0),                   // rotation
-            Vector3(0.0f, scrollValue_, 0.0f) // translate
-        );
-
-        sprite_.uvTransform = uvTransform;
+        sprite_.uvTransform.translate.y = scrollValue_;
+        sprite_.uvTransform.scale = { exScale.x, scale.y * exScale.y };
 
         break;
     }
@@ -114,7 +109,7 @@ void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileS
 
     // Y座標とサイズは補間なしで設定
     const float targetX = translate.x;
-    sprite_.translate.y = translate.y + offsetTranslateY_ + tileSize;
+    sprite_.transform.translate.y = translate.y + offsetTranslateY_ + tileSize;
     sprite_.size.y = sizeY + tileSize;
 
     // 補間が必要になったら値をリセットして補間する
@@ -124,7 +119,7 @@ void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileS
     if (needRestart) {
 
         // 開始時のX座標を設定する
-        lerpXParam_.startX = sprite_.translate.x;
+        lerpXParam_.startX = sprite_.transform.translate.x;
         lerpXParam_.targetX = targetX;
         // タイマーをリセット
         lerpXParam_.elapsed = 0.0f;
@@ -139,13 +134,13 @@ void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileS
         // 座標を補間する
         float lerpT = (std::min)(1.0f, lerpXParam_.elapsed / lerpXParam_.duration);
         float easedT = Easing::Ease[lerpXParam_.easing](lerpT);
-        sprite_.translate.x = lerpXParam_.startX + (lerpXParam_.targetX - lerpXParam_.startX) * easedT;
+        sprite_.transform.translate.x = lerpXParam_.startX + (lerpXParam_.targetX - lerpXParam_.startX) * easedT;
 
         // 補間が完了したら補間処理を終了する
         if (1.0f <= lerpT) {
 
             // 座標を固定
-            sprite_.translate.x = lerpXParam_.targetX;
+            sprite_.transform.translate.x = lerpXParam_.targetX;
             lerpXParam_.running = false;
         }
     }
@@ -175,8 +170,8 @@ void BorderLine::Edit(const Vector2& playerTranslate, float tileSize) {
     EnumAdapter<Easing::Type>::Combo("LerpEasing", &lerpXParam_.easing);
 
     // プレイヤーと境界線
-    Vector2 left(sprite_.translate.x - playerToDistance_, sprite_.translate.y);
-    Vector2 right(sprite_.translate.x + playerToDistance_, sprite_.translate.y);
+    Vector2 left(sprite_.transform.translate.x - playerToDistance_, sprite_.transform.translate.y);
+    Vector2 right(sprite_.transform.translate.x + playerToDistance_, sprite_.transform.translate.y);
     if (CheckPlayerToDistance(playerTranslate, tileSize)) {
 
         SEED::DrawLine2D(left, right, Vector4(1.0f, 0.0f, 0.0f, 1.0f));

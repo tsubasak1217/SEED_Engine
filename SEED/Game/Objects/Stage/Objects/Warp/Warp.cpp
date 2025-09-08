@@ -47,7 +47,7 @@ void Warp::InitializeFrameSprites() {
         // スプライトを初期化
         sprite = Sprite("Scene_Game/StageObject/frameRect.png");
         sprite.anchorPoint = Vector2(0.5f);
-        sprite.scale = Vector2(initScale_);
+        sprite.transform.scale = Vector2(initScale_);
         sprite.color = WarpHelper::GetIndexColor(warpIndex_);
 
         timer.Reset();
@@ -63,11 +63,11 @@ void Warp::InitializeFrameSprites() {
 
 void Warp::SetTranslate(const Vector2& translate) {
 
-    sprite_.translate = translate;
+    sprite_.transform.translate = translate;
     // 初期サイズ
     for (auto& frameSprite : frameSprites_) {
 
-        frameSprite.translate = translate;
+        frameSprite.transform.translate = translate;
     }
 }
 
@@ -163,7 +163,7 @@ void Warp::UpdateNone() {
         float easedT = timer.GetEase(scalineEasing_);
 
         // スプライトを一定間隔置きにスケーリングして小さくする
-        sprite.scale = std::lerp(initScale_, 0.0f, easedT);
+        sprite.transform.scale = std::lerp(initScale_, 0.0f, easedT);
 
         // 完了したらリスタート
         if (timer.IsFinished()) {

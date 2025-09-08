@@ -104,7 +104,7 @@ void PlayerDeadEffect::Draw(bool isDead) {
     }
     for (int i = 0; i < kNumParticles_; i++) {
         if (effects_[i].isAlive_) {
-            particles_[i].translate = effects_[i].position;
+            particles_[i].transform.translate = effects_[i].position;
             particles_[i].size = particleSize_ * effects_[i].scale;
             particles_[i].color = Vector4(effects_[i].color.x, effects_[i].color.y, effects_[i].color.z, 1.0f);
             particles_[i].Draw();

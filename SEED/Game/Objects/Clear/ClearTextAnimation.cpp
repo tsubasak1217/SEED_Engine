@@ -85,14 +85,14 @@ void ClearTextAnimation::UpdateInAnim() {
     Vector2 bottomFrom = targetTranslate_ + (direction * textDistance_); // 右
 
     // 位置を補間
-    topText_.translate = MyMath::Lerp(topFrom, targetTranslate_, easedT);
-    bottomText_.translate = MyMath::Lerp(bottomFrom, targetTranslate_, easedT);
+    topText_.transform.translate = MyMath::Lerp(topFrom, targetTranslate_, easedT);
+    bottomText_.transform.translate = MyMath::Lerp(bottomFrom, targetTranslate_, easedT);
 
     // 値を設定
-    topText_.rotate = radian;
-    topText_.scale = textScale_;
-    bottomText_.rotate = radian;
-    bottomText_.scale = textScale_;
+    topText_.transform.rotate = radian;
+    topText_.transform.scale = textScale_;
+    bottomText_.transform.rotate = radian;
+    bottomText_.transform.scale = textScale_;
 
     // 少し経過してからαを戻す
     if (0.1f < animTimer_.GetProgress()) {
@@ -105,8 +105,8 @@ void ClearTextAnimation::UpdateInAnim() {
     if (animTimer_.IsFinished()) {
 
         // 座標を固定
-        topText_.translate = targetTranslate_;
-        bottomText_.translate = targetTranslate_;
+        topText_.transform.translate = targetTranslate_;
+        bottomText_.transform.translate = targetTranslate_;
     }
 }
 
@@ -126,21 +126,21 @@ void ClearTextAnimation::UpdateOutAnim() {
     Vector2 bottomTo = targetTranslate_ - (direction * textDistance_); // 左
 
     // 位置を補間
-    topText_.translate = MyMath::Lerp(targetTranslate_, topTo, easedT);
-    bottomText_.translate = MyMath::Lerp(targetTranslate_, bottomTo, easedT);
+    topText_.transform.translate = MyMath::Lerp(targetTranslate_, topTo, easedT);
+    bottomText_.transform.translate = MyMath::Lerp(targetTranslate_, bottomTo, easedT);
 
     // 値を設定
-    topText_.rotate = radian;
-    topText_.scale = textScale_;
-    bottomText_.rotate = radian;
-    bottomText_.scale = textScale_;
+    topText_.transform.rotate = radian;
+    topText_.transform.scale = textScale_;
+    bottomText_.transform.rotate = radian;
+    bottomText_.transform.scale = textScale_;
 
     // 補間処理終了後シーンに通知する
     if (animTimer_.IsFinished()) {
 
         // 座標を固定
-        topText_.translate = targetTranslate_;
-        bottomText_.translate = targetTranslate_;
+        topText_.transform.translate = targetTranslate_;
+        bottomText_.transform.translate = targetTranslate_;
     }
 }
 
@@ -200,8 +200,8 @@ void ClearTextAnimation::Edit() {
     ImGui::DragFloat("textDistance", &textDistance_, 1.0f);
     if (ImGui::DragFloat("textScale", &textScale_, 0.01f)) {
 
-        topText_.scale = textScale_;
-        bottomText_.scale = textScale_;
+        topText_.transform.scale = textScale_;
+        bottomText_.transform.scale = textScale_;
     }
 
     EnumAdapter<Easing::Type>::Combo("inAnimEasing", &inAnimEasing_);

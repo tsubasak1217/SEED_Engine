@@ -379,14 +379,14 @@ void SelectStageDrawer::DrawFocusAnim() {
     float alpha = std::clamp(1.0f - easedT, 0.0f, 1.0f);
 
     // フレーム
-    focusAnimFrame_.translate = center.translate;
+    focusAnimFrame_.transform.translate = center.translate;
     focusAnimFrame_.size = Vector2(center.size.x * scale, center.size.y * scale);
     focusAnimFrame_.color.w = alpha;
     // 描画
     focusAnimFrame_.Draw();
 
     // ステージ番号背景
-    stageIndexBackAnim_.translate = center.stageIndexBack.translate;
+    stageIndexBackAnim_.transform.translate = center.stageIndexBack.transform.translate;
     stageIndexBackAnim_.size = center.stageIndexBack.size * (scale + 0.08f);
     stageIndexBackAnim_.color = stageIndexBackColor_;
     stageIndexBackAnim_.color.w = alpha;
@@ -480,9 +480,9 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     // 座標、サイズを設定する
     stage.translate = center;
     stage.size = size;
-    stage.frame.translate = center;
+    stage.frame.transform.translate = center;
     stage.frame.size = size;
-    stage.background.translate = center;
+    stage.background.transform.translate = center;
     stage.background.size = size;
     // ステージ番号はフレームY座標からオフセットをかける
     {
@@ -494,7 +494,7 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     {
         const float scaleY = size.y / focusSize_.y;
         const float offsetY = stageIndexBackOffsetY_ * scaleY;
-        stage.stageIndexBack.translate = Vector2(center.x, center.y + offsetY);
+        stage.stageIndexBack.transform.translate = Vector2(center.x, center.y + offsetY);
         stage.stageIndexBack.size = stageIndexBackSize_ * scaleY;
     }
 
@@ -517,7 +517,7 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
         const Vector2  uv = stage.objectUVs[k];
 
         // uvをグリッドサイズに変換して左上オフセットを足す
-        stage.objects[k].translate = Vector2(left + uv.x * gridWidth, top + uv.y * gridHeight);
+        stage.objects[k].transform.translate = Vector2(left + uv.x * gridWidth, top + uv.y * gridHeight);
         stage.objects[k].size = cell;
     }
 }
@@ -679,7 +679,7 @@ void SelectStageDrawer::BuildAllStage() {
         stage.frame = Sprite("Scene_Select/selectStageRect.png");
         stage.frame.size = stage.size;
         stage.frame.anchorPoint = 0.5f;
-        stage.frame.translate = stage.translate;
+        stage.frame.transform.translate = stage.translate;
         stage.frame.color = frameColor_;
         stage.frame.isApplyViewMat = false;
         // 背景描画初期化
@@ -687,9 +687,9 @@ void SelectStageDrawer::BuildAllStage() {
         stage.background = Sprite("Scene_Select/bgCheckerboard.png");
         stage.background.size = stage.size;
         stage.background.anchorPoint = 0.5f;
-        stage.background.translate = stage.translate;
+        stage.background.transform.translate = stage.translate;
         stage.background.color = backgroundColor_;
-        stage.background.uvTransform = AffineMatrix(Vector3(80.0f, 45.0f, 1.0f), Vector3(0.0f), Vector3(0.0f));
+        stage.background.uvTransform.scale = Vector2(80.0f, 45.0f);
         stage.background.isApplyViewMat = false;
         // ステージ番号背景
         stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
@@ -743,7 +743,7 @@ Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     Sprite sprite = Sprite(GetFileNameFromIndex(index, warpIndex));
     // 設定
     sprite.anchorPoint = 0.5f;
-    sprite.translate = translate;
+    sprite.transform.translate = translate;
     sprite.size = size;
     sprite.isApplyViewMat = false;
 

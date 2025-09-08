@@ -53,7 +53,7 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetTranslate(const Vector2& translate) { sprite_.translate = translate; }
+    void SetTranslate(const Vector2& translate) { sprite_.transform.translate = translate; }
     void SetSize(const Vector2& size);
 
     // 状態の設定
@@ -67,7 +67,7 @@ public:
     virtual void SetHitWarpParam(const WarpLaserParam& param) = 0;
     void SetFamilyId(uint64_t id) { familyId_ = id; }
 
-    const Vector2& GetTranslate() const { return sprite_.translate; }
+    const Vector2& GetTranslate() const { return sprite_.transform.translate; }
     const Vector2& GetSize() const { return sprite_.size; }
     const Vector2& GetAnchorPoint() const { return sprite_.anchorPoint; }
     StageObjectCommonState GetCommonState() const { return commonState_; }

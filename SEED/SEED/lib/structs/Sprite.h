@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
+#include <json.hpp>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Structs/Material.h>
@@ -31,9 +32,8 @@ public:
     BlendMode blendMode;
 
     // SRT
-    Vector2 scale;
-    float rotate;
-    Vector2 translate;
+    Transform2D transform;
+    Vector2 offset;
     
     // アンカーポイント
     Vector2 anchorPoint;
@@ -43,7 +43,7 @@ public:
     Vector2 clipSize;
 
     // UVトランスフォーム
-    Matrix4x4 uvTransform;  
+    Transform2D uvTransform;  
     bool flipX = false;
     bool flipY = false;
 
@@ -60,6 +60,10 @@ public:
 public:
     Matrix4x4 GetWorldMatrix()const;
     void SetTexture(const std::string& filename);
+    void ToDefaultSize();
 
-
+    // Json, ImGui
+    nlohmann::json ToJson() const;
+    void FromJson(const nlohmann::json& data);
+    void Edit();
 };

@@ -41,7 +41,7 @@ public:
 
     //--------- accessor -----------------------------------------------------
 
-    void SetTranslate(const Vector2& translate) override { body_.translate = translate; }
+    void SetTranslate(const Vector2& translate) override { body_.transform.translate = translate; }
     void SetSize(const Vector2& size) override;
     // プレイヤーをワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);

@@ -105,7 +105,7 @@ void BlockNormal::QuadDraw(){
         float easeT = EaseOutBack(t);
         centerQuad_.GH = imageMap_["White"];
         centerQuad_.layer = sprite_.layer + 1;
-        centerQuad_.translate = sprite_.translate;
+        centerQuad_.translate = sprite_.transform.translate;
         centerQuad_.scale = Vector2(1.0f) + Vector2(easeT * 0.6f);
         centerQuad_.color = sprite_.color;
         SEED::DrawQuad2D(centerQuad_);
@@ -116,7 +116,7 @@ void BlockNormal::QuadDraw(){
         hologramQuad_.GH = imageMap_["FrameRect"];
         hologramQuad_.layer = sprite_.layer + 1;
         hologramQuad_.color = sprite_.color;
-        hologramQuad_.translate = sprite_.translate;
+        hologramQuad_.translate = sprite_.transform.translate;
 
         static float kTime = 1.0f;
         static const int divCount = 2;

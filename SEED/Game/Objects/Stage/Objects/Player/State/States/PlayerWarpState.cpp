@@ -128,9 +128,9 @@ void PlayerWarpState::UpdateWarpTrail(Player& player) {
 
         // 見た目の減衰
         float scale = 1.0f - life.GetProgress();
-        trailSprites_[i].scale = Vector2(scale);
+        trailSprites_[i].transform.scale = Vector2(scale);
         trailSprites_[i].color.w = scale;
-        trailSprites_[i].rotate += std::numbers::pi_v<float> / 18.0f;
+        trailSprites_[i].transform.rotate += std::numbers::pi_v<float> / 18.0f;
 
         if (life.IsFinishedNow()) {
 
@@ -169,9 +169,9 @@ void PlayerWarpState::UpdateWarpTrail(Player& player) {
     sprite.size = baseSpriteSize_ + sizeJitter;
 
     // SRT設定
-    sprite.translate = spawnPos;
-    sprite.rotate = RandRange(-randomRotate_, +randomRotate_);
-    sprite.scale = Vector2(1.0f);
+    sprite.transform.translate = spawnPos;
+    sprite.transform.rotate = RandRange(-randomRotate_, +randomRotate_);
+    sprite.transform.scale = Vector2(1.0f);
 
     // 追加
     trailSprites_.emplace_back(std::move(sprite));

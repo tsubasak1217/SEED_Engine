@@ -83,7 +83,7 @@ void LaserLauncher::InitializeLaunchSprites() {
             // スプライトを初期化
             Sprite sprite("Scene_Game/StageObject/laserUnit.png");
             sprite.anchorPoint = 0.5f;
-            sprite.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
+            sprite.transform.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
             // 発射台の色に合わせる
             sprite.color = frameSprite_.color;
 
@@ -110,7 +110,7 @@ void LaserLauncher::SetTranslate(const Vector2& translate) {
     // 全てのスプライトに対して処理を行う
     for (Sprite& sprite : std::array{ std::ref(frameSprite_), std::ref(centerStarSprite_) }) {
 
-        sprite.translate = translate;
+        sprite.transform.translate = translate;
     }
 }
 
@@ -221,7 +221,7 @@ void LaserLauncher::UpdateCenterStar() {
     const float scaleMin = 0.8f;
     const float scaleMax = 1.2f;
     float scale = isStarGrowing_ ? std::lerp(scaleMin, scaleMax, t) : std::lerp(scaleMax, scaleMin, t);
-    centerStarSprite_.scale = Vector2(scale);
+    centerStarSprite_.transform.scale = Vector2(scale);
 
     // 反転してループさせる
     if (centerStarTimer_.IsFinishedNow()) {
@@ -277,7 +277,7 @@ void LaserLauncher::UpdateEmit(LaserUnit& unit) {
             // 表示を消す
             for (auto& sprite : unit.laserUnitSprite) {
 
-                sprite.scale = Vector2(0.0f);
+                sprite.transform.scale = Vector2(0.0f);
             }
             unit.currentState = State::EmitNotPossible;
             continue;
@@ -291,11 +291,11 @@ void LaserLauncher::UpdateEmit(LaserUnit& unit) {
 
         // 座標補間
         float tEasedT = timer.GetEase(unit.translateEasing);
-        sprite.translate = MyMath::Lerp(origin, target, tEasedT);
+        sprite.transform.translate = MyMath::Lerp(origin, target, tEasedT);
 
         // スケール補間
         float sEasedT = timer.GetEase(unit.scalineEasing);
-        sprite.scale = std::lerp(unit.startScale, unit.targetScale, sEasedT);
+        sprite.transform.scale = std::lerp(unit.startScale, unit.targetScale, sEasedT);
 
         // 完了したらリスタート
         if (timer.IsFinishedNow()) {

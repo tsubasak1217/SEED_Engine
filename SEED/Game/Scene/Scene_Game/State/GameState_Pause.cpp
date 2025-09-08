@@ -106,14 +106,14 @@ void GameState_Pause::Update(){
         pauseItems_[i].selectTime.Update(i == currentMenu_ ? 1.0f : -1.0f);
 
         // パラメーターの更新
-        pauseItems_[i].backSprite.translate = MyMath::Lerp(pauseItems_[i].start.translate, pauseItems_[i].end.translate, ease);
+        pauseItems_[i].backSprite.transform.translate = MyMath::Lerp(pauseItems_[i].start.translate, pauseItems_[i].end.translate, ease);
         pauseItems_[i].text.transform.translate = MyMath::Lerp(pauseItems_[i].start.translate, pauseItems_[i].end.translate, ease);
         pauseItems_[i].backSprite.size = pauseItems_[i].backSpriteSize;
 
         float t2 = pauseItems_[i].selectTime.GetProgress();
         float ease2 = EaseOutBack(t2);
-        pauseItems_[i].backSprite.scale = 1.0f + 0.2f * ease2;
-        pauseItems_[i].text.transform.scale = pauseItems_[i].backSprite.scale;
+        pauseItems_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
+        pauseItems_[i].text.transform.scale = pauseItems_[i].backSprite.transform.scale;
         pauseItems_[i].backSprite.color = pauseItems_[i].backColor;
         pauseItems_[i].backSprite.color.w = 0.4f + 0.6f * t2;
         pauseItems_[i].text.color.w = pauseItems_[i].backSprite.color.w;

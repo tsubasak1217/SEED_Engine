@@ -256,7 +256,7 @@ void GameStage::UpdateBorderLine() {
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate,
+    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
         stageObjectMapTileSize_) && player_->IsRemoveBorder()) {
 
         // ワープ中は境界線を消せない && ホログラム中は回収できない
@@ -523,30 +523,30 @@ void GameStage::CheckPlayerCrossedBorderLine() {
         axisX = GameStageHelper::BorderAxisXFromPlayerDirection(axisX, player_->GetMoveDirection(), stageObjectMapTileSize_);
 
         //向きごとの境界線を越えたかどうかの判定をする
-        if (borderLine_->GetSprite().translate.y > playerWorldTranslate.y) {
+        if (borderLine_->GetSprite().transform.translate.y > playerWorldTranslate.y) {
             if (borderLine_->GetDirection() == LR::LEFT) {
                 /*--- LEFT ---*/
                 // プレイヤーが境界線を左から右に越えたか
-                if (playerWorldTranslate.x < borderLine_->GetSprite().translate.x &&
-                    prePos.x > borderLine_->GetSprite().translate.x) {
+                if (playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x > borderLine_->GetSprite().transform.translate.x) {
 
                     player_->SetIsHologram(true);
                 }
-                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x &&
-                    prePos.x < borderLine_->GetSprite().translate.x) {
+                if (playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x < borderLine_->GetSprite().transform.translate.x) {
 
                     player_->SetIsHologram(false);
                 }
             } else {
                 /*--- RIGHT ---*/
                 // プレイヤーが境界線を右から左に越えたか
-                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x &&
-                    prePos.x < borderLine_->GetSprite().translate.x) {
+                if (playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x < borderLine_->GetSprite().transform.translate.x) {
 
                     player_->SetIsHologram(true);
                 }
-                if (playerWorldTranslate.x < borderLine_->GetSprite().translate.x &&
-                    prePos.x > borderLine_->GetSprite().translate.x) {
+                if (playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x > borderLine_->GetSprite().transform.translate.x) {
 
                     player_->SetIsHologram(false);
                 }

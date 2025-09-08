@@ -374,7 +374,7 @@ void SEED::DrawSprite(const Sprite& sprite){
         sprite.GetWorldMatrix(),
         sprite.GH,
         sprite.color,
-        sprite.uvTransform,
+        sprite.uvTransform.ToMatrix4x4(),
         sprite.flipX,
         sprite.flipY,
         sprite.anchorPoint,

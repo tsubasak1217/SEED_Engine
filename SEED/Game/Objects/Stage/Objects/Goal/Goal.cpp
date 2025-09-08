@@ -58,7 +58,7 @@ void Goal::OnCollisionEnter([[maybe_unused]] GameObject2D* other){
     if(other->GetObjectType() == ObjectType::Player){
         // プレイヤーのゴールタッチ時間を増加させる
         pPlayer_ = other->GetComponent<StageObjectComponent>()->GetStageObject<Player>();
-        startPos_ = sprite_.translate;
+        startPos_ = sprite_.transform.translate;
     }
 }
 
@@ -100,21 +100,21 @@ void Goal::CrownMotion(){
         float easeT = EaseInOutQuad(t);
 
         // 座標を計算
-        sprite_.translate = MyMath::CatmullRomPosition(points, easeT);
-        savedPos_ = sprite_.translate;
+        sprite_.transform.translate = MyMath::CatmullRomPosition(points, easeT);
+        savedPos_ = sprite_.transform.translate;
         sprite_.layer = 12;// プレイヤー上に描画
 
     } else{
 
         if(MyMath::Length(targetPos_ - savedPos_) > 1.0f){
             // プレイヤーに触れられていない場合,徐々に元の位置に戻す
-            sprite_.translate = savedPos_ + (owner_->GetWorldTranslate() - savedPos_) * 0.1f * ClockManager::TimeRate();
-            savedPos_ = sprite_.translate;
+            sprite_.transform.translate = savedPos_ + (owner_->GetWorldTranslate() - savedPos_) * 0.1f * ClockManager::TimeRate();
+            savedPos_ = sprite_.transform.translate;
             motionTimer_ = 0.0f;
         } else{
             // 上下に揺らす
             float waveRadius = 5.0f;
-            sprite_.translate.y = sprite_.translate.y + std::sinf(motionTimer_ * 3.14f * 0.7f) * waveRadius;
+            sprite_.transform.translate.y = sprite_.transform.translate.y + std::sinf(motionTimer_ * 3.14f * 0.7f) * waveRadius;
         }
 
         sprite_.layer = 0;

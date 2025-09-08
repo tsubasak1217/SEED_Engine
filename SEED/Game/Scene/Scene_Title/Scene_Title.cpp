@@ -42,22 +42,22 @@ void Scene_Title::Initialize(){
         titleOffset_ = { 0.0f,-15.0f };
 
         sprites_["body"].anchorPoint = anchor;
-        sprites_["body"].scale = { scale,scale };
-        basePos_ = { 640.0f,360.0f + sprites_["body"].size.y * 0.5f * sprites_["body"].scale.y };
-        sprites_["body"].translate = basePos_;
+        sprites_["body"].transform.scale = { scale,scale };
+        basePos_ = { 640.0f,360.0f + sprites_["body"].size.y * 0.5f * sprites_["body"].transform.scale.y };
+        sprites_["body"].transform.translate = basePos_;
 
         sprites_["rightLeg"].anchorPoint = anchor;
-        sprites_["rightLeg"].scale = { scale,scale };
-        sprites_["rightLeg"].translate = basePos_;
-        sprites_["rightLeg"].uvTransform = ScaleMatrix({ -1.0f,1.0f,1.0f });
+        sprites_["rightLeg"].transform.scale = { scale,scale };
+        sprites_["rightLeg"].transform.translate = basePos_;
+        sprites_["rightLeg"].uvTransform.scale = { -1.0f,1.0f };
 
         sprites_["leftLeg"].anchorPoint = anchor;
-        sprites_["leftLeg"].scale = { scale,scale };
-        sprites_["leftLeg"].translate = basePos_;
+        sprites_["leftLeg"].transform.scale = { scale,scale };
+        sprites_["leftLeg"].transform.translate = basePos_;
 
         sprites_["title"].anchorPoint = {0.5f,0.5f};
-        sprites_["title"].scale = { 2.75f,2.1f };
-        sprites_["title"].translate = basePos_;
+        sprites_["title"].transform.scale = { 2.75f,2.1f };
+        sprites_["title"].transform.translate = basePos_;
 
         basePos_ = { 640.0f,493.0f };
         titleOffset_ = { 0.0f,-261.0f };
@@ -183,21 +183,21 @@ void Scene_Title::UpdateTitleLogo(){
     static float timeSpeed = 1.6f;
     float sin = std::sin(logoTimer_ * 3.14f * timeSpeed);
 
-    sprites_["rightLeg"].translate.x = basePos_.x;
-    sprites_["rightLeg"].translate.y = basePos_.y - std::clamp(sin,0.0f,1.0f) * raiseRadius;
-    sprites_["leftLeg"].translate.x = basePos_.x;
-    sprites_["leftLeg"].translate.y = basePos_.y - std::clamp(-sin, 0.0f, 1.0f) * raiseRadius;
-    sprites_["body"].translate.x = basePos_.x;
-    sprites_["body"].translate.y = basePos_.y - sin * (sin > 0.0f ? idleRadius : -idleRadius * 0.5f);
-    sprites_["title"].translate = basePos_ + titleOffset_;
+    sprites_["rightLeg"].transform.translate.x = basePos_.x;
+    sprites_["rightLeg"].transform.translate.y = basePos_.y - std::clamp(sin,0.0f,1.0f) * raiseRadius;
+    sprites_["leftLeg"].transform.translate.x = basePos_.x;
+    sprites_["leftLeg"].transform.translate.y = basePos_.y - std::clamp(-sin, 0.0f, 1.0f) * raiseRadius;
+    sprites_["body"].transform.translate.x = basePos_.x;
+    sprites_["body"].transform.translate.y = basePos_.y - sin * (sin > 0.0f ? idleRadius : -idleRadius * 0.5f);
+    sprites_["title"].transform.translate = basePos_ + titleOffset_;
 
     logoTimer_ += ClockManager::DeltaTime();
 
 #ifdef _DEBUG
     ImFunc::CustomBegin("Title", MoveOnly_TitleBar);
     {
-        ImGui::DragFloat2("titlePos", &sprites_["title"].translate.x);
-        ImGui::DragFloat2("titleScale", &sprites_["title"].scale.x, 0.05f);
+        ImGui::DragFloat2("titlePos", &sprites_["title"].transform.translate.x);
+        ImGui::DragFloat2("titleScale", &sprites_["title"].transform.scale.x, 0.05f);
         ImGui::DragFloat2("titleOffset", &titleOffset_.x);
         ImGui::DragFloat2("basePos", &basePos_.x);
 

@@ -33,8 +33,8 @@ void Laser::SetDirection(DIRECTION4 direction) {
     // 向きの設定
     direction_ = direction;
     // 向きで回転を設定
-    sprite_.rotate = LaserHelper::GetRotateFromDirection(direction);
-    owner_->SetWorldRotate(sprite_.rotate);
+    sprite_.transform.rotate = LaserHelper::GetRotateFromDirection(direction);
+    owner_->SetWorldRotate(sprite_.transform.rotate);
 }
 
 void Laser::ReExtend() {

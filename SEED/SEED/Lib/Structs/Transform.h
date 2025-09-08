@@ -10,8 +10,8 @@ struct Transform2D{
     float rotate = 0.0f; // radians
     Vector2 translate;
     // 変換関数
-    Matrix3x3 ToMatrix();
-    Matrix4x4 ToMatrix4x4();
+    Matrix3x3 ToMatrix()const;
+    Matrix4x4 ToMatrix4x4()const;
     void FromMatrix4x4(const Matrix4x4& mat);
 };
 

@@ -61,7 +61,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
     stageIndexBack_ = Sprite("Scene_Select/hexagonDesign.png");
     stageIndexBack_.anchorPoint = 0.5f;
     stageIndexBack_.isApplyViewMat = false;
-    stageIndexBack_.scale = 0.0f;
+    stageIndexBack_.transform.scale = 0.0f;
     stageIndexBack_.size *= 0.64f;
     stageIndexBack_.color = MyMath::FloatColor(0xFF0094FF);
     // 番号
@@ -130,25 +130,25 @@ void ClearSelectMenu::Update() {
         items_[i].selectTime.Update(i == currentMenu_ ? 1.0f : -1.0f);
 
         // パラメーターの更新
-        items_[i].backSprite.translate = MyMath::Lerp(items_[i].start.translate, items_[i].end.translate, ease);
+        items_[i].backSprite.transform.translate = MyMath::Lerp(items_[i].start.translate, items_[i].end.translate, ease);
         items_[i].text.transform.translate = MyMath::Lerp(items_[i].start.translate, items_[i].end.translate, ease);
         items_[i].backSprite.size = items_[i].backSpriteSize;
         items_[i].backSprite.color = items_[i].backColor;
 
         float t2 = items_[i].selectTime.GetProgress();
         float ease2 = EaseOutBack(t2);
-        items_[i].backSprite.scale = 1.0f + 0.2f * ease2;
+        items_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
         items_[i].text.transform.scale = 1.0f + 0.2f * ease2;
         items_[i].backSprite.color.w = 0.5f + 0.5f * t2;
     }
 
     // 座標を設定
-    stageIndexBack_.translate = stageIndexBackTranslate_;
+    stageIndexBack_.transform.translate = stageIndexBackTranslate_;
     stageIndexText_.transform.translate = stageIndexTextTranslate_;
 
     // ステージ番号を補間
-    stageIndexBack_.scale = EaseOutExpo(t);
-    stageIndexBack_.rotate = std::lerp(std::numbers::pi_v<float>*2.0f, 0.0f, EaseOutExpo(t));
+    stageIndexBack_.transform.scale = EaseOutExpo(t);
+    stageIndexBack_.transform.rotate = std::lerp(std::numbers::pi_v<float>*2.0f, 0.0f, EaseOutExpo(t));
     stageIndexText_.transform.scale = std::lerp(0.0f, 1.4f, EaseOutExpo(t));
 }
 

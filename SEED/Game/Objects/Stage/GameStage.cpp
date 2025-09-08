@@ -493,29 +493,45 @@ void GameStage::CheckPlayerDead(){
 void GameStage::CheckPlayerCrossedBorderLine(){
     if(borderLine_->IsActive()){
         // プレイヤーのワールド座標
+        const Vector2 prePos = player_->GetOwner()->GetPrePos();
         const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
+
+        // 境界線のX座標の計算
+        float axisX = GameStageHelper::ComputeBorderAxisXFromContact(objects_,
+            player_->GetSprite(), playerWorldTranslate, player_->GetMoveDirection(), stageObjectMapTileSize_);
+        axisX = GameStageHelper::BorderAxisXFromPlayerDirection(axisX, player_->GetMoveDirection(), stageObjectMapTileSize_);
+
         //向きごとの境界線を越えたかどうかの判定をする
         if(borderLine_->GetSprite().translate.y > playerWorldTranslate.y){
             if(borderLine_->GetDirection() == LR::LEFT){
                 /*--- LEFT ---*/
-                if(borderLine_->GetSprite().translate.x > playerWorldTranslate.x){
+                // プレイヤーが境界線を左から右に越えたか
+                if (playerWorldTranslate.x < borderLine_->GetSprite().translate.x &&
+                    prePos.x > borderLine_->GetSprite().translate.x) {
+
                     player_->SetIsHologram(true);
-                } else{
+                } 
+                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x &&
+                    prePos.x < borderLine_->GetSprite().translate.x) {
+
                     player_->SetIsHologram(false);
-                }
-            } else{
+                } 
+            } else {
                 /*--- RIGHT ---*/
-                if(playerWorldTranslate.x > borderLine_->GetSprite().translate.x){
+                // プレイヤーが境界線を右から左に越えたか
+                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x &&
+                    prePos.x < borderLine_->GetSprite().translate.x) {
+
                     player_->SetIsHologram(true);
-                } else{
+                } 
+                if (playerWorldTranslate.x < borderLine_->GetSprite().translate.x &&
+                    prePos.x > borderLine_->GetSprite().translate.x) {
+
                     player_->SetIsHologram(false);
-                }
+                } 
             }
-        } else{
-            player_->SetIsHologram(false);
-            return;
-        }
-    } else{
+        } 
+    } else {
         // 境界線が置かれていないときはホログラム状態を解除する
         player_->SetIsHologram(false);
     }

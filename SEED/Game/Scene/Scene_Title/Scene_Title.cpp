@@ -22,9 +22,6 @@ Scene_Title::~Scene_Title(){}
 //////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::Initialize(){
 
-    // ブルームの初期化
-    //PostEffect::Load("bloom.json");
-
     // spriteの初期化
     sprites_["body"] = Sprite("Scene_Title/titleLogo_Body.png");
     sprites_["rightLeg"] = Sprite("Scene_Title/titleLogo_Leg.png");

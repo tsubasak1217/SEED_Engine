@@ -393,18 +393,19 @@ void Player::Edit() {
 }
 
 void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
-    if (other->GetObjectType() == ObjectType::Laser) {
-        istouchedLaser_ = true;
-    }
+   
 }
 
 void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+    if (other->GetObjectType() == ObjectType::Laser) {
+        istouchedLaser_ = true;
+    } else {
+        istouchedLaser_ = false;
+    }
 }
 
 void Player::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
-    if (other->GetObjectType() == ObjectType::Laser) {
-        istouchedLaser_ = false;
-    }
+
 }
 
 void Player::ApplyJson() {

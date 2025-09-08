@@ -33,10 +33,10 @@ void Player::Initialize(){
     // 画像ハンドルの初期化
     static bool isFirstInitialize = true;
     if(isFirstInitialize){
-        imageMap_["Body"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerBody.png");
-        imageMap_["Body_Hologram"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerBody_Hologram.png");
-        imageMap_["Leg"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerLeg.png");
-        imageMap_["Leg_Hologram"] = TextureManager::LoadTexture("Scene_Game/StageObject/Player/PlayerLeg_Hologram.png");
+        imageMap_["Body"] = "Scene_Game/StageObject/Player/PlayerBody.png";
+        imageMap_["Body_Hologram"] = "Scene_Game/StageObject/Player/PlayerBody_Hologram.png";
+        imageMap_["Leg"] = "Scene_Game/StageObject/Player/PlayerLeg.png";
+        imageMap_["Leg_Hologram"] = "Scene_Game/StageObject/Player/PlayerLeg_Hologram.png";
         isFirstInitialize = false;
     }
 
@@ -167,13 +167,13 @@ void Player::SpriteMotion(){
 
     // ホログラム状態に応じた設定
     if(isHologram_){
-        body_.GH = imageMap_["Body_Hologram"];
-        legs_[0].GH = imageMap_["Leg_Hologram"];
-        legs_[1].GH = imageMap_["Leg_Hologram"];
+        body_.GH = TextureManager::LoadTexture(imageMap_["Body_Hologram"]);
+        legs_[0].GH = TextureManager::LoadTexture(imageMap_["Leg_Hologram"]);
+        legs_[1].GH = TextureManager::LoadTexture(imageMap_["Leg_Hologram"]);
     } else{
-        body_.GH = imageMap_["Body"];
-        legs_[0].GH = imageMap_["Leg"];
-        legs_[1].GH = imageMap_["Leg"];
+        body_.GH = TextureManager::LoadTexture(imageMap_["Body"]);
+        legs_[0].GH = TextureManager::LoadTexture(imageMap_["Leg"]);
+        legs_[1].GH = TextureManager::LoadTexture(imageMap_["Leg"]);
     }
 
     // 足のtranslateを設定

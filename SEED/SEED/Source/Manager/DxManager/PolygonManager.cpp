@@ -389,7 +389,7 @@ void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Matrix4x4& worldMat, const Vector4& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
-    uint32_t GH,BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    uint32_t GH, BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
 ){
 
@@ -520,7 +520,7 @@ void PolygonManager::AddTriangle(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : 
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
             isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
@@ -680,8 +680,8 @@ void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat, 
-    uint32_t GH,BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
+    uint32_t GH, BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
 ){
 
@@ -851,7 +851,7 @@ void PolygonManager::AddQuad(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : 
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
             isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
@@ -1031,10 +1031,10 @@ void PolygonManager::AddQuadPrimitive(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PolygonManager::AddSprite(
-    const Vector2& size, const Matrix4x4& worldMat,
+    const Vector2& size, const Vector2& defaultSize, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, 
-    bool isApplyViewMat,D3D12_CULL_MODE cullMode,
+    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
+    bool isApplyViewMat, D3D12_CULL_MODE cullMode,
     bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
@@ -1055,33 +1055,17 @@ void PolygonManager::AddSprite(
 
     // アンカーポイントを考慮したワールド座標を作成する行列
     Matrix4x4 adjustedWorldMat;
-    if(MyMath::Length(clipSize) == 0.0f){
-        adjustedWorldMat = Multiply(
-            worldMat,
-            TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
-        );
+    adjustedWorldMat = Multiply(
+        worldMat,
+        TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
+    );
 
-        // 4頂点
-        v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
-        if(isSystemDraw){ v[0].z = zfar; }
-        v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
-        v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
-        v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
-
-    } else{// 描画範囲指定がある場合
-
-        adjustedWorldMat = Multiply(
-            worldMat,
-            TranslateMatrix({ clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,0.0f })
-        );
-
-        // 4頂点
-        v[0] = { clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,zNear,1.0f };
-        if(isSystemDraw){ v[0].z = zfar; }
-        v[1] = v[0] + Vector4(clipSize.x, 0.0f, 0.0f, 0.0f);
-        v[2] = v[0] + Vector4(0.0f, clipSize.y, 0.0f, 0.0f);
-        v[3] = v[0] + Vector4(clipSize.x, clipSize.y, 0.0f, 0.0f);
-    }
+    // 4頂点
+    v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
+    if(isSystemDraw){ v[0].z = zfar; }
+    v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
+    v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
+    v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
 
     // 法線ベクトル
     Vector3 normalVec =
@@ -1161,17 +1145,24 @@ void PolygonManager::AddSprite(
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() <= vertexCount){ mesh.vertices.resize(vertexCount + 4); }
 
-    if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
+    if(!MyMath::HasLength(clipSize)){// 描画範囲指定がない場合
         mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
         mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
 
     } else{// 描画範囲指定がある場合
-        mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / size.x, clipLT.y / size.y), normalVec);
-        mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / size.x, clipLT.y / size.y), normalVec);
-        mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
-        mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
+        if(MyMath::HasLength(defaultSize)){
+            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
+        } else{
+            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
+            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
+            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
+            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
+        }
     }
 
     // 反転の指定がある場合
@@ -1464,8 +1455,8 @@ void PolygonManager::AddModel(Model* model){
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, bool isApplyViewMat, BlendMode blendMode, 
-    bool isStaticDraw,DrawLocation drawLocation, int32_t layer
+    const Vector4& color, bool view3D, bool isApplyViewMat, BlendMode blendMode,
+    bool isStaticDraw, DrawLocation drawLocation, int32_t layer
 ){
 
     assert(lineCount_ < kMaxLineCount_);

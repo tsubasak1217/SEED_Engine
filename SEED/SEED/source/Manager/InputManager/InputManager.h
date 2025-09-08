@@ -28,6 +28,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+enum class InputDevice{
+    KEYBOARD,
+    GAMEPAD
+};
+
 class Input{
 
 private:
@@ -107,6 +112,9 @@ public:// キーの状態を返す関数
 
     // アクティブかどうか
     static void SetIsActive(bool isActive){ instance_->isActive_ = isActive; }
+    // 直近で使用した入力デバイス
+    static InputDevice GetRecentInputDevice(){ return instance_->recentInputDevice_; }
+    static bool IsChangedInputDevice(){ return instance_->recentInputDevice_ != instance_->prevDevice_; }
 
 private:
 
@@ -137,4 +145,8 @@ private:
 
     // アクティブかどうか
     bool isActive_ = true;
+
+    // 直近で使用した入力デバイス
+    InputDevice recentInputDevice_ = InputDevice::KEYBOARD;
+    InputDevice prevDevice_ = InputDevice::KEYBOARD;
 };

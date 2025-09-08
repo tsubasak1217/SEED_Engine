@@ -43,7 +43,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-    static inline std::unordered_map<std::string, uint32_t> imageMap_{};
+    static inline std::unordered_map<std::string, std::string> imageMap_{};
 
     // 王冠を取得する際の動きづくりに使用する変数
     Player* pPlayer_ = nullptr;

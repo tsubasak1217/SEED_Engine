@@ -11,8 +11,8 @@ void Goal::Initialize(){
 
     static bool isFirstInitialize = true;
     if(isFirstInitialize){
-        imageMap_["crown"] = TextureManager::LoadTexture("Scene_Game/StageObject/crown.png");
-        imageMap_["crown_outline"] = TextureManager::LoadTexture("Scene_Game/StageObject/crown_outline.png");
+        imageMap_["crown"] = "Scene_Game/StageObject/crown.png";
+        imageMap_["crown_outline"] = "Scene_Game/StageObject/crown_outline.png";
         isFirstInitialize = false;
     }
 
@@ -29,12 +29,12 @@ void Goal::Update(){
 
     case StageObjectCommonState::None:
         sprite_.color = normalColor_;
-        sprite_.GH = imageMap_["crown_outline"];
+        sprite_.GH = TextureManager::LoadTexture(imageMap_["crown_outline"]);
         break;
 
     case StageObjectCommonState::Hologram:
         sprite_.color = hologramColor_;
-        sprite_.GH = imageMap_["crown_outline"];
+        sprite_.GH = TextureManager::LoadTexture(imageMap_["crown_outline"]);
         break;
     }
 

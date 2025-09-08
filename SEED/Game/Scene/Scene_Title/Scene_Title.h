@@ -26,6 +26,7 @@ public:
 
 private:
     void UpdateTitleLogo();
+    void UpdateButtonSprites();
 
 private:
     std::unordered_map<std::string, Sprite> sprites_;

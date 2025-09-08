@@ -4,7 +4,6 @@
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 Sprite::Sprite(){
-    leftTop = { 0.0f,0.0f };
     size = { 100.0f,100.0f };
     transform = Transform2D();
     anchorPoint = { 0.0f,0.0f };
@@ -17,18 +16,13 @@ Sprite::Sprite(){
     isStaticDraw = false;
 }
 
-Sprite::Sprite(uint32_t GH) : Sprite::Sprite(){
-    this->GH = GH;
-}
-
 Sprite::Sprite(const std::string& filename) : Sprite::Sprite(){
     SetTexture(filename);
     size = SEED::GetImageSize(MyFunc::ConvertString(filename));
 }
 
-Sprite::Sprite(const std::string& filename, const Vector2& leftTop, const Vector2& size)
+Sprite::Sprite(const std::string& filename, const Vector2& size)
     : Sprite::Sprite(filename){
-    this->leftTop = leftTop;
     this->size = size;
 }
 
@@ -42,14 +36,14 @@ Matrix4x4 Sprite::GetWorldMatrix() const{
 
     if(MyMath::Length(clipSize) == 0.0f){
         anchorOffset = {
-            leftTop.x + size.x * anchorPoint.x,
-            leftTop.y + size.y * anchorPoint.y,
+            size.x * anchorPoint.x,
+            size.y * anchorPoint.y,
             0.0f
         };
     } else{
         anchorOffset = {
-            leftTop.x + clipSize.x * anchorPoint.x,
-            leftTop.y + clipSize.y * anchorPoint.y,
+            clipSize.x * anchorPoint.x,
+            clipSize.y * anchorPoint.y,
             0.0f
         };
     }
@@ -68,12 +62,27 @@ Matrix4x4 Sprite::GetWorldMatrix() const{
 void Sprite::SetTexture(const std::string& filename){
     texturePath = filename;
     GH = TextureManager::LoadTexture(filename);
+    defaultSize_ = SEED::GetImageSize(MyFunc::ConvertString(filename));
 }
 
 // 画像サイズそのままにする
 void Sprite::ToDefaultSize(){
     if(!texturePath.empty()){
         size = SEED::GetImageSize(MyFunc::ConvertString(texturePath));
+        defaultSize_ = size;
+    }
+}
+
+// デフォルトサイズを取得する
+Vector2 Sprite::GetDefaultSize() const{
+    if(defaultSize_ != Vector2(0.0f, 0.0f)){
+        return defaultSize_;
+    }
+
+    if(!texturePath.empty()){
+        return SEED::GetImageSize(MyFunc::ConvertString(texturePath));
+    } else{
+        return Vector2(0.0f);
     }
 }
 
@@ -83,7 +92,6 @@ void Sprite::ToDefaultSize(){
 ///////////////////////////////////////////////////////////////////////////
 nlohmann::json Sprite::ToJson() const{
     nlohmann::json data;
-    data["leftTop"] = leftTop;
     data["size"] = size;
     data["texturePath"] = texturePath;
     data["color"] = color;
@@ -103,7 +111,6 @@ nlohmann::json Sprite::ToJson() const{
 }
 
 void Sprite::FromJson(const nlohmann::json& data){
-    leftTop = data.value("leftTop", leftTop);
     size = data.value("size", size);
     texturePath = data.value("texturePath", texturePath);
     color = data.value("color", color);
@@ -148,8 +155,7 @@ void Sprite::Edit(){
         }
 
         ImGui::ColorEdit4("色", &color.x);
-        ImGui::Combo("ブレンドモード", (int*)&blendMode, "NONE\0MUL\0SUB\0NORMAL\0ADD\0SCREEN\0");
-
+        ImFunc::Combo<BlendMode>("描画位置", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN"});
 
         ImGui::Unindent();
     }
@@ -170,7 +176,6 @@ void Sprite::Edit(){
 
     if(ImGui::CollapsingHeader("サイズ・切り抜き範囲・アンカー詳細")){
         ImGui::Indent();
-        ImGui::DragFloat2("左上座標", &leftTop.x, 1.0f);
         ImGui::DragFloat2("サイズ", &size.x, 1.0f, 0.0f, 10000.0f);
         ImGui::DragFloat2("アンカーポイント", &anchorPoint.x, 0.01f, 0.0f, 1.0f);
         ImGui::DragFloat2("切り取り左上", &clipLT.x, 1.0f, 0.0f, 10000.0f);
@@ -192,7 +197,7 @@ void Sprite::Edit(){
         ImGui::Checkbox("Y反転", &flipY);
         ImGui::Checkbox("静的描画", &isStaticDraw);
         ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
-        ImGui::Combo("描画位置", (int*)&drawLocation, "背景\0前景\0");
+        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, {"背景","前景"},1);
         ImGui::DragInt("描画順(layer)", &layer, 1.0f);
         ImGui::Unindent();
     }

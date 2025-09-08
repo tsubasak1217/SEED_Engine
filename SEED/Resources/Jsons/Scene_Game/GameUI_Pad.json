@@ -1,0 +1,306 @@
+{
+    "Sprites": [
+        {
+            "anchorPoint": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "clipLT": {
+                "x": 0.0,
+                "y": 647.0
+            },
+            "clipSize": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "drawLocation": 2,
+            "flipX": false,
+            "flipY": false,
+            "isApplyViewMat": false,
+            "isStaticDraw": false,
+            "layer": 20,
+            "size": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "texturePath": "UI/buttons.png",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 0.36000001430511475,
+                    "y": 0.36000001430511475
+                },
+                "translate": {
+                    "x": 56.3390007019043,
+                    "y": 50.723236083984375
+                }
+            },
+            "uvTransform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        },
+        {
+            "anchorPoint": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "clipLT": {
+                "x": 0.0,
+                "y": 385.0
+            },
+            "clipSize": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 0.027027010917663574,
+                "z": 0.34258610010147095
+            },
+            "drawLocation": 2,
+            "flipX": false,
+            "flipY": false,
+            "isApplyViewMat": false,
+            "isStaticDraw": false,
+            "layer": 20,
+            "size": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "texturePath": "UI/buttons.png",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 0.36000001430511475,
+                    "y": 0.3100000023841858
+                },
+                "translate": {
+                    "x": 58.512001037597656,
+                    "y": 105.60505676269531
+                }
+            },
+            "uvTransform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        },
+        {
+            "anchorPoint": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "clipLT": {
+                "x": 0.0,
+                "y": 513.0
+            },
+            "clipSize": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "color": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 1.0,
+                "z": 0.9420850276947021
+            },
+            "drawLocation": 2,
+            "flipX": false,
+            "flipY": false,
+            "isApplyViewMat": false,
+            "isStaticDraw": false,
+            "layer": 20,
+            "size": {
+                "x": 231.0,
+                "y": 129.0
+            },
+            "texturePath": "UI/buttons.png",
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 0.36000001430511475,
+                    "y": 0.36000001430511475
+                },
+                "translate": {
+                    "x": 56.117000579833984,
+                    "y": 156.8867950439453
+                }
+            },
+            "uvTransform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        }
+    ],
+    "Texts": [
+        {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 28.0,
+            "glyphSpacing": 0.4000000059604645,
+            "isApplyViewMat": false,
+            "layer": 20,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 4.0,
+            "size": {
+                "x": 211.0,
+                "y": 34.0
+            },
+            "text": "ポーズ",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 223.0,
+                    "y": 52.0
+                }
+            },
+            "useOutline": true
+        },
+        {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 28.0,
+            "glyphSpacing": 0.4000000059604645,
+            "isApplyViewMat": false,
+            "layer": 20,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 4.0,
+            "size": {
+                "x": 211.0,
+                "y": 34.0
+            },
+            "text": "ミラー設置",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 225.0,
+                    "y": 105.0
+                }
+            },
+            "useOutline": true
+        },
+        {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 28.0,
+            "glyphSpacing": 0.4000000059604645,
+            "isApplyViewMat": false,
+            "layer": 20,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 4.0,
+            "size": {
+                "x": 211.0,
+                "y": 42.0
+            },
+            "text": "ジャンプ",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 227.0,
+                    "y": 165.0
+                }
+            },
+            "useOutline": true
+        }
+    ]
+}

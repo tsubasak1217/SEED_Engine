@@ -41,6 +41,11 @@ public:
     // ベクトルの長さの2乗を返す関数 (3D)
     static float LengthSq(const Vector3& vec);
 
+    // ベクトルの長さが0かどうかを返す関数 (2D)
+    static bool HasLength(const Vector2& vec);
+    // ベクトルの長さが0かどうかを返す関数 (3D)
+    static bool HasLength(const Vector3& vec);
+
     /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
     // ベクトルを正規化する関数 (2D)

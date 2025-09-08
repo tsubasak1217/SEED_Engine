@@ -31,6 +31,7 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
     void HandOverColliders() override;
+    void SceneEdit() override;
 
     GameStage* GetStage() { return stage_.get(); }
 
@@ -44,4 +45,12 @@ private:
 
     //BGMのハンドル
     AudioHandle BGMHandle_ = 0;
+
+    // UI
+    std::vector<std::pair<Sprite,bool>> uiSprites_;
+    std::vector<std::pair<TextBox2D, bool>> uiTexts_;
+
+private:
+    void UIToJson();
+    void UIFromJson();
 };

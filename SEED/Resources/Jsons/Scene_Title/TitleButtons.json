@@ -1,0 +1,110 @@
+[
+    {
+        "anchorPoint": {
+            "x": 0.5,
+            "y": 0.5
+        },
+        "blendMode": 3,
+        "clipLT": {
+            "x": 0.0,
+            "y": 509.0
+        },
+        "clipSize": {
+            "x": 231.0,
+            "y": 129.0
+        },
+        "color": {
+            "w": 1.0,
+            "x": 0.239215686917305,
+            "y": 1.0,
+            "z": 0.0
+        },
+        "drawLocation": 2,
+        "flipX": false,
+        "flipY": false,
+        "isApplyViewMat": false,
+        "isStaticDraw": false,
+        "layer": 0,
+        "size": {
+            "x": 154.0,
+            "y": 83.0
+        },
+        "texturePath": "UI/Buttons.png",
+        "transform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.2028487920761108,
+                "y": 1.2028487920761108
+            },
+            "translate": {
+                "x": 621.2745971679688,
+                "y": 522.6043090820313
+            }
+        },
+        "uvTransform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 0.0,
+                "y": 0.0
+            }
+        }
+    },
+    {
+        "anchorPoint": {
+            "x": 0.5,
+            "y": 0.5
+        },
+        "blendMode": 3,
+        "clipLT": {
+            "x": 0.0,
+            "y": 129.0
+        },
+        "clipSize": {
+            "x": 231.0,
+            "y": 129.0
+        },
+        "color": {
+            "w": 1.0,
+            "x": 0.239215686917305,
+            "y": 1.0,
+            "z": 0.0
+        },
+        "drawLocation": 2,
+        "flipX": false,
+        "flipY": false,
+        "isApplyViewMat": false,
+        "isStaticDraw": false,
+        "layer": 0,
+        "size": {
+            "x": 140.0,
+            "y": 78.0
+        },
+        "texturePath": "UI/Buttons.png",
+        "transform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.2028487920761108,
+                "y": 1.2028487920761108
+            },
+            "translate": {
+                "x": 834.718017578125,
+                "y": 529.0941772460938
+            }
+        },
+        "uvTransform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 0.0,
+                "y": 0.0
+            }
+        }
+    }
+]

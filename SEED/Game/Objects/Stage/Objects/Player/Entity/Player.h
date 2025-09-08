@@ -92,7 +92,7 @@ private:
     const std::string kJsonPath_ = "Player/playerParameter.json";
 
     // 画像ハンドルのマップ
-    static inline std::unordered_map<std::string, int32_t> imageMap_;
+    static inline std::unordered_map<std::string, std::string> imageMap_;
 
     // 描画情報
     Sprite body_;

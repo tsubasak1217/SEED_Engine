@@ -138,6 +138,16 @@ void Input::GetAllInput() {
 
     // XInput
     instance_->GetXInputState();
+
+    // 最近使った入力デバイスの更新
+    instance_->prevDevice_ = instance_->recentInputDevice_;
+    if(IsPressAnyKey()){
+        instance_->recentInputDevice_ = InputDevice::KEYBOARD;
+    } else{
+        if(IsPressAnyPadButton() or MyMath::HasLength(GetStickValue(LR::LEFT)) or MyMath::HasLength(GetStickValue(LR::RIGHT))){
+            instance_->recentInputDevice_ = InputDevice::GAMEPAD;
+        }
+    }
 }
 
 
@@ -226,7 +236,7 @@ bool Input::IsPressAnyKey() {
 }
 
 bool Input::IsTriggerKey(uint8_t key) {
-    return instance_->keys_[key] && !instance_->preKeys_[key];
+    return (instance_->keys_[key] && !instance_->preKeys_[key]) * instance_->isActive_;
 }
 
 bool Input::IsTriggerKey(const std::initializer_list<uint8_t>& keys) {

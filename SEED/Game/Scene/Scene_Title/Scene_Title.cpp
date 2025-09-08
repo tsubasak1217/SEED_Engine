@@ -30,6 +30,8 @@ void Scene_Title::Initialize(){
     sprites_["leftLeg"] = Sprite("Scene_Title/titleLogo_Leg.png");
     sprites_["title"] = Sprite("Scene_Title/titleLogo_Title.png");
     sprites_["bg"] = Sprite("Scene_Title/tempBG.png");
+    sprites_["A"] = Sprite("UI/Buttons.png");
+    sprites_["Space"] = Sprite("UI/Buttons.png");
 
     // spriteの設定
     sprites_["bg"].size = { 1280.0f,720.0f };
@@ -74,6 +76,13 @@ void Scene_Title::Initialize(){
     if(not uijson.is_null()){
         uiText_.LoadFromJson(uijson);
     }
+
+    // ボタンの初期化
+    nlohmann::json buttonJson = MyFunc::GetJson("Resources/Jsons/Scene_Title/TitleButtons.json");
+    if(buttonJson.is_array() and buttonJson.size() >= 2){
+        sprites_["A"].FromJson(buttonJson[0]);
+        sprites_["Space"].FromJson(buttonJson[1]);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,6 +112,7 @@ void Scene_Title::Update(){
 
     // spriteの更新
     UpdateTitleLogo();
+    UpdateButtonSprites();
 
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
         ChangeScene("Select");
@@ -206,7 +216,41 @@ void Scene_Title::UpdateTitleLogo(){
             MyFunc::CreateJsonFile("Resources/Jsons/Scene_Title/UIText.json", uiText_.GetJsonData());
         }
 
+        ImGui::Spacing();
+        ImGui::Separator();
+
+        // ボタンのUI編集
+        ImGui::Text("-------Button_A------");
+        if(ImGui::CollapsingHeader("A")){
+            sprites_["A"].Edit();
+        }
+        ImGui::Text("-------Button_Space------");
+        if(ImGui::CollapsingHeader("Space")){
+            sprites_["Space"].Edit();
+        }
+        if(ImGui::Button("A,Space to json")){
+            nlohmann::json data = nlohmann::json::array();
+            data.push_back(sprites_["A"].ToJson());
+            data.push_back(sprites_["Space"].ToJson());
+            MyFunc::CreateJsonFile("Resources/Jsons/Scene_Title/TitleButtons.json", data);
+        }
+
         ImGui::End();
     }
 #endif // _DEBUG
+}
+
+
+void Scene_Title::UpdateButtonSprites(){
+
+    static float timer = 0.0f;
+    float sin = std::sinf(timer * 3.14f * 0.5f);
+
+    // スケールを変える
+    float scale = 1.0f + sin * (sin > 0.0f ? 0.25f : -0.25f);
+    sprites_["A"].transform.scale = { scale,scale };
+    sprites_["Space"].transform.scale = { scale,scale };
+
+    // 時間の更新
+    timer += ClockManager::DeltaTime();
 }

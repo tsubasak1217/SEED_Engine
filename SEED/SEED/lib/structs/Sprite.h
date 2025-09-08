@@ -14,15 +14,13 @@ struct Sprite{
 
 public:
     Sprite();
-    Sprite(uint32_t GH);
     Sprite(const std::string& filename);
-    Sprite(const std::string& filename, const Vector2& leftTop, const Vector2& size);
+    Sprite(const std::string& filename, const Vector2& size);
 
     void Draw();
 
 public:
 
-    Vector2 leftTop;
     Vector2 size;
 
     // 色；マテリアル
@@ -57,10 +55,14 @@ public:
     // 2D描画時にビュー行列を適用するかどうか
     bool isApplyViewMat = true;
 
+private:
+    Vector2 defaultSize_ = {0.0f,0.0f};
+
 public:
     Matrix4x4 GetWorldMatrix()const;
     void SetTexture(const std::string& filename);
     void ToDefaultSize();
+    Vector2 GetDefaultSize() const;
 
     // Json, ImGui
     nlohmann::json ToJson() const;

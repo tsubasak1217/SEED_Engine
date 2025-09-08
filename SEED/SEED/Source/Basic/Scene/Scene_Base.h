@@ -18,6 +18,7 @@ public:
     virtual void EndFrame() = 0;
     virtual void HandOverColliders() = 0;
     virtual void ManageState();
+    virtual void SceneEdit(){};
 
 public:
     void ChangeScene(const std::string& nextSceneName);

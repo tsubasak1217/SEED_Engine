@@ -20,7 +20,7 @@
 SEED* SEED::instance_ = nullptr;
 std::wstring SEED::windowTitle_ = L"SEED::GameWindow";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
-uint32_t SEED::windowBackColor_ = MyMath::IntColor(1,20,19,255);
+uint32_t SEED::windowBackColor_ = MyMath::IntColor(27,27,27,255);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,6 +371,7 @@ void SEED::DrawSprite(const Sprite& sprite){
 
     instance_->pPolygonManager_->AddSprite(
         sprite.size,
+        sprite.GetDefaultSize(),
         sprite.GetWorldMatrix(),
         sprite.GH,
         sprite.color,

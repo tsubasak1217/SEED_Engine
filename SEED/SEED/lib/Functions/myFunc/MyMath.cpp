@@ -51,6 +51,14 @@ float MyMath::LengthSq(const Vector3& vec){
     return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
 }
 
+bool MyMath::HasLength(const Vector2& vec){
+    return LengthSq(vec) > 0.0f;
+}
+
+bool MyMath::HasLength(const Vector3& vec){
+    return LengthSq(vec) > 0.0f;
+}
+
 /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
 Vector2 MyMath::Normalize(const Vector2& vec){

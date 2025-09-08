@@ -36,9 +36,6 @@ public:
     void EndFrame() override;
 
     void HandOverColliders() override {}
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods

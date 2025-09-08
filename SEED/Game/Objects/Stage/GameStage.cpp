@@ -491,7 +491,6 @@ void GameStage::RequestNextStage() {
     // 次のステージを構築する
     // インデックスを進める
     currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
-    BuildStage();
 }
 
 void GameStage::CheckClear() {

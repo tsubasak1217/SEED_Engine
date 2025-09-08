@@ -79,21 +79,21 @@ void ClearSelectMenu::Update() {
     SelectEdit();
 
     if (menuTimer_.IsFinished()) {
-        if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
 
-            // 現在フォーカスされている方をtrueにする
-            if (currentMenu_ == 0) {
+        // 現在フォーカスされている方をtrueにする
+        if (currentMenu_ == 0) {
 
-                result_.isNextStage = true;
-            } else {
+            result_.isNextStage = true;
+        } else {
 
-                result_.returnSelect = true;
-            }
-            return;
+            result_.returnSelect = true;
         }
-        if (result_.isNextStage || result_.returnSelect) {
-            return;
-        }
+        return;
+    }
+    if (result_.isNextStage || result_.returnSelect) {
+        return;
+    }
     }
 
     // メニューの選択

@@ -80,7 +80,7 @@ void BlockNormal::OnCollisionEnter(GameObject2D* other) {
 
                 pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
             }
-            
+
         }
     }
 }
@@ -92,7 +92,7 @@ void BlockNormal::OnCollisionStay(GameObject2D* other) {
         touchedTimer_ = std::clamp(touchedTimer_, 0.0f, maxTouchedTime_);
 
         // NormalBlockを踏んだらその座標を記録する
-        if (other->GetIsOnGroundTrigger()) {
+        if (other->GetIsOnGroundTrigger() || other->GetIsOnGround()) {
             if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
 
                 pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
@@ -103,7 +103,14 @@ void BlockNormal::OnCollisionStay(GameObject2D* other) {
 
 void BlockNormal::OnCollisionExit(GameObject2D* other) {
     if (other->GetObjectType() == ObjectType::Player) {
+
         isTouchedByPlayer_ = false;
+
+        // NormalBlockを踏んだらその座標を記録する
+        if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
+
+            pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
+        }
     }
 }
 

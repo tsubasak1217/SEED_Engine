@@ -41,7 +41,7 @@ void GameState_Pause::Initialize(){
     for(int i = 0; i < kMenuCount; i++){
 
         // 基本初期化
-        pauseItems_[i].backSprite = Sprite("DefaultAssets/white1x1.png");
+        pauseItems_[i].backSprite = Sprite("UI/menuItem.png");
         pauseItems_[i].backSprite.size = { 200.0f, 50.0f };
         pauseItems_[i].backSprite.layer = 20;
         pauseItems_[i].backSprite.anchorPoint = { 0.5f, 0.5f };
@@ -113,8 +113,10 @@ void GameState_Pause::Update(){
         float t2 = pauseItems_[i].selectTime.GetProgress();
         float ease2 = EaseOutBack(t2);
         pauseItems_[i].backSprite.scale = 1.0f + 0.2f * ease2;
-        pauseItems_[i].text.transform.scale = 1.0f + 0.2f * ease2;
-        pauseItems_[i].backSprite.color.w = 0.5f + 0.5f * t2;
+        pauseItems_[i].text.transform.scale = pauseItems_[i].backSprite.scale;
+        pauseItems_[i].backSprite.color = pauseItems_[i].backColor;
+        pauseItems_[i].backSprite.color.w = 0.4f + 0.6f * t2;
+        pauseItems_[i].text.color.w = pauseItems_[i].backSprite.color.w;
     }
 
 #ifdef _DEBUG

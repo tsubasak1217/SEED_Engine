@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Stage/Objects/Player/State/Interface/PlayerIState.h>
+#include <Game/Objects/Stage/Objects/Player/Effect/PlayerDeadEffect.h>
 #include <SEED/Lib/Structs/Timer.h>
 
 //============================================================================
@@ -20,6 +21,8 @@ public:
     void Enter(Player& player) override;
     // 更新処理
     void Update(Player& player) override;
+    //描画処理
+    void Draw([[maybe_unused]] Player& player) override;
     // 状態終了時
     void Exit(Player& player) override;
     // エディター
@@ -43,6 +46,8 @@ private:
 
     bool isDead_ = false; // 死んだかどうか
     bool isFinishedDeadTrigger_ = false; // 死亡時の処理が終わったか
+
+    PlayerDeadEffect deadEffect_; // 死亡エフェクト
 
     Timer deadTimer_;
     float deadDuration_; // 死亡アニメーションの時間

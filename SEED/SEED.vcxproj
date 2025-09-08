@@ -259,6 +259,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Scene\Input\Device\MenuBarKeyInput.cpp" />
     <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
       </SubType>
@@ -543,6 +544,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
     <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.h" />
+    <ClInclude Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>
       </SubType>

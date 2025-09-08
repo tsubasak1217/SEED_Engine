@@ -133,7 +133,7 @@ private:
     StageCameraAdjuster cameraAdjuster_; // カメラ調整
 
     // プレイヤーが踏んでいたNormalBlockの座標s
-    int maxRecordCount_ = 2;
+    int maxRecordCount_ = 1;
     std::deque<Vector2> onPlayerNormalBlocks_;
 
     //--------- functions ----------------------------------------------------

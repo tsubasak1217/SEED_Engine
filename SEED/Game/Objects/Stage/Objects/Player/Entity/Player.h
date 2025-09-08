@@ -81,6 +81,8 @@ public:
     bool IsTriggredAnyDevice() const;
     bool GetIsMoving() const { return stateController_->GetIsMoving(); }
     bool OnGround() const { return stateController_->OnGround(); }
+    float GetJumpVelocity() const { return stateController_->GetJumpVelocity(); }
+    void ExitDeadState() { stateController_->ExitDeadState(*this); }
 private:
     //========================================================================
     //	private Methods

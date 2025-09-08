@@ -177,6 +177,13 @@ bool PlayerStateController::OnGround() const {
     return current_ != PlayerState::Jump;
 }
 
+void PlayerStateController::ExitDeadState(Player& owner) {
+
+    if (PlayerDeadState* dead = static_cast<PlayerDeadState*>(states_.at(PlayerState::Dead).get())) {
+
+        dead->Exit(owner);
+    }
+}
 
 void PlayerStateController::UpdateInputState() {
 

@@ -18,6 +18,7 @@ void GameStageWarpController::Initialize() {
 
     // 初期化値
     currentState_ = State::WarpPossible; // ワープ可能状態
+    isDeadWarp_ = false;
 }
 
 void GameStageWarpController::SetWarps(StageObjectCommonState state,
@@ -121,6 +122,23 @@ bool GameStageWarpController::CheckWarpPartner(StageObjectCommonState state, uin
     return false;
 }
 
+void GameStageWarpController::DeadWarp(const Vector2& start, const Vector2& target) {
+
+    // 強制ワープ処理
+    // start  == 死亡時の座標
+    // target == 死ぬ前に踏んでいた座標
+    player_->SetWarpState(start, target);
+    currentState_ = State::Warping;
+    isDeadWarp_ = true;
+
+    // 当たり判定を無くす
+    if (Collision2DComponent* component = player_->GetOwner()->GetComponent<Collision2DComponent>()) {
+
+        // 判定を取らない
+        component->SetIsActive(false);
+    }
+}
+
 void GameStageWarpController::Update() {
 
     // 状態毎にワープの更新処理を行う
@@ -179,10 +197,27 @@ void GameStageWarpController::UpdateWarping() {
     if (player_->IsFinishedWarp()) {
 
         currentState_ = State::WarpNotPossible;
+        isDeadWarp_ = false;
+
+        // 判定を戻す
+        // 当たり判定を無くす
+        if (Collision2DComponent* component = player_->GetOwner()->GetComponent<Collision2DComponent>()) {
+
+            // 判定を取らない
+            component->SetIsActive(true);
+        }
     }
 }
 
 void GameStageWarpController::UpdateWarpNotPossible() {
+
+    if (!executingWarpTarget_) {
+
+        // リセット
+        ResetWarp();
+        currentState_ = State::WarpPossible;
+        return;
+    }
 
     // ワープ先から離れたら再ワープ可能にする
     if (executingWarpTarget_->IsStateNone()) {

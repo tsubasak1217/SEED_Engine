@@ -35,6 +35,7 @@ void PlayerDeadState::Draw([[maybe_unused]] Player& player) {
 }
 
 void PlayerDeadState::Exit([[maybe_unused]] Player& player) {
+
     //状態リセット
     isDead_ = false;
     isFinishedDeadTrigger_ = false;

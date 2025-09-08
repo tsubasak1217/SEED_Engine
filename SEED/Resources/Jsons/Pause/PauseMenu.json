@@ -40,7 +40,7 @@
             },
             "blendMode": 3,
             "color": {
-                "w": 0.4000000059604645,
+                "w": 1.0,
                 "x": 1.0,
                 "y": 0.6023165583610535,
                 "z": 0.0
@@ -64,12 +64,12 @@
                 "y": 61.0
             },
             "text": "ゲームに戻る",
-            "textBoxVisible": true,
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 1.2000000476837158,
+                    "y": 1.2000000476837158
                 },
                 "translate": {
                     "x": 862.0357666015625,
@@ -144,7 +144,7 @@
                 "y": 57.0
             },
             "text": "リトライ",
-            "textBoxVisible": true,
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
@@ -200,7 +200,7 @@
             },
             "blendMode": 3,
             "color": {
-                "w": 1.0,
+                "w": 0.4000000059604645,
                 "x": 0.07722008228302002,
                 "y": 1.0,
                 "z": 0.0
@@ -224,12 +224,12 @@
                 "y": 57.0
             },
             "text": "ステージセレクトへ",
-            "textBoxVisible": true,
+            "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
                 "scale": {
-                    "x": 1.2000000476837158,
-                    "y": 1.2000000476837158
+                    "x": 1.0,
+                    "y": 1.0
                 },
                 "translate": {
                     "x": 897.6936645507813,

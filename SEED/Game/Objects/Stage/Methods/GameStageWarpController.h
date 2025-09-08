@@ -48,6 +48,9 @@ public:
 
     // 対象のワープの相手がいるかどうかチェック
     bool CheckWarpPartner(StageObjectCommonState state, uint32_t warpIndex);
+    
+    // 死亡時のワープ処理
+    void DeadWarp(const Vector2& start, const Vector2& target);
 
     //--------- accessor -----------------------------------------------------
 
@@ -59,6 +62,7 @@ public:
 
     // ワープ中かどうか
     bool IsWarping() const { return currentState_ == State::Warping; }
+    bool IsDeadWarping() const { return isDeadWarp_; }
 
     // ワープ先座標をインデックスから取得する
     Vector2 GetWarpTargetTranslateFromIndex(StageObjectCommonState state, uint32_t warpIndex) const;
@@ -84,6 +88,7 @@ private:
 
     // プレイヤー
     Player* player_;
+    bool isDeadWarp_;
 
     // ワープオブジェクト
     std::vector<Warp*> noneWarps_;     // 通常ワープ

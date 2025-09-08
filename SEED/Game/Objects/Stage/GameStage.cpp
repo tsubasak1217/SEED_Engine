@@ -89,6 +89,9 @@ void GameStage::BuildStage() {
 
     // 状態をプレイ中に遷移させる
     currentState_ = State::Play;
+
+    // 最初の座標を渡しておく
+    onPlayerNormalBlocks_.push_back(player_->GetOwner()->GetWorldTranslate());
 }
 
 //Objectのアクティブ・非アクティブ設定
@@ -152,7 +155,7 @@ void GameStage::RecordPlayerOnBlock(const Vector2& translate) {
     // 座標をブロックの中心位置にする
     const float tileSize = stageObjectMapTileSize_;
     Vector2 blockPos = Vector2(std::round(translate.x / tileSize) * tileSize,
-        std::round(translate.y / tileSize) * tileSize);
+        player_->GetOwner()->GetWorldTranslate().y);
 
     // 踏まれたブロック位置の座標をセット
     onPlayerNormalBlocks_.push_back(blockPos);
@@ -490,11 +493,6 @@ void GameStage::RemoveBorderLine() {
 
     // 背景描画を非アクティブにする
     backDrawer_.SetActive(false);
-
-    // プレイヤーがホログラム状態だったら死亡処理を行う
-    if (player_->GetIsHologram()) {
-        player_->RequestDeadState();
-    }
 }
 
 void GameStage::RequestNextStage() {
@@ -519,16 +517,19 @@ void GameStage::CheckClear() {
 }
 
 void GameStage::CheckPlayerDead() {
+
     // 死亡判定
     if (player_->IsDeadFinishTrigger()) {
-        currentState_ = State::Dead;
+
+        // 元の位置にワープして戻す
+        warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), onPlayerNormalBlocks_.front());
     }
 }
-
 
 // プレイヤーが境界線を越えたかどうか
 void GameStage::CheckPlayerCrossedBorderLine() {
     if (borderLine_->IsActive()) {
+
         // プレイヤーのワールド座標
         const Vector2 prePos = player_->GetOwner()->GetPrePos();
         const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
@@ -581,7 +582,9 @@ void GameStage::CheckPlayerOutOfCamera() {
         const Range2D cameraRange = cameraAdjuster_.GetCameraRange();
         // プレイヤーがカメラ範囲から出たか
         if (player_->IsOutOfCamera(cameraRange)) {
-            player_->RequestDeadState();
+
+            // 元の位置にワープして戻す
+            warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), onPlayerNormalBlocks_.front());
         }
     }
 }

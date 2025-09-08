@@ -63,6 +63,7 @@ public:
     PlayerState GetCurrentState() const{ return current_; }
     bool GetIsMoving()const;
     bool OnGround() const;
+    void ExitDeadState(Player& owner);
 private:
     //========================================================================
     //	private Methods

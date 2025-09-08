@@ -30,7 +30,7 @@ void Scene_Select::Initialize() {
     EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f },nullptr);
 
     // ブルームの初期化
-    PostEffect::Load("bloom.json");
+    //PostEffect::Load("bloom.json");
 
     //============================================================================
     //	objects

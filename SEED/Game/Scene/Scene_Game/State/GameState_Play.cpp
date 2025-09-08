@@ -98,7 +98,17 @@ void GameState_Play::HandOverColliders(){
 void GameState_Play::ManageState(){
     // ポーズ
     if(menuBarInputMapper_->IsTriggered(PauseMenuInputAction::Pause)) {
-        pScene_->ChangeState(new GameState_Pause(pScene_));
+        Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+        GameStage* stage = gameScene->GetStage();
+        
+        if(stage){
+            // プレイヤーを左側に寄せアップで写す
+            stage->CloseToPlayer(LR::LEFT);
+        }
+
+        // ポーズステートに遷移
+        gameScene->ChangeState(new GameState_Pause(gameScene));
+
         return;
     }
 }

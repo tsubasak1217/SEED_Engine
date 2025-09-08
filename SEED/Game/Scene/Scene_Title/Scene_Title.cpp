@@ -1,5 +1,6 @@
 #include <Game/Scene/Scene_Title/Scene_Title.h>
 
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 //lib
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 

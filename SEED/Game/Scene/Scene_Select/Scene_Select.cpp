@@ -1,6 +1,11 @@
 #include "Scene_Select.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
+
+//============================================================================
 //	Scene_Select classMethods
 //============================================================================
 
@@ -23,6 +28,9 @@ void Scene_Select::Initialize() {
 
     // エフェクトの追加
     EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f },nullptr);
+
+    // ブルームの初期化
+    //PostEffect::Load("bloom.json");
 
     //============================================================================
     //	objects
@@ -59,6 +67,13 @@ void Scene_Select::Update() {
         // ゲームシーンに進ませる
         currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
         ChangeScene("Game");
+        return;
+    }
+    // タイトルに戻るかチェック
+    if (selectStage_->IsReturnScene()) {
+
+        // タイトルシーンに戻す
+        ChangeScene("Title");
     }
 }
 

@@ -19,6 +19,8 @@ class Player;
 //	GameStage class
 //============================================================================
 class GameStage {
+    friend class GameState_Play;// 期限が近いのでいったんこれで
+    friend class GameState_Pause;
 public:
     //========================================================================
     //	public Methods
@@ -159,4 +161,5 @@ private:
 
     // ステージ範囲計算
     void CalculateCurrentStageRange();
+    void CloseToPlayer(LR direction);
 };

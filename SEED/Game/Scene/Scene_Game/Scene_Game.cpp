@@ -143,6 +143,7 @@ void Scene_Game::Update() {
     } else {
 
         stage_->SetIsActive(false);
+        stage_->Update();
     }
     
     stage_->Edit();

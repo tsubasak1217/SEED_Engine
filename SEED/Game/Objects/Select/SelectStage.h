@@ -32,6 +32,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+    // タイトル戻す
+    bool IsReturnScene() const { return inputMapper_->IsTriggered(SelectInputEnum::Return); }
+
     // 選択ステージ情報
     const SelectStageInfo& GetStageInfo() const { return stageDrawer_->GetStageInfo(); }
 private:

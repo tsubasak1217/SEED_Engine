@@ -1,0 +1,10 @@
+{
+    "postProcesses": [
+        {
+            "radius_": 6,
+            "sigma_": 64.0,
+            "threshold_": 0.1599999964237213,
+            "type": "Bloom"
+        }
+    ]
+}

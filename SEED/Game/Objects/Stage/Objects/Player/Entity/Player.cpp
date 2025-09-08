@@ -325,6 +325,11 @@ void Player::OnCeilingTrigger() {
     }
 }
 
+bool Player::IsTriggredAnyDevice() const {
+
+    return inputMapper_->IsTriggered(PlayerInputAction::PutBorder);
+}
+
 bool Player::TouchLaser() const {
     // レーザーに触れた
     if(istouchedLaser_){

@@ -73,12 +73,12 @@ public:
     bool IsRemoveBorder() const;
     bool IsJumpInput() const;
 
-
     // 状態通知
     void OnGroundTrigger();
     void OnCeilingTrigger();
-    
 
+    // 何か入力があるか
+    bool IsTriggredAnyDevice() const;
 private:
     //========================================================================
     //	private Methods

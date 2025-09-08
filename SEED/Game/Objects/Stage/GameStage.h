@@ -21,6 +21,7 @@ class Player;
 class GameStage {
     friend class GameState_Play;// 期限が近いのでいったんこれで
     friend class GameState_Pause;
+    friend class GameState_Clear;
 public:
     //========================================================================
     //	public Methods
@@ -44,6 +45,9 @@ public:
     // ホログラムオブジェクトの削除
     void RemoveBorderLine();
 
+    // 次のステージをリクエスト
+    void RequestNextStage();
+
     //--------- structure ----------------------------------------------------
 
     // ステージ進行状態
@@ -51,7 +55,7 @@ public:
 
         Play,   // プレイ中...
         Clear,  // クリア
-        Dead,  // プレイヤーがやられた
+        Dead,   // プレイヤーがやられた
         Retry,  // リトライ
         Select, // セレクト画面に戻る
     };
@@ -72,12 +76,15 @@ public:
 
     // クリアしたかどうか
     bool IsClear() const { return isClear_; }
+    bool IsFinishedAdjust() const { return cameraAdjuster_.IsFinishedAdjust(); }
     void SetIsClear(bool isClear) { isClear_ = isClear; }
 
     // オブジェクトリスト関連
     static void AddDisActiveObject(GameObject2D* object) { disActiveObjects_.push_back(object); }
     static void ReActivateDisActiveObjects();
 
+    // 何か入力があるかチェック
+    bool IsTriggredAnyDevice() const;
 private:
     //========================================================================
     //	private Methods
@@ -161,5 +168,5 @@ private:
 
     // ステージ範囲計算
     void CalculateCurrentStageRange();
-    void CloseToPlayer(LR direction);
+    void CloseToPlayer(LR direction, float zoomRate = 2.4f, const Vector2& focus = 0.7f);
 };

@@ -1,0 +1,162 @@
+[
+    {
+        "backColor": {
+            "w": 0.0,
+            "x": 0.5289574861526489,
+            "y": 0.028592310845851898,
+            "z": 0.32997068762779236
+        },
+        "backSpriteSize": {
+            "x": 400.0,
+            "y": 88.0
+        },
+        "end": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 868.1554565429688,
+                "y": 409.1559143066406
+            }
+        },
+        "start": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 1528.4625244140625,
+                "y": 406.28045654296875
+            }
+        },
+        "text": {
+            "align": 1,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 54.0,
+            "glyphSpacing": 7.199999809265137,
+            "isApplyViewMat": false,
+            "layer": 21,
+            "lineSpacing": 0.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 458.0,
+                "y": 64.0
+            },
+            "text": "次のステージへ",
+            "textBoxVisible": true,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.2000000476837158,
+                    "y": 1.2000000476837158
+                },
+                "translate": {
+                    "x": 868.1554565429688,
+                    "y": 409.1559143066406
+                }
+            },
+            "useOutline": false
+        }
+    },
+    {
+        "backColor": {
+            "w": 0.0,
+            "x": 0.12355220317840576,
+            "y": 1.0,
+            "z": 0.0
+        },
+        "backSpriteSize": {
+            "x": 400.0,
+            "y": 88.0
+        },
+        "end": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 868.3909301757813,
+                "y": 533.856201171875
+            }
+        },
+        "start": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 1671.5157470703125,
+                "y": 524.6778564453125
+            }
+        },
+        "text": {
+            "align": 1,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 0.843137264251709,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 54.0,
+            "glyphSpacing": 7.199999809265137,
+            "isApplyViewMat": false,
+            "layer": 21,
+            "lineSpacing": 0.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 458.0,
+                "y": 64.0
+            },
+            "text": "ステージセレクトへ",
+            "textBoxVisible": true,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 868.3909301757813,
+                    "y": 533.856201171875
+                }
+            },
+            "useOutline": false
+        }
+    }
+]

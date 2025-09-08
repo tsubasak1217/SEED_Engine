@@ -115,11 +115,7 @@ void Scene_Game::Finalize() {
 
 void Scene_Game::Update() {
 
-    /*========================== ImGui =============================*/
-
-
     /*======================= 各状態固有の更新 ========================*/
-    
 
     // ヒエラルキー内のオブジェクトの更新
     hierarchy_->Update();
@@ -147,20 +143,9 @@ void Scene_Game::Update() {
     }
     
     stage_->Edit();
-   
-    // ステージクリアならクリアステートに遷移
-    if(stage_->GetCurrentState() == GameStage::State::Clear && 
-        dynamic_cast<GameState_Play*>(currentState_.get())){
-        //clear時のステージの更新処理を実行してからステート遷移
-        stage_->Update();
-        currentStageIndex_ = stage_->GetCurrentStageIndex();
-        ChangeState(new GameState_Clear(this));
-    }
 
     //ステートクラス内の遷移処理を実行
     ManageState();
-
-    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

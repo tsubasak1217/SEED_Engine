@@ -1,42 +1,82 @@
 #pragma once
+
+//============================================================================
+//	include
+//============================================================================
 #include <SEED/Source/Basic/Scene/State_Base.h>
-#include <json.hpp>
-#include <memory>
+#include <Game/Objects/Clear/ClearTextAnimation.h>
+#include <Game/Objects/Clear/ClearSelectMenu.h>
 
-#include <SEED/Lib/Input/InputMapper.h>
-#include <SEED/Lib/Structs/Sprite.h>
-#include <SEED/Lib/Structs/TextBox.h>
-#include <Game/Scene/Input/PauseMenuInputActionEnum.h>
-
-class GameState_Clear : public State_Base {
+//============================================================================
+//	GameState_Clear class
+//============================================================================
+class GameState_Clear :
+    public State_Base {
 public:
-    GameState_Clear() = default;
+    //========================================================================
+    //	public Methods
+    //========================================================================
+
     GameState_Clear(Scene_Base* pScene);
+    GameState_Clear() = default;
     ~GameState_Clear() override;
 
-public:
-
+    // 初期化処理
     void Initialize() override;
-    void Finalize() override;
+    void Finalize() override {}
+
+    // 更新処理
     void Update() override;
     void Draw() override;
-    void BeginFrame() override;
-    void EndFrame() override;
-    void HandOverColliders() override;
+
+    void BeginFrame() override {}
+    void EndFrame() override {}
+    void HandOverColliders() override {}
     void ManageState() override;
-
 private:
+    //========================================================================
+    //	private Methods
+    //========================================================================
 
-    // メニュー項目のスプライトとテキスト
-    std::array<Sprite, 2> MenuBack_;
-    std::array<TextBox2D,2> MenuText_;
-    int32_t currentMenu_ = 0;
-    Vector2 menuPos_[2];
-    Vector2 menuSize_;
+    //--------- structure ----------------------------------------------------
+    //========================================================================
+    //	private Methods
+    //========================================================================
 
-    //クリアテキスト
-    TextBox2D ClearText_;
+    //--------- structure ----------------------------------------------------
 
-    std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
-    bool changeStateRequest_ = false;
+    // 状態
+    enum class State {
+
+        ZoomCamera, // カメラズーム処理
+        InText,     // クリアテキスト登場
+        OutText,    // クリアテキスト退場
+        Select      // 入力処理
+    };
+
+    //--------- variables ----------------------------------------------------
+
+    // 現在の状態
+    State currentState_;
+
+    // クリア文字
+    std::unique_ptr<ClearTextAnimation> clearText_;
+
+    // メニュー
+    std::unique_ptr<ClearSelectMenu> menu_;
+
+    //--------- functions ----------------------------------------------------
+
+    // エディター
+    void Edit();
+
+    // update
+    /// ZoomCamera
+    void UpdateZoomCamera();
+    /// InText
+    void UpdateInText();
+    /// OutText
+    void UpdateOutText();
+    /// Select
+    void UpdateSelect();
 };

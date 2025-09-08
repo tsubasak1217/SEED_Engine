@@ -22,7 +22,7 @@
 //	GameStage classMethods
 //============================================================================
 
-void GameStage::Initialize(int currentStageIndex) {
+void GameStage::Initialize(int currentStageIndex){
 
     // 境界線
     borderLine_ = std::make_unique<BorderLine>();
@@ -57,14 +57,14 @@ void GameStage::Initialize(int currentStageIndex) {
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameStage::BuildStage() {
+void GameStage::BuildStage(){
 
     // 全てのオブジェクトを破棄
-    for (GameObject2D* object : objects_) {
+    for(GameObject2D* object : objects_){
         delete object;
     }
     objects_.clear();
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
     }
     hologramObjects_.clear();
@@ -92,10 +92,10 @@ void GameStage::BuildStage() {
 }
 
 //Objectのアクティブ・非アクティブ設定
-void GameStage::SetIsActive(bool isActive) {
+void GameStage::SetIsActive(bool isActive){
 
     // アクティブを設定する
-    for (GameObject2D* object : std::views::join(std::array{ objects_, hologramObjects_ })) {
+    for(GameObject2D* object : std::views::join(std::array{ objects_, hologramObjects_ })){
 
         object->SetIsActive(isActive);
 
@@ -105,15 +105,15 @@ void GameStage::SetIsActive(bool isActive) {
             object->SetIsMustDraw(false);
         }
 
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
 
             // レーザーは別でアクティブを設定する
-            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+            if(LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()){
 
                 laserLauncher->SetIsLaserActive(isActive);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* warp = component->GetStageObject<Warp>()) {
+            if(Warp* warp = component->GetStageObject<Warp>()){
 
                 // 状態を元に戻す
                 warp->ResetAnimation();
@@ -123,20 +123,20 @@ void GameStage::SetIsActive(bool isActive) {
 }
 
 // 非アクティブオブジェクトの再アクティブ化
-void GameStage::ReActivateDisActiveObjects() {
+void GameStage::ReActivateDisActiveObjects(){
 
-    for (auto& object : disActiveObjects_) {
+    for(auto& object : disActiveObjects_){
 
         object->SetIsActive(true);
 
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
             // レーザーは別でアクティブを設定する
-            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+            if(LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()){
 
                 laserLauncher->SetIsLaserActive(true);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* warp = component->GetStageObject<Warp>()) {
+            if(Warp* warp = component->GetStageObject<Warp>()){
 
                 // 状態を元に戻す
                 warp->SetNone();
@@ -152,9 +152,9 @@ void GameStage::ReActivateDisActiveObjects() {
 // 全体の更新処理
 //
 /////////////////////////////////////////////////////////////////////////
-void GameStage::Update() {
+void GameStage::Update(){
 
-    switch (currentState_) {
+    switch(currentState_){
         //============================================================================
         //	ゲームプレイ中の更新処理
         //============================================================================
@@ -226,34 +226,34 @@ void GameStage::UpdatePlay(){
     }
 }
 
-void GameStage::UpdateWarp() {
+void GameStage::UpdateWarp(){
 
     // ワープの更新処理
     warpController_->Update();
 }
 
-void GameStage::UpdateLaserLauncher() {
+void GameStage::UpdateLaserLauncher(){
 
     // レーザーの更新処理
     laserController_->Update();
 }
 
-void GameStage::UpdateBorderLine() {
+void GameStage::UpdateBorderLine(){
 
     // プレイヤーのワールド座標
     const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
 
     // プレイヤーの入力処理に応じて境界線を置いたり外したりする
     // 境界線がまだ置かれていないとき
-    if (!borderLine_->IsActive() && player_->IsPutBorder()) {
+    if(!borderLine_->IsActive() && player_->IsPutBorder()){
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
-    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().translate,
-        stageObjectMapTileSize_) && player_->IsRemoveBorder()) {
+    } else if(borderLine_->CanTransitionDisable(player_->GetSprite().translate,
+        stageObjectMapTileSize_) && player_->IsRemoveBorder()){
 
         // ワープ中は境界線を消せない
-        if (!warpController_->IsWarping()) {
+        if(!warpController_->IsWarping()){
 
             // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
             isRemoveHologram_ = true;
@@ -270,14 +270,14 @@ void GameStage::UpdateBorderLine() {
     borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y, stageObjectMapTileSize_);
 }
 
-void GameStage::UpdateClear() {
+void GameStage::UpdateClear(){
 
     // インデックスを進める
     currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
     BuildStage();
 }
 
-void GameStage::UpdateDead() {
+void GameStage::UpdateDead(){
 
     // ホログラムを非アクティブ状態に
     isRemoveHologram_ = true;
@@ -289,12 +289,12 @@ void GameStage::UpdateDead() {
     currentState_ = State::Play;
 }
 
-void GameStage::UpdateRetry() {
+void GameStage::UpdateRetry(){
 
 
 }
 
-void GameStage::UpdateReturnSelect() {
+void GameStage::UpdateReturnSelect(){
 
 
 }
@@ -305,11 +305,11 @@ void GameStage::UpdateReturnSelect() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::GetListsPlayerPtr() {
+void GameStage::GetListsPlayerPtr(){
     player_ = nullptr;
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-            if (component->GetStageObjectType() == StageObjectType::Player) {
+    for(GameObject2D* object : objects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+            if(component->GetStageObjectType() == StageObjectType::Player){
 
                 player_ = component->GetStageObject<Player>();
                 break;
@@ -324,23 +324,23 @@ void GameStage::GetListsPlayerPtr() {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
+void GameStage::SetListsWarpPtr(StageObjectCommonState state){
 
     std::vector<Warp*> warps{};
-    if (state == StageObjectCommonState::None) {
-        for (GameObject2D* object : objects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::Warp) {
+    if(state == StageObjectCommonState::None){
+        for(GameObject2D* object : objects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::Warp){
 
                     // ワープのポインタを追加
                     warps.push_back(component->GetStageObject<Warp>());
                 }
             }
         }
-    } else if (state == StageObjectCommonState::Hologram) {
-        for (GameObject2D* object : hologramObjects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::Warp) {
+    } else if(state == StageObjectCommonState::Hologram){
+        for(GameObject2D* object : hologramObjects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::Warp){
 
                     // ワープのポインタを追加
                     warps.push_back(component->GetStageObject<Warp>());
@@ -358,23 +358,23 @@ void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state) {
+void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state){
 
     std::vector<LaserLauncher*> launcheres{};
-    if (state == StageObjectCommonState::None) {
-        for (GameObject2D* object : objects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+    if(state == StageObjectCommonState::None){
+        for(GameObject2D* object : objects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::LaserLauncher){
 
                     // レーザー発射台のポインタを追加
                     launcheres.push_back(component->GetStageObject<LaserLauncher>());
                 }
             }
         }
-    } else if (state == StageObjectCommonState::Hologram) {
-        for (GameObject2D* object : hologramObjects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+    } else if(state == StageObjectCommonState::Hologram){
+        for(GameObject2D* object : hologramObjects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::LaserLauncher){
 
                     // レーザー発射台のポインタを追加
                     launcheres.push_back(component->GetStageObject<LaserLauncher>());
@@ -392,7 +392,7 @@ void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state) {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::PutBorderLine() {
+void GameStage::PutBorderLine(){
 
     // プレイヤーの向き
     const LR playerDirection = player_->GetMoveDirection();
@@ -435,9 +435,9 @@ void GameStage::PutBorderLine() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::RemoveBorderLine() {
+void GameStage::RemoveBorderLine(){
 
-    if (!isRemoveHologram_) {
+    if(!isRemoveHologram_){
         return;
     }
 
@@ -452,7 +452,7 @@ void GameStage::RemoveBorderLine() {
     ReActivateDisActiveObjects();
 
     // 作成したホログラムオブジェクトをすべて破棄する
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
         object = nullptr;
     }
@@ -473,61 +473,61 @@ void GameStage::RemoveBorderLine() {
     }
 }
 
-void GameStage::CheckClear() {
+void GameStage::CheckClear(){
 
     // デバッグ用
-    if (isClear_) {
+    if(isClear_){
         currentState_ = State::Clear;
     }
 }
 
-void GameStage::CheckPlayerDead() {
+void GameStage::CheckPlayerDead(){
     // 死亡判定
-    if (player_->IsDeadFinishTrigger()) {
+    if(player_->IsDeadFinishTrigger()){
         currentState_ = State::Dead;
     }
 }
 
 
 // プレイヤーが境界線を越えたかどうか
-void GameStage::CheckPlayerCrossedBorderLine() {
+void GameStage::CheckPlayerCrossedBorderLine(){
     if(borderLine_->IsActive()){
         // プレイヤーのワールド座標
         const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
         //向きごとの境界線を越えたかどうかの判定をする
-        if (borderLine_->GetSprite().translate.y > playerWorldTranslate.y) {
-            if (borderLine_->GetDirection() == LR::LEFT) {
+        if(borderLine_->GetSprite().translate.y > playerWorldTranslate.y){
+            if(borderLine_->GetDirection() == LR::LEFT){
                 /*--- LEFT ---*/
-                if (borderLine_->GetSprite().translate.x > playerWorldTranslate.x) {
+                if(borderLine_->GetSprite().translate.x > playerWorldTranslate.x){
                     player_->SetIsHologram(true);
-                } else {
+                } else{
                     player_->SetIsHologram(false);
                 }
-            } else {
+            } else{
                 /*--- RIGHT ---*/
-                if (playerWorldTranslate.x > borderLine_->GetSprite().translate.x) {
+                if(playerWorldTranslate.x > borderLine_->GetSprite().translate.x){
                     player_->SetIsHologram(true);
-                } else {
+                } else{
                     player_->SetIsHologram(false);
                 }
             }
-        } else {
+        } else{
             player_->SetIsHologram(false);
             return;
         }
-    } else {
+    } else{
         // 境界線が置かれていないときはホログラム状態を解除する
         player_->SetIsHologram(false);
     }
 }
 
-void GameStage::CheckPlayerOutOfCamera() {
+void GameStage::CheckPlayerOutOfCamera(){
     // プレイヤーがカメラ範囲から出たかどうか
-    if (currentStageRange_ != std::nullopt && player_ != nullptr) {
+    if(currentStageRange_ != std::nullopt && player_ != nullptr){
         // カメラの範囲
         const Range2D cameraRange = cameraAdjuster_.GetCameraRange();
         // プレイヤーがカメラ範囲から出たか
-        if (player_->IsOutOfCamera(cameraRange)) {
+        if(player_->IsOutOfCamera(cameraRange)){
             player_->RequestDeadState();
         }
     }
@@ -551,14 +551,14 @@ void GameStage::CalculateCurrentStageRange(){
         // x,yそれぞれの最小値・最大値を更新
         if(pos.x < currentStageRange_.value().min.x){
             currentStageRange_.value().min.x = pos.x;
-        
+
         } else if(currentStageRange_.value().max.x < pos.x){
             currentStageRange_.value().max.x = pos.x;
         }
 
         if(pos.y < currentStageRange_.value().min.y){
             currentStageRange_.value().min.y = pos.y;
-        
+
         } else if(currentStageRange_.value().max.y < pos.y){
             currentStageRange_.value().max.y = pos.y;
         }
@@ -567,12 +567,37 @@ void GameStage::CalculateCurrentStageRange(){
     // ステージ範囲に少し余裕を持たせる
     float margin = stageObjectMapTileSize_;
     if(currentStageRange_ == std::nullopt){
-        currentStageRange_ = Range2D({0.0f,0.0f},{0.0f,0.0f});
+        currentStageRange_ = Range2D({ 0.0f,0.0f }, { 0.0f,0.0f });
     }
     currentStageRange_.value().min.x -= margin;
     currentStageRange_.value().min.y -= margin;
     currentStageRange_.value().max.x += margin;
     currentStageRange_.value().max.y += margin;
+
+    // カメラ調整に範囲を渡す
+    cameraAdjuster_.SetStageRange(currentStageRange_.value());
+}
+
+// プレイヤーに近づく
+void GameStage::CloseToPlayer(LR direction){
+    currentStageRange_ = std::nullopt;
+
+    if(direction == LR::LEFT){
+        // playerを左に写すように
+        Vector2 min = player_->GetOwner()->GetWorldTranslate() - Vector2(playerSize_ * 0.7f);
+        Vector2 max = min + Vector2(playerSize_ * 2.4f, stageObjectMapTileSize_);
+        currentStageRange_ = Range2D(min, max);
+
+    } else if(direction == LR::RIGHT){
+        // playerを右に写すように
+        Vector2 max = player_->GetOwner()->GetWorldTranslate() + Vector2(playerSize_ * 0.7f);
+        Vector2 min = max - Vector2(playerSize_ * 2.4f, stageObjectMapTileSize_);
+
+    } else{
+        // playerを中心に写すように
+        Vector2 min = player_->GetOwner()->GetWorldTranslate() - Vector2(playerSize_ * 1.1f, stageObjectMapTileSize_ * 0.5f);
+        Vector2 max = min + Vector2(playerSize_ * 2.4f, stageObjectMapTileSize_);
+    }
 
     // カメラ調整に範囲を渡す
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
@@ -584,7 +609,7 @@ void GameStage::CalculateCurrentStageRange(){
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::Draw() {
+void GameStage::Draw(){
 
     // 境界線の描画
     borderLine_->Draw();
@@ -599,27 +624,27 @@ void GameStage::Draw() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::Edit() {
+void GameStage::Edit(){
 #ifdef _DEBUG
 
     ImFunc::CustomBegin("GameStage", MoveOnly_TitleBar);
     {
         ImGui::PushItemWidth(192.0f);
-        if (ImGui::Button("Save Json")) {
+        if(ImGui::Button("Save Json")){
 
             SaveJson();
         }
 
-        if (ImGui::BeginTabBar("GameStageTab")) {
-            if (ImGui::BeginTabItem("Stage")) {
+        if(ImGui::BeginTabBar("GameStageTab")){
+            if(ImGui::BeginTabItem("Stage")){
 
-                if (ImGui::Button("ReBuildStage")) {
+                if(ImGui::Button("ReBuildStage")){
 
-                    for (GameObject2D* object : objects_) {
+                    for(GameObject2D* object : objects_){
                         delete object;
                     }
                     objects_.clear();
-                    for (GameObject2D* object : hologramObjects_) {
+                    for(GameObject2D* object : hologramObjects_){
                         delete object;
                     }
                     hologramObjects_.clear();
@@ -633,22 +658,22 @@ void GameStage::Edit() {
                 ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("BorderLine")) {
+            if(ImGui::BeginTabItem("BorderLine")){
 
                 borderLine_->Edit(player_->GetOwner()->GetWorldTranslate(), stageObjectMapTileSize_);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Warp")) {
+            if(ImGui::BeginTabItem("Warp")){
 
                 warpController_->Edit();
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Laser")) {
+            if(ImGui::BeginTabItem("Laser")){
 
                 laserController_->Edit();
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Camera")) {
+            if(ImGui::BeginTabItem("Camera")){
                 float cameraFov = SEED::GetMainCamera()->GetFov();
                 Vector2 clipRange = SEED::GetMainCamera()->GetClipRange();
                 ImGui::DragFloat("CameraFov", &cameraFov, 0.1f, 1.0f, 179.0f);
@@ -671,10 +696,10 @@ void GameStage::Edit() {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::ApplyJson() {
+void GameStage::ApplyJson(){
 
     nlohmann::json data;
-    if (!JsonAdapter::LoadCheck(kJsonPath_, data)) {
+    if(!JsonAdapter::LoadCheck(kJsonPath_, data)){
         return;
     }
 
@@ -684,7 +709,7 @@ void GameStage::ApplyJson() {
     warpController_->FromJson(data.value("WarpController", nlohmann::json()));
 }
 
-void GameStage::SaveJson() {
+void GameStage::SaveJson(){
 
     nlohmann::json data;
 

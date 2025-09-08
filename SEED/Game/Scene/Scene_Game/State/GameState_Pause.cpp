@@ -1,6 +1,7 @@
 #include "GameState_Pause.h"
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
 #include <Game/Scene/Input/Device/MenuBarKeyInput.h>
@@ -153,9 +154,13 @@ void GameState_Pause::HandOverColliders() {
 //////////////////////////////////////////////////////////////////////////////////
 void GameState_Pause::ManageState() {
 
+    Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+    GameStage* stage_ = gameScene->GetStage();
+
     //State_Playに戻る
     if(inputMapper_->IsTriggered(PauseMenuInputAction::Pause)){
         changeStateRequest_ = true;
+        stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
         return;
     }
 
@@ -171,6 +176,7 @@ void GameState_Pause::ManageState() {
         switch (currentMenu_) {
         case 0:// 続ける
             changeStateRequest_ = true;
+            stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
             break;
         case 1:// やり直す
             pScene_->ChangeScene("Game");

@@ -18,11 +18,13 @@ void ClearTextAnimation::Initialize() {
     topText_.anchorPoint = Vector2(0.5f, 1.0f);
     topText_.isApplyViewMat = false;
     topText_.color.w = 0.0f;
+    topText_.layer = 20;
     // 下
     bottomText_ = Sprite("Scene_Game/Clear/Clear_Bottom.png");
     bottomText_.anchorPoint = Vector2(0.5f, 0.0f);
     bottomText_.isApplyViewMat = false;
     bottomText_.color.w = 0.0f;
+    bottomText_.layer = 20;
 
     // json適応
     ApplyJson();

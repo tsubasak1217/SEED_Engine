@@ -166,9 +166,6 @@ void Scene_Game::Draw() {
         currentState_->Draw();
     }
 
-    //SEED::DrawSkyBox(true);
-    //SEED::DrawGrid();
-
     /*==================== 各オブジェクトの基本描画 =====================*/
 
     // ヒエラルキー内のオブジェクトの描画

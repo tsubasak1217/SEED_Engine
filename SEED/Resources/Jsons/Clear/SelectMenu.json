@@ -2,9 +2,9 @@
     {
         "backColor": {
             "w": 0.0,
-            "x": 0.5289574861526489,
-            "y": 0.028592310845851898,
-            "z": 0.32997068762779236
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.5803921818733215
         },
         "backSpriteSize": {
             "x": 400.0,
@@ -42,12 +42,12 @@
             "color": {
                 "w": 1.0,
                 "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "y": 0.0,
+                "z": 0.5803921818733215
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 54.0,
-            "glyphSpacing": 7.199999809265137,
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 48.0,
+            "glyphSpacing": 3.200000047683716,
             "isApplyViewMat": false,
             "layer": 21,
             "lineSpacing": 0.0,
@@ -60,8 +60,8 @@
             "outlineSplitCount": 16,
             "outlineWidth": 2.0,
             "size": {
-                "x": 458.0,
-                "y": 64.0
+                "x": 468.0,
+                "y": 45.0
             },
             "text": "次のステージへ",
             "textBoxVisible": true,
@@ -81,9 +81,9 @@
     },
     {
         "backColor": {
-            "w": 0.0,
-            "x": 0.12355220317840576,
-            "y": 1.0,
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.6705882549285889,
             "z": 0.0
         },
         "backSpriteSize": {
@@ -120,14 +120,14 @@
             },
             "blendMode": 3,
             "color": {
-                "w": 0.843137264251709,
+                "w": 1.0,
                 "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "y": 0.6705881953239441,
+                "z": 0.0
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 54.0,
-            "glyphSpacing": 7.199999809265137,
+            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+            "fontSize": 40.0,
+            "glyphSpacing": 3.200000047683716,
             "isApplyViewMat": false,
             "layer": 21,
             "lineSpacing": 0.0,
@@ -140,8 +140,8 @@
             "outlineSplitCount": 16,
             "outlineWidth": 2.0,
             "size": {
-                "x": 458.0,
-                "y": 64.0
+                "x": 468.0,
+                "y": 36.0
             },
             "text": "ステージセレクトへ",
             "textBoxVisible": true,

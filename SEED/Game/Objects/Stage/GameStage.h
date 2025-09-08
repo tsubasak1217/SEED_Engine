@@ -12,6 +12,7 @@
 
 // c++
 #include <list>
+#include <deque>
 // front
 class Player;
 
@@ -83,6 +84,9 @@ public:
     static void AddDisActiveObject(GameObject2D* object) { disActiveObjects_.push_back(object); }
     static void ReActivateDisActiveObjects();
 
+    // StageObjectComponentからプレイヤーがNormalBlockを踏んだ時の座標を受け取る
+    void RecordPlayerOnBlock(const Vector2& translate);
+
     // 何か入力があるかチェック
     bool IsTriggredAnyDevice() const;
 private:
@@ -128,6 +132,10 @@ private:
     std::optional<Range2D> currentStageRange_;
     StageCameraAdjuster cameraAdjuster_; // カメラ調整
 
+    // プレイヤーが踏んでいたNormalBlockの座標s
+    int maxRecordCount_ = 2;
+    std::deque<Vector2> onPlayerNormalBlocks_;
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -154,7 +162,6 @@ private:
 
     // helper
     void GetListsPlayerPtr();
-    //
     void SetListsWarpPtr(StageObjectCommonState state);
     void SetListsLaserLaunchersPtr(StageObjectCommonState state);
     void PutBorderLine();
@@ -169,4 +176,7 @@ private:
     // ステージ範囲計算
     void CalculateCurrentStageRange();
     void CloseToPlayer(LR direction, float zoomRate = 2.4f, const Vector2& focus = 0.7f);
+
+    // プレイヤーが踏んでいる最新のブロック位置を記録する
+    void RecordPlayerOnBlock();
 };

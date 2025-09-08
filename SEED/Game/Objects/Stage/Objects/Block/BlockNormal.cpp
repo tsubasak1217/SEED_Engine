@@ -2,6 +2,12 @@
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
 #include <SEED/Source/SEED.h>
+#include <Game/Components/StageObjectComponent.h>
+#include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
+
+// scene
+#include <Game/GameSystem.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 
 //============================================================================
 //	BlockNormal classMethods
@@ -67,6 +73,21 @@ void BlockNormal::Draw(){
 void BlockNormal::OnCollisionEnter(GameObject2D* other){
     if(other->GetObjectType() == ObjectType::Player){
         isTouchedByPlayer_ = true;
+
+        // NormalBlockを踏んだらその座標を記録する
+        if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+            if (component->GetStageObjectType() == StageObjectType::Player) {
+                if (Player* player = component->GetStageObject<Player>()) {
+                    if (player->OnGround()) {
+                        if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
+
+                            // 座標を記録
+                            pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

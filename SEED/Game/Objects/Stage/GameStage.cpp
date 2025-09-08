@@ -147,6 +147,22 @@ void GameStage::ReActivateDisActiveObjects() {
     disActiveObjects_.clear();
 }
 
+void GameStage::RecordPlayerOnBlock(const Vector2& translate) {
+
+    // 座標をブロックの中心位置にする
+    const float tileSize = stageObjectMapTileSize_;
+    Vector2 blockPos = Vector2(std::round(translate.x / tileSize) * tileSize,
+        std::round(translate.y / tileSize) * tileSize);
+
+    // 踏まれたブロック位置の座標をセット
+    onPlayerNormalBlocks_.push_back(blockPos);
+    while (maxRecordCount_ < onPlayerNormalBlocks_.size()) {
+
+        // 最大数を超えた場合古い座標を削除する
+        onPlayerNormalBlocks_.pop_front();
+    }
+}
+
 bool GameStage::IsTriggredAnyDevice() const {
 
     return player_->IsTriggredAnyDevice();
@@ -640,6 +656,11 @@ void GameStage::CloseToPlayer(LR direction, float zoomRate, const Vector2& focus
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
 }
 
+void GameStage::RecordPlayerOnBlock() {
+
+
+}
+
 /////////////////////////////////////////////////////////////////////////
 //
 // 描画
@@ -721,6 +742,20 @@ void GameStage::Edit() {
                 ImGui::DragFloat2("CameraClipRange", &clipRange.x, 0.1f, 0.1f, 10000.0f);
                 SEED::GetMainCamera()->SetFov(cameraFov);
                 SEED::GetMainCamera()->SetClipRange(clipRange);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Record")) {
+
+                const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
+                ImGui::Text("playerPos: %.1f,%.1f", playerWorldTranslate.x, playerWorldTranslate.y);
+                ImGui::DragInt("maxRecord", &maxRecordCount_, 1, 1, 16);
+                uint32_t index = 0;
+                for (const auto& trans : onPlayerNormalBlocks_) {
+
+                    std::string key = "records" + std::to_string(index) + ": %.1f,%.1f";
+                    ImGui::Text(key.c_str(), trans.x, trans.y);
+                    ++index;
+                }
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

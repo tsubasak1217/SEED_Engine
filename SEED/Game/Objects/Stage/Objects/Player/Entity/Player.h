@@ -55,14 +55,14 @@ public:
     LR GetMoveDirection() const { return moveDirection_; }
 
     // クリア判定
-    void IncreaseGoalTouchTime(){ goalTouchTime_ += ClockManager::DeltaTime(); }
-    void ResetGoalTouchTime(){ goalTouchTime_ = 0.0f; }
-    float GetGoalT()const{ return std::clamp(goalTouchTime_ / requiredGoalTime_,0.0f,1.0f); }
-    bool IsClearStage() const{ return goalTouchTime_ >= requiredGoalTime_; }
+    void IncreaseGoalTouchTime() { goalTouchTime_ += ClockManager::DeltaTime(); }
+    void ResetGoalTouchTime() { goalTouchTime_ = 0.0f; }
+    float GetGoalT()const { return std::clamp(goalTouchTime_ / requiredGoalTime_, 0.0f, 1.0f); }
+    bool IsClearStage() const { return goalTouchTime_ >= requiredGoalTime_; }
     // 死亡判定
     bool IsDeadFinishTrigger() const;
     void RequestDeadState() { stateController_->RequestDeadState(); }
-   
+
     //カメラ範囲から出たか判定
     bool IsOutOfCamera(const Range2D& cameraRange) const;
     bool TouchLaser() const;
@@ -79,6 +79,8 @@ public:
 
     // 何か入力があるか
     bool IsTriggredAnyDevice() const;
+    bool GetIsMoving() const { return stateController_->GetIsMoving(); }
+    bool OnGround() const { return stateController_->OnGround(); }
 private:
     //========================================================================
     //	private Methods

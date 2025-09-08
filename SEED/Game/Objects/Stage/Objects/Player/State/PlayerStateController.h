@@ -62,7 +62,7 @@ public:
     // 現在の状態を取得
     PlayerState GetCurrentState() const{ return current_; }
     bool GetIsMoving()const;
-
+    bool OnGround() const;
 private:
     //========================================================================
     //	private Methods

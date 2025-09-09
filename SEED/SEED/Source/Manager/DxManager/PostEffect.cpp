@@ -19,6 +19,7 @@
 #include <SEED/Source/Basic/PostProcess/Vignette/Vignette.h>
 #include <SEED/Source/Basic/PostProcess/Fog/Fog.h>
 #include <SEED/Source/Basic/PostProcess/Bloom/Bloom.h>
+#include <SEED/Source/Basic/PostProcess/Glitch/Glitch.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //                          static変数初期化
@@ -305,8 +306,10 @@ void PostEffect::Edit(){
                     postProcesses_.push_back({ std::make_unique<Bloom>(),false });
                     postProcesses_.back().first->Initialize();
                 }
-
-
+                if(ImGui::Button("グリッチ")){
+                    postProcesses_.push_back({ std::make_unique<Glitch>(),false });
+                    postProcesses_.back().first->Initialize();
+                }
             }ImGui::Unindent();
         }
 

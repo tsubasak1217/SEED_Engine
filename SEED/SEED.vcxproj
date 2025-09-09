@@ -294,6 +294,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
@@ -602,6 +606,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
@@ -774,6 +782,14 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Glitch.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

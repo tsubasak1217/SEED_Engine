@@ -73,6 +73,11 @@ bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tile
     return IsActive() && CheckPlayerToDistance(playerTranslate, tileSize);
 }
 
+void BorderLine::SetTargetX(float x) {
+    lerpXParam_.targetX = x;
+    lerpXParam_.running = true;
+}
+
 void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
 
     // 状態に応じて更新
@@ -86,9 +91,10 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
     case BorderLine::State::Active: {
 
         //移動補間が完了してからアクティブにする
-       /* if (lerpXParam_.running) {
-            UpdateSprite(lerpXParam_.targetX, sizeY, tileSize);
-        }*/
+        if (lerpXParam_.running) {
+            UpdateSprite({ lerpXParam_.targetX,translate.y }, sizeY, tileSize);
+            return;
+        }
 
 
         // サイズからscaleを計算して更新

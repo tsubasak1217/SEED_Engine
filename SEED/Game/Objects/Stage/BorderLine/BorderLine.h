@@ -58,6 +58,8 @@ public:
     //シェイクフラグ設定
     void SetIsShaking(bool flag) { isShaking_ = flag; }
 
+    void SetTargetX(float x);
+
 private:
     //========================================================================
     //	private Methods

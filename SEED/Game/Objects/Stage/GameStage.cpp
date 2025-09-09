@@ -528,6 +528,8 @@ void GameStage::PutBorderLine() {
     borderLine_->SetActivate();
     //向きの設定
     borderLine_->SetDirection(playerDirection);
+    // X座標の再設定
+    borderLine_->SetTargetX(axisX);
 
     // ホログラムオブジェクトを生成する
     GameStageBuilder stageBuilder{};

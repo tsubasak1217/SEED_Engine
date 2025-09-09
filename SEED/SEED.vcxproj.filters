@@ -405,6 +405,7 @@
     <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
+    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

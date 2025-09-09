@@ -5,8 +5,10 @@
 //============================================================================
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <SEED/Lib/Random/RandomGenerator.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
@@ -23,6 +25,12 @@
 //============================================================================
 //	GameStage classMethods
 //============================================================================
+
+GameStage::~GameStage() {
+
+    // 削除
+    PostEffectSystem::Delete(deadGlitchNoise_.handle);
+}
 
 void GameStage::Initialize(int currentStageIndex) {
 
@@ -77,6 +85,9 @@ void GameStage::Initialize(int currentStageIndex) {
     removeUI_TextBox.isApplyViewMat = true;
     removeUI_TextBox.useOutline = true;
     removeUI_TextBox.outlineWidth = 4.0f;
+
+    // グリッチ初期化
+    deadGlitchNoise_ = PostEffectSystem::AddPostProcess<Glitch>();
 }
 
 void GameStage::Reset() {
@@ -266,6 +277,9 @@ void GameStage::Update(bool isUpdateBorderLine) {
 
         break;
     }
+
+    // gグリッチ処理
+    UpdateDeadGlitch();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -715,6 +729,9 @@ void GameStage::CheckPlayerOutOfCamera() {
             // 元の位置にワープして戻す
             RecordData data = onBlockPlayerRecordData_.back();
             warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), data.translate);
+
+            // グリッチ処理開始
+            //StartDeadGlitch();
         }
     }
 }
@@ -837,6 +854,66 @@ void GameStage::SetDeadLaserCollisions() {
                     playerCollision_ = *aabb;
                 }
             }
+        }
+    }
+}
+
+void GameStage::StartDeadGlitch() {
+
+    if (isActiveGlitchNoise_) {
+        return;
+    }
+
+    // グリッチ処理開始
+    PostEffectSystem::SetActive(deadGlitchNoise_.handle, true);
+    isActiveGlitchNoise_ = true;
+
+    // 収束時間を設定
+    deadGlitchConvergenceTimer_.duration = randomGlitchCount_ * deadGlitchTimer_.duration;
+}
+
+void GameStage::UpdateDeadGlitch() {
+
+    // グリッチ処理開始
+    if (player_->TouchLaser()) {
+
+        //StartDeadGlitch();
+    }
+
+    // アクティブ時のみ
+    if (!isActiveGlitchNoise_) {
+        return;
+    }
+
+    // 時間を進める
+    deadGlitchTimer_.Update();
+    deadGlitchNoise_.pPostProcess->time_ += deadGlitchTimer_.currentTime;
+
+    // 収束
+    deadGlitchConvergenceTimer_.Update();
+    glitchIntencityRange_ = std::lerp(startIntencityRange_, 0.0f,
+        deadGlitchConvergenceTimer_.GetProgress());
+
+    // 時間経過後
+    if (deadGlitchTimer_.IsFinished()) {
+
+        // ランダムな値で強さを設定する
+        deadGlitchNoise_.pPostProcess->intensity_ = RandomGenerator::Generate(
+            -glitchIntencityRange_, glitchIntencityRange_);
+
+        // タイマー諸々リセットして進める
+        deadGlitchTimer_.Reset();
+        ++currentGlitchCount_;
+
+        // 最大数を超えたら処理終了
+        if (randomGlitchCount_ < currentGlitchCount_) {
+
+            deadGlitchConvergenceTimer_.Reset();
+            isActiveGlitchNoise_ = false;
+            currentGlitchCount_ = 0;
+            PostEffectSystem::SetActive(deadGlitchNoise_.handle, false);
+            deadGlitchNoise_.pPostProcess->time_ = 0.0f;
+            deadGlitchNoise_.pPostProcess->intensity_ = 0.0f;
         }
     }
 }
@@ -1015,6 +1092,18 @@ void GameStage::Edit() {
                 EnumAdapter<Easing::Type>::Combo("blockAppearanceEasing", &blockAppearanceEasing_);
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("Glitch")) {
+
+                if (ImGui::Button("Start")) {
+                    StartDeadGlitch();
+                }
+
+                ImGui::DragFloat("duration", &deadGlitchTimer_.duration, 0.01f);
+                ImGui::DragInt("randomGlitchCount", &randomGlitchCount_, 1, 1, 1024);
+                ImGui::DragFloat("glitchIntencityRange", &glitchIntencityRange_, 0.01f);
+                deadGlitchNoise_.pPostProcess->Edit();
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
@@ -1039,6 +1128,10 @@ void GameStage::ApplyJson() {
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
     blockAppearanceBaseDuration_ = data.value("blockAppearanceBaseDuration_", 0.26f);
     blockAppearanceSpacing_ = data.value("blockAppearanceSpacing_", 0.1f);
+    deadGlitchTimer_.duration = data.value("deadGlitchTimer_.duration", 0.1f);
+    glitchIntencityRange_ = data.value("glitchIntencityRange_", 6.0f);
+    startIntencityRange_ = data.value("glitchIntencityRange_", 6.0f);
+    randomGlitchCount_ = data.value("randomGlitchCount_", 16);
     //blockAppearanceEasing_ = EnumAdapter<Easing::Type>::FromString(data["blockAppearanceEasing_"]).value();
     playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
@@ -1052,6 +1145,9 @@ void GameStage::SaveJson() {
     data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
     data["blockAppearanceBaseDuration_"] = blockAppearanceBaseDuration_;
     data["blockAppearanceSpacing_"] = blockAppearanceSpacing_;
+    data["deadGlitchTimer_.duration"] = deadGlitchTimer_.duration;
+    data["glitchIntencityRange_"] = glitchIntencityRange_;
+    data["randomGlitchCount_"] = randomGlitchCount_;
     data["blockAppearanceEasing_"] = EnumAdapter<Easing::Type>::ToString(blockAppearanceEasing_);
     borderLine_->ToJson(data["BorderLine"]);
     warpController_->ToJson(data["WarpController"]);

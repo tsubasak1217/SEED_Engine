@@ -33,20 +33,13 @@ public:
     nlohmann::json ToJson() override;
     void FromJson(const nlohmann::json& json) override;
 
-	//--------- accessor -----------------------------------------------------
-
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
+    //--------- variables ----------------------------------------------------
 
     float time_ = 0.0f;        // 経過秒
     float intensity_ = 0.0f;   // グリッチ全体の強さ
     float blockSize_ = 32.0f;  // 横ずれブロックの太さ
-    float colorOffset_ = 4.0f; // RGBずれ距離
+    float colorOffset_ = 8.0f; // RGBずれ距離
 
     float noiseStrength_ = 0.2f; // ノイズ混合率
-    float lineSpeed_ = 1.5f;     // スキャンライン走査速度
+    float lineSpeed_ = 4.0f;     // スキャンライン走査速度
 };

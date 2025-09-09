@@ -3,6 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectContext.h>
+#include <SEED/Source/Basic/PostProcess/Glitch/Glitch.h>
+
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 #include <Game/Objects/Stage/Methods/GameStageWarpController.h>
@@ -30,7 +33,7 @@ public:
     //========================================================================
 
     GameStage() = default;
-    ~GameStage() = default;
+    ~GameStage();
 
     // 初期化処理
     void Initialize(int currentStageIndex);
@@ -172,6 +175,16 @@ private:
     float blockAppearanceSpacing_;       // 間隔
     Easing::Type blockAppearanceEasing_;
 
+    // 死亡時のグリッチノイズ処理
+    MinimalPostEffect<Glitch> deadGlitchNoise_;
+    bool isActiveGlitchNoise_ = false;
+    Timer deadGlitchTimer_;  // 1処理にかかる時間
+    Timer deadGlitchConvergenceTimer_;
+    int randomGlitchCount_;  // ランダム処理回数
+    int currentGlitchCount_; // 処理回数
+    float glitchIntencityRange_;
+    float startIntencityRange_;
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -225,4 +238,8 @@ private:
     // プレイヤーが死亡時のレーザーの衝突判定
     bool IsSafeRecordPoint(const RecordData& data) const;
     void SetDeadLaserCollisions();
+
+    // 死亡時のグリッチ
+    void StartDeadGlitch();
+    void UpdateDeadGlitch();
 };

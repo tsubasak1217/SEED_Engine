@@ -437,6 +437,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />

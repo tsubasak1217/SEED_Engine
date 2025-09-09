@@ -216,8 +216,8 @@ void GameState_Pause::ManageState(){
         case 1:// やり直す
             pScene_->ChangeScene("Game");
             break;
-        case 2:// タイトルへ戻る
-            pScene_->ChangeScene("Title");
+        case 2:// セレクトへ戻る
+            pScene_->ChangeScene("Select");
             AudioManager::EndAllAudio();
             break;
         default:

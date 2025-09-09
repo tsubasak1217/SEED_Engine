@@ -9,6 +9,7 @@
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
@@ -51,6 +52,20 @@ void GameStage::Initialize(int currentStageIndex) {
     cameraAdjuster_.Update();
 }
 
+void GameStage::Reset() {
+
+    if (!requestInitialize_) {
+        return;
+    }
+
+    // リクエストがあれば初期化する
+    BuildStage();
+    // カメラ調整の初期化
+    cameraAdjuster_.SetStageRange(currentStageRange_.value());
+    cameraAdjuster_.Update();
+    requestInitialize_ = false;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // ステージ構築処理
@@ -91,7 +106,8 @@ void GameStage::BuildStage() {
     currentState_ = State::Play;
 
     // 最初の座標を渡しておく
-    onPlayerNormalBlocks_.push_back(player_->GetOwner()->GetWorldTranslate());
+    onBlockPlayerRecordData_.push_back({ false,player_->GetOwner()->GetWorldTranslate() });
+    deadMomentLaserCollisions_.clear();
 }
 
 //Objectのアクティブ・非アクティブ設定
@@ -158,11 +174,11 @@ void GameStage::RecordPlayerOnBlock(const Vector2& translate) {
         player_->GetOwner()->GetWorldTranslate().y);
 
     // 踏まれたブロック位置の座標をセット
-    onPlayerNormalBlocks_.push_back(blockPos);
-    while (maxRecordCount_ < onPlayerNormalBlocks_.size()) {
+    onBlockPlayerRecordData_.push_back({ borderLine_->IsActive(),blockPos });
+    while (maxRecordCount_ < onBlockPlayerRecordData_.size()) {
 
         // 最大数を超えた場合古い座標を削除する
-        onPlayerNormalBlocks_.pop_front();
+        onBlockPlayerRecordData_.pop_front();
     }
 }
 
@@ -521,8 +537,36 @@ void GameStage::CheckPlayerDead() {
     // 死亡判定
     if (player_->IsDeadFinishTrigger()) {
 
-        // 元の位置にワープして戻す
-        warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), onPlayerNormalBlocks_.front());
+        // レーザーで元の位置に戻す処理
+        // レーザーの衝突位置を取得する
+        //SetDeadLaserCollisions();
+
+        //Vector2 target = onBlockPlayerRecordData_.back().translate;
+        //// 逆イテレータで最新の座標でチェックする
+        //bool isFound = false;
+        //for (auto it = onBlockPlayerRecordData_.rbegin(); it != onBlockPlayerRecordData_.rend(); ++it) {
+        //    // レーザーと衝突していたら他の座標でチェックする
+        //    if (IsSafeRecordPoint(*it)) {
+
+        //        // 補間先を設定
+        //        target = it->translate;
+        //        isFound = true;
+        //        // 境界線を置いていなかった場合
+        //        if (!it->isPutBordered && !player_->GetIsHologram()) {
+
+        //            isRemoveHologram_ = true;
+        //            break;
+        //        }
+        //    }
+        //}
+        //// 元の位置にワープして戻す
+        //RecordData data = onBlockPlayerRecordData_.back();
+        //warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), target);
+        //deadMomentLaserCollisions_.clear();
+
+        // レーザーで死んだらリスタート
+        isRemoveHologram_ = true;
+        requestInitialize_ = true;
     }
 }
 
@@ -584,7 +628,8 @@ void GameStage::CheckPlayerOutOfCamera() {
         if (player_->IsOutOfCamera(cameraRange)) {
 
             // 元の位置にワープして戻す
-            warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), onPlayerNormalBlocks_.front());
+            RecordData data = onBlockPlayerRecordData_.back();
+            warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), data.translate);
         }
     }
 }
@@ -659,9 +704,56 @@ void GameStage::CloseToPlayer(LR direction, float zoomRate, const Vector2& focus
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
 }
 
-void GameStage::RecordPlayerOnBlock() {
+bool GameStage::IsSafeRecordPoint(const RecordData& data) const {
 
+    // 衝突判定を取得して衝突していれば別のデータでチェックする
+    AABB2D playerAABB = playerCollision_.GetAABB();
+    playerAABB.center = data.translate;
+    for (const auto& laserCollision : deadMomentLaserCollisions_) {
 
+        // 衝突した場合別のデータ
+        if (Collision::AABB2D::AABB2D(playerAABB, laserCollision.GetAABB())) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void GameStage::SetDeadLaserCollisions() {
+
+    // プレイヤーがレーザーの衝突で死んだときステージ内のレーザー判定をすべて取得する
+    if (deadMomentLaserCollisions_.empty()) {
+        for (const auto& object : std::views::join(std::array{ objects_,hologramObjects_ })) {
+            if (StageObjectComponent* stage = object->GetComponent<StageObjectComponent>()) {
+                if (LaserLauncher* laserLauncher = stage->GetStageObject<LaserLauncher>()) {
+
+                    // 発射台からすべてのレーザーを取得する
+                    for (const auto& laser : laserLauncher->GetLasers()) {
+                        if (Collision2DComponent* collision = laser->GetComponent<Collision2DComponent>()) {
+
+                            // 全ての衝突を取得
+                            for (const auto& collider : collision->GetColliders()) {
+                                if (Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())) {
+
+                                    deadMomentLaserCollisions_.emplace_back(*aabb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (Collision2DComponent* component = player_->GetOwner()->GetComponent<Collision2DComponent>()) {
+
+            // プレイヤーの衝突を取得
+            for (const auto& collider : component->GetColliders()) {
+                if (Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())) {
+
+                    playerCollision_ = *aabb;
+                }
+            }
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -753,10 +845,13 @@ void GameStage::Edit() {
                 ImGui::Text("playerPos: %.1f,%.1f", playerWorldTranslate.x, playerWorldTranslate.y);
                 ImGui::DragInt("maxRecord", &maxRecordCount_, 1, 1, 16);
                 uint32_t index = 0;
-                for (const auto& trans : onPlayerNormalBlocks_) {
+                for (const auto& data : onBlockPlayerRecordData_) {
 
-                    std::string key = "records" + std::to_string(index) + ": %.1f,%.1f";
-                    ImGui::Text(key.c_str(), trans.x, trans.y);
+                    ImGui::SeparatorText(("records: " + std::to_string(index)).c_str());
+                    std::string key = "translate: %.1f,%.1f";
+                    ImGui::Text(key.c_str(), data.translate.x, data.translate.y);
+                    key = std::format("isPutBordered: {}", data.isPutBordered);
+                    ImGui::Text(key.c_str(), data.translate.x, data.translate.y);
                     ++index;
                 }
                 ImGui::EndTabItem();

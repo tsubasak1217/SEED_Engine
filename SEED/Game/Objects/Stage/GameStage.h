@@ -33,6 +33,7 @@ public:
 
     // 初期化処理
     void Initialize(int currentStageIndex);
+    void Reset();
 
     // 更新処理
     void Update(bool isUpdateBorderLine = true);
@@ -94,12 +95,22 @@ private:
     //	private Methods
     //========================================================================
 
+    //--------- structure ----------------------------------------------------
+
+    // 記録しておくデータ
+    struct RecordData {
+
+        bool isPutBordered; // 境界線を置いていたか
+        Vector2 translate;  // 踏んでいたブロックの中心座標
+    };
+
     //--------- variables ----------------------------------------------------
 
     State currentState_;         // 現在の状態
     uint32_t currentStageIndex_; // 現在のステージ番号
     uint32_t maxStageCount_;     // 最大ステージ数
     bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
+    bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
 
@@ -132,9 +143,12 @@ private:
     std::optional<Range2D> currentStageRange_;
     StageCameraAdjuster cameraAdjuster_; // カメラ調整
 
-    // プレイヤーが踏んでいたNormalBlockの座標s
-    int maxRecordCount_ = 1;
-    std::deque<Vector2> onPlayerNormalBlocks_;
+    // プレイヤーがブロックを踏んでいた時の記録s
+    int maxRecordCount_ = 18;
+    std::deque<RecordData> onBlockPlayerRecordData_;
+    // 死んだときのレーザー判定の集合
+    std::vector<Collider_AABB2D> deadMomentLaserCollisions_;
+    Collider_AABB2D playerCollision_;
 
     //--------- functions ----------------------------------------------------
 
@@ -177,6 +191,7 @@ private:
     void CalculateCurrentStageRange();
     void CloseToPlayer(LR direction, float zoomRate = 2.4f, const Vector2& focus = 0.7f);
 
-    // プレイヤーが踏んでいる最新のブロック位置を記録する
-    void RecordPlayerOnBlock();
+    // プレイヤーが死亡時のレーザーの衝突判定
+    bool IsSafeRecordPoint(const RecordData& data) const;
+    void SetDeadLaserCollisions();
 };

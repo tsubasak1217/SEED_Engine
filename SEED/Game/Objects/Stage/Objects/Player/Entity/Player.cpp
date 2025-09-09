@@ -68,6 +68,9 @@ void Player::Initialize(){
     // 初期化値
     // 最初は右向き
     moveDirection_ = LR::RIGHT;
+
+    //ownerのOnGround判定をtrueにする
+    owner_->SetIsOnGround(true);
 }
 
 // spriteのサイズ設定
@@ -91,9 +94,8 @@ bool Player::IsDeadFinishTrigger() const{
 bool Player::IsOutOfCamera(const Range2D& cameraRange) const{
     bool isOut = false;
 
-    if(cameraRange.min.x > body_.transform.translate.x + body_.size.x * 1.5f ||
+    if(cameraRange.min.x > body_.transform.translate.x + body_.size.x * 1.5f || 
         cameraRange.max.x < body_.transform.translate.x - body_.size.x * 1.5f ||
-        cameraRange.min.y > body_.transform.translate.y + body_.size.y * 1.5f ||
         cameraRange.max.y < body_.transform.translate.y - body_.size.y * 1.5f){
         isOut = true;
     }

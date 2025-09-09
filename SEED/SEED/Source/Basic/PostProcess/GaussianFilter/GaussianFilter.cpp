@@ -1,5 +1,5 @@
 #include "GaussianFilter.h"
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <Environment/Environment.h>
 
 GaussianFilter::GaussianFilter() : IPostProcess(){

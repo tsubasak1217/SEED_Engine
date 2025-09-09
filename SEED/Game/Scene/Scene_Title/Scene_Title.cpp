@@ -1,6 +1,5 @@
 #include <Game/Scene/Scene_Title/Scene_Title.h>
 
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
 //lib
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
@@ -11,11 +10,12 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Title::Scene_Title(){
     SEED::SetMainCamera("default");
-    PostEffect::DeleteAll();
-    PostEffect::Load("gj3_defaultPostEffect.json");
+    PostEffectSystem::DeleteAll();
+    PostEffectSystem::Load("gj3_defaultPostEffect.json");
 
     // 再生
     bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("タイトルシーン_BGM"), true, kBgmVolume_);
+
 }
 
 Scene_Title::~Scene_Title(){}
@@ -87,6 +87,7 @@ void Scene_Title::Initialize(){
         sprites_["Space"].FromJson(buttonJson[1]);
     }
 
+
     // 色の初期化
     hexagonColors_.push_back(MyMath::FloatColor(255,118,11,255,false));
     hexagonColors_.push_back(MyMath::FloatColor(10,10,10,255, false));
@@ -139,6 +140,7 @@ void Scene_Title::Update(){
         transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
         transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
     }
+
 
     // タイマーが終わったらシーン遷移
     if(transisitionTimer_.IsFinished()){

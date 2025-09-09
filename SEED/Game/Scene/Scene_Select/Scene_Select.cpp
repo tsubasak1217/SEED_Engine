@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 
 //============================================================================
 //	Scene_Select classMethods

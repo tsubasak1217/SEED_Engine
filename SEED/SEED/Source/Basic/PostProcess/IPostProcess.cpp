@@ -1,7 +1,7 @@
 #include "IPostProcess.h"
 // local
 #include <SEED/Source/Manager/DxManager/DxManager.h>
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Structs/CS_Buffers.h>
@@ -41,21 +41,21 @@ void IPostProcess::Dispatch(
 
     if(isSwapBuffer){
         // バッファインデックスを更新
-        PostEffect::instance_->ChangeBufferIndex();
+        PostEffectSystem::instance_->ChangeBufferIndex();
 
         // リソースの状態を更新
-        PostEffect::instance_->StartTransition();
+        PostEffectSystem::instance_->StartTransition();
     }
 }
 
 // 名前取得関数
 std::string IPostProcess::GetCurUAVBufferName(){
-    return PostEffect::GetCurUAVBufferName();
+    return PostEffectSystem::GetCurUAVBufferName();
 }
 
 // 名前取得関数
 std::string IPostProcess::GetCurSRVBufferName(){
-    return PostEffect::GetCurSRVBufferName();
+    return PostEffectSystem::GetCurSRVBufferName();
 }
 
 // 深度バッファ名取得関数

@@ -7,7 +7,7 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 
 // external
@@ -2414,7 +2414,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
         //GPUParticleSystem::Update();
 
         // オフスクリーンの描画依頼をここで出しておく
-        if((int)PostEffect::GetInstance()->postProcesses_.size() != 0){
+        if((int)PostEffectSystem::GetInstance()->postProcessGroups_.size() != 0){
             AddOffscreenResult(ViewManager::GetTextureHandle("postEffectResult"), BlendMode::NONE);
 
         } else{

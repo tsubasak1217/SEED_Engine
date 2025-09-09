@@ -392,6 +392,7 @@
     <ClInclude Include="Game\Objects\Clear\ClearTextAnimation.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
     <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
+    <ClInclude Include="Game\Manager\AudioDictionary.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

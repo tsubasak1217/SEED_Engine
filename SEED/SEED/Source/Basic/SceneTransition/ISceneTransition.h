@@ -21,13 +21,13 @@ protected:
 
 public:
     virtual void StartTransition(
-        float sceneOutTime, // シーンが終了するまでの時間
-        float sceneInTime   // 次のシーンの開始までの時間
+        float curSceneExitTime, // シーンが終了するまでの時間
+        float newSceneEnterTime   // 次のシーンの開始までの時間
     );
 
 protected:
     // タイマー
-    Timer sceneOutTimer_;
-    Timer sceneInTimer_;
+    Timer curSceneExitTimer_;
+    Timer newSceneEnterTimer_;
     bool isStart_ = false;
 };

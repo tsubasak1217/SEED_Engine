@@ -59,6 +59,14 @@ void GameState_Pause::Initialize(){
         }
     }
 
+    // 色の初期化
+    hexagonColors_.push_back(MyMath::FloatColor(255, 118, 11, 255, false));
+    hexagonColors_.push_back(MyMath::FloatColor(10, 10, 10, 255, false));
+    hexagonColors_.push_back(MyMath::FloatColor(255, 13, 86, 255, false));
+    hexagonSize_ = 46.0f;
+
+    // Spriteなどを一度更新しておく(ちらつき防止)
+    Update(); 
 }
 
 
@@ -117,6 +125,11 @@ void GameState_Pause::Update(){
         pauseItems_[i].backSprite.color = pauseItems_[i].backColor;
         pauseItems_[i].backSprite.color.w = 0.4f + 0.6f * t2;
         pauseItems_[i].text.color.w = pauseItems_[i].backSprite.color.w;
+    }
+
+    // 終了遷移のタイマー更新
+    if(isExitScene_){
+        sceneChangeTimer_.Update();
     }
 
 #ifdef _DEBUG
@@ -217,14 +230,25 @@ void GameState_Pause::ManageState(){
             pScene_->ChangeScene("Game");
             break;
         case 2:// セレクトへ戻る
-            pScene_->ChangeScene("Select");
+        {
+            // シーン遷移を生成して開始
+            isExitScene_ = true;
+            HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+            transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+            transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
             AudioManager::EndAllAudio();
             break;
+        }
         default:
             break;
         }
     }
 
+    // セレクトシーンに遷移
+    if(sceneChangeTimer_.IsFinished()){
+        pScene_->ChangeScene("Select");
+        return;
+    }
 
 }
 

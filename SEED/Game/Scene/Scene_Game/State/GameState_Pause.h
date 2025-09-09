@@ -9,6 +9,10 @@
 #include <SEED/Lib/Structs/Timer.h>
 #include <Game/Scene/Input/PauseMenuInputActionEnum.h>
 
+// transition
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
+
 struct PauseItem{
     Transform2D start;
     Transform2D end;
@@ -50,6 +54,15 @@ private:
     int32_t currentMenu_ = 0;
     int32_t kMenuCount = 3;
     Timer menuTimer_ = Timer(1.0f);
+
+    // 現在のシーンの終わり時間と次のシーンの始まり時間(遷移用)
+    bool isExitScene_ = false;
+    Timer sceneChangeTimer_ = Timer(1.0f);
+    float nextSceneEnterTime_ = 0.75f;
+
+    //hexagon遷移用
+    std::vector<Vector4> hexagonColors_;
+    float hexagonSize_ = 80.0f;
 
 private:
     void MenuItemsToJson();

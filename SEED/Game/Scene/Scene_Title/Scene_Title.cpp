@@ -139,10 +139,21 @@ void Scene_Title::Update(){
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
 
         // 遷移処理開始
+        static bool isFirstTransition = true;
+        float nextSceneEnterTime = 0;
+
+        // 最初の遷移時は次のシーン開始時間を長く取る(読み込み対策)
+        if(isFirstTransition){
+            nextSceneEnterTime = nextSceneStartTime_ + 0.5f;
+            isFirstTransition = false;
+        } else{
+            nextSceneEnterTime = nextSceneStartTime_;
+        }
+
         isExitScene_ = true;
         HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
         transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
-        transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
+        transition->StartTransition(transisitionTimer_.GetDuration(), nextSceneEnterTime);
 
         // SE
         const float kSEVolume = 0.24f;

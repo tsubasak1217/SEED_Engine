@@ -48,6 +48,21 @@ void StageObjectComponent::Initialize(
     object_->SetTranslate(translate);
     mapSize_ = size;
     object_->SetSize(size);
+
+    // ホログラムはスケール倍率0.0fから補間して発生させる
+    if (state == StageObjectCommonState::Hologram) {
+
+        object_->SetScale(0.0f);
+    }
+}
+
+void StageObjectComponent::AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing) {
+
+    // ホログラム専用更新処理
+    if (object_->GetCommonState() == StageObjectCommonState::Hologram) {
+
+        object_->AppearanceUpdateAnimation(baseDuration, spacing, easing, objectColum_);
+    }
 }
 
 //============================================================================

@@ -35,7 +35,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
 
         // 基本初期化
         item.backSprite = Sprite("UI/menuItem.png");
-        item.backSprite.layer = 30;
+        item.backSprite.layer = 20;
         item.backSprite.anchorPoint = 0.5f;
         item.backSprite.isApplyViewMat = false;
 
@@ -59,6 +59,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
     // スケール倍率0.0fで初期化
     // 背景
     stageIndexBack_ = Sprite("Scene_Select/hexagonDesign.png");
+    stageIndexBack_.layer = 20;
     stageIndexBack_.anchorPoint = 0.5f;
     stageIndexBack_.isApplyViewMat = false;
     stageIndexBack_.transform.scale = 0.0f;
@@ -140,7 +141,7 @@ void ClearSelectMenu::Update() {
         float ease2 = EaseOutBack(t2);
         items_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
         items_[i].text.transform.scale = 1.0f + 0.2f * ease2;
-        items_[i].backSprite.color.w = 0.5f + 0.5f * t2;
+        //items_[i].backSprite.color.w = 0.5f + 0.5f * t2;
     }
 
     // 座標を設定

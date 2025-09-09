@@ -45,6 +45,7 @@ public:
 
     void SetTranslate(const Vector2& translate) override;
     void SetSize(const Vector2& size) override;
+    void SetScale(float scale) override;
     void SetCommonState(StageObjectCommonState state) override;
     void SetIsLaserActive(bool isActive);
 

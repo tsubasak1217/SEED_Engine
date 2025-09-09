@@ -127,6 +127,8 @@ void GameState_Play::ManageState() {
 
             // プレイヤーを左側に寄せアップで写す
             stage->CloseToPlayer(LR::LEFT);
+            // ステージをポーズ状態にする
+            stage->SetIsPaused(true);
         }
 
         // ポーズステートに遷移

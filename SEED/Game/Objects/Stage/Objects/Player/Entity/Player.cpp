@@ -142,12 +142,16 @@ void Player::Update() {
     // エディターを更新
     Edit();
 
-    // 状態を更新: 王冠を取ったら状態更新を止める
-    if (isGetCrown_ == false) {
-        // 向いている方向を更新
-        UpdateMoveDirection();
-        stateController_->Update(*this);
+    // ポーズ中 or クリア後は移動処理を止める
+    if (isPaused_ || isGetCrown_) {
+        // スプライトの動きだけは更新する（アニメ演出用）
+        SpriteMotion();
+        return;
     }
+
+    // 通常時の処理
+    UpdateMoveDirection();
+    stateController_->Update(*this);
 
     // スプライトの動きを更新
     SpriteMotion();
@@ -210,8 +214,8 @@ void Player::SpriteMotion() {
 
     bool isMoving = stateController_->GetIsMoving();
 
-    // 王冠取得後は移動状態を無効化する
-    if (isGetCrown_) {
+    // 王冠取得後は移動状態を無効化する. ポーズ中も無効化
+    if (isGetCrown_ == true || isPaused_ == true) {
         isMoving = false;
     }
 

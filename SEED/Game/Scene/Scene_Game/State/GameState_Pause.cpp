@@ -196,6 +196,8 @@ void GameState_Pause::ManageState(){
     if(inputMapper_->IsTriggered(PauseMenuInputAction::Pause)){
         isExit_ = true;
         stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
+        // 画面が切り替わったらポーズ解除
+        stage_->SetIsPaused(false);
         return;
     }
 
@@ -223,8 +225,10 @@ void GameState_Pause::ManageState(){
         default:
             break;
         }
-    }
 
+        // 画面が切り替わったらポーズ解除
+        stage_->SetIsPaused(false);
+    }
 
 }
 

@@ -86,9 +86,9 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
     case BorderLine::State::Active: {
 
         //移動補間が完了してからアクティブにする
-        if (lerpXParam_.running) {
+       /* if (lerpXParam_.running) {
             UpdateSprite(lerpXParam_.targetX, sizeY, tileSize);
-        }
+        }*/
 
 
         // サイズからscaleを計算して更新

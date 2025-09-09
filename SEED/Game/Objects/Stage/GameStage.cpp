@@ -291,6 +291,8 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     CheckClear();
     // 死亡判定
     CheckPlayerDead();
+    // ポーズ中か判定
+    CheckPause();
 
     // uiの更新
     UpdateRemoveUI();
@@ -615,36 +617,18 @@ void GameStage::CheckPlayerDead() {
     // 死亡判定
     if (player_->IsDeadFinishTrigger()) {
 
-        // レーザーで元の位置に戻す処理
-        // レーザーの衝突位置を取得する
-        //SetDeadLaserCollisions();
-
-        //Vector2 target = onBlockPlayerRecordData_.back().translate;
-        //// 逆イテレータで最新の座標でチェックする
-        //bool isFound = false;
-        //for (auto it = onBlockPlayerRecordData_.rbegin(); it != onBlockPlayerRecordData_.rend(); ++it) {
-        //    // レーザーと衝突していたら他の座標でチェックする
-        //    if (IsSafeRecordPoint(*it)) {
-
-        //        // 補間先を設定
-        //        target = it->translate;
-        //        isFound = true;
-        //        // 境界線を置いていなかった場合
-        //        if (!it->isPutBordered && !player_->GetIsHologram()) {
-
-        //            isRemoveHologram_ = true;
-        //            break;
-        //        }
-        //    }
-        //}
-        //// 元の位置にワープして戻す
-        //RecordData data = onBlockPlayerRecordData_.back();
-        //warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), target);
-        //deadMomentLaserCollisions_.clear();
-
         // レーザーで死んだらリスタート
         isRemoveHologram_ = true;
         requestInitialize_ = true;
+    }
+}
+
+void GameStage::CheckPause() {
+
+    if (isPaused_) {
+        player_->SetPaused(true);
+    } else {
+        player_->SetPaused(false);
     }
 }
 

@@ -4,56 +4,60 @@
 
 void HexagonTransition::Update(){
 
-    sceneOutTimer_.Update();
+    if(!isExitScene_){
+        // 現在のシーン終了タイマー
+        curSceneExitTimer_.Update();
 
-    // 時間を彩度抽選
-    if(sceneOutTimer_.IsFinished()){
-        if(sceneOutTimer_.IsFinishedNow()){
-            for(auto& row : hexagons_){
-                for(auto& hex : row){
-                    hex.time = MyFunc::Random(sceneInTimer_.GetDuration() * 0.1f, sceneInTimer_.GetDuration());
-                }
+        // 終わったら時間を再度抽選
+        if(curSceneExitTimer_.IsFinishedNow()){
+            for(auto& hex : hexagons_){
+                hex.appearTime = MyFunc::Random(newSceneEnterTimer_.GetDuration() * 0.1f, newSceneEnterTimer_.GetDuration());
+                hex.scalingTimer.ToEnd();
             }
+
+            isExitScene_ = true;
         }
 
-        // 次のシーン開始時のタイマー
-        sceneInTimer_.Update();
+    } else{
+        // 次のシーン開始タイマー
+        newSceneEnterTimer_.Update();
     }
-
-#ifdef _DEBUG
-    ImFunc::CustomBegin("HexagonTransition", MoveOnly_TitleBar);
-    {
-        ImGui::Text("end %d", sceneOutTimer_.IsFinished());
-        ImGui::End();
-    }
-#endif // _DEBUG
 }
 
 void HexagonTransition::Draw(){
 
     // 六角形の描画
-    for(auto& row : hexagons_){
-        for(auto& hex : row){
+    for(auto& hex : hexagons_){
 
-            bool isDraw = false;
-            if(!sceneOutTimer_.IsFinished()){
-                isDraw = hex.time <= sceneOutTimer_.currentTime;
-            } else{
-                isDraw = hex.time >= sceneInTimer_.currentTime;
-            }
-
+        bool isDraw = false;
+        float ease = 0.0f;
+        if(!curSceneExitTimer_.IsFinished()){
+            isDraw = hex.appearTime <= curSceneExitTimer_.currentTime;
             if(isDraw){
-                SEED::DrawHexagon(
-                    hex.pos,
-                    hexagonRadius_,
-                    angle_,
-                    hex.color,
-                    BlendMode::NORMAL,
-                    DrawLocation::Front,
-                    300,
-                    false
-                );
+                hex.scalingTimer.Update();
+                ease = hex.scalingTimer.GetEase(Easing::InOutQuint);
             }
+
+        } else{
+            ease = hex.scalingTimer.GetEase(Easing::InOutQuint);
+            if(hex.appearTime <= newSceneEnterTimer_.currentTime){
+                hex.scalingTimer.Update(-1.0f);
+            }
+            isDraw = ease > 0.0f;
+        }
+
+        if(isDraw){
+
+            SEED::DrawHexagon(
+                hex.pos,
+                hexagonRadius_ * ease,
+                angle_,
+                hex.color,
+                BlendMode::NORMAL,
+                DrawLocation::Front,
+                300,
+                false
+            );
         }
     }
 }
@@ -90,7 +94,6 @@ void HexagonTransition::CreateHexagonInfo(){
         if(currentPos.x > kWindowSize.x){ break; }
 
         // 要素の追加
-        hexagons_.emplace_back();
         int col = 0;
 
         while(currentPos.y < kWindowSize.y){
@@ -101,8 +104,9 @@ void HexagonTransition::CreateHexagonInfo(){
             currentPos.x = initialPos.x + row * dx;
             info.pos = currentPos;
             info.color = colorList_[random];
-            info.time = MyFunc::Random(0.0f, sceneOutTimer_.GetDuration() * 0.9f);
-            hexagons_.back().emplace_back(info);
+            info.appearTime = MyFunc::Random(0.0f, curSceneExitTimer_.GetDuration() * 0.9f);
+            info.scalingTimer = Timer(scaleTime);
+            hexagons_.emplace_back(info);
             col++;
         }
 

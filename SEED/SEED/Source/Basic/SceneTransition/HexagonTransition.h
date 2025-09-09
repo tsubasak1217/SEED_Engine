@@ -11,7 +11,8 @@
 struct TransitionHexagon{
     Vector2 pos;
     Vector4 color;
-    float time;
+    float appearTime;
+    Timer scalingTimer;
 };
 
 class HexagonTransition : public ISceneTransition{
@@ -26,8 +27,8 @@ protected:
 public:
 
     // 遷移の開始
-    void StartTransition(float sceneOutTime, float sceneInTime)override {
-        ISceneTransition::StartTransition(sceneOutTime, sceneInTime);
+    void StartTransition(float curSceneExitTime, float newSceneEnterTime)override {
+        ISceneTransition::StartTransition(curSceneExitTime, newSceneEnterTime);
         CreateHexagonInfo();
     }
 
@@ -42,10 +43,12 @@ private:
 
 private:
     // リスト
-    std::vector<std::vector<TransitionHexagon>> hexagons_;
+    std::vector<TransitionHexagon> hexagons_;
     std::vector<Vector4> colorList_;
 
     // パラメータ
     float hexagonRadius_ = 80.0f;
     float angle_ = std::numbers::pi_v<float> / 2.0f;
+    float scaleTime = 0.2f;
+    bool isExitScene_ = false;
 };

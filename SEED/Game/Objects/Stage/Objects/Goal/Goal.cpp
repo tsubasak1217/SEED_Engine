@@ -85,7 +85,7 @@ void Goal::CrownMotion(){
     if(pPlayer_){
 
         // プレイヤーの上をターゲットにする
-        targetPos_ = pPlayer_->GetOwner()->GetWorldTranslate() + defaultTileSize_ * 0.6f * Vector2(0.0f, -1.0f);
+        targetPos_ = pPlayer_->GetSprite().transform.translate + defaultTileSize_ * 0.6f * Vector2(0.0f, -1.0f);
 
         // スプライン曲線で補間
         std::vector<Vector2> points = {
@@ -100,8 +100,13 @@ void Goal::CrownMotion(){
         float easeT = EaseInOutQuad(t);
 
         // 座標を計算
-        sprite_.transform.translate = MyMath::CatmullRomPosition(points, easeT);
-        savedPos_ = sprite_.transform.translate;
+        if (pPlayer_->IsGetCrown() == false) {
+            sprite_.transform.translate = MyMath::CatmullRomPosition(points, easeT);
+            savedPos_ = sprite_.transform.translate;
+        } else {
+            //プレイヤーの動きに合わせる
+            sprite_.transform.translate = targetPos_;
+        }
         sprite_.layer = 12;// プレイヤー上に描画
 
     } else{

@@ -247,7 +247,7 @@ void GameState_Pause::ManageState(){
             const float kSEVolume = 0.5f;
             AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
             pScene_->ChangeScene("Game");
-            break;
+            return;
         }
         case 2:// セレクトへ戻る
         {

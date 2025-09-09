@@ -23,6 +23,7 @@ void AudioDictionary::Initialize() {
     // ミラー
     dict["ミラー_設置"] = "SE/playerPutBorder.wav";
     dict["ミラー_回収"] = "SE/playerCollectBorder.wav";
+    dict["ミラー_回収不可"] = "SE/playerUnCollectBorder.wav";
     // ポーズ
     dict["ポーズ_ポーズボタン"] = "SE/pauseButton.wav";
     dict["ポーズ_選択"] = "SE/decide2.wav";

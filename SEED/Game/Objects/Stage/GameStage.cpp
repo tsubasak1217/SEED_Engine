@@ -93,6 +93,11 @@ void GameStage::Reset() {
     requestInitialize_ = false;
 }
 
+bool GameStage::IsCurrentHologram() const {
+
+    return player_->GetIsHologram();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // ステージ構築処理
@@ -346,7 +351,12 @@ void GameStage::UpdateBorderLine() {
 
                 //プレイヤーがホログラム状態のときは回収できない
                 if (player_->GetIsHologram() == true) {
+
                     borderLine_->SetIsShaking(true);
+
+                    // SE
+                    const float kSEVolume = 0.24f;
+                    AudioManager::PlayAudio(AudioDictionary::Get("ミラー_回収不可"), false, kSEVolume);
                 } else {
 
                     // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
@@ -363,7 +373,7 @@ void GameStage::UpdateBorderLine() {
                 //タイマーを減らす
                 removeUITimer_.Update(-1.0f);
             } else {
-               
+
                 removeUITimer_.Update();
             }
         } else {
@@ -579,7 +589,7 @@ void GameStage::RemoveBorderLine() {
 
     // 非アクティブオブジェクトを再アクティブ化する
     ReActivateDisActiveObjects();
-     
+
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
         delete object;

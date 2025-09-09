@@ -64,16 +64,24 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
     stageIndexBack_.anchorPoint = 0.5f;
     stageIndexBack_.isApplyViewMat = false;
     stageIndexBack_.transform.scale = 0.0f;
-    stageIndexBack_.size *= 0.64f;
-    stageIndexBack_.color = MyMath::FloatColor(0xFF0094FF);
+    stageIndexBack_.size = 160.0f;
+    stageIndexBack_.color = MyMath::FloatColor(0x990099FF);
     // 番号
     stageIndexText_ = TextBox2D(std::to_string(currentStageIndex + 1));
     stageIndexText_.layer = 21;
+    if (10 <= currentStageIndex + 1) {
+
+        stageIndexText_.fontSize = 64.0f;
+        stageIndexTextTranslate_ = Vector2(876.3f, 260.0f);
+    } else {
+
+        stageIndexText_.fontSize = 96.0f;
+        stageIndexTextTranslate_ = Vector2(876.3f, 236.0f);
+    }
     stageIndexText_.isApplyViewMat = false;
     stageIndexText_.transform.scale = 0.0f;
     stageIndexText_.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
     stageIndexBackTranslate_ = Vector2(872.0f, 255.0f);
-    stageIndexTextTranslate_ = Vector2(876.3f, 230.88f);
 }
 
 void ClearSelectMenu::Update() {
@@ -82,21 +90,21 @@ void ClearSelectMenu::Update() {
     SelectEdit();
 
     if (menuTimer_.IsFinished()) {
-    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+        if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
 
-        // 現在フォーカスされている方をtrueにする
-        if (currentMenu_ == 0) {
+            // 現在フォーカスされている方をtrueにする
+            if (currentMenu_ == 0) {
 
-            result_.isNextStage = true;
-        } else {
+                result_.isNextStage = true;
+            } else {
 
-            result_.returnSelect = true;
+                result_.returnSelect = true;
+            }
+            return;
         }
-        return;
-    }
-    if (result_.isNextStage || result_.returnSelect) {
-        return;
-    }
+        if (result_.isNextStage || result_.returnSelect) {
+            return;
+        }
     }
 
     // メニューの選択
@@ -179,6 +187,7 @@ void ClearSelectMenu::SelectEdit() {
     ImFunc::CustomBegin("ClearSelectMenu", MoveOnly_TitleBar);
     {
 
+        stageIndexText_.Edit();
         ImGui::DragFloat2("stageIndexTranslate", &stageIndexBackTranslate_.x, 0.01f);
         ImGui::DragFloat2("stageIndexTextTranslate", &stageIndexTextTranslate_.x, 0.01f);
 

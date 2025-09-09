@@ -166,6 +166,8 @@ void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileS
 void BorderLine::Draw() {
 
     // 描画
+    if (isPaused_) return;
+
     sprite_.Draw();
 }
 

@@ -4,7 +4,7 @@
 #include "ImGlyph.h"
 #include <DirectXMath.h>
 #include <DirectXMathMatrix.inl>
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
 using namespace DirectX;
@@ -328,7 +328,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 
         // 表示
         if(cameraName == ""){
-            if((int)PostEffect::GetInstance()->postProcessGroups_.size() != 0){
+            if((int)PostEffectSystem::GetInstance()->postProcessGroups_.size() != 0){
                 ImGui::Image(TextureManager::GetImGuiTexture("postEffectResult"), finalSize);
             } else{
                 ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetMainCameraName()), finalSize);

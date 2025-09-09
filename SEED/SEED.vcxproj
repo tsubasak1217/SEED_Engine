@@ -354,8 +354,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PostEffect.cpp" />
+    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
@@ -657,6 +658,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
+    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
@@ -717,7 +719,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PostEffect.h" />
+    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />

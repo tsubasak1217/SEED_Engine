@@ -9,7 +9,7 @@
 #include <json.hpp>
 
 class IPostProcess{
-    friend class PostEffect;
+    friend class PostEffectSystem;
     friend struct PostProcessGroup;
 public:
     IPostProcess();

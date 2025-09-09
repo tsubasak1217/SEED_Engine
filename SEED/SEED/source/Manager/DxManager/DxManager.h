@@ -49,7 +49,7 @@ class DxManager{
 
     friend PolygonManager;
     friend DxResource;
-    friend class PostEffect;
+    friend class PostEffectSystem;
     friend class SEED;
     friend class TextureManager;
     friend class TextSystem;

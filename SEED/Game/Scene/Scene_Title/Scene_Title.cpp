@@ -10,11 +10,12 @@
 //////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Title::Scene_Title(){
     SEED::SetMainCamera("default");
-    PostEffect::DeleteAll();
-    PostEffect::Load("gj3_defaultPostEffect.json");
+    PostEffectSystem::DeleteAll();
+    PostEffectSystem::Load("gj3_defaultPostEffect.json");
 
     // 再生
     bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("タイトルシーン_BGM"), true, kBgmVolume_);
+
 }
 
 Scene_Title::~Scene_Title(){}
@@ -85,6 +86,7 @@ void Scene_Title::Initialize(){
         sprites_["A"].FromJson(buttonJson[0]);
         sprites_["Space"].FromJson(buttonJson[1]);
     }
+
 
     // 色の初期化
     hexagonColors_.push_back(MyMath::FloatColor(255,118,11,255,false));

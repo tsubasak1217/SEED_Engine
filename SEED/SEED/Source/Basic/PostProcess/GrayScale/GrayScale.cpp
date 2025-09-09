@@ -1,5 +1,5 @@
 #include "GrayScale.h"
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/SEED.h>
 

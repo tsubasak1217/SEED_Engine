@@ -6,7 +6,7 @@
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
@@ -28,7 +28,7 @@ void DxManager::Initialize(SEED* pSEED){
     instance_->polygonManager_ = new PolygonManager(instance_);
     SEED::instance_->pPolygonManager_ = instance_->polygonManager_;
     // PostEffectのinstance作成
-    PostEffect::GetInstance();
+    PostEffectSystem::GetInstance();
 
 
     /*===========================================================================================*/
@@ -400,7 +400,7 @@ void DxManager::InitPSO(){
     /*==================================================================================*/
 
     // 内部でPSOManager::CreatePipelinesを呼び出している
-    PostEffect::GetInstance()->Initialize();
+    PostEffectSystem::GetInstance()->Initialize();
 
 }
 
@@ -567,10 +567,10 @@ void DxManager::DrawPolygonAll(){
     /*----------------------ポストエフェクトを行う-------------------*/
 
     // ポストエフェクト用のパラメーターを更新
-    PostEffect::Update();
+    PostEffectSystem::Update();
 
     // 有効なポストエフェクトを適用
-    PostEffect::GetInstance()->PostProcess();
+    PostEffectSystem::GetInstance()->PostProcess();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
@@ -645,7 +645,7 @@ void DxManager::DrawPolygonAll(){
 void DxManager::DrawGUI(){
 #ifdef USE_SUB_WINDOW
 
-    PostEffect::instance_->Edit();
+    PostEffectSystem::instance_->Edit();
     GPUParticleSystem::GetInstance()->DrawGUI();
 
 #endif // USE_SUB_WINDOW
@@ -778,7 +778,7 @@ void DxManager::Release(){
         offScreenResources[cameraName].resource.Reset();
         depthStencilResources[cameraName].resource.Reset();
     }
-    PostEffect::GetInstance()->Release();
+    PostEffectSystem::GetInstance()->Release();
     GPUParticleSystem::Release();
     VideoManager::GetInstance()->Release();
     delete polygonManager_;

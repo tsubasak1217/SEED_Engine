@@ -1,5 +1,5 @@
 #include "DoF.h"
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/SEED.h>
 
 DoF::DoF() : IPostProcess(){

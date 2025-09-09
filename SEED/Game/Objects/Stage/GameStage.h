@@ -154,7 +154,11 @@ private:
     // timer
     Timer removeUITimer_ = Timer(0.25f);
     Sprite removeUI_;
-    TextBox2D textBox;
+    TextBox2D removeUI_TextBox;
+
+    Timer removeUIShakeTimer_ = Timer(0.2f);
+    float shakeAmount_ = 5.0f;
+    float shakeStartPosX_ = 0.0f;
 
     //--------- functions ----------------------------------------------------
 
@@ -202,6 +206,8 @@ private:
 
     // 取り除くUI
     void UpdateRemoveUI();
+    // UIを揺らす
+    void ShakeRemoveUI();
     // プレイヤーが死亡時のレーザーの衝突判定
     bool IsSafeRecordPoint(const RecordData& data) const;
     void SetDeadLaserCollisions();

@@ -53,29 +53,29 @@ void GameStage::Initialize(int currentStageIndex) {
 
     // UI画像
     removeUI_ = Sprite("UI/buttons.png");
-    removeUI_.size = { 231.0f,129.0f};
+    removeUI_.size = { 231.0f,129.0f };
     removeUI_.clipSize = { 231.0f,129.0f };
     removeUI_.anchorPoint = { 0.5f,0.5f };
     removeUI_.layer = 20;
     removeUI_.isApplyViewMat = true;
     removeUI_.transform.scale = Vector2(0.25f);
-    if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
+    if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
         removeUI_.clipLT.y = 129.0f * 3.0f;
-    } else{
+    } else {
         removeUI_.clipLT.y = 129.0f * 1.0f;
     }
 
     // テキストボックス
-    textBox = TextBox2D("回収");
-    textBox.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
-    textBox.fontSize = 20.0f;
-    textBox.size = { 211.0f,20.0f };
-    textBox.glyphSpacing = 0.4f;
-    textBox.layer = 20;
-    textBox.textBoxVisible = false;
-    textBox.isApplyViewMat = true;
-    textBox.useOutline = true;
-    textBox.outlineWidth = 4.0f;
+    removeUI_TextBox = TextBox2D("回収");
+    removeUI_TextBox.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
+    removeUI_TextBox.fontSize = 20.0f;
+    removeUI_TextBox.size = { 211.0f,20.0f };
+    removeUI_TextBox.glyphSpacing = 0.4f;
+    removeUI_TextBox.layer = 20;
+    removeUI_TextBox.textBoxVisible = false;
+    removeUI_TextBox.isApplyViewMat = true;
+    removeUI_TextBox.useOutline = true;
+    removeUI_TextBox.outlineWidth = 4.0f;
 }
 
 void GameStage::Reset() {
@@ -328,20 +328,27 @@ void GameStage::UpdateBorderLine() {
         stageObjectMapTileSize_)) {
 
         // ワープ中は境界線を消せない && ホログラム中は回収できない
-        if(!warpController_->IsWarping() && !player_->GetIsHologram()){
+        if (!warpController_->IsWarping()) {
 
-            if(player_->IsRemoveBorder()){
-                // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
-                isRemoveHologram_ = true;
+            if (player_->IsRemoveBorder()) {
+
+                //プレイヤーがホログラム状態のときは回収できない
+                if (player_->GetIsHologram() == true) {
+                    borderLine_->SetIsShaking(true);
+                } else {
+
+                    // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
+                    isRemoveHologram_ = true;
+                }
             }
 
             //タイマーの更新
             removeUITimer_.Update();
-        } else{
+        } else {
             //タイマーを減らす
             removeUITimer_.Update(-1.0f);
         }
-    } else{
+    } else {
         //タイマーを減らす
         removeUITimer_.Update(-1.0f);
     }
@@ -801,18 +808,18 @@ void GameStage::SetDeadLaserCollisions() {
 }
 
 // 取り除くUIの更新
-void GameStage::UpdateRemoveUI(){
+void GameStage::UpdateRemoveUI() {
 
     // 入力デバイスが変わったら画像を切り替える
-    if(Input::IsChangedInputDevice()){
-        if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
+    if (Input::IsChangedInputDevice()) {
+        if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
             removeUI_.clipLT.y = 129.0f * 3.0f;
-        } else{
+        } else {
             removeUI_.clipLT.y = 129.0f * 1.0f;
         }
     }
 
-    if(removeUITimer_.GetPrevProgress() == 0.0f){
+    if (removeUITimer_.GetPrevProgress() == 0.0f) {
         return;
     }
 
@@ -825,8 +832,42 @@ void GameStage::UpdateRemoveUI(){
 
     // テキストボックスの更新
     float offset = removeUI_.size.x * removeUI_.transform.scale.x;
-    textBox.transform.translate = removeUI_.transform.translate + Vector2(offset, 0.0f);
-    textBox.color.w = removeUI_.color.w;
+    removeUI_TextBox.transform.translate = removeUI_.transform.translate + Vector2(offset, 0.0f);
+    removeUI_TextBox.color.w = removeUI_.color.w;
+
+    // 揺れの更新
+    ShakeRemoveUI();
+}
+
+void GameStage::ShakeRemoveUI() {
+
+    if (borderLine_->IsShaking() == false) return;
+
+    if (removeUITimer_.GetPrevProgress() == 0.0f) {
+        return;
+    }
+
+     shakeStartPosX_ = player_->GetOwner()->GetWorldTranslate().x - removeUI_.size.x * 0.25f * removeUI_.transform.scale.x;
+     float offset = removeUI_.size.x * removeUI_.transform.scale.x;
+
+    if (!removeUIShakeTimer_.IsFinished()) {
+        removeUIShakeTimer_.Update();
+
+        float decay = 1.0f - removeUIShakeTimer_.GetProgress();
+
+        float wave = std::sin(removeUIShakeTimer_.GetProgress() * 100.0f);
+
+        removeUI_.transform.translate.x = shakeStartPosX_ + wave * shakeAmount_ * decay;
+       
+        removeUI_TextBox.transform.translate.x = removeUI_.transform.translate.x + offset;
+    } else {
+        // 揺れ終了
+        removeUI_.transform.translate.x = shakeStartPosX_;
+        removeUI_TextBox.transform.translate.x = removeUI_.transform.translate.x + offset;
+
+        removeUIShakeTimer_.Reset();
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -845,7 +886,7 @@ void GameStage::Draw() {
 
         // 取り除くUIの更新・描画
         removeUI_.Draw();
-        textBox.Draw();
+        removeUI_TextBox.Draw();
     }
 
     // 背景描画

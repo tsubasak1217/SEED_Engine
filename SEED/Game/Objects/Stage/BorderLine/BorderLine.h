@@ -35,6 +35,8 @@ public:
     void FromJson(const nlohmann::json& data);
     void ToJson(nlohmann::json& data);
 
+    void ShakeBorderLine();
+
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
@@ -51,6 +53,11 @@ public:
     bool IsActive() const { return currentState_ == State::Active; }
     // 非アクティブ状態に遷移可能かどうか
     bool CanTransitionDisable(const Vector2& playerTranslate, float tileSize) const;
+    //シェイク中か
+    bool IsShaking() const { return isShaking_; }
+    //シェイクフラグ設定
+    void SetIsShaking(bool flag) { isShaking_ = flag; }
+
 private:
     //========================================================================
     //	private Methods
@@ -93,6 +100,13 @@ private:
     Vector2 initialSize_;// 初期サイズ
     float scrollValue_ = 0.0f;// スクロール値
     LR direction_; // 向き
+
+    // 揺れ情報
+    float shakeDuration_ = 0.2f;
+    float shakeAmount_ = 5.0f;
+    float elapsedTime_ = 0.0f;
+    float shakeStartPosX_ = 0.0f;
+    bool isShaking_ = false;
 
     //--------- functions ----------------------------------------------------
 

@@ -9,6 +9,7 @@
 #include <Game/Objects/Stage/Methods/GameStageLaserController.h>
 #include <Game/Objects/Stage/Methods/StageCameraAdjuster.h>
 #include <Game/Objects/Stage/Methods/StageBackDrawer.h>
+#include <SEED/Lib/Structs/TextBox.h>
 
 // c++
 #include <list>
@@ -136,6 +137,11 @@ private:
     int maxRecordCount_ = 1;
     std::deque<Vector2> onPlayerNormalBlocks_;
 
+    // timer
+    Timer removeUITimer_ = Timer(0.25f);
+    Sprite removeUI_;
+    TextBox2D textBox;
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -179,4 +185,7 @@ private:
 
     // プレイヤーが踏んでいる最新のブロック位置を記録する
     void RecordPlayerOnBlock();
+
+    // 取り除くUI
+    void UpdateRemoveUI();
 };

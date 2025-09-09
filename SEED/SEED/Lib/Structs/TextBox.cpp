@@ -319,6 +319,7 @@ void TextBox2D::Draw()const{
                         float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
                         Quad2D outlineQuad = quad;
                         outlineQuad.color = outlineColor;
+                        outlineQuad.color.w *= color.w; // 透明度は元の文字の透明度を乗算
                         outlineQuad.layer = 1; // アウトラインは下に描画するためレイヤーを0に設定
 
                         // アウトラインを移動させて描画

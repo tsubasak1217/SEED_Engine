@@ -196,7 +196,7 @@ private:
     void SetListsLaserLaunchersPtr(StageObjectCommonState state);
     void PutBorderLine();
 
-    //
+    //クリア判定
     void CheckClear();
     //死亡判定
     void CheckPlayerDead();

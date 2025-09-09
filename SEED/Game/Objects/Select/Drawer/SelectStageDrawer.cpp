@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Environment/Environment.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
@@ -43,6 +44,42 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     stageIndexBackAnim_.anchorPoint = 0.5f;
     stageIndexBackAnim_.isApplyViewMat = false;
     stageIndexBackAnim_.color = stageIndexBackColor_;
+
+    // 矢印
+    // 左
+    leftArrow_ = Sprite("Scene_Select/selectArrow.png");
+    leftArrow_.anchorPoint = 0.5f;
+    leftArrow_.transform.scale = 0.64f;
+    leftArrow_.transform.rotate = std::numbers::pi_v<float>;
+    leftArrow_.color = MyMath::FloatColor(0xD61DDAFF);
+    leftArrow_.blendMode = BlendMode::ADD;
+    // 右
+    rightArrow_ = Sprite("Scene_Select/selectArrow.png");
+    rightArrow_.anchorPoint = 0.5f;
+    rightArrow_.transform.scale = 0.64f;
+    rightArrow_.color = MyMath::FloatColor(0xD61DDAFF);
+    rightArrow_.blendMode = BlendMode::ADD;
+    // 共通設定
+    leftArrow_.transform.translate.y = arrowTranslateY_;
+    rightArrow_.transform.translate.y = arrowTranslateY_;
+    leftArrow_.transform.translate.x = kWindowCenter.x - arrowSpacing_;
+    rightArrow_.transform.translate.x = kWindowCenter.x + arrowSpacing_;
+
+    // 倍速で設定
+    leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+    rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+
+    // ステージの名前
+    stageNameText_ = TextBox2D("ステージです");
+    stageNameText_.SetFont("Game/x10y12pxDonguriDuel.ttf");
+    stageNameText_.fontSize = stageNameTextSize_;
+    stageNameText_.transform.translate = stageNameTextTranslate_;
+    stageNameText_.anchorPos = Vector2(0.5f, 0.0f);
+    stageNameText_.glyphSpacing = 0.0f;
+    stageNameText_.color = stageNameTextColor_;
+    stageNameText_.size = Vector2(1280.0f, 400.0f);
+    stageNameText_.textBoxVisible = false;
+    stageNameText_.isApplyViewMat = false;
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -52,6 +89,8 @@ void SelectStageDrawer::SetNextFocus() {
         return;
     }
     StartMoveToNext(focusIndex_ + 1);
+    // 右リアクション
+    TriggerRightArrowReact();
 }
 
 void SelectStageDrawer::SetPrevFocus() {
@@ -61,6 +100,8 @@ void SelectStageDrawer::SetPrevFocus() {
         return;
     }
     StartMoveToNext(focusIndex_ - 1);
+    // 左リアクション
+    TriggerLeftArrowReact();
 }
 
 void SelectStageDrawer::SetEndFocus() {
@@ -141,6 +182,47 @@ void SelectStageDrawer::Update() {
         }
         break;
     }
+
+    // 矢印の更新処理
+    UpdateArrow();
+}
+
+void SelectStageDrawer::UpdateArrow() {
+
+    // 通常振幅タイマー
+    arrowAnimTimer_.Update();
+    if (arrowAnimTimer_.IsFinished()) {
+        arrowAnimTimer_.Reset();
+    }
+
+    // リアクション中だけタイマーを変える
+    if (leftArrowReacting_) {
+
+        leftArrowReactTimer_.Update();
+        if (leftArrowReactTimer_.IsFinished()) {
+
+            leftArrowReacting_ = false;
+        }
+    }
+    if (rightArrowReacting_) {
+
+        rightArrowReactTimer_.Update();
+        if (rightArrowReactTimer_.IsFinished()) {
+
+            rightArrowReacting_ = false;
+        }
+    }
+
+    // 進行度
+    const float tBase = arrowAnimTimer_.GetEase(arrowEasing_);
+    const float easedLeft = leftArrowReacting_ ? leftArrowReactTimer_.GetEase(arrowEasing_) : tBase;
+    const float easedRight = rightArrowReacting_ ? rightArrowReactTimer_.GetEase(arrowEasing_) : tBase;
+
+    // 正弦波に変換
+    const float sinLeft = std::sin(easedLeft * std::numbers::pi_v<float> *2.0f);
+    const float sinRight = std::sin(easedRight * std::numbers::pi_v<float> *2.0f);
+    leftArrow_.offset.x = -sinLeft * arrowAmplitude_ * (leftArrowReacting_ ? 2.0f : 1.0f);
+    rightArrow_.offset.x = sinRight * arrowAmplitude_ * (rightArrowReacting_ ? 2.0f : 1.0f);
 }
 
 void SelectStageDrawer::Draw() {
@@ -157,6 +239,9 @@ void SelectStageDrawer::Draw() {
     float f = (currentState_ == State::Move)
         ? animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(moveEasing_)
         : static_cast<float>(focusIndex_);
+
+    // ステージの名前をセット
+    stageNameText_.text = stages_[focusIndex_].stageName;
     for (size_t i = 0; i < stages_.size(); ++i) {
 
         float off = static_cast<float>(i) - f;
@@ -178,6 +263,7 @@ void SelectStageDrawer::Draw() {
         // ステージ番号描画
         stages_[i].stageIndexBack.Draw();
         stages_[i].stageIndexText.Draw();
+        stageNameText_.Draw();
         // ステージ描画
         for (auto& sprite : stages_[i].objects) {
 
@@ -187,94 +273,187 @@ void SelectStageDrawer::Draw() {
 
     // 新しく表示するステージを補間しながら描画する
     DrawActivate(f);
+
+    // 矢印の描画
+    if (focusIndex_ != 0) {
+
+        leftArrow_.Draw();
+    }
+    if (focusIndex_ + 1 != maxStageCount_) {
+
+        rightArrow_.Draw();
+    }
 }
 
 void SelectStageDrawer::Edit() {
-
+#ifdef _DEBUG
     if (ImGui::Button("Save Json")) {
 
         SaveJson();
     }
-    {
-        ImGui::DragFloat("moveDuration", &moveTimer_.duration, 0.01f);
-        ImGui::DragFloat2("centerTranslate", &centerTranslate_.x, 1.0f);
-        ImGui::DragFloat2("leftTranslate", &leftTranslate_.x, 1.0f);
-        ImGui::DragFloat2("rightTranslate", &rightTranslate_.x, 1.0f);
 
-        ImGui::DragFloat2("focusSize", &focusSize_.x, 1.0f);
-        ImGui::DragFloat2("outSize", &outSize_.x, 1.0f);
-        ImGui::DragFloat("tileScale", &tileScale_, 0.01f);
-        ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
-        ImGui::DragFloat("stageIndexBackOffsetY_", &stageIndexBackOffsetY_, 1.0f);
+    if (ImGui::CollapsingHeader("EditStageName")) {
 
-        if (ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)) {
-
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
-
-                stage.stageIndexBack.size = stageIndexBackSize_;
+        // 保存配列のサイズをステージ数に合わせる
+        if (stageNames_.size() != stages_.size()) {
+            stageNames_.resize(stages_.size());
+            for (size_t i = 0; i < stages_.size(); ++i) {
+                if (stageNames_[i].empty()) stageNames_[i] = stages_[i].stageName;
             }
         }
-        if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
 
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
+        for (size_t i = 0; i < stages_.size(); ++i) {
+            ImGui::PushID(static_cast<int>(i));
 
-                stage.stageIndexText.fontSize = stageIndexTextSize_;
+            // 表示ラベル
+            ImGui::Text("Stage %d", static_cast<int>(i + 1));
+            ImGui::SameLine();
+
+            // 編集ボックス
+            if (ImFunc::InputText("Stage %d", stages_[i].stageName)) {
+
+                stageNames_[i] = stages_[i].stageName;
             }
+            ImGui::PopID();
         }
-        if (ImGui::ColorEdit4("stageIndexTextColor", &stageIndexTextColor_.x)) {
-
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
-
-                stage.stageIndexText.color = stageIndexTextColor_;
-            }
-        }
-        if (ImGui::ColorEdit4("stageIndexBackColor", &stageIndexBackColor_.x)) {
-
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
-
-                stage.stageIndexBack.color = stageIndexBackColor_;
-            }
-        }
-        if (ImGui::ColorEdit4("frameColor", &frameColor_.x)) {
-
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
-
-                stage.frame.color = frameColor_;
-            }
-        }
-        if (ImGui::ColorEdit4("backgroundColor", &backgroundColor_.x)) {
-
-            // 全てのフレームに適応
-            for (auto& stage : stages_) {
-
-                stage.background.color = backgroundColor_;
-            }
-        }
-        EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
-
-        ImGui::SeparatorText("FocusAnim");
-
-        ImGui::DragFloat("animDuration", &focusAnimTimer_.duration, 0.01f);
-        ImGui::DragFloat("animFrom", &focusAnimFrom_, 0.001f);
-        ImGui::DragFloat("animTo", &focusAnimTo_, 0.001f);
-        EnumAdapter<Easing::Type>::Combo("focusAnimEasing", &focusAnimEasing_);
-
-        ImGui::SeparatorText("EndAnim");
-
-        if (ImGui::Button("SetEndFocus")) {
-
-            SetEndFocus();
-        }
-
-        ImGui::DragFloat("endZoomDuration", &endZoomTimer_.duration, 0.01f);
-        ImGui::DragFloat("endZoomToScale", &endZoomToScale_, 0.01f);
-        EnumAdapter<Easing::Type>::Combo("endZoomEasing", &endZoomEasing_);
+        ImGui::Separator();
     }
+
+    if (ImGui::CollapsingHeader("EditStageParam")) {
+        {
+            ImGui::DragFloat("moveDuration", &moveTimer_.duration, 0.01f);
+            ImGui::DragFloat2("centerTranslate", &centerTranslate_.x, 1.0f);
+            ImGui::DragFloat2("leftTranslate", &leftTranslate_.x, 1.0f);
+            ImGui::DragFloat2("rightTranslate", &rightTranslate_.x, 1.0f);
+
+            ImGui::DragFloat2("focusSize", &focusSize_.x, 1.0f);
+            ImGui::DragFloat2("outSize", &outSize_.x, 1.0f);
+            ImGui::DragFloat("tileScale", &tileScale_, 0.01f);
+            ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
+            ImGui::DragFloat("stageIndexBackOffsetY", &stageIndexBackOffsetY_, 1.0f);
+            if (ImGui::DragFloat2("stageNameTextTranslate", &stageNameTextTranslate_.x, 1.0f)) {
+
+                stageNameText_.transform.translate = stageNameTextTranslate_;
+            }
+
+            if (ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.stageIndexBack.size = stageIndexBackSize_;
+                }
+            }
+            if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.stageIndexText.fontSize = stageIndexTextSize_;
+                }
+            }
+            if (ImGui::DragFloat("stageNameTextSize", &stageNameTextSize_)) {
+
+                // 全てのフレームに適応
+                stageNameText_.fontSize = stageNameTextSize_;
+            }
+            if (ImGui::ColorEdit4("stageIndexTextColor", &stageIndexTextColor_.x)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.stageIndexText.color = stageIndexTextColor_;
+                }
+            }
+            if (ImGui::ColorEdit4("stageIndexBackColor", &stageIndexBackColor_.x)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.stageIndexBack.color = stageIndexBackColor_;
+                }
+            }
+            if (ImGui::ColorEdit4("stageNameTextColor", &stageNameTextColor_.x)) {
+
+                // 全てのフレームに適応
+                stageNameText_.color = stageNameTextColor_;
+            }
+            if (ImGui::ColorEdit4("frameColor", &frameColor_.x)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.frame.color = frameColor_;
+                }
+            }
+            if (ImGui::ColorEdit4("backgroundColor", &backgroundColor_.x)) {
+
+                // 全てのフレームに適応
+                for (auto& stage : stages_) {
+
+                    stage.background.color = backgroundColor_;
+                }
+            }
+            EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
+
+            ImGui::SeparatorText("FocusAnim");
+
+            ImGui::DragFloat("animDuration", &focusAnimTimer_.duration, 0.01f);
+            ImGui::DragFloat("animFrom", &focusAnimFrom_, 0.001f);
+            ImGui::DragFloat("animTo", &focusAnimTo_, 0.001f);
+            EnumAdapter<Easing::Type>::Combo("focusAnimEasing", &focusAnimEasing_);
+
+            ImGui::SeparatorText("EndAnim");
+
+            if (ImGui::Button("SetEndFocus")) {
+
+                SetEndFocus();
+            }
+
+            ImGui::DragFloat("endZoomDuration", &endZoomTimer_.duration, 0.01f);
+            ImGui::DragFloat("endZoomToScale", &endZoomToScale_, 0.01f);
+            EnumAdapter<Easing::Type>::Combo("endZoomEasing", &endZoomEasing_);
+
+            if (ImGui::CollapsingHeader("Arrow")) {
+
+                if (ImGui::DragFloat("translateY", &arrowTranslateY_, 1.0f)) {
+
+                    leftArrow_.transform.translate.y = arrowTranslateY_;
+                    rightArrow_.transform.translate.y = arrowTranslateY_;
+                }
+                if (ImGui::DragFloat("arrowSpacing", &arrowSpacing_, 1.0f)) {
+
+                    leftArrow_.transform.translate.x = kWindowCenter.x - arrowSpacing_;
+                    rightArrow_.transform.translate.x = kWindowCenter.x + arrowSpacing_;
+                }
+                ImGui::DragFloat("arrowAmplitude", &arrowAmplitude_, 0.1f);
+                ImGui::DragFloat("reactRate", &reactRate_, 0.1f);
+                if (ImGui::DragFloat("arrowDuration", &arrowAnimTimer_.duration, 0.1f)) {
+
+                    leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+                    rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+                }
+                EnumAdapter<Easing::Type>::Combo("arrowEasing", &arrowEasing_);
+                if (ImGui::CollapsingHeader("Left")) {
+
+                    ImGui::PushID("Left");
+                    leftArrow_.Edit();
+                    ImGui::PopID();
+                }
+                if (ImGui::CollapsingHeader("Right")) {
+
+                    ImGui::PushID("Right");
+                    rightArrow_.Edit();
+                    ImGui::PopID();
+                }
+            }
+            if (ImGui::CollapsingHeader("StageName")) {
+
+                stageNameText_.Edit();
+            }
+        }
+    }
+#endif // _DEBUG
 }
 
 void SelectStageDrawer::ApplyJson() {
@@ -290,14 +469,17 @@ void SelectStageDrawer::ApplyJson() {
     stageIndexBackOffsetY_ = data.value("stageIndexBackOffsetY_", 128.0f);
     stageIndexBackSize_ = data.value("stageIndexBackSize_", 128.0f);
     stageIndexTextSize_ = data.value("stageIndexTextSize_", 128.0f);
+    stageNameTextSize_ = data.value("stageNameTextSize_", 128.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
     from_json(data["leftTranslate_"], leftTranslate_);
     from_json(data["rightTranslate_"], rightTranslate_);
     from_json(data["focusSize_"], focusSize_);
     from_json(data["outSize_"], outSize_);
+    from_json(data.value("stageNameTextTranslate_", nlohmann::json()), stageNameTextTranslate_);
     from_json(data.value("stageIndexTextColor_", nlohmann::json()), stageIndexTextColor_);
     from_json(data.value("stageIndexBackColor_", nlohmann::json()), stageIndexBackColor_);
+    from_json(data.value("stageNameTextColor_", nlohmann::json()), stageNameTextColor_);
     from_json(data.value("frameColor_", nlohmann::json()), frameColor_);
     from_json(data.value("backgroundColor_", nlohmann::json()), backgroundColor_);
 
@@ -312,6 +494,26 @@ void SelectStageDrawer::ApplyJson() {
     endZoomTimer_.duration = data.value("endZoomTimer_.duration", 0.9f);
     endZoomToScale_ = data.value("endZoomToScale_", 1.0f);
     endZoomEasing_ = EnumAdapter<Easing::Type>::FromString(data["endZoomEasing_"]).value();
+
+    leftArrow_.FromJson(data.value("leftArrow_", nlohmann::json()));
+    rightArrow_.FromJson(data.value("rightArrow_", nlohmann::json()));
+    arrowAnimTimer_.duration = data.value("arrowAnimTimer_.duration", 0.9f);
+
+    arrowSpacing_ = data.value("arrowSpacing_", 0.9f);
+    arrowAmplitude_ = data.value("arrowAmplitude_", 0.9f);
+    arrowTranslateY_ = data.value("arrowTranslateY_", 0.9f);
+    reactRate_ = data.value("reactRate_", 0.9f);
+    arrowEasing_ = EnumAdapter<Easing::Type>::FromString(data["arrowEasing_"]).value();
+
+    stageNames_.clear();
+    if (data.contains("stageNames") && data["stageNames"].is_array()) {
+        for (auto& name : data["stageNames"]) {
+            if (name.is_string()) {
+                stageNames_.push_back(name.get<std::string>());
+            }
+        }
+    }
+
 }
 
 void SelectStageDrawer::SaveJson() {
@@ -323,6 +525,7 @@ void SelectStageDrawer::SaveJson() {
     data["stageIndexTextOffsetY_"] = stageIndexTextOffsetY_;
     data["stageIndexBackOffsetY_"] = stageIndexBackOffsetY_;
 
+    to_json(data["stageNameTextTranslate_"], stageNameTextTranslate_);
     to_json(data["centerTranslate_"], centerTranslate_);
     to_json(data["leftTranslate_"], leftTranslate_);
     to_json(data["rightTranslate_"], rightTranslate_);
@@ -330,10 +533,12 @@ void SelectStageDrawer::SaveJson() {
     to_json(data["outSize_"], outSize_);
     to_json(data["stageIndexTextColor_"], stageIndexTextColor_);
     to_json(data["stageIndexBackColor_"], stageIndexBackColor_);
+    to_json(data["stageNameTextColor_"], stageNameTextColor_);
     to_json(data["frameColor_"], frameColor_);
     to_json(data["backgroundColor_"], backgroundColor_);
     to_json(data["stageIndexBackSize_"], stageIndexBackSize_);
     to_json(data["stageIndexTextSize_"], stageIndexTextSize_);
+    to_json(data["stageNameTextSize_"], stageNameTextSize_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
 
@@ -345,6 +550,22 @@ void SelectStageDrawer::SaveJson() {
     data["endZoomTimer_.duration"] = endZoomTimer_.duration;
     data["endZoomToScale_"] = endZoomToScale_;
     data["endZoomEasing_"] = EnumAdapter<Easing::Type>::ToString(endZoomEasing_);
+
+    data["leftArrow_"] = leftArrow_.ToJson();
+    data["rightArrow_"] = rightArrow_.ToJson();
+    data["arrowAnimTimer_.duration"] = arrowAnimTimer_.duration;
+
+    data["arrowSpacing_"] = arrowSpacing_;
+    data["arrowAmplitude_"] = arrowAmplitude_;
+    data["arrowTranslateY_"] = arrowTranslateY_;
+    data["reactRate_"] = reactRate_;
+    data["arrowEasing_"] = EnumAdapter<Easing::Type>::ToString(arrowEasing_);
+
+    stageNames_.resize(stages_.size());
+    for (size_t i = 0; i < stages_.size(); ++i) {
+        stageNames_[i] = stages_[i].stageName;
+    }
+    data["stageNames"] = stageNames_;
 
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
 }
@@ -552,6 +773,20 @@ void SelectStageDrawer::PoseFromOffset(float offset, Vector2& outPos, Vector2& o
     }
 }
 
+void SelectStageDrawer::TriggerLeftArrowReact() {
+
+    leftArrowReacting_ = true;
+    leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+    leftArrowReactTimer_.Reset();
+}
+
+void SelectStageDrawer::TriggerRightArrowReact() {
+
+    rightArrowReacting_ = true;
+    rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
+    rightArrowReactTimer_.Reset();
+}
+
 void SelectStageDrawer::DrawActivate(float f) {
 
     // 移動処理以外で処理しない
@@ -734,7 +969,20 @@ void SelectStageDrawer::BuildAllStage() {
         // 配列に追加
         stages_.push_back(std::move(stage));
     }
-}
+
+    if (stageNames_.size() < stages_.size()) {
+
+        const size_t old = stageNames_.size();
+        stageNames_.resize(stages_.size());
+        for (size_t i = old; i < stages_.size(); ++i) {
+
+            stageNames_[i] = "Stage " + std::to_string(i + 1);
+        }
+    }
+    for (size_t i = 0; i < stages_.size(); ++i) {
+
+        stages_[i].stageName = stageNames_[i];
+    }}
 
 Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     const Vector2& translate, const Vector2& size, uint32_t warpIndex) {

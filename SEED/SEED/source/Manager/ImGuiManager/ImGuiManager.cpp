@@ -105,6 +105,7 @@ void ImGuiManager::PreDraw(){
     // guizmoのリストをクリア
     instance_->guizmoInfo3D_.clear();
     instance_->guizmoInfo2D_.clear();
+    instance_->isInputText_ = false;
 
     // ディスプレイサイズの設定
     ImGuiIO& io = ImGui::GetIO();
@@ -567,10 +568,15 @@ bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     }
 
     // ImGuiの入力中は他の入力を受け付けないようにする
-    if(ImGui::IsItemActive()){
+    if (ImGui::IsItemActive()) {
+
+        ImGuiManager::SetIsInputText(true);
         Input::SetIsActive(false);
-    } else{
-        Input::SetIsActive(true);
+    } else {
+        if (!ImGuiManager::GetIsInputText()) {
+
+            Input::SetIsActive(true);
+        }
     }
 
     return changed;
@@ -588,9 +594,14 @@ bool ImFunc::InputText(const char* label, string& str){
 
     // ImGuiの入力中は他の入力を受け付けないようにする
     if(ImGui::IsItemActive()){
+
+        ImGuiManager::SetIsInputText(true);
         Input::SetIsActive(false);
     } else{
-        Input::SetIsActive(true);
+        if (!ImGuiManager::GetIsInputText()) {
+
+            Input::SetIsActive(true);
+        }
     }
 
     return changed;

@@ -91,6 +91,7 @@ private:
         Sprite background;           // ステージとフレームの背景
         TextBox2D stageIndexText;    // ステージ番号
         Sprite stageIndexBack;       // ステージ番号背景
+        std::string stageName;       // ステージの名前
 
         // 全体の表示
         Vector2 translate; // 中心座標
@@ -128,18 +129,21 @@ private:
     Vector4 backgroundColor_;     // 背景の色
     Vector4 stageIndexBackColor_; // ステージ番号背景の色
     Vector4 stageIndexTextColor_; // ステージ番号の色
+    Vector4 stageNameTextColor_;  // ステージ名前の色
     // 座標
-    Vector2 centerTranslate_;     // 真ん中のステージ表示(フォーカス位置)
-    Vector2 leftTranslate_;       // 左のステージ表示位置
-    Vector2 rightTranslate_;      // 右のステージ表示位置
-    float stageIndexBackOffsetY_; // ステージ番号インデックス背景のオフセットY
-    float stageIndexTextOffsetY_; // ステージ番号インデックスのオフセットY
+    Vector2 centerTranslate_;      // 真ん中のステージ表示(フォーカス位置)
+    Vector2 leftTranslate_;        // 左のステージ表示位置
+    Vector2 rightTranslate_;       // 右のステージ表示位置
+    float stageIndexBackOffsetY_;  // ステージ番号インデックス背景のオフセットY
+    float stageIndexTextOffsetY_;  // ステージ番号インデックスのオフセットY
+    Vector2 stageNameTextTranslate_; // ステージ名前インデックスのオフセットY
     // サイズ
     Vector2 focusSize_; // フォーカス時のサイズ
     Vector2 outSize_;   // フォーカスされていないときのサイズ
     float tileScale_;   // フレーム内のブロックサイズのスケーリング
     float stageIndexBackSize_; // ステージ番号背景サイズ
     float stageIndexTextSize_; // ステージ番号サイズ
+    float stageNameTextSize_;  // ステージ名前サイズ
 
     // 中央フレームアニメーション
     Sprite focusAnimFrame_; // 中央だけに被せるフレーム
@@ -156,6 +160,24 @@ private:
     Easing::Type endZoomEasing_;
     float focusAnimBaseDuration_; // フォーカス速度の保存用
     float endZoomToScale_;        // 最後のズームスケール倍率
+    
+    // 下の矢印
+    Sprite leftArrow_;  // 左
+    Sprite rightArrow_; // 右
+    Timer arrowAnimTimer_;  // 矢印アニメーション時間
+    float arrowSpacing_;    // 矢印の間の間隔
+    float arrowAmplitude_;  // 振幅
+    float arrowTranslateY_; // 矢印のY座標
+    Easing::Type arrowEasing_;
+    Timer leftArrowReactTimer_;   // 左リアクション
+    Timer rightArrowReactTimer_;  // 右リアクション
+    float reactRate_;
+    bool leftArrowReacting_ = false;
+    bool rightArrowReacting_ = false;
+    // ステージの名前表示
+    TextBox2D stageNameText_;
+    // ステージの名前s
+    std::vector<std::string> stageNames_;
 
     //--------- functions ----------------------------------------------------
 
@@ -170,6 +192,7 @@ private:
 
     // update
     void UpdateFocusAnim();
+    void UpdateArrow();
 
     // draw
     void DrawFocusAnim();
@@ -181,4 +204,6 @@ private:
     void PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize);
     void DrawActivate(float f);
     std::string GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const;
+    void TriggerLeftArrowReact();
+    void TriggerRightArrowReact();
 };

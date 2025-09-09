@@ -124,6 +124,15 @@ void LaserLauncher::SetSize(const Vector2& size) {
     centerStarSprite_.size = size;
 }
 
+
+void LaserLauncher::SetScale(float scale) {
+
+    for (Sprite& sprite : std::array{ std::ref(frameSprite_), std::ref(centerStarSprite_) }) {
+
+        sprite.transform.scale = scale;
+    }
+}
+
 void LaserLauncher::SetCommonState(StageObjectCommonState state) {
 
     // 状態に応じて色を設定
@@ -205,9 +214,28 @@ void LaserLauncher::Update() {
 
     // ユニットの更新処理
     UpdateUnits();
+
+    // レーザーの発射制御
+    if (commonState_ == StageObjectCommonState::Hologram) {
+        if (!appearanceTimer_.IsFinished()) {
+
+            centerStarSprite_.transform.scale = commonScale_;
+            frameSprite_.transform.scale = commonScale_;
+        }
+        for (const auto& laserObject : lasers_) {
+
+            LaserObjectComponent* component = laserObject->GetComponent<LaserObjectComponent>();
+            Laser* laser = component->GetLaserObject<Laser>();
+            laser->SetIsStop(!appearanceWaitTimer_.IsFinished());
+        }
+    }
 }
 
 void LaserLauncher::UpdateCenterStar() {
+
+    if (!appearanceWaitTimer_.IsFinished()) {
+        return;
+    }
 
     // 時間経過で大きくなったり小さくしたりする
     // 時間を進める
@@ -273,7 +301,7 @@ void LaserLauncher::UpdateEmit(LaserUnit& unit) {
 
         // 発生できない場合は状態を変える
         if (!IsDirectionReadyForUnit(unit)) {
-            
+
             // 表示を消す
             for (auto& sprite : unit.laserUnitSprite) {
 
@@ -340,10 +368,12 @@ void LaserLauncher::Draw() {
     }
 
     // ユニット描画
-    for (auto& unit : units_) {
-        for (auto& sprite : unit.laserUnitSprite) {
+    if (appearanceWaitTimer_.IsFinished()) {
+        for (auto& unit : units_) {
+            for (auto& sprite : unit.laserUnitSprite) {
 
-            sprite.Draw();
+                sprite.Draw();
+            }
         }
     }
 

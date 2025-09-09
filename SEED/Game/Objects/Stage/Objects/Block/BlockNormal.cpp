@@ -63,7 +63,6 @@ void BlockNormal::Draw() {
 
     // 中心の四角形を描画
     QuadDraw();
-
 }
 
 
@@ -120,6 +119,10 @@ void BlockNormal::SetSize(const Vector2& size) {
 // 中の四角形の描画
 void BlockNormal::QuadDraw() {
 
+    if (!appearanceWaitTimer_.IsFinished()) {
+        return;
+    }
+
     // 時間の更新
     motionTimer += ClockManager::DeltaTime();
 
@@ -130,8 +133,15 @@ void BlockNormal::QuadDraw() {
         centerQuad_.GH = imageMap_["White"];
         centerQuad_.layer = sprite_.layer + 1;
         centerQuad_.translate = sprite_.transform.translate;
-        centerQuad_.scale = Vector2(1.0f) + Vector2(easeT * 0.6f);
         centerQuad_.color = sprite_.color;
+        if (appearanceTimer_.IsFinished()) {
+
+            centerQuad_.scale = Vector2(1.0f) + Vector2(easeT * 0.6f);
+        } else {
+
+            centerQuad_.scale = commonScale_;
+            centerQuad_.color.w = commonScale_;
+        }
         SEED::DrawQuad2D(centerQuad_);
     }
 
@@ -152,7 +162,6 @@ void BlockNormal::QuadDraw() {
 
             hologramQuad_.color.w = sampledTime[i] * 0.3f;
             hologramQuad_.scale = Vector2(0.2f) + Vector2(easeT * 0.6f);
-
             SEED::DrawQuad2D(hologramQuad_);
         }
     }

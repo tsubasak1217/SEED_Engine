@@ -83,7 +83,7 @@ public:
     void SetIsClear(bool isClear) { isClear_ = isClear; }
 
     // オブジェクトリスト関連
-    static void AddDisActiveObject(GameObject2D* object) { disActiveObjects_.push_back(object); }
+    static void AddDisActiveObject(GameObject2D* object);
     static void ReActivateDisActiveObjects();
 
     // StageObjectComponentからプレイヤーがNormalBlockを踏んだ時の座標を受け取る
@@ -154,7 +154,16 @@ private:
     // timer
     Timer removeUITimer_ = Timer(0.25f);
     Sprite removeUI_;
-    TextBox2D textBox;
+    TextBox2D removeUI_TextBox;
+
+    Timer removeUIShakeTimer_ = Timer(0.2f);
+    float shakeAmount_ = 5.0f;
+    float shakeStartPosX_ = 0.0f;
+
+    // ホログラム出現時間
+    float blockAppearanceBaseDuration_;  // ベース出現時間
+    float blockAppearanceSpacing_;       // 間隔
+    Easing::Type blockAppearanceEasing_;
 
     //--------- functions ----------------------------------------------------
 
@@ -171,6 +180,7 @@ private:
     void UpdateWarp();
     void UpdateLaserLauncher();
     void UpdateBorderLine();
+    void UpdateHologramAppearanceUpdateAnimation();
     /// Clear
     void UpdateClear();
     /// Death
@@ -197,11 +207,10 @@ private:
     void CalculateCurrentStageRange();
     void CloseToPlayer(LR direction, float zoomRate = 2.4f, const Vector2& focus = 0.7f);
 
-    // プレイヤーが踏んでいる最新のブロック位置を記録する
-    void RecordPlayerOnBlock();
-
     // 取り除くUI
     void UpdateRemoveUI();
+    // UIを揺らす
+    void ShakeRemoveUI();
     // プレイヤーが死亡時のレーザーの衝突判定
     bool IsSafeRecordPoint(const RecordData& data) const;
     void SetDeadLaserCollisions();

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Structs/Sprite.h>
+#include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
@@ -29,6 +30,8 @@ public:
 
     // 更新処理
     virtual void Update() = 0;
+    // ホログラム発生時のアニメーション
+    virtual void AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing, uint32_t colum);
 
     // 描画処理
     virtual void Draw() = 0;
@@ -40,7 +43,7 @@ public:
 
     virtual void SetTranslate(const Vector2& translate) { sprite_.transform.translate = translate; }
     virtual void SetSize(const Vector2& size) { sprite_.size = size; }
-    void SetScale(float scale) { sprite_.transform.scale = scale; }
+    virtual void SetScale(float scale) { sprite_.transform.scale = scale; }
     virtual void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
 
     virtual const Vector2& GetTranslate() const { return sprite_.transform.translate; }
@@ -61,9 +64,12 @@ protected:
 
     //--------- variables ----------------------------------------------------
 
-    Sprite sprite_;                      // 描画情報
-    StageObjectCommonState commonState_; // オブジェクトの状態
-    GameObject2D* owner_ = nullptr;            // 所有者
+    Sprite sprite_;                       // 描画情報
+    StageObjectCommonState commonState_;  // オブジェクトの状態
+    GameObject2D* owner_ = nullptr;       // 所有者
+    Timer appearanceTimer_;               // 出現アニメーション
+    Timer appearanceWaitTimer_;           // 出現待機時間
+    float commonScale_;                   // 共通スケーリング
 
     // 色
     static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);

@@ -167,6 +167,8 @@
     <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
     <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp" />
     <ClCompile Include="Game\Manager\AudioDictionary.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Objects\Interface\IStageObject.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -400,6 +402,7 @@
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
     <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
@@ -425,6 +428,7 @@
     <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl" />
     <FxCompile Include="Resources\Shaders\Bloom.CS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Glitch.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli" />

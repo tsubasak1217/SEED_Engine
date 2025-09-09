@@ -85,6 +85,10 @@ void Laser::Update() {
 
 void Laser::UpdateExtend() {
 
+    if (isStop_) {
+        return;
+    }
+
     sizeExtendSpeed_ = 18.0f;
 
     // オブジェクトに衝突するまで伸びつ続ける

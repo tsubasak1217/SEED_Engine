@@ -15,15 +15,10 @@ Vector4 WarpHelper::GetIndexColor(uint32_t index) {
     switch (index) {
     case 0: {
 
-        color = MyMath::FloatColor(0xff007fff);
-        break;
-    }
-    case 1: {
-
         color = MyMath::FloatColor(0x1489ffff);
         break;
     }
-    case 2: {
+    case 1: {
 
         color = MyMath::FloatColor(0x0aff84ff);
         break;

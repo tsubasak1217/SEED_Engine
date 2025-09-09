@@ -100,6 +100,9 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
         sprite_.uvTransform.translate.y = scrollValue_;
         sprite_.uvTransform.scale = { exScale.x, scale.y * exScale.y };
 
+        //シェイク処理
+        ShakeBorderLine();
+
         break;
     }
     }
@@ -169,6 +172,11 @@ void BorderLine::Edit(const Vector2& playerTranslate, float tileSize) {
     ImGui::DragFloat("lerpXDuration", &lerpXParam_.duration, 0.01f);
     EnumAdapter<Easing::Type>::Combo("LerpEasing", &lerpXParam_.easing);
 
+    ImGui::SeparatorText("ShakeLine");
+    ImGui::Checkbox("isShaking", &isShaking_);
+    ImGui::DragFloat("shakeAmount", &shakeAmount_, 0.1f);
+    ImGui::DragFloat("shakeDuration", &shakeDuration_, 0.1f);
+
     // プレイヤーと境界線
     Vector2 left(sprite_.transform.translate.x - playerToDistance_, sprite_.transform.translate.y);
     Vector2 right(sprite_.transform.translate.x + playerToDistance_, sprite_.transform.translate.y);
@@ -201,4 +209,32 @@ void BorderLine::ToJson(nlohmann::json& data) {
 
     data["lerpXDuration_"] = lerpXParam_.duration;
     data["lerpXEasing_"] = EnumAdapter<Easing::Type>::ToString(lerpXParam_.easing);
+}
+
+void BorderLine::ShakeBorderLine() {
+
+    // シェイクフラグが立っていなければ処理しない
+    if (isShaking_ == false) return;
+
+    
+    // 初回開始時に位置を保存
+    if (elapsedTime_ == 0.0f) {
+        shakeStartPosX_ = sprite_.transform.translate.x;
+    }
+    elapsedTime_ += ClockManager::DeltaTime();
+    if (elapsedTime_ < shakeDuration_) {
+        // 経過時間に応じて振動させる
+        float progress = elapsedTime_ / shakeDuration_; 
+
+        //振幅を徐々に減少させる
+        float decay = 1.0f - progress;
+
+        float wave = std::sin(progress * 100.0f); // 振動回数を調整
+        sprite_.transform.translate.x = shakeStartPosX_ + wave * shakeAmount_ * decay;
+    }
+    else {
+        sprite_.transform.translate.x = shakeStartPosX_;
+        elapsedTime_ = 0.0f;
+        isShaking_ = false;
+    }
 }

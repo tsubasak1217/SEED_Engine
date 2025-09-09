@@ -63,13 +63,15 @@ public:
             instance_->guizmoInfo2D_.push_back(info);
         }
     }
-
+    static bool GetIsInputText() { return instance_->isInputText_; }
+    static void SetIsInputText(bool isInputText) { instance_->isInputText_ = isInputText; }
 private:
     std::wstring windowTitle_;
     ImGuizmo::OPERATION currentOperation_ = ImGuizmo::TRANSLATE; // 現在の操作モード
     ImDrawList* pDrawList_ = nullptr; // ImGuiの描画リスト
     std::list<GuizmoInfo> guizmoInfo3D_; // ImGuizmoで操作するTransformのリスト
     std::list<GuizmoInfo> guizmoInfo2D_; // ImGuizmoで操作するTransformのリスト
+    bool isInputText_=false;
 };
 
 

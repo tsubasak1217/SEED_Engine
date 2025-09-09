@@ -111,6 +111,11 @@ nlohmann::json Sprite::ToJson() const{
 }
 
 void Sprite::FromJson(const nlohmann::json& data){
+
+    if (data.empty()) {
+        return;
+    }
+
     size = data.value("size", size);
     texturePath = data.value("texturePath", texturePath);
     color = data.value("color", color);

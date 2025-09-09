@@ -156,6 +156,15 @@ private:
     Easing::Type endZoomEasing_;
     float focusAnimBaseDuration_; // フォーカス速度の保存用
     float endZoomToScale_;        // 最後のズームスケール倍率
+    
+    // 下の矢印
+    Sprite leftArrow_;  // 左
+    Sprite rightArrow_; // 右
+    Timer arrowAnimTimer_;  // 矢印アニメーション時間
+    float arrowSpacing_;    // 矢印の間の間隔
+    float arrowAmplitude_;  // 振幅
+    float arrowTranslateY_; // 矢印のY座標
+    Easing::Type arrowEasing_;
 
     //--------- functions ----------------------------------------------------
 
@@ -170,6 +179,7 @@ private:
 
     // update
     void UpdateFocusAnim();
+    void UpdateArrow();
 
     // draw
     void DrawFocusAnim();

@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Environment/Environment.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
@@ -43,6 +44,26 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     stageIndexBackAnim_.anchorPoint = 0.5f;
     stageIndexBackAnim_.isApplyViewMat = false;
     stageIndexBackAnim_.color = stageIndexBackColor_;
+
+    // 矢印
+    // 左
+    leftArrow_ = Sprite("Scene_Select/selectArrow.png");
+    leftArrow_.anchorPoint = 0.5f;
+    leftArrow_.transform.scale = 0.64f;
+    leftArrow_.transform.rotate = std::numbers::pi_v<float>;
+    leftArrow_.color = MyMath::FloatColor(0xD61DDAFF);
+    leftArrow_.blendMode = BlendMode::ADD;
+    // 右
+    rightArrow_ = Sprite("Scene_Select/selectArrow.png");
+    rightArrow_.anchorPoint = 0.5f;
+    rightArrow_.transform.scale = 0.64f;
+    rightArrow_.color = MyMath::FloatColor(0xD61DDAFF);
+    rightArrow_.blendMode = BlendMode::ADD;
+    // 共通設定
+    leftArrow_.transform.translate.y = arrowTranslateY_;
+    rightArrow_.transform.translate.y = arrowTranslateY_;
+    leftArrow_.transform.translate.x = kWindowCenter.x - arrowSpacing_;
+    rightArrow_.transform.translate.x = kWindowCenter.x + arrowSpacing_;
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -141,6 +162,23 @@ void SelectStageDrawer::Update() {
         }
         break;
     }
+
+    // 矢印の更新処理
+    UpdateArrow();
+}
+
+void SelectStageDrawer::UpdateArrow() {
+
+    // 時間を進める
+    arrowAnimTimer_.Update();
+    if (arrowAnimTimer_.IsFinished()) {
+        arrowAnimTimer_.Reset();
+    }
+
+    // xを揺らす
+    const float sin = std::sin(arrowAnimTimer_.GetEase(arrowEasing_) * std::numbers::pi_v<float> *2.0f);
+    leftArrow_.offset.x = -sin * arrowAmplitude_;
+    rightArrow_.offset.x = sin * arrowAmplitude_;
 }
 
 void SelectStageDrawer::Draw() {
@@ -187,6 +225,16 @@ void SelectStageDrawer::Draw() {
 
     // 新しく表示するステージを補間しながら描画する
     DrawActivate(f);
+
+    // 矢印の描画
+    if (focusIndex_ != 0) {
+
+        leftArrow_.Draw();
+    }
+    if (focusIndex_ + 1 != maxStageCount_) {
+
+        rightArrow_.Draw();
+    }
 }
 
 void SelectStageDrawer::Edit() {
@@ -274,6 +322,35 @@ void SelectStageDrawer::Edit() {
         ImGui::DragFloat("endZoomDuration", &endZoomTimer_.duration, 0.01f);
         ImGui::DragFloat("endZoomToScale", &endZoomToScale_, 0.01f);
         EnumAdapter<Easing::Type>::Combo("endZoomEasing", &endZoomEasing_);
+
+        if (ImGui::CollapsingHeader("Arrow")) {
+
+            if (ImGui::DragFloat("translateY", &arrowTranslateY_, 1.0f)) {
+
+                leftArrow_.transform.translate.y = arrowTranslateY_;
+                rightArrow_.transform.translate.y = arrowTranslateY_;
+            }
+            if (ImGui::DragFloat("arrowSpacing", &arrowSpacing_, 1.0f)) {
+
+                leftArrow_.transform.translate.x = kWindowCenter.x - arrowSpacing_;
+                rightArrow_.transform.translate.x = kWindowCenter.x + arrowSpacing_;
+            }
+            ImGui::DragFloat("arrowAmplitude", &arrowAmplitude_, 0.1f);
+            ImGui::DragFloat("arrowDuration", &arrowAnimTimer_.duration, 0.1f);
+            EnumAdapter<Easing::Type>::Combo("arrowEasing", &arrowEasing_);
+            if (ImGui::CollapsingHeader("Left")) {
+
+                ImGui::PushID("Left");
+                leftArrow_.Edit();
+                ImGui::PopID();
+            }
+            if (ImGui::CollapsingHeader("Right")) {
+
+                ImGui::PushID("Right");
+                rightArrow_.Edit();
+                ImGui::PopID();
+            }
+        }
     }
 }
 
@@ -312,6 +389,15 @@ void SelectStageDrawer::ApplyJson() {
     endZoomTimer_.duration = data.value("endZoomTimer_.duration", 0.9f);
     endZoomToScale_ = data.value("endZoomToScale_", 1.0f);
     endZoomEasing_ = EnumAdapter<Easing::Type>::FromString(data["endZoomEasing_"]).value();
+
+    leftArrow_.FromJson(data.value("leftArrow_", nlohmann::json()));
+    rightArrow_.FromJson(data.value("rightArrow_", nlohmann::json()));
+    arrowAnimTimer_.duration = data.value("arrowAnimTimer_.duration", 0.9f);
+
+    arrowSpacing_ = data.value("arrowSpacing_", 0.9f);
+    arrowAmplitude_ = data.value("arrowAmplitude_", 0.9f);
+    arrowTranslateY_ = data.value("arrowTranslateY_", 0.9f);
+    arrowEasing_ = EnumAdapter<Easing::Type>::FromString(data["arrowEasing_"]).value();
 }
 
 void SelectStageDrawer::SaveJson() {
@@ -345,6 +431,15 @@ void SelectStageDrawer::SaveJson() {
     data["endZoomTimer_.duration"] = endZoomTimer_.duration;
     data["endZoomToScale_"] = endZoomToScale_;
     data["endZoomEasing_"] = EnumAdapter<Easing::Type>::ToString(endZoomEasing_);
+
+    data["leftArrow_"] = leftArrow_.ToJson();
+    data["rightArrow_"] = rightArrow_.ToJson();
+    data["arrowAnimTimer_.duration"] = arrowAnimTimer_.duration;
+
+    data["arrowSpacing_"] = arrowSpacing_;
+    data["arrowAmplitude_"] = arrowAmplitude_;
+    data["arrowTranslateY_"] = arrowTranslateY_;
+    data["arrowEasing_"] = EnumAdapter<Easing::Type>::ToString(arrowEasing_);
 
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
 }

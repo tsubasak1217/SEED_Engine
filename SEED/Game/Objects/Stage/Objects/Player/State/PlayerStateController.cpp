@@ -235,7 +235,7 @@ void PlayerStateController::CheckOwnerState(Player& owner) {
     }
 
     // 落下している場合はジャンプ状態にする
-    if (!owner.GetOwner()->GetIsOnGround()) {
+    if (!owner.GetOwner()->GetIsPreOnGround()) {
         // ワープ処理が終了した瞬間にジャンプ状態に遷移させる
         if (PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())) {
             if (warp->IsWarpFinishTrigger()) {

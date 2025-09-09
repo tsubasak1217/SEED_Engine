@@ -5,9 +5,9 @@
         },
         "Idle": null,
         "Jump": {
-            "gravity_": 753.0999755859375,
+            "gravity_": 753.099,
             "groundY_": 552.0,
-            "jumpPower_": -427.1000061035156
+            "jumpPower_": -427.1
         },
         "Move": {
             "moveSpeed_": 238.60000610351563

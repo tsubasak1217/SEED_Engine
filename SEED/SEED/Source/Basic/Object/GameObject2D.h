@@ -180,6 +180,7 @@ public:
     /*-------- state --------*/
     bool GetIsOnGround()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
+    bool GetIsPreOnGround()const { return preIsOnGround_; }
     bool GetIsOnGroundTrigger()const{ return isOnGround_ && !preIsOnGround_; }
     bool GetIsCeiling()const{ return isCeiling_; }
     void SetIsCeiling(bool flag){ isCeiling_ = flag; }

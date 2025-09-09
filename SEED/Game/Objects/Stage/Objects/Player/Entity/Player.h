@@ -52,7 +52,9 @@ public:
     void SetIsHologram(bool isHologram) { isHologram_ = isHologram; }
 
     const Sprite& GetSprite() const { return body_; }
+    // 向いている方向の取得
     LR GetMoveDirection() const { return moveDirection_; }
+    LR GetPrevDirection() const { return prevDirection_; }
 
     // クリア判定
     void IncreaseGoalTouchTime() { goalTouchTime_ += ClockManager::DeltaTime(); }
@@ -121,6 +123,7 @@ private:
 
     // 向いている方向
     LR moveDirection_;
+    LR prevDirection_; // 前回のフレームで向いていた方向
 
     //--------- functions ----------------------------------------------------
 

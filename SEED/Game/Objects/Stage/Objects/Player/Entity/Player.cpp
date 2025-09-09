@@ -68,6 +68,7 @@ void Player::Initialize() {
     // 初期化値
     // 最初は右向き
     moveDirection_ = LR::RIGHT;
+    prevDirection_ = LR::NONE;
 
     //ownerのOnGround判定をtrueにする
     owner_->SetIsOnGround(true);
@@ -143,15 +144,15 @@ void Player::Update() {
 
     // 状態を更新: 王冠を取ったら状態更新を止める
     if (isGetCrown_ == false) {
-        stateController_->Update(*this);
         // 向いている方向を更新
         UpdateMoveDirection();
+        stateController_->Update(*this);
     }
 
     // スプライトの動きを更新
     SpriteMotion();
 
-
+    prevDirection_ = moveDirection_;
 }
 
 void Player::UpdateMoveDirection() {
@@ -165,6 +166,8 @@ void Player::UpdateMoveDirection() {
 
         moveDirection_ = LR::RIGHT;
     }
+
+   
 }
 
 // スプライトの動きを更新

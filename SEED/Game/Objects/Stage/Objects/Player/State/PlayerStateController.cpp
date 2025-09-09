@@ -100,13 +100,25 @@ void PlayerStateController::Update(Player& owner) {
     if (current_ != PlayerState::Warp && current_ != PlayerState::Dead) {
         if (auto* move = states_[PlayerState::Move].get()) {
 
+            //方向転換した瞬間にクールタイムをリセット
+            if(owner.GetPrevDirection() != LR::NONE &&
+                owner.GetMoveDirection() != LR::NONE &&
+                owner.GetPrevDirection() != owner.GetMoveDirection()){
+                moveInputCooldownTimer_.Reset();
+            }
+
             move->Update(owner);
+
+
         }
 
         if (auto* jump = states_[PlayerState::Jump].get()) {
             jump->Update(owner);
         }
     }
+
+    // 動いていないと判断するまでの猶予時間を更新
+    moveInputCooldownTimer_.Update();
 
     // 現在の状態を更新
     if (PlayerIState* currentState = states_[current_].get()) {
@@ -331,6 +343,12 @@ bool PlayerStateController::IsCanOperateBorder() const {
         current_ == PlayerState::Warp) {
         return false;
     }
+
+    // 移動入力直後は不可
+    if(moveInputCooldownTimer_.IsFinished() == false){
+        return false;
+    }
+
     return true;
 }
 

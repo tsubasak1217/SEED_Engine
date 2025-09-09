@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Lib/Structs/Timer.h>
 #include <Game/Objects/Stage/Objects/Player/State/Interface/PlayerIState.h>
 #include <Game/Objects/Stage/Objects/Player/State/Enum/PlayerStateEnum.h>
 
@@ -75,6 +76,9 @@ private:
     PlayerState pre_;                      // 前回の状態
     std::optional<PlayerState> requested_; // 次の状態
     bool requestedJump_;                   // ジャンプをリクエストしたか
+
+    // 動いていないと判断するまでの猶予時間
+    Timer moveInputCooldownTimer_ = Timer(0.1f);
 
     // 入力管理
     const InputMapper<PlayerInputAction>* inputMapper_;

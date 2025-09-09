@@ -286,7 +286,7 @@ void SelectStageDrawer::Draw() {
 }
 
 void SelectStageDrawer::Edit() {
-
+#ifdef _DEBUG
     if (ImGui::Button("Save Json")) {
 
         SaveJson();
@@ -453,6 +453,7 @@ void SelectStageDrawer::Edit() {
             }
         }
     }
+#endif // _DEBUG
 }
 
 void SelectStageDrawer::ApplyJson() {

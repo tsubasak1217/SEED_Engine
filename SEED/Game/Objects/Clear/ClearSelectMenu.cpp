@@ -35,7 +35,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
 
         // 基本初期化
         item.backSprite = Sprite("UI/menuItem.png");
-        item.backSprite.layer = 20;
+        item.backSprite.layer = 30;
         item.backSprite.anchorPoint = 0.5f;
         item.backSprite.isApplyViewMat = false;
 

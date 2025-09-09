@@ -220,6 +220,9 @@ void GameState_Pause::ManageState(){
         // SE
         const float kSEVolume = 0.5f;
         AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ゲームに戻る"), false, kSEVolume);
+        stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
+        // 画面が切り替わったらポーズ解除
+        stage_->SetIsPaused(false);
         return;
     }
 
@@ -263,6 +266,9 @@ void GameState_Pause::ManageState(){
         default:
             break;
         }
+
+        // 画面が切り替わったらポーズ解除
+        stage_->SetIsPaused(false);
     }
 
     // セレクトシーンに遷移

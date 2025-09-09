@@ -32,6 +32,7 @@ void BorderLine::Initialize() {
 
 void BorderLine::SetActivate() {
 
+    
     // アクティブ状態を設定
     currentState_ = State::Active;
     // 画像をアクティブにする
@@ -73,6 +74,11 @@ bool BorderLine::CanTransitionDisable(const Vector2& playerTranslate, float tile
     return IsActive() && CheckPlayerToDistance(playerTranslate, tileSize);
 }
 
+void BorderLine::SetTargetX(float x) {
+    lerpXParam_.targetX = x;
+    lerpXParam_.running = true;
+}
+
 void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
 
     // 状態に応じて更新
@@ -84,6 +90,13 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
         break;
     }
     case BorderLine::State::Active: {
+
+        //移動補間が完了してからアクティブにする
+        if (lerpXParam_.running) {
+            UpdateSprite({ lerpXParam_.targetX,translate.y }, sizeY, tileSize);
+            return;
+        }
+
 
         // サイズからscaleを計算して更新
         Vector2 scale = sprite_.size / initialSize_;

@@ -92,6 +92,11 @@ public:
 
     // 何か入力があるかチェック
     bool IsTriggredAnyDevice() const;
+
+    // ポーズ中かどうか
+    bool GetIsPaused() const { return isPaused_; }
+    void SetIsPaused(bool isPaused) { isPaused_ = isPaused; }
+
 private:
     //========================================================================
     //	private Methods
@@ -115,6 +120,7 @@ private:
     bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
+    bool isPaused_ = false;      // ポーズ中かどうか
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -201,6 +207,8 @@ private:
     void CheckClear();
     //死亡判定
     void CheckPlayerDead();
+    //ポーズ中か判定
+    void CheckPause();
     //プレイヤーが境界線を越えたかどうかの判定
     void CheckPlayerCrossedBorderLine();
     //カメラ範囲から出たか判定

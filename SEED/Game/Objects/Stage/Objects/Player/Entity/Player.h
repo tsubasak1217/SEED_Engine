@@ -73,6 +73,9 @@ public:
     // 王冠を取ったか(クリア判定)
     bool IsGetCrown() const { return isGetCrown_; }
     void SetGetCrown(bool flag) { isGetCrown_ = flag; }
+    // ポーズ中か
+    bool IsPaused() const { return isPaused_; }
+    void SetPaused(bool flag) { isPaused_ = flag; }
 
     // 入力検知
     bool IsFinishedWarp() const;
@@ -111,6 +114,7 @@ private:
     bool isHologram_ = false; // ホログラム状態か
     bool istouchedLaser_ = false; // レーザーに触れたか
     bool isGetCrown_ = false; // 王冠を取ったか
+    bool isPaused_ = false; // ポーズ中か
 
     // 入力管理
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;

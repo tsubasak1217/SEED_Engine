@@ -2414,7 +2414,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
         //GPUParticleSystem::Update();
 
         // オフスクリーンの描画依頼をここで出しておく
-        if((int)PostEffect::GetInstance()->postProcesses_.size() != 0){
+        if((int)PostEffect::GetInstance()->postProcessGroups_.size() != 0){
             AddOffscreenResult(ViewManager::GetTextureHandle("postEffectResult"), BlendMode::NONE);
 
         } else{

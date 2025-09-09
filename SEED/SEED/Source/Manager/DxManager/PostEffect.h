@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <unordered_map>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
@@ -6,6 +8,9 @@
 
 class DxManager;
 class SEED;
+class IPostProcess;
+
+using PostEffectHandle = int32_t;
 
 enum class DEAPTH_TEXTURE_FORMAT{
     NORMAL = 0,
@@ -20,11 +25,24 @@ enum class DX_RESOURCE_TYPE{
     BUFFER
 };
 
+// 複数のポストプロセスをまとめて扱う構造体
+struct PostProcessGroup{
+    bool isActive = true;
+    bool removeOrder = false;
+    std::vector<std::pair<std::unique_ptr<IPostProcess>, bool>> postProcesses;
+    PostEffectHandle handle_ = -1;
+    void Edit();
+    void FromJson(const nlohmann::json& json);
+    nlohmann::json ToJson()const;
+};
+
+
+// ポストエフェクト管理クラス
 class PostEffect{
     friend class DxManager;// DxManagerからアクセスを許可
     friend class PolygonManager; // PolygonManagerからアクセスを許可
-    friend class IPostProcess; // IPostProcessからアクセスを許可
     friend struct ImFunc; // ImGuiManagerからアクセスを許可
+    friend IPostProcess; // IPostProcessからアクセスを許可
 private:
     PostEffect() = default;
     ~PostEffect();
@@ -74,14 +92,15 @@ private:
     int currentBufferIndex_ = 0;
 
     // ポストプロセスのリスト
-    std::list<std::pair<std::unique_ptr<IPostProcess>,bool>> postProcesses_;
+    PostEffectHandle nextHandle_ = 0;
+    std::unordered_map<PostEffectHandle, PostProcessGroup> postProcessGroups_;
 
 private:
     void Edit();
-    nlohmann::json ToJson() const;
-    void FromJson(const nlohmann::json& json);
 
 public:
-    static void Load(const std::string& fileName);
+    static PostEffectHandle Load(const std::string& fileName);
     static void DeleteAll();
+    static void Delete(PostEffectHandle handle);
+    static void SetActive(PostEffectHandle handle, bool isActive);
 };

@@ -1,6 +1,5 @@
 #include <Game/Scene/Scene_Title/Scene_Title.h>
 
-#include <SEED/Source/Manager/DxManager/PostEffect.h>
 //lib
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
@@ -139,6 +138,7 @@ void Scene_Title::Update(){
         transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
         transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
     }
+
 
     // タイマーが終わったらシーン遷移
     if(transisitionTimer_.IsFinished()){

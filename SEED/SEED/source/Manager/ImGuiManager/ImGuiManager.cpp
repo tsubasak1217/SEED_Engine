@@ -328,7 +328,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 
         // 表示
         if(cameraName == ""){
-            if((int)PostEffect::GetInstance()->postProcesses_.size() != 0){
+            if((int)PostEffect::GetInstance()->postProcessGroups_.size() != 0){
                 ImGui::Image(TextureManager::GetImGuiTexture("postEffectResult"), finalSize);
             } else{
                 ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetMainCameraName()), finalSize);

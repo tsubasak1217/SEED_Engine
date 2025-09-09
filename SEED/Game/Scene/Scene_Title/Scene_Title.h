@@ -17,6 +17,7 @@
 // manager
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
+#include <SEED/Source/Manager/DxManager/PostEffect.h>
 
 class Scene_Title : public Scene_Base{
 public:
@@ -60,6 +61,5 @@ private:
     //hexagon
     std::vector<Vector4> hexagonColors_;
     float hexagonSize_ = 80.0f;
-
 
 };

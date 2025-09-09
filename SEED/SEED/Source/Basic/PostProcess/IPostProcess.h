@@ -10,6 +10,7 @@
 
 class IPostProcess{
     friend class PostEffect;
+    friend struct PostProcessGroup;
 public:
     IPostProcess();
     virtual ~IPostProcess() = default;

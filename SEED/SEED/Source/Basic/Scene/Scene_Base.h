@@ -4,6 +4,9 @@
 #include <SEED/Source/Basic/Scene/EventState_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 
+// audio
+#include <Game/Manager/AudioDictionary.h>
+
 class GameObject;
 
 class Scene_Base{

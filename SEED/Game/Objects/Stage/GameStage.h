@@ -80,6 +80,7 @@ public:
     // クリアしたかどうか
     bool IsClear() const { return isClear_; }
     bool IsFinishedAdjust() const { return cameraAdjuster_.IsFinishedAdjust(); }
+    bool IsCurrentHologram() const { return borderLine_->IsActive(); }
     void SetIsClear(bool isClear) { isClear_ = isClear; }
 
     // オブジェクトリスト関連

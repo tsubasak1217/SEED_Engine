@@ -6,8 +6,10 @@
 #include <Environment/Environment.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
+#include <Game/Manager/AudioDictionary.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -91,6 +93,9 @@ void SelectStageDrawer::SetNextFocus() {
     StartMoveToNext(focusIndex_ + 1);
     // 右リアクション
     TriggerRightArrowReact();
+
+    const float kSEVolume = 0.24f;
+    AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_左右"), false, kSEVolume);
 }
 
 void SelectStageDrawer::SetPrevFocus() {
@@ -102,6 +107,9 @@ void SelectStageDrawer::SetPrevFocus() {
     StartMoveToNext(focusIndex_ - 1);
     // 左リアクション
     TriggerLeftArrowReact();
+
+    const float kSEVolume = 0.24f;
+    AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_左右"), false, kSEVolume);
 }
 
 void SelectStageDrawer::SetEndFocus() {

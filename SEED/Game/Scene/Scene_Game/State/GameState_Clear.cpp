@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
@@ -152,6 +153,10 @@ void GameState_Clear::ManageState() {
     // 入力を受け付けて次どうするかを取得する
     if (menu_->GetResult().isNextStage) {
 
+        // SE
+        const float kSEVolume = 0.5f;
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
+
         // 次のステージに進む
         Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
         GameStage* stage = gameScene->GetStage();
@@ -161,6 +166,10 @@ void GameState_Clear::ManageState() {
         return;
     }
     if (menu_->GetResult().returnSelect) {
+
+        // SE
+        const float kSEVolume = 0.5f;
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
 
         // セレクトに戻る
         Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);

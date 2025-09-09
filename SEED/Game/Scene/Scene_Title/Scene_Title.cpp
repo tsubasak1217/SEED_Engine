@@ -134,11 +134,16 @@ void Scene_Title::Update(){
     UpdateButtonSprites();
 
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
-        isExitScene_ = true;
 
+        // 遷移処理開始
+        isExitScene_ = true;
         HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
         transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
         transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
+
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("タイトル_決定"), false, kSEVolume);
     }
 
 

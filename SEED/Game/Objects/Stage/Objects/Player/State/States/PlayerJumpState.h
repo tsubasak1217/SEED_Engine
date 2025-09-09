@@ -54,4 +54,7 @@ private:
     float jumpPower_; // ジャンプ力
     float gravity_;   // 重力
     float groundY_;   // 着地点のY座標
+
+    // audio
+    uint32_t jumpSE_;
 };

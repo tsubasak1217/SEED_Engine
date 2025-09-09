@@ -8,6 +8,7 @@
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/Functions/myFunc/MyFunc.h>
+#include <Game/Manager/AudioDictionary.h>
 #include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
 #include <Game/Scene/Input/Device/MenuBarKeyInput.h>
 
@@ -100,16 +101,17 @@ void ClearSelectMenu::Update() {
 
     // メニューの選択
     //上移動
+    const float kSEVolume = 0.24f;
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kItemCount_ - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
     }
     //下移動
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kItemCount_ - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
     }
 
     // メニュータイマーの更新
@@ -141,7 +143,6 @@ void ClearSelectMenu::Update() {
         float ease2 = EaseOutBack(t2);
         items_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
         items_[i].text.transform.scale = 1.0f + 0.2f * ease2;
-        //items_[i].backSprite.color.w = 0.5f + 0.5f * t2;
     }
 
     // 座標を設定

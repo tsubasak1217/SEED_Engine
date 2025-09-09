@@ -4,13 +4,8 @@
 
 class AudioDictionary{
 public:
+    static void Initialize();
     static const std::string& Get(const std::string& key) {
-
-        static bool isInitialized = false;
-
-        if(!isInitialized){
-            Initialize();
-        }
 
         auto it = dict.find(key);
         if(it != dict.end()){
@@ -19,10 +14,6 @@ public:
         static const std::string emptyString = "";
         return emptyString;
     }
-
-private:
-    static void Initialize();
-
 public:
     static inline std::unordered_map<std::string, std::string> dict{};
 };

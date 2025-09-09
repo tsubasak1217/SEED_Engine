@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // imgui
@@ -100,6 +101,10 @@ void PlayerWarpState::UpdateBeginAnimation(Player& player) {
 
         player.GetOwner()->SetWorldScale(beginScaling_.target);
         currentState_ = State::Warp;
+
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_ワープ音"), false, kSEVolume);
     }
 }
 

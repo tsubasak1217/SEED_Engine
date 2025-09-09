@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // imgui
@@ -17,10 +18,15 @@ void PlayerJumpState::Enter([[maybe_unused]] Player& player) {
 
     // 入力していた時のみジャンプ
     if (player.IsJumpInput()) {
+
         // ジャンプ開始
         isJumping_ = true;
         // 初期速度を設定
         velocityY_ = jumpPower_;
+
+        // SE
+        const float kSEVolume = 0.16f;
+        jumpSE_ = AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_ジャンプ音"), false, kSEVolume);
     }
 
     // 落下フラグを立てる

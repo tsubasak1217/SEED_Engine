@@ -1,5 +1,6 @@
 #include "GameState_Play.h"
 #include <SEED/Source/SEED.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Pause.h>
 #include <Game/Scene/Scene_Game/State/GameState_Clear.h>
@@ -112,6 +113,10 @@ void GameState_Play::ManageState() {
                 stage->CloseToPlayer(LR::LEFT, cameraZoomRate, cameraFocus);
                 gameScene->ChangeState(new GameState_Clear(gameScene));
 
+                // BGM
+                AudioManager::EndAllAudio();
+                const float kBGMVolume = 0.24f;
+                AudioManager::PlayAudio(AudioDictionary::Get("クリア_BGM"), true, kBGMVolume);
                 // これ以降の処理は受け付けさせない
                 return;
             }
@@ -132,6 +137,9 @@ void GameState_Play::ManageState() {
         // ポーズステートに遷移
         gameScene->ChangeState(new GameState_Pause(gameScene));
 
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ポーズボタン"), false, kSEVolume);
         return;
     }
 }

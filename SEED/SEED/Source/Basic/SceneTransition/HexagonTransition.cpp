@@ -20,12 +20,13 @@ void HexagonTransition::Update(){
         sceneInTimer_.Update();
     }
 
-
+#ifdef _DEBUG
     ImFunc::CustomBegin("HexagonTransition", MoveOnly_TitleBar);
     {
         ImGui::Text("end %d", sceneOutTimer_.IsFinished());
         ImGui::End();
     }
+#endif // _DEBUG
 }
 
 void HexagonTransition::Draw(){

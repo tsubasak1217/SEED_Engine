@@ -48,7 +48,7 @@ private:
     std::vector<std::pair<TextBox2D, bool>> uiTexts_;
 
     // Audios
-    const float kBGMVolume_ = 0.2f;
+    const float kBGMVolume_ = 0.16f;
     AudioHandle noneBGMHandle_;
     AudioHandle holoBGMHandle_;
     // 現在ホログラム状態か

@@ -56,9 +56,14 @@ void Goal::OnCollisionEnter([[maybe_unused]] GameObject2D* other){
 
     // もしプレイヤーに触れられたら
     if(other->GetObjectType() == ObjectType::Player){
+
         // プレイヤーのゴールタッチ時間を増加させる
         pPlayer_ = other->GetComponent<StageObjectComponent>()->GetStageObject<Player>();
         startPos_ = sprite_.transform.translate;
+
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("王冠_取得音"), false, kSEVolume);
     }
 }
 
@@ -72,6 +77,10 @@ void Goal::OnCollisionExit([[maybe_unused]] GameObject2D* other){
             // ゴールから離れた場合,タイマーをリセット
             pPlayer_->ResetGoalTouchTime();
             pPlayer_ = nullptr;
+
+            // SE
+            const float kSEVolume = 0.24f;
+            AudioManager::PlayAudio(AudioDictionary::Get("王冠_取得音"), false, kSEVolume);
         }
     }
 }

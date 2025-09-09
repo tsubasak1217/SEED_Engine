@@ -17,13 +17,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 Scene_Game::Scene_Game() : Scene_Base() {
-
-    // ホログラムハンドルだけもらう
-    holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
-    AudioManager::EndAudio(holoBGMHandle_);
-    // 最初は通常BGMを再生
-    noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-    isCurrentHologram_ = false;
 };
 
 Scene_Game::~Scene_Game() {
@@ -98,6 +91,12 @@ void Scene_Game::Initialize() {
     // Audio の 初期化
     ////////////////////////////////////////////////////
 
+    // ホログラムハンドルだけもらう
+    holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
+    AudioManager::EndAudio(holoBGMHandle_);
+    // 最初は通常BGMを再生
+    noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+    isCurrentHologram_ = false;
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化

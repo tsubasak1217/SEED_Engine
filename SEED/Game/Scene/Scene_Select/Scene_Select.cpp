@@ -10,9 +10,6 @@
 //============================================================================
 
 Scene_Select::Scene_Select() {
-
-    // BGMを再生
-    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_BGM"), true, kBGMVolume_);
 }
 
 Scene_Select::~Scene_Select() {
@@ -39,8 +36,8 @@ void Scene_Select::Initialize() {
     // エフェクトの追加
     EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f }, camera->GetWorldMatPtr());
 
-    // ブルームの初期化
-    //PostEffect::Load("bloom.json");
+    // BGMを再生
+    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_BGM"), true, kBGMVolume_);
 
     //============================================================================
     //	objects
@@ -70,24 +67,6 @@ void Scene_Select::Update() {
     //============================================================================
     //	sceneEvenets
     //============================================================================
-
-    // 入力SE
-    const float kSEVolume = 0.5f;
-    if (selectStage_->GetInput().IsTriggered(SelectInputEnum::Left) ||
-        selectStage_->GetInput().IsTriggered(SelectInputEnum::Right)) {
-
-        AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_左右"), false, kSEVolume);
-    }
-    if (selectStage_->GetInput().IsTriggered(SelectInputEnum::Decide)) {
-        if (selectStage_->IsDecideStage()) {
-
-            AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
-        }
-    }
-    if (selectStage_->GetInput().IsTriggered(SelectInputEnum::Return)) {
-
-        AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
-    }
 
     // 次のシーンに進めるかチェック
     if (selectStage_->GetStageInfo().isNextScene) {

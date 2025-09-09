@@ -141,7 +141,7 @@ void Scene_Title::Update(){
         transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
 
         // SE
-        const float kSEVolume = 0.5f;
+        const float kSEVolume = 0.24f;
         AudioManager::PlayAudio(AudioDictionary::Get("タイトル_決定"), false, kSEVolume);
     }
 

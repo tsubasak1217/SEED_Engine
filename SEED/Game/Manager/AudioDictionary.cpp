@@ -33,6 +33,7 @@ void AudioDictionary::Initialize() {
     dict["クリア_BGM"] = "BGM/clearBgm2.wav";
     dict["王冠_キラキラ音"] = "SE/reproduction.wav";
     dict["王冠_取得音"] = "SE/clearJingle1.wav";
+    dict["王冠_離脱音"] = "SE/playerCollectBorder.wav";
     dict["クリアメニュー_選択"] = "SE/decide2.wav";
     dict["クリアメニュー_決定"] = "SE/decide1.wav";
 }

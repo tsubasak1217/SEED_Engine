@@ -34,9 +34,13 @@ public:
 
     // タイトル戻す
     bool IsReturnScene() const { return inputMapper_->IsTriggered(SelectInputEnum::Return); }
+    bool IsDecideStage() const { return stageDrawer_->IsDecideStage(); }
 
     // 選択ステージ情報
     const SelectStageInfo& GetStageInfo() const { return stageDrawer_->GetStageInfo(); }
+
+    // 入力を取得
+    const InputMapper<SelectInputEnum>& GetInput() const { return *inputMapper_.get(); }
 private:
 	//========================================================================
 	//	private Methods

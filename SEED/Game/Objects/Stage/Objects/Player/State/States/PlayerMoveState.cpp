@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // imgui
@@ -21,11 +22,26 @@ void PlayerMoveState::Update(Player& player) {
     // 入力値
     Vector2 inputValue(inputMapper_->GetVector(PlayerInputAction::MoveX), 0.0f);
     if (std::abs(MyMath::Length(inputValue)) < std::numeric_limits<float>::epsilon()) {
+
+        // 動いてなければ止める
+        AudioManager::EndAudio(moveSE_);
         return;
     }
 
     // 現在の座標に速度を足す
     player.GetOwner()->AddWorldTranslate(inputValue * moveSpeed_ * ClockManager::DeltaTime());
+
+    // SE停止
+    if (player.IsClearStage()) {
+        AudioManager::EndAudio(moveSE_);
+    }
+
+    // 移動中...
+    const float kSEVolume = 0.064f;
+    if (!AudioManager::IsPlayingAudio(moveSE_)) {
+
+        moveSE_ = AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_足音"), true, kSEVolume);
+    }
 }
 
 void PlayerMoveState::Exit([[maybe_unused]] Player& player) {

@@ -10,12 +10,13 @@ struct Timer{
 public:
     void Initialize(float _duration);
     float GetProgress() const;
-    float GetDuration() const{ return duration; }
+    float GetDuration() const;
     float GetEase(Easing::Type easeType);
     float GetPrevProgress() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
     void Reset();
+    void ToEnd();
     void Stop();
     void Restart();
     void Update(float timeScale = 1.0f);
@@ -46,6 +47,11 @@ inline float Timer::GetProgress() const {
     return currentTime / duration;
 }
 
+// durationを取得
+inline float Timer::GetDuration() const {
+    return duration;
+}
+
 // 進捗度をイージングして返す
 inline float Timer::GetEase(Easing::Type easeType) {
     return Easing::Ease[easeType](GetProgress());
@@ -69,6 +75,11 @@ inline bool Timer::IsFinishedNow() const {
 // リセット
 inline void Timer::Reset() {
     currentTime = 0.0f;
+}
+
+// 最後まで進める
+inline void Timer::ToEnd() {
+    currentTime = duration;
 }
 
 // 停止

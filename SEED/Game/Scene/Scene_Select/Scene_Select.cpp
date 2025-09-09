@@ -13,8 +13,12 @@ Scene_Select::Scene_Select() {
 }
 
 Scene_Select::~Scene_Select() {
+
     // すべてのエフェクトを削除
     EffectSystem::DeleteAll();
+
+    // BGMを停止させる
+    AudioManager::EndAudio(bgmHandle_);
 }
 
 void Scene_Select::Initialize() {
@@ -30,10 +34,10 @@ void Scene_Select::Initialize() {
     SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
 
     // エフェクトの追加
-    EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f },camera->GetWorldMatPtr());
+    EffectSystem::AddEffectEndless("gj3_selectScene.json", { 0.0f,0.0f,0.0f }, camera->GetWorldMatPtr());
 
-    // ブルームの初期化
-    //PostEffect::Load("bloom.json");
+    // BGMを再生
+    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_BGM"), true, kBGMVolume_);
 
     //============================================================================
     //	objects

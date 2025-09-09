@@ -171,7 +171,7 @@ LRESULT CALLBACK WindowProc(
 
     case WM_NCLBUTTONDOWN:// マウス左ボタンが押されているとき
         ClockManager::GetInstance()->Stop();
-        AudioManager::GetInstance()->PauseAll();
+        //AudioManager::GetInstance()->PauseAll();
         break;
 
     case WM_NCLBUTTONUP:

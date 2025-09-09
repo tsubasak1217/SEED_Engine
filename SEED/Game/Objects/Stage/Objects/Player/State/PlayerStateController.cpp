@@ -145,9 +145,15 @@ void PlayerStateController::Draw(Player& owner) {
 }
 
 void PlayerStateController::OnGroundTrigger() {
+
     // 今がジャンプ状態ならアイドル状態にする
     if (current_ == PlayerState::Jump) {
+
         requested_ = PlayerState::Idle;
+
+        // SE
+        const float kSEVolume = 0.5f;
+        AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_着地音"), false, kSEVolume);
     }
 }
 

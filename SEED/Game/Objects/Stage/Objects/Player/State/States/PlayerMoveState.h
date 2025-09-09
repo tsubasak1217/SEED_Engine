@@ -44,4 +44,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
     float moveSpeed_; // 移動速度
+
+    // audio
+    uint32_t moveSE_;
 };

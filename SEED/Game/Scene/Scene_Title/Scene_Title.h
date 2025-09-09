@@ -11,9 +11,6 @@
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Lib/Structs/Timer.h>
 
-// audio
-#include <Game/Manager/AudioDictionary.h>
-
 // manager
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
@@ -52,14 +49,15 @@ private:
     // scene
     Timer transisitionTimer_ = Timer(1.0f);
     Timer sceneStartTimer_ = Timer(1.0f);
+    float nextSceneStartTime_ = 1.0f;
     bool isExitScene_ = false;
 
     // Text
     TextBox2D uiText_;
 
-    // audio;
+    // audio
     AudioHandle bgmHandle_;
-    float kBgmVolume_ = 0.2f;
+    float kBgmVolume_ = 0.4f;
 
     //hexagon
     std::vector<Vector4> hexagonColors_;

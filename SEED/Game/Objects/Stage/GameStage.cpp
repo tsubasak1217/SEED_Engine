@@ -6,6 +6,7 @@
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
@@ -90,6 +91,11 @@ void GameStage::Reset() {
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
     cameraAdjuster_.Update();
     requestInitialize_ = false;
+}
+
+bool GameStage::IsCurrentHologram() const {
+
+    return player_->GetIsHologram();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -333,6 +339,10 @@ void GameStage::UpdateBorderLine() {
         //タイマーを減らす
         removeUITimer_.Update(-1.0f);
 
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("ミラー_設置"), false, kSEVolume);
+
     } else if (borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
         stageObjectMapTileSize_)) {
 
@@ -343,11 +353,20 @@ void GameStage::UpdateBorderLine() {
 
                 //プレイヤーがホログラム状態のときは回収できない
                 if (player_->GetIsHologram() == true) {
+
                     borderLine_->SetIsShaking(true);
+
+                    // SE
+                    const float kSEVolume = 0.24f;
+                    AudioManager::PlayAudio(AudioDictionary::Get("ミラー_回収不可"), false, kSEVolume);
                 } else {
 
                     // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
                     isRemoveHologram_ = true;
+
+                    // SE
+                    const float kSEVolume = 0.24f;
+                    AudioManager::PlayAudio(AudioDictionary::Get("ミラー_回収"), false, kSEVolume);
                 }
             }
 
@@ -356,7 +375,7 @@ void GameStage::UpdateBorderLine() {
                 //タイマーを減らす
                 removeUITimer_.Update(-1.0f);
             } else {
-               
+
                 removeUITimer_.Update();
             }
         } else {
@@ -574,7 +593,7 @@ void GameStage::RemoveBorderLine() {
 
     // 非アクティブオブジェクトを再アクティブ化する
     ReActivateDisActiveObjects();
-     
+
     // 作成したホログラムオブジェクトをすべて破棄する
     for (GameObject2D* object : hologramObjects_) {
         delete object;

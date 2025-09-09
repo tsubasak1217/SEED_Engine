@@ -11,7 +11,7 @@ void SceneTransitionDrawer::Update(){
             instance_->transition_->Update();
         }
 
-        if(instance_->transition_->sceneInTimer_.IsFinished()){
+        if(instance_->transition_->newSceneEnterTimer_.IsFinished()){
             instance_->transition_.reset();
         }
     }

@@ -51,5 +51,7 @@ private:
 
     Timer deadTimer_;
     float deadDuration_; // 死亡アニメーションの時間
-};
 
+    // audio
+    uint32_t deadSE_;
+};

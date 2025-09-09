@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <Game/Manager/AudioDictionary.h>
 #include <cassert>
 
 // static変数初期化
@@ -118,10 +119,15 @@ void AudioManager::BeginFrame(){
 /////////////////////////////////////////////////////////////////////////////////////
 
 void AudioManager::StartUpLoad(){
-    // 以下にロード処理をまとめる
-    LoadAudio("SE/turnoverPaper.mp3");
-    LoadAudio("SE/iceSound.mp3");
-    LoadAudio("BGM/2_23_AM.wav");
+
+    // マップに使用ファイルを登録
+    AudioDictionary::Initialize();
+
+    // 使用するファイルをすべて読み込む
+    for (const auto& fileName : std::views::values(AudioDictionary::dict)) {
+
+        LoadAudio(fileName);
+    }
 }
 
 

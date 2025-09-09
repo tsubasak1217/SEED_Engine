@@ -8,6 +8,7 @@
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/Functions/myFunc/MyFunc.h>
+#include <Game/Manager/AudioDictionary.h>
 #include <Game/Scene/Input/Device/MenuBarGamePadInput.h>
 #include <Game/Scene/Input/Device/MenuBarKeyInput.h>
 
@@ -63,16 +64,24 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
     stageIndexBack_.anchorPoint = 0.5f;
     stageIndexBack_.isApplyViewMat = false;
     stageIndexBack_.transform.scale = 0.0f;
-    stageIndexBack_.size *= 0.64f;
-    stageIndexBack_.color = MyMath::FloatColor(0xFF0094FF);
+    stageIndexBack_.size = 160.0f;
+    stageIndexBack_.color = MyMath::FloatColor(0x990099FF);
     // 番号
     stageIndexText_ = TextBox2D(std::to_string(currentStageIndex + 1));
     stageIndexText_.layer = 21;
+    if (10 <= currentStageIndex + 1) {
+
+        stageIndexText_.fontSize = 64.0f;
+        stageIndexTextTranslate_ = Vector2(876.3f, 260.0f);
+    } else {
+
+        stageIndexText_.fontSize = 96.0f;
+        stageIndexTextTranslate_ = Vector2(876.3f, 236.0f);
+    }
     stageIndexText_.isApplyViewMat = false;
     stageIndexText_.transform.scale = 0.0f;
     stageIndexText_.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
     stageIndexBackTranslate_ = Vector2(872.0f, 255.0f);
-    stageIndexTextTranslate_ = Vector2(876.3f, 230.88f);
 }
 
 void ClearSelectMenu::Update() {
@@ -81,35 +90,36 @@ void ClearSelectMenu::Update() {
     SelectEdit();
 
     if (menuTimer_.IsFinished()) {
-    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+        if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
 
-        // 現在フォーカスされている方をtrueにする
-        if (currentMenu_ == 0) {
+            // 現在フォーカスされている方をtrueにする
+            if (currentMenu_ == 0) {
 
-            result_.isNextStage = true;
-        } else {
+                result_.isNextStage = true;
+            } else {
 
-            result_.returnSelect = true;
+                result_.returnSelect = true;
+            }
+            return;
         }
-        return;
-    }
-    if (result_.isNextStage || result_.returnSelect) {
-        return;
-    }
+        if (result_.isNextStage || result_.returnSelect) {
+            return;
+        }
     }
 
     // メニューの選択
     //上移動
+    const float kSEVolume = 0.24f;
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kItemCount_ - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
     }
     //下移動
     if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kItemCount_ - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
     }
 
     // メニュータイマーの更新
@@ -141,7 +151,6 @@ void ClearSelectMenu::Update() {
         float ease2 = EaseOutBack(t2);
         items_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
         items_[i].text.transform.scale = 1.0f + 0.2f * ease2;
-        //items_[i].backSprite.color.w = 0.5f + 0.5f * t2;
     }
 
     // 座標を設定
@@ -178,6 +187,7 @@ void ClearSelectMenu::SelectEdit() {
     ImFunc::CustomBegin("ClearSelectMenu", MoveOnly_TitleBar);
     {
 
+        stageIndexText_.Edit();
         ImGui::DragFloat2("stageIndexTranslate", &stageIndexBackTranslate_.x, 0.01f);
         ImGui::DragFloat2("stageIndexTextTranslate", &stageIndexTextTranslate_.x, 0.01f);
 

@@ -43,13 +43,16 @@ private:
     // ゲームステージ
     std::unique_ptr<GameStage> stage_;
 
-    //BGMのハンドル
-    AudioHandle BGMHandle_ = 0;
-
     // UI
     std::vector<std::pair<Sprite,bool>> uiSprites_;
     std::vector<std::pair<TextBox2D, bool>> uiTexts_;
 
+    // Audios
+    const float kBGMVolume_ = 0.16f;
+    AudioHandle noneBGMHandle_;
+    AudioHandle holoBGMHandle_;
+    // 現在ホログラム状態か
+    bool isCurrentHologram_;
 private:
     void UIToJson();
     void UIFromJson();

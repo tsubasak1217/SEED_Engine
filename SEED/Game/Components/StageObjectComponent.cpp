@@ -149,8 +149,7 @@ void StageObjectComponent::OnCollisionEnter([[maybe_unused]] GameObject2D* other
 
         break;
     }
-    case StageObjectType::Player:
-    {
+    case StageObjectType::Player: {
         break;
     }
     case StageObjectType::Warp:

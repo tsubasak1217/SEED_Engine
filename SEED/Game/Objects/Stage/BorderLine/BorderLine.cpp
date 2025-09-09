@@ -19,6 +19,7 @@ void BorderLine::Initialize() {
 
     // スプライトを初期化
     sprite_ = Sprite("DefaultAssets/white.png");
+    sprite_.layer = 21;
 
     // テクスチャGHを取得
     transparentTextureGH_ = sprite_.GH;

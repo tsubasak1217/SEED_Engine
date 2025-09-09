@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 
 // imgui
@@ -14,6 +15,10 @@ void PlayerDeadState::Enter([[maybe_unused]] Player& player) {
     isDead_ = true;
     deadTimer_ = Timer(deadDuration_);
     deadEffect_.Initialize(player.GetOwner()->GetWorldTranslate());
+
+    // SE
+    const float kSEVolume = 0.5f;
+    deadSE_ = AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_死亡音"), false, kSEVolume);
 }
 
 

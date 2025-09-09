@@ -87,12 +87,15 @@ void Scene_Title::Initialize(){
         sprites_["Space"].FromJson(buttonJson[1]);
     }
 
-
     // 色の初期化
     hexagonColors_.push_back(MyMath::FloatColor(255,118,11,255,false));
     hexagonColors_.push_back(MyMath::FloatColor(10,10,10,255, false));
     hexagonColors_.push_back(MyMath::FloatColor(255,13,86,255, false));
     hexagonSize_ = 46.0f;
+
+    // spriteの更新
+    UpdateTitleLogo();
+    UpdateButtonSprites();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,11 +137,16 @@ void Scene_Title::Update(){
     UpdateButtonSprites();
 
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
-        isExitScene_ = true;
 
+        // 遷移処理開始
+        isExitScene_ = true;
         HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
         transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
         transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
+
+        // SE
+        const float kSEVolume = 0.24f;
+        AudioManager::PlayAudio(AudioDictionary::Get("タイトル_決定"), false, kSEVolume);
     }
 
 
@@ -232,56 +240,6 @@ void Scene_Title::UpdateTitleLogo(){
     sprites_["title"].transform.translate = basePos_ + titleOffset_;
 
     logoTimer_ += ClockManager::DeltaTime();
-
-#ifdef _DEBUG
-    ImFunc::CustomBegin("Title", MoveOnly_TitleBar);
-    {
-        if(ImGui::Button("色の追加")){
-            hexagonColors_.push_back({ 1.0f,1.0f,1.0f,1.0f });
-        }
-        int i = 0;
-        for(auto& color : hexagonColors_){
-            std::string label = "color" + std::to_string(i);
-            ImGui::ColorEdit4(label.c_str(), &color.x);
-            i++;
-        }
-
-        ImGui::DragFloat("hexagonSize", &hexagonSize_, 1.0f, 16.0f, 100.0f);
-
-
-
-        ImGui::DragFloat2("titlePos", &sprites_["title"].transform.translate.x);
-        ImGui::DragFloat2("titleScale", &sprites_["title"].transform.scale.x, 0.05f);
-        ImGui::DragFloat2("titleOffset", &titleOffset_.x);
-        ImGui::DragFloat2("basePos", &basePos_.x);
-
-        uiText_.Edit();
-        if(ImGui::Button("uiText to json")){
-            MyFunc::CreateJsonFile("Resources/Jsons/Scene_Title/UIText.json", uiText_.GetJsonData());
-        }
-
-        ImGui::Spacing();
-        ImGui::Separator();
-
-        // ボタンのUI編集
-        ImGui::Text("-------Button_A------");
-        if(ImGui::CollapsingHeader("A")){
-            sprites_["A"].Edit();
-        }
-        ImGui::Text("-------Button_Space------");
-        if(ImGui::CollapsingHeader("Space")){
-            sprites_["Space"].Edit();
-        }
-        if(ImGui::Button("A,Space to json")){
-            nlohmann::json data = nlohmann::json::array();
-            data.push_back(sprites_["A"].ToJson());
-            data.push_back(sprites_["Space"].ToJson());
-            MyFunc::CreateJsonFile("Resources/Jsons/Scene_Title/TitleButtons.json", data);
-        }
-
-        ImGui::End();
-    }
-#endif // _DEBUG
 }
 
 

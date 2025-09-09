@@ -1,5 +1,6 @@
 #include "GameState_Pause.h"
 #include <SEED/Source/SEED.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
@@ -59,6 +60,14 @@ void GameState_Pause::Initialize(){
         }
     }
 
+    // 色の初期化
+    hexagonColors_.push_back(MyMath::FloatColor(255, 118, 11, 255, false));
+    hexagonColors_.push_back(MyMath::FloatColor(10, 10, 10, 255, false));
+    hexagonColors_.push_back(MyMath::FloatColor(255, 13, 86, 255, false));
+    hexagonSize_ = 46.0f;
+
+    // Spriteなどを一度更新しておく(ちらつき防止)
+    Update();
 }
 
 
@@ -79,14 +88,18 @@ void GameState_Pause::Update(){
 
     // メニューの選択
     //上移動
+    const float kSEVolume = 0.3f;
+    const float kSETime = 1.0f;
     if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f){
+
         currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kMenuCount - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume, kSETime);
     }
     //下移動
     if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f){
+
         currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kMenuCount - 1);
-        AudioManager::PlayAudio("SE/turnoverPaper.mp3", false, 0.3f, 1.0f);
+        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume, kSETime);
     }
 
     // メニュータイマーの更新
@@ -117,6 +130,11 @@ void GameState_Pause::Update(){
         pauseItems_[i].backSprite.color = pauseItems_[i].backColor;
         pauseItems_[i].backSprite.color.w = 0.4f + 0.6f * t2;
         pauseItems_[i].text.color.w = pauseItems_[i].backSprite.color.w;
+    }
+
+    // 終了遷移のタイマー更新
+    if(isExitScene_){
+        sceneChangeTimer_.Update();
     }
 
 #ifdef _DEBUG
@@ -194,7 +212,14 @@ void GameState_Pause::ManageState(){
 
     //State_Playに戻る
     if(inputMapper_->IsTriggered(PauseMenuInputAction::Pause)){
+
+        // カメラ範囲を元に戻す
         isExit_ = true;
+        stage_->CalculateCurrentStageRange();
+
+        // SE
+        const float kSEVolume = 0.5f;
+        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ゲームに戻る"), false, kSEVolume);
         stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
         // 画面が切り替わったらポーズ解除
         stage_->SetIsPaused(false);
@@ -209,25 +234,47 @@ void GameState_Pause::ManageState(){
 
     // 決定
     if(inputMapper_->IsTriggered(PauseMenuInputAction::Enter)){
-        AudioManager::PlayAudio("SE/iceSound.mp3", false, 0.3f, 1.0f);
+
         switch(currentMenu_){
         case 0:// 続ける
             isExit_ = true;
             stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
             break;
-        case 1:// やり直す
+        case 1:
+        {
+            // やり直す
+            // SE
+            const float kSEVolume = 0.5f;
+            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
             pScene_->ChangeScene("Game");
             break;
+        }
         case 2:// セレクトへ戻る
-            pScene_->ChangeScene("Select");
-            AudioManager::EndAllAudio();
+        {
+            // シーン遷移を生成して開始
+            isExitScene_ = true;
+            HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+            transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+            transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
+
+            // SE
+            const float kSEVolume = 0.5f;
+            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_セレクトへ"), false, kSEVolume);
+
             break;
+        }
         default:
             break;
         }
 
         // 画面が切り替わったらポーズ解除
         stage_->SetIsPaused(false);
+    }
+
+    // セレクトシーンに遷移
+    if(sceneChangeTimer_.IsFinished()){
+        pScene_->ChangeScene("Select");
+        return;
     }
 
 }

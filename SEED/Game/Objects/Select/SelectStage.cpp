@@ -3,6 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <Game/Manager/AudioDictionary.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -41,14 +43,14 @@ void SelectStage::Update() {
 
 void SelectStage::UpdateSelectInput() {
 
+    // ステージ決定後は入力を受け付けない
+    if (stageDrawer_->IsDecideStage()) {
+        return;
+    }
     // 決定入力
     if (inputMapper_->IsTriggered(SelectInputEnum::Decide)) {
 
         stageDrawer_->SetEndFocus();
-    }
-    // ステージ決定後は入力を受け付けない
-    if (stageDrawer_->IsDecideStage()) {
-        return;
     }
 
     // 入力に応じたステージの選択

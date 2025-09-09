@@ -58,6 +58,7 @@ private:
     // ステージ描画を初期化
     std::unique_ptr<SelectStageDrawer> stageDrawer_;
 
+
 	//--------- functions ----------------------------------------------------
 
     // update

@@ -10,6 +10,7 @@
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
 #include <Game/Manager/AudioDictionary.h>
+#include <Game/GameSystem.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -681,7 +682,9 @@ void SelectStageDrawer::DrawEndZoom() {
         stages_[focusIndex_].frame.Draw();
         stages_[focusIndex_].stageIndexBack.Draw();
         stages_[focusIndex_].stageIndexText.Draw();
-        stages_[focusIndex_].achievementUI.Draw(); // クリア済みUI描画
+        if (stages_[focusIndex_].isClear) {
+            stages_[focusIndex_].achievementUI.Draw(); // クリア済みUI描画
+        }
         for (auto& spite : stages_[focusIndex_].objects) {
 
             spite.Draw();
@@ -702,7 +705,9 @@ void SelectStageDrawer::DrawEndZoom() {
             stages_[focusIndex_ - 1].frame.Draw();
             stages_[focusIndex_ - 1].stageIndexBack.Draw();
             stages_[focusIndex_ - 1].stageIndexText.Draw();
-            stages_[focusIndex_ - 1].achievementUI.Draw(); // クリア済みUI描画
+            if (stages_[focusIndex_ - 1].isClear) {
+                stages_[focusIndex_ - 1].achievementUI.Draw(); // クリア済みUI描画
+            }
             for (auto& spite : stages_[focusIndex_ - 1].objects) {
 
                 spite.Draw();
@@ -722,7 +727,9 @@ void SelectStageDrawer::DrawEndZoom() {
             stages_[focusIndex_ + 1].frame.Draw();
             stages_[focusIndex_ + 1].stageIndexBack.Draw();
             stages_[focusIndex_ + 1].stageIndexText.Draw();
-            stages_[focusIndex_ + 1].achievementUI.Draw(); // クリア済みUI描画
+            if (stages_[focusIndex_ + 1].isClear) {
+                stages_[focusIndex_ + 1].achievementUI.Draw(); // クリア済みUI描画
+            }
             for (auto& spite : stages_[focusIndex_ + 1].objects) {
 
                 spite.Draw();
@@ -1044,10 +1051,17 @@ void SelectStageDrawer::BuildAllStage() {
                 }
             }
         }
+
+        if (GameSystem::GetInstance()->GetStageProgressCollector()) {
+            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
+        } else {
+            stage.isClear = false;
+        }
         // 配列に追加
         stages_.push_back(std::move(stage));
     }
 
+    // ステージ名配列のサイズを合わせる
     if (stageNames_.size() < stages_.size()) {
 
         const size_t old = stageNames_.size();
@@ -1057,10 +1071,14 @@ void SelectStageDrawer::BuildAllStage() {
             stageNames_[i] = "Stage " + std::to_string(i + 1);
         }
     }
+    // ステージ名を設定する
     for (size_t i = 0; i < stages_.size(); ++i) {
 
         stages_[i].stageName = stageNames_[i];
-    }}
+    }
+
+
+}
 
 Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     const Vector2& translate, const Vector2& size, uint32_t warpIndex) {

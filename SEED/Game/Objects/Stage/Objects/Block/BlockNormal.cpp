@@ -73,15 +73,6 @@ void BlockNormal::Draw() {
 void BlockNormal::OnCollisionEnter(GameObject2D* other) {
     if (other->GetObjectType() == ObjectType::Player) {
         isTouchedByPlayer_ = true;
-
-        // NormalBlockを踏んだらその座標を記録する
-        if (other->GetIsOnGround()) {
-            if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
-
-                pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
-            }
-
-        }
     }
 }
 
@@ -92,7 +83,16 @@ void BlockNormal::OnCollisionStay(GameObject2D* other) {
         touchedTimer_ = std::clamp(touchedTimer_, 0.0f, maxTouchedTime_);
 
         // NormalBlockを踏んだらその座標を記録する
-        if (other->GetIsOnGroundTrigger() || other->GetIsOnGround()) {
+        Player* player = nullptr;
+        if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+            player = component->GetStageObject<Player>();
+        }
+        // 着地の瞬間
+        const bool landingNow = other->GetIsOnGroundTrigger();
+        // 地面上 かつ 入力で移動中
+        const bool walkingNow = player->OnGround() && player->GetIsMoving();
+
+        if (landingNow || walkingNow) {
             if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
 
                 pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
@@ -105,12 +105,6 @@ void BlockNormal::OnCollisionExit(GameObject2D* other) {
     if (other->GetObjectType() == ObjectType::Player) {
 
         isTouchedByPlayer_ = false;
-
-        // NormalBlockを踏んだらその座標を記録する
-        if (Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene())) {
-
-            pScene->GetStage()->RecordPlayerOnBlock(GetTranslate());
-        }
     }
 }
 

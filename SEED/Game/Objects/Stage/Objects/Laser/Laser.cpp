@@ -47,6 +47,8 @@ void Laser::StopExtend() {
 
     // 停止させる
     currentState_ = State::Stop;
+    // ここで一度だけ衝突を更新
+    owner_->SetWorldScale(Vector2(1.0f, sprite_.size.y / initSizeY_.value()));
 }
 
 void Laser::SetHitWarpParam(const WarpLaserParam& param) {

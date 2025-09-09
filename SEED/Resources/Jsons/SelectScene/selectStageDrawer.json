@@ -1,5 +1,5 @@
 {
-    "arrowAmplitude_": 4.0,
+    "arrowAmplitude_": 8.0,
     "arrowAnimTimer_.duration": 1.5,
     "arrowEasing_": "None",
     "arrowSpacing_": 248.0,
@@ -95,6 +95,7 @@
         "x": 224.0,
         "y": 126.0
     },
+    "reactRate_": 0.10000000149011612,
     "rightArrow_": {
         "anchorPoint": {
             "x": 0.5,
@@ -159,7 +160,7 @@
         "y": 0.0,
         "z": 0.25482654571533203
     },
-    "stageIndexBackOffsetY_": -192.0,
+    "stageIndexBackOffsetY_": -190.0,
     "stageIndexBackSize_": 100.0,
     "stageIndexTextColor_": {
         "w": 1.0,
@@ -169,5 +170,30 @@
     },
     "stageIndexTextOffsetY_": -238.0,
     "stageIndexTextSize_": 80.0,
+    "stageNameTextColor_": {
+        "w": 1.0,
+        "x": 1.0,
+        "y": 0.29343628883361816,
+        "z": 0.4734877943992615
+    },
+    "stageNameTextSize_": 104.0,
+    "stageNameTextTranslate_": {
+        "x": 640.0,
+        "y": 30.0
+    },
+    "stageNames": [
+        "ステー字",
+        "Ishika",
+        "Kurokawa",
+        "Murata",
+        "Stage 5",
+        "aaaaadddddd",
+        "Stage 7",
+        "Stage 8",
+        "Stage 9",
+        "Stage 10",
+        "Stage 11",
+        "Stage 12"
+    ],
     "tileScale_": 0.8999999761581421
 }

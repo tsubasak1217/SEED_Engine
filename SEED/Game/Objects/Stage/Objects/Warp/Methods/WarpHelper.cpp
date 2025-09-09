@@ -13,11 +13,6 @@ Vector4 WarpHelper::GetIndexColor(uint32_t index) {
 
     Vector4 color = {};
     switch (index) {
-    case 0: {
-
-        color = MyMath::FloatColor(0xff007fff);
-        break;
-    }
     case 1: {
 
         color = MyMath::FloatColor(0x1489ffff);

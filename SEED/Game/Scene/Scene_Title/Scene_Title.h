@@ -11,9 +11,6 @@
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Lib/Structs/Timer.h>
 
-// audio
-#include <Game/Manager/AudioDictionary.h>
-
 // manager
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
@@ -53,7 +50,7 @@ private:
     // Text
     TextBox2D uiText_;
 
-    // audio;
+    // audio
     AudioHandle bgmHandle_;
     float kBgmVolume_ = 0.2f;
 

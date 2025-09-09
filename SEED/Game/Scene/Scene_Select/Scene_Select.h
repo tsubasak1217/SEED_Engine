@@ -48,6 +48,10 @@ private:
     // ステージ選択
     std::unique_ptr<SelectStage> selectStage_;
 
+    // Audios
+    const float kBGMVolume_ = 0.2f;
+    AudioHandle bgmHandle_;
+
 	//--------- functions ----------------------------------------------------
 
 };

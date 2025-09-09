@@ -648,8 +648,10 @@ void GameStage::CheckPause() {
 
     if (isPaused_) {
         player_->SetPaused(true);
+        borderLine_->SetPaused(true);
     } else {
         player_->SetPaused(false);
+        borderLine_->SetPaused(false);
     }
 }
 

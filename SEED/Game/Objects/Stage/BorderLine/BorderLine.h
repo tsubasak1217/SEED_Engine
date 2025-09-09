@@ -60,6 +60,8 @@ public:
 
     void SetTargetX(float x);
 
+    void SetPaused(bool isPaused) { isPaused_ = isPaused; }
+
 private:
     //========================================================================
     //	private Methods
@@ -109,6 +111,9 @@ private:
     float elapsedTime_ = 0.0f;
     float shakeStartPosX_ = 0.0f;
     bool isShaking_ = false;
+
+    //ポーズ中かどうか
+    bool isPaused_ = false;
 
     //--------- functions ----------------------------------------------------
 

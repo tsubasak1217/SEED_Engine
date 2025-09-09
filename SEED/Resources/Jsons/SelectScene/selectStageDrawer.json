@@ -155,6 +155,8 @@
         "x": 1120.0,
         "y": 500.0
     },
+    "stageAchievementUIOffsetY_": -250.0,
+    "stageAchievementUISize_": 64.0,
     "stageIndexBackColor_": {
         "w": 1.0,
         "x": 1.0,

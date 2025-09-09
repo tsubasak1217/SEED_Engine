@@ -238,7 +238,6 @@ void GameStage::Update(bool isUpdateBorderLine) {
         //============================================================================
     case GameStage::State::Clear:
 
-        isClearState_ = true;
         UpdateClear();
         break;
         //============================================================================

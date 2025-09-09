@@ -114,6 +114,7 @@ private:
     bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
+    static inline bool isClearState_ = false;
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";

@@ -546,7 +546,9 @@ void GameStage::PutBorderLine() {
 
     // 背景描画に境界線の情報を渡す
     backDrawer_.SetActive(true);
-    backDrawer_.SetBorder(axisX, playerDirection, cameraAdjuster_.GetCameraRange());
+    Range2D range = cameraAdjuster_.GetCameraRange();
+    range.max.y = borderLine_->GetSprite().transform.translate.y - backDrawer_.GetHexagonSize() / 2.0f;
+    backDrawer_.SetBorder(axisX, playerDirection, range);
 }
 
 /////////////////////////////////////////////////////////////////////////

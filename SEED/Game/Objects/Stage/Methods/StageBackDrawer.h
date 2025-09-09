@@ -46,6 +46,9 @@ public:
     void EnableAmbientPurpleFade(int count,
         float radius, float period, const Range2D& area,
         bool relocateEachCycle = true, float purpleAmp = 0.6f, float alphaAmp = 0.12f);
+
+    float GetHexagonSize() const{ return hexagonSize_; }
+
 private:
 
     struct AmbientSpot {

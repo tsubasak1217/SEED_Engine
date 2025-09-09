@@ -177,7 +177,7 @@ void StageBackDrawer::CreateHexagonInfo() {
 
     Vector2 initialPos = {
         borderLineX_ + (direction_ == LR::LEFT ? -radius : radius),
-        displayRange_.min.y
+        displayRange_.max.y
     };
 
     Vector2 currentPos = initialPos;
@@ -195,10 +195,10 @@ void StageBackDrawer::CreateHexagonInfo() {
         hexagons_.emplace_back();
         int col = 0;
 
-        while (currentPos.y < displayRange_.max.y) {
+        while (currentPos.y > displayRange_.min.y) {
 
             HexagonInfo info;
-            currentPos.y = initialPos.y + col * (radius * 3) + (row % 2) * dy;
+            currentPos.y = initialPos.y - col * (radius * 3) - (row % 2) * dy;
             currentPos.x = initialPos.x + row * dx * (direction_ == LR::LEFT ? -1.0f : 1.0f);
             info.pos = currentPos;
             info.radius = radius;

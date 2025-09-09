@@ -117,6 +117,8 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromCSVFile(
             } else {
                 component->Initialize(static_cast<StageObjectType>(id), Vector2(0, 0), tileSize);
             }
+            // 列番号を設定
+            component->SetObjectColum(c);
 
             // オブジェクトごとの個別処理
             IndividualSetting(*component, objectIndex[id], directions);
@@ -169,6 +171,10 @@ std::list<GameObject2D*> GameStageBuilder::CreateFromBorderLine(std::list<GameOb
         StageObjectComponent* newComponent = newBlock->AddComponent<StageObjectComponent>();
         newComponent->Initialize(sourceType, Vector2(0.0f, 0.0f), tileSize, StageObjectCommonState::Hologram);
         newComponent->UpdateBlockTranslate();
+        // 列番号を設定
+        const float dstX = std::fabs(dstPos.x - axisX);
+        const float tile = tileSize;
+        newComponent->SetObjectColum(static_cast<uint32_t>((std::max)(0.0f, std::floor((dstX - 0.5f * tile) / tile))));
 
         // オブジェクトごとの個別処理
         IndividualSetting(*newComponent, *sourceComponent);
@@ -312,7 +318,7 @@ void GameStageBuilder::CreateColliders(std::list<GameObject2D*>& objects, float 
             }
             case StageObjectType::Goal:
             {
-                aabb->SetSize({ tileSize*0.8f,tileSize*0.8f });
+                aabb->SetSize({ tileSize * 0.8f,tileSize * 0.8f });
                 aabb->isMovable_ = false;
                 aabb->isGhost_ = true;
                 object->SetObjectType(ObjectType::Goal);

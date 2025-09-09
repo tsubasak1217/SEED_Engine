@@ -295,6 +295,9 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     if (player_) {
         backDrawer_.Update(player_->GetOwner()->GetWorldTranslate());
     }
+
+    // ホログラム専用更新処理
+    UpdateHologramAppearanceUpdateAnimation();
 }
 
 void GameStage::UpdateWarp() {
@@ -361,6 +364,18 @@ void GameStage::UpdateBorderLine() {
 
     // 境界線の更新処理
     borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y, stageObjectMapTileSize_);
+}
+
+void GameStage::UpdateHologramAppearanceUpdateAnimation() {
+
+    // ホログラム専用の更新処理
+    for (const auto& object : hologramObjects_) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+
+            component->AppearanceUpdateAnimation(blockAppearanceBaseDuration_,
+                blockAppearanceSpacing_, blockAppearanceEasing_);
+        }
+    }
 }
 
 void GameStage::UpdateClear() {
@@ -974,6 +989,13 @@ void GameStage::Edit() {
                 }
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("blockAppearance")) {
+
+                ImGui::DragFloat("blockAppearanceBaseDuration", &blockAppearanceBaseDuration_, 0.01f);
+                ImGui::DragFloat("blockAppearanceSpacing", &blockAppearanceSpacing_, 0.01f);
+                EnumAdapter<Easing::Type>::Combo("blockAppearanceEasing", &blockAppearanceEasing_);
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
@@ -996,6 +1018,9 @@ void GameStage::ApplyJson() {
     }
 
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
+    blockAppearanceBaseDuration_ = data.value("blockAppearanceBaseDuration_", 0.26f);
+    blockAppearanceSpacing_ = data.value("blockAppearanceSpacing_", 0.1f);
+    //blockAppearanceEasing_ = EnumAdapter<Easing::Type>::FromString(data["blockAppearanceEasing_"]).value();
     playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
     warpController_->FromJson(data.value("WarpController", nlohmann::json()));
@@ -1006,6 +1031,9 @@ void GameStage::SaveJson() {
     nlohmann::json data;
 
     data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
+    data["blockAppearanceBaseDuration_"] = blockAppearanceBaseDuration_;
+    data["blockAppearanceSpacing_"] = blockAppearanceSpacing_;
+    data["blockAppearanceEasing_"] = EnumAdapter<Easing::Type>::ToString(blockAppearanceEasing_);
     borderLine_->ToJson(data["BorderLine"]);
     warpController_->ToJson(data["WarpController"]);
 

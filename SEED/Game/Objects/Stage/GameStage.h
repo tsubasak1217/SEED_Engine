@@ -160,6 +160,11 @@ private:
     float shakeAmount_ = 5.0f;
     float shakeStartPosX_ = 0.0f;
 
+    // ホログラム出現時間
+    float blockAppearanceBaseDuration_;  // ベース出現時間
+    float blockAppearanceSpacing_;       // 間隔
+    Easing::Type blockAppearanceEasing_;
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -175,6 +180,7 @@ private:
     void UpdateWarp();
     void UpdateLaserLauncher();
     void UpdateBorderLine();
+    void UpdateHologramAppearanceUpdateAnimation();
     /// Clear
     void UpdateClear();
     /// Death
@@ -200,9 +206,6 @@ private:
     // ステージ範囲計算
     void CalculateCurrentStageRange();
     void CloseToPlayer(LR direction, float zoomRate = 2.4f, const Vector2& focus = 0.7f);
-
-    // プレイヤーが踏んでいる最新のブロック位置を記録する
-    void RecordPlayerOnBlock();
 
     // 取り除くUI
     void UpdateRemoveUI();

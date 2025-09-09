@@ -146,6 +146,24 @@ void Warp::UpdateState() {
 
 void Warp::UpdateNone() {
 
+    if (commonState_ == StageObjectCommonState::Hologram) {
+        if (!appearanceWaitTimer_.IsFinished()) {
+            for (int index = 0; index < frameSpriteCount_; ++index) {
+
+                frameSprites_[index].transform.scale = 0.0f;
+            }
+            return;
+        }
+        if (appearanceWaitTimer_.IsFinished()) {
+            if (!appearanceTimer_.IsFinished()) {
+                for (int index = 0; index < frameSpriteCount_; ++index) {
+
+                    frameSprites_[index].transform.scale = commonScale_;
+                }
+            }
+        }
+    }
+
     // 空、サイズ以上の場合は処理しない
     if (frameAnimTimers_.empty() || frameSprites_.empty() ||
         frameSprites_.size() < frameSpriteCount_) {
@@ -177,6 +195,10 @@ void Warp::UpdateAlways() {
 }
 
 void Warp::Draw() {
+
+    if (!appearanceWaitTimer_.IsFinished()) {
+        return;
+    }
 
     // アニメーションスプライトを描画
     for (auto& frameSprite : frameSprites_) {

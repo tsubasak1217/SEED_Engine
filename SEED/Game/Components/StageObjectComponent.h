@@ -32,8 +32,9 @@ public:
 
     void Initialize(
         StageObjectType objectType, const Vector2& translate, const Vector2& size, 
-        StageObjectCommonState state = StageObjectCommonState::None
-    );
+        StageObjectCommonState state = StageObjectCommonState::None);
+    // ホログラム発生時のアニメーション
+    void AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing);
 
     //--------- collision ----------------------------------------------------
 
@@ -44,11 +45,13 @@ public:
     //--------- accessor -----------------------------------------------------
 
     void SetObjectCommonState(StageObjectCommonState state) { object_->SetCommonState(state); }
+    void SetObjectColum(uint32_t objectColum) { objectColum_ = objectColum; }
 
     StageObjectType GetStageObjectType() const { return objectType_; }
     const Vector2& GetBlockTranslate() const { return object_->GetTranslate(); }
     void UpdateBlockTranslate(){ object_->SetTranslate(owner_.owner2D->GetWorldTranslate()); }
     const Vector2& GetMapSize() const { return mapSize_; }
+    uint32_t GetObjectColum() const { return objectColum_; }
 
     template <typename T>
     T* GetStageObject() const;
@@ -64,6 +67,8 @@ private:
     StageObjectType objectType_;
     // IStageObjectを継承したオブジェクトのインスタンスを持つ
     std::unique_ptr<IStageObject> object_ = nullptr;
+    // オブジェクトの列番号
+    uint32_t objectColum_;
 
     // サイズを保持
     Vector2 mapSize_;

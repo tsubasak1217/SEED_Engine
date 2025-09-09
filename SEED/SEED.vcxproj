@@ -169,6 +169,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Stage\Objects\Interface\IStageObject.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp">
       <SubType>
       </SubType>

@@ -73,7 +73,6 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
     // ステージの名前
     stageNameText_ = TextBox2D("ステージです");
-    stageNameText_.SetFont("Game/x10y12pxDonguriDuel.ttf");
     stageNameText_.fontSize = stageNameTextSize_;
     stageNameText_.transform.translate = stageNameTextTranslate_;
     stageNameText_.anchorPos = Vector2(0.5f, 0.0f);
@@ -305,11 +304,34 @@ void SelectStageDrawer::Edit() {
 
     if (ImGui::CollapsingHeader("EditStageName")) {
 
+        // フォント設定
+        static std::filesystem::path currentDir = "Resources/Fonts";
+        std::string selectedFont = ImFunc::FolderView("フォント一覧", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
+        if (!selectedFont.empty()) {
+            stageNameText_.SetFont(selectedFont);
+        }
+        if (ImGui::Checkbox("isSameFontStageIndex", &isSameFontStageIndex_)) {
+            if (isSameFontStageIndex_) {
+                for (size_t i = 0; i < stages_.size(); ++i) {
+
+                    stages_[i].stageIndexText.SetFont(selectedFont);
+                }
+            } else {
+                for (size_t i = 0; i < stages_.size(); ++i) {
+
+                    stages_[i].stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
+                }
+            }
+        }
+        ImGui::Separator();
+
         // 保存配列のサイズをステージ数に合わせる
         if (stageNames_.size() != stages_.size()) {
             stageNames_.resize(stages_.size());
             for (size_t i = 0; i < stages_.size(); ++i) {
-                if (stageNames_[i].empty()) stageNames_[i] = stages_[i].stageName;
+                if (stageNames_[i].empty()) {
+                    stageNames_[i] = stages_[i].stageName;
+                }
             }
         }
 
@@ -514,6 +536,7 @@ void SelectStageDrawer::ApplyJson() {
     arrowAmplitude_ = data.value("arrowAmplitude_", 0.9f);
     arrowTranslateY_ = data.value("arrowTranslateY_", 0.9f);
     reactRate_ = data.value("reactRate_", 0.9f);
+    isSameFontStageIndex_ = data.value("isSameFontStageIndex_", false);
     arrowEasing_ = EnumAdapter<Easing::Type>::FromString(data["arrowEasing_"]).value();
 
     stageNames_.clear();
@@ -525,6 +548,10 @@ void SelectStageDrawer::ApplyJson() {
         }
     }
 
+    if (data.contains("stageNameText_.fontName")) {
+
+        stageNameText_.SetFont(data["stageNameText_.fontName"]);
+    }
 }
 
 void SelectStageDrawer::SaveJson() {
@@ -577,6 +604,8 @@ void SelectStageDrawer::SaveJson() {
         stageNames_[i] = stages_[i].stageName;
     }
     data["stageNames"] = stageNames_;
+    data["stageNameText_.fontName"] = stageNameText_.fontName;
+    data["isSameFontStageIndex_"] = isSameFontStageIndex_;
 
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
 }
@@ -945,7 +974,13 @@ void SelectStageDrawer::BuildAllStage() {
         stage.stageIndexBack.isApplyViewMat = false;
         // ステージ番号
         stage.stageIndexText = TextBox2D(std::to_string(index + 1));
-        stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
+        if (isSameFontStageIndex_) {
+
+            stage.stageIndexText.SetFont(stageNameText_.fontName);
+        } else {
+
+            stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
+        }
         stage.stageIndexText.fontSize = stageIndexTextSize_;
         stage.stageIndexText.anchorPos = Vector2(0.5f, 0.0f);
         stage.stageIndexText.glyphSpacing = 0.0f;

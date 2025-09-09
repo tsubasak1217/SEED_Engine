@@ -178,6 +178,7 @@ private:
     TextBox2D stageNameText_;
     // ステージの名前s
     std::vector<std::string> stageNames_;
+    bool isSameFontStageIndex_;
 
     //--------- functions ----------------------------------------------------
 

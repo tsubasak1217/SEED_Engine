@@ -31,6 +31,7 @@
         "y": 0.11372549086809158,
         "z": 0.6078431606292725
     },
+    "isSameFontStageIndex_": false,
     "leftArrow_": {
         "anchorPoint": {
             "x": 0.5,
@@ -181,6 +182,7 @@
         "x": 640.0,
         "y": 30.0
     },
+    "stageNameText_.fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
     "stageNames": [
         "ステー字",
         "Ishika",
@@ -193,7 +195,12 @@
         "Stage 9",
         "Stage 10",
         "Stage 11",
-        "Stage 12"
+        "Stage 12",
+        "Stage 13",
+        "Stage 14",
+        "Stage 15",
+        "Stage 16",
+        "Stage 17"
     ],
     "tileScale_": 0.8999999761581421
 }

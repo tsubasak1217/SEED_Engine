@@ -53,15 +53,15 @@ void GameStage::Initialize(int currentStageIndex) {
 
     // UI画像
     removeUI_ = Sprite("UI/buttons.png");
-    removeUI_.size = { 231.0f,129.0f};
+    removeUI_.size = { 231.0f,129.0f };
     removeUI_.clipSize = { 231.0f,129.0f };
     removeUI_.anchorPoint = { 0.5f,0.5f };
     removeUI_.layer = 20;
     removeUI_.isApplyViewMat = true;
     removeUI_.transform.scale = Vector2(0.25f);
-    if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
+    if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
         removeUI_.clipLT.y = 129.0f * 3.0f;
-    } else{
+    } else {
         removeUI_.clipLT.y = 129.0f * 1.0f;
     }
 
@@ -295,6 +295,9 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     if (player_) {
         backDrawer_.Update(player_->GetOwner()->GetWorldTranslate());
     }
+
+    // ホログラム専用更新処理
+    UpdateHologramAppearanceUpdateAnimation();
 }
 
 void GameStage::UpdateWarp() {
@@ -328,20 +331,20 @@ void GameStage::UpdateBorderLine() {
         stageObjectMapTileSize_)) {
 
         // ワープ中は境界線を消せない && ホログラム中は回収できない
-        if(!warpController_->IsWarping() && !player_->GetIsHologram()){
+        if (!warpController_->IsWarping() && !player_->GetIsHologram()) {
 
-            if(player_->IsRemoveBorder()){
+            if (player_->IsRemoveBorder()) {
                 // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
                 isRemoveHologram_ = true;
             }
 
             //タイマーの更新
             removeUITimer_.Update();
-        } else{
+        } else {
             //タイマーを減らす
             removeUITimer_.Update(-1.0f);
         }
-    } else{
+    } else {
         //タイマーを減らす
         removeUITimer_.Update(-1.0f);
     }
@@ -354,6 +357,18 @@ void GameStage::UpdateBorderLine() {
 
     // 境界線の更新処理
     borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y, stageObjectMapTileSize_);
+}
+
+void GameStage::UpdateHologramAppearanceUpdateAnimation() {
+
+    // ホログラム専用の更新処理
+    for (const auto& object : hologramObjects_) {
+        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+
+            component->AppearanceUpdateAnimation(blockAppearanceBaseDuration_,
+                blockAppearanceSpacing_, blockAppearanceEasing_);
+        }
+    }
 }
 
 void GameStage::UpdateClear() {
@@ -801,18 +816,18 @@ void GameStage::SetDeadLaserCollisions() {
 }
 
 // 取り除くUIの更新
-void GameStage::UpdateRemoveUI(){
+void GameStage::UpdateRemoveUI() {
 
     // 入力デバイスが変わったら画像を切り替える
-    if(Input::IsChangedInputDevice()){
-        if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
+    if (Input::IsChangedInputDevice()) {
+        if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
             removeUI_.clipLT.y = 129.0f * 3.0f;
-        } else{
+        } else {
             removeUI_.clipLT.y = 129.0f * 1.0f;
         }
     }
 
-    if(removeUITimer_.GetPrevProgress() == 0.0f){
+    if (removeUITimer_.GetPrevProgress() == 0.0f) {
         return;
     }
 
@@ -933,6 +948,13 @@ void GameStage::Edit() {
                 }
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("blockAppearance")) {
+
+                ImGui::DragFloat("blockAppearanceBaseDuration", &blockAppearanceBaseDuration_, 0.01f);
+                ImGui::DragFloat("blockAppearanceSpacing", &blockAppearanceSpacing_, 0.01f);
+                EnumAdapter<Easing::Type>::Combo("blockAppearanceEasing", &blockAppearanceEasing_);
+                ImGui::EndTabItem();
+            }
             ImGui::EndTabBar();
         }
         ImGui::PopItemWidth();
@@ -955,6 +977,9 @@ void GameStage::ApplyJson() {
     }
 
     stageObjectMapTileSize_ = data.value("stageObjectMapTileSize_", 32.0f);
+    blockAppearanceBaseDuration_ = data.value("blockAppearanceBaseDuration_", 0.26f);
+    blockAppearanceSpacing_ = data.value("blockAppearanceSpacing_", 0.1f);
+    //blockAppearanceEasing_ = EnumAdapter<Easing::Type>::FromString(data["blockAppearanceEasing_"]).value();
     playerSize_ = stageObjectMapTileSize_ * 0.8f;
     borderLine_->FromJson(data["BorderLine"]);
     warpController_->FromJson(data.value("WarpController", nlohmann::json()));
@@ -965,6 +990,9 @@ void GameStage::SaveJson() {
     nlohmann::json data;
 
     data["stageObjectMapTileSize_"] = stageObjectMapTileSize_;
+    data["blockAppearanceBaseDuration_"] = blockAppearanceBaseDuration_;
+    data["blockAppearanceSpacing_"] = blockAppearanceSpacing_;
+    data["blockAppearanceEasing_"] = EnumAdapter<Easing::Type>::ToString(blockAppearanceEasing_);
     borderLine_->ToJson(data["BorderLine"]);
     warpController_->ToJson(data["WarpController"]);
 

@@ -66,6 +66,7 @@ public:
     // ヒット先のワープの情報を設定する
     virtual void SetHitWarpParam(const WarpLaserParam& param) = 0;
     void SetFamilyId(uint64_t id) { familyId_ = id; }
+    void SetIsStop(bool isStop) { isStop_ = isStop; }
 
     const Vector2& GetTranslate() const { return sprite_.transform.translate; }
     const Vector2& GetSize() const { return sprite_.size; }
@@ -103,6 +104,7 @@ protected:
     // パラメータ
     std::optional<float> initSizeY_; // 初期化時のサイズY
     float sizeExtendSpeed_;          // レーザーが伸びる速度
+    bool isStop_ = false;
     // ワープするレーザー処理に使用する
     WarpLaserParam warpParam_;
     //  発射系統を識別するID

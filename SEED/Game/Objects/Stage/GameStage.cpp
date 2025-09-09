@@ -9,6 +9,7 @@
 #include <Environment/Environment.h>
 #include <Game/GameSystem.h>
 #include <Game/Components/StageObjectComponent.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Objects/Stage/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Stage/Objects/Warp/Warp.h>
 #include <Game/Objects/Stage/Objects/Laser/LaserLauncher.h>
@@ -49,6 +50,20 @@ void GameStage::Initialize(int currentStageIndex) {
     // カメラ調整の初期化
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
     cameraAdjuster_.Update();
+}
+
+void GameStage::Reset() {
+
+    if (!requestInitialize_) {
+        return;
+    }
+
+    // リクエストがあれば初期化する
+    BuildStage();
+    // カメラ調整の初期化
+    cameraAdjuster_.SetStageRange(currentStageRange_.value());
+    cameraAdjuster_.Update();
+    requestInitialize_ = false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -522,39 +537,36 @@ void GameStage::CheckPlayerDead() {
     // 死亡判定
     if (player_->IsDeadFinishTrigger()) {
 
+        // レーザーで元の位置に戻す処理
         // レーザーの衝突位置を取得する
-        SetDeadLaserCollisions();
+        //SetDeadLaserCollisions();
 
-        Vector2 target = onBlockPlayerRecordData_.back().translate;
-        // 逆イテレータで最新の座標でチェックする
-        for (auto it = onBlockPlayerRecordData_.rbegin(); it != onBlockPlayerRecordData_.rend(); ++it) {
-            if (IsSafeRecordPoint(*it)) {
+        //Vector2 target = onBlockPlayerRecordData_.back().translate;
+        //// 逆イテレータで最新の座標でチェックする
+        //bool isFound = false;
+        //for (auto it = onBlockPlayerRecordData_.rbegin(); it != onBlockPlayerRecordData_.rend(); ++it) {
+        //    // レーザーと衝突していたら他の座標でチェックする
+        //    if (IsSafeRecordPoint(*it)) {
 
-                // 補間先を設定
-                target = it->translate;
+        //        // 補間先を設定
+        //        target = it->translate;
+        //        isFound = true;
+        //        // 境界線を置いていなかった場合
+        //        if (!it->isPutBordered && !player_->GetIsHologram()) {
 
-                // 状態が今と違う場合境界線をその時点の状態に戻す
-                if (borderLine_->IsActive() == it->isPutBordered) {
-                    break;
-                }
+        //            isRemoveHologram_ = true;
+        //            break;
+        //        }
+        //    }
+        //}
+        //// 元の位置にワープして戻す
+        //RecordData data = onBlockPlayerRecordData_.back();
+        //warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), target);
+        //deadMomentLaserCollisions_.clear();
 
-                // 境界線を置いていた場合
-                if (it->isPutBordered) {
-                    // ここ分からん、バグる
-                    break;
-                }
-                // 境界線を置いていなかった場合
-                if (!it->isPutBordered) {
-
-                    isRemoveHologram_ = true;
-                    break;
-                }
-            }
-        }
-        // 元の位置にワープして戻す
-        RecordData data = onBlockPlayerRecordData_.back();
-        warpController_->DeadWarp(player_->GetOwner()->GetWorldTranslate(), target);
-        deadMomentLaserCollisions_.clear();
+        // レーザーで死んだらリスタート
+        isRemoveHologram_ = true;
+        requestInitialize_ = true;
     }
 }
 
@@ -701,10 +713,10 @@ bool GameStage::IsSafeRecordPoint(const RecordData& data) const {
 
         // 衝突した場合別のデータ
         if (Collision::AABB2D::AABB2D(playerAABB, laserCollision.GetAABB())) {
-            return true;
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
 void GameStage::SetDeadLaserCollisions() {

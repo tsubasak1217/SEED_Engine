@@ -33,6 +33,7 @@ public:
 
     // 初期化処理
     void Initialize(int currentStageIndex);
+    void Reset();
 
     // 更新処理
     void Update(bool isUpdateBorderLine = true);
@@ -109,6 +110,7 @@ private:
     uint32_t currentStageIndex_; // 現在のステージ番号
     uint32_t maxStageCount_;     // 最大ステージ数
     bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
+    bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
 
@@ -142,7 +144,7 @@ private:
     StageCameraAdjuster cameraAdjuster_; // カメラ調整
 
     // プレイヤーがブロックを踏んでいた時の記録s
-    int maxRecordCount_ = 4;
+    int maxRecordCount_ = 18;
     std::deque<RecordData> onBlockPlayerRecordData_;
     // 死んだときのレーザー判定の集合
     std::vector<Collider_AABB2D> deadMomentLaserCollisions_;

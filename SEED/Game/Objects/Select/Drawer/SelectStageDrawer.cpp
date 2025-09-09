@@ -10,6 +10,7 @@
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
 #include <Game/Manager/AudioDictionary.h>
+#include <Game/GameSystem.h>
 
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
@@ -273,6 +274,10 @@ void SelectStageDrawer::Draw() {
         // ステージ番号描画
         stages_[i].stageIndexBack.Draw();
         stages_[i].stageIndexText.Draw();
+        // クリア済みUI描画
+        if (stages_[i].isClear) {
+            stages_[i].achievementUI.Draw();
+        }
         stageNameText_.Draw();
         // ステージ描画
         for (auto& sprite : stages_[i].objects) {
@@ -340,6 +345,7 @@ void SelectStageDrawer::Edit() {
 
             // 表示ラベル
             ImGui::Text("Stage %d", static_cast<int>(i + 1));
+            ImGui::Checkbox("Clear", &stages_[i].isClear); // クリア済みフラグ
             ImGui::SameLine();
 
             // 編集ボックス
@@ -364,6 +370,7 @@ void SelectStageDrawer::Edit() {
             ImGui::DragFloat("tileScale", &tileScale_, 0.01f);
             ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
             ImGui::DragFloat("stageIndexBackOffsetY", &stageIndexBackOffsetY_, 1.0f);
+            ImGui::DragFloat("stageAchievementUIOffsetY", &stageAchievementUIOffsetY_, 1.0f);
             if (ImGui::DragFloat2("stageNameTextTranslate", &stageNameTextTranslate_.x, 1.0f)) {
 
                 stageNameText_.transform.translate = stageNameTextTranslate_;
@@ -427,6 +434,7 @@ void SelectStageDrawer::Edit() {
                     stage.background.color = backgroundColor_;
                 }
             }
+
             EnumAdapter<Easing::Type>::Combo("moveEasing", &moveEasing_);
 
             ImGui::SeparatorText("FocusAnim");
@@ -500,9 +508,11 @@ void SelectStageDrawer::ApplyJson() {
     tileScale_ = data.value("tileScale_", 1.0f);
     stageIndexTextOffsetY_ = data.value("stageIndexTextOffsetY_", 128.0f);
     stageIndexBackOffsetY_ = data.value("stageIndexBackOffsetY_", 128.0f);
+    stageAchievementUIOffsetY_ = data.value("stageAchievementUIOffsetY_", 180.0f);
     stageIndexBackSize_ = data.value("stageIndexBackSize_", 128.0f);
     stageIndexTextSize_ = data.value("stageIndexTextSize_", 128.0f);
     stageNameTextSize_ = data.value("stageNameTextSize_", 128.0f);
+    stageAchievementUISize_ = data.value("stageAchievementUISize_", 64.0f);
 
     from_json(data["centerTranslate_"], centerTranslate_);
     from_json(data["leftTranslate_"], leftTranslate_);
@@ -562,6 +572,7 @@ void SelectStageDrawer::SaveJson() {
     data["tileScale_"] = tileScale_;
     data["stageIndexTextOffsetY_"] = stageIndexTextOffsetY_;
     data["stageIndexBackOffsetY_"] = stageIndexBackOffsetY_;
+    data["stageAchievementUIOffsetY_"] = stageAchievementUIOffsetY_;
 
     to_json(data["stageNameTextTranslate_"], stageNameTextTranslate_);
     to_json(data["centerTranslate_"], centerTranslate_);
@@ -577,6 +588,7 @@ void SelectStageDrawer::SaveJson() {
     to_json(data["stageIndexBackSize_"], stageIndexBackSize_);
     to_json(data["stageIndexTextSize_"], stageIndexTextSize_);
     to_json(data["stageNameTextSize_"], stageNameTextSize_);
+    to_json(data["stageAchievementUISize_"], stageAchievementUISize_);
 
     data["moveEasing_"] = EnumAdapter<Easing::Type>::ToString(moveEasing_);
 
@@ -670,6 +682,9 @@ void SelectStageDrawer::DrawEndZoom() {
         stages_[focusIndex_].frame.Draw();
         stages_[focusIndex_].stageIndexBack.Draw();
         stages_[focusIndex_].stageIndexText.Draw();
+        if (stages_[focusIndex_].isClear) {
+            stages_[focusIndex_].achievementUI.Draw(); // クリア済みUI描画
+        }
         for (auto& spite : stages_[focusIndex_].objects) {
 
             spite.Draw();
@@ -690,6 +705,9 @@ void SelectStageDrawer::DrawEndZoom() {
             stages_[focusIndex_ - 1].frame.Draw();
             stages_[focusIndex_ - 1].stageIndexBack.Draw();
             stages_[focusIndex_ - 1].stageIndexText.Draw();
+            if (stages_[focusIndex_ - 1].isClear) {
+                stages_[focusIndex_ - 1].achievementUI.Draw(); // クリア済みUI描画
+            }
             for (auto& spite : stages_[focusIndex_ - 1].objects) {
 
                 spite.Draw();
@@ -709,6 +727,9 @@ void SelectStageDrawer::DrawEndZoom() {
             stages_[focusIndex_ + 1].frame.Draw();
             stages_[focusIndex_ + 1].stageIndexBack.Draw();
             stages_[focusIndex_ + 1].stageIndexText.Draw();
+            if (stages_[focusIndex_ + 1].isClear) {
+                stages_[focusIndex_ + 1].achievementUI.Draw(); // クリア済みUI描画
+            }
             for (auto& spite : stages_[focusIndex_ + 1].objects) {
 
                 spite.Draw();
@@ -757,6 +778,13 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
         const float offsetY = stageIndexBackOffsetY_ * scaleY;
         stage.stageIndexBack.transform.translate = Vector2(center.x, center.y + offsetY);
         stage.stageIndexBack.size = stageIndexBackSize_ * scaleY;
+    }
+    //クリア済みUIは更にその上に描画させる
+    {
+        const float scaleY = size.y / focusSize_.y;
+        const float offsetY = stageAchievementUIOffsetY_ * scaleY;
+        stage.achievementUI.transform.translate = Vector2(center.x, center.y + offsetY);
+        stage.achievementUI.size = stageAchievementUISize_ * scaleY;
     }
 
     // タイルを最大の正方形の最大サイズにする
@@ -910,6 +938,10 @@ void SelectStageDrawer::DrawActivate(float f) {
     // ステージ番号描画
     stages_[enterIndex].stageIndexBack.Draw();
     stages_[enterIndex].stageIndexText.Draw();
+    // クリア済みUI描画
+    if (stages_[enterIndex].isClear) {
+        stages_[enterIndex].achievementUI.Draw();
+    }
     for (auto& sprite : stages_[enterIndex].objects) {
 
         // ステージ描画
@@ -972,6 +1004,13 @@ void SelectStageDrawer::BuildAllStage() {
         stage.stageIndexBack.anchorPoint = 0.5f;
         stage.stageIndexBack.color = stageIndexBackColor_;
         stage.stageIndexBack.isApplyViewMat = false;
+        // ステージクリア済みUI
+        stage.achievementUI = Sprite("Scene_Select/stageGoal.png");
+        stage.achievementUI.size = stage.size;
+        stage.achievementUI.anchorPoint = 0.5f;
+        stage.achievementUI.transform.translate = stage.translate + stage.size.y;
+        stage.achievementUI.isApplyViewMat = false;
+
         // ステージ番号
         stage.stageIndexText = TextBox2D(std::to_string(index + 1));
         if (isSameFontStageIndex_) {
@@ -1012,10 +1051,17 @@ void SelectStageDrawer::BuildAllStage() {
                 }
             }
         }
+
+        if (GameSystem::GetInstance()->GetStageProgressCollector()) {
+            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
+        } else {
+            stage.isClear = false;
+        }
         // 配列に追加
         stages_.push_back(std::move(stage));
     }
 
+    // ステージ名配列のサイズを合わせる
     if (stageNames_.size() < stages_.size()) {
 
         const size_t old = stageNames_.size();
@@ -1025,10 +1071,14 @@ void SelectStageDrawer::BuildAllStage() {
             stageNames_[i] = "Stage " + std::to_string(i + 1);
         }
     }
+    // ステージ名を設定する
     for (size_t i = 0; i < stages_.size(); ++i) {
 
         stages_[i].stageName = stageNames_[i];
-    }}
+    }
+
+
+}
 
 Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
     const Vector2& translate, const Vector2& size, uint32_t warpIndex) {

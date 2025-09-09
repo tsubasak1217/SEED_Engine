@@ -13,6 +13,9 @@ Scene_Title::Scene_Title(){
     SEED::SetMainCamera("default");
     PostEffect::DeleteAll();
     PostEffect::Load("gj3_defaultPostEffect.json");
+
+    // 再生
+    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("タイトルシーン_BGM"), true, kBgmVolume_);
 }
 
 Scene_Title::~Scene_Title(){}
@@ -57,7 +60,7 @@ void Scene_Title::Initialize(){
         sprites_["leftLeg"].transform.scale = { scale,scale };
         sprites_["leftLeg"].transform.translate = basePos_;
 
-        sprites_["title"].anchorPoint = {0.5f,0.5f};
+        sprites_["title"].anchorPoint = { 0.5f,0.5f };
         sprites_["title"].transform.scale = { 2.75f,2.1f };
         sprites_["title"].transform.translate = basePos_;
 
@@ -83,6 +86,12 @@ void Scene_Title::Initialize(){
         sprites_["A"].FromJson(buttonJson[0]);
         sprites_["Space"].FromJson(buttonJson[1]);
     }
+
+    // 色の初期化
+    hexagonColors_.push_back(MyMath::FloatColor(255,118,11,255,false));
+    hexagonColors_.push_back(MyMath::FloatColor(10,10,10,255, false));
+    hexagonColors_.push_back(MyMath::FloatColor(255,13,86,255, false));
+    hexagonSize_ = 46.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,11 +119,30 @@ void Scene_Title::Update(){
         currentEventState_->Update();
     }
 
+    // シーン開始してからのタイマー
+    sceneStartTimer_.Update();
+
+    // シーン遷移タイマー
+    if(isExitScene_){
+        transisitionTimer_.Update();
+        UpdateAudioVolume();
+    }
+
     // spriteの更新
     UpdateTitleLogo();
     UpdateButtonSprites();
 
     if(Input::IsTriggerPadButton(PAD_BUTTON::A) or Input::IsTriggerKey(DIK_SPACE)){
+        isExitScene_ = true;
+
+        HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+        transition->StartTransition(transisitionTimer_.GetDuration(), sceneStartTimer_.GetDuration());
+    }
+
+    // タイマーが終わったらシーン遷移
+    if(transisitionTimer_.IsFinished()){
+        AudioManager::EndAudio(bgmHandle_);
         ChangeScene("Select");
     }
 }
@@ -194,7 +222,7 @@ void Scene_Title::UpdateTitleLogo(){
     float sin = std::sin(logoTimer_ * 3.14f * timeSpeed);
 
     sprites_["rightLeg"].transform.translate.x = basePos_.x;
-    sprites_["rightLeg"].transform.translate.y = basePos_.y - std::clamp(sin,0.0f,1.0f) * raiseRadius;
+    sprites_["rightLeg"].transform.translate.y = basePos_.y - std::clamp(sin, 0.0f, 1.0f) * raiseRadius;
     sprites_["leftLeg"].transform.translate.x = basePos_.x;
     sprites_["leftLeg"].transform.translate.y = basePos_.y - std::clamp(-sin, 0.0f, 1.0f) * raiseRadius;
     sprites_["body"].transform.translate.x = basePos_.x;
@@ -206,6 +234,20 @@ void Scene_Title::UpdateTitleLogo(){
 #ifdef _DEBUG
     ImFunc::CustomBegin("Title", MoveOnly_TitleBar);
     {
+        if(ImGui::Button("色の追加")){
+            hexagonColors_.push_back({ 1.0f,1.0f,1.0f,1.0f });
+        }
+        int i = 0;
+        for(auto& color : hexagonColors_){
+            std::string label = "color" + std::to_string(i);
+            ImGui::ColorEdit4(label.c_str(), &color.x);
+            i++;
+        }
+
+        ImGui::DragFloat("hexagonSize", &hexagonSize_, 1.0f, 16.0f, 100.0f);
+
+
+
         ImGui::DragFloat2("titlePos", &sprites_["title"].transform.translate.x);
         ImGui::DragFloat2("titleScale", &sprites_["title"].transform.scale.x, 0.05f);
         ImGui::DragFloat2("titleOffset", &titleOffset_.x);
@@ -253,4 +295,10 @@ void Scene_Title::UpdateButtonSprites(){
 
     // 時間の更新
     timer += ClockManager::DeltaTime();
+}
+
+void Scene_Title::UpdateAudioVolume(){
+    if(bgmHandle_){
+        AudioManager::SetAudioVolume(bgmHandle_, kBgmVolume_ * (1.0f - transisitionTimer_.GetProgress()));
+    }
 }

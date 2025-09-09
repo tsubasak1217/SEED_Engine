@@ -128,6 +128,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Manager\AudioDictionary.cpp" />
     <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
     <ClCompile Include="Game\Objects\Clear\ClearTextAnimation.cpp" />
     <ClCompile Include="Game\Objects\Select\Background\SelectBackground.cpp">
@@ -158,6 +159,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
     <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
@@ -295,6 +297,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
@@ -360,6 +363,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\Manager\ModelManager\ModelManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp" />
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
@@ -424,6 +428,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
     <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />
     <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
@@ -603,6 +608,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
@@ -712,6 +718,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
     <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h" />
+    <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />

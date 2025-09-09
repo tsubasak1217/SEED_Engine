@@ -1,34 +1,28 @@
+#pragma once
 #include <string>
 #include <unordered_map>
 
-std::unordered_map<std::string, std::string> AudioDictionary = {
-    // タイトルシーン
-    {"タイトルシーン_BGM", ""},
-    {"タイトル_決定", ""},
-    // セレクトシーン
-    {"セレクトシーン_BGM", ""},
-    {"セレクトシーン_左右", ""},
-    {"セレクトシーン_決定", ""},
-    // ゲームシーン
-    {"ゲームシーン_通常BGM", ""},
-    {"ゲームシーン_虚像BGM", ""},
-    // プレイヤー
-    {"プレイヤー_足音", "" },
-    {"プレイヤー_死亡音", "" },
-    {"プレイヤー_着地音", ""},
-    // ミラー
-    {"ミラー_設置", "" },
-    {"ミラー_回収", "" },
-    // ポーズ
-    {"ポーズ_ポーズボタン", ""},
-    {"ポーズ_選択", ""},
-    {"ポーズ_ゲームに戻る", ""},
-    {"ポーズ_リトライ", ""},
-    {"ポーズ_セレクトへ", ""},
-    // ゴール、クリア
-    {"クリア_BGM", ""},
-    {"王冠_キラキラ音", ""},
-    {"王冠_取得音", ""},
-    {"クリアメニュー_選択", ""},
-    {"クリアメニュー_選択", ""},
+class AudioDictionary{
+public:
+    static const std::string& Get(const std::string& key) {
+
+        static bool isInitialized = false;
+
+        if(!isInitialized){
+            Initialize();
+        }
+
+        auto it = dict.find(key);
+        if(it != dict.end()){
+            return it->second;
+        }
+        static const std::string emptyString = "";
+        return emptyString;
+    }
+
+private:
+    static void Initialize();
+
+public:
+    static inline std::unordered_map<std::string, std::string> dict{};
 };

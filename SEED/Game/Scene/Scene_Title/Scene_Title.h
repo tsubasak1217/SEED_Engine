@@ -9,6 +9,14 @@
 // object
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Model.h>
+#include <SEED/Lib/Structs/Timer.h>
+
+// audio
+#include <Game/Manager/AudioDictionary.h>
+
+// manager
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
 
 class Scene_Title : public Scene_Base{
 public:
@@ -27,6 +35,7 @@ public:
 private:
     void UpdateTitleLogo();
     void UpdateButtonSprites();
+    void UpdateAudioVolume();
 
 private:
     std::unordered_map<std::string, Sprite> sprites_;
@@ -36,6 +45,21 @@ private:
     float logoTimer_ = 0.0f;
     Vector2 titleOffset_;
 
+    // scene
+    Timer transisitionTimer_ = Timer(1.0f);
+    Timer sceneStartTimer_ = Timer(1.0f);
+    bool isExitScene_ = false;
+
     // Text
     TextBox2D uiText_;
+
+    // audio;
+    AudioHandle bgmHandle_;
+    float kBgmVolume_ = 0.2f;
+
+    //hexagon
+    std::vector<Vector4> hexagonColors_;
+    float hexagonSize_ = 80.0f;
+
+
 };

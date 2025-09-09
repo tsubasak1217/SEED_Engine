@@ -3,6 +3,7 @@
 #include <SEED/Source/Basic/Scene/SceneRegister.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 
 /////////////////////////////////////////////////////////////////
 // 静的メンバ変数の初期化
@@ -66,6 +67,8 @@ void GameSystem::Update() {
     EffectSystem::Update();
     // すべての更新終了後にカメラを更新
     CameraManager::Update();
+    // シーン遷移の更新
+    SceneTransitionDrawer::Update();
 }
 
 
@@ -82,6 +85,9 @@ void GameSystem::Draw() {
     // エフェクトの描画
     EffectSystem::Draw();
     
+    // シーン遷移の更新
+    SceneTransitionDrawer::Draw();
+
     // ImGuiの描画
     DrawGUI();
 }

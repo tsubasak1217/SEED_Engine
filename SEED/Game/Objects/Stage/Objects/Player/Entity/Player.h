@@ -66,7 +66,11 @@ public:
 
     //カメラ範囲から出たか判定
     bool IsOutOfCamera(const Range2D& cameraRange) const;
+    // レーザーに触れたか
     bool TouchLaser() const;
+    // 王冠を取ったか(クリア判定)
+    bool IsGetCrown() const { return isGetCrown_; }
+    void SetGetCrown(bool flag) { isGetCrown_ = flag; }
 
     // 入力検知
     bool IsFinishedWarp() const;
@@ -104,6 +108,7 @@ private:
     bool isMove_ = false; // 動き始めた瞬間か
     bool isHologram_ = false; // ホログラム状態か
     bool istouchedLaser_ = false; // レーザーに触れたか
+    bool isGetCrown_ = false; // 王冠を取ったか
 
     // 入力管理
     std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;

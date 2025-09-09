@@ -195,6 +195,8 @@ private:
     void SetListsWarpPtr(StageObjectCommonState state);
     void SetListsLaserLaunchersPtr(StageObjectCommonState state);
     void PutBorderLine();
+
+    //
     void CheckClear();
     //死亡判定
     void CheckPlayerDead();

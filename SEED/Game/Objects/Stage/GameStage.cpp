@@ -284,14 +284,13 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     CheckPlayerCrossedBorderLine();
     //プレイヤーがカメラの範囲外に出たか判定
     CheckPlayerOutOfCamera();
+    // カメラの調整
+    cameraAdjuster_.Update();
 
     // クリア判定
     CheckClear();
     // 死亡判定
     CheckPlayerDead();
-
-    // カメラの調整
-    cameraAdjuster_.Update();
 
     // uiの更新
     UpdateRemoveUI();
@@ -391,7 +390,6 @@ void GameStage::UpdateHologramAppearanceUpdateAnimation() {
 
 void GameStage::UpdateClear() {
 
-    // カメラの調整処理
     cameraAdjuster_.Update();
 
     // ここでクリア状態の更新を行う(プレイヤーを喜ばせるなど)
@@ -607,6 +605,7 @@ void GameStage::CheckClear() {
     // プレイヤーから受け取ったクリア判定でクリア状態に遷移させる
     if (isClear_) {
 
+        player_->SetGetCrown(true);
         currentState_ = State::Clear;
     }
 }

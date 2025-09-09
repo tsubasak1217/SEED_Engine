@@ -129,6 +129,9 @@ void SelectStageDrawer::SetEndFocus() {
 
     // ステージ番号を記録
     stageInfo_.decideStage = focusIndex_;
+
+    const float kSEVolume = 0.24f;
+    AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
 }
 
 void SelectStageDrawer::Update() {

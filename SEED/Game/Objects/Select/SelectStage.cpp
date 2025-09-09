@@ -51,8 +51,6 @@ void SelectStage::UpdateSelectInput() {
     if (inputMapper_->IsTriggered(SelectInputEnum::Decide)) {
 
         stageDrawer_->SetEndFocus();
-        const float kSEVolume = 0.24f;
-        AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
     }
 
     // 入力に応じたステージの選択

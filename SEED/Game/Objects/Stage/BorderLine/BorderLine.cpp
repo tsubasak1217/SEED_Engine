@@ -31,6 +31,7 @@ void BorderLine::Initialize() {
 
 void BorderLine::SetActivate() {
 
+    
     // アクティブ状態を設定
     currentState_ = State::Active;
     // 画像をアクティブにする
@@ -83,6 +84,12 @@ void BorderLine::Update(const Vector2& translate, float sizeY, float tileSize) {
         break;
     }
     case BorderLine::State::Active: {
+
+        //移動補間が完了してからアクティブにする
+        if (lerpXParam_.running) {
+            UpdateSprite(lerpXParam_.targetX, sizeY, tileSize);
+        }
+
 
         // サイズからscaleを計算して更新
         Vector2 scale = sprite_.size / initialSize_;

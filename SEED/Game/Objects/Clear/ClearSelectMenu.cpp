@@ -16,7 +16,9 @@
 //	ClearSelectMenu classMethods
 //============================================================================
 
-void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
+void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage) {
+
+    isLastStage_ = isLastStage;
 
     // falseで初期化
     result_.isNextStage = false;
@@ -29,7 +31,15 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex) {
 
     // メニューの初期化
     items_.clear();
-    nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu.json");
+    nlohmann::json data;
+    if(!isLastStage){
+        kItemCount_ = 2;
+        data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu.json");
+    } else{
+        kItemCount_ = 1;
+        data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu.json");
+    }
+
     for (uint32_t index = 0; index < kItemCount_; ++index) {
 
         Item item{};
@@ -93,13 +103,17 @@ void ClearSelectMenu::Update() {
         if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
 
             // 現在フォーカスされている方をtrueにする
-            if (currentMenu_ == 0) {
-
-                result_.isNextStage = true;
-
-            } else {
-
+            if(isLastStage_){
                 result_.returnSelect = true;
+            } else{
+                if(currentMenu_ == 0){
+
+                    result_.isNextStage = true;
+
+                } else{
+
+                    result_.returnSelect = true;
+                }
             }
             // SE
             const float kSEVolume = 0.24f;
@@ -244,7 +258,11 @@ void ClearSelectMenu::MenuItemsToJson() {
         data.push_back(item.ToJson());
     }
     // JSONファイルに保存
-    MyFunc::CreateJsonFile("Resources/Jsons/Clear/SelectMenu.json", data);
+    if(!isLastStage_){
+        MyFunc::CreateJsonFile("Resources/Jsons/Clear/SelectMenu.json", data);
+    } else{
+        MyFunc::CreateJsonFile("Resources/Jsons/Clear/SelectMenu_Last.json", data);
+    }
 }
 
 void ClearSelectMenu::Item::Edit() {

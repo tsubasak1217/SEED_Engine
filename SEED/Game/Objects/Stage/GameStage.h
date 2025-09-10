@@ -73,6 +73,7 @@ public:
 
     // 現在のステージ番号を取得する
     uint32_t GetCurrentStageIndex() const { return currentStageIndex_; }
+    bool GetIsLastStage() const{ return currentStageIndex_ + 1 >= maxStageCount_; }
 
     // 最大ステージ数を取得する
     uint32_t GetMaxStageCount() const { return maxStageCount_; }

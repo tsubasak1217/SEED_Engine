@@ -64,7 +64,7 @@ void GameState_Clear::Initialize() {
 
     // メニュー
     menu_ = std::make_unique<ClearSelectMenu>();
-    menu_->Initialize(stage->GetCurrentStageIndex());
+    menu_->Initialize(stage->GetCurrentStageIndex(),stage->GetIsLastStage());
 
     // タイマーをリセット
     outTextTimer_.Reset();

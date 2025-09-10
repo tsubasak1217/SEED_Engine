@@ -36,7 +36,7 @@ public:
     ~ClearSelectMenu() = default;
 
     // 初期化処理
-    void Initialize(uint32_t currentStageIndex);
+    void Initialize(uint32_t currentStageIndex,bool isLastStage);
 
     // 更新処理
     void Update();
@@ -87,13 +87,14 @@ private:
     //--------- variables ----------------------------------------------------
 
     // アイテム数
-    const uint32_t kItemCount_ = 2; // メニュー最大数
+    uint32_t kItemCount_; // メニュー最大数
     uint32_t currentMenu_ = 0;      // 現在選択しているメニュー
     SelectMenuResult result_;       // 入力結果
 
     // 入力処理
     std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
     bool isExit_ = false;
+    bool isLastStage_ = false;
 
     // アイテムs
     std::vector<Item> items_;

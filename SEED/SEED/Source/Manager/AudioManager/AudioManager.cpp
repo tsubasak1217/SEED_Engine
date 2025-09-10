@@ -96,17 +96,18 @@ void AudioManager::BeginFrame(){
                 sourceVoice->SetVolume(instance_->volumeMap_[handle] * systemVolumeRate_);
             }
         }
+    }
 
-        // 終了している音声の削除
-        for(auto it = instance_->sourceVoices_.begin(); it != instance_->sourceVoices_.end(); ){
-            XAUDIO2_VOICE_STATE state{};
-            it->second->GetState(&state);
+    // 終了している音声の削除
+    for(auto it = instance_->sourceVoices_.begin(); it != instance_->sourceVoices_.end(); ){
+        XAUDIO2_VOICE_STATE state{};
+        it->second->GetState(&state);
 
-            if(state.BuffersQueued == 0){
-                EndAudio(it->first);
-            } else{
-                ++it;
-            }
+        if(state.BuffersQueued == 0){
+            EndAudio(it->first);
+            it = instance_->sourceVoices_.erase(it);
+        } else{
+            ++it;
         }
     }
 }
@@ -124,7 +125,7 @@ void AudioManager::StartUpLoad(){
     AudioDictionary::Initialize();
 
     // 使用するファイルをすべて読み込む
-    for (const auto& fileName : std::views::values(AudioDictionary::dict)) {
+    for(const auto& fileName : std::views::values(AudioDictionary::dict)){
 
         LoadAudio(fileName);
     }
@@ -187,6 +188,7 @@ AudioHandle AudioManager::PlayAudio(
     hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
     assert(SUCCEEDED(hr));
     hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume);
+    volumeMap_[nextAudioHandle_] = volume;
     assert(SUCCEEDED(hr));
     hr = sourceVoices_[nextAudioHandle_]->Start();
     assert(SUCCEEDED(hr));
@@ -241,7 +243,6 @@ void AudioManager::EndAudio(AudioHandle handle){
     instance_->sourceVoices_[handle]->DestroyVoice();
 
     // 要素の削除
-    instance_->sourceVoices_.erase(handle);
     instance_->isPlaying_.erase(handle);
     instance_->volumeMap_.erase(handle);
 
@@ -253,7 +254,7 @@ void AudioManager::EndAudio(AudioHandle handle){
 /// </summary>
 void AudioManager::EndAllAudio(){
     // すべての音声を停止
-    
+
     for(auto& sourceVoice : instance_->sourceVoices_){
         HRESULT hr;
         hr = sourceVoice.second->Stop();

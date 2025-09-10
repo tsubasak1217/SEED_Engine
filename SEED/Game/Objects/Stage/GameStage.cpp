@@ -931,12 +931,14 @@ void GameStage::StartDeadGlitch() {
 void GameStage::UpdateDeadGlitch() {
 
     // グリッチ処理開始
-    if (player_->TouchLaser() && !executedGlitch_) {
+    bool touchLaser = player_->TouchLaser();
+    if (touchLaser && !wasTouchingLaser_ && !executedGlitch_) {
 
         StartDeadGlitch();
         borderLine_->SetDrawActive(false);
         executedGlitch_ = true;
     }
+    wasTouchingLaser_ = touchLaser;
 
     // アクティブ時のみ
     if (!isActiveGlitchNoise_) {

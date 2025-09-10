@@ -6,6 +6,7 @@
 #include <SEED/Source/Basic/Scene/State_Base.h>
 #include <Game/Objects/Clear/ClearTextAnimation.h>
 #include <Game/Objects/Clear/ClearSelectMenu.h>
+#include <Game/Objects/Transition/NextStageTransition.h>
 
 //============================================================================
 //	GameState_Clear class
@@ -68,6 +69,15 @@ private:
 
     // Audios
     uint32_t bgmHandle_;
+
+    // transition
+    Timer nextStageTimer_ = Timer(0.5f);
+    Vector4 color_ = MyMath::FloatColor(238, 106, 2, 255, false);
+    float nextStageTime_ = 0.6f;
+    bool isNextStage_ = false;
+    // parameters
+    float stripHeight_ = 40.0f;
+    float appearEndTimeT_ = 0.32f;
 
     //--------- functions ----------------------------------------------------
 

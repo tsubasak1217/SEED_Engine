@@ -679,6 +679,7 @@ void SelectStageDrawer::SaveJson(){
     // 難易度を別ファイルで保存
     nlohmann::json data2;
     data2["stageDifficulties"] = stageDifficulties_;
+    data2["stageNames"] = stageNames_;
     JsonAdapter::Save("Scene_Game/stageContexts.json", data2);
 }
 

@@ -26,13 +26,13 @@
 //	GameStage classMethods
 //============================================================================
 
-GameStage::~GameStage() {
+GameStage::~GameStage(){
 
     // 削除
     PostEffectSystem::Delete(deadGlitchNoise_.handle);
 }
 
-void GameStage::Initialize(int currentStageIndex) {
+void GameStage::Initialize(int currentStageIndex){
 
     // 境界線
     borderLine_ = std::make_unique<BorderLine>();
@@ -68,9 +68,9 @@ void GameStage::Initialize(int currentStageIndex) {
     removeUI_.layer = 20;
     removeUI_.isApplyViewMat = true;
     removeUI_.transform.scale = Vector2(0.25f);
-    if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
+    if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
         removeUI_.clipLT.y = 129.0f * 3.0f;
-    } else {
+    } else{
         removeUI_.clipLT.y = 129.0f * 1.0f;
     }
 
@@ -88,11 +88,34 @@ void GameStage::Initialize(int currentStageIndex) {
 
     // グリッチ初期化
     deadGlitchNoise_ = PostEffectSystem::AddPostProcess<Glitch>();
+
+    // ステージ名関連の初期化
+    {
+        // ステージ名
+        stageName_ = GetCurrentStageName();
+        // スプライト
+        stageNameBack_ = Sprite("DefaultAssets/white1x1.png");
+        stageNameBack_.color = Vector4(0.0f, 0.0f, 0.0f, 0.95f);
+        stageNameBack_.size = { kWindowSize.x,kWindowSize.y * 0.4f };
+        stageNameBack_.anchorPoint = { 0.5f,0.5f };
+        stageNameBack_.transform.translate = kWindowCenter;
+        stageNameBack_.layer = 25;
+        stageNameBack_.isApplyViewMat = false;
+        // テキストボックス
+        stageNameTextBox_ = TextBox2D(stageName_);
+        stageNameTextBox_.fontSize = 64.0f;
+        stageNameTextBox_.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
+        stageNameTextBox_.size = { kWindowSize.x, stageNameTextBox_.fontSize };
+        stageNameTextBox_.anchorPos = { 0.5f,0.5f };
+        stageNameTextBox_.transform.translate = kWindowCenter;
+        stageNameTextBox_.layer = 26;
+        stageNameTextBox_.isApplyViewMat = false;
+    }
 }
 
-void GameStage::Reset() {
+void GameStage::Reset(){
 
-    if (!requestInitialize_) {
+    if(!requestInitialize_){
         return;
     }
 
@@ -104,7 +127,7 @@ void GameStage::Reset() {
     requestInitialize_ = false;
 }
 
-bool GameStage::IsCurrentHologram() const {
+bool GameStage::IsCurrentHologram() const{
 
     return player_->GetIsHologram();
 }
@@ -115,14 +138,14 @@ bool GameStage::IsCurrentHologram() const {
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameStage::BuildStage() {
+void GameStage::BuildStage(){
 
     // 全てのオブジェクトを破棄
-    for (GameObject2D* object : objects_) {
+    for(GameObject2D* object : objects_){
         delete object;
     }
     objects_.clear();
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
     }
     hologramObjects_.clear();
@@ -154,7 +177,7 @@ void GameStage::BuildStage() {
 
     // jsonからcontextを適応
     nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Scene_Game/stageContexts.json");
-    if (!data.empty()) {
+    if(!data.empty()){
 
         // 難易度を適応
         if(data.contains("stageDifficulties")){
@@ -181,29 +204,43 @@ int32_t GameStage::GetNextStageDifficulty() const{
     return 0;
 }
 
+std::string GameStage::GetCurrentStageName() const{
+    // jsonからcontextを適応
+    nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Scene_Game/stageContexts.json");
+    if(!data.empty()){
+        // ステージ名を適応
+        if(data.contains("stageNames")){
+            if(data["stageNames"].size() > currentStageIndex_){
+                return data["stageNames"][currentStageIndex_];
+            }
+        }
+    }
+    return "No Name";
+}
+
 //Objectのアクティブ・非アクティブ設定
-void GameStage::SetIsActive(bool isActive) {
+void GameStage::SetIsActive(bool isActive){
 
     // アクティブを設定する
-    for (GameObject2D* object : std::views::join(std::array{ objects_, hologramObjects_ })) {
+    for(GameObject2D* object : std::views::join(std::array{ objects_, hologramObjects_ })){
 
         object->SetIsActive(isActive);
 
-        if (!isActive) {
+        if(!isActive){
             object->SetIsMustDraw(true);
-        } else {
+        } else{
             object->SetIsMustDraw(false);
         }
 
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
 
             // レーザーは別でアクティブを設定する
-            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+            if(LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()){
 
                 laserLauncher->SetIsLaserActive(isActive);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* warp = component->GetStageObject<Warp>()) {
+            if(Warp* warp = component->GetStageObject<Warp>()){
 
                 // 状態を元に戻す
                 warp->ResetAnimation();
@@ -212,26 +249,26 @@ void GameStage::SetIsActive(bool isActive) {
     }
 }
 
-void GameStage::AddDisActiveObject(GameObject2D* object) {
+void GameStage::AddDisActiveObject(GameObject2D* object){
 
     disActiveObjects_.push_back(object);
 }
 
 // 非アクティブオブジェクトの再アクティブ化
-void GameStage::ReActivateDisActiveObjects() {
+void GameStage::ReActivateDisActiveObjects(){
 
-    for (auto& object : disActiveObjects_) {
+    for(auto& object : disActiveObjects_){
 
         object->SetIsActive(true);
 
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
             // レーザーは別でアクティブを設定する
-            if (LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()) {
+            if(LaserLauncher* laserLauncher = component->GetStageObject<LaserLauncher>()){
 
                 laserLauncher->SetIsLaserActive(true);
             }
             // ワープも別でアクティブを設定する
-            if (Warp* warp = component->GetStageObject<Warp>()) {
+            if(Warp* warp = component->GetStageObject<Warp>()){
 
                 // 状態を元に戻す
                 warp->SetNone();
@@ -242,7 +279,7 @@ void GameStage::ReActivateDisActiveObjects() {
     disActiveObjects_.clear();
 }
 
-void GameStage::RecordPlayerOnBlock(const Vector2& translate) {
+void GameStage::RecordPlayerOnBlock(const Vector2& translate){
 
     // 座標をブロックの中心位置にする
     const float tileSize = stageObjectMapTileSize_;
@@ -251,22 +288,22 @@ void GameStage::RecordPlayerOnBlock(const Vector2& translate) {
 
     // 踏まれたブロック位置の座標をセット
     onBlockPlayerRecordData_.push_back({ borderLine_->IsActive(),blockPos });
-    while (maxRecordCount_ < onBlockPlayerRecordData_.size()) {
+    while(maxRecordCount_ < onBlockPlayerRecordData_.size()){
 
         // 最大数を超えた場合古い座標を削除する
         onBlockPlayerRecordData_.pop_front();
     }
 }
 
-bool GameStage::IsTriggredAnyDevice() const {
+bool GameStage::IsTriggredAnyDevice() const{
 
     return player_->IsTriggredAnyDevice();
 }
 
-void GameStage::SetIsPaused(bool isPaused) {
+void GameStage::SetIsPaused(bool isPaused){
 
     isPaused_ = isPaused;
-    if (isPaused_) {
+    if(isPaused_){
 
         isReturnPaused_ = true;
     }
@@ -277,7 +314,7 @@ void GameStage::SetIsPaused(bool isPaused) {
 // 全体の更新処理
 //
 /////////////////////////////////////////////////////////////////////////
-void GameStage::Update(bool isUpdateBorderLine) {
+void GameStage::Update(bool isUpdateBorderLine){
 
     // 初回更新時に入力を有効化
     if(isFirstUpdate){
@@ -287,7 +324,7 @@ void GameStage::Update(bool isUpdateBorderLine) {
         }
     }
 
-    switch (currentState_) {
+    switch(currentState_){
         //============================================================================
         //	ゲームプレイ中の更新処理
         //============================================================================
@@ -333,10 +370,10 @@ void GameStage::Update(bool isUpdateBorderLine) {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::UpdatePlay(bool isUpdateBorderLine) {
+void GameStage::UpdatePlay(bool isUpdateBorderLine){
 
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
-    if (isUpdateBorderLine) {
+    if(isUpdateBorderLine){
         UpdateBorderLine();
     }
 
@@ -363,7 +400,7 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     UpdateRemoveUI();
 
     // 背景描画
-    if (player_) {
+    if(player_){
         backDrawer_.Update(player_->GetOwner()->GetWorldTranslate());
     }
 
@@ -371,33 +408,33 @@ void GameStage::UpdatePlay(bool isUpdateBorderLine) {
     UpdateHologramAppearanceUpdateAnimation();
 }
 
-void GameStage::UpdateWarp() {
+void GameStage::UpdateWarp(){
 
     // ワープの更新処理
     warpController_->Update();
 }
 
-void GameStage::UpdateLaserLauncher() {
+void GameStage::UpdateLaserLauncher(){
 
     // レーザーの更新処理
     laserController_->Update();
 }
 
-void GameStage::UpdateBorderLine() {
+void GameStage::UpdateBorderLine(){
 
     // プレイヤーのワールド座標
     const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
 
     // ポーズから戻るとき、カメラが元に戻るまで処理させない
-    if (isReturnPaused_ && player_->IsPutBorder()) {
-        
+    if(isReturnPaused_ && player_->IsPutBorder()){
+
         isReturnPaused_ = false;
         return;
     }
 
     // プレイヤーの入力処理に応じて境界線を置いたり外したりする
     // 境界線がまだ置かれていないとき
-    if (!borderLine_->IsActive() && player_->IsPutBorder()) {
+    if(!borderLine_->IsActive() && player_->IsPutBorder()){
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();
@@ -411,23 +448,23 @@ void GameStage::UpdateBorderLine() {
 
         // ワープを再検討させる
         laserController_->ResetWarpIgnore();
-    } else if (borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
-        stageObjectMapTileSize_)) {
+    } else if(borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
+        stageObjectMapTileSize_)){
 
         // ワープ中は境界線を消せない && ホログラム中は回収できない
-        if (!warpController_->IsWarping()) {
+        if(!warpController_->IsWarping()){
 
-            if (player_->IsRemoveBorder()) {
+            if(player_->IsRemoveBorder()){
 
                 //プレイヤーがホログラム状態のときは回収できない
-                if (player_->GetIsHologram() == true) {
+                if(player_->GetIsHologram() == true){
 
                     borderLine_->SetIsShaking(true);
 
                     // SE
                     const float kSEVolume = 0.24f;
                     AudioManager::PlayAudio(AudioDictionary::Get("ミラー_回収不可"), false, kSEVolume);
-                } else {
+                } else{
 
                     // 境界線を非アクティブ状態にしてホログラムオブジェクトを全て破棄する
                     isRemoveHologram_ = true;
@@ -439,18 +476,18 @@ void GameStage::UpdateBorderLine() {
             }
 
             // //プレイヤーがホログラム状態のときはUIを表示しない
-            if (player_->GetIsHologram() == true) {
+            if(player_->GetIsHologram() == true){
                 //タイマーを減らす
                 removeUITimer_.Update(-1.0f);
-            } else {
+            } else{
 
                 removeUITimer_.Update();
             }
-        } else {
+        } else{
             //タイマーを減らす
             removeUITimer_.Update(-1.0f);
         }
-    } else {
+    } else{
         //タイマーを減らす
         removeUITimer_.Update(-1.0f);
     }
@@ -465,11 +502,11 @@ void GameStage::UpdateBorderLine() {
     borderLine_->Update(placePos, playerWorldTranslate.y + player_->GetSprite().size.y, stageObjectMapTileSize_);
 }
 
-void GameStage::UpdateHologramAppearanceUpdateAnimation() {
+void GameStage::UpdateHologramAppearanceUpdateAnimation(){
 
     // ホログラム専用の更新処理
-    for (const auto& object : hologramObjects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
+    for(const auto& object : hologramObjects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
 
             component->AppearanceUpdateAnimation(blockAppearanceBaseDuration_,
                 blockAppearanceSpacing_, blockAppearanceEasing_);
@@ -477,14 +514,14 @@ void GameStage::UpdateHologramAppearanceUpdateAnimation() {
     }
 }
 
-void GameStage::UpdateClear() {
+void GameStage::UpdateClear(){
 
     cameraAdjuster_.Update();
 
     // ここでクリア状態の更新を行う(プレイヤーを喜ばせるなど)
 }
 
-void GameStage::UpdateDead() {
+void GameStage::UpdateDead(){
 
     // ホログラムを非アクティブ状態に
     isRemoveHologram_ = true;
@@ -496,12 +533,12 @@ void GameStage::UpdateDead() {
     currentState_ = State::Play;
 }
 
-void GameStage::UpdateRetry() {
+void GameStage::UpdateRetry(){
 
 
 }
 
-void GameStage::UpdateReturnSelect() {
+void GameStage::UpdateReturnSelect(){
 
 
 }
@@ -512,11 +549,11 @@ void GameStage::UpdateReturnSelect() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::GetListsPlayerPtr() {
+void GameStage::GetListsPlayerPtr(){
     player_ = nullptr;
-    for (GameObject2D* object : objects_) {
-        if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-            if (component->GetStageObjectType() == StageObjectType::Player) {
+    for(GameObject2D* object : objects_){
+        if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+            if(component->GetStageObjectType() == StageObjectType::Player){
 
                 player_ = component->GetStageObject<Player>();
                 break;
@@ -531,23 +568,23 @@ void GameStage::GetListsPlayerPtr() {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
+void GameStage::SetListsWarpPtr(StageObjectCommonState state){
 
     std::vector<Warp*> warps{};
-    if (state == StageObjectCommonState::None) {
-        for (GameObject2D* object : objects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::Warp) {
+    if(state == StageObjectCommonState::None){
+        for(GameObject2D* object : objects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::Warp){
 
                     // ワープのポインタを追加
                     warps.push_back(component->GetStageObject<Warp>());
                 }
             }
         }
-    } else if (state == StageObjectCommonState::Hologram) {
-        for (GameObject2D* object : hologramObjects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::Warp) {
+    } else if(state == StageObjectCommonState::Hologram){
+        for(GameObject2D* object : hologramObjects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::Warp){
 
                     // ワープのポインタを追加
                     warps.push_back(component->GetStageObject<Warp>());
@@ -565,23 +602,23 @@ void GameStage::SetListsWarpPtr(StageObjectCommonState state) {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state) {
+void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state){
 
     std::vector<LaserLauncher*> launcheres{};
-    if (state == StageObjectCommonState::None) {
-        for (GameObject2D* object : objects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+    if(state == StageObjectCommonState::None){
+        for(GameObject2D* object : objects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::LaserLauncher){
 
                     // レーザー発射台のポインタを追加
                     launcheres.push_back(component->GetStageObject<LaserLauncher>());
                 }
             }
         }
-    } else if (state == StageObjectCommonState::Hologram) {
-        for (GameObject2D* object : hologramObjects_) {
-            if (StageObjectComponent* component = object->GetComponent<StageObjectComponent>()) {
-                if (component->GetStageObjectType() == StageObjectType::LaserLauncher) {
+    } else if(state == StageObjectCommonState::Hologram){
+        for(GameObject2D* object : hologramObjects_){
+            if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
+                if(component->GetStageObjectType() == StageObjectType::LaserLauncher){
 
                     // レーザー発射台のポインタを追加
                     launcheres.push_back(component->GetStageObject<LaserLauncher>());
@@ -599,7 +636,7 @@ void GameStage::SetListsLaserLaunchersPtr(StageObjectCommonState state) {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::PutBorderLine() {
+void GameStage::PutBorderLine(){
 
     // プレイヤーの向き
     const LR playerDirection = player_->GetMoveDirection();
@@ -646,9 +683,9 @@ void GameStage::PutBorderLine() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::RemoveBorderLine() {
+void GameStage::RemoveBorderLine(){
 
-    if (!isRemoveHologram_) {
+    if(!isRemoveHologram_){
         return;
     }
 
@@ -664,7 +701,7 @@ void GameStage::RemoveBorderLine() {
     ReActivateDisActiveObjects();
 
     // 作成したホログラムオブジェクトをすべて破棄する
-    for (GameObject2D* object : hologramObjects_) {
+    for(GameObject2D* object : hologramObjects_){
         delete object;
         object = nullptr;
     }
@@ -681,10 +718,10 @@ void GameStage::RemoveBorderLine() {
     borderLine_->SetDrawActive(true);
 }
 
-void GameStage::RequestNextStage() {
+void GameStage::RequestNextStage(){
 
     // クリア状態以外の時には受け付けない
-    if (currentState_ != State::Clear) {
+    if(currentState_ != State::Clear){
         return;
     }
 
@@ -693,20 +730,20 @@ void GameStage::RequestNextStage() {
     currentStageIndex_ = std::clamp(++currentStageIndex_, uint32_t(0), maxStageCount_);
 }
 
-void GameStage::CheckClear() {
+void GameStage::CheckClear(){
 
     // プレイヤーから受け取ったクリア判定でクリア状態に遷移させる
-    if (isClear_) {
+    if(isClear_){
 
         player_->SetGetCrown(true);
         currentState_ = State::Clear;
     }
 }
 
-void GameStage::CheckPlayerDead() {
+void GameStage::CheckPlayerDead(){
 
     // 死亡判定
-    if (player_->IsDeadFinishTrigger()) {
+    if(player_->IsDeadFinishTrigger()){
 
         // レーザーで死んだらリスタート
         isRemoveHologram_ = true;
@@ -714,20 +751,20 @@ void GameStage::CheckPlayerDead() {
     }
 }
 
-void GameStage::CheckPause() {
+void GameStage::CheckPause(){
 
-    if (isPaused_) {
+    if(isPaused_){
         player_->SetPaused(true);
         borderLine_->SetPaused(true);
-    } else {
+    } else{
         player_->SetPaused(false);
         borderLine_->SetPaused(false);
     }
 }
 
 // プレイヤーが境界線を越えたかどうか
-void GameStage::CheckPlayerCrossedBorderLine() {
-    if (borderLine_->IsActive()) {
+void GameStage::CheckPlayerCrossedBorderLine(){
+    if(borderLine_->IsActive()){
 
         // プレイヤーのワールド座標
         const Vector2 prePos = player_->GetOwner()->GetPrePos();
@@ -739,48 +776,48 @@ void GameStage::CheckPlayerCrossedBorderLine() {
         axisX = GameStageHelper::BorderAxisXFromPlayerDirection(axisX, player_->GetMoveDirection(), stageObjectMapTileSize_);
 
         //向きごとの境界線を越えたかどうかの判定をする
-        if (borderLine_->GetSprite().transform.translate.y > playerWorldTranslate.y) {
-            if (borderLine_->GetDirection() == LR::LEFT) {
+        if(borderLine_->GetSprite().transform.translate.y > playerWorldTranslate.y){
+            if(borderLine_->GetDirection() == LR::LEFT){
                 /*--- LEFT ---*/
                 // プレイヤーが境界線を左から右に越えたか
-                if (playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
-                    prePos.x > borderLine_->GetSprite().transform.translate.x) {
+                if(playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x > borderLine_->GetSprite().transform.translate.x){
 
                     player_->SetIsHologram(true);
                 }
-                if (playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
-                    prePos.x < borderLine_->GetSprite().transform.translate.x) {
+                if(playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x < borderLine_->GetSprite().transform.translate.x){
 
                     player_->SetIsHologram(false);
                 }
-            } else {
+            } else{
                 /*--- RIGHT ---*/
                 // プレイヤーが境界線を右から左に越えたか
-                if (playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
-                    prePos.x < borderLine_->GetSprite().transform.translate.x) {
+                if(playerWorldTranslate.x > borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x < borderLine_->GetSprite().transform.translate.x){
 
                     player_->SetIsHologram(true);
                 }
-                if (playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
-                    prePos.x > borderLine_->GetSprite().transform.translate.x) {
+                if(playerWorldTranslate.x < borderLine_->GetSprite().transform.translate.x &&
+                    prePos.x > borderLine_->GetSprite().transform.translate.x){
 
                     player_->SetIsHologram(false);
                 }
             }
         }
-    } else {
+    } else{
         // 境界線が置かれていないときはホログラム状態を解除する
         player_->SetIsHologram(false);
     }
 }
 
-void GameStage::CheckPlayerOutOfCamera() {
+void GameStage::CheckPlayerOutOfCamera(){
     // プレイヤーがカメラ範囲から出たかどうか
-    if (currentStageRange_ != std::nullopt && player_ != nullptr) {
+    if(currentStageRange_ != std::nullopt && player_ != nullptr){
         // カメラの範囲
         const Range2D cameraRange = cameraAdjuster_.GetCameraRange();
         // プレイヤーがカメラ範囲から出たか
-        if (player_->IsOutOfCamera(cameraRange)) {
+        if(player_->IsOutOfCamera(cameraRange)){
 
             // 元の位置にワープして戻す
             RecordData data = onBlockPlayerRecordData_.back();
@@ -794,38 +831,38 @@ void GameStage::CheckPlayerOutOfCamera() {
 
 
 // ステージの範囲を計算する
-void GameStage::CalculateCurrentStageRange() {
+void GameStage::CalculateCurrentStageRange(){
 
     // リセット
     currentStageRange_ = std::nullopt;
 
-    for (GameObject2D* object : std::views::join(std::array{ objects_,hologramObjects_ })) {
+    for(GameObject2D* object : std::views::join(std::array{ objects_,hologramObjects_ })){
         Vector2 pos = object->GetWorldTranslate();
 
         // 範囲の初期化
-        if (currentStageRange_ == std::nullopt) {
+        if(currentStageRange_ == std::nullopt){
             currentStageRange_ = Range2D(pos, pos);
         }
 
         // x,yそれぞれの最小値・最大値を更新
-        if (pos.x < currentStageRange_.value().min.x) {
+        if(pos.x < currentStageRange_.value().min.x){
             currentStageRange_.value().min.x = pos.x;
 
-        } else if (currentStageRange_.value().max.x < pos.x) {
+        } else if(currentStageRange_.value().max.x < pos.x){
             currentStageRange_.value().max.x = pos.x;
         }
 
-        if (pos.y < currentStageRange_.value().min.y) {
+        if(pos.y < currentStageRange_.value().min.y){
             currentStageRange_.value().min.y = pos.y;
 
-        } else if (currentStageRange_.value().max.y < pos.y) {
+        } else if(currentStageRange_.value().max.y < pos.y){
             currentStageRange_.value().max.y = pos.y;
         }
     }
 
     // ステージ範囲に少し余裕を持たせる
     float margin = stageObjectMapTileSize_;
-    if (currentStageRange_ == std::nullopt) {
+    if(currentStageRange_ == std::nullopt){
         currentStageRange_ = Range2D({ 0.0f,0.0f }, { 0.0f,0.0f });
     }
     currentStageRange_.value().min.x -= margin;
@@ -838,21 +875,21 @@ void GameStage::CalculateCurrentStageRange() {
 }
 
 // プレイヤーに近づく
-void GameStage::CloseToPlayer(LR direction, float zoomRate, const Vector2& focus) {
+void GameStage::CloseToPlayer(LR direction, float zoomRate, const Vector2& focus){
 
     currentStageRange_ = std::nullopt;
-    if (direction == LR::LEFT) {
+    if(direction == LR::LEFT){
         // playerを左に写すように
         Vector2 min = player_->GetOwner()->GetWorldTranslate() - Vector2(playerSize_ * focus.x, playerSize_ * focus.y);
         Vector2 max = min + Vector2(playerSize_ * zoomRate, stageObjectMapTileSize_);
         currentStageRange_ = Range2D(min, max);
 
-    } else if (direction == LR::RIGHT) {
+    } else if(direction == LR::RIGHT){
         // playerを右に写すように
         Vector2 max = player_->GetOwner()->GetWorldTranslate() + Vector2(playerSize_ * focus.x, playerSize_ * focus.y);
         Vector2 min = max - Vector2(playerSize_ * zoomRate, stageObjectMapTileSize_);
 
-    } else {
+    } else{
         // playerを中心に写すように
         Vector2 min = player_->GetOwner()->GetWorldTranslate() - Vector2(playerSize_ * 1.1f, stageObjectMapTileSize_ * 0.5f);
         Vector2 max = min + Vector2(playerSize_ * zoomRate, stageObjectMapTileSize_);
@@ -862,36 +899,36 @@ void GameStage::CloseToPlayer(LR direction, float zoomRate, const Vector2& focus
     cameraAdjuster_.SetStageRange(currentStageRange_.value());
 }
 
-bool GameStage::IsSafeRecordPoint(const RecordData& data) const {
+bool GameStage::IsSafeRecordPoint(const RecordData& data) const{
 
     // 衝突判定を取得して衝突していれば別のデータでチェックする
     AABB2D playerAABB = playerCollision_.GetAABB();
     playerAABB.center = data.translate;
-    for (const auto& laserCollision : deadMomentLaserCollisions_) {
+    for(const auto& laserCollision : deadMomentLaserCollisions_){
 
         // 衝突した場合別のデータ
-        if (Collision::AABB2D::AABB2D(playerAABB, laserCollision.GetAABB())) {
+        if(Collision::AABB2D::AABB2D(playerAABB, laserCollision.GetAABB())){
             return false;
         }
     }
     return true;
 }
 
-void GameStage::SetDeadLaserCollisions() {
+void GameStage::SetDeadLaserCollisions(){
 
     // プレイヤーがレーザーの衝突で死んだときステージ内のレーザー判定をすべて取得する
-    if (deadMomentLaserCollisions_.empty()) {
-        for (const auto& object : std::views::join(std::array{ objects_,hologramObjects_ })) {
-            if (StageObjectComponent* stage = object->GetComponent<StageObjectComponent>()) {
-                if (LaserLauncher* laserLauncher = stage->GetStageObject<LaserLauncher>()) {
+    if(deadMomentLaserCollisions_.empty()){
+        for(const auto& object : std::views::join(std::array{ objects_,hologramObjects_ })){
+            if(StageObjectComponent* stage = object->GetComponent<StageObjectComponent>()){
+                if(LaserLauncher* laserLauncher = stage->GetStageObject<LaserLauncher>()){
 
                     // 発射台からすべてのレーザーを取得する
-                    for (const auto& laser : laserLauncher->GetLasers()) {
-                        if (Collision2DComponent* collision = laser->GetComponent<Collision2DComponent>()) {
+                    for(const auto& laser : laserLauncher->GetLasers()){
+                        if(Collision2DComponent* collision = laser->GetComponent<Collision2DComponent>()){
 
                             // 全ての衝突を取得
-                            for (const auto& collider : collision->GetColliders()) {
-                                if (Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())) {
+                            for(const auto& collider : collision->GetColliders()){
+                                if(Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())){
 
                                     deadMomentLaserCollisions_.emplace_back(*aabb);
                                 }
@@ -901,11 +938,11 @@ void GameStage::SetDeadLaserCollisions() {
                 }
             }
         }
-        if (Collision2DComponent* component = player_->GetOwner()->GetComponent<Collision2DComponent>()) {
+        if(Collision2DComponent* component = player_->GetOwner()->GetComponent<Collision2DComponent>()){
 
             // プレイヤーの衝突を取得
-            for (const auto& collider : component->GetColliders()) {
-                if (Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())) {
+            for(const auto& collider : component->GetColliders()){
+                if(Collider_AABB2D* aabb = static_cast<Collider_AABB2D*>(collider.get())){
 
                     playerCollision_ = *aabb;
                 }
@@ -914,9 +951,9 @@ void GameStage::SetDeadLaserCollisions() {
     }
 }
 
-void GameStage::StartDeadGlitch() {
+void GameStage::StartDeadGlitch(){
 
-    if (isActiveGlitchNoise_) {
+    if(isActiveGlitchNoise_){
         return;
     }
 
@@ -925,14 +962,14 @@ void GameStage::StartDeadGlitch() {
     isActiveGlitchNoise_ = true;
 
     // 収束時間を設定
-    deadGlitchConvergenceTimer_.duration = randomGlitchCount_ * deadGlitchTimer_.duration;  
+    deadGlitchConvergenceTimer_.duration = randomGlitchCount_ * deadGlitchTimer_.duration;
 }
 
-void GameStage::UpdateDeadGlitch() {
+void GameStage::UpdateDeadGlitch(){
 
     // グリッチ処理開始
     bool touchLaser = player_->TouchLaser();
-    if (touchLaser && !wasTouchingLaser_ && !executedGlitch_) {
+    if(touchLaser && !wasTouchingLaser_ && !executedGlitch_){
 
         StartDeadGlitch();
         borderLine_->SetDrawActive(false);
@@ -941,7 +978,7 @@ void GameStage::UpdateDeadGlitch() {
     wasTouchingLaser_ = touchLaser;
 
     // アクティブ時のみ
-    if (!isActiveGlitchNoise_) {
+    if(!isActiveGlitchNoise_){
         return;
     }
 
@@ -955,7 +992,7 @@ void GameStage::UpdateDeadGlitch() {
         deadGlitchConvergenceTimer_.GetProgress());
 
     // 時間経過後
-    if (deadGlitchTimer_.IsFinished()) {
+    if(deadGlitchTimer_.IsFinished()){
 
         // ランダムな値で強さを設定する
         deadGlitchNoise_.pPostProcess->intensity_ = RandomGenerator::Generate(
@@ -966,7 +1003,7 @@ void GameStage::UpdateDeadGlitch() {
         ++currentGlitchCount_;
 
         // 最大数を超えたら処理終了
-        if (randomGlitchCount_ < currentGlitchCount_) {
+        if(randomGlitchCount_ < currentGlitchCount_){
 
             deadGlitchConvergenceTimer_.Reset();
             isActiveGlitchNoise_ = false;
@@ -979,19 +1016,61 @@ void GameStage::UpdateDeadGlitch() {
     }
 }
 
+// ステージ名の描画
+void GameStage::StageNameDraw(){
+    if(stageNameTimerArray_.IsFinished()) return;
+    stageNameTimerArray_.Update();
+    float t = stageNameTimerArray_.GetProgress();
+
+
+    StageNameState state = (StageNameState)stageNameTimerArray_.GetCurrentIndex();
+    switch(state){
+
+    case StageNameState::BackAppear:
+    {
+        float ease = EaseInOutExpo(t);
+        stageNameBack_.transform.scale.y = ease;
+        stageNameTextBox_.color.w = 0.0f;
+
+        break;
+    }
+    case StageNameState::TextAppear:
+    {
+        stageNameTextBox_.color.w = t;
+        break;
+    }
+    case StageNameState::Stay:
+    {
+        break;
+    }
+    case StageNameState::Disappear:
+    {
+        float t2 = 1.0f - t;
+        stageNameBack_.color.w = t2;
+        stageNameTextBox_.color.w = t2;
+        break;
+    }
+    default:
+        break;
+    }
+
+    stageNameBack_.Draw();
+    stageNameTextBox_.Draw();
+}
+
 // 取り除くUIの更新
-void GameStage::UpdateRemoveUI() {
+void GameStage::UpdateRemoveUI(){
 
     // 入力デバイスが変わったら画像を切り替える
-    if (Input::IsChangedInputDevice()) {
-        if (Input::GetRecentInputDevice() == InputDevice::GAMEPAD) {
+    if(Input::IsChangedInputDevice()){
+        if(Input::GetRecentInputDevice() == InputDevice::GAMEPAD){
             removeUI_.clipLT.y = 129.0f * 3.0f;
-        } else {
+        } else{
             removeUI_.clipLT.y = 129.0f * 1.0f;
         }
     }
 
-    if (removeUITimer_.GetPrevProgress() == 0.0f) {
+    if(removeUITimer_.GetPrevProgress() == 0.0f){
         return;
     }
 
@@ -1048,10 +1127,10 @@ void GameStage::UpdateRemoveUI() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::Draw() {
+void GameStage::Draw(){
 
     // クリアになったら表示しない
-    if (currentState_ != State::Clear) {
+    if(currentState_ != State::Clear){
 
         // 境界線の描画
         borderLine_->Draw();
@@ -1063,6 +1142,9 @@ void GameStage::Draw() {
 
     // 背景描画
     backDrawer_.Draw();
+
+    // ステージ名の描画
+    StageNameDraw();
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -1071,27 +1153,27 @@ void GameStage::Draw() {
 //
 /////////////////////////////////////////////////////////////////////////
 
-void GameStage::Edit() {
+void GameStage::Edit(){
 #ifdef _DEBUG
 
     ImFunc::CustomBegin("GameStage", MoveOnly_TitleBar);
     {
         ImGui::PushItemWidth(192.0f);
-        if (ImGui::Button("Save Json")) {
+        if(ImGui::Button("Save Json")){
 
             SaveJson();
         }
 
-        if (ImGui::BeginTabBar("GameStageTab")) {
-            if (ImGui::BeginTabItem("Stage")) {
+        if(ImGui::BeginTabBar("GameStageTab")){
+            if(ImGui::BeginTabItem("Stage")){
 
-                if (ImGui::Button("ReBuildStage")) {
+                if(ImGui::Button("ReBuildStage")){
 
-                    for (GameObject2D* object : objects_) {
+                    for(GameObject2D* object : objects_){
                         delete object;
                     }
                     objects_.clear();
-                    for (GameObject2D* object : hologramObjects_) {
+                    for(GameObject2D* object : hologramObjects_){
                         delete object;
                     }
                     hologramObjects_.clear();
@@ -1105,22 +1187,22 @@ void GameStage::Edit() {
                 ImGui::DragFloat("stageObjectMapTileSize", &stageObjectMapTileSize_, 0.5f);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("BorderLine")) {
+            if(ImGui::BeginTabItem("BorderLine")){
 
                 borderLine_->Edit(player_->GetOwner()->GetWorldTranslate(), stageObjectMapTileSize_);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Warp")) {
+            if(ImGui::BeginTabItem("Warp")){
 
                 warpController_->Edit();
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Laser")) {
+            if(ImGui::BeginTabItem("Laser")){
 
                 laserController_->Edit();
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Camera")) {
+            if(ImGui::BeginTabItem("Camera")){
                 float cameraFov = SEED::GetMainCamera()->GetFov();
                 Vector2 clipRange = SEED::GetMainCamera()->GetClipRange();
                 ImGui::DragFloat("CameraFov", &cameraFov, 0.1f, 1.0f, 179.0f);
@@ -1129,13 +1211,13 @@ void GameStage::Edit() {
                 SEED::GetMainCamera()->SetClipRange(clipRange);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Record")) {
+            if(ImGui::BeginTabItem("Record")){
 
                 const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
                 ImGui::Text("playerPos: %.1f,%.1f", playerWorldTranslate.x, playerWorldTranslate.y);
                 ImGui::DragInt("maxRecord", &maxRecordCount_, 1, 1, 16);
                 uint32_t index = 0;
-                for (const auto& data : onBlockPlayerRecordData_) {
+                for(const auto& data : onBlockPlayerRecordData_){
 
                     ImGui::SeparatorText(("records: " + std::to_string(index)).c_str());
                     std::string key = "translate: %.1f,%.1f";
@@ -1146,16 +1228,16 @@ void GameStage::Edit() {
                 }
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("blockAppearance")) {
+            if(ImGui::BeginTabItem("blockAppearance")){
 
                 ImGui::DragFloat("blockAppearanceBaseDuration", &blockAppearanceBaseDuration_, 0.01f);
                 ImGui::DragFloat("blockAppearanceSpacing", &blockAppearanceSpacing_, 0.01f);
                 EnumAdapter<Easing::Type>::Combo("blockAppearanceEasing", &blockAppearanceEasing_);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Glitch")) {
+            if(ImGui::BeginTabItem("Glitch")){
 
-                if (ImGui::Button("Start")) {
+                if(ImGui::Button("Start")){
                     StartDeadGlitch();
                     executedGlitch_ = false;
                 }
@@ -1180,10 +1262,10 @@ void GameStage::Edit() {
 //
 //////////////////////////////////////////////////////////////////////////
 
-void GameStage::ApplyJson() {
+void GameStage::ApplyJson(){
 
     nlohmann::json data;
-    if (!JsonAdapter::LoadCheck(kJsonPath_, data)) {
+    if(!JsonAdapter::LoadCheck(kJsonPath_, data)){
         return;
     }
 
@@ -1199,7 +1281,7 @@ void GameStage::ApplyJson() {
     warpController_->FromJson(data.value("WarpController", nlohmann::json()));
 }
 
-void GameStage::SaveJson() {
+void GameStage::SaveJson(){
 
     nlohmann::json data;
 

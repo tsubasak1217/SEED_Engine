@@ -271,6 +271,27 @@ bool GameStageWarpController::CheckWarpTarget() {
     return true;
 }
 
+bool GameStageWarpController::CheckWarpPairBothSides(uint32_t warpIndex) {
+
+    // 両方のワープは存在しているかチェック
+    bool hasNone = false;
+    for (const auto& warp : noneWarps_) {
+        if (warp->GetWarpIndex() == warpIndex) {
+            hasNone = true;
+            break;
+        }
+    }
+    bool hasHolo = false;
+    for (const auto& warp : hologramWarps_) {
+        if (warp->GetWarpIndex() == warpIndex) {
+            hasHolo = true;
+            break;
+        }
+    }
+    return hasNone && hasHolo;
+
+}
+
 const std::vector<Warp*>* GameStageWarpController::GetWarpTarget(StageObjectCommonState state) const {
 
     switch (state) {

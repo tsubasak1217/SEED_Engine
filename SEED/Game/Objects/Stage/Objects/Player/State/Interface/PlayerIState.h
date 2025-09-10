@@ -43,6 +43,9 @@ public:
     virtual void FromJson(const nlohmann::json& data) = 0;
     virtual void ToJson(nlohmann::json& data) = 0;
 
+    // audio
+    virtual void StopAudio() {}
+
     //--------- accessor -----------------------------------------------------
 
     void SetInputMapper(const InputMapper<PlayerInputAction>* inputMapper) { inputMapper_ = inputMapper; }

@@ -48,6 +48,7 @@ public:
 
     // 対象のワープの相手がいるかどうかチェック
     bool CheckWarpPartner(StageObjectCommonState state, uint32_t warpIndex);
+    bool CheckWarpPairBothSides(uint32_t warpIndex);
     
     // 死亡時のワープ処理
     void DeadWarp(const Vector2& start, const Vector2& target);

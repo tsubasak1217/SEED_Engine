@@ -327,15 +327,15 @@ void GameStage::Update(bool isUpdateBorderLine) {
 
 void GameStage::UpdatePlay(bool isUpdateBorderLine) {
 
-    // ワープの更新処理
-    UpdateWarp();
-    // レーザーの更新処理
-    UpdateLaserLauncher();
-
     // 境界線の更新処理(ホログラムオブジェクトの作成も行っている)
     if (isUpdateBorderLine) {
         UpdateBorderLine();
     }
+
+    // ワープの更新処理
+    UpdateWarp();
+    // レーザーの更新処理
+    UpdateLaserLauncher();
 
     //プレイヤーが境界線を越えたか判定
     CheckPlayerCrossedBorderLine();
@@ -401,6 +401,8 @@ void GameStage::UpdateBorderLine() {
         const float kSEVolume = 0.24f;
         AudioManager::PlayAudio(AudioDictionary::Get("ミラー_設置"), false, kSEVolume);
 
+        // ワープを再検討させる
+        laserController_->ResetWarpIgnore();
     } else if (borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
         stageObjectMapTileSize_)) {
 

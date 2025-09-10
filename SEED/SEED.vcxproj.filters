@@ -173,6 +173,7 @@
     <ClCompile Include="Game\Manager\ParticleMachine.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="Game\Objects\Select\Methods\StageAchievementCollector.cpp" />
+    <ClCompile Include="Game\Objects\Select\Methods\SelectStageCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -412,6 +413,7 @@
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
     <ClInclude Include="Game\Objects\Select\Methods\StageAchievementCollector.h" />
+    <ClInclude Include="Game\Objects\Select\Methods\SelectStageCreator.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

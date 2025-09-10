@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PlayerMoveState() = default;
+	PlayerMoveState();
 	~PlayerMoveState() = default;
 
     // 状態遷移時

@@ -32,6 +32,38 @@ public:
     //	public Methods
     //========================================================================
 
+    //--------- structure -----------------------------------------------------
+
+    // ステージ描画
+    struct Stage {
+
+        uint32_t index;              // ステージ番号
+        std::vector<Sprite> objects; // オブジェクト番号に対応するスプライト
+        Sprite frame;                // ステージを囲うフレーム
+        Sprite background;           // ステージとフレームの背景
+        Sprite achievementUI;        // クリア済みかどうかの表示
+        TextBox2D stageIndexText;    // ステージ番号
+        Sprite stageIndexBack;       // ステージ番号背景
+        std::string stageName;       // ステージの名前
+        int32_t difficulty;          // 難易度の星の数
+
+        // 全体の表示
+        Vector2 translate; // 中心座標
+        Vector2 size;      // サイズ
+
+        // スプライトの位置情報
+        int rows = 0;
+        int cols = 0;
+        std::vector<uint32_t> objectIds; // 各スプライトのid
+        std::vector<Vector2> objectUVs;  // フレーム内の位置
+
+        bool isClear = false; // クリア済みかどうか
+    };
+public:
+    //========================================================================
+    //	public Methods
+    //========================================================================
+
     SelectStageDrawer() = default;
     ~SelectStageDrawer() = default;
 
@@ -80,32 +112,6 @@ private:
 
         Decide, // 決定
         Zoom    // ズーム
-    };
-
-    // ステージ描画
-    struct Stage {
-
-        uint32_t index;              // ステージ番号
-        std::vector<Sprite> objects; // オブジェクト番号に対応するスプライト
-        Sprite frame;                // ステージを囲うフレーム
-        Sprite background;           // ステージとフレームの背景
-        Sprite achievementUI;        // クリア済みかどうかの表示
-        TextBox2D stageIndexText;    // ステージ番号
-        Sprite stageIndexBack;       // ステージ番号背景
-        std::string stageName;       // ステージの名前
-        int32_t difficulty;          // 難易度の星の数
-
-        // 全体の表示
-        Vector2 translate; // 中心座標
-        Vector2 size;      // サイズ
-
-        // スプライトの位置情報
-        int rows = 0;
-        int cols = 0;
-        std::vector<uint32_t> objectIds; // 各スプライトのid
-        std::vector<Vector2> objectUVs;  // フレーム内の位置
-
-        bool isClear = false; // クリア済みかどうか
     };
 
     //--------- variables ----------------------------------------------------
@@ -167,7 +173,7 @@ private:
     Easing::Type endZoomEasing_;
     float focusAnimBaseDuration_; // フォーカス速度の保存用
     float endZoomToScale_;        // 最後のズームスケール倍率
-    
+
     // 下の矢印
     Sprite leftArrow_;  // 左
     Sprite rightArrow_; // 右
@@ -198,11 +204,6 @@ private:
     void ApplyJson();
     void SaveJson();
 
-    // init
-    void BuildAllStage();
-    Sprite CreateTileSprite(uint32_t index, const Vector2& translate, \
-        const Vector2& size, uint32_t warpIndex);
-
     // update
     void UpdateFocusAnim();
     void UpdateArrow();
@@ -216,7 +217,6 @@ private:
     void ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size);
     void PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize);
     void DrawActivate(float f);
-    std::string GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const;
     void TriggerLeftArrowReact();
     void TriggerRightArrowReact();
     void UpdateDifficultyStar();

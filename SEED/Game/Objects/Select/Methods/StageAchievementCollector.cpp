@@ -57,11 +57,7 @@ void StageProgressCollector::SaveJson() {
 
     jsonData["stages"] = stagesJson;
 
-    std::ofstream file("Progress/StageProgress.json");
-    if (file.is_open()) {
-        file << jsonData.dump(4); // インデント4で整形保存
-        file.close();
-    }
+    JsonAdapter::Save("Progress/StageProgress.json", jsonData);
 }
 
 void StageProgressCollector::ApplyJson() {

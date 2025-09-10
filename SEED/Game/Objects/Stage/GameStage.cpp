@@ -151,6 +151,34 @@ void GameStage::BuildStage() {
     // 最初の座標を渡しておく
     onBlockPlayerRecordData_.push_back({ false,player_->GetOwner()->GetWorldTranslate() });
     deadMomentLaserCollisions_.clear();
+
+    // jsonからcontextを適応
+    nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Scene_Game/stageContexts.json");
+    if (!data.empty()) {
+
+        // 難易度を適応
+        if(data.contains("stageDifficulties")){
+            if(data["stageDifficulties"].size() > currentStageIndex_){
+                difficulty_ = data["stageDifficulties"][currentStageIndex_];
+            }
+        }
+    }
+}
+
+int32_t GameStage::GetNextStageDifficulty() const{
+    // jsonからcontextを適応
+    nlohmann::json data = MyFunc::GetJson("Resources/Jsons/Scene_Game/stageContexts.json");
+    if(!data.empty()){
+
+        // 難易度を適応
+        if(data.contains("stageDifficulties")){
+            if(data["stageDifficulties"].size() > currentStageIndex_ + 1){
+                return data["stageDifficulties"][currentStageIndex_ + 1];
+            }
+        }
+    }
+
+    return 0;
 }
 
 //Objectのアクティブ・非アクティブ設定

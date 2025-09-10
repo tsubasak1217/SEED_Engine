@@ -8,6 +8,7 @@
 #include <Game/Manager/AudioDictionary.h>
 
 class GameObject;
+class GameObject2D;
 
 class Scene_Base{
 public:
@@ -34,6 +35,8 @@ public:
     void RemoveFromHierarchy(GameObject* gameObject);
     void RemoveFromHierarchy(GameObject2D* gameObject);
     Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
+    bool IsExistObject(uint32_t gameObjectHanle) const;
+    bool IsExistObject2D(uint32_t gameObjectHanle) const;
 
     static inline int currentStageIndex_ = 0; // 現在のステージ番号
     static inline int maxStageCount_ = 0; // 最大ステージ数

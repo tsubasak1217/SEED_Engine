@@ -240,7 +240,7 @@ protected:
     bool preIsCollideGhost_ = false;
     bool isCollideSolid_ = false;// すり抜けないオブジェクトと衝突したかどうか
     bool preIsCollideSolid_ = false;
-    std::unordered_set<GameObject2D*>preCollideObjects_;
+    std::unordered_map<uint32_t,GameObject2D*>preCollideObjects_;
 
     // 接地などの判定
     bool isOnGround_ = true;

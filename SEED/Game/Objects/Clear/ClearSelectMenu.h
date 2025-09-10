@@ -36,7 +36,7 @@ public:
     ~ClearSelectMenu() = default;
 
     // 初期化処理
-    void Initialize(uint32_t currentStageIndex,bool isLastStage);
+    void Initialize(uint32_t currentStageIndex,bool isLastStage, int32_t nextStageDifficulty);
 
     // 更新処理
     void Update();
@@ -74,6 +74,8 @@ private:
         Timer selectTime = Timer(0.2f);
         static inline float kSelectTimeMax = 0.2f;
 
+        bool isNextStageItem = false; // 次のステージに進むアイテムか
+
         //--------- functions ------------------------------------------------
 
         // json
@@ -94,7 +96,10 @@ private:
     // 入力処理
     std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
     bool isExit_ = false;
+
+    // ステージ情報
     bool isLastStage_ = false;
+    int32_t nextStageDifficulty_; // 次のステージの難易度
 
     // アイテムs
     std::vector<Item> items_;

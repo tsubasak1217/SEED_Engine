@@ -16,6 +16,7 @@ void Hierarchy::RegisterGameObject(GameObject2D* gameObject2D){
 
 void Hierarchy::RemoveGameObject(GameObject* gameObject){
     // ゲームオブジェクトを削除
+    existObjectIdMap_.erase(gameObject->GetObjectID());
     gameObjects_.remove(gameObject);
 
     // 親子関係の再構築
@@ -44,6 +45,7 @@ void Hierarchy::RemoveGameObject(GameObject* gameObject){
 
 void Hierarchy::RemoveGameObject(GameObject2D* gameObject){
     // ゲームオブジェクトを削除
+    existObjectIdMap2D_.erase(gameObject->GetObjectID());
     gameObjects2D_.remove(gameObject);
 
     // 親子関係の再構築
@@ -72,6 +74,7 @@ void Hierarchy::RemoveGameObject(GameObject2D* gameObject){
 
 void Hierarchy::EraseObject(GameObject* gameObject){
     auto childrenCopy = gameObject->GetAllChildren();
+    existObjectIdMap_.erase(gameObject->GetObjectID());
 
     for(auto* child : childrenCopy){
         // selfCreatedObjectにあるか確認
@@ -104,6 +107,7 @@ void Hierarchy::EraseObject(GameObject* gameObject){
 
 void Hierarchy::EraseObject(GameObject2D* gameObject){
     auto childrenCopy = gameObject->GetAllChildren();
+    existObjectIdMap2D_.erase(gameObject->GetObjectID());
 
     for(auto* child : childrenCopy){
         // selfCreatedObjectにあるか確認
@@ -213,6 +217,17 @@ void Hierarchy::Finalize(){
     gameObjects2D_.clear();
     grandParentObjects_.clear();
     grandParentObjects2D_.clear();
+}
+
+/////////////////////////////////////////////////////////////////////
+// オブジェクトの存在確認
+/////////////////////////////////////////////////////////////////////
+bool Hierarchy::IsExistObject(uint32_t id) const{
+    return existObjectIdMap_.find(id) != existObjectIdMap_.end();
+}
+
+bool Hierarchy::IsExistObject2D(uint32_t id) const{
+    return existObjectIdMap2D_.find(id) != existObjectIdMap2D_.end();
 }
 
 /////////////////////////////////////////////////////////////////////

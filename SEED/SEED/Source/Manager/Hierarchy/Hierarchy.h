@@ -31,6 +31,10 @@ public:
     // 終了処理
     void Finalize();
 
+public:
+    bool IsExistObject(uint32_t id) const;
+    bool IsExistObject2D(uint32_t id) const;
+
 private:
     void RebuildParentInfo();
     void EditGUI();
@@ -60,5 +64,7 @@ private:
     GameObject2D* contextMenuObject2D_ = nullptr;
     std::list<std::unique_ptr<GameObject>> selfCreateObjects_; // 自分で生成したオブジェクトのリスト
     std::list<std::unique_ptr<GameObject2D>> selfCreateObjects2D_;
+    std::unordered_set<uint32_t> existObjectIdMap_; // 使用されているIDの集合
+    std::unordered_set<uint32_t> existObjectIdMap2D_; // 使用されているIDの集合(2D)
     std::string executeMenuName_;
 };

@@ -67,3 +67,12 @@ void Scene_Base::RemoveFromHierarchy(GameObject* gameObject){
 void Scene_Base::RemoveFromHierarchy(GameObject2D* gameObject){
     hierarchy_->RemoveGameObject(gameObject);
 }
+
+// オブジェクトの存在確認
+bool Scene_Base::IsExistObject(uint32_t gameObjectandle)const{
+    return hierarchy_->IsExistObject(gameObjectandle);
+}
+
+bool Scene_Base::IsExistObject2D(uint32_t gameObjectandle)const{
+    return hierarchy_->IsExistObject2D(gameObjectandle);
+}

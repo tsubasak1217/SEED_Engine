@@ -675,6 +675,11 @@ void SelectStageDrawer::SaveJson(){
     }
 
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
+
+    // 難易度を別ファイルで保存
+    nlohmann::json data2;
+    data2["stageDifficulties"] = stageDifficulties_;
+    JsonAdapter::Save("Scene_Game/stageContexts.json", data2);
 }
 
 void SelectStageDrawer::UpdateFocusAnim(){

@@ -21,6 +21,7 @@
                 "y": 409.1559143066406
             }
         },
+        "isNextStageItem": true,
         "start": {
             "rotate": 0.0,
             "scale": {
@@ -101,6 +102,7 @@
                 "y": 533.856201171875
             }
         },
+        "isNextStageItem": false,
         "start": {
             "rotate": 0.0,
             "scale": {

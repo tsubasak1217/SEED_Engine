@@ -78,6 +78,10 @@ public:
     // 最大ステージ数を取得する
     uint32_t GetMaxStageCount() const { return maxStageCount_; }
 
+    // 難易度を取得する
+    int32_t GetDifficulty() const{ return difficulty_; }
+    int32_t GetNextStageDifficulty() const;
+
     // アクティブ状態を設定する
     void SetIsActive(bool isActive);
 
@@ -126,6 +130,7 @@ private:
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
     bool isPaused_ = false;      // ポーズ中かどうか
     bool isReturnPaused_ = false;
+    int32_t difficulty_;         // 難易度
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";

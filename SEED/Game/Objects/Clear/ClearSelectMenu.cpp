@@ -16,9 +16,10 @@
 //	ClearSelectMenu classMethods
 //============================================================================
 
-void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage) {
+void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, int32_t nextStageDifficulty) {
 
     isLastStage_ = isLastStage;
+    nextStageDifficulty_ = nextStageDifficulty;
 
     // falseで初期化
     result_.isNextStage = false;
@@ -193,6 +194,47 @@ void ClearSelectMenu::Draw() {
 
         items_[i].backSprite.Draw();
         items_[i].text.Draw();
+
+        // 次のステージの難易度を表示
+        if(items_[i].isNextStageItem){
+            static Sprite star = Sprite("UI/star.png");
+            static bool initialized = false;
+            static float motionTimer = 0.0f;
+
+            if(!initialized){
+                star.layer = 21;
+                star.anchorPoint = Vector2(0.5f);
+                star.isApplyViewMat = false;
+                star.size = Vector2(46.0f);
+                initialized = true;
+            }
+
+            auto& bg = items_[i].backSprite;
+            Vector2 starPos = bg.transform.translate + bg.size * Vector2(0.55f, 0.5f);
+
+            for(int32_t j = 0; j < nextStageDifficulty_; j++){
+                star.transform.translate = starPos - Vector2(star.size.x * 1.0f * j, 0.0f);
+
+                // ステージの星の数だけ明るくする
+                if(j < nextStageDifficulty_){
+                    // 少しスケーリングを揺らします
+                    float sin = std::sin(motionTimer * 3.14f - 0.3f * j);
+                    star.transform.scale = Vector2(1.0f + sin * (sin > 0 ? 0.2f : -0.1f));
+                    // キラキラさせます
+                    star.color = MyMath::FloatColor(255, 198, 57, 255);
+                    if(sin < 0.0f){ star.color *= 1.0f + 5.0f * -sin; }
+
+                } else{
+                    // 灰色にする
+                    star.color = Vector4(1.0f, 1.0f, 1.0f, 0.1f);
+                    star.transform.scale = Vector2(1.0f);
+                }
+
+                star.Draw();
+            }
+
+            motionTimer += ClockManager::DeltaTime();
+        }
     }
 
     // ステージ番号描画
@@ -241,6 +283,7 @@ nlohmann::json ClearSelectMenu::Item::ToJson() const {
     data["backColor"] = backColor;
     data["backSpriteSize"] = backSpriteSize;
     data["text"] = text.GetJsonData();
+    data["isNextStageItem"] = isNextStageItem;
     return data;
 }
 
@@ -250,6 +293,7 @@ void ClearSelectMenu::Item::FromJson(const nlohmann::json& data) {
     end = data.value("end", Transform2D());
     backColor = data.value("backColor", Vector4(1.0f));
     backSpriteSize = data.value("backSpriteSize", Vector2(200.0f, 50.0f));
+    isNextStageItem = data.value("isNextStageItem", false);
     text.LoadFromJson(data["text"]);
 }
 
@@ -275,6 +319,7 @@ void ClearSelectMenu::Item::Edit() {
     ImGuiManager::RegisterGuizmoItem(&end);
     ImGui::DragFloat2("BackSpriteSize", &backSpriteSize.x, 1.0f, 1.0f, 1000.0f);
     ImGui::ColorEdit4("BackColor", &backColor.x);
+    ImGui::Checkbox("isNextStageItem", &isNextStageItem);
 
     ImGui::Spacing();
     ImGui::Separator();

@@ -321,18 +321,19 @@ void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
     }
 
     // 衝突したオブジェクトを保存
-    preCollideObjects_.insert(other);
+    preCollideObjects_.insert({ other->GetObjectID(),other});
 }
 
 void GameObject2D::CheckCollisionExit(){
     // 衝突終了時の処理
     if(!isCollideAny_ && preIsCollideAny_){
-        for(auto* other : preCollideObjects_){
-            OnCollisionExit(other);
+        for(auto& other : preCollideObjects_){
+            if(GameSystem::GetScene()->IsExistObject2D(other.first)){
+                OnCollisionExit(other.second);
+            }
         }
         preCollideObjects_.clear();
     }
-
 }
 
 void GameObject2D::OnCollisionEnter(GameObject2D* other){

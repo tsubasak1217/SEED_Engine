@@ -6,7 +6,6 @@
 #include <Environment/Environment.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
-#include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
@@ -24,7 +23,7 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
     // ステージのデータを受け取る
     stages_.clear();
-    stages_ = SceneManager::GetCreator()->GetStages();
+    stages_ = GameSystem::GetInstance()->GetCreator()->GetStages();
 
     // ステージの名前
     stageNameText_ = TextBox2D("");
@@ -536,8 +535,8 @@ void SelectStageDrawer::Edit(){
 
 void SelectStageDrawer::ApplyJson(){
 
-    nlohmann::json data = SceneManager::GetCreator()->GetDrawerParams();
-
+    nlohmann::json data = GameSystem::GetInstance()->GetCreator()->GetDrawerParams();
+    std::unordered_map<int, bool> progressMap = GameSystem::GetInstance()->GetStageProgressCollector()->GetStageClearMap();
     moveTimer_.duration = data.value("moveTimer_.duration", 0.32f);
     tileScale_ = data.value("tileScale_", 1.0f);
     stageIndexTextOffsetY_ = data.value("stageIndexTextOffsetY_", 128.0f);
@@ -602,6 +601,15 @@ void SelectStageDrawer::ApplyJson(){
         for (auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
     } else {
         for (auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
+    }
+
+    //ステージがクリア済みかチェック
+    for(int i = 0; i < static_cast<int>(stages_.size()); ++i){
+        if(progressMap.find(i) != progressMap.end() && progressMap[i]){
+            stages_[i].isClear = true;
+        } else{
+            stages_[i].isClear = false;
+        }
     }
 }
 

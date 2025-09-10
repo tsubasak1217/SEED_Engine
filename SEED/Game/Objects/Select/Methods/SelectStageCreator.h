@@ -64,6 +64,8 @@ private:
     // json
     nlohmann::json GetJsonData() const;
 
+    nlohmann::json GetProgressJsonData() const;
+
     // helper
     Sprite CreateTileSprite(uint32_t index, const Vector2& translate,
         const Vector2& size, uint32_t warpIndex);

@@ -34,6 +34,9 @@ void GameSystem::Initialize() {
 
     instance_->stageProgressCollector_ = std::make_unique<StageProgressCollector>();
     instance_->stageProgressCollector_->Initialize();
+
+    instance_->stageCreator_ = std::make_unique<SelectStageCreator>();
+    instance_->stageCreator_->BuildStage();
 }
 
 /////////////////////////////////////////////////////////////////

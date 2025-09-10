@@ -10,8 +10,7 @@ std::unique_ptr<SceneManager> SceneManager::instance_ = nullptr;
 ///////////////////////////////////////////////////////////////////////////////
 SceneManager::SceneManager() {
 
-    stageCreator_ = std::make_unique<SelectStageCreator>();
-    stageCreator_->BuildStage();
+ 
 }
 SceneManager::~SceneManager() {}
 

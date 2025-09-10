@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <Game/GameSystem.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
 
@@ -20,6 +21,15 @@ nlohmann::json SelectStageCreator::GetJsonData() const {
     return data;
 }
 
+nlohmann::json SelectStageCreator::GetProgressJsonData() const {
+    
+    nlohmann::json data;
+    if (!JsonAdapter::LoadCheck("Progress/StageProgress.json", data)) {
+        return nlohmann::json{};
+    }
+    return data;
+}
+
 void SelectStageCreator::BuildStage() {
 
     // 作成済みの場合は処理しない
@@ -29,6 +39,7 @@ void SelectStageCreator::BuildStage() {
 
     // jsonデータを取得する
     nlohmann::json data = GetJsonData();
+    nlohmann::json progressData = GetProgressJsonData();
     const Vector4 frameColor = data.value("frameColor_", Vector4(1));
     const Vector4 backgroundColor = data.value("backgroundColor_", Vector4(1));
     const Vector4 stageIndexBackColor = data.value("stageIndexBackColor_", Vector4(1));
@@ -153,6 +164,13 @@ void SelectStageCreator::BuildStage() {
                     ++warpIndex;
                 }
             }
+        }
+
+        // クリア済みかどうか
+        if (GameSystem::GetInstance()->GetStageProgressCollector()) {
+            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
+        } else {
+            stage.isClear = false;
         }
         stages_.push_back(std::move(stage));
     }

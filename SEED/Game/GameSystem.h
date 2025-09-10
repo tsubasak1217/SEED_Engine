@@ -4,6 +4,7 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <Game/Objects/Select/Methods/StageAchievementCollector.h>
+#include <Game/Objects/Select/Methods/SelectStageCreator.h>
 
 class GameSystem{
 private:
@@ -33,10 +34,14 @@ public:
 
     static StageProgressCollector* GetStageProgressCollector() { return instance_->stageProgressCollector_.get(); }
 
+    static SelectStageCreator* GetCreator() { return instance_->stageCreator_.get(); }
+
 private:
     static std::unique_ptr<GameSystem>instance_;
     std::unique_ptr<Scene_Base> pScene_;
 
     // ステージ達成度管理
     std::unique_ptr<StageProgressCollector> stageProgressCollector_;
+
+    std::unique_ptr<SelectStageCreator> stageCreator_;
 };

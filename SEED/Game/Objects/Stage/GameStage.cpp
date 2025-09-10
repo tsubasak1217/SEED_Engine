@@ -279,6 +279,14 @@ void GameStage::SetIsPaused(bool isPaused) {
 /////////////////////////////////////////////////////////////////////////
 void GameStage::Update(bool isUpdateBorderLine) {
 
+    // 初回更新時に入力を有効化
+    if(isFirstUpdate){
+        if(!Input::GetIsAnyInput(true)){
+            Input::SetIsActive(true);
+            isFirstUpdate = false;
+        }
+    }
+
     switch (currentState_) {
         //============================================================================
         //	ゲームプレイ中の更新処理

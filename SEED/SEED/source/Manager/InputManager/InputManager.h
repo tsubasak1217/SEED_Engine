@@ -80,7 +80,7 @@ public:// キーの状態を返す関数
     static Vector2 GetMouseDirection(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static bool IsMouseMoved(INPUT_STATE inputState = INPUT_STATE::CURRENT);
-
+    static bool IsMouseInputAny();
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
@@ -115,6 +115,7 @@ public:// キーの状態を返す関数
     // 直近で使用した入力デバイス
     static InputDevice GetRecentInputDevice(){ return instance_->recentInputDevice_; }
     static bool IsChangedInputDevice(){ return instance_->recentInputDevice_ != instance_->prevDevice_; }
+    static bool GetIsAnyInput(bool isIgnoreActiveFlag = false);
 
 private:
 

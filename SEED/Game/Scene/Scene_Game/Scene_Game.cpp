@@ -17,6 +17,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 Scene_Game::Scene_Game() : Scene_Base() {
+    Input::SetIsActive(false);
 };
 
 Scene_Game::~Scene_Game() {

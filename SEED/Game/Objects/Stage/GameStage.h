@@ -193,6 +193,9 @@ private:
     float glitchIntencityRange_;
     float startIntencityRange_;
 
+    // 最初の更新かどうか
+    bool isFirstUpdate = true;
+
     //--------- functions ----------------------------------------------------
 
     // json

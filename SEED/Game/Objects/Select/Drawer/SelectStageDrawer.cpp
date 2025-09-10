@@ -19,10 +19,14 @@
 //	SelectStageDrawer classMethods
 //============================================================================
 
-void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
+void SelectStageDrawer::Initialize(uint32_t firstFocusStage, const std::vector<Stage>& stageData) {
+
+    // ステージのデータを受け取る
+    stages_.clear();
+    stages_ = stageData;
 
     // ステージの名前
-    stageNameText_ = TextBox2D("ステージです");
+    stageNameText_ = TextBox2D("");
     stageNameText_.anchorPos = Vector2(0.5f, 0.0f);
     stageNameText_.glyphSpacing = 0.0f;
     stageNameText_.size = Vector2(1280.0f, 400.0f);
@@ -32,8 +36,8 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
     // json適応
     ApplyJson();
 
-    // すべてのステージを構築する
-    BuildAllStage();
+    // 各ステージに必要なパラメータを設定する
+    SetStageParam();
 
     // 初期化値設定
     // 最初のフォーカス先を設定
@@ -87,7 +91,72 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
     stageNameText_.transform.translate = stageNameTextTranslate_;
 }
 
-void SelectStageDrawer::SetNextFocus(){
+void SelectStageDrawer::SetStageParam() {
+
+    // 全てのステージ
+    // 1番左の表示
+    float cursorX = leftTranslate_.x;
+    maxStageCount_ = static_cast<uint32_t>(SelectStageBuilder::CollectStageCSV("Resources/Stage").size());
+    uint32_t index = 0;
+    for (auto& stage : stages_) {
+
+        // 全体のサイズ
+        stage.size = outSize_;
+        stage.translate = Vector2(cursorX + stage.size.x * 0.5f, leftTranslate_.y);
+
+        //  フレームの描画処理
+        stage.frame.size = stage.size;
+        stage.frame.transform.translate = stage.translate;
+        stage.frame.color = frameColor_;
+        // 背景
+        stage.background.size = stage.size;
+        stage.background.transform.translate = stage.translate;
+        stage.background.color = backgroundColor_;
+        // ステージ番号背景
+        stage.stageIndexBack.size = stageIndexBackSize_;
+        stage.stageIndexBack.color = stageIndexBackColor_;
+        // ステージ番号
+        stage.stageIndexText.text = std::to_string(index + 1);
+        stage.stageIndexText.fontSize = stageIndexTextSize_;
+        stage.stageIndexText.color = stageIndexTextColor_;
+        if (isSameFontStageIndex_) {
+            stage.stageIndexText.SetFont(stageNameText_.fontName);
+        } else {
+            stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
+        }
+        // ステージクリア済みUI
+        stage.achievementUI.size = stage.size;
+        stage.achievementUI.transform.translate = stage.translate + stage.size.y;
+
+        // クリア判定を取得
+        if (GameSystem::GetInstance()->GetStageProgressCollector()) {
+            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
+        } else {
+            stage.isClear = false;
+        }
+
+        // ステージを進める
+        ++index;
+    }
+
+    // ステージ名配列のサイズを合わせる
+    if (stageNames_.size() < stages_.size()) {
+
+        const size_t old = stageNames_.size();
+        stageNames_.resize(stages_.size());
+        for (size_t i = old; i < stages_.size(); ++i) {
+
+            stageNames_[i] = "Stage " + std::to_string(i + 1);
+        }
+    }
+    // ステージ名を設定する
+    for (size_t i = 0; i < stages_.size(); ++i) {
+
+        stages_[i].stageName = stageNames_[i];
+    }
+}
+
+void SelectStageDrawer::SetNextFocus() {
 
     // 次のステージへフォーカスさせる
     if(stages_.size() <= focusIndex_ + 1){
@@ -1056,179 +1125,4 @@ void SelectStageDrawer::DrawActivate(float f){
         // ステージ描画
         sprite.Draw();
     }
-}
-
-void SelectStageDrawer::BuildAllStage(){
-
-    // 全てのステージをCSVファイルを基に構築する
-    stages_.clear();
-
-    // ファイル名をすべて取得する
-    auto csvFiles = SelectStageBuilder::CollectStageCSV("Resources/Stage");
-
-    // 1番左の表示
-    float cursorX = leftTranslate_.x;
-    maxStageCount_ = static_cast<uint32_t>(csvFiles.size());
-    for(uint32_t index = 0; index < csvFiles.size(); ++index){
-
-        // CSVファイルを読み込む
-        auto grid = SelectStageBuilder::LoadCSV(csvFiles[index]);
-        if(grid.empty()){
-            continue;
-        }
-
-        uint32_t warpIndex = 0;
-        const int rows = static_cast<int>(grid.size());
-        const int cols = static_cast<int>(grid.front().size());
-
-        // このステージ描画情報
-        Stage stage;
-        stage.index = index;
-        stage.rows = rows;
-        stage.cols = cols;
-        // 全体のサイズ
-        stage.size = outSize_;
-        stage.translate = Vector2(cursorX + stage.size.x * 0.5f, leftTranslate_.y);
-
-        // フレーム描画初期化
-        // フレームは全体のサイズで設定する
-        stage.frame = Sprite("Scene_Select/selectStageRect.png");
-        stage.frame.size = stage.size;
-        stage.frame.anchorPoint = 0.5f;
-        stage.frame.transform.translate = stage.translate;
-        stage.frame.color = frameColor_;
-        stage.frame.isApplyViewMat = false;
-        // 背景描画初期化
-        // 背景は全体のサイズで設定する
-        stage.background = Sprite("Scene_Select/bgCheckerboard.png");
-        stage.background.size = stage.size;
-        stage.background.anchorPoint = 0.5f;
-        stage.background.transform.translate = stage.translate;
-        stage.background.color = backgroundColor_;
-        stage.background.uvTransform.scale = Vector2(80.0f, 45.0f);
-        stage.background.isApplyViewMat = false;
-        // ステージ番号背景
-        stage.stageIndexBack = Sprite("Scene_Select/hexagonDesign.png");
-        stage.stageIndexBack.size = stageIndexBackSize_;
-        stage.stageIndexBack.anchorPoint = 0.5f;
-        stage.stageIndexBack.color = stageIndexBackColor_;
-        stage.stageIndexBack.isApplyViewMat = false;
-        // ステージクリア済みUI
-        stage.achievementUI = Sprite("Scene_Select/stageGoal.png");
-        stage.achievementUI.size = stage.size;
-        stage.achievementUI.anchorPoint = 0.5f;
-        stage.achievementUI.transform.translate = stage.translate + stage.size.y;
-        stage.achievementUI.isApplyViewMat = false;
-
-        // ステージ番号
-        stage.stageIndexText = TextBox2D(std::to_string(index + 1));
-        if(isSameFontStageIndex_){
-
-            stage.stageIndexText.SetFont(stageNameText_.fontName);
-        } else{
-
-            stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
-        }
-        stage.stageIndexText.fontSize = stageIndexTextSize_;
-        stage.stageIndexText.anchorPos = Vector2(0.5f, 0.0f);
-        stage.stageIndexText.glyphSpacing = 0.0f;
-        stage.stageIndexText.color = stageIndexTextColor_;
-        stage.stageIndexText.size = 256.0f;
-        stage.stageIndexText.textBoxVisible = false;
-        stage.stageIndexText.isApplyViewMat = false;
-        for(int r = 0; r < rows; ++r){
-
-            const int colsThis = static_cast<int>(grid[r].size());
-            for(int c = 0; c < colsThis; ++c){
-
-                // CSVのインデックスからスプライトを作成する
-                const int id = grid[r][c];
-                // Noneは処理しない
-                if(static_cast<StageObjectType>(id) == StageObjectType::None){
-                    continue;
-                }
-
-                // ステージ位置を記録
-                stage.objectIds.push_back(id);
-                stage.objectUVs.push_back(Vector2((c + 0.5f) / static_cast<float>(cols),
-                    (r + 0.5f) / static_cast<float>(rows)));
-                stage.objects.emplace_back(CreateTileSprite(id, Vector2(0.0f), Vector2(1.0f), warpIndex));
-
-                // インデックスを進める
-                if(static_cast<StageObjectType>(id) == StageObjectType::Warp){
-                    ++warpIndex;
-                }
-            }
-        }
-
-        if(GameSystem::GetInstance()->GetStageProgressCollector()){
-            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
-        } else{
-            stage.isClear = false;
-        }
-        // 配列に追加
-        stages_.push_back(std::move(stage));
-    }
-
-    // ステージ名配列のサイズを合わせる
-    if(stageNames_.size() < stages_.size()){
-
-        const size_t old = stageNames_.size();
-        stageNames_.resize(stages_.size());
-        for(size_t i = old; i < stages_.size(); ++i){
-
-            stageNames_[i] = "Stage " + std::to_string(i + 1);
-        }
-    }
-    // ステージ名を設定する
-    for(size_t i = 0; i < stages_.size(); ++i){
-
-        stages_[i].stageName = stageNames_[i];
-    }
-
-    // 難易度を設定する
-    for(size_t i = 0; i < stageDifficulties_.size(); ++i){
-        if(i < stages_.size()){
-            stages_[i].difficulty = stageDifficulties_[i];
-        }
-    }
-}
-
-Sprite SelectStageDrawer::CreateTileSprite(uint32_t index,
-    const Vector2& translate, const Vector2& size, uint32_t warpIndex){
-
-    // スプライトをパスから作成
-    Sprite sprite = Sprite(GetFileNameFromIndex(index, warpIndex));
-    // 設定
-    sprite.anchorPoint = 0.5f;
-    sprite.transform.translate = translate;
-    sprite.size = size;
-    sprite.isApplyViewMat = false;
-
-    // 個別のサイズ設定
-    if(static_cast<StageObjectType>(index) == StageObjectType::Player){
-
-        sprite.size *= 0.8f;
-    }
-    return sprite;
-}
-
-std::string SelectStageDrawer::GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const{
-
-    // 番号からスプライト画像のパスを取得する
-    switch(index){
-    case 1:  return "Scene_Select/stageBlockNormal.png";   // NormalBlock
-    case 2:  return "Scene_Select/stageGoal.png";          // Goal
-    case 3:  return "Scene_Select/stagePlayer.png";        // Player
-    case 5:  return "Scene_Select/stageEmptyBlock.png";    // EmptyBlock
-    case 6:  return "Scene_Select/stageLaserLauncher.png"; // LaserLauncher
-    case 4:
-    {
-
-        // Warpはインデックスに応じて使用する画像を変更する
-        std::string path = "Scene_Select/stageWarp" + std::to_string(warpIndex) + ".png";
-        return path;
-    }
-    }
-    return "";
 }

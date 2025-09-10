@@ -19,7 +19,7 @@ public:
 	~SelectStage() = default;
 
     // 初期化
-    void Initialize(uint32_t firstFocusStage);
+    void Initialize(uint32_t firstFocusStage, const std::vector<SelectStageDrawer::Stage>& stageData);
 
     // 更新処理
     void Update();

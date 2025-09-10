@@ -11,6 +11,7 @@
 // objects
 #include <Game/Objects/Select/Background/SelectBackground.h>
 #include <Game/Objects/Select/SelectStage.h>
+#include <Game/Objects/Select/Methods/SelectStageCreator.h>
 
 // transition
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
@@ -50,6 +51,7 @@ private:
     // 背景描画
     std::unique_ptr<SelectBackground> background_;
     // ステージ選択
+    std::unique_ptr<SelectStageCreator> selectStageCreator_;
     std::unique_ptr<SelectStage> selectStage_;
 
     // Audios

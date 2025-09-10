@@ -25,5 +25,6 @@ public:// シーンの管理
     static Scene_Base* CreateScene(const std::string sceneName);
 
 private:// メンバ変数
+
     std::unordered_map<std::string, std::function<Scene_Base* (void)>> sceneMap_;
 };

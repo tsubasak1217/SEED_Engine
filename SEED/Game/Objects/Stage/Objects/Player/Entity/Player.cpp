@@ -336,9 +336,9 @@ void Player::SpriteMotion() {
         float landingT = std::clamp(landingTimer / 0.2f, 0.0f, 1.0f);
         if (landingT < 1.0f) {
             float landingAnimationT = EaseOutBounce(EaseOutBounce(landingT));
-            body_.transform.scale.y *= 0.7f + (0.3f * landingAnimationT);
-            body_.transform.scale.x *= 1.15f - (0.15f * landingAnimationT);
-            body_.transform.translate.y += (body_.size.y * 0.3f * landingAnimationT) * 0.5f;
+            body_.transform.scale.y *= (0.7f + (0.3f * landingAnimationT)) *ClockManager::TimeRate();
+            body_.transform.scale.x *= (1.15f - (0.15f * landingAnimationT)) * ClockManager::TimeRate();
+            body_.transform.translate.y += ((body_.size.y * 0.3f * landingAnimationT) * 0.5f) * ClockManager::TimeRate();
         }
     }
 

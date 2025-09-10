@@ -9,10 +9,10 @@
 //	Scene_Select classMethods
 //============================================================================
 
-Scene_Select::Scene_Select() {
+Scene_Select::Scene_Select(){
 }
 
-Scene_Select::~Scene_Select() {
+Scene_Select::~Scene_Select(){
 
     // すべてのエフェクトを削除
     EffectSystem::DeleteAll();
@@ -21,7 +21,7 @@ Scene_Select::~Scene_Select() {
     AudioManager::EndAudio(bgmHandle_);
 }
 
-void Scene_Select::Initialize() {
+void Scene_Select::Initialize(){
 
     //============================================================================
     //	engine
@@ -56,7 +56,7 @@ void Scene_Select::Initialize() {
     //quadColors_.push_back(MyMath::FloatColor(255, 13, 86, 255, false));
 }
 
-void Scene_Select::Update() {
+void Scene_Select::Update(){
 
     //============================================================================
     //	objects
@@ -72,16 +72,31 @@ void Scene_Select::Update() {
     //	sceneEvenets
     //============================================================================
 
-    // 次のシーンに進めるかチェック
-    if (selectStage_->GetStageInfo().isNextScene) {
+    if(isTransitionToGame_){
+        // ゲームシーンに進むタイマーを進める
+        toGameSceneTimer_.Update();
+        // タイマーが終わったらゲームシーンに進む
+        if(toGameSceneTimer_.IsFinished()){
+            currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
+            ChangeScene("Game");
+        }
+        return;
+    }
 
+    // 次のシーンに進めるかチェック
+    if(selectStage_->GetStageInfo().isNextScene){
         // ゲームシーンに進ませる
-        currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
-        ChangeScene("Game");
+        isTransitionToGame_ = true;
+
+        // トランジション開始
+        HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        transition->SetHexagonInfo(46.0f, quadColors_);
+        transition->StartTransition(toGameSceneTimer_.GetDuration(), gameSceneStartTime_);
+
         return;
     }
     // タイトルに戻るかチェック
-    if (selectStage_->IsReturnScene()) {
+    if(selectStage_->IsReturnScene()){
         isBackToTitle_ = true;
 
         BlockSlideTransition* transition = SceneTransitionDrawer::AddTransition<BlockSlideTransition>();
@@ -89,18 +104,18 @@ void Scene_Select::Update() {
         transition->StartTransition(backToTitleTimer_.GetDuration(), titleSceneStartTime_);
     }
 
-    if (isBackToTitle_) {
+    if(isBackToTitle_){
         // タイトルに戻るタイマーを進める
         backToTitleTimer_.Update();
 
         // タイマーが終わったらタイトルシーンに戻す
-        if (backToTitleTimer_.IsFinished()) {
+        if(backToTitleTimer_.IsFinished()){
             ChangeScene("Title");
         }
     }
 }
 
-void Scene_Select::Draw() {
+void Scene_Select::Draw(){
 
     //============================================================================
     //	objects
@@ -117,7 +132,7 @@ void Scene_Select::Draw() {
 //	Scene_Select frame:Begin
 //============================================================================
 
-void Scene_Select::BeginFrame() {
+void Scene_Select::BeginFrame(){
 
     // ヒエラルキー内のオブジェクトの描画
     hierarchy_->BeginFrame();
@@ -126,7 +141,7 @@ void Scene_Select::BeginFrame() {
 //	Scene_Select frame:End
 //============================================================================
 
-void Scene_Select::EndFrame() {
+void Scene_Select::EndFrame(){
 
     // ヒエラルキー内のオブジェクトのフレーム終了処理
     hierarchy_->EndFrame();

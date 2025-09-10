@@ -25,5 +25,4 @@ public:
 private:
 
     std::unique_ptr<InputMapper<PauseMenuInputAction>> menuBarInputMapper_;
-
 };

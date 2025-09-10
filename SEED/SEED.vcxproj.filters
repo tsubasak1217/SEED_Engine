@@ -172,6 +172,7 @@
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
     <ClCompile Include="Game\Manager\ParticleMachine.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
+    <ClCompile Include="Game\Objects\Select\Methods\StageAchievementCollector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -409,6 +410,8 @@
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="Game\Manager\ParticleMachine.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
+    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
+    <ClInclude Include="Game\Objects\Select\Methods\StageAchievementCollector.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

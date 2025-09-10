@@ -10,6 +10,7 @@
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/GameSystem.h>
 
 //============================================================================
 //	GameState_Clear classMethods
@@ -20,11 +21,17 @@ GameState_Clear::GameState_Clear(Scene_Base* pScene) {
     // シーンの設定
     pScene_ = pScene;
     Initialize();
+
+    const float kBGMVolume = 0.24f;
+    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("クリア_BGM"), true, kBGMVolume);
 }
 
 GameState_Clear::~GameState_Clear() {
 
     SEED::SetMainCamera("default");
+
+    // BGM停止
+    AudioManager::EndAudio(bgmHandle_);
 }
 
 void GameState_Clear::Edit() {
@@ -153,26 +160,25 @@ void GameState_Clear::ManageState() {
     // 入力を受け付けて次どうするかを取得する
     if (menu_->GetResult().isNextStage) {
 
-        // SE
-        const float kSEVolume = 0.5f;
-        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
-
         // 次のステージに進む
         Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
         GameStage* stage = gameScene->GetStage();
+        // ステージクリアを記録
+        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(),true);
+        //記録後インデックスを進める
         stage->RequestNextStage();
         gameScene->currentStageIndex_ = stage->GetCurrentStageIndex();
+
         gameScene->ChangeScene("Game");
         return;
     }
     if (menu_->GetResult().returnSelect) {
 
-        // SE
-        const float kSEVolume = 0.5f;
-        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
-
         // セレクトに戻る
         Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+        GameStage* stage = gameScene->GetStage();
+        // ステージクリアを記録
+        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
         gameScene->ChangeScene("Select");
         return;
     }

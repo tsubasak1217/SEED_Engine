@@ -89,6 +89,7 @@ private:
         std::vector<Sprite> objects; // オブジェクト番号に対応するスプライト
         Sprite frame;                // ステージを囲うフレーム
         Sprite background;           // ステージとフレームの背景
+        Sprite achievementUI;        // クリア済みかどうかの表示
         TextBox2D stageIndexText;    // ステージ番号
         Sprite stageIndexBack;       // ステージ番号背景
         std::string stageName;       // ステージの名前
@@ -102,6 +103,8 @@ private:
         int cols = 0;
         std::vector<uint32_t> objectIds; // 各スプライトのid
         std::vector<Vector2> objectUVs;  // フレーム内の位置
+
+        bool isClear = false; // クリア済みかどうか
     };
 
     //--------- variables ----------------------------------------------------
@@ -134,8 +137,10 @@ private:
     Vector2 centerTranslate_;      // 真ん中のステージ表示(フォーカス位置)
     Vector2 leftTranslate_;        // 左のステージ表示位置
     Vector2 rightTranslate_;       // 右のステージ表示位置
+    //オフセット
     float stageIndexBackOffsetY_;  // ステージ番号インデックス背景のオフセットY
     float stageIndexTextOffsetY_;  // ステージ番号インデックスのオフセットY
+    float stageAchievementUIOffsetY_; // ステージクリア済みUIのオフセットY
     Vector2 stageNameTextTranslate_; // ステージ名前インデックスのオフセットY
     // サイズ
     Vector2 focusSize_; // フォーカス時のサイズ
@@ -144,6 +149,7 @@ private:
     float stageIndexBackSize_; // ステージ番号背景サイズ
     float stageIndexTextSize_; // ステージ番号サイズ
     float stageNameTextSize_;  // ステージ名前サイズ
+    float stageAchievementUISize_; // ステージクリア済みUIサイズ
 
     // 中央フレームアニメーション
     Sprite focusAnimFrame_; // 中央だけに被せるフレーム
@@ -178,6 +184,7 @@ private:
     TextBox2D stageNameText_;
     // ステージの名前s
     std::vector<std::string> stageNames_;
+    bool isSameFontStageIndex_;
 
     //--------- functions ----------------------------------------------------
 

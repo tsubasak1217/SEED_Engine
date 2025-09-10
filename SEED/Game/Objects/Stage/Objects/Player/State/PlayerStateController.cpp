@@ -150,10 +150,6 @@ void PlayerStateController::OnGroundTrigger() {
     if (current_ == PlayerState::Jump) {
 
         requested_ = PlayerState::Idle;
-
-        // SE
-        const float kSEVolume = 0.5f;
-        AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_着地音"), false, kSEVolume);
     }
 }
 
@@ -174,7 +170,6 @@ float PlayerStateController::GetJumpVelocity() const {
             return jump->GetJumpVelocityY();
         }
     }
-
     return 0.0f;
 }
 

@@ -96,10 +96,14 @@ void ClearSelectMenu::Update() {
             if (currentMenu_ == 0) {
 
                 result_.isNextStage = true;
+
             } else {
 
                 result_.returnSelect = true;
             }
+            // SE
+            const float kSEVolume = 0.24f;
+            AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
             return;
         }
         if (result_.isNextStage || result_.returnSelect) {

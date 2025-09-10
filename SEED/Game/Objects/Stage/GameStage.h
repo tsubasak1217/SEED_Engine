@@ -3,6 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectContext.h>
+#include <SEED/Source/Basic/PostProcess/Glitch/Glitch.h>
+
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <Game/Objects/Stage/BorderLine/BorderLine.h>
 #include <Game/Objects/Stage/Methods/GameStageWarpController.h>
@@ -30,7 +33,7 @@ public:
     //========================================================================
 
     GameStage() = default;
-    ~GameStage() = default;
+    ~GameStage();
 
     // 初期化処理
     void Initialize(int currentStageIndex);
@@ -92,6 +95,11 @@ public:
 
     // 何か入力があるかチェック
     bool IsTriggredAnyDevice() const;
+
+    // ポーズ中かどうか
+    bool GetIsPaused() const { return isPaused_; }
+    void SetIsPaused(bool isPaused) { isPaused_ = isPaused; }
+
 private:
     //========================================================================
     //	private Methods
@@ -115,6 +123,7 @@ private:
     bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
+    bool isPaused_ = false;      // ポーズ中かどうか
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -166,6 +175,17 @@ private:
     float blockAppearanceSpacing_;       // 間隔
     Easing::Type blockAppearanceEasing_;
 
+    // 死亡時のグリッチノイズ処理
+    MinimalPostEffect<Glitch> deadGlitchNoise_;
+    bool isActiveGlitchNoise_ = false;
+    bool executedGlitch_ = false;
+    Timer deadGlitchTimer_;  // 1処理にかかる時間
+    Timer deadGlitchConvergenceTimer_;
+    int randomGlitchCount_;  // ランダム処理回数
+    int currentGlitchCount_; // 処理回数
+    float glitchIntencityRange_;
+    float startIntencityRange_;
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -201,6 +221,8 @@ private:
     void CheckClear();
     //死亡判定
     void CheckPlayerDead();
+    //ポーズ中か判定
+    void CheckPause();
     //プレイヤーが境界線を越えたかどうかの判定
     void CheckPlayerCrossedBorderLine();
     //カメラ範囲から出たか判定
@@ -217,4 +239,8 @@ private:
     // プレイヤーが死亡時のレーザーの衝突判定
     bool IsSafeRecordPoint(const RecordData& data) const;
     void SetDeadLaserCollisions();
+
+    // 死亡時のグリッチ
+    void StartDeadGlitch();
+    void UpdateDeadGlitch();
 };

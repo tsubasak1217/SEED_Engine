@@ -26,7 +26,8 @@ Scene_Game::~Scene_Game() {
     SEED::SetMainCamera("default");
 
     // 全て停止させる
-    AudioManager::EndAllAudio();
+    AudioManager::EndAudio(noneBGMHandle_);
+    AudioManager::EndAudio(holoBGMHandle_);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

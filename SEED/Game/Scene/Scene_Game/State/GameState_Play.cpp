@@ -106,17 +106,15 @@ void GameState_Play::ManageState() {
             // クリアフラグが立っていればクリア状態に遷移させる
             if (stage->IsClear()) {
 
+                // BGM
+                AudioManager::EndAllAudio();
+
                 // クリア状態に遷移させる
                 // プレイヤーを左側に寄せアップで写す
                 const float cameraZoomRate = 2.92f;
                 const Vector2 cameraFocus = Vector2(0.72f, 0.84f);
                 stage->CloseToPlayer(LR::LEFT, cameraZoomRate, cameraFocus);
                 gameScene->ChangeState(new GameState_Clear(gameScene));
-
-                // BGM
-                AudioManager::EndAllAudio();
-                const float kBGMVolume = 0.24f;
-                AudioManager::PlayAudio(AudioDictionary::Get("クリア_BGM"), true, kBGMVolume);
                 // これ以降の処理は受け付けさせない
                 return;
             }
@@ -132,6 +130,8 @@ void GameState_Play::ManageState() {
 
             // プレイヤーを左側に寄せアップで写す
             stage->CloseToPlayer(LR::LEFT);
+            // ステージをポーズ状態にする
+            stage->SetIsPaused(true);
         }
 
         // ポーズステートに遷移

@@ -31,6 +31,7 @@
         "y": 0.11372549086809158,
         "z": 0.6078431606292725
     },
+    "isSameFontStageIndex_": false,
     "leftArrow_": {
         "anchorPoint": {
             "x": 0.5,
@@ -154,6 +155,8 @@
         "x": 1120.0,
         "y": 500.0
     },
+    "stageAchievementUIOffsetY_": -250.0,
+    "stageAchievementUISize_": 64.0,
     "stageIndexBackColor_": {
         "w": 1.0,
         "x": 1.0,
@@ -176,13 +179,14 @@
         "y": 0.29343628883361816,
         "z": 0.4734877943992615
     },
-    "stageNameTextSize_": 104.0,
+    "stageNameTextSize_": 56.0,
     "stageNameTextTranslate_": {
         "x": 640.0,
-        "y": 30.0
+        "y": 65.0
     },
+    "stageNameText_.fontName": "Resources/Fonts\\Game\\JF-Dot-Shinonome14B.ttf",
     "stageNames": [
-        "ステー字",
+        "鏡の向こうはホログラム",
         "Ishika",
         "Kurokawa",
         "Murata",
@@ -193,7 +197,12 @@
         "Stage 9",
         "Stage 10",
         "Stage 11",
-        "Stage 12"
+        "Stage 12",
+        "Stage 13",
+        "Stage 14",
+        "Stage 15",
+        "Stage 16",
+        "Stage 17"
     ],
     "tileScale_": 0.8999999761581421
 }

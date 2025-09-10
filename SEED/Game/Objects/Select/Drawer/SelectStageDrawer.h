@@ -93,6 +93,7 @@ private:
         TextBox2D stageIndexText;    // ステージ番号
         Sprite stageIndexBack;       // ステージ番号背景
         std::string stageName;       // ステージの名前
+        int32_t difficulty;          // 難易度の星の数
 
         // 全体の表示
         Vector2 translate; // 中心座標
@@ -185,6 +186,11 @@ private:
     // ステージの名前s
     std::vector<std::string> stageNames_;
     bool isSameFontStageIndex_;
+    // ステージの難易度s
+    std::vector<int32_t> stageDifficulties_;
+    std::array<Sprite,5> difficultyStars_; // 難易度の星
+    Vector2 difficultyStarBasePos_;
+    float starDrawRangeX_ = 300.0f;
 
     //--------- functions ----------------------------------------------------
 
@@ -213,4 +219,5 @@ private:
     std::string GetFileNameFromIndex(uint32_t index, uint32_t warpIndex) const;
     void TriggerLeftArrowReact();
     void TriggerRightArrowReact();
+    void UpdateDifficultyStar();
 };

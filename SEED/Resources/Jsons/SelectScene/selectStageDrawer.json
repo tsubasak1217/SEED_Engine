@@ -14,6 +14,10 @@
         "x": 640.0,
         "y": 400.0
     },
+    "difficultyStarBasePos": {
+        "x": 645.0,
+        "y": 628.0
+    },
     "endZoomEasing_": "OutExpo",
     "endZoomTimer_.duration": 1.9199999570846558,
     "endZoomToScale_": 2.4000000953674316,
@@ -157,6 +161,25 @@
     },
     "stageAchievementUIOffsetY_": -250.0,
     "stageAchievementUISize_": 64.0,
+    "stageDifficulties": [
+        2,
+        5,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+    ],
     "stageIndexBackColor_": {
         "w": 1.0,
         "x": 1.0,
@@ -186,12 +209,12 @@
     },
     "stageNameText_.fontName": "Resources/Fonts\\Game\\JF-Dot-Shinonome14B.ttf",
     "stageNames": [
-        "鏡の向こうはホログラム",
-        "Ishika",
-        "Kurokawa",
-        "Murata",
+        "Stage 1",
+        "Stage 2",
+        "Stage 3",
+        "Stage 4",
         "Stage 5",
-        "aaaaadddddd",
+        "Stage 6",
         "Stage 7",
         "Stage 8",
         "Stage 9",
@@ -204,5 +227,60 @@
         "Stage 16",
         "Stage 17"
     ],
+    "starDrawRangeX": 205.0,
+    "starSprite": {
+        "anchorPoint": {
+            "x": 0.5,
+            "y": 0.5
+        },
+        "blendMode": 3,
+        "clipLT": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "clipSize": {
+            "x": 0.0,
+            "y": 0.0
+        },
+        "color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.5731589794158936,
+            "z": 0.037028517574071884
+        },
+        "drawLocation": 2,
+        "flipX": false,
+        "flipY": false,
+        "isApplyViewMat": false,
+        "isStaticDraw": false,
+        "layer": 170,
+        "size": {
+            "x": 50.0,
+            "y": 50.0
+        },
+        "texturePath": "Resources/Textures\\ParticleTextures\\star.png",
+        "transform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 542.5,
+                "y": 628.0
+            }
+        },
+        "uvTransform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 0.0,
+                "y": 0.0
+            }
+        }
+    },
     "tileScale_": 0.8999999761581421
 }

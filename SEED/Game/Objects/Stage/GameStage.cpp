@@ -875,9 +875,10 @@ void GameStage::StartDeadGlitch() {
 void GameStage::UpdateDeadGlitch() {
 
     // グリッチ処理開始
-    if (player_->TouchLaser()) {
+    if (player_->TouchLaser() && !executedGlitch_) {
 
-        //StartDeadGlitch();
+        StartDeadGlitch();
+        executedGlitch_ = true;
     }
 
     // アクティブ時のみ
@@ -910,6 +911,7 @@ void GameStage::UpdateDeadGlitch() {
 
             deadGlitchConvergenceTimer_.Reset();
             isActiveGlitchNoise_ = false;
+            executedGlitch_ = false;
             currentGlitchCount_ = 0;
             PostEffectSystem::SetActive(deadGlitchNoise_.handle, false);
             deadGlitchNoise_.pPostProcess->time_ = 0.0f;
@@ -1096,11 +1098,12 @@ void GameStage::Edit() {
 
                 if (ImGui::Button("Start")) {
                     StartDeadGlitch();
+                    executedGlitch_ = false;
                 }
 
                 ImGui::DragFloat("duration", &deadGlitchTimer_.duration, 0.01f);
                 ImGui::DragInt("randomGlitchCount", &randomGlitchCount_, 1, 1, 1024);
-                ImGui::DragFloat("glitchIntencityRange", &glitchIntencityRange_, 0.01f);
+                ImGui::DragFloat("startIntencityRange", &startIntencityRange_, 0.01f);
                 deadGlitchNoise_.pPostProcess->Edit();
                 ImGui::EndTabItem();
             }
@@ -1129,7 +1132,6 @@ void GameStage::ApplyJson() {
     blockAppearanceBaseDuration_ = data.value("blockAppearanceBaseDuration_", 0.26f);
     blockAppearanceSpacing_ = data.value("blockAppearanceSpacing_", 0.1f);
     deadGlitchTimer_.duration = data.value("deadGlitchTimer_.duration", 0.1f);
-    glitchIntencityRange_ = data.value("glitchIntencityRange_", 6.0f);
     startIntencityRange_ = data.value("glitchIntencityRange_", 6.0f);
     randomGlitchCount_ = data.value("randomGlitchCount_", 16);
     //blockAppearanceEasing_ = EnumAdapter<Easing::Type>::FromString(data["blockAppearanceEasing_"]).value();
@@ -1146,7 +1148,7 @@ void GameStage::SaveJson() {
     data["blockAppearanceBaseDuration_"] = blockAppearanceBaseDuration_;
     data["blockAppearanceSpacing_"] = blockAppearanceSpacing_;
     data["deadGlitchTimer_.duration"] = deadGlitchTimer_.duration;
-    data["glitchIntencityRange_"] = glitchIntencityRange_;
+    data["glitchIntencityRange_"] = startIntencityRange_;
     data["randomGlitchCount_"] = randomGlitchCount_;
     data["blockAppearanceEasing_"] = EnumAdapter<Easing::Type>::ToString(blockAppearanceEasing_);
     borderLine_->ToJson(data["BorderLine"]);

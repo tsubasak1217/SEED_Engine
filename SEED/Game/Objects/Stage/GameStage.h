@@ -178,6 +178,7 @@ private:
     // 死亡時のグリッチノイズ処理
     MinimalPostEffect<Glitch> deadGlitchNoise_;
     bool isActiveGlitchNoise_ = false;
+    bool executedGlitch_ = false;
     Timer deadGlitchTimer_;  // 1処理にかかる時間
     Timer deadGlitchConvergenceTimer_;
     int randomGlitchCount_;  // ランダム処理回数

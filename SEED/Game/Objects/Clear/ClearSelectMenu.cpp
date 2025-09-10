@@ -16,7 +16,7 @@
 //	ClearSelectMenu classMethods
 //============================================================================
 
-void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, int32_t nextStageDifficulty) {
+void ClearSelectMenu::Initialize(uint32_t currentStageIndex, bool isLastStage, int32_t nextStageDifficulty){
 
     isLastStage_ = isLastStage;
     nextStageDifficulty_ = nextStageDifficulty;
@@ -41,7 +41,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, in
         data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu_Last.json");
     }
 
-    for (uint32_t index = 0; index < kItemCount_; ++index) {
+    for(uint32_t index = 0; index < kItemCount_; ++index){
 
         Item item{};
 
@@ -56,8 +56,8 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, in
         item.text.layer = 21;
         item.text.isApplyViewMat = false;
 
-        if (!data.empty()) {
-            if (index < data.size()) {
+        if(!data.empty()){
+            if(index < data.size()){
 
                 item.FromJson(data[index]);
             }
@@ -80,11 +80,11 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, in
     // 番号
     stageIndexText_ = TextBox2D(std::to_string(currentStageIndex + 1));
     stageIndexText_.layer = 21;
-    if (10 <= currentStageIndex + 1) {
+    if(10 <= currentStageIndex + 1){
 
         stageIndexText_.fontSize = 64.0f;
         stageIndexTextTranslate_ = Vector2(876.3f, 260.0f);
-    } else {
+    } else{
 
         stageIndexText_.fontSize = 96.0f;
         stageIndexTextTranslate_ = Vector2(876.3f, 236.0f);
@@ -95,13 +95,13 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage, in
     stageIndexBackTranslate_ = Vector2(872.0f, 255.0f);
 }
 
-void ClearSelectMenu::Update() {
+void ClearSelectMenu::Update(){
 
     // エディターの更新処理
     SelectEdit();
 
-    if (menuTimer_.IsFinished()) {
-        if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+    if(menuTimer_.IsFinished()){
+        if(inputMapper_->IsTriggered(PauseMenuInputAction::Enter)){
 
             // 現在フォーカスされている方をtrueにする
             if(isLastStage_){
@@ -121,7 +121,7 @@ void ClearSelectMenu::Update() {
             AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_決定"), false, kSEVolume);
             return;
         }
-        if (result_.isNextStage || result_.returnSelect) {
+        if(result_.isNextStage || result_.returnSelect){
             return;
         }
     }
@@ -129,13 +129,13 @@ void ClearSelectMenu::Update() {
     // メニューの選択
     //上移動
     const float kSEVolume = 0.24f;
-    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
+    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f){
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kItemCount_ - 1);
         AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
     }
     //下移動
-    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
+    if(inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f){
 
         currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kItemCount_ - 1);
         AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_選択"), false, kSEVolume);
@@ -144,18 +144,18 @@ void ClearSelectMenu::Update() {
     // メニュータイマーの更新
     float t = menuTimer_.GetProgress();
     float ease;
-    if (isExit_) {
+    if(isExit_){
 
         menuTimer_.Update(-1.0f);
         ease = EaseInQuint(t);
-    } else {
+    } else{
 
         menuTimer_.Update(1.0f);
         ease = EaseOutQuint(t);
     }
 
     // 選択中のメニューの色を変える
-    for (size_t i = 0; i < kItemCount_; i++) {
+    for(size_t i = 0; i < kItemCount_; i++){
 
         // 時間の更新
         items_[i].selectTime.Update(i == currentMenu_ ? 1.0f : -1.0f);
@@ -182,15 +182,15 @@ void ClearSelectMenu::Update() {
     stageIndexText_.transform.scale = std::lerp(0.0f, 1.4f, EaseOutExpo(t));
 }
 
-void ClearSelectMenu::Draw() {
+void ClearSelectMenu::Draw(){
 
     // 少し経過後に描画する
-    if (menuTimer_.GetProgress() < 0.1f) {
+    if(menuTimer_.GetProgress() < 0.1f){
         return;
     }
 
     // 描画処理
-    for (size_t i = 0; i < kItemCount_; i++) {
+    for(size_t i = 0; i < kItemCount_; i++){
 
         items_[i].backSprite.Draw();
         items_[i].text.Draw();
@@ -200,6 +200,12 @@ void ClearSelectMenu::Draw() {
             static Sprite star = Sprite("UI/star.png");
             static bool initialized = false;
             static float motionTimer = 0.0f;
+            static Timer scaleTimer = Timer(0.25f);
+
+            if(i != currentMenu_){
+                scaleTimer.Update(-1.0f);
+                continue;
+            }
 
             if(!initialized){
                 star.layer = 21;
@@ -215,24 +221,18 @@ void ClearSelectMenu::Draw() {
             for(int32_t j = 0; j < nextStageDifficulty_; j++){
                 star.transform.translate = starPos - Vector2(star.size.x * 1.0f * j, 0.0f);
 
-                // ステージの星の数だけ明るくする
-                if(j < nextStageDifficulty_){
-                    // 少しスケーリングを揺らします
-                    float sin = std::sin(motionTimer * 3.14f - 0.3f * j);
-                    star.transform.scale = Vector2(1.0f + sin * (sin > 0 ? 0.2f : -0.1f));
-                    // キラキラさせます
-                    star.color = MyMath::FloatColor(255, 198, 57, 255);
-                    if(sin < 0.0f){ star.color *= 1.0f + 5.0f * -sin; }
-
-                } else{
-                    // 灰色にする
-                    star.color = Vector4(1.0f, 1.0f, 1.0f, 0.1f);
-                    star.transform.scale = Vector2(1.0f);
-                }
+                // 少しスケーリングを揺らします
+                float sin = std::sin(motionTimer * 3.14f - 0.3f * j);
+                star.transform.scale = Vector2(1.0f + sin * (sin > 0 ? 0.2f : -0.1f))
+                    * Vector2(scaleTimer.GetProgress());
+                // キラキラさせます
+                star.color = MyMath::FloatColor(255, 198, 57, 255);
+                if(sin < 0.0f){ star.color *= 1.0f + 5.0f * -sin; }
 
                 star.Draw();
             }
 
+            scaleTimer.Update(1.0f);
             motionTimer += ClockManager::DeltaTime();
         }
     }
@@ -242,7 +242,7 @@ void ClearSelectMenu::Draw() {
     stageIndexText_.Draw();
 }
 
-void ClearSelectMenu::SelectEdit() {
+void ClearSelectMenu::SelectEdit(){
 #ifdef _DEBUG
     ImFunc::CustomBegin("ClearSelectMenu", MoveOnly_TitleBar);
     {
@@ -255,9 +255,9 @@ void ClearSelectMenu::SelectEdit() {
         }
 
         std::string label;
-        for (uint32_t i = 0; i < kItemCount_; i++) {
+        for(uint32_t i = 0; i < kItemCount_; i++){
             label = "Menu" + std::to_string(i);
-            if (ImGui::CollapsingHeader(label.c_str())) {
+            if(ImGui::CollapsingHeader(label.c_str())){
 
                 items_[i].Edit();
             }
@@ -266,7 +266,7 @@ void ClearSelectMenu::SelectEdit() {
         ImGui::Separator();
 
         // jsonに保存
-        if (ImGui::Button("Save Json")) {
+        if(ImGui::Button("Save Json")){
 
             MenuItemsToJson();
         }
@@ -275,7 +275,7 @@ void ClearSelectMenu::SelectEdit() {
 #endif // _DEBUG
 }
 
-nlohmann::json ClearSelectMenu::Item::ToJson() const {
+nlohmann::json ClearSelectMenu::Item::ToJson() const{
 
     nlohmann::json data;
     data["start"] = start;
@@ -287,7 +287,7 @@ nlohmann::json ClearSelectMenu::Item::ToJson() const {
     return data;
 }
 
-void ClearSelectMenu::Item::FromJson(const nlohmann::json& data) {
+void ClearSelectMenu::Item::FromJson(const nlohmann::json& data){
 
     start = data.value("start", Transform2D());
     end = data.value("end", Transform2D());
@@ -297,10 +297,10 @@ void ClearSelectMenu::Item::FromJson(const nlohmann::json& data) {
     text.LoadFromJson(data["text"]);
 }
 
-void ClearSelectMenu::MenuItemsToJson() {
+void ClearSelectMenu::MenuItemsToJson(){
 
     nlohmann::ordered_json data = nlohmann::ordered_json::array();
-    for (const auto& item : items_) {
+    for(const auto& item : items_){
 
         data.push_back(item.ToJson());
     }
@@ -312,7 +312,7 @@ void ClearSelectMenu::MenuItemsToJson() {
     }
 }
 
-void ClearSelectMenu::Item::Edit() {
+void ClearSelectMenu::Item::Edit(){
 #ifdef _DEBUG
 
     ImGuiManager::RegisterGuizmoItem(&start);

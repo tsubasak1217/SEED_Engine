@@ -104,7 +104,7 @@ public:
     // ポーズ中かどうか
     bool GetIsPaused() const { return isPaused_; }
     void SetIsPaused(bool isPaused);
-
+    void StartDeadGlitch();
 private:
     //========================================================================
     //	private Methods
@@ -251,6 +251,5 @@ private:
     void SetDeadLaserCollisions();
 
     // 死亡時のグリッチ
-    void StartDeadGlitch();
     void UpdateDeadGlitch();
 };

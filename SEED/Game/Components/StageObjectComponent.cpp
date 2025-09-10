@@ -133,6 +133,9 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
 
                         // レーザーに触れたことにする
                         player->SetDeadState();
+
+                        Scene_Game* pScene = dynamic_cast<Scene_Game*>(GameSystem::GetScene());
+                        pScene->GetStage()->StartDeadGlitch();
                     }
                 }
             }

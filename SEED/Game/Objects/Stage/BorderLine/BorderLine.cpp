@@ -26,13 +26,13 @@ void BorderLine::Initialize() {
     opaqueTextureGH_ = TextureManager::LoadTexture("Scene_Game/StageObject/borderLine.png");
     initialSize_ = SEED::GetImageSize(L"Scene_Game/StageObject/borderLine.png");
 
+    isDrawActive_ = true;
     // 初期状態を設定
     SetDeactivate();
 }
 
 void BorderLine::SetActivate() {
 
-    
     // アクティブ状態を設定
     currentState_ = State::Active;
     // 画像をアクティブにする
@@ -166,7 +166,9 @@ void BorderLine::UpdateSprite(const Vector2& translate, float sizeY, float tileS
 void BorderLine::Draw() {
 
     // 描画
-    if (isPaused_) return;
+    if (isPaused_ || !isDrawActive_) {
+        return;
+    }
 
     sprite_.Draw();
 }
@@ -232,7 +234,7 @@ void BorderLine::ShakeBorderLine() {
     // シェイクフラグが立っていなければ処理しない
     if (isShaking_ == false) return;
 
-    
+
     // 初回開始時に位置を保存
     if (elapsedTime_ == 0.0f) {
         shakeStartPosX_ = sprite_.transform.translate.x;
@@ -240,15 +242,14 @@ void BorderLine::ShakeBorderLine() {
     elapsedTime_ += ClockManager::DeltaTime();
     if (elapsedTime_ < shakeDuration_) {
         // 経過時間に応じて振動させる
-        float progress = elapsedTime_ / shakeDuration_; 
+        float progress = elapsedTime_ / shakeDuration_;
 
         //振幅を徐々に減少させる
         float decay = 1.0f - progress;
 
         float wave = std::sin(progress * 100.0f); // 振動回数を調整
         sprite_.transform.translate.x = shakeStartPosX_ + wave * shakeAmount_ * decay;
-    }
-    else {
+    } else {
         sprite_.transform.translate.x = shakeStartPosX_;
         elapsedTime_ = 0.0f;
         isShaking_ = false;

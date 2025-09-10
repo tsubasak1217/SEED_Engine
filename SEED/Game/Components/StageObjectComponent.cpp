@@ -65,6 +65,11 @@ void StageObjectComponent::AppearanceUpdateAnimation(float baseDuration, float s
     }
 }
 
+void StageObjectComponent::MasterScaleUpdate(float timeScale) {
+    // ホログラム専用更新処理
+    object_->MasterScaleUpdate(timeScale);
+}
+
 //============================================================================
 // 衝突時の処理
 //============================================================================
@@ -103,8 +108,11 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
         // 空白ブロックと衝突していたらオブジェクトを非アクティブにする
         if (other->GetObjectType() == ObjectType::EmptyBlock) {
 
-            owner_.owner2D->SetIsActive(false);
-            GameStage::AddDisActiveObject(owner_.owner2D);
+            MasterScaleUpdate(-2.0f);
+            if(object_->GetMasterScaleTimer().GetProgress() == 0.0f){
+                owner_.owner2D->SetIsActive(false);
+                GameStage::AddDisActiveObject(owner_.owner2D);
+            }
 
             // レーザー制御処理
             if (LaserLauncher* laserLauncher = GetStageObject<LaserLauncher>()) {
@@ -299,6 +307,7 @@ void StageObjectComponent::Update() {
     // objectの更新
     UpdateBlockTranslate();
     object_->Update();
+    MasterScaleUpdate();
 }
 
 void StageObjectComponent::Draw() {

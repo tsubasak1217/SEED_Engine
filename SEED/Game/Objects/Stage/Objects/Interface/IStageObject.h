@@ -32,6 +32,7 @@ public:
     virtual void Update() = 0;
     // ホログラム発生時のアニメーション
     virtual void AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing, uint32_t colum);
+    virtual void MasterScaleUpdate(float timeScale = 1.0f);
 
     // 描画処理
     virtual void Draw() = 0;
@@ -50,6 +51,7 @@ public:
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }
+    const Timer& GetMasterScaleTimer() const{ return masterScaleTimer_; }
 
     // Collision
     virtual void OnCollisionEnter([[maybe_unused]] GameObject2D* other) {}
@@ -70,6 +72,8 @@ protected:
     Timer appearanceTimer_;               // 出現アニメーション
     Timer appearanceWaitTimer_;           // 出現待機時間
     float commonScale_;                   // 共通スケーリング
+    Timer masterScaleTimer_ = Timer(0.5f, 0.5f);// マスター倍率用タイマー
+    bool masterScaleOrder_ = true; // マスター倍率更新中かどうか
 
     // 色
     static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);

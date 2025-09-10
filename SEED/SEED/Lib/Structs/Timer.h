@@ -5,10 +5,10 @@
 
 struct Timer{
     Timer() = default;
-    Timer(float _duration);
+    Timer(float _duration,float current = 0.0f);
 
 public:
-    void Initialize(float _duration);
+    void Initialize(float _duration,float current);
     float GetProgress() const;
     float GetDuration() const;
     float GetEase(Easing::Type easeType);
@@ -31,15 +31,15 @@ public:
 
 
 // コンストラクタ
-inline Timer::Timer(float _duration) {
-    Initialize(_duration);
+inline Timer::Timer(float _duration, float current) {
+    Initialize(_duration,current);
 }
 
 // 初期化
-inline void Timer::Initialize(float _duration) {
+inline void Timer::Initialize(float _duration, float current) {
     this->duration = _duration;
-    currentTime = 0.0f;
-    prevTime = 0.0f;
+    currentTime = current;
+    prevTime = current;
 }
 
 // 進捗を取得(0~1)

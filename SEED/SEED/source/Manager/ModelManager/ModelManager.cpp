@@ -63,11 +63,6 @@ void ModelManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
-    // モデルの読み込み
-    LoadModel("DefaultAssets/cube/cube.obj");
-    LoadModel("DefaultAssets/JapaneseSword/JapaneseSword.obj");
-    LoadModel("DefaultAssets/tree/tree.gltf");
-    LoadModel("DefaultAssets/Boy/Boy.gltf");
 }
 
 void ModelManager::LoadModel(const std::string& filename){

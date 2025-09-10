@@ -36,6 +36,9 @@ public:
     // json
     void FromJson(const nlohmann::json& data) override;
     void ToJson(nlohmann::json& data) override;
+
+    // audio
+    void StopAudio() override;
 private:
 	//========================================================================
 	//	private Methods

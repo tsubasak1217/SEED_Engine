@@ -133,6 +133,14 @@ void PlayerStateController::Update(Player& owner) {
 
     // 前回の状態を更新
     pre_ = current_;
+
+    // 死んだ瞬間に音をすべて消す
+    if (IsDeadFinishTrigger()) {
+        for (const auto& ptr : std::views::values(states_)) {
+
+            ptr->StopAudio();
+        }
+    }
 }
 
 void PlayerStateController::Draw(Player& owner) {

@@ -14,7 +14,7 @@ class Player;
 //	StageObjectComponent class
 //============================================================================
 class StageObjectComponent : public IComponent {
-public:
+public: 
     StageObjectComponent(GameObject2D* pOwner, const std::string& tagName = "");
     ~StageObjectComponent() = default;
 

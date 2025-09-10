@@ -29,71 +29,15 @@ public:
 };
 
 
-
-// コンストラクタ
-inline Timer::Timer(float _duration, float current) {
-    Initialize(_duration,current);
-}
-
-// 初期化
-inline void Timer::Initialize(float _duration, float current) {
-    this->duration = _duration;
-    currentTime = current;
-    prevTime = current;
-}
-
-// 進捗を取得(0~1)
-inline float Timer::GetProgress() const {
-    return currentTime / duration;
-}
-
-// durationを取得
-inline float Timer::GetDuration() const {
-    return duration;
-}
-
-// 進捗度をイージングして返す
-inline float Timer::GetEase(Easing::Type easeType) {
-    return Easing::Ease[easeType](GetProgress());
-}
+struct TimerArray{
+    TimerArray() = default;
+    TimerArray(std::initializer_list<float> timePoints);
+    void Update(float timeScale = 1.0f);
+    int32_t GetCurrentIndex() const;
+    int32_t IsFinishedNow() const;
+    float GetProgress() const;
+    bool IsFinished() const;
+    std::vector<Timer> timers;
+};
 
 
-inline float Timer::GetPrevProgress() const {
-    return prevTime / duration;
-}
-
-// 完了しているかどうか
-inline bool Timer::IsFinished() const {
-    return currentTime >= duration;
-}
-
-// 今完了したばかりかどうか
-inline bool Timer::IsFinishedNow() const {
-    return prevTime < duration && currentTime >= duration;
-}
-
-// リセット
-inline void Timer::Reset() {
-    currentTime = 0.0f;
-}
-
-// 最後まで進める
-inline void Timer::ToEnd() {
-    currentTime = duration;
-}
-
-// 停止
-inline void Timer::Stop() {
-    isStop = true;
-}
-
-// 再開
-inline void Timer::Restart() {
-    isStop = false;
-}
-
-// 時間の更新
-inline void Timer::Update(float timeScale) {
-    prevTime = currentTime;
-    currentTime = std::clamp(currentTime + ClockManager::DeltaTime() * timeScale * !isStop, 0.0f, duration);
-}

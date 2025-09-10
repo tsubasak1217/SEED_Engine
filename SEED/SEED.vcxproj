@@ -165,6 +165,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />

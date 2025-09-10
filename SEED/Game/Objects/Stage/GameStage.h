@@ -82,6 +82,9 @@ public:
     int32_t GetDifficulty() const{ return difficulty_; }
     int32_t GetNextStageDifficulty() const;
 
+    // ステージ名を取得する
+    std::string GetCurrentStageName() const;
+
     // アクティブ状態を設定する
     void SetIsActive(bool isActive);
 
@@ -131,6 +134,7 @@ private:
     bool isPaused_ = false;      // ポーズ中かどうか
     bool isReturnPaused_ = false;
     int32_t difficulty_;         // 難易度
+    std::string stageName_; // ステージ名
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";
@@ -197,6 +201,17 @@ private:
     // 最初の更新かどうか
     bool isFirstUpdate = true;
 
+    // stageName描画関連
+    TextBox2D stageNameTextBox_;
+    Sprite stageNameBack_;;
+    TimerArray stageNameTimerArray_ = TimerArray{ 0.8f,1.0f,0.7f,0.5f };
+    enum StageNameState {
+        BackAppear,
+        TextAppear,
+        Stay,
+        Disappear,
+    };
+
     //--------- functions ----------------------------------------------------
 
     // json
@@ -253,4 +268,7 @@ private:
 
     // 死亡時のグリッチ
     void UpdateDeadGlitch();
+
+    // 開始時のステージ名の描画
+    void StageNameDraw();
 };

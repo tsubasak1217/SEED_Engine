@@ -174,6 +174,7 @@
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="Game\Objects\Select\Methods\StageAchievementCollector.cpp" />
     <ClCompile Include="Game\Objects\Select\Methods\SelectStageCreator.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />

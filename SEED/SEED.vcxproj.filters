@@ -170,6 +170,8 @@
     <ClCompile Include="Game\Objects\Stage\Objects\Interface\IStageObject.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp" />
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
+    <ClCompile Include="Game\Manager\ParticleMachine.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -405,6 +407,8 @@
     <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
+    <ClInclude Include="Game\Manager\ParticleMachine.h" />
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

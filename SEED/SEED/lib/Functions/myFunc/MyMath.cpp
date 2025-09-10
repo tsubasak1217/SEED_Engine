@@ -252,6 +252,10 @@ std::array<Vector2, 2> MyMath::LineClosestPoints(const Line2D& l1, const Line2D&
     return { closest1, closest2 };
 }
 
+float MyMath::GetTheta(const Vector2& dir){
+    return std::atan2(dir.y, dir.x); // -π ~ +π の範囲
+}
+
 
 //================================================================
 //                      個人用な便利関数

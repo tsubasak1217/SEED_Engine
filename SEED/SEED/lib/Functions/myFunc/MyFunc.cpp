@@ -72,6 +72,10 @@ Vector2 MyFunc::Random(const Range2D& range){
     return Random(range.min, range.max);
 }
 
+float MyFunc::Random(const Range1D& range){
+    return Random(range.min, range.max);
+}
+
 
 
 //--------------- ランダムな方向を返す関数 ---------------//

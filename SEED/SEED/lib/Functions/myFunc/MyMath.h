@@ -104,6 +104,9 @@ public:
     // 線分同士の最近傍点を求める関数 (2D)
     static std::array<Vector2, 2> LineClosestPoints(const Line2D& l1, const Line2D& l2);
 
+    // 2Dベクトルの角度を求める関数 (radian)
+    static float GetTheta(const Vector2& dir);
+
     //================================================================
     //                      個人用な便利関数
     //================================================================

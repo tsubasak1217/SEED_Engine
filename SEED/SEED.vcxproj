@@ -129,6 +129,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Manager\AudioDictionary.cpp" />
+    <ClCompile Include="Game\Manager\ParticleMachine.cpp" />
     <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
     <ClCompile Include="Game\Objects\Clear\ClearTextAnimation.cpp" />
     <ClCompile Include="Game\Objects\Select\Background\SelectBackground.cpp">
@@ -306,6 +307,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
@@ -403,6 +405,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Manager\AudioDictionary.h" />
+    <ClInclude Include="Game\Manager\ParticleMachine.h" />
     <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
     <ClInclude Include="Game\Objects\Clear\ClearTextAnimation.h" />
     <ClInclude Include="Game\Objects\Select\Background\SelectBackground.h">
@@ -622,6 +625,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />

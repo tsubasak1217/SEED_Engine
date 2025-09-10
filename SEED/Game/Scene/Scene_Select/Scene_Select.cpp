@@ -9,10 +9,10 @@
 //	Scene_Select classMethods
 //============================================================================
 
-Scene_Select::Scene_Select() {
+Scene_Select::Scene_Select(){
 }
 
-Scene_Select::~Scene_Select() {
+Scene_Select::~Scene_Select(){
 
     // すべてのエフェクトを削除
     EffectSystem::DeleteAll();
@@ -21,7 +21,7 @@ Scene_Select::~Scene_Select() {
     AudioManager::EndAudio(bgmHandle_);
 }
 
-void Scene_Select::Initialize() {
+void Scene_Select::Initialize(){
 
     //============================================================================
     //	engine
@@ -50,9 +50,14 @@ void Scene_Select::Initialize() {
     // ステージ選択初期化
     selectStage_ = std::make_unique<SelectStage>();
     selectStage_->Initialize(static_cast<uint32_t>(currentStageIndex_));
+
+    // 色の初期化
+    quadColors_.push_back(MyMath::FloatColor(0x006066ff));
+    //quadColors_.push_back(MyMath::FloatColor(10, 10, 10, 255, false));
+    //quadColors_.push_back(MyMath::FloatColor(255, 13, 86, 255, false));
 }
 
-void Scene_Select::Update() {
+void Scene_Select::Update(){
 
     //============================================================================
     //	objects
@@ -69,7 +74,7 @@ void Scene_Select::Update() {
     //============================================================================
 
     // 次のシーンに進めるかチェック
-    if (selectStage_->GetStageInfo().isNextScene) {
+    if(selectStage_->GetStageInfo().isNextScene){
 
         // ゲームシーンに進ませる
         currentStageIndex_ = selectStage_->GetStageInfo().decideStage;
@@ -77,14 +82,26 @@ void Scene_Select::Update() {
         return;
     }
     // タイトルに戻るかチェック
-    if (selectStage_->IsReturnScene()) {
+    if(selectStage_->IsReturnScene()){
+        isBackToTitle_ = true;
 
-        // タイトルシーンに戻す
-        ChangeScene("Title");
+        BlockSlideTransition* transition = SceneTransitionDrawer::AddTransition<BlockSlideTransition>();
+        transition->SetQuadInfo(96.0f, quadColors_);
+        transition->StartTransition(backToTitleTimer_.GetDuration(), titleSceneStartTime_);
+    }
+
+    if(isBackToTitle_){
+        // タイトルに戻るタイマーを進める
+        backToTitleTimer_.Update();
+
+        // タイマーが終わったらタイトルシーンに戻す
+        if(backToTitleTimer_.IsFinished()){
+            ChangeScene("Title");
+        }
     }
 }
 
-void Scene_Select::Draw() {
+void Scene_Select::Draw(){
 
     //============================================================================
     //	objects
@@ -101,7 +118,7 @@ void Scene_Select::Draw() {
 //	Scene_Select frame:Begin
 //============================================================================
 
-void Scene_Select::BeginFrame() {
+void Scene_Select::BeginFrame(){
 
     // ヒエラルキー内のオブジェクトの描画
     hierarchy_->BeginFrame();
@@ -110,7 +127,7 @@ void Scene_Select::BeginFrame() {
 //	Scene_Select frame:End
 //============================================================================
 
-void Scene_Select::EndFrame() {
+void Scene_Select::EndFrame(){
 
     // ヒエラルキー内のオブジェクトのフレーム終了処理
     hierarchy_->EndFrame();

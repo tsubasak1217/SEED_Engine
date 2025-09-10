@@ -31,6 +31,7 @@ public:
     static Vector3 Random(const Range3D& range);
     static Vector2 Random(const Vector2& min,const Vector2& max);
     static Vector2 Random(const Range2D& range);
+    static float Random(const Range1D& range);
 
     // 64ビットの乱数を返す関数
     static uint64_t RandomU64();

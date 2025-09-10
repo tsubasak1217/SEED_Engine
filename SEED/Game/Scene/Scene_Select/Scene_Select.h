@@ -12,6 +12,10 @@
 #include <Game/Objects/Select/Background/SelectBackground.h>
 #include <Game/Objects/Select/SelectStage.h>
 
+// transition
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
+#include <SEED/Source/Basic/SceneTransition/BlockSlideTransition.h>
+
 //============================================================================
 //	Scene_Select class
 //============================================================================
@@ -51,6 +55,12 @@ private:
     // Audios
     const float kBGMVolume_ = 0.2f;
     AudioHandle bgmHandle_;
+
+    // transition
+    Timer backToTitleTimer_ = Timer(1.0f);
+    bool isBackToTitle_ = false;
+    float titleSceneStartTime_ = 1.0f;
+    std::vector<Vector4> quadColors_;
 
 	//--------- functions ----------------------------------------------------
 

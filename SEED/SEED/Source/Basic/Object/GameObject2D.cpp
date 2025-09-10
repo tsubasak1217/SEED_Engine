@@ -332,7 +332,6 @@ void GameObject2D::CheckCollisionExit(){
         }
         preCollideObjects_.clear();
     }
-
 }
 
 void GameObject2D::OnCollisionEnter(GameObject2D* other){

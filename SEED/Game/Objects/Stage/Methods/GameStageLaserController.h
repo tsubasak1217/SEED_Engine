@@ -45,6 +45,7 @@ public:
 
     // リセット
     void ResetLauncheres(StageObjectCommonState state);
+    void ResetWarpIgnore();
 
 	//--------- accessor -----------------------------------------------------
 

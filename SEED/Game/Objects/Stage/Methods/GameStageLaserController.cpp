@@ -48,6 +48,19 @@ void GameStageLaserController::ResetLauncheres(StageObjectCommonState state) {
     }
 }
 
+void GameStageLaserController::ResetWarpIgnore() {
+
+    // ワープを再検討させる
+    for (const auto& launcher : noneLaserLauncheres_) {
+        for (const auto& laserObject : launcher->GetLasers()) {
+            if (LaserObjectComponent* component = laserObject->GetComponent<LaserObjectComponent>()) {
+                
+                component->ResetWarpIgnore();
+            }
+        }
+    }
+}
+
 void GameStageLaserController::SetLaserLauncheres(StageObjectCommonState state,
     const std::vector<LaserLauncher*> launcheres) {
 
@@ -99,7 +112,10 @@ void GameStageLaserController::CheckWarpLasers() {
                         if (param.isHit) {
 
                             // ワープ相手がいなければ処理しない
-                            if (!warpController_->CheckWarpPartner(param.warpCommonState, param.warpIndex)) {
+                            if (!warpController_->CheckWarpPairBothSides(param.warpIndex)) {
+
+                                // 複製されているレーザーを消す
+                                launcher->RemoveWarpLasers();
 
                                 // ヒット判定を取り消す
                                 inWarpLasers_.erase(laserObject);
@@ -107,6 +123,10 @@ void GameStageLaserController::CheckWarpLasers() {
                                 endParam.isHit = false;
                                 laser->SetHitWarpParam(endParam);
                                 component->ClearPendingWarpStop();
+                                component->IgnoreWarpUntilExit(param.warpIndex);
+
+                                auto& used = usedWarpIndexByFamily_[laser->GetFamilyId()];
+                                used.erase(param.warpIndex);
                                 continue;
                             }
                             if (!inWarpLasers_.contains(laserObject)) {

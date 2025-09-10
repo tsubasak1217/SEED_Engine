@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "LaserObjectComponent.h"
 
 //============================================================================
@@ -20,6 +22,7 @@ LaserObjectComponent::LaserObjectComponent(GameObject2D* pOwner, const std::stri
     if (tagName == "") {
         componentTag_ = "LaserObjectComponent_ID:" + std::to_string(componentID_);
     }
+    ignoreWarpIndex_ = std::numeric_limits<uint32_t>::max();
 }
 
 void LaserObjectComponent::Initialize(LaserObjectType objectType, const Vector2& translate) {
@@ -72,6 +75,17 @@ bool LaserObjectComponent::CheckWarp(GameObject2D* other) {
         return false;
     }
 
+    // すでに無効のワープなら処理しない
+    if (ignoreWarpUntilExit_) {
+        if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+            if (Warp* warp = component->GetStageObject<Warp>()) {
+                if (warp->GetWarpIndex() == ignoreWarpIndex_) {
+                    return true;
+                }
+            }
+        }
+    }
+
     // すでに衝突している場合は処理しない
     if (object_->GetWarpParam().isHit) {
         return true;
@@ -93,6 +107,18 @@ bool LaserObjectComponent::CheckWarp(GameObject2D* other) {
         }
     }
     return false;
+}
+
+void LaserObjectComponent::IgnoreWarpUntilExit(uint32_t index) {
+
+    ignoreWarpUntilExit_ = true;
+    ignoreWarpIndex_ = index;
+}
+
+void LaserObjectComponent::ResetWarpIgnore() {
+
+    ignoreWarpUntilExit_ = false;
+    ignoreWarpIndex_ = std::numeric_limits<uint32_t>::max();
 }
 
 void LaserObjectComponent::ConsiderBlocker(const Vector2& center, const Vector2& size, bool apply) {
@@ -187,12 +213,11 @@ void LaserObjectComponent::ClearPendingWarpStop() {
     pendingWarpStop_.has = false;
     keepStoppedByWarp_ = false;
 
-    // 保存されていた衝突相手を設定する
-    if (hasSavedBlocker_) {
-
-        blocker_ = savedBlocker_;
-    }
+    // 衝突情報をリセット
     hasSavedBlocker_ = false;
+    blocker_.isFound = false;
+    blocker_.frontDistance = std::numeric_limits<float>::infinity();
+    object_->ReExtend();
 }
 
 //============================================================================
@@ -243,15 +268,27 @@ void LaserObjectComponent::OnCollisionStay(GameObject2D* other) {
 
 void LaserObjectComponent::OnCollisionExit(GameObject2D* other) {
 
+    if (!ignoreWarpUntilExit_) {
+        return;
+    }
+
     // ワープと離れたらfalseにする
     if (LaserHelper::HasObejctType(other->GetObjectType(), ObjectType::Warp)) {
+        if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+            if (Warp* warp = component->GetStageObject<Warp>()) {
+                if (ignoreWarpUntilExit_ && warp->GetWarpIndex() == ignoreWarpIndex_) {  
 
+                    ignoreWarpUntilExit_ = false;
+                    ignoreWarpIndex_ = std::numeric_limits<uint32_t>::max();
+                }
+            }
+        }
+
+        // レーザー停止処理終了
         auto param = object_->GetWarpParam();
         param.isHit = false;
         object_->SetHitWarpParam(param);
-
-        // レーザー停止処理終了
-        keepStoppedByWarp_ = false;
+        ClearPendingWarpStop();
     }
 }
 

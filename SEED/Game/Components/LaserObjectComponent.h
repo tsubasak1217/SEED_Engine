@@ -44,6 +44,10 @@ public:
     void ApplyPendingWarpStop();
     void ClearPendingWarpStop();
 
+    // 衝突無視するワープを設定
+    void IgnoreWarpUntilExit(uint32_t index);
+    void ResetWarpIgnore();
+
     //--------- collision ----------------------------------------------------
 
     void OnCollisionEnter(GameObject2D* other) override;
@@ -105,6 +109,9 @@ private:
     // 停止予約用
     PendingStop pendingWarpStop_;
     bool keepStoppedByWarp_ = false;
+    // 無効ワープの記録
+    bool ignoreWarpUntilExit_ = false;
+    uint32_t ignoreWarpIndex_;
 
     //--------- functions ----------------------------------------------------
 

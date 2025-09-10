@@ -135,6 +135,10 @@ bool Player::IsJumpState() const {
     return stateController_->GetCurrentState() == PlayerState::Jump;
 }
 
+bool Player::IsDeadState() const {
+    return stateController_->GetCurrentState() == PlayerState::Dead;
+}
+
 //////////////////////////////////////////////////////////////
 //
 // 更新処理

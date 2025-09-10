@@ -83,6 +83,7 @@ public:
     bool IsRemoveBorder() const;
     bool IsJumpInput() const;
     bool IsJumpState() const;
+    bool IsDeadState() const;
 
     // 状態通知
     void OnGroundTrigger();

@@ -34,9 +34,12 @@ void PlayerMoveState::Update(Player& player) {
     // SE停止
     if (player.IsClearStage()) {
         AudioManager::EndAudio(moveSE_);
+        return;
     }
 
-    if (player.IsJumpState()) {
+    if (player.IsJumpState() || 0.1f < std::fabs(player.GetJumpVelocity()) || player.IsDeadState()) {
+        // 動いてなければ止める
+        AudioManager::EndAudio(moveSE_);
         return;
     }
 

@@ -170,7 +170,6 @@ float PlayerStateController::GetJumpVelocity() const {
             return jump->GetJumpVelocityY();
         }
     }
-
     return 0.0f;
 }
 

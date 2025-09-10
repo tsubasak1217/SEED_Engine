@@ -40,6 +40,6 @@ public:
     float blockSize_ = 32.0f;  // 横ずれブロックの太さ
     float colorOffset_ = 8.0f; // RGBずれ距離
 
-    float noiseStrength_ = 0.2f; // ノイズ混合率
-    float lineSpeed_ = 4.0f;     // スキャンライン走査速度
+    float noiseStrength_ = 0.01f; // ノイズ混合率
+    float lineSpeed_ = 4.0f;      // スキャンライン走査速度
 };

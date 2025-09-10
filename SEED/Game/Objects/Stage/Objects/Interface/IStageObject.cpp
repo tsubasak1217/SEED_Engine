@@ -5,6 +5,9 @@
 //============================================================================
 
 void IStageObject::AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing, uint32_t colum) {
+    
+    // 出現時はマスター倍率更新を掛けない
+    masterScaleOrder_ = false;
 
     // インデックスで待ち時間の間隔を空ける
     appearanceWaitTimer_.duration = spacing * static_cast<float>(colum);
@@ -25,7 +28,17 @@ void IStageObject::AppearanceUpdateAnimation(float baseDuration, float spacing, 
 
     // 終了したら固定
     if (appearanceTimer_.IsFinishedNow()) {
-
+        masterScaleOrder_ = true;// マスター倍率更新を再開
         sprite_.transform.scale = 1.0f;
     }
+}
+
+// マスター倍率の更新
+void IStageObject::MasterScaleUpdate(float timeScale){
+    if(!masterScaleOrder_){return;}
+    masterScaleTimer_.Update(timeScale);
+
+    // マスター倍率を適用
+    sprite_.transform.scale = masterScaleTimer_.GetEase(Easing::OutBack);
+    commonScale_ = sprite_.transform.scale.x;
 }

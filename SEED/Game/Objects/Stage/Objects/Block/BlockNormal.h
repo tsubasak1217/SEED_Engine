@@ -20,11 +20,8 @@ public:
     ~BlockNormal() = default;
 
     void Initialize() override;
-
     void Update() override;
-
     void Draw() override;
-
     void Edit() override {};
 
     //--------- collision ----------------------------------------------------

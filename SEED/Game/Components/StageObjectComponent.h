@@ -35,6 +35,7 @@ public:
         StageObjectCommonState state = StageObjectCommonState::None);
     // ホログラム発生時のアニメーション
     void AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing);
+    void MasterScaleUpdate(float timeScale = 1.0f);
 
     //--------- collision ----------------------------------------------------
 

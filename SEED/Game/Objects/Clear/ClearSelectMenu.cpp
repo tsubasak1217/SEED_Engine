@@ -204,10 +204,13 @@ void ClearSelectMenu::SelectEdit() {
 #ifdef _DEBUG
     ImFunc::CustomBegin("ClearSelectMenu", MoveOnly_TitleBar);
     {
-
-        stageIndexText_.Edit();
-        ImGui::DragFloat2("stageIndexTranslate", &stageIndexBackTranslate_.x, 0.01f);
-        ImGui::DragFloat2("stageIndexTextTranslate", &stageIndexTextTranslate_.x, 0.01f);
+        if(ImGui::CollapsingHeader("StageTextItem")){
+            ImGui::Indent();
+            stageIndexText_.Edit();
+            ImGui::DragFloat2("stageIndexTranslate", &stageIndexBackTranslate_.x, 0.01f);
+            ImGui::DragFloat2("stageIndexTextTranslate", &stageIndexTextTranslate_.x, 0.01f);
+            ImGui::Unindent();
+        }
 
         std::string label;
         for (uint32_t i = 0; i < kItemCount_; i++) {

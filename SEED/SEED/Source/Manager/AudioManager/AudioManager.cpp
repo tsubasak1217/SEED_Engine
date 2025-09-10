@@ -99,17 +99,12 @@ void AudioManager::BeginFrame(){
     }
 
     // 終了している音声の削除
-    for(auto it = instance_->sourceVoices_.begin(); it != instance_->sourceVoices_.end(); ){
+    std::erase_if(instance_->sourceVoices_,
+        [](auto& kv){
         XAUDIO2_VOICE_STATE state{};
-        it->second->GetState(&state);
-
-        if(state.BuffersQueued == 0){
-            EndAudio(it->first);
-            it = instance_->sourceVoices_.erase(it);
-        } else{
-            ++it;
-        }
-    }
+        kv.second->GetState(&state);
+        return state.BuffersQueued == 0;
+    });
 }
 
 
@@ -243,6 +238,7 @@ void AudioManager::EndAudio(AudioHandle handle){
     instance_->sourceVoices_[handle]->DestroyVoice();
 
     // 要素の削除
+    instance_->sourceVoices_.erase(handle);
     instance_->isPlaying_.erase(handle);
     instance_->volumeMap_.erase(handle);
 

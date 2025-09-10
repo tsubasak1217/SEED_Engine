@@ -87,18 +87,21 @@ void GameState_Pause::Finalize() {
 void GameState_Pause::Update() {
 
     // メニューの選択
-    //上移動
-    const float kSEVolume = 0.3f;
-    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
+    // 
+    if (!isExitScene_) {
+        //上移動
+        const float kSEVolume = 0.3f;
+        if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) < 0.0f) {
 
-        currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kMenuCount - 1);
-        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume);
-    }
-    //下移動
-    if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
+            currentMenu_ = MyFunc::Spiral(currentMenu_ - 1, 0, kMenuCount - 1);
+            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume);
+        }
+        //下移動
+        if (inputMapper_->GetVector(PauseMenuInputAction::MoveY) > 0.0f) {
 
-        currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kMenuCount - 1);
-        AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume);
+            currentMenu_ = MyFunc::Spiral(currentMenu_ + 1, 0, kMenuCount - 1);
+            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_選択"), false, kSEVolume);
+        }
     }
 
     // メニュータイマーの更新
@@ -232,48 +235,49 @@ void GameState_Pause::ManageState() {
     }
 
     // 決定
-    if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
+    if (isExitScene_ == false) {
+        if (inputMapper_->IsTriggered(PauseMenuInputAction::Enter)) {
 
-        switch (currentMenu_) {
-        case 0: {
+            switch (currentMenu_) {
+            case 0:
+            {
 
-            // 続ける
-           // SE
-            const float kSEVolume = 0.5f;
-            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ゲームに戻る"), false, kSEVolume);
-            isExit_ = true;
-            stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
-            break;
+                // 続ける
+               // SE
+                const float kSEVolume = 0.5f;
+                AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ゲームに戻る"), false, kSEVolume);
+                isExit_ = true;
+                stage_->CalculateCurrentStageRange();// カメラ範囲を元に戻す
+                stage_->SetIsPaused(false);
+                break;
+            }
+            case 1:
+            {
+                // やり直す
+                // SE
+                const float kSEVolume = 0.5f;
+                AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
+                pScene_->ChangeScene("Game");
+                return;
+            }
+            case 2:// セレクトへ戻る
+            {
+                // シーン遷移を生成して開始
+                isExitScene_ = true;
+                HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+                transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+                transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
+
+                // SE
+                const float kSEVolume = 0.5f;
+                AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_セレクトへ"), false, kSEVolume);
+
+                break;
+            }
+            default:
+                break;
+            }
         }
-        case 1:
-        {
-            // やり直す
-            // SE
-            const float kSEVolume = 0.5f;
-            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
-            pScene_->ChangeScene("Game");
-            return;
-        }
-        case 2:// セレクトへ戻る
-        {
-            // シーン遷移を生成して開始
-            isExitScene_ = true;
-            HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
-            transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
-            transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
-
-            // SE
-            const float kSEVolume = 0.5f;
-            AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_セレクトへ"), false, kSEVolume);
-
-            break;
-        }
-        default:
-            break;
-        }
-
-        // 画面が切り替わったらポーズ解除
-        stage_->SetIsPaused(false);
     }
 
     // セレクトシーンに遷移

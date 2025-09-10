@@ -87,6 +87,8 @@ void Scene_Game::Initialize() {
 
     stage_ = std::make_unique<GameStage>();
     stage_->Initialize(currentStageIndex_);
+    // 画面が切り替わったらポーズ解除
+    stage_->SetIsPaused(false);
     maxStageCount_ = stage_->GetMaxStageCount();
 
     ////////////////////////////////////////////////////

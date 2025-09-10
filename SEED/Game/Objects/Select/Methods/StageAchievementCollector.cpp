@@ -8,6 +8,11 @@
 // imgui
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
+StageProgressCollector::~StageProgressCollector() {
+    // json保存
+    SaveJson();
+}
+
 void StageProgressCollector::Initialize() {
     // json適応
     ApplyJson();

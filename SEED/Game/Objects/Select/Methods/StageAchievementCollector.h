@@ -25,7 +25,7 @@ public:
     //========================================================================
 
     StageProgressCollector() = default;
-    ~StageProgressCollector() = default;
+    ~StageProgressCollector();
 
     void Initialize();
 

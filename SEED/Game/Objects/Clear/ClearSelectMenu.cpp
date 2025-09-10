@@ -37,7 +37,7 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex,bool isLastStage) {
         data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu.json");
     } else{
         kItemCount_ = 1;
-        data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu.json");
+        data = MyFunc::GetJson("Resources/Jsons/Clear/SelectMenu_Last.json");
     }
 
     for (uint32_t index = 0; index < kItemCount_; ++index) {

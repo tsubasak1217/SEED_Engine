@@ -936,6 +936,7 @@ void SelectStageDrawer::TriggerRightArrowReact(){
 
 void SelectStageDrawer::UpdateDifficultyStar(){
 
+    static float motionTimer = 0.0f;
     Vector2 minPos = difficultyStarBasePos_ - Vector2(starDrawRangeX_ * 0.5f, 0.0f);
     Vector2 maxPos = difficultyStarBasePos_ + Vector2(starDrawRangeX_ * 0.5f, 0.0f);
 
@@ -947,11 +948,20 @@ void SelectStageDrawer::UpdateDifficultyStar(){
 
         // ステージの星の数だけ明るくする
         if(i < stages_[focusIndex_].difficulty){
+            // 少しスケーリングを揺らします
+            float sin = std::sin(motionTimer * 3.14f - 0.3f * i);
+            difficultyStars_[i].transform.scale = Vector2(1.0f + sin * (sin > 0 ? 0.2f : -0.1f));
+            // キラキラさせます
             difficultyStars_[i].color = MyMath::FloatColor(255, 198, 57, 255);
+            if(sin < 0.0f){ difficultyStars_[i].color *= 1.0f + 5.0f * -sin; }
         } else{
+            // 灰色にする
             difficultyStars_[i].color = Vector4(1.0f, 1.0f, 1.0f, 0.1f);
+            difficultyStars_[i].transform.scale = Vector2(1.0f);
         }
     }
+
+    motionTimer += ClockManager::DeltaTime();
 }
 
 void SelectStageDrawer::DrawActivate(float f){

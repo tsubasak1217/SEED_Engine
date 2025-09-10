@@ -41,6 +41,9 @@ public:
     void SetWarping() { currentState_ = State::Warping; }
     void SetWarpNotPossible() { currentState_ = State::WarpNotPossible; }
     void SetWarpEmpty() { currentState_ = State::WarpEmpty; }
+    void SetLaserSourceActive(bool active) { isLaserSourceActive_ = active; }
+    void SetLaserTargetActive(bool active) { isLaserTargetActive_ = active; }
+    void ResetLaserActiveFlags();
     // 通常更新状態にする
     void SetNone();
     void ResetAnimation();
@@ -50,6 +53,9 @@ public:
     bool IsStateNone()const { return currentState_ == State::None; }
     bool IsStateWarpNotPossible()const { return currentState_ == State::WarpNotPossible; }
     bool IsStateWarpEmpty()const { return currentState_ == State::WarpEmpty; }
+    // レーザーをワープさせているか
+    bool IsLaserSourceActive() const { return isLaserSourceActive_; }
+    bool IsLaserTargetActive() const { return isLaserTargetActive_; }
 private:
     //========================================================================
     //	private Methods
@@ -73,6 +79,9 @@ private:
     State currentState_;
     // 自身のワープインデックス
     uint32_t warpIndex_;
+    // レーザーをワープさせているか
+    bool isLaserSourceActive_ = false; // 元
+    bool isLaserTargetActive_ = false; // 先
 
     // 表示スプライト
     std::vector<Sprite> frameSprites_;   // 外側から内側に小さくするフレーム

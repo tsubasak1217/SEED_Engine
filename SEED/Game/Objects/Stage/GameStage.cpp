@@ -658,6 +658,7 @@ void GameStage::RemoveBorderLine() {
     laserController_->ResetLauncheres(StageObjectCommonState::Hologram);
     // ホログラム側のワープにアクセスできないようにする
     warpController_->ResetWarps(StageObjectCommonState::Hologram);
+    warpController_->ResetAllWarpLaserFlags();
 
     // 非アクティブオブジェクトを再アクティブ化する
     ReActivateDisActiveObjects();

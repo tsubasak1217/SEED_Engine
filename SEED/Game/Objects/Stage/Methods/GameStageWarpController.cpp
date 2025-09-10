@@ -271,6 +271,43 @@ bool GameStageWarpController::CheckWarpTarget() {
     return true;
 }
 
+Warp* GameStageWarpController::FindWarp(StageObjectCommonState state, uint32_t warpIndex) {
+
+    auto& list = (state == StageObjectCommonState::None) ? noneWarps_ : hologramWarps_;
+    for (Warp* warp : list) {
+        if (warp->GetWarpIndex() == warpIndex) {
+            return warp;
+        }
+    }
+    return nullptr;
+}
+
+void GameStageWarpController::SetLaserSourceActive(
+    StageObjectCommonState state, uint32_t warpIndex, bool active) {
+
+    if (Warp* warp = FindWarp(state, warpIndex)) {
+        warp->SetLaserSourceActive(active);
+    }
+}
+
+void GameStageWarpController::SetLaserTargetActive(
+    StageObjectCommonState state, uint32_t warpIndex, bool active) {
+
+    if (Warp* warp = FindWarp(state, warpIndex)) {
+        warp->SetLaserTargetActive(active);
+    }
+}
+
+void GameStageWarpController::ResetAllWarpLaserFlags() {
+
+    for (Warp* warp : noneWarps_) {
+        warp->ResetLaserActiveFlags();
+    }
+    for (Warp* warp : hologramWarps_) {
+        warp->ResetLaserActiveFlags();
+    }
+}
+
 bool GameStageWarpController::CheckWarpPairBothSides(uint32_t warpIndex) {
 
     // 両方のワープは存在しているかチェック

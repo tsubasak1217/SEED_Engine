@@ -125,6 +125,18 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
             // フィールドオブジェクトと重なっている場合はワープ不可
             GetStageObject<Warp>()->SetWarpNotPossible();
         }
+        if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
+            if (Warp* warp = GetStageObject<Warp>()) {
+                // レーザーを処理しているワープなら
+                if (warp->IsLaserSourceActive() || warp->IsLaserTargetActive()) {
+                    if (Player* player = component->GetStageObject<Player>()) {
+
+                        // レーザーに触れたことにする
+                        player->SetDeadState();
+                    }
+                }
+            }
+        }
     }
 
     // blockに衝突通知
@@ -186,9 +198,7 @@ void StageObjectComponent::OnCollisionExit([[maybe_unused]] GameObject2D* other)
 
         break;
     }
-    case StageObjectType::Player:
-    {
-
+    case StageObjectType::Player: {
         break;
     }
     case StageObjectType::Warp:

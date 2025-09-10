@@ -103,6 +103,12 @@ void Warp::SetNotification() {
     currentState_ = State::Notification;
 }
 
+void Warp::ResetLaserActiveFlags() {
+
+    isLaserSourceActive_ = false;
+    isLaserTargetActive_ = false;
+}
+
 void Warp::SetNone() {
 
     // 通常状態に戻す

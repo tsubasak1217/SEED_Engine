@@ -53,6 +53,12 @@ void PlayerStateController::SetWarpState(const Vector2& start, const Vector2& ta
     Request(PlayerState::Warp);
 }
 
+void PlayerStateController::SetDeadState() {
+
+    // レーザーに食らった判定
+    Request(PlayerState::Dead);
+}
+
 bool PlayerStateController::IsFinishedWarp() const {
 
     PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_.at(PlayerState::Warp).get());

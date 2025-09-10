@@ -103,6 +103,11 @@ bool Player::IsOutOfCamera(const Range2D& cameraRange) const {
     return isOut;
 }
 
+void Player::SetDeadState() {
+
+    stateController_->SetDeadState();
+}
+
 bool Player::IsFinishedWarp() const {
 
     // ワープ状態かどうか

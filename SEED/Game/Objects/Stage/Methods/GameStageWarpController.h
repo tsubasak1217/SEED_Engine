@@ -67,6 +67,11 @@ public:
 
     // ワープ先座標をインデックスから取得する
     Vector2 GetWarpTargetTranslateFromIndex(StageObjectCommonState state, uint32_t warpIndex) const;
+
+    // レーザー処理と関与しているかどうかを設定
+    void SetLaserSourceActive(StageObjectCommonState state, uint32_t warpIndex, bool active);
+    void SetLaserTargetActive(StageObjectCommonState state, uint32_t warpIndex, bool active);
+    void ResetAllWarpLaserFlags();
 private:
     //========================================================================
     //	private Methods
@@ -110,5 +115,6 @@ private:
     void ResetWarp();
     bool IsWarpCameNotification();
     bool CheckWarpTarget();
+    Warp* FindWarp(StageObjectCommonState state, uint32_t warpIndex);
     const std::vector<Warp*>* GetWarpTarget(StageObjectCommonState state) const;
 };

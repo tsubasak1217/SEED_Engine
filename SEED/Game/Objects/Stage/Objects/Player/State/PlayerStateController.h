@@ -43,6 +43,7 @@ public:
 
     // ワープ状態にする
     void SetWarpState(const Vector2& start, const Vector2& target);
+    void SetDeadState();
     // ワープ状態じゃなくなったか
     bool IsFinishedWarp() const;
     //死亡判定

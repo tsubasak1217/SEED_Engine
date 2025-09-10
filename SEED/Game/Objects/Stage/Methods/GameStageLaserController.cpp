@@ -54,7 +54,7 @@ void GameStageLaserController::ResetWarpIgnore() {
     for (const auto& launcher : noneLaserLauncheres_) {
         for (const auto& laserObject : launcher->GetLasers()) {
             if (LaserObjectComponent* component = laserObject->GetComponent<LaserObjectComponent>()) {
-                
+
                 component->ResetWarpIgnore();
             }
         }
@@ -116,6 +116,9 @@ void GameStageLaserController::CheckWarpLasers() {
 
                                 // 複製されているレーザーを消す
                                 launcher->RemoveWarpLasers();
+                                // ワープ元でなくする
+                                warpController_->SetLaserSourceActive(param.warpCommonState, param.warpIndex, false);
+                                warpController_->SetLaserTargetActive(LaserHelper::GetInverseCommonState(param.warpCommonState), param.warpIndex, false);
 
                                 // ヒット判定を取り消す
                                 inWarpLasers_.erase(laserObject);
@@ -138,6 +141,9 @@ void GameStageLaserController::CheckWarpLasers() {
                                     continue;
                                 }
 
+                                // レーザーワープ元として設定
+                                warpController_->SetLaserSourceActive(param.warpCommonState, param.warpIndex, true);
+
                                 // 反対側の状態の相手ワープ座標を取得
                                 Vector2 target = warpController_->GetWarpTargetTranslateFromIndex(
                                     LaserHelper::GetInverseCommonState(param.warpCommonState), param.warpIndex);
@@ -150,6 +156,8 @@ void GameStageLaserController::CheckWarpLasers() {
                             }
                         } else {
 
+                            // ワープ元でなくする
+                            warpController_->SetLaserSourceActive(param.warpCommonState, param.warpIndex, false);
                             // ワープから出たらリストから削除する
                             inWarpLasers_.erase(laserObject);
                         }
@@ -170,6 +178,15 @@ void GameStageLaserController::UpdateLaserLauncheres() {
 
         // 1度だけ発生させる
         spawn.launcher->WarpLaserFromController(spawn.target, spawn.sourceLaserObject);
+        if (LaserObjectComponent* component = spawn.sourceLaserObject->GetComponent<LaserObjectComponent>()) {
+            if (Laser* laser = component->GetLaserObject<Laser>()) {
+
+                // レーザーのワープ先として設定
+                const auto param = laser->GetWarpParam();
+                warpController_->SetLaserTargetActive(
+                    LaserHelper::GetInverseCommonState(param.warpCommonState), param.warpIndex, true);
+            }
+        }
 
         // レーザーを停止させる
         if (LaserObjectComponent* component = spawn.sourceLaserObject->GetComponent<LaserObjectComponent>()) {

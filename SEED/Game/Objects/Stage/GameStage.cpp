@@ -925,7 +925,7 @@ void GameStage::StartDeadGlitch() {
     isActiveGlitchNoise_ = true;
 
     // 収束時間を設定
-    deadGlitchConvergenceTimer_.duration = randomGlitchCount_ * deadGlitchTimer_.duration;
+    deadGlitchConvergenceTimer_.duration = randomGlitchCount_ * deadGlitchTimer_.duration;  
 }
 
 void GameStage::UpdateDeadGlitch() {

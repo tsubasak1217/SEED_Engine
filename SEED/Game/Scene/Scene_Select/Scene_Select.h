@@ -15,6 +15,7 @@
 // transition
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <SEED/Source/Basic/SceneTransition/BlockSlideTransition.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
 
 //============================================================================
 //	Scene_Select class
@@ -58,8 +59,12 @@ private:
 
     // transition
     Timer backToTitleTimer_ = Timer(1.0f);
+    Timer toGameSceneTimer_ = Timer(1.0f);
+    bool isTransitionToGame_ = false;
     bool isBackToTitle_ = false;
     float titleSceneStartTime_ = 1.0f;
+    float gameSceneStartTime_ = 0.5f;
+    float hexagonSize_ = 32.0f;
     std::vector<Vector4> quadColors_;
 
 	//--------- functions ----------------------------------------------------

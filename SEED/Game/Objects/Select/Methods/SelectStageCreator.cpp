@@ -3,12 +3,22 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
 
 //============================================================================
 //	SelectStageCreator classMethods
 //============================================================================
+
+nlohmann::json SelectStageCreator::GetJsonData() const {
+
+    nlohmann::json data;
+    if (!JsonAdapter::LoadCheck("SelectScene/selectStageDrawer.json", data)) {
+        return nlohmann::json{};
+    }
+    return data;
+}
 
 void SelectStageCreator::BuildStage() {
 
@@ -17,7 +27,30 @@ void SelectStageCreator::BuildStage() {
         return;
     }
 
-    Default defaultParam{};
+    // jsonデータを取得する
+    nlohmann::json data = GetJsonData();
+    const Vector4 frameColor = data.value("frameColor_", Vector4(1));
+    const Vector4 backgroundColor = data.value("backgroundColor_", Vector4(1));
+    const Vector4 stageIndexBackColor = data.value("stageIndexBackColor_", Vector4(1));
+    const Vector4 stageIndexTextColor = data.value("stageIndexTextColor_", Vector4(1));
+    const float   stageIndexBackSize = data.value("stageIndexBackSize_", 128.0f);
+    const float   stageIndexTextSize = data.value("stageIndexTextSize_", 128.0f);
+
+    const bool    isSameFontStageIndex = data.value("isSameFontStageIndex_", false);
+    const std::string stageIndexFontName =
+        data.contains("stageNameText_.fontName") ? data["stageNameText_.fontName"].get<std::string>()
+        : "Game/x10y12pxDonguriDuel.ttf";
+    // ステージ名/難易度の初期化
+    std::vector<std::string> stageNames;
+    if (data.contains("stageNames") && data["stageNames"].is_array()) {
+        for (auto& n : data["stageNames"]) if (n.is_string()) stageNames.push_back(n.get<std::string>());
+    }
+    std::vector<int32_t> stageDiffs;
+    if (data.contains("stageDifficulties") && data["stageDifficulties"].is_array()) {
+        for (auto& d : data["stageDifficulties"]) if (d.is_number_integer()) stageDiffs.push_back(d.get<int32_t>());
+    }
+
+    drawerParams_ = data;
 
     // ファイル名をすべて取得する
     auto csvFiles = SelectStageBuilder::CollectStageCSV("Resources/Stage");
@@ -66,6 +99,35 @@ void SelectStageCreator::BuildStage() {
         stage.achievementUI = Sprite("Scene_Select/stageGoal.png");
         stage.achievementUI.anchorPoint = 0.5f;
         stage.achievementUI.isApplyViewMat = false;
+
+        // 色
+        stage.frame.color = frameColor;
+        stage.background.color = backgroundColor;
+        stage.stageIndexBack.color = stageIndexBackColor;
+        stage.stageIndexText.color = stageIndexTextColor;
+
+        // サイズ
+        stage.stageIndexBack.size = stageIndexBackSize;
+        stage.stageIndexText.fontSize = stageIndexTextSize;
+
+        // フォント
+        if (isSameFontStageIndex) {
+            stage.stageIndexText.SetFont(stageIndexFontName);
+        } else {
+            stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
+        }
+
+        // ステージ名
+        if (index < stageNames.size()) {
+
+            stage.stageName = stageNames[index];
+        } else {
+
+            stage.stageName = "Stage " + std::to_string(static_cast<int>(index) + 1);
+        }
+
+        // 難易度
+        stage.difficulty = (index < stageDiffs.size()) ? stageDiffs[index] : 1;
 
         // タイル
         uint32_t warpIndex = 0;

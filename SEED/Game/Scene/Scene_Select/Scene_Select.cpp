@@ -46,14 +46,9 @@ void Scene_Select::Initialize() {
     // 背景初期化
     background_ = std::make_unique<SelectBackground>();
     background_->Initialize();
-
-    // ステージ構築
-    selectStageCreator_ = std::make_unique<SelectStageCreator>();
-    selectStageCreator_->BuildStage();
     // ステージ選択初期化
     selectStage_ = std::make_unique<SelectStage>();
-    selectStage_->Initialize(static_cast<uint32_t>(currentStageIndex_),
-        selectStageCreator_->GetStages());
+    selectStage_->Initialize(static_cast<uint32_t>(currentStageIndex_));
 
     // 色の初期化
     quadColors_.push_back(MyMath::FloatColor(0x006066ff));

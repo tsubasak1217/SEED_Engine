@@ -6,6 +6,7 @@
 #include <Environment/Environment.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
+#include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Stage/Enum/StageObjectType.h>
 #include <Game/Objects/Select/Methods/SelectStageBuilder.h>
@@ -19,11 +20,11 @@
 //	SelectStageDrawer classMethods
 //============================================================================
 
-void SelectStageDrawer::Initialize(uint32_t firstFocusStage, const std::vector<Stage>& stageData) {
+void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
     // ステージのデータを受け取る
     stages_.clear();
-    stages_ = stageData;
+    stages_ = SceneManager::GetCreator()->GetStages();
 
     // ステージの名前
     stageNameText_ = TextBox2D("");
@@ -35,9 +36,6 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage, const std::vector<S
 
     // json適応
     ApplyJson();
-
-    // 各ステージに必要なパラメータを設定する
-    SetStageParam();
 
     // 初期化値設定
     // 最初のフォーカス先を設定
@@ -89,71 +87,6 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage, const std::vector<S
     stageNameText_.color = stageNameTextColor_;
     stageNameText_.fontSize = stageNameTextSize_;
     stageNameText_.transform.translate = stageNameTextTranslate_;
-}
-
-void SelectStageDrawer::SetStageParam() {
-
-    // 全てのステージ
-    // 1番左の表示
-    float cursorX = leftTranslate_.x;
-    maxStageCount_ = static_cast<uint32_t>(SelectStageBuilder::CollectStageCSV("Resources/Stage").size());
-    uint32_t index = 0;
-    for (auto& stage : stages_) {
-
-        // 全体のサイズ
-        stage.size = outSize_;
-        stage.translate = Vector2(cursorX + stage.size.x * 0.5f, leftTranslate_.y);
-
-        //  フレームの描画処理
-        stage.frame.size = stage.size;
-        stage.frame.transform.translate = stage.translate;
-        stage.frame.color = frameColor_;
-        // 背景
-        stage.background.size = stage.size;
-        stage.background.transform.translate = stage.translate;
-        stage.background.color = backgroundColor_;
-        // ステージ番号背景
-        stage.stageIndexBack.size = stageIndexBackSize_;
-        stage.stageIndexBack.color = stageIndexBackColor_;
-        // ステージ番号
-        stage.stageIndexText.text = std::to_string(index + 1);
-        stage.stageIndexText.fontSize = stageIndexTextSize_;
-        stage.stageIndexText.color = stageIndexTextColor_;
-        if (isSameFontStageIndex_) {
-            stage.stageIndexText.SetFont(stageNameText_.fontName);
-        } else {
-            stage.stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
-        }
-        // ステージクリア済みUI
-        stage.achievementUI.size = stage.size;
-        stage.achievementUI.transform.translate = stage.translate + stage.size.y;
-
-        // クリア判定を取得
-        if (GameSystem::GetInstance()->GetStageProgressCollector()) {
-            stage.isClear = GameSystem::GetInstance()->GetStageProgressCollector()->IsStageClear(index);
-        } else {
-            stage.isClear = false;
-        }
-
-        // ステージを進める
-        ++index;
-    }
-
-    // ステージ名配列のサイズを合わせる
-    if (stageNames_.size() < stages_.size()) {
-
-        const size_t old = stageNames_.size();
-        stageNames_.resize(stages_.size());
-        for (size_t i = old; i < stages_.size(); ++i) {
-
-            stageNames_[i] = "Stage " + std::to_string(i + 1);
-        }
-    }
-    // ステージ名を設定する
-    for (size_t i = 0; i < stages_.size(); ++i) {
-
-        stages_[i].stageName = stageNames_[i];
-    }
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -603,10 +536,7 @@ void SelectStageDrawer::Edit(){
 
 void SelectStageDrawer::ApplyJson(){
 
-    nlohmann::json data;
-    if(!JsonAdapter::LoadCheck("SelectScene/selectStageDrawer.json", data)){
-        return;
-    }
+    nlohmann::json data = SceneManager::GetCreator()->GetDrawerParams();
 
     moveTimer_.duration = data.value("moveTimer_.duration", 0.32f);
     tileScale_ = data.value("tileScale_", 1.0f);
@@ -654,47 +584,24 @@ void SelectStageDrawer::ApplyJson(){
     arrowEasing_ = EnumAdapter<Easing::Type>::FromString(data["arrowEasing_"]).value();
 
     stageNames_.clear();
-    if(data.contains("stageNames") && data["stageNames"].is_array()){
-        for(auto& name : data["stageNames"]){
-            if(name.is_string()){
-                stageNames_.push_back(name.get<std::string>());
-            }
-        }
+    if (data.contains("stageNames") && data["stageNames"].is_array()) {
+        for (auto& name : data["stageNames"]) if (name.is_string()) stageNames_.push_back(name.get<std::string>());
     }
 
-
-    if(data.contains("stageNameText_.fontName")){
-
+    if (data.contains("stageNameText_.fontName")) {
         stageNameText_.SetFont(data["stageNameText_.fontName"]);
     }
 
-
-    // 難易度関連---------------------------------
     stageDifficulties_.clear();
-    if(data.contains("stageDifficulties") && data["stageDifficulties"].is_array()){
-        for(auto& diff : data["stageDifficulties"]){
-            if(diff.is_number_integer()){
-                stageDifficulties_.push_back(diff.get<int32_t>());
-            }
-        }
+    if (data.contains("stageDifficulties") && data["stageDifficulties"].is_array()) {
+        for (auto& diff : data["stageDifficulties"]) if (diff.is_number_integer()) stageDifficulties_.push_back(diff.get<int32_t>());
     }
-
-    if(data.contains("difficultyStarBasePos")){
-        difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
-    }
-
-    if(data.contains("starDrawRangeX")){
-        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
-    }
-
-    if(data.contains("starSprite")){
-        for(auto& star : difficultyStars_){
-            star.FromJson(data["starSprite"]);
-        }
-    } else{
-        for(auto& star : difficultyStars_){
-            star = Sprite("DefaultAssets/white1x1.png");
-        }
+    if (data.contains("difficultyStarBasePos")) difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
+    if (data.contains("starDrawRangeX"))        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
+    if (data.contains("starSprite")) {
+        for (auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
+    } else {
+        for (auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
     }
 }
 

@@ -23,6 +23,8 @@ public:
     //--------- accessor -----------------------------------------------------
 
     const std::vector<SelectStageDrawer::Stage>& GetStages() const { return stages_; }
+
+    const nlohmann::json& GetDrawerParams() const { return drawerParams_; }
 private:
     //========================================================================
     //	private Methods
@@ -54,7 +56,13 @@ private:
     // 作成するステージの構造体
     std::vector<SelectStageDrawer::Stage> stages_;
 
+    // データ
+    nlohmann::json drawerParams_;
+
     //--------- functions ----------------------------------------------------
+
+    // json
+    nlohmann::json GetJsonData() const;
 
     // helper
     Sprite CreateTileSprite(uint32_t index, const Vector2& translate,

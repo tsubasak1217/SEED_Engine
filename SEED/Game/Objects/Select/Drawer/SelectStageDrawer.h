@@ -68,7 +68,7 @@ public:
     ~SelectStageDrawer() = default;
 
     // 初期化
-    void Initialize(uint32_t firstFocusStage, const std::vector<Stage>& stageData);
+    void Initialize(uint32_t firstFocusStage);
 
     // 更新処理
     void Update();
@@ -203,9 +203,6 @@ private:
     // json
     void ApplyJson();
     void SaveJson();
-
-    // init
-    void SetStageParam();
 
     // update
     void UpdateFocusAnim();

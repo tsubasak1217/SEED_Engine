@@ -14,6 +14,12 @@
 //	PlayerMoveState classMethods
 //============================================================================
 
+PlayerMoveState::PlayerMoveState() {
+
+    moveSE_ = AudioManager::PlayAudio(AudioDictionary::Get("プレイヤー_足音"), true, 0.0f);
+    AudioManager::EndAudio(moveSE_);
+}
+
 void PlayerMoveState::Enter([[maybe_unused]] Player& player) {
 }
 

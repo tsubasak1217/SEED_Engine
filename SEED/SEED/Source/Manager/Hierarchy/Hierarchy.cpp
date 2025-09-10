@@ -7,11 +7,13 @@
 void Hierarchy::RegisterGameObject(GameObject* gameObject){
     // ゲームオブジェクトを登録
     gameObjects_.push_back(gameObject);
+    existObjectIdMap_.insert(gameObject->GetObjectID());
 }
 
 void Hierarchy::RegisterGameObject(GameObject2D* gameObject2D){
     // 2Dゲームオブジェクトを登録
     gameObjects2D_.push_back(gameObject2D);
+    existObjectIdMap2D_.insert(gameObject2D->GetObjectID());
 }
 
 void Hierarchy::RemoveGameObject(GameObject* gameObject){

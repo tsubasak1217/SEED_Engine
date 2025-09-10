@@ -179,14 +179,14 @@
         "y": 0.29343628883361816,
         "z": 0.4734877943992615
     },
-    "stageNameTextSize_": 104.0,
+    "stageNameTextSize_": 56.0,
     "stageNameTextTranslate_": {
         "x": 640.0,
-        "y": 30.0
+        "y": 65.0
     },
-    "stageNameText_.fontName": "Resources/Fonts\\DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Light.ttf",
+    "stageNameText_.fontName": "Resources/Fonts\\Game\\JF-Dot-Shinonome14B.ttf",
     "stageNames": [
-        "ステー字",
+        "鏡の向こうはホログラム",
         "Ishika",
         "Kurokawa",
         "Murata",

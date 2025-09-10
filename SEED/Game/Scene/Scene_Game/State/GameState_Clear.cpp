@@ -8,6 +8,7 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/GameSystem.h>
@@ -44,6 +45,14 @@ void GameState_Clear::Edit() {
 
             clearText_->Edit();
         }
+        if (ImGui::CollapsingHeader("Transition")) {
+
+            ImGui::DragFloat("duration", &nextStageTimer_.duration, 0.01f);
+            ImGui::DragFloat("nextStageTime", &nextStageTime_, 0.01f);
+            ImGui::DragFloat("stripHeight", &stripHeight_, 0.1f);
+            ImGui::DragFloat("appearEndTimeT", &appearEndTimeT_, 0.01f);
+            ImGui::ColorEdit4("color", &color_.x);
+        }
         ImGui::End();
     }
 #endif // _DEBUG
@@ -64,7 +73,7 @@ void GameState_Clear::Initialize() {
 
     // メニュー
     menu_ = std::make_unique<ClearSelectMenu>();
-    menu_->Initialize(stage->GetCurrentStageIndex(),stage->GetIsLastStage(),stage->GetNextStageDifficulty());
+    menu_->Initialize(stage->GetCurrentStageIndex(), stage->GetIsLastStage(), stage->GetNextStageDifficulty());
 
     // タイマーをリセット
     outTextTimer_.Reset();
@@ -153,6 +162,18 @@ void GameState_Clear::UpdateSelect() {
 
 void GameState_Clear::ManageState() {
 
+    if (isNextStage_) {
+
+        // 次のシーンに進むまでのタイマーを進める
+        nextStageTimer_.Update();
+        if (nextStageTimer_.IsFinished()) {
+
+            Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+            gameScene->ChangeScene("Game");
+        }
+        return;
+    }
+
     if (currentState_ != State::Select) {
         return;
     }
@@ -164,12 +185,16 @@ void GameState_Clear::ManageState() {
         Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
         GameStage* stage = gameScene->GetStage();
         // ステージクリアを記録
-        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(),true);
+        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
         //記録後インデックスを進める
         stage->RequestNextStage();
         gameScene->currentStageIndex_ = stage->GetCurrentStageIndex();
 
-        gameScene->ChangeScene("Game");
+        // 遷移処理を開始する
+        isNextStage_ = true;
+        NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+        transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+        transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
         return;
     }
     if (menu_->GetResult().returnSelect) {

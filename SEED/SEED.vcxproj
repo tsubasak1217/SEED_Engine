@@ -166,6 +166,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
+    <ClCompile Include="Game\Objects\Transition\NextStageTransition.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
     <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
@@ -448,6 +452,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Stage\Methods\GameStageLaserController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Transition\NextStageTransition.h">
       <SubType>
       </SubType>
     </ClInclude>

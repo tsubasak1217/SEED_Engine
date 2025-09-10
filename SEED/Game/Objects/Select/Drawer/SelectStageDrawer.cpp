@@ -21,6 +21,14 @@
 
 void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
+    // ステージの名前
+    stageNameText_ = TextBox2D("ステージです");
+    stageNameText_.anchorPos = Vector2(0.5f, 0.0f);
+    stageNameText_.glyphSpacing = 0.0f;
+    stageNameText_.size = Vector2(1280.0f, 400.0f);
+    stageNameText_.textBoxVisible = false;
+    stageNameText_.isApplyViewMat = false;
+
     // json適応
     ApplyJson();
 
@@ -72,16 +80,10 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
     rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
 
-    // ステージの名前
-    stageNameText_ = TextBox2D("ステージです");
+    // テキスト設定
+    stageNameText_.color = stageNameTextColor_;
     stageNameText_.fontSize = stageNameTextSize_;
     stageNameText_.transform.translate = stageNameTextTranslate_;
-    stageNameText_.anchorPos = Vector2(0.5f, 0.0f);
-    stageNameText_.glyphSpacing = 0.0f;
-    stageNameText_.color = stageNameTextColor_;
-    stageNameText_.size = Vector2(1280.0f, 400.0f);
-    stageNameText_.textBoxVisible = false;
-    stageNameText_.isApplyViewMat = false;
 }
 
 void SelectStageDrawer::SetNextFocus() {
@@ -319,7 +321,7 @@ void SelectStageDrawer::Edit() {
             if (isSameFontStageIndex_) {
                 for (size_t i = 0; i < stages_.size(); ++i) {
 
-                    stages_[i].stageIndexText.SetFont(selectedFont);
+                    stages_[i].stageIndexText.SetFont(stageNameText_.fontName);
                 }
             } else {
                 for (size_t i = 0; i < stages_.size(); ++i) {

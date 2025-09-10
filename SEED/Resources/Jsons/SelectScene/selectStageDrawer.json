@@ -184,7 +184,7 @@
         "x": 640.0,
         "y": 30.0
     },
-    "stageNameText_.fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+    "stageNameText_.fontName": "Resources/Fonts\\DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Light.ttf",
     "stageNames": [
         "ステー字",
         "Ishika",

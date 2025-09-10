@@ -152,6 +152,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Select\Methods\SelectStageCreator.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Select\Methods\StageAchievementCollector.cpp" />
     <ClCompile Include="Game\Objects\Select\SelectStage.cpp">
       <SubType>
@@ -430,6 +434,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Select\Methods\SelectStageBuilder.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Select\Methods\SelectStageCreator.h">
       <SubType>
       </SubType>
     </ClInclude>

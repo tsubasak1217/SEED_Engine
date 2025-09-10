@@ -17,7 +17,7 @@
 //	SelectStage classMethods
 //============================================================================
 
-void SelectStage::Initialize(uint32_t firstFocusStage) {
+void SelectStage::Initialize(uint32_t firstFocusStage, const std::vector<SelectStageDrawer::Stage>& stageData) {
 
     // 入力クラスを初期化
     inputMapper_ = std::make_unique<InputMapper<SelectInputEnum>>();
@@ -26,7 +26,7 @@ void SelectStage::Initialize(uint32_t firstFocusStage) {
 
     // ステージ描画を初期化
     stageDrawer_ = std::make_unique<SelectStageDrawer>();
-    stageDrawer_->Initialize(firstFocusStage);
+    stageDrawer_->Initialize(firstFocusStage, stageData);
 }
 
 void SelectStage::Update() {

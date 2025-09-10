@@ -98,7 +98,7 @@ public:
 
     // ポーズ中かどうか
     bool GetIsPaused() const { return isPaused_; }
-    void SetIsPaused(bool isPaused) { isPaused_ = isPaused; }
+    void SetIsPaused(bool isPaused);
 
 private:
     //========================================================================
@@ -124,6 +124,7 @@ private:
     bool isClear_ = false;       // クリアしたかどうか
     bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
     bool isPaused_ = false;      // ポーズ中かどうか
+    bool isReturnPaused_ = false;
 
     // jsonパス
     const std::string kJsonPath_ = "GameStage/stageParameter.json";

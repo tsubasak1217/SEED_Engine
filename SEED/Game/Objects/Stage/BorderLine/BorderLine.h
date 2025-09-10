@@ -40,9 +40,9 @@ public:
     //--------- accessor -----------------------------------------------------
 
     // アクティブ状態にする
-    void SetActivate();
+    __declspec(noinline) void SetActivate();
     // 非アクティブ状態にする
-    void SetDeactivate();
+    __declspec(noinline) void SetDeactivate();
     // 向きを設定
     void SetDirection(LR direction) { direction_ = direction; }
 
@@ -61,7 +61,7 @@ public:
     void SetTargetX(float x);
 
     void SetPaused(bool isPaused) { isPaused_ = isPaused; }
-
+    void SetDrawActive(bool isDrawActive) { isDrawActive_ = isDrawActive; }
 private:
     //========================================================================
     //	private Methods
@@ -90,7 +90,7 @@ private:
     //--------- variables ----------------------------------------------------
 
     // 現在の状態
-    State currentState_;
+    State currentState_ = State::Disable;
 
     // 描画情報
     Sprite sprite_;
@@ -114,6 +114,7 @@ private:
 
     //ポーズ中かどうか
     bool isPaused_ = false;
+    bool isDrawActive_ = true;
 
     //--------- functions ----------------------------------------------------
 

@@ -235,6 +235,15 @@ bool GameStage::IsTriggredAnyDevice() const {
     return player_->IsTriggredAnyDevice();
 }
 
+void GameStage::SetIsPaused(bool isPaused) {
+
+    isPaused_ = isPaused;
+    if (isPaused_) {
+
+        isReturnPaused_ = true;
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////
 //
 // 全体の更新処理
@@ -342,6 +351,13 @@ void GameStage::UpdateBorderLine() {
 
     // プレイヤーのワールド座標
     const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
+
+    // ポーズから戻るとき、カメラが元に戻るまで処理させない
+    if (isReturnPaused_ && player_->IsPutBorder()) {
+        
+        isReturnPaused_ = false;
+        return;
+    }
 
     // プレイヤーの入力処理に応じて境界線を置いたり外したりする
     // 境界線がまだ置かれていないとき
@@ -623,6 +639,7 @@ void GameStage::RemoveBorderLine() {
 
     // 背景描画を非アクティブにする
     backDrawer_.SetActive(false);
+    borderLine_->SetDrawActive(true);
 }
 
 void GameStage::RequestNextStage() {
@@ -878,6 +895,7 @@ void GameStage::UpdateDeadGlitch() {
     if (player_->TouchLaser() && !executedGlitch_) {
 
         StartDeadGlitch();
+        borderLine_->SetDrawActive(false);
         executedGlitch_ = true;
     }
 

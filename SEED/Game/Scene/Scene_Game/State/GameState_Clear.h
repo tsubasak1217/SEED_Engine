@@ -66,6 +66,9 @@ private:
     // メニュー
     std::unique_ptr<ClearSelectMenu> menu_;
 
+    // Audios
+    uint32_t bgmHandle_;
+
     //--------- functions ----------------------------------------------------
 
     // エディター

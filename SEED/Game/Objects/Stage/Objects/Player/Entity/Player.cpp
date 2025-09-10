@@ -131,6 +131,10 @@ bool Player::IsJumpInput() const {
     return inputMapper_->IsTriggered(PlayerInputAction::Jump);
 }
 
+bool Player::IsJumpState() const {
+    return stateController_->GetCurrentState() == PlayerState::Jump;
+}
+
 //////////////////////////////////////////////////////////////
 //
 // 更新処理
@@ -171,7 +175,7 @@ void Player::UpdateMoveDirection() {
         moveDirection_ = LR::RIGHT;
     }
 
-   
+
 }
 
 // スプライトの動きを更新

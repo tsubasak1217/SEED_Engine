@@ -80,7 +80,7 @@ void Goal::OnCollisionExit([[maybe_unused]] GameObject2D* other){
 
             // SE
             const float kSEVolume = 0.24f;
-            AudioManager::PlayAudio(AudioDictionary::Get("王冠_取得音"), false, kSEVolume);
+            AudioManager::PlayAudio(AudioDictionary::Get("王冠_離脱音"), false, kSEVolume);
         }
     }
 }

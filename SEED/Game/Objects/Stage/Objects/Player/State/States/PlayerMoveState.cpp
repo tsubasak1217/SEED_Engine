@@ -36,6 +36,10 @@ void PlayerMoveState::Update(Player& player) {
         AudioManager::EndAudio(moveSE_);
     }
 
+    if (player.IsJumpState()) {
+        return;
+    }
+
     // 移動中...
     const float kSEVolume = 0.064f;
     if (!AudioManager::IsPlayingAudio(moveSE_)) {

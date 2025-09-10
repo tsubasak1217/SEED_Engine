@@ -147,7 +147,6 @@ void Scene_Game::Update() {
         stage_->Update();
     } else {
 
-        //stage_->SetIsActive(false);
         stage_->Update();
     }
 

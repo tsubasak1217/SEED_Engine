@@ -20,6 +20,7 @@ void PlayerWarpState::InitializeCommonSprite(Sprite& sprite) {
     sprite = Sprite("Scene_Game/Effect/trailTriangle.png");
     sprite.anchorPoint = 0.5f;
     sprite.blendMode = BlendMode::ADD;
+    sprite.layer = 18;
 }
 
 void PlayerWarpState::SetLerpValue(const Vector2& start, const Vector2& target) {

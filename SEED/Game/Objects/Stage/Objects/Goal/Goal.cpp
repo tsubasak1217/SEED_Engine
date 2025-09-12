@@ -116,7 +116,7 @@ void Goal::CrownMotion(){
             //プレイヤーの動きに合わせる
             sprite_.transform.translate = targetPos_;
         }
-        sprite_.layer = 12;// プレイヤー上に描画
+        sprite_.layer = 20;// プレイヤー上に描画
 
     } else{
 

@@ -86,23 +86,28 @@ bool LaserObjectComponent::CheckWarp(GameObject2D* other) {
         }
     }
 
-    // すでに衝突している場合は処理しない
-    if (object_->GetWarpParam().isHit) {
-        return true;
-    }
-    // レーザーにワープと衝突したことを通知する
     if (StageObjectComponent* component = other->GetComponent<StageObjectComponent>()) {
         if (Warp* warp = component->GetStageObject<Warp>()) {
 
-            // パラメータを設定
-            WarpLaserParam param{};
-            param.isHit = true;
-            param.warpIndex = warp->GetWarpIndex();
-            param.warpCommonState = warp->GetCommonState();
-            object_->SetHitWarpParam(param);
+            // レーザーの座標から近い方を設定する
+            const Vector2 origin = owner_.owner2D->GetWorldTranslate();
+            const Vector2 axis = LaserHelper::GetAxisFromDirection(object_->GetDirection());
+            const Vector2 to = component->GetBlockTranslate() - origin;
+            const float distance = to.x * axis.x + to.y * axis.y;
+            const float eps = 1e-4f;
+            if (distance >= -eps && distance + eps < nearestWarpDistance_) {
 
-            // レーザー停止予約、ワープするなら止める
-            SetPendingWarpStop(component->GetBlockTranslate(), component->GetMapSize());
+                // 一番近いワープを設定する
+                WarpLaserParam param{};
+                param.isHit = true;
+                param.warpIndex = warp->GetWarpIndex();
+                param.warpCommonState = warp->GetCommonState();
+                object_->SetHitWarpParam(param);
+
+                // 停止予約
+                SetPendingWarpStop(component->GetBlockTranslate(), component->GetMapSize());
+                nearestWarpDistance_ = distance;
+            }
             return true;
         }
     }
@@ -301,6 +306,7 @@ void LaserObjectComponent::BeginFrame() {
     // 衝突相手をリセット
     blocker_.isFound = false;
     blocker_.frontDistance = std::numeric_limits<float>::infinity();
+    nearestWarpDistance_ = std::numeric_limits<float>::infinity();
 }
 
 void LaserObjectComponent::EndFrame() {

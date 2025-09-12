@@ -299,6 +299,7 @@ std::unique_ptr<IStageObject> StageObjectComponent::CreateInstance(StageObjectTy
     return nullptr;
 }
 
+
 void StageObjectComponent::BeginFrame() {
 }
 

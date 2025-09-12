@@ -142,4 +142,5 @@ private:
     // update
     void UpdateMoveDirection();
     void SpriteMotion();
+    void CollisionOrderToManager();
 };

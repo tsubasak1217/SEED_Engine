@@ -28,11 +28,11 @@
 // 初期化処理
 //
 //////////////////////////////////////////////////////////////////
-void Player::Initialize() {
+void Player::Initialize(){
 
     // 画像ハンドルの初期化
     static bool isFirstInitialize = true;
-    if (isFirstInitialize) {
+    if(isFirstInitialize){
         imageMap_["Body"] = "Scene_Game/StageObject/Player/PlayerBody.png";
         imageMap_["Body_Hologram"] = "Scene_Game/StageObject/Player/PlayerBody_Hologram.png";
         imageMap_["Leg"] = "Scene_Game/StageObject/Player/PlayerLeg.png";
@@ -55,7 +55,7 @@ void Player::Initialize() {
     body_.layer = baseLayer_;
 
     // 足のスプライトを初期化
-    for (int i = 0; i < 2; i++) {
+    for(int i = 0; i < 2; i++){
         legs_[i] = Sprite(imageMap_["Leg"]);
         legs_[i].anchorPoint = Vector2(0.5f, 0.5f);
         legs_[i].layer = baseLayer_ + (i == 0 ? 1 : -1);
@@ -75,72 +75,72 @@ void Player::Initialize() {
 }
 
 // spriteのサイズ設定
-void Player::SetSize(const Vector2& size) {
+void Player::SetSize(const Vector2& size){
     body_.size = size;
     legs_[0].size = size;
     legs_[1].size = size;
 }
 
-void Player::SetWarpState(const Vector2& start, const Vector2& target) {
+void Player::SetWarpState(const Vector2& start, const Vector2& target){
 
     // 状態管理クラスに通知
     stateController_->SetWarpState(start, target);
 }
 
-bool Player::IsDeadFinishTrigger() const {
+bool Player::IsDeadFinishTrigger() const{
     // 死亡状態かどうか
     return stateController_->IsDeadFinishTrigger();
 }
 
-bool Player::IsOutOfCamera(const Range2D& cameraRange) const {
+bool Player::IsOutOfCamera(const Range2D& cameraRange) const{
     bool isOut = false;
 
-    if (cameraRange.min.x > body_.transform.translate.x + body_.size.x * 1.5f ||
+    if(cameraRange.min.x > body_.transform.translate.x + body_.size.x * 1.5f ||
         cameraRange.max.x < body_.transform.translate.x - body_.size.x * 1.5f ||
-        cameraRange.max.y < body_.transform.translate.y - body_.size.y * 1.5f) {
+        cameraRange.max.y < body_.transform.translate.y - body_.size.y * 1.5f){
         isOut = true;
     }
     return isOut;
 }
 
-void Player::SetDeadState() {
+void Player::SetDeadState(){
 
     stateController_->SetDeadState();
 }
 
-bool Player::IsFinishedWarp() const {
+bool Player::IsFinishedWarp() const{
 
     // ワープ状態かどうか
     return stateController_->IsFinishedWarp();
 }
 
-bool Player::IsPutBorder() const {
+bool Player::IsPutBorder() const{
 
     // 境界線を操作できる状態かチェック
-    if (!stateController_->IsCanOperateBorder()) {
+    if(!stateController_->IsCanOperateBorder()){
         return false;
     }
     return inputMapper_->IsTriggered(PlayerInputAction::PutBorder);
 }
 
-bool Player::IsRemoveBorder() const {
+bool Player::IsRemoveBorder() const{
 
     // 境界線を操作できる状態かチェック
-    if (!stateController_->IsCanOperateBorder()) {
+    if(!stateController_->IsCanOperateBorder()){
         return false;
     }
     return inputMapper_->IsTriggered(PlayerInputAction::RemoveBorder);
 }
 
-bool Player::IsJumpInput() const {
+bool Player::IsJumpInput() const{
     return inputMapper_->IsTriggered(PlayerInputAction::Jump);
 }
 
-bool Player::IsJumpState() const {
+bool Player::IsJumpState() const{
     return stateController_->GetCurrentState() == PlayerState::Jump;
 }
 
-bool Player::IsDeadState() const {
+bool Player::IsDeadState() const{
     return stateController_->GetCurrentState() == PlayerState::Dead;
 }
 
@@ -150,13 +150,13 @@ bool Player::IsDeadState() const {
 //
 //////////////////////////////////////////////////////////////
 
-void Player::Update() {
+void Player::Update(){
 
     // エディターを更新
     Edit();
 
     // ポーズ中 or クリア後は移動処理を止める
-    if (isPaused_ || isGetCrown_) {
+    if(isPaused_ || isGetCrown_){
         // スプライトの動きだけは更新する（アニメ演出用）
         SpriteMotion();
         return;
@@ -169,17 +169,20 @@ void Player::Update() {
     // スプライトの動きを更新
     SpriteMotion();
 
+    // 動きに応じて衝突検出順を更新
+    CollisionOrderToManager();
+
     prevDirection_ = moveDirection_;
 }
 
-void Player::UpdateMoveDirection() {
+void Player::UpdateMoveDirection(){
 
     // 入力値に応じて向きを更新
     float vector = inputMapper_->GetVector(PlayerInputAction::MoveX);
-    if (vector < 0.0f) {
+    if(vector < 0.0f){
 
         moveDirection_ = LR::LEFT;
-    } else if (0.0f < vector) {
+    } else if(0.0f < vector){
 
         moveDirection_ = LR::RIGHT;
     }
@@ -188,30 +191,30 @@ void Player::UpdateMoveDirection() {
 }
 
 // スプライトの動きを更新
-void Player::SpriteMotion() {
+void Player::SpriteMotion(){
 
     // ホログラム状態に応じた設定
-    if (isHologram_) {
+    if(isHologram_){
         body_.GH = TextureManager::LoadTexture(imageMap_["Body_Hologram"]);
         legs_[0].GH = TextureManager::LoadTexture(imageMap_["Leg_Hologram"]);
         legs_[1].GH = TextureManager::LoadTexture(imageMap_["Leg_Hologram"]);
-    } else {
+    } else{
         body_.GH = TextureManager::LoadTexture(imageMap_["Body"]);
         legs_[0].GH = TextureManager::LoadTexture(imageMap_["Leg"]);
         legs_[1].GH = TextureManager::LoadTexture(imageMap_["Leg"]);
     }
 
     // 足のtranslateを設定
-    for (int i = 0; i < 2; i++) {
+    for(int i = 0; i < 2; i++){
         legs_[i].transform.translate = body_.transform.translate;
     }
 
     // 向きに応じた設定
-    if (moveDirection_ == LR::LEFT) {
+    if(moveDirection_ == LR::LEFT){
         body_.uvTransform.scale = { 1.0f, 1.0f };
         legs_[0].uvTransform.scale = { 1.0f, 1.0f };
         legs_[1].uvTransform.scale = { -1.0f, 1.0f };
-    } else {
+    } else{
         body_.uvTransform.scale = { -1.0f, 1.0f };
         legs_[0].uvTransform.scale = { -1.0f, 1.0f };
         legs_[1].uvTransform.scale = { 1.0f, 1.0f };
@@ -228,25 +231,25 @@ void Player::SpriteMotion() {
     bool isMoving = stateController_->GetIsMoving();
 
     // 王冠取得後は移動状態を無効化する. ポーズ中も無効化
-    if (isGetCrown_ == true || isPaused_ == true) {
+    if(isGetCrown_ == true || isPaused_ == true){
         isMoving = false;
     }
 
 
-    if (state == PlayerState::Idle && !isMoving) {
+    if(state == PlayerState::Idle && !isMoving){
 
         static float waveRadius = 8.0f;
         float sin = waveRadius * std::sinf(motionTimer * 3.14f * 1.2f);
         isMove_ = false;
 
-        if (sin > 0.0f) {
+        if(sin > 0.0f){
             sin *= -0.5f;
         }
 
         body_.transform.scale = body_.transform.scale + (Vector2(1.0f) - body_.transform.scale) * 0.05f * ClockManager::TimeRate();
         body_.transform.translate.y = body_.transform.translate.y + sin;
 
-    } else if (state == PlayerState::Warp) {
+    } else if(state == PlayerState::Warp){
 
         const Vector2 pos = GetOwner()->GetWorldTranslate();
         const Vector2 scale = GetOwner()->GetWorldScale();
@@ -259,13 +262,13 @@ void Player::SpriteMotion() {
         legs_[0].transform.scale = Vector2(scale);
         legs_[1].transform.scale = Vector2(scale);
         return;
-    } else if (state == PlayerState::Jump or state == PlayerState::Warp) {
+    } else if(state == PlayerState::Jump or state == PlayerState::Warp){
 
         float jumpVel = stateController_->GetJumpVelocity();
         landingTimer = 0.0f;
         motionTimer = 0.0f;
         isMove_ = false;
-        if (jumpVel <= 0.0f) {
+        if(jumpVel <= 0.0f){
             float jumpT = std::clamp(jumpVel / -60.0f, 0.0f, 1.0f);
             // 上昇中は縦に伸ばす
             body_.transform.scale.y = 1.0f + jumpT * 0.2f;
@@ -275,7 +278,7 @@ void Player::SpriteMotion() {
             legs_[0].transform.translate.y = body_.transform.translate.y + (body_.size.y * 0.25f * body_.transform.scale.y * jumpT);
             legs_[1].transform.translate.y = body_.transform.translate.y + (body_.size.y * 0.25f * body_.transform.scale.y * jumpT);
 
-        } else {
+        } else{
             // 下降中は横に伸ばす
             float fallT = std::clamp(jumpVel / 60.0f, 0.0f, 1.0f);
             body_.transform.scale.y = 1.0f - fallT * 0.1f;
@@ -288,11 +291,11 @@ void Player::SpriteMotion() {
     }
     // 歩いている場合のアニメーション
     // 王冠を取ったら歩行アニメーションを止める
-    if (isMoving) {
+    if(isMoving){
         // 歩いている場合の足の動き
-        if (state != PlayerState::Jump) {
+        if(state != PlayerState::Jump){
             // timerのリセット
-            if (!isMove_) {
+            if(!isMove_){
                 motionTimer = 0.0f;
                 isMove_ = true;
             }
@@ -304,9 +307,9 @@ void Player::SpriteMotion() {
             float rot = 0.0f;
             float bodyScaleT = std::clamp(motionTimer / 0.4f, 0.0f, 1.0f);
 
-            if (moveDirection_ == LR::LEFT) {
+            if(moveDirection_ == LR::LEFT){
                 rot = rotRange * (sin > 0.0f ? sin : sin * -0.7f);
-            } else {
+            } else{
                 rot = rotRange * (sin <= 0.0f ? sin : sin * -0.7f);
                 cos *= -1.0f;
             }
@@ -317,12 +320,12 @@ void Player::SpriteMotion() {
             body_.transform.rotate = rot;
 
             // 足を交互に上げる
-            if (sin > 0.0f) {
+            if(sin > 0.0f){
                 legs_[0].transform.translate.y = body_.transform.translate.y + waveRadius * -sin;
                 legs_[0].transform.translate.x = body_.transform.translate.x + (body_.size.x * 0.1f * body_.transform.scale.x * cos);
                 legs_[1].transform.translate.y = body_.transform.translate.y;
                 legs_[1].transform.translate.x = body_.transform.translate.x + (body_.size.x * -0.1f * body_.transform.scale.x * cos);
-            } else {
+            } else{
                 legs_[0].transform.translate.y = body_.transform.translate.y;
                 legs_[0].transform.translate.x = body_.transform.translate.x + (body_.size.x * 0.1f * body_.transform.scale.x * cos);
                 legs_[1].transform.translate.y = body_.transform.translate.y + waveRadius * sin;
@@ -332,7 +335,7 @@ void Player::SpriteMotion() {
     }
 
     // 着地した直後のアニメーション
-    if (state != PlayerState::Jump) {
+    if(state != PlayerState::Jump){
         //float landingT = std::clamp(landingTimer / 0.2f, 0.0f, 1.0f);
         //if (landingT < 1.0f) {
         //    float landingAnimationT = EaseOutBounce(EaseOutBounce(landingT));
@@ -347,26 +350,36 @@ void Player::SpriteMotion() {
     landingTimer += ClockManager::DeltaTime();
 }
 
-void Player::OnGroundTrigger() {
+void Player::CollisionOrderToManager(){
+
+    float jumpVel = stateController_->GetJumpVelocity();
+    if(jumpVel <= 0.0f){
+        CollisionManager::SetCollisionOrder(CollisionOrder::InReverseOrder);// 下に移動中は逆順
+    } else{
+        CollisionManager::SetCollisionOrder(CollisionOrder::InOrder);// 上に移動中は順番
+    }
+}
+
+void Player::OnGroundTrigger(){
     // 着地した瞬間
-    if (stateController_->GetJumpVelocity() > 0.0f) {
+    if(stateController_->GetJumpVelocity() > 0.0f){
         stateController_->OnGroundTrigger();
     }
 }
 
-void Player::OnCeilingTrigger() {
+void Player::OnCeilingTrigger(){
     // 天井に当たった瞬間
-    if (stateController_->GetJumpVelocity() <= 0.0f) {
+    if(stateController_->GetJumpVelocity() <= 0.0f){
         stateController_->OnCeilingTrigger();
     }
 }
 
-bool Player::IsTriggredAnyDevice() const {
+bool Player::IsTriggredAnyDevice() const{
 
     return inputMapper_->IsTriggered(PlayerInputAction::PutBorder);
 }
 
-bool Player::TouchLaser() const {
+bool Player::TouchLaser() const{
     // レーザーに触れた
     return istouchedLaser_;
 }
@@ -375,35 +388,35 @@ bool Player::TouchLaser() const {
 // 描画
 /////////////////////////////////////////////////////////////////////////////
 
-void Player::Draw() {
+void Player::Draw(){
 
     // 各状態の描画
     stateController_->Draw(*this);
 
     // 胴体の描画
-    if (stateController_->IsDead() == false) {
+    if(stateController_->IsDead() == false){
         body_.Draw();
 
         // 足を描画
-        for (int i = 0; i < 2; i++) {
+        for(int i = 0; i < 2; i++){
             legs_[i].Draw();
         }
     }
 
 }
 
-void Player::Edit() {
+void Player::Edit(){
 #ifdef _DEBUG
     ImFunc::CustomBegin("Player", MoveOnly_TitleBar);
     {
         ImGui::PushItemWidth(192.0f);
-        if (ImGui::Button("Save Json")) {
+        if(ImGui::Button("Save Json")){
 
             SaveJson();
         }
 
-        if (ImGui::BeginTabBar("PlayerTab")) {
-            if (ImGui::BeginTabItem("PlayerParam")) {
+        if(ImGui::BeginTabBar("PlayerTab")){
+            if(ImGui::BeginTabItem("PlayerParam")){
 
                 ImGui::Text("moveDirection: %s", EnumAdapter<LR>::ToString(moveDirection_));
 
@@ -414,7 +427,7 @@ void Player::Edit() {
                 ImGui::Checkbox("isHologram", &isHologram_);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("State")) {
+            if(ImGui::BeginTabItem("State")){
 
                 stateController_->Edit(*this);
                 ImGui::EndTabItem();
@@ -430,28 +443,28 @@ void Player::Edit() {
 #endif // _DEBUG
 }
 
-void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
+void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other){
 
 }
 
-void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
-    if (other->GetObjectType() == ObjectType::Laser) {
+void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other){
+    if(other->GetObjectType() == ObjectType::Laser){
 
         istouchedLaser_ = true;
-    } else {
+    } else{
 
         istouchedLaser_ = false;
     }
 }
 
-void Player::OnCollisionExit([[maybe_unused]] GameObject2D* other) {
+void Player::OnCollisionExit([[maybe_unused]] GameObject2D* other){
 
 }
 
-void Player::ApplyJson() {
+void Player::ApplyJson(){
 
     nlohmann::json data;
-    if (!JsonAdapter::LoadCheck(kJsonPath_, data)) {
+    if(!JsonAdapter::LoadCheck(kJsonPath_, data)){
         return;
     }
 
@@ -459,7 +472,7 @@ void Player::ApplyJson() {
     stateController_->FromJson(data["StateParam"]);
 }
 
-void Player::SaveJson() {
+void Player::SaveJson(){
 
     nlohmann::json data;
 

@@ -93,7 +93,16 @@ void CollisionManager::CheckCollision(){
         collider.second->Update();
     }
 
-
+    // 逆順判定の場合には逆順に並べ替える
+    if(instance_->collisionOrder_ == CollisionOrder::InReverseOrder){
+        std::reverse(instance_->onFieldObjectColliders3D_.begin(), instance_->onFieldObjectColliders3D_.end());
+        std::reverse(instance_->onFieldObjectColliders2D_.begin(), instance_->onFieldObjectColliders2D_.end());
+        std::reverse(instance_->fieldColliders3D_.begin(), instance_->fieldColliders3D_.end());
+        std::reverse(instance_->fieldColliders2D_.begin(), instance_->fieldColliders2D_.end());
+        std::reverse(instance_->editorColliders3D_.begin(), instance_->editorColliders3D_.end());
+        std::reverse(instance_->editorColliders2D_.begin(), instance_->editorColliders2D_.end());
+    }
+    
     // 当たり判定(フィールド vs フィールド上のもの)
     for(int i = 0; i < instance_->onFieldObjectColliders3D_.size(); i++){
         for(int j = 0; j < instance_->fieldColliders3D_.size(); j++){
@@ -158,7 +167,7 @@ void CollisionManager::CheckCollision(){
             }
         }
     }
-    //instance_->octree_->CheckCollision();
+
 
     // exit判定
     {

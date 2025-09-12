@@ -15,4 +15,5 @@ enum class PauseMenuInputAction : uint8_t {
     Pause,      // ポーズ
     Enter,      // 決定
     MoveY,      // 縦移動
+    Reset,      // リセット
 };

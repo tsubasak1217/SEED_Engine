@@ -20,7 +20,15 @@ GameState_Play::GameState_Play(Scene_Base* pScene) {
 
 
 GameState_Play::~GameState_Play() {
+
     SEED::SetMainCamera("default");
+
+    if (!isSameScene_) {
+
+        // 全て停止させる
+        AudioManager::EndAudio(noneBGMHandle_);
+        AudioManager::EndAudio(holoBGMHandle_);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +48,34 @@ void GameState_Play::Initialize() {
     if (stage) {
         gameScene->GetStage()->SetIsActive(true);
     }
+
+    // 再生中なら再生しない
+    if (AudioManager::IsPlayingAudio(AudioDictionary::Get("ゲームシーン_通常BGM"))) {
+
+        // ホログラムハンドルだけもらう
+        holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
+        AudioManager::EndAudio(holoBGMHandle_);
+        // 再生中のハンドルを取得する
+        noneBGMHandle_ = AudioManager::GetAudioHandle(AudioDictionary::Get("ゲームシーン_通常BGM"));
+        isCurrentHologram_ = false;
+    } else if (AudioManager::IsPlayingAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"))) {
+
+        // 通常BGMハンドルだけもらう
+        noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+        AudioManager::EndAudio(noneBGMHandle_);
+        // 再生中のハンドルを取得する
+        holoBGMHandle_ = AudioManager::GetAudioHandle(AudioDictionary::Get("ゲームシーン_虚像BGM"));
+        isCurrentHologram_ = true;
+    } else {
+
+        // ホログラムハンドルだけもらう
+        holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
+        AudioManager::EndAudio(holoBGMHandle_);
+        // 最初は通常BGMを再生
+        noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+        isCurrentHologram_ = false;
+    }
+    isSameScene_ = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +94,33 @@ void GameState_Play::Finalize() {
 /////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::Update() {
 
+    //========================================================================
+    //	Audio
+    //========================================================================
+
+    // 状態が切り替わったら
+    if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
+        if (GameStage* stage = gameScene->GetStage()) {
+            if (isCurrentHologram_ != stage->IsCurrentHologram()) {
+
+                // 通常
+                if (!stage->IsCurrentHologram()) {
+
+                    // 通常BGMを流してホログラムBGMを停止
+                    noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+                    AudioManager::EndAudio(holoBGMHandle_);
+                }
+                // ホログラム
+                else {
+
+                    // ホログラムBGMを流して通常BGMを停止
+                    holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
+                    AudioManager::EndAudio(noneBGMHandle_);
+                }
+                isCurrentHologram_ = stage->IsCurrentHologram();
+            }
+        }
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +162,46 @@ void GameState_Play::HandOverColliders() {
 /////////////////////////////////////////////////////////////////////////////////
 void GameState_Play::ManageState() {
 
+    if (isResetStage_) {
+
+        // 次のシーンに進むまでのタイマーを進める
+        nextStageTimer_.Update();
+        if (nextStageTimer_.IsFinished()) {
+
+            Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+            isSameScene_ = true;
+
+            // ホログラムのBGMが流れていたら止める
+            if (AudioManager::IsPlayingAudio(holoBGMHandle_)) {
+
+                // 音声をリセットする
+                AudioManager::EndAudio(holoBGMHandle_);
+                noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+            }
+            gameScene->ChangeScene("Game");
+        }
+        return;
+    }
+
+    // リセット
+    if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
+        if (GameStage* stage = gameScene->GetStage()) {
+            if (!stage->IsClear()) {
+                if (menuBarInputMapper_->IsTriggered(PauseMenuInputAction::Reset)) {
+
+                    // 遷移処理を開始する
+                    isResetStage_ = true;
+                    NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+                    transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+                    transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+
+                    const float kSEVolume = 0.24f;
+                    AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
+                }
+            }
+        }
+    }
+
     // クリア
     if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
         if (GameStage* stage = gameScene->GetStage()) {
@@ -135,6 +238,7 @@ void GameState_Play::ManageState() {
         }
 
         // ポーズステートに遷移
+        isSameScene_ = true;
         gameScene->ChangeState(new GameState_Pause(gameScene));
 
         // SE

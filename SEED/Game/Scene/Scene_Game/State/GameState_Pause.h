@@ -54,6 +54,16 @@ private:
     int32_t currentMenu_ = 0;
     int32_t kMenuCount = 3;
     Timer menuTimer_ = Timer(1.0f);
+    const float kBGMVolume_ = 0.16f;
+
+    // transition
+    Timer nextStageTimer_ = Timer(0.5f);
+    Vector4 color_ = MyMath::FloatColor(238, 106, 2, 255, false);
+    float nextStageTime_ = 0.6f;
+    bool isResetStage_ = false;
+    // parameters
+    float stripHeight_ = 40.0f;
+    float appearEndTimeT_ = 0.32f;
 
     // 現在のシーンの終わり時間と次のシーンの始まり時間(遷移用)
     bool isExitScene_ = false;

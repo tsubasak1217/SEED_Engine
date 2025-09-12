@@ -212,6 +212,24 @@ void GameState_Pause::ManageState() {
     Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
     GameStage* stage_ = gameScene->GetStage();
 
+    if (isResetStage_) {
+
+        // 次のシーンに進むまでのタイマーを進める
+        nextStageTimer_.Update();
+        if (nextStageTimer_.IsFinished()) {
+
+            // ホログラムのBGMが流れていたら止める
+            if (AudioManager::IsPlayingAudio(holoBGMHandle_)) {
+
+                // 音声をリセットする
+                AudioManager::EndAudio(holoBGMHandle_);
+                noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
+            }
+            gameScene->ChangeScene("Game");
+        }
+        return;
+    }
+
     //State_Playに戻る
     if (inputMapper_->IsTriggered(PauseMenuInputAction::Pause)) {
 
@@ -257,7 +275,12 @@ void GameState_Pause::ManageState() {
                 // SE
                 const float kSEVolume = 0.5f;
                 AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
-                pScene_->ChangeScene("Game");
+
+                // 遷移処理を開始する
+                isResetStage_ = true;
+                NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+                transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+                transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
                 return;
             }
             case 2:// セレクトへ戻る

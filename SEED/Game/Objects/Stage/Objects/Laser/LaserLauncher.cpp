@@ -232,6 +232,12 @@ void LaserLauncher::Update() {
             laser->SetIsStop(!appearanceWaitTimer_.IsFinished());
         }
     }
+
+    // 全てのスプライトに対して処理を行う
+    for(Sprite& sprite : std::array{ std::ref(frameSprite_), std::ref(centerStarSprite_) }){
+
+        sprite.transform.scale = masterScaleTimer_.GetEase(Easing::OutBack);
+    }
 }
 
 void LaserLauncher::UpdateCenterStar() {

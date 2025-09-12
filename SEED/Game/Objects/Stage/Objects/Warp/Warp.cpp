@@ -128,6 +128,11 @@ void Warp::Update() {
 
     // 状態別の更新処理
     UpdateState();
+
+    // アニメーションスプライトを描画
+    for(auto& frameSprite : frameSprites_){
+        frameSprite.transform.scale = frameSprite.transform.scale * masterScaleTimer_.GetEase(Easing::OutBack);
+    }
 }
 
 void Warp::UpdateState() {

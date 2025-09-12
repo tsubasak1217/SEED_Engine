@@ -109,7 +109,6 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
         // 空白ブロックと衝突していたらオブジェクトを非アクティブにする
         if (other->GetObjectType() == ObjectType::EmptyBlock) {
 
-            object_->SetStopAppearance(true);
             MasterScaleUpdate(-2.0f);
             if(object_->GetMasterScaleTimer().GetProgress() == 0.0f){
 

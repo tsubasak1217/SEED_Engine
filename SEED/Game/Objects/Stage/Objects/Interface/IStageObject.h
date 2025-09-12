@@ -46,19 +46,18 @@ public:
     virtual void SetSize(const Vector2& size) { sprite_.size = size; }
     virtual void SetScale(float scale) { sprite_.transform.scale = scale; }
     virtual void SetCommonState(StageObjectCommonState state) { commonState_ = state; }
+    void SetStopAppearance(bool isSetStopAppearance) { isSetStopAppearance_ = isSetStopAppearance; }
 
     virtual const Vector2& GetTranslate() const { return sprite_.transform.translate; }
     StageObjectCommonState GetCommonState() const { return commonState_; }
 
     GameObject2D* GetOwner() const { return owner_; }
-    const Timer& GetMasterScaleTimer() const{ return masterScaleTimer_; }
+    const Timer& GetMasterScaleTimer() const { return masterScaleTimer_; }
 
     // Collision
     virtual void OnCollisionEnter([[maybe_unused]] GameObject2D* other) {}
     virtual void OnCollisionStay([[maybe_unused]] GameObject2D* other) {}
     virtual void OnCollisionExit([[maybe_unused]] GameObject2D* other) {}
-
-
 protected:
     //========================================================================
     //	protected Methods
@@ -74,6 +73,7 @@ protected:
     float commonScale_;                   // 共通スケーリング
     Timer masterScaleTimer_ = Timer(0.5f, 0.5f);// マスター倍率用タイマー
     bool masterScaleOrder_ = true; // マスター倍率更新中かどうか
+    bool isSetStopAppearance_ = false;
 
     // 色
     static inline const Vector4 normalColor_ = MyMath::FloatColor(255, 198, 57, 255);

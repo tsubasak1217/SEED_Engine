@@ -91,6 +91,10 @@ public:
     bool IsDecideStage() const { return currentState_ == State::End; }
     // 選択ステージ情報
     const SelectStageInfo& GetStageInfo() const { return stageInfo_; }
+
+    float GetRepeatDelay() const { return inputRepeatDelay_; }
+    float GetRepeatInterval() const { return inputRepeatInterval_; }
+    float GetStickThreshold() const { return stickThreshold_; }
 private:
     //========================================================================
     //	private Methods
@@ -197,6 +201,11 @@ private:
     std::array<Sprite,5> difficultyStars_; // 難易度の星
     Vector2 difficultyStarBasePos_;
     float starDrawRangeX_ = 300.0f;
+
+    // 連続入力用
+    float inputRepeatDelay_;    // 連続入力を検知するまでの時間
+    float inputRepeatInterval_; // リピート間隔
+    float stickThreshold_;      // スティック入力閾値
 
     //--------- functions ----------------------------------------------------
 

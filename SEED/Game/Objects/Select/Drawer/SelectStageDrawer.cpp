@@ -530,6 +530,12 @@ void SelectStageDrawer::Edit(){
         }
         ImGui::Unindent();
     }
+    if (ImGui::CollapsingHeader("Input Hold")) {
+
+        ImGui::DragFloat("repeatInterval", &inputRepeatInterval_, 0.01f);
+        ImGui::DragFloat("repeatInitialDelay", &inputRepeatDelay_, 0.01f);
+        ImGui::DragFloat("stickThreshold", &stickThreshold_, 0.01f);
+    }
 #endif // _DEBUG
 }
 
@@ -581,6 +587,10 @@ void SelectStageDrawer::ApplyJson(){
     reactRate_ = data.value("reactRate_", 0.9f);
     isSameFontStageIndex_ = data.value("isSameFontStageIndex_", false);
     arrowEasing_ = EnumAdapter<Easing::Type>::FromString(data["arrowEasing_"]).value();
+
+    inputRepeatDelay_ = data.value("inputRepeatDelay_", 0.4f);
+    inputRepeatInterval_ = data.value("inputRepeatInterval_", 0.08f);
+    stickThreshold_ = data.value("stickThreshold_", 0.1f);
 
     stageNames_.clear();
     if (data.contains("stageNames") && data["stageNames"].is_array()) {
@@ -660,11 +670,14 @@ void SelectStageDrawer::SaveJson(){
     data["reactRate_"] = reactRate_;
     data["arrowEasing_"] = EnumAdapter<Easing::Type>::ToString(arrowEasing_);
 
+    data["inputRepeatDelay_"] = inputRepeatDelay_;
+    data["inputRepeatInterval_"] = inputRepeatInterval_;
+    data["stickThreshold_"] = stickThreshold_;
+
     stageNames_.resize(stages_.size());
     for(size_t i = 0; i < stages_.size(); ++i){
         stageNames_[i] = stages_[i].stageName;
     }
-
 
     data["stageNames"] = stageNames_;
     data["stageNameText_.fontName"] = stageNameText_.fontName;

@@ -53,55 +53,87 @@ void SelectStage::UpdateSelectInput() {
         stageDrawer_->SetEndFocus();
     }
 
-    // 入力に応じたステージの選択
-    // 1つ前のステージの選択
+    // 入力に応じた関数の呼び出し
+    auto InputTrigger = [&](LR direction) {
+        // 前のステージに戻る
+        if (direction == LR::LEFT) {
+            stageDrawer_->SetPrevFocus();
+        }
+        // 次のステージに進む
+        if (direction == LR::RIGHT) {
+            stageDrawer_->SetNextFocus();
+        } };
+
+    // トリガー入力を判定
     if (inputMapper_->IsTriggered(SelectInputEnum::Left)) {
 
-        stageDrawer_->SetPrevFocus();
+        InputTrigger(LR::LEFT);
+        holdDirection_ = LR::LEFT;
+        // 入力保持時間をリセット
+        holdTimer_.duration = stageDrawer_->GetRepeatDelay();
+        repeatTimer_.duration = stageDrawer_->GetRepeatInterval();
+        isRepeating_ = false;
+        holdTimer_.Reset();
+        repeatTimer_.Reset();
         return;
     }
-    // 1つ次のステージの選択
     if (inputMapper_->IsTriggered(SelectInputEnum::Right)) {
 
-        stageDrawer_->SetNextFocus();
+        InputTrigger(LR::RIGHT);
+        holdDirection_ = LR::RIGHT;
+        // 入力保持時間をリセット
+        holdTimer_.duration = stageDrawer_->GetRepeatDelay();
+        repeatTimer_.duration = stageDrawer_->GetRepeatInterval();
+        isRepeating_ = false;
+        holdTimer_.Reset();
+        repeatTimer_.Reset();
         return;
     }
 
+    // 連続入力判定
     LR direction = LR::NONE;
-    // スティック入力閾値
-    const float threshold = 0.1f;
-    if (inputMapper_->GetVector(SelectInputEnum::Left) < -threshold) {
+    const float threshold = stageDrawer_->GetStickThreshold();
+    if (inputMapper_->IsPressed(SelectInputEnum::Left) ||
+        inputMapper_->GetVector(SelectInputEnum::Left) < -threshold) {
 
         direction = LR::LEFT;
     }
-    if (inputMapper_->GetVector(SelectInputEnum::Right) > threshold) {
+    if (inputMapper_->IsPressed(SelectInputEnum::Right) ||
+        inputMapper_->GetVector(SelectInputEnum::Right) > threshold) {
 
-        direction = LR::RIGHT;
+        direction = (direction == LR::LEFT ? LR::NONE : LR::RIGHT);
     }
 
-    // ニュートラル状態でないときのみ入力できる
-    if (direction != LR::NONE && !stickLatched_) {
-        // 左入力
-        if (direction == LR::LEFT) {
-
-            stageDrawer_->SetPrevFocus();
-        }
-        // 右入力
-        else if (direction == LR::RIGHT) {
-
-            stageDrawer_->SetNextFocus();
-        }
-
-        // ニュートラルに戻るまで処理できないようにする
-        stickLatched_ = true;
-        stickDirection_ = direction;
-    }
-
-    // 何も入力が取得されなければ再入力可能にする
+    // ニュートラルに戻ったら状態リセット
     if (direction == LR::NONE) {
 
-        stickLatched_ = false;
-        stickDirection_ = LR::NONE;
+        holdDirection_ = LR::NONE;
+        isRepeating_ = false;
+        return;
+    }
+
+    // 連続入力判定をしていないとき
+    if (!isRepeating_) {
+
+        holdTimer_.Update();
+        if (holdTimer_.IsFinishedNow() || holdTimer_.IsFinished()) {
+
+            InputTrigger(holdDirection_);
+            isRepeating_ = true;
+            repeatTimer_.Reset();
+            return;
+        }
+    }
+    // 連続入力中一定間隔で次のステージに進める
+    else {
+        repeatTimer_.Update();
+        if (repeatTimer_.IsFinishedNow() || repeatTimer_.IsFinished()) {
+
+            // 入力方向に動かしてリセット
+            InputTrigger(holdDirection_);
+            repeatTimer_.Reset();
+            return;
+        }
     }
 }
 

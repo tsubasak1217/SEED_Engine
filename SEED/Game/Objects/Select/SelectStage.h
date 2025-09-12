@@ -48,16 +48,17 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-    // 入力状態
-    LR stickDirection_; // スティック入力
-    bool stickLatched_; // スティック入力暴発防止
-
     // 入力管理
     std::unique_ptr<InputMapper<SelectInputEnum>> inputMapper_;
 
     // ステージ描画を初期化
     std::unique_ptr<SelectStageDrawer> stageDrawer_;
 
+    // 連続入力用
+    LR holdDirection_ = LR::NONE;
+    bool isRepeating_ = false;
+    Timer holdTimer_;
+    Timer repeatTimer_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -35,6 +35,8 @@
         "y": 0.11372549086809158,
         "z": 0.6078431606292725
     },
+    "inputRepeatDelay_": 0.4000000059604645,
+    "inputRepeatInterval_": 0.11999999731779099,
     "isSameFontStageIndex_": false,
     "leftArrow_": {
         "anchorPoint": {
@@ -288,8 +290,8 @@
         "transform": {
             "rotate": 0.0,
             "scale": {
-                "x": 1.0022999048233032,
-                "y": 1.0022999048233032
+                "x": 1.199945092201233,
+                "y": 1.199945092201233
             },
             "translate": {
                 "x": 547.5,
@@ -308,5 +310,6 @@
             }
         }
     },
+    "stickThreshold_": 0.800000011920929,
     "tileScale_": 0.8999999761581421
 }

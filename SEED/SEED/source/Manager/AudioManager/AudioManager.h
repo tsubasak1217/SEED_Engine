@@ -76,6 +76,7 @@ public:// 初期化に関する関数
 public:// エンジンで利用できる関数
 
     static AudioHandle PlayAudio(const std::string& filename,bool loop,float volume = 1.0f,float time = 0.0f);
+    static AudioHandle GetAudioHandle(const std::string& filename);
     static void EndAudio(AudioHandle handle);
     static void EndAllAudio();
     static void PauseAudio(AudioHandle handle);
@@ -84,6 +85,7 @@ public:// エンジンで利用できる関数
     static void RestartAll();
     static void SetAudioVolume(AudioHandle handle, float volume);
     static bool IsPlayingAudio(AudioHandle handle);
+    static bool IsPlayingAudio(const std::string& filename);
     static void LoadAudio(const std::string& filename);
     static void UnloadAudio(const std::string& filename);
     static void UnloadAllAudio();
@@ -111,6 +113,7 @@ private:
     std::unordered_map<AudioHandle, bool>isPlaying_;
     std::unordered_map<AudioHandle, float>volumeMap_;
     std::unordered_map < AudioHandle, bool> isAlreadyPaused_;
+    std::unordered_map<std::string, AudioHandle> filenameToHandle_;
 
 private:
     static const std::string directoryPath_;

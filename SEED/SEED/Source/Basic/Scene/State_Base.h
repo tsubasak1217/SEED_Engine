@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cstdint>
 
 class Scene_Base;
 
@@ -20,4 +21,7 @@ public:
 
 protected:
     Scene_Base* pScene_ = nullptr;
+
+    static inline uint32_t noneBGMHandle_ = 0;
+    static inline uint32_t holoBGMHandle_ = 0;
 };

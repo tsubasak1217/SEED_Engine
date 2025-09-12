@@ -76,7 +76,6 @@ public:
     // ポーズ中か
     bool IsPaused() const { return isPaused_; }
     void SetPaused(bool flag) { isPaused_ = flag; }
-    void SetTouchLaser(bool flag) { istouchedLaser_ = flag; }
     void SetDeadState();
 
     // 入力検知

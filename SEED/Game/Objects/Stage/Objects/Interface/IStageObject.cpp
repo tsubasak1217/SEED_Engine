@@ -5,7 +5,16 @@
 //============================================================================
 
 void IStageObject::AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing, uint32_t colum) {
-    
+
+    // 空白ブロックに重なっている
+    if (isSetStopAppearance_) {
+
+        commonScale_ = 0.0f;
+        sprite_.transform.scale = 0.0f;
+        owner_->SetWorldScale(0.0f);
+        return;
+    }
+
     // 出現時はマスター倍率更新を掛けない
     masterScaleOrder_ = false;
 

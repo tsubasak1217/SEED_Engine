@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Lib/Structs/Sprite.h>
 
 //============================================================================
@@ -72,7 +73,7 @@ Vector2 LaserHelper::GetAxisFromDirection(DIRECTION4 direction) {
 void LaserHelper::UpdateLaserSprite(Sprite& sprite, float sizeExtendSpeed) {
 
     // サイズを伸ばす
-    sprite.size.y += sizeExtendSpeed;
+    sprite.size.y += sizeExtendSpeed * ClockManager::DeltaTime();
 }
 
 float LaserHelper::ComputeFrontDistance(DIRECTION4 direction, const Vector2& translate,

@@ -25,10 +25,6 @@ Scene_Game::~Scene_Game() {
     Finalize();
     SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
-
-    // 全て停止させる
-    AudioManager::EndAudio(noneBGMHandle_);
-    AudioManager::EndAudio(holoBGMHandle_);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -95,12 +91,6 @@ void Scene_Game::Initialize() {
     // Audio の 初期化
     ////////////////////////////////////////////////////
 
-    // ホログラムハンドルだけもらう
-    holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
-    AudioManager::EndAudio(holoBGMHandle_);
-    // 最初は通常BGMを再生
-    noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-    isCurrentHologram_ = false;
 
     ////////////////////////////////////////////////////
     //  他クラスの情報を必要とするクラスの初期化
@@ -154,30 +144,6 @@ void Scene_Game::Update() {
 
     stage_->Edit();
     SceneEdit();
-
-    //========================================================================
-    //	Audio
-    //========================================================================
-
-    // 状態が切り替わったら
-    if (isCurrentHologram_ != stage_->IsCurrentHologram()) {
-
-        // 通常
-        if (!stage_->IsCurrentHologram()) {
-
-            // 通常BGMを流してホログラムBGMを停止
-            noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-            AudioManager::EndAudio(holoBGMHandle_);
-        }
-        // ホログラム
-        else {
-
-            // ホログラムBGMを流して通常BGMを停止
-            holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
-            AudioManager::EndAudio(noneBGMHandle_);
-        }
-        isCurrentHologram_ = stage_->IsCurrentHologram();
-    }
 
     //ステートクラス内の遷移処理を実行
     ManageState();

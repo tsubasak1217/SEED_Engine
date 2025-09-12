@@ -31,6 +31,9 @@ bool MenuBarGamePadInput::IsPressed(PauseMenuInputAction button) const {
     case PauseMenuInputAction::Enter: {
         return Input::IsPressPadButton(PAD_BUTTON::A);
     }
+    case PauseMenuInputAction::Reset: {
+        return Input::IsPressPadButton(PAD_BUTTON::BACK);
+    }
     }
     return false;
 }
@@ -43,6 +46,9 @@ bool MenuBarGamePadInput::IsTriggered(PauseMenuInputAction button) const {
     }
     case PauseMenuInputAction::Enter: {
         return Input::IsTriggerPadButton(PAD_BUTTON::A);
+    }
+    case PauseMenuInputAction::Reset: {
+        return Input::IsTriggerPadButton(PAD_BUTTON::BACK);
     }
     }
     return false;

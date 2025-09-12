@@ -207,10 +207,25 @@ AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, floa
 
     // 再生フラグを立てる
     instance_->isPlaying_[handle] = true;
+    // ファイル名を記録
+    instance_->filenameToHandle_[filename] = handle;
+
 
     return handle;
 }
 
+/// <summary>
+/// 再生中の音声ハンドルをファイル名から取得する関数
+/// </summary>
+/// <param name="filename">ファイル名</param>
+/// <param name="loop">ループ可否</param>
+AudioHandle AudioManager::GetAudioHandle(const std::string& filename){
+
+    if (instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()) {
+        return UINT32_MAX;
+    }
+    return instance_->filenameToHandle_[filename];
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -241,6 +256,15 @@ void AudioManager::EndAudio(AudioHandle handle){
     instance_->sourceVoices_.erase(handle);
     instance_->isPlaying_.erase(handle);
     instance_->volumeMap_.erase(handle);
+
+    // ファイル名マッピングを削除
+    for (auto it = instance_->filenameToHandle_.begin(); it != instance_->filenameToHandle_.end();) {
+        if (it->second == handle) {
+            it = instance_->filenameToHandle_.erase(it);
+        } else {
+            ++it;
+        }
+    }
 
     assert(SUCCEEDED(hr));
 }
@@ -357,6 +381,20 @@ bool AudioManager::IsPlayingAudio(AudioHandle handle){
 
     // 再生しているかどうか返す
     return instance_->isPlaying_[handle];
+}
+
+/// <summary>
+/// 音声が再生中かどうか取得
+/// </summary>
+/// <param name="filename">ファイル名</param>
+/// <returns>音声が再生されているか</returns>
+bool AudioManager::IsPlayingAudio(const std::string& filename){
+
+    if (instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()) {
+        return false;
+    }
+    AudioHandle handle = instance_->filenameToHandle_[filename];
+    return IsPlayingAudio(handle);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

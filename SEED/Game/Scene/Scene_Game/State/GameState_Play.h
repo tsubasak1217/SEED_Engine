@@ -5,6 +5,7 @@
 
 #include <SEED/Lib/Input/InputMapper.h>
 #include <Game/Scene/Input/PauseMenuInputActionEnum.h>
+#include <Game/Objects/Transition/NextStageTransition.h>
 
 class GameState_Play : public State_Base{
 public:
@@ -25,4 +26,19 @@ public:
 private:
 
     std::unique_ptr<InputMapper<PauseMenuInputAction>> menuBarInputMapper_;
+
+    // Audios
+    const float kBGMVolume_ = 0.16f;
+    // 現在ホログラム状態か
+    bool isCurrentHologram_;
+    bool isSameScene_;
+
+    // transition
+    Timer nextStageTimer_ = Timer(0.5f);
+    Vector4 color_ = MyMath::FloatColor(238, 106, 2, 255, false);
+    float nextStageTime_ = 0.6f;
+    bool isResetStage_ = false;
+    // parameters
+    float stripHeight_ = 40.0f;
+    float appearEndTimeT_ = 0.32f;
 };

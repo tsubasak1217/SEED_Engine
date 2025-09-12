@@ -35,6 +35,9 @@ bool MenuBarKeyInput::IsPressed(PauseMenuInputAction button) const {
     case PauseMenuInputAction::Enter: {
         return Input::IsPressKey({ DIK_SPACE });
     }
+    case PauseMenuInputAction::Reset: {
+        return Input::IsPressKey({ DIK_R });
+    }
     }
     return false;
 }
@@ -46,6 +49,9 @@ bool MenuBarKeyInput::IsTriggered(PauseMenuInputAction button) const {
     }
     case PauseMenuInputAction::Enter: {
         return Input::IsTriggerKey({ DIK_SPACE });
+    }
+    case PauseMenuInputAction::Reset: {
+        return Input::IsTriggerKey({ DIK_R });
     }
     }
     return false;

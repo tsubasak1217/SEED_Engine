@@ -16,7 +16,8 @@ void Laser::Initialize() {
     // スプライトの初期化
     sprite_ = Sprite("Scene_Game/StageObject/laser.png");
     sprite_.anchorPoint = Vector2(0.5f, 1.0f);
-    sprite_.blendMode = BlendMode::ADD;
+    sprite_.size.x *= 0.9f;
+    sprite_.layer = 10;
 
     // 初期化値
     warpParam_.isHit = false;
@@ -89,7 +90,7 @@ void Laser::UpdateExtend() {
         return;
     }
 
-    sizeExtendSpeed_ = 18.0f;
+    sizeExtendSpeed_ = 1440.0f;
 
     // オブジェクトに衝突するまで伸びつ続ける
     LaserHelper::UpdateLaserSprite(sprite_, sizeExtendSpeed_);

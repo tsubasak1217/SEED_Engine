@@ -193,16 +193,17 @@ void GameState_Play::ManageState() {
     if (Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_)) {
         if (GameStage* stage = gameScene->GetStage()) {
             if (!stage->IsClear()) {
-                if (menuBarInputMapper_->IsTriggered(PauseMenuInputAction::Reset)) {
-
+                if(menuBarInputMapper_->IsTriggered(PauseMenuInputAction::Reset)){
                     // 遷移処理を開始する
-                    isResetStage_ = true;
-                    NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
-                    transition->SetParam(stripHeight_, appearEndTimeT_, color_);
-                    transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+                    if(!isResetStage_){
+                        isResetStage_ = true;
+                        NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+                        transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+                        transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
 
-                    const float kSEVolume = 0.24f;
-                    AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
+                        const float kSEVolume = 0.24f;
+                        AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
+                    }
                 }
             }
         }

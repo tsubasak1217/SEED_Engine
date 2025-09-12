@@ -150,14 +150,16 @@ void Scene_Title::Update(){
             nextSceneEnterTime = nextSceneStartTime_;
         }
 
-        isExitScene_ = true;
-        HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
-        transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
-        transition->StartTransition(transisitionTimer_.GetDuration(), nextSceneEnterTime);
+        if(!isExitScene_){
+            isExitScene_ = true;
+            HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+            transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+            transition->StartTransition(transisitionTimer_.GetDuration(), nextSceneEnterTime);
 
-        // SE
-        const float kSEVolume = 0.24f;
-        AudioManager::PlayAudio(AudioDictionary::Get("タイトル_決定"), false, kSEVolume);
+            // SE
+            const float kSEVolume = 0.24f;
+            AudioManager::PlayAudio(AudioDictionary::Get("タイトル_決定"), false, kSEVolume);
+        }
     }
 
 

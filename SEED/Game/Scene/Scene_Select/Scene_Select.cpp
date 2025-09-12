@@ -97,11 +97,14 @@ void Scene_Select::Update(){
     }
     // タイトルに戻るかチェック
     if(selectStage_->IsReturnScene()){
-        isBackToTitle_ = true;
-
-        BlockSlideTransition* transition = SceneTransitionDrawer::AddTransition<BlockSlideTransition>();
-        transition->SetQuadInfo(96.0f, quadColors_);
-        transition->StartTransition(backToTitleTimer_.GetDuration(), titleSceneStartTime_);
+        if(!selectStage_->IsDecideStage()){
+            if(!isBackToTitle_){
+                isBackToTitle_ = true;
+                BlockSlideTransition* transition = SceneTransitionDrawer::AddTransition<BlockSlideTransition>();
+                transition->SetQuadInfo(96.0f, quadColors_);
+                transition->StartTransition(backToTitleTimer_.GetDuration(), titleSceneStartTime_);
+            }
+        }
     }
 
     if(isBackToTitle_){

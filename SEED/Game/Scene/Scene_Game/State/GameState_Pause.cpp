@@ -283,23 +283,27 @@ void GameState_Pause::ManageState() {
                 AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_リトライ"), false, kSEVolume);
 
                 // 遷移処理を開始する
-                isResetStage_ = true;
-                NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
-                transition->SetParam(stripHeight_, appearEndTimeT_, color_);
-                transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+                if(!isResetStage_){
+                    isResetStage_ = true;
+                    NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+                    transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+                    transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+                }
                 return;
             }
             case 2:// セレクトへ戻る
             {
                 // シーン遷移を生成して開始
-                isExitScene_ = true;
-                HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
-                transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
-                transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
+                if(!isExitScene_){
+                    isExitScene_ = true;
+                    HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+                    transition->SetHexagonInfo(hexagonSize_, hexagonColors_);
+                    transition->StartTransition(sceneChangeTimer_.GetDuration(), nextSceneEnterTime_);
 
-                // SE
-                const float kSEVolume = 0.5f;
-                AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_セレクトへ"), false, kSEVolume);
+                    // SE
+                    const float kSEVolume = 0.5f;
+                    AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_セレクトへ"), false, kSEVolume);
+                }
 
                 break;
             }

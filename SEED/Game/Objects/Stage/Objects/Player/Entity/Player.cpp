@@ -173,6 +173,11 @@ void Player::Update(){
     CollisionOrderToManager();
 
     prevDirection_ = moveDirection_;
+
+    if(isTouchingGoal_){
+        IncreaseGoalTouchTime();
+        isTouchingGoal_ = false;
+    }
 }
 
 void Player::UpdateMoveDirection(){

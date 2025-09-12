@@ -57,6 +57,7 @@ public:
     LR GetPrevDirection() const { return prevDirection_; }
 
     // クリア判定
+    void SetIsTouchingGoal(bool flag){ isTouchingGoal_ = flag; }
     void IncreaseGoalTouchTime() { goalTouchTime_ += ClockManager::DeltaTime(); }
     void ResetGoalTouchTime() { goalTouchTime_ = 0.0f; }
     float GetGoalT()const { return std::clamp(goalTouchTime_ / requiredGoalTime_, 0.0f, 1.0f); }
@@ -125,6 +126,7 @@ private:
     std::unique_ptr<PlayerStateController> stateController_;
 
     // ゴールに関わる変数
+    bool isTouchingGoal_ = false; // ゴールに触れているか
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 1.4f; // ゴールに触れてからクリアになるまでの時間
 

@@ -93,7 +93,7 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
 
         // ゴールに触れている場合
         if (other->GetObjectType() == ObjectType::Goal) {
-            player->IncreaseGoalTouchTime();
+            player->SetIsTouchingGoal(true);
 
             // ステージクリア処理
             if (player->IsClearStage()) {

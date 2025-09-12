@@ -44,13 +44,13 @@ void GameState_Pause::Initialize() {
         // 基本初期化
         pauseItems_[i].backSprite = Sprite("UI/menuItem.png");
         pauseItems_[i].backSprite.size = { 200.0f, 50.0f };
-        pauseItems_[i].backSprite.layer = 20;
+        pauseItems_[i].backSprite.layer = 21;
         pauseItems_[i].backSprite.anchorPoint = { 0.5f, 0.5f };
         pauseItems_[i].backSprite.isApplyViewMat = false;
 
         // テキスト
         pauseItems_[i].text = TextBox2D("text");
-        pauseItems_[i].text.layer = 21;
+        pauseItems_[i].text.layer = 22;
         pauseItems_[i].text.isApplyViewMat = false;
 
         if (!data.empty()) {

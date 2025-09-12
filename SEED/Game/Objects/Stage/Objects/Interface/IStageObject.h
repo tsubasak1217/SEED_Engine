@@ -53,6 +53,7 @@ public:
 
     GameObject2D* GetOwner() const { return owner_; }
     const Timer& GetMasterScaleTimer() const { return masterScaleTimer_; }
+    bool IsStopAppearance() const { return isSetStopAppearance_; }
 
     // Collision
     virtual void OnCollisionEnter([[maybe_unused]] GameObject2D* other) {}

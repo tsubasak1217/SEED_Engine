@@ -168,6 +168,9 @@ void Warp::UpdateNone() {
                 }
             }
         }
+
+        bool check = isSetStopAppearance_;
+        check = false;
     }
 
     // 空、サイズ以上の場合は処理しない

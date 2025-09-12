@@ -311,16 +311,19 @@ void GameStageWarpController::ResetAllWarpLaserFlags() {
 bool GameStageWarpController::CheckWarpPairBothSides(uint32_t warpIndex) {
 
     // 両方のワープは存在しているかチェック
+    // インデックスが同じで空白ブロックに埋もれていない
     bool hasNone = false;
     for (const auto& warp : noneWarps_) {
-        if (warp->GetWarpIndex() == warpIndex) {
+        if (warp->GetWarpIndex() == warpIndex &&
+            !warp->IsStopAppearance()) {
             hasNone = true;
             break;
         }
     }
     bool hasHolo = false;
     for (const auto& warp : hologramWarps_) {
-        if (warp->GetWarpIndex() == warpIndex) {
+        if (warp->GetWarpIndex() == warpIndex &&
+            !warp->IsStopAppearance()) {
             hasHolo = true;
             break;
         }

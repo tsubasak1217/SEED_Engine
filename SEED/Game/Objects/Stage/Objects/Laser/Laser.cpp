@@ -67,6 +67,14 @@ bool Laser::IsStopAll() const {
 
 void Laser::Update() {
 
+    if (commonState_ == StageObjectCommonState::Hologram) {
+
+        sprite_.color = Vector4(0.0f, 0.0f, 1.0f, 0.0f);
+    } else {
+
+        sprite_.color = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+    }
+
     // 状態に応じて更新処理
     switch (currentState_) {
     case ILaserObject::State::Extend: {

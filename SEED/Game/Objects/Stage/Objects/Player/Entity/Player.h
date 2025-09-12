@@ -74,6 +74,9 @@ public:
     // 王冠を取ったか(クリア判定)
     bool IsGetCrown() const { return isGetCrown_; }
     void SetGetCrown(bool flag) { isGetCrown_ = flag; }
+    // ワープに触れたか
+    bool IsTouchedWarp() const{ return isTouchedWarp_; }
+
     // ポーズ中か
     bool IsPaused() const { return isPaused_; }
     void SetPaused(bool flag) { isPaused_ = flag; }
@@ -133,6 +136,9 @@ private:
     // 向いている方向
     LR moveDirection_;
     LR prevDirection_; // 前回のフレームで向いていた方向
+
+    // warpに触れたかどうか
+    bool isTouchedWarp_ = false;
 
     //--------- functions ----------------------------------------------------
 

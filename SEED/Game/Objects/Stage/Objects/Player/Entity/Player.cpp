@@ -178,6 +178,9 @@ void Player::Update(){
         IncreaseGoalTouchTime();
         isTouchingGoal_ = false;
     }
+
+    // ワープ接触フラグを毎回リセット
+    isTouchedWarp_ = false;
 }
 
 void Player::UpdateMoveDirection(){
@@ -466,6 +469,10 @@ void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other){
     } else{
 
         istouchedLaser_ = false;
+    }
+
+    if(other->GetObjectType() == ObjectType::Warp){
+        isTouchedWarp_ = true;
     }
 }
 

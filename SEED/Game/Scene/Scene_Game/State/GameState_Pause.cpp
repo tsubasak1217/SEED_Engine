@@ -130,8 +130,9 @@ void GameState_Pause::Update() {
         pauseItems_[i].backSprite.transform.scale = 1.0f + 0.2f * ease2;
         pauseItems_[i].text.transform.scale = pauseItems_[i].backSprite.transform.scale;
         pauseItems_[i].backSprite.color = pauseItems_[i].backColor;
-        pauseItems_[i].backSprite.color.w = 0.4f + 0.6f * t2;
-        pauseItems_[i].text.color.w = pauseItems_[i].backSprite.color.w;
+        pauseItems_[i].backSprite.color *= 0.2f + 0.8f * t2;
+        pauseItems_[i].backSprite.color.w = 1.0f;
+        pauseItems_[i].text.color = pauseItems_[i].backSprite.color;
     }
 
     // 終了遷移のタイマー更新

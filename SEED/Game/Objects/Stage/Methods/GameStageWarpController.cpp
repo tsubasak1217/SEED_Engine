@@ -207,6 +207,13 @@ void GameStageWarpController::UpdateWarping() {
             component->SetIsActive(true);
         }
     }
+
+    // warpできなくなる問題の対策
+    if(!player_->IsTouchedWarp()){
+        if(currentState_ == State::Warping){
+            currentState_ = State::WarpNotPossible;
+        }
+    }
 }
 
 void GameStageWarpController::UpdateWarpNotPossible() {

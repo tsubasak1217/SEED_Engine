@@ -304,8 +304,10 @@ void GameStage::SetIsPaused(bool isPaused) {
 
     isPaused_ = isPaused;
     if (isPaused_) {
-
+        SetIsActive(false);
         isReturnPaused_ = true;
+    } else{
+        SetIsActive(true);
     }
 }
 

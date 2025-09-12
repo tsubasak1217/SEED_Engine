@@ -179,16 +179,7 @@ void Scene_Game::Draw(){
     stage_->Draw();
 
     // UI描画
-    if(dynamic_cast<GameState_Play*>(currentState_.get())){
-        for(auto& uiSprite : uiSprites_){
-            uiSprite.first.Draw();
-        }
-
-        // UIテキスト描画
-        for(auto& uiText : uiTexts_){
-            uiText.first.Draw();
-        }
-    }
+    DrawUI();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -318,6 +309,31 @@ void Scene_Game::SceneEdit(){
     }
 
 #endif // _DEBUG
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//  UI描画
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Game::DrawUI(){
+
+    // UIタイマー更新
+    if(dynamic_cast<GameState_Play*>(currentState_.get())){
+        uiTimer_.Update();
+    } else{
+        uiTimer_.Update(-2.0f);
+    }
+
+
+    for(auto& uiSprite : uiSprites_){
+        uiSprite.first.color.w = uiTimer_.GetProgress();
+        uiSprite.first.Draw();
+    }
+
+    // UIテキスト描画
+    for(auto& uiText : uiTexts_){
+        uiText.first.color.w = uiTimer_.GetProgress();
+        uiText.first.Draw();
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

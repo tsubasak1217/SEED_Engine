@@ -1025,7 +1025,11 @@ void GameStage::StageNameDraw(){
     if(stageNameTimerArray_.IsFinished()){
 
         // タイマーを進める
-        afterBeginDisplayTimer_.Update();
+        if(!isPaused_ && currentState_ == State::Play){
+            afterBeginDisplayTimer_.Update();
+        } else{
+            afterBeginDisplayTimer_.Update(-2.0f);
+        }
 
         // 徐々に出現
         stageNameTextBox_.color.w = 0.6f * afterBeginDisplayTimer_.GetProgress();

@@ -45,7 +45,9 @@ private:
     // UI
     std::vector<std::pair<Sprite,bool>> uiSprites_;
     std::vector<std::pair<TextBox2D, bool>> uiTexts_;
+    Timer uiTimer_ = Timer(1.0f);
 private:
+    void DrawUI();
     void UIToJson();
     void UIFromJson();
 };

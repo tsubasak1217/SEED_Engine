@@ -1,3 +1,7 @@
 {
-    "stages": null
+    "stages": {
+        "0": {
+            "isClear": true
+        }
+    }
 }

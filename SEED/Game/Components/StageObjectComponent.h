@@ -14,6 +14,7 @@ class Player;
 //	StageObjectComponent class
 //============================================================================
 class StageObjectComponent : public IComponent {
+    friend class GameStage;
 public: 
     StageObjectComponent(GameObject2D* pOwner, const std::string& tagName = "");
     ~StageObjectComponent() = default;
@@ -73,6 +74,8 @@ private:
 
     // サイズを保持
     Vector2 mapSize_;
+    //
+    bool isAppearanceAnimation_ = true;
 
     //--------- functions ----------------------------------------------------
 

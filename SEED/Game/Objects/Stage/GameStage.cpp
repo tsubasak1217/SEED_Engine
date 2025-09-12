@@ -510,7 +510,9 @@ void GameStage::UpdateHologramAppearanceUpdateAnimation(){
     // ホログラム専用の更新処理
     for(const auto& object : hologramObjects_){
         if(StageObjectComponent* component = object->GetComponent<StageObjectComponent>()){
-
+            if(!component->isAppearanceAnimation_){
+                continue;
+            }
             component->AppearanceUpdateAnimation(blockAppearanceBaseDuration_,
                 blockAppearanceSpacing_, blockAppearanceEasing_);
         }

@@ -16,6 +16,8 @@
 //	IStageObject class
 //============================================================================
 class IStageObject {
+    friend class StageObjectComponent;
+    friend class GameStageBuilder;
 public:
     //========================================================================
     //	public Methods

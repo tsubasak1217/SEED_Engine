@@ -200,6 +200,7 @@ private:
     std::vector<int32_t> stageDifficulties_;
     std::array<Sprite,5> difficultyStars_; // 難易度の星
     Vector2 difficultyStarBasePos_;
+    TextBox2D difficultyText_;
     float starDrawRangeX_ = 300.0f;
 
     // 連続入力用
@@ -228,5 +229,5 @@ private:
     void DrawActivate(float f);
     void TriggerLeftArrowReact();
     void TriggerRightArrowReact();
-    void UpdateDifficultyStar();
+    void UpdateDifficultyDrawInfo();
 };

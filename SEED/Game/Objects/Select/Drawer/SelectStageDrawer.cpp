@@ -19,7 +19,7 @@
 //	SelectStageDrawer classMethods
 //============================================================================
 
-void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
+void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
 
     // ステージのデータを受け取る
     stages_.clear();
@@ -88,7 +88,7 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
     stageNameText_.transform.translate = stageNameTextTranslate_;
 }
 
-void SelectStageDrawer::SetNextFocus() {
+void SelectStageDrawer::SetNextFocus(){
 
     // 次のステージへフォーカスさせる
     if(stages_.size() <= focusIndex_ + 1){
@@ -201,7 +201,7 @@ void SelectStageDrawer::Update(){
     // 矢印の更新処理
     UpdateArrow();
     // 難易度の星の更新
-    UpdateDifficultyStar();
+    UpdateDifficultyDrawInfo();
 }
 
 void SelectStageDrawer::UpdateArrow(){
@@ -311,6 +311,9 @@ void SelectStageDrawer::Draw(){
         for(auto& star : difficultyStars_){
             star.Draw();
         }
+
+        // 難易度テキスト
+        difficultyText_.Draw();
     }
 }
 
@@ -525,12 +528,19 @@ void SelectStageDrawer::Edit(){
                 ImGui::DragFloat("starDrawRangeX", &starDrawRangeX_, 1.0f);
                 ImGui::Text("--StarSprite--");
                 difficultyStars_[0].Edit();
+                ImGui::SeparatorText("difficultyText");
+                if(ImGui::CollapsingHeader("difficultyText")){
+                    ImGui::Indent();
+                    difficultyText_.Edit();
+                    ImGui::Unindent();
+                }
+
                 ImGui::Unindent();
             }
         }
         ImGui::Unindent();
     }
-    if (ImGui::CollapsingHeader("Input Hold")) {
+    if(ImGui::CollapsingHeader("Input Hold")){
 
         ImGui::DragFloat("repeatInterval", &inputRepeatInterval_, 0.01f);
         ImGui::DragFloat("repeatInitialDelay", &inputRepeatDelay_, 0.01f);
@@ -593,24 +603,29 @@ void SelectStageDrawer::ApplyJson(){
     stickThreshold_ = data.value("stickThreshold_", 0.1f);
 
     stageNames_.clear();
-    if (data.contains("stageNames") && data["stageNames"].is_array()) {
-        for (auto& name : data["stageNames"]) if (name.is_string()) stageNames_.push_back(name.get<std::string>());
+    if(data.contains("stageNames") && data["stageNames"].is_array()){
+        for(auto& name : data["stageNames"]) if(name.is_string()) stageNames_.push_back(name.get<std::string>());
     }
 
-    if (data.contains("stageNameText_.fontName")) {
+    if(data.contains("stageNameText_.fontName")){
         stageNameText_.SetFont(data["stageNameText_.fontName"]);
     }
 
     stageDifficulties_.clear();
-    if (data.contains("stageDifficulties") && data["stageDifficulties"].is_array()) {
-        for (auto& diff : data["stageDifficulties"]) if (diff.is_number_integer()) stageDifficulties_.push_back(diff.get<int32_t>());
+    if(data.contains("stageDifficulties") && data["stageDifficulties"].is_array()){
+        for(auto& diff : data["stageDifficulties"]) if(diff.is_number_integer()) stageDifficulties_.push_back(diff.get<int32_t>());
     }
-    if (data.contains("difficultyStarBasePos")) difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
-    if (data.contains("starDrawRangeX"))        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
-    if (data.contains("starSprite")) {
-        for (auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
-    } else {
-        for (auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
+    if(data.contains("difficultyStarBasePos")) difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
+    if(data.contains("starDrawRangeX"))        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
+    if(data.contains("difficultyText")){
+        difficultyText_.LoadFromJson(data["difficultyText"]);
+    } else{
+        difficultyText_ = TextBox2D("");
+    }
+    if(data.contains("starSprite")){
+        for(auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
+    } else{
+        for(auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
     }
 
     //ステージがクリア済みかチェック
@@ -693,6 +708,7 @@ void SelectStageDrawer::SaveJson(){
         data["difficultyStarBasePos"] = difficultyStarBasePos_;
         data["starDrawRangeX"] = starDrawRangeX_;
         data["starSprite"] = difficultyStars_[0].ToJson(); // 全て同じなので1つだけ保存
+        data["difficultyText"] = difficultyText_.GetJsonData();
     }
 
     JsonAdapter::Save("SelectScene/selectStageDrawer.json", data);
@@ -937,7 +953,7 @@ void SelectStageDrawer::TriggerRightArrowReact(){
     rightArrowReactTimer_.Reset();
 }
 
-void SelectStageDrawer::UpdateDifficultyStar(){
+void SelectStageDrawer::UpdateDifficultyDrawInfo(){
 
     static float motionTimer = 0.0f;
     Vector2 minPos = difficultyStarBasePos_ - Vector2(starDrawRangeX_ * 0.5f, 0.0f);
@@ -962,6 +978,27 @@ void SelectStageDrawer::UpdateDifficultyStar(){
             difficultyStars_[i].color = Vector4(1.0f, 1.0f, 1.0f, 0.1f);
             difficultyStars_[i].transform.scale = Vector2(1.0f);
         }
+    }
+
+    switch(stages_[focusIndex_].difficulty){
+    case 1:
+        difficultyText_.text ="カンタン";
+        break;
+    case 2:
+        difficultyText_.text = "カンタン";
+        break;
+    case 3:
+        difficultyText_.text = "フツウ";
+        break;
+    case 4:
+        difficultyText_.text = "ムズカシイ";
+        break;
+    case 5:
+        difficultyText_.text = "ゲキムズ";
+        break;
+    default:
+        difficultyText_.text = "EROOR";
+        break;
     }
 
     motionTimer += ClockManager::DeltaTime();

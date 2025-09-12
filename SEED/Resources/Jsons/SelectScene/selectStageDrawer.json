@@ -16,7 +16,53 @@
     },
     "difficultyStarBasePos": {
         "x": 645.0,
-        "y": 616.0
+        "y": 637.0
+    },
+    "difficultyText": {
+        "align": 1,
+        "anchorPos": {
+            "x": 0.5,
+            "y": 0.5
+        },
+        "blendMode": 3,
+        "color": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+        "fontSize": 32.0,
+        "glyphSpacing": 8.0,
+        "isApplyViewMat": false,
+        "layer": 0,
+        "lineSpacing": 8.0,
+        "outlineColor": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.2316603660583496
+        },
+        "outlineSplitCount": 16,
+        "outlineWidth": 2.0,
+        "size": {
+            "x": 347.0,
+            "y": 64.0
+        },
+        "text": "カンタン",
+        "textBoxVisible": false,
+        "transform": {
+            "rotate": 0.0,
+            "scale": {
+                "x": 1.0,
+                "y": 1.0
+            },
+            "translate": {
+                "x": 640.0,
+                "y": 605.0
+            }
+        },
+        "useOutline": true
     },
     "endZoomEasing_": "OutExpo",
     "endZoomTimer_.duration": 1.9199999570846558,
@@ -271,10 +317,10 @@
             "y": 0.0
         },
         "color": {
-            "w": 1.0,
-            "x": 1.0,
-            "y": 0.5731589794158936,
-            "z": 0.037028517574071884
+            "w": 3.6199698448181152,
+            "x": 3.6199698448181152,
+            "y": 2.0748181343078613,
+            "z": 0.13404211401939392
         },
         "drawLocation": 2,
         "flipX": false,
@@ -290,12 +336,12 @@
         "transform": {
             "rotate": 0.0,
             "scale": {
-                "x": 1.199945092201233,
-                "y": 1.199945092201233
+                "x": 1.0523993968963623,
+                "y": 1.0523993968963623
             },
             "translate": {
                 "x": 547.5,
-                "y": 616.0
+                "y": 637.0
             }
         },
         "uvTransform": {

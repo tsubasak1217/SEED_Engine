@@ -451,6 +451,7 @@ void GameStage::UpdateBorderLine(){
 
         // ワープを再検討させる
         laserController_->ResetWarpIgnore();
+
     } else if(borderLine_->CanTransitionDisable(player_->GetSprite().transform.translate,
         stageObjectMapTileSize_)){
 
@@ -1121,40 +1122,8 @@ void GameStage::UpdateRemoveUI(){
     removeUI_TextBox.transform.translate = removeUI_.transform.translate + Vector2(offset, 0.0f);
     removeUI_TextBox.color.w = removeUI_.color.w;
 
-    // 揺れの更新
-    //ShakeRemoveUI();
 }
 
-//void GameStage::ShakeRemoveUI() {
-//
-//    if (borderLine_->IsShaking() == false) return;
-//
-//    if (removeUITimer_.GetPrevProgress() == 0.0f) {
-//        return;
-//    }
-//
-//     shakeStartPosX_ = player_->GetOwner()->GetWorldTranslate().x - removeUI_.size.x * 0.25f * removeUI_.transform.scale.x;
-//     float offset = removeUI_.size.x * removeUI_.transform.scale.x;
-//
-//    if (!removeUIShakeTimer_.IsFinished()) {
-//        removeUIShakeTimer_.Update();
-//
-//        float decay = 1.0f - removeUIShakeTimer_.GetProgress();
-//
-//        float wave = std::sin(removeUIShakeTimer_.GetProgress() * 100.0f);
-//
-//        removeUI_.transform.translate.x = shakeStartPosX_ + wave * shakeAmount_ * decay;
-//       
-//        removeUI_TextBox.transform.translate.x = removeUI_.transform.translate.x + offset;
-//    } else {
-//        // 揺れ終了
-//        removeUI_.transform.translate.x = shakeStartPosX_;
-//        removeUI_TextBox.transform.translate.x = removeUI_.transform.translate.x + offset;
-//
-//        removeUIShakeTimer_.Reset();
-//    }
-//
-//}
 
 /////////////////////////////////////////////////////////////////////////
 //

@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"3001_TwiniwT_1.2";
+std::wstring SEED::windowTitle_ = L"3001_TwiniwT_1.3";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
 uint32_t SEED::windowBackColor_ = MyMath::IntColor(27,27,27,255);
 

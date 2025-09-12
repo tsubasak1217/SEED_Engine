@@ -112,6 +112,17 @@ void SelectStage::UpdateSelectInput() {
         return;
     }
 
+    if (direction != holdDirection_) {
+        InputTrigger(direction);
+        holdDirection_ = direction;
+        isRepeating_ = false;
+        holdTimer_.duration = stageDrawer_->GetRepeatDelay();
+        repeatTimer_.duration = stageDrawer_->GetRepeatInterval();
+        holdTimer_.Reset();
+        repeatTimer_.Reset();
+        return;
+    }
+
     // 連続入力判定をしていないとき
     if (!isRepeating_) {
 

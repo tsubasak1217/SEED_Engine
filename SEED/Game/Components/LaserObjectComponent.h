@@ -112,6 +112,8 @@ private:
     // 無効ワープの記録
     bool ignoreWarpUntilExit_ = false;
     uint32_t ignoreWarpIndex_;
+    // 1番近いワープ
+    float nearestWarpDistance_ = 0.0f;
 
     //--------- functions ----------------------------------------------------
 

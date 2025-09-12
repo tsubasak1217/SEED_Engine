@@ -223,19 +223,18 @@ void Player::SpriteMotion(){
     // 徐々に回転を戻す
     body_.transform.rotate *= 0.9f;
 
-    // 状態に応じた設定
+    // 時間
     static float motionTimer = 0.0f;
     static float landingTimer = 0.0f;
-    auto state = stateController_->GetCurrentState();
-
-    bool isMoving = stateController_->GetIsMoving();
 
     // 王冠取得後は移動状態を無効化する. ポーズ中も無効化
+    bool isMoving = stateController_->GetIsMoving();
     if(isGetCrown_ == true || isPaused_ == true){
         isMoving = false;
     }
 
-
+    // 状態に応じた設定
+    auto state = stateController_->GetCurrentState();
     if(state == PlayerState::Idle && !isMoving){
 
         static float waveRadius = 8.0f;
@@ -336,18 +335,20 @@ void Player::SpriteMotion(){
 
     // 着地した直後のアニメーション
     if(state != PlayerState::Jump){
-        //float landingT = std::clamp(landingTimer / 0.2f, 0.0f, 1.0f);
-        //if (landingT < 1.0f) {
-        //    float landingAnimationT = EaseOutBounce(EaseOutBounce(landingT));
-        //    body_.transform.scale.y *= (0.7f + (0.3f * landingAnimationT)) *ClockManager::TimeRate();
-        //    body_.transform.scale.x *= (1.15f - (0.15f * landingAnimationT)) * ClockManager::TimeRate();
-        //    body_.transform.translate.y += ((body_.size.y * 0.3f * landingAnimationT) * 0.5f) * ClockManager::TimeRate();
-        //}
+        float landingT = std::clamp(landingTimer / 0.2f, 0.0f, 1.0f);
+        Vector2 startScale = Vector2(1.3f, 0.5f);
+
+        if(landingT < 1.5f){
+            float landingAnimationT = EaseInOutBounce(landingT);
+            body_.transform.scale = MyMath::Lerp(startScale, Vector2(1.0f), landingAnimationT);
+        }
+
+        // timer更新(地面についている間)
+        landingTimer += ClockManager::DeltaTime();
     }
 
-    // 時間の更新
+    // timer更新
     motionTimer += ClockManager::DeltaTime();
-    landingTimer += ClockManager::DeltaTime();
 }
 
 void Player::CollisionOrderToManager(){
@@ -447,14 +448,14 @@ void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other){
 
 }
 
-void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other){
 
     // 1度当たったらアウト
-    if (istouchedLaser_) {
+    if(istouchedLaser_){
         return;
     }
 
-    if (other->GetObjectType() == ObjectType::Laser) {
+    if(other->GetObjectType() == ObjectType::Laser){
 
         istouchedLaser_ = true;
     } else{

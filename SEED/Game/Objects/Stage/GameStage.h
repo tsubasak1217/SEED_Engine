@@ -106,6 +106,7 @@ public:
 
     // ポーズ中かどうか
     bool GetIsPaused() const { return isPaused_; }
+    bool GetIsFirstUpdate() const { return isFirstUpdate; }
     void SetIsPaused(bool isPaused);
     void StartDeadGlitch();
 private:
@@ -130,7 +131,7 @@ private:
     bool isRemoveHologram_;      // ホログラムオブジェクトの削除を行うか
     bool requestInitialize_;     // 初期化依頼
     bool isClear_ = false;       // クリアしたかどうか
-    bool isPlayerDead_ = false; // プレイヤーが死んだかどうか
+    bool isPlayerDead_ = false;  // プレイヤーが死んだかどうか
     bool isPaused_ = false;      // ポーズ中かどうか
     bool isReturnPaused_ = false;
     int32_t difficulty_;         // 難易度

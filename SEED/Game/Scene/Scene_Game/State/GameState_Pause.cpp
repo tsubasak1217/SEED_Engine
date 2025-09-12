@@ -192,6 +192,12 @@ void GameState_Pause::BeginFrame() {
 //
 //////////////////////////////////////////////////////////////////////////////////
 void GameState_Pause::EndFrame() {
+
+    // 歩き音声が再生中なら止める
+    if (AudioManager::IsPlayingAudio(AudioDictionary::Get("プレイヤー_足音"))) {
+
+        AudioManager::EndAudio(AudioManager::GetAudioHandle(AudioDictionary::Get("プレイヤー_足音")));
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////

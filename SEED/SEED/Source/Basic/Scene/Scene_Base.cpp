@@ -76,3 +76,7 @@ bool Scene_Base::IsExistObject(uint32_t gameObjectandle)const{
 bool Scene_Base::IsExistObject2D(uint32_t gameObjectandle)const{
     return hierarchy_->IsExistObject2D(gameObjectandle);
 }
+
+void Scene_Base::SortObject2DByTranslate(ObjSortMode sortMode){
+    hierarchy_->SortObject2DByTranslate(sortMode);
+}

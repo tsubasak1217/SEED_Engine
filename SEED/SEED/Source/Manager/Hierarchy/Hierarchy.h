@@ -6,6 +6,15 @@
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
 
+enum class ObjSortMode{
+    AscendX,
+    DescendX,
+    AscendY,
+    DescendY,
+    AcsendZ,
+    DescendZ
+};
+
 class Hierarchy{
 
 public:
@@ -34,6 +43,7 @@ public:
 public:
     bool IsExistObject(uint32_t id) const;
     bool IsExistObject2D(uint32_t id) const;
+    void SortObject2DByTranslate(ObjSortMode sortMode);
 
 private:
     void RebuildParentInfo();

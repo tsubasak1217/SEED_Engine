@@ -233,6 +233,31 @@ bool Hierarchy::IsExistObject2D(uint32_t id) const{
 }
 
 /////////////////////////////////////////////////////////////////////
+// オブジェクトのソート
+/////////////////////////////////////////////////////////////////////
+void Hierarchy::SortObject2DByTranslate(ObjSortMode sortMode){
+    gameObjects2D_.sort([sortMode](const GameObject2D* a, const GameObject2D* b){
+
+        const Vector2& ta = a->GetWorldTranslate();
+        const Vector2& tb = b->GetWorldTranslate();
+
+        switch(sortMode){
+        case ObjSortMode::AscendX:
+            return ta.x < tb.x;
+        case ObjSortMode::DescendX:
+            return ta.x > tb.x;
+        case ObjSortMode::AscendY:
+            return ta.y < tb.y;
+        case ObjSortMode::DescendY:
+            return ta.y > tb.y;
+        default:
+            return false; // Zはここでは無視
+        }
+    }
+    );
+}
+
+/////////////////////////////////////////////////////////////////////
 // 親子関係の再構築
 /////////////////////////////////////////////////////////////////////
 void Hierarchy::RebuildParentInfo(){

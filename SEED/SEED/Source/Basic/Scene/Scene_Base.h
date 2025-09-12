@@ -30,6 +30,8 @@ public:
     void CauseEvent(EventState_Base* nextEventState);
     void EndEvent() { currentEventState_ = nullptr; };
     bool HasEvent(){ return currentEventState_ != nullptr; };
+
+public:// Hierarchy関連
     void RegisterToHierarchy(GameObject* gameObject);
     void RegisterToHierarchy(GameObject2D* gameObject);
     void RemoveFromHierarchy(GameObject* gameObject);
@@ -37,9 +39,12 @@ public:
     Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
     bool IsExistObject(uint32_t gameObjectHanle) const;
     bool IsExistObject2D(uint32_t gameObjectHanle) const;
+    void SortObject2DByTranslate(ObjSortMode sortMode);
 
+public:// 後で消す
     static inline int currentStageIndex_ = 0; // 現在のステージ番号
     static inline int maxStageCount_ = 0; // 最大ステージ数
+
 protected:
     std::unique_ptr<State_Base> currentState_;
     std::unique_ptr<EventState_Base> currentEventState_;

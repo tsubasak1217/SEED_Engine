@@ -678,6 +678,10 @@ void GameStage::PutBorderLine(){
     Range2D range = cameraAdjuster_.GetCameraRange();
     range.max.y = borderLine_->GetSprite().transform.translate.y - backDrawer_.GetHexagonSize() / 2.0f;
     backDrawer_.SetBorder(axisX, playerDirection, range);
+
+    // ヒエラルキーのオブジェクトの順番をY軸でソート
+    GameSystem::GetScene()->SortObject2DByTranslate(ObjSortMode::AscendY);
+
 }
 
 /////////////////////////////////////////////////////////////////////////

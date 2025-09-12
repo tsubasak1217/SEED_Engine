@@ -131,7 +131,7 @@ void Goal::CrownMotion(){
             sprite_.transform.translate.y = sprite_.transform.translate.y + std::sinf(motionTimer_ * 3.14f * 0.7f) * waveRadius;
         }
 
-        sprite_.layer = 0;
+        sprite_.layer = 13;
     }
 
     // 時間の更新

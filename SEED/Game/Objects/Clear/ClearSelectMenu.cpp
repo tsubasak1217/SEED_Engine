@@ -198,6 +198,7 @@ void ClearSelectMenu::Draw(){
         // 次のステージの難易度を表示
         if(items_[i].isNextStageItem){
             static Sprite star = Sprite("UI/star.png");
+            static TextBox2D difficultyText = TextBox2D("難易度");
             static bool initialized = false;
             static float motionTimer = 0.0f;
             static Timer scaleTimer = Timer(0.25f);
@@ -212,6 +213,21 @@ void ClearSelectMenu::Draw(){
                 star.anchorPoint = Vector2(0.5f);
                 star.isApplyViewMat = false;
                 star.size = Vector2(46.0f);
+
+                difficultyText.layer = 21;
+                difficultyText.isApplyViewMat = false;
+                difficultyText.fontSize = 28.0f;
+                difficultyText.size = Vector2(400.0f, difficultyText.fontSize);
+                difficultyText.anchorPos = Vector2(1.0f, 0.5f);
+                difficultyText.align = TextAlign::RIGHT;
+                difficultyText.SetFont("DefaultAssets/Digital/851Gkktt_005.ttf");
+                difficultyText.useOutline = true;
+                difficultyText.outlineWidth = 4.0f;
+                difficultyText.textBoxVisible = false;
+                difficultyText.glyphSpacing = 4.0f;
+                difficultyText.color = { 1.0f,1.0f,1.0f,0.8f };
+                difficultyText.outlineColor = {0.01f,0.01f,0.01f,1.0f};
+
                 initialized = true;
             }
 
@@ -231,6 +247,31 @@ void ClearSelectMenu::Draw(){
 
                 star.Draw();
             }
+
+            switch(nextStageDifficulty_){
+            case 1:
+                difficultyText.text = "カンタン";
+                break;
+            case 2:
+                difficultyText.text = "カンタン";
+                break;
+            case 3:
+                difficultyText.text = "フツウ";
+                break;
+            case 4:
+                difficultyText.text = "ムズカシイ";
+                break;
+            case 5:
+                difficultyText.text = "ゲキムズ";
+                break;
+            default:
+                difficultyText.text = "ERROR";
+                break;
+            }
+
+            difficultyText.transform.translate = star.transform.translate - Vector2(star.size.x * 0.7f, 0.0f);
+            difficultyText.transform.scale = Vector2(scaleTimer.GetProgress());
+            difficultyText.Draw();
 
             scaleTimer.Update(1.0f);
             motionTimer += ClockManager::DeltaTime();

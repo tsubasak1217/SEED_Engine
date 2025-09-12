@@ -110,6 +110,7 @@ void GameStage::Initialize(int currentStageIndex){
         stageNameTextBox_.transform.translate = kWindowCenter;
         stageNameTextBox_.layer = 26;
         stageNameTextBox_.isApplyViewMat = false;
+        stageNameTextBox_.textBoxVisible = false;
     }
 }
 

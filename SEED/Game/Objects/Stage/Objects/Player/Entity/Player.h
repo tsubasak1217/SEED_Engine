@@ -126,7 +126,7 @@ private:
 
     // ゴールに関わる変数
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
-    float requiredGoalTime_ = 2.0f; // ゴールに触れてからクリアになるまでの時間
+    float requiredGoalTime_ = 1.4f; // ゴールに触れてからクリアになるまでの時間
 
     // 向いている方向
     LR moveDirection_;

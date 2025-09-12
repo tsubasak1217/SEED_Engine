@@ -304,8 +304,13 @@ void GameState_Pause::ManageState() {
     }
 
     // セレクトシーンに遷移
+
     if (sceneChangeTimer_.IsFinished()) {
         pScene_->ChangeScene("Select");
+
+        // 音声をリセットする
+        AudioManager::EndAudio(noneBGMHandle_);
+        AudioManager::EndAudio(holoBGMHandle_);
         return;
     }
 

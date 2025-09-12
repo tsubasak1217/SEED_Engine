@@ -16,11 +16,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game() : Scene_Base() {
+Scene_Game::Scene_Game() : Scene_Base(){
     Input::SetIsActive(false);
 };
 
-Scene_Game::~Scene_Game() {
+Scene_Game::~Scene_Game(){
 
     Finalize();
     SEED::RemoveCamera("gameCamera");
@@ -33,7 +33,7 @@ Scene_Game::~Scene_Game() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize() {
+void Scene_Game::Initialize(){
 
     // パーティクルの初期化
     EffectSystem::DeleteAll();
@@ -47,7 +47,7 @@ void Scene_Game::Initialize() {
     // Playステートに初期化
     ChangeState(new GameState_Play(this));
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Initialize();
     }
 
@@ -104,7 +104,7 @@ void Scene_Game::Initialize() {
 
 }
 
-void Scene_Game::Finalize() {
+void Scene_Game::Finalize(){
     Scene_Base::Finalize();
 }
 
@@ -114,18 +114,18 @@ void Scene_Game::Finalize() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update() {
+void Scene_Game::Update(){
 
     /*======================= 各状態固有の更新 ========================*/
 
     // ヒエラルキー内のオブジェクトの更新
     hierarchy_->Update();
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Update();
     }
 
-    if (currentEventState_) {
+    if(currentEventState_){
         currentEventState_->Update();
     }
 
@@ -134,10 +134,10 @@ void Scene_Game::Update() {
     //========================================================================
     //	ステージ
     //========================================================================
-    if (dynamic_cast<GameState_Play*>(currentState_.get())) {
+    if(dynamic_cast<GameState_Play*>(currentState_.get())){
 
         stage_->Update();
-    } else {
+    } else{
 
         stage_->Update();
     }
@@ -155,15 +155,15 @@ void Scene_Game::Update() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw() {
+void Scene_Game::Draw(){
 
     /*======================= 各状態固有の描画 ========================*/
 
-    if (currentEventState_) {
+    if(currentEventState_){
         currentEventState_->Draw();
     }
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->Draw();
     }
 
@@ -179,13 +179,13 @@ void Scene_Game::Draw() {
     stage_->Draw();
 
     // UI描画
-    if (dynamic_cast<GameState_Play*>(currentState_.get())) {
-        for (auto& uiSprite : uiSprites_) {
+    if(dynamic_cast<GameState_Play*>(currentState_.get())){
+        for(auto& uiSprite : uiSprites_){
             uiSprite.first.Draw();
         }
 
         // UIテキスト描画
-        for (auto& uiText : uiTexts_) {
+        for(auto& uiText : uiTexts_){
             uiText.first.Draw();
         }
     }
@@ -196,18 +196,18 @@ void Scene_Game::Draw() {
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame() {
+void Scene_Game::BeginFrame(){
 
     // ヒエラルキー内のオブジェクトの描画
     hierarchy_->BeginFrame();
 
     // 現在のステートがあればフレーム開始処理を行う
-    if (currentState_) {
+    if(currentState_){
         currentState_->BeginFrame();
     }
 
     // 入力デバイスが変更されたらUIを再読み込み
-    if (Input::IsChangedInputDevice()) {
+    if(Input::IsChangedInputDevice()){
         UIFromJson();
     }
 }
@@ -218,7 +218,7 @@ void Scene_Game::BeginFrame() {
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame() {
+void Scene_Game::EndFrame(){
 
     // シーン開始時にホログラムオブジェクトの削除を行う
     stage_->RemoveBorderLine();
@@ -228,7 +228,7 @@ void Scene_Game::EndFrame() {
     hierarchy_->EndFrame();
 
     // 現在のステートがあればフレーム終了処理を行う
-    if (currentState_) {
+    if(currentState_){
         currentState_->EndFrame();
     }
 }
@@ -239,9 +239,9 @@ void Scene_Game::EndFrame() {
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::HandOverColliders() {
+void Scene_Game::HandOverColliders(){
 
-    if (currentState_) {
+    if(currentState_){
         currentState_->HandOverColliders();
     }
 }
@@ -251,29 +251,29 @@ void Scene_Game::HandOverColliders() {
 //  編集関数
 // 
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::SceneEdit() {
+void Scene_Game::SceneEdit(){
 #ifdef _DEBUG
     ImFunc::CustomBegin("Scene_Game", MoveOnly_TitleBar);
     {
 
-        if (ImGui::Button("Add UI")) {
+        if(ImGui::Button("Add UI")){
             uiSprites_.push_back({ Sprite("UI/buttons.png"), false });
         }
 
-        if (ImGui::Button("Add UIText")) {
+        if(ImGui::Button("Add UIText")){
             uiTexts_.push_back({ TextBox2D("Text"), false });
         }
 
         ImGui::Separator();
 
         ImGui::Text("UI一覧");
-        for (int i = 0; i < uiSprites_.size(); i++) {
-            if (ImGui::CollapsingHeader(("UI" + std::to_string(i)).c_str())) {
+        for(int i = 0; i < uiSprites_.size(); i++){
+            if(ImGui::CollapsingHeader(("UI" + std::to_string(i)).c_str())){
                 ImGui::Indent();
                 uiSprites_[i].first.Edit();
 
                 ImGui::Text("削除");
-                if (ImGui::Button("Delete")) {
+                if(ImGui::Button("Delete")){
                     uiSprites_[i].second = true;
                     break;
                 }
@@ -284,12 +284,12 @@ void Scene_Game::SceneEdit() {
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Text("UIText一覧");
-        for (int i = 0; i < uiTexts_.size(); i++) {
-            if (ImGui::CollapsingHeader(("UIText" + std::to_string(i)).c_str())) {
+        for(int i = 0; i < uiTexts_.size(); i++){
+            if(ImGui::CollapsingHeader(("UIText" + std::to_string(i)).c_str())){
                 ImGui::Indent();
                 uiTexts_[i].first.Edit();
                 ImGui::Text("削除");
-                if (ImGui::Button("Delete")) {
+                if(ImGui::Button("Delete")){
                     uiTexts_[i].second = true;
                     break;
                 }
@@ -299,10 +299,10 @@ void Scene_Game::SceneEdit() {
 
         // 削除フラグが立っているものを削除
         uiSprites_.erase(std::remove_if(uiSprites_.begin(), uiSprites_.end(),
-            [](const std::pair<Sprite, bool>& item) { return item.second; }),
+            [](const std::pair<Sprite, bool>& item){ return item.second; }),
             uiSprites_.end());
         uiTexts_.erase(std::remove_if(uiTexts_.begin(), uiTexts_.end(),
-            [](const std::pair<TextBox2D, bool>& item) { return item.second; }),
+            [](const std::pair<TextBox2D, bool>& item){ return item.second; }),
             uiTexts_.end());
 
         ImGui::Spacing();
@@ -310,7 +310,7 @@ void Scene_Game::SceneEdit() {
         ImGui::Spacing();
 
         // json保存
-        if (ImGui::Button("UI to json")) {
+        if(ImGui::Button("UI to json")){
             UIToJson();
         }
 
@@ -323,42 +323,47 @@ void Scene_Game::SceneEdit() {
 /////////////////////////////////////////////////////////////////////////////////////////
 // json
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::UIToJson() {
+void Scene_Game::UIToJson(){
     nlohmann::json data;
 
-    for (auto& uiSprite : uiSprites_) {
+    for(auto& uiSprite : uiSprites_){
         data["Sprites"].push_back(uiSprite.first.ToJson());
     }
 
-    for (auto& uiText : uiTexts_) {
+    for(auto& uiText : uiTexts_){
         data["Texts"].push_back(uiText.first.GetJsonData());
     }
 
-    MyFunc::CreateJsonFile("Resources/Jsons/Scene_Game/GameUI_Pad.json", data);
+    bool isPad = Input::IsPressKey(DIK_P);
+    if(isPad){
+        MyFunc::CreateJsonFile("Resources/Jsons/Scene_Game/GameUI_Pad.json", data);
+    } else{
+        MyFunc::CreateJsonFile("Resources/Jsons/Scene_Game/GameUI.json", data);
+    }
 }
 
-void Scene_Game::UIFromJson() {
+void Scene_Game::UIFromJson(){
     bool isPad = Input::GetRecentInputDevice() == InputDevice::GAMEPAD;
     nlohmann::json data;
-    if (isPad) {
+    if(isPad){
         data = MyFunc::GetJson("Resources/Jsons/Scene_Game/GameUI_Pad.json");
-    } else {
+    } else{
         data = MyFunc::GetJson("Resources/Jsons/Scene_Game/GameUI.json");
     }
 
     uiSprites_.clear();
     uiTexts_.clear();
 
-    if (data.contains("Sprites")) {
-        for (auto& spriteData : data["Sprites"]) {
+    if(data.contains("Sprites")){
+        for(auto& spriteData : data["Sprites"]){
             Sprite sprite;
             sprite.FromJson(spriteData);
             uiSprites_.push_back({ sprite,false });
         }
     }
 
-    if (data.contains("Texts")) {
-        for (auto& textData : data["Texts"]) {
+    if(data.contains("Texts")){
+        for(auto& textData : data["Texts"]){
             TextBox2D text;
             text.LoadFromJson(textData);
             uiTexts_.push_back({ text,false });

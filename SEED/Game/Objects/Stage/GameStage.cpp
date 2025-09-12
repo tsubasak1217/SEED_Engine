@@ -95,7 +95,7 @@ void GameStage::Initialize(int currentStageIndex) {
         stageName_ = GetCurrentStageName();
         // スプライト
         stageNameBack_ = Sprite("DefaultAssets/white1x1.png");
-        stageNameBack_.color = Vector4(0.01f, 0.01f, 0.01f, 0.95f);
+        stageNameBack_.color = Vector4(0.0f, 0.0f, 0.0f, 0.95f);
         stageNameBack_.size = { kWindowSize.x,kWindowSize.y * 0.25f };
         stageNameBack_.anchorPoint = { 0.5f,0.5f };
         stageNameBack_.transform.translate = kWindowCenter;

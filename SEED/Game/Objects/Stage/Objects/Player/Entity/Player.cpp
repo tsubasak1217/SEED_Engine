@@ -435,6 +435,12 @@ void Player::OnCollisionEnter([[maybe_unused]] GameObject2D* other) {
 }
 
 void Player::OnCollisionStay([[maybe_unused]] GameObject2D* other) {
+
+    // 1度当たったらアウト
+    if (istouchedLaser_) {
+        return;
+    }
+
     if (other->GetObjectType() == ObjectType::Laser) {
 
         istouchedLaser_ = true;

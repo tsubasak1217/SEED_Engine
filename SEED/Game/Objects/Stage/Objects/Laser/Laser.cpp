@@ -16,6 +16,7 @@ void Laser::Initialize() {
     // スプライトの初期化
     sprite_ = Sprite("Scene_Game/StageObject/laser.png");
     sprite_.anchorPoint = Vector2(0.5f, 1.0f);
+    sprite_.size.x *= 0.9f;
     sprite_.layer = 10;
 
     // 初期化値

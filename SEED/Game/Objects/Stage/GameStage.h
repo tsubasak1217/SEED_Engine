@@ -206,6 +206,7 @@ private:
     TextBox2D stageNameTextBox_;
     Sprite stageNameBack_;;
     TimerArray stageNameTimerArray_ = TimerArray{ 0.8f,1.0f,0.7f,0.5f };
+    Timer afterBeginDisplayTimer_ = Timer(1.0f);
     enum StageNameState {
         BackAppear,
         TextAppear,

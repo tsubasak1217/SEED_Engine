@@ -37,6 +37,7 @@ struct TimerArray{
     int32_t IsFinishedNow() const;
     float GetProgress() const;
     bool IsFinished() const;
+    bool IsAllFinishedNow() const;
     std::vector<Timer> timers;
 };
 

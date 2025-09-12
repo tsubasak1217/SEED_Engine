@@ -122,3 +122,7 @@ bool TimerArray::IsFinished() const{
     }
     return true;
 }
+
+bool TimerArray::IsAllFinishedNow() const{
+    return timers.back().IsFinishedNow();
+}

@@ -7,6 +7,7 @@
 #include <Game/Objects/Clear/ClearTextAnimation.h>
 #include <Game/Objects/Clear/ClearSelectMenu.h>
 #include <Game/Objects/Transition/NextStageTransition.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
 
 //============================================================================
 //	GameState_Clear class
@@ -73,8 +74,10 @@ private:
     // transition
     Timer nextStageTimer_ = Timer(0.5f);
     Vector4 color_ = MyMath::FloatColor(238, 106, 2, 255, false);
+    Vector4 hexagonColor = MyMath::FloatColor(0x006066ff);
     float nextStageTime_ = 0.6f;
-    bool isNextStage_ = false;
+    bool isStartTransition_ = false;
+    int32_t selectIdx_;
     // parameters
     float stripHeight_ = 40.0f;
     float appearEndTimeT_ = 0.32f;

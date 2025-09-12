@@ -162,50 +162,63 @@ void GameState_Clear::UpdateSelect() {
 
 void GameState_Clear::ManageState() {
 
-    if (isNextStage_) {
+    if (isStartTransition_) {
 
         // 次のシーンに進むまでのタイマーを進める
         nextStageTimer_.Update();
         if (nextStageTimer_.IsFinished()) {
 
-            Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
-            gameScene->ChangeScene("Game");
+            if(selectIdx_ == 1){
+                Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+                gameScene->ChangeScene("Game");
+
+            } else if(selectIdx_ == 2){
+                // セレクトに戻る
+                Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+                GameStage* stage = gameScene->GetStage();
+                // ステージクリアを記録
+                GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
+                gameScene->ChangeScene("Select");
+            }
         }
         return;
-    }
+    
+    } else{
 
-    if (currentState_ != State::Select) {
-        return;
-    }
+        if(currentState_ != State::Select){
+            return;
+        }
 
-    // 入力を受け付けて次どうするかを取得する
-    if (menu_->GetResult().isNextStage) {
+        // 入力を受け付けて次どうするかを取得する
+        if(menu_->GetResult().isNextStage){
 
-        // 次のステージに進む
-        Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
-        GameStage* stage = gameScene->GetStage();
-        // ステージクリアを記録
-        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
-        //記録後インデックスを進める
-        stage->RequestNextStage();
-        gameScene->currentStageIndex_ = stage->GetCurrentStageIndex();
+            // 次のステージに進む
+            Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
+            GameStage* stage = gameScene->GetStage();
+            // ステージクリアを記録
+            GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
+            //記録後インデックスを進める
+            stage->RequestNextStage();
+            gameScene->currentStageIndex_ = stage->GetCurrentStageIndex();
 
-        // 遷移処理を開始する
-        isNextStage_ = true;
-        NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
-        transition->SetParam(stripHeight_, appearEndTimeT_, color_);
-        transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
-        return;
-    }
-    if (menu_->GetResult().returnSelect) {
+            // 遷移処理を開始する
+            isStartTransition_ = true;
+            selectIdx_ = 1;
+            NextStageTransition* transition = SceneTransitionDrawer::AddTransition<NextStageTransition>();
+            transition->SetParam(stripHeight_, appearEndTimeT_, color_);
+            transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+        }
 
-        // セレクトに戻る
-        Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
-        GameStage* stage = gameScene->GetStage();
-        // ステージクリアを記録
-        GameSystem::GetInstance()->GetStageProgressCollector()->SetStageClear(stage->GetCurrentStageIndex(), true);
-        gameScene->ChangeScene("Select");
-        return;
+        if(menu_->GetResult().returnSelect){
+
+            isStartTransition_ = true;
+            selectIdx_ = 2;
+
+            // 遷移処理を開始する
+            HexagonTransition* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+            transition->SetHexagonInfo(46.0f, { hexagonColor });
+            transition->StartTransition(nextStageTimer_.GetDuration(), nextStageTime_);
+        }
     }
 }
 

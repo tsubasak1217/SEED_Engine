@@ -86,6 +86,7 @@ void LaserLauncher::InitializeLaunchSprites() {
             Sprite sprite("Scene_Game/StageObject/laserUnit.png");
             sprite.anchorPoint = 0.5f;
             sprite.transform.rotate = LaserHelper::GetRotateFromDirection(stateDirection);
+            sprite.layer = centerStarSprite_.layer;
             // 発射台の色に合わせる
             sprite.color = frameSprite_.color;
 

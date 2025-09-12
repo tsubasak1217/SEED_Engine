@@ -26,6 +26,7 @@ void BlockNormal::Initialize(){
     // スプライトの初期化
     sprite_ = Sprite("Scene_Game/StageObject/normalBlock.png");
     sprite_.anchorPoint = Vector2(0.5f);
+    sprite_.layer = 14;
 
     centerQuad_ = MakeEqualQuad2D(sprite_.size.x * 0.5f);
     centerQuad_.lightingType = LIGHTINGTYPE_NONE;
@@ -46,12 +47,12 @@ void BlockNormal::Update(){
 
     case StageObjectCommonState::None:
         sprite_.color = normalColor_;
-        sprite_.layer = 2;
+        sprite_.layer = 16;
         break;
 
     case StageObjectCommonState::Hologram:
         sprite_.color = hologramColor_;
-        sprite_.layer = 0;
+        sprite_.layer = 14;
         break;
     }
 }

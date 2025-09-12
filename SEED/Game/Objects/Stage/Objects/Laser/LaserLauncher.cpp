@@ -35,9 +35,11 @@ void LaserLauncher::Initialize() {
     // フレーム
     frameSprite_ = Sprite("Scene_Game/StageObject/normalBlock.png");
     frameSprite_.anchorPoint = 0.5f;
+    frameSprite_.layer = 14;
     // 星
     centerStarSprite_ = Sprite("Scene_Game/StageObject/laserLauncherStar.png");
     centerStarSprite_.anchorPoint = 0.5f;
+    centerStarSprite_.layer = 14;
 
     // EmitState
     {

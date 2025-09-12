@@ -53,7 +53,7 @@ void StageObjectComponent::Initialize(
     if (state == StageObjectCommonState::Hologram) {
 
         object_->SetScale(0.0f);
-        object_->masterScaleTimer_.Reset();
+        object_->masterScaleOrder_ = false;
     }
 }
 
@@ -110,7 +110,6 @@ void StageObjectComponent::OnCollisionStay([[maybe_unused]] GameObject2D* other)
         // 空白ブロックと衝突していたらオブジェクトを非アクティブにする
         if (other->GetObjectType() == ObjectType::EmptyBlock) {
 
-            isAppearanceAnimation_ = false;
             MasterScaleUpdate(-2.0f);
             if(object_->GetMasterScaleTimer().GetProgress() == 0.0f){
 
@@ -313,7 +312,6 @@ void StageObjectComponent::Update() {
     UpdateBlockTranslate();
     object_->Update();
     MasterScaleUpdate();
-    isAppearanceAnimation_ = true;// 毎フレームtrueに戻す
 }
 
 void StageObjectComponent::Draw() {

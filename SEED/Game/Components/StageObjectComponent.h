@@ -74,8 +74,6 @@ private:
 
     // サイズを保持
     Vector2 mapSize_;
-    //
-    bool isAppearanceAnimation_ = true;
 
     //--------- functions ----------------------------------------------------
 

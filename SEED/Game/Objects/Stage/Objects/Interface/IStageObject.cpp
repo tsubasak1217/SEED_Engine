@@ -6,6 +6,8 @@
 
 void IStageObject::AppearanceUpdateAnimation(float baseDuration, float spacing, Easing::Type easing, uint32_t colum) {
 
+    if(masterScaleOrder_){ return; }
+
     // 空白ブロックに重なっている
     if (isSetStopAppearance_) {
 

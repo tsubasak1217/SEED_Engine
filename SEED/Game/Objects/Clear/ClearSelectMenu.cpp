@@ -97,6 +97,10 @@ void ClearSelectMenu::Initialize(uint32_t currentStageIndex, bool isLastStage, i
 
 void ClearSelectMenu::Update(){
 
+    if (result_.isNextStage || result_.returnSelect) {
+        return;
+    }
+
     // エディターの更新処理
     SelectEdit();
 

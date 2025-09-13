@@ -12,6 +12,12 @@
 
 void PlayerDeadState::Enter([[maybe_unused]] Player& player) {
 
+    // 歩き音声が再生中なら止める
+    if (AudioManager::IsPlayingAudio(AudioDictionary::Get("プレイヤー_足音"))) {
+
+        AudioManager::EndAudio(AudioManager::GetAudioHandle(AudioDictionary::Get("プレイヤー_足音")));
+    }
+
     isDead_ = true;
     deadTimer_ = Timer(deadDuration_);
     deadEffect_.Initialize(player.GetOwner()->GetWorldTranslate());

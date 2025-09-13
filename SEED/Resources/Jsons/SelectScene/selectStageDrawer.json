@@ -327,7 +327,7 @@
         "flipY": false,
         "isApplyViewMat": false,
         "isStaticDraw": false,
-        "layer": 170,
+        "layer": 0,
         "size": {
             "x": 50.0,
             "y": 50.0

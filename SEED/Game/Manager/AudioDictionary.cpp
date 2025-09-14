@@ -12,8 +12,8 @@ void AudioDictionary::Initialize() {
     dict["セレクトシーン_左右"] = "SE/decide2.wav";
     dict["セレクトシーン_決定"] = "SE/decide1.wav";
     // ゲームシーン
-    dict["ゲームシーン_通常BGM"] = "BGM/gameBgm1.wav";
-    dict["ゲームシーン_虚像BGM"] = "BGM/gameBgm2.wav";
+    dict["ゲームシーン_通常BGM"] = "BGM/TwiniwT_normal.wav";
+    dict["ゲームシーン_虚像BGM"] = "BGM/TwiniwT_hologram.wav";
     // プレイヤー
     dict["プレイヤー_足音"] = "SE/playerMove.wav";
     dict["プレイヤー_死亡音"] = "SE/playerDie2.wav";

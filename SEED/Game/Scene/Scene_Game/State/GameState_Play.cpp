@@ -49,18 +49,18 @@ void GameState_Play::Initialize() {
         gameScene->GetStage()->SetIsActive(true);
     }
 
+    // 同時に再生してハンドルを取得する
     const auto normal = AudioDictionary::Get("ゲームシーン_通常BGM");
     const auto holo = AudioDictionary::Get("ゲームシーン_虚像BGM");
-
-    // 同時に再生してハンドルを取得する
     if (!AudioManager::IsPlayingAudio(normal)) {
 
         // 再生されていなければ再生
-        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, kBGMVolume_);
+        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, kNormalBGMVolume_);
     } else {
 
         // されていればハンドルを取得する
         noneBGMHandle_ = AudioManager::GetAudioHandle(normal);
+        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
     }
     if (!AudioManager::IsPlayingAudio(holo)) {
 
@@ -123,25 +123,25 @@ void GameState_Play::Update() {
                 if (isTargetHologram_) {
 
                     // 通常を下げてホログラムを上げる
-                    AudioManager::SetAudioVolume(noneBGMHandle_, kBGMVolume_ * (1.0f - backT));
-                    AudioManager::SetAudioVolume(holoBGMHandle_, kBGMVolume_ * frontT);
+                    AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * (1.0f - backT));
+                    AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * frontT);
                 } else {
 
                     // ホログラムを下げて通常を上げる
-                    AudioManager::SetAudioVolume(holoBGMHandle_, kBGMVolume_ * (1.0f - backT));
-                    AudioManager::SetAudioVolume(noneBGMHandle_, kBGMVolume_ * frontT);
+                    AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * (1.0f - backT));
+                    AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * frontT);
                 }
                 // 補間終了時に音量を固定する
                 if (audioChangeTimer_.IsFinished()) {
                     if (isTargetHologram_) {
 
                         AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
-                        AudioManager::SetAudioVolume(holoBGMHandle_, kBGMVolume_);
+                        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_);
                         isCurrentHologram_ = true;
                     } else {
 
                         AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
-                        AudioManager::SetAudioVolume(noneBGMHandle_, kBGMVolume_);
+                        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
                         isCurrentHologram_ = false;
                     }
                     isAudioFading_ = false;
@@ -198,14 +198,6 @@ void GameState_Play::ManageState() {
 
             Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
             isSameScene_ = true;
-
-            // ホログラムのBGMが流れていたら止める
-            if (AudioManager::IsPlayingAudio(holoBGMHandle_)) {
-
-                // 音声をリセットする
-                AudioManager::EndAudio(holoBGMHandle_);
-                noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-            }
             gameScene->ChangeScene("Game");
         }
         return;
@@ -239,10 +231,12 @@ void GameState_Play::ManageState() {
             if (stage->IsClear()) {
 
                 // BGM
-                AudioManager::EndAllAudio();
+                // クリアBGM用
+                //AudioManager::EndAllAudio();
 
                 // クリア状態に遷移させる
                 // プレイヤーを左側に寄せアップで写す
+                isSameScene_ = true;
                 const float cameraZoomRate = 2.92f;
                 const Vector2 cameraFocus = Vector2(0.72f, 0.84f);
                 stage->CloseToPlayer(LR::LEFT, cameraZoomRate, cameraFocus);

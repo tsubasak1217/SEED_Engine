@@ -225,13 +225,6 @@ void GameState_Pause::ManageState() {
         nextStageTimer_.Update();
         if (nextStageTimer_.IsFinished()) {
 
-            // ホログラムのBGMが流れていたら止める
-            if (AudioManager::IsPlayingAudio(holoBGMHandle_)) {
-
-                // 音声をリセットする
-                AudioManager::EndAudio(holoBGMHandle_);
-                noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-            }
             gameScene->ChangeScene("Game");
         }
         return;
@@ -317,11 +310,11 @@ void GameState_Pause::ManageState() {
     // セレクトシーンに遷移
 
     if (sceneChangeTimer_.IsFinished()) {
-        pScene_->ChangeScene("Select");
 
         // 音声をリセットする
-        AudioManager::EndAudio(noneBGMHandle_);
-        AudioManager::EndAudio(holoBGMHandle_);
+        AudioManager::EndAllAudio();
+
+        pScene_->ChangeScene("Select");
         return;
     }
 

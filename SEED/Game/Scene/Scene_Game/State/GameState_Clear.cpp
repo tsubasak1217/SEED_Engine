@@ -23,8 +23,8 @@ GameState_Clear::GameState_Clear(Scene_Base* pScene) {
     pScene_ = pScene;
     Initialize();
 
-    const float kBGMVolume = 0.24f;
-    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("クリア_BGM"), true, kBGMVolume);
+   /* const float kBGMVolume = 0.24f;
+    bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("クリア_BGM"), true, kBGMVolume);*/
 }
 
 GameState_Clear::~GameState_Clear() {
@@ -32,7 +32,7 @@ GameState_Clear::~GameState_Clear() {
     SEED::SetMainCamera("default");
 
     // BGM停止
-    AudioManager::EndAudio(bgmHandle_);
+    //AudioManager::EndAudio(bgmHandle_);
 }
 
 void GameState_Clear::Edit() {
@@ -169,10 +169,14 @@ void GameState_Clear::ManageState() {
         if (nextStageTimer_.IsFinished()) {
 
             if(selectIdx_ == 1){
+
                 Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
                 gameScene->ChangeScene("Game");
-
             } else if(selectIdx_ == 2){
+
+                // 音声をリセットする
+                AudioManager::EndAllAudio();
+
                 // セレクトに戻る
                 Scene_Game* gameScene = dynamic_cast<Scene_Game*>(pScene_);
                 GameStage* stage = gameScene->GetStage();

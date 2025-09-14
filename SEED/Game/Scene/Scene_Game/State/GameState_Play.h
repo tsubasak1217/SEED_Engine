@@ -7,7 +7,7 @@
 #include <Game/Scene/Input/PauseMenuInputActionEnum.h>
 #include <Game/Objects/Transition/NextStageTransition.h>
 
-class GameState_Play : public State_Base{
+class GameState_Play : public State_Base {
 public:
     GameState_Play() = default;
     GameState_Play(Scene_Base* pScene);
@@ -29,6 +29,11 @@ private:
 
     // Audios
     const float kBGMVolume_ = 0.16f;
+    // 音切り替えタイマーを
+    Timer audioChangeTimer_ = Timer(0.16f);
+    bool isAudioFading_ = false;
+    bool isTargetHologram_ = false;
+
     // 現在ホログラム状態か
     bool isCurrentHologram_;
     bool isSameScene_;
@@ -41,4 +46,6 @@ private:
     // parameters
     float stripHeight_ = 40.0f;
     float appearEndTimeT_ = 0.32f;
+
+    void StartBGMFade(bool isTargetHologram);
 };

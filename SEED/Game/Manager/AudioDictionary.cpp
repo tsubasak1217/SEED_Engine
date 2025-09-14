@@ -35,6 +35,8 @@ void AudioDictionary::Initialize() {
     dict["王冠_キラキラ音"] = "SE/reproduction.wav";
     dict["王冠_取得音"] = "SE/clearJingle1.wav";
     dict["王冠_離脱音"] = "SE/playerCollectBorder.wav";
+    dict["クリアメニュー_開始"] = "SE/swoosh-06-351021.mp3";
+    dict["クリアメニュー_バー"] = "SE/notification-bell-sound-1-376885.mp3";
     dict["クリアメニュー_選択"] = "SE/decide2.wav";
     dict["クリアメニュー_決定"] = "SE/decide1.wav";
 }

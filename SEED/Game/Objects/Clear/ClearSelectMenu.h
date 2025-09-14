@@ -96,6 +96,7 @@ private:
     // 入力処理
     std::unique_ptr<InputMapper<PauseMenuInputAction>> inputMapper_;
     bool isExit_ = false;
+    bool beginFrame_ = true;
 
     // ステージ情報
     bool isLastStage_ = false;
@@ -105,6 +106,7 @@ private:
     std::vector<Item> items_;
     // メニュー移動時間
     Timer menuTimer_ = Timer(0.8f);
+    bool isFinishedOnce_ = false;
 
     // ステージ番号を表示する
     Sprite stageIndexBack_;       // ステージ番号背景

@@ -964,6 +964,7 @@ void SelectStageDrawer::UpdateDifficultyDrawInfo(){
 
         difficultyStars_[i] = difficultyStars_[0];
         difficultyStars_[i].transform.translate = MyMath::Lerp(minPos, maxPos, t);
+        difficultyStars_[i].layer = 20;
 
         // ステージの星の数だけ明るくする
         if(i < stages_[focusIndex_].difficulty){

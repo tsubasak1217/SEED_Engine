@@ -49,31 +49,28 @@ void GameState_Play::Initialize() {
         gameScene->GetStage()->SetIsActive(true);
     }
 
-    // 再生中なら再生しない
-    if (AudioManager::IsPlayingAudio(AudioDictionary::Get("ゲームシーン_通常BGM"))) {
+    const auto normal = AudioDictionary::Get("ゲームシーン_通常BGM");
+    const auto holo = AudioDictionary::Get("ゲームシーン_虚像BGM");
 
-        // ホログラムハンドルだけもらう
-        holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
-        AudioManager::EndAudio(holoBGMHandle_);
-        // 再生中のハンドルを取得する
-        noneBGMHandle_ = AudioManager::GetAudioHandle(AudioDictionary::Get("ゲームシーン_通常BGM"));
-        isCurrentHologram_ = false;
-    } else if (AudioManager::IsPlayingAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"))) {
+    // 同時に再生してハンドルを取得する
+    if (!AudioManager::IsPlayingAudio(normal)) {
 
-        // 通常BGMハンドルだけもらう
-        noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-        AudioManager::EndAudio(noneBGMHandle_);
-        // 再生中のハンドルを取得する
-        holoBGMHandle_ = AudioManager::GetAudioHandle(AudioDictionary::Get("ゲームシーン_虚像BGM"));
-        isCurrentHologram_ = true;
+        // 再生されていなければ再生
+        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, kBGMVolume_);
     } else {
 
-        // ホログラムハンドルだけもらう
-        holoBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_虚像BGM"), true, kBGMVolume_);
-        AudioManager::EndAudio(holoBGMHandle_);
-        // 最初は通常BGMを再生
-        noneBGMHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ゲームシーン_通常BGM"), true, kBGMVolume_);
-        isCurrentHologram_ = false;
+        // されていればハンドルを取得する
+        noneBGMHandle_ = AudioManager::GetAudioHandle(normal);
+    }
+    if (!AudioManager::IsPlayingAudio(holo)) {
+
+        // 再生されていなければ再生
+        holoBGMHandle_ = AudioManager::PlayAudio(holo, true, 0.0f);
+    } else {
+
+        // されていればハンドルを取得する
+        holoBGMHandle_ = AudioManager::GetAudioHandle(holo);
+        AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
     }
     isSameScene_ = false;
 
@@ -111,7 +108,10 @@ void GameState_Play::Update() {
             // ステージの状態が切り替わったらグラデーションさせる
             if (!isAudioFading_ && isCurrentHologram_ != stage->IsCurrentHologram()) {
 
-                StartBGMFade(stage->IsCurrentHologram());
+                // タイマーをリセットして切り替える
+                isAudioFading_ = true;
+                isTargetHologram_ = stage->IsCurrentHologram();
+                audioChangeTimer_.Reset();
             }
             // 音量をグラデーションさせる
             if (isAudioFading_) {
@@ -131,15 +131,17 @@ void GameState_Play::Update() {
                     AudioManager::SetAudioVolume(holoBGMHandle_, kBGMVolume_ * (1.0f - backT));
                     AudioManager::SetAudioVolume(noneBGMHandle_, kBGMVolume_ * frontT);
                 }
-                // 終了時にBGMを停止させる
+                // 補間終了時に音量を固定する
                 if (audioChangeTimer_.IsFinished()) {
                     if (isTargetHologram_) {
 
-                        AudioManager::EndAudio(noneBGMHandle_);
+                        AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
+                        AudioManager::SetAudioVolume(holoBGMHandle_, kBGMVolume_);
                         isCurrentHologram_ = true;
                     } else {
 
-                        AudioManager::EndAudio(holoBGMHandle_);
+                        AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
+                        AudioManager::SetAudioVolume(noneBGMHandle_, kBGMVolume_);
                         isCurrentHologram_ = false;
                     }
                     isAudioFading_ = false;
@@ -272,36 +274,5 @@ void GameState_Play::ManageState() {
         const float kSEVolume = 0.24f;
         AudioManager::PlayAudio(AudioDictionary::Get("ポーズ_ポーズボタン"), false, kSEVolume);
         return;
-    }
-}
-
-void GameState_Play::StartBGMFade(bool isTargetHologram) {
-
-    if (isAudioFading_ && isTargetHologram_ == isTargetHologram) {
-        return;
-    }
-
-    // タイマーをリセットして切り替える
-    isAudioFading_ = true;
-    isTargetHologram_ = isTargetHologram;
-    audioChangeTimer_.Reset();
-    if (isTargetHologram_) {
-        if (!AudioManager::IsPlayingAudio(holoBGMHandle_)) {
-
-            holoBGMHandle_ = AudioManager::PlayAudio(
-                AudioDictionary::Get("ゲームシーン_虚像BGM"), true, 0.0f);
-        } else {
-
-            AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
-        }
-    } else {
-        if (!AudioManager::IsPlayingAudio(noneBGMHandle_)) {
-
-            noneBGMHandle_ = AudioManager::PlayAudio(
-                AudioDictionary::Get("ゲームシーン_通常BGM"), true, 0.0f);
-        } else {
-
-            AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
-        }
     }
 }

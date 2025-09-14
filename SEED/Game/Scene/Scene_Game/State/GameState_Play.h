@@ -30,7 +30,7 @@ private:
     // Audios
     const float kBGMVolume_ = 0.16f;
     // 音切り替えタイマーを
-    Timer audioChangeTimer_ = Timer(0.16f);
+    Timer audioChangeTimer_ = Timer(0.24f);
     bool isAudioFading_ = false;
     bool isTargetHologram_ = false;
 
@@ -46,6 +46,4 @@ private:
     // parameters
     float stripHeight_ = 40.0f;
     float appearEndTimeT_ = 0.32f;
-
-    void StartBGMFade(bool isTargetHologram);
 };

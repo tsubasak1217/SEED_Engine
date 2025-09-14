@@ -299,6 +299,12 @@ void Scene_Game::SceneEdit(){
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
+        if(GameState_Play * playState = dynamic_cast<GameState_Play*>(currentState_.get())){
+            float fadeDuration = playState->GetAudioFadeDuration();
+            ImGui::DragFloat("Audio Fade Duration", &fadeDuration, 0.01f, 0.0f, 5.0f);
+            playState->SetAudioFadeDuration(fadeDuration);
+        }
+        ImGui::Spacing();
 
         // json保存
         if(ImGui::Button("UI to json")){

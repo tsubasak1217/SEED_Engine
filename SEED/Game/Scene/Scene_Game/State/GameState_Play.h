@@ -23,6 +23,9 @@ public:
     void HandOverColliders() override;
     void ManageState() override;
 
+    float GetAudioFadeDuration() const { return audioFadeDuration_; }
+    void SetAudioFadeDuration(float duration) { audioFadeDuration_ = duration; audioChangeTimer_.duration = duration; }
+
 private:
 
     std::unique_ptr<InputMapper<PauseMenuInputAction>> menuBarInputMapper_;
@@ -31,7 +34,8 @@ private:
     const float kNormalBGMVolume_ = 0.32f;
     const float kHologramBGMVolume_ = 0.4f;
     // 音切り替えタイマーを
-    Timer audioChangeTimer_ = Timer(0.48f);
+    float audioFadeDuration_ = 0.48f;
+    Timer audioChangeTimer_ = Timer(audioFadeDuration_);
     bool isAudioFading_ = false;
     bool isTargetHologram_ = false;
     bool isStartFade_ = false;

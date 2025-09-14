@@ -55,12 +55,12 @@ void GameState_Play::Initialize() {
     if (!AudioManager::IsPlayingAudio(normal)) {
 
         // 再生されていなければ再生
-        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, kNormalBGMVolume_);
+        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, 0.0f);
     } else {
 
         // されていればハンドルを取得する
         noneBGMHandle_ = AudioManager::GetAudioHandle(normal);
-        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
+        AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
     }
     if (!AudioManager::IsPlayingAudio(holo)) {
 
@@ -72,6 +72,19 @@ void GameState_Play::Initialize() {
         holoBGMHandle_ = AudioManager::GetAudioHandle(holo);
         AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
     }
+    // ステージ側の初期状態を記録
+    bool startIsHologram = false;
+    if (stage) {
+        startIsHologram = stage->IsCurrentHologram();
+    }
+    isCurrentHologram_ = startIsHologram;
+
+    // 起動直後の片側補間開始
+    isStartFade_ = true;
+    isAudioFading_ = true;
+    isTargetHologram_ = startIsHologram;
+    audioChangeTimer_.Reset();
+
     isSameScene_ = false;
 
     // 歩き音声が再生中なら止める
@@ -120,31 +133,59 @@ void GameState_Play::Update() {
                 audioChangeTimer_.Update();
                 const float frontT = EaseInSine(audioChangeTimer_.GetProgress());
                 const float backT = EaseOutSine(audioChangeTimer_.GetProgress());
-                if (isTargetHologram_) {
-
-                    // 通常を下げてホログラムを上げる
-                    AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * (1.0f - backT));
-                    AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * frontT);
-                } else {
-
-                    // ホログラムを下げて通常を上げる
-                    AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * (1.0f - backT));
-                    AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * frontT);
-                }
-                // 補間終了時に音量を固定する
-                if (audioChangeTimer_.IsFinished()) {
+                // ゲーム開始時の音量フェード処理
+                if (isStartFade_) {
                     if (isTargetHologram_) {
 
                         AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
-                        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_);
-                        isCurrentHologram_ = true;
+                        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * frontT);
                     } else {
 
                         AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
-                        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
-                        isCurrentHologram_ = false;
+                        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * frontT);
                     }
-                    isAudioFading_ = false;
+                    if (audioChangeTimer_.IsFinished()) {
+                        if (isTargetHologram_) {
+
+                            AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
+                            AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_);
+                            isCurrentHologram_ = true;
+                        } else {
+
+                            AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
+                            AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
+                            isCurrentHologram_ = false;
+                        }
+                        isStartFade_ = false;
+                        isAudioFading_ = false;
+                    }
+                } else {
+                    if (isTargetHologram_) {
+
+                        // 通常を下げてホログラムを上げる
+                        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * (1.0f - backT));
+                        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * frontT);
+                    } else {
+
+                        // ホログラムを下げて通常を上げる
+                        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_ * (1.0f - backT));
+                        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_ * frontT);
+                    }
+                    // 補間終了時に音量を固定する
+                    if (audioChangeTimer_.IsFinished()) {
+                        if (isTargetHologram_) {
+
+                            AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
+                            AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_);
+                            isCurrentHologram_ = true;
+                        } else {
+
+                            AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
+                            AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
+                            isCurrentHologram_ = false;
+                        }
+                        isAudioFading_ = false;
+                    }
                 }
             }
         }

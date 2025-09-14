@@ -31,9 +31,10 @@ private:
     const float kNormalBGMVolume_ = 0.32f;
     const float kHologramBGMVolume_ = 0.4f;
     // 音切り替えタイマーを
-    Timer audioChangeTimer_ = Timer(0.24f);
+    Timer audioChangeTimer_ = Timer(0.48f);
     bool isAudioFading_ = false;
     bool isTargetHologram_ = false;
+    bool isStartFade_ = false;
 
     // 現在ホログラム状態か
     bool isCurrentHologram_;

@@ -425,6 +425,7 @@ void GameStage::UpdateLaserLauncher(){
 
 void GameStage::UpdateBorderLine(){
 
+
     // プレイヤーのワールド座標
     const Vector2 playerWorldTranslate = player_->GetOwner()->GetWorldTranslate();
 
@@ -438,6 +439,11 @@ void GameStage::UpdateBorderLine(){
     // プレイヤーの入力処理に応じて境界線を置いたり外したりする
     // 境界線がまだ置かれていないとき
     if(!borderLine_->IsActive() && player_->IsPutBorder()){
+
+        // ポーズ中は境界線を置けない
+        if(isPaused_){
+            return;
+        }
 
         // 境界線を置いてホログラムオブジェクトを構築する
         PutBorderLine();

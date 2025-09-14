@@ -195,14 +195,6 @@ void ClearSelectMenu::Update() {
     stageIndexBack_.transform.scale = EaseOutExpo(t);
     stageIndexBack_.transform.rotate = std::lerp(std::numbers::pi_v<float>*2.0f, 0.0f, EaseOutExpo(t));
     stageIndexText_.transform.scale = std::lerp(0.0f, 1.4f, EaseOutExpo(t));
-
-    if (menuTimer_.IsFinishedNow() && !isFinishedOnce_) {
-
-        // SE
-        const float kSEVolume = 0.6f;
-        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_バー"), false, kSEVolume);
-        isFinishedOnce_ = true;
-    }
 }
 
 void ClearSelectMenu::Draw() {

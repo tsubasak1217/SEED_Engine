@@ -5,6 +5,8 @@
 //============================================================================
 #include <SEED/Lib/MagicEnumAdapter/EnumAdapter.h>
 #include <SEED/Lib/JsonAdapter/JsonAdapter.h>
+#include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <Game/Manager/AudioDictionary.h>
 
 //============================================================================
 //	ClearTextAnimation classMethods
@@ -66,6 +68,12 @@ void ClearTextAnimation::Update() {
         // 退場アニメーション中
         UpdateOutAnim();
         break;
+    }
+
+    seTimer_.Update();
+    if(seTimer_.IsFinishedNow()){
+        const float kSEVolume = 0.6f;
+        AudioManager::PlayAudio(AudioDictionary::Get("クリアメニュー_バー"), false, kSEVolume);
     }
 }
 
@@ -142,6 +150,7 @@ void ClearTextAnimation::UpdateOutAnim() {
         topText_.transform.translate = targetTranslate_;
         bottomText_.transform.translate = targetTranslate_;
     }
+
 }
 
 bool ClearTextAnimation::IsFinishedInAnim() const {
@@ -218,6 +227,7 @@ void ClearTextAnimation::ApplyJson() {
     from_json(data.value("targetTranslate_", nlohmann::json()), targetTranslate_);
 
     animTimer_.duration = data.value("animTimer_.duration", 0.0f);
+    seTimer_ = Timer(animTimer_.duration);
     textAngle_ = data.value("textAngle_", 0.0f);
     textDistance_ = data.value("textDistance_", 400.0f);
     textScale_ = data.value("textScale_", 1.0f);

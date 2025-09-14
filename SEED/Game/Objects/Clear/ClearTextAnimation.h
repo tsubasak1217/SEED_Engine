@@ -60,6 +60,10 @@ private:
     // 現在の状態
     AnimState currentState_;
 
+    // SE
+    bool isPlayedSe_ = false;
+    Timer seTimer_;
+
     // 文字表示
     Sprite topText_;    // 上
     Sprite bottomText_; // 下

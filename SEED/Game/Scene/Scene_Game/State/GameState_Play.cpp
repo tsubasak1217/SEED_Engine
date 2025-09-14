@@ -55,22 +55,22 @@ void GameState_Play::Initialize() {
     if (!AudioManager::IsPlayingAudio(normal)) {
 
         // 再生されていなければ再生
-        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, 0.0f);
+        noneBGMHandle_ = AudioManager::PlayAudio(normal, true, kNormalBGMVolume_);
     } else {
 
         // されていればハンドルを取得する
         noneBGMHandle_ = AudioManager::GetAudioHandle(normal);
-        AudioManager::SetAudioVolume(noneBGMHandle_, 0.0f);
+        AudioManager::SetAudioVolume(noneBGMHandle_, kNormalBGMVolume_);
     }
     if (!AudioManager::IsPlayingAudio(holo)) {
 
         // 再生されていなければ再生
-        holoBGMHandle_ = AudioManager::PlayAudio(holo, true, 0.0f);
+        holoBGMHandle_ = AudioManager::PlayAudio(holo, true, kHologramBGMVolume_);
     } else {
 
         // されていればハンドルを取得する
         holoBGMHandle_ = AudioManager::GetAudioHandle(holo);
-        AudioManager::SetAudioVolume(holoBGMHandle_, 0.0f);
+        AudioManager::SetAudioVolume(holoBGMHandle_, kHologramBGMVolume_);
     }
     // ステージ側の初期状態を記録
     bool startIsHologram = false;
@@ -83,7 +83,7 @@ void GameState_Play::Initialize() {
     isStartFade_ = true;
     isAudioFading_ = true;
     isTargetHologram_ = startIsHologram;
-    audioChangeTimer_.Reset();
+    audioChangeTimer_.ToEnd();
 
     isSameScene_ = false;
 

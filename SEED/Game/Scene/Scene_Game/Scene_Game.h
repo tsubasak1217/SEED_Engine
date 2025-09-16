@@ -15,9 +15,6 @@
 // camera
 #include <SEED/Source/Basic/Camera/FollowCamera.h>
 
-// stage
-#include <Game/Objects/Stage/GameStage.h>
-
 class Scene_Game
     : public Scene_Base{
 
@@ -31,23 +28,10 @@ public:
     void BeginFrame() override;
     void EndFrame() override;
     void HandOverColliders() override;
-    void SceneEdit() override;
 
-    GameStage* GetStage() { return stage_.get(); }
 private:
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 
-    // ゲームステージ
-    std::unique_ptr<GameStage> stage_;
-
-    // UI
-    std::vector<std::pair<Sprite,bool>> uiSprites_;
-    std::vector<std::pair<TextBox2D, bool>> uiTexts_;
-    Timer uiTimer_ = Timer(1.0f);
-private:
-    void DrawUI();
-    void UIToJson();
-    void UIFromJson();
 };

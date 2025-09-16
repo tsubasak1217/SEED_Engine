@@ -4,9 +4,6 @@
 #include <SEED/Source/Basic/Scene/EventState_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 
-// audio
-#include <Game/Manager/AudioDictionary.h>
-
 class GameObject;
 class GameObject2D;
 
@@ -14,14 +11,15 @@ class Scene_Base{
 public:
     Scene_Base();
     virtual ~Scene_Base(){};
-    virtual void Initialize() = 0;
+    virtual void Initialize();
     virtual void Finalize();
-    virtual void Update() = 0;
-    virtual void Draw() = 0;
+    virtual void Update();
+    virtual void Draw();
     virtual void BeginFrame();
-    virtual void EndFrame() = 0;
-    virtual void HandOverColliders() = 0;
-    virtual void ManageState();
+    virtual void EndFrame();
+    virtual void HandOverColliders();
+
+protected:
     virtual void SceneEdit(){};
 
 public:
@@ -40,10 +38,6 @@ public:// Hierarchy関連
     bool IsExistObject(uint32_t gameObjectHanle) const;
     bool IsExistObject2D(uint32_t gameObjectHanle) const;
     void SortObject2DByTranslate(ObjSortMode sortMode);
-
-public:// 後で消す
-    static inline int currentStageIndex_ = 0; // 現在のステージ番号
-    static inline int maxStageCount_ = 0; // 最大ステージ数
 
 protected:
     std::unique_ptr<State_Base> currentState_;

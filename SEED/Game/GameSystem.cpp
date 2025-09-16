@@ -29,14 +29,7 @@ void GameSystem::Initialize() {
     // シーンの登録
     SceneRegister::RegisterScenes();
     // 最初のシーンを設定
-    ChangeScene("Title");
-
-
-    instance_->stageProgressCollector_ = std::make_unique<StageProgressCollector>();
-    instance_->stageProgressCollector_->Initialize();
-
-    instance_->stageCreator_ = std::make_unique<SelectStageCreator>();
-    instance_->stageCreator_->BuildStage();
+    ChangeScene("Game");
 }
 
 /////////////////////////////////////////////////////////////////
@@ -133,7 +126,6 @@ void GameSystem::EndFrame() {
 void GameSystem::DrawGUI(){
 #ifdef _DEBUG
     CollisionManager::GUI();
-    instance_->stageProgressCollector_->Edit();
 #endif // _DEBUG
 }
 

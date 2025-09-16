@@ -124,160 +124,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Components\LaserObjectComponent.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\AudioDictionary.cpp" />
-    <ClCompile Include="Game\Manager\ParticleMachine.cpp" />
-    <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
-    <ClCompile Include="Game\Objects\Clear\ClearTextAnimation.cpp" />
-    <ClCompile Include="Game\Objects\Select\Background\SelectBackground.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Drawer\SelectStageDrawer.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Input\Device\SelectGamePadInput.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Input\Device\SelectKeyInput.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Methods\SelectStageBuilder.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Methods\SelectStageCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Select\Methods\StageAchievementCollector.cpp" />
-    <ClCompile Include="Game\Objects\Select\SelectStage.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageLaserController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
-    <ClCompile Include="Game\Objects\Transition\NextStageTransition.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Methods\StageBackDrawer.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Methods\StageCameraAdjuster.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockEmpty.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Interface\ILaserObject.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Interface\IStageObject.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Laser.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Warp\Warp.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageBuilder.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageHelper.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Goal\Goal.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Clear.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
-    <ClCompile Include="Game\Components\StageObjectComponent.cpp" />
-    <ClCompile Include="Game\Objects\Stage\BorderLine\BorderLine.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Select\Scene_Select.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerKeyInput.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\Entity\Player.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\Interface\PlayerIState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\PlayerStateController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerIdleState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerJumpState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerMoveState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\Objects\Block\BlockNormal.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Stage\GameStage.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Input\Device\MenuBarKeyInput.cpp" />
-    <ClCompile Include="Game\Scene\Input\Device\MenuBarGamePadInput.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
       </SubType>
@@ -319,7 +167,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -327,6 +174,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
+    <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
@@ -338,7 +186,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
@@ -410,183 +257,11 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Components\LaserObjectComponent.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\AudioDictionary.h" />
-    <ClInclude Include="Game\Manager\ParticleMachine.h" />
-    <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
-    <ClInclude Include="Game\Objects\Clear\ClearTextAnimation.h" />
-    <ClInclude Include="Game\Objects\Select\Background\SelectBackground.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Drawer\SelectStageDrawer.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Input\Device\SelectGamePadInput.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Input\Device\SelectKeyInput.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Input\SelectInputEnum.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Methods\SelectStageBuilder.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Methods\SelectStageCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Select\Methods\StageAchievementCollector.h" />
-    <ClInclude Include="Game\Objects\Select\SelectStage.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageLaserController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Transition\NextStageTransition.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
-    <ClInclude Include="Game\Objects\Stage\Methods\StageBackDrawer.h" />
-    <ClInclude Include="Game\Objects\Stage\Methods\StageCameraAdjuster.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockEmpty.h" />
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Interface\ILaserObject.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Laser.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\LaserLauncher.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserBuilder.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Laser\Methods\LaserHelper.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerWarpState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Warp\Methods\WarpHelper.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Warp\Warp.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageHelper.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Goal\Goal.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\BorderLine\BorderLine.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageBuilder.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Input\PauseMenuInputActionEnum.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Clear.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
-    <ClInclude Include="Game\Scene\Scene_Select\Scene_Select.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Components\StageObjectComponent.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerGamePadInput.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\Device\PlayerKeyInput.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\Input\PlayerInputActionEnum.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\Entity\Player.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\Enum\PlayerStateEnum.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\Interface\PlayerIState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\PlayerStateController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerIdleState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerJumpState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerMoveState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Block\BlockNormal.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Enum\StageObjectType.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\Objects\Interface\IStageObject.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Stage\GameStage.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Input\Device\MenuBarKeyInput.h" />
-    <ClInclude Include="Game\Scene\Input\Device\MenuBarGamePadInput.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\State\States\PlayerDeadState.h" />
-    <ClInclude Include="Game\Objects\Stage\Objects\Player\Effect\PlayerDeadEffect.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>
       </SubType>
@@ -650,7 +325,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
@@ -660,6 +334,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
+    <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
@@ -675,7 +350,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />

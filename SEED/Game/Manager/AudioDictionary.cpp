@@ -31,7 +31,6 @@ void AudioDictionary::Initialize() {
     dict["ポーズ_リトライ"] = "SE/decide1.wav";
     dict["ポーズ_セレクトへ"] = "SE/decide1.wav";
     // ゴール、クリア
-    dict["クリア_BGM"] = "BGM/clearBgm2.wav";
     dict["王冠_キラキラ音"] = "SE/reproduction.wav";
     dict["王冠_取得音"] = "SE/clearJingle1.wav";
     dict["王冠_離脱音"] = "SE/playerCollectBorder.wav";

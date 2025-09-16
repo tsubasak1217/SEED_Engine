@@ -31,8 +31,8 @@ private:
     std::unique_ptr<InputMapper<PauseMenuInputAction>> menuBarInputMapper_;
 
     // Audios
-    const float kNormalBGMVolume_ = 0.32f;
-    const float kHologramBGMVolume_ = 0.4f;
+    const float kNormalBGMVolume_ = 0.4f;
+    const float kHologramBGMVolume_ = 0.5f;
     // 音切り替えタイマーを
     float audioFadeDuration_ = 0.48f;
     Timer audioChangeTimer_ = Timer(audioFadeDuration_);

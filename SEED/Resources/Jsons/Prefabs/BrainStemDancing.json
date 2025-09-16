@@ -1,0 +1,97 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 0.5600000023841858,
+                    "blendMode": 3,
+                    "componentID": 0,
+                    "componentTag": "ModelRender_ID:2",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": true,
+                    "isAnimationLoop": true,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\BrainStem\\BrainStem.glb",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 10.0,
+                            "y": 10.0,
+                            "z": 10.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "color": [
+                        0.9731369614601135,
+                        1.0,
+                        0.8687258958816528,
+                        1.0
+                    ],
+                    "componentID": 4,
+                    "componentTag": "SpotLight_ID:4",
+                    "componentType": "SpotLight",
+                    "cosAngle": 0.9300000071525574,
+                    "cosFallofStart": 1.0,
+                    "decay": 1.7000000476837158,
+                    "direction": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "distance": 136.0,
+                    "intensity": 10.0,
+                    "isParentRotate": true,
+                    "position": {
+                        "x": 0.0,
+                        "y": 41.231998443603516,
+                        "z": 0.0
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "BaseObject1",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 7.252598285675049,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

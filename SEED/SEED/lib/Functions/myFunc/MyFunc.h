@@ -8,6 +8,7 @@
 #include <sstream>
 #include <filesystem>
 #include <initializer_list>
+#include <json.hpp>
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Structs/Range1D.h>
@@ -30,6 +31,7 @@ public:
     static Vector3 Random(const Range3D& range);
     static Vector2 Random(const Vector2& min,const Vector2& max);
     static Vector2 Random(const Range2D& range);
+    static float Random(const Range1D& range);
 
     // 64ビットの乱数を返す関数
     static uint64_t RandomU64();
@@ -40,6 +42,7 @@ public:
 
     // ランダムな色
     static Vector4 RandomColor();
+    static Vector4 RandomColor(std::initializer_list<uint32_t>colorList,bool isCorrectionToLiner = true);
 
     // ランダムな方向(基準方向と許容角度から)
     static Vector3 RandomDirection(const Vector3& baseDirection, float angle);
@@ -110,9 +113,16 @@ public:// ファイル・文字列関連 =======================================
     // projectのディレクトリまでのフルパスを取得する関数
     static std::filesystem::path GetProjectDirectory();
 
+    // ファイル名のみ抜き出す関数
+    static std::string ExtractFileName(const std::string& filePath,bool isContainExt);
+
     // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
     static std::string ToFullPath(const std::string& relativePath);
     static std::wstring ToFullPath(const std::wstring& relativePath);
+
+    // jsonふぁあいる関連の関数
+    static nlohmann::json GetJson(const std::string& filePath);
+    static void CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData);
 };
 
 

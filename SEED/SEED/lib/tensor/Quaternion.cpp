@@ -232,25 +232,26 @@ Quaternion Quaternion::ToQuaternion(const Vector3& eulerRotate){
 
 // クォータニオンからオイラー角に変換
 Vector3 Quaternion::ToEuler(const Quaternion& q){
-    // クォータニオンの各成分
-    float xx = q.x * q.x;
-    float yy = q.y * q.y;
-    float zz = q.z * q.z;
-    float ww = q.w * q.w;
-    float xy = q.x * q.y;
-    float xz = q.x * q.z;
-    float yz = q.y * q.z;
-    float wx = q.w * q.x;
-    float wy = q.w * q.y;
-    float wz = q.w * q.z;
+    Vector3 euler;
 
-    // オイラー角を計算
-    Vector3 result;
-    result.x = std::atan2f(2.0f * (yz + wx), ww - xx - yy + zz);
-    result.y = std::asinf(-2.0f * (xz - wy));
-    result.z = std::atan2f(2.0f * (xy + wz), ww + xx - yy - zz);
+    // Y軸（yaw）
+    float siny_cosp = 2.0f * (q.w * q.y + q.z * q.x);
+    float cosy_cosp = 1.0f - 2.0f * (q.y * q.y + q.x * q.x);
+    euler.y = std::atan2(siny_cosp, cosy_cosp);
 
-    return result;
+    // X軸（pitch）
+    float sinp = 2.0f * (q.w * q.x - q.y * q.z);
+    if(std::abs(sinp) >= 1)
+        euler.x = std::copysign(float(std::numbers::pi) / 2.0f, sinp); // gimbal lock
+    else
+        euler.x = std::asin(sinp);
+
+    // Z軸（roll）
+    float sinr_cosp = 2.0f * (q.w * q.z + q.x * q.y);
+    float cosr_cosp = 1.0f - 2.0f * (q.z * q.z + q.x * q.x);
+    euler.z = std::atan2(sinr_cosp, cosr_cosp);
+
+    return euler;
 }
 
 Quaternion Quaternion::MatrixToQuaternion(const Matrix4x4& mat){

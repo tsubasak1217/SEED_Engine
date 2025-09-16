@@ -1,0 +1,265 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 13,
+                    "componentTag": "ModelRender_ID:0",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\ground\\ground.obj",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 14,
+                    "componentTag": "ModelRender_ID:2",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 0,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\skydome\\skydome.obj",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 250.0,
+                            "y": 250.0,
+                            "z": 250.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "world",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "animationName": "running",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 15,
+                    "componentTag": "ModelRender_ID:5",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": true,
+                    "isAnimationLoop": true,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\man\\man.gltf",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "componentID": 24,
+                    "componentTag": "Jump_ID:24",
+                    "componentType": "Jump"
+                },
+                {
+                    "componentID": 25,
+                    "componentTag": "Physics_ID:25",
+                    "componentType": "Gravity",
+                    "customGravity": 9.800000190734863,
+                    "gravityDirection": {
+                        "x": 0.0,
+                        "y": -1.0,
+                        "z": 0.0
+                    },
+                    "isUseCustomGravity": false
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "man",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 0.996465265750885,
+                    "x": 0.0,
+                    "y": 0.08400610089302063,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 0.9999992847442627
+                },
+                "translate": {
+                    "x": -36.40272521972656,
+                    "y": -0.02424052357673645,
+                    "z": -8.968889236450195
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 22,
+                    "componentTag": "TextComponent_ID:22",
+                    "componentType": "Text",
+                    "textBox": {
+                        "align": 0,
+                        "anchorPos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "blendMode": 3,
+                        "color": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf",
+                        "fontSize": 39.0,
+                        "glyphSpacing": 8.0,
+                        "lineSpacing": 8.0,
+                        "outlineColor": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "outlineSplitCount": 16,
+                        "outlineWidth": 4.300000190734863,
+                        "size": {
+                            "x": 1010.0,
+                            "y": 258.0
+                        },
+                        "text": "[重力 x ジャンプコンポーネント]\nジャンプコンポーネントでジャンプし、重力コンポーネントで\n落下速度を加算することができます。\n重力の方向や強さも調整可能。",
+                        "textBoxVisible": false,
+                        "transform": {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 28.0,
+                                "y": 27.0
+                            }
+                        },
+                        "useOutline": true
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "text",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

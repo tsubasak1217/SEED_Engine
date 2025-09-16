@@ -16,10 +16,11 @@ uint32_t GameObject::nextID_ = 0;
 //////////////////////////////////////////////////////////////////////////
 GameObject::GameObject(Scene_Base* pScene){
     objectID_ = nextID_++;
-    objectName_ = "BaseObject" + std::to_string(objectID_);
+    objectName_ = "Object_" + std::to_string(objectID_);
     Initialize();
     // シーンのヒエラルキーに登録
     pScene->RegisterToHierarchy(this);
+    UpdateMatrix();
 }
 
 GameObject::~GameObject(){
@@ -176,6 +177,17 @@ void GameObject::SetParent(GameObject* parent){
     parent->children_.push_back(this);
 }
 
+std::list<GameObject*> GameObject::GetAllChildren() const{
+    // 全ての子孫を取得する
+    std::list<GameObject*> allChildren;
+    for(const auto& child : children_){
+        allChildren.push_back(child);
+        auto descendants = child->GetAllChildren();
+        allChildren.insert(allChildren.end(), descendants.begin(), descendants.end());
+    }
+    return allChildren;
+}
+
 void GameObject::RemoveChild(GameObject* child){
     if(child){
         child->ReleaseParent();
@@ -210,6 +222,42 @@ bool GameObject::IsDescendant(GameObject* obj) const{
     return false;
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// スケールの設定
+//////////////////////////////////////////////////////////////////////////
+
+void GameObject::SetWorldScale(const Vector3& scale){
+    // 親のスケールを考慮してワールド軸基準でスケールを設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.scale = scale * invParentMat;
+    } else{
+        localTransform_.scale = scale;
+    }
+}
+
+void GameObject::SetLocalScale(const Vector3& scale){
+    localTransform_.scale = scale;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Rotateの設定
+//////////////////////////////////////////////////////////////////////////
+void GameObject::SetWorldRotate(const Quaternion& rotate){
+    // 親の回転を考慮してワールド軸基準で回転を設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.rotate = rotate * Quaternion::MatrixToQuaternion(invParentMat);
+    } else{
+        localTransform_.rotate = rotate;
+    }
+}
+
+void GameObject::SetLocalRotate(const Quaternion& rotate){
+    localTransform_.rotate = rotate;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
 //////////////////////////////////////////////////////////////////////////
@@ -221,6 +269,20 @@ void GameObject::AddWorldTranslate(const Vector3& addValue){
     } else{
         localTransform_.translate += addValue;
     }
+}
+
+void GameObject::SetWorldTranslate(const Vector3& translate){
+    // 親の位置を考慮してワールド軸基準で位置を設定
+    if(parent_ != nullptr){
+        Matrix4x4 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        localTransform_.translate = translate * invParentMat;
+    } else{
+        localTransform_.translate = translate;
+    }
+}
+
+void GameObject::SetLocalTranslate(const Vector3& translate){
+    localTransform_.translate = translate;
 }
 
 
@@ -331,8 +393,8 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
             auto* modelComponent = AddComponent<ModelRenderComponent>();
             modelComponent->LoadFromJson(componentJson);
 
-        } else if(componentType == "Collision"){
-            auto* collisionComponent = AddComponent<CollisionComponent>();
+        } else if(componentType == "Collision3D"){
+            auto* collisionComponent = AddComponent<Collision3DComponent>();
             collisionComponent->LoadFromJson(componentJson);
 
         } else if(componentType == "Text"){
@@ -343,6 +405,20 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
             auto* spotLightComponent = AddComponent<SpotLightComponent>();
             spotLightComponent->LoadFromJson(componentJson);
 
+        } else if(componentType == "Gravity"){
+            auto* gravityComponent = AddComponent<Gravity3DComponent>();
+            gravityComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "Move"){
+            auto* moveComponent = AddComponent<Move3DComponent>();
+            moveComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "Jump"){
+            auto* jumpComponent = AddComponent<JumpComponent>();
+            jumpComponent->LoadFromJson(componentJson);
+        } else if(componentType == "Routine"){
+            auto* routineComponent = AddComponent<Routine3DComponent>();
+            routineComponent->LoadFromJson(componentJson);
         }
     }
 }
@@ -443,13 +519,14 @@ void GameObject::EditGUI(){
     }
 
     if(ImGui::BeginPopup("AddComponentPopup")){
+        ImGui::Indent();
         // コンポーネントの追加
         if(ImGui::Button("ModelRenderComponent / モデル描画")){
             AddComponent<ModelRenderComponent>();
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
-            AddComponent<CollisionComponent>();
+            AddComponent<Collision3DComponent>();
             ImGui::CloseCurrentPopup();
         }
         if(ImGui::Button("TextComponent / テキスト描画")){
@@ -460,6 +537,24 @@ void GameObject::EditGUI(){
             AddComponent<SpotLightComponent>();
             ImGui::CloseCurrentPopup();
         }
+        if(ImGui::Button("GravityComponent / 重力")){
+            AddComponent<Gravity3DComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("MoveComponent / 移動")){
+            AddComponent<Move3DComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("JumpComponent / ジャンプ")){
+            AddComponent<JumpComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("RoutineComponent / ルーチン")){
+            AddComponent<Routine3DComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::Unindent();
         ImGui::EndPopup();
     }
 

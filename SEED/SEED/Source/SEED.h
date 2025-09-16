@@ -36,6 +36,7 @@
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 
 // external
 #include <json.hpp>
@@ -146,7 +147,25 @@ public:
 
     // AABB, OBBの描画関数
     static void DrawAABB(const AABB& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawAABB2D(const AABB2D& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+
+    // 六角形の描画
+    static void DrawHexagon(
+        const Vector2& center, float radius, float theta, 
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        BlendMode blendMode = BlendMode::NORMAL,
+        DrawLocation drawLocation = DrawLocation::Front, 
+        int32_t layer = 0, bool isApplyViewMat = true
+    );
+
+    static void DrawHexagonFrame(
+        const Vector2& center, float radius, float theta, float frameWidthRate,
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
+        BlendMode blendMode = BlendMode::NORMAL,
+        DrawLocation drawLocation = DrawLocation::Front,
+        int32_t layer = 0, bool isApplyViewMat = true
+    );
 
     // 球の描画関数
     static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
@@ -165,6 +184,9 @@ public:
     static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     // ライトのデバッグ用描画
     static void DrawLight(const BaseLight* light);
+    // SkyBoxの描画関数
+    static void SetSkyBox(const std::string& textureName, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSkyBox(bool isFollowCameraPos = true,const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 100.0f);
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                その他細かい関数                                   */
@@ -182,6 +204,7 @@ public:
     static Vector2 GetImageSize(const std::wstring& fileName);
     // 画面の解像度を変更する関数(0.0f ~ 1.0f)
     static void ChangeResolutionRate(float resolutionRate);
+    static float GetResolutionRate(){ return DxManager::GetInstance()->GetResolutionRate(); }
     // カメラにシェイクを設定する関数
     static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
     // マウスカーソルの表示・非表示を切り替える関数
@@ -209,6 +232,8 @@ public:
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
     static void SetIsRepeatCursor(bool flag){instance_->isRepeatCursor_ = flag;}
     static void ToggleRepeatCursor(){ instance_->isRepeatCursor_ = !instance_->isRepeatCursor_; }
+    // アプリケーション終了フラグ
+    static bool GetIsEndAplication(){ return instance_->isEndAplication_; }
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                     メンバ変数                                    */
@@ -220,7 +245,8 @@ private:// インスタンス
     bool isCursorVisible_ = true;
     bool isDebugCamera_ = false;
     float resolutionRate_ = 1.0f;
-    bool isGridVisible_ = true;
+    bool isGridVisible_ = false;
+    bool isEndAplication_ = false;
     Vector4 clearColor_;
 
 private:// object

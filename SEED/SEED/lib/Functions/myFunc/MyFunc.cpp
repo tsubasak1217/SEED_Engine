@@ -72,6 +72,10 @@ Vector2 MyFunc::Random(const Range2D& range){
     return Random(range.min, range.max);
 }
 
+float MyFunc::Random(const Range1D& range){
+    return Random(range.min, range.max);
+}
+
 
 
 //--------------- ランダムな方向を返す関数 ---------------//
@@ -103,6 +107,18 @@ Vector2 MyFunc::RandomVector2(){
 //----------------- ランダムな色を返す関数 -----------------//
 Vector4 MyFunc::RandomColor(){
     return { Random(0.0f,1.0f),Random(0.0f,1.0f),Random(0.0f,1.0f),1.0f };
+}
+
+Vector4 MyFunc::RandomColor(std::initializer_list<uint32_t> colorList, bool isCorrectionToLiner){
+    if(colorList.size() == 0){
+        return { 1.0f,1.0f,1.0f,1.0f }; // デフォルトの白色
+    }
+
+    // ランダムに選択
+    auto it = std::next(colorList.begin(), Random(0, static_cast<int>(colorList.size()) - 1));
+    uint32_t color = *it;
+    // RGBA成分を抽出して返す
+    return MyMath::FloatColor(color, isCorrectionToLiner);
 }
 
 //----------------- ランダムな方向を返す関数 -----------------//
@@ -157,7 +173,7 @@ int32_t MyFunc::Spiral(int32_t input, int32_t min, int32_t max){
 float MyFunc::Spiral(float input, float min, float max){
 
     if(max < min){
-        assert(false);
+        return Spiral(input, max, min);
     }
 
 
@@ -356,9 +372,9 @@ std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, boo
         // ディレクトリのみを探す
         if(cur.is_directory()){
             if(isRelative){
-                folderList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                folderList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
             } else{
-                folderList.push_back(cur.path().string()); // 絶対パスを格納
+                folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
             }
         }
     }
@@ -380,9 +396,9 @@ std::vector<std::string> MyFunc::GetFileList(
             if(cur.is_regular_file() && cur.path().extension() == ext){
                 // ファイル名を格納
                 if(isRelative){
-                    fileList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    fileList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    fileList.push_back(cur.path().string()); // 絶対パスを格納
+                    fileList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -402,9 +418,9 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -413,9 +429,9 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
-                    dirList.push_back(cur.path().string()); // 絶対パスを格納
+                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
@@ -452,9 +468,9 @@ std::string MyFunc::FindFile(const std::string& entryPath, const std::string& fi
         if(cur.is_regular_file() && cur.path().filename() == filePath){
             // 存在する場合はパスを返す
             if(isRelative){
-                return fs::relative(cur.path(), entryPath).string(); // 相対パスを返す
+                return fs::relative(cur.path(), entryPath).generic_string(); // 相対パスを返す
             } else{
-                return cur.path().string(); // 絶対パスを返す
+                return cur.path().generic_string(); // 絶対パスを返す
             }
         }
     }
@@ -475,16 +491,79 @@ std::filesystem::path MyFunc::GetProjectDirectory(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ファイル名のみ抜き出す関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::string MyFunc::ExtractFileName(const std::string& filePath, bool isContainExt){
+    // ファイルパスからファイル名を取得
+    std::filesystem::path path(filePath);
+    std::string fileName = path.filename().generic_string(); // ファイル名を取得
+    if(isContainExt){
+        return fileName; // 拡張子を含む場合はそのまま返す
+    } else{
+        // 拡張子を除去して返す
+        return path.stem().generic_string(); // 拡張子を除去したファイル名を返す
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::string MyFunc::ToFullPath(const std::string& relativePath){
-    std::string fullPath = GetProjectDirectory().string() + "/" + relativePath;
+    std::string fullPath = GetProjectDirectory().generic_string() + "/" + relativePath;
     // フルパスを正規化して返す
-    return std::filesystem::canonical(fullPath).string();
+    return std::filesystem::canonical(fullPath).generic_string();
 }
 
 std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
-    std::wstring fullPath = GetProjectDirectory().wstring() + L"/" + relativePath;
+    std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
     // フルパスを正規化して返す
-    return std::filesystem::canonical(fullPath).wstring();
+    return std::filesystem::canonical(fullPath).generic_wstring();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Jsonファイル関連
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+nlohmann::json MyFunc::GetJson(const std::string& filePath){
+
+    if(!filePath.ends_with(".json")){
+        assert(false && "Jsonファイルの拡張子が不正");
+        return nlohmann::json();
+    }
+
+    // ファイルを開く
+    std::ifstream file(filePath);
+    if(!file.is_open()){
+        return nlohmann::json();
+    }
+
+    // JSONデータをパース
+    nlohmann::json jsonData;
+    file >> jsonData;
+    return jsonData;
+}
+
+// Jsonファイルを作成する関数
+void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData){
+
+    if(!filePath.ends_with(".json")){
+        assert(false && "Jsonファイルの拡張子が不正");
+        return;
+    }
+
+    // 親ディレクトリを作成（なければ）
+    fs::path path(filePath);
+    if(path.has_parent_path()){
+        fs::create_directories(path.parent_path());
+    }
+
+    // ファイルを開く
+    std::ofstream file(filePath);
+    if(!file.is_open()){
+        assert(false && "Jsonファイルの作成に失敗");
+        return;
+    }
+    
+    // JSONデータを書き込む
+    file << jsonData.dump(4); // インデント幅を4に設定して書き込む
 }

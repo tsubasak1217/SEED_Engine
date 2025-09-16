@@ -51,6 +51,14 @@ float MyMath::LengthSq(const Vector3& vec){
     return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
 }
 
+bool MyMath::HasLength(const Vector2& vec){
+    return LengthSq(vec) > 0.0f;
+}
+
+bool MyMath::HasLength(const Vector3& vec){
+    return LengthSq(vec) > 0.0f;
+}
+
 /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
 Vector2 MyMath::Normalize(const Vector2& vec){
@@ -193,6 +201,59 @@ Vector3 MyMath::ClosestPoint(const Vector3& seg_origin, const Vector3& seg_end, 
     }
 
     return seg_origin + proj;
+}
+
+std::array<Vector2, 2> MyMath::LineClosestPoints(const Line2D& l1, const Line2D& l2){
+    // 2直線の方向ベクトル
+    Vector2 dir1 = l1.end_ - l1.origin_;
+    Vector2 dir2 = l2.end_ - l2.origin_;
+    
+    // 2直線の長さ
+    float length1 = MyMath::Length(dir1);
+    float length2 = MyMath::Length(dir2);
+    
+    // 点が同じ場所の場合
+    if(length1 == 0.0f){
+        if(length2 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { l1.origin_,MyMath::ClosestPoint(l2.origin_,l2.end_,l1.origin_) };
+        }
+    } else if(length2 == 0.0f){
+        if(length1 == 0.0f){
+            return { l1.origin_,l2.origin_ };
+        } else{
+            return { MyMath::ClosestPoint(l1.origin_,l1.end_,l2.origin_),l2.origin_ };
+        }
+    }
+    
+    // 2直線の始点間のベクトル
+    Vector2 originVec = l2.origin_ - l1.origin_;
+    
+    // 2直線の方向ベクトルの外積
+    float cross = MyMath::Cross(dir1, dir2);
+    
+    // 2直線が平行な場合
+    if(std::abs(cross) < 1e-6f){
+        return { l1.origin_,l2.origin_ };
+    }
+    
+    // 最近傍点を計算
+    float crossLengthSq = cross * cross;
+    float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
+    float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
+    
+    // t1, t2 を [0, 1] に制限
+    t1 = std::clamp(t1, 0.0f, 1.0f);
+    t2 = std::clamp(t2, 0.0f, 1.0f);
+
+    Vector2 closest1 = l1.origin_ + dir1 * t1;
+    Vector2 closest2 = l2.origin_ + dir2 * t2;
+    return { closest1, closest2 };
+}
+
+float MyMath::GetTheta(const Vector2& dir){
+    return std::atan2(dir.y, dir.x); // -π ~ +π の範囲
 }
 
 
@@ -547,7 +608,7 @@ uint32_t MyMath::GrayScale(uint32_t color){
 
 
 // RGBA形式のカラーコードをVector4形式に変換する関数 (各要素は0~1に収まる)
-Vector4 MyMath::FloatColor(uint32_t color){
+Vector4 MyMath::FloatColor(uint32_t color, bool isCorrectionToLiner){
     float delta = 1.0f / 255.0f;
 
     Vector4 colorf = {
@@ -557,10 +618,17 @@ Vector4 MyMath::FloatColor(uint32_t color){
         float(Alpha(color)) * delta
     };
 
+    if(isCorrectionToLiner){
+        // ガンマ補正を行う
+        colorf.x = std::pow(colorf.x, 2.2f);
+        colorf.y = std::pow(colorf.y, 2.2f);
+        colorf.z = std::pow(colorf.z, 2.2f);
+    }
+
     return colorf;
 }
 
-Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
+Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a, bool isCorrectionToLiner){
     float delta = 1.0f / 255.0f;
 
     Vector4 colorf = {
@@ -569,6 +637,14 @@ Vector4 MyMath::FloatColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
         float(b) * delta,
         float(a) * delta
     };
+
+
+    if(isCorrectionToLiner){
+        // ガンマ補正を行う
+        colorf.x = std::pow(colorf.x, 2.2f);
+        colorf.y = std::pow(colorf.y, 2.2f);
+        colorf.z = std::pow(colorf.z, 2.2f);
+    }
 
     return colorf;
 }
@@ -621,6 +697,41 @@ Vector4 MyMath::HSV_to_RGB(float h, float s, float v, float alpha){
 }
 
 
-Vector4 MyMath::HSV_to_RGB(Vector4 HSVA_color){
+
+Vector4 MyMath::HSV_to_RGB(const Vector4& HSVA_color){
     return HSV_to_RGB(HSVA_color.x, HSVA_color.y, HSVA_color.z, HSVA_color.w);
+}
+
+// RGBをHSV形式に変換する関数
+Vector4 MyMath::RGB_to_HSV(const Vector4& rgbColor){
+    float r = rgbColor.x;
+    float g = rgbColor.y;
+    float b = rgbColor.z;
+    float max = std::max({ r, g, b });
+    float min = std::min({ r, g, b });
+    float delta = max - min;
+    float h, s, v = max;
+    if(max == 0.0f){
+        s = 0.0f; // 彩度が0
+        h = 0.0f; // 色相は定義されない
+    } else{
+        s = delta / max; // 彩度の計算
+        if(delta == 0.0f){
+            h = 0.0f; // 色相は定義されない
+        } else if(max == r){
+            h = (g - b) / delta + (g < b ? 6.0f : 0.0f);
+        } else if(max == g){
+            h = (b - r) / delta + 2.0f;
+        } else{
+            h = (r - g) / delta + 4.0f;
+        }
+        h /= 6.0f; // 色相を[0,1]に正規化
+    }
+    return Vector4(h, s, v, rgbColor.w);
+}
+
+// RGB形式のカラーコードをHSV形式に変換する関数
+Vector4 MyMath::RGB_to_HSV(uint32_t colorCode){
+    Vector4 rgbColor = FloatColor(colorCode);
+    return RGB_to_HSV(rgbColor);
 }

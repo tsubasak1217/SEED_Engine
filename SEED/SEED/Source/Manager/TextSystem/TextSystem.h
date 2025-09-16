@@ -52,6 +52,8 @@ private:// 読み込みに使用する内部関数
         int width,int height
     );
 
+    void StartupLoad();// 起動時に読み込むフォント
+
 private:
     std::unordered_map<std::string, std::unique_ptr<FontData>> fontDataMap_; // フォントデータのマップ
     std::vector<std::string> fontNames; // 読み込んだフォント名のリスト

@@ -18,6 +18,15 @@ TextSystem* TextSystem::GetInstance(){
 void TextSystem::Initialize(){
     // インスタンスの取得
     GetInstance();
+    // フォントの起動時読み込み
+    instance_->StartupLoad();
+}
+
+///////////////////////////////////////////////////////////////////
+// 起動時に読み込むフォント
+///////////////////////////////////////////////////////////////////
+void TextSystem::StartupLoad(){
+    LoadFont("DefaultAssets/Digital/851Gkktt_005.ttf");
 }
 
 /////////////////////////////////////////////////////////////////
@@ -36,11 +45,19 @@ void TextSystem::Release(){
 /////////////////////////////////////////////////////////////////
 const GlyphData* TextSystem::GetGlyphData(const std::string& fontName, int32_t codePoint){
     // フォントデータが存在しない場合はnullptrを返す
-    if(fontDataMap_.find(directory_ + fontName) == fontDataMap_.end()){
+    std::string fullFontName;
+    if(fontName.starts_with("Resources")){
+        fullFontName = fontName;
+    } else{
+        fullFontName = directory_ + fontName;
+    }
+    std::filesystem::path pathObj = fullFontName;
+    std::string fontFileName = pathObj.filename().string();
+    if(fontDataMap_.find(fontFileName) == fontDataMap_.end()){
         assert(false);
     }
     // フォントデータを取得
-    const FontData& fontData = *fontDataMap_[directory_ + fontName];
+    const FontData& fontData = *fontDataMap_[fontFileName];
 
     // 文字コードに対応するグリフデータを取得
     auto it = fontData.glyphDatas.find(codePoint);
@@ -254,13 +271,23 @@ uint32_t TextSystem::CreateFontTexture(const std::string& fontName, const uint8_
     return ViewManager::CreateView(VIEW_TYPE::SRV, textureResources.back().Get(), &srvDesc, fontName);
 }
 
+
 ///////////////////////////////////////////////////////////////////
 // フォントを読み込む
 ///////////////////////////////////////////////////////////////////
 const FontData* TextSystem::LoadFont(const std::string& filename){
     // すでに読み込まれている場合はそのポインタを返す
-    std::string fullPath = directory_ + filename; // ディレクトリを付加
-    auto it = fontDataMap_.find(fullPath);
+    std::string fullPath;
+    std::filesystem::path pathObj;
+    
+    if(filename.starts_with("Resources")){
+        fullPath = filename; // すでにディレクトリが付加されている場合
+    } else{
+        fullPath = directory_ + filename; // ディレクトリを付加
+    }
+
+    pathObj = fullPath;
+    auto it = fontDataMap_.find(pathObj.filename().string());
     if(it != fontDataMap_.end()){
         return it->second.get();
     }
@@ -299,7 +326,8 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
     }
 
     // フォントデータをマップに追加
-    auto [insertedIt, success] = fontDataMap_.emplace(fullPath, std::move(fontData));
+
+    auto [insertedIt, success] = fontDataMap_.emplace(pathObj.filename().string(), std::move(fontData));
 
     // glyphをマップに追加(moveした後じゃないと無効になります)
     for(auto& atlas : insertedIt->second->atlases){
@@ -321,11 +349,20 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
 ///////////////////////////////////////////////////////////////////
 const FontData& TextSystem::GetFont(const std::string& filename){
     
-    if(fontDataMap_.find(directory_ + filename) == fontDataMap_.end()){
+    std::string fullPath;
+    if(filename.starts_with("Resources")){
+        fullPath = filename; // すでにディレクトリが付加されている場合
+    } else{
+        fullPath = directory_ + filename; // ディレクトリを付加
+    }
+
+    std::filesystem::path pathObj = fullPath;
+    std::string fontFileName = pathObj.filename().string();
+    if(fontDataMap_.find(fontFileName) == fontDataMap_.end()){
         // フォントが読み込まれていない場合はロードを試みる
         LoadFont(filename);
     }
 
     // フォントデータを取得
-    return *fontDataMap_[directory_ + filename];
+    return *fontDataMap_[fontFileName];
 }

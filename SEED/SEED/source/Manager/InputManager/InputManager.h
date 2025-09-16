@@ -28,6 +28,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+enum class InputDevice{
+    KEYBOARD,
+    GAMEPAD
+};
+
 class Input{
 
 private:
@@ -55,12 +60,15 @@ public:// キーの状態を返す関数
     /*------------- キーボード ------------*/
     static bool IsPressKey(uint8_t key);
     static bool IsPressKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsPressKey(const std::vector<uint8_t>& keys);
     static bool IsPressAnyKey();
     static bool IsTriggerKey(uint8_t key);
     static bool IsTriggerKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsTriggerKey(const std::vector<uint8_t>& keys);
     static bool IsTriggerAnyKey();
     static bool IsReleaseKey(uint8_t key);
     static bool IsReleaseKey(const std::initializer_list<uint8_t>& keys);
+    static bool IsReleaseKey(const std::vector<uint8_t>& keys);
     static bool IsReleaseAnyKey();
 
     /*-------------- マウス --------------*/
@@ -72,7 +80,7 @@ public:// キーの状態を返す関数
     static Vector2 GetMouseDirection(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static bool IsMouseMoved(INPUT_STATE inputState = INPUT_STATE::CURRENT);
-
+    static bool IsMouseInputAny();
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
@@ -100,6 +108,14 @@ public:// キーの状態を返す関数
 
     // スティックのデッドゾーン設定
     static void SetDeadZone(float deadZone){ instance_->deadZone_ = deadZone; }
+    static float GetDeadZone() { return deadZone_; }
+
+    // アクティブかどうか
+    static void SetIsActive(bool isActive){ instance_->isActive_ = isActive; }
+    // 直近で使用した入力デバイス
+    static InputDevice GetRecentInputDevice(){ return instance_->recentInputDevice_; }
+    static bool IsChangedInputDevice(){ return instance_->recentInputDevice_ != instance_->prevDevice_; }
+    static bool GetIsAnyInput(bool isIgnoreActiveFlag = false);
 
 private:
 
@@ -123,8 +139,15 @@ private:
     XINPUT_STATE xInputState_[XUSER_MAX_COUNT];
     XINPUT_STATE preXInputState_[XUSER_MAX_COUNT];
     bool connected_[XUSER_MAX_COUNT];
-    float deadZone_;
+    static float deadZone_;
 
     // ボタン管理用変数
     static std::unordered_map<PAD_BUTTON, uint32_t>buttonMap_;
+
+    // アクティブかどうか
+    bool isActive_ = true;
+
+    // 直近で使用した入力デバイス
+    InputDevice recentInputDevice_ = InputDevice::KEYBOARD;
+    InputDevice prevDevice_ = InputDevice::KEYBOARD;
 };

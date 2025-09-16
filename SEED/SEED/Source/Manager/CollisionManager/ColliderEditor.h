@@ -11,12 +11,12 @@
 // local
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
 
 class GameObject;
 
 class ColliderEditor{
-
+    friend class Collision3DComponent;
 private:// 基本関数
     ColliderEditor() = default;
 public:
@@ -34,6 +34,7 @@ private:
     void InputOnGUI();
 
     static void LoadColliderData(const std::string fileName);
+    static std::vector<Collider*> LoadColliderData(const nlohmann::json& json);
     void OutputToJson();
     void LoadFromJson(const std::string& fileName);
 
@@ -49,8 +50,9 @@ private:
     GameObject* parentObject_ = nullptr;
     const Matrix4x4* parentMat_ = nullptr;
     std::vector<std::unique_ptr<Collider>>colliders_;
+
     // ロードしたコライダーのデータ
-    static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_;
-    static std::vector<std::string> colliderFileNames_;
+    inline static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_{};
+    inline static std::vector<std::string> colliderFileNames_{};
     int32_t selectedColliderIndex_ = 0;
 };

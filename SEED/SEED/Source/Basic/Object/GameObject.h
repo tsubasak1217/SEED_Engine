@@ -6,7 +6,7 @@
 
 #include <SEED/Lib/Structs/Model.h>
 #include <Environment/Physics.h>
-#include <SEED/Source/Basic/Collision/Collider.h>
+#include <SEED/Source/Basic/Collision/3D/Collider.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
@@ -37,7 +37,6 @@ public:
     void Draw();
     void BeginFrame();
     void EndFrame();
-    void RegisterToHierarchy(Hierarchy* pHierarchy);
 
 public:// コンポーネントの管理関数
     template<typename TComponent>
@@ -54,16 +53,42 @@ public:// コンポーネントの管理関数
         return static_cast<TComponent*>(components_.back().get());
     }
 
+    // 型と名前で取得
     template<typename TComponent>
-    TComponent* GetComponent(const std::string& tagName){
+    TComponent* GetComponent(const std::string& tagName = ""){
         static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
         for(auto& component : components_){
             // 名前が一致しているか
-            if(component->GetTagName() == tagName){
+            if(!tagName.empty()){
+                if(component->GetTagName() == tagName){
+                    // 型が一致しているか
+                    if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
+                        return foundComponent;
+                    }
+                }
+            } else{
                 // 型が一致しているか
                 if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
                     return foundComponent;
                 }
+            }
+        }
+        return nullptr;
+    }
+
+    // 型とインデックスで取得
+    template<typename TComponent>
+    TComponent* GetComponent(uint32_t index){
+        static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
+        uint32_t count = 0;
+        for(auto& component : components_){
+            // 型が一致しているか
+            if(auto* foundComponent = dynamic_cast<TComponent*>(component.get())){
+                // インデックスが一致しているか
+                if(count == index){
+                    return foundComponent;
+                }
+                count++;
             }
         }
         return nullptr;
@@ -104,6 +129,8 @@ public:
     void SetName(const std::string& name){ objectName_ = name; }
     void SetIsActive(bool isActive){ isActive_ = isActive; }
     bool GetIsActive() const{ return isActive_; }
+    void SetIsMustDraw(bool isMustDraw){ isMustDraw_ = isMustDraw; }
+    bool GetIsMustDraw() const{ return isMustDraw_; }
 
     //=====================================
     // 親子付け関連
@@ -112,6 +139,7 @@ public:
     void SetParentComponentInfo(const ParentComponentInfo& info){ parentComponentInfo_ = info; }
     GameObject* GetParent(){ return parent_; }
     const std::list<GameObject*>& GetChildren() const{ return children_; }
+    std::list<GameObject*> GetAllChildren()const;
     void RemoveChild(GameObject* child);
     void ReleaseParent();
     void ReleaseChildren();
@@ -127,17 +155,21 @@ public:
     /*------ scale -------*/
     Vector3 GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
-    void SetLocalScale(const Vector3& scale){ localTransform_.scale = scale; }
+    void SetWorldScale(const Vector3& scale);
+    void SetLocalScale(const Vector3& scale);
     /*------ rotate -------*/
     const Quaternion& GetWorldRotate() const{ return worldTransform_.rotate; }
     const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
     Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
     Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
-    void SetLocalRotate(const Quaternion& rotate){ localTransform_.rotate = rotate; }
+    void SetWorldRotate(const Quaternion& rotate);
+    void SetLocalRotate(const Quaternion& rotate);
     /*------ translate -------*/
     Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
     void AddWorldTranslate(const Vector3& addValue);
+    void SetWorldTranslate(const Vector3& translate);
+    void SetLocalTranslate(const Vector3& translate);
     const Vector3& GetPrePos() const{ return prePos_; }
     /*------ matrix -------*/
     const Matrix4x4& GetLocalMat() const{ return localMat_; }
@@ -149,6 +181,9 @@ public:
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
     void SetVelocityZ(float z){ velocity_.z = z; }
+    /*-------- state --------*/
+    bool GetIsOnGrounnd()const{ return isOnGround_; }
+    void SetIsOnGround(bool flag){ isOnGround_ = flag; }
 
     //=====================================
     // json
@@ -170,6 +205,7 @@ protected:
     std::string objectName_;
     Vector3 targetOffset_;
     bool isActive_ = true;
+    bool isMustDraw_ = false;
     std::list<std::unique_ptr<IComponent>> components_;
 
 public:
@@ -194,5 +230,7 @@ private:
 protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
+    bool isOnGround_ = true;
+    bool preIsOnGround_ = true;
     Vector3 prePos_;
 };

@@ -5,8 +5,9 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 
+
 // シーン管理クラス(シングルトン)
-class SceneManager{
+class SceneManager {
 
 private:
     SceneManager();
@@ -25,5 +26,7 @@ public:// シーンの管理
     static Scene_Base* CreateScene(const std::string sceneName);
 
 private:// メンバ変数
+
     std::unordered_map<std::string, std::function<Scene_Base* (void)>> sceneMap_;
+
 };

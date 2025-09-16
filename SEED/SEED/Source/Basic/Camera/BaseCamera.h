@@ -30,6 +30,8 @@ private:
 
 public:// アクセッサ
 
+    const Transform& GetTransform() const{ return transform_; }
+    void SetTransform(const Transform& transform){ transform_ = transform; }
     const Vector3& GetTranslation() const{ return transform_.translate; }
     void SetTranslation(const Vector3& translation){ transform_.translate = translation; }
     const Quaternion& GetRotation() const{ return transform_.rotate; }
@@ -39,6 +41,7 @@ public:// アクセッサ
     const Vector3& GetScale() const{ return transform_.scale; }
     void SetScale(const Vector3& scale){ transform_.scale = scale; }
     const Vector2& GetClipRange() const{ return clipRange_; }
+    void SetClipRange(const Vector2& clipRange) { clipRange_ = clipRange; }
     float GetZNear() const{ return znear_; }
     void SetZNear(float znear){ znear_ = znear; }
     float GetZFar() const{ return zfar_; }
@@ -49,6 +52,7 @@ public:// アクセッサ
     void SetProjectionMode(PROJECTIONMODE mode){ projectionMode_ = mode; }
     const Vector3& GetNormal() const{ return normal_; }
     const Matrix4x4& GetWorldMat() const{ return worldMat_; }
+    const Matrix4x4* GetWorldMatPtr(){ return &worldMat_; }
     const Matrix4x4& GetViewMat() const{ return viewMat_; }
     const Matrix4x4& GetProjectionMat() const{ return projectionMat_; }
     const Matrix4x4& GetProjectionMat2D() const{ return projectionMat2D_; }
@@ -73,7 +77,9 @@ protected:
     Vector3 normal_;
 
     Matrix4x4 worldMat_;
+    Matrix4x4 worldMat2D_;
     Matrix4x4 viewMat_;
+    Matrix4x4 viewMat2D_;
     Matrix4x4 projectionMat_;
     Matrix4x4 projectionMat2D_;
     Matrix4x4 viewProjectionMat_;
@@ -86,4 +92,7 @@ protected:
     float kShakeTime_ = 1.0f;
     float shakePower_;
     Vector3 shakeLevel_;
+
+public:
+    virtual void Edit();
 };

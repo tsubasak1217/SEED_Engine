@@ -16,3 +16,14 @@ D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetHeapStartCPU(){
 D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetHeapStartGPU(){
     return GetGPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, 0);
 }
+
+void DescriptorHeap::UnloadView(uint32_t index){
+    if(index > viewCount_){
+        return; // 無効なインデックス
+    }
+
+    // インデックスを解放リストに追加
+    freeIndices_.push(index);
+    // 使用中のビュー数を減らす
+    --viewCount_;
+}

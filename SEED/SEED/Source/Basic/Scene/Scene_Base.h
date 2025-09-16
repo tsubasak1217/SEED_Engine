@@ -5,19 +5,22 @@
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 
 class GameObject;
+class GameObject2D;
 
 class Scene_Base{
 public:
     Scene_Base();
     virtual ~Scene_Base(){};
-    virtual void Initialize() = 0;
+    virtual void Initialize();
     virtual void Finalize();
-    virtual void Update() = 0;
-    virtual void Draw() = 0;
+    virtual void Update();
+    virtual void Draw();
     virtual void BeginFrame();
-    virtual void EndFrame() = 0;
-    virtual void HandOverColliders() = 0;
-    virtual void ManageState();
+    virtual void EndFrame();
+    virtual void HandOverColliders();
+
+protected:
+    virtual void SceneEdit(){};
 
 public:
     void ChangeScene(const std::string& nextSceneName);
@@ -25,8 +28,16 @@ public:
     void CauseEvent(EventState_Base* nextEventState);
     void EndEvent() { currentEventState_ = nullptr; };
     bool HasEvent(){ return currentEventState_ != nullptr; };
+
+public:// Hierarchy関連
     void RegisterToHierarchy(GameObject* gameObject);
+    void RegisterToHierarchy(GameObject2D* gameObject);
     void RemoveFromHierarchy(GameObject* gameObject);
+    void RemoveFromHierarchy(GameObject2D* gameObject);
+    Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
+    bool IsExistObject(uint32_t gameObjectHanle) const;
+    bool IsExistObject2D(uint32_t gameObjectHanle) const;
+    void SortObject2DByTranslate(ObjSortMode sortMode);
 
 protected:
     std::unique_ptr<State_Base> currentState_;

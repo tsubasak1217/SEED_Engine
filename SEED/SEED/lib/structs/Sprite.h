@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
+#include <json.hpp>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
 #include <SEED/Lib/Structs/Material.h>
@@ -14,13 +15,12 @@ struct Sprite{
 public:
     Sprite();
     Sprite(const std::string& filename);
-    Sprite(const std::string& filename, const Vector2& leftTop, const Vector2& size);
+    Sprite(const std::string& filename, const Vector2& size);
 
     void Draw();
 
 public:
 
-    Vector2 leftTop;
     Vector2 size;
 
     // 色；マテリアル
@@ -30,9 +30,8 @@ public:
     BlendMode blendMode;
 
     // SRT
-    Vector2 scale;
-    float rotate;
-    Vector2 translate;
+    Transform2D transform;
+    Vector2 offset;
     
     // アンカーポイント
     Vector2 anchorPoint;
@@ -42,7 +41,7 @@ public:
     Vector2 clipSize;
 
     // UVトランスフォーム
-    Matrix4x4 uvTransform;  
+    Transform2D uvTransform;  
     bool flipX = false;
     bool flipY = false;
 
@@ -51,9 +50,22 @@ public:
 
     // 描画位置の設定(前景か背景か)
     DrawLocation drawLocation = DrawLocation::Front;
-    uint32_t layer = 0;// 描画順。大きいほど手前に描画
+    int32_t layer = 0;// 描画順。大きいほど手前に描画
+
+    // 2D描画時にビュー行列を適用するかどうか
+    bool isApplyViewMat = true;
+
+private:
+    Vector2 defaultSize_ = {0.0f,0.0f};
 
 public:
     Matrix4x4 GetWorldMatrix()const;
     void SetTexture(const std::string& filename);
+    void ToDefaultSize();
+    Vector2 GetDefaultSize() const;
+
+    // Json, ImGui
+    nlohmann::json ToJson() const;
+    void FromJson(const nlohmann::json& data);
+    void Edit();
 };

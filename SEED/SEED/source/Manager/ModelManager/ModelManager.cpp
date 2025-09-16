@@ -63,19 +63,23 @@ void ModelManager::Initialize(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void ModelManager::StartUpLoad(){
-    // モデルの読み込み
-    LoadModel("DefaultAssets/cube/cube.obj");
-    LoadModel("DefaultAssets/JapaneseSword/JapaneseSword.obj");
-    LoadModel("DefaultAssets/tree/tree.gltf");
-    LoadModel("DefaultAssets/Boy/Boy.gltf");
 }
 
 void ModelManager::LoadModel(const std::string& filename){
+
+    std::string path = filename;
+
+    // "Resources/"の階層からのパスなら"Moswls/"階層以降のパスに変換する
+    if(path.starts_with("Resources/Models")){
+        // "Resources/Models/"を削除
+        path = path.substr(17); // "Resources/Models"の長さは17
+    }
+
     // すでに読み込み済みのファイルであればreturn
-    if(instance_->modelData_.find(filename) != instance_->modelData_.end()){ return; }
+    if(instance_->modelData_.find(path) != instance_->modelData_.end()){ return; }
 
     // 読み込み
-    instance_->modelData_[filename] = instance_->LoadModelFile(instance_->directoryPath_, filename);
+    instance_->modelData_[path] = instance_->LoadModelFile(instance_->directoryPath_, path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

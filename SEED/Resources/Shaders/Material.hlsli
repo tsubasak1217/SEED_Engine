@@ -7,6 +7,7 @@ struct Material {
     int lightingType;
     int GH;
     float shinines;
+    float environmentCoef;
 };
 
 #endif

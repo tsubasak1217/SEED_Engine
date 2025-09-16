@@ -8,11 +8,14 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
 // 各形状のコライダーをインクルード
-#include <SEED/Source/Basic/Collision/Collider_AABB.h>
-#include <SEED/Source/Basic/Collision/Collider_OBB.h>
-#include <SEED/Source/Basic/Collision/Collider_Line.h>
-#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
-#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_AABB.h>
+#include <SEED/Source/Basic/Collision/2D/Collider_AABB2D.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_OBB.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Line.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Sphere.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/2D/Collider_Circle.h>
+#include <SEED/Source/Basic/Collision/2D/Collider_Quad2D.h>
 
 float separator = 0.01f;
 
@@ -20,6 +23,7 @@ float separator = 0.01f;
 //						重複防止のためcpp内で宣言・定義
 /////////////////////////////////////////////////////////////////////////
 void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data);
+void CalcPushbackRatio(const Collider2D* collider1, const Collider2D* collider2, CollisionData2D* data);
 
 bool CheckProjentionCollision(
     std::vector<Vector3> vertices1, std::vector<Vector3>vertices2,
@@ -57,6 +61,20 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
 CollisionData CollisionData_Capsule_Capusle(const ::Capsule& capsule1, const ::Capsule& capsule2);
 CollisionData CollisionData_Capsule_Sphere(const ::Capsule& capsule, const ::Sphere& sphere);
 
+// 2DCollision
+float Line2DDistance(const ::Line2D& line1, const ::Line2D& line2);
+
+bool Collision_AABB2D(const ::AABB2D& aabb1, const ::AABB2D& aabb2);
+CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* aabb2);
+bool Collision_Circle_Circle(const ::Circle& circle1, const ::Circle& circle2);
+CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Collider2D* circle2);
+bool Collision_Circle_Quad2D(const ::Circle& circle, const ::Quad2D& quad);
+CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D* quad);
+bool Collision_Capsule2D_Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2);
+CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2);
+CollisionData2D CircleVsConvexQuad(const Vector2& center, float radius, const Quad2D& quad);
+CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(Collider2D* quad1, Collider2D* quad2);
+
 /////////////////////////////////////////////////////////////////////////
 //						名前空間内の関数の定義
 /////////////////////////////////////////////////////////////////////////
@@ -79,6 +97,11 @@ namespace Collision{
         CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider){ return Collision_Sphere_MoveAABB(sphereCollider, aabbCollider); }
     }
 
+    namespace AABB2D{
+        bool AABB2D(const ::AABB2D& aabb1, const ::AABB2D& aabb2){ return Collision_AABB2D(aabb1, aabb2); }
+        CollisionData2D AABB2D(Collider2D* aabb1, Collider2D* aabb2){ return CollisionData_MoveAABB2D_AABB2D(aabb1, aabb2); }
+    }
+
     namespace Line{
         bool OBB(const ::Line& line, const ::OBB& obb){ return Collision_Line_OBB(line, obb); }
         bool AABB(const ::Line& line, const ::AABB& aabb){ return Collision_Line_AABB(line, aabb); }
@@ -95,10 +118,26 @@ namespace Collision{
         CollisionData Sphere(Collider* sphere1Collider, Collider* sphere2Collider){ return CollisionData_MoveSphere_MoveSphere(sphere1Collider, sphere2Collider); }
     }
 
+    namespace Circle{
+        bool Circle(const ::Circle& circle1, const ::Circle& circle2){ return Collision_Circle_Circle(circle1, circle2); }
+        CollisionData2D Circle(Collider2D* circle1, Collider2D* circle2){ return CollisionData2D_MoveCircle_MoveCircle(circle1, circle2); }
+        bool Quad2D(const ::Circle& circle, const ::Quad2D& quad){ return Collision_Circle_Quad2D(circle, quad); }
+        CollisionData2D Quad2D(Collider2D* circle, Collider2D* quad){ return CollisionData2D_MoveCircle_Quad2D(circle, quad); }
+    }
+
     namespace Quad{
         CollisionData Line(const::Quad& quad, const::Line& line){ return CollisionData_Line_Plane(line, quad); }
     }
+
+    namespace Quad2D{
+
+    }
+
+    namespace Capsule2D{
+        bool Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2){ return Collision_Capsule2D_Capsule2D(capsule1, capsule2); }
+    }
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,6 +186,39 @@ void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, Col
     return;
 }
 
+void CalcPushbackRatio(const Collider2D* collider1, const Collider2D* collider2, CollisionData2D* data){
+
+    // もしどちらかが押し戻ししない設定なら終了
+    if(collider1->isGhost_ or collider2->isGhost_){
+        data->pushBackRatio_A = 0.0f;
+        data->pushBackRatio_B = 0.0f;
+        return;
+    }
+
+    // 質量比を求める
+    float mass1 = collider1->mass_;
+    float mass2 = collider2->mass_;
+    float sumMass = mass1 + mass2;
+    if(sumMass == 0.0f){ sumMass = 1.0f; }
+
+    data->pushBackRatio_A = 1.0f - (mass1 / sumMass);
+    data->pushBackRatio_B = 1.0f - (mass2 / sumMass);
+
+    // 動かないオブジェクトがある場合
+    if(collider1->isMovable_ && !collider2->isMovable_){
+        data->pushBackRatio_A = 1.0f;
+        data->pushBackRatio_B = 0.0f;
+    } else if(!collider1->isMovable_ && collider2->isMovable_){
+        data->pushBackRatio_A = 0.0f;
+        data->pushBackRatio_B = 1.0f;
+    } else if(!collider1->isMovable_ && !collider2->isMovable_){
+        data->pushBackRatio_A = 0.0f;
+        data->pushBackRatio_B = 0.0f;
+    }
+
+    return;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 射影範囲を取得する関数 =====================================//
@@ -157,7 +229,7 @@ Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis){
     float min = MyMath::Dot(vertices[0], normalAxis);
     float max = min;
 
-    for(size_t i = 1; i < vertices.size(); i++) {
+    for(size_t i = 1; i < vertices.size(); i++){
         float proj = MyMath::Dot(vertices[i], normalAxis);
         if(proj < min) min = proj;
         if(proj > max) max = proj;
@@ -197,7 +269,7 @@ bool CheckProjentionCollision(
                 depth = range[1].max - range[0].max;
             } else if(range[1].min < range[0].min && range[1].max > range[0].max){
                 depth = range[1].max - range[0].min;
-            } else {
+            } else{
                 // そうでない場合は重なっている部分の長さを計算
                 depth = sumLength - subLength;
             }
@@ -207,7 +279,7 @@ bool CheckProjentionCollision(
         }
 
         return true;
-    } else {
+    } else{
         return false;
     }
 }
@@ -274,7 +346,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
         }
 
         return true;
-    } else {// 衝突していない場合
+    } else{// 衝突していない場合
         return false;
     }
 }
@@ -539,7 +611,7 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
     for(int32_t i = 0; i < 3; i++){
         for(int32_t j = 0; j < 3; j++){
             Vector3 axis = MyMath::Cross(axes[0][i], axes[1][j]);
-            if(MyMath::Length(axis) < 1e-6f) { // ゼロベクトルを無視
+            if(MyMath::Length(axis) < 1e-6f){ // ゼロベクトルを無視
                 continue;
             }
 
@@ -767,38 +839,38 @@ bool Collision_Line_AABB(const::Line& line, const::AABB& aabb){
     Vector3 max = aabb.center + aabb.halfSize;
     Vector3 dif = line.end_ - line.origin_;
 
-    if(dif.x != 0.0f) {
+    if(dif.x != 0.0f){
         float tx1 = (min.x - line.origin_.x) / dif.x;
         float tx2 = (max.x - line.origin_.x) / dif.x;
 
         tmin = (std::max)(tmin, (std::min)(tx1, tx2));
         tmax = (std::min)(tmax, (std::max)(tx1, tx2));
-    } else {
-        if(line.origin_.x < min.x || line.origin_.x > max.x) {
+    } else{
+        if(line.origin_.x < min.x || line.origin_.x > max.x){
             return false;
         }
     }
 
-    if(dif.y != 0.0f) {
+    if(dif.y != 0.0f){
         float ty1 = (min.y - line.origin_.y) / dif.y;
         float ty2 = (max.y - line.origin_.y) / dif.y;
 
         tmin = (std::max)(tmin, (std::min)(ty1, ty2));
         tmax = (std::min)(tmax, (std::max)(ty1, ty2));
-    } else {
-        if(line.origin_.z < min.z || line.origin_.z > max.z) {
+    } else{
+        if(line.origin_.z < min.z || line.origin_.z > max.z){
             return false;
         }
     }
 
-    if(dif.z != 0.0f) {
+    if(dif.z != 0.0f){
         float tz1 = (min.z - line.origin_.z) / dif.z;
         float tz2 = (max.z - line.origin_.z) / dif.z;
 
         tmin = (std::max)(tmin, (std::min)(tz1, tz2));
         tmax = (std::min)(tmax, (std::max)(tz1, tz2));
-    } else {
-        if(line.origin_.z < min.z || line.origin_.z > max.z) {
+    } else{
+        if(line.origin_.z < min.z || line.origin_.z > max.z){
             return false;
         }
     }
@@ -834,7 +906,7 @@ CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
         // 衝突深度が浅い方を採用
         if(data_origin.collideDepth < data_end.collideDepth){
             return data_origin;
-        } else {
+        } else{
             return data_end;
         }
     }
@@ -849,15 +921,15 @@ CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
     float tMax = 1.0f;
 
     // 各軸で交差判定
-    for(int i = 0; i < 3; ++i) {
+    for(int i = 0; i < 3; ++i){
         float t1, t2;
-        if(i == 0) { // X軸
+        if(i == 0){ // X軸
             t1 = (min.x - start.x) * invDir.x;
             t2 = (max.x - start.x) * invDir.x;
-        } else if(i == 1) { // Y軸
+        } else if(i == 1){ // Y軸
             t1 = (min.y - start.y) * invDir.y;
             t2 = (max.y - start.y) * invDir.y;
-        } else { // Z軸
+        } else{ // Z軸
             t1 = (min.z - start.z) * invDir.z;
             t2 = (max.z - start.z) * invDir.z;
         }
@@ -866,7 +938,7 @@ CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
         tMin = (std::max)(tMin, t1);
         tMax = (std::min)(tMax, t2);
 
-        if(tMin > tMax) {
+        if(tMin > tMax){
             result.isCollide = false;
             return result;
         }
@@ -911,7 +983,7 @@ CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb){
     // 点がAABB内にあるかをチェック
     if(point.x > min.x && point.x < max.x &&
         point.y > min.y && point.y < max.y &&
-        point.z > min.z && point.z < max.z) {
+        point.z > min.z && point.z < max.z){
         result.isCollide = true;
         result.hitPos = point;
 
@@ -932,7 +1004,7 @@ CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb){
         else if(minDist == dzMax) result.hitNormal = { 0.0f, 0.0f, 1.0f };
 
         result.collideDepth = minDist + separator; // 衝突深度を最小距離として扱う
-    } else {
+    } else{
         result.isCollide = false;
     }
     return result;
@@ -1192,7 +1264,7 @@ CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Col
     if(!result.isCollide){
         return result;
     }
-    
+
     // 押し戻し割合を求めるため、質量比を求める
     CalcPushbackRatio(sphereCollider1, sphereCollider2, &result);
 
@@ -1510,6 +1582,7 @@ CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Spher
 
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //=================================== 動いている球とAABBの衝突判定 ===================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1602,4 +1675,344 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
     CalcPushbackRatio(sphereCollider, aabbCollider, &collisionData);
 
     return collisionData;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 2Dの線分同士の距離 =======================================//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+float Line2DDistance(const::Line2D& line1, const::Line2D& line2){
+    Vector2 p1 = line1.end_ - line1.origin_;
+    Vector2 p2 = line2.end_ - line2.origin_;
+    Vector2 p3 = line1.origin_ - line2.origin_;
+    float a = MyMath::Dot(p1, p1);
+    float b = MyMath::Dot(p1, p2);
+    float c = MyMath::Dot(p2, p2);
+    float d = MyMath::Dot(p1, p3);
+    float e = MyMath::Dot(p2, p3);
+    float denom = a * c - b * b;
+    float s = 0.0f;
+    float t = 0.0f;
+    if(denom != 0.0f){
+        s = (b * e - c * d) / denom;
+        t = (a * e - b * d) / denom;
+        s = std::clamp(s, 0.0f, 1.0f);
+        t = std::clamp(t, 0.0f, 1.0f);
+    }
+    Vector2 closestPointLine1 = line1.origin_ + p1 * s;
+    Vector2 closestPointLine2 = line2.origin_ + p2 * t;
+    return MyMath::Length(closestPointLine1 - closestPointLine2);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 2DのAABB同士の衝突判定 =======================================//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collision_AABB2D(const::AABB2D& aabb1, const::AABB2D& aabb2){
+    Vector2 min1 = aabb1.center - aabb1.halfSize;
+    Vector2 max1 = aabb1.center + aabb1.halfSize;
+    Vector2 min2 = aabb2.center - aabb2.halfSize;
+    Vector2 max2 = aabb2.center + aabb2.halfSize;
+    // 各軸での重なりをチェック
+    bool overlapX = (min1.x <= max2.x) && (max1.x >= min2.x);
+    bool overlapY = (min1.y <= max2.y) && (max1.y >= min2.y);
+    return overlapX && overlapY;
+}
+
+CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* aabb2){
+    CollisionData2D result;
+
+    // 形状が違う場合は無効
+    if(aabb1->GetColliderType() != ColliderType2D::AABB ||
+        aabb2->GetColliderType() != ColliderType2D::AABB){
+        return result;
+    }
+
+    // 最大AABBで衝突していなければ当たっていない
+    if(Collision_AABB2D(aabb1->GetBox(), aabb2->GetBox()) == false){
+        return result;
+    }
+
+    // AABBを取得
+    auto* convertedAABB1 = dynamic_cast<Collider_AABB2D*>(aabb1);
+    auto* convertedAABB2 = dynamic_cast<Collider_AABB2D*>(aabb2);
+    AABB2D moving = convertedAABB1->GetAABB();
+    AABB2D target = convertedAABB2->GetAABB();
+    Vector2 vel = moving.center - convertedAABB1->GetPreAABB().center;
+
+    // =============================
+    // 静的衝突チェック（すでに重なっている場合）
+    // =============================
+    float dx = (target.center.x - moving.center.x);
+    float px = (target.halfSize.x + moving.halfSize.x) - std::fabs(dx);
+
+    float dy = (target.center.y - moving.center.y);
+    float py = (target.halfSize.y + moving.halfSize.y) - std::fabs(dy);
+
+    if(px > 0 && py > 0){
+        result.isCollide = true;
+
+        if(px < py){
+            result.hitNormal = Vector2{ (dx < 0 ? 1.0f : -1.0f), 0.0f };
+            result.collideDepth = px;
+        } else{
+            result.hitNormal = Vector2{ 0.0f, (dy < 0 ? 1.0f : -1.0f) };
+            result.collideDepth = py;
+        }
+
+        CalcPushbackRatio(aabb1, aabb2, &result);
+        return result;
+    }
+
+    // =============================
+    // 動的衝突チェック（Swept AABB）
+    // =============================
+    AABB2D expanded = target;
+    expanded.halfSize.x += moving.halfSize.x;
+    expanded.halfSize.y += moving.halfSize.y;
+
+    Vector2 pos = moving.center;
+    float tFirst = 0.0f;
+    float tLast = 1.0f;
+    Vector2 bestNormal{ 0,0 }; // ← 最終的に採用する法線
+
+    auto checkAxis = [&](float pos, float vel, float minB, float maxB,
+        Vector2 nMin, Vector2 nMax) -> bool{
+        if(std::fabs(vel) < 1e-6f){
+            // 速度がゼロなら範囲内にあるかどうか
+            if(pos < minB || pos > maxB) return false;
+            else return true;
+        }
+
+        float t1 = (minB - pos) / vel;
+        float t2 = (maxB - pos) / vel;
+        Vector2 n1 = nMin;
+        Vector2 n2 = nMax;
+
+        if(t1 > t2){ std::swap(t1, t2); std::swap(n1, n2); }
+
+        if(t1 > tFirst){
+            tFirst = t1;
+            bestNormal = -n1; // 更新
+        }
+        if(t2 < tLast){
+            tLast = t2;
+        }
+
+        if(tFirst > tLast) return false;
+        return true;
+    };
+
+    if(!checkAxis(pos.x, vel.x,
+        expanded.center.x - expanded.halfSize.x,
+        expanded.center.x + expanded.halfSize.x,
+        { -1,0 }, { 1,0 })) return result;
+
+    if(!checkAxis(pos.y, vel.y,
+        expanded.center.y - expanded.halfSize.y,
+        expanded.center.y + expanded.halfSize.y,
+        { 0,-1 }, { 0,1 })) return result;
+
+    if(tFirst < 0.0f || tFirst > 1.0f) return result;
+
+    // =============================
+    // 衝突あり（動的）
+    // =============================
+    result.isCollide = true;
+    result.hitNormal = bestNormal; // ← 確定
+    float time = tFirst;
+    result.collideDepth = MyMath::Length(vel) * (1.0f - time);
+
+    CalcPushbackRatio(aabb1, aabb2, &result);
+
+    return result;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 円同士の衝突判定 =========================================//
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collision_Circle_Circle(const::Circle& circle1, const::Circle& circle2){
+    float distance = MyMath::Length(circle1.center - circle2.center);
+    float sumRadius = circle1.radius + circle2.radius;
+    return distance <= sumRadius;
+}
+
+CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Collider2D* circle2){
+    CollisionData2D result;
+
+    // 形状が違う場合エラー
+    if(circle1->GetColliderType() != ColliderType2D::Circle or
+        circle2->GetColliderType() != ColliderType2D::Circle){
+        return result;
+    }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB2D(circle1->GetBox(), circle2->GetBox()) == false){
+        return result;
+    }
+
+    // 円の情報を取得
+    Collider_Circle* convertedCircle1 = dynamic_cast<Collider_Circle*>(circle1);
+    Collider_Circle* convertedCircle2 = dynamic_cast<Collider_Circle*>(circle2);
+    Circle circle[2][2] = {
+        { convertedCircle1->GetCircle(),convertedCircle1->GetPreCircle() },
+        { convertedCircle2->GetCircle(),convertedCircle2->GetPreCircle() }
+    };
+
+    // MaxRadiusを求める
+    float maxRadius[2] = {
+        (std::max)(circle[0][0].radius, circle[0][1].radius),
+        (std::max)(circle[1][0].radius, circle[1][1].radius)
+    };
+
+    // カプセルにする
+    Capsule2D capsule[2] = {
+        { circle[0][0].center, circle[0][1].center, maxRadius[0] },
+        { circle[1][0].center, circle[1][1].center, maxRadius[1] }
+    };
+
+    // カプセル同士の衝突判定
+    result = CollisionData2D_Capsule2D_Capsule2D(capsule[0], capsule[1]);
+    return result;
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 2Dの円と四角形の衝突判定 ===================================//
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collision_Circle_Quad2D(const::Circle& circle, const::Quad2D& quad){
+    quad; circle;
+    return false;
+}
+
+// 未実装
+CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D* quad){
+    CollisionData2D result;
+    // 形状が違う場合エラー
+    if(circle->GetColliderType() != ColliderType2D::Circle or
+        quad->GetColliderType() != ColliderType2D::Quad){
+        return result;
+    }
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB2D(circle->GetBox(), quad->GetBox()) == false){
+        return result;
+    }
+    // 円の情報を取得
+    Collider_Circle* convertedCircle = dynamic_cast<Collider_Circle*>(circle);
+    Circle circleData[2] = {
+        convertedCircle->GetCircle(),
+        convertedCircle->GetPreCircle()
+    };
+
+    // 2D超平面定理で判定を取る
+    return result;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//======================================= 2Dのカプセル同士の衝突判定 ===================================//
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+bool Collision_Capsule2D_Capsule2D(const::Capsule2D& capsule1, const::Capsule2D& capsule2){
+    // ラインの作成
+    ::Line2D line[2] = {
+        ::Line2D(capsule1.origin, capsule1.end),
+        ::Line2D(capsule2.origin, capsule2.end)
+    };
+    // 線分同士の最短距離を取得
+    float closestDistance = Line2DDistance(line[0], line[1]);
+
+    // カプセルの半径の和よりも短ければ衝突している
+    return closestDistance <= capsule1.radius + capsule2.radius;
+}
+
+
+
+CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const::Capsule2D& capsule1, const::Capsule2D& capsule2){
+    CollisionData2D result;
+
+    // ラインの作成
+    Line2D l1 = { capsule1.origin, capsule1.end };
+    Line2D l2 = { capsule2.origin, capsule2.end };
+    // 線分同士の最近傍点を二か所求める
+    std::array<Vector2, 2> closest = MyMath::LineClosestPoints(l1, l2);
+
+    float dist = MyMath::Length(closest[0] - closest[1]);
+    float sumRadius = capsule1.radius + capsule2.radius;
+    // 最近傍点同士の距離が半径の和よりも短ければ衝突している
+    if(dist < sumRadius){
+        result.isCollide = true;
+        result.hitPos = (closest[0] + closest[1]) * 0.5f;
+        result.hitNormal = MyMath::Normalize(closest[0] - closest[1]);
+        result.collideDepth = sumRadius - dist;
+    }
+
+    return result;
+}
+
+
+// 円 vs 凸四角形（頂点配列 v[4]）
+CollisionData2D CircleVsConvexQuad(
+    const Vector2& center, float radius, const Quad2D& quad
+){
+    CollisionData2D result;
+    bool inside = true;
+    float minOverlap = FLT_MAX;
+    Vector2 bestDir{ 0,0 };
+
+    // 各辺について
+    for(int i = 0; i < 4; i++){
+        Vector2 a = quad.localVertex[i];
+        Vector2 b = quad.localVertex[(i + 1) % 4];
+
+        // 最近傍点を求める
+        Vector2 closest = MyMath::ClosestPoint(center, a, b);
+
+        Vector2 diff = { center.x - closest.x, center.y - closest.y };
+        float dist2 = diff.x * diff.x + diff.y * diff.y;
+        float dist = sqrt(dist2);
+
+        if(dist < radius){
+            float overlap = radius - dist;
+            if(overlap < minOverlap){
+                minOverlap = overlap;
+                if(dist > 1e-6f)
+                    bestDir = { diff.x / dist, diff.y / dist }; // 正規化
+                else
+                    bestDir = { a.y - b.y, b.x - a.x }; // 万一ゼロなら辺法線
+            }
+        } else{
+            inside = false;
+        }
+    }
+
+    if(minOverlap < FLT_MAX){
+        result.hitNormal = bestDir;
+        result.collideDepth = minOverlap;
+        result.isCollide = true;
+    }
+    return result;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//==================================== 動いている2Dの四角形同士の衝突判定 ================================//
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(Collider2D* quad1, Collider2D* quad2){
+    CollisionData2D result;
+    // 形状が違う場合エラー
+    if(quad1->GetColliderType() != ColliderType2D::Quad or
+        quad2->GetColliderType() != ColliderType2D::Quad){
+        return result;
+    }
+
+    // 最大AABBが衝突していなけ得れば当たっていない
+    if(Collision_AABB2D(quad1->GetBox(), quad2->GetBox()) == false){
+        return result;
+    }
+
+    // 各コライダーの移動ベクトルを計算
+    //Collider_Quad2D* convertedQuad1 = dynamic_cast<Collider_Quad2D*>(quad1);
+    //Collider_Quad2D* convertedQuad2 = dynamic_cast<Collider_Quad2D*>(quad2);
+    //Vector2 move1 = convertedQuad1->GetQuad2D().translate;
+    return result;
 }

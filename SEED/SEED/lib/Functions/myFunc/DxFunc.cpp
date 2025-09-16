@@ -78,6 +78,9 @@ ComPtr<IDxcBlob> CompileShader(
     if(shaderError != nullptr && shaderError->GetStringLength() != 0) {
         Log(shaderError->GetStringPointer());
         // 警告・エラーダメゼッタイ
+        // エラーの内容
+        const char* errorMessage = reinterpret_cast<const char*>(shaderError->GetBufferPointer());
+        errorMessage;
         assert(false);
     }
 
@@ -312,11 +315,17 @@ ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t 
 // ------------------------------リソース作成に関する関数---------------------------------------//
 
 // バッファ用
-ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes){
+ComPtr<ID3D12Resource> CreateBufferResource(
+    ID3D12Device* device, 
+    size_t sizeInBytes,
+    D3D12_HEAP_TYPE heapLocation, 
+    D3D12_RESOURCE_FLAGS resourceFlag,
+    D3D12_RESOURCE_STATES initialState
+){
 
     //頂点リソース用のヒープの設定
     D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-    uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // UploadHeap
+    uploadHeapProperties.Type = heapLocation;
 
     //頂点リソースの設定
     D3D12_RESOURCE_DESC bufferResourceDesc{};
@@ -328,6 +337,7 @@ ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInB
     bufferResourceDesc.DepthOrArraySize = 1;
     bufferResourceDesc.MipLevels = 1;
     bufferResourceDesc.SampleDesc.Count = 1;
+    bufferResourceDesc.Flags = resourceFlag;
     // バッファの場合はこれにする決まり
     bufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
@@ -340,7 +350,7 @@ ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInB
 
     hr = device->CreateCommittedResource(
         &uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
-        &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+        &bufferResourceDesc, initialState, nullptr,
         IID_PPV_ARGS(&bufferResource)
     );
 
@@ -366,8 +376,7 @@ ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX
     // 利用するHeapの設定
     D3D12_HEAP_PROPERTIES heapProperties{};
     heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; // デフォルト
-    //heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK; // WriteBackポリシーでCPUアクセス可能
-    //heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0; // プロセッサの近くに配置
+
 
     // リソースの作成
     ComPtr<ID3D12Resource> resource = nullptr;

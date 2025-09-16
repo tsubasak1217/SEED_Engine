@@ -1,18 +1,22 @@
 #pragma once
 #include <algorithm>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
+#include <SEED/Lib/Functions/MyFunc/Easing.h>
 
 struct Timer{
     Timer() = default;
-    Timer(float _duration);
+    Timer(float _duration,float current = 0.0f);
 
 public:
-    void Initialize(float _duration);
+    void Initialize(float _duration,float current);
     float GetProgress() const;
+    float GetDuration() const;
+    float GetEase(Easing::Type easeType);
     float GetPrevProgress() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
     void Reset();
+    void ToEnd();
     void Stop();
     void Restart();
     void Update(float timeScale = 1.0f);
@@ -25,55 +29,16 @@ public:
 };
 
 
+struct TimerArray{
+    TimerArray() = default;
+    TimerArray(std::initializer_list<float> timePoints);
+    void Update(float timeScale = 1.0f);
+    int32_t GetCurrentIndex() const;
+    int32_t IsFinishedNow() const;
+    float GetProgress() const;
+    bool IsFinished() const;
+    bool IsAllFinishedNow() const;
+    std::vector<Timer> timers;
+};
 
-// コンストラクタ
-inline Timer::Timer(float _duration) {
-    Initialize(_duration);
-}
 
-// 初期化
-inline void Timer::Initialize(float _duration) {
-    this->duration = _duration;
-    currentTime = 0.0f;
-    prevTime = 0.0f;
-}
-
-// 進捗を取得(0~1)
-inline float Timer::GetProgress() const {
-    return currentTime / duration;
-}
-
-inline float Timer::GetPrevProgress() const {
-    return prevTime / duration;
-}
-
-// 完了しているかどうか
-inline bool Timer::IsFinished() const {
-    return currentTime >= duration;
-}
-
-// 今完了したばかりかどうか
-inline bool Timer::IsFinishedNow() const {
-    return prevTime < duration && currentTime >= duration;
-}
-
-// リセット
-inline void Timer::Reset() {
-    currentTime = 0.0f;
-}
-
-// 停止
-inline void Timer::Stop() {
-    isStop = true;
-}
-
-// 再開
-inline void Timer::Restart() {
-    isStop = false;
-}
-
-// 時間の更新
-inline void Timer::Update(float timeScale) {
-    prevTime = currentTime;
-    currentTime = std::clamp(currentTime + ClockManager::DeltaTime() * timeScale * !isStop, 0.0f, duration);
-}

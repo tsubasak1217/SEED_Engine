@@ -22,8 +22,14 @@ enum class TextAlign{
 };
 
 struct TextBox2D{
+
     TextBox2D() = default;
-    TextBox2D(const std::string& _text) : text(_text){}
+    TextBox2D(const std::string& _text) : text(_text){ SetFont(""); }
+    void Draw()const;
+    void SetFont(const std::string& fileName);
+    void BindDatas(std::initializer_list<BindData> datas);
+
+public:// パラメータなど
     std::string text;
     std::string fontName;
     Transform2D transform;
@@ -39,22 +45,20 @@ struct TextBox2D{
     int outlineSplitCount = 16;
     Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-#ifdef _DEBUG
+    bool isApplyViewMat = true;// ビュー行列を適用するかどうか
     bool textBoxVisible = true;
-    void Edit();
-#endif // _DEBUG
-    nlohmann::json GetJsonData() const;
-    void LoadFromJson(const nlohmann::json& jsonData);
+    int32_t layer = 0; // 描画順。大きいほど手前に描画
 
 private:// フォーマット解析
     std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)
     std::vector<std::string> AnalyzeFormatToken(const std::string& sourceText)const;
 
-public:// 関数
-    void Draw()const;
-    void SetFont(const std::string& fileName);
-    void BindDatas(std::initializer_list<BindData> datas);
+public:// 編集・入出力関連
+#ifdef _DEBUG
+    void Edit();
+#endif // _DEBUG
+    nlohmann::json GetJsonData() const;
+    void LoadFromJson(const nlohmann::json& jsonData);
 };
 
 struct TextBox3D{

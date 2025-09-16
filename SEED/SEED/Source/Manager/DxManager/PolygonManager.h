@@ -108,7 +108,8 @@ private:// 内部で使用する定数や列挙型
     static const int kPrimitiveVariation = kPrimitiveCount;
 
     enum class DrawOrder : BYTE{
-        Model = 0,
+        SkyBox = 0,
+        Model,
         AnimationModel,
         Triangle,
         Quad,
@@ -148,6 +149,7 @@ public:// 根幹をなす関数
     PolygonManager(DxManager* pDxManager);
     ~PolygonManager();
     void InitResources();
+    void BindFrameDatas();
     void BindCameraDatas(const std::string& cameraName);
     void Finalize();
     void Reset();
@@ -158,6 +160,7 @@ public:
 
 public:
     void AddLight(BaseLight* light);
+    void AddSkyBoxDrawCommand(){ skyBoxAdded_ = true; }
 
 private:
 
@@ -169,13 +172,13 @@ public:// 頂点情報の追加に関わる関数
     void AddTriangle(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Matrix4x4& worldMat, const Vector4& color,
-        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
+        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
         uint32_t GH, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0
     );
 
-    void AddTriangle3DPrimitive(
+    void AddTrianglePrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
         uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
@@ -186,13 +189,13 @@ public:// 頂点情報の追加に関わる関数
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
         const Matrix4x4& worldMat, const Vector4& color,
-        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D,
+        int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
         uint32_t GH, BlendMode blendMode,bool isText = false,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0
     );
 
-    void AddQuad3DPrimitive(
+    void AddQuadPrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
         const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
@@ -200,11 +203,11 @@ public:// 頂点情報の追加に関わる関数
     );
 
     void AddSprite(
-        const Vector2& size, const Matrix4x4& worldMat,
+        const Vector2& size, const Vector2& defaultSize, const Matrix4x4& worldMat,
         uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
         const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
-        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0,
+        bool isApplyViewMat,D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
+        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0,
         bool isSystemDraw = false
     );
 
@@ -213,12 +216,13 @@ public:// 頂点情報の追加に関わる関数
     void AddLine(
         const Vector4& v1, const Vector4& v2,
         const Matrix4x4& worldMat, const Vector4& color,
-        bool view3D, BlendMode blendMode, bool isStaticDraw = false,
-        DrawLocation drawLocation = DrawLocation::Not2D, uint32_t layer = 0, bool alwaysWrite = false
+        bool view3D,bool isApplyViewMat, BlendMode blendMode, bool isStaticDraw = false,
+        DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0, bool alwaysWrite = false
     );
 
 private:
     void AddOffscreenResult(uint32_t GH, BlendMode blendMode);
+    void AddSkyBox();
 
 private:
 
@@ -231,12 +235,12 @@ private:// 外部参照のためのポインタ変数
 
 private:// 描画上限や頂点数などの定数
 
-    static const int32_t kMaxTriangleCount_ = 0xfff;
+    static const int32_t kMaxTriangleCount_ = 0xffff;
     static const int32_t kMaxQuadCount_ = kMaxTriangleCount_ / 2;
     static const int32_t kMaxMeshCount_ = 0xffff;
     static const int32_t kMaxVerticesCountInResource_ = 10240000;
     static const int32_t kMaxModelVertexCount = 5000000;
-    static const int32_t kMaxSpriteCount = 256;
+    static const int32_t kMaxSpriteCount = 1024;
     static const int32_t kMaxLineCount_ = 512000;
     static const int32_t kMeshletIndexCount = 64;
 
@@ -325,5 +329,5 @@ private:// GPUハンドルまとめ
 
 private:
     bool isWrited_ = false; // 描画データを書き込んだかどうか
-    bool isActivePostEffect_ = false;
+    bool skyBoxAdded_ = false; // SkyBoxが追加されたかどうか
 };

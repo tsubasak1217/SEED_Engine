@@ -2,6 +2,8 @@
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Basic/Scene/SceneRegister.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
+#include <SEED/Source/Manager/VideoManager/VideoManager.h>
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 
 /////////////////////////////////////////////////////////////////
 // 静的メンバ変数の初期化
@@ -27,7 +29,7 @@ void GameSystem::Initialize() {
     // シーンの登録
     SceneRegister::RegisterScenes();
     // 最初のシーンを設定
-    ChangeScene("Clear");
+    ChangeScene("Game");
 }
 
 /////////////////////////////////////////////////////////////////
@@ -59,14 +61,14 @@ void GameSystem::Run() {
 void GameSystem::Update() {
     // シーンの更新
     instance_->pScene_->Update();
-    // Colliderの追加
-    instance_->pScene_->HandOverColliders();
-    // 当たり判定
-    CollisionManager::CheckCollision();
+    // ビデオの更新
+    VideoManager::GetInstance()->Update();
     // エフェクトの更新
     EffectSystem::Update();
     // すべての更新終了後にカメラを更新
     CameraManager::Update();
+    // シーン遷移の更新
+    SceneTransitionDrawer::Update();
 }
 
 
@@ -82,10 +84,10 @@ void GameSystem::Draw() {
 
     // エフェクトの描画
     EffectSystem::Draw();
-
-    // コリジョンの描画(デバッグ表示)
-    CollisionManager::Draw();
     
+    // シーン遷移の更新
+    SceneTransitionDrawer::Draw();
+
     // ImGuiの描画
     DrawGUI();
 }
@@ -99,6 +101,12 @@ void GameSystem::BeginFrame() {
     CollisionManager::ResetColliderList();
     // シーンのフレーム開始処理
     instance_->pScene_->BeginFrame();
+    // Colliderの追加
+    instance_->pScene_->HandOverColliders();
+    // 当たり判定
+    CollisionManager::CheckCollision();
+    // コリジョンの描画だけ先に行う
+    CollisionManager::Draw();
 }
 
 
@@ -117,7 +125,7 @@ void GameSystem::EndFrame() {
 /////////////////////////////////////////////////////////////////
 void GameSystem::DrawGUI(){
 #ifdef _DEBUG
-
+    CollisionManager::GUI();
 #endif // _DEBUG
 }
 
@@ -127,4 +135,5 @@ void GameSystem::DrawGUI(){
 /////////////////////////////////////////////////////////////////
 void GameSystem::ChangeScene(const std::string& sceneName) {
     instance_->pScene_.reset(SceneManager::CreateScene(sceneName));
+    instance_->pScene_->Initialize();
 }

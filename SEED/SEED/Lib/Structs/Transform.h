@@ -10,8 +10,8 @@ struct Transform2D{
     float rotate = 0.0f; // radians
     Vector2 translate;
     // 変換関数
-    Matrix3x3 ToMatrix();
-    Matrix4x4 ToMatrix4x4();
+    Matrix3x3 ToMatrix()const;
+    Matrix4x4 ToMatrix4x4()const;
     void FromMatrix4x4(const Matrix4x4& mat);
 };
 
@@ -42,7 +42,15 @@ struct TransformSegment2D{
 };
 
 // jsosnコンバート関数
-inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform){
+inline void to_json(nlohmann::json& j, const Transform2D& transformMatrix) {
+    j = {
+        {"scale",transformMatrix.scale},
+        {"rotate",transformMatrix.rotate},
+        {"translate",transformMatrix.translate},
+    };
+}
+
+inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform) {
     j = {
         {"scale",transform.scale},
         {"rotate",transform.rotate},
@@ -50,7 +58,7 @@ inline void to_json(nlohmann::ordered_json& j, const Transform2D& transform){
     };
 }
 
-inline void to_json(nlohmann::ordered_json& j, const Transform& transform){
+inline void to_json(nlohmann::json& j, const Transform& transform) {
     j = {
         {"scale",transform.scale},
         {"rotate",transform.rotate},
@@ -58,14 +66,22 @@ inline void to_json(nlohmann::ordered_json& j, const Transform& transform){
     };
 }
 
-inline void from_json(const nlohmann::ordered_json& j, Transform2D& transform){
-    if(j.contains("scale")){ transform.scale = j["scale"]; }
-    if(j.contains("rotate")){ transform.rotate = j["rotate"]; }
-    if(j.contains("translate")){ transform.translate = j["translate"]; }
+inline void to_json(nlohmann::ordered_json& j, const Transform& transform) {
+    j = {
+        {"scale",transform.scale},
+        {"rotate",transform.rotate},
+        {"translate",transform.translate},
+    };
 }
 
-inline void from_json(const nlohmann::ordered_json& j, Transform& transform){
-    if(j.contains("scale")){ transform.scale = j["scale"]; }
-    if(j.contains("rotate")){ transform.rotate = j["rotate"]; }
-    if(j.contains("translate")){ transform.translate = j["translate"]; }
+inline void from_json(const nlohmann::ordered_json& j, Transform2D& transform) {
+    if (j.contains("scale")) { transform.scale = j["scale"]; }
+    if (j.contains("rotate")) { transform.rotate = j["rotate"]; }
+    if (j.contains("translate")) { transform.translate = j["translate"]; }
+}
+
+inline void from_json(const nlohmann::ordered_json& j, Transform& transform) {
+    if (j.contains("scale")) { transform.scale = j["scale"]; }
+    if (j.contains("rotate")) { transform.rotate = j["rotate"]; }
+    if (j.contains("translate")) { transform.translate = j["translate"]; }
 }

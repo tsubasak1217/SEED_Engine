@@ -167,6 +167,7 @@ struct Vector3 final {
     bool operator==(const Vector3& obj) const{ return x == obj.x && y == obj.y && z == obj.z; }
 
     Vector4 ToVec4();
+    void Normalize();
 };
 
 // Vector3をJSONに変換する関数

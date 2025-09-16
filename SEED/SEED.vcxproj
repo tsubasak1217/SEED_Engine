@@ -124,14 +124,48 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SEED\Source\Basic\Components\CollisionComponent.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
+    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\PhysicsComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\SpotLightComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\ModelRenderComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\TextComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
+    <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
+    <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
@@ -140,7 +174,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
+    <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
+    <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp" />
@@ -149,9 +185,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
@@ -179,8 +213,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PostEffect.cpp" />
+    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
@@ -188,6 +223,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
+    <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
     <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp" />
@@ -195,21 +231,23 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\Manager\ModelManager\ModelManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp" />
     <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp" />
     <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\BaseCamera.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\DebugCamera.cpp" />
     <ClCompile Include="SEED\Source\Basic\Camera\FollowCamera.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_AABB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Capsule.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Line.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_OBB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Plane.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Collider_Sphere.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_AABB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Line.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_OBB.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp" />
@@ -219,18 +257,73 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
+    <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Input\InputMapper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
+    <ClInclude Include="SEED\Lib\Structs\Rect.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\CollisionComponent.h" />
+    <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\PhysicsComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\SpotLightComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\ModelRenderComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\TextComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\utils\DragInfo_Joint.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
+    <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
+    <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
+    <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
@@ -241,7 +334,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
+    <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
+    <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionData.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionManager.h" />
@@ -249,27 +344,30 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObject.h" />
     <ClInclude Include="Environment\Environment.h" />
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
     <ClInclude Include="SEED\lib\structs\BitSet.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
+    <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
+    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
+    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
@@ -322,7 +420,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PostEffect.h" />
+    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
     <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
@@ -335,22 +433,24 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
     <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h" />
+    <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
     <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
     <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
+    <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
     <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\BaseCamera.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\DebugCamera.h" />
     <ClInclude Include="SEED\Source\Basic\Camera\FollowCamera.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_AABB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Capsule.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Line.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_OBB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Plane.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Collider_Sphere.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_AABB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Line.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_OBB.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h" />
+    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Octree.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h" />
@@ -365,11 +465,67 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="resources\shaders\DoF.CS.hlsl">
+    <FxCompile Include="Resources\Shaders\Bloom.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\DoF.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.6</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.6</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Fog.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Glitch.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GPUParticle\EmitterUpdate.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GPUParticle\GPUParticleInit.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GPUParticle\ParticleUpdate.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\GrayScale.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Object3d.MS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -387,7 +543,11 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Object3dAlwaysWrite.PS.hlsl">
+    <FxCompile Include="Resources\Shaders\RGBShift.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ScanLine.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -395,13 +555,33 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\SkyBox.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\SkyBox.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\Text.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Vignette.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Camera.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\GPUParticle\GPUParticle.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
@@ -413,7 +593,23 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="Resources\Shaders\Math\Math.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Math\Numbers.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Math\Quaternion.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="resources\shaders\Object3d.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Random\Random.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>

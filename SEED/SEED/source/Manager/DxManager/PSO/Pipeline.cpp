@@ -98,7 +98,12 @@ void Pipeline::Create(BlendMode blendMode,PolygonTopology topology,D3D12_CULL_MO
         depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;// 書き込みする
     }
 
-    depthStencilDesc.DepthFunc = depthFunc_;// 近いものを優先して描画
+    // 値があればそれを使用
+    if(depthWriteMask_.has_value()){
+        depthStencilDesc.DepthWriteMask = depthWriteMask_.value();
+    }
+
+    depthStencilDesc.DepthFunc = depthFunc_;
 
 
     //======================================================================

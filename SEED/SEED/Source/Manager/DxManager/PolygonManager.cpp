@@ -7,6 +7,8 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
+#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
 
 // external
 #include <assert.h>
@@ -285,9 +287,24 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+
+    // SkyBoxVSPipeline
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+
 }
 
-// カメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
+// 毎フレームセットする情報
+void PolygonManager::BindFrameDatas(){
+    // CommonVSPipeline
+    PSOManager::SetBindInfo("CommonVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
+    // SkinningVSPipeline
+    PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
+    // SkyBoxVSPipeline
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "gEnvironmentTexture", TextureManager::GetHandleGPU(SkyBox::textureName_));
+}
+
+// 毎フレームかつカメラは別途バインドする必要があるので、BindCameraDatasを呼び出す
 void PolygonManager::BindCameraDatas(const std::string& cameraName){
     // カメラのインデックスを設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
@@ -299,6 +316,7 @@ void PolygonManager::BindCameraDatas(const std::string& cameraName){
     PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
 }
 
 void PolygonManager::Finalize(){}
@@ -336,6 +354,7 @@ void PolygonManager::Reset(){
 
     // フラグの初期化
     isWrited_ = false;
+    skyBoxAdded_ = false;
 }
 
 
@@ -383,9 +402,9 @@ void PolygonManager::MapOnce(){
 void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
+    uint32_t GH, BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    DrawLocation drawLocation, int32_t layer
 ){
 
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -515,7 +534,8 @@ void PolygonManager::AddTriangle(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -544,7 +564,7 @@ void PolygonManager::AddTriangle(
     drawData->totalDrawCount++;
 }
 
-void PolygonManager::AddTriangle3DPrimitive(
+void PolygonManager::AddTrianglePrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
     uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
@@ -674,9 +694,9 @@ void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Matrix4x4& worldMat, const Vector4& color,
-    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, uint32_t GH,
-    BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer
+    int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
+    uint32_t GH, BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
+    DrawLocation drawLocation, int32_t layer
 ){
 
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -845,7 +865,8 @@ void PolygonManager::AddQuad(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -887,7 +908,7 @@ void PolygonManager::AddQuad(
 }
 
 
-void PolygonManager::AddQuad3DPrimitive(
+void PolygonManager::AddQuadPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
@@ -1024,10 +1045,11 @@ void PolygonManager::AddQuad3DPrimitive(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PolygonManager::AddSprite(
-    const Vector2& size, const Matrix4x4& worldMat,
+    const Vector2& size, const Vector2& defaultSize, const Matrix4x4& worldMat,
     uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode, D3D12_CULL_MODE cullMode,
-    bool isStaticDraw, DrawLocation drawLocation, uint32_t layer, bool isSystemDraw
+    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
+    bool isApplyViewMat, D3D12_CULL_MODE cullMode,
+    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     blendMode;
@@ -1047,33 +1069,17 @@ void PolygonManager::AddSprite(
 
     // アンカーポイントを考慮したワールド座標を作成する行列
     Matrix4x4 adjustedWorldMat;
-    if(MyMath::Length(clipSize) == 0.0f){
-        adjustedWorldMat = Multiply(
-            worldMat,
-            TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
-        );
+    adjustedWorldMat = Multiply(
+        worldMat,
+        TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
+    );
 
-        // 4頂点
-        v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
-        if(isSystemDraw){ v[0].z = zfar; }
-        v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
-        v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
-        v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
-
-    } else{// 描画範囲指定がある場合
-
-        adjustedWorldMat = Multiply(
-            worldMat,
-            TranslateMatrix({ clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,0.0f })
-        );
-
-        // 4頂点
-        v[0] = { clipSize.x * -anchorPoint.x,clipSize.y * -anchorPoint.y,zNear,1.0f };
-        if(isSystemDraw){ v[0].z = zfar; }
-        v[1] = v[0] + Vector4(clipSize.x, 0.0f, 0.0f, 0.0f);
-        v[2] = v[0] + Vector4(0.0f, clipSize.y, 0.0f, 0.0f);
-        v[3] = v[0] + Vector4(clipSize.x, clipSize.y, 0.0f, 0.0f);
-    }
+    // 4頂点
+    v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
+    if(isSystemDraw){ v[0].z = zfar; }
+    v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
+    v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
+    v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
 
     // 法線ベクトル
     Vector3 normalVec =
@@ -1153,17 +1159,24 @@ void PolygonManager::AddSprite(
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() <= vertexCount){ mesh.vertices.resize(vertexCount + 4); }
 
-    if(MyMath::Length(clipSize) == 0.0f){// 描画範囲指定がない場合
+    if(!MyMath::HasLength(clipSize)){// 描画範囲指定がない場合
         mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
         mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
 
     } else{// 描画範囲指定がある場合
-        mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / size.x, clipLT.y / size.y), normalVec);
-        mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / size.x, clipLT.y / size.y), normalVec);
-        mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
-        mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / size.x, (clipLT.y + clipSize.y) / size.y), normalVec);
+        if(MyMath::HasLength(defaultSize)){
+            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
+        } else{
+            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
+            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
+            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
+            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
+        }
     }
 
     // 反転の指定がある場合
@@ -1223,7 +1236,7 @@ void PolygonManager::AddSprite(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = IdentityMat4();
-        transform[drawCount].WVP = camera->GetProjectionMat2D();
+        transform[drawCount].WVP = isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -1352,6 +1365,7 @@ void PolygonManager::AddModel(Model* model){
         material[drawCount].lightingType_ = model->lightingType_;
         material[drawCount].uvTransform_ = model->materials_[meshIdx].uvTransform;
         material[drawCount].GH_ = model->materials_[meshIdx].GH;
+        material[drawCount].environmentCoef_ = model->materials_[meshIdx].environmentCoef;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -1431,7 +1445,7 @@ void PolygonManager::AddModel(Model* model){
                 
                 // 線の追加
                 AddLine(point[0].ToVec4(), point[1].ToVec4(), 
-                    model->worldMat_, {1.0f,1.0f,1.0f,1.0f},true,
+                    model->worldMat_, {1.0f,1.0f,1.0f,1.0f},true,false,
                     BlendMode::NORMAL,false,DrawLocation::Not2D,0,true
                 );
             }
@@ -1450,8 +1464,8 @@ void PolygonManager::AddModel(Model* model){
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, BlendMode blendMode, bool isStaticDraw,
-    DrawLocation drawLocation, uint32_t layer, bool alwaysWrite
+    const Vector4& color, bool view3D, bool isApplyViewMat, BlendMode blendMode,
+    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool alwaysWrite
 ){
 
     assert(lineCount_ < kMaxLineCount_);
@@ -1580,7 +1594,8 @@ void PolygonManager::AddLine(
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = worldMat;
-        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = view3D ? camera->GetViewProjectionMat() :
+            isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = worldInverseTranspose;
     }
 
@@ -1734,6 +1749,124 @@ void PolygonManager::AddOffscreenResult(uint32_t GH, BlendMode blendMode){
     objCountCull_[0]++;
     drawData->indexCount += 6;
     drawData->totalDrawCount++;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                        //
+//                                                     SkyBoxの追加                                                        //
+//                                                                                                                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PolygonManager::AddSkyBox(){
+
+    //////////////////////////////////////////////////////////////////////////
+    // モデルの名前の決定
+    //////////////////////////////////////////////////////////////////////////
+
+    uint64_t hash = MyFunc::Hash64("System_SkyBox");
+    if(modelDrawData_.find(hash) == modelDrawData_.end()){
+        // 頂点データの取得
+        modelDrawData_[hash] = std::make_unique<ModelDrawData>();
+        ModelManager::LoadModel("DefaultAssets/SkyBox/SkyBox.obj");
+        modelDrawData_[hash]->modelData = ModelManager::GetModelData("DefaultAssets/SkyBox/SkyBox.obj");
+        // 名前の設定
+        modelDrawData_[hash]->name = "System_SkyBox";
+        // hashの設定
+        modelDrawData_[hash]->hash = hash;
+
+        // 描画種類の設定
+        modelDrawData_[hash]->drawOrder = (int)DrawOrder::SkyBox;
+
+        // パイプラインの設定
+        modelDrawData_[hash]->pso =
+            PSOManager::GetPSO(
+                "SkyBoxVSPipeline.pip",
+                BlendMode::NORMAL, D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
+            );
+    }
+
+    // サイズ確保
+    auto& drawData = modelDrawData_[hash];
+    int meshSize = (int)drawData->modelData->meshes.size();
+
+    // count(instance数)
+    int drawCount = drawData->totalDrawCount;
+
+    /////////////////////////////////////////////////////////////////////////
+    //                          materialResourceの設定
+    /////////////////////////////////////////////////////////////////////////
+
+    // 各meshごとにinstance数分のマテリアルを持つ。ここではmesh数分の配列を確保
+    drawData->materials.resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
+
+        // ここではinstance数分のマテリアルを確保
+        auto& material = drawData->materials[meshIdx];
+        if(material.size() <= drawCount){ material.resize(drawCount + 1); }
+
+        // マテリアルの設定
+        material[drawCount].color_ = SkyBox::color_;
+        material[drawCount].shininess_ = 1.0f;
+        material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
+        material[drawCount].uvTransform_ = IdentityMat4();
+        material[drawCount].GH_ = SkyBox::textureGH_;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                          transformResourceの設定
+    //////////////////////////////////////////////////////////////////////////
+
+    // instance数分のtransformを確保(meshごとには必要ない)
+    Matrix4x4 wvp;
+    Matrix4x4 worldInverseTranspose = IdentityMat4();
+    Matrix4x4 skyBoxMat = AffineMatrix(Vector3(SkyBox::scale_), Quaternion(), SkyBox::translate_);
+    for(const auto& [cameraName, camera] : pDxManager_->cameras_){
+
+        auto& transform = drawData->transforms[cameraName];
+        if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
+
+        Matrix4x4 worldMat;
+        if(SkyBox::isFollowCameraPos_){
+            Matrix4x4 cameraTranslateMat = TranslateMatrix(camera->GetTranslation());
+            worldMat = skyBoxMat * cameraTranslateMat;
+        } else{
+            worldMat = skyBoxMat;
+        }
+
+        // transformの設定
+        wvp = Multiply(
+            worldMat,
+            camera->GetViewProjectionMat()
+        );
+
+        transform[drawCount].world = worldMat;
+        transform[drawCount].WVP = wvp;
+        transform[drawCount].worldInverseTranspose = worldInverseTranspose;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                              offset情報の設定
+    //////////////////////////////////////////////////////////////////////////
+
+    // mesh数 * instance数分のoffsetを確保(各instanceごとにオフセットが必要なため)
+    drawData->offsetData.resize(meshSize);
+    for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
+        auto& offsetData = drawData->offsetData[meshIdx];
+        offsetData.resize(drawCount + 1);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //                              カウントの更新
+    //////////////////////////////////////////////////////////////////////////
+
+    // 要素数を更新
+    objCounts_[(int)DrawOrder::SkyBox]++;
+
+    objCountCull_[(int)D3D12_CULL_MODE_BACK - 1]++;
+    objCountBlend_[(int)BlendMode::NORMAL]++;
+    drawData->totalDrawCount++;
+    modelIndexCount_++;
 }
 
 
@@ -2166,7 +2299,9 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                         offsetResource_.Get()->GetGPUVirtualAddress() + (meshCountAll * size);
 
                     // 総サイズ、刻み幅の設定
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or
+                        drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
+                        ){
                         vbv2->SizeInBytes = size * drawData->totalDrawCount;
                     } else{
                         vbv2->SizeInBytes = size;
@@ -2227,7 +2362,9 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
                     /*/////////////////////////////////////////////////////////////////*/
 
                     // 描画
-                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel or drawOrder == DrawOrder::Particle){
+                    if(drawOrder == DrawOrder::Model or drawOrder == DrawOrder::AnimationModel
+                        or drawOrder == DrawOrder::Particle or drawOrder == DrawOrder::SkyBox
+                        ){
 
                         pDxManager_->commandList->DrawIndexedInstanced(
                             (int)drawData->modelData->meshes[meshIdx].indices.size(),
@@ -2289,21 +2426,24 @@ void PolygonManager::SetRenderData(const std::string& cameraName, const DrawOrde
 void PolygonManager::DrawToOffscreen(const std::string& cameraName){
 
     if(!isWrited_){
-    #ifdef _DEBUG
-        ImFunc::CustomBegin("PostEffect", MoveOnly_TitleBar);
-        ImGui::Checkbox("active", &isActivePostEffect_);
-        ImGui::End();
-    #endif // _DEBUG
+
+        // GPUパーティクルシステムの更新
+        //GPUParticleSystem::Update();
 
         // オフスクリーンの描画依頼をここで出しておく
-        if(isActivePostEffect_){
-            AddOffscreenResult(ViewManager::GetTextureHandle("blur_0"), BlendMode::NONE);
-            //AddOffscreenResult(ViewManager::GetTextureHandle("depth_1"), BlendMode::NONE);
+        if((int)PostEffectSystem::GetInstance()->postProcessGroups_.size() != 0){
+            AddOffscreenResult(ViewManager::GetTextureHandle("postEffectResult"), BlendMode::NONE);
+
         } else{
             AddOffscreenResult(
                 ViewManager::GetTextureHandle(pDxManager_->offScreenNames[pDxManager_->mainCameraName_]),
                 BlendMode::NONE
             );
+        }
+
+        // skyBoxの描画フラグが立っていれば描画
+        if(skyBoxAdded_){
+            AddSkyBox();
         }
 
         // Resourceに情報を書き込む
@@ -2315,6 +2455,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::BackSprite);
 
     // 3D
+    SetRenderData(cameraName, DrawOrder::SkyBox);
     SetRenderData(cameraName, DrawOrder::Line);
     SetRenderData(cameraName, DrawOrder::Model);
     SetRenderData(cameraName, DrawOrder::AnimationModel);
@@ -2322,6 +2463,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::Quad);
     SetRenderData(cameraName, DrawOrder::Text);
     SetRenderData(cameraName, DrawOrder::Particle);
+    //GPUParticleSystem::Draw(cameraName);
 
     // 2D
     SetRenderData(cameraName, DrawOrder::Line2D);
@@ -2329,6 +2471,7 @@ void PolygonManager::DrawToOffscreen(const std::string& cameraName){
     SetRenderData(cameraName, DrawOrder::Quad2D);
     SetRenderData(cameraName, DrawOrder::Sprite);
     SetRenderData(cameraName, DrawOrder::Text2D);
+
 }
 
 void PolygonManager::DrawToBackBuffer(){

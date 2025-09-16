@@ -24,7 +24,7 @@ std::unordered_map<PAD_BUTTON, uint32_t>Input::buttonMap_ = {
     {PAD_BUTTON::LT,VK_PAD_LTRIGGER},
     {PAD_BUTTON::RT,VK_PAD_RTRIGGER}
 };
-
+float Input::deadZone_ = 16000.0f;
 
 // デストラクタ
 Input::~Input(){
@@ -138,6 +138,16 @@ void Input::GetAllInput(){
 
     // XInput
     instance_->GetXInputState();
+
+    // 最近使った入力デバイスの更新
+    instance_->prevDevice_ = instance_->recentInputDevice_;
+    if(IsPressAnyKey()){
+        instance_->recentInputDevice_ = InputDevice::KEYBOARD;
+    } else{
+        if(IsPressAnyPadButton() or MyMath::HasLength(GetStickValue(LR::LEFT)) or MyMath::HasLength(GetStickValue(LR::RIGHT))){
+            instance_->recentInputDevice_ = InputDevice::GAMEPAD;
+        }
+    }
 }
 
 
@@ -199,40 +209,54 @@ void Input::GetXInputState(){
 //--------------------------------- キーボード -----------------------------------------//
 
 bool Input::IsPressKey(uint8_t key){
-    return instance_->keys_[key];
+    return instance_->keys_[key] * instance_->isActive_;
 }
 
 bool Input::IsPressKey(const std::initializer_list<uint8_t>& keys){
     for(auto& key : keys){
-        if(instance_->keys_[key]){ return true; }
+        if(instance_->keys_[key]){ return true * instance_->isActive_; }
     }
 
     return false;
 }
 
+bool Input::IsPressKey(const std::vector<uint8_t>& keys){
+    for(auto& key : keys){
+        if(instance_->keys_[key]){ return true * instance_->isActive_; }
+    }
+    return false;
+}
+
 bool Input::IsPressAnyKey(){
     for(int i = 0; i < kMaxKey_; i++){
-        if(instance_->keys_[i]){ return true; }
+        if(instance_->keys_[i]){ return true * instance_->isActive_; }
     }
 
     return false;
 }
 
 bool Input::IsTriggerKey(uint8_t key){
-    return instance_->keys_[key] && !instance_->preKeys_[key];
+    return (instance_->keys_[key] && !instance_->preKeys_[key]) * instance_->isActive_;
 }
 
 bool Input::IsTriggerKey(const std::initializer_list<uint8_t>& keys){
     for(auto& key : keys){
-        if(instance_->keys_[key] && !instance_->preKeys_[key]){ return true; }
+        if(instance_->keys_[key] && !instance_->preKeys_[key]){ return true * instance_->isActive_; }
     }
 
     return false;
 }
 
+bool Input::IsTriggerKey(const std::vector<uint8_t>& keys){
+    for(auto& key : keys){
+        if(instance_->keys_[key] && !instance_->preKeys_[key]){ return true * instance_->isActive_; }
+    }
+    return false;
+}
+
 bool Input::IsTriggerAnyKey(){
     for(int i = 0; i < kMaxKey_; i++){
-        if(instance_->keys_[i] && !instance_->preKeys_[i]){ return true; }
+        if(instance_->keys_[i] && !instance_->preKeys_[i]){ return true * instance_->isActive_; }
     }
 
     return false;
@@ -244,15 +268,22 @@ bool Input::IsReleaseKey(uint8_t key){
 
 bool Input::IsReleaseKey(const std::initializer_list<uint8_t>& keys){
     for(auto& key : keys){
-        if(!instance_->keys_[key] && instance_->preKeys_[key]){ return true; }
+        if(!instance_->keys_[key] && instance_->preKeys_[key]){ return true * instance_->isActive_; }
     }
 
     return false;
 }
 
+bool Input::IsReleaseKey(const std::vector<uint8_t>& keys){
+    for(auto& key : keys){
+        if(!instance_->keys_[key] && instance_->preKeys_[key]){ return true * instance_->isActive_; }
+    }
+    return false;
+}
+
 bool Input::IsReleaseAnyKey(){
     for(int i = 0; i < kMaxKey_; i++){
-        if(!instance_->keys_[i] && instance_->preKeys_[i]){ return true; }
+        if(!instance_->keys_[i] && instance_->preKeys_[i]){ return true * instance_->isActive_; }
     }
 
     return false;
@@ -263,6 +294,7 @@ bool Input::IsReleaseAnyKey(){
 
 // マウスのボタンが押されているかどうか
 bool Input::IsPressMouse(MOUSE_BUTTON button){
+    if(!instance_->isActive_){ return false; }
     switch(button){
     case MOUSE_BUTTON::LEFT:
         return instance_->mouseState_.rgbButtons[0] & 0x80;
@@ -277,6 +309,7 @@ bool Input::IsPressMouse(MOUSE_BUTTON button){
 
 // マウスのボタンが押された瞬間
 bool Input::IsTriggerMouse(MOUSE_BUTTON button){
+    if(!instance_->isActive_){ return false; }
     switch(button){
     case MOUSE_BUTTON::LEFT:
         return (instance_->mouseState_.rgbButtons[0] & 0x80) && !(instance_->preMouseState_.rgbButtons[0] & 0x80);
@@ -292,6 +325,7 @@ bool Input::IsTriggerMouse(MOUSE_BUTTON button){
 
 // マウスのボタンが離された瞬間かどうか
 bool Input::IsReleaseMouse(MOUSE_BUTTON button){
+    if(!instance_->isActive_){ return false; }
     switch(button){
     case MOUSE_BUTTON::LEFT:
         return !(instance_->mouseState_.rgbButtons[0] & 0x80) && (instance_->preMouseState_.rgbButtons[0] & 0x80);
@@ -306,6 +340,7 @@ bool Input::IsReleaseMouse(MOUSE_BUTTON button){
 
 // マウスのホイールの回転量を取得
 int32_t Input::GetMouseWheel(INPUT_STATE inputState){
+    if(!instance_->isActive_){ return 0; }
     if(inputState == INPUT_STATE::CURRENT){
         return instance_->mouseState_.lZ / 120;
     } else{
@@ -323,6 +358,7 @@ Vector2 Input::GetMouseVector(INPUT_STATE inputState){
 
 // マウスの方向を取得
 Vector2 Input::GetMouseDirection(INPUT_STATE inputState){
+
     Vector2 vec = GetMouseVector(inputState);
     if(MyMath::Length(vec)){
         return MyMath::Normalize(vec);
@@ -361,11 +397,22 @@ bool Input::IsMouseMoved(INPUT_STATE inputState){
     return MyMath::LengthSq(GetMouseVector(inputState)) > 0.0f;
 }
 
+// マウスのボタンが何かしら押されているか
+bool Input::IsMouseInputAny(){
+    if(!instance_->isActive_){ return false; }
+    for(int i = 0; i < 3; i++){
+        if(instance_->mouseState_.rgbButtons[i] & 0x80){
+            return true;
+        }
+    }
+    return false;
+}
+
 
 //---------------------------------- ゲームパッド --------------------------------------//
 
 bool Input::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber){
-
+    if(!instance_->isActive_){ return false; }
     // 押されているボタンがあれば加算される
     uint32_t result = 0;
 
@@ -397,6 +444,7 @@ bool Input::IsPressPadButton(PAD_BUTTON button, uint8_t padNumber){
 
 bool Input::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber){
 
+    if(!instance_->isActive_){ return false; }
     // 押されているボタンがあれば加算される
     uint32_t result = 0;
 
@@ -435,6 +483,7 @@ bool Input::IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber){
 
 bool Input::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber){
 
+    if(!instance_->isActive_){ return false; }
     // 押されているボタンがあれば加算される
     uint32_t result = 0;
 
@@ -474,6 +523,7 @@ bool Input::IsReleasePadButton(PAD_BUTTON button, uint8_t padNumber){
 
 bool Input::IsPressAnyPadButton(uint8_t padNumber){
 
+    if(!instance_->isActive_){ return false; }
     for(auto& [key, value] : instance_->buttonMap_){
         if(instance_->IsPressPadButton(padNumber, key, INPUT_STATE::CURRENT)){ return true; }
     }
@@ -482,6 +532,7 @@ bool Input::IsPressAnyPadButton(uint8_t padNumber){
 }
 
 bool Input::IsTriggerAnyPadButton(uint8_t padNumber){
+    if(!instance_->isActive_){ return false; }
     for(auto& [key, value] : instance_->buttonMap_){
         if(instance_->IsTriggerPadButton(key, padNumber)){ return true; }
     }
@@ -495,6 +546,7 @@ bool Input::IsConnectedPad(uint8_t padNumber){
 
 float Input::GetLRTriggerValue(LR LEFTorRIGHT, uint8_t padNumber, INPUT_STATE padState){
 
+    if(!instance_->isActive_){ return 0.0f; }
     float triggerValue;
 
     // 対応するパッドの状態取得
@@ -513,6 +565,8 @@ float Input::GetLRTriggerValue(LR LEFTorRIGHT, uint8_t padNumber, INPUT_STATE pa
 }
 
 Vector2 Input::GetStickValue(LR stick, uint8_t padNumber, INPUT_STATE padState){
+
+    if(!instance_->isActive_){ return Vector2(); }
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn
@@ -543,6 +597,7 @@ Vector2 Input::GetStickValue(LR stick, uint8_t padNumber, INPUT_STATE padState){
 
 
 bool Input::IsTriggerStick(LR stick_LorR, DIRECTION4 direction, float border, uint8_t padNumber){
+    if(!instance_->isActive_){ return false; }
     Vector2 stickValue[2] = {
         GetStickValue(stick_LorR,padNumber,INPUT_STATE::CURRENT),
         GetStickValue(stick_LorR,padNumber,INPUT_STATE::BEFORE)
@@ -563,12 +618,28 @@ bool Input::IsTriggerStick(LR stick_LorR, DIRECTION4 direction, float border, ui
     }
 }
 
+// 何かしらの入力があったか
+bool Input::GetIsAnyInput(bool isIgnoreActiveFlag){
+    if(!isIgnoreActiveFlag){
+        if(!instance_->isActive_){ return false; }
+    }
+    
+    instance_->isActive_ = true;
+    bool result = IsPressAnyKey() or IsPressAnyPadButton()
+        or MyMath::HasLength(GetStickValue(LR::LEFT))
+        or MyMath::HasLength(GetStickValue(LR::RIGHT))
+        or IsMouseInputAny();
+    instance_->isActive_ = false;
 
+    return result;
+}
 
 
 /*********************** 内部で使うやつ *********************/
 
+
 bool Input::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE padState){
+    if(!instance_->isActive_){ return false; }
     // パッド番号の範囲外の場合アサート
     if(padNumber >= XUSER_MAX_COUNT){ assert(0); }
     // 番号に対応するパッドが存在しなければreturn

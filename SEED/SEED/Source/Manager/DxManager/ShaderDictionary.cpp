@@ -69,16 +69,7 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
     std::vector<std::string> fileNames;
     HRESULT hr;
 
-    // 指定されたディレクトリ内のすべてのファイルを探索
-    for(const auto& entry : std::filesystem::directory_iterator(directoryPath)){
-        if(entry.is_regular_file()){ // 通常のファイルのみ取得（ディレクトリを除外）
-            // もしファイル名が".png"で終わっていたら
-            if(entry.path().extension() == ".hlsl"){
-                // ファイル名を追加
-                fileNames.push_back(entry.path().filename().string());
-            }
-        }
-    }
+    fileNames = MyFunc::GetFileList(directoryPath,{ ".hlsl" });
 
     // シェーダーの種類に応じてコンパイル
     for(auto& fileName : fileNames){

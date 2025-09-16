@@ -50,18 +50,19 @@ struct Triangle2D{
 public:
     Vector2 localVertex[3];
     Vector2 scale = { 1.0f,1.0f };
-    float rotate;
-    Vector2 translate;
+    float rotate = 0.0f;
+    Vector2 translate = {0.0f,0.0f};
     Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
     int32_t litingType = LIGHTINGTYPE_NONE;
     int32_t GH = -1;
     BlendMode blendMode = BlendMode::NORMAL;
     Matrix4x4 uvTransform = IdentityMat4();
     // 解像度の変更を反映するかどうかの設定
-    bool isStaticDraw;
+    bool isStaticDraw = false;
     // 描画位置の設定(前景か背景か)
     DrawLocation drawLocation = DrawLocation::Front;
-    uint32_t layer = 0;// 描画順。大きいほど手前に描画
+    bool isApplyViewMat = true;
+    int32_t layer = 0;// 描画順。大きいほど手前に描画
 
 public:
     Matrix4x4 GetWorldMatrix()const;

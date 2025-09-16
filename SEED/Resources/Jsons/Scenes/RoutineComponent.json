@@ -1,0 +1,333 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 13,
+                    "componentTag": "ModelRender_ID:0",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\ground\\ground.obj",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 14,
+                    "componentTag": "ModelRender_ID:2",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 0,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\skydome\\skydome.obj",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 250.0,
+                            "y": 250.0,
+                            "z": 250.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "world",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "animationName": "running",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 15,
+                    "componentTag": "ModelRender_ID:5",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": true,
+                    "isAnimationLoop": true,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets\\man\\man.gltf",
+                    "transform": {
+                        "rotate": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "componentID": 12,
+                    "componentTag": "Routine_ID:12",
+                    "componentType": "Routine",
+                    "duration": 14.300000190734863,
+                    "isActive": true,
+                    "isConnectLoop": true,
+                    "isLoop": true,
+                    "isRotateByDirection": true,
+                    "points": [
+                        {
+                            "rotate": {
+                                "w": 0.9949220418930054,
+                                "x": -3.7063812019511033e-09,
+                                "y": 0.10064854472875595,
+                                "z": -3.7494024551776306e-10
+                            },
+                            "scale": {
+                                "x": 1.0000001192092896,
+                                "y": 1.0,
+                                "z": 0.9999992847442627
+                            },
+                            "translate": {
+                                "x": 0.748818576335907,
+                                "y": 0.1450444459915161,
+                                "z": 2.012240409851074
+                            }
+                        },
+                        {
+                            "rotate": {
+                                "w": 0.9846667051315308,
+                                "x": -0.0,
+                                "y": -0.174446240067482,
+                                "z": 0.0
+                            },
+                            "scale": {
+                                "x": 0.9999985098838806,
+                                "y": 0.9999995231628418,
+                                "z": 0.9999994039535522
+                            },
+                            "translate": {
+                                "x": 7.115355491638184,
+                                "y": 0.3026237487792969,
+                                "z": 16.73401641845703
+                            }
+                        },
+                        {
+                            "rotate": {
+                                "w": 0.8967306017875671,
+                                "x": -0.0,
+                                "y": -0.4425767958164215,
+                                "z": 0.0
+                            },
+                            "scale": {
+                                "x": 0.9999999403953552,
+                                "y": 0.9999963045120239,
+                                "z": 0.9999999403953552
+                            },
+                            "translate": {
+                                "x": -2.447437286376953,
+                                "y": 0.5072817802429199,
+                                "z": 22.418136596679688
+                            }
+                        },
+                        {
+                            "rotate": {
+                                "w": 0.45146575570106506,
+                                "x": 0.0,
+                                "y": 0.8922884464263916,
+                                "z": 0.0
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 0.9999982118606567,
+                                "z": 1.0
+                            },
+                            "translate": {
+                                "x": -8.730627059936523,
+                                "y": 4.3213367462158203e-07,
+                                "z": 7.994250297546387
+                            }
+                        }
+                    ],
+                    "speedRate": 1.0
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "man",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 0.9390127062797546,
+                    "x": -0.011290603317320347,
+                    "y": -0.3436722457408905,
+                    "z": -0.004132283851504326
+                },
+                "scale": {
+                    "x": 0.9999986290931702,
+                    "y": 0.9999995827674866,
+                    "z": 0.9999994039535522
+                },
+                "translate": {
+                    "x": 5.880437850952148,
+                    "y": 0.3630308508872986,
+                    "z": 19.132200241088867
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 22,
+                    "componentTag": "TextComponent_ID:22",
+                    "componentType": "Text",
+                    "textBox": {
+                        "align": 0,
+                        "anchorPos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "blendMode": 3,
+                        "color": {
+                            "w": 1.0,
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf",
+                        "fontSize": 39.0,
+                        "glyphSpacing": 8.0,
+                        "lineSpacing": 8.0,
+                        "outlineColor": {
+                            "w": 1.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "outlineSplitCount": 16,
+                        "outlineWidth": 4.300000190734863,
+                        "size": {
+                            "x": 1010.0,
+                            "y": 258.0
+                        },
+                        "text": "[ルーチン設定コンポーネント]\nコントロールポイントをdurationの時間で移動します\nループ/ループ接続/移動に応じた回転の自動決定など\nパラメータを設定できます\n[制御点の管理]を展開することで制御点が表示されます。\n",
+                        "textBoxVisible": false,
+                        "transform": {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 28.0,
+                                "y": 27.0
+                            }
+                        },
+                        "useOutline": true
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "text",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

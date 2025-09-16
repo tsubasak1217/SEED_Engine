@@ -4,6 +4,9 @@
 #include "ImGlyph.h"
 #include <DirectXMath.h>
 #include <DirectXMathMatrix.inl>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
+
 using namespace DirectX;
 
 // シングルトンインスタンス
@@ -102,6 +105,7 @@ void ImGuiManager::PreDraw(){
     // guizmoのリストをクリア
     instance_->guizmoInfo3D_.clear();
     instance_->guizmoInfo2D_.clear();
+    instance_->isInputText_ = false;
 
     // ディスプレイサイズの設定
     ImGuiIO& io = ImGui::GetIO();
@@ -324,7 +328,11 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 
         // 表示
         if(cameraName == ""){
-            ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetInstance()->GetMainCameraName()), finalSize);
+            if((int)PostEffectSystem::GetInstance()->postProcessGroups_.size() != 0){
+                ImGui::Image(TextureManager::GetImGuiTexture("postEffectResult"), finalSize);
+            } else{
+                ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetMainCameraName()), finalSize);
+            }
         } else{
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
         }
@@ -333,9 +341,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
     }
 }
 
-/////////////////////////////////////////////////////////////////
-// フォルダビューの開始関数
-/////////////////////////////////////////////////////////////////
+
 /////////////////////////////////////////////////////////////////
 // フォルダビューの開始関数
 /////////////////////////////////////////////////////////////////
@@ -343,7 +349,8 @@ std::string ImFunc::FolderView(
     const char* label,
     std::filesystem::path& currentPath,
     bool isFileNameOnly,
-    std::initializer_list<std::string> filterExts
+    std::initializer_list<std::string> filterExts,
+    std::filesystem::path rootPath
 ){
     static bool isLoaded = false;
     static ImTextureID folderIcon;
@@ -362,9 +369,13 @@ std::string ImFunc::FolderView(
 
         ImGui::Text("Current Path: %s", currentPath.string().c_str());
         if(currentPath.has_parent_path()){
-            if(ImGui::Button("<< Back")){
-                currentPath = currentPath.parent_path();
-                return "";
+
+            // rootPathよりウh会階層にいるときのみBackボタンを表示
+            if(rootPath.empty() || currentPath != rootPath){
+                if(ImGui::Button("<< Back")){
+                    currentPath = currentPath.parent_path();
+                    return "";
+                }
             }
         }
 
@@ -377,7 +388,6 @@ std::string ImFunc::FolderView(
         std::vector<std::filesystem::directory_entry> entries;
 
         for(const auto& entry : std::filesystem::directory_iterator(currentPath)){
-
             if(entry.is_directory()){
                 entries.push_back(entry); // ディレクトリは常に表示
             } else{
@@ -388,7 +398,10 @@ std::string ImFunc::FolderView(
                 if(filterExts.size() == 1 && *filterExts.begin() == ""){
                     entries.push_back(entry); // フィルターが空なら全てのファイルを表示
                 } else{
-                    for(const auto& filter : filterExts){
+                    for(auto filter : filterExts){
+                        if(!filter.starts_with(".")){
+                            filter = "." + filter;
+                        }
                         if(ext == filter){
                             entries.push_back(entry);
                             break;
@@ -425,8 +438,18 @@ std::string ImFunc::FolderView(
                 ImGui::EndDragDropSource();
             }
 
+            // 中央揃えでテキスト表示（修正部分）
             auto lines = WrapTextLines(name, iconSize.x, 2);
             for(const auto& l : lines){
+                float textWidth = ImGui::CalcTextSize(l.c_str()).x;
+                float iconCenterX = iconSize.x * 0.5f;
+                float textPosX = iconPos.x + iconCenterX - textWidth * 0.5f;
+
+                float minX = ImGui::GetWindowPos().x;
+                float maxX = minX + ImGui::GetWindowContentRegionMax().x;
+                textPosX = std::clamp(textPosX, minX, maxX - textWidth);
+
+                ImGui::SetCursorScreenPos(ImVec2(textPosX, ImGui::GetCursorScreenPos().y));
                 ImGui::TextUnformatted(l.c_str());
             }
 
@@ -436,11 +459,9 @@ std::string ImFunc::FolderView(
                     ImGui::EndGroup();
                     return "";
                 } else{
-                    if(!isFileNameOnly){
-                        selectedFile = entry.path().string();
-                    } else{
-                        selectedFile = entry.path().filename().string();
-                    }
+                    selectedFile = isFileNameOnly
+                        ? entry.path().filename().string()
+                        : entry.path().string();
                 }
             }
 
@@ -455,7 +476,6 @@ std::string ImFunc::FolderView(
 
     return selectedFile;
 }
-
 
 
 /////////////////////////////////////////////////////////////////
@@ -546,6 +566,19 @@ bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     if(changed){
         str = buffer.data();  // 更新
     }
+
+    // ImGuiの入力中は他の入力を受け付けないようにする
+    if (ImGui::IsItemActive()) {
+
+        ImGuiManager::SetIsInputText(true);
+        Input::SetIsActive(false);
+    } else {
+        if (!ImGuiManager::GetIsInputText()) {
+
+            Input::SetIsActive(true);
+        }
+    }
+
     return changed;
 }
 
@@ -558,6 +591,19 @@ bool ImFunc::InputText(const char* label, string& str){
     if(changed){
         str = buffer.data();  // 更新
     }
+
+    // ImGuiの入力中は他の入力を受け付けないようにする
+    if(ImGui::IsItemActive()){
+
+        ImGuiManager::SetIsInputText(true);
+        Input::SetIsActive(false);
+    } else{
+        if (!ImGuiManager::GetIsInputText()) {
+
+            Input::SetIsActive(true);
+        }
+    }
+
     return changed;
 }
 

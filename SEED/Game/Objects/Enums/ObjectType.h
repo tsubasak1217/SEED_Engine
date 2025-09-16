@@ -1,9 +1,10 @@
 #pragma once
 #include <cstdint>
 
-enum class ObjectType : int32_t{
+enum class ObjectType : int32_t {
     // 全般
-    Editor = 0,
+    All = 0,
+    Editor = All,
     Field = 0b1,
     OnFieldObject = 0b1 << 1,
     Area = 0b1 << 2,
@@ -14,17 +15,11 @@ enum class ObjectType : int32_t{
     Item = 0b1 << 7,
     Attack = 0b1 << 8,
     Start = 0b1 << 9,
-    Goal = 0b1 << 10,
     Event = 0b1 << 11,
+    Warp = 0b1 << 12,
+    Laser = (0b1 << 13) | OnFieldObject,
     // 組み合わせ
-    Player = OnFieldObject | Friendly,
-    PlayerCorpse = OnFieldObject | Friendly,
-    Egg = OnFieldObject | Friendly | Item,
-    Enemy = OnFieldObject | NonFriendly,
-    PlayerAttack = Friendly | Attack,
-    EnemyAttack = NonFriendly | Attack,
-    StartField = Field | Start,
-    GoalField = Field | Goal,
-    EventArea = Field | Area | Event,
-    MoveFloor = Field | Move,
+    Goal = (0b1 << 10) | Field,
+    Player = OnFieldObject | Move | Friendly,
+    EmptyBlock = OnFieldObject | NotMove,
 };

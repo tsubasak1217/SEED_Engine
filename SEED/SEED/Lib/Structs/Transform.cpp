@@ -4,11 +4,11 @@
 //////////////////////////////////////////////////////////////
 // 行列に変換する関数
 //////////////////////////////////////////////////////////////
-Matrix3x3 Transform2D::ToMatrix(){
+Matrix3x3 Transform2D::ToMatrix()const{
     return AffineMatrix(scale, rotate, translate);
 }
 
-Matrix4x4 Transform2D::ToMatrix4x4(){
+Matrix4x4 Transform2D::ToMatrix4x4()const{
     return AffineMatrix(
         { scale.x, scale.y, 1.0f },
         { 0.0f,0.0f,rotate },

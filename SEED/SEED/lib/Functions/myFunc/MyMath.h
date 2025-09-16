@@ -41,6 +41,11 @@ public:
     // ベクトルの長さの2乗を返す関数 (3D)
     static float LengthSq(const Vector3& vec);
 
+    // ベクトルの長さが0かどうかを返す関数 (2D)
+    static bool HasLength(const Vector2& vec);
+    // ベクトルの長さが0かどうかを返す関数 (3D)
+    static bool HasLength(const Vector3& vec);
+
     /*----------------------- ベクトルを正規化する関数 ------------------------*/
 
     // ベクトルを正規化する関数 (2D)
@@ -96,6 +101,11 @@ public:
     static Vector2 ClosestPoint(const Vector2& seg_origin,const Vector2& seg_end,const Vector2& point);
     // 直線への最近傍点を求める関数 (3D)
     static Vector3 ClosestPoint(const Vector3& seg_origin,const Vector3& seg_end,const Vector3& point);
+    // 線分同士の最近傍点を求める関数 (2D)
+    static std::array<Vector2, 2> LineClosestPoints(const Line2D& l1, const Line2D& l2);
+
+    // 2Dベクトルの角度を求める関数 (radian)
+    static float GetTheta(const Vector2& dir);
 
     //================================================================
     //                      個人用な便利関数
@@ -161,13 +171,15 @@ public:
     static uint32_t GrayScale(uint32_t color);
 
     // カラーコードからVector4に変換する関数 (0~1に収められる)
-    static Vector4 FloatColor(uint32_t color);
-    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a = 255);
+    static Vector4 FloatColor(uint32_t color,bool isCorrectionToLiner = true);
+    static Vector4 FloatColor(uint32_t r,uint32_t g,uint32_t b,uint32_t a = 255, bool isCorrectionToLiner = true);
     // Vector4からカラーコードに変換する関数
     static uint32_t IntColor(const Vector4& color);
     static uint32_t IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a = 255);
 
     // HSVをRGBに変換する関数
     static Vector4 HSV_to_RGB(float h, float s, float v, float alpha);
-    static Vector4 HSV_to_RGB(Vector4 HSVA_color);
+    static Vector4 HSV_to_RGB(const Vector4& HSVA_color);
+    static Vector4 RGB_to_HSV(const Vector4& rgbColor);
+    static Vector4 RGB_to_HSV(uint32_t colorCode);
 };

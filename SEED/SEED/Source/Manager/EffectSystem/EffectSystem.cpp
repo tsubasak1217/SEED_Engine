@@ -144,10 +144,6 @@ void EffectSystem::Update(){
         p->Update();
     });
 
-    //for(auto& particle : instance_->particles_){
-    //    particle->Update();
-    //}
-
     ////////////////////////////////////////////
     // パーティクルとフィールドの衝突判定
     ////////////////////////////////////////////
@@ -284,6 +280,7 @@ void EffectSystem::DeleteAll(){
     instance_->particles_.clear();
     instance_->emitterGroups_.clear();
     instance_->onceEffects_.clear();
+    instance_->endlessEffects_.clear();
     instance_->effectData_.clear();
     instance_->accelerationFields_.clear();
 }

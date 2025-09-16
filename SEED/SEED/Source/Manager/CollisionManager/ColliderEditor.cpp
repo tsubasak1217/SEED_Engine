@@ -1,19 +1,13 @@
 #include "ColliderEditor.h"
 #include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
-#include <SEED/Source/Basic/Collision/Collider_Sphere.h>
-#include <SEED/Source/Basic/Collision/Collider_AABB.h>
-#include <SEED/Source/Basic/Collision/Collider_OBB.h>
-#include <SEED/Source/Basic/Collision/Collider_Line.h>
-#include <SEED/Source/Basic/Collision/Collider_Capsule.h>
-#include <SEED/Source/Basic/Collision/Collider_Plane.h>
-
-////////////////////////////////////////////////////////////
-// 静的メンバ変数
-////////////////////////////////////////////////////////////
-
-std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>> ColliderEditor::colliderData_;
-std::vector<std::string> ColliderEditor::colliderFileNames_;
+#include <SEED/Source/Basic/Collision/3D/Collider_Sphere.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_AABB.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_OBB.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Line.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Capsule.h>
+#include <SEED/Source/Basic/Collision/3D/Collider_Plane.h>
 
 ////////////////////////////////////////////////////////////
 // コンストラクタ ・ デストラクタ
@@ -29,7 +23,7 @@ ColliderEditor::ColliderEditor(const std::string& className, GameObject* parent)
     // ファイルの一覧を取得
     colliderFileNames_.clear();
     // ファイルの一覧を取得
-    std::string path = "Resources/jsons/Colliders";
+    std::string path = "Resources/jsons/Colliders/3D";
     for(const auto& entry : std::filesystem::directory_iterator(path)){
         colliderFileNames_.push_back(entry.path().filename().string());
     }
@@ -285,7 +279,7 @@ void ColliderEditor::OutputToJson(){
     }
 
     // ファイルへの書き込み
-    std::ofstream ofs("Resources/jsons/Colliders/" + className_ + ".json");
+    std::ofstream ofs("Resources/jsons/Colliders/3D/" + className_ + ".json");
     ofs << j.dump(4);
     ofs.close();
 }
@@ -375,7 +369,7 @@ void ColliderEditor::LoadColliders(const std::string& fileName, GameObject* pare
 // エディター用の読み込み関数
 void ColliderEditor::LoadFromJson(const std::string& fileName){
     // ファイルの読み込み
-    std::ifstream ifs("Resources/jsons/Colliders/" + fileName);
+    std::ifstream ifs("Resources/jsons/Colliders/3D/" + fileName);
     if(ifs.fail()){
         return;
     }
@@ -422,7 +416,7 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
     std::vector<Collider*> colliders;
 
     // ファイルの読み込み
-    std::ifstream ifs("Resources/jsons/Colliders/" + fileName);
+    std::ifstream ifs("Resources/jsons/Colliders/3D/" + fileName);
     if(ifs.fail()){
         return;
     }
@@ -457,6 +451,36 @@ void ColliderEditor::LoadColliderData(const std::string fileName){
     }
 
     ifs.close();
+}
+
+
+std::vector<Collider*> ColliderEditor::LoadColliderData(const nlohmann::json& json){
+
+    std::vector<Collider*> colliders;
+
+    // コライダーの数
+    for(int i = 0; i < json["colliders"].size(); i++){
+        // コライダーの形状
+        std::string colliderType = json["colliders"][i]["colliderType"];
+        if(colliderType == "Sphere"){
+            colliders.push_back(new Collider_Sphere());
+        } else if(colliderType == "AABB"){
+            colliders.push_back(new Collider_AABB());
+        } else if(colliderType == "OBB"){
+            colliders.push_back(new Collider_OBB());
+        } else if(colliderType == "Line"){
+            colliders.push_back(new Collider_Line());
+        } else if(colliderType == "Capsule"){
+            colliders.push_back(new Collider_Capsule());
+        } else if(colliderType == "Plane"){
+            colliders.push_back(new Collider_Plane());
+        }
+
+        // コライダーの読み込み
+        colliders.back()->LoadFromJson(json["colliders"][i]);
+    }
+
+    return colliders;
 }
 
 

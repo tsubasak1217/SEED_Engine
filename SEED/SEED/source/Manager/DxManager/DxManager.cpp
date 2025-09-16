@@ -6,6 +6,9 @@
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
+#include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
+#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 DxManager* DxManager::instance_ = nullptr;
 
@@ -25,7 +28,7 @@ void DxManager::Initialize(SEED* pSEED){
     instance_->polygonManager_ = new PolygonManager(instance_);
     SEED::instance_->pPolygonManager_ = instance_->polygonManager_;
     // PostEffectのinstance作成
-    PostEffect::GetInstance();
+    PostEffectSystem::GetInstance();
 
 
     /*===========================================================================================*/
@@ -107,6 +110,7 @@ void DxManager::Initialize(SEED* pSEED){
 
     // 情報がそろったのでpolygonManagerの初期化
     instance_->polygonManager_->InitResources();
+
 }
 
 
@@ -251,6 +255,14 @@ void DxManager::CreateCommanders(){
     );
     // コマンドリストの生成がうまくいかなかったので起動できない
     assert(SUCCEEDED(hr));
+
+    hr = commandList->Close();// コマンドリスト閉じる
+    assert(SUCCEEDED(hr));
+    // リセットして次のフレーム用のコマンドリストを準備
+    hr = commandAllocator->Reset();
+    assert(SUCCEEDED(hr));
+    hr = commandList->Reset(commandAllocator.Get(), nullptr);
+    assert(SUCCEEDED(hr));
 }
 
 void DxManager::CreateRenderTargets(){
@@ -382,13 +394,14 @@ void DxManager::InitPSO(){
     PSOManager::CreatePipelines("AlwaysWriteVSPipeline.pip");// VSのパイプライン。深度に関わらず必ず書き込む
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
     PSOManager::CreatePipelines("TextVSPipeline.pip");// テキストのパイプライン。
+    PSOManager::CreatePipelines("SkyBoxVSPipeline.pip");// スカイボックス用のパイプライン。
 
     /*==================================================================================*/
     //                              CSのパイプラインの初期化
     /*==================================================================================*/
 
     // 内部でPSOManager::CreatePipelinesを呼び出している
-    PostEffect::GetInstance()->Initialize();
+    PostEffectSystem::GetInstance()->Initialize();
 
 }
 
@@ -522,6 +535,10 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////////////
     //  オフスクリーンに描画を行う
     //////////////////////////////////////////////////////////////////////////
+
+    // 毎フレーム一度セットする情報
+    polygonManager_->BindFrameDatas();
+
     for(const auto& [cameraName, camera] : cameras_){
         if(!camera->isActive_){ continue; }
 
@@ -550,9 +567,11 @@ void DxManager::DrawPolygonAll(){
 
     /*----------------------ポストエフェクトを行う-------------------*/
 
-    // 被写界深度
-    //PostEffect::GetInstance()->DoF();
+    // ポストエフェクト用のパラメーターを更新
+    PostEffectSystem::Update();
 
+    // 有効なポストエフェクトを適用
+    PostEffectSystem::GetInstance()->PostProcess();
 
     //---------------------- 元の状態に遷移 ---------------------//
 
@@ -597,8 +616,6 @@ void DxManager::DrawPolygonAll(){
     //////////////////////////////////////////////////////////////////
 
 
-    PostEffect::GetInstance()->BeforeBackBufferDrawTransition();
-
     // オフスクリーンのリソースを参照するために状態を遷移させる
     for(const auto& [cameraName, camera] : cameras_){
         offScreenResources[cameraName].TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -617,8 +634,6 @@ void DxManager::DrawPolygonAll(){
     // すべてのリソースを基本の状態に戻す
     //////////////////////////////////////////////////////////////////
 
-    PostEffect::GetInstance()->EndTransition();
-
     /*---------- メインゲーム画面 -> ImGui用のSystem画面に描画を切り替え----------*/
 #ifdef USE_SUB_WINDOW
     commandList->OMSetRenderTargets(
@@ -631,6 +646,8 @@ void DxManager::DrawPolygonAll(){
 void DxManager::DrawGUI(){
 #ifdef USE_SUB_WINDOW
 
+    PostEffectSystem::instance_->Edit();
+    GPUParticleSystem::GetInstance()->DrawGUI();
 
 #endif // USE_SUB_WINDOW
 }
@@ -762,7 +779,9 @@ void DxManager::Release(){
         offScreenResources[cameraName].resource.Reset();
         depthStencilResources[cameraName].resource.Reset();
     }
-    PostEffect::GetInstance()->Release();
+    PostEffectSystem::GetInstance()->Release();
+    GPUParticleSystem::Release();
+    VideoManager::GetInstance()->Release();
     delete polygonManager_;
     polygonManager_ = nullptr;
 

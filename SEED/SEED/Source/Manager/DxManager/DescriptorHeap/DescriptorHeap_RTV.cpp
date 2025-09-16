@@ -15,12 +15,17 @@ DescriptorHeap_RTV::DescriptorHeap_RTV(){
         kMaxViewCount_,// ダブルバッファ用とオフスクリーンように計3つ。 多くても別に構わない
         false
     );
+
+    // フリーリストに全てのインデックスを追加
+    for(uint32_t i = 0; i < kMaxViewCount_; ++i){
+        freeIndices_.push(i);
+    }
 }
 
 uint32_t DescriptorHeap_RTV::CreateView(VIEW_TYPE viewType, ID3D12Resource* pResource, const void* pDesc){
 
     D3D12_CPU_DESCRIPTOR_HANDLE handleCPU;
-    handleCPU = GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, viewCount_);
+    handleCPU = GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, freeIndices_.front());
 
     if(viewType == VIEW_TYPE::RTV){
         const D3D12_RENDER_TARGET_VIEW_DESC* rtvDesc = static_cast<const D3D12_RENDER_TARGET_VIEW_DESC*>(pDesc);
@@ -30,6 +35,9 @@ uint32_t DescriptorHeap_RTV::CreateView(VIEW_TYPE viewType, ID3D12Resource* pRes
         assert(false);
     }
 
-    return viewCount_++;
+    viewCount_++;
+    uint32_t index = freeIndices_.front();
+    freeIndices_.pop();
+    return index;
 }
 

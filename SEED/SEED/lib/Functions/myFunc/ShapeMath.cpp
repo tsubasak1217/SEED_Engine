@@ -1,5 +1,6 @@
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <Environment/Environment.h>
 
 //---------------------- 正三角形 -------------------------
 
@@ -62,6 +63,28 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
         { 0.0f,0.0f },
         color
     );
+}
+
+Quad2D MakeBackgroundQuad2D(int32_t layer,const Vector4& color){
+    Quad2D quad = MakeQuad2D(kWindowSize,color);
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x += kWindowSize.x * 0.5f;
+        quad.localVertex[i].y += kWindowSize.y * 0.5f;
+    }
+    quad.drawLocation = DrawLocation::Back;
+    quad.layer = layer;
+    return quad;
+}
+
+Quad2D MakeFrontQuad2D(int32_t layer, const Vector4& color){
+    Quad2D quad = MakeQuad2D(kWindowSize,color);
+    for(int i = 0; i < 4; ++i){
+        quad.localVertex[i].x += kWindowSize.x * 0.5f;
+        quad.localVertex[i].y += kWindowSize.y * 0.5f;
+    }
+    quad.drawLocation = DrawLocation::Front;
+    quad.layer = layer;
+    return quad;
 }
 
 Quad MakeQuad(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){
@@ -197,6 +220,27 @@ AABB MaxAABB(const AABB& aabb1, const AABB& aabb2){
     Vector3 halfSize = (mostMax - mostMin) * 0.5f;
 
     return AABB(mostMin + halfSize, halfSize);
+}
+
+AABB2D MaxAABB(const AABB2D& aabb1, const AABB2D& aabb2){
+    Vector2 min[2] = {
+        aabb1.center - aabb1.halfSize,
+        aabb2.center - aabb2.halfSize
+    };
+    Vector2 max[2] = {
+        aabb1.center + aabb1.halfSize,
+        aabb2.center + aabb2.halfSize
+    };
+    Vector2 mostMin = {
+        (std::min)(min[0].x, min[1].x),
+        (std::min)(min[0].y, min[1].y)
+    };
+    Vector2 mostMax = {
+        (std::max)(max[0].x, max[1].x),
+        (std::max)(max[0].y, max[1].y)
+    };
+    Vector2 halfSize = (mostMax - mostMin) * 0.5f;
+    return AABB2D(mostMin + halfSize, halfSize);
 }
 
 //----------------------BOX頂点を作成する関数-------------------

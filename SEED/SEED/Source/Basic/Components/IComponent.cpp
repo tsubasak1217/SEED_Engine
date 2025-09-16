@@ -1,7 +1,19 @@
 #include "IComponent.h"
 
-IComponent::IComponent(GameObject* pOwner, const std::string& tagName){
-    owner_ = pOwner;
+IComponent::IComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName){
+
+    // 所有者の設定
+    if(std::holds_alternative<GameObject*>(pOwner)) {
+        owner_.owner3D = std::get<GameObject*>(pOwner);
+
+    } else if (std::holds_alternative<GameObject2D*>(pOwner)) {
+        owner_.is2D = true;
+        owner_.owner2D = std::get<GameObject2D*>(pOwner);
+
+    } else {
+        assert(false);
+    }
+
     componentTag_ = tagName;
     componentID_ = nextComponentID_++;
 }

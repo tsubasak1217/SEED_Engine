@@ -66,6 +66,9 @@ struct Vector2 final {
 		x -= obj;
 		y -= obj;
 	}
+    Vector2 operator-() const{
+        return Vector2(-x, -y);
+    }
 
 	// MULTIPLY-----------------------
 	Vector2 operator*(const Vector2& obj) const {
@@ -124,6 +127,7 @@ struct Vector2 final {
 
 
     Vector3 ToVec3() const;
+    void Normalize();
 };
 
 // Vector2をJSONに変換する関数
@@ -133,6 +137,10 @@ inline void to_json(nlohmann::json& j, const Vector2& vec){
 
 // JSONをVector2に変換する関数
 inline void from_json(const nlohmann::json& j, Vector2& vec){
+
+    if (j.empty()) {
+        return;
+    }
     if(!j.contains("x") || !j.contains("y")){
         vec.x = j[0].get<float>();
         vec.y = j[1].get<float>();

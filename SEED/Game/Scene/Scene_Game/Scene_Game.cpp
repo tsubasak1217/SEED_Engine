@@ -6,6 +6,9 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
 // state
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Scene/Scene_Game/State/GameState_Select.h>
+#include <Game/Scene/Scene_Game/State/GameState_Strolling.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -17,8 +20,8 @@ Scene_Game::Scene_Game() : Scene_Base(){
 };
 
 Scene_Game::~Scene_Game(){
-
-    Finalize();
+    Scene_Base::Finalize();
+    SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
 }
 
@@ -32,17 +35,63 @@ void Scene_Game::Initialize(){
 
     // パーティクルの初期化
     EffectSystem::DeleteAll();
-    // SkyBoxの設定
+
+    ////////////////////////////////////////////////////
+    // State初期化
+    ////////////////////////////////////////////////////
+
     SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
-    // ライトの設定
+
+    // Playステートに初期化
+    //ChangeState(new GameState_Strolling(this));
+    ChangeState(new GameState_Select(this));
+
+    if(currentState_){
+        currentState_->Initialize();
+    }
+
+    ////////////////////////////////////////////////////
+    //  カメラ初期化
+    ////////////////////////////////////////////////////
+
+    auto* scene = this;
+    scene;
+
+    ////////////////////////////////////////////////////
+    //  ライトの初期化
+    ////////////////////////////////////////////////////
+
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->direction_ = { -0.5f,-1.0f,0.0f };
 
-    // stateの初期化
-    Scene_Base::Initialize();
+    ////////////////////////////////////////////////////
+    //  オブジェクトの初期化
+    ////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////
+    // スプライトの初期化
+    ////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////
+    // Audio の 初期化
+    ////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////
+    //  他クラスの情報を必要とするクラスの初期化
+    ////////////////////////////////////////////////////
+
+
+
+    /////////////////////////////////////////////////
+    //  関連付けや初期値の設定
+    /////////////////////////////////////////////////
+
 }
 
-void Scene_Game::Finalize(){
+void Scene_Game::Finalize() {
     Scene_Base::Finalize();
 }
 
@@ -53,7 +102,26 @@ void Scene_Game::Finalize(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Update(){
-    Scene_Base::Update();
+
+    /*========================== ImGui =============================*/
+
+
+    /*======================= 各状態固有の更新 ========================*/
+
+    // ヒエラルキー内のオブジェクトの更新
+    hierarchy_->Update();
+
+    if(currentState_){
+        currentState_->Update();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Update();
+    }
+
+    /*==================== 各オブジェクトの基本更新 =====================*/
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +131,28 @@ void Scene_Game::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw(){
-    Scene_Base::Draw();
+
+    /*======================= 各状態固有の描画 ========================*/
+
+    if(currentEventState_){
+        currentEventState_->Draw();
+    }
+
+    if(currentState_){
+        currentState_->Draw();
+    }
+
+    //SEED::DrawSkyBox(true);
+    //SEED::DrawGrid();
+
+    /*==================== 各オブジェクトの基本描画 =====================*/
+
+    // ヒエラルキー内のオブジェクトの描画
+    hierarchy_->Draw();
+
+    // ライトをセット
+    directionalLight_->SendData();
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +161,14 @@ void Scene_Game::Draw(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::BeginFrame(){
-    Scene_Base::BeginFrame();
+
+    // ヒエラルキー内のオブジェクトの描画
+    hierarchy_->BeginFrame();
+
+    // 現在のステートがあればフレーム開始処理を行う
+    if(currentState_){
+        currentState_->BeginFrame();
+    }
 }
 
 
@@ -82,7 +178,14 @@ void Scene_Game::BeginFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::EndFrame(){
-    Scene_Base::EndFrame();
+
+    // ヒエラルキー内のオブジェクトのフレーム終了処理
+    hierarchy_->EndFrame();
+
+    // 現在のステートがあればフレーム終了処理を行う
+    if(currentState_){
+        currentState_->EndFrame();
+    }
 }
 
 
@@ -92,5 +195,8 @@ void Scene_Game::EndFrame(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Game::HandOverColliders(){
-    Scene_Base::HandOverColliders();
+
+    if(currentState_){
+        currentState_->HandOverColliders();
+    }
 }

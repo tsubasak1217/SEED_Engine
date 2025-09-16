@@ -1,0 +1,382 @@
+{
+    "ArtistName": {
+        "RelativePos": {
+            "x": 284.0,
+            "y": 79.0
+        },
+        "textBox": {
+            "align": 2,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 23.0,
+            "glyphSpacing": 2.799999952316284,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 3.4000000953674316,
+            "size": {
+                "x": 250.0,
+                "y": 64.0
+            },
+            "text": "カマキリ楽団",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1033.559326171875,
+                    "y": 875.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "BPM": {
+        "RelativePos": {
+            "x": 419.0,
+            "y": 121.0
+        },
+        "textBox": {
+            "align": 2,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 18.0,
+            "glyphSpacing": 1.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 187.0,
+                "y": 64.0
+            },
+            "text": "BPM160",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1168.559326171875,
+                    "y": 917.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "Difficulty": {
+        "RelativePos": {
+            "x": 467.0,
+            "y": 31.0
+        },
+        "textBox": {
+            "align": 1,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 91.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 7.199999809265137,
+            "size": {
+                "x": 124.0,
+                "y": 64.0
+            },
+            "text": "5",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1216.559326171875,
+                    "y": 827.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "GroupName": {
+        "RelativePos": {
+            "x": 258.0,
+            "y": 59.0
+        },
+        "textBox": {
+            "align": 1,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 49.0,
+            "glyphSpacing": 3.4000000953674316,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 17,
+            "outlineWidth": 4.699999809265137,
+            "size": {
+                "x": 546.0,
+                "y": 63.0
+            },
+            "text": "ゲームミュージック",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1007.5592651367188,
+                    "y": 855.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "NotesDesigner": {
+        "RelativePos": {
+            "x": 316.0,
+            "y": 121.0
+        },
+        "textBox": {
+            "align": 2,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 18.0,
+            "glyphSpacing": 1.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.700000047683716,
+            "size": {
+                "x": 260.0,
+                "y": 64.0
+            },
+            "text": "tbs",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1065.559326171875,
+                    "y": 917.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "Score": {
+        "RelativePos": {
+            "x": 77.0,
+            "y": 70.0
+        },
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 100.0,
+            "glyphSpacing": 8.0,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 2.0,
+            "size": {
+                "x": 128.0,
+                "y": 64.0
+            },
+            "text": "",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "SongName": {
+        "RelativePos": {
+            "x": 317.0,
+            "y": 47.0
+        },
+        "textBox": {
+            "align": 0,
+            "anchorPos": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blendMode": 3,
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+            "fontSize": 36.0,
+            "glyphSpacing": 4.5,
+            "lineSpacing": 8.0,
+            "outlineColor": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "outlineSplitCount": 16,
+            "outlineWidth": 4.300000190734863,
+            "size": {
+                "x": 404.0,
+                "y": 64.0
+            },
+            "text": "TinySummerKnight",
+            "textBoxVisible": false,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 1066.559326171875,
+                    "y": 843.6369018554688
+                }
+            },
+            "useOutline": false
+        }
+    },
+    "backColors": [
+        {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.6023165583610535,
+            "z": 0.0
+        },
+        {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 0.03474903106689453,
+            "z": 0.14655399322509766
+        },
+        {
+            "w": 1.0,
+            "x": 0.5280778408050537,
+            "y": 0.0,
+            "z": 0.8339768648147583
+        },
+        {
+            "w": 1.0,
+            "x": 0.0019379565492272377,
+            "y": 0.022043898701667786,
+            "z": 0.03861004114151001
+        }
+    ],
+    "kDrawSize": {
+        "x": 514.0,
+        "y": 109.0
+    }
+}

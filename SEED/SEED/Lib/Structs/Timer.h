@@ -8,7 +8,7 @@ struct Timer{
     Timer(float _duration,float current = 0.0f);
 
 public:
-    void Initialize(float _duration,float current);
+    void Initialize(float _duration,float current = 0.0f);
     float GetProgress() const;
     float GetDuration() const;
     float GetEase(Easing::Type easeType);

@@ -15,6 +15,7 @@
 // camera
 #include <SEED/Source/Basic/Camera/FollowCamera.h>
 
+
 class Scene_Game
     : public Scene_Base{
 
@@ -33,5 +34,4 @@ private:
 
     // EngineObjects
     std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
-
 };

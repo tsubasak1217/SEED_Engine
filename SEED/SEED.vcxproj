@@ -124,6 +124,32 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Config\PlaySettings.cpp" />
+    <ClCompile Include="Game\GameSystem.cpp" />
+    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
+    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\SongSelector.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
+    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
@@ -146,7 +172,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
-    <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp">
       <SubType>
@@ -166,7 +191,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -174,6 +198,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
@@ -185,7 +210,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
@@ -257,6 +281,34 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="Game\GameSystem.h" />
+    <ClInclude Include="Game\Manager\NotesEditor.h" />
+    <ClInclude Include="Game\Manager\RythmGameManager.h" />
+    <ClInclude Include="Game\Manager\SongSelector.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
+    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
+    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
+    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
+    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
+    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
       <SubType>
       </SubType>
@@ -301,7 +353,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
-    <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h">
@@ -324,7 +375,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="SEED\External\stb\stb_truetype.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
@@ -334,6 +384,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
+    <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
@@ -349,7 +400,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />

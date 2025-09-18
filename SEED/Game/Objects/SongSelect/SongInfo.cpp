@@ -176,6 +176,7 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
         textBox[key]->transform.scale = transform.scale;
         textBox[key]->transform.translate = leftTopPos + textBoxRelativePos[key] * transform.scale;
         textBox[key]->color.w = alpha; // 透明度を適用
+        textBox[key]->layer = backSprite->layer + 1;
         textBox[key]->Draw();
     }
 }
@@ -208,6 +209,7 @@ void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transfo
     textBox["GroupName"]->transform.scale = transform.scale;
     textBox["GroupName"]->transform.translate = leftTopPos + textBoxRelativePos["GroupName"] * transform.scale;
     textBox["GroupName"]->color.w = alpha; // 透明度を適用
+    textBox["GroupName"]->layer = backSprite->layer + 1;
     textBox["GroupName"]->Draw();
 
     difficulty;

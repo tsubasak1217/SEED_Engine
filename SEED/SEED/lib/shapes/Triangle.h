@@ -61,7 +61,7 @@ public:
     bool isStaticDraw = false;
     // 描画位置の設定(前景か背景か)
     DrawLocation drawLocation = DrawLocation::Front;
-    bool isApplyViewMat = true;
+    bool isApplyViewMat = false;
     int32_t layer = 0;// 描画順。大きいほど手前に描画
 
 public:

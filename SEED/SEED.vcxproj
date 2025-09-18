@@ -146,11 +146,15 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
+    <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType>
@@ -305,14 +309,17 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
+    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType>

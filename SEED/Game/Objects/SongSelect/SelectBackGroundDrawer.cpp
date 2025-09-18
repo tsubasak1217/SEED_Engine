@@ -68,6 +68,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
         backQuad.translate = center; // 背景Quadの位置を中央に設定
         backQuad.drawLocation = DrawLocation::Back; // 背景Quadの描画位置を設定
         backQuad.layer = 0;
+        backQuad.isApplyViewMat = false;
 
         // 格納可能な縦横数を計算
         int rows = int((kWindowSize.y * 0.5f) / kGridSize) * 2 + 3;
@@ -84,6 +85,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
                 obj.quad.translate = obj.position;
                 obj.quad.color = MyFunc::RandomColor({ 0x314072FF, 0xe94c76FF, 0x6c3f82FF, 0xede690FF }); // ランダムな色
                 obj.quad.layer = 1;
+                obj.quad.isApplyViewMat = false;
                 obj.quad.drawLocation = DrawLocation::Back;
                 scrollObjects[i].push_back(obj);
             }

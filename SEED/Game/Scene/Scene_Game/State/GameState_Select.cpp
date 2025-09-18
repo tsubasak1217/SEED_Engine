@@ -1,5 +1,4 @@
 #include "GameState_Select.h"
-#include "SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h"
 
 GameState_Select::GameState_Select(){
     // ゲームマネージャーの初期化
@@ -16,11 +15,9 @@ GameState_Select::GameState_Select(Scene_Base* pScene){
     backGroundDrawer_ = std::make_unique<SelectBackGroundDrawer>();
 
     // ポストプロセスの設定
+    PostEffectSystem::DeleteAll();
     PostEffectSystem::Load("SelectScene.json");
 
-    // videoの初期化
-    video_ = std::make_unique<VideoPlayer>("xx.mp4");
-    video_->Play(0.0f, 1.0f, true);
 }
 
 GameState_Select::~GameState_Select(){
@@ -48,13 +45,6 @@ void GameState_Select::Draw(){
     // 背景描画クラスの描画
     backGroundDrawer_->Draw();
 
-    Quad2D quad = MakeBackgroundQuad2D(10);
-    //Quad2D quad = MakeFrontQuad2D(10);
-    video_->Draw(quad);
-    video_->DrawGUI();
-
-    quad = MakeEqualQuad2D(30.0f);
-    SEED::DrawQuad2D(quad);
 }
 
 void GameState_Select::BeginFrame(){

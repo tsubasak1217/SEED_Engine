@@ -147,6 +147,10 @@
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
+    <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -356,6 +360,9 @@
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
+    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

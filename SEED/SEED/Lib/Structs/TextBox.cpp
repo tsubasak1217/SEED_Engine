@@ -10,30 +10,56 @@ void TextBox2D::Edit(){
 
     // フォント設定
     static std::filesystem::path currentDir = "Resources/Fonts";
-    std::string selectedFont = ImFunc::FolderView("フォント一覧", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
+    std::string selectedFont = ImFunc::FolderView("フォント設定", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
     if(!selectedFont.empty()){
         SetFont(selectedFont);
     }
 
     // 各種パラメータ設定
-    ImFunc::Combo<TextAlign>("配置", align, { "LEFT","CENTER","RIGHT" });
-    ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 1000.0f);
-    ImGui::DragFloat2("テキスト位置", &transform.translate.x, 1.0f);
-    ImGui::DragFloat2("ボックスサイズ", &size.x, 1.0f, 0.0f);
-    ImGui::DragFloat2("アンカーポイント", &anchorPos.x, 0.01f);
-    ImGui::DragFloat("回転", &transform.rotate, 0.01f);
-    ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f, 0.0f);
-    ImGui::DragFloat("行間", &lineSpacing, 0.1f);
-    ImGui::DragFloat("文字間隔", &glyphSpacing, 0.1f);
-    ImGui::DragInt("描画レイヤー", &layer);
-    ImGui::ColorEdit4("文字色", (float*)&color);
-    ImGui::Checkbox("テキストボックス表示", &textBoxVisible);
-    ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
-    ImGui::Checkbox("アウトライン", &useOutline);
-    if(useOutline){
-        ImGui::DragFloat("アウトライン幅", &outlineWidth, 0.1f, 0.0f);
-        ImGui::ColorEdit4("アウトライン色", (float*)&outlineColor);
-        ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
+    if(ImGui::CollapsingHeader("トランスフォーム")){
+        ImGui::Indent();
+        static bool guizmo = false;
+        ImGui::Checkbox("Gizmoで操作", &guizmo);
+        ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f);
+        ImGui::DragFloat("回転", &transform.rotate, 0.05f);
+        ImGui::DragFloat2("移動", &transform.translate.x);
+        if(guizmo){
+            if(!parentMat){
+                ImGuiManager::RegisterGuizmoItem(&transform);
+            } else{
+                ImGuiManager::RegisterGuizmoItem(&transform, parentMat->ToMat4x4());
+            }
+        }
+        ImGui::Unindent();
+    }
+
+    if(ImGui::CollapsingHeader("配置や大きさ、アンカーなどの設定")){
+        ImGui::Indent();
+        ImFunc::Combo<TextAlignX>("配置(X)", alignX, { "LEFT","CENTER","RIGHT" });
+        ImFunc::Combo<TextAlignY>("配置(Y)", alignY, { "TOP","CENTER","BOTTOM" });
+        ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 1000.0f);
+        ImGui::DragFloat2("ボックスサイズ", &size.x, 1.0f, 0.0f);
+        ImGui::DragFloat2("アンカーポイント", &anchorPos.x, 0.01f);
+        ImGui::DragFloat("行間", &lineSpacing, 0.1f);
+        ImGui::DragFloat("文字間隔", &glyphSpacing, 0.1f);
+        ImGui::Unindent();
+    }
+
+    if(ImGui::CollapsingHeader("描画設定")){
+        ImGui::Indent();
+        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
+        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, { "背景","前景" }, 1);
+        ImGui::DragInt("描画レイヤー", &layer);
+        ImGui::ColorEdit4("文字色", (float*)&color);
+        ImGui::Checkbox("テキストボックス表示", &textBoxVisible);
+        ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
+        ImGui::Checkbox("アウトライン", &useOutline);
+        if(useOutline){
+            ImGui::DragFloat("アウトライン幅", &outlineWidth, 0.1f, 0.0f);
+            ImGui::ColorEdit4("アウトライン色", (float*)&outlineColor);
+            ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
+        }
+        ImGui::Unindent();
     }
 }
 #endif // _DEBUG
@@ -51,7 +77,8 @@ nlohmann::json TextBox2D::GetJsonData() const{
     jsonData["fontSize"] = fontSize;
     jsonData["lineSpacing"] = lineSpacing;
     jsonData["glyphSpacing"] = glyphSpacing;
-    jsonData["align"] = static_cast<int>(align);
+    jsonData["alignX"] = static_cast<int>(alignX);
+    jsonData["alignY"] = static_cast<int>(alignY);
     jsonData["blendMode"] = static_cast<int>(blendMode);
     jsonData["useOutline"] = useOutline;
     jsonData["outlineWidth"] = outlineWidth;
@@ -76,7 +103,8 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     fontSize = jsonData["fontSize"];
     lineSpacing = jsonData["lineSpacing"];
     glyphSpacing = jsonData["glyphSpacing"];
-    align = static_cast<TextAlign>(jsonData["align"]);
+    alignX = static_cast<TextAlignX>(jsonData.value("align",1));
+    alignY = static_cast<TextAlignY>(jsonData.value("alignY",0));
     blendMode = static_cast<BlendMode>(jsonData["blendMode"]);
     useOutline = jsonData["useOutline"];
     outlineWidth = jsonData["outlineWidth"];
@@ -84,7 +112,7 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     color = jsonData["color"];
     outlineColor = jsonData["outlineColor"];
     textBoxVisible = jsonData.value("textBoxVisible", true);
-    isApplyViewMat = jsonData.value("isApplyViewMat", true);
+    isApplyViewMat = jsonData.value("isApplyViewMat", false);
     layer = jsonData.value("layer", 0);
     // フォントを設定
     SetFont(fontName);
@@ -192,7 +220,13 @@ void TextBox2D::Draw()const{
     // 変換行列を作成
     static Vector2 baseAnchorPos = { 0.5f, 0.5f }; // デフォルトのアンカー位置
     Vector2 anchorOffset = (anchorPos - baseAnchorPos) * size;
-    Matrix3x3 textBoxMat = AffineMatrix(transform);
+    Matrix3x3 textBoxMat;
+
+    if(parentMat){
+        textBoxMat = transform.ToMatrix() * (*parentMat);
+    } else{
+        textBoxMat = transform.ToMatrix();
+    }
 
     // デバッグ時描画
 #ifdef _DEBUG
@@ -218,8 +252,8 @@ void TextBox2D::Draw()const{
 
         // アンカー位置の描画(常にtranslateの位置に描画)
         Triangle2D anchorTri = MakeEqualTriangle2D(10.0f, color);
-        anchorTri.translate = transform.translate;
-        anchorTri.rotate = transform.rotate;
+        anchorTri.translate = ExtractTranslation(textBoxMat);
+        anchorTri.rotate = ExtractRotation(textBoxMat);
         SEED::DrawTriangle2D(anchorTri);
 
     }
@@ -246,11 +280,17 @@ void TextBox2D::Draw()const{
     float totalWidth = 0.0f;
     const FontData& fontData = TextSystem::GetInstance()->GetFont(fontName);
     float heightOffset = fontSize * fontData.baselneHeightRate; // ベースラインのオフセット
+    // 最終的に描画する矩形
+    std::vector<std::vector<Quad2D>> quadLines;
 
 
     //====================== テキストを行ごとに分割して描画 =========================//
     for(auto& codePoints : codePointsList){
 
+        // 新しい行の矩形リストを追加
+        auto& quads = quadLines.emplace_back();
+
+        // 一行
         for(size_t i = 0; i < codePoints.size(); i++){
 
             // 文字データを取得
@@ -269,17 +309,15 @@ void TextBox2D::Draw()const{
 
                 // 字詰めモードに応じて左端座標を調整
                 float leftX = 0.0f;
-                if(align == TextAlign::LEFT){// 左寄せ
+                if(alignX == TextAlignX::LEFT){// 左寄せ
                     leftX = 0.0f;
-                } else if(align == TextAlign::CENTER){// 中央寄せ
+                } else if(alignX == TextAlignX::CENTER){// 中央寄せ
                     leftX = (size.x - totalWidth) * 0.5f;
-                } else if(align == TextAlign::RIGHT){// 右寄せ
+                } else if(alignX == TextAlignX::RIGHT){// 右寄せ
                     leftX = size.x - totalWidth;
                 }
                 float curX = leftX;
 
-                // 最終的に描画する矩形
-                std::vector<Quad2D> quads;
 
                 // 矩形を追加していく
                 for(const auto& lineGlyph : lineGlyphs){
@@ -296,8 +334,6 @@ void TextBox2D::Draw()const{
                             });
                         // アンカーオフセットを適用
                         quad.localVertex[idx] -= (baseAnchorPos * size) + anchorOffset;
-                        // 行列を適用
-                        quad.localVertex[idx] *= textBoxMat;
                     }
 
 
@@ -313,36 +349,11 @@ void TextBox2D::Draw()const{
                     // その他設定
                     quad.isText = true;
 
-                    if(useOutline){
-                        Matrix3x3 rotateMat = RotateMatrix(transform.rotate);
-                        Vector2 rotatedVec = Vector2(0.0f, 1.0f) * rotateMat;
-                        float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
-                        Quad2D outlineQuad = quad;
-                        outlineQuad.color = outlineColor;
-                        outlineQuad.color.w *= color.w; // 透明度は元の文字の透明度を乗算
-                        outlineQuad.layer = 1; // アウトラインは下に描画するためレイヤーを0に設定
-
-                        // アウトラインを移動させて描画
-                        for(int j = 0; j < outlineSplitCount; j++){
-                            // アウトラインの位置を計算
-                            Vector2 offset = rotatedVec * outlineWidth;
-                            outlineQuad.localVertex[0] = quad.localVertex[0] + offset;
-                            outlineQuad.localVertex[1] = quad.localVertex[1] + offset;
-                            outlineQuad.localVertex[2] = quad.localVertex[2] + offset;
-                            outlineQuad.localVertex[3] = quad.localVertex[3] + offset;
-                            // アウトラインの色を設定
-                            outlineQuad.layer = layer - 1;
-                            outlineQuad.isApplyViewMat = isApplyViewMat;
-                            SEED::DrawQuad2D(outlineQuad);
-                            // 回転ベクトルを更新
-                            rotatedVec *= RotateMatrix(radianEvery);
-                        }
-                    }
-
-                    // 描画
+                    // 描画設定
                     quad.isApplyViewMat = isApplyViewMat;
                     quad.layer = layer;
-                    SEED::DrawQuad2D(quad);
+                    quad.blendMode = blendMode;
+                    quad.drawLocation = drawLocation;
 
                     // X座標オフセットを加算
                     float height = fontSize * lineGlyph->yRatio;
@@ -352,6 +363,79 @@ void TextBox2D::Draw()const{
                 lineCount++;
                 totalWidth = 0.0f;
                 lineGlyphs.clear(); // 次の行のためにクリア
+            }
+        }
+    }
+
+    // Y軸のalignに応じて全体のオフセットを計算
+    float top = FLT_MAX;
+    float bottom = -FLT_MAX;
+    float yOffset = 0.0f;
+
+    // 最大の高さを計算
+    auto& topLine = quadLines.front();
+    auto& bottomLine = quadLines.back();
+    if(!topLine.empty()){
+        for(auto& quad : topLine){
+            if(quad.localVertex[0].y < top){ top = quad.localVertex[0].y; }
+        }
+        for(auto& quad : bottomLine){
+            if(quad.localVertex[2].y > bottom){ bottom = quad.localVertex[2].y; }
+        }
+
+        // 最大落差
+        float totalHeight = bottom - top;
+
+        // alignYに応じてオフセットを計算
+        if(alignY == TextAlignY::TOP){// 上寄せ
+            yOffset = 0.0f;
+        } else if(alignY == TextAlignY::CENTER){// 中央寄せ
+            yOffset = size.y * 0.5f - (totalHeight * 0.5f);
+        } else if(alignY == TextAlignY::BOTTOM){// 下寄せ
+            yOffset = size.y - totalHeight;
+        }
+
+        // オフセットや行列を適用
+        for(auto& quads : quadLines){
+            for(auto& quad : quads){
+                for(int i = 0; i < 4; i++){
+                    // Yオフセットを適用
+                    quad.localVertex[i].y += yOffset;
+
+                    // 行列を適用
+                    quad.localVertex[i] *= textBoxMat;
+                }
+
+                // アウトラインの描画
+                if(useOutline){
+                    Matrix3x3 rotateMat = RotateMatrix(transform.rotate);
+                    Vector2 rotatedVec = Vector2(0.0f, 1.0f) * rotateMat;
+                    float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
+                    Quad2D outlineQuad = quad;
+                    outlineQuad.color = outlineColor;
+                    outlineQuad.color.w *= color.w; // 透明度は元の文字の透明度を乗算
+
+                    // アウトラインを移動させて描画
+                    for(int j = 0; j < outlineSplitCount; j++){
+                        // アウトラインの位置を計算
+                        Vector2 offset = rotatedVec * outlineWidth;
+                        outlineQuad.localVertex[0] = quad.localVertex[0] + offset;
+                        outlineQuad.localVertex[1] = quad.localVertex[1] + offset;
+                        outlineQuad.localVertex[2] = quad.localVertex[2] + offset;
+                        outlineQuad.localVertex[3] = quad.localVertex[3] + offset;
+                        // アウトラインの色を設定
+                        outlineQuad.layer = layer - 1;
+                        outlineQuad.isApplyViewMat = isApplyViewMat;
+                        outlineQuad.blendMode = blendMode;
+                        outlineQuad.drawLocation = drawLocation;
+                        SEED::DrawQuad2D(outlineQuad);
+                        // 回転ベクトルを更新
+                        rotatedVec *= RotateMatrix(radianEvery);
+                    }
+                }
+
+                // 文字本体の描画
+                SEED::DrawQuad2D(quad);
             }
         }
     }

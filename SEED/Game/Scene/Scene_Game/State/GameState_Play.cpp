@@ -19,6 +19,7 @@ GameState_Play::~GameState_Play(){
 }
 
 void GameState_Play::Initialize(){
+    PostEffectSystem::DeleteAll();
 }
 
 

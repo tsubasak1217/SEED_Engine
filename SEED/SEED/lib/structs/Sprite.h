@@ -32,7 +32,8 @@ public:
     // SRT
     Transform2D transform;
     Vector2 offset;
-    
+    const Matrix3x3* parentMat = nullptr;
+
     // アンカーポイント
     Vector2 anchorPoint;
 
@@ -53,7 +54,7 @@ public:
     int32_t layer = 0;// 描画順。大きいほど手前に描画
 
     // 2D描画時にビュー行列を適用するかどうか
-    bool isApplyViewMat = true;
+    bool isApplyViewMat = false;
 
 private:
     Vector2 defaultSize_ = {0.0f,0.0f};

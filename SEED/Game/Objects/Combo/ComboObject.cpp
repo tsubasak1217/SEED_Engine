@@ -5,7 +5,7 @@ ComboObject::ComboObject(){
     comboText.SetFont("DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf");
     comboText.text = "%d\nCOMBO";
     comboText.BindDatas({ comboCount });
-    comboText.align = TextAlign::CENTER;
+    comboText.alignX = TextAlignX::CENTER;
 }
 
 void ComboObject::Draw() const{

@@ -1,14 +1,6 @@
-#include <Game/Scene/Scene_Game/Scene_Game.h>
+#include <Game/Scene/Scene_Load/Scene_Load.h>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
-#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
-#include <SEED/Source/Manager/CameraManager/CameraManager.h>
-#include <SEED/Source/Manager/AudioManager/AudioManager.h>
-
-// state
-#include <Game/Scene/Scene_Game/State/GameState_Play.h>
-#include <Game/Scene/Scene_Game/State/GameState_Select.h>
-#include <Game/Scene/Scene_Game/State/GameState_Strolling.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -16,13 +8,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Scene_Game::Scene_Game() : Scene_Base(){
+Scene_Load::Scene_Load() : Scene_Base(){
 };
 
-Scene_Game::~Scene_Game(){
+Scene_Load::~Scene_Load(){
     Scene_Base::Finalize();
-    SEED::RemoveCamera("gameCamera");
-    SEED::SetMainCamera("default");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -31,25 +21,11 @@ Scene_Game::~Scene_Game(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Initialize(){
-
-    // 共通初期化
+void Scene_Load::Initialize(){
     Scene_Base::Initialize();
-
-    // ステート初期化
-    //ChangeState(new GameState_Strolling(this));
-    ChangeState(new GameState_Select(this));
-
-    // ライトの初期化
-    directionalLight_ = std::make_unique<DirectionalLight>();
-    directionalLight_->direction_ = { -0.5f,-1.0f,0.0f };
-
-    // スカイボックスの設定
-    SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
-
 }
 
-void Scene_Game::Finalize() {
+void Scene_Load::Finalize() {
     Scene_Base::Finalize();
 }
 
@@ -59,7 +35,7 @@ void Scene_Game::Finalize() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Update(){
+void Scene_Load::Update(){
     Scene_Base::Update();
 }
 
@@ -69,14 +45,8 @@ void Scene_Game::Update(){
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void Scene_Game::Draw(){
-
-    // 共通描画
+void Scene_Load::Draw(){
     Scene_Base::Draw();
-
-    // ライトをセット
-    directionalLight_->SendData();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +54,7 @@ void Scene_Game::Draw(){
 //  フレーム開始時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::BeginFrame(){
+void Scene_Load::BeginFrame(){
     Scene_Base::BeginFrame();
 }
 
@@ -94,7 +64,7 @@ void Scene_Game::BeginFrame(){
 //  フレーム終了時の処理
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::EndFrame(){
+void Scene_Load::EndFrame(){
     Scene_Base::EndFrame();
 }
 
@@ -104,6 +74,6 @@ void Scene_Game::EndFrame(){
 //  すべてのコライダーをコリジョンマネージャに渡す
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Game::HandOverColliders(){
+void Scene_Load::HandOverColliders(){
     Scene_Base::HandOverColliders();
 }

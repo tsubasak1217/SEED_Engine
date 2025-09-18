@@ -18,8 +18,17 @@ Scene_Base::Scene_Base(){
 ////////////////////////////////////////////////////////////////////
 void Scene_Base::Initialize(){
 
+    // 現在のパーティクルやポストエフェクトの全削除
+    EffectSystem::DeleteAll();
+    PostEffectSystem::DeleteAll();
+
+    // stateの初期化
     if(currentState_){
         currentState_->Initialize();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Initialize();
     }
 }
 
@@ -32,6 +41,10 @@ void Scene_Base::Finalize(){
 
     if(currentState_){
         currentState_->Finalize();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Finalize();
     }
 }
 
@@ -67,12 +80,12 @@ void Scene_Base::Update(){
 void Scene_Base::Draw(){
     /*=========== 各状態固有の描画 ============*/
 
-    if(currentEventState_){
-        currentEventState_->Draw();
-    }
-
     if(currentState_){
         currentState_->Draw();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 
     /*======== 各オブジェクトの基本描画 ========*/
@@ -94,6 +107,10 @@ void Scene_Base::BeginFrame(){
         currentState_->BeginFrame();
     }
 
+    if(currentEventState_){
+        currentEventState_->BeginFrame();
+    }
+
     // ヒエラルキー内のオブジェクトの開始処理
     hierarchy_->BeginFrame();
 }
@@ -103,6 +120,10 @@ void Scene_Base::EndFrame(){
     if(currentState_){
         currentState_->EndFrame();
     }
+    
+    if(currentEventState_){
+        currentEventState_->EndFrame();
+    }
 
     // ヒエラルキー内のオブジェクトの描画
     hierarchy_->EndFrame();
@@ -110,6 +131,10 @@ void Scene_Base::EndFrame(){
     // ステートクラス内の遷移処理を実行
     if(currentState_){
         currentState_->ManageState();
+    }
+
+    if(currentEventState_){
+        currentEventState_->ManageState();
     }
 }
 
@@ -122,6 +147,10 @@ void Scene_Base::EndFrame(){
 void Scene_Base::HandOverColliders(){
     if(currentState_){
         currentState_->HandOverColliders();
+    }
+
+    if(currentEventState_){
+        currentEventState_->HandOverColliders();
     }
 }
 
@@ -139,7 +168,7 @@ void Scene_Base::ChangeState(State_Base* nextState){
     currentState_.reset(nextState);
 }
 
-void Scene_Base::CauseEvent(EventState_Base* nextEventState){
+void Scene_Base::CauseEvent(State_Base* nextEventState){
     currentEventState_.reset(nextEventState);
 }
 

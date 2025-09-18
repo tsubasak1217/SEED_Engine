@@ -103,7 +103,7 @@ void ResultDrawer::Edit(){
 
             if(!isTextInitialized){
                 textBox.size = { 500.0f,100.0f };
-                textBox.align = TextAlign::LEFT;
+                textBox.alignX = TextAlignX::LEFT;
                 textBox.fontSize = 30.0f;
                 textBox.anchorPos = { 0.0f,0.0f };
                 textBox.textBoxVisible = false;

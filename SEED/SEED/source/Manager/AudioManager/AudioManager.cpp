@@ -173,7 +173,7 @@ AudioHandle AudioManager::PlayAudio(
     // Submit & 再生
     hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
     assert(SUCCEEDED(hr));
-    hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume);
+    hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume * systemVolumeRate_);
     volumeMap_[nextAudioHandle_] = volume;
     assert(SUCCEEDED(hr));
     hr = sourceVoices_[nextAudioHandle_]->Start();

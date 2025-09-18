@@ -1,16 +1,16 @@
 #pragma once
 #include <SEED/Source/Basic/Scene/State_Base.h>
 #include <Game/Manager/RythmGameManager.h>
-#include <Game/Manager/SongSelector.h>
-#include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
-#include <SEED/Lib/Structs/VideoPlayer.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 #include <memory>
+#include <list>
+#include <SEED/Lib/Structs/TextBox.h>
 
-class GameState_Select : public State_Base{
+class GameState_Pause : public State_Base{
 public:
-    GameState_Select();
-    GameState_Select(Scene_Base* pScene);
-    ~GameState_Select() override;
+    GameState_Pause();
+    GameState_Pause(Scene_Base* pScene);
+    ~GameState_Pause() override = default;
 
 public:
     void Initialize() override;
@@ -23,6 +23,5 @@ public:
     void ManageState() override;
 
 private:
-    std::unique_ptr<SongSelector> songSelector_;
-    std::unique_ptr< SelectBackGroundDrawer> backGroundDrawer_;
+
 };

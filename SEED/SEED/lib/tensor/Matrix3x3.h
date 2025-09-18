@@ -1,4 +1,7 @@
 #pragma once
+// 前方宣言
+struct Matrix4x4;
+
 struct Matrix3x3 final {
     float m[3][3];
 
@@ -29,6 +32,8 @@ struct Matrix3x3 final {
         m[2][1] = cb;
         m[2][2] = cc;
     }
+
+    Matrix4x4 ToMat4x4() const;
 
     Matrix3x3 operator*(const Matrix3x3& other) const{
         Matrix3x3 result;

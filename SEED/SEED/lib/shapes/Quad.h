@@ -69,5 +69,5 @@ struct Quad2D{
     // 描画位置の設定(前景か背景か)
     DrawLocation drawLocation = DrawLocation::Front;
     int32_t layer = 0;// 描画順。大きいほど手前に描画
-    bool isApplyViewMat = true;
+    bool isApplyViewMat = false;
 };

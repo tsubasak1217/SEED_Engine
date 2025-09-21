@@ -24,8 +24,8 @@ public:
     bool GetIsEnd(){ return isEnd_; }
     int32_t GetTotalCombo();
     void AddActiveHoldNote(std::weak_ptr<Note_Base> note){activeHoldNotes_.push_back(note);}
-    void Pause(){ isPauseMode_ = true; }
-    void Resume(){ isPauseMode_ = false; }
+    void Pause();
+    void Resume();
 
 private:
     void DeleteNotes();

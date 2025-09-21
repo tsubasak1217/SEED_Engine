@@ -10,7 +10,7 @@ class GameState_Pause : public State_Base{
 public:
     GameState_Pause();
     GameState_Pause(Scene_Base* pScene);
-    ~GameState_Pause() override = default;
+    ~GameState_Pause() override;
 
 public:
     void Initialize() override;
@@ -23,5 +23,13 @@ public:
     void ManageState() override;
 
 private:
+    std::vector<GameObject2D*> pauseUIs_;
+    Sprite pauseBg_;
+    int32_t selectedIndex_ = 0;
 
+    // タイマー関連
+    Timer pauseTimer_;
+
+    // state遷移用
+    bool isExit_ = false;
 };

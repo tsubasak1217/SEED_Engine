@@ -20,7 +20,7 @@
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
 // dict
-#include <SEED/Source/Manager/AudioManager/AudioDictionary.h>
+#include <SEED/Source/Basic/Dictionary/AudioDictionary.h>
 
 
 using AudioHandle = uint32_t;

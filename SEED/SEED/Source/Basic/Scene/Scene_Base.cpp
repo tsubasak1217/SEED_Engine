@@ -170,6 +170,7 @@ void Scene_Base::ChangeState(State_Base* nextState){
 
 void Scene_Base::CauseEvent(State_Base* nextEventState){
     currentEventState_.reset(nextEventState);
+    currentEventState_->Initialize();
 }
 
 
@@ -194,6 +195,14 @@ void Scene_Base::RemoveFromHierarchy(GameObject* gameObject){
 
 void Scene_Base::RemoveFromHierarchy(GameObject2D* gameObject){
     hierarchy_->RemoveGameObject(gameObject);
+}
+
+void Scene_Base::EraseFromHierarchy(GameObject* gameObject){
+    hierarchy_->EraseObject(gameObject);
+}
+
+void Scene_Base::EraseFromHierarchy(GameObject2D* gameObject){
+    hierarchy_->EraseObject(gameObject);
 }
 
 // オブジェクトの存在確認

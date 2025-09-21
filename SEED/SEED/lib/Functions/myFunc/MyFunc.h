@@ -121,7 +121,7 @@ public:// ファイル・文字列関連 =======================================
     static std::wstring ToFullPath(const std::wstring& relativePath);
 
     // jsonふぁあいる関連の関数
-    static nlohmann::json GetJson(const std::string& filePath);
+    static nlohmann::json GetJson(const std::string& filePath,bool createFile = false);
     static void CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData);
 };
 

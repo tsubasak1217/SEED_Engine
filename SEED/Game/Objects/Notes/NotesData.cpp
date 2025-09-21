@@ -146,6 +146,10 @@ void NotesData::Draw(){
 // フレーム開始時の処理
 ////////////////////////////////////////////////////////////////////
 void NotesData::BeginFrame(){
+    if(isPauseMode_){
+        return;
+    }
+
     onFieldNotes_.clear();// フィールド上のノーツをクリア
 }
 
@@ -350,6 +354,26 @@ void NotesData::PlayAudio(){
 }
 
 //////////////////////////////////////////////////////////////////////
+// 音源の一時停止,再開
+//////////////////////////////////////////////////////////////////////
+void NotesData::Pause(){
+    isPauseMode_ = true;
+    isStopped_ = true;
+    songTimer_.Stop();
+    AudioManager::EndAudio(songAudioHandle_);
+}
+
+void NotesData::Resume(){
+    isPauseMode_ = false;
+    isStopped_ = false;
+    // 再生状態にする
+    songTimer_.Restart();
+    if(songTimer_.currentTime >= startOffsetTime_){
+        songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////
 // JSONからノーツデータを読み込む
 //////////////////////////////////////////////////////////////////////
 void NotesData::FromJson(const nlohmann::json& songData){
@@ -481,14 +505,9 @@ void NotesData::Edit(){
             isStopped_ = !isStopped_;
 
             if(isStopped_){
-                songTimer_.Stop();
-                AudioManager::EndAudio(songAudioHandle_);
+                Pause();
             } else{
-                // 再生状態にする
-                songTimer_.Restart();
-                if(songTimer_.currentTime >= startOffsetTime_){
-                    songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
-                }
+                Resume();
             }
         }
 

@@ -3,8 +3,7 @@
 #include <vector>
 #include <memory>
 #include <json.hpp>
-#include <SEED/Source/Basic/Object/GameObject.h>
-#include <SEED/Source/Basic/Object/GameObject2D.h>
+#include "LoadObjectData.h"
 
 enum class ObjSortMode{
     AscendX,
@@ -60,7 +59,7 @@ public:
     // json
     nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const;
     nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject2D*> grandParentObjects) const;
-    void LoadFromJson(const std::string& filePath, bool resetObjects = true);
+    LoadObjectData LoadFromJson(const std::string& filePath, bool resetObjects = true);
 
 private:
     std::list<GameObject*> gameObjects_;// 登録されているゲームオブジェクトのリスト

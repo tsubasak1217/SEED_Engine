@@ -485,9 +485,9 @@ void GameObject2D::EditGUI(){
     ImFunc::InputText(label.c_str(), objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
-    ImGui::Text("位置(ローカル): %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y);
-    ImGui::Text("回転(ローカル): %.2f", localTransform_.rotate);
-    ImGui::Text("スケール(ローカル): %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y);
+    ImGui::DragFloat2("位置", &localTransform_.translate.x);
+    ImGui::DragFloat("回転", &localTransform_.rotate, 0.05f);
+    ImGui::DragFloat2("スケール", &localTransform_.scale.x, 0.05f);
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
     ImGui::Checkbox("回転をペアレントする", &isParentRotate_);

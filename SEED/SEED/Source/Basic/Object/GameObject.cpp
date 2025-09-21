@@ -475,14 +475,13 @@ void GameObject::EditGUI(){
     ImFunc::InputText(label.c_str(), objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
-    Vector3 info[3] = { GetWorldTranslate(), GetWorldEulerRotate(), GetWorldScale() };
-    Vector3 localRotEuler = GetLocalEulerRotate();
-    ImGui::Text("位置(ワールド): %.2f, %.2f, %.2f", info[0].x, info[0].y, info[0].z);
-    ImGui::Text("位置(ローカル): %.2f, %.2f, %.2f", localTransform_.translate.x, localTransform_.translate.y, localTransform_.translate.z);
-    ImGui::Text("回転(ワールド): %.2f, %.2f, %.2f", info[1].x, info[1].y, info[1].z);
-    ImGui::Text("回転(ローカル): %.2f, %.2f, %.2f", localRotEuler.x, localRotEuler.y, localRotEuler.z);
-    ImGui::Text("スケール(ワールド): %.2f, %.2f, %.2f", info[2].x, info[2].y, info[2].z);
-    ImGui::Text("スケール(ローカル): %.2f, %.2f, %.2f", localTransform_.scale.x, localTransform_.scale.y, localTransform_.scale.z);
+    static Vector3 eulerAngle;
+    ImGui::DragFloat3("位置", &localTransform_.translate.x, 0.1f);
+    ImGui::DragFloat3("スケール", &localTransform_.scale.x, 0.05f);
+    ImGui::DragFloat3("オイラー回転", &eulerAngle.x, 0.05f);
+    if(ImGui::Button("オイラー角からQuaternion回転に適用")){
+        localTransform_.rotate = Quaternion::ToQuaternion(eulerAngle);
+    }
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
     ImGui::Checkbox("回転をペアレントする", &isParentRotate_);

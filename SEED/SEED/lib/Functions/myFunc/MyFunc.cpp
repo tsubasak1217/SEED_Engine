@@ -524,7 +524,7 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jsonファイル関連
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-nlohmann::json MyFunc::GetJson(const std::string& filePath){
+nlohmann::json MyFunc::GetJson(const std::string& filePath,bool createFile){
 
     if(!filePath.ends_with(".json")){
         assert(false && "Jsonファイルの拡張子が不正");
@@ -534,6 +534,17 @@ nlohmann::json MyFunc::GetJson(const std::string& filePath){
     // ファイルを開く
     std::ifstream file(filePath);
     if(!file.is_open()){
+        if(createFile){
+            // ファイルが存在しない場合は新規作成
+            std::ofstream newFile(filePath);
+            if(!newFile.is_open()){
+                assert(false && "Jsonファイルの作成に失敗");
+                return nlohmann::json();
+            }
+            newFile << "{}"; // 空のJSONオブジェクトを書き込む
+            newFile.close();
+        }
+
         return nlohmann::json();
     }
 

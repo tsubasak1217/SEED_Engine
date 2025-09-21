@@ -125,6 +125,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
@@ -203,7 +204,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
-    <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\AudioDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
@@ -286,6 +287,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Manager\NotesEditor.h" />
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
@@ -392,7 +394,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
     <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
-    <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\AudioDictionary.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
     <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
@@ -416,6 +418,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
+    <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />

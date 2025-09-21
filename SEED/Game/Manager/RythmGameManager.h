@@ -26,6 +26,8 @@ public:
 
 public:
     BaseCamera* GetCamera(){ return gameCamera_.get(); }
+    void Pause();
+    void Resume();
     void BreakCombo(){ comboObject_->comboCount = 0; }
     void AddCombo(){ 
         comboObject_->comboCount++; 
@@ -54,4 +56,5 @@ private:
     std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
     std::unique_ptr<NotesEditor> notesEditor_; // ノーツエディタ
     PlayResult playResult_; // プレイ結果
+    bool isPaused_ = false; // ポーズ中かどうか
 };

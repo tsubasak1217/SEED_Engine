@@ -4,6 +4,7 @@
 #include <Game/GameSystem.h>
 #include <Game/Config/PlaySettings.h>
 #include <Game/Scene/Scene_Game/State/GameState_Select.h>
+#include <Game/Scene/Scene_Game/State/GameState_Pause.h>
 #include <Game/Objects/Result/ResultDrawer.h>
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -79,16 +80,25 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // 判定の初期化
     Judgement::GetInstance();
-
-    // カーソルの設定
-    SEED::SetIsRepeatCursor(false);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // フレーム開始処理
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::BeginFrame(){
+    if(isPaused_){
+        Input::SetMouseCursorVisible(true);
+        return;
+    }
+
     // inputのフレーム開始処理
+    Input::SetMouseCursorVisible(false);
+#ifdef _DEBUG
+    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+#else
+    Input::RepeatCursor();
+#endif
+
     PlayerInput::GetInstance()->BeginFrame();
     // 譜面データのフレーム開始処理
     if(notesData_){
@@ -115,10 +125,13 @@ void RythmGameManager::EndFrame(){
         GameSystem::ChangeScene("Clear");
     }
 
-    // escapeでセレクトに戻る
-    if(Input::IsTriggerKey(DIK_ESCAPE)){
-        auto* scene = GameSystem::GetScene();
-        scene->ChangeState(new GameState_Select(scene));
+    // escapeでポーズ画面を出す
+    if(!isPaused_){
+        if(Input::IsTriggerKey(DIK_ESCAPE)){
+            auto* scene = GameSystem::GetScene();
+            scene->CauseEvent(new GameState_Pause(scene));
+            Pause();
+        }
     }
 }
 
@@ -126,21 +139,18 @@ void RythmGameManager::EndFrame(){
 // 更新
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::Update(){
-    // Inputの更新
-    PlayerInput::GetInstance()->Update();
+    if(!isPaused_){
+        // Inputの更新
+        PlayerInput::GetInstance()->Update();
 
-    // 譜面データの更新
-    notesData_->Update();
+        // 譜面データの更新
+        notesData_->Update();
 
-    // ノーツの判定
-    Judgement::GetInstance()->Judge(notesData_.get());
+        // ノーツの判定
+        Judgement::GetInstance()->Judge(notesData_.get());
 
-    // プレイフィールドの更新
-    PlayField::GetInstance()->Update();
-
-    // escapeキーでカーソルのフラグを切り替え
-    if(Input::IsPressKey(DIK_ESCAPE)){
-        //SEED::ToggleRepeatCursor();
+        // プレイフィールドの更新
+        PlayField::GetInstance()->Update();
     }
 
 #ifdef _DEBUG
@@ -179,6 +189,19 @@ void RythmGameManager::Draw(){
     PlaySettings::GetInstance()->Edit();
 
 #endif // _DEBUG
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// ポーズ,再開
+//////////////////////////////////////////////////////////////////////////////////
+void RythmGameManager::Pause(){
+    isPaused_ = true;
+    notesData_->Pause();
+}
+
+void RythmGameManager::Resume(){
+    isPaused_ = false;
+    notesData_->Resume();
 }
 
 //////////////////////////////////////////////////////////////////////////////////

@@ -119,7 +119,7 @@
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
-    <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\AudioDictionary.cpp" />
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
     <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
@@ -151,6 +151,7 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -330,7 +331,7 @@
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
-    <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\AudioDictionary.h" />
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Manager\NotesEditor.h" />
     <ClInclude Include="Game\Manager\RythmGameManager.h" />
@@ -363,6 +364,8 @@
     <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

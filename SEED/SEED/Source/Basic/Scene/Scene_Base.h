@@ -36,6 +36,8 @@ public:// Hierarchy関連
     void RegisterToHierarchy(GameObject2D* gameObject);
     void RemoveFromHierarchy(GameObject* gameObject);
     void RemoveFromHierarchy(GameObject2D* gameObject);
+    void EraseFromHierarchy(GameObject* gameObject);
+    void EraseFromHierarchy(GameObject2D* gameObject);
     Hierarchy* GetHierarchy(){ return hierarchy_.get(); }
     bool IsExistObject(uint32_t gameObjectHanle) const;
     bool IsExistObject2D(uint32_t gameObjectHanle) const;

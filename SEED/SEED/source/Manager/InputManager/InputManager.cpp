@@ -134,6 +134,11 @@ void Input::InitializeXInput(){
 
 void Input::GetAllInput(){
 
+    // DirectInputの取得
+    instance_->GetDInputState();
+    // XInputの取得
+    instance_->GetXInputState();
+
     // カーソル操作関連
     ClipCursor(NULL);
     if(instance_->isCursorRepeat_){
@@ -145,11 +150,6 @@ void Input::GetAllInput(){
         SetCursorPos((int)instance_->cursorPos_.x, (int)instance_->cursorPos_.y);
         instance_->isSetCursorPos_ = false;
     }
-
-    // DirectInputの取得
-    instance_->GetDInputState();
-    // XInputの取得
-    instance_->GetXInputState();
 
     // 最近使った入力デバイスの更新
     instance_->prevDevice_ = instance_->recentInputDevice_;
@@ -729,8 +729,16 @@ void Input::RepeatCursorInternal(){
     int bottom = top + clientHeight - 1;
 
     // --- ClipCursor で範囲を制限 ---
+#ifdef _DEBUG
+    if(!IsPressKey(DIK_ESCAPE)){
+        RECT clipRect = { left, top, right, bottom };
+        ClipCursor(&clipRect);
+    }
+#else
     RECT clipRect = { left, top, right, bottom };
     ClipCursor(&clipRect);
+#endif
+
 
     // --- 端に来たらワープ処理 ---
     bool moved = false;

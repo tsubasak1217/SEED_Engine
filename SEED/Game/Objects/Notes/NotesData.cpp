@@ -12,6 +12,7 @@
 #include <Game/Objects/Notes/Note_SideFlick.h>
 #include <Game/Objects/Notes/Note_RectFlick.h>
 #include <Game/Objects/Notes/Note_Wheel.h>
+#include <Game/Objects/Notes/Note_Warning.h>
 
 // managerのインクルード
 #include <Game/Manager/RythmGameManager.h>
@@ -96,12 +97,6 @@ void NotesData::Update(){
 
     // 出現させるノーツの確認
     AppearNotes();
-
-
-#ifdef _DEBUG
-    // デバッグ用の編集
-    Edit();
-#endif // _DEBUG
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -136,6 +131,14 @@ void NotesData::Draw(){
     for(auto& note : onFieldNotes_){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::RectFlick){
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
+        }
+    }
+
+    for(auto& note : onFieldNotes_){
+        if(auto notePtr = note.lock()){
+            if(notePtr->noteType_ == NoteType::Warning){
                 notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
             }
         }
@@ -241,12 +244,29 @@ void NotesData::DeleteNotes(){
                 }
 
             } else{
-                // ホールドノーツでなければノーツを削除
-                it->second.reset();
-                it = notes_.erase(it);
-                // 押せずに通り過ぎたノーツなのでコンボを切る
-                RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
-                RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
+                if(it->second->noteType_ != NoteType::Warning){
+                    // ホールド,警告ノーツでなければノーツを削除
+                    it->second.reset();
+                    it = notes_.erase(it);
+                    // 押せずに通り過ぎたノーツなのでコンボを切る
+                    RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
+                    RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
+                
+                } else{
+                    if(Note_Warning* warningNote = dynamic_cast<Note_Warning*>(it->second.get())){
+                        warningNote->start_ = true;
+                        // 警告ノーツの場合、表示時間を過ぎていたら削除
+                        if(warningNote->timer_.IsFinished()){
+                            it->second.reset();
+                            it = notes_.erase(it);
+                        } else{
+                            ++it;
+                        }
+                    } else{
+                        ++it;
+                    }
+                    
+                }
             }
         } else{
             ++it;
@@ -416,6 +436,12 @@ void NotesData::FromJson(const nlohmann::json& songData){
                 note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
+            } else if(noteType == "warning"){
+                Note_Warning* note = new Note_Warning();
+                note->FromJson(noteJson);
+                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                notes_.emplace_back(std::make_pair(note->time_, note));
+
             } else{
                 // 未知のノーツタイプは無視
                 continue;
@@ -502,12 +528,14 @@ void NotesData::Edit(){
 
         // 再生・停止・時間変更
         if(ImGui::ImageButton("playIcon", isStopped_ ? pauseIcon : playIcon, ImVec2(20, 20))){
-            isStopped_ = !isStopped_;
+            if(!isPauseMode_){
+                isStopped_ = !isStopped_;
 
-            if(isStopped_){
-                Pause();
-            } else{
-                Resume();
+                if(isStopped_){
+                    Pause();
+                } else{
+                    Resume();
+                }
             }
         }
 

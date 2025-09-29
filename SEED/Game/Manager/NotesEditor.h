@@ -58,7 +58,8 @@ private:
         Tap,
         Hold,
         RectFlick,
-        Wheel
+        Wheel,
+        Warning,
     };
 
     enum DivisionMode{

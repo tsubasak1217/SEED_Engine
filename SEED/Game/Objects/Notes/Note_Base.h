@@ -17,6 +17,7 @@ enum class NoteType{
     SideFlick,
     RectFlick,
     Wheel,
+    Warning,
 };
 
 class Note_Base{

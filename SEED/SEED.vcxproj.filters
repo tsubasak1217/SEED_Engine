@@ -152,6 +152,7 @@
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
     <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -366,6 +367,7 @@
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

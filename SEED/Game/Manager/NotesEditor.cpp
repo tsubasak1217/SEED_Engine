@@ -4,6 +4,7 @@
 #include <Game/Objects/Notes/Note_Hold.h>
 #include <Game/Objects/Notes/Note_RectFlick.h>
 #include <Game/Objects/Notes/Note_Wheel.h>
+#include <Game/Objects/Notes/Note_Warning.h>
 
 
 NotesEditor::NotesEditor(){
@@ -36,6 +37,7 @@ NotesEditor::NotesEditor(){
     textureIDs_["rf_RT_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT_EX.png");
     textureIDs_["rf_LB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB_EX.png");
     textureIDs_["rf_RB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB_EX.png");
+    textureIDs_["warning"] = TextureManager::GetImGuiTexture("Notes/warning.png");
 
     // name
     laneTextureNameMap_[LaneBit::RECTFLICK_LT] = "rf_LT";
@@ -493,7 +495,7 @@ void NotesEditor::EditNotes(){
 
     // 編集ノーツ種の選択
     ImGui::Checkbox("レーン編集", &isEditOnLane_);
-    ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール" });
+    ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール","警告"});
 
     // 小節の分割モードの選択
     if(ImFunc::Combo("分数", divisionMode_, { "1/4","1/6","1/8","1/12","1/16","1/24","1/32","1/48","1/64" })){
@@ -717,6 +719,19 @@ void NotesEditor::CreateNoteOnLane(){
                 note->direction_ = UpDown::UP;
                 note->laneBit_ = LaneBit::WHEEL_UP;
                 note->time_ = timeLocation; // 時間を設定
+            }
+            break;
+        }
+        case Warning:
+        {
+            // 警告ノーツの作成
+            notes_.emplace_back(std::make_unique<Note_Warning>());
+            if(Note_Warning* note = dynamic_cast<Note_Warning*>(notes_.back().get())){
+                note->layer_ = layer; // レイヤーを設定
+                note->lane_ = laneIndex; // レーンを設定
+                note->time_ = timeLocation; // 時間を設定
+                note->laneBit_ = (LaneBit)(1 << laneIndex);
+                note->duration_ = 0.5f; // 初期表示時間
             }
             break;
         }
@@ -1010,6 +1025,45 @@ void NotesEditor::DisplayNotes(){
             float direction = wheelNote->direction_ == UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
             ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, alpha) : IM_COL32(0, 255, 255, alpha); // 上向きはピンク、下向きは水色
             pDrawList_->AddImage(textureIDs_["wheel"], p1, p2, ImVec2(0, 0), ImVec2(direction, direction), color);
+        
+
+        }else if(note->noteType_ == NoteType::Warning){
+
+            // ノーツ画像を描画
+            ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+            ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
+            int alpha = 128;
+
+            // ノーツにボタン判定を作成
+            ImGui::SetCursorScreenPos(p1);
+            label = "warningNote##" + std::to_string(noteIdx);
+
+            // クリックしたらノーツを編集状態にする
+            if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
+                edittingNote_ = note.get();
+            }
+
+            // ボタンを押している間ドラッグ状態にする
+            if(ImGui::IsItemActive()){
+                if(Input::IsMouseMoved()){
+                    note->isDragging_ = true; // ドラッグ中にする
+                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                }
+            }
+
+            // ホバー時は不透明にする
+            if(ImGui::IsItemHovered()){
+                isHoveringNote_ = true;
+                alpha = 255;
+            }
+
+            // 編集中のノーツは不透明にする
+            if(edittingNote_ == note.get()){
+                alpha = 255;
+            }
+
+            pDrawList_->AddImage(textureIDs_["warning"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+
         }
 
         noteIdx++; // ノーツのIDをインクリメント
@@ -1219,6 +1273,18 @@ void NotesEditor::DraggingNote(){
                 note->layer_ = layer; // レイヤーを設定
                 note->time_ = timeLocation; // 時間を設定
             }
+            break;
+        }
+        case NoteType::Warning:
+        {
+            // タップノーツの移動
+            if(Note_Warning* note = dynamic_cast<Note_Warning*>(draggingNote_)){
+                note->layer_ = layer; // レイヤーを設定
+                note->lane_ = laneIndex; // レーンを設定
+                note->time_ = timeLocation; // 時間を設定
+                note->laneBit_ = (LaneBit)(1 << laneIndex);
+            }
+
             break;
         }
         default:
@@ -1544,6 +1610,10 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
                 notes_.emplace_back(note);
             } else if(noteType == "wheel"){
                 Note_Wheel* note = new Note_Wheel();
+                note->FromJson(noteJson);
+                notes_.emplace_back(note);
+            } else if(noteType == "warning"){
+                Note_Warning* note = new Note_Warning();
                 note->FromJson(noteJson);
                 notes_.emplace_back(note);
             } else{

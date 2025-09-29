@@ -161,6 +161,7 @@ void RythmGameManager::Update(){
 
     // ノーツの編集ウインドウ
     notesEditor_->Edit();
+    notesData_->Edit();
 #endif // _DEBUG
 
 }

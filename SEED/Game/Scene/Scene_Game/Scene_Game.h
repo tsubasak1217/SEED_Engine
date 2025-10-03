@@ -30,8 +30,4 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
-private:
-
-    // EngineObjects
-    std::unique_ptr<DirectionalLight> directionalLight_ = nullptr;
 };

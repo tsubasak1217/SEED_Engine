@@ -5,13 +5,13 @@ GameState_Select::GameState_Select(){
     songSelector_->Initialize();
 }
 
-GameState_Select::GameState_Select(Scene_Base* pScene){
-    // シーンの設定
-    pScene_ = pScene;
+GameState_Select::GameState_Select(Scene_Base* pScene) : State_Base(pScene){
+
     // 選曲マネージャーの初期化
     songSelector_ = std::make_unique<SongSelector>();
     songSelector_->Initialize();
 
+    // 背景描画クラスの初期化
     backGroundDrawer_ = std::make_unique<SelectBackGroundDrawer>();
 
     // ポストプロセスの設定
@@ -21,7 +21,10 @@ GameState_Select::GameState_Select(Scene_Base* pScene){
 }
 
 GameState_Select::~GameState_Select(){
+    // 現在流してある音声を全て停止
     AudioManager::EndAllAudio();
+    // ポストプロセスの削除
+    PostEffectSystem::DeleteAll();
 }
 
 void GameState_Select::Initialize(){

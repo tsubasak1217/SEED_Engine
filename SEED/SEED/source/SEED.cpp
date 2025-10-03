@@ -237,11 +237,6 @@ void SEED::BeginFrame(){
 
     // imguiの描画
     instance_->DrawGUI();
-
-    // カーソルの更新
-    if(instance_->isRepeatCursor_){
-        instance_->RepeatCursor();
-    }
 }
 
 /*----------------------- フレーム終了処理 ----------------------*/
@@ -951,53 +946,4 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 /*------------------ カメラにシェイクを設定する関数 ------------------*/
 void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
     GetMainCamera()->SetShake(time, power, shakeLevel);
-}
-
-/*------------------ マウスカーソルの表示・非表示を切り替える関数 ------------------*/
-void SEED::SetMouseCursorVisible(bool isVisible){
-    if(isVisible){
-        ShowCursor(TRUE);
-        instance_->isCursorVisible_ = true;
-    } else{
-        ShowCursor(FALSE);
-        instance_->isCursorVisible_ = false;
-    }
-}
-
-void SEED::ToggleMouseCursorVisible(){
-    instance_->isCursorVisible_ = !instance_->isCursorVisible_;
-    if(instance_->isCursorVisible_){
-        ShowCursor(TRUE);
-    } else{
-        ShowCursor(FALSE);
-    }
-}
-
-/*------------------ マウスカーソルをリピートさせる関数 ------------------*/
-void SEED::RepeatCursor(){
-    POINT cursorPos;
-    GetCursorPos(&cursorPos);
-
-    RECT clientRect;
-    GetClientRect(WindowManager::GetHWND(windowTitle_), &clientRect);
-
-    // クライアント座標 -> スクリーン座標に変換（左上と右下）
-    POINT topLeft = { 0, 0 };
-    ClientToScreen(WindowManager::GetHWND(windowTitle_), &topLeft);
-
-    int clientWidth = clientRect.right - clientRect.left;
-    int clientHeight = clientRect.bottom - clientRect.top;
-
-    int left = topLeft.x;
-    int top = topLeft.y;
-    int right = left + clientWidth;
-    int bottom = top + clientHeight;
-
-    // 指定範囲を繰り返す
-    cursorPos.x = MyFunc::Spiral(cursorPos.x, left, right);
-    cursorPos.y = MyFunc::Spiral(cursorPos.y, top, bottom);
-
-    // カーソルを移動
-    SetCursorPos(cursorPos.x, cursorPos.y);
-
 }

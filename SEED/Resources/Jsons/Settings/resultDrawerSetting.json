@@ -1,0 +1,1346 @@
+{
+    "items": {
+        "SongName": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 640.0,
+                        "y": 65.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 640.0,
+                        "y": 65.0
+                    }
+                }
+            },
+            "step": 0,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "typeName": "SongName",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 60.0,
+                            "glyphSpacing": 13.5,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 586.0,
+                                "y": 64.0
+                            },
+                            "text": "Unnamed",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 640.0,
+                                    "y": 65.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -568.5,
+                        "y": -8.300000190734863
+                    },
+                    "typeName": "Difficulty",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 82.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 71.5,
+                                    "y": 56.70000076293945
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 1420.0,
+                    "y": 83.0
+                },
+                "color": {
+                    "x": 0.5405406951904297,
+                    "y": 0.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 1.0,
+                "isAlphaMove": false
+            }
+        },
+        "Rank": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 302.1513977050781,
+                        "y": 487.5361022949219
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 303.4263000488281,
+                        "y": 491.2545471191406
+                    }
+                }
+            },
+            "step": 4,
+            "sprite": {
+                "size": {
+                    "x": 100.0,
+                    "y": 100.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "texturePath": ""
+            },
+            "alpha": {
+                "maxAlpha": 1.0,
+                "isAlphaMove": false
+            }
+        },
+        "Score": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 283.21014404296875,
+                        "y": 291.97857666015625
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0099999904632568,
+                        "y": 1.0099999904632568
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 281.9352111816406,
+                        "y": 291.01690673828125
+                    }
+                }
+            },
+            "step": 3,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "typeName": "Score",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 121.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 10.699999809265137,
+                            "size": {
+                                "x": 501.0,
+                                "y": 118.0
+                            },
+                            "text": "0.0000",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0099999904632568,
+                                    "y": 1.0099999904632568
+                                },
+                                "translate": {
+                                    "x": 281.9352111816406,
+                                    "y": 291.01690673828125
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 562.0,
+                    "y": 219.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.0
+                },
+                "texturePath": ""
+            },
+            "alpha": {
+                "maxAlpha": 0.0,
+                "isAlphaMove": false
+            }
+        },
+        "Combo": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 292.5888671875,
+                        "y": 659.4487915039063
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 245.46435546875,
+                        "y": 657.0601196289063
+                    }
+                }
+            },
+            "step": 2,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": 14.899999618530273,
+                        "y": 0.0
+                    },
+                    "typeName": "Combo",
+                    "textBox": [
+                        {
+                            "align": 2,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 100.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.5,
+                            "size": {
+                                "x": 439.0,
+                                "y": 96.0
+                            },
+                            "text": "0/0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 260.3643493652344,
+                                    "y": 657.0601196289063
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "color": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0,
+                    "w": 1.0
+                },
+                "texturePath": ""
+            },
+            "alpha": {
+                "maxAlpha": 1.0,
+                "isAlphaMove": false
+            }
+        },
+        "Miss": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1553.1468505859375,
+                        "y": 469.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1170.10498046875,
+                        "y": 469.0
+                    }
+                }
+            },
+            "step": 1,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -355.3999938964844,
+                        "y": -41.79999923706055
+                    },
+                    "typeName": "Miss",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.5960784554481506,
+                                "y": 0.5960784554481506,
+                                "z": 0.5960784554481506
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 417.0,
+                                "y": 109.0
+                            },
+                            "text": "Miss",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 814.7049560546875,
+                                    "y": 427.20001220703125
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -8.0,
+                        "y": -40.099998474121094
+                    },
+                    "typeName": "MissCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.5945945978164673,
+                                "y": 0.5945945978164673,
+                                "z": 0.5945945978164673
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 1162.10498046875,
+                                    "y": 428.8999938964844
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 861.0,
+                    "y": 87.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Perfect": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1353.412353515625,
+                        "y": 166.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 961.3800048828125,
+                        "y": 166.0
+                    }
+                }
+            },
+            "step": 1,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -380.8999938964844,
+                        "y": -42.400001525878906
+                    },
+                    "typeName": "Perfect",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.8880308866500854,
+                                "y": 1.0,
+                                "z": 0.0
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 417.0,
+                                "y": 109.0
+                            },
+                            "text": "Perfect",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 580.47998046875,
+                                    "y": 123.5999984741211
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -14.0,
+                        "y": -40.0
+                    },
+                    "typeName": "PerfectCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.886274516582489,
+                                "y": 1.0,
+                                "z": 0.0
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 947.3800048828125,
+                                    "y": 126.0
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 861.0,
+                    "y": 87.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Great": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1422.798828125,
+                        "y": 266.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1031.10498046875,
+                        "y": 266.0
+                    }
+                }
+            },
+            "step": 1,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -372.5,
+                        "y": -39.400001525878906
+                    },
+                    "typeName": "Great",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.19776087999343872,
+                                "z": 0.09266406297683716
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 417.0,
+                                "y": 109.0
+                            },
+                            "text": "Great",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 658.60498046875,
+                                    "y": 226.60000610351563
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -19.700000762939453,
+                        "y": -40.099998474121094
+                    },
+                    "typeName": "GreatCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.19607843458652496,
+                                "z": 0.0941176488995552
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 1011.4049682617188,
+                                    "y": 225.89999389648438
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 861.0,
+                    "y": 87.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Good": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1488.7919921875,
+                        "y": 367.0
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1101.10498046875,
+                        "y": 367.0
+                    }
+                }
+            },
+            "step": 1,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -363.1000061035156,
+                        "y": -39.5
+                    },
+                    "typeName": "Good",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 1.0,
+                                "z": 0.038609981536865234
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 417.0,
+                                "y": 109.0
+                            },
+                            "text": "Good",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 738.0050048828125,
+                                    "y": 327.5
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -20.600000381469727,
+                        "y": -38.400001525878906
+                    },
+                    "typeName": "GoodCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 1.0,
+                                "z": 0.03921568766236305
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 84.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 4.199999809265137,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 1080.5050048828125,
+                                    "y": 328.6000061035156
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 861.0,
+                    "y": 87.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Fast": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 718.448974609375,
+                        "y": 729.34130859375
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 718.251953125,
+                        "y": 663.5099487304688
+                    }
+                }
+            },
+            "step": 2,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -134.6999969482422,
+                        "y": -35.20000076293945
+                    },
+                    "typeName": "Fast",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.2239382266998291,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 71.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.200000047683716,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "Fast",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 583.5519409179688,
+                                    "y": 628.3099365234375
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": 54.400001525878906,
+                        "y": -34.099998474121094
+                    },
+                    "typeName": "FastCount",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.2235294133424759,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets\\M_PLUS_Rounded_1c\\MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 71.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.200000047683716,
+                            "size": {
+                                "x": 128.0,
+                                "y": 64.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 772.6519775390625,
+                                    "y": 629.4099731445313
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 332.0,
+                    "y": 72.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        },
+        "Late": {
+            "controlPoints": {
+                "start": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1080.6923828125,
+                        "y": 727.64404296875
+                    }
+                },
+                "end": {
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "rotate": 0.0,
+                    "translate": {
+                        "x": 1080.041259765625,
+                        "y": 663.0092163085938
+                    }
+                }
+            },
+            "step": 2,
+            "textItems": [
+                {
+                    "offset": {
+                        "x": -137.6999969482422,
+                        "y": -35.099998474121094
+                    },
+                    "typeName": "Late",
+                    "textBox": [
+                        {
+                            "align": 0,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.03861004114151001,
+                                "z": 0.14996778964996338
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 71.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": -220.10000610351563,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.200000047683716,
+                            "size": {
+                                "x": 466.0,
+                                "y": 116.0
+                            },
+                            "text": "Late",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 942.3412475585938,
+                                    "y": 627.9092407226563
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -203.60000610351563,
+                        "y": -33.5
+                    },
+                    "typeName": "GreatCount",
+                    "textBox": [
+                        {
+                            "align": 2,
+                            "anchorPos": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.03921568766236305,
+                                "z": 0.14901961386203766
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 71.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.200000047683716,
+                            "size": {
+                                "x": 352.0,
+                                "y": 116.0
+                            },
+                            "text": "0",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 876.4412841796875,
+                                    "y": 629.5092163085938
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "offset": {
+                        "x": -57.70000076293945,
+                        "y": 5.300000190734863
+                    },
+                    "typeName": "",
+                    "textBox": [
+                        {
+                            "align": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 71.0,
+                            "glyphSpacing": 8.0,
+                            "lineSpacing": 8.0,
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 177.0,
+                                "y": 64.0
+                            },
+                            "text": "\n",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 1022.3412475585938,
+                                    "y": 668.3092041015625
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "sprite": {
+                "size": {
+                    "x": 332.0,
+                    "y": 72.0
+                },
+                "color": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "w": 0.6309999823570251
+                },
+                "texturePath": "Resources/Textures/DefaultAssets\\white.png"
+            },
+            "alpha": {
+                "maxAlpha": 0.6309999823570251,
+                "isAlphaMove": true
+            }
+        }
+    }
+}

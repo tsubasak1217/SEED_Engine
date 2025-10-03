@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
-    <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
     <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
     <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
@@ -10,7 +9,6 @@
     <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
     <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
@@ -56,7 +54,6 @@
     <ClCompile Include="SEED\Source\Basic\Camera\FollowCamera.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp" />
     <ClCompile Include="SEED\source\SEED.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.cpp" />
@@ -114,9 +111,7 @@
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Methods\GameStageWarpController.cpp" />
     <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp" />
-    <ClCompile Include="Game\Objects\Clear\ClearSelectMenu.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
     <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp" />
@@ -124,11 +119,43 @@
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
-    <ClCompile Include="SEED\Source\Manager\AudioManager\AudioDictionary.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\AudioDictionary.cpp" />
+    <ClCompile Include="Game\Config\PlaySettings.cpp" />
+    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
+    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\SongSelector.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
+    <ClCompile Include="Game\GameSystem.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
+    <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
-    <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
     <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
     <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
@@ -140,7 +167,6 @@
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
     <ClInclude Include="SEED\lib\enums\Direction.h" />
     <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
@@ -215,7 +241,6 @@
     <ClInclude Include="SEED\Source\Basic\Camera\FollowCamera.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Octree.h" />
     <ClInclude Include="SEED\source\SEED.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\Particle_Model.h" />
     <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h" />
@@ -299,9 +324,7 @@
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
-    <ClInclude Include="Game\Objects\Stage\Methods\GameStageWarpController.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h" />
-    <ClInclude Include="Game\Objects\Clear\ClearSelectMenu.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
     <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
@@ -309,7 +332,42 @@
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
     <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
-    <ClInclude Include="SEED\Source\Manager\AudioManager\AudioDictionary.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\AudioDictionary.h" />
+    <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="Game\Manager\NotesEditor.h" />
+    <ClInclude Include="Game\Manager\RythmGameManager.h" />
+    <ClInclude Include="Game\Manager\SongSelector.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
+    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
+    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
+    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
+    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
+    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
+    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
+    <ClInclude Include="Game\GameSystem.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
+    <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
+    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
+    <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

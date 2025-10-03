@@ -18,8 +18,17 @@ Scene_Base::Scene_Base(){
 ////////////////////////////////////////////////////////////////////
 void Scene_Base::Initialize(){
 
+    // 現在のパーティクルやポストエフェクトの全削除
+    EffectSystem::DeleteAll();
+    PostEffectSystem::DeleteAll();
+
+    // stateの初期化
     if(currentState_){
         currentState_->Initialize();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Initialize();
     }
 }
 
@@ -32,6 +41,10 @@ void Scene_Base::Finalize(){
 
     if(currentState_){
         currentState_->Finalize();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Finalize();
     }
 }
 
@@ -67,12 +80,12 @@ void Scene_Base::Update(){
 void Scene_Base::Draw(){
     /*=========== 各状態固有の描画 ============*/
 
-    if(currentEventState_){
-        currentEventState_->Draw();
-    }
-
     if(currentState_){
         currentState_->Draw();
+    }
+
+    if(currentEventState_){
+        currentEventState_->Draw();
     }
 
     /*======== 各オブジェクトの基本描画 ========*/
@@ -89,9 +102,16 @@ void Scene_Base::Draw(){
 ///////////////////////////////////////////////////////////////////
 void Scene_Base::BeginFrame(){
 
+    // 毎回false初期化
+    isChangeScene_ = false;
+
     // 現在のステートがあればフレーム開始処理を行う
     if(currentState_){
         currentState_->BeginFrame();
+    }
+
+    if(currentEventState_){
+        currentEventState_->BeginFrame();
     }
 
     // ヒエラルキー内のオブジェクトの開始処理
@@ -101,15 +121,33 @@ void Scene_Base::BeginFrame(){
 void Scene_Base::EndFrame(){
     // 現在のステートがあればフレーム終了処理を行う
     if(currentState_){
-        currentState_->EndFrame();
+        if(!isChangeScene_){
+            currentState_->EndFrame();
+        }
+    }
+    
+    if(currentEventState_){
+        if(!isChangeScene_){
+            currentEventState_->EndFrame();
+        }
     }
 
-    // ヒエラルキー内のオブジェクトの描画
-    hierarchy_->EndFrame();
+    // ヒエラルキー内のオブジェクトのフレーム終了時処理
+    if(!isChangeScene_){
+        hierarchy_->EndFrame();
+    }
 
     // ステートクラス内の遷移処理を実行
     if(currentState_){
-        currentState_->ManageState();
+        if(!isChangeScene_){
+            currentState_->ManageState();
+        }
+    }
+
+    if(currentEventState_){
+        if(!isChangeScene_){
+            currentEventState_->ManageState();
+        }
     }
 }
 
@@ -122,6 +160,10 @@ void Scene_Base::EndFrame(){
 void Scene_Base::HandOverColliders(){
     if(currentState_){
         currentState_->HandOverColliders();
+    }
+
+    if(currentEventState_){
+        currentEventState_->HandOverColliders();
     }
 }
 
@@ -139,8 +181,9 @@ void Scene_Base::ChangeState(State_Base* nextState){
     currentState_.reset(nextState);
 }
 
-void Scene_Base::CauseEvent(EventState_Base* nextEventState){
+void Scene_Base::CauseEvent(State_Base* nextEventState){
     currentEventState_.reset(nextEventState);
+    currentEventState_->Initialize();
 }
 
 
@@ -165,6 +208,14 @@ void Scene_Base::RemoveFromHierarchy(GameObject* gameObject){
 
 void Scene_Base::RemoveFromHierarchy(GameObject2D* gameObject){
     hierarchy_->RemoveGameObject(gameObject);
+}
+
+void Scene_Base::EraseFromHierarchy(GameObject* gameObject){
+    hierarchy_->EraseObject(gameObject);
+}
+
+void Scene_Base::EraseFromHierarchy(GameObject2D* gameObject){
+    hierarchy_->EraseObject(gameObject);
 }
 
 // オブジェクトの存在確認

@@ -436,6 +436,9 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
         if(ImGui::MenuItem("オブジェクトを削除")){
             executeMenuName_ = "Delete Object"; // 実際の削除は関数外で行う
         }
+        if(ImGui::MenuItem("複製")){
+            executeMenuName_ = "Copy Object"; // 実際のコピーは関数外で行う
+        }
 
         ImGui::EndPopup();
     }
@@ -460,7 +463,7 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
                 }
             }
         }
-        
+
         if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("JOINT")){
             if(payload->DataSize == sizeof(DragInfo_Joint*)){
                 DragInfo_Joint* draggedObj = *(DragInfo_Joint**)payload->Data;
@@ -534,6 +537,10 @@ void Hierarchy::RecursiveTreeNode(GameObject2D* gameObject, int32_t depth){
         // コンテキストメニューの表示
         if(ImGui::MenuItem("オブジェクトを削除")){
             executeMenuName_ = "Delete Object"; // 実際の削除は関数外で行う
+        }
+
+        if(ImGui::MenuItem("複製")){
+            executeMenuName_ = "Copy Object"; // 実際のコピーは関数外で行う
         }
 
         ImGui::EndPopup();
@@ -622,7 +629,13 @@ void Hierarchy::InOutOnGUI(){
 
             // 出力ボタン
             if(ImGui::Button("出力", ImVec2(120, 0))){
-                OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects_);
+                
+                nlohmann::json j = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects_);
+                nlohmann::json j2 = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects2D_);
+                nlohmann::json result;
+                if(!j.empty()){ result.update(j); }
+                if(!j2.empty()){ result.update(j2); }
+                MyFunc::CreateJsonFile(outputFileDirectory + filename + ".json", result);
                 ImGui::CloseCurrentPopup();
             }
 
@@ -752,8 +765,18 @@ void Hierarchy::ExecuteContextMenu(){
             EraseObject(contextMenuObject_);
             contextMenuObject_ = nullptr;
             RebuildParentInfo();
-            executeMenuName_ = "";
+
+        } else if(executeMenuName_ == "Copy Object"){
+            // オブジェクトの複製
+            nlohmann::json jsonData = contextMenuObject_->GetJsonData(0);
+            // 子を再帰的に探索し、家族グループを作成
+            std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(jsonData);
+            // vector内の要素を自身の所有物にする
+            for(auto& obj : familyObjects){
+                selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+            }
         }
+
     } else{
         if(contextMenuObject2D_){
             // オブジェクトの削除
@@ -761,10 +784,25 @@ void Hierarchy::ExecuteContextMenu(){
                 EraseObject(contextMenuObject2D_);
                 contextMenuObject2D_ = nullptr;
                 RebuildParentInfo();
-                executeMenuName_ = "";
+
+            } else if(executeMenuName_ == "Copy Object"){
+                // オブジェクトの複製
+                nlohmann::json jsonData = contextMenuObject2D_->GetJsonData(0);
+                // 子を再帰的に探索し、家族グループを作成
+                std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(jsonData);
+                // vector内の要素を自身の所有物にする
+                for(auto& obj : familyObjects){
+                    selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+                }
             }
         }
     }
+
+    // 処理が終わったらクリア
+    if(executeMenuName_ != ""){
+        executeMenuName_ = "";
+    }
+
 #endif // _DEBUG
 }
 
@@ -806,13 +844,16 @@ nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath, std::l
 /////////////////////////////////////////////////////////////////////////
 // Jsonファイルからの読み込み
 /////////////////////////////////////////////////////////////////////////
-void Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
+LoadObjectData Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
+
+    // 結果格納用
+    LoadObjectData result;
 
     // ファイルを開く
     std::ifstream ifs(filePath);
     if(ifs.fail()){
         assert(false);
-        return;
+        return result;
     }
 
     // jsonデータに変換
@@ -832,6 +873,7 @@ void Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
         // vector内の要素を自身の所有物にする
         for(auto& obj : familyObjects){
             selfCreateObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
+            result.objects3D_.emplace_back(obj);
         }
     }
 
@@ -841,6 +883,9 @@ void Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
         // vector内の要素を自身の所有物にする
         for(auto& obj : familyObjects){
             selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+            result.objects2D_.emplace_back(obj);
         }
     }
+
+    return result;
 }

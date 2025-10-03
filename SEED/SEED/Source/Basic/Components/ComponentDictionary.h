@@ -4,6 +4,7 @@
 
 // 2D専用のコンポーネント
 #include <SEED/Source/Basic/Components/Only2D/Collision2DComponent.h>
+#include <SEED/Source/Basic/Components/Only2D/UIComponent.h>
 
 // 3D専用のコンポーネント
 #include <SEED/Source/Basic/Components/Only3D/ModelRenderComponent.h>

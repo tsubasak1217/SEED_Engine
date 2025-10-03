@@ -10,7 +10,7 @@ Sprite::Sprite(){
     clipLT = { 0.0f,0.0f };
     clipSize = { 0.0f,0.0f };
     color = { 1.0f,1.0f,1.0f,1.0f };
-    GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
+    GH = TextureManager::LoadTexture("DefaultAssets/white.png");
     blendMode = BlendMode::NORMAL;
     uvTransform = Transform2D();
     isStaticDraw = false;
@@ -30,31 +30,37 @@ void Sprite::Draw(){
     SEED::DrawSprite(*this);
 }
 
-Matrix4x4 Sprite::GetWorldMatrix() const{
+Matrix4x4 Sprite::GetWorldMatrix()const {
 
-    Vector3 anchorOffset;
+    Vector2 anchorOffset;
 
     if(MyMath::Length(clipSize) == 0.0f){
         anchorOffset = {
             size.x * anchorPoint.x,
-            size.y * anchorPoint.y,
-            0.0f
+            size.y * anchorPoint.y
         };
     } else{
         anchorOffset = {
             clipSize.x * anchorPoint.x,
-            clipSize.y * anchorPoint.y,
-            0.0f
+            clipSize.y * anchorPoint.y
         };
     }
 
 
-    Matrix4x4 worldMat =
-        AffineMatrix(
-            { transform.scale.x,transform.scale.y,1.0f },
-            { 0.0f, 0.0f, transform.rotate },
-            { transform.translate.x + anchorOffset.x + offset.x,transform.translate.y + anchorOffset.y + offset.y,0.0f }
-        );
+    Matrix4x4 worldMat;
+    if(parentMat){
+        Transform2D offsetApplyedTransform = transform;
+        offsetApplyedTransform.translate += (offset + anchorOffset);
+        worldMat = (offsetApplyedTransform.ToMatrix() * (*parentMat)).ToMat4x4();
+        return worldMat;
+    } else{
+        worldMat =
+            AffineMatrix(
+                { transform.scale.x,transform.scale.y,1.0f },
+                { 0.0f, 0.0f, transform.rotate },
+                { transform.translate.x + anchorOffset.x + offset.x,transform.translate.y + anchorOffset.y + offset.y,0.0f }
+            );
+    }
     return worldMat;
 }
 
@@ -130,7 +136,7 @@ void Sprite::FromJson(const nlohmann::json& data){
     isStaticDraw = data.value("isStaticDraw", isStaticDraw);
     drawLocation = static_cast<DrawLocation>(data.value("drawLocation", static_cast<int>(drawLocation)));
     layer = data.value("layer", layer);
-    isApplyViewMat = data.value("isApplyViewMat", isApplyViewMat);
+    isApplyViewMat = data.value("isApplyViewMat", false);
 
     // テクスチャが設定されていれば読み込む
     if(!texturePath.empty()){
@@ -160,7 +166,7 @@ void Sprite::Edit(){
         }
 
         ImGui::ColorEdit4("色", &color.x);
-        ImFunc::Combo<BlendMode>("描画位置", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN"});
+        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN"});
 
         ImGui::Unindent();
     }
@@ -174,7 +180,11 @@ void Sprite::Edit(){
         ImGui::DragFloat2("移動", &transform.translate.x);
 
         if(guizmo){
-            ImGuiManager::RegisterGuizmoItem(&transform);
+            if(!parentMat){
+                ImGuiManager::RegisterGuizmoItem(&transform);
+            }else{
+                ImGuiManager::RegisterGuizmoItem(&transform, parentMat->ToMat4x4());
+            }
         }
         ImGui::Unindent();
     }

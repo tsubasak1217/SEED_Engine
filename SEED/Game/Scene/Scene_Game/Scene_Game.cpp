@@ -6,6 +6,9 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
 // state
+#include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Scene/Scene_Game/State/GameState_Select.h>
+#include <Game/Scene/Scene_Game/State/GameState_Strolling.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -17,8 +20,8 @@ Scene_Game::Scene_Game() : Scene_Base(){
 };
 
 Scene_Game::~Scene_Game(){
-
-    Finalize();
+    Scene_Base::Finalize();
+    SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
 }
 
@@ -30,19 +33,23 @@ Scene_Game::~Scene_Game(){
 
 void Scene_Game::Initialize(){
 
-    // パーティクルの初期化
-    EffectSystem::DeleteAll();
-    // SkyBoxの設定
-    SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
-    // ライトの設定
+    // 共通初期化
+    Scene_Base::Initialize();
+
+    // ステート初期化
+    //ChangeState(new GameState_Strolling(this));
+    ChangeState(new GameState_Select(this));
+
+    // ライトの初期化
     directionalLight_ = std::make_unique<DirectionalLight>();
     directionalLight_->direction_ = { -0.5f,-1.0f,0.0f };
 
-    // stateの初期化
-    Scene_Base::Initialize();
+    // スカイボックスの設定
+    SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
+
 }
 
-void Scene_Game::Finalize(){
+void Scene_Game::Finalize() {
     Scene_Base::Finalize();
 }
 
@@ -63,7 +70,13 @@ void Scene_Game::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void Scene_Game::Draw(){
+
+    // 共通描画
     Scene_Base::Draw();
+
+    // ライトをセット
+    directionalLight_->SendData();
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

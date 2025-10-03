@@ -133,11 +133,23 @@ void Input::InitializeXInput(){
 /////////////////////////////////////////////////////////////////////////////////////
 
 void Input::GetAllInput(){
-    // DirectInput
-    instance_->GetDInputState();
 
-    // XInput
+    // DirectInputの取得
+    instance_->GetDInputState();
+    // XInputの取得
     instance_->GetXInputState();
+
+    // カーソル操作関連
+    ClipCursor(NULL);
+    if(instance_->isCursorRepeat_){
+        instance_->RepeatCursorInternal();
+        instance_->isCursorRepeat_ = false;
+    }
+
+    if(instance_->isSetCursorPos_){
+        SetCursorPos((int)instance_->cursorPos_.x, (int)instance_->cursorPos_.y);
+        instance_->isSetCursorPos_ = false;
+    }
 
     // 最近使った入力デバイスの更新
     instance_->prevDevice_ = instance_->recentInputDevice_;
@@ -408,6 +420,36 @@ bool Input::IsMouseInputAny(){
     return false;
 }
 
+/*------------------ マウスカーソルをリピートさせる関数 ------------------*/
+
+void Input::RepeatCursor(const Range2D& repeatRange){
+    instance_->isCursorRepeat_ = true;
+    instance_->repeatRange_ = repeatRange;
+}
+
+void Input::SetMouseCursorPos(const Vector2& pos){
+    instance_->isSetCursorPos_ = true;
+    instance_->cursorPos_ = pos;
+}
+
+void Input::SetMouseCursorVisible(bool isVisible){
+    if(instance_->isCursorVisible_ == isVisible){ return; }
+    instance_->isCursorVisible_ = isVisible;
+    if(isVisible){
+        ShowCursor(TRUE);
+    } else{
+        ShowCursor(FALSE);
+    }
+}
+
+void Input::ToggleMouseCursorVisible(){
+    instance_->isCursorVisible_ = !instance_->isCursorVisible_;
+    if(instance_->isCursorVisible_){
+        ShowCursor(TRUE);
+    } else{
+        ShowCursor(FALSE);
+    }
+}
 
 //---------------------------------- ゲームパッド --------------------------------------//
 
@@ -623,7 +665,7 @@ bool Input::GetIsAnyInput(bool isIgnoreActiveFlag){
     if(!isIgnoreActiveFlag){
         if(!instance_->isActive_){ return false; }
     }
-    
+
     instance_->isActive_ = true;
     bool result = IsPressAnyKey() or IsPressAnyPadButton()
         or MyMath::HasLength(GetStickValue(LR::LEFT))
@@ -662,5 +704,60 @@ bool Input::IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE p
 
     } else{// トリガーボタン以外のボタン
         return pad->wButtons & buttonMap_[button];
+    }
+}
+
+// マウスカーソルを範囲内でリピートさせる
+void Input::RepeatCursorInternal(){
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+
+    // クライアント座標 -> スクリーン座標に変換（左上）
+    POINT topLeft = { (int)repeatRange_.min.x, (int)repeatRange_.min.y };
+#ifdef _DEBUG
+    ClientToScreen(WindowManager::GetHWND(SEED::systemWindowTitle_), &topLeft);
+#else
+    ClientToScreen(WindowManager::GetHWND(SEED::windowTitle_), &topLeft);
+#endif
+
+    int clientWidth = int(repeatRange_.max.x - repeatRange_.min.x);
+    int clientHeight = int(repeatRange_.max.y - repeatRange_.min.y);
+
+    int left = topLeft.x;
+    int top = topLeft.y;
+    int right = left + clientWidth - 1;
+    int bottom = top + clientHeight - 1;
+
+    // --- ClipCursor で範囲を制限 ---
+#ifdef _DEBUG
+    if(!IsPressKey(DIK_ESCAPE)){
+        RECT clipRect = { left, top, right, bottom };
+        ClipCursor(&clipRect);
+    }
+#else
+    RECT clipRect = { left, top, right, bottom };
+    ClipCursor(&clipRect);
+#endif
+
+
+    // --- 端に来たらワープ処理 ---
+    bool moved = false;
+    if(cursorPos.x <= left){
+        cursorPos.x = right - 1;
+        moved = true;
+    } else if(cursorPos.x >= right - 1){
+        cursorPos.x = left + 1;
+        moved = true;
+    }
+    if(cursorPos.y <= top){
+        cursorPos.y = bottom - 1;
+        moved = true;
+    } else if(cursorPos.y >= bottom - 1){
+        cursorPos.y = top + 1;
+        moved = true;
+    }
+
+    if(moved){
+        SetCursorPos(cursorPos.x, cursorPos.y);
     }
 }

@@ -38,6 +38,10 @@
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
 
+// dict
+#include <SEED/Source/Basic/Dictionary/AudioDictionary.h>
+#include <SEED/Source/Basic/Dictionary/LayerDictionary.h>
+
 // external
 #include <json.hpp>
 
@@ -196,8 +200,6 @@ private:
     void SetImGuiEmptyWindows();
     // 起動時の読み込み関数
     void StartUpLoad();
-    // カーソルのリピートを行う関数
-    void RepeatCursor();
 
 public:
     // 画像の縦横幅を取得する関数
@@ -207,9 +209,6 @@ public:
     static float GetResolutionRate(){ return DxManager::GetInstance()->GetResolutionRate(); }
     // カメラにシェイクを設定する関数
     static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
-    // マウスカーソルの表示・非表示を切り替える関数
-    static void SetMouseCursorVisible(bool isVisible);
-    static void ToggleMouseCursorVisible();
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                 アクセッサ関数                                    */
@@ -230,8 +229,6 @@ public:
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
-    static void SetIsRepeatCursor(bool flag){instance_->isRepeatCursor_ = flag;}
-    static void ToggleRepeatCursor(){ instance_->isRepeatCursor_ = !instance_->isRepeatCursor_; }
     // アプリケーション終了フラグ
     static bool GetIsEndAplication(){ return instance_->isEndAplication_; }
 
@@ -241,8 +238,6 @@ public:
 
 private:// インスタンス
     static SEED* instance_;
-    bool isRepeatCursor_ = false;
-    bool isCursorVisible_ = true;
     bool isDebugCamera_ = false;
     float resolutionRate_ = 1.0f;
     bool isGridVisible_ = false;

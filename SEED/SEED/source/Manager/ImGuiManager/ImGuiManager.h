@@ -125,6 +125,12 @@ struct ImFunc{
     // ImGuizmoの操作を行う関数
     static void Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
     static void Guizmo2D(const GuizmoInfo& info,ImDrawList* pDrawList,Range2D rectRange);
+
+    // シーンウィンドウの範囲を取得する関数
+    static const Range2D& GetSceneWindowRange(const std::string& label);
+
+private:
+    static inline std::unordered_map<std::string, Range2D> sceneWindowRanges_; // シーンウィンドウの範囲を保存するマップ
 };
 
 

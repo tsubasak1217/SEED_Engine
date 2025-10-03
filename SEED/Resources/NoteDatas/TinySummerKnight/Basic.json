@@ -1,0 +1,62 @@
+{
+    "artist": "カマキリ楽団",
+    "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
+    "bpm": 160.0,
+    "difficulty": 1,
+    "difficultyName": "Basic",
+    "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Basic.json",
+    "maxCombo": 4,
+    "notes": [
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 1.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 1.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 2.625
+        }
+    ],
+    "notesDesigner": "tbs",
+    "songName": "TinySummerKnight",
+    "tempoData": [
+        {
+            "barCount": 1,
+            "bpm": 160.0,
+            "time": 1.5,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        },
+        {
+            "barCount": 14,
+            "bpm": 160.0,
+            "time": 1.5,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        }
+    ]
+}

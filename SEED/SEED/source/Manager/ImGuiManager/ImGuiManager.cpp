@@ -337,6 +337,10 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
         }
 
+        sceneWindowRanges_[std::string(label)] = {
+            {ImGui::GetItemRectMin().x,ImGui::GetItemRectMin().y},
+            {ImGui::GetItemRectMin().x + finalSize.x,ImGui::GetItemRectMin().y + finalSize.y}
+        };
         return finalSize; // 画像サイズを返す
     }
 }
@@ -568,12 +572,12 @@ bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     }
 
     // ImGuiの入力中は他の入力を受け付けないようにする
-    if (ImGui::IsItemActive()) {
+    if(ImGui::IsItemActive()){
 
         ImGuiManager::SetIsInputText(true);
         Input::SetIsActive(false);
-    } else {
-        if (!ImGuiManager::GetIsInputText()) {
+    } else{
+        if(!ImGuiManager::GetIsInputText()){
 
             Input::SetIsActive(true);
         }
@@ -598,7 +602,7 @@ bool ImFunc::InputText(const char* label, string& str){
         ImGuiManager::SetIsInputText(true);
         Input::SetIsActive(false);
     } else{
-        if (!ImGuiManager::GetIsInputText()) {
+        if(!ImGuiManager::GetIsInputText()){
 
             Input::SetIsActive(true);
         }
@@ -698,4 +702,14 @@ void ImFunc::Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
         modelMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
         info.transform2D->FromMatrix4x4(modelMat);
     }
+}
+
+// シーンウィンドウの描画範囲を取得
+const Range2D& ImFunc::GetSceneWindowRange(const std::string& label){
+    if(sceneWindowRanges_.find(std::string(label)) != sceneWindowRanges_.end()){
+        return sceneWindowRanges_[std::string(label)];
+    }
+
+    sceneWindowRanges_["emptyRange"] = Range2D{};
+    return sceneWindowRanges_["emptyRange"];
 }

@@ -15,10 +15,12 @@
 #include <initializer_list>
 
 // local
+#include <Environment/Environment.h>
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Source/Manager/InputManager/PadDefinitions.h>
 #include <SEED/Source/Manager/InputManager/MouseDefinitions.h>
 #include <SEED/Lib/enums/Direction.h>
+#include <SEED/Lib/Structs/Range2D.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +83,12 @@ public:// キーの状態を返す関数
     static Vector2 GetMousePosition(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static bool IsMouseMoved(INPUT_STATE inputState = INPUT_STATE::CURRENT);
     static bool IsMouseInputAny();
+    // カーソル関連関数
+    static void RepeatCursor(const Range2D& repeatRange = {Vector2(0.0f),kWindowSize});
+    static void SetMouseCursorPos(const Vector2& pos);
+    static void SetMouseCursorVisible(bool isVisible);
+    static void ToggleMouseCursorVisible();
+
     /*------------ ゲームパッド -----------*/
     static bool IsPressPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
     static bool IsTriggerPadButton(PAD_BUTTON button, uint8_t padNumber = 0);
@@ -120,6 +128,7 @@ public:// キーの状態を返す関数
 private:
 
     bool IsPressPadButton(uint8_t padNumber, PAD_BUTTON button, INPUT_STATE padState);
+    void RepeatCursorInternal();
 
 private:
     static Input* instance_;
@@ -150,4 +159,11 @@ private:
     // 直近で使用した入力デバイス
     InputDevice recentInputDevice_ = InputDevice::KEYBOARD;
     InputDevice prevDevice_ = InputDevice::KEYBOARD;
+
+    // カーソル
+    bool isCursorRepeat_ = false;
+    bool isSetCursorPos_ = false;
+    Vector2 cursorPos_ = { 0.0f,0.0f };
+    Range2D repeatRange_;
+    bool isCursorVisible_ = true;
 };

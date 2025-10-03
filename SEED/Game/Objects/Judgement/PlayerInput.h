@@ -65,7 +65,9 @@ private:
     InputHandler<DIRECTION8> rectFlick_;
     InputHandler<int32_t>cursorLane_;
     InputHandler<UpDown> wheelScroll_;
-    Quad2D cursorQuad_;// カーソル描画用の四角形
+    Triangle cursor_[2];
+    Triangle2D cursor2D_[2];
+    Quad cursorLine_[2];
 
     // 判定のたびに無駄な計算を行わないように毎フレーム最初にこいつらに情報を入れる
     std::unordered_set<int32_t> holdLane_;

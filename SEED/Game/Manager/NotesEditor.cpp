@@ -38,6 +38,7 @@ NotesEditor::NotesEditor(){
     textureIDs_["rf_LB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB_EX.png");
     textureIDs_["rf_RB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB_EX.png");
     textureIDs_["warning"] = TextureManager::GetImGuiTexture("Notes/warning.png");
+    textureIDs_["white"] = TextureManager::GetImGuiTexture("DefaultAssets/white1x1.png");
 
     // name
     laneTextureNameMap_[LaneBit::RECTFLICK_LT] = "rf_LT";
@@ -1029,41 +1030,95 @@ void NotesEditor::DisplayNotes(){
 
         }else if(note->noteType_ == NoteType::Warning){
 
-            // ノーツ画像を描画
-            ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
-            ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
-            int alpha = 128;
+            // 終点
+            Note_Warning* warning = dynamic_cast<Note_Warning*>(note.get());
+            float t2 = (warning->time_ + warning->duration_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
+            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (warning->layer_ == UpDown::UP ? -1.0f : 1.0f);
+            if(displayY2 == displayY){ displayY2 += 1.0f; }
 
-            // ノーツにボタン判定を作成
-            ImGui::SetCursorScreenPos(p1);
-            label = "warningNote##" + std::to_string(noteIdx);
+            /*-------------- ボディの描画 -------------*/
+            {
+                ImVec2 p1 = ImVec2(laneX, displayY);
+                ImVec2 p2 = ImVec2(laneX + laneWidth, displayY2);
+                int alpha = 64;
 
-            // クリックしたらノーツを編集状態にする
-            if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
-                edittingNote_ = note.get();
-            }
-
-            // ボタンを押している間ドラッグ状態にする
-            if(ImGui::IsItemActive()){
-                if(Input::IsMouseMoved()){
-                    note->isDragging_ = true; // ドラッグ中にする
-                    draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                // ノーツにボタン判定を作成
+                label = "warningNoteBody##" + std::to_string(noteIdx);
+                // クリックしたらノーツを編集状態にする
+                if(note->layer_ == UpDown::UP){
+                    ImGui::SetCursorScreenPos(ImVec2(p1.x, p2.y) + ImVec2(0.0f, noteHeight * 0.5f));
+                    ImVec2 buttonSize = ImVec2(p2.x, p1.y) - ImVec2(p1.x, p2.y) - ImVec2(0.0f, noteHeight);
+                    if(ImGui::InvisibleButton(label.c_str(), buttonSize)){
+                        edittingNote_ = note.get();
+                    }
+                } else{
+                    ImGui::SetCursorScreenPos(p1 + ImVec2(0.0f, noteHeight * 0.5f));
+                    if(ImGui::InvisibleButton(label.c_str(), p2 - p1 - ImVec2(0.0f, noteHeight))){
+                        edittingNote_ = note.get();
+                    }
                 }
+
+                // ボタンを押している間ドラッグ状態にする
+                if(ImGui::IsItemActive()){
+                    if(Input::IsMouseMoved()){
+                        note->isDragging_ = true; // ドラッグ中にする
+                        draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                        edittingNote_ = note.get();
+                    }
+                }
+
+                // ホバー時は不透明にする
+                if(ImGui::IsItemHovered()){
+                    isHoveringNote_ = true;
+                    alpha = 128;
+                }
+
+                // 編集中のノーツは不透明にする
+                if(edittingNote_ == note.get()){
+                    alpha = 128;
+                }
+
+                pDrawList_->AddImage(textureIDs_["white"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 0, 0, alpha));
             }
 
-            // ホバー時は不透明にする
-            if(ImGui::IsItemHovered()){
-                isHoveringNote_ = true;
-                alpha = 255;
+
+            {
+                // ノーツ画像を描画
+                ImVec2 p1 = ImVec2(laneX, displayY - noteHeight * 0.5f);
+                ImVec2 p2 = p1 + ImVec2(laneWidth, noteHeight); // ノーツのサイズを設定
+                int alpha = 128;
+
+                // ノーツにボタン判定を作成
+                ImGui::SetCursorScreenPos(p1);
+                label = "warningNoteHead##" + std::to_string(noteIdx);
+
+                // クリックしたらノーツを編集状態にする
+                if(ImGui::InvisibleButton(label.c_str(), ImVec2(laneWidth, noteHeight))){
+                    edittingNote_ = note.get();
+                }
+
+                // ボタンを押している間ドラッグ状態にする
+                if(ImGui::IsItemActive()){
+                    if(Input::IsMouseMoved()){
+                        note->isDragging_ = true; // ドラッグ中にする
+                        draggingNote_ = note.get(); // ドラッグ中のノーツを保存
+                    }
+                }
+
+                // ホバー時は不透明にする
+                if(ImGui::IsItemHovered()){
+                    isHoveringNote_ = true;
+                    alpha = 255;
+                }
+
+                // 編集中のノーツは不透明にする
+                if(edittingNote_ == note.get()){
+                    alpha = 255;
+                }
+
+
+                pDrawList_->AddImage(textureIDs_["warning"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
             }
-
-            // 編集中のノーツは不透明にする
-            if(edittingNote_ == note.get()){
-                alpha = 255;
-            }
-
-            pDrawList_->AddImage(textureIDs_["warning"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
-
         }
 
         noteIdx++; // ノーツのIDをインクリメント

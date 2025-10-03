@@ -102,6 +102,9 @@ void Scene_Base::Draw(){
 ///////////////////////////////////////////////////////////////////
 void Scene_Base::BeginFrame(){
 
+    // 毎回false初期化
+    isChangeScene_ = false;
+
     // 現在のステートがあればフレーム開始処理を行う
     if(currentState_){
         currentState_->BeginFrame();
@@ -118,23 +121,33 @@ void Scene_Base::BeginFrame(){
 void Scene_Base::EndFrame(){
     // 現在のステートがあればフレーム終了処理を行う
     if(currentState_){
-        currentState_->EndFrame();
+        if(!isChangeScene_){
+            currentState_->EndFrame();
+        }
     }
     
     if(currentEventState_){
-        currentEventState_->EndFrame();
+        if(!isChangeScene_){
+            currentEventState_->EndFrame();
+        }
     }
 
-    // ヒエラルキー内のオブジェクトの描画
-    hierarchy_->EndFrame();
+    // ヒエラルキー内のオブジェクトのフレーム終了時処理
+    if(!isChangeScene_){
+        hierarchy_->EndFrame();
+    }
 
     // ステートクラス内の遷移処理を実行
     if(currentState_){
-        currentState_->ManageState();
+        if(!isChangeScene_){
+            currentState_->ManageState();
+        }
     }
 
     if(currentEventState_){
-        currentEventState_->ManageState();
+        if(!isChangeScene_){
+            currentEventState_->ManageState();
+        }
     }
 }
 

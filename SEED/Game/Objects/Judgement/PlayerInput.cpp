@@ -189,9 +189,22 @@ void PlayerInput::Initialize(){
     // カーソルの端の位置を設定
     edgePos_[(int)LR::LEFT] = cursorPos_ - PlayField::kPlayFieldSizeX_ * 0.5f;
     edgePos_[(int)LR::RIGHT] = cursorPos_ + PlayField::kPlayFieldSizeX_ * 0.5f;
-    // カーソルの矩形を設定
-    cursorQuad_ = MakeEqualQuad2D(30.0f, { 1.0f,0.0f,0.0f,1.0f });
-    cursorQuad_.translate = { cursorPos_, kWindowCenter.y };
+
+    for(int i = 0; i < 2; i++){
+        cursor_[i] = Triangle();
+        cursor_[i].GH = TextureManager::LoadTexture("PlayField/cursor_half.png");
+        cursor_[i].litingType = LIGHTINGTYPE_NONE;
+        //cursor_[i].blendMode = BlendMode::ADD;
+
+        cursor2D_[i] = Triangle2D();
+        cursor2D_[i].GH = TextureManager::LoadTexture("PlayField/cursor_half.png");
+        //cursor2D_[i].color = { 1.0f,0.0f,1.0f,1.0f };
+
+        cursorLine_[i] = Quad();
+        cursorLine_[i].GH = TextureManager::LoadTexture("PlayField/lineAura.png");
+        cursorLine_[i].color = { 1.0f,1.0f,0.0f,1.0f };
+
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,8 +212,47 @@ void PlayerInput::Initialize(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::Update(){
 
+    // 必要な頂点の計算
+    Vector3 corsorWorldPos = PlayField::GetInstance()->GetCursorWorldPos(cursorPos_);
+    Vector3 farPos[2] = {
+        PlayField::GetInstance()->GetPlayFieldPointWorld(0),
+        PlayField::GetInstance()->GetPlayFieldPointWorld(2)
+    };
+    float dist = MyMath::Length(corsorWorldPos - farPos[0]);
+    float keyWidth = PlayField::GetInstance()->GetKeyWidthWorld();
+    float zRate = 0.015f;
+    float keyWidthRate = 0.35f;
+
     // カーソル矩形の位置を更新
-    cursorQuad_.translate = { cursorPos_, kWindowCenter.y };
+    cursor_[0].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[0] - corsorWorldPos) * dist * zRate;
+    cursor_[0].localVertex[1] = corsorWorldPos + Vector3(keyWidth * keyWidthRate,0.0f,0.0f);
+    cursor_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * keyWidthRate,0.0f,0.0f);
+    cursor_[1].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[1] - corsorWorldPos) * dist * zRate;
+    cursor_[1].localVertex[1] = corsorWorldPos - Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
+    cursor_[1].localVertex[2] = corsorWorldPos + Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
+
+    // zファイティング防止
+    for(int i = 0; i < 3; i++){
+        cursor_[0].localVertex[i].z -= 0.1f;
+        cursor_[1].localVertex[i].z -= 0.1f;
+    }
+
+    float lineWidthRate = 0.5f;
+    cursorLine_[0].localVertex[0] = farPos[0];
+    cursorLine_[0].localVertex[1] = farPos[0];
+    cursorLine_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
+    cursorLine_[0].localVertex[3] = corsorWorldPos + Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
+    cursorLine_[1].localVertex[0] = farPos[1];
+    cursorLine_[1].localVertex[1] = farPos[1];
+    cursorLine_[1].localVertex[2] = corsorWorldPos + Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
+    cursorLine_[1].localVertex[3] = corsorWorldPos - Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
+
+    BaseCamera* camera = SEED::GetMainCamera();
+    for(int i = 0; i < 3; i++){
+        cursor2D_[0].localVertex[i] = camera->ToScreenPosition(cursor_[0].localVertex[i]);
+        cursor2D_[1].localVertex[i] = camera->ToScreenPosition(cursor_[1].localVertex[i]);
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +260,11 @@ void PlayerInput::Update(){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerInput::Draw(){
     // カーソルの描画
-    SEED::DrawQuad2D(cursorQuad_);
+    for(int i = 0; i < 2; i++){
+        //SEED::DrawTriangle(cursor_[i]);
+        SEED::DrawTriangle2D(cursor2D_[i]);
+        SEED::DrawQuad(cursorLine_[i]);
+    }
 
 #ifdef _DEBUG
     // 入力情報の表示
@@ -292,7 +348,7 @@ bool PlayerInput::GetIsRelease(int32_t key){
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 const std::unordered_set<int32_t>& PlayerInput::GetUnTapLane(){
     static std::unordered_set<int32_t> unTapLane;
-    
+
     // いったん全部入れる
     for(int i = 0; i < PlayField::kKeyCount_; ++i){
         unTapLane.insert(i);
@@ -454,7 +510,7 @@ void PlayerInput::DisplayInputInfo(){
     auto& relLane = GetReleaseLane();
 
     ImFunc::CustomBegin("input", MoveOnly_TitleBar);
-    
+
     // タップ判定
     {
         ImGui::Text("タップ判定:{ ");

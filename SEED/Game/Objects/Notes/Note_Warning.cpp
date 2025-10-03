@@ -19,7 +19,7 @@ void Note_Warning::Draw(float currentTime, float appearLength){
 
     // 描画用の矩形を計算
     static Quad noteRect;
-    noteRect = PlayField::GetInstance()->GetNoteQuad(1.0f, lane_, layer_, 0.5f);
+    noteRect = PlayField::GetInstance()->GetNoteQuad(0.0f, lane_, layer_, 1.0f);
 
     // 頂点設定
     for(int j = 0; j < 4; j++){
@@ -28,10 +28,10 @@ void Note_Warning::Draw(float currentTime, float appearLength){
     }
 
     // 媒介変数
-    //float t = timer_.GetProgress();
-    //float sin = std::sin(timer_.currentTime * (float)std::numbers::pi * 2.0f);
-    //float sin2 = std::sin(t * (float)std::numbers::pi);
-    float alpha = 1.0f;//(0.5f + 0.5f * sin) * sin2;
+    float t = timer_.GetProgress();
+    float sin = std::sin(timer_.currentTime * (float)std::numbers::pi * 2.0f);
+    float sin2 = std::sin(t * (float)std::numbers::pi);
+    float alpha = (0.5f + 0.5f * sin) * sin2;
 
     // quadの色などの設定
     noteQuad_->color = { 1.0f, 0.0f, 0.0f, alpha };
@@ -67,6 +67,8 @@ void Note_Warning::FromJson(const nlohmann::json& json){
 #ifdef _DEBUG
 void Note_Warning::Edit(){
     Note_Base::Edit();
-    ImGui::DragFloat("Duration", &duration_, 0.1f, 0.0f);
+    if(ImGui::DragFloat("Duration", &duration_, 0.02f)){
+        duration_ = (std::max)(0.0f, duration_);
+    }
 }
 #endif // _DEBUG

@@ -92,9 +92,9 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    Input::SetMouseCursorVisible(false);
+    //Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
     Input::RepeatCursor();
 #endif
@@ -112,6 +112,15 @@ void RythmGameManager::BeginFrame(){
 void RythmGameManager::EndFrame(){
 
     // 譜面が終わったらクリアシーンへ移行
+    // escapeでポーズ画面を出す
+    if(!isPaused_){
+        if(Input::IsTriggerKey(DIK_ESCAPE)){
+            auto* scene = GameSystem::GetScene();
+            scene->CauseEvent(new GameState_Pause(scene));
+            Pause();
+        }
+    }
+
     if(notesData_->GetIsEnd()){
 
         // スコア,ランクの計算
@@ -121,18 +130,14 @@ void RythmGameManager::EndFrame(){
         // プレイ結果の保存
         ResultDrawer::SetResult(playResult_);
 
+        // Inputのカーソルを表示状態に戻す
+        Input::SetMouseCursorVisible(true);
+
         // リザルト画面へ移行
         GameSystem::ChangeScene("Clear");
+        return;
     }
 
-    // escapeでポーズ画面を出す
-    if(!isPaused_){
-        if(Input::IsTriggerKey(DIK_ESCAPE)){
-            auto* scene = GameSystem::GetScene();
-            scene->CauseEvent(new GameState_Pause(scene));
-            Pause();
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////

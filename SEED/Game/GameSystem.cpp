@@ -136,4 +136,5 @@ void GameSystem::DrawGUI(){
 void GameSystem::ChangeScene(const std::string& sceneName) {
     instance_->pScene_.reset(SceneManager::CreateScene(sceneName));
     instance_->pScene_->Initialize();
+    Scene_Base::isChangeScene_ = true;
 }

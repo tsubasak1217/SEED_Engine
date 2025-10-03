@@ -37,6 +37,9 @@ void PlayField::Initialize(){
     // ゲームカメラの取得
     BaseCamera* gameCamera_ = SEED::GetCamera("gameCamera");
 
+    farZ_ = 600.0f;// プレイフィールドの奥行き
+    nearZ_ = 50.0f;// プレイフィールドの手前
+
     // プレイフィールドの4点を求める
     Vector2 center = kWindowCenter;
     Vector2 size = { kPlayFieldSizeX_, kPlayFieldSizeY_ };
@@ -58,10 +61,10 @@ void PlayField::Initialize(){
     playFieldPointsWorld_[LEFT] = gameCamera_->ToWorldPosition(playFieldPointsScreen_[LEFT], nearZ_);
 
     // 鍵盤の境界線の座標を求める
-    float keyWidth = std::fabsf(playFieldPointsWorld_[RIGHT].x - playFieldPointsWorld_[LEFT].x) / kKeyCount_;
+    keyWidthWorld_ = std::fabsf(playFieldPointsWorld_[RIGHT].x - playFieldPointsWorld_[LEFT].x) / kKeyCount_;
     for(int i = 0; i < kKeyCount_ + 1; i++){
         keyboardBorderPoints_[i] = playFieldPointsWorld_[LEFT] +
-            Vector3(keyWidth * i, 0.0f, 0.0f);
+            Vector3(keyWidthWorld_ * i, 0.0f, 0.0f);
     }
 
     // レーン描画矩形の座標決定
@@ -89,8 +92,8 @@ void PlayField::Initialize(){
         }
 
         // 色を設定
-        lane_[0][i].color = { 0.0f, 0.0f, 0.0f, 0.5f };
-        lane_[1][i].color = { 0.0f, 0.0f, 0.0f, 0.5f };
+        lane_[0][i].color = { 0.0f, 0.0f, 0.0f, 0.8f };
+        lane_[1][i].color = { 0.0f, 0.0f, 0.0f, 0.8f };
         laneAnswer_[0][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[1][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[0][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
@@ -101,10 +104,10 @@ void PlayField::Initialize(){
         laneBorderLine_[1][i] = lane_[1][i];
         laneBorderLine_[0][i].color = { 1.0f,1.0f,1.0f,0.5f };
         laneBorderLine_[1][i].color = { 1.0f,1.0f,1.0f,0.5f };
-        laneBorderLine_[0][i].localVertex[1].x -= keyWidth * 0.5f;
-        laneBorderLine_[0][i].localVertex[2].x -= keyWidth * 0.5f;
-        laneBorderLine_[1][i].localVertex[1].x -= keyWidth * 0.5f;
-        laneBorderLine_[1][i].localVertex[2].x -= keyWidth * 0.5f;
+        laneBorderLine_[0][i].localVertex[1].x -= keyWidthWorld_ * 0.5f;
+        laneBorderLine_[0][i].localVertex[2].x -= keyWidthWorld_ * 0.5f;
+        laneBorderLine_[1][i].localVertex[1].x -= keyWidthWorld_ * 0.5f;
+        laneBorderLine_[1][i].localVertex[2].x -= keyWidthWorld_ * 0.5f;
 
 
         // レーンの境界線の周りのオーラ的なやつの矩形の座標を決定
@@ -114,6 +117,8 @@ void PlayField::Initialize(){
         // 画像を設定
         laneAnswer_[0][i].tri.GH = TextureManager::LoadTexture("PlayField/gradation.png");
         laneAnswer_[1][i].tri.GH = TextureManager::LoadTexture("PlayField/gradation.png");
+        laneAnswer_[0][i].evalutionPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
+        laneAnswer_[1][i].evalutionPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
         laneBorderLine_[0][i].GH = TextureManager::LoadTexture("PlayField/borderLine.png");
         laneBorderLine_[1][i].GH = TextureManager::LoadTexture("PlayField/borderLine.png");
         laneBorderLineAura_[0][i].GH = TextureManager::LoadTexture("PlayField/lineAura.png");
@@ -135,10 +140,10 @@ void PlayField::Initialize(){
             laneBorderLine_[1][i + 1] = lane_[1][i];
             laneBorderLine_[0][i + 1].color = { 1.0f,1.0f,1.0f,0.5f };
             laneBorderLine_[1][i + 1].color = { 1.0f,1.0f,1.0f,0.5f };
-            laneBorderLine_[0][i + 1].localVertex[1].x += keyWidth * 0.5f;
-            laneBorderLine_[0][i + 1].localVertex[2].x += keyWidth * 0.5f;
-            laneBorderLine_[1][i + 1].localVertex[1].x += keyWidth * 0.5f;
-            laneBorderLine_[1][i + 1].localVertex[2].x += keyWidth * 0.5f;
+            laneBorderLine_[0][i + 1].localVertex[1].x += keyWidthWorld_ * 0.5f;
+            laneBorderLine_[0][i + 1].localVertex[2].x += keyWidthWorld_ * 0.5f;
+            laneBorderLine_[1][i + 1].localVertex[1].x += keyWidthWorld_ * 0.5f;
+            laneBorderLine_[1][i + 1].localVertex[2].x += keyWidthWorld_ * 0.5f;
             laneBorderLineAura_[0][i + 1] = laneBorderLine_[0][i + 1];
             laneBorderLineAura_[1][i + 1] = laneBorderLine_[1][i + 1];
             laneBorderLine_[0][i + 1].GH = TextureManager::LoadTexture("PlayField/borderLine.png");
@@ -176,13 +181,17 @@ void PlayField::Initialize(){
 
     // エフェクトの初期化
     EffectSystem::DeleteAll();// 既存のエフェクトを削除
-    EffectSystem::AddEffectEndless("kiraField.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
+    EffectSystem::AddEffectEndless("stageBack.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
 
     // 背景の初期化
     backImage_ = Sprite("PlayField/tempBack.png");
     backImage_.drawLocation = DrawLocation::Back;
     backImage_.isStaticDraw = false;
     backImage_.size = kWindowSize;
+
+    //objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Prefabs/PlayFieldItems.json", false).objects2D_;
+
+    SEED::windowBackColor_ = 0x26554EFF;
 }
 
 
@@ -235,7 +244,7 @@ void PlayField::Draw(){
     }
 
     // 背景の描画
-    backImage_.Draw();
+    //backImage_.Draw();
 }
 
 
@@ -540,4 +549,12 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
         RectFlickEffect(evalution, laneBit);
     }
 
+}
+
+// スクリーンのカーソル座標をワールドに
+Vector3 PlayField::GetCursorWorldPos(float cursorX){
+    float t = (cursorX - playFieldPointsScreen_[LEFT].x) / 
+        (playFieldPointsScreen_[RIGHT].x - playFieldPointsScreen_[LEFT].x);
+    Vector3 result = MyMath::Lerp(playFieldPointsWorld_[LEFT], playFieldPointsWorld_[RIGHT], t);
+    return result;
 }

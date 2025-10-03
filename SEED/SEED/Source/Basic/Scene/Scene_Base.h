@@ -10,6 +10,7 @@ class GameObject;
 class GameObject2D;
 
 class Scene_Base{
+    friend class GameSystem;
 public:
     Scene_Base();
     virtual ~Scene_Base(){};
@@ -47,4 +48,5 @@ protected:
     std::unique_ptr<State_Base> currentState_;
     std::unique_ptr<State_Base> currentEventState_;
     std::unique_ptr<Hierarchy> hierarchy_; // Hierarchy管理クラス
+    static inline bool isChangeScene_ = false;
 };

@@ -8,6 +8,8 @@
 #include <Game/Objects/Judgement/LaneBit.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <SEED/Source/SEED.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <Game/GameSystem.h>
 
 // 前方宣言
 class NotesData;
@@ -46,6 +48,10 @@ public:
     Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
     void EmitEffect(LaneBit laneBit, UpDown layer, int evalution);
+    //
+    Vector3 GetCursorWorldPos(float cursorX);
+    const Vector3& GetPlayFieldPointWorld(int index) const{ return playFieldPointsWorld_[index]; }
+    float GetKeyWidthWorld(){ return keyWidthWorld_; }
 
 private:
     void CalcEffectEmitPoints();
@@ -59,9 +65,10 @@ public:
     static float kPlayFieldSizeY_;// プレイフィールドの高さ
     static const int32_t kKeyCount_ = 5;// 鍵盤数
     static float kKeyWidth_;// 鍵盤の幅
+    float keyWidthWorld_;
     float kBorderLineZ_;// 判定ボーダーラインの位置
-    float farZ_ = 1000.0f;// プレイフィールドの奥行き
-    float nearZ_ = 50.0f;// プレイフィールドの手前
+    float farZ_;// プレイフィールドの奥行き
+    float nearZ_;// プレイフィールドの手前
 
 private:
     NotesData* noteData_;// セットされている譜面
@@ -80,4 +87,5 @@ private:
 
     //
     Sprite backImage_;
+    std::vector<GameObject2D*> objects2D_;
 };

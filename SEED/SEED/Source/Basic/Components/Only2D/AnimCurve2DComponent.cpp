@@ -145,6 +145,7 @@ void AnimCurve2DComponent::Finalize(){
 // GUI編集
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AnimCurve2DComponent::EditGUI(){
+#ifdef _DEBUG
 
     ImGui::Indent();
     static std::string label;
@@ -207,9 +208,9 @@ void AnimCurve2DComponent::EditGUI(){
     ImGui::SameLine();
     ImGui::SliderFloat("現在の時間", &timer_.currentTime, 0.0f, timer_.duration);
     ImFunc::Combo("補間方法", interpolationType_, { "LINEAR","CATMULLROM" });
-    ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
     ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);
     ImGui::Checkbox("ループするか", &isLoop_);
+    ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
 
     ImGui::Unindent();
 
@@ -219,6 +220,7 @@ void AnimCurve2DComponent::EditGUI(){
             controlPoints_.erase(controlPoints_.begin() + i);
         }
     }
+#endif // _DEBUG
 }
 
 

@@ -155,6 +155,7 @@ void DoF::Release(){
     // リソースの解放
     if(blurParamsBuffer_.bufferResource.resource){
         blurParamsBuffer_.bufferResource.resource->Release();
+        blurParamsBuffer_.bufferResource.resource = nullptr;
     }
     for(int i = 0; i < 2; i++){
         if(halfTexture_[i].resource){

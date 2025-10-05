@@ -78,9 +78,9 @@
                             },
                             "color": {
                                 "w": 1.0,
-                                "x": 1.0,
-                                "y": 1.0,
-                                "z": 1.0
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
                             },
                             "drawLocation": 2,
                             "flipX": false,
@@ -90,7 +90,7 @@
                             "layer": 0,
                             "name": "sprite0",
                             "size": {
-                                "x": 64.0,
+                                "x": 227.0,
                                 "y": 64.0
                             },
                             "texturePath": "",
@@ -117,6 +117,56 @@
                                 }
                             }
                         }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 0,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 67.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 218.0,
+                                "y": 64.0
+                            },
+                            "text": "テキスト",
+                            "textBoxVisible": true,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
                     ]
                 }
             ],
@@ -126,14 +176,14 @@
             "objectName": "Object2D_5",
             "objectType": 0,
             "transform": {
-                "rotate": 0.2482868731021881,
+                "rotate": 1.273714542388916,
                 "scale": {
-                    "x": 0.9018306732177734,
-                    "y": 1.0
+                    "x": 1.2672863006591797,
+                    "y": 0.9674728512763977
                 },
                 "translate": {
-                    "x": 131.2970733642578,
-                    "y": 102.80552673339844
+                    "x": 315.0802917480469,
+                    "y": 126.45263671875
                 }
             }
         }

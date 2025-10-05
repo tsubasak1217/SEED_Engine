@@ -365,23 +365,7 @@ void SEED::DrawQuad2D(const Quad2D& quad){
 void SEED::DrawSprite(const Sprite& sprite){
 
     instance_->pPolygonManager_->AddSprite(
-        sprite.size,
-        sprite.GetDefaultSize(),
-        sprite.GetWorldMatrix(),
-        sprite.GH,
-        sprite.color,
-        sprite.uvTransform.ToMatrix4x4(),
-        sprite.flipX,
-        sprite.flipY,
-        sprite.anchorPoint,
-        sprite.clipLT,
-        sprite.clipSize,
-        sprite.blendMode,
-        sprite.isApplyViewMat,
-        D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
-        sprite.isStaticDraw,
-        sprite.drawLocation,
-        sprite.layer,
+        sprite,
         false
     );
 }

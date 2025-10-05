@@ -654,7 +654,22 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
     if(isManipulated){
         Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
         worldMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
-        info.transform->FromMatrix(worldMat);
+        Transform result;
+        result.FromMatrix(worldMat);
+
+        // 操作モードに応じて適切に反映
+        if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::SCALE){
+            info.transform->scale = result.scale;
+
+        } else if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::TRANSLATE){
+            info.transform->translate = result.translate;
+
+        } else if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::ROTATE){
+            info.transform->rotate = result.rotate;
+        
+        } else{
+            *info.transform = result;
+        }
     }
 }
 
@@ -700,7 +715,22 @@ void ImFunc::Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
     if(isManipulated){
         Matrix4x4 invParentMat = InverseMatrix(info.parentMat);
         modelMat *= invParentMat; // 親の逆行列を掛けてローカル座標系に変換
-        info.transform2D->FromMatrix4x4(modelMat);
+        Transform2D result;
+        result.FromMatrix4x4(modelMat);
+
+        // 操作モードに応じて適切に反映
+        if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::SCALE){
+            info.transform2D->scale = result.scale;
+
+        } else if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::TRANSLATE){
+            info.transform2D->translate = result.translate;
+
+        } else if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::ROTATE){
+            info.transform2D->rotate = result.rotate;
+
+        } else{
+            *info.transform2D = result;
+        }
     }
 }
 

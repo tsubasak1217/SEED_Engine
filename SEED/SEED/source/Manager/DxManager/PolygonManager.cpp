@@ -1045,14 +1045,10 @@ void PolygonManager::AddQuadPrimitive(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PolygonManager::AddSprite(
-    const Vector2& size, const Vector2& defaultSize, const Matrix4x4& worldMat,
-    uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-    const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-    bool isApplyViewMat, D3D12_CULL_MODE cullMode,
-    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isSystemDraw
+    const Sprite& sprite,bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
-    blendMode;
+    sprite.blendMode;
 
 
     ///////////////////////////////////////////////////////////////////
@@ -1060,7 +1056,7 @@ void PolygonManager::AddSprite(
     ///////////////////////////////////////////////////////////////////
 
     // 遠近
-    float layerZ = 0.001f * layer;
+    float layerZ = 0.001f * sprite.layer;
     float zNear = pDxManager_->mainCamera_->GetZNear() - layerZ;
     float zfar = pDxManager_->mainCamera_->GetZFar() - layerZ;
 
@@ -1069,17 +1065,14 @@ void PolygonManager::AddSprite(
 
     // アンカーポイントを考慮したワールド座標を作成する行列
     Matrix4x4 adjustedWorldMat;
-    adjustedWorldMat = Multiply(
-        worldMat,
-        TranslateMatrix({ size.x * -anchorPoint.x,size.y * -anchorPoint.y,0.0f })
-    );
+    adjustedWorldMat = sprite.GetWorldMatrix();
 
     // 4頂点
-    v[0] = { size.x * -anchorPoint.x,size.y * -anchorPoint.y,zNear,1.0f };
+    v[0] = { sprite.size.x * -sprite.anchorPoint.x,sprite.size.y * -sprite.anchorPoint.y,zNear,1.0f };
     if(isSystemDraw){ v[0].z = zfar; }
-    v[1] = v[0] + Vector4(size.x, 0.0f, 0.0f, 0.0f);
-    v[2] = v[0] + Vector4(0.0f, size.y, 0.0f, 0.0f);
-    v[3] = v[0] + Vector4(size.x, size.y, 0.0f, 0.0f);
+    v[1] = v[0] + Vector4(sprite.size.x, 0.0f, 0.0f, 0.0f);
+    v[2] = v[0] + Vector4(0.0f, sprite.size.y, 0.0f, 0.0f);
+    v[3] = v[0] + Vector4(sprite.size.x, sprite.size.y, 0.0f, 0.0f);
 
     // 法線ベクトル
     Vector3 normalVec =
@@ -1099,17 +1092,17 @@ void PolygonManager::AddSprite(
     /*-------------------- ModelDataに情報を追加する--------------------*/
     ///////////////////////////////////////////////////////////////////
 
-    auto* modelData = isStaticDraw ?
-        &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)blendMode][(int)cullMode - 1] :
-        &primitiveData_[PRIMITIVE_SPRITE][(int)blendMode][(int)cullMode - 1];
+    auto* modelData = sprite.isStaticDraw ?
+        &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1] :
+        &primitiveData_[PRIMITIVE_SPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1];
 
     // 背景描画の場合は背景用のモデルデータを使用
-    modelData = drawLocation == DrawLocation::Back ?
-        &primitiveData_[PRIMITIVE_BACKSPRITE][(int)blendMode][(int)cullMode - 1] : modelData;
+    modelData = sprite.drawLocation == DrawLocation::Back ?
+        &primitiveData_[PRIMITIVE_BACKSPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1] : modelData;
 
     static std::string drawDataName;
     // 背面描画の場合はzFarに設定
-    if(drawLocation == DrawLocation::Back && !isStaticDraw){
+    if(sprite.drawLocation == DrawLocation::Back && !sprite.isStaticDraw){
         v[0].z = zfar;
         v[1].z = zfar;
         v[2].z = zfar;
@@ -1119,10 +1112,10 @@ void PolygonManager::AddSprite(
     // 描画データの取得
     drawDataName.clear();
     drawDataName.reserve(128);
-    drawDataName += isStaticDraw ? "SSP" : "SP";
-    drawLocation == DrawLocation::Back ? drawDataName = "BSP" : drawDataName;
-    drawDataName += blendName[(int)blendMode];
-    drawDataName += cullName[(int)cullMode - 1];
+    drawDataName += sprite.isStaticDraw ? "SSP" : "SP";
+    sprite.drawLocation == DrawLocation::Back ? drawDataName = "BSP" : drawDataName;
+    drawDataName += blendName[(int)sprite.blendMode];
+    drawDataName += cullName[(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1];
     uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // もし該当する描画データがなければ作成する
@@ -1135,13 +1128,13 @@ void PolygonManager::AddSprite(
         modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
-                blendMode, cullMode, PolygonTopology::TRIANGLE
+                sprite.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
-        modelDrawData_[hash]->drawOrder = isStaticDraw ?
+        modelDrawData_[hash]->drawOrder = sprite.isStaticDraw ?
             (int8_t)DrawOrder::StaticSprite : (int8_t)DrawOrder::Sprite;
-        modelDrawData_[hash]->drawOrder = drawLocation == DrawLocation::Back ?
+        modelDrawData_[hash]->drawOrder = sprite.drawLocation == DrawLocation::Back ?
             (int8_t)DrawOrder::BackSprite : modelDrawData_[hash]->drawOrder;
         // 名前の設定
         modelDrawData_[hash]->name = drawDataName;
@@ -1159,18 +1152,19 @@ void PolygonManager::AddSprite(
     auto& mesh = modelData->meshes[0];
     if(mesh.vertices.size() <= vertexCount){ mesh.vertices.resize(vertexCount + 4); }
 
-    if(!MyMath::HasLength(clipSize)){// 描画範囲指定がない場合
+    if(!MyMath::HasLength(sprite.clipSize)){// 描画範囲指定がない場合
         mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
         mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(0.0, 1.0f), normalVec);
         mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2(1.0f, 1.0f), normalVec);
 
     } else{// 描画範囲指定がある場合
+        Vector2 defaultSize = sprite.GetDefaultSize();
         if(MyMath::HasLength(defaultSize)){
-            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(clipLT.x / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
-            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((clipLT.x + clipSize.x) / defaultSize.x, clipLT.y / defaultSize.y), normalVec);
-            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(clipLT.x / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
-            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((clipLT.x + clipSize.x) / defaultSize.x, (clipLT.y + clipSize.y) / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount] = VertexData(v[0], Vector2(sprite.clipLT.x / defaultSize.x, sprite.clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2((sprite.clipLT.x + sprite.clipSize.x) / defaultSize.x, sprite.clipLT.y / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 2] = VertexData(v[2], Vector2(sprite.clipLT.x / defaultSize.x, (sprite.clipLT.y + sprite.clipSize.y) / defaultSize.y), normalVec);
+            mesh.vertices[vertexCount + 3] = VertexData(v[3], Vector2((sprite.clipLT.x + sprite.clipSize.x) / defaultSize.x, (sprite.clipLT.y + sprite.clipSize.y) / defaultSize.y), normalVec);
         } else{
             mesh.vertices[vertexCount] = VertexData(v[0], Vector2(0.0f, 0.0f), normalVec);
             mesh.vertices[vertexCount + 1] = VertexData(v[1], Vector2(1.0f, 0.0f), normalVec);
@@ -1180,7 +1174,7 @@ void PolygonManager::AddSprite(
     }
 
     // 反転の指定がある場合
-    if(flipX){
+    if(sprite.flipX){
         Vector2 temp[2] = { mesh.vertices[vertexCount].texcoord_, mesh.vertices[vertexCount + 2].texcoord_ };
         mesh.vertices[vertexCount].texcoord_.x = mesh.vertices[vertexCount + 1].texcoord_.x;
         mesh.vertices[vertexCount + 1].texcoord_.x = temp[0].x;
@@ -1188,7 +1182,7 @@ void PolygonManager::AddSprite(
         mesh.vertices[vertexCount + 3].texcoord_.x = temp[1].x;
     }
 
-    if(flipY){
+    if(sprite.flipY){
         Vector2 temp[2] = { mesh.vertices[vertexCount].texcoord_, mesh.vertices[vertexCount + 1].texcoord_ };
         mesh.vertices[vertexCount].texcoord_.y = mesh.vertices[vertexCount + 2].texcoord_.y;
         mesh.vertices[vertexCount + 1].texcoord_.y = mesh.vertices[vertexCount + 3].texcoord_.y;
@@ -1226,17 +1220,17 @@ void PolygonManager::AddSprite(
     drawData->materials.resize(1);
     auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-    material[drawCount].color_ = color;
+    material[drawCount].color_ = sprite.color;
     material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
-    material[drawCount].uvTransform_ = uvTransform;
-    material[drawCount].GH_ = GH;
+    material[drawCount].uvTransform_ = sprite.uvTransform.ToMatrix4x4();
+    material[drawCount].GH_ = sprite.GH;
 
     // transform
     for(const auto& [cameraName, camera] : pDxManager_->cameras_){
         auto& transform = drawData->transforms[cameraName];
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
         transform[drawCount].world = IdentityMat4();
-        transform[drawCount].WVP = isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
+        transform[drawCount].WVP = sprite.isApplyViewMat ? camera->GetViewProjectionMat2D() : camera->GetProjectionMat2D();
         transform[drawCount].worldInverseTranspose = IdentityMat4();
     }
 
@@ -1249,10 +1243,10 @@ void PolygonManager::AddSprite(
 
 
     // カウントを更新
-    if(isStaticDraw){
+    if(sprite.isStaticDraw){
         objCounts_[(int)DrawOrder::StaticSprite]++;
     } else{
-        if(drawLocation == DrawLocation::Back){
+        if(sprite.drawLocation == DrawLocation::Back){
             objCounts_[(int)DrawOrder::BackSprite]++;
         } else{
             objCounts_[(int)DrawOrder::Sprite]++;
@@ -1260,8 +1254,8 @@ void PolygonManager::AddSprite(
     }
 
 
-    objCountCull_[(int)cullMode - 1]++;
-    objCountBlend_[(int)blendMode]++;
+    objCountCull_[(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1]++;
+    objCountBlend_[(int)sprite.blendMode]++;
     spriteCount_++;
     drawData->indexCount += 6;
     drawData->totalDrawCount++;

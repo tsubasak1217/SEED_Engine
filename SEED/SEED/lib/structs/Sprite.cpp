@@ -30,35 +30,26 @@ void Sprite::Draw(){
     SEED::DrawSprite(*this);
 }
 
-Matrix4x4 Sprite::GetWorldMatrix()const {
+Matrix4x4 Sprite::GetWorldMatrix()const{
 
     Vector2 anchorOffset;
-
-    if(MyMath::Length(clipSize) == 0.0f){
-        anchorOffset = {
-            size.x * anchorPoint.x,
-            size.y * anchorPoint.y
-        };
-    } else{
-        anchorOffset = {
-            clipSize.x * anchorPoint.x,
-            clipSize.y * anchorPoint.y
-        };
-    }
+    anchorOffset = {
+        size.x * anchorPoint.x,
+        size.y * anchorPoint.y
+    };
 
 
     Matrix4x4 worldMat;
     if(parentMat){
-        Transform2D offsetApplyedTransform = transform;
-        offsetApplyedTransform.translate += (offset + anchorOffset);
-        worldMat = (offsetApplyedTransform.ToMatrix() * (*parentMat)).ToMat4x4();
+        worldMat = (transform.ToMatrix() * (*parentMat)).ToMat4x4();
+        worldMat *= TranslateMatrix({ offset.x,offset.y,0.0f });
         return worldMat;
     } else{
         worldMat =
             AffineMatrix(
                 { transform.scale.x,transform.scale.y,1.0f },
                 { 0.0f, 0.0f, transform.rotate },
-                { transform.translate.x + anchorOffset.x + offset.x,transform.translate.y + anchorOffset.y + offset.y,0.0f }
+                { transform.translate.x,transform.translate.y,0.0f }
             );
     }
     return worldMat;
@@ -118,7 +109,7 @@ nlohmann::json Sprite::ToJson() const{
 
 void Sprite::FromJson(const nlohmann::json& data){
 
-    if (data.empty()) {
+    if(data.empty()){
         return;
     }
 
@@ -166,7 +157,7 @@ void Sprite::Edit(){
         }
 
         ImGui::ColorEdit4("色", &color.x);
-        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN"});
+        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
 
         ImGui::Unindent();
     }
@@ -182,7 +173,7 @@ void Sprite::Edit(){
         if(guizmo){
             if(!parentMat){
                 ImGuiManager::RegisterGuizmoItem(&transform);
-            }else{
+            } else{
                 ImGuiManager::RegisterGuizmoItem(&transform, parentMat->ToMat4x4());
             }
         }
@@ -212,7 +203,7 @@ void Sprite::Edit(){
         ImGui::Checkbox("Y反転", &flipY);
         ImGui::Checkbox("静的描画", &isStaticDraw);
         ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
-        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, {"背景","前景"},1);
+        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, { "背景","前景" }, 1);
         ImGui::DragInt("描画順(layer)", &layer, 1.0f);
         ImGui::Unindent();
     }

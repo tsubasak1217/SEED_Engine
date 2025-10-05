@@ -10,6 +10,7 @@
 #include <SEED/Lib/Structs/VertexData.h>
 #include <SEED/Lib/Structs/OffsetData.h>
 #include <SEED/Lib/Structs/Model.h>
+#include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Material.h>
 #include <SEED/Lib/Structs/Transform.h>
 #include <SEED/Lib/Structs/CameraForGPU.h>
@@ -203,12 +204,7 @@ public:// 頂点情報の追加に関わる関数
     );
 
     void AddSprite(
-        const Vector2& size, const Vector2& defaultSize, const Matrix4x4& worldMat,
-        uint32_t GH, const Vector4& color, const Matrix4x4& uvTransform, bool flipX, bool flipY,
-        const Vector2& anchorPoint, const Vector2& clipLT, const Vector2& clipSize, BlendMode blendMode,
-        bool isApplyViewMat,D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
-        bool isStaticDraw = true, DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0,
-        bool isSystemDraw = false
+        const struct Sprite& sprite, bool isSystemDraw = false
     );
 
     void AddModel(Model* model);

@@ -16,12 +16,6 @@ RythmGameManager* RythmGameManager::instance_ = nullptr;
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////////////
 RythmGameManager::RythmGameManager(){
-    // コンボオブジェクト
-    comboObject_ = std::make_unique<ComboObject>();
-    comboObject_->comboText.transform.translate = { 187.0f,147.0f };
-    comboObject_->comboText.size = { 300.0f,200.0f };
-    comboObject_->comboText.fontSize = 100.0f;
-
     // エディタ
     notesEditor_ = std::make_unique<NotesEditor>();
 }
@@ -77,6 +71,11 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // プレイフィールドの初期化
     PlayField::GetInstance()->SetNoteData(notesData_.get());
+    PlayField::GetInstance()->Initialize();
+
+    // コンボオブジェクト
+    comboObject_ = std::make_unique<ComboObject>();
+
 
     // 判定の初期化
     Judgement::GetInstance();
@@ -92,9 +91,9 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    //Input::SetMouseCursorVisible(false);
+    Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
     Input::RepeatCursor();
 #endif
@@ -122,10 +121,6 @@ void RythmGameManager::EndFrame(){
     }
 
     if(notesData_->GetIsEnd()){
-
-        // スコア,ランクの計算
-        playResult_.score = CalculateScore();
-        playResult_.rank = ScoreRankUtils::GetScoreRank(playResult_.score);
 
         // プレイ結果の保存
         ResultDrawer::SetResult(playResult_);
@@ -156,14 +151,17 @@ void RythmGameManager::Update(){
 
         // プレイフィールドの更新
         PlayField::GetInstance()->Update();
+
+        // コンボテキストの更新
+        comboObject_->Update();
+                        
+        // スコア,ランクの計算
+        playResult_.score = CalculateScore();
+        playResult_.rank = ScoreRankUtils::GetScoreRank(playResult_.score);
+        playResult_.ScoreTextUpdate();
     }
 
 #ifdef _DEBUG
-    if(ImFunc::CustomBegin("ComboText", MoveOnly_TitleBar)){
-        comboObject_->comboText.Edit();
-    }
-    ImGui::End();
-
     // ノーツの編集ウインドウ
     notesEditor_->Edit();
     notesData_->Edit();
@@ -183,9 +181,6 @@ void RythmGameManager::Draw(){
 
     // 譜面データの描画
     notesData_->Draw();
-
-    // コンボの描画
-    comboObject_->Draw();
 
     // ゲームカメラ画面の描画
 #ifdef _DEBUG
@@ -208,6 +203,20 @@ void RythmGameManager::Pause(){
 void RythmGameManager::Resume(){
     isPaused_ = false;
     notesData_->Resume();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////
+// コンボの加算、終了
+//////////////////////////////////////////////////////////////////////////////////
+void RythmGameManager::BreakCombo(){
+    comboObject_->comboCount = 0;
+}
+
+void RythmGameManager::AddCombo(){
+    comboObject_->scalingTimer.Reset();
+    comboObject_->comboCount++;
+    comboObject_->comboCount > playResult_.maxCombo ? playResult_.maxCombo = comboObject_->comboCount : playResult_.maxCombo;
 }
 
 //////////////////////////////////////////////////////////////////////////////////

@@ -26,6 +26,7 @@ public:
     float currentTime = 0.0f;
     float prevTime = 0.0f;
     float duration = 0.0f;
+    float overtime = 0.0f;
 };
 
 

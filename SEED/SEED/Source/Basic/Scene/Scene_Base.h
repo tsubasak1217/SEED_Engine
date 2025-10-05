@@ -43,6 +43,10 @@ public:// Hierarchy関連
     bool IsExistObject(uint32_t gameObjectHanle) const;
     bool IsExistObject2D(uint32_t gameObjectHanle) const;
     void SortObject2DByTranslate(ObjSortMode sortMode);
+    GameObject* GetGameObject(uint32_t id) const;
+    GameObject2D* GetGameObject2D(uint32_t id) const;
+    GameObject* GetGameObject(const std::string& name) const;
+    GameObject2D* GetGameObject2D(const std::string& name) const;
 
 protected:
     std::unique_ptr<State_Base> currentState_;

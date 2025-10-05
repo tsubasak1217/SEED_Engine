@@ -126,6 +126,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   <ItemGroup>
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
+    <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
@@ -289,6 +291,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
   <ItemGroup>
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Manager\NotesEditor.h" />

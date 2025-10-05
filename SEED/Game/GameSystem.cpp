@@ -134,7 +134,12 @@ void GameSystem::DrawGUI(){
 // シーンの変更
 /////////////////////////////////////////////////////////////////
 void GameSystem::ChangeScene(const std::string& sceneName) {
-    instance_->pScene_.reset(SceneManager::CreateScene(sceneName));
+    // sceneを破棄
+    instance_->pScene_.reset(new Scene_Base);
+    instance_->pScene_.reset();
+    // 新しいsceneを生成して設定
+    auto* nextScene = SceneManager::CreateScene(sceneName);
+    instance_->pScene_ = std::unique_ptr<Scene_Base>(nextScene);
     instance_->pScene_->Initialize();
     Scene_Base::isChangeScene_ = true;
 }

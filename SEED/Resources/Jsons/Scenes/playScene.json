@@ -1,0 +1,386 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 0,
+                    "componentTag": "UI_ID:0",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 4,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.01905159279704094,
+                                "y": 0.5482625365257263,
+                                "z": 0.22338010370731354
+                            },
+                            "drawLocation": 1,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 0,
+                            "name": "sprite0",
+                            "size": {
+                                "x": 1280.0,
+                                "y": 1280.0
+                            },
+                            "texturePath": "Resources/Textures\\ParticleTextures\\particle.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "back",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 640.0,
+                    "y": 360.0
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 3,
+                    "componentTag": "UI_ID:3",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.5415990948677063,
+                                "y": 1.0,
+                                "z": 0.050193071365356445
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+                            "fontSize": 82.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": -4,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.011583030223846436,
+                                "y": 0.010516778565943241,
+                                "z": 0.0005366656696423888
+                            },
+                            "outlineSplitCount": 8,
+                            "outlineWidth": 7.0,
+                            "size": {
+                                "x": 276.0,
+                                "y": 145.0
+                            },
+                            "text": "%d",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "comboCount",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 645.435546875,
+                    "y": 339.6473083496094
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 5,
+                    "componentTag": "UI_ID:5",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.6832486391067505,
+                                "y": 1.0,
+                                "z": 0.011583030223846436
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+                            "fontSize": 44.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 8,
+                            "outlineWidth": 5.599999904632568,
+                            "size": {
+                                "x": 438.0,
+                                "y": 125.0
+                            },
+                            "text": "combo",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "comboText",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 648.5977783203125,
+                    "y": 394.9068298339844
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 3,
+                    "componentTag": "UI_ID:3",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 0,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+                            "fontSize": 72.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 689.0,
+                                "y": 64.0
+                            },
+                            "text": "%f",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "score",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 367.2746276855469,
+                    "y": 73.95392608642578
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 3,
+                    "componentTag": "UI_ID:3",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+                            "fontSize": 59.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 689.0,
+                                "y": 64.0
+                            },
+                            "text": "score",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "scoreText",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 144.62710571289063,
+                    "y": 6.628762245178223
+                }
+            }
+        }
+    ]
+}

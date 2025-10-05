@@ -1,0 +1,141 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 5,
+                    "componentTag": "AnimCurve2D_ID:5",
+                    "componentType": "AnimCurve2D",
+                    "controlPoints": [
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 48.4093017578125,
+                                "y": 125.12722778320313
+                            }
+                        },
+                        {
+                            "rotate": 1.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 293.30364990234375,
+                                "y": 97.99127197265625
+                            }
+                        },
+                        {
+                            "rotate": 3.4110000133514404,
+                            "scale": {
+                                "x": 3.1500000953674316,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 400.08984375,
+                                "y": 373.875
+                            }
+                        },
+                        {
+                            "rotate": 8.718000411987305,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 4.050000190734863
+                            },
+                            "translate": {
+                                "x": 788.7882690429688,
+                                "y": 502.0174255371094
+                            }
+                        }
+                    ],
+                    "defaultPaused": false,
+                    "duration": 1.899999976158142,
+                    "interpolationType": 1,
+                    "isLoop": true
+                },
+                {
+                    "componentID": 6,
+                    "componentTag": "UI_ID:6",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 0,
+                            "name": "sprite0",
+                            "size": {
+                                "x": 64.0,
+                                "y": 64.0
+                            },
+                            "texturePath": "",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object2D_5",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.2482868731021881,
+                "scale": {
+                    "x": 0.9018306732177734,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 131.2970733642578,
+                    "y": 102.80552673339844
+                }
+            }
+        }
+    ]
+}

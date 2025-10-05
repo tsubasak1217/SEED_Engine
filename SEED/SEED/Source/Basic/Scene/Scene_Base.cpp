@@ -230,3 +230,19 @@ bool Scene_Base::IsExistObject2D(uint32_t gameObjectandle)const{
 void Scene_Base::SortObject2DByTranslate(ObjSortMode sortMode){
     hierarchy_->SortObject2DByTranslate(sortMode);
 }
+
+// IDからオブジェクトを取得
+GameObject* Scene_Base::GetGameObject(uint32_t id) const{
+    return hierarchy_->GetGameObject(id);
+}
+GameObject2D* Scene_Base::GetGameObject2D(uint32_t id) const{
+    return hierarchy_->GetGameObject2D(id);
+}
+
+// 名前からオブジェクトを取得
+GameObject* Scene_Base::GetGameObject(const std::string& name) const{
+    return hierarchy_->GetGameObject(name);
+}
+GameObject2D* Scene_Base::GetGameObject2D(const std::string& name) const{
+    return hierarchy_->GetGameObject2D(name);
+}

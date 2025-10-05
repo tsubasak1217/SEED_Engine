@@ -103,7 +103,7 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     fontSize = jsonData["fontSize"];
     lineSpacing = jsonData["lineSpacing"];
     glyphSpacing = jsonData["glyphSpacing"];
-    alignX = static_cast<TextAlignX>(jsonData.value("align",1));
+    alignX = static_cast<TextAlignX>(jsonData.value("alignX",1));
     alignY = static_cast<TextAlignY>(jsonData.value("alignY",0));
     blendMode = static_cast<BlendMode>(jsonData["blendMode"]);
     useOutline = jsonData["useOutline"];

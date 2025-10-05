@@ -48,7 +48,7 @@ public:
     Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
     void EmitEffect(LaneBit laneBit, UpDown layer, int evalution);
-    //
+    // 座標や大きさを返す
     Vector3 GetCursorWorldPos(float cursorX);
     const Vector3& GetPlayFieldPointWorld(int index) const{ return playFieldPointsWorld_[index]; }
     float GetKeyWidthWorld(){ return keyWidthWorld_; }

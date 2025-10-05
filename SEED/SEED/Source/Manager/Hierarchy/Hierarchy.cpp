@@ -271,6 +271,48 @@ void Hierarchy::SortObject2DByTranslate(ObjSortMode sortMode){
     );
 }
 
+////////////////////////////////////////////////////////////////////
+// IDからオブジェクトを取得
+////////////////////////////////////////////////////////////////////
+GameObject* Hierarchy::GetGameObject(uint32_t id) const{
+    for(auto* gameObject : gameObjects_){
+        if(gameObject->GetObjectID() == id){
+            return gameObject;
+        }
+    }
+    return nullptr;
+}
+
+GameObject2D* Hierarchy::GetGameObject2D(uint32_t id) const{
+    for(auto* gameObject2D : gameObjects2D_){
+        if(gameObject2D->GetObjectID() == id){
+            return gameObject2D;
+        }
+    }
+    return nullptr;
+}
+
+////////////////////////////////////////////////////////////////////
+// 名前からオブジェクトを取得
+////////////////////////////////////////////////////////////////////
+GameObject* Hierarchy::GetGameObject(const std::string& name) const{
+    for(auto* gameObject : gameObjects_){
+        if(gameObject->GetName() == name){
+            return gameObject;
+        }
+    }
+    return nullptr;
+}
+
+GameObject2D* Hierarchy::GetGameObject2D(const std::string& name) const{
+    for(auto* gameObject2D : gameObjects2D_){
+        if(gameObject2D->GetName() == name){
+            return gameObject2D;
+        }
+    }
+    return nullptr;
+}
+
 /////////////////////////////////////////////////////////////////////
 // 親子関係の再構築
 /////////////////////////////////////////////////////////////////////
@@ -629,7 +671,7 @@ void Hierarchy::InOutOnGUI(){
 
             // 出力ボタン
             if(ImGui::Button("出力", ImVec2(120, 0))){
-                
+
                 nlohmann::json j = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects_);
                 nlohmann::json j2 = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects2D_);
                 nlohmann::json result;

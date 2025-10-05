@@ -36,17 +36,12 @@ public:
     void EndFrame();
 
 public:// コンポーネントの管理関数
+
+    // コンポーネントの追加
     template<typename TComponent>
-    TComponent* AddComponent(const std::string& tagName){
+    TComponent* AddComponent(const std::string& tagName = ""){
         static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
         components_.emplace_back(std::make_unique<TComponent>(this, tagName));
-        return static_cast<TComponent*>(components_.back().get());
-    }
-
-    template<typename TComponent>
-    TComponent* AddComponent(){
-        static_assert(std::is_base_of<IComponent, TComponent>::value, "TComponent must inherit from IComponent");
-        components_.emplace_back(std::make_unique<TComponent>(this));
         return static_cast<TComponent*>(components_.back().get());
     }
 
@@ -97,7 +92,7 @@ public:
 
     /*-------- 当たり判定時関数 --------*/
 public:
-    void OnCollision(GameObject2D* other,Collider2D* collider);
+    void OnCollision(GameObject2D* other, Collider2D* collider);
     void CheckCollisionExit();
 protected:
     void OnCollisionEnter(GameObject2D* other);
@@ -124,7 +119,7 @@ public:
     uint32_t GetObjectID() const{ return objectID_; }
     ObjectType GetObjectType() const{ return objectType_; }
     void SetObjectType(ObjectType type){ objectType_ = type; }
-    std::string GetName() const{ return objectName_; }
+    const std::string& GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
     void SetIsActive(bool isActive){ isActive_ = isActive; }
     bool GetIsActive() const{ return isActive_; }
@@ -148,10 +143,10 @@ public:
     //=====================================
     // トランスフォーム
     //=====================================
-    Transform2D GetLocalTransform(){ return localTransform_; }
-    Transform2D GetWorldTransform(){ return worldTransform_; }
+    const Transform2D& GetLocalTransform()const{ return localTransform_; }
+    const Transform2D& GetWorldTransform()const{ return worldTransform_; }
     /*------ scale -------*/
-    Vector2 GetWorldScale() const{ return worldTransform_.scale; }
+    const Vector2& GetWorldScale() const{ return worldTransform_.scale; }
     const Vector2& GetLocalScale() const{ return localTransform_.scale; }
     void SetWorldScale(const Vector2& scale);
     void SetLocalScale(const Vector2& scale);
@@ -161,34 +156,39 @@ public:
     void SetWorldRotate(float rotate);
     void SetLocalRotate(float rotate);
     /*------ translate -------*/
-    Vector2 GetWorldTranslate() const{ return worldTransform_.translate; }
+    const Vector2& GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector2& GetLocalTranslate() const{ return localTransform_.translate; }
     void AddWorldTranslate(const Vector2& addValue);
     void SetWorldTranslate(const Vector2& translate);
     void SetLocalTranslate(const Vector2& translate);
     const Vector2& GetPrePos() const{ return prePos_; }
-    Vector2 GetMoveVector() const{ return GetWorldTranslate() - prePos_; }
+    const Vector2& GetMoveVector() const{ return GetWorldTranslate() - prePos_; }
     /*------ matrix -------*/
     const Matrix3x3& GetLocalMat() const{ return localMat_; }
     const Matrix3x3& GetWorldMat() const{ return worldMat_; }
     const Matrix3x3* GetWorldMatPtr() const{ return &worldMat_; }
     /*------- velocity ------*/
-    Vector2 GetVelocity()const{ return velocity_; }
+    const Vector2& GetVelocity()const{ return velocity_; }
     void SetVelocity(const Vector2& velocity){ velocity_ = velocity; }
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
     /*-------- state --------*/
+    // 接地判定
     bool GetIsOnGround()const{ return isOnGround_; }
     void SetIsOnGround(bool flag){ isOnGround_ = flag; }
-    bool GetIsPreOnGround()const { return preIsOnGround_; }
+    bool GetIsPreOnGround()const{ return preIsOnGround_; }
     bool GetIsOnGroundTrigger()const{ return isOnGround_ && !preIsOnGround_; }
+    // 天井との衝突判定
     bool GetIsCeiling()const{ return isCeiling_; }
     void SetIsCeiling(bool flag){ isCeiling_ = flag; }
     bool GetIsCeilingTrigger()const{ return isCeiling_ && !preIsCeiling_; }
+    // なにかしらのオブジェクトとの衝突
     bool GetIsCollideAny()const{ return isCollideAny_; }
     bool GetIsCollideAnyTrigger()const{ return isCollideAny_ && !preIsCollideAny_; }
+    // すり抜けるオブジェクトとの衝突
     bool GetIsCollideGhost()const{ return isCollideGhost_; }
     bool GetIsCollideGhostTrigger()const{ return isCollideGhost_ && !preIsCollideGhost_; }
+    // すり抜けないオブジェクトとの衝突
     bool GetIsCollideSolid()const{ return isCollideSolid_; }
     bool GetIsCollideSolidTrigger()const{ return isCollideSolid_ && !preIsCollideSolid_; }
 
@@ -240,9 +240,9 @@ protected:
     bool preIsCollideGhost_ = false;
     bool isCollideSolid_ = false;// すり抜けないオブジェクトと衝突したかどうか
     bool preIsCollideSolid_ = false;
-    std::unordered_map<uint32_t,GameObject2D*>preCollideObjects_;
+    std::unordered_map<uint32_t, GameObject2D*>preCollideObjects_;
 
-    // 接地などの判定
+    // 地面、天井などに対する判定
     bool isOnGround_ = true;
     bool preIsOnGround_ = true;
     bool isCeiling_ = false;

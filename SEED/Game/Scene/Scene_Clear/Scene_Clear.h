@@ -20,12 +20,10 @@ public:
     Scene_Clear();
     ~Scene_Clear()override;
     void Initialize()override;
-    void Finalize()override;
     void Update()override;
     void Draw()override;
     void BeginFrame()override;
     void EndFrame()override;
-    void HandOverColliders()override;
 
 private:
     void CheckStep();

@@ -321,7 +321,7 @@ void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
     }
 
     // 衝突したオブジェクトを保存
-    preCollideObjects_.insert({ other->GetObjectID(),other});
+    preCollideObjects_.insert({ other->GetObjectID(),other });
 }
 
 void GameObject2D::CheckCollisionExit(){
@@ -422,9 +422,13 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Jump"){
             auto* jumpComponent = AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(componentJson);
-        
+
         } else if(componentType == "UI"){
             auto* uiComponent = AddComponent<UIComponent>();
+            uiComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "AnimCurve2D"){
+            auto* uiComponent = AddComponent<AnimCurve2DComponent>();
             uiComponent->LoadFromJson(componentJson);
 
         } else{
@@ -485,9 +489,12 @@ void GameObject2D::EditGUI(){
     ImFunc::InputText(label.c_str(), objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
-    ImGui::DragFloat2("位置", &localTransform_.translate.x);
-    ImGui::DragFloat("回転", &localTransform_.rotate, 0.05f);
-    ImGui::DragFloat2("スケール", &localTransform_.scale.x, 0.05f);
+    label = "位置##" + std::to_string(objectID_);
+    ImGui::DragFloat2(label.c_str(), &localTransform_.translate.x);
+    label = "回転##" + std::to_string(objectID_);
+    ImGui::DragFloat(label.c_str(), &localTransform_.rotate, 0.05f);
+    label = "スケール##" + std::to_string(objectID_);
+    ImGui::DragFloat2(label.c_str(), &localTransform_.scale.x, 0.05f);
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
     ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
@@ -540,6 +547,10 @@ void GameObject2D::EditGUI(){
         }
         if(ImGui::Button("UIComponent / UI描画")){
             AddComponent<UIComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("AnimCurve2DComponent / アニメーションカーブ")){
+            AddComponent<AnimCurve2DComponent>();
             ImGui::CloseCurrentPopup();
         }
 

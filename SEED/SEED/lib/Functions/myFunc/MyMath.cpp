@@ -265,8 +265,21 @@ float MyMath::GetTheta(const Vector2& dir){
 uint32_t MyMath::negaZero(int32_t num){ return num > 0 ? num : 0; }
 float MyMath::negaZero(float num){ return num > 0.0f ? num : 0.0f; }
 
+// 度をラジアンに変換する関数
 float MyMath::Deg2Rad(float deg){
     return deg * (static_cast<float>(std::numbers::pi) / 180.0f);
+}
+
+// tを配列の要素数に変換する関数
+int32_t MyMath::CalcElement(float t, int32_t size){
+    int idx = int(t * (size-1));
+    return idx;
+}
+
+// tを現在の区間のtに変換する関数
+float MyMath::CalcSectionT(float t, int32_t size){
+    float t2 = std::fmod(t * (size-1), 1.0f);
+    return t2;
 }
 
 
@@ -365,6 +378,23 @@ Vector2 MyMath::CatmullRomInterpolation(const Vector2& p0, const Vector2& p1, co
     return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
 }
 
+// 4点を直接指定してCatmull-Rom補間を行う関数 (float版)
+float MyMath::CatmullRomInterpolation(const float p0, const float p1, const float p2, const float p3, float t){
+    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+    if(t <= 0.0f){
+        return p1;
+    } else if(t >= 1.0f){
+        return p2;
+    }
+    float t2 = t * t;
+    float t3 = t2 * t;
+    float e3 = (p3 * 1) + (p2 * -3) + (p1 * 3) + (p0 * -1);
+    float e2 = (p3 * -1) + (p2 * 4) + (p1 * -5) + (p0 * 2);
+    float e1 = (p2 * 1) + (p0 * -1);
+    float e0 = p1 * 2;
+    return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
+}
+
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
 Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
 
@@ -451,6 +481,32 @@ Vector2 MyMath::CatmullRomPosition(const std::vector<Vector2>& controlPoints, fl
         }
         // 等間隔に制御点を修正
         //ToConstantControlPoints(&tmpControlPoints);
+    }
+    int size = int(tmpControlPoints.size() - 1);
+    float t2 = std::fmod(t * size, 1.0f);
+    int idx = int(t * size);
+    result = CatmullRomInterpolation(
+        tmpControlPoints[std::clamp(idx - 1, 0, size)],
+        tmpControlPoints[idx],
+        tmpControlPoints[std::clamp(idx + 1, 0, size)],
+        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        t2
+    );
+    return result;
+}
+
+// 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数 (float版)
+float MyMath::CatmullRomPosition(const std::vector<float>& controlPoints, float t){
+    if(controlPoints.size() == 0){ return 0.0f; }
+    t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+    float result = 0.0f;
+    std::vector<float> tmpControlPoints = controlPoints;
+    // 要素数が必要数に達するまでコピーして追加
+    while(tmpControlPoints.size() < 4){
+        // 要素数が必要数に達するまでコピーして追加
+        while(tmpControlPoints.size() < 4){
+            tmpControlPoints.push_back(tmpControlPoints.back());
+        }
     }
     int size = int(tmpControlPoints.size() - 1);
     float t2 = std::fmod(t * size, 1.0f);

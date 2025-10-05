@@ -14,6 +14,9 @@ void Timer::Initialize(float _duration, float current){
 
 // 進捗を取得(0~1)
 float Timer::GetProgress() const{
+    if(duration == 0.0f){
+        return 1.0f;
+    }
     return currentTime / duration;
 }
 
@@ -65,7 +68,15 @@ void Timer::Restart(){
 // 時間の更新
 void Timer::Update(float timeScale){
     prevTime = currentTime;
-    currentTime = std::clamp(currentTime + ClockManager::DeltaTime() * timeScale * !isStop, 0.0f, duration);
+    currentTime += ClockManager::DeltaTime() * timeScale * !isStop;
+
+    // 超過時間の記録
+    if(currentTime > duration){
+        overtime = currentTime - duration;
+    }
+
+    // Clamp
+    currentTime = std::clamp(currentTime, 0.0f, duration);
 }
 
 

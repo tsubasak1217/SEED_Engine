@@ -266,6 +266,35 @@ Transform2D MyFunc::Interpolate(const Transform2D& a, const Transform2D& b, floa
     return result;
 }
 
+// 2D 複数のトランスフォームから補間
+Transform2D MyFunc::Interpolate(const std::vector<Transform2D>& transforms, float t){
+    int32_t size = static_cast<int32_t>(transforms.size());
+    int32_t currentIdx = MyMath::CalcElement(t, size);
+    float sectionT = MyMath::CalcSectionT(t, size);
+    return Interpolate(transforms[currentIdx], transforms[std::clamp(currentIdx + 1, 0, size - 1)], sectionT);
+}
+
+// 2D Catmull-Rom補間
+Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t){
+    Transform2D result;
+
+    // 各成分をそれぞれ配列に分解
+    std::vector<Vector2> scales;
+    std::vector<float> rotations;
+    std::vector<Vector2> positions;
+    for(const auto& tr : transforms){
+        scales.push_back(tr.scale);
+        rotations.push_back(tr.rotate);
+        positions.push_back(tr.translate);
+    }
+
+    // 結果の各成分を求める
+    result.scale = MyMath::CatmullRomPosition(scales,t);
+    result.rotate = MyMath::CatmullRomPosition(rotations, t);
+    result.translate = MyMath::CatmullRomPosition(positions, t);
+    return result;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // 放物線の計算
@@ -524,7 +553,7 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jsonファイル関連
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-nlohmann::json MyFunc::GetJson(const std::string& filePath,bool createFile){
+nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 
     if(!filePath.ends_with(".json")){
         assert(false && "Jsonファイルの拡張子が不正");
@@ -574,7 +603,7 @@ void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& j
         assert(false && "Jsonファイルの作成に失敗");
         return;
     }
-    
+
     // JSONデータを書き込む
     file << jsonData.dump(4); // インデント幅を4に設定して書き込む
 }

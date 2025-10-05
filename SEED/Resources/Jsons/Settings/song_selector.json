@@ -73,10 +73,10 @@
             }
         }
     ],
-    "currentDifficulty": 3,
+    "currentDifficulty": 1,
     "currentGroupIndex": 0,
-    "currentGroupMode": 1,
-    "currentSongIndex": 1,
+    "currentGroupMode": 3,
+    "currentSongIndex": 5,
     "currentSortMode": 1,
     "difficultyTransforms": [
         {

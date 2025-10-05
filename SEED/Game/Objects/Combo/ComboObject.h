@@ -1,10 +1,19 @@
 #pragma once
 #include <SEED/Lib/Structs/TextBox.h>
 #include <cstdint>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <SEED/Lib/Structs/Timer.h>
 
 struct ComboObject{
     int32_t comboCount = 0;
-    TextBox2D comboText;
+    GameObject2D* comboTextObj = nullptr;
+    TextBox2D* text = nullptr;
+    Timer scalingTimer;
+
+public:
     ComboObject();
-    void Draw() const;
+    void Update();
+
+private:
+    void Initialize();
 };

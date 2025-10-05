@@ -16,9 +16,7 @@ float PlayField::kKeyWidth_ = kPlayFieldSizeX_ / kKeyCount_;// 鍵盤の幅
 /////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ・インスタンス取得
 /////////////////////////////////////////////////////////////////////////
-PlayField::PlayField(){
-    Initialize();
-}
+PlayField::PlayField() = default;
 
 PlayField* PlayField::GetInstance(){
     if(!instance_){
@@ -189,9 +187,10 @@ void PlayField::Initialize(){
     backImage_.isStaticDraw = false;
     backImage_.size = kWindowSize;
 
-    //objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Prefabs/PlayFieldItems.json", false).objects2D_;
+    // シーンの読み込み
+    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/playScene.json", false).objects2D_;
 
-    SEED::windowBackColor_ = 0x26554EFF;
+    SEED::windowBackColor_ = 0x00557CFF;
 }
 
 

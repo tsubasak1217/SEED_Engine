@@ -5,7 +5,8 @@
             "y": 79.0
         },
         "textBox": {
-            "align": 2,
+            "alignX": 2,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -20,6 +21,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 23.0,
             "glyphSpacing": 2.799999952316284,
+            "isApplyViewMat": false,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -33,7 +36,7 @@
                 "x": 250.0,
                 "y": 64.0
             },
-            "text": "カマキリ楽団",
+            "text": "妖精さん",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -55,7 +58,8 @@
             "y": 121.0
         },
         "textBox": {
-            "align": 2,
+            "alignX": 2,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -70,6 +74,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 18.0,
             "glyphSpacing": 1.5,
+            "isApplyViewMat": false,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -83,7 +89,7 @@
                 "x": 187.0,
                 "y": 64.0
             },
-            "text": "BPM160",
+            "text": "BPM177",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -105,7 +111,8 @@
             "y": 31.0
         },
         "textBox": {
-            "align": 1,
+            "alignX": 1,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -120,6 +127,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 91.0,
             "glyphSpacing": 8.0,
+            "isApplyViewMat": false,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -133,7 +142,7 @@
                 "x": 124.0,
                 "y": 64.0
             },
-            "text": "5",
+            "text": "9",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -155,7 +164,8 @@
             "y": 59.0
         },
         "textBox": {
-            "align": 1,
+            "alignX": 1,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -170,6 +180,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 49.0,
             "glyphSpacing": 3.4000000953674316,
+            "isApplyViewMat": false,
+            "layer": 0,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -205,7 +217,8 @@
             "y": 121.0
         },
         "textBox": {
-            "align": 2,
+            "alignX": 2,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -220,6 +233,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 18.0,
             "glyphSpacing": 1.5,
+            "isApplyViewMat": false,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -255,7 +270,8 @@
             "y": 70.0
         },
         "textBox": {
-            "align": 0,
+            "alignX": 0,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -270,6 +286,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 100.0,
             "glyphSpacing": 8.0,
+            "isApplyViewMat": false,
+            "layer": 0,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -305,7 +323,8 @@
             "y": 47.0
         },
         "textBox": {
-            "align": 0,
+            "alignX": 0,
+            "alignY": 0,
             "anchorPos": {
                 "x": 0.5,
                 "y": 0.5
@@ -320,6 +339,8 @@
             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
             "fontSize": 36.0,
             "glyphSpacing": 4.5,
+            "isApplyViewMat": false,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -333,7 +354,7 @@
                 "x": 404.0,
                 "y": 64.0
             },
-            "text": "TinySummerKnight",
+            "text": "飛べない鯉はただの鯉",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,

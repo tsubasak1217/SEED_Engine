@@ -25,29 +25,24 @@ public:
     void Draw();
 
 public:
+    // ゲームカメラの取得
     BaseCamera* GetCamera(){ return gameCamera_.get(); }
+
+    // ポーズ・再開
     void Pause();
     void Resume();
-    void BreakCombo(){ comboObject_->comboCount = 0; }
-    void AddCombo(){ 
-        comboObject_->comboCount++; 
-        comboObject_->comboCount > playResult_.maxCombo ? playResult_.maxCombo = comboObject_->comboCount : playResult_.maxCombo;
-    }
 
-    void AddEvaluation(Judgement::Evaluation evalution){
-        playResult_.evalutionCount[(int)evalution]++;
-    }
+    // コンボの加算や終了
+    void BreakCombo();
+    void AddCombo();
 
-    // fast, lateのカウントを追加
-    void AddFastCount(int count = 1){
-        playResult_.fastCount += count;
-    }
-
-    void AddLateCount(int count = 1){
-        playResult_.lateCount += count;
-    }
+    // 評価関連のカウントを追加
+    void AddEvaluation(Judgement::Evaluation evalution){playResult_.evalutionCount[(int)evalution]++;}
+    void AddFastCount(int count = 1){playResult_.fastCount += count;}
+    void AddLateCount(int count = 1){playResult_.lateCount += count;}
 
 private:
+    // スコアの計算
     float CalculateScore();
 
 private:

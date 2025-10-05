@@ -66,9 +66,11 @@ public:
     template <typename T>
     static int32_t ToBack(std::map<std::string,T>& myMap,const std::string& token);
 
-    // トランスフォームのLerp関数
+    // トランスフォームのL補間関数
     static Transform Interpolate(const Transform& a, const Transform& b, float t);
     static Transform2D Interpolate(const Transform2D& a, const Transform2D& b, float t);
+    static Transform2D Interpolate(const std::vector<Transform2D>& transforms, float t);
+    static Transform2D CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t);
 
    /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算

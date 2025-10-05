@@ -49,7 +49,7 @@ Matrix4x4 Sprite::GetWorldMatrix()const{
             AffineMatrix(
                 { transform.scale.x,transform.scale.y,1.0f },
                 { 0.0f, 0.0f, transform.rotate },
-                { transform.translate.x,transform.translate.y,0.0f }
+                { transform.translate.x + offset.x,transform.translate.y + offset.y,0.0f }
             );
     }
     return worldMat;
@@ -94,6 +94,7 @@ nlohmann::json Sprite::ToJson() const{
     data["color"] = color;
     data["blendMode"] = static_cast<int>(blendMode);
     data["transform"] = transform;
+    data["offset"] = offset;
     data["anchorPoint"] = anchorPoint;
     data["clipLT"] = clipLT;
     data["clipSize"] = clipSize;
@@ -118,6 +119,7 @@ void Sprite::FromJson(const nlohmann::json& data){
     color = data.value("color", color);
     blendMode = static_cast<BlendMode>(data.value("blendMode", static_cast<int>(blendMode)));
     transform = data.value("transform", transform);
+    offset = data.value("offset", offset);
     anchorPoint = data.value("anchorPoint", anchorPoint);
     clipLT = data.value("clipLT", clipLT);
     clipSize = data.value("clipSize", clipSize);
@@ -169,6 +171,7 @@ void Sprite::Edit(){
         ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f);
         ImGui::DragFloat("回転", &transform.rotate, 0.05f);
         ImGui::DragFloat2("移動", &transform.translate.x);
+        ImGui::DragFloat2("オフセット", &offset.x);
 
         if(guizmo){
             if(!parentMat){

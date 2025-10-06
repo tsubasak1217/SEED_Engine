@@ -5,6 +5,7 @@
 #include <SEED/Lib/Structs/Transform.h>
 #include <Game/GameSystem.h>
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
+#include <Game/Scene/Scene_Clear/Scene_Clear.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
 
 // コンストラクタ
@@ -103,8 +104,13 @@ void SongSelector::Initialize(){
 void SongSelector::EndFrame(){
     // 曲の選択が完了したら、曲の詳細を非表示にする
     if(changeSceneOrder_){
+        Scene_Clear::SetJacketPath(
+            "Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
+        );
+
         auto* scene = GameSystem::GetScene();
         GameSystem::GetScene()->ChangeState(new GameState_Play(scene, currentSong.first->noteDatas[(int)currentDifficulty]));
+        return;
     }
 }
 

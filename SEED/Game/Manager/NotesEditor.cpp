@@ -1781,6 +1781,9 @@ nlohmann::json NotesEditor::ToJson(){
     int comboCount = 0;
     for(const auto& note : notes_){
         if(note->noteType_ != NoteType::Hold){
+            if(note->noteType_ == NoteType::Warning){
+                continue; // ワーニングノーツはコンボに含めない
+            }
             comboCount++; // タップノーツとホールドノーツの数をカウント
         } else{
             comboCount += 2; // ホールドノーツは開始と終了で2つカウント

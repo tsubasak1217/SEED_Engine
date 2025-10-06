@@ -388,11 +388,13 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, 
     );
 }
 
-void SEED::DrawLine2D(const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode){
+void SEED::DrawLine2D(
+    const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode, bool isApplyViewMat
+){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, true,blendMode, false, DrawLocation::Front, 100
+        IdentityMat4(), color, false, isApplyViewMat,blendMode, false, DrawLocation::Front, 100
     );
 }
 

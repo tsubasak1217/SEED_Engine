@@ -56,8 +56,8 @@ public:
     virtual void EditGUI(){};
 
     // json出力
-    virtual nlohmann::json GetJsonData() const = 0;
-    virtual void LoadFromJson(const nlohmann::json& jsonData) = 0;
+    virtual nlohmann::json GetJsonData() const;
+    virtual void LoadFromJson(const nlohmann::json& jsonData);
 
 public:
     // アクセッサ

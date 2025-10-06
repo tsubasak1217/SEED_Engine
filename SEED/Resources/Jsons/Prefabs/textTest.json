@@ -1,0 +1,79 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 8,
+                    "componentTag": "UI_ID:8",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                            "fontSize": 100.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 563.0,
+                                "y": 140.0
+                            },
+                            "text": "テキスト",
+                            "textBoxVisible": true,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object2D_8",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 696.1409912109375,
+                    "y": 225.88287353515625
+                }
+            }
+        }
+    ]
+}

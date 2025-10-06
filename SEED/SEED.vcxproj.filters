@@ -136,7 +136,6 @@
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
     <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
-    <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
@@ -155,6 +154,8 @@
     <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
     <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp" />
+    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
@@ -353,7 +354,6 @@
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
     <ClInclude Include="Game\Objects\Notes\NotesData.h" />
     <ClInclude Include="Game\Objects\Result\PlayResult.h" />
-    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
     <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
@@ -371,6 +371,8 @@
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.h" />
+    <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />

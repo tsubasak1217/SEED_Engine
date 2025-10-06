@@ -4,25 +4,25 @@
 #include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
 
 #ifdef _DEBUG
-void TextBox2D::Edit(){
+void TextBox2D::Edit(const std::string& hash){
     // beginされているウインドウ内で使うこと
-    ImFunc::InputTextMultiLine("テキスト", text);
+    ImFunc::InputTextMultiLine("テキスト##" + hash, text);
 
     // フォント設定
     static std::filesystem::path currentDir = "Resources/Fonts";
-    std::string selectedFont = ImFunc::FolderView("フォント設定", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
+    std::string selectedFont = ImFunc::FolderView("フォント設定##" + hash, currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
     if(!selectedFont.empty()){
         SetFont(selectedFont);
     }
 
     // 各種パラメータ設定
-    if(ImGui::CollapsingHeader("トランスフォーム")){
+    if(ImGui::CollapsingHeader("トランスフォーム##" + hash)){
         ImGui::Indent();
         static bool guizmo = false;
-        ImGui::Checkbox("Gizmoで操作", &guizmo);
-        ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f);
-        ImGui::DragFloat("回転", &transform.rotate, 0.05f);
-        ImGui::DragFloat2("移動", &transform.translate.x);
+        ImGui::Checkbox("Gizmoで操作##" + hash, &guizmo);
+        ImGui::DragFloat2("スケール##" + hash, &transform.scale.x, 0.01f);
+        ImGui::DragFloat("回転##" + hash, &transform.rotate, 0.05f);
+        ImGui::DragFloat2("移動##" + hash, &transform.translate.x);
         if(guizmo){
             if(!parentMat){
                 ImGuiManager::RegisterGuizmoItem(&transform);
@@ -33,31 +33,31 @@ void TextBox2D::Edit(){
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("配置や大きさ、アンカーなどの設定")){
+    if(ImGui::CollapsingHeader("配置や大きさ、アンカーなどの設定##" + hash)){
         ImGui::Indent();
-        ImFunc::Combo<TextAlignX>("配置(X)", alignX, { "LEFT","CENTER","RIGHT" });
-        ImFunc::Combo<TextAlignY>("配置(Y)", alignY, { "TOP","CENTER","BOTTOM" });
-        ImGui::DragFloat("フォントサイズ(縦幅基準)", &fontSize, 1.0f, 1.0f, 1000.0f);
-        ImGui::DragFloat2("ボックスサイズ", &size.x, 1.0f, 0.0f);
-        ImGui::DragFloat2("アンカーポイント", &anchorPos.x, 0.01f);
-        ImGui::DragFloat("行間", &lineSpacing, 0.1f);
-        ImGui::DragFloat("文字間隔", &glyphSpacing, 0.1f);
+        ImFunc::Combo<TextAlignX>("配置(X)##" + hash, alignX, { "LEFT","CENTER","RIGHT" });
+        ImFunc::Combo<TextAlignY>("配置(Y)##" + hash, alignY, { "TOP","CENTER","BOTTOM" });
+        ImGui::DragFloat("フォントサイズ(縦幅基準)##" + hash, &fontSize, 1.0f, 1.0f, 1000.0f);
+        ImGui::DragFloat2("ボックスサイズ##" + hash, &size.x, 1.0f, 0.0f);
+        ImGui::DragFloat2("アンカーポイント##" + hash, &anchorPos.x, 0.01f);
+        ImGui::DragFloat("行間##" + hash, &lineSpacing, 0.1f);
+        ImGui::DragFloat("文字間隔##" + hash, &glyphSpacing, 0.1f);
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("描画設定")){
+    if(ImGui::CollapsingHeader("描画設定##" + hash)){
         ImGui::Indent();
-        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
-        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, { "背景","前景" }, 1);
-        ImGui::DragInt("描画レイヤー", &layer);
-        ImGui::ColorEdit4("文字色", (float*)&color);
-        ImGui::Checkbox("テキストボックス表示", &textBoxVisible);
-        ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
-        ImGui::Checkbox("アウトライン", &useOutline);
+        ImFunc::Combo<BlendMode>("ブレンドモード##" + hash, blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
+        ImFunc::Combo<DrawLocation>("描画位置##" + hash, drawLocation, { "背景","前景" }, 1);
+        ImGui::DragInt("描画レイヤー##" + hash, &layer);
+        ImGui::ColorEdit4("文字色##" + hash, (float*)&color);
+        ImGui::Checkbox("テキストボックス表示##" + hash, &textBoxVisible);
+        ImGui::Checkbox("ビュー行列を適用##" + hash, &isApplyViewMat);
+        ImGui::Checkbox("アウトライン##" + hash, &useOutline);
         if(useOutline){
-            ImGui::DragFloat("アウトライン幅", &outlineWidth, 0.1f, 0.0f);
-            ImGui::ColorEdit4("アウトライン色", (float*)&outlineColor);
-            ImGui::DragInt("アウトライン分割数", &outlineSplitCount, 1, 1, 64);
+            ImGui::DragFloat("アウトライン幅##" + hash, &outlineWidth, 0.1f, 0.0f);
+            ImGui::ColorEdit4("アウトライン色##" + hash, (float*)&outlineColor);
+            ImGui::DragInt("アウトライン分割数##" + hash, &outlineSplitCount, 1, 1, 64);
         }
         ImGui::Unindent();
     }
@@ -387,12 +387,13 @@ void TextBox2D::Draw()const{
         float totalHeight = bottom - top;
 
         // alignYに応じてオフセットを計算
+        float baselineOffset = fontSize * (1.0f - fontData.baselneHeightRate);
         if(alignY == TextAlignY::TOP){// 上寄せ
             yOffset = 0.0f;
         } else if(alignY == TextAlignY::CENTER){// 中央寄せ
-            yOffset = size.y * 0.5f - (totalHeight * 0.5f);
+            yOffset = size.y * 0.5f - (totalHeight * 0.5f) - baselineOffset;
         } else if(alignY == TextAlignY::BOTTOM){// 下寄せ
-            yOffset = size.y - totalHeight;
+            yOffset = size.y - totalHeight - baselineOffset;
         }
 
         // オフセットや行列を適用

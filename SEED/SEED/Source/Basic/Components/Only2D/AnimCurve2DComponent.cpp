@@ -41,28 +41,30 @@ void AnimCurve2DComponent::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AnimCurve2DComponent::Update(){
 
-    // 補間方法に応じて制御点の補間
-    Transform2D result;
-    float t = timer_.GetProgress();
-    switch(interpolationType_){
-    case InterpolationType::LINEAR:
-    {
-        result = MyFunc::Interpolate(controlPoints_, t);
-        break;
-    }
-    case InterpolationType::CATMULLROM:
-    {
-        result = MyFunc::CatmullRomInterpolate(controlPoints_, t);
-        break;
-    }
-    default:
-        break;
-    }
+    if(controlPoints_.size() >= 2){
+        // 補間方法に応じて制御点の補間
+        Transform2D result;
+        float t = timer_.GetEase(easingType_);
+        switch(interpolationType_){
+        case InterpolationType::LINEAR:
+        {
+            result = MyFunc::Interpolate(controlPoints_, t);
+            break;
+        }
+        case InterpolationType::CATMULLROM:
+        {
+            result = MyFunc::CatmullRomInterpolate(controlPoints_, t);
+            break;
+        }
+        default:
+            break;
+        }
 
-    // オーナーに反映
-    owner_.owner2D->SetWorldScale(result.scale);
-    owner_.owner2D->SetWorldRotate(result.rotate);
-    owner_.owner2D->SetWorldTranslate(result.translate);
+        // オーナーに反映
+        owner_.owner2D->SetWorldScale(result.scale);
+        owner_.owner2D->SetWorldRotate(result.rotate);
+        owner_.owner2D->SetWorldTranslate(result.translate);
+    }
 
     // 再生中なら更新
     if(isPlaying_){
@@ -77,14 +79,6 @@ void AnimCurve2DComponent::Update(){
             }
         }
     }
-
-
-#ifdef _DEBUG
-    // コントロールポイントをGizmoに登録
-    for(auto& point : controlPoints_){
-        ImGuiManager::RegisterGuizmoItem(&point);
-    }
-#endif // _DEBUG
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +184,15 @@ void AnimCurve2DComponent::EditGUI(){
     // 制御点追加ボタン
     ImGui::SeparatorText("制御点の追加");
     if(ImGui::Button("追加")){
-        controlPoints_.emplace_back();
+        // 追加する制御点の初期値を設定
+        Transform2D newPoint;
+        if(controlPoints_.empty()){
+            newPoint = owner_.owner2D->GetWorldTransform();
+        } else{
+            newPoint = controlPoints_.back();
+        }
+        // 追加
+        controlPoints_.push_back(newPoint);
     }
 
     // 設定
@@ -202,12 +204,16 @@ void AnimCurve2DComponent::EditGUI(){
         }
     } else{
         if(ImGui::ImageButton("再生ボタン", textureIDs_["pauseIcon"], { 20,20 })){
+            if(timer_.IsFinished()){
+                timer_.Reset();
+            }
             Play();
         }
     }
     ImGui::SameLine();
     ImGui::SliderFloat("現在の時間", &timer_.currentTime, 0.0f, timer_.duration);
     ImFunc::Combo("補間方法", interpolationType_, { "LINEAR","CATMULLROM" });
+    ImFunc::Combo("イージング補間関数", easingType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);
     ImGui::Checkbox("ループするか", &isLoop_);
     ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
@@ -220,6 +226,12 @@ void AnimCurve2DComponent::EditGUI(){
             controlPoints_.erase(controlPoints_.begin() + i);
         }
     }
+
+    // コントロールポイントをGizmoに登録
+    for(auto& point : controlPoints_){
+        ImGuiManager::RegisterGuizmoItem(&point);
+    }
+
 #endif // _DEBUG
 }
 
@@ -237,6 +249,7 @@ void AnimCurve2DComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     // その他設定の読み込み
     interpolationType_ = static_cast<InterpolationType>(jsonData.value("interpolationType", 0));
+    easingType_ = static_cast<Easing::Type>(jsonData.value("easingType", 0));
     isLoop_ = jsonData.value("isLoop", false);
     defaultPaused_ = jsonData.value("defaultPaused", false);
     timer_.duration = jsonData.value("duration", 1.0f);
@@ -260,6 +273,7 @@ nlohmann::json AnimCurve2DComponent::GetJsonData() const{
 
     // その他設定
     jsonData["interpolationType"] = static_cast<int>(interpolationType_);
+    jsonData["easingType"] = static_cast<int>(easingType_);
     jsonData["isLoop"] = isLoop_;
     jsonData["defaultPaused"] = defaultPaused_;
     jsonData["duration"] = timer_.duration;

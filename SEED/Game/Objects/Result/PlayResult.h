@@ -13,7 +13,7 @@ struct PlayResult{
     int32_t fastCount = 0;
     int32_t lateCount = 0;
     ScoreRank rank;
-    nlohmann::json songData;
+    nlohmann::json songData = nlohmann::json::object();
     GameObject2D* scoreTextObj = nullptr;
     TextBox2D* scoreText = nullptr;
 

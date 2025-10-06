@@ -65,7 +65,7 @@ private:// フォーマット解析
 
 public:// 編集・入出力関連
 #ifdef _DEBUG
-    void Edit();
+    void Edit(const std::string& hash = "");
 #endif // _DEBUG
     nlohmann::json GetJsonData() const;
     void LoadFromJson(const nlohmann::json& jsonData);

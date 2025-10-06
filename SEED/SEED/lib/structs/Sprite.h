@@ -68,5 +68,5 @@ public:
     // Json, ImGui
     nlohmann::json ToJson() const;
     void FromJson(const nlohmann::json& data);
-    void Edit();
+    void Edit(const std::string& hash = "");
 };

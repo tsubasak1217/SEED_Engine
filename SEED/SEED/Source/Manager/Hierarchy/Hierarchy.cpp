@@ -406,8 +406,6 @@ void Hierarchy::EditGUI(){
 
     ImFunc::CustomBegin("ObjectEdit", MoveOnly_TitleBar);
     if(selectedObject_){
-        // 選択中のオブジェクトのGUI編集
-        selectedObject_->EditGUI();
 
         // Guizmoに登録
         if(selectedObject_->GetParent()){
@@ -417,12 +415,13 @@ void Hierarchy::EditGUI(){
             ImGuiManager::RegisterGuizmoItem(&selectedObject_->localTransform_);
         }
 
+        // 選択中のオブジェクトのGUI編集
+        selectedObject_->EditGUI();
+
         OutputPrefab(selectedObject_);
     } else{
 
         if(selectedObject2D_){
-            // 選択中のオブジェクトのGUI編集
-            selectedObject2D_->EditGUI();
             // Guizmoに登録
             if(selectedObject2D_->GetParent()){
                 Matrix4x4 parentWorldMat = ToMat4x4(selectedObject2D_->GetParent()->GetWorldMat());
@@ -430,6 +429,10 @@ void Hierarchy::EditGUI(){
             } else{
                 ImGuiManager::RegisterGuizmoItem(&selectedObject2D_->localTransform_);
             }
+
+            // 選択中のオブジェクトのGUI編集
+            selectedObject2D_->EditGUI();
+
             OutputPrefab(selectedObject2D_);
         } else{
             ImGui::Text("オブジェクトが選択されていません");

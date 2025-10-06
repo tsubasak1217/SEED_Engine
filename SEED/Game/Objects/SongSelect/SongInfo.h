@@ -70,7 +70,6 @@ namespace ScoreRankUtils {
 struct SongInfo{
     void Initialize(const std::string& _folderName);
 
-
     // 曲の共通情報
     std::string folderName;
     std::string songName;

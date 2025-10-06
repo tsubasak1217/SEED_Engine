@@ -97,6 +97,11 @@ void ModelRenderComponent::EditGUI(){
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
         ImGui::ColorEdit4("色", &model_->masterColor_.x);
+        if(ImGui::SliderFloat("環境光強度", &model_->materials_[0].environmentCoef, 0.0f, 1.0f)){
+            for(auto& mtl : model_->materials_){
+                mtl.environmentCoef = model_->materials_[0].environmentCoef;
+            }
+        }
         ImFunc::Combo("ライティング", model_->lightingType_, { "なし","ランバート","ハーフランバート" });
         ImFunc::Combo("ブレンドモード", model_->blendMode_, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
         ImFunc::Combo("カリング設定", model_->cullMode_, { "なし","背面","全面" }, 1);

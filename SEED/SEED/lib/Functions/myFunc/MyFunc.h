@@ -89,6 +89,9 @@ public:// ファイル・文字列関連 =======================================
     static std::wstring ConvertString(const std::string& str);
     static std::string ConvertString(const std::wstring& str);
 
+    // ポインタを文字列に変換する関数
+    static std::string PtrToStr(const void* ptr);
+
     // 文字列を変換するhash関数
     static uint64_t Hash64(const std::string& str);
     static uint32_t Hash32(const std::string& str);

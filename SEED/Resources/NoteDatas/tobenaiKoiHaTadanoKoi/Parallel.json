@@ -2,11 +2,11 @@
     "artist": "妖精さん",
     "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
     "bpm": 177.0,
-    "difficulty": 9,
+    "difficulty": 10,
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Parallel.json",
-    "maxCombo": 376,
+    "maxCombo": 363,
     "notes": [
         {
             "direction": 0,

@@ -1,0 +1,79 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 8,
+                    "componentTag": "UI_ID:8",
+                    "componentType": "UI",
+                    "texts": [
+                        {
+                            "alignX": 0,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 0,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\English\\Shock Surgent.otf",
+                            "fontSize": 109.0,
+                            "glyphSpacing": 7.599999904632568,
+                            "isApplyViewMat": false,
+                            "layer": 0,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 9.5,
+                            "size": {
+                                "x": 678.0,
+                                "y": 176.0
+                            },
+                            "text": "100.00%",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Score",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 0.949999988079071,
+                    "y": 1.649999976158142
+                },
+                "translate": {
+                    "x": 345.78497314453125,
+                    "y": 665.0800170898438
+                }
+            }
+        }
+    ]
+}

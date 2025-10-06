@@ -64,16 +64,14 @@ void UIComponent::EditGUI(){
 #ifdef _DEBUG
     {
         ImGui::Indent();
-        static std::string label{};
+        std::string idStr = "##" + std::to_string(componentID_);
 
         // スプライト
         {
-            label = "Sprites##" + std::to_string(componentID_);
-            ImGui::SeparatorText(label.c_str());
+            ImGui::SeparatorText("Sprites" + idStr);
 
             // スプライトの追加
-            label = "スプライトの追加##" + std::to_string(componentID_);
-            if(ImGui::Button(label.c_str())){
+            if(ImGui::Button("スプライトの追加" + idStr)){
                 auto& sprite = sprites_.emplace_back("sprite" + std::to_string(spriteCount_++), Sprite());
                 sprite.second.parentMat = owner_.owner2D->GetWorldMatPtr();
             }
@@ -83,10 +81,12 @@ void UIComponent::EditGUI(){
                 // スプライト一覧
                 for(size_t i = 0; i < sprites_.size(); i++){
 
+                    // ポインタをハッシュにする
+                    std::string ptrStr = MyFunc::PtrToStr(&sprites_[i].second);
+                    std::string ptrHash = "##" + ptrStr;
 
                     // スプライトの削除
-                    label = "削除##" + std::to_string(i);
-                    if(ImGui::Button(label.c_str())){
+                    if(ImGui::Button("削除" + ptrHash)){
                         sprites_.erase(sprites_.begin() + i);
                         break;
                     }
@@ -94,16 +94,13 @@ void UIComponent::EditGUI(){
                     // スプライトの編集
                     ImGui::SameLine();
                     auto& spritePair = sprites_[i];
-                    label = spritePair.first + "##" + std::to_string(componentID_);
-
-                    if(ImGui::CollapsingHeader(label.c_str())){
+                    if(ImGui::CollapsingHeader(spritePair.first + idStr)){
                         ImGui::Indent();
 
                         // 名前の編集
-                        label = "スプライト名##" + std::to_string(i);
-                        ImFunc::InputText(label.c_str(), spritePair.first);
+                        ImFunc::InputText("スプライト名" + ptrHash, spritePair.first);
                         // スプライトの編集
-                        spritePair.second.Edit();
+                        spritePair.second.Edit(ptrStr);
 
                         ImGui::Unindent();
                     }
@@ -114,12 +111,10 @@ void UIComponent::EditGUI(){
 
         // テキスト
         {
-            label = "Texts##" + std::to_string(componentID_);
-            ImGui::SeparatorText(label.c_str());
+            ImGui::SeparatorText("Texts" + idStr);
 
             // テキストの追加
-            label = "テキストの追加##" + std::to_string(componentID_);
-            if(ImGui::Button(label.c_str())){
+            if(ImGui::Button("テキストの追加" + idStr)){
                 auto& text = texts_.emplace_back("text" + std::to_string(textCount_++), TextBox2D("テキスト"));
                 text.second.parentMat = owner_.owner2D->GetWorldMatPtr();
             }
@@ -128,28 +123,28 @@ void UIComponent::EditGUI(){
                 ImGui::Indent();
                 // テキスト一覧
                 for(size_t i = 0; i < texts_.size(); i++){
-                    
+
+                    // ポインタをハッシュにする
+                    std::string ptrStr = MyFunc::PtrToStr(&texts_[i].second);
+                    std::string ptrHash = "##" + ptrStr;
+
                     // テキストの削除
-                    label = "削除##" + std::to_string(i);
-                    if(ImGui::Button(label.c_str())){
+                    if(ImGui::Button("削除" + ptrHash)){
                         texts_.erase(texts_.begin() + i);
                         break;
                     }
 
                     // テキストの編集
                     auto& textPair = texts_[i];
-                    label = textPair.first + "##" + std::to_string(componentID_);
                     ImGui::SameLine();
-
-                    if(ImGui::CollapsingHeader(label.c_str())){
+                    if(ImGui::CollapsingHeader(textPair.first + idStr)){
                         ImGui::Indent();
 
                         // 名前の編集
-                        label = "テキスト名##" + std::to_string(i);
-                        ImFunc::InputText(label.c_str(), textPair.first);
+                        ImFunc::InputText("テキスト名" + ptrHash, textPair.first);
 
                         // テキストの編集
-                        textPair.second.Edit();
+                        textPair.second.Edit(ptrStr);
                         ImGui::Unindent();
                     }
                 }

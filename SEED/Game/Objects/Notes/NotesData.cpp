@@ -188,7 +188,9 @@ int32_t NotesData::GetTotalCombo(){
         if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.second.get())){
             totalCombo += 2;
         } else{
-            totalCombo++;
+            if(note.second->noteType_ != NoteType::Warning){
+                totalCombo++;
+            }
         }
     }
 

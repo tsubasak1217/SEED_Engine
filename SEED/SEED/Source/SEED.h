@@ -133,7 +133,7 @@ public:
     // 2D線
     static void DrawLine2D(
         const Vector2& v1, const Vector2& v2, 
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
+        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, bool isApplyViewMat = false
     );
 
     /*========================テキストの描画関数==========================*/

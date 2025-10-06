@@ -25,7 +25,7 @@ struct Material{
     uint32_t GH;
     Matrix4x4 uvTransform = IdentityMat4();
     float shininess = 50.0f;
-    float environmentCoef = 0.2f;// 環境光の係数
+    float environmentCoef = 0.01f;// 環境光の係数
 };
 
 struct MaterialForGPU{

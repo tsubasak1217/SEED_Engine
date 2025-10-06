@@ -93,6 +93,8 @@ void TimerArray::Update(float timeScale){
         if(!timer.IsFinished()){
             timer.Update(timeScale);
             break;
+        } else{
+            timer.prevTime = timer.duration;
         }
     }
 }
@@ -112,6 +114,13 @@ float TimerArray::GetProgress() const{
     int32_t index = GetCurrentIndex();
     if(index < 0 || index >= static_cast<int32_t>(timers.size())){
         return 1.0f;
+    }
+    return timers[index].GetProgress();
+}
+
+float TimerArray::GetProgress(int32_t index) const{
+    if(index < 0 || index >= static_cast<int32_t>(timers.size())){
+        return 0.0f;
     }
     return timers[index].GetProgress();
 }

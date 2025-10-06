@@ -350,7 +350,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
 // フォルダビューの開始関数
 /////////////////////////////////////////////////////////////////
 std::string ImFunc::FolderView(
-    const char* label,
+    const std::string& label,
     std::filesystem::path& currentPath,
     bool isFileNameOnly,
     std::initializer_list<std::string> filterExts,
@@ -363,7 +363,7 @@ std::string ImFunc::FolderView(
     static ImVec2 iconSize = { 64.0f, 64.0f };
     std::string selectedFile = "";
 
-    if(ImGui::CollapsingHeader(label)){
+    if(ImGui::CollapsingHeader(label.c_str())){
 
         if(!isLoaded){
             folderIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/folderIcon.png");
@@ -533,7 +533,7 @@ std::vector<std::string> ImFunc::WrapTextLines(const std::string& text, float ma
 /////////////////////////////////////////////////////////////////
 // stringのコンボボックスを作成
 /////////////////////////////////////////////////////////////////
-bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<std::string>& items){
+bool ImFunc::ComboText(const std::string& label, std::string& str, const std::vector<std::string>& items){
     int currentIndex = -1;
     int size = static_cast<int>(items.size()); // padding分を除外
     for(int i = 0; i < size; ++i){
@@ -550,7 +550,7 @@ bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<st
     }
 
     // Comboの実行
-    bool changed = ImGui::Combo(label, &currentIndex, itemsCStr.data(), size);
+    bool changed = ImGui::Combo(label.c_str(), &currentIndex, itemsCStr.data(), size);
     if(changed && currentIndex >= 0 && currentIndex < size){
         str = items[currentIndex];
     }
@@ -561,12 +561,12 @@ bool ImFunc::ComboText(const char* label, std::string& str, const std::vector<st
 ///////////////////////////////////////////////////////////////////
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
-bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
+bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str){
     static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
-    bool changed = ImGui::InputTextMultiline(label, buffer.data(), buffer.size());
+    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size());
     if(changed){
         str = buffer.data();  // 更新
     }
@@ -586,12 +586,12 @@ bool ImFunc::InputTextMultiLine(const char* label, std::string& str){
     return changed;
 }
 
-bool ImFunc::InputText(const char* label, string& str){
+bool ImFunc::InputText(const std::string& label, string& str){
     static std::array<char, 256> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
-    bool changed = ImGui::InputText(label, buffer.data(), buffer.size());
+    bool changed = ImGui::InputText(label.c_str(), buffer.data(), buffer.size());
     if(changed){
         str = buffer.data();  // 更新
     }

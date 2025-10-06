@@ -12,7 +12,6 @@ enum class InterpolationType{
     CATMULLROM
 };
 
-/*----------- 衝突判定をするやつ ----------*/
 class AnimCurve2DComponent : public IComponent{
 public:
     AnimCurve2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
@@ -41,6 +40,7 @@ private:
     Timer timer_;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;
     std::vector<Transform2D> controlPoints_;
+    Easing::Type easingType_ = Easing::Type::None;
 
 #ifdef _DEBUG
     bool isDebugItemVisible_ = true;

@@ -4,6 +4,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/Structs/Transform.h>
 #include <SEED/Lib/Structs/Range2D.h>
+#include "ImGuiEx.h"
 // stl
 #include <initializer_list>
 #include <vector>
@@ -95,7 +96,7 @@ struct ImFunc{
     static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName = "", CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
     // フォルダ表示
     static std::string FolderView(
-        const char* label,
+        const std::string& label,
         std::filesystem::path& currentPath,
         bool isFileNameOnly = false,
         std::initializer_list<std::string> filterExts = {""},
@@ -108,19 +109,19 @@ struct ImFunc{
 
     // コンボボックスの拡張関数
     template <typename EnumType>
-    static bool Combo(const char* label, EnumType& currentValue, initializer_list<string> items, int padding = 0);
+    static bool Combo(const std::string& label, EnumType& currentValue, initializer_list<string> items, int padding = 0);
     template <typename EnumType>
-    static bool Combo(const char* label, EnumType& currentValue, const char* const* items, int size, int padding = 0);
+    static bool Combo(const std::string& label, EnumType& currentValue, const char* const* items, int size, int padding = 0);
     template <typename EnumType>
-    static bool ComboPair(const char* label, EnumType& currentValue, initializer_list<pair<string, EnumType>>items);
-    static bool ComboText(const char* label, string& str, const vector<string>& items);
+    static bool ComboPair(const std::string& label, EnumType& currentValue, initializer_list<pair<string, EnumType>>items);
+    static bool ComboText(const std::string& label, string& str, const vector<string>& items);
     // ビットマスク
     template <typename EnumType>
-    static bool BitMask(const char* label, EnumType& bit, initializer_list<string> bitNames);
+    static bool BitMask(const std::string& label, EnumType& bit, initializer_list<string> bitNames);
 
     // inputTextに直接stringを渡せるように
-    static bool InputTextMultiLine(const char* label, string& str);
-    static bool InputText(const char* label, string& str);
+    static bool InputTextMultiLine(const std::string& label, string& str);
+    static bool InputText(const std::string& label, string& str);
 
     // ImGuizmoの操作を行う関数
     static void Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
@@ -135,21 +136,21 @@ private:
 
 
 template<typename EnumType>
-inline bool ImFunc::Combo(const char* label, EnumType& currentValue, initializer_list<string> items, int padding){
+inline bool ImFunc::Combo(const std::string& label, EnumType& currentValue, initializer_list<string> items, int padding){
     vector<const char*> cstrItems;
     cstrItems.reserve(items.size());
     for(const auto& item : items){
         cstrItems.push_back(item.c_str()); // 一時的に const char* に変換
     }
 
-    return Combo(label, currentValue, cstrItems.data(), static_cast<int>(cstrItems.size()), padding);
+    return Combo(label.c_str(), currentValue, cstrItems.data(), static_cast<int>(cstrItems.size()), padding);
 }
 
 template<typename EnumType>
-inline bool ImFunc::Combo(const char* label, EnumType& currentValue, const char* const* items, int size, int padding){
+inline bool ImFunc::Combo(const std::string& label, EnumType& currentValue, const char* const* items, int size, int padding){
 
     int currentIndex = static_cast<int>(currentValue) - padding;
-    bool changed = ImGui::Combo(label, &currentIndex, items, size);
+    bool changed = ImGui::Combo(label.c_str(), &currentIndex, items, size);
     if(changed){
         //EnumTypeの最初の値を取得
         currentValue = static_cast<EnumType>(currentIndex + padding);
@@ -158,7 +159,7 @@ inline bool ImFunc::Combo(const char* label, EnumType& currentValue, const char*
 }
 
 template<typename EnumType>
-inline bool ImFunc::ComboPair(const char* label, EnumType& currentValue, initializer_list<pair<string, EnumType>> items){
+inline bool ImFunc::ComboPair(const std::string& label, EnumType& currentValue, initializer_list<pair<string, EnumType>> items){
     // 一時的に const char* に変換
     vector<const char*> cstrItems;
     cstrItems.reserve(items.size());
@@ -177,7 +178,7 @@ inline bool ImFunc::ComboPair(const char* label, EnumType& currentValue, initial
     }
 
     // 選択した要素に結びつけられている値にvalueを設定
-    bool changed = ImGui::Combo(label, &currentIndex, cstrItems.data(), size);
+    bool changed = ImGui::Combo(label.c_str(), &currentIndex, cstrItems.data(), size);
     if(changed){
         // EnumTypeの最初の値を取得
         auto it = items.begin();
@@ -193,10 +194,10 @@ inline bool ImFunc::ComboPair(const char* label, EnumType& currentValue, initial
 // ビットマスクのチェックボックスを作成
 /////////////////////////////////////////////////////////////////
 template<typename EnumType>
-inline bool ImFunc::BitMask(const char* label, EnumType& bit, initializer_list<string> bitNames){
+inline bool ImFunc::BitMask(const std::string& label, EnumType& bit, initializer_list<string> bitNames){
     bool changed = false;
     int bitValue = static_cast<int>(bit); // EnumTypeをintに変換
-    ImGui::Text("%s", label);
+    ImGui::Text("%s", label.c_str());
 
     // ビットマスクのチェックボックスを作成
     for(int i = 0; i < static_cast<int>(bitNames.size()); i++){

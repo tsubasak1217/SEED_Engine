@@ -142,36 +142,39 @@ void Sprite::FromJson(const nlohmann::json& data){
 ///////////////////////////////////////////////////////////////////////////
 // 編集関数
 ///////////////////////////////////////////////////////////////////////////
-void Sprite::Edit(){
+void Sprite::Edit(const std::string& hash){
 #ifdef _DEBUG
 
-    if(ImGui::CollapsingHeader("テクスチャ・マテリアル・描画設定")){
+    static std::string label;
+
+    if(ImGui::CollapsingHeader("テクスチャ・マテリアル・描画設定##" + hash)){
         ImGui::Indent();
         static std::filesystem::path rootDir = "Resources/Textures";
         static std::filesystem::path currentDir = rootDir;
-        std::string selected = ImFunc::FolderView("テクスチャ選択", currentDir, false, { ".png",".jpg" }, rootDir);
+        std::string selected = ImFunc::FolderView("テクスチャ選択##" + hash, currentDir, false, { ".png",".jpg" }, rootDir);
         if(!selected.empty()){
             SetTexture(selected);
         }
         ImGui::Text("テクスチャ: %s", texturePath.c_str());
-        if(ImGui::Button("画像サイズに戻す")){
+
+        if(ImGui::Button("画像サイズに戻す##" + hash)){
             ToDefaultSize();
         }
 
-        ImGui::ColorEdit4("色", &color.x);
-        ImFunc::Combo<BlendMode>("ブレンドモード", blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
+        ImGui::ColorEdit4("色##" + hash, &color.x);
+        ImFunc::Combo<BlendMode>("ブレンドモード##" + hash, blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
 
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("トランスフォーム")){
+    if(ImGui::CollapsingHeader("トランスフォーム##" + hash)){
         ImGui::Indent();
         static bool guizmo = false;
-        ImGui::Checkbox("Gizmoで操作", &guizmo);
-        ImGui::DragFloat2("スケール", &transform.scale.x, 0.01f);
-        ImGui::DragFloat("回転", &transform.rotate, 0.05f);
-        ImGui::DragFloat2("移動", &transform.translate.x);
-        ImGui::DragFloat2("オフセット", &offset.x);
+        ImGui::Checkbox("Gizmoで操作##" + hash, &guizmo);
+        ImGui::DragFloat2("スケール##" + hash, &transform.scale.x, 0.01f);
+        ImGui::DragFloat("回転##" + hash, &transform.rotate, 0.05f);
+        ImGui::DragFloat2("移動##" + hash, &transform.translate.x);
+        ImGui::DragFloat2("オフセット##" + hash, &offset.x);
 
         if(guizmo){
             if(!parentMat){
@@ -183,31 +186,31 @@ void Sprite::Edit(){
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("サイズ・切り抜き範囲・アンカー詳細")){
+    if(ImGui::CollapsingHeader("サイズ・切り抜き範囲・アンカー詳細##" + hash)){
         ImGui::Indent();
-        ImGui::DragFloat2("サイズ", &size.x, 1.0f, 0.0f, 10000.0f);
-        ImGui::DragFloat2("アンカーポイント", &anchorPoint.x, 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat2("切り取り左上", &clipLT.x, 1.0f, 0.0f, 10000.0f);
-        ImGui::DragFloat2("切り取りサイズ", &clipSize.x, 1.0f, 0.0f, 10000.0f);
+        ImGui::DragFloat2("サイズ##" + hash, &size.x, 1.0f, 0.0f, 10000.0f);
+        ImGui::DragFloat2("アンカーポイント##" + hash, &anchorPoint.x, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat2("切り取り左上##" + hash, &clipLT.x, 1.0f, 0.0f, 10000.0f);
+        ImGui::DragFloat2("切り取りサイズ##" + hash, &clipSize.x, 1.0f, 0.0f, 10000.0f);
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("UVトランスフォーム")){
+    if(ImGui::CollapsingHeader("UVトランスフォーム##" + hash)){
         ImGui::Indent();
-        ImGui::DragFloat2("UVスケール詳細", &uvTransform.scale.x, 0.01f, 0.01f, 10.0f);
-        ImGui::DragFloat("UV回転詳細", &uvTransform.rotate, 0.05f);
-        ImGui::DragFloat2("UV移動詳細", &uvTransform.translate.x, 0.1f, -10.0f, 10.0f);
+        ImGui::DragFloat2("UVスケール詳細##" + hash, &uvTransform.scale.x, 0.01f, 0.01f, 10.0f);
+        ImGui::DragFloat("UV回転詳細##" + hash, &uvTransform.rotate, 0.05f);
+        ImGui::DragFloat2("UV移動詳細##" + hash, &uvTransform.translate.x, 0.1f, -10.0f, 10.0f);
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("その他詳細設定")){
+    if(ImGui::CollapsingHeader("その他詳細設定##" + hash)){
         ImGui::Indent();
-        ImGui::Checkbox("X反転", &flipX);
-        ImGui::Checkbox("Y反転", &flipY);
-        ImGui::Checkbox("静的描画", &isStaticDraw);
-        ImGui::Checkbox("ビュー行列を適用", &isApplyViewMat);
-        ImFunc::Combo<DrawLocation>("描画位置", drawLocation, { "背景","前景" }, 1);
-        ImGui::DragInt("描画順(layer)", &layer, 1.0f);
+        ImGui::Checkbox("X反転##" + hash, &flipX);
+        ImGui::Checkbox("Y反転##" + hash, &flipY);
+        ImGui::Checkbox("静的描画##" + hash, &isStaticDraw);
+        ImGui::Checkbox("ビュー行列を適用##" + hash, &isApplyViewMat);
+        ImFunc::Combo<DrawLocation>("描画位置##" + hash, drawLocation, { "背景","前景" }, 1);
+        ImGui::DragInt("描画順(layer)##" + hash, &layer, 1.0f);
         ImGui::Unindent();
     }
 

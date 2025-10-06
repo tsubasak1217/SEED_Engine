@@ -2,7 +2,7 @@
 
 ///etc
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <Game/Objects/Result/ResultDrawer.h>
+#include <Game/Components/ResultUpdateComponent.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -10,7 +10,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 Scene_Clear::Scene_Clear() : Scene_Base(){
-    Initialize();
 }
 
 Scene_Clear::~Scene_Clear(){}
@@ -23,6 +22,10 @@ Scene_Clear::~Scene_Clear(){}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
     SEED::SetMainCamera("default");
+
+    // リザルト更新用オブジェクトの生成
+    resultUpdater_ = std::make_unique<GameObject2D>(this);
+    resultUpdater_->AddComponent<ResultUpdate2DComponent>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,7 @@
 #include <Game/Config/PlaySettings.h>
 #include <Game/Scene/Scene_Game/State/GameState_Select.h>
 #include <Game/Scene/Scene_Game/State/GameState_Pause.h>
-#include <Game/Objects/Result/ResultDrawer.h>
+#include <Game/Scene/Scene_Clear/Scene_Clear.h>
 
 /////////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -123,7 +123,7 @@ void RythmGameManager::EndFrame(){
     if(notesData_->GetIsEnd()){
 
         // プレイ結果の保存
-        ResultDrawer::SetResult(playResult_);
+        Scene_Clear::SetResult(playResult_);
 
         // Inputのカーソルを表示状態に戻す
         Input::SetMouseCursorVisible(true);

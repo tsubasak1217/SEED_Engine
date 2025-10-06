@@ -124,6 +124,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
     <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
@@ -145,7 +146,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
-    <ClCompile Include="Game\Objects\Result\ResultDrawer.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
     <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
@@ -245,6 +245,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp" />
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp" />
     <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
@@ -289,6 +290,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.h" />
@@ -311,7 +313,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
     <ClInclude Include="Game\Objects\Result\PlayResult.h" />
-    <ClInclude Include="Game\Objects\Result\ResultDrawer.h" />
     <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
@@ -424,6 +425,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
+    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />

@@ -185,6 +185,8 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     RegisterCamera("debug",instance_->debugCamera_.get());
     // デフォルトカメラを設定
     SetMainCamera("default");
+    // デフォルトスカイボックスの設定
+    SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
 
     // 起動時読み込み
     instance_->StartUpLoad();

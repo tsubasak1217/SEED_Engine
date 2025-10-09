@@ -73,11 +73,11 @@
             }
         }
     ],
-    "currentDifficulty": 3,
+    "currentDifficulty": 0,
     "currentGroupIndex": 0,
-    "currentGroupMode": 3,
-    "currentSongIndex": 7,
-    "currentSortMode": 3,
+    "currentGroupMode": 0,
+    "currentSongIndex": 0,
+    "currentSortMode": 4,
     "difficultyTransforms": [
         {
             "rotate": 0.0,
@@ -209,8 +209,8 @@
                 "y": 1.0
             },
             "translate": {
-                "x": 907.7727661132813,
-                "y": 224.88937377929688
+                "x": 906.8359985351563,
+                "y": 221.391845703125
             }
         },
         {
@@ -220,8 +220,8 @@
                 "y": 1.374739408493042
             },
             "translate": {
-                "x": 906.6465454101563,
-                "y": 371.3323059082031
+                "x": 894.0025634765625,
+                "y": 358.6953430175781
             }
         },
         {
@@ -231,8 +231,8 @@
                 "y": 1.0
             },
             "translate": {
-                "x": 910.9413452148438,
-                "y": 518.388427734375
+                "x": 905.4991455078125,
+                "y": 501.10150146484375
             }
         },
         {

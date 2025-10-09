@@ -43,7 +43,6 @@ private:
     // タイマー関連
     Timer songTimer_;// 曲の再生時間
     Timer waitTimer_;// ノーツを出現させるまでの時間
-    Timer playEndTimer_;// 曲が終わった後の終了までの時間
     float startOffsetTime_ = 0.0f;// 曲の開始オフセット時間(メトロノーム流す時間)
     bool isStopped_ = false;// 曲が停止しているかどうか
     bool isPauseMode_ = false;// 一時停止モードかどうか

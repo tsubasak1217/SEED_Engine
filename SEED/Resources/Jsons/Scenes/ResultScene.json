@@ -23,176 +23,6 @@
                             },
                             "color": {
                                 "w": 1.0,
-                                "x": 1.0,
-                                "y": 0.0,
-                                "z": 0.8571429252624512
-                            },
-                            "drawLocation": 2,
-                            "flipX": false,
-                            "flipY": false,
-                            "isApplyViewMat": false,
-                            "isStaticDraw": false,
-                            "layer": 1,
-                            "name": "sprite0",
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 150.0,
-                                "y": 150.0
-                            },
-                            "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
-                            "transform": {
-                                "rotate": 0.0,
-                                "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "translate": {
-                                    "x": 0.0,
-                                    "y": 0.0
-                                }
-                            },
-                            "uvTransform": {
-                                "rotate": 0.0,
-                                "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "translate": {
-                                    "x": 0.0,
-                                    "y": 0.0
-                                }
-                            }
-                        }
-                    ],
-                    "texts": [
-                        {
-                            "alignX": 1,
-                            "alignY": 1,
-                            "anchorPos": {
-                                "x": 0.5,
-                                "y": 0.5
-                            },
-                            "blendMode": 3,
-                            "color": {
-                                "w": 1.0,
-                                "x": 1.0,
-                                "y": 1.0,
-                                "z": 1.0
-                            },
-                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
-                            "fontSize": 68.0,
-                            "glyphSpacing": 8.0,
-                            "isApplyViewMat": false,
-                            "layer": 2,
-                            "lineSpacing": 8.0,
-                            "name": "text0",
-                            "outlineColor": {
-                                "w": 1.0,
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            },
-                            "outlineSplitCount": 16,
-                            "outlineWidth": 2.0,
-                            "size": {
-                                "x": 168.0,
-                                "y": 139.0
-                            },
-                            "text": "12",
-                            "textBoxVisible": false,
-                            "transform": {
-                                "rotate": 0.0,
-                                "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "translate": {
-                                    "x": 4.0,
-                                    "y": 0.0
-                                }
-                            },
-                            "useOutline": false
-                        }
-                    ]
-                },
-                {
-                    "componentID": 3,
-                    "componentTag": "AnimCurve2D_ID:3",
-                    "componentType": "AnimCurve2D",
-                    "controlPoints": [
-                        {
-                            "rotate": -6.300000190734863,
-                            "scale": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "translate": {
-                                "x": 104.82914733886719,
-                                "y": 90.677978515625
-                            }
-                        },
-                        {
-                            "rotate": 0.0,
-                            "scale": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "translate": {
-                                "x": 104.82914733886719,
-                                "y": 90.677978515625
-                            }
-                        }
-                    ],
-                    "defaultPaused": true,
-                    "duration": 1.0,
-                    "easingType": 25,
-                    "interpolationType": 0,
-                    "isLoop": false
-                }
-            ],
-            "isParentRotate": true,
-            "isParentScale": true,
-            "isParentTranslate": true,
-            "objectName": "Difficulty",
-            "objectType": 0,
-            "transform": {
-                "rotate": -6.300000190734863,
-                "scale": {
-                    "x": 0.0,
-                    "y": 0.0
-                },
-                "translate": {
-                    "x": 104.82914733886719,
-                    "y": 90.677978515625
-                }
-            }
-        },
-        {
-            "components": [
-                {
-                    "componentID": 8,
-                    "componentTag": "UI_ID:8",
-                    "componentType": "UI",
-                    "sprites": [
-                        {
-                            "anchorPoint": {
-                                "x": 0.5,
-                                "y": 0.5
-                            },
-                            "blendMode": 3,
-                            "clipLT": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "clipSize": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "color": {
-                                "w": 1.0,
                                 "x": 0.3562258183956146,
                                 "y": 0.0,
                                 "z": 0.4478764533996582
@@ -1207,8 +1037,8 @@
                     "y": 1.2000000476837158
                 },
                 "translate": {
-                    "x": 821.8889770507813,
-                    "y": 603.9984130859375
+                    "x": -284.1793518066406,
+                    "y": 866.2135009765625
                 }
             }
         },
@@ -2013,6 +1843,516 @@
                 "translate": {
                     "x": 345.78497314453125,
                     "y": 665.0800170898438
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 8,
+                    "componentTag": "UI_ID:8",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.0,
+                                "z": 0.8571429252624512
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 1,
+                            "name": "sprite0",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 150.0,
+                                "y": 150.0
+                            },
+                            "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
+                            "fontSize": 68.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 2,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.0,
+                            "size": {
+                                "x": 168.0,
+                                "y": 139.0
+                            },
+                            "text": "10",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 4.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                },
+                {
+                    "componentID": 3,
+                    "componentTag": "AnimCurve2D_ID:3",
+                    "componentType": "AnimCurve2D",
+                    "controlPoints": [
+                        {
+                            "rotate": -6.300000190734863,
+                            "scale": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "translate": {
+                                "x": 86.8290023803711,
+                                "y": 90.677978515625
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 86.8290023803711,
+                                "y": 90.677978515625
+                            }
+                        }
+                    ],
+                    "defaultPaused": true,
+                    "duration": 1.0,
+                    "easingType": 25,
+                    "interpolationType": 0,
+                    "isLoop": false
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Difficulty",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 86.8290023803711,
+                    "y": 90.677978515625
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 8,
+                    "componentTag": "UI_ID:8",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.48648643493652344,
+                                "z": 0.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 1,
+                            "name": "sprite0",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 120.0,
+                                "y": 120.0
+                            },
+                            "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.8803088665008545,
+                                "z": 0.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\English\\Shock Surgent.otf",
+                            "fontSize": 43.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 2,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.11969113349914551,
+                                "y": 0.006931915879249573,
+                                "z": 0.05917559936642647
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 8.5,
+                            "size": {
+                                "x": 168.0,
+                                "y": 139.0
+                            },
+                            "text": "AP",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 4.0,
+                                    "y": 5.0
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "componentID": 41,
+                    "componentTag": "AnimCurve2D_ID:41",
+                    "componentType": "AnimCurve2D",
+                    "controlPoints": [
+                        {
+                            "rotate": -6.300000190734863,
+                            "scale": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "translate": {
+                                "x": 86.97369384765625,
+                                "y": 222.76475524902344
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 86.97369384765625,
+                                "y": 222.76475524902344
+                            }
+                        }
+                    ],
+                    "defaultPaused": true,
+                    "duration": 1.0,
+                    "easingType": 25,
+                    "interpolationType": 0,
+                    "isLoop": false
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "AP",
+            "objectType": 0,
+            "transform": {
+                "rotate": -6.300000190734863,
+                "scale": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "translate": {
+                    "x": 86.97369384765625,
+                    "y": 222.76475524902344
+                }
+            }
+        },
+        {
+            "components": [
+                {
+                    "componentID": 8,
+                    "componentTag": "UI_ID:8",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.007722020149230957,
+                                "y": 1.0,
+                                "z": 0.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 1,
+                            "name": "sprite0",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 120.0,
+                                "y": 120.0
+                            },
+                            "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts\\DefaultAssets\\English\\Shock Surgent.otf",
+                            "fontSize": 43.0,
+                            "glyphSpacing": 8.0,
+                            "isApplyViewMat": false,
+                            "layer": 2,
+                            "lineSpacing": 8.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.015639178454875946,
+                                "y": 0.006931915879249573,
+                                "z": 0.11969113349914551
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 8.5,
+                            "size": {
+                                "x": 168.0,
+                                "y": 139.0
+                            },
+                            "text": "FC",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 4.0,
+                                    "y": 5.0
+                                }
+                            },
+                            "useOutline": true
+                        }
+                    ]
+                },
+                {
+                    "componentID": 41,
+                    "componentTag": "AnimCurve2D_ID:41",
+                    "componentType": "AnimCurve2D",
+                    "controlPoints": [
+                        {
+                            "rotate": -6.300000190734863,
+                            "scale": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "translate": {
+                                "x": 86.97369384765625,
+                                "y": 222.76475524902344
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 86.97369384765625,
+                                "y": 222.76475524902344
+                            }
+                        }
+                    ],
+                    "defaultPaused": true,
+                    "duration": 1.0,
+                    "easingType": 25,
+                    "interpolationType": 0,
+                    "isLoop": false
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "FC",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 86.97369384765625,
+                    "y": 222.76475524902344
                 }
             }
         }

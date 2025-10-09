@@ -12,7 +12,9 @@ struct PlayResult{
     int32_t evalutionCount[(int)Judgement::Evaluation::kEvaluationCount]{};
     int32_t fastCount = 0;
     int32_t lateCount = 0;
-    ScoreRank rank;
+    ScoreRank rank = ScoreRank::D;
+    bool isFullCombo = false;
+    bool isAllPerfect = false;
     nlohmann::json songData = nlohmann::json::object();
     GameObject2D* scoreTextObj = nullptr;
     TextBox2D* scoreText = nullptr;

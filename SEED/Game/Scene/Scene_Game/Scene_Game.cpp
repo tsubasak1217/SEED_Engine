@@ -41,9 +41,6 @@ void Scene_Game::Initialize(){
     // ステート初期化
     ChangeState(new GameState_Select(this));
 
-    // スカイボックスの設定
-    SEED::SetSkyBox("DefaultAssets/CubeMaps/rostock_laage_airport_4k.dds");
-
 }
 
 void Scene_Game::Finalize() {

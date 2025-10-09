@@ -242,6 +242,27 @@ void GameObject::SetLocalScale(const Vector3& scale){
 }
 
 //////////////////////////////////////////////////////////////////////////
+// 回転の加算
+//////////////////////////////////////////////////////////////////////////
+void GameObject::AddWorldRotate(const Quaternion& addValue){
+    if(parent_ != nullptr){
+        // 親のワールド回転を取得
+        Quaternion parentWorldRot = parent_->GetWorldRotate();
+        // 親の回転を逆変換してローカル空間に変換
+        Quaternion localAddValue = Quaternion::Inverse(parentWorldRot) * addValue * parentWorldRot;
+        // ローカル回転に加算（合成）
+        localTransform_.rotate = localAddValue * localTransform_.rotate;
+    } else{
+        // 親がいない場合はワールド＝ローカルなのでそのまま
+        localTransform_.rotate = addValue * localTransform_.rotate;
+    }
+}
+
+void GameObject::AddWorldRotate(const Vector3& addValue){
+    AddWorldRotate(Quaternion::ToQuaternion(addValue));
+}
+
+//////////////////////////////////////////////////////////////////////////
 // Rotateの設定
 //////////////////////////////////////////////////////////////////////////
 void GameObject::SetWorldRotate(const Quaternion& rotate){
@@ -416,8 +437,13 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
         } else if(componentType == "Jump"){
             auto* jumpComponent = AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(componentJson);
+
         } else if(componentType == "Routine"){
             auto* routineComponent = AddComponent<Routine3DComponent>();
+            routineComponent->LoadFromJson(componentJson);
+
+        } else if(componentType == "AnimCurve"){
+            auto* routineComponent = AddComponent<AnimCurveComponent>();
             routineComponent->LoadFromJson(componentJson);
         }
     }
@@ -550,6 +576,10 @@ void GameObject::EditGUI(){
         }
         if(ImGui::Button("RoutineComponent / ルーチン")){
             AddComponent<Routine3DComponent>();
+            ImGui::CloseCurrentPopup();
+        }
+        if(ImGui::Button("AnimCurveComponent / アニメーションカーブ")){
+            AddComponent<AnimCurveComponent>();
             ImGui::CloseCurrentPopup();
         }
 

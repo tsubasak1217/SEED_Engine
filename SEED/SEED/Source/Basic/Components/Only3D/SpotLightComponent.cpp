@@ -59,10 +59,13 @@ void SpotLightComponent::Draw(){
     light_->SendData();
 
 #ifdef _DEBUG
-    // ライト描画
-    SEED::DrawSphere(light_->position, 1.0f, 6, light_->color_);
-    Vector3 lightVec = light_->direction * light_->distance;
-    SEED::DrawLine(light_->position, light_->position + lightVec, light_->color_);
+    if(isEditting_){
+        // ライト描画
+        SEED::DrawSphere(light_->position, 1.0f, 6, light_->color_);
+        Vector3 lightVec = light_->direction * light_->distance;
+        SEED::DrawLine(light_->position, light_->position + lightVec, light_->color_);
+        isEditting_ = false;
+    }
 #endif // _DEBUG
 }
 
@@ -84,6 +87,10 @@ void SpotLightComponent::Finalize(){
 
 void SpotLightComponent::EditGUI(){
 #ifdef _DEBUG
+
+    // 編集中にする
+    isEditting_ = true;
+
     // guizmoに登録
     ImGuiManager::RegisterGuizmoItem(&localTransform_, owner_.owner3D->GetWorldMat());
 

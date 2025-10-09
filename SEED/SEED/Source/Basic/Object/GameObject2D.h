@@ -205,7 +205,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     /*----------- 基礎情報----------*/
-protected:
+private:
     static uint32_t nextID_;
     uint32_t objectID_;
     ObjectType objectType_;
@@ -223,6 +223,9 @@ public:
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
 
+    //---------- 描画情報 ---------//
+    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
+
     //------- トランスフォーム情報 ------//
     Transform2D localTransform_;
 private:
@@ -231,9 +234,8 @@ private:
     Matrix3x3 worldMat_;
     Vector2 velocity_;
 
+private:
     /*----------- 衝突判定 ----------*/
-protected:
-
     bool isCollideAny_ = false;// 何かしらのオブジェクトと衝突したかどうか
     bool preIsCollideAny_ = false;
     bool isCollideGhost_ = false;// すり抜けるオブジェクトと衝突したかどうか
@@ -250,4 +252,5 @@ protected:
 
     // 前の座標
     Vector2 prePos_;
+
 };

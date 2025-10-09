@@ -1,5 +1,5 @@
 #pragma once
-#include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Structs/Sprite.h>
@@ -8,10 +8,10 @@
 #include <memory>
 #include <vector>
 
-class AnimCurve2DComponent : public IComponent{
+class AnimCurveComponent : public IComponent{
 public:
-    AnimCurve2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
-    ~AnimCurve2DComponent() = default;
+    AnimCurveComponent(GameObject* pOwner, const std::string& tagName = "");
+    ~AnimCurveComponent() = default;
     void BeginFrame()override;
     void Update()override;
     void Draw()override;
@@ -22,6 +22,7 @@ public:
 public:// accessor
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
+    const Transform* GetControlPoint(int32_t index) const;
 
 public:// json
     void LoadFromJson(const nlohmann::json& jsonData) override;
@@ -35,12 +36,12 @@ private:
     bool isPlaying_ = false;
     Timer timer_;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;
-    std::vector<Transform2D> controlPoints_;
+    std::vector<Transform> controlPoints_;
     Easing::Type easingType_ = Easing::Type::None;
 
 #ifdef _DEBUG
     bool isDebugItemVisible_ = true;
     bool isEditting_ = false;
-    Sprite debugPointSprite_;
+    Model debugPointModel_;
 #endif // _DEBUG
 };

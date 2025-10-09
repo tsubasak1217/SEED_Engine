@@ -76,6 +76,8 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     // コンボオブジェクト
     comboObject_ = std::make_unique<ComboObject>();
 
+    // timer
+    playEndTimer_.Initialize(3.0f);
 
     // 判定の初期化
     Judgement::GetInstance();
@@ -91,9 +93,9 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    Input::SetMouseCursorVisible(false);
+    //Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
     Input::RepeatCursor();
 #endif
@@ -110,7 +112,6 @@ void RythmGameManager::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::EndFrame(){
 
-    // 譜面が終わったらクリアシーンへ移行
     // escapeでポーズ画面を出す
     if(!isPaused_){
         if(Input::IsTriggerKey(DIK_ESCAPE)){
@@ -120,17 +121,32 @@ void RythmGameManager::EndFrame(){
         }
     }
 
+    // 譜面が終了している場合の処理
     if(notesData_->GetIsEnd()){
 
-        // プレイ結果の保存
-        Scene_Clear::SetResult(playResult_);
+        // 譜面が終了した瞬間の処理
+        if(playEndTimer_.GetProgress() == 0.0f){
+            // プレイ結果をScene_Clearに渡す
+            playResult_.isFullCombo = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] == 0;
+            playResult_.isAllPerfect =
+                playResult_.isFullCombo &&
+                playResult_.evalutionCount[(int)Judgement::Evaluation::GREAT] == 0 &&
+                playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] == 0;
+            Scene_Clear::SetResult(playResult_);
+        }
 
-        // Inputのカーソルを表示状態に戻す
-        Input::SetMouseCursorVisible(true);
+        // プレイ終了タイマーを更新
+        playEndTimer_.Update();
 
-        // リザルト画面へ移行
-        GameSystem::ChangeScene("Clear");
-        return;
+        // タイマーが終了したらシーン遷移
+        if(playEndTimer_.IsFinished()){
+            // Inputのカーソルを表示状態に戻す
+            Input::SetMouseCursorVisible(true);
+
+            // リザルト画面へ移行
+            GameSystem::ChangeScene("Clear");
+            return;
+        }
     }
 
 }
@@ -231,5 +247,5 @@ float RythmGameManager::CalculateScore(){
     float subtractGood = playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] * scorePerNote * scoreSubtractRateGood;
     float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] * scorePerNote;
     result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
-    return result;
+    return std::clamp(result,0.0f,100.0f);
 }

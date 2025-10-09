@@ -1,6 +1,7 @@
 #pragma once
 #include <Game/GameSystem.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Structs/Sprite.h>
@@ -32,4 +33,7 @@ private:
     PlayResult displayResult_;
     bool isFirstUpdate_ = true;
     bool isInitialized_ = false;
+    std::unordered_map<ScoreRank, std::string> rankToString_;
+    GameObject* rankObj_ = nullptr;
+    GameObject* cameraPointObj_ = nullptr;
 };

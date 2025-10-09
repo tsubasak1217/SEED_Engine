@@ -51,5 +51,6 @@ private:
     std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
     std::unique_ptr<NotesEditor> notesEditor_; // ノーツエディタ
     PlayResult playResult_; // プレイ結果
+    Timer playEndTimer_;
     bool isPaused_ = false; // ポーズ中かどうか
 };

@@ -25,7 +25,6 @@ NotesData::NotesData(){
 
     // タイマーの初期化
     waitTimer_.Initialize(3.0f);
-    playEndTimer_.Initialize(3.0f);
 
     // 音源情報の初期化
     metronomeFilePath_ = "SE/metronome.mp3"; // メトロノームのファイルパス
@@ -85,14 +84,9 @@ void NotesData::Update(){
         waitTimer_.Update();
     }
 
-    // 譜面が終了したらプレイ終了タイマーを加算
+    // 譜面が終了したらプレイ終了
     if(songTimer_.IsFinished()){
-        playEndTimer_.Update();
-
-        if(playEndTimer_.IsFinished()){
-            // プレイ終了フラグを立てる
-            isEnd_ = true;
-        }
+        isEnd_ = true;
     }
 
     // 出現させるノーツの確認
@@ -253,7 +247,7 @@ void NotesData::DeleteNotes(){
                     // 押せずに通り過ぎたノーツなのでコンボを切る
                     RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
                     RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
-                
+
                 } else{
                     if(Note_Warning* warningNote = dynamic_cast<Note_Warning*>(it->second.get())){
                         warningNote->start_ = true;
@@ -267,7 +261,7 @@ void NotesData::DeleteNotes(){
                     } else{
                         ++it;
                     }
-                    
+
                 }
             }
         } else{

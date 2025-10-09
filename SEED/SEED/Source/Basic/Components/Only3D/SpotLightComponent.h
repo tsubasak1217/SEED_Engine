@@ -23,4 +23,9 @@ private:
     std::unique_ptr<SpotLight> light_;
     Transform localTransform_; // ライトのローカル
     bool isParentRotate_ = true; // 親の回転を反映するか
+
+#ifdef _DEBUG
+    bool isEditting_ = false;
+#endif // _DEBUG
+
 };

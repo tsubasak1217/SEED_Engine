@@ -274,6 +274,22 @@ Transform2D MyFunc::Interpolate(const std::vector<Transform2D>& transforms, floa
     return Interpolate(transforms[currentIdx], transforms[std::clamp(currentIdx + 1, 0, size - 1)], sectionT);
 }
 
+// 3D 複数のトランスフォームから補間
+Transform MyFunc::Interpolate(const std::vector<Transform>& transforms, float t){
+    int32_t size = static_cast<int32_t>(transforms.size());
+    int32_t currentIdx = MyMath::CalcElement(t, size);
+    float sectionT = MyMath::CalcSectionT(t, size);
+    return Interpolate(transforms[currentIdx], transforms[std::clamp(currentIdx + 1, 0, size - 1)], sectionT);
+}
+
+// Quaternionを複数配列から補間
+Quaternion MyFunc::Interpolate(const std::vector<Quaternion>& transforms, float t){
+    int32_t size = static_cast<int32_t>(transforms.size());
+    int32_t currentIdx = MyMath::CalcElement(t, size);
+    float sectionT = MyMath::CalcSectionT(t, size);
+    return Quaternion::Slerp(transforms[currentIdx], transforms[std::clamp(currentIdx + 1, 0, size - 1)], sectionT);
+}
+
 // 2D Catmull-Rom補間
 Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t){
     Transform2D result;
@@ -291,6 +307,27 @@ Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transf
     // 結果の各成分を求める
     result.scale = MyMath::CatmullRomPosition(scales,t);
     result.rotate = MyMath::CatmullRomPosition(rotations, t);
+    result.translate = MyMath::CatmullRomPosition(positions, t);
+    return result;
+}
+
+// 3D Catmull-Rom補間
+Transform MyFunc::CatmullRomInterpolate(const std::vector<Transform>& transforms, float t){
+    Transform result;
+
+    // 各成分をそれぞれ配列に分解
+    std::vector<Vector3> scales;
+    std::vector<Quaternion> rotations;
+    std::vector<Vector3> positions;
+    for(const auto& tr : transforms){
+        scales.push_back(tr.scale);
+        rotations.push_back(tr.rotate);
+        positions.push_back(tr.translate);
+    }
+
+    // 結果の各成分を求める
+    result.scale = MyMath::CatmullRomPosition(scales, t);
+    result.rotate = Interpolate(rotations, t);
     result.translate = MyMath::CatmullRomPosition(positions, t);
     return result;
 }

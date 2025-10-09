@@ -10,15 +10,35 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
     }
 
     // timer初期化
-    timer_ = TimerArray({ 1.0f,1.0f,2.0f });
+    timer_ = TimerArray({ 1.0f,1.0f,1.0f,1.0f });
 
     // playResult初期化
     playResult_ = Scene_Clear::GetResult();
+    displayResult_.score = 0.0f;
+
+    // displayResult初期化
+    rankToString_[ScoreRank::ULT] = "ULT.json";
+    rankToString_[ScoreRank::SSS] = "SSS.json";
+    rankToString_[ScoreRank::SS] = "SS.json";
+    rankToString_[ScoreRank::S] = "S.json";
+    rankToString_[ScoreRank::A] = "A.json";
+    rankToString_[ScoreRank::B] = "B.json";
+    rankToString_[ScoreRank::C] = "C.json";
+    rankToString_[ScoreRank::D] = "D.json";
+
 
     // リザルトシーンの読み込み
     auto* scene = GameSystem::GetScene();
     auto* hierarchy = scene->GetHierarchy();
     hierarchy->LoadFromJson("Resources/Jsons/Scenes/ResultScene.json", false);
+    rankObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/" + rankToString_[playResult_.rank], false).objects3D_[0];
+    cameraPointObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ResultCameraPoints.json", false).objects3D_[0];
+
+    // カメラ位置の設定
+    if(cameraPointObj_){
+        const Transform* cameraPoint = cameraPointObj_->GetComponent<AnimCurveComponent>()->GetControlPoint(0);
+        SEED::GetMainCamera()->SetTransform(*cameraPoint);
+    }
 
     // オブジェクトの取得
     if(auto* obj = GameSystem::GetScene()->GetHierarchy()->GetGameObject2D("Title")){
@@ -59,6 +79,12 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
     }
     if(auto* obj = GameSystem::GetScene()->GetHierarchy()->GetGameObject2D("Jacket")){
         uiObjects_["Jacket"] = obj;
+    }
+    if(auto* obj = GameSystem::GetScene()->GetHierarchy()->GetGameObject2D("AP")){
+        uiObjects_["AP"] = obj;
+    }
+    if(auto* obj = GameSystem::GetScene()->GetHierarchy()->GetGameObject2D("FC")){
+        uiObjects_["FC"] = obj;
     }
 
     /*------- 特定オブジェクトを非表示に --------*/
@@ -111,17 +137,13 @@ void ResultUpdate2DComponent::Update(){
             uiObjects_["Difficulty"]->GetComponent<UIComponent>()->GetText(0).text = std::to_string(difficulty);
             // 各判定
             uiObjects_["Perfect"]->GetComponent<AnimCurve2DComponent>()->Play();
-            uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
-            uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ displayResult_.evalutionCount[0] });
+            uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[0]);
             uiObjects_["Great"]->GetComponent<AnimCurve2DComponent>()->Play();
-            uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
-            uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ displayResult_.evalutionCount[1] });
+            uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[1]);
             uiObjects_["Good"]->GetComponent<AnimCurve2DComponent>()->Play();
-            uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
-            uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ displayResult_.evalutionCount[2] });
+            uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[2]);
             uiObjects_["Miss"]->GetComponent<AnimCurve2DComponent>()->Play();
-            uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
-            uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ displayResult_.evalutionCount[3] });
+            uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[3]);
             // コンボ
             uiObjects_["Combo"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
             uiObjects_["Combo"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ playResult_.maxCombo });
@@ -138,8 +160,22 @@ void ResultUpdate2DComponent::Update(){
             // スコア
             uiObjects_["Score"]->GetComponent<UIComponent>()->GetText(0).text = "%f%";
             uiObjects_["Score"]->GetComponent<UIComponent>()->GetText(0).BindDatas({ displayResult_.score });
+            break;
+
+        case 2:
+            // APアイコン
+            if(playResult_.isAllPerfect){
+                uiObjects_["AP"]->GetComponent<AnimCurve2DComponent>()->Play();
+
+            } else{
+                // FCアイコン
+                if(playResult_.isFullCombo){
+                    uiObjects_["FC"]->GetComponent<AnimCurve2DComponent>()->Play();
+                }
+            }
 
             break;
+
         default:
             break;
         }
@@ -148,18 +184,6 @@ void ResultUpdate2DComponent::Update(){
     // タイマーの段階に応じた処理
     int32_t currentPhase = timer_.GetCurrentIndex();
     if(currentPhase >= 1){
-        // 各判定数をカウントアップ
-        for(int i = 0; i < 4; i++){
-            displayResult_.evalutionCount[i] =
-                static_cast<int32_t>(
-                    MyMath::Lerp(
-                        static_cast<float>(displayResult_.evalutionCount[i]),
-                        static_cast<float>(playResult_.evalutionCount[i]),
-                        timer_.GetProgress(1)
-                    )
-                    );
-        }
-
         // コンボ, Fast, Lateを徐々に表示
         uiObjects_["Combo"]->GetComponent<UIComponent>()->SetMasterColor({ 1.0f,1.0f,1.0f,timer_.GetProgress(1) });
         uiObjects_["Fast"]->GetComponent<UIComponent>()->SetMasterColor({ 1.0f,1.0f,1.0f,timer_.GetProgress(1) });
@@ -170,6 +194,12 @@ void ResultUpdate2DComponent::Update(){
     if(currentPhase >= 2){
         // 表示用のスコアをカウントアップ
         displayResult_.score = MyMath::Lerp(displayResult_.score, static_cast<float>(playResult_.score), timer_.GetProgress(2));
+    }
+
+    // rankObjを回転させる
+    static float rotateSpeed = 3.14f * 0.5f;
+    if(rankObj_){
+        rankObj_->AddWorldRotate(Vector3(0.0f, 1.0f, 0.0f) * rotateSpeed * ClockManager::DeltaTime());
     }
 
     // タイマーの更新

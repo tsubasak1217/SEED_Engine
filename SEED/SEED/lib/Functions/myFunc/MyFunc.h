@@ -70,7 +70,10 @@ public:
     static Transform Interpolate(const Transform& a, const Transform& b, float t);
     static Transform2D Interpolate(const Transform2D& a, const Transform2D& b, float t);
     static Transform2D Interpolate(const std::vector<Transform2D>& transforms, float t);
+    static Transform Interpolate(const std::vector<Transform>& transforms, float t);
+    static Quaternion Interpolate(const std::vector<Quaternion>& transforms, float t);
     static Transform2D CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t);
+    static Transform CatmullRomInterpolate(const std::vector<Transform>& transforms, float t);
 
    /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算

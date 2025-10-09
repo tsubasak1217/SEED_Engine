@@ -162,6 +162,8 @@ public:
     const Quaternion& GetLocalRotate() const{ return localTransform_.rotate; }
     Vector3 GetWorldEulerRotate() const{ return worldTransform_.rotate.ToEuler(); }
     Vector3 GetLocalEulerRotate() const{ return localTransform_.rotate.ToEuler(); }
+    void AddWorldRotate(const Quaternion& addValue);
+    void AddWorldRotate(const Vector3& addValue);
     void SetWorldRotate(const Quaternion& rotate);
     void SetLocalRotate(const Quaternion& rotate);
     /*------ translate -------*/
@@ -197,8 +199,8 @@ public:
     // メンバー変数
     ////////////////////////////////////////////////////////////////////////////
 
+private:
     /*----------- 基礎情報----------*/
-protected:
     static uint32_t nextID_;
     uint32_t objectID_;
     ObjectType objectType_;
@@ -218,6 +220,9 @@ public:
     bool isParentScale_ = true;
     bool isParentTranslate_ = true;
 
+    //---------- 描画情報 ---------//
+    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
+
     //------- トランスフォーム情報 ------//
     Transform localTransform_;
 private:
@@ -226,8 +231,8 @@ private:
     Matrix4x4 worldMat_;
     Vector3 velocity_;
 
+private:
     /*----------- 衝突判定 ----------*/
-protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isOnGround_ = true;

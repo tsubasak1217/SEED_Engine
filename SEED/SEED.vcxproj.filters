@@ -1,414 +1,1487 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp" />
-    <ClCompile Include="SEED\Lib\Shapes\Ring.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\PointLight.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
-    <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\LocalFunc.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="SEED\lib\Functions\localFunc\LocalDrawer.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\DxFunc.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\Easing.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\MatrixFunc.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\MyFunc.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\MyMath.cpp" />
-    <ClCompile Include="SEED\lib\Functions\myFunc\ShapeMath.cpp" />
-    <ClCompile Include="SEED\lib\shapes\Quad.cpp" />
-    <ClCompile Include="SEED\lib\shapes\Triangle.cpp" />
-    <ClCompile Include="SEED\lib\structs\AccelerarionField.cpp" />
-    <ClCompile Include="SEED\lib\structs\Model.cpp" />
-    <ClCompile Include="SEED\lib\structs\Sprite.cpp" />
-    <ClCompile Include="SEED\lib\tensor\Quaternion.cpp" />
-    <ClCompile Include="SEED\lib\tensor\Vector2.cpp" />
-    <ClCompile Include="SEED\lib\tensor\Vector3.cpp" />
-    <ClCompile Include="SEED\lib\tensor\Vector4.cpp" />
-    <ClCompile Include="SEED\source\Manager\AudioManager\AudioManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp" />
-    <ClCompile Include="SEED\source\Manager\CameraManager\CameraManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\ClockManager\ClockManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\DxManager.cpp" />
-    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PolygonManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PSO\Pipeline.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PSO\PSOManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\PSO\RootSignature.cpp" />
-    <ClCompile Include="SEED\source\Manager\DxManager\ViewManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\ImGuiManager\ImGuiManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\InputManager\InputManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\JsonManager\JsonManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\ModelManager\ModelManager.cpp" />
-    <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\TextureManager\TextureManager.cpp" />
-    <ClCompile Include="SEED\source\Manager\WindowManager\WindowInfo.cpp" />
-    <ClCompile Include="SEED\source\Manager\WindowManager\WindowManager.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Camera\BaseCamera.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Camera\DebugCamera.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Camera\FollowCamera.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp" />
-    <ClCompile Include="SEED\source\SEED.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp" />
-    <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp" />
-    <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp" />
-    <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_AABB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Line.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_OBB.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Particle_Model.cpp" />
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
-    <ClCompile Include="SEED\Source\Manager\textsystem\TextSystem.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\TextBox.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\Transform.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp" />
-    <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
-    <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp" />
-    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp" />
-    <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
-    <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp" />
-    <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp" />
-    <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp" />
-    <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
-    <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp" />
-    <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Dictionary\AudioDictionary.cpp" />
-    <ClCompile Include="Game\Config\PlaySettings.cpp" />
-    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
-    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
-    <ClCompile Include="Game\Manager\SongSelector.cpp" />
-    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
-    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
-    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
-    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
-    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
-    <ClCompile Include="Game\GameSystem.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
-    <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
-    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
-    <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.cpp" />
-    <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp" />
-    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Cylinder.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Ring.h" />
-    <ClInclude Include="SEED\Lib\Structs\BaseLight.h" />
-    <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h" />
-    <ClInclude Include="SEED\Lib\Structs\PointLight.h" />
-    <ClInclude Include="SEED\Lib\Structs\SpotLight.h" />
-    <ClInclude Include="Environment\Environment.h" />
-    <ClInclude Include="Environment\Physics.h" />
-    <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
-    <ClInclude Include="SEED\lib\enums\Direction.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\LocalFunc.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Line.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Sphere.h" />
-    <ClInclude Include="SEED\lib\structs\BitSet.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\MouseDefinitions.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\lib\Functions\localFunc\LocalDrawer.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\DxFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\Easing.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MatrixFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MyFunc.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\MyMath.h" />
-    <ClInclude Include="SEED\lib\Functions\myFunc\ShapeMath.h" />
-    <ClInclude Include="SEED\lib\includes\includes.h" />
-    <ClInclude Include="SEED\lib\includes\include_matrixes.h" />
-    <ClInclude Include="SEED\lib\includes\include_shapes.h" />
-    <ClInclude Include="SEED\lib\includes\include_tensors.h" />
-    <ClInclude Include="SEED\lib\includes\include_useful.h" />
-    <ClInclude Include="SEED\lib\includes\include_vectors.h" />
-    <ClInclude Include="SEED\lib\shapes\AABB.h" />
-    <ClInclude Include="SEED\lib\shapes\OBB.h" />
-    <ClInclude Include="SEED\lib\shapes\Quad.h" />
-    <ClInclude Include="SEED\lib\shapes\Triangle.h" />
-    <ClInclude Include="SEED\lib\structs\AccelerarionField.h" />
-    <ClInclude Include="SEED\lib\structs\blendMode.h" />
-    <ClInclude Include="SEED\lib\structs\CS_Buffers.h" />
-    <ClInclude Include="SEED\lib\structs\DirectionalLight.h" />
-    <ClInclude Include="SEED\lib\structs\DrawLocation.h" />
-    <ClInclude Include="SEED\lib\structs\ModelAnimation.h" />
-    <ClInclude Include="SEED\lib\structs\OffsetData.h" />
-    <ClInclude Include="SEED\lib\structs\Material.h" />
-    <ClInclude Include="SEED\lib\structs\Model.h" />
-    <ClInclude Include="SEED\lib\structs\ModelData.h" />
-    <ClInclude Include="SEED\lib\structs\Range1D.h" />
-    <ClInclude Include="SEED\lib\structs\Range2D.h" />
-    <ClInclude Include="SEED\lib\structs\Range3D.h" />
-    <ClInclude Include="SEED\lib\structs\Sprite.h" />
-    <ClInclude Include="SEED\lib\structs\Transform.h" />
-    <ClInclude Include="SEED\lib\structs\VertexData.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix2x2.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix3x3.h" />
-    <ClInclude Include="SEED\lib\tensor\Matrix4x4.h" />
-    <ClInclude Include="SEED\lib\tensor\Quaternion.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector2.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector3.h" />
-    <ClInclude Include="SEED\lib\tensor\Vector4.h" />
-    <ClInclude Include="SEED\source\Manager\AudioManager\AudioManager.h" />
-    <ClInclude Include="SEED\source\Manager\AudioManager\XAPO\XAPO_Pitch.h" />
-    <ClInclude Include="SEED\source\Manager\CameraManager\CameraManager.h" />
-    <ClInclude Include="SEED\source\Manager\ClockManager\ClockManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\DxManager.h" />
-    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PolygonManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\Pipeline.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\PSOManager.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\PSO\RootSignature.h" />
-    <ClInclude Include="SEED\source\Manager\DxManager\ViewManager.h" />
-    <ClInclude Include="SEED\source\Manager\ImGuiManager\ImGuiManager.h" />
-    <ClInclude Include="SEED\source\Manager\InputManager\InputManager.h" />
-    <ClInclude Include="SEED\source\Manager\JsonManager\JsonManager.h" />
-    <ClInclude Include="SEED\source\Manager\ModelManager\ModelManager.h" />
-    <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h" />
-    <ClInclude Include="SEED\source\Manager\TextureManager\TextureManager.h" />
-    <ClInclude Include="SEED\source\Manager\WindowManager\WindowInfo.h" />
-    <ClInclude Include="SEED\source\Manager\WindowManager\WindowManager.h" />
-    <ClInclude Include="SEED\Source\Basic\Camera\BaseCamera.h" />
-    <ClInclude Include="SEED\Source\Basic\Camera\DebugCamera.h" />
-    <ClInclude Include="SEED\Source\Basic\Camera\FollowCamera.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\Octree.h" />
-    <ClInclude Include="SEED\source\SEED.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Particle_Model.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h" />
-    <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionData.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionManager.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_AABB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Line.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_OBB.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h" />
-    <ClInclude Include="SEED\Lib\Structs\SkyBox.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.h" />
-    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h" />
-    <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h" />
-    <ClInclude Include="SEED\External\stb\stb_truetype.h" />
-    <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h" />
-    <ClInclude Include="SEED\Lib\Structs\TextBox.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />
-    <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
-    <ClInclude Include="SEED\Lib\Structs\Timer.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h" />
-    <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
-    <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h" />
-    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h" />
-    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h" />
-    <ClInclude Include="SEED\Lib\Input\IInputDevice.h" />
-    <ClInclude Include="SEED\Lib\Input\InputMapper.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h" />
-    <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
-    <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="SEED\Lib\Structs\Rect.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="SEED\Lib\Structs\Rect.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h" />
-    <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h" />
-    <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
-    <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h" />
-    <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h" />
-    <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h" />
-    <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
-    <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h" />
-    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h" />
-    <ClInclude Include="SEED\Source\Basic\Dictionary\AudioDictionary.h" />
-    <ClInclude Include="Game\Config\PlaySettings.h" />
-    <ClInclude Include="Game\Manager\NotesEditor.h" />
-    <ClInclude Include="Game\Manager\RythmGameManager.h" />
-    <ClInclude Include="Game\Manager\SongSelector.h" />
-    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
-    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
-    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
-    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
-    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
-    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
-    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
-    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
-    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
-    <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
-    <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
-    <ClInclude Include="Game\GameSystem.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h" />
-    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
-    <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
-    <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
-    <ClInclude Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.h" />
-    <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.h" />
-    <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Resources\Shaders\DoF.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Object3d.MS.hlsl" />
-    <FxCompile Include="resources\shaders\Object3d.PS.hlsl" />
-    <FxCompile Include="resources\shaders\Object3d.VS.hlsl" />
-    <FxCompile Include="resources\shaders\Skinning.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Text.PS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GrayScale.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Vignette.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\RGBShift.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\ScanLine.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Fog.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\SkyBox.PS.hlsl" />
-    <FxCompile Include="Resources\Shaders\SkyBox.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GPUParticle\ParticleUpdate.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GPUParticle\EmitterUpdate.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GPUParticle\GPUParticleInit.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Bloom.CS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Glitch.CS.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shaders\Camera.hlsli" />
-    <None Include="Resources\Shaders\Lighting.hlsli" />
-    <None Include="Resources\Shaders\Material.hlsli" />
-    <None Include="resources\shaders\Object3d.hlsli" />
-    <None Include="Resources\Shaders\GPUParticle\GPUParticle.hlsli" />
-    <None Include="Resources\Shaders\Random\Random.hlsli" />
-    <None Include="Resources\Shaders\Math\Math.hlsli" />
-    <None Include="Resources\Shaders\Math\Quaternion.hlsli" />
-    <None Include="Resources\Shaders\Math\Numbers.hlsli" />
-  </ItemGroup>
+    <ItemGroup>
+        <Filter Include="Environment">
+            <UniqueIdentifier>{7C2D749E-AFC3-4CAE-8A02-DFA228985D07}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game">
+            <UniqueIdentifier>{10804343-EA6F-4A97-B34B-BE41851D2016}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources">
+            <UniqueIdentifier>{F120703D-1E59-4897-803D-A37186644203}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED">
+            <UniqueIdentifier>{D769FB41-74D6-4803-83C5-8D16093C6C8F}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Components">
+            <UniqueIdentifier>{665B142D-229F-4FF1-99FD-94F6F510A2B8}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Config">
+            <UniqueIdentifier>{5BC1773A-43B9-4E08-8831-20663172A339}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Manager">
+            <UniqueIdentifier>{5497209C-FCE2-44A3-A6F8-A753AFD7E725}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects">
+            <UniqueIdentifier>{6A849405-CB9F-41A9-9692-A9C1942454A8}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene">
+            <UniqueIdentifier>{C81CF9D7-A5CF-4209-9B3E-7E7D2990C3DF}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders">
+            <UniqueIdentifier>{1E0329FE-7E05-43DC-A8A9-6C2B7BEA97E1}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\External">
+            <UniqueIdentifier>{6D17A03C-D665-4ED2-9249-D58A90760026}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib">
+            <UniqueIdentifier>{494E7C90-10D0-4B8C-A945-323238B3D6F4}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source">
+            <UniqueIdentifier>{77112DC8-B097-4F19-9704-C0615C663A6D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\Combo">
+            <UniqueIdentifier>{A5A96FAD-2405-4D69-9F9C-3B578C551122}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\Enums">
+            <UniqueIdentifier>{60E4A847-47B2-42A1-BEA9-A0DF05C4F99E}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\FieldObject">
+            <UniqueIdentifier>{9D8977CB-27A9-4EB5-8F31-8FB0150C2E90}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\Judgement">
+            <UniqueIdentifier>{95DCB304-E6FD-4D39-954B-2389CA9C6BFB}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\Notes">
+            <UniqueIdentifier>{5D79153D-F555-4B5E-971D-E9E056BD3FB9}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\Result">
+            <UniqueIdentifier>{25C1D8F4-D8D5-4DD0-A523-5B0D29D9AAA5}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Objects\SongSelect">
+            <UniqueIdentifier>{A2061C51-D6EE-4347-A4DF-CC18BC30D807}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene\Scene_Clear">
+            <UniqueIdentifier>{127F8BC6-6607-44BD-9D35-B2FB69CFD5D8}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene\Scene_Game">
+            <UniqueIdentifier>{962A3AD1-CFC8-4AFD-B727-1080A8A2BE88}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene\Scene_Load">
+            <UniqueIdentifier>{AD78F55A-E2CC-412E-BA85-5B414A59BDB7}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene\Scene_Title">
+            <UniqueIdentifier>{364756A2-4CFE-44B4-BE25-9CBE21985694}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders\GPUParticle">
+            <UniqueIdentifier>{4AA28811-133D-4847-8FEB-8D4F4A15B845}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders\GaussianFilter">
+            <UniqueIdentifier>{384981D1-A88C-49E4-9953-BC8A16282E52}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders\Math">
+            <UniqueIdentifier>{55FEC6FC-CA9A-43F1-9C86-3199553A6C7B}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders\Random">
+            <UniqueIdentifier>{25E91483-9AE1-4662-A508-6F67E6103BED}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Resources\Shaders\Video">
+            <UniqueIdentifier>{550BC7F6-422B-4CF2-97AB-CB6E923F5E1E}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\External\stb">
+            <UniqueIdentifier>{7FB4408F-0949-4B9E-A960-98244BCE348A}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Functions">
+            <UniqueIdentifier>{EE1CE0C5-81AA-44B3-A0A4-BEEB20985295}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Includes">
+            <UniqueIdentifier>{921118CA-FBF2-4CD0-933E-0F98741CF401}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Input">
+            <UniqueIdentifier>{618DC5F4-EA4E-425D-9D34-44814A2CA82D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\JsonAdapter">
+            <UniqueIdentifier>{F663A4AC-142E-4BE9-9047-152BB6C890CB}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\MagicEnumAdapter">
+            <UniqueIdentifier>{62280DC9-9742-4209-8901-8ADC3DC5808D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Random">
+            <UniqueIdentifier>{C30AF4AB-6C41-4DCB-A8C0-050728EF5CEF}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Shapes">
+            <UniqueIdentifier>{39BD5653-9D4D-4999-81DB-36681C98EFA2}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Structs">
+            <UniqueIdentifier>{6C2452E4-76AE-4907-A967-6A6DB5DB8A3E}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Tensor">
+            <UniqueIdentifier>{7A8ECD7B-CEED-4564-A660-0D8698861295}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\enums">
+            <UniqueIdentifier>{10C316DB-3F0B-4BE1-9CC4-37AA5A4099EA}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic">
+            <UniqueIdentifier>{7EA4BAB0-4ED8-4EE1-B3F2-EA1E8886E728}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager">
+            <UniqueIdentifier>{8D975128-F352-4A83-8341-A065311079B8}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="Game\Scene\Scene_Game\State">
+            <UniqueIdentifier>{AA971B81-2A0A-4F7E-BE35-B2B464CC89DA}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Functions\LocalFunc">
+            <UniqueIdentifier>{796A428F-9BA3-488F-84C0-F60F50A1790C}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Lib\Functions\MyFunc">
+            <UniqueIdentifier>{06F8630D-F5E0-45CC-AB95-6399347273CF}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Camera">
+            <UniqueIdentifier>{D3FF9985-E1DE-453B-9425-0B67785BB306}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Collision">
+            <UniqueIdentifier>{124EF11F-BF9F-408E-B2AF-54917930D8C7}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Components">
+            <UniqueIdentifier>{F000E84D-FCFA-4804-89D0-CD8004240CC6}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Dictionary">
+            <UniqueIdentifier>{B4EDBE66-3C84-44EF-A56B-692287555D69}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Object">
+            <UniqueIdentifier>{8D830D11-2A09-4204-98C5-45085DA30078}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Particle">
+            <UniqueIdentifier>{E2CB9BA7-98F1-46D4-8DEE-0441FCFBD1F3}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess">
+            <UniqueIdentifier>{24513440-AC74-4533-BDDF-8822A1C46CB5}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Scene">
+            <UniqueIdentifier>{D7EDC184-0CFD-4B0A-9DC6-5749EFF6560D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\SceneTransition">
+            <UniqueIdentifier>{A7E7953A-0386-4E5C-AC64-808D49CB3339}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\AudioManager">
+            <UniqueIdentifier>{E2C6AFCF-53F0-4665-983C-78A80B569AAE}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\CameraManager">
+            <UniqueIdentifier>{B9BB3ED2-42F3-4FE0-B1FA-6DC8C98F50E4}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\ClockManager">
+            <UniqueIdentifier>{98CA7F05-6790-4298-808E-45213DF46599}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\CollisionManager">
+            <UniqueIdentifier>{9E844312-F7DB-4F4B-97DB-50D5B0CC3F9C}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\DxManager">
+            <UniqueIdentifier>{8A291DC2-C0A5-4F49-A7FD-0A2DA40EB93B}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\EffectSystem">
+            <UniqueIdentifier>{4E16D7E2-F3AE-41DB-9B27-B34D5F7D6166}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\Hierarchy">
+            <UniqueIdentifier>{F34E4403-CB4E-48F7-AFCF-676C96169476}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\ImGuiManager">
+            <UniqueIdentifier>{B3610B2D-3073-4009-81F7-68C2824D9C22}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\InputManager">
+            <UniqueIdentifier>{77E1B790-7D97-4060-AFEB-0AAEA3446578}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\JsonManager">
+            <UniqueIdentifier>{83449215-1352-41EE-913C-CAC3A454E6BB}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\ModelManager">
+            <UniqueIdentifier>{42CFF04A-1346-4AE6-835D-408267F70B9E}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\PostEffectSystem">
+            <UniqueIdentifier>{8CDC9932-8679-4E4C-B01D-941094C65D35}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\RuntimeScriptSystem">
+            <UniqueIdentifier>{50EA7D3D-8CAB-4C60-B77C-C0F83DC96D0F}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\SceneManager">
+            <UniqueIdentifier>{83CB186B-A19D-4B31-9D9A-6D15A30EEF2C}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\SceneTransitionDrawer">
+            <UniqueIdentifier>{3BE3B693-AB6D-4430-9F78-2C0E744446B1}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\TextSystem">
+            <UniqueIdentifier>{066CC2E8-9F55-4E1D-B19F-DBC27CB4AB30}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\TextureManager">
+            <UniqueIdentifier>{64D93CEB-EEE6-4D97-BB6D-95D84B04E128}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\VideoManager">
+            <UniqueIdentifier>{A3956648-8B08-447D-B23C-E6032024AA15}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\WindowManager">
+            <UniqueIdentifier>{F2D24F87-A134-40CD-90A8-25692506E658}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Collision\2D">
+            <UniqueIdentifier>{0107F5BB-91C9-4063-9115-BCFC9287B56D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Collision\3D">
+            <UniqueIdentifier>{1E972AC7-F167-4167-B4BB-93DEFB3DC1FD}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Components\3D&amp;2D">
+            <UniqueIdentifier>{1A83CDD7-6357-4090-8D64-0201105B699B}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Components\Only2D">
+            <UniqueIdentifier>{1B938C3B-BCD4-49DC-B4E2-646FFFD1B852}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Components\Only3D">
+            <UniqueIdentifier>{F41BA3DA-6AF6-4C56-8965-D62937A1F68A}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\Particle\Emitter">
+            <UniqueIdentifier>{03120474-11C2-4FB9-9DD4-D2245FFECAEC}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\Bloom">
+            <UniqueIdentifier>{031C345E-E597-4E7F-941D-5DE7810F1776}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\DoF">
+            <UniqueIdentifier>{7E387ACD-2C5B-44A6-AD7F-65C850F29186}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\Fog">
+            <UniqueIdentifier>{E053C750-E608-4262-B2C0-E1C2152BED49}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\GaussianFilter">
+            <UniqueIdentifier>{C6EF369F-34C4-4825-9E55-F0049524349A}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\Glitch">
+            <UniqueIdentifier>{02E671BC-664D-4C15-AB2B-F1B77130F9B6}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\GrayScale">
+            <UniqueIdentifier>{D55B1F9A-5033-4BA7-98FD-16DDCC83676D}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\RGBShift">
+            <UniqueIdentifier>{23A28A4D-071B-4F23-BC93-6881C456E34B}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\ScanLine">
+            <UniqueIdentifier>{4485B0C5-9F13-44E2-A81F-45A4E77F1D54}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Basic\PostProcess\Vignette">
+            <UniqueIdentifier>{0D404ABF-1B35-48DE-8DAE-618501099573}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\AudioManager\XAPO">
+            <UniqueIdentifier>{5F5B8638-2CC8-48DB-A113-C7410B80BBF0}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\DxManager\DescriptorHeap">
+            <UniqueIdentifier>{F55A8B75-AFE6-4D65-8E50-775B55B1CECA}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\DxManager\PSO">
+            <UniqueIdentifier>{F825149D-8F6B-4E2B-88C1-E31B3606F8A7}</UniqueIdentifier>
+        </Filter>
+        <Filter Include="SEED\Source\Manager\EffectSystem\GPUParticle">
+            <UniqueIdentifier>{C1A2818D-B116-4379-9934-107309965B29}</UniqueIdentifier>
+        </Filter>
+    </ItemGroup>
+    <ItemGroup>
+        <ClCompile Include="Game\Components\ResultUpdateComponent.cpp">
+            <Filter>Game\Components</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Config\PlaySettings.cpp">
+            <Filter>Game\Config</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Result\PlayResult.cpp">
+            <Filter>Game\Objects\Result</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\AnimCurveComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp">
+            <Filter>SEED\Source\Basic\Dictionary</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\GameSystem.cpp">
+            <Filter>Game</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Manager\NotesEditor.cpp">
+            <Filter>Game\Manager</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Manager\RythmGameManager.cpp">
+            <Filter>Game\Manager</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Manager\SongSelector.cpp">
+            <Filter>Game\Manager</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Combo\ComboObject.cpp">
+            <Filter>Game\Objects\Combo</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Judgement\Judgement.cpp">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Judgement\PlayField.cpp">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\NotesData.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_Base.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp">
+            <Filter>Game\Objects\SongSelect</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp">
+            <Filter>Game\Objects\SongSelect</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp">
+            <Filter>Game\Scene\Scene_Clear</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp">
+            <Filter>Game\Scene\Scene_Game</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp">
+            <Filter>Game\Scene\Scene_Load</Filter>
+        </ClCompile>
+        <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp">
+            <Filter>Game\Scene\Scene_Title</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\Timer.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
+            <Filter>SEED\Lib\JsonAdapter</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Circle.cpp">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.cpp">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\IComponent.cpp">
+            <Filter>SEED\Source\Basic\Components</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\3D&amp;2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.cpp">
+            <Filter>SEED\Source\Basic\Components\3D&amp;2D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Object\GameObject.cpp">
+            <Filter>SEED\Source\Basic\Object</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Object\GameObject2D.cpp">
+            <Filter>SEED\Source\Basic\Object</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\Bloom</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\DoF\DoF.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\DoF</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\Fog\Fog.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\Fog</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\GaussianFilter</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\Glitch</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\GrayScale</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\IPostProcess.cpp">
+            <Filter>SEED\Source\Basic\PostProcess</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\RGBShift</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\ScanLine</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.cpp">
+            <Filter>SEED\Source\Basic\PostProcess\Vignette</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\SceneTransition\ISceneTransition.cpp">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.cpp">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Shapes\Ring.cpp">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\BaseLight.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\DirectionalLight.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\PointLight.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\SpotLight.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\TextBox.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\Transform.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Scene\SceneRegister.cpp">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Dictionary\AudioDictionary.cpp">
+            <Filter>SEED\Source\Basic\Dictionary</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor.cpp">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.cpp">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\CollisionManager\Collision.cpp">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\CollisionManager\CollisionManager.cpp">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.cpp">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.cpp">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.cpp">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\LocalFunc.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="main.cpp"/>
+        <ClCompile Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.cpp">
+            <Filter>SEED\Lib\Functions\LocalFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\DxFunc.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\Easing.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\MatrixFunc.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\MyFunc.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\MyMath.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Functions\MyFunc\ShapeMath.cpp">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Shapes\Quad.cpp">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Shapes\Triangle.cpp">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\AccelerarionField.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\Model.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Structs\Sprite.cpp">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Tensor\Quaternion.cpp">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Tensor\Vector2.cpp">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Tensor\Vector3.cpp">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Lib\Tensor\Vector4.cpp">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\AudioManager\AudioManager.cpp">
+            <Filter>SEED\Source\Manager\AudioManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp">
+            <Filter>SEED\Source\Manager\AudioManager\XAPO</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\CameraManager\CameraManager.cpp">
+            <Filter>SEED\Source\Manager\CameraManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\ClockManager\ClockManager.cpp">
+            <Filter>SEED\Source\Manager\ClockManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DxManager.cpp">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp">
+            <Filter>SEED\Source\Manager\ImGuiManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp">
+            <Filter>SEED\Source\Manager\PostEffectSystem</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\PolygonManager.cpp">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp">
+            <Filter>SEED\Source\Manager\PostEffectSystem</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.cpp">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\PSO\Pipeline.cpp">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\PSO\PSOManager.cpp">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\PSO\RootSignature.cpp">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\DxManager\ViewManager.cpp">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp">
+            <Filter>SEED\Source\Manager\EffectSystem</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp">
+            <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp">
+            <Filter>SEED\Source\Manager\Hierarchy</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiManager.cpp">
+            <Filter>SEED\Source\Manager\ImGuiManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\InputManager\InputManager.cpp">
+            <Filter>SEED\Source\Manager\InputManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\JsonManager\JsonManager.cpp">
+            <Filter>SEED\Source\Manager\JsonManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\ModelManager\ModelManager.cpp">
+            <Filter>SEED\Source\Manager\ModelManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp">
+            <Filter>SEED\Source\Manager\RuntimeScriptSystem</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp">
+            <Filter>SEED\Source\Manager\SceneManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.cpp">
+            <Filter>SEED\Source\Manager\SceneTransitionDrawer</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\TextSystem\TextSystem.cpp">
+            <Filter>SEED\Source\Manager\TextSystem</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\TextureManager\TextureManager.cpp">
+            <Filter>SEED\Source\Manager\TextureManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\VideoManager\VideoManager.cpp">
+            <Filter>SEED\Source\Manager\VideoManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\WindowManager\WindowInfo.cpp">
+            <Filter>SEED\Source\Manager\WindowManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Manager\WindowManager\WindowManager.cpp">
+            <Filter>SEED\Source\Manager\WindowManager</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Camera\BaseCamera.cpp">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Camera\DebugCamera.cpp">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Camera\FollowCamera.cpp">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\ColliderAnimationData.cpp">
+            <Filter>SEED\Source\Basic\Collision</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_AABB.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Line.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_OBB.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp">
+            <Filter>SEED\Source\Basic\Collision</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp">
+            <Filter>SEED\Source\Basic\Particle</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.cpp">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.cpp">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\Basic\Particle\Particle_Model.cpp">
+            <Filter>SEED\Source\Basic\Particle</Filter>
+        </ClCompile>
+        <ClCompile Include="SEED\Source\SEED.cpp">
+            <Filter>SEED\Source</Filter>
+        </ClCompile>
+        <ClInclude Include="Game\Components\ResultUpdateComponent.h">
+            <Filter>Game\Components</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Config\PlaySettings.h">
+            <Filter>Game\Config</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_Warning.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\enums\InterpolateType.h">
+            <Filter>SEED\Lib\enums</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only2D\AnimCurve2DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\AnimCurveComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h">
+            <Filter>SEED\Source\Basic\Dictionary</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\GameSystem.h">
+            <Filter>Game</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Manager\NotesEditor.h">
+            <Filter>Game\Manager</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Manager\RythmGameManager.h">
+            <Filter>Game\Manager</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Manager\SongSelector.h">
+            <Filter>Game\Manager</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Combo\ComboObject.h">
+            <Filter>Game\Objects\Combo</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Judgement\AnswerLane.h">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Judgement\Judgement.h">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Judgement\LaneBit.h">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Judgement\PlayerInput.h">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Judgement\PlayField.h">
+            <Filter>Game\Objects\Judgement</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\NotesData.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_Base.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_Hold.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_Tap.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Notes\Note_Wheel.h">
+            <Filter>Game\Objects\Notes</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Result\PlayResult.h">
+            <Filter>Game\Objects\Result</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h">
+            <Filter>Game\Objects\SongSelect</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\SongSelect\SongInfo.h">
+            <Filter>Game\Objects\SongSelect</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h">
+            <Filter>Game\Scene\Scene_Clear</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h">
+            <Filter>Game\Scene\Scene_Game</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h">
+            <Filter>Game\Scene\Scene_Game\State</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h">
+            <Filter>Game\Scene\Scene_Load</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h">
+            <Filter>Game\Scene\Scene_Title</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
+            <Filter>SEED\Lib\Random</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
+            <Filter>SEED\Lib\Input</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Input\InputMapper.h">
+            <Filter>SEED\Lib\Input</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
+            <Filter>SEED\Lib\JsonAdapter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
+            <Filter>SEED\Lib\MagicEnumAdapter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Circle.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Rect.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Timer.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.h">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Circle.h">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider_Quad2D.h">
+            <Filter>SEED\Source\Basic\Collision\2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only2D\Collision2DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\Collision3DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\ComponentDictionary.h">
+            <Filter>SEED\Source\Basic\Components</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\JumpComponent.h">
+            <Filter>SEED\Source\Basic\Components\3D&amp;2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\Move3DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\Gravity3DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\SpotLightComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\Only3D\ModelRenderComponent.h">
+            <Filter>SEED\Source\Basic\Components\Only3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\IComponent.h">
+            <Filter>SEED\Source\Basic\Components</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h">
+            <Filter>SEED\Source\Basic\Components\3D&amp;2D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Object\GameObject.h">
+            <Filter>SEED\Source\Basic\Object</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h">
+            <Filter>Game\Objects\FieldObject</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h">
+            <Filter>SEED\Source\Basic\Object</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h">
+            <Filter>SEED\Source\Basic\PostProcess\Bloom</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\DoF\DoF.h">
+            <Filter>SEED\Source\Basic\PostProcess\DoF</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\Fog.h">
+            <Filter>SEED\Source\Basic\PostProcess\Fog</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\Fog\FogParam.h">
+            <Filter>SEED\Source\Basic\PostProcess\Fog</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\BlurParam.h">
+            <Filter>SEED\Source\Basic\PostProcess\GaussianFilter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\GaussianFilter\GaussianFilter.h">
+            <Filter>SEED\Source\Basic\PostProcess\GaussianFilter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\Glitch\Glitch.h">
+            <Filter>SEED\Source\Basic\PostProcess\Glitch</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\GrayScale\GrayScale.h">
+            <Filter>SEED\Source\Basic\PostProcess\GrayScale</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\IPostProcess.h">
+            <Filter>SEED\Source\Basic\PostProcess</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\RGBShift\RGBShift.h">
+            <Filter>SEED\Source\Basic\PostProcess\RGBShift</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\ScanLine\ScanLine.h">
+            <Filter>SEED\Source\Basic\PostProcess\ScanLine</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\PostProcess\Vignette\Vignette.h">
+            <Filter>SEED\Source\Basic\PostProcess\Vignette</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\SceneTransition\ISceneTransition.h">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\SceneTransition\BlockSlideTransition.h">
+            <Filter>SEED\Source\Basic\SceneTransition</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\External\stb\stb_truetype.h">
+            <Filter>SEED\External\stb</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Cylinder.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Ring.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\BaseLight.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\CameraForGPU.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\PointLight.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\SkyBox.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\SpotLight.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\TextBox.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Scene\SceneRegister.h">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Dictionary\AudioDictionary.h">
+            <Filter>SEED\Source\Basic\Dictionary</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor.h">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CollisionManager\ColliderEditor2D.h">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CollisionManager\Collision.h">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionData.h">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CollisionManager\CollisionManager.h">
+            <Filter>SEED\Source\Manager\CollisionManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_DSV.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="Environment\Environment.h">
+            <Filter>Environment</Filter>
+        </ClInclude>
+        <ClInclude Include="Environment\Physics.h">
+            <Filter>Environment</Filter>
+        </ClInclude>
+        <ClInclude Include="Game\Objects\Enums\ObjectType.h">
+            <Filter>Game\Objects\Enums</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h">
+            <Filter>SEED\Source\Basic\Scene</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\enums\Direction.h">
+            <Filter>SEED\Lib\enums</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\LocalFunc.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Line.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\sphere.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\BitSet.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DxBuffer.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DxReadbackBuffer.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h">
+            <Filter>SEED\Source\Manager\Hierarchy</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.h">
+            <Filter>SEED\Source\Manager\ImGuiManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h">
+            <Filter>SEED\Source\Manager\PostEffectSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h">
+            <Filter>SEED\Source\Manager\EffectSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h">
+            <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h">
+            <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h">
+            <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h">
+            <Filter>SEED\Source\Manager\Hierarchy</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h">
+            <Filter>SEED\Source\Manager\ImGuiManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h">
+            <Filter>SEED\Source\Manager\InputManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\InputManager\MouseDefinitions.h">
+            <Filter>SEED\Source\Manager\InputManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\InputManager\PadDefinitions.h">
+            <Filter>SEED\Source\Manager\InputManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.h">
+            <Filter>SEED\Lib\Functions\LocalFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\DxFunc.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\Easing.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\MatrixFunc.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\MyFunc.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\MyMath.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Functions\MyFunc\ShapeMath.h">
+            <Filter>SEED\Lib\Functions\MyFunc</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\includes.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\include_matrixes.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\include_shapes.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\include_tensors.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\include_useful.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Includes\include_vectors.h">
+            <Filter>SEED\Lib\Includes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\AABB.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\OBB.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Quad.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Shapes\Triangle.h">
+            <Filter>SEED\Lib\Shapes</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\AccelerarionField.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\blendMode.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\CS_Buffers.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\DirectionalLight.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\DrawLocation.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\ModelAnimation.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\OffsetData.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Material.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Model.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\modelData.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Range1D.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Range2D.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Range3D.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Sprite.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\Transform.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Structs\VertexData.h">
+            <Filter>SEED\Lib\Structs</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Matrix2x2.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Matrix3x3.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Matrix4x4.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Quaternion.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Vector2.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Vector3.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Lib\Tensor\Vector4.h">
+            <Filter>SEED\Lib\Tensor</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\AudioManager\AudioManager.h">
+            <Filter>SEED\Source\Manager\AudioManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\AudioManager\XAPO\XAPO_Pitch.h">
+            <Filter>SEED\Source\Manager\AudioManager\XAPO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\CameraManager\CameraManager.h">
+            <Filter>SEED\Source\Manager\CameraManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\ClockManager\ClockManager.h">
+            <Filter>SEED\Source\Manager\ClockManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h">
+            <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\DxManager.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.h">
+            <Filter>SEED\Source\Manager\PostEffectSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PolygonManager.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\Pipeline.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSOManager.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\PSO\RootSignature.h">
+            <Filter>SEED\Source\Manager\DxManager\PSO</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\DxManager\ViewManager.h">
+            <Filter>SEED\Source\Manager\DxManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiManager.h">
+            <Filter>SEED\Source\Manager\ImGuiManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\InputManager\InputManager.h">
+            <Filter>SEED\Source\Manager\InputManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\JsonManager\JsonManager.h">
+            <Filter>SEED\Source\Manager\JsonManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\ModelManager\ModelManager.h">
+            <Filter>SEED\Source\Manager\ModelManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h">
+            <Filter>SEED\Source\Manager\RuntimeScriptSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h">
+            <Filter>SEED\Source\Manager\RuntimeScriptSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\SceneManager\SceneManager.h">
+            <Filter>SEED\Source\Manager\SceneManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\SceneTransitionDrawer\SceneTransitionDrawer.h">
+            <Filter>SEED\Source\Manager\SceneTransitionDrawer</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\TextSystem\FontData.h">
+            <Filter>SEED\Source\Manager\TextSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\TextSystem\TextSystem.h">
+            <Filter>SEED\Source\Manager\TextSystem</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\TextureManager\TextureManager.h">
+            <Filter>SEED\Source\Manager\TextureManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\VideoManager\VideoManager.h">
+            <Filter>SEED\Source\Manager\VideoManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\WindowManager\WindowInfo.h">
+            <Filter>SEED\Source\Manager\WindowManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Manager\WindowManager\WindowManager.h">
+            <Filter>SEED\Source\Manager\WindowManager</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Camera\BaseCamera.h">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Camera\DebugCamera.h">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Camera\FollowCamera.h">
+            <Filter>SEED\Source\Basic\Camera</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\ColliderAnimationData.h">
+            <Filter>SEED\Source\Basic\Collision</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_AABB.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Capsule.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Line.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_OBB.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h">
+            <Filter>SEED\Source\Basic\Collision\3D</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Collision\Octree.h">
+            <Filter>SEED\Source\Basic\Collision</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h">
+            <Filter>SEED\Source\Basic\Particle</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.h">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.h">
+            <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\Basic\Particle\Particle_Model.h">
+            <Filter>SEED\Source\Basic\Particle</Filter>
+        </ClInclude>
+        <ClInclude Include="SEED\Source\SEED.h">
+            <Filter>SEED\Source</Filter>
+        </ClInclude>
+        <FxCompile Include="Resources\Shaders\Bloom.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\DoF.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\DownSample.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Fog.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterX.CS.hlsl">
+            <Filter>Resources\Shaders\GaussianFilter</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GaussianFilter\GaussianFilterY.CS.hlsl">
+            <Filter>Resources\Shaders\GaussianFilter</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Glitch.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GPUParticle\EmitterUpdate.CS.hlsl">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GPUParticle\GPUParticleInit.CS.hlsl">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GPUParticle\Particle.PS.hlsl">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GPUParticle\Particle.VS.hlsl">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GPUParticle\ParticleUpdate.CS.hlsl">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\GrayScale.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Object3D.MS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Object3d.PS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Object3d.VS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\RGBShift.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\ScanLine.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Skinning.VS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\SkyBox.PS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\SkyBox.VS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Text.PS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Video\NV12ToRGBA.CS.hlsl">
+            <Filter>Resources\Shaders\Video</Filter>
+        </FxCompile>
+        <FxCompile Include="Resources\Shaders\Vignette.CS.hlsl">
+            <Filter>Resources\Shaders</Filter>
+        </FxCompile>
+        <None Include="Resources\Shaders\Camera.hlsli">
+            <Filter>Resources\Shaders</Filter>
+        </None>
+        <None Include="Resources\Shaders\GPUParticle\GPUParticle.hlsli">
+            <Filter>Resources\Shaders\GPUParticle</Filter>
+        </None>
+        <None Include="Resources\Shaders\Lighting.hlsli">
+            <Filter>Resources\Shaders</Filter>
+        </None>
+        <None Include="Resources\Shaders\Material.hlsli">
+            <Filter>Resources\Shaders</Filter>
+        </None>
+        <None Include="Resources\Shaders\Math\Math.hlsli">
+            <Filter>Resources\Shaders\Math</Filter>
+        </None>
+        <None Include="Resources\Shaders\Math\Numbers.hlsli">
+            <Filter>Resources\Shaders\Math</Filter>
+        </None>
+        <None Include="Resources\Shaders\Math\Quaternion.hlsli">
+            <Filter>Resources\Shaders\Math</Filter>
+        </None>
+        <None Include="Resources\Shaders\Object3D.hlsli">
+            <Filter>Resources\Shaders</Filter>
+        </None>
+        <None Include="Resources\Shaders\Random\Random.hlsli">
+            <Filter>Resources\Shaders\Random</Filter>
+        </None>
+    </ItemGroup>
 </Project>

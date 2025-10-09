@@ -36,7 +36,7 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
 
     // カメラ位置の設定
     if(cameraPointObj_){
-        const Transform* cameraPoint = cameraPointObj_->GetComponent<AnimCurveComponent>()->GetControlPoint(0);
+        const Transform* cameraPoint = cameraPointObj_->GetComponent<Routine3DComponent>()->GetControlPoint(0);
         SEED::GetMainCamera()->SetTransform(*cameraPoint);
     }
 
@@ -113,14 +113,14 @@ void ResultUpdate2DComponent::Update(){
     // 一度のみの初期化処理
     if(!isInitialized_){
         // 曲名
-        uiObjects_["Title"]->GetComponent<AnimCurve2DComponent>()->Play();
+        uiObjects_["Title"]->GetComponent<Routine2DComponent>()->Play();
         uiObjects_["Title"]->GetComponent<UIComponent>()->GetText(0).text = playResult_.songData.value("songName","none");
         // 上から出てくるやつ
-        uiObjects_["Top"]->GetComponent<AnimCurve2DComponent>()->Play();
+        uiObjects_["Top"]->GetComponent<Routine2DComponent>()->Play();
         // 下から出てくるやつ
-        uiObjects_["Bottom"]->GetComponent<AnimCurve2DComponent>()->Play();
+        uiObjects_["Bottom"]->GetComponent<Routine2DComponent>()->Play();
         // jacket
-        uiObjects_["Jacket"]->GetComponent<AnimCurve2DComponent>()->Play();
+        uiObjects_["Jacket"]->GetComponent<Routine2DComponent>()->Play();
         uiObjects_["Jacket"]->GetComponent<UIComponent>()->GetSprite(0).GH = TextureManager::LoadTexture(Scene_Clear::GetJacketPath());
         isInitialized_ = true;
     }
@@ -132,17 +132,17 @@ void ResultUpdate2DComponent::Update(){
         case 0:
         {
             // 難易度
-            uiObjects_["Difficulty"]->GetComponent<AnimCurve2DComponent>()->Play();
+            uiObjects_["Difficulty"]->GetComponent<Routine2DComponent>()->Play();
             int difficulty = playResult_.songData.value("difficulty",0);
             uiObjects_["Difficulty"]->GetComponent<UIComponent>()->GetText(0).text = std::to_string(difficulty);
             // 各判定
-            uiObjects_["Perfect"]->GetComponent<AnimCurve2DComponent>()->Play();
+            uiObjects_["Perfect"]->GetComponent<Routine2DComponent>()->Play();
             uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[0]);
-            uiObjects_["Great"]->GetComponent<AnimCurve2DComponent>()->Play();
+            uiObjects_["Great"]->GetComponent<Routine2DComponent>()->Play();
             uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[1]);
-            uiObjects_["Good"]->GetComponent<AnimCurve2DComponent>()->Play();
+            uiObjects_["Good"]->GetComponent<Routine2DComponent>()->Play();
             uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[2]);
-            uiObjects_["Miss"]->GetComponent<AnimCurve2DComponent>()->Play();
+            uiObjects_["Miss"]->GetComponent<Routine2DComponent>()->Play();
             uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[3]);
             // コンボ
             uiObjects_["Combo"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
@@ -165,12 +165,12 @@ void ResultUpdate2DComponent::Update(){
         case 2:
             // APアイコン
             if(playResult_.isAllPerfect){
-                uiObjects_["AP"]->GetComponent<AnimCurve2DComponent>()->Play();
+                uiObjects_["AP"]->GetComponent<Routine2DComponent>()->Play();
 
             } else{
                 // FCアイコン
                 if(playResult_.isFullCombo){
-                    uiObjects_["FC"]->GetComponent<AnimCurve2DComponent>()->Play();
+                    uiObjects_["FC"]->GetComponent<Routine2DComponent>()->Play();
                 }
             }
 

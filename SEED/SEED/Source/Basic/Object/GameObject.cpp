@@ -438,13 +438,10 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
             auto* jumpComponent = AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(componentJson);
 
-        } else if(componentType == "Routine"){
+        } else if(componentType == "Routine3D"){
             auto* routineComponent = AddComponent<Routine3DComponent>();
             routineComponent->LoadFromJson(componentJson);
 
-        } else if(componentType == "AnimCurve"){
-            auto* routineComponent = AddComponent<AnimCurveComponent>();
-            routineComponent->LoadFromJson(componentJson);
         }
     }
 }
@@ -574,12 +571,8 @@ void GameObject::EditGUI(){
             AddComponent<JumpComponent>();
             ImGui::CloseCurrentPopup();
         }
-        if(ImGui::Button("RoutineComponent / ルーチン")){
+        if(ImGui::Button("Routine3DComponent / ルーチン")){
             AddComponent<Routine3DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("AnimCurveComponent / アニメーションカーブ")){
-            AddComponent<AnimCurveComponent>();
             ImGui::CloseCurrentPopup();
         }
 

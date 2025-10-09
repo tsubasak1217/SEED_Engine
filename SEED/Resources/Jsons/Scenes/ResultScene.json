@@ -121,7 +121,7 @@
                 {
                     "componentID": 2,
                     "componentTag": "AnimCurve2D_ID:2",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": 0.0,
@@ -339,7 +339,7 @@
                 {
                     "componentID": 10,
                     "componentTag": "AnimCurve2D_ID:10",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -557,7 +557,7 @@
                 {
                     "componentID": 11,
                     "componentTag": "AnimCurve2D_ID:11",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -775,7 +775,7 @@
                 {
                     "componentID": 12,
                     "componentTag": "AnimCurve2D_ID:12",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -993,7 +993,7 @@
                 {
                     "componentID": 13,
                     "componentTag": "AnimCurve2D_ID:13",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -1113,7 +1113,7 @@
                 {
                     "componentID": 14,
                     "componentTag": "AnimCurve2D_ID:14",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -1233,7 +1233,7 @@
                 {
                     "componentID": 15,
                     "componentTag": "AnimCurve2D_ID:15",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -0.23318509757518768,
@@ -1353,7 +1353,7 @@
                 {
                     "componentID": 19,
                     "componentTag": "AnimCurve2D_ID:19",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": 7.166999816894531,
@@ -1967,7 +1967,7 @@
                 {
                     "componentID": 3,
                     "componentTag": "AnimCurve2D_ID:3",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -6.300000190734863,
@@ -2005,10 +2005,10 @@
             "objectName": "Difficulty",
             "objectType": 0,
             "transform": {
-                "rotate": 0.0,
+                "rotate": -6.300000190734863,
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "translate": {
                     "x": 86.8290023803711,
@@ -2137,7 +2137,7 @@
                 {
                     "componentID": 41,
                     "componentTag": "AnimCurve2D_ID:41",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -6.300000190734863,
@@ -2307,7 +2307,7 @@
                 {
                     "componentID": 41,
                     "componentTag": "AnimCurve2D_ID:41",
-                    "componentType": "AnimCurve2D",
+                    "componentType": "Routine2D",
                     "controlPoints": [
                         {
                             "rotate": -6.300000190734863,
@@ -2345,10 +2345,10 @@
             "objectName": "FC",
             "objectType": 0,
             "transform": {
-                "rotate": 0.0,
+                "rotate": -6.300000190734863,
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0
+                    "x": 0.0,
+                    "y": 0.0
                 },
                 "translate": {
                     "x": 86.97369384765625,

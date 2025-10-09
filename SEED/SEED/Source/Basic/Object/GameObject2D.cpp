@@ -427,8 +427,8 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
             auto* uiComponent = AddComponent<UIComponent>();
             uiComponent->LoadFromJson(componentJson);
 
-        } else if(componentType == "AnimCurve2D"){
-            auto* uiComponent = AddComponent<AnimCurve2DComponent>();
+        } else if(componentType == "Routine2D"){
+            auto* uiComponent = AddComponent<Routine2DComponent>();
             uiComponent->LoadFromJson(componentJson);
 
         } else{
@@ -549,8 +549,8 @@ void GameObject2D::EditGUI(){
             AddComponent<UIComponent>();
             ImGui::CloseCurrentPopup();
         }
-        if(ImGui::Button("AnimCurve2DComponent / アニメーションカーブ")){
-            AddComponent<AnimCurve2DComponent>();
+        if(ImGui::Button("Routine2DComponent / アニメーションカーブ")){
+            AddComponent<Routine2DComponent>();
             ImGui::CloseCurrentPopup();
         }
 

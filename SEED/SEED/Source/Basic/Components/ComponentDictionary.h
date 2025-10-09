@@ -5,7 +5,7 @@
 // 2D専用のコンポーネント
 #include <SEED/Source/Basic/Components/Only2D/Collision2DComponent.h>
 #include <SEED/Source/Basic/Components/Only2D/UIComponent.h>
-#include <SEED/Source/Basic/Components/Only2D/AnimCurve2DComponent.h>
+#include <SEED/Source/Basic/Components/Only2D/Routine2DComponent.h>
 
 // 3D専用のコンポーネント
 #include <SEED/Source/Basic/Components/Only3D/ModelRenderComponent.h>
@@ -14,7 +14,6 @@
 #include <SEED/Source/Basic/Components/Only3D/Gravity3DComponent.h>
 #include <SEED/Source/Basic/Components/Only3D/Move3DComponent.h>
 #include <SEED/Source/Basic/Components/Only3D/Routine3DComponent.h>
-#include <SEED/Source/Basic/Components/Only3D/AnimCurveComponent.h>
 
 // 3D・2D共通のコンポーネント
 #include <SEED/Source/Basic/Components/3D&2D/TextComponent.h>

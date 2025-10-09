@@ -8,10 +8,10 @@
 #include <memory>
 #include <vector>
 
-class AnimCurve2DComponent : public IComponent{
+class Routine2DComponent : public IComponent{
 public:
-    AnimCurve2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
-    ~AnimCurve2DComponent() = default;
+    Routine2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
+    ~Routine2DComponent() = default;
     void BeginFrame()override;
     void Update()override;
     void Draw()override;

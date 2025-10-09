@@ -1,14 +1,14 @@
-#include "AnimCurveComponent.h"
+#include "Routine2DComponent.h"
 #include <SEED/Source/SEED.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-AnimCurveComponent::AnimCurveComponent(GameObject* pOwner, const std::string& tagName)
+Routine2DComponent::Routine2DComponent(GameObject2D* pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
 
     if(tagName == ""){
-        componentTag_ = "AnimCurve_ID:" + std::to_string(componentID_);
+        componentTag_ = "Routine2D_ID:" + std::to_string(componentID_);
     }
 
     if(!isTextureLoaded_){
@@ -23,24 +23,27 @@ AnimCurveComponent::AnimCurveComponent(GameObject* pOwner, const std::string& ta
 #ifdef _DEBUG
     // spriteの初期化
     isDebugItemVisible_ = true;
-    debugPointModel_ = Model("DefaultAssets/axis/axis.obj");
+    debugPointSprite_ = Sprite("DefaultAssets/symmetryORE1.png");
+    debugPointSprite_.size = { 64.0f,64.0f };
+    debugPointSprite_.anchorPoint = { 0.5f,0.5f };
+    debugPointSprite_.layer = -100;
 #endif // _DEBUG
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // フレーム開始時処理
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::BeginFrame(){
+void Routine2DComponent::BeginFrame(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 更新処理
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::Update(){
+void Routine2DComponent::Update(){
 
     if(controlPoints_.size() >= 2){
         // 補間方法に応じて制御点の補間
-        Transform result;
+        Transform2D result;
         float t = timer_.GetEase(easingType_);
         switch(interpolationType_){
         case InterpolationType::LINEAR:
@@ -58,9 +61,9 @@ void AnimCurveComponent::Update(){
         }
 
         // オーナーに反映
-        owner_.owner3D->SetWorldScale(result.scale);
-        owner_.owner3D->SetWorldRotate(result.rotate);
-        owner_.owner3D->SetWorldTranslate(result.translate);
+        owner_.owner2D->SetWorldScale(result.scale);
+        owner_.owner2D->SetWorldRotate(result.rotate);
+        owner_.owner2D->SetWorldTranslate(result.translate);
     }
 
     // 再生中なら更新
@@ -81,7 +84,7 @@ void AnimCurveComponent::Update(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 描画処理
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::Draw(){
+void Routine2DComponent::Draw(){
     // デバッグ用に制御点と補間曲線を描画
 #ifdef _DEBUG
 
@@ -91,16 +94,15 @@ void AnimCurveComponent::Draw(){
 
     // 制御点にデバッグ用のスプライトを描画
     for(auto& point : controlPoints_){
-        debugPointModel_.transform_ = point;
-        debugPointModel_.UpdateMatrix();
-        debugPointModel_.Draw();
+        debugPointSprite_.transform = point;
+        SEED::DrawSprite(debugPointSprite_);
     }
 
     // 制御点が2つ未満ならライン描画しない
     if(controlPoints_.size() < 2){ return; }
 
     // 制御点の座標リストを作成
-    std::vector<Vector3> points;
+    std::vector<Vector2> points;
     for(auto& point : controlPoints_){
         points.push_back(point.translate);
     }
@@ -109,7 +111,7 @@ void AnimCurveComponent::Draw(){
     switch(interpolationType_){
     case InterpolationType::LINEAR:
         for(int i = 0; i < controlPoints_.size() - 1; i++){
-            SEED::DrawLine(controlPoints_[i].translate, controlPoints_[i + 1].translate, { 0.0f,0.0f,1.0f,1.0f });
+            SEED::DrawLine2D(controlPoints_[i].translate, controlPoints_[i + 1].translate, { 0.0f,0.0f,1.0f,1.0f });
         }
         break;
     case InterpolationType::CATMULLROM:
@@ -128,23 +130,23 @@ void AnimCurveComponent::Draw(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // フレーム終了時処理
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::EndFrame(){
+void Routine2DComponent::EndFrame(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 初期化・終了処理
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::Finalize(){
+void Routine2DComponent::Finalize(){
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GUI編集
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::EditGUI(){
+void Routine2DComponent::EditGUI(){
 #ifdef _DEBUG
 
-    // 編集の開始
+    // 編集も開始
     isEditting_ = true;
     ImGui::Indent();
     static std::string label;
@@ -162,25 +164,14 @@ void AnimCurveComponent::EditGUI(){
             // ポインタをUINTに変換して一意なIDを生成
             std::string ptrStr = std::to_string(reinterpret_cast<uintptr_t>(&controlPoints_[i]));
 
-            // トランスフォームをデバッグカメラに適用
-            label = "デバッグカメラのトランスフォームを適用##" + ptrStr;
-            if(ImGui::Button(label.c_str())){
-                controlPoints_[i] = SEED::GetCamera("debug")->GetTransform();
-            }
-
             // トランスフォームの編集
             ImGui::SeparatorText("トランスフォーム");
             label = "座標##" + ptrStr;
             ImGui::DragFloat2(label.c_str(), &controlPoints_[i].translate.x);
+            label = "回転##" + ptrStr;
+            ImGui::DragFloat(label.c_str(), &controlPoints_[i].rotate, 0.05f);
             label = "スケール##" + ptrStr;
             ImGui::DragFloat2(label.c_str(), &controlPoints_[i].scale.x, 0.05f);
-            label = "オイラー回転##" + ptrStr;
-            static Vector3 eulerAngle;
-            ImGui::DragFloat3(label.c_str(), &eulerAngle.x, 0.05f);
-            label = "オイラー回転をQuaternionに適用##" + ptrStr;
-            if(ImGui::Button(label.c_str())){
-                controlPoints_[i].rotate = Quaternion::ToQuaternion(eulerAngle);
-            }
 
             // 削除ボタン
             ImGui::SeparatorText("削除");
@@ -201,9 +192,9 @@ void AnimCurveComponent::EditGUI(){
     ImGui::SeparatorText("制御点の追加");
     if(ImGui::Button("追加")){
         // 追加する制御点の初期値を設定
-        Transform newPoint;
+        Transform2D newPoint;
         if(controlPoints_.empty()){
-            newPoint = owner_.owner3D->GetWorldTransform();
+            newPoint = owner_.owner2D->GetWorldTransform();
         } else{
             newPoint = controlPoints_.back();
         }
@@ -253,19 +244,9 @@ void AnimCurveComponent::EditGUI(){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// コントロールポイントの取得
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const Transform* AnimCurveComponent::GetControlPoint(int32_t index) const{
-    if(index < 0 || index >= controlPoints_.size()){
-        return nullptr;
-    }
-    return &controlPoints_[index];
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // JSON読み込み・書き出し
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void AnimCurveComponent::LoadFromJson(const nlohmann::json& jsonData){
+void Routine2DComponent::LoadFromJson(const nlohmann::json& jsonData){
     IComponent::LoadFromJson(jsonData);
 
     // 制御点の読み込み
@@ -287,9 +268,9 @@ void AnimCurveComponent::LoadFromJson(const nlohmann::json& jsonData){
     }
 }
 
-nlohmann::json AnimCurveComponent::GetJsonData() const{
+nlohmann::json Routine2DComponent::GetJsonData() const{
     nlohmann::json jsonData;
-    jsonData["componentType"] = "AnimCurve";
+    jsonData["componentType"] = "Routine2D";
     jsonData.update(IComponent::GetJsonData());
 
     // 制御点

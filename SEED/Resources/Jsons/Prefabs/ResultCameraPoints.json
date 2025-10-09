@@ -4,8 +4,8 @@
             "components": [
                 {
                     "componentID": 38,
-                    "componentTag": "AnimCurve_ID:38",
-                    "componentType": "AnimCurve",
+                    "componentTag": "Routine3D_ID:38",
+                    "componentType": "Routine3D",
                     "controlPoints": [
                         {
                             "rotate": {

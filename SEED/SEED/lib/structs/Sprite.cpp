@@ -142,7 +142,7 @@ void Sprite::FromJson(const nlohmann::json& data){
 ///////////////////////////////////////////////////////////////////////////
 // 編集関数
 ///////////////////////////////////////////////////////////////////////////
-void Sprite::Edit(const std::string& hash){
+void Sprite::Edit([[maybe_unused]]const std::string& hash){
 #ifdef _DEBUG
 
     static std::string label;

@@ -39,15 +39,15 @@ public:
     static ImGuiManager* GetInstance();
     static void Initialize();
     static void Finalize();
-
     static void Draw();
-
     static void PreDraw();
     static void PostDraw();
 
 public:
-    static const std::wstring& GetWindowName(){ return instance_->windowTitle_; }
-    static void RegisterGuizmoItem(Transform* transform,const Matrix4x4& parentMat = IdentityMat4()){
+    //===================================================================================
+    // Guizmoで操作するTransformを登録
+    //===================================================================================
+    static void RegisterGuizmoItem(Transform* transform, const Matrix4x4& parentMat = IdentityMat4()){
         if(transform != nullptr){
             GuizmoInfo info;
             info.transform = transform;
@@ -55,6 +55,7 @@ public:
             instance_->guizmoInfo3D_.push_back(info);
         }
     }
+
     static void RegisterGuizmoItem(Transform2D* transform, const Matrix4x4& parentMat = IdentityMat4()){
         if(transform != nullptr){
             GuizmoInfo info;
@@ -64,15 +65,34 @@ public:
             instance_->guizmoInfo2D_.push_back(info);
         }
     }
-    static bool GetIsInputText() { return instance_->isInputText_; }
-    static void SetIsInputText(bool isInputText) { instance_->isInputText_ = isInputText; }
+
+public:
+    //===================================================================================
+    // アクセッサ
+    //===================================================================================
+    static const std::wstring& GetWindowName(){ return instance_->windowTitle_; }
+    static bool GetIsInputNow(){ return instance_->isInputNow_; }
+    static void SetIsInputNow(bool isInputNow){ instance_->isInputNow_ = isInputNow; }
+
+    //===================================================================================
+    // ヘルパー関数
+    //===================================================================================
+    static void OpenExplorerMenu(const std::string& itemPath);
 private:
+    void ExprolerMenu();
+
+private:
+    //===================================================================================
+    // メンバ変数
+    //===================================================================================
     std::wstring windowTitle_;
     ImGuizmo::OPERATION currentOperation_ = ImGuizmo::TRANSLATE; // 現在の操作モード
     ImDrawList* pDrawList_ = nullptr; // ImGuiの描画リスト
     std::list<GuizmoInfo> guizmoInfo3D_; // ImGuizmoで操作するTransformのリスト
     std::list<GuizmoInfo> guizmoInfo2D_; // ImGuizmoで操作するTransformのリスト
-    bool isInputText_=false;
+    bool isInputNow_ = false;
+    std::string explorerItemPath_;
+    bool explolerMenuOpenOrder_ = false; // エクスプローラーメニューを開く指示
 };
 
 
@@ -91,16 +111,17 @@ enum CustomImWindowFlag_{
 struct ImFunc{
 
     // カスタムウィンドウの開始関数
-    static bool CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWindowFlags flags = 0);
+    static bool CustomBegin(const std::string& name, CustomWindowFlag customFlag, ImGuiWindowFlags flags = 0);
     // シーン描画ウィンドウの関数
-    static ImVec2 SceneWindowBegin(const char* label,const std::string& cameraName = "", CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
+    static ImVec2 SceneWindowBegin(const std::string& label, const std::string& cameraName = "", CustomWindowFlag flags = MoveOnly_TitleBar, ImGuiWindowFlags normalFlags = 0);
     // フォルダ表示
     static std::string FolderView(
         const std::string& label,
         std::filesystem::path& currentPath,
         bool isFileNameOnly = false,
-        std::initializer_list<std::string> filterExts = {""},
-        std::filesystem::path rootPath = ""
+        std::initializer_list<std::string> filterExts = { "" },
+        std::filesystem::path rootPath = "",
+        bool returnDirectoryName = false
     );
 
 
@@ -115,17 +136,29 @@ struct ImFunc{
     template <typename EnumType>
     static bool ComboPair(const std::string& label, EnumType& currentValue, initializer_list<pair<string, EnumType>>items);
     static bool ComboText(const std::string& label, string& str, const vector<string>& items);
+    // ラジオボタンの拡張関数
+    template <typename EnumType>
+    static bool RadioButton(const std::string& label, EnumType& currentValue, initializer_list<string> items, int padding = 0);
+    template <typename EnumType>
+    static bool RadioButton(const std::string& label, EnumType& currentValue, const char* const* items, int size, int padding = 0);
+    // ドラッグ＆ドロップの開始関数
+    template<typename T>
+    static bool BeginDrag(const char* payloadType, const T& value, const std::string& displayName, ImGuiDragDropFlags flags = 0);
+    // ドロップされた情報を返す関数
+    template <typename T>
+    static std::optional<T> GetDroppedData(const char* payloadType);
+
     // ビットマスク
     template <typename EnumType>
     static bool BitMask(const std::string& label, EnumType& bit, initializer_list<string> bitNames);
 
     // inputTextに直接stringを渡せるように
-    static bool InputTextMultiLine(const std::string& label, string& str);
+    static bool InputTextMultiLine(const std::string& label, string& str,const ImVec2& size = ImVec2(0,0));
     static bool InputText(const std::string& label, string& str);
 
     // ImGuizmoの操作を行う関数
     static void Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
-    static void Guizmo2D(const GuizmoInfo& info,ImDrawList* pDrawList,Range2D rectRange);
+    static void Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
 
     // シーンウィンドウの範囲を取得する関数
     static const Range2D& GetSceneWindowRange(const std::string& label);
@@ -150,7 +183,33 @@ template<typename EnumType>
 inline bool ImFunc::Combo(const std::string& label, EnumType& currentValue, const char* const* items, int size, int padding){
 
     int currentIndex = static_cast<int>(currentValue) - padding;
-    bool changed = ImGui::Combo(label.c_str(), &currentIndex, items, size);
+    bool changed = false;
+    bool isOpen = false;
+    if(ImGui::BeginCombo(label.c_str(), items[currentIndex])){
+        isOpen = true;
+        for(int i = 0; i < size; i++){
+            const bool is_selected = (currentValue == EnumType(i));
+            if(ImGui::Selectable(items[i], is_selected)){
+                currentIndex = i, changed = true;
+            }
+            if(is_selected){
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    // 上下キーで選択項目を移動できるようにする
+    if(isOpen){
+        int direction = Input::IsTriggerKey(DIK_DOWN) - Input::IsTriggerKey(DIK_UP);
+        if(direction != 0){
+            currentIndex += direction;
+            if(currentIndex < padding) currentIndex = padding;
+            if(currentIndex >= size) currentIndex = size - 1;
+            changed = true;
+        }
+    }
+
     if(changed){
         //EnumTypeの最初の値を取得
         currentValue = static_cast<EnumType>(currentIndex + padding);
@@ -190,6 +249,100 @@ inline bool ImFunc::ComboPair(const std::string& label, EnumType& currentValue, 
 }
 
 
+//////////////////////////////////////////////////////////////////
+// ラジオボタンの拡張関数
+//////////////////////////////////////////////////////////////////
+template<typename EnumType>
+inline bool ImFunc::RadioButton(const std::string& label, EnumType& currentValue, initializer_list<string> items, int padding){
+    bool changed = false;
+    ImGui::Text("%s", label.c_str());
+    int currentIndex = static_cast<int>(currentValue) - padding;
+    // ラジオボタンを作成
+    for(int i = 0; i < static_cast<int>(items.size()); i++){
+        if(ImGui::RadioButton(items.begin()[i].c_str(), currentIndex == i)){
+            currentIndex = i;
+            changed = true;
+        }
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
+    // 変更があった場合、値を適用
+    if(changed){
+        currentValue = static_cast<EnumType>(currentIndex + padding);
+    }
+    return changed;
+}
+
+template<typename EnumType>
+inline bool ImFunc::RadioButton(const std::string& label, EnumType& currentValue, const char* const* items, int size, int padding){
+    bool changed = false;
+    ImGui::Text("%s", label.c_str());
+    int currentIndex = static_cast<int>(currentValue) - padding;
+    // ラジオボタンを作成
+    for(int i = 0; i < size; i++){
+        if(ImGui::RadioButton(items[i], currentIndex == i)){
+            currentIndex = i;
+            changed = true;
+        }
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
+    // 変更があった場合、値を適用
+    if(changed){
+        currentValue = static_cast<EnumType>(currentIndex + padding);
+    }
+    return changed;
+}
+
+//////////////////////////////////////////////////////////////////
+// ドラッグ＆ドロップの開始関数
+//////////////////////////////////////////////////////////////////
+template<typename T>
+inline bool ImFunc::BeginDrag(const char* payloadType, const T& value, const std::string& displayName, ImGuiDragDropFlags flags){
+    if(ImGui::BeginDragDropSource(flags)){
+        if constexpr(std::is_same_v<T, std::string>){
+            std::string temp = value; // 寿命保証
+            ImGui::SetDragDropPayload(payloadType, temp.c_str(), temp.size() + 1);
+            ImGui::TextUnformatted(displayName.c_str());
+        } else if constexpr(std::is_same_v<T, const char*>){
+            ImGui::SetDragDropPayload(payloadType, value, strlen(value) + 1);
+            ImGui::TextUnformatted(displayName.c_str());
+        } else{
+            ImGui::SetDragDropPayload(payloadType, &value, sizeof(T));
+            ImGui::TextUnformatted(displayName.c_str());
+        }
+
+        ImGui::EndDragDropSource();
+        return true;
+    }
+    return false;
+}
+
+//////////////////////////////////////////////////////////////////
+// ドロップされた情報を返す関数
+//////////////////////////////////////////////////////////////////
+template<typename T>
+inline std::optional<T> ImFunc::GetDroppedData(const char* payloadType){
+    std::optional<T> result = std::nullopt;
+
+    if(ImGui::BeginDragDropTarget()){
+        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType)){
+            if constexpr(std::is_same_v<T, std::string>){
+                const char* data = static_cast<const char*>(payload->Data);
+                result = std::string(data);
+            } else if constexpr(std::is_same_v<T, const char*> || std::is_same_v<T, char*>){
+                result = static_cast<const char*>(payload->Data);
+            } else if(payload->DataSize >= sizeof(T)){
+                result = *static_cast<const T*>(payload->Data);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    return result;
+}
+
+
 /////////////////////////////////////////////////////////////////
 // ビットマスクのチェックボックスを作成
 /////////////////////////////////////////////////////////////////
@@ -216,6 +369,6 @@ inline bool ImFunc::BitMask(const std::string& label, EnumType& bit, initializer
     if(changed){
         bit = static_cast<EnumType>(bitValue);
     }
-    
+
     return changed;
 }

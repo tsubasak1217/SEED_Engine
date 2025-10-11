@@ -35,6 +35,9 @@ namespace ImGui{
     bool ColorEdit4(const std::string& label, float col[4], ImGuiColorEditFlags flags = 0);
     // その他
     bool CollapsingHeader(const std::string& label, ImGuiTreeNodeFlags flags = 0);
-
+    // popup系
+    bool BeginPopup(const std::string& str_id, ImGuiWindowFlags flags = 0);
+    void OpenPopup(const std::string& str_id, ImGuiPopupFlags popup_flags = 0);
+    bool BeginPopupContextItem(const std::string& str_id, ImGuiPopupFlags popup_flags = 1);
 
 }

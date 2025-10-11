@@ -255,3 +255,13 @@ float EaseInOutBounce(float t) {
         }
     }
 }
+
+
+/* --- Others --- */
+float Linear(float t){
+    return t;
+}
+
+float Discrete(float t){
+    return t < 1.0f ? 0.0f : 1.0f;
+}

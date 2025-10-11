@@ -228,37 +228,40 @@ void NotesEditor::DisplayLane(){
     ImGui::Image(textureIDs_["laneField"], laneSize_);
 
     // ドラッグしたアイテムをドロップで受け付ける
-    if(ImGui::BeginDragDropTarget()){
-        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")){
-            const char* path = static_cast<const char*>(payload->Data);
-            std::string droppedPath(path);
-
-            if(!droppedPath.empty()){
-
-                // "NoteDatas/"以降の階層にあるかチェック
-                if(droppedPath.find("NoteDatas") != std::string::npos){
-                    // ポップアップが開いていない場合は自動で開く
-                    ImGui::OpenPopup("ノーツデータの読み込み確認");
-                    loadFileName_ = droppedPath; // 読み込むファイル名を保存
-                }
-            }
-        }
-        ImGui::EndDragDropTarget();
+    if(auto droppedPath = ImFunc::GetDroppedData<std::string>("FILE_PATH")){
+        // ポップアップが開いていない場合は自動で開く
+        ImGui::OpenPopup("ノーツデータの読み込み確認");
+        loadFileName_ = *droppedPath; // 読み込むファイル名を保存
     }
+    //if(ImGui::BeginDragDropTarget()){
+    //    if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")){
+    //        const char* path = static_cast<const char*>(payload->Data);
+    //        std::string droppedPath(path);
+
+    //        if(!droppedPath.empty()){
+
+    //            // "NoteDatas/"以降の階層にあるかチェック
+    //            if(droppedPath.find("NoteDatas") != std::string::npos){
+    //                // ポップアップが開いていない場合は自動で開く
+    //                ImGui::OpenPopup("ノーツデータの読み込み確認");
+    //                loadFileName_ = droppedPath; // 読み込むファイル名を保存
+    //            }
+    //        }
+    //    }
+    //    ImGui::EndDragDropTarget();
+    //}
 
     // 読み込むかどうか確認するポップアップを出す
     if(ImGui::BeginPopupModal("ノーツデータの読み込み確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
 
+        std::replace(loadFileName_.begin(), loadFileName_.end(), '/', '\\'); // パスの区切り文字を変換
         ImGui::Text("ノーツデータを読み込みますか？\n%s", loadFileName_.c_str());
 
         if(ImGui::Button("はい")){
             // ノーツデータを読み込む
             if(std::filesystem::exists(loadFileName_)){
-                std::ifstream file(loadFileName_);
-                nlohmann::json jsonData;
-                file >> jsonData;
+                nlohmann::json jsonData = MyFunc::GetJson(loadFileName_);
                 LoadFromJson(jsonData); // JSONから譜面データを読み込む
-                file.close();
             }
             ImGui::CloseCurrentPopup();
         }

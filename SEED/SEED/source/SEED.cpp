@@ -723,6 +723,47 @@ void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, u
     }
 }
 
+// 2D版
+void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Vector4& color){
+    // ベジェ曲線の描画
+    Vector2 previous = p1;
+    for(uint32_t i = 1; i <= subdivision; i++){
+        // 現在の位置を求める
+        float t = float(i) / subdivision;
+        Vector2 current = MyMath::Bezier(p1, p2, p3, t);
+        // 線を描画
+        DrawLine2D(previous, current, color);
+        // 現在の点を保存
+        previous = current;
+    }
+}
+
+// 複数点版
+void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color){
+
+    // 点が2つ未満の場合は描画しない
+    if(points.size() < 2){ return; }
+
+    // 必要な変数を用意
+    float t = 0;
+    uint32_t totalSubdivision = uint32_t(points.size() - 1) * subdivision;
+    std::optional<Vector2> previous = std::nullopt;
+
+    // ベジェ曲線の描画
+    for(uint32_t i = 0; i <= totalSubdivision; i++){
+        // 現在の位置を求める
+        t = float(i) / totalSubdivision;
+        // 現在の区間の点を求める
+        Vector2 p = MyMath::Bezier(points, t);
+        // 線を描画
+        if(previous != std::nullopt){
+            DrawLine2D(previous.value(), p, color);
+        }
+        // 現在の点を保存
+        previous = p;
+    }
+}
+
 
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画

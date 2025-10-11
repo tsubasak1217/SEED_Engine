@@ -120,6 +120,7 @@ public:// キーの状態を返す関数
 
     // アクティブかどうか
     static void SetIsActive(bool isActive){ instance_->isActive_ = isActive; }
+    static bool GetIsActive(){ return instance_->isActive_; }
     // 直近で使用した入力デバイス
     static InputDevice GetRecentInputDevice(){ return instance_->recentInputDevice_; }
     static bool IsChangedInputDevice(){ return instance_->recentInputDevice_ != instance_->prevDevice_; }

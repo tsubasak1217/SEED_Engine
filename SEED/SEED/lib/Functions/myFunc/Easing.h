@@ -43,6 +43,9 @@ float EaseInBounce(float t);
 float EaseOutBounce(float t);
 float EaseInOutBounce(float t);
 
+// その他の補間関数
+float Linear(float t);
+float Discrete(float t);
 
 using EasingFunction = std::function<float(float)>;
 namespace Easing{
@@ -76,13 +79,14 @@ namespace Easing{
         InOutCirc,
         InOutExpo,
         InOutBack,
-        InOutBounce
+        InOutBounce,
+        _Discrete
     };
 
 
     // 関数ポインタ配列を作成
     inline EasingFunction Ease[] = {
-        [](float t){ return t; }, // None
+        Linear, // None
         EaseInSine,
         EaseInQuad,
         EaseInCubic,
@@ -109,7 +113,8 @@ namespace Easing{
         EaseInOutCirc,
         EaseInOutExpo,
         EaseInOutBack,
-        EaseInOutBounce
+        EaseInOutBounce,
+        Discrete
     };
 
     // イージングの名前を配列で定義(ImGui::Comboで使用)
@@ -141,6 +146,7 @@ namespace Easing{
         "InOutCirc",
         "InOutExpo",
         "InOutBack",
-        "InOutBounce"
+        "InOutBounce",
+        "Discrete"
     };
 };

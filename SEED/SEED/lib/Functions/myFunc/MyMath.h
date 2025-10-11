@@ -131,7 +131,8 @@ public:
 
     // ベジェ曲線を求める関数
     static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,float t);
-    static Vector3 Bezier(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);
+    static Vector2 Bezier(const Vector2& p0, const Vector2& p1, const Vector2& p2, float t);
+    static Vector2 Bezier(const std::vector<Vector2>& points, float t);
 
     //スプライン補完をする関数
     static Vector3 CatmullRomInterpolation(const Vector3& p0,const Vector3& p1,const Vector3& p2,const Vector3& p3,float t);

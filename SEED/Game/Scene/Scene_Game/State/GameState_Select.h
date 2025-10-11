@@ -4,6 +4,7 @@
 #include <Game/Manager/SongSelector.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
 #include <SEED/Lib/Structs/VideoPlayer.h>
+#include <SEED/Source/Editor/CurveEditor/CurveEditor.h>
 #include <memory>
 
 class GameState_Select : public State_Base{
@@ -25,4 +26,5 @@ public:
 private:
     std::unique_ptr<SongSelector> songSelector_;
     std::unique_ptr< SelectBackGroundDrawer> backGroundDrawer_;
+    CurveEditor curveEditor_;
 };

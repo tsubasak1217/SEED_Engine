@@ -2,6 +2,7 @@
 #include <SEED/Lib/Functions/MyFunc/MyMath.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
 #include <Windows.h>
+#include <shobjidl.h>
 
 // usiing
 namespace fs = std::filesystem;
@@ -305,7 +306,7 @@ Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transf
     }
 
     // 結果の各成分を求める
-    result.scale = MyMath::CatmullRomPosition(scales,t);
+    result.scale = MyMath::CatmullRomPosition(scales, t);
     result.rotate = MyMath::CatmullRomPosition(rotations, t);
     result.translate = MyMath::CatmullRomPosition(positions, t);
     return result;
@@ -602,9 +603,13 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
 nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 
     if(!filePath.ends_with(".json")){
-        assert(false && "Jsonファイルの拡張子が不正");
         return nlohmann::json();
     }
+
+    // フルパスに変換
+    std::string fullPath = ToFullPath(filePath);
+    // '/'を'\\'に変換
+    std::replace(fullPath.begin(), fullPath.end(), '/', '\\');
 
     // ファイルを開く
     std::ifstream file(filePath);
@@ -652,4 +657,143 @@ void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& j
 
     // JSONデータを書き込む
     file << jsonData.dump(4); // インデント幅を4に設定して書き込む
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ファイル名の変更
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool MyFunc::RenameFile(const std::string& oldFilePath, const std::string& newFilePath){
+
+    // 同じなら何もしない
+    if(oldFilePath == newFilePath){
+        return true;
+    }
+
+    fs::path src(oldFilePath);
+    fs::path dst(newFilePath);
+
+    // ディレクトリと拡張子・基本名を分解
+    fs::path dir = dst.parent_path();
+    std::string stem = dst.stem().string();     // 拡張子を除いたファイル名
+    std::string ext = dst.extension().string(); // ".txt" など
+
+    fs::path finalPath = dst;
+    int counter = 1;
+
+    // 既に存在する場合は "(n)" を付けて回避
+    while(fs::exists(finalPath)){
+        finalPath = dir / fs::path(stem + "(" + std::to_string(counter++) + ")" + ext);
+    }
+
+    fs::rename(src, finalPath);
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// エクスプローラーで開く
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MyFunc::OpenInExplorer(const std::string& path){
+    // '/'を'\\'に変換
+    std::string fixedPath = path;
+    std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
+
+    // パスからファイル名を除去
+    fs::path fsPath(fixedPath);
+
+    if(fs::is_directory(fsPath)){
+        // フォルダの場合はそのフォルダを開く
+        ShellExecuteA(NULL, "open", fsPath.string().c_str(), NULL, NULL, SW_SHOW);
+    } else if(fs::is_regular_file(fsPath)){
+        // ファイルの場合はそのファイルの場所を開く(parentPath)
+        ShellExecuteA(NULL, "open", fsPath.parent_path().string().c_str(), NULL, NULL, SW_SHOW);
+
+    } else{
+        assert(false && "指定したパスが存在しません");
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ファイルを削除する
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool MyFunc::DeleteFileObject(const std::string& path){
+
+    // パスが存在するか確認
+    std::wstring wpath = ConvertString(path);
+    if(!std::filesystem::exists(wpath))
+        return false;
+
+    // 削除確認メッセージを出す
+    std::wstring message = L"次のファイル（またはフォルダ）を削除しますか？\n\n" + wpath;
+    int res = MessageBoxW(nullptr, message.c_str(), L"削除の確認",
+        MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2);
+    if(res != IDYES){
+        return false; // キャンセルされた
+    }
+
+    // 実際の削除
+    std::error_code ec; // エラーコードを受け取るための変数
+    fs::remove_all(path, ec);
+    if(ec){
+        // エラーが発生した場合
+        std::wstring errorMessage = L"ファイル（またはフォルダ）の削除に失敗しました。\n\n" + wpath + L"\n\nエラー内容: " + ConvertString(ec.message());
+        MessageBoxW(nullptr, errorMessage.c_str(), L"削除エラー", MB_OK | MB_ICONERROR);
+        return false;
+    }
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ファイルを保存するダイアログを表示する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::string& ext, const std::string& initialName){
+    // 保存ダイアログを表示するラムダ関数
+    auto ShowSaveFileDialog = [](const std::wstring& title = L"名前を付けて保存",
+        const std::wstring& filter = L"すべてのファイル (*.*)\0*.*\0",
+        const std::wstring& defaultExt = L"",
+        const std::wstring& initialDir = L"",
+        const std::wstring& initName = L""
+        ){
+        wchar_t filePath[MAX_PATH];
+        // 初期ファイル名をセット
+        if(!initName.empty()){
+            wcsncpy_s(filePath, initName.c_str(), MAX_PATH);
+        } else{
+            filePath[0] = L'\0'; // 空文字列で初期化
+        }
+
+        OPENFILENAMEW ofn{};
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = nullptr; // 親ウィンドウハンドル（ImGui等から渡すなら指定してOK）
+        ofn.lpstrFilter = filter.c_str();
+        ofn.lpstrFile = filePath;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = title.c_str();
+        ofn.lpstrDefExt = defaultExt.empty() ? nullptr : defaultExt.c_str();
+        ofn.lpstrInitialDir = initialDir.empty() ? nullptr : initialDir.c_str();
+        ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
+
+        if(GetSaveFileNameW(&ofn)){
+            return std::wstring(filePath); // ユーザーが選択したパス
+        }
+        return std::wstring(); // キャンセル時
+    };
+
+    // 絶対パスに変換
+    std::string absDirectory = ToFullPath(directory);
+    // '/'を'\\'に変換
+    std::replace(absDirectory.begin(), absDirectory.end(), '/', '\\');
+
+    // directoryが存在しなければreturn
+    if(!fs::exists(absDirectory)){
+        return "";
+    }
+
+    // extの拡張子で保存されるようにする
+    std::wstring wExt = ConvertString(ext);
+    std::wstring filter = L"指定の拡張子 (*" + wExt + L")\0*" + wExt + L"\0すべてのファイル (*.*)\0*.*\0";
+    std::wstring initialDir = ConvertString(absDirectory);
+    std::wstring initName = ConvertString(initialName);
+    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wExt.substr(1), initialDir,initName));
 }

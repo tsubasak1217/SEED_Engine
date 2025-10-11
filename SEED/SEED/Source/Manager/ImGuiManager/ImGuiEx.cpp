@@ -91,3 +91,15 @@ bool ImGui::ColorEdit4(const std::string& label, float col[4], ImGuiColorEditFla
 bool ImGui::CollapsingHeader(const std::string& label, ImGuiTreeNodeFlags flags){
     return ImGui::CollapsingHeader(label.c_str(), flags);
 }
+
+bool ImGui::BeginPopup(const std::string& str_id, ImGuiWindowFlags flags){
+    return ImGui::BeginPopup(str_id.c_str(), flags);
+}
+
+void ImGui::OpenPopup(const std::string& str_id, ImGuiPopupFlags popup_flags){
+    ImGui::OpenPopup(str_id.c_str(), popup_flags);
+}
+
+bool ImGui::BeginPopupContextItem(const std::string& str_id, ImGuiPopupFlags popup_flags){
+    return ImGui::BeginPopupContextItem(str_id.c_str(), popup_flags);
+}

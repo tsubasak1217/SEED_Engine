@@ -131,6 +131,18 @@ public:// ファイル・文字列関連 =======================================
     // jsonふぁあいる関連の関数
     static nlohmann::json GetJson(const std::string& filePath,bool createFile = false);
     static void CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData);
+
+    // ファイルのリネーム
+    static bool RenameFile(const std::string& oldFilePath, const std::string& newFilePath);
+
+    // エクスプローラーで開く
+    static void OpenInExplorer(const std::string& path);
+
+    // ファイルの削除
+    static bool DeleteFileObject(const std::string& path);
+
+    // ファイルの保存
+    static std::string OpenSaveFileDialog(const std::string& directory, const std::string& ext, const std::string& initialName = "");
 };
 
 

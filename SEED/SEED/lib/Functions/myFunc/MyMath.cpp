@@ -330,10 +330,26 @@ Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, 
     return Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t);
 }
 
-Vector3 MyMath::Bezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t){
-    return Lerp(Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t), Lerp(Lerp(p1, p2, t), Lerp(p2, p3, t), t), t);
+Vector2 MyMath::Bezier(const Vector2& p0, const Vector2& p1, const Vector2& p2, float t){
+    return Lerp(Lerp(p0, p1, t), Lerp(p1, p2, t), t);
 }
 
+Vector2 MyMath::Bezier(const std::vector<Vector2>& points, float t){
+    if(points.size() == 0){ return{ 0.0f,0.0f }; }
+    if(points.size() == 1){ return points[0]; }
+    if(points.size() == 2){ return Lerp(points[0], points[1], t); }
+
+    // De Casteljauのアルゴリズムを使用してベジェ曲線を計算
+    std::vector<Vector2> tmpPoints = points;
+    while(tmpPoints.size() > 1){
+        std::vector<Vector2> nextPoints;
+        for(size_t i = 0; i < tmpPoints.size() - 1; i++){
+            nextPoints.push_back(Lerp(tmpPoints[i], tmpPoints[i + 1], t));
+        }
+        tmpPoints = nextPoints;
+    }
+    return tmpPoints[0];
+}
 
 //================================================================
 //                      スプライン補間の関数

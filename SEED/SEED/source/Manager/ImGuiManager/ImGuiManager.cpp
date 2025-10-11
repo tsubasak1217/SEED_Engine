@@ -105,7 +105,7 @@ void ImGuiManager::PreDraw(){
     // guizmoのリストをクリア
     instance_->guizmoInfo3D_.clear();
     instance_->guizmoInfo2D_.clear();
-    instance_->isInputText_ = false;
+    instance_->isInputNow_ = false;
 
     // ディスプレイサイズの設定
     ImGuiIO& io = ImGui::GetIO();
@@ -143,45 +143,61 @@ void ImGuiManager::PostDraw(){
 #ifdef _DEBUG
 
     ImFunc::CustomBegin("ImGui", MoveOnly_TitleBar);
-    ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+    {
+        ImGui::Text("mouse position: (%.1f, %.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
 
-    // ImGuizmoの操作モードを切り替えるコンボボックス
-    ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
-        {
-            {"Translate",ImGuizmo::TRANSLATE},
-            {"Rotate",ImGuizmo::ROTATE},
-            {"Scale",ImGuizmo::SCALE}
+        // ImGuizmoの操作モードを切り替えるコンボボックス
+        ImFunc::ComboPair("Guizmoの操作モード", instance_->currentOperation_,
+            {
+                {"Translate",ImGuizmo::TRANSLATE},
+                {"Rotate",ImGuizmo::ROTATE},
+                {"Scale",ImGuizmo::SCALE}
+            }
+        );
+
+        // エクスプローラーメニュー
+        if(instance_->explolerMenuOpenOrder_){
+            ImGui::OpenPopup("エクスプローラー関連");
+            instance_->explolerMenuOpenOrder_ = false;
         }
-    );
+        if(ImGui::BeginPopup("エクスプローラー関連")){
+            instance_->ExprolerMenu();
+            ImGui::EndPopup();
+        }
+
+    }
     ImGui::End();
 
     // デフォルトカメラ画面描画ウインドウ
     ImFunc::SceneWindowBegin("GameWindow");
-    ImGui::End();
-
-    // デバッグカメラ視点描画ウインドウ
-    ImVec2 imageSize = ImFunc::SceneWindowBegin("DebugCameraWindow", "debug", MoveOnly_TitleBar | SceneManipurate);
     {
-        // Guizmo
-        ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-        ImVec2 imageLeftTop = ImGui::GetItemRectMin();
+        ImGui::End();
 
-        Range2D rectRange = {
-            {imageLeftTop.x,imageLeftTop.y},
-            {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
-        };
+        // デバッグカメラ視点描画ウインドウ
+        ImVec2 imageSize = ImFunc::SceneWindowBegin("DebugCameraWindow", "debug", MoveOnly_TitleBar | SceneManipurate);
+        {
+            // Guizmo
+            ImDrawList* pDrawList = ImGui::GetWindowDrawList();
+            ImVec2 imageLeftTop = ImGui::GetItemRectMin();
 
-        // ImGuizmoの操作を行う
-        for(auto& info : instance_->guizmoInfo3D_){
-            ImFunc::Guizmo3D(info, pDrawList, rectRange);
-        }
+            Range2D rectRange = {
+                {imageLeftTop.x,imageLeftTop.y},
+                {imageLeftTop.x + imageSize.x, imageLeftTop.y + imageSize.y}
+            };
 
-        // 2D ImGuizmoの操作を行う
-        for(auto& info : instance_->guizmoInfo2D_){
-            ImFunc::Guizmo2D(info, pDrawList, rectRange);
+            // ImGuizmoの操作を行う
+            for(auto& info : instance_->guizmoInfo3D_){
+                ImFunc::Guizmo3D(info, pDrawList, rectRange);
+            }
+
+            // 2D ImGuizmoの操作を行う
+            for(auto& info : instance_->guizmoInfo2D_){
+                ImFunc::Guizmo2D(info, pDrawList, rectRange);
+            }
         }
     }
     ImGui::End();
+
 
     // 描画前準備
     ImGui::Render();
@@ -192,11 +208,33 @@ void ImGuiManager::PostDraw(){
 }
 
 
+//////////////////////////////////////////////////////////////////
+// エクスプローラーメニュー表示
+//////////////////////////////////////////////////////////////////
+void ImGuiManager::OpenExplorerMenu(const std::string& itemPath){
+    instance_->explorerItemPath_ = itemPath;
+    instance_->explolerMenuOpenOrder_ = true;
+}
+
+void ImGuiManager::ExprolerMenu(){
+
+    // 指定したパスをエクスプローラーで開く
+    if(ImGui::MenuItem("エクスプローラーで開く")){
+        MyFunc::OpenInExplorer(explorerItemPath_);
+    }
+
+    // 削除
+    if(ImGui::MenuItem("削除")){
+        MyFunc::DeleteFileObject(explorerItemPath_);
+    }
+}
+
+
 /////////////////////////////////////////////////////////////////
 // カスタムウィンドウの開始関数
 /////////////////////////////////////////////////////////////////
 using WindowLocationData = std::pair<ImVec2, ImVec2>; // ウィンドウの位置とサイズ
-bool ImFunc::CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWindowFlags flags){
+bool ImFunc::CustomBegin(const std::string& name, CustomWindowFlag customFlag, ImGuiWindowFlags flags){
 
     static std::unordered_map<std::string, WindowLocationData> windowDatas;
     static std::unordered_map<std::string, bool> isDragging;
@@ -209,7 +247,7 @@ bool ImFunc::CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWin
 
         if(windowDatas.find(name) != windowDatas.end()){
             float titlebar_height = ImGui::GetFontSize() + ImGui::GetStyle().FramePadding.y * 2;
-            ImGuiWindow* window = ImGui::FindWindowByName(name);
+            ImGuiWindow* window = ImGui::FindWindowByName(name.c_str());
             ImVec2 window_pos = windowDatas[name].first;
             ImVec2 window_size = windowDatas[name].second;
             ImVec2 rectMin{};
@@ -253,7 +291,7 @@ bool ImFunc::CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWin
     }
 
     // ImGuiウィンドウを開始
-    bool isDisplayed = ImGui::Begin(name, nullptr, flags);
+    bool isDisplayed = ImGui::Begin(name.c_str(), nullptr, flags);
 
     // ウィンドウの位置とサイズを保存
     ImVec2 window_pos = ImGui::GetWindowPos();
@@ -271,7 +309,7 @@ bool ImFunc::CustomBegin(const char* name, CustomWindowFlag customFlag, ImGuiWin
 /////////////////////////////////////////////////////////////////
 // シーン描画ウインドウ
 /////////////////////////////////////////////////////////////////
-ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName, CustomWindowFlag customFlags, ImGuiWindowFlags normalFlags){
+ImVec2 ImFunc::SceneWindowBegin(const std::string& label, const std::string& cameraName, CustomWindowFlag customFlags, ImGuiWindowFlags normalFlags){
     ImFunc::CustomBegin(label, customFlags, normalFlags);
     {
         // static変数
@@ -337,7 +375,7 @@ ImVec2 ImFunc::SceneWindowBegin(const char* label, const std::string& cameraName
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
         }
 
-        sceneWindowRanges_[std::string(label)] = {
+        sceneWindowRanges_[label] = {
             {ImGui::GetItemRectMin().x,ImGui::GetItemRectMin().y},
             {ImGui::GetItemRectMin().x + finalSize.x,ImGui::GetItemRectMin().y + finalSize.y}
         };
@@ -354,13 +392,18 @@ std::string ImFunc::FolderView(
     std::filesystem::path& currentPath,
     bool isFileNameOnly,
     std::initializer_list<std::string> filterExts,
-    std::filesystem::path rootPath
+    std::filesystem::path rootPath,
+    bool returnDirectoryName
 ){
     static bool isLoaded = false;
     static ImTextureID folderIcon;
     static ImTextureID fileIcon;
     static float rowStartX = 0.0f;
     static ImVec2 iconSize = { 64.0f, 64.0f };
+    static unordered_map<std::string, std::string> focusedItems;
+    static std::string edittingName = "";
+    static bool isEditName = false;
+    static int frameCount = 0;
     std::string selectedFile = "";
 
     if(ImGui::CollapsingHeader(label.c_str())){
@@ -374,7 +417,7 @@ std::string ImFunc::FolderView(
         ImGui::Text("Current Path: %s", currentPath.string().c_str());
         if(currentPath.has_parent_path()){
 
-            // rootPathよりウh会階層にいるときのみBackボタンを表示
+            // rootPathより上の階層にいるときのみBackボタンを表示
             if(rootPath.empty() || currentPath != rootPath){
                 if(ImGui::Button("<< Back")){
                     currentPath = currentPath.parent_path();
@@ -389,8 +432,8 @@ std::string ImFunc::FolderView(
         int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
         int currentColumn = 0;
 
+        // 表示対象のファイル・フォルダを収集
         std::vector<std::filesystem::directory_entry> entries;
-
         for(const auto& entry : std::filesystem::directory_iterator(currentPath)){
             if(entry.is_directory()){
                 entries.push_back(entry); // ディレクトリは常に表示
@@ -415,8 +458,10 @@ std::string ImFunc::FolderView(
             }
         }
 
+        // 各アイテムの表示
         for(size_t i = 0; i < entries.size(); ++i){
             const auto& entry = entries[i];
+            bool focused = false;
 
             if(currentColumn == 0){
                 rowStartX = ImGui::GetCursorPosX();
@@ -426,38 +471,105 @@ std::string ImFunc::FolderView(
 
             ImGui::BeginGroup();
 
+            // アイコンの表示
             ImTextureID icon = entry.is_directory() ? folderIcon : fileIcon;
             std::string name = entry.path().filename().string();
             std::string id = "##" + entry.path().string();
-
             ImVec2 iconPos = ImGui::GetCursorScreenPos();
             ImGui::Image(icon, iconSize);
+
+            // 各種入力の取得
             bool isHovered = ImGui::IsItemHovered();
-            bool isClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
+            bool isLeftDoubleClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
+            bool isLeftClicked = isHovered && ImGui::IsMouseClicked(0);
+            bool isRightClicked = isHovered && ImGui::IsMouseClicked(1);
 
-            if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
-                std::string fullPathStr = entry.path().string();
-                ImGui::SetDragDropPayload("FILE_PATH", fullPathStr.c_str(), fullPathStr.size() + 1);
-                ImGui::Text("%s", name.c_str());
-                ImGui::EndDragDropSource();
+            // ドラッグ＆ドロップの開始
+            std::string fullPathStr = entry.path().string();
+            if(ImFunc::BeginDrag("FILE_PATH", fullPathStr, name, ImGuiDragDropFlags_SourceAllowNullID)){
+                fullPathStr = fullPathStr;
+                name;
             }
 
-            // 中央揃えでテキスト表示（修正部分）
-            auto lines = WrapTextLines(name, iconSize.x, 2);
-            for(const auto& l : lines){
-                float textWidth = ImGui::CalcTextSize(l.c_str()).x;
-                float iconCenterX = iconSize.x * 0.5f;
-                float textPosX = iconPos.x + iconCenterX - textWidth * 0.5f;
+            // フォーカスされている場合は枠を表示
+            if(focusedItems.find(label) != focusedItems.end() && focusedItems[label] == id){
+                focused = true;
+                ImGui::GetWindowDrawList()->AddRect(
+                    iconPos,
+                    ImVec2(iconPos.x + iconSize.x, iconPos.y + iconSize.y),
+                    IM_COL32(255, 255, 255, 128), // 黄色の枠
+                    0.0f,0,3.0f // 線の太さ
+                );
 
-                float minX = ImGui::GetWindowPos().x;
-                float maxX = minX + ImGui::GetWindowContentRegionMax().x;
-                textPosX = std::clamp(textPosX, minX, maxX - textWidth);
+                // もう一度クリックしたら名前を編集するようにする
+                if(!isEditName){
+                    if(isLeftClicked && !isLeftDoubleClicked){
+                        isEditName = true;
+                        edittingName = entry.path().filename().string();
+                        // 拡張子を除去
+                        if(!entry.is_directory() && edittingName.find(".") != std::string::npos){
+                            edittingName = edittingName.substr(0, edittingName.find_last_of('.'));
+                        }
 
-                ImGui::SetCursorScreenPos(ImVec2(textPosX, ImGui::GetCursorScreenPos().y));
-                ImGui::TextUnformatted(l.c_str());
+                        // 次のテキスト入力にフォーカスを当てる
+                        ImGui::SetKeyboardFocusHere();
+                        frameCount = 0;
+                    }
+                }
             }
 
-            if(isClicked){
+            // フォーカスの設定
+            if(isLeftClicked){
+                focusedItems[label] = id;
+            }
+
+
+            // 中央揃えでテキスト表示
+            if(!(isEditName && focusedItems[label] == id)){
+
+                auto lines = WrapTextLines(name, iconSize.x, 2);
+                for(const auto& l : lines){
+                    float textWidth = ImGui::CalcTextSize(l.c_str()).x;
+                    float iconCenterX = iconSize.x * 0.5f;
+                    float textPosX = iconPos.x + iconCenterX - textWidth * 0.5f;
+
+                    float minX = ImGui::GetWindowPos().x;
+                    float maxX = minX + ImGui::GetWindowContentRegionMax().x;
+                    textPosX = std::clamp(textPosX, minX, maxX - textWidth);
+
+                    ImGui::SetCursorScreenPos(ImVec2(textPosX, ImGui::GetCursorScreenPos().y));
+                    ImGui::TextUnformatted(l.c_str());
+                }
+
+            } else{
+                // 名前編集モード
+                ImVec2 boxSize = { iconSize.x, ImGui::GetTextLineHeight() * 2 };
+                ImFunc::InputTextMultiLine(id, edittingName,boxSize);
+
+                // インプットが有効になったらテキスト入力を終えているので確定
+                if(Input::GetIsActive()){
+                    if(frameCount > 0){
+                        isEditName = false;
+
+                        // ファイル名を変更
+                        std::string newName = edittingName;
+                        if(!entry.is_directory()){
+                            // 拡張子を復元
+                            if(entry.path().filename().string().find(".") != std::string::npos){
+                                newName += entry.path().extension().string();
+                            }
+                        }
+
+                        // 変更
+                        std::filesystem::path newPath = entry.path().parent_path() / newName;
+                        MyFunc::RenameFile(entry.path().string(), newPath.string());
+                    }
+                }
+                
+            }
+
+            // ダブルクリックでディレクトリ移動、ファイル名格納
+            if(isLeftDoubleClicked){
                 if(entry.is_directory()){
                     currentPath = entry.path();
                     ImGui::EndGroup();
@@ -466,6 +578,22 @@ std::string ImFunc::FolderView(
                     selectedFile = isFileNameOnly
                         ? entry.path().filename().string()
                         : entry.path().string();
+
+                    // フォルダ名を返す設定なら親フォルダを返す
+                    if(returnDirectoryName){
+                        currentPath = entry.path().parent_path();
+                    }
+                }
+            }
+
+            // コンテキストメニュー用のアイテムのパスを取得
+            if(isRightClicked){
+                if(entry.is_directory()){
+                    ImGuiManager::OpenExplorerMenu(entry.path().string());
+                    ImGui::OpenPopup("エクスプローラー関連");
+                } else{
+                    ImGuiManager::OpenExplorerMenu(entry.path().string());
+                    ImGui::OpenPopup("エクスプローラー関連");
                 }
             }
 
@@ -476,7 +604,19 @@ std::string ImFunc::FolderView(
                 currentColumn = 0;
             }
         }
+
+    } else{
+        // 閉じたらフォーカス情報をクリア
+        focusedItems.erase(label);
     }
+
+    if(ImGui::IsMouseClicked(1)){
+        if(ImGuiManager::GetInstance()->explorerItemPath_.empty()){
+            ImGuiManager::GetInstance()->explorerItemPath_ = currentPath.string();
+        }
+    }
+
+    ImGui::Separator();
 
     return selectedFile;
 }
@@ -561,12 +701,12 @@ bool ImFunc::ComboText(const std::string& label, std::string& str, const std::ve
 ///////////////////////////////////////////////////////////////////
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
-bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str){
+bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str,const ImVec2& size){
     static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
-    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size());
+    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size(),size);
     if(changed){
         str = buffer.data();  // 更新
     }
@@ -574,10 +714,10 @@ bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str){
     // ImGuiの入力中は他の入力を受け付けないようにする
     if(ImGui::IsItemActive()){
 
-        ImGuiManager::SetIsInputText(true);
+        ImGuiManager::SetIsInputNow(true);
         Input::SetIsActive(false);
     } else{
-        if(!ImGuiManager::GetIsInputText()){
+        if(!ImGuiManager::GetIsInputNow()){
 
             Input::SetIsActive(true);
         }
@@ -599,10 +739,10 @@ bool ImFunc::InputText(const std::string& label, string& str){
     // ImGuiの入力中は他の入力を受け付けないようにする
     if(ImGui::IsItemActive()){
 
-        ImGuiManager::SetIsInputText(true);
+        ImGuiManager::SetIsInputNow(true);
         Input::SetIsActive(false);
     } else{
-        if(!ImGuiManager::GetIsInputText()){
+        if(!ImGuiManager::GetIsInputNow()){
 
             Input::SetIsActive(true);
         }
@@ -666,7 +806,7 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
 
         } else if(ImGuiManager::instance_->currentOperation_ == ImGuizmo::ROTATE){
             info.transform->rotate = result.rotate;
-        
+
         } else{
             *info.transform = result;
         }

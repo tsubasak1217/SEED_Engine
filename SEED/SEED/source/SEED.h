@@ -183,6 +183,8 @@ public:
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
     // ベジェ曲線の描画
     static void DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
     // スプライン曲線の描画
     static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
     static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);

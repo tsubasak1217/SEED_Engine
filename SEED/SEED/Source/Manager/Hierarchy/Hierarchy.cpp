@@ -489,46 +489,33 @@ void Hierarchy::RecursiveTreeNode(GameObject* gameObject, int32_t depth){
     }
 
     // ドラッグ操作の送信側設定
-    if(ImGui::BeginDragDropSource()){
-        ImGui::SetDragDropPayload("GAMEOBJECT", &gameObject, sizeof(GameObject*));
-        ImGui::Text("親を変更: %s", gameObject->GetName().c_str());
-        ImGui::EndDragDropSource();
+    ImFunc::BeginDrag("GAMEOBJECT", gameObject, "親を変更: " + gameObject->GetName());
+
+
+    // ドロップで親子付けを変更
+    if(auto payload = ImFunc::GetDroppedData<GameObject*>("GAMEOBJECT")){
+        // 自分自身や子孫を親にしないようチェック
+        if(*payload != gameObject && !gameObject->IsDescendant(*payload)){
+            // 親子付けを変更する処理
+            payload.value()->SetParent(gameObject);
+        }
     }
 
-    // ドラッグ操作の受信側設定
-    if(ImGui::BeginDragDropTarget()){
-        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT")){
-            if(payload->DataSize == sizeof(GameObject*)){
-                GameObject* draggedObj = *(GameObject**)payload->Data;
+    // ドロップでジョイントの親子付けを変更
+    if(auto payload = ImFunc::GetDroppedData<DragInfo_Joint*>("JOINT")){
+        GameObject* owner = payload.value()->pComponent->GetOwner().owner3D;
 
-                // 自分自身や子孫を親にしないようチェック
-                if(draggedObj != gameObject && !gameObject->IsDescendant(draggedObj)){
-                    // 親子付けを変更する処理
-                    draggedObj->SetParent(gameObject);  // あなたの GameObject クラスに応じて関数を調整
-                }
-            }
+        // 自分自身や子孫を親にしないようチェック
+        if(owner != gameObject && !gameObject->IsDescendant(owner)){
+            // 親子draggedObj付けを変更する処理
+            gameObject->SetParent(owner);
+
+            // コンポーネントを親子付け情報に追加
+            ParentComponentInfo parentInfo;
+            parentInfo.pComponent = payload.value()->pComponent;
+            parentInfo.pMatrix = &payload.value()->pJoint->skeletonSpaceMatrix;
+            gameObject->SetParentComponentInfo(parentInfo);
         }
-
-        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("JOINT")){
-            if(payload->DataSize == sizeof(DragInfo_Joint*)){
-                DragInfo_Joint* draggedObj = *(DragInfo_Joint**)payload->Data;
-                GameObject* owner = draggedObj->pComponent->GetOwner().owner3D;
-
-                // 自分自身や子孫を親にしないようチェック
-                if(owner != gameObject && !gameObject->IsDescendant(owner)){
-                    // 親子draggedObj付けを変更する処理
-                    gameObject->SetParent(owner);  // あなたの GameObject クラスに応じて関数を調整
-
-                    // コンポーネントを親子付け情報に追加
-                    ParentComponentInfo parentInfo;
-                    parentInfo.pComponent = draggedObj->pComponent;
-                    parentInfo.pMatrix = &draggedObj->pJoint->skeletonSpaceMatrix;
-                    gameObject->SetParentComponentInfo(parentInfo);
-                }
-            }
-        }
-
-        ImGui::EndDragDropTarget();
     }
 
     // 子を表示（再帰）
@@ -592,27 +579,17 @@ void Hierarchy::RecursiveTreeNode(GameObject2D* gameObject, int32_t depth){
     }
 
     // ドラッグ操作の送信側設定
-    if(ImGui::BeginDragDropSource()){
-        ImGui::SetDragDropPayload("GAMEOBJECT", &gameObject, sizeof(GameObject*));
-        ImGui::Text("親を変更: %s", gameObject->GetName().c_str());
-        ImGui::EndDragDropSource();
-    }
+    ImFunc::BeginDrag("GAMEOBJECT", gameObject, "親を変更: " + gameObject->GetName());
 
-    // ドラッグ操作の受信側設定
-    if(ImGui::BeginDragDropTarget()){
-        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GAMEOBJECT")){
-            if(payload->DataSize == sizeof(GameObject2D*)){
-                GameObject2D* draggedObj = *(GameObject2D**)payload->Data;
-
-                // 自分自身や子孫を親にしないようチェック
-                if(draggedObj != gameObject && !gameObject->IsDescendant(draggedObj)){
-                    // 親子付けを変更する処理
-                    draggedObj->SetParent(gameObject);  // あなたの GameObject クラスに応じて関数を調整
-                }
-            }
+    // ドロップで親子付けを変更
+    if(auto payload = ImFunc::GetDroppedData<GameObject2D*>("GAMEOBJECT")){
+        // 自分自身や子孫を親にしないようチェック
+        if(*payload != gameObject && !gameObject->IsDescendant(*payload)){
+            // 親子付けを変更する処理
+            payload.value()->SetParent(gameObject);
         }
-        ImGui::EndDragDropTarget();
     }
+
 
     // 子を表示（再帰）
     if(open){

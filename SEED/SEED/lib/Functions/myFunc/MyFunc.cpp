@@ -602,10 +602,6 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 
-    if(!filePath.ends_with(".json")){
-        return nlohmann::json();
-    }
-
     // フルパスに変換
     std::string fullPath = ToFullPath(filePath);
     // '/'を'\\'に変換
@@ -636,11 +632,6 @@ nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 
 // Jsonファイルを作成する関数
 void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData){
-
-    if(!filePath.ends_with(".json")){
-        assert(false && "Jsonファイルの拡張子が不正");
-        return;
-    }
 
     // 親ディレクトリを作成（なければ）
     fs::path path(filePath);

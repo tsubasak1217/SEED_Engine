@@ -120,7 +120,7 @@ void CurveEditor::EditCurves(){
 
     // フォルダ表示,読み込み
     static std::filesystem::path folderPath = "Resources/Jsons/Curves";
-    std::string selectedFile = ImFunc::FolderView("フォルダ表示" + tag_, folderPath, false, { "json" }, "Resources/Jsons/Curves");
+    std::string selectedFile = ImFunc::FolderView("フォルダ表示" + tag_, folderPath, false, { "curve" }, "Resources/Jsons/Curves");
     if(!selectedFile.empty()){
         FromJson(MyFunc::GetJson(selectedFile));
     }
@@ -161,12 +161,8 @@ void CurveEditor::DrawBG(){
     ImColor bgColor = ImColor(10, 10, 10, 255);
     drawList->AddRectFilled(rect_.Min, rect_.Max, bgColor);
 
-    // drop領域の設定
-    ImGui::SetCursorScreenPos(rect_.Min);
-    ImGui::InvisibleButton("CurveEditorDropArea" + tag_, rect_.GetSize());
-
     // jsonがdropされたら読み込む
-    if(auto droppedPath = ImFunc::GetDroppedData<std::string>("FILE_PATH")){
+    if(auto droppedPath = ImFunc::GetDroppedData<std::string>("FILE_PATH", rect_)){
         FromJson(MyFunc::GetJson(*droppedPath));
     }
 
@@ -208,37 +204,39 @@ void CurveEditor::DecideOperation(){
 
     // どれかしらのポイントにホバーしているか格納する変数
     bool hoverAnyPoint = false;
+    ImVec2 mousePos = ImGui::GetIO().MousePos;
+
+    if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)){
+        hoverAnyPoint = false;
+        mousePos = ImGui::GetIO().MousePos;
+    }
 
     for(size_t i = 0; i < curves_[curveIdx_].points.size(); ++i){
         // 選択領域の作成
         ImVec2 p = curves_[curveIdx_].drawPoints_[i];
-        float rectSize = pointRadius * 2.0f;
+        float rectSize = pointRadius * 5.0f;
 
-        // 透明なボタンをポイントの上に配置
-        ImGui::SetCursorScreenPos(ImVec2(p.x - pointRadius, p.y - pointRadius));
-        ImGui::InvisibleButton(("point" + std::to_string(i)).c_str() + tag_, ImVec2(rectSize, rectSize));
+        // 一意なIDを安全に生成
+        std::string id = "point" + std::to_string(i) + tag_;
+        ImGui::SetCursorScreenPos(ImVec2(p.x - rectSize * 0.5f, p.y - rectSize * 0.5f));
+        ImGui::InvisibleButton(id.c_str(), ImVec2(rectSize, rectSize));
 
-        // invisibleButtonの範囲内にマウスがホバーしているか
+        // ホバーしている場合
         if(ImGui::IsItemHovered()){
-
-            // 選択されたポイントのインデックスを保存
             selectedPointIndex_ = static_cast<int>(i);
             hoverAnyPoint = true;
 
-            // 左クリックされたらドラッグ開始
+            // クリック状況に応じて操作を決定
             if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)){
                 clickedMousePos_ = ImGui::GetIO().MousePos;
                 originalPointPos_ = curves_[curveIdx_].points[i];
                 operation_ = Operation::Drag;
                 break;
-
             } else if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
-                // 右クリックされたらコンテキストメニュー表示
-                ImGui::OpenPopup("PointContextMenu" + tag_);
+                ImGui::OpenPopup(("PointContextMenu" + tag_).c_str());
                 operation_ = Operation::SelectContextMenu;
                 break;
             }
-
         } else{
 
             // ポイントの範囲外かつエディタ範囲内の場合
@@ -296,7 +294,7 @@ void CurveEditor::ContextMenuSelect(){
     // 出力
     if(ImGui::MenuItem("ファイル出力")){
         operation_ = Operation::None;
-        outputFilename_ = MyFunc::OpenSaveFileDialog("Resources/Jsons/Curves", ".json", outputFilename_);
+        outputFilename_ = MyFunc::OpenSaveFileDialog("Resources/Jsons/Curves", ".curve", outputFilename_);
         if(!outputFilename_.empty()){
             MyFunc::CreateJsonFile(outputFilename_, ToJson());
             // outputFilename_をファイル名のみに戻す

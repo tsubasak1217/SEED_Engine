@@ -157,10 +157,10 @@ void ImGuiManager::PostDraw(){
 
         // エクスプローラーメニュー
         if(instance_->explolerMenuOpenOrder_){
-            ImGui::OpenPopup("エクスプローラー関連");
+            ImGui::OpenPopup(instance_->menuName_);
             instance_->explolerMenuOpenOrder_ = false;
         }
-        if(ImGui::BeginPopup("エクスプローラー関連")){
+        if(ImGui::BeginPopup(instance_->menuName_)){
             instance_->ExprolerMenu();
             ImGui::EndPopup();
         }
@@ -211,21 +211,37 @@ void ImGuiManager::PostDraw(){
 //////////////////////////////////////////////////////////////////
 // エクスプローラーメニュー表示
 //////////////////////////////////////////////////////////////////
-void ImGuiManager::OpenExplorerMenu(const std::string& itemPath){
+void ImGuiManager::OpenExplorerMenu(const std::string& itemPath, const std::string& menuName){
     instance_->explorerItemPath_ = itemPath;
     instance_->explolerMenuOpenOrder_ = true;
+    instance_->menuName_ = menuName;
 }
 
 void ImGuiManager::ExprolerMenu(){
 
-    // 指定したパスをエクスプローラーで開く
-    if(ImGui::MenuItem("エクスプローラーで開く")){
-        MyFunc::OpenInExplorer(explorerItemPath_);
+    // explorerItemPathが空なら何もしない
+    if(explorerItemPath_.empty()){
+        ImGui::EndPopup();
+        return;
     }
 
-    // 削除
-    if(ImGui::MenuItem("削除")){
-        MyFunc::DeleteFileObject(explorerItemPath_);
+
+    if(menuName_ == "ファイル/フォルダ"){
+        // 指定したパスをエクスプローラーで開く
+        if(ImGui::MenuItem("エクスプローラーで開く")){
+            MyFunc::OpenInExplorer(explorerItemPath_);
+        }
+
+        // 削除
+        if(ImGui::MenuItem("削除")){
+            MyFunc::DeleteFileObject(explorerItemPath_);
+        }
+    
+    }else if(menuName_ == "空選択"){
+        // 新規作成
+        if(ImGui::MenuItem("フォルダを作成")){
+
+        }
     }
 }
 
@@ -405,18 +421,24 @@ std::string ImFunc::FolderView(
     static bool isEditName = false;
     static int frameCount = 0;
     std::string selectedFile = "";
+    bool isClickAnyItem = false;
+    ImRect folderViewRect = ImRect();
 
     if(ImGui::CollapsingHeader(label.c_str())){
 
+        // 一度のみ画像読み込み
         if(!isLoaded){
             folderIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/folderIcon.png");
             fileIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/fileIcon.png");
             isLoaded = true;
         }
 
+        // folderViewのmin座標を保存
+        folderViewRect.Min = ImGui::GetCursorScreenPos();
+
+        // ディレクトリ表示
         ImGui::Text("Current Path: %s", currentPath.string().c_str());
         if(currentPath.has_parent_path()){
-
             // rootPathより上の階層にいるときのみBackボタンを表示
             if(rootPath.empty() || currentPath != rootPath){
                 if(ImGui::Button("<< Back")){
@@ -425,12 +447,6 @@ std::string ImFunc::FolderView(
                 }
             }
         }
-
-        float padding = 16.0f;
-        float cellWidth = iconSize.x + padding;
-        ImVec2 availRegion = ImGui::GetContentRegionAvail();
-        int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
-        int currentColumn = 0;
 
         // 表示対象のファイル・フォルダを収集
         std::vector<std::filesystem::directory_entry> entries;
@@ -458,6 +474,13 @@ std::string ImFunc::FolderView(
             }
         }
 
+        // 項目表示に必要な変数
+        float padding = 16.0f;
+        float cellWidth = iconSize.x + padding;
+        ImVec2 availRegion = ImGui::GetContentRegionAvail();
+        int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
+        int currentColumn = 0;
+
         // 各アイテムの表示
         for(size_t i = 0; i < entries.size(); ++i){
             const auto& entry = entries[i];
@@ -481,15 +504,13 @@ std::string ImFunc::FolderView(
             // 各種入力の取得
             bool isHovered = ImGui::IsItemHovered();
             bool isLeftDoubleClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
-            bool isLeftClicked = isHovered && ImGui::IsMouseClicked(0);
+            bool isLeftClicked = isHovered && ImGui::IsMouseClicked(0) && !isLeftDoubleClicked;
             bool isRightClicked = isHovered && ImGui::IsMouseClicked(1);
+            isClickAnyItem |= isLeftClicked || isLeftDoubleClicked || isRightClicked;
 
             // ドラッグ＆ドロップの開始
             std::string fullPathStr = entry.path().string();
-            if(ImFunc::BeginDrag("FILE_PATH", fullPathStr, name, ImGuiDragDropFlags_SourceAllowNullID)){
-                fullPathStr = fullPathStr;
-                name;
-            }
+            ImFunc::BeginDrag("FILE_PATH", fullPathStr, name, ImGuiDragDropFlags_SourceAllowNullID);
 
             // フォーカスされている場合は枠を表示
             if(focusedItems.find(label) != focusedItems.end() && focusedItems[label] == id){
@@ -498,29 +519,31 @@ std::string ImFunc::FolderView(
                     iconPos,
                     ImVec2(iconPos.x + iconSize.x, iconPos.y + iconSize.y),
                     IM_COL32(255, 255, 255, 128), // 黄色の枠
-                    0.0f,0,3.0f // 線の太さ
+                    0.0f, 0, 3.0f // 線の太さ
                 );
 
-                // もう一度クリックしたら名前を編集するようにする
-                if(!isEditName){
-                    if(isLeftClicked && !isLeftDoubleClicked){
-                        isEditName = true;
-                        edittingName = entry.path().filename().string();
-                        // 拡張子を除去
-                        if(!entry.is_directory() && edittingName.find(".") != std::string::npos){
-                            edittingName = edittingName.substr(0, edittingName.find_last_of('.'));
-                        }
 
-                        // 次のテキスト入力にフォーカスを当てる
-                        ImGui::SetKeyboardFocusHere();
-                        frameCount = 0;
-                    }
-                }
             }
 
             // フォーカスの設定
             if(isLeftClicked){
-                focusedItems[label] = id;
+                // フォーカス済みのものを押していたら名前を編集するようにする
+                if(focusedItems[label] == id){
+                    isEditName = true;
+                    edittingName = entry.path().filename().string();
+                    // 拡張子を除去してファイル名のみ編集するように
+                    if(!entry.is_directory() && edittingName.find(".") != std::string::npos){
+                        edittingName = edittingName.substr(0, edittingName.find_last_of('.'));
+                    }
+
+                    // 次のテキスト入力にフォーカスを当てる
+                    ImGui::SetKeyboardFocusHere();
+                    frameCount = 0;
+
+                } else{// まだフォーカスしていなければフォーカス
+                    focusedItems[label] = id;
+                    isEditName = false;
+                }
             }
 
 
@@ -544,7 +567,7 @@ std::string ImFunc::FolderView(
             } else{
                 // 名前編集モード
                 ImVec2 boxSize = { iconSize.x, ImGui::GetTextLineHeight() * 2 };
-                ImFunc::InputTextMultiLine(id, edittingName,boxSize);
+                ImFunc::InputTextMultiLine(id, edittingName, boxSize);
 
                 // インプットが有効になったらテキスト入力を終えているので確定
                 if(Input::GetIsActive()){
@@ -565,7 +588,10 @@ std::string ImFunc::FolderView(
                         MyFunc::RenameFile(entry.path().string(), newPath.string());
                     }
                 }
-                
+
+                // フレーム数をカウント(フォーカス設定用)
+                frameCount++;
+
             }
 
             // ダブルクリックでディレクトリ移動、ファイル名格納
@@ -588,13 +614,7 @@ std::string ImFunc::FolderView(
 
             // コンテキストメニュー用のアイテムのパスを取得
             if(isRightClicked){
-                if(entry.is_directory()){
-                    ImGuiManager::OpenExplorerMenu(entry.path().string());
-                    ImGui::OpenPopup("エクスプローラー関連");
-                } else{
-                    ImGuiManager::OpenExplorerMenu(entry.path().string());
-                    ImGui::OpenPopup("エクスプローラー関連");
-                }
+                ImGuiManager::OpenExplorerMenu(entry.path().string(), "ファイル/フォルダ");
             }
 
             ImGui::EndGroup();
@@ -604,6 +624,11 @@ std::string ImFunc::FolderView(
                 currentColumn = 0;
             }
         }
+
+        // folderViewのmax座標を保存
+        float curWindowRight = ImGui::GetWindowPos().x + ImGui::GetWindowSize().x;
+        folderViewRect.Max = ImGui::GetCursorScreenPos();
+        folderViewRect.Max.x = curWindowRight;
 
     } else{
         // 閉じたらフォーカス情報をクリア
@@ -617,6 +642,13 @@ std::string ImFunc::FolderView(
     }
 
     ImGui::Separator();
+
+    // FolderViewの範囲内かつ、何もアイテムをクリックしていないときに右クリックしたかをチェック
+    if(folderViewRect.Contains(ImGui::GetIO().MousePos) && !isClickAnyItem){
+        if(ImGui::IsMouseClicked(1) && !isClickAnyItem){
+            ImGuiManager::OpenExplorerMenu(currentPath.string(),"空選択");
+        }
+    }
 
     return selectedFile;
 }
@@ -701,12 +733,12 @@ bool ImFunc::ComboText(const std::string& label, std::string& str, const std::ve
 ///////////////////////////////////////////////////////////////////
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
-bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str,const ImVec2& size){
+bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str, const ImVec2& size){
     static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
-    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size(),size);
+    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size(), size, ImGuiInputTextFlags_CtrlEnterForNewLine);
     if(changed){
         str = buffer.data();  // 更新
     }

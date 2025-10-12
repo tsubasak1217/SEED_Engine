@@ -77,7 +77,7 @@ public:
     //===================================================================================
     // ヘルパー関数
     //===================================================================================
-    static void OpenExplorerMenu(const std::string& itemPath);
+    static void OpenExplorerMenu(const std::string& itemPath,const std::string& menuName);
 private:
     void ExprolerMenu();
 
@@ -93,6 +93,7 @@ private:
     bool isInputNow_ = false;
     std::string explorerItemPath_;
     bool explolerMenuOpenOrder_ = false; // エクスプローラーメニューを開く指示
+    std::string menuName_;
 };
 
 
@@ -146,14 +147,14 @@ struct ImFunc{
     static bool BeginDrag(const char* payloadType, const T& value, const std::string& displayName, ImGuiDragDropFlags flags = 0);
     // ドロップされた情報を返す関数
     template <typename T>
-    static std::optional<T> GetDroppedData(const char* payloadType);
+    static std::optional<T> GetDroppedData(const char* payloadType, const ImRect& dropArea = ImRect());
 
     // ビットマスク
     template <typename EnumType>
     static bool BitMask(const std::string& label, EnumType& bit, initializer_list<string> bitNames);
 
     // inputTextに直接stringを渡せるように
-    static bool InputTextMultiLine(const std::string& label, string& str,const ImVec2& size = ImVec2(0,0));
+    static bool InputTextMultiLine(const std::string& label, string& str, const ImVec2& size = ImVec2(0, 0));
     static bool InputText(const std::string& label, string& str);
 
     // ImGuizmoの操作を行う関数
@@ -322,21 +323,40 @@ inline bool ImFunc::BeginDrag(const char* payloadType, const T& value, const std
 // ドロップされた情報を返す関数
 //////////////////////////////////////////////////////////////////
 template<typename T>
-inline std::optional<T> ImFunc::GetDroppedData(const char* payloadType){
+inline std::optional<T> ImFunc::GetDroppedData(const char* payloadType, const ImRect& dropArea){
     std::optional<T> result = std::nullopt;
 
-    if(ImGui::BeginDragDropTarget()){
-        if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType)){
-            if constexpr(std::is_same_v<T, std::string>){
-                const char* data = static_cast<const char*>(payload->Data);
-                result = std::string(data);
-            } else if constexpr(std::is_same_v<T, const char*> || std::is_same_v<T, char*>){
-                result = static_cast<const char*>(payload->Data);
-            } else if(payload->DataSize >= sizeof(T)){
-                result = *static_cast<const T*>(payload->Data);
+    // 領域が設定されていなければ通常のドロップエリアとして扱う
+    if(dropArea.GetWidth() == 0.0f && dropArea.GetHeight() == 0.0f){
+        if(ImGui::BeginDragDropTarget()){
+            if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType)){
+                if constexpr(std::is_same_v<T, std::string>){
+                    const char* data = static_cast<const char*>(payload->Data);
+                    result = std::string(data);
+                } else if constexpr(std::is_same_v<T, const char*> || std::is_same_v<T, char*>){
+                    result = static_cast<const char*>(payload->Data);
+                } else if(payload->DataSize >= sizeof(T)){
+                    result = *static_cast<const T*>(payload->Data);
+                }
             }
+            ImGui::EndDragDropTarget();
         }
-        ImGui::EndDragDropTarget();
+    
+    } else{// 領域が設定されていればその範囲内でドロップを受け付ける
+
+        if(ImGui::BeginDragDropTargetCustom(dropArea, ImGui::GetCurrentWindow()->ID)){
+            if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(payloadType)){
+                if constexpr(std::is_same_v<T, std::string>){
+                    const char* data = static_cast<const char*>(payload->Data);
+                    result = std::string(data);
+                } else if constexpr(std::is_same_v<T, const char*> || std::is_same_v<T, char*>){
+                    result = static_cast<const char*>(payload->Data);
+                } else if(payload->DataSize >= sizeof(T)){
+                    result = *static_cast<const T*>(payload->Data);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
     }
 
     return result;

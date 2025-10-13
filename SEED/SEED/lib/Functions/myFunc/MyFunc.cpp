@@ -374,6 +374,35 @@ std::string MyFunc::ConvertString(const std::wstring& str){
     return result;
 }
 
+std::string MyFunc::ToString(const std::u8string& u8str){
+    return std::string(reinterpret_cast<const char*>(u8str.data()), u8str.size());
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 文字コードを変換する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::string MyFunc::UTF16ToUTF8(const std::wstring& utf16Str){
+    if(utf16Str.empty()) return "";
+    int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, utf16Str.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string result(sizeNeeded, 0);
+    WideCharToMultiByte(CP_UTF8, 0, utf16Str.c_str(), -1, &result[0], sizeNeeded, nullptr, nullptr);
+    result.pop_back(); // 終端の null を削除
+    return result;
+}
+
+std::string MyFunc::UTF16ToUTF8(const std::string& utf16Str){
+    return UTF16ToUTF8(ConvertString(utf16Str));
+}
+
+std::wstring MyFunc::UTF8ToUTF16(const std::string& utf8Str){
+    if(utf8Str.empty()) return L"";
+    int sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), -1, nullptr, 0);
+    std::wstring result(sizeNeeded, 0);
+    MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), -1, &result[0], sizeNeeded);
+    result.pop_back(); // 終端の null を削除
+    return result;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ポインタを文字列に変換する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -656,25 +685,34 @@ void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& j
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool MyFunc::RenameFile(const std::string& oldFilePath, const std::string& newFilePath){
 
+    // wstringに変換
+    std::string fixedOldPath = oldFilePath.c_str();
+    std::string fixedNewPath = newFilePath.c_str();
+    std::replace(fixedOldPath.begin(), fixedOldPath.end(), '/', '\\');
+    std::replace(fixedNewPath.begin(), fixedNewPath.end(), '/', '\\');
+    std::wstring wOldPath = ConvertString(fixedOldPath);
+    std::wstring wNewPath = ConvertString(fixedNewPath);
+
     // 同じなら何もしない
-    if(oldFilePath == newFilePath){
+    if(wOldPath == wNewPath){
         return true;
     }
 
-    fs::path src(oldFilePath);
-    fs::path dst(newFilePath);
+    // パスにする
+    fs::path src(wOldPath);
+    fs::path dst(wNewPath);
 
     // ディレクトリと拡張子・基本名を分解
     fs::path dir = dst.parent_path();
-    std::string stem = dst.stem().string();     // 拡張子を除いたファイル名
-    std::string ext = dst.extension().string(); // ".txt" など
+    std::wstring stem = dst.stem().wstring();     // 拡張子を除いたファイル名
+    std::wstring ext = dst.extension().wstring(); // ".txt" など
 
     fs::path finalPath = dst;
     int counter = 1;
 
     // 既に存在する場合は "(n)" を付けて回避
     while(fs::exists(finalPath)){
-        finalPath = dir / fs::path(stem + "(" + std::to_string(counter++) + ")" + ext);
+        finalPath = dir / fs::path(stem + L"(" + std::to_wstring(counter++) + L")" + ext);
     }
 
     fs::rename(src, finalPath);
@@ -686,11 +724,12 @@ bool MyFunc::RenameFile(const std::string& oldFilePath, const std::string& newFi
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void MyFunc::OpenInExplorer(const std::string& path){
     // '/'を'\\'に変換
-    std::string fixedPath = path;
+    std::string fixedPath = path.c_str();
     std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
+    std::wstring wpath = ConvertString(fixedPath);
 
     // パスからファイル名を除去
-    fs::path fsPath(fixedPath);
+    fs::path fsPath(wpath);
 
     if(fs::is_directory(fsPath)){
         // フォルダの場合はそのフォルダを開く
@@ -709,10 +748,15 @@ void MyFunc::OpenInExplorer(const std::string& path){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool MyFunc::DeleteFileObject(const std::string& path){
 
+    // '/'を'\\'に変換
+    std::string fixedPath = path.c_str();
+    std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
+    std::wstring wpath = ConvertString(fixedPath);
+    
     // パスが存在するか確認
-    std::wstring wpath = ConvertString(path);
-    if(!std::filesystem::exists(wpath))
+    if(!std::filesystem::exists(wpath)){
         return false;
+    }
 
     // 削除確認メッセージを出す
     std::wstring message = L"次のファイル（またはフォルダ）を削除しますか？\n\n" + wpath;
@@ -724,10 +768,10 @@ bool MyFunc::DeleteFileObject(const std::string& path){
 
     // 実際の削除
     std::error_code ec; // エラーコードを受け取るための変数
-    fs::remove_all(path, ec);
+    fs::remove_all(wpath, ec);
     if(ec){
         // エラーが発生した場合
-        std::wstring errorMessage = L"ファイル（またはフォルダ）の削除に失敗しました。\n\n" + wpath + L"\n\nエラー内容: " + ConvertString(ec.message());
+        std::wstring errorMessage = L"ファイル（またはフォルダ）の削除に失敗しました。\n\nエラー内容: " + ConvertString(ec.message());
         MessageBoxW(nullptr, errorMessage.c_str(), L"削除エラー", MB_OK | MB_ICONERROR);
         return false;
     }
@@ -786,5 +830,37 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
     std::wstring filter = L"指定の拡張子 (*" + wExt + L")\0*" + wExt + L"\0すべてのファイル (*.*)\0*.*\0";
     std::wstring initialDir = ConvertString(absDirectory);
     std::wstring initName = ConvertString(initialName);
-    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wExt.substr(1), initialDir,initName));
+    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wExt.substr(1), initialDir, initName));
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 新しいフォルダを作成する関数
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool MyFunc::CreateNewFolder(const std::string& directory, const std::string& folderName){
+    // 絶対パスに変換
+    std::string absDirectory = ToFullPath(directory);
+
+    // '/'を'\\'に変換
+    std::replace(absDirectory.begin(), absDirectory.end(), '/', '\\');
+
+    // directoryが存在しなければreturn
+    if(!fs::exists(absDirectory)){
+        return false;
+    }
+
+    // wstring 変換
+    std::wstring wAbsDir = ConvertString(absDirectory);
+    std::wstring wFolder = ConvertString(folderName);
+    fs::path newPath = fs::path(wAbsDir) / fs::path(wFolder);
+    int counter = 1;
+
+    // 既に存在する場合は "(n)" を付けて回避
+    while(fs::exists(newPath)){
+        std::wstring numbered = wFolder + L"(" + std::to_wstring(counter++) + L")";
+        newPath = fs::path(wAbsDir) / fs::path(numbered);
+    }
+
+    // フォルダを作成
+    return fs::create_directory(newPath);
 }

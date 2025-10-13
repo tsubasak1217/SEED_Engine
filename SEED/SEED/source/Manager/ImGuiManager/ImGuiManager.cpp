@@ -240,7 +240,7 @@ void ImGuiManager::ExprolerMenu(){
     }else if(menuName_ == "空選択"){
         // 新規作成
         if(ImGui::MenuItem("フォルダを作成")){
-
+            MyFunc::CreateNewFolder(explorerItemPath_, "新規フォルダ");
         }
     }
 }
@@ -496,7 +496,7 @@ std::string ImFunc::FolderView(
 
             // アイコンの表示
             ImTextureID icon = entry.is_directory() ? folderIcon : fileIcon;
-            std::string name = entry.path().filename().string();
+            std::string name = MyFunc::ToString(entry.path().filename().u8string());
             std::string id = "##" + entry.path().string();
             ImVec2 iconPos = ImGui::GetCursorScreenPos();
             ImGui::Image(icon, iconSize);
@@ -509,8 +509,8 @@ std::string ImFunc::FolderView(
             isClickAnyItem |= isLeftClicked || isLeftDoubleClicked || isRightClicked;
 
             // ドラッグ＆ドロップの開始
-            std::string fullPathStr = entry.path().string();
-            ImFunc::BeginDrag("FILE_PATH", fullPathStr, name, ImGuiDragDropFlags_SourceAllowNullID);
+            std::string fullPathStr = MyFunc::ToString(entry.path().u8string());
+            ImFunc::BeginDrag("FILE_PATH", fullPathStr, name.c_str(), ImGuiDragDropFlags_SourceAllowNullID);
 
             // フォーカスされている場合は枠を表示
             if(focusedItems.find(label) != focusedItems.end() && focusedItems[label] == id){
@@ -530,7 +530,7 @@ std::string ImFunc::FolderView(
                 // フォーカス済みのものを押していたら名前を編集するようにする
                 if(focusedItems[label] == id){
                     isEditName = true;
-                    edittingName = entry.path().filename().string();
+                    edittingName = MyFunc::ToString(entry.path().filename().u8string());
                     // 拡張子を除去してファイル名のみ編集するように
                     if(!entry.is_directory() && edittingName.find(".") != std::string::npos){
                         edittingName = edittingName.substr(0, edittingName.find_last_of('.'));
@@ -584,8 +584,8 @@ std::string ImFunc::FolderView(
                         }
 
                         // 変更
-                        std::filesystem::path newPath = entry.path().parent_path() / newName;
-                        MyFunc::RenameFile(entry.path().string(), newPath.string());
+                        std::string newPath = MyFunc::ToString(entry.path().parent_path().u8string()) + "/" + newName;
+                        MyFunc::RenameFile(MyFunc::ToString(entry.path().u8string()), newPath);
                     }
                 }
 
@@ -614,7 +614,7 @@ std::string ImFunc::FolderView(
 
             // コンテキストメニュー用のアイテムのパスを取得
             if(isRightClicked){
-                ImGuiManager::OpenExplorerMenu(entry.path().string(), "ファイル/フォルダ");
+                ImGuiManager::OpenExplorerMenu(MyFunc::ToString(entry.path().u8string()), "ファイル/フォルダ");
             }
 
             ImGui::EndGroup();
@@ -646,7 +646,10 @@ std::string ImFunc::FolderView(
     // FolderViewの範囲内かつ、何もアイテムをクリックしていないときに右クリックしたかをチェック
     if(folderViewRect.Contains(ImGui::GetIO().MousePos) && !isClickAnyItem){
         if(ImGui::IsMouseClicked(1) && !isClickAnyItem){
-            ImGuiManager::OpenExplorerMenu(currentPath.string(),"空選択");
+            // フォーカス情報をクリア
+            focusedItems.erase(label);
+            // 空選択メニューを開く
+            ImGuiManager::OpenExplorerMenu(MyFunc::ToString(currentPath.u8string()),"空選択");
         }
     }
 

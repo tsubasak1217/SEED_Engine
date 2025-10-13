@@ -91,6 +91,12 @@ public:// ファイル・文字列関連 =======================================
     // 文字列を変換する関数
     static std::wstring ConvertString(const std::string& str);
     static std::string ConvertString(const std::wstring& str);
+    static std::string ToString(const std::u8string& u8str);
+
+    // 文字コードを変換する関数
+    static std::string UTF16ToUTF8(const std::wstring& utf16Str);
+    static std::string UTF16ToUTF8(const std::string& utf16Str);
+    static std::wstring UTF8ToUTF16(const std::string& utf8Str);
 
     // ポインタを文字列に変換する関数
     static std::string PtrToStr(const void* ptr);
@@ -143,6 +149,9 @@ public:// ファイル・文字列関連 =======================================
 
     // ファイルの保存
     static std::string OpenSaveFileDialog(const std::string& directory, const std::string& ext, const std::string& initialName = "");
+
+    // フォルダの新規作成
+    static bool CreateNewFolder(const std::string& directory, const std::string& folderName);
 };
 
 

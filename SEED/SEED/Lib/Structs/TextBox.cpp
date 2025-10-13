@@ -5,8 +5,8 @@
 
 #ifdef _DEBUG
 void TextBox2D::Edit(const std::string& hash){
-    // beginされているウインドウ内で使うこと
-    ImFunc::InputTextMultiLine("テキスト##" + hash, text);
+    // text内容の編集(ctrl+enterで改行)
+    ImFunc::InputTextMultiLine("テキスト##" + hash, text, ImGuiInputTextFlags_CtrlEnterForNewLine);
 
     // フォント設定
     static std::filesystem::path currentDir = "Resources/Fonts";

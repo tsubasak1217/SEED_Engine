@@ -236,8 +236,8 @@ void ImGuiManager::ExprolerMenu(){
         if(ImGui::MenuItem("削除")){
             MyFunc::DeleteFileObject(explorerItemPath_);
         }
-    
-    }else if(menuName_ == "空選択"){
+
+    } else if(menuName_ == "空選択"){
         // 新規作成
         if(ImGui::MenuItem("フォルダを作成")){
             MyFunc::CreateNewFolder(explorerItemPath_, "新規フォルダ");
@@ -419,9 +419,9 @@ std::string ImFunc::FolderView(
     static unordered_map<std::string, std::string> focusedItems;
     static std::string edittingName = "";
     static bool isEditName = false;
-    static int frameCount = 0;
     std::string selectedFile = "";
     bool isClickAnyItem = false;
+    static bool isInputNameStartNow = false;
     ImRect folderViewRect = ImRect();
 
     if(ImGui::CollapsingHeader(label.c_str())){
@@ -480,6 +480,7 @@ std::string ImFunc::FolderView(
         ImVec2 availRegion = ImGui::GetContentRegionAvail();
         int columns = (std::max)(1, (int)(availRegion.x / cellWidth));
         int currentColumn = 0;
+        ImVec2 textboxSize = { iconSize.x, ImGui::GetTextLineHeight() * 2 };
 
         // 各アイテムの表示
         for(size_t i = 0; i < entries.size(); ++i){
@@ -501,6 +502,12 @@ std::string ImFunc::FolderView(
             ImVec2 iconPos = ImGui::GetCursorScreenPos();
             ImGui::Image(icon, iconSize);
 
+            // invisibleボタンでクリック検出用の領域を確保
+            ImVec2 textPos = ImGui::GetCursorScreenPos();
+            ImGui::SetCursorScreenPos(iconPos);
+            ImVec2 hoverSize = { iconSize.x, iconSize.y + textboxSize.y };
+            ImGui::Image(icon, hoverSize,ImVec2(0,0),ImVec2(1,1), ImVec4(0, 0, 0, 0));
+
             // 各種入力の取得
             bool isHovered = ImGui::IsItemHovered();
             bool isLeftDoubleClicked = isHovered && ImGui::IsMouseDoubleClicked(0);
@@ -521,8 +528,6 @@ std::string ImFunc::FolderView(
                     IM_COL32(255, 255, 255, 128), // 黄色の枠
                     0.0f, 0, 3.0f // 線の太さ
                 );
-
-
             }
 
             // フォーカスの設定
@@ -535,10 +540,8 @@ std::string ImFunc::FolderView(
                     if(!entry.is_directory() && edittingName.find(".") != std::string::npos){
                         edittingName = edittingName.substr(0, edittingName.find_last_of('.'));
                     }
-
-                    // 次のテキスト入力にフォーカスを当てる
-                    ImGui::SetKeyboardFocusHere();
-                    frameCount = 0;
+                    // 始まった瞬間の検出
+                    isInputNameStartNow = true;
 
                 } else{// まだフォーカスしていなければフォーカス
                     focusedItems[label] = id;
@@ -546,6 +549,8 @@ std::string ImFunc::FolderView(
                 }
             }
 
+            // テキスト表示位置を設定
+            ImGui::SetCursorScreenPos(textPos);
 
             // 中央揃えでテキスト表示
             if(!(isEditName && focusedItems[label] == id)){
@@ -565,13 +570,23 @@ std::string ImFunc::FolderView(
                 }
 
             } else{
-                // 名前編集モード
-                ImVec2 boxSize = { iconSize.x, ImGui::GetTextLineHeight() * 2 };
-                ImFunc::InputTextMultiLine(id, edittingName, boxSize);
 
-                // インプットが有効になったらテキスト入力を終えているので確定
-                if(Input::GetIsActive()){
-                    if(frameCount > 0){
+                // 名前編集が始まった瞬間にフォーカスを当てる
+                if(isInputNameStartNow){
+                    ImGui::SetKeyboardFocusHere();
+                }
+
+                // 名前編集モード
+                ImFunc::InputTextMultiLine(
+                    id, edittingName,
+                    ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_AutoSelectAll,
+                    textboxSize
+                );
+
+
+                // インプットが有効になったらテキスト入力を終えている(フォーカスが外れている)ので確定
+                if(!isInputNameStartNow){
+                    if(Input::GetIsActive()){
                         isEditName = false;
 
                         // ファイル名を変更
@@ -587,11 +602,9 @@ std::string ImFunc::FolderView(
                         std::string newPath = MyFunc::ToString(entry.path().parent_path().u8string()) + "/" + newName;
                         MyFunc::RenameFile(MyFunc::ToString(entry.path().u8string()), newPath);
                     }
+                } else{
+                    isInputNameStartNow = false;
                 }
-
-                // フレーム数をカウント(フォーカス設定用)
-                frameCount++;
-
             }
 
             // ダブルクリックでディレクトリ移動、ファイル名格納
@@ -645,11 +658,15 @@ std::string ImFunc::FolderView(
 
     // FolderViewの範囲内かつ、何もアイテムをクリックしていないときに右クリックしたかをチェック
     if(folderViewRect.Contains(ImGui::GetIO().MousePos) && !isClickAnyItem){
-        if(ImGui::IsMouseClicked(1) && !isClickAnyItem){
+        if(ImGui::IsMouseClicked(1)){
             // フォーカス情報をクリア
             focusedItems.erase(label);
             // 空選択メニューを開く
-            ImGuiManager::OpenExplorerMenu(MyFunc::ToString(currentPath.u8string()),"空選択");
+            ImGuiManager::OpenExplorerMenu(MyFunc::ToString(currentPath.u8string()), "空選択");
+
+        } else if(ImGui::IsMouseClicked(0)){
+            // 左クリックでもフォーカス情報をクリア
+            focusedItems.erase(label);
         }
     }
 
@@ -736,12 +753,12 @@ bool ImFunc::ComboText(const std::string& label, std::string& str, const std::ve
 ///////////////////////////////////////////////////////////////////
 // inputTextに直接stringを渡せるように
 ///////////////////////////////////////////////////////////////////
-bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str, const ImVec2& size){
+bool ImFunc::InputTextMultiLine(const std::string& label, std::string& str, ImGuiInputTextFlags flags, const ImVec2& size){
     static std::array<char, 1024> buffer;
     std::fill(buffer.begin(), buffer.end(), '\0'); // バッファをクリア
     strncpy_s(buffer.data(), buffer.size(), str.c_str(), _TRUNCATE);
 
-    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size(), size, ImGuiInputTextFlags_CtrlEnterForNewLine);
+    bool changed = ImGui::InputTextMultiline(label.c_str(), buffer.data(), buffer.size(), size, flags);
     if(changed){
         str = buffer.data();  // 更新
     }

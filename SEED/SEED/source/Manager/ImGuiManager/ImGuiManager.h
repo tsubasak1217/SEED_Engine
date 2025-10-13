@@ -154,7 +154,7 @@ struct ImFunc{
     static bool BitMask(const std::string& label, EnumType& bit, initializer_list<string> bitNames);
 
     // inputTextに直接stringを渡せるように
-    static bool InputTextMultiLine(const std::string& label, string& str, const ImVec2& size = ImVec2(0, 0));
+    static bool InputTextMultiLine(const std::string& label, string& str, ImGuiInputTextFlags flags = 0,const ImVec2& size = ImVec2(0, 0));
     static bool InputText(const std::string& label, string& str);
 
     // ImGuizmoの操作を行う関数

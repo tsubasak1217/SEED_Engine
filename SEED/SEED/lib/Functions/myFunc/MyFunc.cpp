@@ -614,14 +614,26 @@ std::string MyFunc::ExtractFileName(const std::string& filePath, bool isContainE
 // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::string MyFunc::ToFullPath(const std::string& relativePath){
-    std::string fullPath = GetProjectDirectory().generic_string() + "/" + relativePath;
+    // すでにフルパスの場合はそのまま返す
+    std::filesystem::path checkPath(relativePath);
+    if(checkPath.is_absolute()){
+        return checkPath.generic_string();
+    }
+
     // フルパスを正規化して返す
+    std::string fullPath = GetProjectDirectory().generic_string() + "/" + relativePath;
     return std::filesystem::canonical(fullPath).generic_string();
 }
 
 std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
-    std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
+    // すでにフルパスの場合はそのまま返す
+    std::filesystem::path checkPath(relativePath);
+    if(checkPath.is_absolute()){
+        return checkPath.generic_wstring();
+    }
+
     // フルパスを正規化して返す
+    std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
     return std::filesystem::canonical(fullPath).generic_wstring();
 }
 

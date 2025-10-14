@@ -433,24 +433,35 @@ std::string ImFunc::FolderView(
             isLoaded = true;
         }
 
+
         // folderViewのmin座標を保存
         folderViewRect.Min = ImGui::GetCursorScreenPos();
 
         // ディレクトリ表示
-        ImGui::Text("Current Path: %s", currentPath.string().c_str());
-        if(currentPath.has_parent_path()){
-            // rootPathより上の階層にいるときのみBackボタンを表示
-            if(rootPath.empty() || currentPath != rootPath){
-                if(ImGui::Button("<< Back")){
-                    currentPath = currentPath.parent_path();
-                    return "";
+        std::filesystem::path fullPath = MyFunc::ToFullPath(currentPath.string());
+        ImGui::Text("Current Path: %s", fullPath.string().c_str());
+        if(fullPath.has_parent_path()){
+
+            if(!rootPath.empty()){
+                // rootPathより上の階層にいるときのみBackボタンを表示
+                std::filesystem::path fullRootPath = MyFunc::ToFullPath(rootPath.string());
+                if(fullPath != fullRootPath){
+                    if(ImGui::Button("<< Back")){
+                        currentPath = currentPath.parent_path();
+                        return "";
+                    }
                 }
             }
         }
 
         // 表示対象のファイル・フォルダを収集
+        std::error_code ec;
         std::vector<std::filesystem::directory_entry> entries;
-        for(const auto& entry : std::filesystem::directory_iterator(currentPath)){
+        for(const auto& entry : std::filesystem::directory_iterator(fullPath, ec)){
+            if(ec){// エラー発生時はスキップ
+                break;
+            }
+
             if(entry.is_directory()){
                 entries.push_back(entry); // ディレクトリは常に表示
             } else{
@@ -502,11 +513,11 @@ std::string ImFunc::FolderView(
             ImVec2 iconPos = ImGui::GetCursorScreenPos();
             ImGui::Image(icon, iconSize);
 
-            // invisibleボタンでクリック検出用の領域を確保
+            // 透明画像でクリック検出用の領域を確保
             ImVec2 textPos = ImGui::GetCursorScreenPos();
             ImGui::SetCursorScreenPos(iconPos);
             ImVec2 hoverSize = { iconSize.x, iconSize.y + textboxSize.y };
-            ImGui::Image(icon, hoverSize,ImVec2(0,0),ImVec2(1,1), ImVec4(0, 0, 0, 0));
+            ImGui::Image(icon, hoverSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 0));
 
             // 各種入力の取得
             bool isHovered = ImGui::IsItemHovered();

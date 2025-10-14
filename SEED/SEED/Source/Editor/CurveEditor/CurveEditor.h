@@ -16,6 +16,7 @@ private:
 private:
     void EditCurves();
     void DrawBG();
+    void DrawUnitBorder();
     void DecideOperation();
     void ContextMenuSelect();
     void DragPoint();
@@ -29,22 +30,28 @@ private:
     void FromJson(const nlohmann::json& json);
 
 private:
-    // パラメーター
+    // パラメーター----------------------------------------
     CurveChannel curveChannel_;
     Easing::Type curveType_;
     std::array<EditorCurve,4> curves_;
     ImRect rect_;
     float pointRadius = 5.0f;
+    float unitValueBorder_ = 1.0f;// 1.0と見なすボーダー値
 
-    // 編集用変数
+    // 編集用変数------------------------------------------
+    //ポイント編集用
     bool isInitialized_ = false;
     int32_t curveIdx_ = 0;
     int selectedPointIndex_ = -1;
     ImVec2 clickedMousePos_;
     ImVec2 originalPointPos_;
     Operation operation_ = Operation::None;
+    // ボーダー編集用
+    bool isDraggingBorder_ = false;
+    //ウィンドウ用
     ImVec2  bottomCursorPos_;
     float editorScale_ = 0.8f;
-    std::string outputFilename_;
     std::string tag_;
+    //出力用
+    std::string outputFilename_;
 };

@@ -15,7 +15,7 @@ void CurveEditor::Initialize(){
     // カーブの色設定
     curves_[0].curveColor_ = ImColor(255, 0, 0, 255);
     curves_[1].curveColor_ = ImColor(0, 255, 0, 255);
-    curves_[2].curveColor_ = ImColor(0, 0, 255, 255);
+    curves_[2].curveColor_ = ImColor(0, 255, 255, 255);
     curves_[3].curveColor_ = ImColor(255, 0, 255, 255);
 
     // カーブ設定の初期化
@@ -66,6 +66,9 @@ void CurveEditor::EditCurves(){
     // カーブ編集エリアの描画
     DrawBG();
 
+    // 1.0単位線の描画
+    DrawUnitBorder();
+
     // 描画座標の計算
     for(auto& curve : curves_){
         curve.drawPoints_ = curve.points;
@@ -79,20 +82,33 @@ void CurveEditor::EditCurves(){
     for(size_t i = 0; i < channelCount; ++i){
         ImColor curveColor = curves_[i].curveColor_;
         if(i != curveIdx_){
-            curveColor.Value.w *= 0.3f;
+            curveColor.Value.x *= 0.3f;
+            curveColor.Value.y *= 0.3f;
+            curveColor.Value.z *= 0.3f;
         }
         DrawCurve(curves_[i], curveColor);
     }
 
     // ポイントの描画
     ImColor pointColor = ImColor(255, 255, 0, 255);
-    for(size_t i = 0; i < curves_[curveIdx_].points.size(); ++i){
-        if(static_cast<int>(i) == selectedPointIndex_){
+    for(int32_t i = 0; i < curves_[curveIdx_].points.size(); ++i){
+        if(i == selectedPointIndex_){
             pointColor.Value.w = 1.0f;
         } else{
             pointColor.Value.w = 0.3f;
         }
         drawList->AddCircleFilled(curves_[curveIdx_].drawPoints_[i], pointRadius, pointColor);
+    }
+
+    // ポイント情報のポップアップ表示
+    if(selectedPointIndex_ > -1){
+        ImGui::BeginTooltip();
+        // y値を表示
+        ImVec2 p = curves_[curveIdx_].points[selectedPointIndex_];
+        float yValue = p.y * (1.0f / unitValueBorder_);
+        std::string text = std::to_string(yValue);
+        ImGui::Text("y: " + text);
+        ImGui::EndTooltip();
     }
 
     // 操作の決定
@@ -113,6 +129,7 @@ void CurveEditor::EditCurves(){
     // カーブの種類やタイプ選択
     static const char* channelStrs[] = { "x","y","z","w" };
     ImFunc::RadioButton("編集中のチャンネル", curveIdx_, channelStrs, channelCount);
+    ImGui::DragFloat("1.0の基準ボーダー" + tag_, &unitValueBorder_, 0.05f, 0.05f, 1.0f);
     ImFunc::Combo("カーブの種類" + tag_, curveType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     if(ImFunc::Combo("チャンネル数" + tag_, curveChannel_, { "Float","Vector2","Vector3","Vector4" })){
         curveIdx_ = 0;
@@ -194,6 +211,41 @@ void CurveEditor::DrawBG(){
 
     // bottomPosの保存
     bottomCursorPos_ = ImVec2(cursorPos.x, maxPos.y);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// 1.0単位枠の描画
+/////////////////////////////////////////////////////////////////////////////////////////////////
+void CurveEditor::DrawUnitBorder(){
+    auto* drawList = ImGui::GetWindowDrawList();
+    ImColor borderColor = ImColor(255, 255, 0, 255);
+    // 1.0の位置を計算
+    ImVec2 size_ = rect_.GetSize();
+    float yPos = MyMath::Lerp(rect_.Max.y, rect_.Min.y, unitValueBorder_);
+    // 枠の描画
+    drawList->AddLine(ImVec2(rect_.Min.x, yPos), ImVec2(rect_.Max.x, yPos), borderColor, 1.5f);
+    // ラインの右側に"1.0"のテキストボタンを描画
+    ImVec2 textSize = ImGui::CalcTextSize("1.0");
+    ImVec2 textPos = ImVec2(rect_.Max.x + 5.0f, yPos - textSize.y * 0.5f);
+    ImGui::SetCursorScreenPos(textPos);
+    ImGui::Button("1.0");
+    // ボタンをクリックしたらドラッグ開始
+    if(ImGui::IsItemClicked(ImGuiMouseButton_Left)){
+        isDraggingBorder_ = true;
+    }
+
+    // ドラッグ処理
+    if(isDraggingBorder_){
+        ImVec2 mousePos = ImGui::GetIO().MousePos;
+        mousePos.y = std::clamp(mousePos.y, rect_.Min.y, rect_.Max.y);
+        float mouseHeightT = (rect_.Max.y - mousePos.y) / size_.y;
+        unitValueBorder_ = std::clamp(mouseHeightT, 0.05f, 1.0f);
+
+        // マウスを離したら終了
+        if(!ImGui::IsMouseDown(ImGuiMouseButton_Left)){
+            isDraggingBorder_ = false;
+        }
+    }
 }
 
 
@@ -501,7 +553,7 @@ nlohmann::json CurveEditor::ToJson() const{
         for(const auto& p : curves_[i].points){
             nlohmann::json pointJson;
             pointJson["x"] = p.x;
-            pointJson["y"] = p.y;
+            pointJson["y"] = p.y * (1.0f / unitValueBorder_); // 1.0ボーダーで補正して保存
             pointArray.push_back(pointJson);
         }
         j["curves"].push_back(pointArray);

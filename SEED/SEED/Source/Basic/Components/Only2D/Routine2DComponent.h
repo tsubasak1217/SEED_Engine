@@ -28,8 +28,6 @@ public:// json
     nlohmann::json GetJsonData() const override;
 
 private:
-    static inline bool isTextureLoaded_ = false;
-    static inline unordered_map<std::string, ImTextureID> textureIDs_;
     bool defaultPaused_ = false;
     bool isLoop_ = false;
     bool isPlaying_ = false;

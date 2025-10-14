@@ -215,7 +215,13 @@ std::vector<std::string> TextBox2D::AnalyzeFormatToken(const std::string& source
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  2Dテキスト描画
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void TextBox2D::Draw()const{
+void TextBox2D::Draw(const std::optional<Vector4>& masterColor)const{
+
+    // マスターカラーが指定されていれば乗算
+    Vector4 _color = this->color;
+    if(masterColor != std::nullopt){
+        _color *= masterColor.value();
+    }
 
     // 変換行列を作成
     static Vector2 baseAnchorPos = { 0.5f, 0.5f }; // デフォルトのアンカー位置
@@ -245,13 +251,13 @@ void TextBox2D::Draw()const{
             vertices[i] *= textBoxMat;
         }
         // テキストボックスのライン描画
-        SEED::DrawLine2D(vertices[0], vertices[1], color);
-        SEED::DrawLine2D(vertices[1], vertices[3], color);
-        SEED::DrawLine2D(vertices[3], vertices[2], color);
-        SEED::DrawLine2D(vertices[2], vertices[0], color);
+        SEED::DrawLine2D(vertices[0], vertices[1], _color);
+        SEED::DrawLine2D(vertices[1], vertices[3], _color);
+        SEED::DrawLine2D(vertices[3], vertices[2], _color);
+        SEED::DrawLine2D(vertices[2], vertices[0], _color);
 
         // アンカー位置の描画(常にtranslateの位置に描画)
-        Triangle2D anchorTri = MakeEqualTriangle2D(10.0f, color);
+        Triangle2D anchorTri = MakeEqualTriangle2D(10.0f, _color);
         anchorTri.translate = ExtractTranslation(textBoxMat);
         anchorTri.rotate = ExtractRotation(textBoxMat);
         SEED::DrawTriangle2D(anchorTri);
@@ -345,7 +351,7 @@ void TextBox2D::Draw()const{
                     // グラフハンドルを設定
                     quad.GH = lineGlyph->graphHandle;
                     // 色を設定
-                    quad.color = color;
+                    quad.color = _color;
                     // その他設定
                     quad.isText = true;
 
@@ -413,8 +419,12 @@ void TextBox2D::Draw()const{
                     Vector2 rotatedVec = Vector2(0.0f, 1.0f) * rotateMat;
                     float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
                     Quad2D outlineQuad = quad;
-                    outlineQuad.color = outlineColor;
-                    outlineQuad.color.w *= color.w; // 透明度は元の文字の透明度を乗算
+                    if(masterColor != std::nullopt){
+                        outlineQuad.color = outlineColor * masterColor.value();
+                    } else{
+                        outlineQuad.color = outlineColor;
+                    }
+                    outlineQuad.color.w *= _color.w; // 透明度は元の文字の透明度を乗算
 
                     // アウトラインを移動させて描画
                     for(int j = 0; j < outlineSplitCount; j++){

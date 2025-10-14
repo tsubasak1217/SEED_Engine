@@ -1,5 +1,6 @@
 #include "TextComponent.h"
-
+#include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 
 TextComponent::TextComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName) : IComponent(pOwner, tagName){
     // テキストボックスの初期化
@@ -24,7 +25,9 @@ void TextComponent::Update(){
 
 void TextComponent::Draw(){
     if(textBox_){
-        textBox_->Draw(); // テキストボックスを描画
+        Vector4 masterColor = owner_.is2D ? 
+            owner_.owner2D->masterColor_ : owner_.owner3D->masterColor_;
+        textBox_->Draw(masterColor); // テキストボックスを描画
     }
 }
 

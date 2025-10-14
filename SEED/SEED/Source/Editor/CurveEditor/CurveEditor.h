@@ -8,10 +8,12 @@ class CurveEditor{
 public:
     CurveEditor() = default;
     ~CurveEditor() = default;
-    void EditGUI();
+    void EditGUI(bool popWindow = true);
+    void EdittingDataToCurve(class Curve& curve);
 
 private:
     void Initialize();
+    void Initialize(const class Curve& curve);
 
 private:
     void EditCurves();
@@ -25,7 +27,7 @@ private:
     void DrawSpline(const std::vector<ImVec2>& points, const ImColor& color,int32_t subdivision = 20);
     void DrawBezier(const std::vector<ImVec2>& points, const ImColor& color, int32_t subdivision = 20);
 
-private:
+public:
     nlohmann::json ToJson() const;
     void FromJson(const nlohmann::json& json);
 
@@ -50,7 +52,7 @@ private:
     bool isDraggingBorder_ = false;
     //ウィンドウ用
     ImVec2  bottomCursorPos_;
-    float editorScale_ = 0.8f;
+    float editorScale_ = 0.9f;
     std::string tag_;
     //出力用
     std::string outputFilename_;

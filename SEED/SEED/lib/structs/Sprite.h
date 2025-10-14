@@ -16,8 +16,7 @@ public:
     Sprite();
     Sprite(const std::string& filename);
     Sprite(const std::string& filename, const Vector2& size);
-
-    void Draw();
+    void Draw(const std::optional<Vector4>& masterColor = std::nullopt);
 
 public:
 

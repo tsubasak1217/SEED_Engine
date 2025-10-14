@@ -1045,7 +1045,7 @@ void PolygonManager::AddQuadPrimitive(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PolygonManager::AddSprite(
-    const Sprite& sprite,bool isSystemDraw
+    const Sprite& sprite, const std::optional<Vector4>& masterColor,bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     sprite.blendMode;
@@ -1220,7 +1220,7 @@ void PolygonManager::AddSprite(
     drawData->materials.resize(1);
     auto& material = drawData->materials.back();
     if(material.size() <= drawCount){ material.resize(drawCount + 1); }
-    material[drawCount].color_ = sprite.color;
+    material[drawCount].color_ = masterColor == std::nullopt ? sprite.color : sprite.color * masterColor.value();
     material[drawCount].lightingType_ = LIGHTINGTYPE_NONE;
     material[drawCount].uvTransform_ = sprite.uvTransform.ToMatrix4x4();
     material[drawCount].GH_ = sprite.GH;
@@ -1271,7 +1271,7 @@ void PolygonManager::AddSprite(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void PolygonManager::AddModel(Model* model){
+void PolygonManager::AddModel(Model* model,const std::optional<Vector4>& masterColor){
 
     if(!model){ return; }
 
@@ -1345,6 +1345,11 @@ void PolygonManager::AddModel(Model* model){
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
+    Vector4 _masterColor = model->masterColor_;
+    if(masterColor != std::nullopt){
+        _masterColor *= masterColor.value();
+    }
+
     // 各meshごとにinstance数分のマテリアルを持つ。ここではmesh数分の配列を確保
     drawData->materials.resize(meshSize);
     for(int meshIdx = 0; meshIdx < meshSize; meshIdx++){
@@ -1354,7 +1359,7 @@ void PolygonManager::AddModel(Model* model){
         if(material.size() <= drawCount){ material.resize(drawCount + 1); }
 
         // マテリアルの設定
-        material[drawCount].color_ = model->masterColor_ * model->materials_[meshIdx].color;
+        material[drawCount].color_ = _masterColor * model->materials_[meshIdx].color;
         material[drawCount].shininess_ = model->materials_[meshIdx].shininess;
         material[drawCount].lightingType_ = model->lightingType_;
         material[drawCount].uvTransform_ = model->materials_[meshIdx].uvTransform;

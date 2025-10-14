@@ -684,6 +684,54 @@ std::string ImFunc::FolderView(
     return selectedFile;
 }
 
+/////////////////////////////////////////////////////////////////
+// 再生バー表示関数
+/////////////////////////////////////////////////////////////////
+bool ImFunc::PlayBar(const std::string& label, Timer& timer){
+    static bool isTextureLoaded = false;
+    static ImTextureID playIcon;
+    static ImTextureID pauseIcon;
+    bool isClicked = false;
+
+    // 一度のみ画像読み込み
+    if(!isTextureLoaded){
+        playIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
+        pauseIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+        isTextureLoaded = true;
+    }
+
+    // 再生・一時停止ボタン
+    if(!timer.isStop){
+        if(ImGui::ImageButton("再生ボタン" + label,playIcon, { 20,20 })){
+            isClicked = true;
+            timer.Stop();
+        }
+    } else{
+        if(ImGui::ImageButton("再生ボタン" + label, pauseIcon, { 20,20 })){
+            if(timer.IsFinished()){
+                timer.Reset();
+            }
+            isClicked = true;
+            timer.Restart();
+        }
+    }
+
+    // スライダー
+    ImGui::SameLine();
+    ImGui::SliderFloat(label, &timer.currentTime, 0.0f, timer.duration);
+    return isClicked;
+}
+
+
+/////////////////////////////////////////////////////////////////
+// 折りたたみヘッダー拡張関数
+/////////////////////////////////////////////////////////////////
+bool ImFunc::CollapsingHeader(const std::string& label, const ImU32& color, ImGuiTreeNodeFlags flags){
+    if(color != 0){ ImGui::PushStyleColor(ImGuiCol_Header, color); }
+    bool isOpen = ImGui::CollapsingHeader(label.c_str(), flags);
+    if(color != 0){ ImGui::PopStyleColor(); }
+    return isOpen;
+}
 
 /////////////////////////////////////////////////////////////////
 // テキストを2行以内で切り、省略(...)付きで返す

@@ -116,11 +116,11 @@ public:
     static void DrawQuad2D(const Quad2D& quad);
 
     // スプライト
-    static void DrawSprite(const Sprite& sprite);
+    static void DrawSprite(const Sprite& sprite,const std::optional<Vector4> masterColor = std::nullopt);
 
     /*==========================モデルの描画関数==========================*/
 
-    static void DrawModel(Model* model);
+    static void DrawModel(Model* model, const std::optional<Vector4>& masterColor = std::nullopt);
 
     /*==========================線の描画関数==========================*/
 

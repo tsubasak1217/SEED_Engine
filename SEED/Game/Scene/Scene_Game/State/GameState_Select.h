@@ -26,5 +26,4 @@ public:
 private:
     std::unique_ptr<SongSelector> songSelector_;
     std::unique_ptr< SelectBackGroundDrawer> backGroundDrawer_;
-    CurveEditor curveEditor_;
 };

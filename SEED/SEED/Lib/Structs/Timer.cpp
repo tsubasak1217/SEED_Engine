@@ -66,19 +66,23 @@ void Timer::Restart(){
 }
 
 // 時間の更新
-void Timer::Update(float timeScale){
+void Timer::Update(float timeScale,bool isLoop){
     prevTime = currentTime;
     currentTime += ClockManager::DeltaTime() * timeScale * !isStop;
 
     // 超過時間の記録
-    if(currentTime > duration){
+    if(currentTime >= duration){
         overtime = currentTime - duration;
+
+        // ループフラグがあればループ
+        if(isLoop){
+            currentTime = overtime;
+        }
     }
 
     // Clamp
     currentTime = std::clamp(currentTime, 0.0f, duration);
 }
-
 
 // TimerArray
 TimerArray::TimerArray(std::initializer_list<float> timePoints){

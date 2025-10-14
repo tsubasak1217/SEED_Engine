@@ -2,6 +2,7 @@
 #include <Game/GameSystem.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
+#include <SEED/Source/Basic/Components/ComponentRegister.h>
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -407,42 +408,9 @@ void GameObject::LoadFromJson(const nlohmann::json& jsonData){
     localTransform_.rotate = jsonData["transform"]["rotate"];
     localTransform_.scale = jsonData["transform"]["scale"];
 
-    // コンポーネントの情報
+    // コンポーネントの読み込み
     for(const auto& componentJson : jsonData["components"]){
-        std::string componentType = componentJson["componentType"];
-        if(componentType == "ModelRender"){
-            auto* modelComponent = AddComponent<ModelRenderComponent>();
-            modelComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Collision3D"){
-            auto* collisionComponent = AddComponent<Collision3DComponent>();
-            collisionComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Text"){
-            auto* textComponent = AddComponent<TextComponent>();
-            textComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "SpotLight"){
-            auto* spotLightComponent = AddComponent<SpotLightComponent>();
-            spotLightComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Gravity"){
-            auto* gravityComponent = AddComponent<Gravity3DComponent>();
-            gravityComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Move"){
-            auto* moveComponent = AddComponent<Move3DComponent>();
-            moveComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Jump"){
-            auto* jumpComponent = AddComponent<JumpComponent>();
-            jumpComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Routine3D"){
-            auto* routineComponent = AddComponent<Routine3DComponent>();
-            routineComponent->LoadFromJson(componentJson);
-
-        }
+        ComponentRegister::LoadComponents(this, componentJson);
     }
 }
 
@@ -494,30 +462,32 @@ void GameObject::EditGUI(){
 #ifdef _DEBUG
 
     // オブジェクトの名前を編集
-    std::string label = "オブジェクト名##" + std::to_string(objectID_);
-    ImFunc::InputText(label.c_str(), objectName_);
+    std::string tag = "##" + std::to_string(objectID_);
+    ImFunc::InputText("オブジェクト名" + tag, objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
     static Vector3 eulerAngle;
-    ImGui::DragFloat3("位置", &localTransform_.translate.x, 0.1f);
-    ImGui::DragFloat3("スケール", &localTransform_.scale.x, 0.05f);
-    ImGui::DragFloat3("オイラー回転", &eulerAngle.x, 0.05f);
-    if(ImGui::Button("オイラー角からQuaternion回転に適用")){
+    ImGui::DragFloat3("位置" + tag, &localTransform_.translate.x, 0.1f);
+    ImGui::DragFloat3("スケール" + tag, &localTransform_.scale.x, 0.05f);
+    ImGui::DragFloat3("オイラー回転" + tag, &eulerAngle.x, 0.05f);
+    if(ImGui::Button("オイラー角からQuaternion回転に適用" + tag)){
         localTransform_.rotate = Quaternion::ToQuaternion(eulerAngle);
     }
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
-    ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
-    ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
-    ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
+    ImGui::Checkbox("回転をペアレントする" + tag, &isParentRotate_);
+    ImGui::Checkbox("スケールをペアレントする" + tag, &isParentScale_);
+    ImGui::Checkbox("位置をペアレントする" + tag, &isParentTranslate_);
 
     ImGui::Text("------------- コンポーネント一覧 -------------");
 
     // コンポーネントのGUI編集
     for(auto& component : components_){
         // ラベルの設定
-        label = component->componentTag_ + "##" + std::to_string(component->componentID_);
-        bool opened = ImGui::CollapsingHeader(label.c_str());
+        bool opened = ImFunc::CollapsingHeader(
+            component->componentTag_ + "##" + std::to_string(component->componentID_),
+            EditorColor::componentHeader
+        );
 
         // 右クリックでコンテキストメニューを表示
         if(ImGui::IsItemClicked(1)){
@@ -541,42 +511,12 @@ void GameObject::EditGUI(){
     }
 
     if(ImGui::BeginPopup("AddComponentPopup")){
-        ImGui::Indent();
-        // コンポーネントの追加
-        if(ImGui::Button("ModelRenderComponent / モデル描画")){
-            AddComponent<ModelRenderComponent>();
+        // 追加GUI
+        if(ComponentRegister::RegisterGUI(this)){
+            // 追加したコンポーネントを初期化し閉じる
+            components_.back()->Initialize();
             ImGui::CloseCurrentPopup();
         }
-        if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
-            AddComponent<Collision3DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("TextComponent / テキスト描画")){
-            AddComponent<TextComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("SpotLightComponent / スポットライト")){
-            AddComponent<SpotLightComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("GravityComponent / 重力")){
-            AddComponent<Gravity3DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("MoveComponent / 移動")){
-            AddComponent<Move3DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("JumpComponent / ジャンプ")){
-            AddComponent<JumpComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("Routine3DComponent / ルーチン")){
-            AddComponent<Routine3DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::Unindent();
         ImGui::EndPopup();
     }
 

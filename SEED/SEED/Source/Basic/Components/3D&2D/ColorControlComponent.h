@@ -1,0 +1,38 @@
+#pragma once
+#include <SEED/Source/Basic/Components/IComponent.h>
+#include <SEED/Lib/Structs/Curve.h>
+#include <SEED/Lib/Structs/Timer.h>
+
+enum class ColorControlMode : int32_t{
+    RGBA,
+    HSVA
+};
+
+class ColorControlComponent : public IComponent{
+public:// 基礎関数
+    ColorControlComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");
+    ~ColorControlComponent() = default;
+    void Initialize()override;
+    void BeginFrame() override;
+    void Update() override;
+    void Draw() override;
+    void EndFrame() override;
+    void Finalize() override;
+
+public:// アクセッサ
+    void SetTimeScale(float timeScale){ timeScale_ = timeScale; }
+
+public:// 入出力
+    // GUI編集
+    void EditGUI() override;
+    // json
+    nlohmann::json GetJsonData() const override;
+    void LoadFromJson(const nlohmann::json& jsonData) override;
+
+private:
+    Curve colorCurve_;
+    ColorControlMode colorControlMode_ = ColorControlMode::RGBA;
+    Timer timer_ ;
+    float timeScale_ = 1.0f;
+    bool isLoop_ = false;
+};

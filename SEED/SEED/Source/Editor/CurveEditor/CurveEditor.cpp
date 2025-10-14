@@ -1,5 +1,6 @@
 #include "CurveEditor.h"
 #include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Structs/Curve.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // 初期化
@@ -29,27 +30,97 @@ void CurveEditor::Initialize(){
     isInitialized_ = true;
 }
 
+// curveから情報を受け取って初期化
+void CurveEditor::Initialize(const Curve& curve){
+    // カーブが何もなければデフォルト初期化
+    if(curve.curves_.size() == 0){
+        Initialize();
+    }
+
+    // カーブの情報をコピー
+    for(int32_t i = 0; i < curves_.size(); ++i){
+        if(i < curve.curves_.size()){
+            // 読み込む
+            curves_[i].points.clear();
+            for(const auto& p : curve.curves_[i]){
+                curves_[i].points.push_back(ImVec2(p.x, p.y));
+            }
+
+            // 二点未満ならデフォルト値を追加
+            if(curves_[i].points.size() < 2){
+                curves_[i].points.clear();
+                curves_[i].points.push_back(ImVec2(0.0f, 0.0f));
+                curves_[i].points.push_back(ImVec2(1.0f, 1.0f));
+            }
+
+        } else{
+            curves_[i].points.clear();
+            curves_[i].points.push_back(ImVec2(0.0f, 0.0f));
+            curves_[i].points.push_back(ImVec2(1.0f, 1.0f));
+        }
+    }
+
+    // カーブの色設定
+    curves_[0].curveColor_ = ImColor(255, 0, 0, 255);
+    curves_[1].curveColor_ = ImColor(0, 255, 0, 255);
+    curves_[2].curveColor_ = ImColor(0, 255, 255, 255);
+    curves_[3].curveColor_ = ImColor(255, 0, 255, 255);
+
+    // カーブ設定の初期化
+    curveChannel_ = curve.channel_;
+    curveType_ = curve.curveType_;
+
+    // tagの初期化
+    tag_ = "##" + MyFunc::PtrToStr(this);
+
+    // 初期化済みにする
+    isInitialized_ = true;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // GUI編集関数
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void CurveEditor::EditGUI(){
+void CurveEditor::EditGUI(bool popWindow){
 
     // 一度のみ初期化
     if(!isInitialized_){
         Initialize();
     }
 
-    // 編集ウィンドウの開始
-    ImFunc::CustomBegin("Curve Editor" + tag_, MoveOnly_TitleBar);
-    {
-        // カーブの編集
-        EditCurves();
+    if(popWindow){
+        // 編集ウィンドウの開始
+        ImFunc::CustomBegin("Curve Editor" + tag_, MoveOnly_TitleBar);
     }
-    ImGui::End();
+    // カーブの編集
+    EditCurves();
+
+    if(popWindow){
+        ImGui::End();
+    }
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// 編集データをカーブに適用
+/////////////////////////////////////////////////////////////////////////////////////////////////
+void CurveEditor::EdittingDataToCurve(Curve& curve){
+    curve.curveType_ = curveType_;
+    curve.channel_ = curveChannel_;
+    curve.unitValueBorder_ = unitValueBorder_;
+    
+    // ポイントの適用
+    float borderRate = 1.0f / unitValueBorder_;
+    for(int32_t i = 0; i < curves_.size(); i++){
+        curve.curves_[i].resize(curves_[i].points.size());
+        for(int32_t j = 0; j < curves_[i].points.size(); j++){
+            curve.curves_[i][j] = Vector2(
+                curves_[i].points[j].x, 
+                curves_[i].points[j].y * borderRate
+            );
+        }
+    }
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +227,7 @@ void CurveEditor::DrawBG(){
 
     // 最低のサイズ以下の場合は最小サイズにする
     ImVec2 minSize = ImVec2(220.0f, 220.0f);
-    ImVec2 maxSize = ImVec2(600.0f, 600.0f);
+    ImVec2 maxSize = ImVec2(495.0f, 400.0f);
     if(availSize.x < minSize.x){ maxPos.x = cursorPos.x + minSize.x - space.x; }
     if(availSize.y < minSize.y){ maxPos.y = cursorPos.y + minSize.y - space.y; }
     if(availSize.x > maxSize.x){ maxPos.x = cursorPos.x + maxSize.x - space.x; }
@@ -226,7 +297,7 @@ void CurveEditor::DrawUnitBorder(){
     drawList->AddLine(ImVec2(rect_.Min.x, yPos), ImVec2(rect_.Max.x, yPos), borderColor, 1.5f);
     // ラインの右側に"1.0"のテキストボタンを描画
     ImVec2 textSize = ImGui::CalcTextSize("1.0");
-    ImVec2 textPos = ImVec2(rect_.Max.x + 5.0f, yPos - textSize.y * 0.5f);
+    ImVec2 textPos = ImVec2(rect_.Max.x + 7.0f, yPos - textSize.y * 0.5f);
     ImGui::SetCursorScreenPos(textPos);
     ImGui::Button("1.0");
     // ボタンをクリックしたらドラッグ開始
@@ -546,6 +617,8 @@ nlohmann::json CurveEditor::ToJson() const{
     j["channel"] = static_cast<int>(curveChannel_);
     // カーブタイプ
     j["type"] = static_cast<int>(curveType_);
+    // 単位ボーダー
+    j["unitBorder"] = unitValueBorder_;
     // カーブのポイントを出力
     int channelCount = static_cast<int>(curveChannel_) + 1;
     for(int i = 0; i < channelCount; ++i){
@@ -576,6 +649,12 @@ void CurveEditor::FromJson(const nlohmann::json& json){
     if(json.contains("type")){
         curveType_ = static_cast<Easing::Type>(json["type"].get<int>());
     }
+
+    // 単位ボーダー
+    if(json.contains("unitBorder")){
+        unitValueBorder_ = json["unitBorder"].get<float>();
+    }
+
     // カーブのポイントを読み込み
     if(json.contains("curves")){
         int channelCount = static_cast<int>(curveChannel_) + 1;

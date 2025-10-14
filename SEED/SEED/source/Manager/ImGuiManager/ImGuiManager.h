@@ -4,6 +4,8 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/Structs/Transform.h>
 #include <SEED/Lib/Structs/Range2D.h>
+#include <SEED/Lib/Structs/Timer.h>
+#include <SEED/Source/Editor/EditorColorSettings.h>
 #include "ImGuiEx.h"
 // stl
 #include <initializer_list>
@@ -124,11 +126,12 @@ struct ImFunc{
         std::filesystem::path rootPath = "",
         bool returnDirectoryName = false
     );
-
-
+    // 再生バーの表示
+    static bool PlayBar(const std::string& label, Timer & timer);
+    // 折りたたみヘッダーの拡張関数
+    static bool CollapsingHeader(const std::string& label, const ImU32& color = 0, ImGuiTreeNodeFlags flags = 0);
     // 文字列を折り返す関数
     static std::vector<std::string> WrapTextLines(const std::string& text, float maxWidth, int maxLines = 2);
-
     // コンボボックスの拡張関数
     template <typename EnumType>
     static bool Combo(const std::string& label, EnumType& currentValue, initializer_list<string> items, int padding = 0);

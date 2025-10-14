@@ -11,12 +11,6 @@ Routine2DComponent::Routine2DComponent(GameObject2D* pOwner, const std::string& 
         componentTag_ = "Routine2D_ID:" + std::to_string(componentID_);
     }
 
-    if(!isTextureLoaded_){
-        textureIDs_["playIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
-        textureIDs_["pauseIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
-        isTextureLoaded_ = true;
-    }
-
     // タイマー初期化
     timer_.Initialize(1.0f);
 
@@ -205,20 +199,9 @@ void Routine2DComponent::EditGUI(){
     // 設定
     ImGui::SeparatorText("設定");
     ImGui::DragFloat("総時間", &timer_.duration, 0.1f, 0.0f, 1000.0f);
-    if(isPlaying_){
-        if(ImGui::ImageButton("再生ボタン", textureIDs_["playIcon"], { 20,20 })){
-            Pause();
-        }
-    } else{
-        if(ImGui::ImageButton("再生ボタン", textureIDs_["pauseIcon"], { 20,20 })){
-            if(timer_.IsFinished()){
-                timer_.Reset();
-            }
-            Play();
-        }
+    if(ImFunc::PlayBar("現在の時間", timer_)){
+        isPlaying_ = !timer_.isStop;
     }
-    ImGui::SameLine();
-    ImGui::SliderFloat("現在の時間", &timer_.currentTime, 0.0f, timer_.duration);
     ImFunc::Combo("補間方法", interpolationType_, { "LINEAR","CATMULLROM" });
     ImFunc::Combo("イージング補間関数", easingType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);

@@ -130,8 +130,8 @@ void Model::UpdateMatrix(){
 //                                                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Model::Draw(){
-    SEED::DrawModel(this);
+void Model::Draw(const std::optional<Vector4>& masterColor){
+    SEED::DrawModel(this,masterColor);
 }
 
 

@@ -39,11 +39,6 @@ void GameState_Select::Update(){
 
     // 背景描画クラスの更新
     backGroundDrawer_->Update();
-
-#ifdef _DEBUG
-    curveEditor_.EditGUI();
-#endif // _DEBUG
-
 }
 
 void GameState_Select::Draw(){

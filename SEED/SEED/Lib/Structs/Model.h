@@ -27,7 +27,7 @@ public:
     Model(const std::string& filename);
     void Initialize(const std::string& filename);
     virtual void Update();
-    virtual void Draw();
+    virtual void Draw(const std::optional<Vector4>& masterColor = std::nullopt);
 
 public:
     // 行列の更新

@@ -2,6 +2,7 @@
 #include <Game/GameSystem.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
+#include <SEED/Source/Basic/Components/ComponentRegister.h>
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -408,32 +409,9 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
     localTransform_.rotate = jsonData["transform"]["rotate"];
     localTransform_.scale = jsonData["transform"]["scale"];
 
-    // コンポーネントの情報
+    // コンポーネントの読み込み
     for(const auto& componentJson : jsonData["components"]){
-        std::string componentType = componentJson["componentType"];
-        if(componentType == "Collision2D"){
-            auto* collisionComponent = AddComponent<Collision2DComponent>();
-            collisionComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Text"){
-            auto* textComponent = AddComponent<TextComponent>();
-            textComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Jump"){
-            auto* jumpComponent = AddComponent<JumpComponent>();
-            jumpComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "UI"){
-            auto* uiComponent = AddComponent<UIComponent>();
-            uiComponent->LoadFromJson(componentJson);
-
-        } else if(componentType == "Routine2D"){
-            auto* uiComponent = AddComponent<Routine2DComponent>();
-            uiComponent->LoadFromJson(componentJson);
-
-        } else{
-            assert(0 && "不明なコンポーネントタイプです");
-        }
+        ComponentRegister::LoadComponents(this, componentJson);
     }
 }
 
@@ -485,16 +463,13 @@ void GameObject2D::EditGUI(){
 #ifdef _DEBUG
 
     // オブジェクトの名前を編集
-    std::string label = "オブジェクト名##" + std::to_string(objectID_);
-    ImFunc::InputText(label.c_str(), objectName_);
+    std::string tag = "##" + std::to_string(objectID_);
+    ImFunc::InputText("オブジェクト名" + tag, objectName_);
 
     ImGui::Text("------------- トランスフォーム -------------");
-    label = "位置##" + std::to_string(objectID_);
-    ImGui::DragFloat2(label.c_str(), &localTransform_.translate.x);
-    label = "回転##" + std::to_string(objectID_);
-    ImGui::DragFloat(label.c_str(), &localTransform_.rotate, 0.05f);
-    label = "スケール##" + std::to_string(objectID_);
-    ImGui::DragFloat2(label.c_str(), &localTransform_.scale.x, 0.05f);
+    ImGui::DragFloat2("位置" + tag, &localTransform_.translate.x);
+    ImGui::DragFloat("回転" + tag, &localTransform_.rotate, 0.05f);
+    ImGui::DragFloat2("スケール" + tag, &localTransform_.scale.x, 0.05f);
 
     ImGui::Text("--------------- ペアレント方式 ---------------");
     ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
@@ -506,8 +481,10 @@ void GameObject2D::EditGUI(){
     // コンポーネントのGUI編集
     for(auto& component : components_){
         // ラベルの設定
-        label = component->componentTag_ + "##" + std::to_string(component->componentID_);
-        bool opened = ImGui::CollapsingHeader(label.c_str());
+        bool opened = ImFunc::CollapsingHeader(
+            component->componentTag_ + "##" + std::to_string(component->componentID_), 
+            EditorColor::componentHeader
+        );
 
         // 右クリックでコンテキストメニューを表示
         if(ImGui::IsItemClicked(1)){
@@ -531,30 +508,12 @@ void GameObject2D::EditGUI(){
     }
 
     if(ImGui::BeginPopup("AddComponentPopup")){
-        ImGui::Indent();
-        // コンポーネントの追加
-        if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
-            AddComponent<Collision2DComponent>();
+        // 追加GUI
+        if(ComponentRegister::RegisterGUI(this)){
+            // 追加したコンポーネントを初期化し閉じる
+            components_.back()->Initialize();
             ImGui::CloseCurrentPopup();
         }
-        if(ImGui::Button("TextComponent / テキスト描画")){
-            AddComponent<TextComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("JumpComponent / ジャンプ")){
-            AddComponent<JumpComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("UIComponent / UI描画")){
-            AddComponent<UIComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-        if(ImGui::Button("Routine2DComponent / アニメーションカーブ")){
-            AddComponent<Routine2DComponent>();
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::Unindent();
         ImGui::EndPopup();
     }
 

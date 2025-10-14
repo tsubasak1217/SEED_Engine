@@ -32,15 +32,11 @@ void UIComponent::Update(){
 void UIComponent::Draw(){
     // スプライトの描画
     for(auto& spritePair : sprites_){
-        Sprite sprite = spritePair.second;
-        sprite.color *= masterColor_;
-        sprite.Draw();
+        spritePair.second.Draw(masterColor_ * owner_.owner2D->masterColor_);
     }
     // テキストの描画
     for(auto& textPair : texts_){
-        TextBox2D textBox = textPair.second;
-        textBox.color *= masterColor_;
-        textBox.Draw();
+        textPair.second.Draw(masterColor_ * owner_.owner2D->masterColor_);
     }
 }
 

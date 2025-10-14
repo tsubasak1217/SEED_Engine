@@ -19,7 +19,7 @@ public:
     void ToEnd();
     void Stop();
     void Restart();
-    void Update(float timeScale = 1.0f);
+    void Update(float timeScale = 1.0f,bool isLoop = false);
 
 public:
     bool isStop = false;

@@ -26,8 +26,8 @@ Sprite::Sprite(const std::string& filename, const Vector2& size)
     this->size = size;
 }
 
-void Sprite::Draw(){
-    SEED::DrawSprite(*this);
+void Sprite::Draw(const std::optional<Vector4>& masterColor){
+    SEED::DrawSprite(*this,masterColor);
 }
 
 Matrix4x4 Sprite::GetWorldMatrix()const{

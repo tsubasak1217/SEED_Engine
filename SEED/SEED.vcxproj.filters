@@ -1496,5 +1496,11 @@
       <Filter>Resources\Shaders\Random</Filter>
     </None>
     <ClCompile Include="SEED\Lib\Structs\Curve.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\ComponentRegister.h" />
+    <ClInclude Include="SEED\Source\Editor\EditorColorSettings.h" />
   </ItemGroup>
 </Project>

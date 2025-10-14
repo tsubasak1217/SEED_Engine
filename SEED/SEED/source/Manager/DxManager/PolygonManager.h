@@ -204,10 +204,10 @@ public:// 頂点情報の追加に関わる関数
     );
 
     void AddSprite(
-        const struct Sprite& sprite, bool isSystemDraw = false
+        const struct Sprite& sprite, const std::optional<Vector4>& masterColor = std::nullopt,bool isSystemDraw = false
     );
 
-    void AddModel(Model* model);
+    void AddModel(Model* model, const std::optional<Vector4>& masterColor = std::nullopt);
 
     void AddLine(
         const Vector4& v1, const Vector4& v2,

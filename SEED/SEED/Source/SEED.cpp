@@ -364,10 +364,11 @@ void SEED::DrawQuad2D(const Quad2D& quad){
 /*========================================== スプライト ===========================================*/
 
 
-void SEED::DrawSprite(const Sprite& sprite){
+void SEED::DrawSprite(const Sprite& sprite, const std::optional<Vector4> masterColor){
 
     instance_->pPolygonManager_->AddSprite(
         sprite,
+        masterColor,
         false
     );
 }
@@ -375,8 +376,8 @@ void SEED::DrawSprite(const Sprite& sprite){
 
 /*========================================== モデル ===========================================*/
 
-void SEED::DrawModel(Model* model){
-    instance_->pPolygonManager_->AddModel(model);
+void SEED::DrawModel(Model* model, const std::optional<Vector4>& masterColor){
+    instance_->pPolygonManager_->AddModel(model,masterColor);
 }
 
 

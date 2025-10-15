@@ -47,6 +47,10 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
             owner->AddComponent<ColorControlComponent>();
             return true;
         }
+        if(ImGui::Button("LifetimeComponent / 寿命")){
+            owner->AddComponent<LifetimeComponent>();
+            return true;
+        }
 
         ImGui::Unindent();
     }
@@ -128,6 +132,10 @@ inline void ComponentRegister::LoadComponents(T* owner, const nlohmann::json& js
         } else if(componentType == "ColorControl"){
             auto* colorControlComponent = owner->AddComponent<ColorControlComponent>();
             colorControlComponent->LoadFromJson(json);
+
+        } else if(componentType == "Lifetime"){
+            auto* lifetimeComponent = owner->AddComponent<LifetimeComponent>();
+            lifetimeComponent->LoadFromJson(json);
         }
     }
 

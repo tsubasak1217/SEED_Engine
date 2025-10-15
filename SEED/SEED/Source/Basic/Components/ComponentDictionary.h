@@ -19,3 +19,4 @@
 #include <SEED/Source/Basic/Components/3D&2D/TextComponent.h>
 #include <SEED/Source/Basic/Components/3D&2D/JumpComponent.h>
 #include <SEED/Source/Basic/Components/3D&2D/ColorControlComponent.h>
+#include <SEED/Source/Basic/Components/3D&2D/LifetimeComponent.h>

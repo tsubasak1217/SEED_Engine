@@ -410,8 +410,10 @@ void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
     localTransform_.scale = jsonData["transform"]["scale"];
 
     // コンポーネントの読み込み
-    for(const auto& componentJson : jsonData["components"]){
-        ComponentRegister::LoadComponents(this, componentJson);
+    if(jsonData.contains("components")){
+        for(const auto& componentJson : jsonData["components"]){
+            ComponentRegister::LoadComponents(this, componentJson);
+        }
     }
 }
 

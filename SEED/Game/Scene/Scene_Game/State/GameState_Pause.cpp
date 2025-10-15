@@ -16,7 +16,7 @@ GameState_Pause::~GameState_Pause(){
 
 void GameState_Pause::Initialize(){
     // ポーズUIの読み込み
-    pauseUIs_ = pScene_->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/PauseItems.json",false).objects2D_;
+    pauseUIs_ = pScene_->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/PauseItems.scene",false).objects2D_;
 
     // ポーズ背景
     pauseBg_ = Sprite("DefaultAssets/white1x1.png");

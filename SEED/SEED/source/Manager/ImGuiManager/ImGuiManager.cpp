@@ -574,7 +574,8 @@ std::string ImFunc::FolderView(
 
                     float minX = ImGui::GetWindowPos().x;
                     float maxX = minX + ImGui::GetWindowContentRegionMax().x;
-                    textPosX = std::clamp(textPosX, minX, maxX - textWidth);
+                    float max = maxX - textWidth <= minX ? minX : maxX - textWidth;
+                    textPosX = std::clamp(textPosX, minX, max);
 
                     ImGui::SetCursorScreenPos(ImVec2(textPosX, ImGui::GetCursorScreenPos().y));
                     ImGui::TextUnformatted(l.c_str());
@@ -625,9 +626,15 @@ std::string ImFunc::FolderView(
                     ImGui::EndGroup();
                     return "";
                 } else{
-                    selectedFile = isFileNameOnly
-                        ? entry.path().filename().string()
-                        : entry.path().string();
+                    if(isFileNameOnly){
+                        selectedFile = entry.path().filename().string();
+                    } else{
+                        selectedFile = entry.path().string();
+                        // "Resources"階層以降のパスに変換
+                        if(selectedFile.find("Resources") != std::string::npos){
+                            selectedFile = selectedFile.substr(selectedFile.find("Resources"));
+                        }
+                    }
 
                     // フォルダ名を返す設定なら親フォルダを返す
                     if(returnDirectoryName){

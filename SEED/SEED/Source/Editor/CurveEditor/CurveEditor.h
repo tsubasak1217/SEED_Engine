@@ -2,9 +2,11 @@
 #include <SEED/Source/Editor/CurveEditor/CurveEditorContexts.h>
 #include <string>
 #include <json.hpp>
+#include <vector>
 
 
 class CurveEditor{
+    friend class Curve;
 public:
     CurveEditor() = default;
     ~CurveEditor() = default;
@@ -56,4 +58,6 @@ private:
     std::string tag_;
     //出力用
     std::string outputFilename_;
+    // チャンネルを貫通して編集するか
+    bool editAllChannel_ = false;
 };

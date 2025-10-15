@@ -121,10 +121,6 @@ public:
     void SetObjectType(ObjectType type){ objectType_ = type; }
     const std::string& GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
-    void SetIsActive(bool isActive){ isActive_ = isActive; }
-    bool GetIsActive() const{ return isActive_; }
-    void SetIsMustDraw(bool isMustDraw){ isMustDraw_ = isMustDraw; }
-    bool GetIsMustDraw() const{ return isMustDraw_; }
 
     //=====================================
     // 親子付け関連
@@ -210,10 +206,13 @@ private:
     uint32_t objectID_;
     ObjectType objectType_;
     std::string objectName_;
+    std::list<std::unique_ptr<IComponent>> components_;
     Vector2 targetOffset_;
+
+public:
+    bool isAlive_ = true;
     bool isActive_ = true;
     bool isMustDraw_ = false;
-    std::list<std::unique_ptr<IComponent>> components_;
 
 public:
     //---------- 親子付け情報 ---------//

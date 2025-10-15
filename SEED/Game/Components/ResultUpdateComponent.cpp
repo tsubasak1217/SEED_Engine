@@ -17,22 +17,22 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
     displayResult_.score = 0.0f;
 
     // displayResult初期化
-    rankToString_[ScoreRank::ULT] = "ULT.json";
-    rankToString_[ScoreRank::SSS] = "SSS.json";
-    rankToString_[ScoreRank::SS] = "SS.json";
-    rankToString_[ScoreRank::S] = "S.json";
-    rankToString_[ScoreRank::A] = "A.json";
-    rankToString_[ScoreRank::B] = "B.json";
-    rankToString_[ScoreRank::C] = "C.json";
-    rankToString_[ScoreRank::D] = "D.json";
+    rankToString_[ScoreRank::ULT] = "ULT.prefab";
+    rankToString_[ScoreRank::SSS] = "SSS.prefab";
+    rankToString_[ScoreRank::SS] = "SS.prefab";
+    rankToString_[ScoreRank::S] = "S.prefab";
+    rankToString_[ScoreRank::A] = "A.prefab";
+    rankToString_[ScoreRank::B] = "B.prefab";
+    rankToString_[ScoreRank::C] = "C.prefab";
+    rankToString_[ScoreRank::D] = "D.prefab";
 
 
     // リザルトシーンの読み込み
     auto* scene = GameSystem::GetScene();
     auto* hierarchy = scene->GetHierarchy();
-    hierarchy->LoadFromJson("Resources/Jsons/Scenes/ResultScene.json", false);
-    rankObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/" + rankToString_[playResult_.rank], false).objects3D_[0];
-    cameraPointObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ResultCameraPoints.json", false).objects3D_[0];
+    hierarchy->LoadFromJson("Resources/Jsons/Scenes/ResultScene.scene", false);
+    rankObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/Result/Ranks/" + rankToString_[playResult_.rank], false).objects3D_[0];
+    cameraPointObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/Result/ResultCameraPoints.prefab", false).objects3D_[0];
 
     // カメラ位置の設定
     if(cameraPointObj_){

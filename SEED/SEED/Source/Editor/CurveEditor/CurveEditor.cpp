@@ -108,14 +108,14 @@ void CurveEditor::EdittingDataToCurve(Curve& curve){
     curve.curveType_ = curveType_;
     curve.channel_ = curveChannel_;
     curve.unitValueBorder_ = unitValueBorder_;
-    
+
     // ポイントの適用
     float borderRate = 1.0f / unitValueBorder_;
     for(int32_t i = 0; i < curves_.size(); i++){
         curve.curves_[i].resize(curves_[i].points.size());
         for(int32_t j = 0; j < curves_[i].points.size(); j++){
             curve.curves_[i][j] = Vector2(
-                curves_[i].points[j].x, 
+                curves_[i].points[j].x,
                 curves_[i].points[j].y * borderRate
             );
         }
@@ -198,6 +198,7 @@ void CurveEditor::EditCurves(){
     ImGui::SetCursorScreenPos(bottomCursorPos_);
 
     // カーブの種類やタイプ選択
+    ImGui::Checkbox("チャンネル貫通", &editAllChannel_);
     static const char* channelStrs[] = { "x","y","z","w" };
     ImFunc::RadioButton("編集中のチャンネル", curveIdx_, channelStrs, channelCount);
     ImGui::DragFloat("1.0の基準ボーダー" + tag_, &unitValueBorder_, 0.05f, 0.05f, 1.0f);
@@ -445,11 +446,33 @@ void CurveEditor::DragPoint(){
         // マウスの移動量を計算
         ImVec2 mousePos = ImGui::GetIO().MousePos;
         ImVec2 delta = mousePos - clickedMousePos_;
+        if(delta == ImVec2(0, 0)){ return; }
+
+        // 操作するポイントを取得
+        std::vector<ImVec2*> editPoints;
+        editPoints.push_back(&curves_[curveIdx_].points[selectedPointIndex_]);
+        if(editAllChannel_){
+            // 他のチャンネルに同じ値のポイントがあればそれも編集対象にする
+            for(int32_t i = 0; i < int(curveChannel_) + 1; ++i){
+                // 自分のチャンネルはスキップ
+                if(i == curveIdx_){ continue; }
+                // 同じ値のポイントを探す
+                auto& otherPoints = curves_[i].points;
+                for(auto& p : otherPoints){
+                    if(p.x == editPoints[0]->x && p.y == editPoints[0]->y){
+                        editPoints.push_back(&p);
+                        break;
+                    }
+                }
+            }
+        }
 
         // 移動量を正規化してポイントに反映
         ImVec2 size_ = rect_.GetSize();
-        points[selectedPointIndex_].x = originalPointPos_.x + delta.x / size_.x;
-        points[selectedPointIndex_].y = originalPointPos_.y - delta.y / size_.y;
+        for(auto& p : editPoints){
+            p->x = originalPointPos_.x + delta.x / size_.x;
+            p->y = originalPointPos_.y - delta.y / size_.y;
+        }
 
         // clamp座標の計算
         float clampMax;
@@ -470,8 +493,15 @@ void CurveEditor::DragPoint(){
         }
 
         // クランプ
-        points[selectedPointIndex_].x = std::clamp(points[selectedPointIndex_].x, clampMin, clampMax);
-        points[selectedPointIndex_].y = std::clamp(points[selectedPointIndex_].y, 0.0f, 1.0f);
+        for(auto& p : editPoints){
+            p->x = std::clamp(p->x, clampMin, clampMax);
+            p->y = std::clamp(p->y, 0.0f, 1.0f);
+        }
+
+        // 正しい順番に並び替える
+        for(int32_t i = 0; i < int(curveChannel_) + 1; ++i){
+            std::sort(curves_[i].points.begin(), curves_[i].points.end(), [](const ImVec2& a, const ImVec2& b){ return a.x < b.x; });
+        }
     }
 }
 
@@ -481,19 +511,32 @@ void CurveEditor::DragPoint(){
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void CurveEditor::AddPoint(){
 
-    // マウス位置を正規化して追加
+    // マウス位置を正規化してポイントを計算
     ImVec2 size_ = rect_.GetSize();
     ImVec2 mousePos = ImGui::GetIO().MousePos;
     ImVec2 newPoint;
-    auto& points = curves_[curveIdx_].points;
     newPoint.x = (mousePos.x - rect_.Min.x) / size_.x;
     newPoint.y = 1.0f - (mousePos.y - rect_.Min.y) / size_.y;
     newPoint.x = std::clamp(newPoint.x, 0.0f, 1.0f);
     newPoint.y = std::clamp(newPoint.y, 0.0f, 1.0f);
-    points.push_back(newPoint);
 
-    // 並び替える
-    std::sort(points.begin(), points.end(), [](const ImVec2& a, const ImVec2& b){ return a.x < b.x; });
+    // 通常編集
+    if(!editAllChannel_){
+        // 追加
+        auto& points = curves_[curveIdx_].points;
+        points.push_back(newPoint);
+        // 並び替える
+        std::sort(points.begin(), points.end(), [](const ImVec2& a, const ImVec2& b){ return a.x < b.x; });
+
+    } else{// 全チャンネル編集
+        for(int32_t i = 0; i < int(curveChannel_) + 1; ++i){
+            // 追加
+            auto& points = curves_[i].points;
+            points.push_back(newPoint);
+            // 並び替える
+            std::sort(points.begin(), points.end(), [](const ImVec2& a, const ImVec2& b){ return a.x < b.x; });
+        }
+    }
 }
 
 

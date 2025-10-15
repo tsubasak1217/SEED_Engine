@@ -764,7 +764,7 @@ bool MyFunc::DeleteFileObject(const std::string& path){
     std::string fixedPath = path.c_str();
     std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
     std::wstring wpath = ConvertString(fixedPath);
-    
+
     // パスが存在するか確認
     if(!std::filesystem::exists(wpath)){
         return false;
@@ -838,11 +838,27 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
     }
 
     // extの拡張子で保存されるようにする
-    std::wstring wExt = ConvertString(ext);
-    std::wstring filter = L"指定の拡張子 (*" + wExt + L")\0*" + wExt + L"\0すべてのファイル (*.*)\0*.*\0";
+    std::wstring wext = std::wstring(ext.begin(), ext.end());
+    if(wext[0] == L'.') wext.erase(0, 1); // ".prefab" → "prefab"
+
+    // filterを1文字ずつ安全に構築
+    std::wstring filter;
+    filter.append(L"Prefab ファイル (*.");
+    filter.append(wext);
+    filter.append(L")");
+    filter.push_back(L'\0');
+    filter.append(L"*.");
+    filter.append(wext);
+    filter.push_back(L'\0');
+    filter.append(L"すべてのファイル (*.*)");
+    filter.push_back(L'\0');
+    filter.append(L"*.*");
+    filter.push_back(L'\0');
+    filter.push_back(L'\0'); // ← 末尾のダブルヌル終端
+
     std::wstring initialDir = ConvertString(absDirectory);
     std::wstring initName = ConvertString(initialName);
-    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wExt.substr(1), initialDir, initName));
+    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wext.substr(1), initialDir, initName));
 }
 
 

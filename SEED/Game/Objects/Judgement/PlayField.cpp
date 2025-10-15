@@ -188,7 +188,7 @@ void PlayField::Initialize(){
     backImage_.size = kWindowSize;
 
     // シーンの読み込み
-    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/playScene.json", false).objects2D_;
+    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/PlayScene.scene", false).objects2D_;
 
     SEED::windowBackColor_ = 0x00557CFF;
 }

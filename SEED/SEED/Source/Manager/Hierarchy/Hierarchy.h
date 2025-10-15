@@ -61,8 +61,8 @@ private:
 
 public:
     // json
-    nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const;
-    nlohmann::json OutputToJson(const std::string& outputFilePath, std::list<GameObject2D*> grandParentObjects) const;
+    nlohmann::json OutputToJson(std::list<GameObject*> grandParentObjects,bool isSaveOnOrigin = false) const;
+    nlohmann::json OutputToJson(std::list<GameObject2D*> grandParentObjects,bool isSaveOnOrigin = false) const;
     LoadObjectData LoadFromJson(const std::string& filePath, bool resetObjects = true);
 
 private:

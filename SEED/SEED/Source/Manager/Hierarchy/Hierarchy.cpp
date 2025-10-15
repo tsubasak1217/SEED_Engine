@@ -163,12 +163,12 @@ void Hierarchy::BeginFrame(){
 
     // ゲームオブジェクトのフレーム開始処理
     for(auto& gameObject : gameObjects_){
-        if(!gameObject->GetIsActive()){ continue; }
+        if(!gameObject->isActive_){ continue; }
         gameObject->BeginFrame();
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive()){ continue; }
+        if(!gameObject2D->isActive_){ continue; }
         gameObject2D->BeginFrame();
     }
 }
@@ -182,12 +182,12 @@ void Hierarchy::Update(){
 
     // ゲームオブジェクトの更新
     for(auto& gameObject : gameObjects_){
-        if(!gameObject->GetIsActive()){ continue; }
+        if(!gameObject->isActive_){ continue; }
         gameObject->Update();
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive()){ continue; }
+        if(!gameObject2D->isActive_){ continue; }
         gameObject2D->Update();
     }
 }
@@ -198,12 +198,12 @@ void Hierarchy::Update(){
 void Hierarchy::Draw(){
     // ゲームオブジェクトの描画
     for(auto& gameObject : gameObjects_){
-        if(!gameObject->GetIsActive() && !gameObject->GetIsMustDraw()){ continue; }
+        if(!gameObject->isActive_ && !gameObject->isMustDraw_){ continue; }
         gameObject->Draw();
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive() && !gameObject2D->GetIsMustDraw()){ continue; }
+        if(!gameObject2D->isActive_ && !gameObject2D->isMustDraw_){ continue; }
         gameObject2D->Draw();
     }
 }
@@ -214,13 +214,36 @@ void Hierarchy::Draw(){
 void Hierarchy::EndFrame(){
     // ゲームオブジェクトのフレーム終了処理
     for(auto& gameObject : gameObjects_){
-        if(!gameObject->GetIsActive()){ continue; }
+        if(!gameObject->isActive_){ continue; }
         gameObject->EndFrame();
     }
 
     for(auto& gameObject2D : gameObjects2D_){
-        if(!gameObject2D->GetIsActive()){ continue; }
+        if(!gameObject2D->isActive_){ continue; }
         gameObject2D->EndFrame();
+    }
+
+    // aliveでないオブジェクトの削除
+    for(auto it = gameObjects_.begin(); it != gameObjects_.end(); ){
+        if(!(*it)->isAlive_){
+            //消す前に次のイテレータを保存しておく
+            auto nextIt = std::next(it);
+            EraseObject(*it);
+            it = nextIt; // イテレータを次に進める
+        } else{
+            ++it;
+        }
+    }
+
+    for(auto it = gameObjects2D_.begin(); it != gameObjects2D_.end(); ){
+        if(!(*it)->isAlive_){
+            //消す前に次のイテレータを保存しておく
+            auto nextIt = std::next(it);
+            EraseObject(*it);
+            it = nextIt; // イテレータを次に進める
+        } else{
+            ++it;
+        }
     }
 }
 
@@ -638,35 +661,21 @@ void Hierarchy::InOutOnGUI(){
         if(ImGui::Button("シーンをJsonファイルへ出力")){
             // 最前面表示
             filename.clear();
-            ImGui::SetNextWindowFocus();
-            ImGui::OpenPopup("OutputToJson");
-        }
+            filename = MyFunc::OpenSaveFileDialog(outputFileDirectory, ".scene", "拡張子は不要です");
 
-        // ポップアップの表示
-        if(ImGui::BeginPopupModal("OutputToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
-
-            ImGui::Text("シーンをJsonファイルへ出力します。");
-            // 出力先のパスを入力
-            ImFunc::InputText(".json", filename);
-
-            // 出力ボタン
-            if(ImGui::Button("出力", ImVec2(120, 0))){
-
-                nlohmann::json j = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects_);
-                nlohmann::json j2 = OutputToJson(outputFileDirectory + filename + ".json", grandParentObjects2D_);
+            // ダイアログ上で保存ボタンが押されたら保存処理を行う
+            if(!filename.empty()){
+                // 3D,2Dオブジェクトを同じjsonにまとめる
+                nlohmann::json j = OutputToJson(grandParentObjects_);
+                nlohmann::json j2 = OutputToJson(grandParentObjects2D_);
                 nlohmann::json result;
                 if(!j.empty()){ result.update(j); }
                 if(!j2.empty()){ result.update(j2); }
-                MyFunc::CreateJsonFile(outputFileDirectory + filename + ".json", result);
-                ImGui::CloseCurrentPopup();
+                // 出力
+                MyFunc::CreateJsonFile(filename,result);
+                // filenameをファイル名のみに戻す
+                filename = std::filesystem::path(filename).filename().stem().string();
             }
-
-            // キャンセルボタン
-            ImGui::SameLine();
-            if(ImGui::Button("キャンセル", ImVec2(120, 0))){
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
         }
     }
 
@@ -678,7 +687,7 @@ void Hierarchy::InOutOnGUI(){
         {
             ImGui::Text("シーンの読み込み");
             static std::filesystem::path prefabPath = "Resources/jsons/Scenes/";
-            std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, false, { ".json" }, "Resources/jsons/Scenes/");
+            std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, false, { ".scene" }, "Resources/jsons/Scenes/");
 
             if(selectedFile != ""){
                 LoadFromJson(selectedFile);
@@ -687,94 +696,102 @@ void Hierarchy::InOutOnGUI(){
         {
             ImGui::Text("Prefabの読み込み");
             static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
-            std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".json" }, "Resources/jsons/Prefabs/");
+            std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".prefab" }, "Resources/jsons/Prefabs/");
             if(selectedFile != ""){
                 LoadFromJson(selectedFile, false);
             }
         }
     }
-
-
-
-
 #endif
 }
 
 void Hierarchy::OutputPrefab(GameObject* gameObject){
     // Jsonファイルへの出力
-    {
-        static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
-        static std::string filename = "";
-        static bool isSaveOnWorldOrigin = true;// 
+    static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
+    static std::string filename = "";
+    static bool isSaveOnWorldOrigin = true;// 
 
-        if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
-            // 最前面表示
+    if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
+        // 最前面表示
+        filename.clear();
+        ImGui::SetNextWindowFocus();
+        ImGui::OpenPopup("PrefabToJson");
+    }
+
+    // ポップアップの表示
+    if(ImGui::BeginPopupModal("PrefabToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+
+        // 保存設定
+        ImGui::SeparatorText("出力詳細設定");
+        ImGui::Checkbox("ワールド原点に保存", &isSaveOnWorldOrigin);
+
+        // 出力ボタン
+        if(ImGui::Button("出力", ImVec2(120, 0))){
             filename.clear();
-            ImGui::SetNextWindowFocus();
-            ImGui::OpenPopup("PrefabToJson");
-        }
+            filename = MyFunc::OpenSaveFileDialog(outputFileDirectory, ".prefab", "拡張子は不要です");
 
-        // ポップアップの表示
-        if(ImGui::BeginPopupModal("PrefabToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
-
-            ImGui::Text("オブジェクトをJsonファイルへ出力します。");
-            // 出力先のパスを入力
-            ImFunc::InputText(".json", filename);
-
-            // 出力ボタン
-            if(ImGui::Button("出力", ImVec2(120, 0))){
+            // ダイアログ上で保存ボタンが押されたら保存処理を行う
+            if(!filename.empty()){
                 std::list<GameObject*> outputObject;
                 outputObject.push_back(gameObject);
-                OutputToJson(outputFileDirectory + filename + ".json", outputObject);
-                ImGui::CloseCurrentPopup();
+                MyFunc::CreateJsonFile(filename, OutputToJson(outputObject, isSaveOnWorldOrigin));
+                // filenameをファイル名のみに戻す
+                filename = std::filesystem::path(filename).filename().stem().string();
             }
-
-            // キャンセルボタン
-            ImGui::SameLine();
-            if(ImGui::Button("キャンセル", ImVec2(120, 0))){
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
+            ImGui::CloseCurrentPopup();
         }
+
+        // キャンセルボタン
+        ImGui::SameLine();
+        if(ImGui::Button("キャンセル", ImVec2(120, 0))){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
 }
 
 void Hierarchy::OutputPrefab(GameObject2D* gameObject){
     // Jsonファイルへの出力
-    {
-        static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
-        static std::string filename = "";
-        static bool isSaveOnWorldOrigin = true;// 
+    static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
+    static std::string filename = "";
+    static bool isSaveOnWorldOrigin = true;// 
 
-        if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
-            // 最前面表示
+    if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
+        // 最前面表示
+        filename.clear();
+        ImGui::SetNextWindowFocus();
+        ImGui::OpenPopup("PrefabToJson");
+    }
+
+    // ポップアップの表示
+    if(ImGui::BeginPopupModal("PrefabToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
+
+        // 保存設定
+        ImGui::SeparatorText("出力詳細設定");
+        ImGui::Checkbox("ワールド原点に保存", &isSaveOnWorldOrigin);
+
+        // 出力ボタン
+        if(ImGui::Button("出力", ImVec2(120, 0))){
             filename.clear();
-            ImGui::SetNextWindowFocus();
-            ImGui::OpenPopup("PrefabToJson");
-        }
+            filename = MyFunc::OpenSaveFileDialog(outputFileDirectory, ".prefab", "拡張子は不要です");
 
-        // ポップアップの表示
-        if(ImGui::BeginPopupModal("PrefabToJson", NULL, ImGuiWindowFlags_AlwaysAutoResize)){
-
-            ImGui::Text("オブジェクトをJsonファイルへ出力します。");
-            // 出力先のパスを入力
-            ImFunc::InputText(".json", filename);
-
-            // 出力ボタン
-            if(ImGui::Button("出力", ImVec2(120, 0))){
+            // ダイアログ上で保存ボタンが押されたら保存処理を行う
+            if(!filename.empty()){
                 std::list<GameObject2D*> outputObject;
                 outputObject.push_back(gameObject);
-                OutputToJson(outputFileDirectory + filename + ".json", outputObject);
-                ImGui::CloseCurrentPopup();
+                MyFunc::CreateJsonFile(filename, OutputToJson(outputObject, isSaveOnWorldOrigin));
+                // filenameをファイル名のみに戻す
+                filename = std::filesystem::path(filename).filename().stem().string();
             }
-
-            // キャンセルボタン
-            ImGui::SameLine();
-            if(ImGui::Button("キャンセル", ImVec2(120, 0))){
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
+            ImGui::CloseCurrentPopup();
         }
+
+        // キャンセルボタン
+        ImGui::SameLine();
+        if(ImGui::Button("キャンセル", ImVec2(120, 0))){
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
 }
 
@@ -832,34 +849,53 @@ void Hierarchy::ExecuteContextMenu(){
 /////////////////////////////////////////////////////////////////////
 // Jsonファイルへの出力
 /////////////////////////////////////////////////////////////////////
-nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath, std::list<GameObject*> grandParentObjects) const{
+nlohmann::json Hierarchy::OutputToJson(
+    std::list<GameObject*> grandParentObjects,
+    bool isSaveOnOrigin
+) const{
     static nlohmann::json sceneData;
     sceneData.clear(); // 既存のデータをクリア
 
     // 各オブジェクトのjsonデータを取得
     for(const auto& grandParent : grandParentObjects){
+
+        // ワールド原点に保存する場合、位置を(0,0)、回転を0、拡縮を1にする
+        Transform originalTransform = grandParent->localTransform_;
+        if(isSaveOnOrigin){
+            grandParent->localTransform_.translate = { 0.0f,0.0f,0.0f };
+        }
+        // jsonデータを取得して追加
         sceneData["gameObjects"].push_back(grandParent->GetJsonData(0));
+
+        // 元に戻す
+        grandParent->localTransform_ = originalTransform;
+
     }
-
-    // 出力
-    std::ofstream ofs(outputFilePath);
-    ofs << sceneData.dump(4); // 4スペースでインデント
-    ofs.close();
-
     return sceneData; // 出力したjsonデータを返す
 }
 
-nlohmann::json Hierarchy::OutputToJson(const std::string& outputFilePath, std::list<GameObject2D*> grandParentObjects) const{
+nlohmann::json Hierarchy::OutputToJson(
+    std::list<GameObject2D*> grandParentObjects,
+    bool isSaveOnOrigin
+) const{
     static nlohmann::json sceneData;
     sceneData.clear(); // 既存のデータをクリア
+
     // 各オブジェクトのjsonデータを取得
     for(const auto& grandParent : grandParentObjects){
+
+        // ワールド原点に保存する場合、位置を(0,0)、回転を0、拡縮を1にする
+        Transform2D originalTransform = grandParent->localTransform_;
+        if(isSaveOnOrigin){
+            grandParent->localTransform_.translate = { 0.0f,0.0f };
+        }
+        // jsonデータを取得して追加
         sceneData["gameObjects2D"].push_back(grandParent->GetJsonData(0));
+
+        // 元に戻す
+        grandParent->localTransform_ = originalTransform;
+
     }
-    // 出力
-    std::ofstream ofs(outputFilePath);
-    ofs << sceneData.dump(4); // 4スペースでインデント
-    ofs.close();
     return sceneData; // 出力したjsonデータを返す
 }
 
@@ -871,8 +907,11 @@ LoadObjectData Hierarchy::LoadFromJson(const std::string& filePath, bool resetOb
     // 結果格納用
     LoadObjectData result;
 
+    // フルパスに変換
+    std::string fullPath = MyFunc::ToFullPath(filePath);
+
     // ファイルを開く
-    std::ifstream ifs(filePath);
+    std::ifstream ifs(fullPath);
     if(ifs.fail()){
         assert(false);
         return result;

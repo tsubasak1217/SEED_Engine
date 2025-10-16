@@ -367,3 +367,4 @@ FodyWeavers.xsd
 # local
 *.ini
 *.vsix
+/SEED/imgui.ini

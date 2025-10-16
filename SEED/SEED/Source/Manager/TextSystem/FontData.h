@@ -8,7 +8,7 @@
 
 // 文字データ
 struct GlyphData{
-    uint32_t graphHandle; // グラフハンドル(フォントアトラスの)
+    int32_t graphHandle = -1; // グラフハンドル(フォントアトラスの)
     Vector2 texcoordLT; // グリフのテクスチャ座標(左上)
     Vector2 texcoordRB; // グリフのテクスチャ座標(右下)
     float yRatio; // 最大縦幅に対するyサイズの比率
@@ -18,8 +18,11 @@ struct GlyphData{
 
 // フォントアトラスデータ
 struct FontAtlas{
-    uint32_t textureHandle;
+    int32_t textureHandle = -1;
+    std::string atlasName;
     std::unordered_map<int32_t, GlyphData> glyphs;// 文字コードでグリフデータを管理
+    std::vector<unsigned char> bitmap;// アトラスのビットマップデータ
+    static const int texWidth = 4096, texHeight = 4096;// アトラスのテクスチャサイズ
 };
 
 // フォントデータ

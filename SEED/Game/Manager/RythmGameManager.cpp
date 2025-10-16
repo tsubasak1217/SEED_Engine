@@ -62,7 +62,7 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     notesData_ = std::make_unique<NotesData>();
     notesData_->Initialize(songData);
     playResult_.totalCombo = notesData_->GetTotalCombo();
-    
+
 
     // エディタの初期化
     if(songData.contains("jsonFilePath")){
@@ -133,6 +133,18 @@ void RythmGameManager::EndFrame(){
                 playResult_.evalutionCount[(int)Judgement::Evaluation::GREAT] == 0 &&
                 playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] == 0;
             Scene_Clear::SetResult(playResult_);
+
+            // クリアエフェクトを出す
+            auto* scene = GameSystem::GetScene();
+            auto* hierarchy = scene->GetHierarchy();
+            hierarchy;
+            if(playResult_.isAllPerfect){
+                hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ClearEffect/Effect_AP.prefab", false);
+            } else{
+                if(playResult_.isFullCombo){
+                    hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ClearEffect/Effect_FC.prefab", false);
+                }
+            }
         }
 
         // プレイ終了タイマーを更新
@@ -170,7 +182,7 @@ void RythmGameManager::Update(){
 
         // コンボテキストの更新
         comboObject_->Update();
-                        
+
         // スコア,ランクの計算
         playResult_.score = CalculateScore();
         playResult_.rank = ScoreRankUtils::GetScoreRank(playResult_.score);
@@ -247,5 +259,5 @@ float RythmGameManager::CalculateScore(){
     float subtractGood = playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] * scorePerNote * scoreSubtractRateGood;
     float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] * scorePerNote;
     result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
-    return std::clamp(result,0.0f,100.0f);
+    return std::clamp(result, 0.0f, 100.0f);
 }

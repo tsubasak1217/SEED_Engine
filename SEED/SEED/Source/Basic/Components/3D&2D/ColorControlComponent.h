@@ -35,4 +35,5 @@ private:
     Timer timer_ ;
     float timeScale_ = 1.0f;
     bool isLoop_ = false;
+    bool isMultiply_ = false;// 直接書き換えるか乗算するかを管理
 };

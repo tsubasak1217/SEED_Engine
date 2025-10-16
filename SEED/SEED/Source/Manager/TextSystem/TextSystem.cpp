@@ -1,5 +1,7 @@
 #include "TextSystem.h"
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
+#include <execution>
+
 // stb
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
@@ -26,7 +28,15 @@ void TextSystem::Initialize(){
 // 起動時に読み込むフォント
 ///////////////////////////////////////////////////////////////////
 void TextSystem::StartupLoad(){
-    LoadFont("DefaultAssets/Digital/851Gkktt_005.ttf");
+
+    std::vector<std::string> fontFiles = MyFunc::GetFileList("Resources/Fonts/", { ".ttf",".otf" });
+
+    // 存在するフォントをアトラスデータだけ先に読み込む
+    for(const auto& fontFile : fontFiles){
+        LoadFont(fontFile, false);
+    }
+
+    fontFiles;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -137,16 +147,15 @@ std::vector<unsigned char> TextSystem::ParseTTF(const char* filename){
 ///////////////////////////////////////////////////////////////////
 // フォントアトラスを作成する関数
 ///////////////////////////////////////////////////////////////////
-uint32_t TextSystem::CreateFontAtlas(
-    const std::string& fontName,
+void TextSystem::CreateFontAtlas(
+    FontAtlas& atlas,
+    const std::string& atlasName,
     FontData* fontData,
     const stbtt_fontinfo& font,
-    std::vector<int32_t>& codePoints,
-    std::unordered_map<int32_t, GlyphData>& outGlyphs
+    std::vector<int32_t>& codePoints
 ){
-    const int texWidth = 4096, texHeight = 4096;
     int padding = 16;
-    std::vector<unsigned char> atlasBitmap(texWidth * texHeight, 0);
+    std::vector<unsigned char> atlasBitmap(FontAtlas::texWidth * FontAtlas::texHeight, 0);
 
     // 各種情報を取得
     float fontSize = 64.0f;
@@ -167,7 +176,7 @@ uint32_t TextSystem::CreateFontAtlas(
         int glyphWidth = x1 - x0;
         int glyphHeight = y1 - y0;
 
-        if(penX + glyphWidth >= texWidth){
+        if(penX + glyphWidth >= FontAtlas::texWidth){
             penX = 0;
             penY += rowHeight + padding;
             rowHeight = 0;
@@ -182,8 +191,8 @@ uint32_t TextSystem::CreateFontAtlas(
         // アトラスに書き込み
         for(int yy = 0; yy < glyphHeight; ++yy){
             for(int xx = 0; xx < glyphWidth; ++xx){
-                int dstIndex = (drawY + yy) * texWidth + (penX + xx);
-                if(dstIndex < texWidth * texHeight)
+                int dstIndex = (drawY + yy) * FontAtlas::texWidth + (penX + xx);
+                if(dstIndex < FontAtlas::texWidth * FontAtlas::texHeight)
                     atlasBitmap[dstIndex] = bitmap[yy * glyphWidth + xx];
             }
         }
@@ -192,12 +201,12 @@ uint32_t TextSystem::CreateFontAtlas(
         GlyphData glyph;
 
         glyph.texcoordLT = {
-            static_cast<float>(penX) / texWidth,
-            static_cast<float>(drawY) / texHeight
+            static_cast<float>(penX) / FontAtlas::texWidth,
+            static_cast<float>(drawY) / FontAtlas::texHeight
         };
         glyph.texcoordRB = {
-            static_cast<float>(penX + glyphWidth) / texWidth,
-            static_cast<float>(drawY + glyphHeight) / texHeight
+            static_cast<float>(penX + glyphWidth) / FontAtlas::texWidth,
+            static_cast<float>(drawY + glyphHeight) / FontAtlas::texHeight
         };
 
         Vector2 texSize = glyph.texcoordRB - glyph.texcoordLT;
@@ -207,21 +216,16 @@ uint32_t TextSystem::CreateFontAtlas(
         // yOffset（描画時に足すことで baseline 揃え）
         glyph.yOffset = static_cast<float>(y0) / fontSize;
 
-        outGlyphs[codePoint] = glyph;
+        atlas.glyphs[codePoint] = glyph;
 
         penX += glyphWidth + padding;
         rowHeight = (std::max)(rowHeight, glyphHeight);
     }
 
-    // テクスチャ作成
-    uint32_t textureHandle = CreateFontTexture(fontName, atlasBitmap.data(), texWidth, texHeight);
-
-    // 各GlyphDataにテクスチャハンドル設定
-    for(auto& [_, glyph] : outGlyphs){
-        glyph.graphHandle = textureHandle;
-    }
-
-    return textureHandle;
+    // アトラスの情報を保存
+    atlas.bitmap = atlasBitmap;
+    atlas.atlasName = atlasName;
+    atlas.textureHandle = -1;
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -275,72 +279,104 @@ uint32_t TextSystem::CreateFontTexture(const std::string& fontName, const uint8_
 ///////////////////////////////////////////////////////////////////
 // フォントを読み込む
 ///////////////////////////////////////////////////////////////////
-const FontData* TextSystem::LoadFont(const std::string& filename){
+const FontData* TextSystem::LoadFont(const std::string& filename, bool isTextureCreate){
     // すでに読み込まれている場合はそのポインタを返す
     std::string fullPath;
     std::filesystem::path pathObj;
-    
+
     if(filename.starts_with("Resources")){
         fullPath = filename; // すでにディレクトリが付加されている場合
     } else{
         fullPath = directory_ + filename; // ディレクトリを付加
     }
 
+    // 読み込み状況を確認
     pathObj = fullPath;
     auto it = fontDataMap_.find(pathObj.filename().string());
+    bool atlasCreated = false;
     if(it != fontDataMap_.end()){
-        return it->second.get();
-    }
-
-    // フォントファイル読み込み（バイナリとして）
-    std::vector<unsigned char> fontBuffer = ParseTTF(fullPath.c_str());
-    if(fontBuffer.empty()){
-        return nullptr; // 読み込み失敗
-    }
-
-    // stb_truetype 初期化
-    stbtt_fontinfo font;
-    stbtt_InitFont(&font, fontBuffer.data(), 0);
-
-
-    // ここで複数アトラスに分けて読み込む
-    std::unique_ptr<FontData> fontData = std::make_unique<FontData>();
-    constexpr size_t MAX_GLYPHS_PER_ATLAS = 4000;
-    size_t offset = 0;
-    int pages = 0;
-
-
-    while(offset < GlyphRanges::jpGlyph.size()){
-        size_t batchSize = (std::min)(MAX_GLYPHS_PER_ATLAS, GlyphRanges::jpGlyph.size() - offset);
-        std::vector<int32_t> codePoints(GlyphRanges::jpGlyph.begin() + offset, GlyphRanges::jpGlyph.begin() + offset + batchSize);
-
-        // atlas を直接 emplace_back して構築（破棄されないように）
-        fontData->atlases.emplace_back();
-        FontAtlas* atlas = &fontData->atlases.back();
-
-        std::string atlasName = fullPath + "_atlas" + std::to_string(pages++);
-        atlas->textureHandle = CreateFontAtlas(atlasName, fontData.get(), font, codePoints, atlas->glyphs);
-
-        // offsetを更新
-        offset += batchSize;
-    }
-
-    // フォントデータをマップに追加
-
-    auto [insertedIt, success] = fontDataMap_.emplace(pathObj.filename().string(), std::move(fontData));
-
-    // glyphをマップに追加(moveした後じゃないと無効になります)
-    for(auto& atlas : insertedIt->second->atlases){
-        // glyphIndex にも追加（ポインタを保存）
-        for(auto& glyph : atlas.glyphs){
-            insertedIt->second.get()->glyphDatas[glyph.first] = &glyph.second;
+        atlasCreated = true;
+        // アトラスが作成されていてかつテクスチャが生成されていればそのまま返す
+        if(it->second->atlases[0].textureHandle != -1){
+            return it->second.get();
         }
     }
 
-    // フォント名を保存
-    fontNames.push_back(filename);
+    if(!atlasCreated){
+        // フォントファイル読み込み（バイナリとして）
+        std::vector<unsigned char> fontBuffer = ParseTTF(fullPath.c_str());
+        if(fontBuffer.empty()){
+            return nullptr; // 読み込み失敗
+        }
 
-    return insertedIt->second.get();
+        // stb_truetype 初期化
+        stbtt_fontinfo font;
+        stbtt_InitFont(&font, fontBuffer.data(), 0);
+
+
+        // ここで複数アトラスに分けて読み込む
+        std::unique_ptr<FontData> fontData = std::make_unique<FontData>();
+        constexpr size_t MAX_GLYPHS_PER_ATLAS = 4000;
+        size_t offset = 0;
+        int pages = 0;
+
+        // フォントアトラスの生成
+        while(offset < GlyphRanges::jpGlyph.size()){
+            size_t batchSize = (std::min)(MAX_GLYPHS_PER_ATLAS, GlyphRanges::jpGlyph.size() - offset);
+            std::vector<int32_t> codePoints(GlyphRanges::jpGlyph.begin() + offset, GlyphRanges::jpGlyph.begin() + offset + batchSize);
+
+            // atlas を直接 emplace_back して構築（破棄されないように）
+            fontData->atlases.emplace_back();
+            FontAtlas* atlas = &fontData->atlases.back();
+
+            std::string atlasName = fullPath + "_atlas" + std::to_string(pages++);
+            CreateFontAtlas(*atlas, atlasName, fontData.get(), font, codePoints);
+
+            // offsetを更新
+            offset += batchSize;
+        }
+
+        // テクスチャの生成
+        if(isTextureCreate){
+            for(auto& atlas : fontData->atlases){
+                atlas.textureHandle = CreateFontTexture(atlas.atlasName, atlas.bitmap.data(), FontAtlas::texWidth, FontAtlas::texHeight);
+                // 並列に更新
+                std::for_each(std::execution::par_unseq, atlas.glyphs.begin(), atlas.glyphs.end(), [&](auto& g){
+                    g.second.graphHandle = atlas.textureHandle;
+                });
+            }
+        }
+
+        // フォントデータをマップに追加
+        auto [insertedIt, success] = fontDataMap_.emplace(pathObj.filename().string(), std::move(fontData));
+
+        // glyphをマップに追加(moveした後じゃないと無効になります)
+        for(auto& atlas : insertedIt->second->atlases){
+            // glyphIndex にも追加（ポインタを保存）
+            for(auto& glyph : atlas.glyphs){
+                insertedIt->second.get()->glyphDatas[glyph.first] = &glyph.second;
+            }
+        }
+
+        return insertedIt->second.get();
+
+    } else{
+        // アトラスは作成されているがテクスチャがない場合
+        if(isTextureCreate){
+            auto fontData = it->second.get();
+            for(auto& atlas : fontData->atlases){
+                atlas.textureHandle = CreateFontTexture(atlas.atlasName, atlas.bitmap.data(), FontAtlas::texWidth, FontAtlas::texHeight);
+                
+                // 並列に更新
+                std::for_each(std::execution::par_unseq, atlas.glyphs.begin(), atlas.glyphs.end(), [&](auto& g){
+                    g.second.graphHandle = atlas.textureHandle;
+                });
+            }
+            return fontData;
+        } else{
+            return it->second.get();
+        }
+    }
 }
 
 
@@ -348,7 +384,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename){
 // フォントデータを取得する関数
 ///////////////////////////////////////////////////////////////////
 const FontData& TextSystem::GetFont(const std::string& filename){
-    
+
     std::string fullPath;
     if(filename.starts_with("Resources")){
         fullPath = filename; // すでにディレクトリが付加されている場合

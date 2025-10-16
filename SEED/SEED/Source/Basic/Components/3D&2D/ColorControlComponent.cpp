@@ -46,9 +46,21 @@ void ColorControlComponent::Update(){
 
     // ownerに反映
     if(owner_.is2D){
-        owner_.owner2D->masterColor_ = rgbaColor;
+        if(!isMultiply_){
+            // 直接書き換え
+            owner_.owner2D->masterColor_ = rgbaColor;
+        } else{
+            // 乗算
+            owner_.owner2D->masterColor_ *= rgbaColor;
+        }
     } else{
-        owner_.owner3D->masterColor_ = rgbaColor;
+        if(!isMultiply_){
+            // 直接書き換え
+            owner_.owner3D->masterColor_ = rgbaColor;
+        } else{
+            // 乗算
+            owner_.owner3D->masterColor_ *= rgbaColor;
+        }
     }
 
     // 時間の更新
@@ -95,6 +107,7 @@ void ColorControlComponent::EditGUI(){
     ImFunc::Combo("色の制御方法##" + componentTag_,colorControlMode_, { "RGBA","HSVA" });
     ImGui::DragFloat("タイムスケール##" + componentTag_, &timeScale_, 0.01f);
     ImGui::Checkbox("ループするか##" + componentTag_, &isLoop_);
+    ImGui::Checkbox("色を置き換えずに乗算##" + componentTag_, &isMultiply_);
 
     ImGui::Unindent();
 #endif // _DEBUG
@@ -112,6 +125,7 @@ nlohmann::json ColorControlComponent::GetJsonData() const{
     jsonData["timeScale"] = timeScale_;
     jsonData["isLoop"] = isLoop_;
     jsonData["colorControlMode"] = static_cast<int32_t>(colorControlMode_);
+    jsonData["isMultiply"] = isMultiply_;
     return jsonData;
 }
 
@@ -127,5 +141,6 @@ void ColorControlComponent::LoadFromJson(const nlohmann::json& jsonData){
 
     timeScale_ = jsonData.value("timeScale", 1.0f);
     isLoop_ = jsonData.value("isLoop", false);
+    isMultiply_ = jsonData.value("isMultiply", false);
     colorControlMode_ = static_cast<ColorControlMode>(jsonData.value("colorControlMode", 0));
 }

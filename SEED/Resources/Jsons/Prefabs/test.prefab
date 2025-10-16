@@ -1,0 +1,152 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 0,
+                    "componentTag": "UI_ID:0",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 0,
+                            "name": "sprite0",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 100.0,
+                                "y": 100.0
+                            },
+                            "texturePath": "",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "componentID": 1,
+                    "componentTag": "Routine2D_ID:1",
+                    "componentType": "Routine2D",
+                    "controlPoints": [
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 53.16290283203125,
+                                "y": 88.76528930664063
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 114.68106079101563,
+                                "y": 592.2008056640625
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 419.68316650390625,
+                                "y": 82.486083984375
+                            }
+                        },
+                        {
+                            "rotate": 0.0,
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "translate": {
+                                "x": 505.0487060546875,
+                                "y": 643.0078735351563
+                            }
+                        }
+                    ],
+                    "defaultPaused": false,
+                    "duration": 3.0,
+                    "easingType": 0,
+                    "interpolationType": 1,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        0.7971575260162354,
+                        0.9158843159675598,
+                        1.0
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object2D_0",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 458.468505859375,
+                    "y": 160.50274658203125
+                }
+            }
+        }
+    ]
+}

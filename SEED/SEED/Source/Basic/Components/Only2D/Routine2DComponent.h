@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+using RoutinePoint2D = std::pair<Transform2D, float>;// 座標とその座標までの時間
+
 class Routine2DComponent : public IComponent{
 public:
     Routine2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
@@ -19,11 +21,11 @@ public:
     void Finalize()override;
     void EditGUI()override;
 
-public:// accessor
+public:// アクセッサ
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
 
-public:// json
+public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;
     nlohmann::json GetJsonData() const override;
 
@@ -33,12 +35,27 @@ private:
     bool isPlaying_ = false;
     Timer timer_;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;
-    std::vector<Transform2D> controlPoints_;
+    std::vector<RoutinePoint2D> controlPoints_;
     Easing::Type easingType_ = Easing::Type::None;
 
 #ifdef _DEBUG
+    // 編集用内部関数
+    void TimelineView();
+    void DragPoint();
+    void EditTransform();
+    void EditSettings();
+    void PopupMenu();
+    void AddPoint(float time);
+
+    // 編集用変数
+    int32_t edittingIdx_ = -1;
+    bool isDragging_ = false;
+    ImVec2 clickedMousePos_;
+    ImVec2 originalPointPos_;
+    ImVec2 timelineMinMaxX_;
     bool isDebugItemVisible_ = true;
     bool isEditting_ = false;
     Sprite debugPointSprite_;
+
 #endif // _DEBUG
 };

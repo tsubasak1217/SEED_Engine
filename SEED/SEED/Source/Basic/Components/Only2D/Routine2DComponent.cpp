@@ -214,7 +214,7 @@ void Routine2DComponent::TimelineView(){
     float lrPadding = 10.0f;
     float offset = 30.0f;
     float lineWidth = ImGui::GetContentRegionAvail().x - offset - (addButtonWidth + lrPadding * 2.0f);
-    lineWidth = (std::min)(lineWidth, 300.0f);// 最大300px
+    lineWidth = (std::min)(lineWidth, 350.0f);// 最大350px
     ImVec2 lineStart = ImGui::GetCursorScreenPos();
     ImVec2 lineEnd = lineStart + ImVec2(lineWidth, 0.0f);
     timelineMinMaxX_ = ImVec2(lineStart.x, lineEnd.x);

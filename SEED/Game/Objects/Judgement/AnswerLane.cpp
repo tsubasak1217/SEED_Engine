@@ -1,6 +1,6 @@
 #include "AnswerLane.h"
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 #include <SEED/Source/SEED.h>
 
 void AnswerLane::Update(){
@@ -35,7 +35,7 @@ void AnswerLane::Update(){
         tri.scale.x = baseScale * ease;// 横幅を広げる
 
         // 色の変更
-        tri.color.w = t;// 色を濃くする
+        tri.color.value.w = t;// 色を濃くする
 
     } else{
 
@@ -48,11 +48,11 @@ void AnswerLane::Update(){
             float t = leftTime / kVisibleTime;
 
             // 色の更新
-            tri.color.w = t;
+            tri.color.value.w = t;
 
         } else{
             // 判定が終わったら、色を完全に消す
-            tri.color.w = 0.0f;
+            tri.color.value.w = 0.0f;
         }
     }
 
@@ -63,7 +63,7 @@ void AnswerLane::Update(){
         // 媒介変数の更新
         float t = evalutionLeftTime / kVisibleTime;
         // 色の更新
-        evalutionPolygon.color.w = t;
+        evalutionPolygon.color.value.w = t;
     }
 }
 

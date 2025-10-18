@@ -540,7 +540,7 @@
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp">
       <Filter>SEED\Source\Basic\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp">
+    <ClCompile Include="SEED\Source\Basic\Scene\SceneState_Base.cpp">
       <Filter>SEED\Source\Basic\Scene</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp">
@@ -549,29 +549,23 @@
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp">
       <Filter>SEED\Lib\Structs</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\LocalFunc.cpp">
-      <Filter>SEED\Lib\Functions\MyFunc</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.cpp">
-      <Filter>SEED\Lib\Functions\LocalFunc</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\DxFunc.cpp">
+    <ClCompile Include="SEED\Lib\Functions\DxFunc.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\Easing.cpp">
+    <ClCompile Include="SEED\Lib\Functions\Easing.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MatrixFunc.cpp">
+    <ClCompile Include="SEED\Lib\Functions\MatrixFunc.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MyFunc.cpp">
+    <ClCompile Include="SEED\Lib\Functions\MyFunc.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MyMath.cpp">
+    <ClCompile Include="SEED\Lib\Functions\MyMath.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\ShapeMath.cpp">
+    <ClCompile Include="SEED\Lib\Functions\ShapeMath.cpp">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Shapes\Quad.cpp">
@@ -1063,14 +1057,11 @@
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h">
       <Filter>SEED\Source\Basic\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h">
+    <ClInclude Include="SEED\Source\Basic\Scene\SceneState_Base.h">
       <Filter>SEED\Source\Basic\Scene</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\enums\Direction.h">
       <Filter>SEED\Lib\enums</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\LocalFunc.h">
-      <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h">
       <Filter>SEED\Lib\Shapes</Filter>
@@ -1141,25 +1132,22 @@
     <ClInclude Include="SEED\Source\Manager\InputManager\PadDefinitions.h">
       <Filter>SEED\Source\Manager\InputManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.h">
-      <Filter>SEED\Lib\Functions\LocalFunc</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\DxFunc.h">
+    <ClInclude Include="SEED\Lib\Functions\DxFunc.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\Easing.h">
+    <ClInclude Include="SEED\Lib\Functions\Easing.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MatrixFunc.h">
+    <ClInclude Include="SEED\Lib\Functions\MatrixFunc.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MyFunc.h">
+    <ClInclude Include="SEED\Lib\Functions\MyFunc.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MyMath.h">
+    <ClInclude Include="SEED\Lib\Functions\MyMath.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\ShapeMath.h">
+    <ClInclude Include="SEED\Lib\Functions\ShapeMath.h">
       <Filter>SEED\Lib\Functions\MyFunc</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Includes\includes.h">
@@ -1498,11 +1486,13 @@
     <ClCompile Include="SEED\Lib\Structs\Curve.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.cpp" />
+    <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentRegister.h" />
     <ClInclude Include="SEED\Source\Editor\EditorColorSettings.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.h" />
+    <ClInclude Include="SEED\Lib\Structs\Color.h" />
   </ItemGroup>
 </Project>

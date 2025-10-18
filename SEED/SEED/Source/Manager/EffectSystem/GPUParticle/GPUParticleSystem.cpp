@@ -524,7 +524,7 @@ void GPUParticleSystem::DrawGUI(){
         ImGui::DragFloat("AngleRange", &emitter_.angleRange, 0.01f);
         ImGui::DragFloat("MinSpeed", &emitter_.minSpeed, 0.01f);
         ImGui::DragFloat("MaxSpeed", &emitter_.maxSpeed, 0.01f);
-        ImGui::ColorEdit4("Color", &emitter_.color.x);
+        ImGui::ColorEdit4("Color", &emitter_.color.value.x);
         ImGui::DragFloat("MinLifeTime", &emitter_.minLifeTime, 0.01f);
         ImGui::DragFloat("MaxLifeTime", &emitter_.maxLifeTime, 0.01f);
         ImGui::DragFloat("Interval", &emitter_.interval, 0.01f, 0.0f, 100.0f);

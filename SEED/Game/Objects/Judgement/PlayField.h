@@ -37,8 +37,8 @@ public:
     void Draw();
 
 public:
-    void SetEvalution(LaneBit laneBit,UpDown layer,const Vector4& color);
-    void SetLanePressed(int32_t lane, const Vector4& color);
+    void SetEvalution(LaneBit laneBit,UpDown layer,const Color& color);
+    void SetLanePressed(int32_t lane, const Color& color);
     void SetLaneReleased(int32_t lane);
     void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
     // 流れてくるノーツ描画に使う頂点情報を取得

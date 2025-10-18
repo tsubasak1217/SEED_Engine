@@ -9,8 +9,8 @@
 #include <Game/Objects/SongSelect/SongInfo.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Range2D.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <Game/Objects/Notes/Note_Base.h>
 
 struct TempoData{

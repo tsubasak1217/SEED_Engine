@@ -45,11 +45,11 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     if(direction_ == UpDown::UP){
         noteFloorRect.color = upDownColor_[0]; // マゼンタ
         noteAuraRect.color = upDownColor_[0];
-        noteAuraRect.color.w = 0.5f;
+        noteAuraRect.color.value.w = 0.5f;
     } else{
         noteFloorRect.color = upDownColor_[1]; // シアン
         noteAuraRect.color = upDownColor_[1];
-        noteAuraRect.color.w = 0.5f;
+        noteAuraRect.color.value.w = 0.5f;
     }
 
     // uvをスクロールする

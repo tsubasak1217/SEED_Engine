@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <SEED/Lib/Includes/include_tensors.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 #include <SEED/Source/Editor/CurveEditor/CurveEditor.h>
 #include <SEED/Source/Editor/CurveEditor/CurveEditorContexts.h>
 #include <json.hpp>

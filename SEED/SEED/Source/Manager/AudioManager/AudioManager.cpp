@@ -1,6 +1,6 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <cassert>
 
 // static変数初期化

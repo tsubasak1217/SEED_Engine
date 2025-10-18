@@ -1,7 +1,7 @@
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
 
 Vector2 Vector2::operator*(const Matrix3x3& mat) const{
     return Multiply(*this, mat);

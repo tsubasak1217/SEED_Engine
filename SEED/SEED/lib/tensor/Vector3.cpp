@@ -1,6 +1,6 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Vector4.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 
 Vector4 Vector3::ToVec4()
 {

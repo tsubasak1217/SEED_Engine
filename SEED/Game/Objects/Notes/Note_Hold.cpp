@@ -5,9 +5,9 @@ Note_Hold::Note_Hold() : Note_Base(){
     noteType_ = NoteType::Hold;
 
     // ホールドノーツのテクスチャの設定
-    textureGHs_[0] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Head.png");
-    textureGHs_[1] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Head.png");
-    textureGHs_[2] = TextureManager::GetInstance()->LoadTexture("Notes/holdNote_Body.png");
+    textureGHs_[0] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[1] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[2] = TextureManager::LoadTexture("Notes/holdNote_Body.png");
 
     // ホールドノーツの色の設定
     noteColors_[0] = { 1.0f, 1.0f, 0.0f, 1.0f };
@@ -59,12 +59,12 @@ void Note_Hold::Draw(float currentTime, float appearLength){
         if(headEvaluation_ == Judgement::Evaluation::NONE){
             bool isTrigger = PlayerInput::GetInstance()->GetIsTap(lane_);
             if(!isTrigger && timeRatio[0] < 0.0f){
-                noteQuad_->color.w *= 0.25f;
+                noteQuad_->color.value.w *= 0.25f;
             }
         } else{
             if(isReleased_){
                 if(!isHold_){
-                    noteQuad_->color.w *= 0.25f;
+                    noteQuad_->color.value.w *= 0.25f;
                 }
             }
         }

@@ -4,11 +4,12 @@
 #include <cmath>
 #include <numbers>
 #include <json.hpp>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Lib/Structs/Material.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Structs/DrawLocation.h>
+#include <SEED/Lib/Structs/Color.h>
 
 struct Sprite{
 
@@ -16,7 +17,7 @@ public:
     Sprite();
     Sprite(const std::string& filename);
     Sprite(const std::string& filename, const Vector2& size);
-    void Draw(const std::optional<Vector4>& masterColor = std::nullopt);
+    void Draw(const std::optional<Color>& masterColor = std::nullopt);
 
 public:
 
@@ -25,7 +26,7 @@ public:
     // 色；マテリアル
     uint32_t GH;
     std::string texturePath;
-    Vector4 color;
+    Color color;
     BlendMode blendMode;
 
     // SRT

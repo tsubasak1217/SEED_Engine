@@ -1,5 +1,5 @@
 #include "BlockSlideTransition.h"
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 #include <Environment/Environment.h>
 
 

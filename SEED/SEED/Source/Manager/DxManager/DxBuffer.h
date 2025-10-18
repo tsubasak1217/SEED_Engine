@@ -1,6 +1,6 @@
 #pragma once
 #include "DxResource.h"
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 
 template<typename T>
 struct DxBuffer{

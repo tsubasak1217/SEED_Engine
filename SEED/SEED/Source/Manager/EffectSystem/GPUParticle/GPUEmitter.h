@@ -1,5 +1,6 @@
 #pragma once
 #include <SEED/Lib/Includes/include_tensors.h>
+#include <SEED/Lib/Structs/Color.h>
 
 struct GPUEmitter{
     // position
@@ -26,7 +27,7 @@ struct GPUEmitter{
     float maxSpeed;
     float pad6;
     // 色
-    Vector4 color;
+    Color color;
     // parameter
     float minLifeTime;
     float maxLifeTime;

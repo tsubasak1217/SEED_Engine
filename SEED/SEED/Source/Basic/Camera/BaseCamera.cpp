@@ -1,7 +1,7 @@
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>

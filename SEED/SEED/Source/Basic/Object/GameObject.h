@@ -10,8 +10,8 @@
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Basic/Components/ComponentDictionary.h>
 
 class Scene_Base;
@@ -146,10 +146,10 @@ public:
     //=====================================
     // トランスフォーム
     //=====================================
-    Transform GetLocalTransform(){ return localTransform_; }
-    Transform GetWorldTransform(){ return worldTransform_; }
+    const Transform& GetLocalTransform(){ return localTransform_; }
+    const Transform& GetWorldTransform(){ return worldTransform_; }
     /*------ scale -------*/
-    Vector3 GetWorldScale() const{ return worldTransform_.scale; }
+    const Vector3& GetWorldScale() const{ return worldTransform_.scale; }
     const Vector3& GetLocalScale() const{ return localTransform_.scale; }
     void SetWorldScale(const Vector3& scale);
     void SetLocalScale(const Vector3& scale);
@@ -163,7 +163,7 @@ public:
     void SetWorldRotate(const Quaternion& rotate);
     void SetLocalRotate(const Quaternion& rotate);
     /*------ translate -------*/
-    Vector3 GetWorldTranslate() const{ return worldTransform_.translate; }
+    const Vector3& GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector3& GetLocalTranslate() const{ return localTransform_.translate; }
     void AddWorldTranslate(const Vector3& addValue);
     void SetWorldTranslate(const Vector3& translate);
@@ -174,7 +174,7 @@ public:
     const Matrix4x4& GetWorldMat() const{ return worldMat_; }
     const Matrix4x4* GetWorldMatPtr() const{ return &worldMat_; }
     /*------- velocity ------*/
-    Vector3 GetVelocity()const{ return velocity_; }
+    const Vector3& GetVelocity()const{ return velocity_; }
     void SetVelocity(const Vector3& velocity){ velocity_ = velocity; }
     void SetVelocityX(float x){ velocity_.x = x; }
     void SetVelocityY(float y){ velocity_.y = y; }
@@ -220,7 +220,7 @@ public:
     bool isParentTranslate_ = true;
 
     //---------- 描画情報 ---------//
-    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
+    Color masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
 
     //------- トランスフォーム情報 ------//
     Transform localTransform_;

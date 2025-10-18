@@ -6,7 +6,7 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Structs/Range2D.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 
 class ISceneTransition {

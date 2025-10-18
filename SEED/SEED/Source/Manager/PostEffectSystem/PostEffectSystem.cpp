@@ -2,7 +2,7 @@
 #include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Basic/PostProcess/IPostProcess.h>

@@ -3,7 +3,7 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <Game/Objects/Notes/NotesData.h>
 #include <Game/Objects/Judgement/Judgement.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
@@ -250,7 +250,7 @@ void PlayField::Draw(){
 /////////////////////////////////////////////////////////////////////////
 // レーンの押下状態を設定
 /////////////////////////////////////////////////////////////////////////
-void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Vector4& color){
+void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Color& color){
 
     // ビットから押されているレーンを取得(5鍵の部分のみ)
     std::vector<int32_t> lanes;
@@ -270,7 +270,7 @@ void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Vector4& color
     }
 }
 
-void PlayField::SetLanePressed(int32_t lane, const Vector4& color){
+void PlayField::SetLanePressed(int32_t lane, const Color& color){
     // レーンの押下状態を設定
     laneAnswer_[0][lane].isTrigger = true;
     laneAnswer_[1][lane].isTrigger = true;

@@ -132,7 +132,7 @@ nlohmann::json SpotLightComponent::GetJsonData() const{
     jsonData.update(IComponent::GetJsonData());
     jsonData["position"] = localTransform_.translate;
     jsonData["direction"] = localTransform_.rotate;
-    jsonData["color"] = { light_->color_.x, light_->color_.y, light_->color_.z, light_->color_.w };
+    jsonData["color"] = { light_->color_.value.x, light_->color_.value.y, light_->color_.value.z, light_->color_.value.w };
     jsonData["intensity"] = light_->intensity;
     jsonData["distance"] = light_->distance;
     jsonData["decay"] = light_->decay;

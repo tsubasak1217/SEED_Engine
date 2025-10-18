@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <SEED/Source/Manager/DxManager/DxManager.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DescriptorHeap/ViewManager_Enum.h>
 
 

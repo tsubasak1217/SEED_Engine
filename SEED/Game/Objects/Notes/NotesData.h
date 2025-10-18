@@ -3,8 +3,8 @@
 #include <queue>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Notes/Note_Base.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Lib/Structs/Timer.h>
 struct TempoData;
 

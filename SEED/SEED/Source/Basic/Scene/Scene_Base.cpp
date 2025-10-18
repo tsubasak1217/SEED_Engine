@@ -177,11 +177,11 @@ void Scene_Base::ChangeScene(const std::string& nextSceneName){
     GameSystem::ChangeScene(nextSceneName);
 }
 
-void Scene_Base::ChangeState(State_Base* nextState){
+void Scene_Base::ChangeState(SceneState_Base* nextState){
     currentState_.reset(nextState);
 }
 
-void Scene_Base::CauseEvent(State_Base* nextEventState){
+void Scene_Base::CauseEvent(SceneState_Base* nextEventState){
     currentEventState_.reset(nextEventState);
     currentEventState_->Initialize();
 }

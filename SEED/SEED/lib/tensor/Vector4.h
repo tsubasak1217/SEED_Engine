@@ -6,10 +6,7 @@ struct Vector3;
 struct Matrix4x4;
 
 struct Vector4 final{
-    float x;
-    float y;
-    float z;
-    float w;
+    float x, y, z, w;
 
     Vector4() = default;
     Vector4(float value) : x(value), y(value), z(value), w(value){}
@@ -27,7 +24,7 @@ struct Vector4 final{
 
     //================== ADD ====================//
 
-    Vector4 operator+(const Vector4& value) const {
+    Vector4 operator+(const Vector4& value) const{
         return { x + value.x,y + value.y,z + value.z,w + value.w };
     }
 
@@ -41,7 +38,7 @@ struct Vector4 final{
 
     //================== SUB ====================//
 
-    Vector4 operator-(const Vector4& value) const {
+    Vector4 operator-(const Vector4& value) const{
         return { x - value.x,y - value.y,z - value.z,w - value.w };
     }
 
@@ -54,11 +51,11 @@ struct Vector4 final{
 
     //================== MUL ====================//
 
-    Vector4 operator*(const Vector4& value) const {
+    Vector4 operator*(const Vector4& value) const{
         return { x * value.x,y * value.y,z * value.z,w * value.w };
     }
 
-    Vector4 operator*(float value) const {
+    Vector4 operator*(float value) const{
         return { x * value,y * value,z * value,w * value };
     }
 
@@ -79,6 +76,20 @@ struct Vector4 final{
 
     void operator*=(const Matrix4x4& matrix);
 
+    //================== DIV ====================//
+    Vector4 operator/(float value) const{
+        assert(value != 0.0f);
+        return { x / value,y / value,z / value,w / value };
+    }
+
+    void operator/=(float value){
+        assert(value != 0.0f);
+        x /= value;
+        y /= value;
+        z /= value;
+        w /= value;
+    }
+
     //================== Equal ====================//
 
     bool operator==(const Vector4& obj) const{ return x == obj.x && y == obj.y && z == obj.z && w == obj.w; }
@@ -88,13 +99,13 @@ struct Vector4 final{
 
 // Vector4をJSONに変換する関数
 inline void to_json(nlohmann::json& j, const Vector4& vec){
-    j = { {"x", vec.x}, {"y", vec.y}, {"z", vec.z},{"w",vec.w}};
+    j = { {"x", vec.x}, {"y", vec.y}, {"z", vec.z},{"w",vec.w} };
 }
 
 // JSONをVector4に変換する関数
 inline void from_json(const nlohmann::json& j, Vector4& vec){
 
-    if (j.empty()) {
+    if(j.empty()){
         return;
     }
 
@@ -112,7 +123,7 @@ inline void from_json(const nlohmann::json& j, Vector4& vec){
 }
 
 inline void to_json(nlohmann::ordered_json& j, const Vector4& vec){
-    j = {{"x", vec.x}, {"y", vec.y}, {"z", vec.z},{"w",vec.w}};
+    j = { {"x", vec.x}, {"y", vec.y}, {"z", vec.z},{"w",vec.w} };
 }
 
 // JSONをVector4に変換する関数

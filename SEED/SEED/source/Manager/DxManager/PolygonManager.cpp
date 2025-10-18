@@ -2,8 +2,8 @@
 #include <SEED/Source/Manager/DxManager/PolygonManager.h>
 #include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
@@ -401,7 +401,7 @@ void PolygonManager::MapOnce(){
 // DrawTriangleが呼び出されるごとに 三角形の情報を積み上げていく
 void PolygonManager::AddTriangle(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
-    const Matrix4x4& worldMat, const Vector4& color,
+    const Matrix4x4& worldMat, const Color& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
     uint32_t GH, BlendMode blendMode, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
@@ -566,7 +566,7 @@ void PolygonManager::AddTriangle(
 
 void PolygonManager::AddTrianglePrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
-    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
+    const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Color& color,
     uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -693,7 +693,7 @@ void PolygonManager::AddTrianglePrimitive(
 void PolygonManager::AddQuad(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-    const Matrix4x4& worldMat, const Vector4& color,
+    const Matrix4x4& worldMat, const Color& color,
     int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
     uint32_t GH, BlendMode blendMode, bool isText, D3D12_CULL_MODE cullMode, bool isStaticDraw,
     DrawLocation drawLocation, int32_t layer
@@ -911,7 +911,7 @@ void PolygonManager::AddQuad(
 void PolygonManager::AddQuadPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
+    const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     assert(triangleIndexCount_ < kMaxTriangleCount_);
@@ -1045,7 +1045,7 @@ void PolygonManager::AddQuadPrimitive(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void PolygonManager::AddSprite(
-    const Sprite& sprite, const std::optional<Vector4>& masterColor,bool isSystemDraw
+    const Sprite& sprite, const std::optional<Color>& masterColor,bool isSystemDraw
 ){
     assert(spriteCount_ < kMaxSpriteCount);
     sprite.blendMode;
@@ -1271,7 +1271,7 @@ void PolygonManager::AddSprite(
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void PolygonManager::AddModel(Model* model,const std::optional<Vector4>& masterColor){
+void PolygonManager::AddModel(Model* model,const std::optional<Color>& masterColor){
 
     if(!model){ return; }
 
@@ -1345,7 +1345,7 @@ void PolygonManager::AddModel(Model* model,const std::optional<Vector4>& masterC
     //                          materialResourceの設定
     /////////////////////////////////////////////////////////////////////////
 
-    Vector4 _masterColor = model->masterColor_;
+    Color _masterColor = model->masterColor_;
     if(masterColor != std::nullopt){
         _masterColor *= masterColor.value();
     }
@@ -1463,7 +1463,7 @@ void PolygonManager::AddModel(Model* model,const std::optional<Vector4>& masterC
 
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
-    const Vector4& color, bool view3D, bool isApplyViewMat, BlendMode blendMode,
+    const Color& color, bool view3D, bool isApplyViewMat, BlendMode blendMode,
     bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool alwaysWrite
 ){
 

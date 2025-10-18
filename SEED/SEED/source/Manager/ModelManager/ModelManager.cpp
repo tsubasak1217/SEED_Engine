@@ -1,9 +1,9 @@
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Source/Manager/DxManager/ViewManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <d3dx12.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>

@@ -109,7 +109,7 @@ void Emitter_RingQuad::EditMaterial(){
         // 色のリスト
         for(int32_t i = 0; i < (int)colors.size(); ++i){
             std::string colorName = "color_" + std::to_string(i);
-            ImGui::ColorEdit4(colorName.c_str(), &colors[i].x);
+            ImGui::ColorEdit4(colorName.c_str(), &colors[i].value.x);
             // 削除ボタン
             if(ImGui::Button("DeleteColor")){
                 if(colors.size() > 1){
@@ -218,7 +218,7 @@ nlohmann::json Emitter_RingQuad::ExportToJson(){
 
     // 色の情報
     for(auto& color : colors){
-        j["colors"].push_back({ color.x, color.y, color.z, color.w });
+        j["colors"].push_back({ color.value.x, color.value.y, color.value.z, color.value.w });
     }
 
     // テクスチャの情報

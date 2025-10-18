@@ -1,5 +1,5 @@
 #include "Note_RectFlick.h"
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 Note_RectFlick::Note_RectFlick() : Note_Base(){
     noteType_ = NoteType::RectFlick;

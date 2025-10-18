@@ -11,19 +11,19 @@
 
 //---------------------- 正三角形 -------------------------
 
-Triangle MakeEqualTriangle(float radius, const Vector4& color);
-Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color);
+Triangle MakeEqualTriangle(float radius, const Color& color);
+Triangle2D MakeEqualTriangle2D(float radius, const Color& color);
 
 //---------------------- 正四角形 -------------------------
 
-Quad MakeEqualQuad(float radius, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-Quad2D MakeEqualQuad2D(float radius, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-Quad2D MakeBackgroundQuad2D(int32_t layer = 0,const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-Quad2D MakeFrontQuad2D(int32_t layer = 0, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+Quad MakeEqualQuad(float radius, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+Quad2D MakeEqualQuad2D(float radius, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+Quad2D MakeBackgroundQuad2D(int32_t layer = 0,const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+Quad2D MakeFrontQuad2D(int32_t layer = 0, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
 
 //---------------------- 矩形 -------------------------
-Quad MakeQuad(const Vector2& size, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, const Vector2& anchorPoint = {0.5,0.5f});
-Quad2D MakeQuad2D(const Vector2& size, const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, const Vector2& anchorPoint = { 0.5,0.5f });
+Quad MakeQuad(const Vector2& size, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, const Vector2& anchorPoint = {0.5,0.5f});
+Quad2D MakeQuad2D(const Vector2& size, const Color& color = {1.0f,1.0f,1.0f,1.0f}, const Vector2& anchorPoint = { 0.5,0.5f });
 
 //-------------- 線分同士の最近傍点を求める関数 ---------------
 std::array<Vector3, 2> LineClosestPoints(const Line& l1, const Line& l2);

@@ -25,7 +25,7 @@
 #pragma comment(lib,"dxcompiler.lib")
 
 // local
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 
 class DxManager;
 

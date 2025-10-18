@@ -24,7 +24,7 @@ public:// accessor
     Sprite& GetSprite(const std::string& name);
     TextBox2D& GetText(size_t index);
     TextBox2D& GetText(const std::string& name);
-    void SetMasterColor(const Vector4& color){ masterColor_ = color; }
+    void SetMasterColor(const Color& color){ masterColor_ = color; }
 
 public:// json
     void LoadFromJson(const nlohmann::json& jsonData) override;
@@ -35,5 +35,5 @@ protected:
     int32_t textCount_ = 0;
     std::vector<std::pair<std::string, Sprite>> sprites_;
     std::vector<std::pair<std::string, TextBox2D>> texts_;
-    Vector4 masterColor_ = Vector4(1.0f);
+    Color masterColor_ = Color(1.0f);
 };

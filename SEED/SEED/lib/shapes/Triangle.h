@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <cmath>
 #include <numbers>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Lib/Structs/Material.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Structs/DrawLocation.h>
@@ -19,7 +19,7 @@ struct Triangle{
         const Vector3& scale = { 1.0f,1.0f,1.0f },
         const Vector3& rotate = { 0.0f, 0.0f, 0.0f },
         const Vector3& translate = { 0.0f,0.0f,0.0f },
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f},
+        const Color& color = {1.0f,1.0f,1.0f,1.0f},
         BlendMode blendMode = BlendMode::NORMAL
     );
 
@@ -27,7 +27,7 @@ struct Triangle{
     Vector3 scale = {1.0f,1.0f,1.0f};
     Vector3 rotate;
     Vector3 translate;
-    Vector4 color = {1.0f,1.0f,1.0f,1.0f};
+    Color color = {1.0f,1.0f,1.0f,1.0f};
     int32_t litingType = LIGHTINGTYPE_NONE;
     int32_t GH = -1;
     BlendMode blendMode = BlendMode::NORMAL;
@@ -43,7 +43,7 @@ struct Triangle2D{
         const Vector2& scale = { 1.0f,1.0f },
         float rotate = 0.0f,
         const Vector2& translate = { 0.0f,0.0f },
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL
     );
 
@@ -52,7 +52,7 @@ public:
     Vector2 scale = { 1.0f,1.0f };
     float rotate = 0.0f;
     Vector2 translate = {0.0f,0.0f};
-    Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
+    Color color = { 1.0f,1.0f,1.0f,1.0f };
     int32_t litingType = LIGHTINGTYPE_NONE;
     int32_t GH = -1;
     BlendMode blendMode = BlendMode::NORMAL;

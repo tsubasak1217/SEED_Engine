@@ -1,6 +1,6 @@
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 Sprite::Sprite(){
@@ -26,7 +26,7 @@ Sprite::Sprite(const std::string& filename, const Vector2& size)
     this->size = size;
 }
 
-void Sprite::Draw(const std::optional<Vector4>& masterColor){
+void Sprite::Draw(const std::optional<Color>& masterColor){
     SEED::DrawSprite(*this,masterColor);
 }
 
@@ -116,7 +116,7 @@ void Sprite::FromJson(const nlohmann::json& data){
 
     size = data.value("size", size);
     texturePath = data.value("texturePath", texturePath);
-    color = data.value("color", color);
+    color = data.value("color", color.value);
     blendMode = static_cast<BlendMode>(data.value("blendMode", static_cast<int>(blendMode)));
     transform = data.value("transform", transform);
     offset = data.value("offset", offset);
@@ -161,7 +161,7 @@ void Sprite::Edit([[maybe_unused]]const std::string& hash){
             ToDefaultSize();
         }
 
-        ImGui::ColorEdit4("色##" + hash, &color.x);
+        ImGui::ColorEdit4("色##" + hash, &color.value.x);
         ImFunc::Combo<BlendMode>("ブレンドモード##" + hash, blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
 
         ImGui::Unindent();

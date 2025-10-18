@@ -1,6 +1,6 @@
 #include "Matrix3x3.h"
 #include "Matrix4x4.h"
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 
 Matrix4x4 Matrix3x3::ToMat4x4() const{
     Matrix4x4 mat4 = IdentityMat4();

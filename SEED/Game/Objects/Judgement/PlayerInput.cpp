@@ -1,6 +1,6 @@
 #include "PlayerInput.h"
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <Game/Objects/Judgement/PlayField.h>
 #include <SEED/Lib/enums/Direction.h>
 

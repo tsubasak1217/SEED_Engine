@@ -1,6 +1,6 @@
 #include <SEED/Lib/Tensor/Quaternion.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <cmath> 
 #include <numbers>
 #include <DirectXMath.h>

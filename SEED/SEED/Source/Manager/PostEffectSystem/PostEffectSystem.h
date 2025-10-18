@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <json.hpp>

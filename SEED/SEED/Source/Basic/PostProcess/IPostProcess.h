@@ -1,5 +1,5 @@
 #pragma once
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <SEED/Source/Manager/DxManager/DxBuffer.h>

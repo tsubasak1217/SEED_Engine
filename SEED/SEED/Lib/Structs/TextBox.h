@@ -32,7 +32,7 @@ struct TextBox2D{
 
     TextBox2D() = default;
     TextBox2D(const std::string& _text) : text(_text){ SetFont(""); }
-    void Draw(const std::optional<Vector4>& masterColor = std::nullopt)const;
+    void Draw(const std::optional<Color>& masterColor = std::nullopt)const;
     void SetFont(const std::string& fileName);
     void BindDatas(std::initializer_list<BindData> datas);
 
@@ -52,7 +52,7 @@ public:// パラメータなど
     bool useOutline = false;
     float outlineWidth = 2.0f; // アウトラインの幅
     int outlineSplitCount = 16;
-    Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    Color color = { 1.0f, 1.0f, 1.0f, 1.0f };
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
     bool isApplyViewMat = false;// ビュー行列を適用するかどうか
     bool textBoxVisible = true;
@@ -82,7 +82,7 @@ struct TextBox3D{
     float glyphSpacing = 8.0f;// 字間の間隔
     TextAlignX align = TextAlignX::CENTER;// テキストの配置
     BlendMode blendMode = BlendMode::NORMAL;
-    Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA color
+    Color color = { 1.0f, 1.0f, 1.0f, 1.0f }; // RGBA color
 
 public:// 関数
     void Draw()const;

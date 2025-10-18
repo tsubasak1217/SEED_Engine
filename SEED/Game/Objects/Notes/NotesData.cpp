@@ -1,5 +1,5 @@
 #include "NotesData.h"
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <Game/Objects/Judgement/PlayerInput.h>
 #include <Game/Objects/Judgement/Judgement.h>

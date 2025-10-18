@@ -1,7 +1,7 @@
 #include <Game/Scene/Scene_Clear/Scene_Clear.h>
 
 ///etc
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <Game/Components/ResultUpdateComponent.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@
 #include <vector>
 #include <optional>
 #include <SEED/Lib/Structs/blendMode.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 using Microsoft::WRL::ComPtr;
 
 enum class PolygonTopology : int{

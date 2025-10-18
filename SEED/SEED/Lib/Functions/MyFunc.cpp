@@ -1,5 +1,5 @@
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
 #include <Windows.h>
 #include <shobjidl.h>

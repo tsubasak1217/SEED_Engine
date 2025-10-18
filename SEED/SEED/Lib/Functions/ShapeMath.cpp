@@ -1,10 +1,10 @@
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <Environment/Environment.h>
 
 //---------------------- 正三角形 -------------------------
 
-Triangle MakeEqualTriangle(float radius, const Vector4& color){
+Triangle MakeEqualTriangle(float radius, const Color& color){
 
     float devideTheta = (std::numbers::pi_v<float> *2.0f) / 3.0f;
     float startTheta = std::numbers::pi_v<float> *0.5f;
@@ -20,7 +20,7 @@ Triangle MakeEqualTriangle(float radius, const Vector4& color){
     );
 }
 
-Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color){
+Triangle2D MakeEqualTriangle2D(float radius, const Color& color){
 
     float devideTheta = (std::numbers::pi_v<float> *2.0f) / 3.0f;
     float startTheta = std::numbers::pi_v<float> *0.5f * -1.0f;
@@ -38,7 +38,7 @@ Triangle2D MakeEqualTriangle2D(float radius, const Vector4& color){
 
 //---------------------- 正四角形 -------------------------
 
-Quad MakeEqualQuad(float radius, const Vector4& color){
+Quad MakeEqualQuad(float radius, const Color& color){
     return Quad(
         { -radius, radius ,0.0f },
         { radius, radius,0.0f },
@@ -52,7 +52,7 @@ Quad MakeEqualQuad(float radius, const Vector4& color){
 }
 
 
-Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
+Quad2D MakeEqualQuad2D(float radius, const Color& color){
     return Quad2D(
         { -radius, -radius },
         { radius, -radius },
@@ -65,7 +65,7 @@ Quad2D MakeEqualQuad2D(float radius, const Vector4& color){
     );
 }
 
-Quad2D MakeBackgroundQuad2D(int32_t layer,const Vector4& color){
+Quad2D MakeBackgroundQuad2D(int32_t layer,const Color& color){
     Quad2D quad = MakeQuad2D(kWindowSize,color);
     for(int i = 0; i < 4; ++i){
         quad.localVertex[i].x += kWindowSize.x * 0.5f;
@@ -76,7 +76,7 @@ Quad2D MakeBackgroundQuad2D(int32_t layer,const Vector4& color){
     return quad;
 }
 
-Quad2D MakeFrontQuad2D(int32_t layer, const Vector4& color){
+Quad2D MakeFrontQuad2D(int32_t layer, const Color& color){
     Quad2D quad = MakeQuad2D(kWindowSize,color);
     for(int i = 0; i < 4; ++i){
         quad.localVertex[i].x += kWindowSize.x * 0.5f;
@@ -87,7 +87,7 @@ Quad2D MakeFrontQuad2D(int32_t layer, const Vector4& color){
     return quad;
 }
 
-Quad MakeQuad(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){
+Quad MakeQuad(const Vector2& size, const Color& color, const Vector2& anchorPoint){
 
     Quad quad = Quad(
         { 0.0f, 0.0f, 0.0f },
@@ -108,7 +108,7 @@ Quad MakeQuad(const Vector2& size, const Vector4& color, const Vector2& anchorPo
     return quad;
 }
 
-Quad2D MakeQuad2D(const Vector2& size, const Vector4& color, const Vector2& anchorPoint){
+Quad2D MakeQuad2D(const Vector2& size, const Color& color, const Vector2& anchorPoint){
     Quad2D quad = Quad2D(
         { 0.0f, 0.0f },
         { size.x, 0.0f },

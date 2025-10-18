@@ -12,14 +12,14 @@
 #pragma comment(lib, "mfuuid.lib")
 
 // DirectX用
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 
 // SEED
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Lib/Shapes/Quad.h>
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Source/Manager/DxManager/DxResource.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 
 // file
 #include <fstream>

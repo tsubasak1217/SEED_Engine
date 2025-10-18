@@ -122,6 +122,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
     <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
     <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
@@ -216,18 +217,16 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_RTV.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\DescriptorHeap_SRV_CBV_UAV.cpp" />
     <ClCompile Include="SEED\Source\Basic\Scene\Scene_Base.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Scene\State_Base.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Scene\SceneState_Base.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\OBB.cpp" />
     <ClCompile Include="SEED\Lib\Structs\ModelAnimation.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\LocalFunc.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\DxFunc.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\Easing.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MatrixFunc.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MyFunc.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\MyMath.cpp" />
-    <ClCompile Include="SEED\Lib\Functions\MyFunc\ShapeMath.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\DxFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\Easing.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\MatrixFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\MyFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\MyMath.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\ShapeMath.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Quad.cpp" />
     <ClCompile Include="SEED\Lib\Shapes\Triangle.cpp" />
     <ClCompile Include="SEED\Lib\Structs\AccelerarionField.cpp" />
@@ -289,6 +288,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SEED\Lib\Structs\Color.h" />
     <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
     <ClInclude Include="Game\Config\PlaySettings.h" />
     <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
@@ -413,9 +413,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Environment\Physics.h" />
     <ClInclude Include="Game\Objects\Enums\ObjectType.h" />
     <ClInclude Include="SEED\Source\Basic\Scene\Scene_Base.h" />
-    <ClInclude Include="SEED\Source\Basic\Scene\State_Base.h" />
+    <ClInclude Include="SEED\Source\Basic\Scene\SceneState_Base.h" />
     <ClInclude Include="SEED\Lib\enums\Direction.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\LocalFunc.h" />
     <ClInclude Include="SEED\Lib\Shapes\Capsule.h" />
     <ClInclude Include="SEED\Lib\Shapes\Line.h" />
     <ClInclude Include="SEED\Lib\Shapes\sphere.h" />
@@ -439,13 +438,12 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\MouseDefinitions.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\PadDefinitions.h" />
-    <ClInclude Include="SEED\Lib\Functions\LocalFunc\LocalDrawer.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\DxFunc.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\Easing.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MatrixFunc.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MyFunc.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\MyMath.h" />
-    <ClInclude Include="SEED\Lib\Functions\MyFunc\ShapeMath.h" />
+    <ClInclude Include="SEED\Lib\Functions\DxFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\Easing.h" />
+    <ClInclude Include="SEED\Lib\Functions\MatrixFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\MyFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\MyMath.h" />
+    <ClInclude Include="SEED\Lib\Functions\ShapeMath.h" />
     <ClInclude Include="SEED\Lib\Includes\includes.h" />
     <ClInclude Include="SEED\Lib\Includes\include_matrixes.h" />
     <ClInclude Include="SEED\Lib\Includes\include_shapes.h" />

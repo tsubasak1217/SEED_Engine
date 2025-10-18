@@ -172,7 +172,7 @@ public:// 頂点情報の追加に関わる関数
 
     void AddTriangle(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
-        const Matrix4x4& worldMat, const Vector4& color,
+        const Matrix4x4& worldMat, const Color& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
         uint32_t GH, BlendMode blendMode,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
@@ -181,7 +181,7 @@ public:// 頂点情報の追加に関わる関数
 
     void AddTrianglePrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
-        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Color& color,
         uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
@@ -189,7 +189,7 @@ public:// 頂点情報の追加に関わる関数
     void AddQuad(
         const Vector3& v1, const Vector3& v2, const Vector3& v3, const Vector3& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-        const Matrix4x4& worldMat, const Vector4& color,
+        const Matrix4x4& worldMat, const Color& color,
         int32_t lightingType, const Matrix4x4& uvTransform, bool view3D, bool isApplyViewMat,
         uint32_t GH, BlendMode blendMode,bool isText = false,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, bool isStaticDraw = false,
@@ -199,19 +199,19 @@ public:// 頂点情報の追加に関わる関数
     void AddQuadPrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-        const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
     void AddSprite(
-        const struct Sprite& sprite, const std::optional<Vector4>& masterColor = std::nullopt,bool isSystemDraw = false
+        const struct Sprite& sprite, const std::optional<Color>& masterColor = std::nullopt,bool isSystemDraw = false
     );
 
-    void AddModel(Model* model, const std::optional<Vector4>& masterColor = std::nullopt);
+    void AddModel(Model* model, const std::optional<Color>& masterColor = std::nullopt);
 
     void AddLine(
         const Vector4& v1, const Vector4& v2,
-        const Matrix4x4& worldMat, const Vector4& color,
+        const Matrix4x4& worldMat, const Color& color,
         bool view3D,bool isApplyViewMat, BlendMode blendMode, bool isStaticDraw = false,
         DrawLocation drawLocation = DrawLocation::Not2D, int32_t layer = 0, bool alwaysWrite = false
     );

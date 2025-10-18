@@ -9,7 +9,7 @@
 // local
 #include <SEED/Source/Manager/TextSystem/FontData.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGlyph.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Lib/Structs/TextBox.h>
 // 前方宣言
 struct stbtt_fontinfo;

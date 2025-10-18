@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 struct Timer{
     Timer() = default;

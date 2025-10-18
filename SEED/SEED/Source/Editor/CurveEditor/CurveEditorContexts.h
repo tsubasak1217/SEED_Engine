@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 enum class CurveChannel{
     FLOAT,

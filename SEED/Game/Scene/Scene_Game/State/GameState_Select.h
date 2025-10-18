@@ -1,5 +1,5 @@
 #pragma once
-#include <SEED/Source/Basic/Scene/State_Base.h>
+#include <SEED/Source/Basic/Scene/SceneState_Base.h>
 #include <Game/Manager/RythmGameManager.h>
 #include <Game/Manager/SongSelector.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
@@ -7,7 +7,7 @@
 #include <SEED/Source/Editor/CurveEditor/CurveEditor.h>
 #include <memory>
 
-class GameState_Select : public State_Base{
+class GameState_Select : public SceneState_Base{
 public:
     GameState_Select();
     GameState_Select(Scene_Base* pScene);

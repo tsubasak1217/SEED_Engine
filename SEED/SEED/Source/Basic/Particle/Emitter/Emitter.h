@@ -3,10 +3,10 @@
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Range3D.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/Easing.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
@@ -98,7 +98,7 @@ public:
     std::unordered_set<std::string> textureSet;// テクスチャのセット（重複を避けるため）
 
     // material
-    std::vector<Vector4> colors;// 発生させる色の一覧
+    std::vector<Color> colors;// 発生させる色の一覧
     BlendMode blendMode = BlendMode::ADD;// ブレンドモード
 
     // 発生・消滅の動きに関わるパラメータ

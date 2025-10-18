@@ -7,10 +7,11 @@
 #include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Timer.h>
+#include <SEED/Lib/Structs/Color.h>
 
 struct TransitionHexagon{
     Vector2 pos;
-    Vector4 color;
+    Color color;
     float appearTime;
     Timer scalingTimer;
 };

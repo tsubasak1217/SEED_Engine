@@ -97,7 +97,7 @@ void ModelRenderComponent::EditGUI(){
     label = "レンダリング設定##" + std::to_string(componentID_);
     if(ImGui::CollapsingHeader(label.c_str())){
         ImGui::Indent();
-        ImGui::ColorEdit4("色", &model_->masterColor_.x);
+        ImGui::ColorEdit4("色", &model_->masterColor_.value.x);
         if(ImGui::SliderFloat("環境光強度", &model_->materials_[0].environmentCoef, 0.0f, 1.0f)){
             for(auto& mtl : model_->materials_){
                 mtl.environmentCoef = model_->materials_[0].environmentCoef;

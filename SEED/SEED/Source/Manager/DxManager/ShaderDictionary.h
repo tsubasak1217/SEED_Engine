@@ -8,7 +8,7 @@
 #include <d3dcompiler.h> 
 using Microsoft::WRL::ComPtr;
 //local
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 
 enum class ShaderType{
     VS = 0,

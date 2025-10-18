@@ -11,7 +11,7 @@ TextComponent::TextComponent(std::variant<GameObject*, GameObject2D*> pOwner, co
     }
 }
 
-void TextComponent::Initialize(const std::string& text, const Vector2& position, const Vector4& color){
+void TextComponent::Initialize(const std::string& text, const Vector2& position, const Color& color){
     textBox_->text = text; // テキストを設定
     textBox_->transform.translate = position; // 位置を設定
     textBox_->color = color; // 色を設定
@@ -25,7 +25,7 @@ void TextComponent::Update(){
 
 void TextComponent::Draw(){
     if(textBox_){
-        Vector4 masterColor = owner_.is2D ? 
+        Color masterColor = owner_.is2D ? 
             owner_.owner2D->masterColor_ : owner_.owner3D->masterColor_;
         textBox_->Draw(masterColor); // テキストボックスを描画
     }

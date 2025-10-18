@@ -2,7 +2,7 @@
 #include <thread>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
@@ -447,7 +447,7 @@ void DxManager::ClearViewSettings(){
         clearColor = MyMath::FloatColor(SEED::GetWindowColor());
         commandList->ClearRenderTargetView(
             offScreenHandle,
-            &clearColor.x, 0, nullptr
+            &clearColor.value.x, 0, nullptr
         );
 
         // フレームの最初にもっとも遠くにクリアする
@@ -594,13 +594,13 @@ void DxManager::DrawPolygonAll(){
     /*----------バックバッファをクリアする----------*/
     commandList->ClearRenderTargetView(
         WindowManager::GetRtvHandle(pSEED_->windowTitle_),
-        &clearColor.x, 0, nullptr
+        &clearColor.value.x, 0, nullptr
     );
 
 #ifdef USE_SUB_WINDOW
     commandList->ClearRenderTargetView(
         WindowManager::GetRtvHandle(pSEED_->systemWindowTitle_),
-        &clearColor.x, 0, nullptr
+        &clearColor.value.x, 0, nullptr
     );
 #endif // USE_SUB_WINDOW
 

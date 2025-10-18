@@ -1,5 +1,5 @@
 #include "Transform.h"
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 
 //////////////////////////////////////////////////////////////
 // 行列に変換する関数

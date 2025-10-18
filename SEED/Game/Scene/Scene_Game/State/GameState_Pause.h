@@ -1,12 +1,12 @@
 #pragma once
-#include <SEED/Source/Basic/Scene/State_Base.h>
+#include <SEED/Source/Basic/Scene/SceneState_Base.h>
 #include <Game/Manager/RythmGameManager.h>
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <memory>
 #include <list>
 #include <SEED/Lib/Structs/TextBox.h>
 
-class GameState_Pause : public State_Base{
+class GameState_Pause : public SceneState_Base{
 public:
     GameState_Pause();
     GameState_Pause(Scene_Base* pScene);

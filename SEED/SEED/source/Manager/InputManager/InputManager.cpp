@@ -1,6 +1,6 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 // static変数初期化

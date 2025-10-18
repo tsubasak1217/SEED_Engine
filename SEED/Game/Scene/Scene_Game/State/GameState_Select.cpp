@@ -5,7 +5,7 @@ GameState_Select::GameState_Select(){
     songSelector_->Initialize();
 }
 
-GameState_Select::GameState_Select(Scene_Base* pScene) : State_Base(pScene){
+GameState_Select::GameState_Select(Scene_Base* pScene) : SceneState_Base(pScene){
 
     // 選曲マネージャーの初期化
     songSelector_ = std::make_unique<SongSelector>();

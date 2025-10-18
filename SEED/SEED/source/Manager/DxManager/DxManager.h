@@ -10,8 +10,8 @@
 #pragma comment (lib,"gdiplus.lib")
 
 // functions
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 // PSO
 #include <SEED/Source/Manager/DxManager/PSO/Pipeline.h>
 #include <SEED/Source/Manager/DxManager/PSO/MSPipeline.h>
@@ -182,7 +182,7 @@ private:/*======================== DirectXの設定に必要な変数 ==========
     std::unordered_map<std::string, D3D12_CPU_DESCRIPTOR_HANDLE> offScreenHandles;
     std::unordered_map<std::string, std::string> offScreenNames; // オフスクリーンの名前を格納するマップ
     // その他
-    Vector4 clearColor;
+    Color clearColor;
 
     //=====================================================================================//
 

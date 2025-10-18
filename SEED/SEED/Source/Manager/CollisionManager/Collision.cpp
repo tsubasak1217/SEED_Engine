@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Shapes/Line.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
 // 各形状のコライダーをインクルード

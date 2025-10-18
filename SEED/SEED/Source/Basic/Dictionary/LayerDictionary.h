@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <unordered_map>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 
 // 描画レイヤーの索引辞書
 class LayerDictionary{

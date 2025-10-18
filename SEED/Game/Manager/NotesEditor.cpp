@@ -233,23 +233,6 @@ void NotesEditor::DisplayLane(){
         ImGui::OpenPopup("ノーツデータの読み込み確認");
         loadFileName_ = *droppedPath; // 読み込むファイル名を保存
     }
-    //if(ImGui::BeginDragDropTarget()){
-    //    if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")){
-    //        const char* path = static_cast<const char*>(payload->Data);
-    //        std::string droppedPath(path);
-
-    //        if(!droppedPath.empty()){
-
-    //            // "NoteDatas/"以降の階層にあるかチェック
-    //            if(droppedPath.find("NoteDatas") != std::string::npos){
-    //                // ポップアップが開いていない場合は自動で開く
-    //                ImGui::OpenPopup("ノーツデータの読み込み確認");
-    //                loadFileName_ = droppedPath; // 読み込むファイル名を保存
-    //            }
-    //        }
-    //    }
-    //    ImGui::EndDragDropTarget();
-    //}
 
     // 読み込むかどうか確認するポップアップを出す
     if(ImGui::BeginPopupModal("ノーツデータの読み込み確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){

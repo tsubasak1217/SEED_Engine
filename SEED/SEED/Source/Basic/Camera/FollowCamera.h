@@ -1,7 +1,7 @@
 #pragma once
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Manager/InputManager/InputHandler.h>
 

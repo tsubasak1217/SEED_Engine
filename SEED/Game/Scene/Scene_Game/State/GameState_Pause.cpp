@@ -41,7 +41,7 @@ void GameState_Pause::Update(){
     }
 
     // 透明度を更新
-    pauseBg_.color.w = 0.8f * t;
+    pauseBg_.color.value.w = 0.8f * t;
     if(!pauseTimer_.IsFinished()){
 
         for(auto* obj : pauseUIs_){

@@ -4,7 +4,7 @@
 #include <SEED/Source/Manager/DxManager/DxResource.h>
 #include <SEED/Source/Manager/DxManager/DxBuffer.h>
 #include <SEED/Source/Manager/DxManager/DxReadbackBuffer.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Lib/Structs/VertexData.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include "GPUEmitter.h"

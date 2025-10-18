@@ -1,6 +1,6 @@
 #include <SEED/Source/Basic/Camera/DebugCamera.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 
 

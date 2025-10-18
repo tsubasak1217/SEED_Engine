@@ -1,4 +1,4 @@
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <windows.h>
 #include <format>
 #include <cassert>

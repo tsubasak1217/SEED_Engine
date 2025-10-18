@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <string>
 #include <unordered_map>
 #include <variant>

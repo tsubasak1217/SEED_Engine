@@ -1,9 +1,9 @@
 #pragma once
-#include <SEED/Source/Basic/Scene/State_Base.h>
+#include <SEED/Source/Basic/Scene/SceneState_Base.h>
 #include <Game/Manager/RythmGameManager.h>
 #include <json.hpp>
 
-class GameState_Play : public State_Base{
+class GameState_Play : public SceneState_Base{
 public:
     GameState_Play() = default;
     GameState_Play(Scene_Base* pScene);

@@ -1,5 +1,5 @@
 #include "Curve.h"
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
+#include <SEED/Lib/Functions/MyMath.h>
 
 Curve::Curve(){
     for(auto& curve : curves_){

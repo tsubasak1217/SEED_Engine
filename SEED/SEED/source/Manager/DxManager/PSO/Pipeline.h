@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <SEED/Lib/Structs/blendMode.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/PSO/IPipeline.h>
 using Microsoft::WRL::ComPtr;
 

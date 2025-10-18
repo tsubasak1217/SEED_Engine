@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
 

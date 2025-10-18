@@ -10,7 +10,7 @@
 #include "dotNet/coreclr_delegates.h"
 #pragma comment(lib, "nethost.lib") 
 // local
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include "FunctionTypeDefines.h"
 
 struct HostFxrContext{

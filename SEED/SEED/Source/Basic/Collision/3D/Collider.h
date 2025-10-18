@@ -16,6 +16,7 @@
 #include <SEED/Lib/Shapes/Capsule.h>
 #include <SEED/Source/Basic/Collision/ColliderAnimationData.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionData.h>
+#include <SEED/Lib/Structs/Color.h>
 
 // 前方宣言
 class GameObject;
@@ -125,7 +126,7 @@ protected:// 基礎情報-------------------------------------------------------
     bool isCollision_ = false;
     bool preIsCollision_ = false;
     Vector3 collidedPosition_;
-    Vector4 color_;
+    Color color_;
 
 protected:// 親子付け情報-----------------------------------------------------------
     const Matrix4x4* parentMat_ = nullptr;

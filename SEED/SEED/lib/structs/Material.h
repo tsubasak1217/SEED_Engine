@@ -12,7 +12,8 @@
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Structs/blendMode.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Structs/Color.h>
 
 enum LIGHTING_TYPE : int32_t{
     LIGHTINGTYPE_NONE = 0,
@@ -21,7 +22,7 @@ enum LIGHTING_TYPE : int32_t{
 };
 
 struct Material{
-    Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
+    Color color = { 1.0f,1.0f,1.0f,1.0f };
     uint32_t GH;
     Matrix4x4 uvTransform = IdentityMat4();
     float shininess = 50.0f;
@@ -29,7 +30,7 @@ struct Material{
 };
 
 struct MaterialForGPU{
-    Vector4 color_;
+    Color color_;
     Matrix4x4 uvTransform_;
     int32_t lightingType_;
     int32_t GH_;
@@ -42,5 +43,5 @@ struct ModelMaterialLoadData{
     Vector3 UV_scale_;
     Vector3 UV_offset_;
     Vector3 UV_translate_;
-    Vector4 color_;
+    Color color_;
 };

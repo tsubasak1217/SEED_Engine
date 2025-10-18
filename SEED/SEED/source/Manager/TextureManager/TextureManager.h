@@ -6,7 +6,7 @@
 #include <string>
 #include <cassert>
 // local
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 // assimp
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

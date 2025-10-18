@@ -12,8 +12,8 @@
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
 #include <SEED/Source/Manager/CollisionManager/ColliderEditor.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Basic/Components/ComponentDictionary.h>
 
 class Scene_Base;
@@ -223,7 +223,7 @@ public:
     bool isParentTranslate_ = true;
 
     //---------- 描画情報 ---------//
-    Vector4 masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
+    Color masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
 
     //------- トランスフォーム情報 ------//
     Transform2D localTransform_;

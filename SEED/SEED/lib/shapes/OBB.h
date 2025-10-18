@@ -1,6 +1,6 @@
 #pragma once
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <array>
 
 struct OBB{

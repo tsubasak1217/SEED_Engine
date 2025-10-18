@@ -4,7 +4,7 @@
 #include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
+#include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/SEED.h>
 
 // Media Foundation で実際の Plane サイズを取得する関数

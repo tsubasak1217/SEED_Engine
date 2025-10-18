@@ -1,5 +1,5 @@
 #include "CurveEditor.h"
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Lib/Structs/Curve.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

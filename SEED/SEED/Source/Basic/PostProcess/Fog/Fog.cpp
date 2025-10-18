@@ -72,7 +72,7 @@ void Fog::Edit(){
             ImGui::SliderFloat(label.c_str(), &fogParamsBuffer_.data->fogStartDistance, 0.0f, 1.0f);
 
             label = "フォグの色##" + std::to_string(id_);
-            ImGui::ColorEdit3(label.c_str(), &fogParamsBuffer_.data->fogColor.x);
+            ImGui::ColorEdit3(label.c_str(), &fogParamsBuffer_.data->fogColor.value.x);
         }
         ImGui::Unindent();
     }

@@ -1,9 +1,9 @@
 // local
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/DxFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Lib/Includes/includes.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
@@ -289,7 +289,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
 void SEED::AddTriangle3DPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
+    const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     instance_->pPolygonManager_->AddTrianglePrimitive(
@@ -334,7 +334,7 @@ void SEED::DrawQuad(const Quad& quad){
 void SEED::AddQuad3DPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-    const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
+    const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
     const Matrix4x4& uvTransform, D3D12_CULL_MODE cullMode
 ){
     instance_->pPolygonManager_->AddQuadPrimitive(
@@ -364,7 +364,7 @@ void SEED::DrawQuad2D(const Quad2D& quad){
 /*========================================== スプライト ===========================================*/
 
 
-void SEED::DrawSprite(const Sprite& sprite, const std::optional<Vector4> masterColor){
+void SEED::DrawSprite(const Sprite& sprite, const std::optional<Color> masterColor){
 
     instance_->pPolygonManager_->AddSprite(
         sprite,
@@ -376,14 +376,14 @@ void SEED::DrawSprite(const Sprite& sprite, const std::optional<Vector4> masterC
 
 /*========================================== モデル ===========================================*/
 
-void SEED::DrawModel(Model* model, const std::optional<Vector4>& masterColor){
+void SEED::DrawModel(Model* model, const std::optional<Color>& masterColor){
     instance_->pPolygonManager_->AddModel(model,masterColor);
 }
 
 
 /*========================================== 線 ===========================================*/
 
-void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, BlendMode blendMode){
+void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Color& color, BlendMode blendMode){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
@@ -392,7 +392,7 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Vector4& color, 
 }
 
 void SEED::DrawLine2D(
-    const Vector2& v1, const Vector2& v2, const Vector4& color, BlendMode blendMode, bool isApplyViewMat
+    const Vector2& v1, const Vector2& v2, const Color& color, BlendMode blendMode, bool isApplyViewMat
 ){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
@@ -423,14 +423,14 @@ void SEED::DrawRing(const Ring& ring){
 ///////////////////////////////////////////////////////
 // AABB,OBBの描画関数
 ///////////////////////////////////////////////////////
-void SEED::DrawAABB(const AABB& aabb, const Vector4& color){
+void SEED::DrawAABB(const AABB& aabb, const Color& color){
     OBB obb;
     obb.center = aabb.center;
     obb.halfSize = aabb.halfSize;
     DrawOBB(obb, color);
 }
 
-void SEED::DrawAABB2D(const AABB2D& aabb, const Vector4& color){
+void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color){
     Vector2 vertex[4] = {
         Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
         Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
@@ -443,7 +443,7 @@ void SEED::DrawAABB2D(const AABB2D& aabb, const Vector4& color){
     DrawLine2D(vertex[3], vertex[0], color);
 }
 
-void SEED::DrawOBB(const OBB& obb, const Vector4& color){
+void SEED::DrawOBB(const OBB& obb, const Color& color){
 
     //ローカルな頂点を計算
     Vector3 vertex[8] = {
@@ -491,7 +491,7 @@ void SEED::DrawOBB(const OBB& obb, const Vector4& color){
 /////////////////////////////////////////////////////////////
 void SEED::DrawHexagon(
     const Vector2& center, float radius, float theta,
-    const Vector4& color, BlendMode blendMode,
+    const Color& color, BlendMode blendMode,
     DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
 ){
     Triangle2D tri;
@@ -522,7 +522,7 @@ void SEED::DrawHexagon(
 
 void SEED::DrawHexagonFrame(
     const Vector2& center, float radius, float theta, float frameWidthRate, 
-    const Vector4& color, BlendMode blendMode,
+    const Color& color, BlendMode blendMode,
     DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
 ){
     Quad2D quad;
@@ -557,7 +557,7 @@ void SEED::DrawHexagonFrame(
 /////////////////////////////////////////////////////////////
 // 球の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision, const Vector4& color){
+void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision, const Color& color){
 
     // 常識的な範囲に納める
     subdivision = std::clamp(subdivision, 3, 16);
@@ -597,7 +597,7 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
 }
 
 
-void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Vector4& color){
+void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Color& color){
     DrawSphere(center, Vector3(radius, radius, radius), subdivision, color);
 }
 
@@ -608,7 +608,7 @@ void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, 
 void SEED::DrawCylinder(
     const Vector3& start, const Vector3& end, 
     float startRadius, float endRadius, 
-    int32_t subdivision, const Vector4& color
+    int32_t subdivision, const Color& color
 ){
 
     if(subdivision < 3){
@@ -665,7 +665,7 @@ void SEED::DrawCylinder(
 /////////////////////////////////////////////////////////////
 // カプセルの描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Vector4& color){
+void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Color& color){
     // 視点と終点に球を描画
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
@@ -673,7 +673,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, i
     DrawCylinder(start, end, radius, radius, subdivision, color);
 }
 
-void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Vector4& color){
+void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Color& color){
     // 視点と終点に球を描画
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
@@ -707,7 +707,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
     }
 }
 
-void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color){
+void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Color& color){
     // ベジェ曲線の描画
     Vector3 previous = p1;
     for(uint32_t i = 1; i <= subdivision; i++){
@@ -725,7 +725,7 @@ void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, u
 }
 
 // 2D版
-void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Vector4& color){
+void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Color& color){
     // ベジェ曲線の描画
     Vector2 previous = p1;
     for(uint32_t i = 1; i <= subdivision; i++){
@@ -740,7 +740,7 @@ void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, u
 }
 
 // 複数点版
-void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color){
+void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -769,7 +769,7 @@ void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, 
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color, bool isControlPointVisible){
+void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -811,7 +811,7 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
 }
 
 // スプライン曲線の描画（2D版）
-void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color, bool isControlPointVisible){
+void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -910,7 +910,7 @@ void SEED::DrawLight(const BaseLight* light){
 // cubeMapの描画
 /////////////////////////////////////////////////////////////
 
-void SEED::SetSkyBox(const std::string& textureName, const Vector4& color){
+void SEED::SetSkyBox(const std::string& textureName, const Color& color){
     SkyBox::textureGH_ = TextureManager::LoadTexture(textureName);
     SkyBox::textureName_ = textureName;
     SkyBox::textureGH_;

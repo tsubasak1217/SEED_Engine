@@ -1,5 +1,5 @@
 #include "HexagonTransition.h"
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 
 void HexagonTransition::Update(){

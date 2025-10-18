@@ -4,9 +4,9 @@
 #include <Environment/Environment.h>
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Shapes/Quad.h>
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Source/SEED.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 SelectBackGroundDrawer::SelectBackGroundDrawer(){
 
@@ -168,13 +168,13 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
 
     {// 色の更新
 
-        Vector4 aimColor = MyMath::RGB_to_HSV(backColors[(int)currentDifficulty]);
-        Vector4 curColor = MyMath::RGB_to_HSV(backQuad.color);
+        Color aimColor = MyMath::RGB_to_HSV(backColors[(int)currentDifficulty]);
+        Color curColor = MyMath::RGB_to_HSV(backQuad.color.value);
         static float lerpRate = 0.2f;
 
         // 色相補間（最短距離補間）
-        float h1 = curColor.x;
-        float h2 = aimColor.x;
+        float h1 = curColor.value.x;
+        float h2 = aimColor.value.x;
         float dh = h2 - h1;
 
         // -0.5〜0.5の範囲に収めて最短経路を取る
@@ -187,12 +187,12 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
         if(newHue >= 1.0f) newHue -= 1.0f;
 
         // 他の成分は普通に補間
-        float newS = curColor.y + (aimColor.y - curColor.y) * lerpRate;
-        float newV = curColor.z + (aimColor.z - curColor.z) * lerpRate;
-        float newA = curColor.w + (aimColor.w - curColor.w) * lerpRate;
+        float newS = curColor.value.y + (aimColor.value.y - curColor.value.y) * lerpRate;
+        float newV = curColor.value.z + (aimColor.value.z - curColor.value.z) * lerpRate;
+        float newA = curColor.value.w + (aimColor.value.w - curColor.value.w) * lerpRate;
 
-        Vector4 nextColor(newHue, newS, newV, newA);
-        backQuad.color = MyMath::HSV_to_RGB(nextColor);
+        Color nextColor(newHue, newS, newV, newA);
+        backQuad.color = MyMath::HSV_to_RGB(nextColor.value);
     }
 
     SEED::DrawQuad2D(backQuad); // 背景Quadを描画

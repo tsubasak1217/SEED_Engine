@@ -3,7 +3,7 @@
 #include <list>
 #include <SEED/Lib/Structs/TextBox.h>
 #include <Game/Objects/SongSelect/SongInfo.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/Easing.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Lib/Shapes/Quad.h>

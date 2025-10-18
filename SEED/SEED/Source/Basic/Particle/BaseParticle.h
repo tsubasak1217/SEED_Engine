@@ -1,7 +1,7 @@
 #pragma once
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Structs/Range1D.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
+#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>

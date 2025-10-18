@@ -1,7 +1,7 @@
 #include "TextBox.h"
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/TextSystem/TextSystem.h>
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
 
 #ifdef _DEBUG
 void TextBox2D::Edit(const std::string& hash){
@@ -215,10 +215,10 @@ std::vector<std::string> TextBox2D::AnalyzeFormatToken(const std::string& source
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  2Dテキスト描画
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-void TextBox2D::Draw(const std::optional<Vector4>& masterColor)const{
+void TextBox2D::Draw(const std::optional<Color>& masterColor)const{
 
     // マスターカラーが指定されていれば乗算
-    Vector4 _color = this->color;
+    Color _color = this->color;
     if(masterColor != std::nullopt){
         _color *= masterColor.value();
     }
@@ -420,11 +420,11 @@ void TextBox2D::Draw(const std::optional<Vector4>& masterColor)const{
                     float radianEvery = (3.14f * 2.0f) / outlineSplitCount;
                     Quad2D outlineQuad = quad;
                     if(masterColor != std::nullopt){
-                        outlineQuad.color = outlineColor * masterColor.value();
+                        outlineQuad.color = outlineColor * masterColor.value().value;
                     } else{
                         outlineQuad.color = outlineColor;
                     }
-                    outlineQuad.color.w *= _color.w; // 透明度は元の文字の透明度を乗算
+                    outlineQuad.color.value.w *= _color.value.w; // 透明度は元の文字の透明度を乗算
 
                     // アウトラインを移動させて描画
                     for(int j = 0; j < outlineSplitCount; j++){

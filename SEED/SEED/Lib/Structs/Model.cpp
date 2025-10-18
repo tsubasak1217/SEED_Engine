@@ -1,6 +1,6 @@
 #include <cassert>
 #include <SEED/Lib/Structs/Model.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <execution>
@@ -130,7 +130,7 @@ void Model::UpdateMatrix(){
 //                                                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Model::Draw(const std::optional<Vector4>& masterColor){
+void Model::Draw(const std::optional<Color>& masterColor){
     SEED::DrawModel(this,masterColor);
 }
 

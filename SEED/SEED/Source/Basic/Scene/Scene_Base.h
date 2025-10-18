@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <SEED/Source/Basic/Scene/State_Base.h>
+#include <SEED/Source/Basic/Scene/SceneState_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
@@ -27,8 +27,8 @@ protected:
 
 public:
     void ChangeScene(const std::string& nextSceneName);
-    void ChangeState(State_Base* nextState);
-    void CauseEvent(State_Base* nextEventState);
+    void ChangeState(SceneState_Base* nextState);
+    void CauseEvent(SceneState_Base* nextEventState);
     void EndEvent() { currentEventState_ = nullptr; };
     bool HasEvent(){ return currentEventState_ != nullptr; };
 
@@ -49,8 +49,8 @@ public:// Hierarchy関連
     GameObject2D* GetGameObject2D(const std::string& name) const;
 
 protected:
-    std::unique_ptr<State_Base> currentState_;
-    std::unique_ptr<State_Base> currentEventState_;
+    std::unique_ptr<SceneState_Base> currentState_;
+    std::unique_ptr<SceneState_Base> currentEventState_;
     std::unique_ptr<Hierarchy> hierarchy_; // Hierarchy管理クラス
     static inline bool isChangeScene_ = false;
 };

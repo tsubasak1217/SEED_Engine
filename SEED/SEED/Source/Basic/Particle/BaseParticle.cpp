@@ -98,7 +98,7 @@ void BaseParticle::Enter(){
     if(lifeTime_ > borderTime_[0]){
         if(particle_->transform_.scale != kScale_){
             particle_->transform_.scale = kScale_;
-            particle_->masterColor_.w = 1.0f;
+            particle_->masterColor_.value.w = 1.0f;
         }
         return;
     }
@@ -111,7 +111,7 @@ void BaseParticle::Enter(){
     particle_->transform_.scale = MyMath::Lerp(kInScale_ * kScale_, kScale_, ease);
 
     // アルファ値の補間
-    particle_->masterColor_.w = MyMath::Lerp(kInAlpha_, 1.0f, ease);
+    particle_->masterColor_.value.w = MyMath::Lerp(kInAlpha_, 1.0f, ease);
 }
 
 
@@ -129,5 +129,5 @@ void BaseParticle::Exit(){
     // スケールの補間
     particle_->transform_.scale = MyMath::Lerp(kScale_, kOutScale_ * kScale_, ease);
     // アルファ値の補間
-    particle_->masterColor_.w = MyMath::Lerp(1.0f, kOutAlpha_, ease);
+    particle_->masterColor_.value.w = MyMath::Lerp(1.0f, kOutAlpha_, ease);
 }

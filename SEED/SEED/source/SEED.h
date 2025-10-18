@@ -32,11 +32,11 @@
 #include <SEED/Lib/Structs/TextBox.h>
 
 // math
-#include <SEED/Lib/Functions/MyFunc/ShapeMath.h>
-#include <SEED/Lib/Functions/MyFunc/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyFunc/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc/MyFunc.h>
-#include <SEED/Lib/Functions/MyFunc/Easing.h>
+#include <SEED/Lib/Functions/ShapeMath.h>
+#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/Easing.h>
 
 // dict
 #include <SEED/Source/Basic/Dictionary/AudioDictionary.h>
@@ -93,7 +93,7 @@ public:
     static void DrawTriangle(const Triangle& triangle);
     static void AddTriangle3DPrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3,
-        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector4& color,
+        const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Color& color,
         uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
@@ -108,7 +108,7 @@ public:
     static void AddQuad3DPrimitive(
         const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
         const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
-        const Vector4& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
+        const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType, const Matrix4x4& uvTransform,
         D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK
     );
 
@@ -116,24 +116,24 @@ public:
     static void DrawQuad2D(const Quad2D& quad);
 
     // スプライト
-    static void DrawSprite(const Sprite& sprite,const std::optional<Vector4> masterColor = std::nullopt);
+    static void DrawSprite(const Sprite& sprite,const std::optional<Color> masterColor = std::nullopt);
 
     /*==========================モデルの描画関数==========================*/
 
-    static void DrawModel(Model* model, const std::optional<Vector4>& masterColor = std::nullopt);
+    static void DrawModel(Model* model, const std::optional<Color>& masterColor = std::nullopt);
 
     /*==========================線の描画関数==========================*/
 
     // 3D線
     static void DrawLine(
         const Vector3& v1, const Vector3& v2, 
-        const Vector4& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL
+        const Color& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL
     );
 
     // 2D線
     static void DrawLine2D(
         const Vector2& v1, const Vector2& v2, 
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, bool isApplyViewMat = false
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, bool isApplyViewMat = false
     );
 
     /*========================テキストの描画関数==========================*/
@@ -150,14 +150,14 @@ public:
     /*=========================デバッグ用の描画関数=======================*/
 
     // AABB, OBBの描画関数
-    static void DrawAABB(const AABB& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawAABB2D(const AABB2D& aabb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawOBB(const OBB& obb, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawAABB(const AABB& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawAABB2D(const AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawOBB(const OBB& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
 
     // 六角形の描画
     static void DrawHexagon(
         const Vector2& center, float radius, float theta, 
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, 
         BlendMode blendMode = BlendMode::NORMAL,
         DrawLocation drawLocation = DrawLocation::Front, 
         int32_t layer = 0, bool isApplyViewMat = true
@@ -165,33 +165,33 @@ public:
 
     static void DrawHexagonFrame(
         const Vector2& center, float radius, float theta, float frameWidthRate,
-        const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL,
         DrawLocation drawLocation = DrawLocation::Front,
         int32_t layer = 0, bool isApplyViewMat = true
     );
 
     // 球の描画関数
-    static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // 円柱の描画関数
-    static void DrawCylinder(const Vector3& start, const Vector3& end, float startRadius, float endRadius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawCylinder(const Vector3& start, const Vector3& end, float startRadius, float endRadius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // カプセルの描画関数
-    static void DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision = 6, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // デバッグ用のグリッド描画関数
     static void DrawGrid(float gridInterval = 10.0f, int32_t gridCount = 200);
     // ベジェ曲線の描画
-    static void DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // スプライン曲線の描画
-    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
-    static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
+    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
+    static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     // ライトのデバッグ用描画
     static void DrawLight(const BaseLight* light);
     // SkyBoxの描画関数
-    static void SetSkyBox(const std::string& textureName, const Vector4& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void SetSkyBox(const std::string& textureName, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawSkyBox(bool isFollowCameraPos = true,const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 100.0f);
 
     /////////////////////////////////////////////////////////////////////////////////////

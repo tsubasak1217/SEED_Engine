@@ -118,10 +118,10 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
     // 背景部分を描画
     if(isSelected){
         backSprite->color = backColors[(int)difficulty];
-        backSprite->color.w = alpha;
+        backSprite->color.value.w = alpha;
     } else{
         backSprite->color = backColors[(int)difficulty] * 0.8f;
-        backSprite->color.w = alpha;
+        backSprite->color.value.w = alpha;
     }
 
     backSprite->size = kDrawSize;
@@ -139,7 +139,7 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
     jacketSprite->transform.translate = leftTopPos + jacketOffset;
     jacketSprite->transform.scale = backSprite->transform.scale;
     // ジャケット画像を描画
-    jacketSprite->color.w = alpha; // 透明度を適用
+    jacketSprite->color.value.w = alpha; // 透明度を適用
     jacketSprite->Draw();
 
     for(auto& key : textBoxKeys){
@@ -175,7 +175,7 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
 
         textBox[key]->transform.scale = transform.scale;
         textBox[key]->transform.translate = leftTopPos + textBoxRelativePos[key] * transform.scale;
-        textBox[key]->color.w = alpha; // 透明度を適用
+        textBox[key]->color.value.w = alpha; // 透明度を適用
         textBox[key]->layer = backSprite->layer + 1;
         textBox[key]->Draw();
     }
@@ -190,10 +190,10 @@ void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transfo
     // 背景部分を描画
     if(isSelected){
         backSprite->color = backColors[(int)difficulty];
-        backSprite->color.w = alpha; // 選択時は透明度を適用
+        backSprite->color.value.w = alpha; // 選択時は透明度を適用
     } else{
         backSprite->color = backColors[(int)difficulty] * 0.8f;
-        backSprite->color.w = alpha; // 選択時は不透明
+        backSprite->color.value.w = alpha; // 選択時は不透明
     }
 
     backSprite->size = kDrawSize;
@@ -208,7 +208,7 @@ void SongInfoDrawer::Draw(const SongGroup& groupInfo, const Transform2D& transfo
     textBox["GroupName"]->text = groupInfo.groupName;
     textBox["GroupName"]->transform.scale = transform.scale;
     textBox["GroupName"]->transform.translate = leftTopPos + textBoxRelativePos["GroupName"] * transform.scale;
-    textBox["GroupName"]->color.w = alpha; // 透明度を適用
+    textBox["GroupName"]->color.value.w = alpha; // 透明度を適用
     textBox["GroupName"]->layer = backSprite->layer + 1;
     textBox["GroupName"]->Draw();
 

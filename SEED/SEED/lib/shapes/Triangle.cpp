@@ -12,7 +12,7 @@ Triangle::Triangle(){
 Triangle::Triangle(
     const Vector3& v1, const Vector3& v2, const Vector3& v3, 
     const Vector3& scale, const Vector3& rotate, 
-    const Vector3& translate, const Vector4& color, BlendMode blendMode
+    const Vector3& translate, const Color& color, BlendMode blendMode
 ){
     localVertex[0] = v1;
     localVertex[1] = v2;
@@ -41,7 +41,7 @@ Triangle2D::Triangle2D(
     const Vector2& scale,
     float rotate,
     const Vector2& translate,
-    const Vector4& color,
+    const Color& color,
     BlendMode blendMode
 ){
     localVertex[0] = v1;

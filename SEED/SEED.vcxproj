@@ -131,6 +131,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Routine2DComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
@@ -162,6 +163,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
     <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
       <SubType />
@@ -253,8 +257,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\PSO\RootSignature.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\ShaderDictionary.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\ViewManager.cpp" />
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp" />
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\ParticleManager.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticleSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
     <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\InputManager\InputManager.cpp" />
@@ -280,11 +284,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Plane.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.cpp" />
-    <ClCompile Include="SEED\Source\Basic\Particle\Particle_Model.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle3D.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterBase.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter3D.cpp" />
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +300,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentRegister.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Routine2DComponent.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\GameSystem.h" />
@@ -332,6 +335,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType />
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterContext.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
     <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
       <SubType />
@@ -429,10 +436,10 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\PSO.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h" />
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\ParticleManager.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUEmitter.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticle.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticleSystem.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGlyph.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputHandler.h" />
@@ -516,11 +523,9 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Plane.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\3D\Collider_Sphere.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\Octree.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.h" />
-    <ClInclude Include="SEED\Source\Basic\Particle\Particle_Model.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle3D.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterBase.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter3D.h" />
     <ClInclude Include="SEED\Source\SEED.h" />
   </ItemGroup>
   <ItemGroup>

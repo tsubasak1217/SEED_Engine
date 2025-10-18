@@ -178,8 +178,8 @@ void PlayField::Initialize(){
     CalcEffectEmitPoints();
 
     // エフェクトの初期化
-    EffectSystem::DeleteAll();// 既存のエフェクトを削除
-    EffectSystem::AddEffectEndless("stageBack.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
+    ParticleManager::DeleteAll();// 既存のエフェクトを削除
+    //ParticleManager::AddEffectEndless("stageBack.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
 
     // 背景の初期化
     backImage_ = Sprite("PlayField/tempBack.png");
@@ -445,17 +445,18 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
 // レーンのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
 void PlayField::LaneEffect(int evalution, LaneBit laneBit){
+    laneBit;
     switch(evalution){
     case Judgement::Evaluation::PERFECT:
-        EffectSystem::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[laneBit]);
         break;
 
     case Judgement::Evaluation::GREAT:
-        EffectSystem::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[laneBit]);
         break;
 
     case Judgement::Evaluation::GOOD:
-        EffectSystem::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[laneBit]);
         break;
 
     default:
@@ -478,15 +479,15 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit){
 
     switch(evalution){
     case Judgement::Evaluation::PERFECT:
-        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
         break;
 
     case Judgement::Evaluation::GREAT:
-        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
         break;
 
     case Judgement::Evaluation::GOOD:
-        EffectSystem::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
         break;
 
     default:
@@ -503,16 +504,16 @@ void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 
     evalution;
     if(laneBit & LaneBit::RECTFLICK_LT){
-        EffectSystem::AddEffectOnce("rectFlick_LT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        //ParticleManager::AddEffectOnce("rectFlick_LT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
     }
     if(laneBit & LaneBit::RECTFLICK_RT){
-        EffectSystem::AddEffectOnce("rectFlick_RT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        //ParticleManager::AddEffectOnce("rectFlick_RT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
     }
     if(laneBit & LaneBit::RECTFLICK_LB){
-        EffectSystem::AddEffectOnce("rectFlick_LB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        //ParticleManager::AddEffectOnce("rectFlick_LB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
     }
     if(laneBit & LaneBit::RECTFLICK_RB){
-        EffectSystem::AddEffectOnce("rectFlick_RB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        //ParticleManager::AddEffectOnce("rectFlick_RB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
     }
 }
 

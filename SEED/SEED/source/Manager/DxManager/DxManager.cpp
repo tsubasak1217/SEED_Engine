@@ -7,7 +7,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
-#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/ParticleManager/GPUParticle/GPUParticleSystem.h>
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 DxManager* DxManager::instance_ = nullptr;

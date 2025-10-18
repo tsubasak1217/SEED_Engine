@@ -14,6 +14,7 @@
 #include <SEED/Source/Basic/Components/Only3D/Gravity3DComponent.h>
 #include <SEED/Source/Basic/Components/Only3D/Move3DComponent.h>
 #include <SEED/Source/Basic/Components/Only3D/Routine3DComponent.h>
+#include <SEED/Source/Basic/Components/Only3D/Component_EmitterGroup3D.h>
 
 // 3D・2D共通のコンポーネント
 #include <SEED/Source/Basic/Components/3D&2D/TextComponent.h>

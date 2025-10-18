@@ -1,16 +1,20 @@
 #pragma once
-#include <SEED/Source/Basic/Particle/Emitter/Emitter.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterBase.h>
+#include <string>
 
 // パーティクルを発生させるための構造体
-class Emitter_Model : public Emitter_Base{
+class Emitter3D : public EmitterBase{
+public:
+    Emitter3D();
+    ~Emitter3D() = default;
 
 public:
-    Emitter_Model();
+    void Edit();
+    nlohmann::json ExportToJson();
+    void LoadFromJson(const nlohmann::json& j);
 
 public:
-    void Edit()override;
-    nlohmann::json ExportToJson()override;
-    void LoadFromJson(const nlohmann::json& j)override;
+    Vector3 GetCenter() const;
 
 private:
     void EditGeneral();
@@ -18,9 +22,9 @@ private:
     void EditEaseType();
     void EditMaterial();
     void EditFrequency();
-    
+
 protected:
-    void DrawEditData() override;
+    void DrawEditData();
 
     //---------------------- フラグ類 ----------------------//
 public:
@@ -35,8 +39,10 @@ public:
 
     //-------------------- 発生パラメータ ------------------//
 public:
+    Transform center;// 中心座標(guizmoに渡せるようTransform構造体)
+    Vector3 emitRange = { 10.0f,10.0f,10.0f };// 発生範囲
     Range1D radiusRange = { 0.5f,3.0f };// 大きさの幅
-    Range3D scaleRange = { { 1.0f,1.0f,1.0f },{ 1.0f,1.0f,1.0f }};// スケールの幅
+    Range3D scaleRange = { { 1.0f,1.0f,1.0f },{ 1.0f,1.0f,1.0f } };// スケールの幅
     Vector3 baseDirection = { 0.0f,1.0f,0.0f };// パーティクルの向き
     Vector3 goalPosition = { 0.0f,0.0f,0.0f };// ゴール位置(移動する場合の目標位置)
     float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)

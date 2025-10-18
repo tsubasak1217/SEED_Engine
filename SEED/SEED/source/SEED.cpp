@@ -8,7 +8,7 @@
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/SceneManager/SceneManager.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionManager.h>
-#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/ParticleManager/GPUParticle/GPUParticleSystem.h>
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     AudioManager::Initialize();
     Input::Initialize();
     ModelManager::Initialize();
-    EffectSystem::Initialize();
+    ParticleManager::Initialize();
     SceneManager::Initialize();
     CollisionManager::Initialize();
     GPUParticleSystem::Initialize();

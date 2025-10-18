@@ -19,7 +19,7 @@ Scene_Base::Scene_Base(){
 void Scene_Base::Initialize(){
 
     // 現在のパーティクルやポストエフェクトの全削除
-    EffectSystem::DeleteAll();
+    ParticleManager::DeleteAll();
     PostEffectSystem::DeleteAll();
 
     // stateの初期化

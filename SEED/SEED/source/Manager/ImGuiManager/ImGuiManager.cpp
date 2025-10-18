@@ -428,8 +428,8 @@ std::string ImFunc::FolderView(
 
         // 一度のみ画像読み込み
         if(!isLoaded){
-            folderIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/folderIcon.png");
-            fileIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/fileIcon.png");
+            folderIcon = TextureManager::GetImGuiTexture("[Engine]folderIcon.png");
+            fileIcon = TextureManager::GetImGuiTexture("[Engine]fileIcon.png");
             isLoaded = true;
         }
 
@@ -457,7 +457,7 @@ std::string ImFunc::FolderView(
         // 表示対象のファイル・フォルダを収集
         std::error_code ec;
         std::vector<std::filesystem::directory_entry> entries;
-        for(const auto& entry : std::filesystem::directory_iterator(fullPath, ec)){
+        for(auto& entry : std::filesystem::directory_iterator(fullPath, ec)){
             if(ec){// エラー発生時はスキップ
                 break;
             }
@@ -627,9 +627,9 @@ std::string ImFunc::FolderView(
                     return "";
                 } else{
                     if(isFileNameOnly){
-                        selectedFile = entry.path().filename().string();
+                        selectedFile = entry.path().filename().generic_string();
                     } else{
-                        selectedFile = entry.path().string();
+                        selectedFile = entry.path().generic_string();
                         // "Resources"階層以降のパスに変換
                         if(selectedFile.find("Resources") != std::string::npos){
                             selectedFile = selectedFile.substr(selectedFile.find("Resources"));
@@ -692,6 +692,29 @@ std::string ImFunc::FolderView(
 }
 
 /////////////////////////////////////////////////////////////////
+// アクティブ/非アクティブボタン表示関数
+/////////////////////////////////////////////////////////////////
+bool ImFunc::ActivateImageButton(
+    const std::string& label, bool& isActive,
+    ImTextureID activeIcon, ImTextureID inactiveIcon, const ImVec2& size
+){
+    // 再生・一時停止ボタン
+    if(isActive){
+        if(ImGui::ImageButton(label, activeIcon, size)){
+            isActive = false;
+            return true;
+        }
+    } else{
+        if(ImGui::ImageButton(label, inactiveIcon, size)){
+            isActive = true;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/////////////////////////////////////////////////////////////////
 // 再生バー表示関数
 /////////////////////////////////////////////////////////////////
 bool ImFunc::PlayBar(const std::string& label, Timer& timer){
@@ -708,20 +731,7 @@ bool ImFunc::PlayBar(const std::string& label, Timer& timer){
     }
 
     // 再生・一時停止ボタン
-    if(!timer.isStop){
-        if(ImGui::ImageButton("再生ボタン" + label,playIcon, { 20,20 })){
-            isClicked = true;
-            timer.Stop();
-        }
-    } else{
-        if(ImGui::ImageButton("再生ボタン" + label, pauseIcon, { 20,20 })){
-            if(timer.IsFinished()){
-                timer.Reset();
-            }
-            isClicked = true;
-            timer.Restart();
-        }
-    }
+    isClicked = ActivateImageButton("再生ボタン" + label, timer.isStop, pauseIcon, playIcon, { 20,20 });
 
     // スライダー
     ImGui::SameLine();

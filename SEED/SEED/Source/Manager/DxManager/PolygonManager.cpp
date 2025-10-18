@@ -8,7 +8,7 @@
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
-#include <SEED/Source/Manager/EffectSystem/GPUParticle/GPUParticleSystem.h>
+#include <SEED/Source/Manager/ParticleManager/GPUParticle/GPUParticleSystem.h>
 
 // external
 #include <assert.h>

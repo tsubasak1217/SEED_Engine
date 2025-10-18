@@ -49,9 +49,9 @@
                 "z": 1.0
             },
             "translate": {
-                "x": 12.241681098937988,
+                "x": 7.09843635559082,
                 "y": -4.944782733917236,
-                "z": -15.681086540222168
+                "z": -22.119277954101563
             }
         },
         {
@@ -69,15 +69,15 @@
             "translate": {
                 "x": 0.0,
                 "y": 0.01861797645688057,
-                "z": -14.943976402282715
+                "z": -7.53433084487915
             }
         }
     ],
     "currentDifficulty": 0,
     "currentGroupIndex": 0,
     "currentGroupMode": 0,
-    "currentSongIndex": 0,
-    "currentSortMode": 4,
+    "currentSongIndex": 1,
+    "currentSortMode": 5,
     "difficultyTransforms": [
         {
             "rotate": 0.0,

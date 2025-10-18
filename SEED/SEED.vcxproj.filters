@@ -646,10 +646,10 @@
     <ClCompile Include="SEED\Source\Manager\DxManager\ViewManager.cpp">
       <Filter>SEED\Source\Manager\DxManager</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\EffectSystem.cpp">
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\ParticleManager.cpp">
       <Filter>SEED\Source\Manager\EffectSystem</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.cpp">
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticleSystem.cpp">
       <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp">
@@ -727,20 +727,14 @@
     <ClCompile Include="SEED\Source\Basic\Collision\Octree.cpp">
       <Filter>SEED\Source\Basic\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Particle\BaseParticle.cpp">
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle3D.cpp">
       <Filter>SEED\Source\Basic\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter.cpp">
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterBase.cpp">
       <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.cpp">
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter3D.cpp">
       <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.cpp">
-      <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Basic\Particle\Particle_Model.cpp">
-      <Filter>SEED\Source\Basic\Particle</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\SEED.cpp">
       <Filter>SEED\Source</Filter>
@@ -1105,16 +1099,16 @@
     <ClInclude Include="SEED\Source\Manager\DxManager\ShaderDictionary.h">
       <Filter>SEED\Source\Manager\DxManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\EffectSystem.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\ParticleManager.h">
       <Filter>SEED\Source\Manager\EffectSystem</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUEmitter.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUEmitter.h">
       <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticle.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticle.h">
       <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\EffectSystem\GPUParticle\GPUParticleSystem.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\GPUParticle\GPUParticleSystem.h">
       <Filter>SEED\Source\Manager\EffectSystem\GPUParticle</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\Hierarchy\Hierarchy.h">
@@ -1366,20 +1360,14 @@
     <ClInclude Include="SEED\Source\Basic\Collision\Octree.h">
       <Filter>SEED\Source\Basic\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Particle\BaseParticle.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle3D.h">
       <Filter>SEED\Source\Basic\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterBase.h">
       <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_Model.h">
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter3D.h">
       <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Particle\Emitter\Emitter_RingQuad.h">
-      <Filter>SEED\Source\Basic\Particle\Emitter</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Basic\Particle\Particle_Model.h">
-      <Filter>SEED\Source\Basic\Particle</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\SEED.h">
       <Filter>SEED\Source</Filter>
@@ -1487,6 +1475,10 @@
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
@@ -1494,5 +1486,10 @@
     <ClInclude Include="SEED\Source\Editor\EditorColorSettings.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterContext.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.h" />
   </ItemGroup>
 </Project>

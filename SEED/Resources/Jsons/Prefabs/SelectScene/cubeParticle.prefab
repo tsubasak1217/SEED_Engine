@@ -1,0 +1,163 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "componentID": 0,
+                    "componentTag": "EmitterGroup3D_ID:0",
+                    "componentType": "EmitterGroup3D",
+                    "emitterGroup": {
+                        "emitters": [
+                            {
+                                "CullingMode": 3,
+                                "baseDirection": [
+                                    0.0,
+                                    1.0,
+                                    0.0
+                                ],
+                                "blendMode": 3,
+                                "center": [
+                                    0.0,
+                                    -18.0,
+                                    0.0
+                                ],
+                                "colors": [
+                                    [
+                                        0.9809931516647339,
+                                        1.0,
+                                        0.015444040298461914,
+                                        1.0
+                                    ],
+                                    [
+                                        0.015205522067844868,
+                                        0.9845559597015381,
+                                        0.9284160137176514,
+                                        1.0
+                                    ],
+                                    [
+                                        1.0,
+                                        0.0,
+                                        0.9498071670532227,
+                                        1.0
+                                    ],
+                                    [
+                                        1.0,
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                ],
+                                "directionRange": 0.20000000298023224,
+                                "emitModelFilePath": "DefaultAssets/cube/cube.obj",
+                                "emitRange": [
+                                    200.0,
+                                    10.0,
+                                    200.0
+                                ],
+                                "emitType": 1,
+                                "emitterType": "Emitter_Model3D",
+                                "enterEaseType": 0,
+                                "exitEaseType": 0,
+                                "goalPosition": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "gravity": -19.940000534057617,
+                                "inAlpha": 1.0,
+                                "inScale": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "interval": 0.019999999552965164,
+                                "isActive": true,
+                                "isBillboard": false,
+                                "isEndWithGoalPosition": false,
+                                "isRoteteRandomInit": true,
+                                "isSetGoalPosition": false,
+                                "isUseGravity": false,
+                                "isUseRotate": true,
+                                "kMaxEmitCount": 5,
+                                "lifeTimeRange": [
+                                    2.0,
+                                    4.0
+                                ],
+                                "lightingType": 0,
+                                "maxTimePoint": 0.5,
+                                "maxTimeRate": 0.20000000298023224,
+                                "numEmitEvery": 5,
+                                "outAlpha": 1.0,
+                                "outScale": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "radiusRange": [
+                                    0.5,
+                                    1.7899999618530273
+                                ],
+                                "rotateDirection": [
+                                    0.0,
+                                    1.0,
+                                    0.0
+                                ],
+                                "rotateEaseType": 0,
+                                "rotateSpeedRange": [
+                                    -10.0,
+                                    10.0
+                                ],
+                                "scaleRange": [
+                                    {
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    }
+                                ],
+                                "speedRange": [
+                                    11.140000343322754,
+                                    23.1200008392334
+                                ],
+                                "textureHandles": [
+                                    "ParticleTextures/white.png"
+                                ],
+                                "useDefaultTexture": false,
+                                "useRotateDirection": false,
+                                "velocityEaseType": 0
+                            }
+                        ]
+                    },
+                    "isParentToOwner": true
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object_0",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

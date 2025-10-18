@@ -2,7 +2,7 @@
 #include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Functions/MyMath.h>
 struct Color{
-    Vector4 value;
+    Vector4 value = Vector4(1.0f);
 
 public:// basic methods
     Color() = default;

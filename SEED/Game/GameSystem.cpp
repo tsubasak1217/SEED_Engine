@@ -64,7 +64,7 @@ void GameSystem::Update() {
     // ビデオの更新
     VideoManager::GetInstance()->Update();
     // エフェクトの更新
-    EffectSystem::Update();
+    ParticleManager::Update();
     // すべての更新終了後にカメラを更新
     CameraManager::Update();
     // シーン遷移の更新
@@ -83,7 +83,7 @@ void GameSystem::Draw() {
     }
 
     // エフェクトの描画
-    EffectSystem::Draw();
+    ParticleManager::Draw();
     
     // シーン遷移の更新
     SceneTransitionDrawer::Draw();

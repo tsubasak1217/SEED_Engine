@@ -49,8 +49,15 @@ uint32_t TextureManager::LoadTexture(const std::string& filename, const aiTextur
 
     // filenameが"Resources/"から始まる場合、basePathを空に
     std::string basePath = "Resources/textures/";
-    if(filename.starts_with("Resources/")){
+    if(filename.starts_with("Resources")){
         basePath = "";
+
+    } else if(filename.starts_with("[Engine]")){
+        // エンジンリソースの場合
+        basePath = "SEED/EngineResources/Textures/";
+        std::string engineFilename = filename.substr(8);// "[Engine]"の分を削る
+        instance_->graphHandle_[filename] = instance_->CreateTexture(basePath + engineFilename);
+        return instance_->graphHandle_[filename];
     }
 
     // 埋め込みテクスチャでない場合

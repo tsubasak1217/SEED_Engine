@@ -67,19 +67,18 @@ void ModelManager::StartUpLoad(){
 
 void ModelManager::LoadModel(const std::string& filename){
 
+    // "Resources/"の階層からのパスならdirを空にする
+    std::string dir = instance_->directoryPath_;
     std::string path = filename;
-
-    // "Resources/"の階層からのパスなら"Moswls/"階層以降のパスに変換する
-    if(path.starts_with("Resources/Models")){
-        // "Resources/Models/"を削除
-        path = path.substr(17); // "Resources/Models"の長さは17
+    if(path.starts_with("Resources")){
+        dir = "";
     }
 
     // すでに読み込み済みのファイルであればreturn
     if(instance_->modelData_.find(path) != instance_->modelData_.end()){ return; }
 
     // 読み込み
-    instance_->modelData_[path] = instance_->LoadModelFile(instance_->directoryPath_, path);
+    instance_->modelData_[path] = instance_->LoadModelFile(dir, path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -93,8 +93,8 @@ void SongSelector::Initialize(){
     camera_ = SEED::GetMainCamera();
 
     // パーティクルを出す
-    EffectSystem::DeleteAll();// 既存のエフェクトを削除
-    EffectSystem::AddEffectEndless("selectScene.json", { 0.0f,0.0f,0.0f }, nullptr);
+    ParticleManager::DeleteAll();// 既存のエフェクトを削除
+    //ParticleManager::AddEffectEndless("selectScene.json", { 0.0f,0.0f,0.0f }, nullptr);
 }
 
 

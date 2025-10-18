@@ -1,43 +1,35 @@
 #pragma once
+#include <SEED/Source/SEED.h>
 #include <SEED/Lib/Structs/Range3D.h>
 #include <SEED/Lib/Structs/Range1D.h>
-#include <SEED/Lib/Functions/MyFunc.h>
-#include <SEED/Lib/Structs/Model.h>
-#include <SEED/Source/Manager/TextureManager/TextureManager.h>
-#include <SEED/Source/Manager/ModelManager/ModelManager.h>
-#include <SEED/Source/Manager/ClockManager/ClockManager.h>
-#include <SEED/Source/Basic/Particle/Emitter/Emitter.h>
 #include <optional>
 #include <vector>
 #include <memory>
 
-class BaseParticle{
+class Particle3D{
 public:
-    BaseParticle() = default;
-    BaseParticle(Emitter_Base* emitter);
-    virtual ~BaseParticle() = default;
-
+    Particle3D() = default;
+    Particle3D(class EmitterBase* emitter);
+    ~Particle3D() = default;
     virtual void Update();
     virtual void Draw();
 
 public:
-
-    bool GetIsAlive()const{return lifeTime_ < kLifeTime_;}
+    bool GetIsAlive()const{ return lifeTime_ < kLifeTime_; }
     void SetAcceleration(const Vector3& acceleration){ acceleration_ = acceleration; }
-    virtual const Vector3& GetPos() = 0;
+    const Vector3& GetPos() const{ return particle_->transform_.translate; }
 
 protected:
     void Enter();
     void Exit();
 
 protected:
-
     // モデル
     std::unique_ptr<Model>particle_;
     // 保存変数
     Vector3 kScale_;
     Vector3 emitPos_;
-    std::optional<Vector3> goalPos_; // 親の位置(親がある場合)
+    std::optional<Vector3> goalPos_; // 目標位置(ある場合)
 
     // ビルボードを適用するかどうか
     bool isBillboard_;

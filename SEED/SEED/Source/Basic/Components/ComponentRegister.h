@@ -35,19 +35,19 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
     if(ImGui::CollapsingHeader("共通")){
         ImGui::Indent();
 
-        if(ImGui::Button("TextComponent / テキスト描画")){
+        if(ImGui::Button("Text / テキスト描画")){
             owner->AddComponent<TextComponent>();
             return true;
         }
-        if(ImGui::Button("JumpComponent / ジャンプ")){
+        if(ImGui::Button("Jump / ジャンプ")){
             owner->AddComponent<JumpComponent>();
             return true;
         }
-        if(ImGui::Button("ColorControlComponent / 色制御")){
+        if(ImGui::Button("ColorControl / 色制御")){
             owner->AddComponent<ColorControlComponent>();
             return true;
         }
-        if(ImGui::Button("LifetimeComponent / 寿命")){
+        if(ImGui::Button("Lifetime / 寿命")){
             owner->AddComponent<LifetimeComponent>();
             return true;
         }
@@ -59,15 +59,15 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
     if constexpr(std::is_base_of_v<GameObject2D, T>){
         if(ImGui::CollapsingHeader("2D専用")){
             ImGui::Indent();
-            if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
+            if(ImGui::Button("Collision2D / 衝突判定・押し戻し")){
                 owner->AddComponent<Collision2DComponent>();
                 return true;
             }
-            if(ImGui::Button("UIComponent / UI描画")){
+            if(ImGui::Button("UI / UI描画")){
                 owner->AddComponent<UIComponent>();
                 return true;
             }
-            if(ImGui::Button("Routine2DComponent / 2Dルーチン")){
+            if(ImGui::Button("Routine2D / 2Dルーチン")){
                 owner->AddComponent<Routine2DComponent>();
                 return true;
             }
@@ -79,30 +79,35 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
     if constexpr(std::is_base_of_v<GameObject, T>){
         if(ImGui::CollapsingHeader("3D専用")){
             ImGui::Indent();
-            if(ImGui::Button("ModelRenderComponent / モデル描画")){
+            if(ImGui::Button("ModelRender / モデル描画")){
                 owner->AddComponent<ModelRenderComponent>();
                 return true;
             }
-            if(ImGui::Button("CollisionComponent / 衝突判定・押し戻し")){
+            if(ImGui::Button("Collision3D / 衝突判定・押し戻し")){
                 owner->AddComponent<Collision3DComponent>();
                 return true;
             }
-            if(ImGui::Button("SpotLightComponent / スポットライト")){
+            if(ImGui::Button("SpotLight / スポットライト")){
                 owner->AddComponent<SpotLightComponent>();
                 return true;
             }
-            if(ImGui::Button("GravityComponent / 重力")){
+            if(ImGui::Button("Gravity / 重力")){
                 owner->AddComponent<Gravity3DComponent>();
                 return true;
             }
-            if(ImGui::Button("MoveComponent / 移動")){
+            if(ImGui::Button("Move / 移動")){
                 owner->AddComponent<Move3DComponent>();
                 return true;
             }
-            if(ImGui::Button("Routine3DComponent / 3Dルーチン")){
+            if(ImGui::Button("Routine3D / 3Dルーチン")){
                 owner->AddComponent<Routine3DComponent>();
                 return true;
             }
+            if(ImGui::Button("EmitterGroup3D / 3Dエミッターグループ")){
+                owner->AddComponent<Component_EmitterGroup3D>();
+                return true;
+            }
+
             ImGui::Unindent();
         }
     }
@@ -181,6 +186,11 @@ inline void ComponentRegister::LoadComponents(T* owner, const nlohmann::json& js
         } else if(componentType == "Routine3D"){
             auto* routineComponent = owner->AddComponent<Routine3DComponent>();
             routineComponent->LoadFromJson(json);
+        
+        } else if(componentType == "EmitterGroup3D"){
+            auto* emitterGroupComponent = owner->AddComponent<Component_EmitterGroup3D>();
+            emitterGroupComponent->LoadFromJson(json);
+
         }
     }
 

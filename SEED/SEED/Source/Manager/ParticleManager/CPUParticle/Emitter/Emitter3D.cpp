@@ -1,20 +1,22 @@
-#include <SEED/Source/Basic/Particle/Emitter/Emitter.h>
+#include "Emitter3D.h"
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterGroup3D.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/ModelManager/ModelManager.h>
-#include "Emitter_Model.h"
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterBase.h>
 
-Emitter_Model::Emitter_Model() : Emitter_Base(){
+Emitter3D::Emitter3D() : EmitterBase(){
 }
 
 //
-void Emitter_Model::Edit(){
+void Emitter3D::Edit(){
+    ImGui::Indent();
 
-    static std::string label = "";
+    // Guizmoの表示フラグ
+    ImGui::Checkbox("Guizmoを表示" + idTag_, &useGuizmo_);
 
     // 全般の情報
-    label = "全般" + idTag_;
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("全般" + idTag_)){
         ImGui::Indent();
         EditGeneral();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -23,8 +25,7 @@ void Emitter_Model::Edit(){
 
 
     // 範囲などの情報
-    label = "範囲 / パラメーター" + idTag_;
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("範囲 / パラメーター" + idTag_)){
         ImGui::Indent();
         EditRangeParameters();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -32,8 +33,7 @@ void Emitter_Model::Edit(){
     }
 
     // イージング関数の情報
-    label = "出現/消滅パラメーター・イージング" + idTag_;
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("出現/消滅パラメーター・イージング" + idTag_)){
         ImGui::Indent();
         EditEaseType();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -41,8 +41,7 @@ void Emitter_Model::Edit(){
     }
 
     // マテリアルなどの情報
-    label = "マテリアル・形状・描画設定" + idTag_;
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("マテリアル・形状・描画設定" + idTag_)){
         ImGui::Indent();
         EditMaterial();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -51,24 +50,44 @@ void Emitter_Model::Edit(){
 
 
     // 頻度などの情報
-    label = "発生頻度・個数" + idTag_;
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("発生頻度・個数" + idTag_)){
         ImGui::Indent();
         EditFrequency();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
         ImGui::Unindent();
     }
+
+    // Guizmoの登録
+    if(useGuizmo_){
+        // 親グループの位置を考慮する
+        Matrix4x4 parentMat = IdentityMat4();
+        if(parentGroup){
+            if(auto group3D = dynamic_cast<EmitterGroup3D*>(parentGroup)){
+                parentMat = TranslateMatrix(group3D->GetPosition());
+            }
+        }
+
+        // 登録
+        ImGuiManager::RegisterGuizmoItem(&center,parentMat);
+    }
+
+    // 出現範囲の可視化
+    AABB rangeBox;
+    rangeBox.center = GetCenter();
+    rangeBox.halfSize = emitRange * 0.5f;
+    SEED::DrawAABB(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
+
+    ImGui::Unindent();
 }
 
 
 /*------------------------*/
 /*        全般の情報       */
 /*------------------------*/
-void Emitter_Model::EditGeneral(){
-    ImFunc::Combo("particleType", particleType, { "kRadial" });
-    ImFunc::Combo("発生タイプ", emitType, { "一度のみ","ずっと","指定回数" });
+void Emitter3D::EditGeneral(){
+    ImFunc::Combo("発生タイプ" + idTag_, emitType, { "一度のみ","ずっと","指定回数" });
     if(emitType == EmitType::kCustom){
-        ImGui::DragInt("発生回数", &kMaxEmitCount, 1);
+        ImGui::DragInt("発生回数" + idTag_, &kMaxEmitCount, 1);
     }
 }
 
@@ -76,62 +95,62 @@ void Emitter_Model::EditGeneral(){
 /*------------------------*/
 /*      範囲などの情報      */
 /*------------------------*/
-void Emitter_Model::EditRangeParameters(){
+void Emitter3D::EditRangeParameters(){
     ImGui::Text("-------- 出現 --------");
-    ImGui::DragFloat3("中心座標", &center.x, 0.05f);
-    ImGui::DragFloat3("発生範囲", &emitRange.x, 0.05f);
-    
+    ImGui::DragFloat3("中心座標" + idTag_, &center.translate.x, 0.05f);
+    ImGui::DragFloat3("発生範囲" + idTag_, &emitRange.x, 0.05f);
+
     ImGui::Text("------- 半径 -------");
-    ImGui::DragFloat("最小半径", &radiusRange.min, 0.01f, 0.0f, radiusRange.max);
-    ImGui::DragFloat("最大半径", &radiusRange.max, 0.01f, radiusRange.min);
-    
+    ImGui::DragFloat("最小半径" + idTag_, &radiusRange.min, 0.01f, 0.0f, radiusRange.max);
+    ImGui::DragFloat("最大半径" + idTag_, &radiusRange.max, 0.01f, radiusRange.min);
+
     ImGui::Text("------- スケール -------");
-    ImGui::DragFloat3("最小倍率(x,y,x)", &scaleRange.min.x, 0.005f, 0.0f, scaleRange.max.x);
-    ImGui::DragFloat3("最大倍率(x,y,x)", &scaleRange.max.x, 0.005f, scaleRange.min.x);
-    
-    
+    ImGui::DragFloat3("最小倍率(x,y,x)" + idTag_, &scaleRange.min.x, 0.005f, 0.0f, scaleRange.max.x);
+    ImGui::DragFloat3("最大倍率(x,y,x)" + idTag_, &scaleRange.max.x, 0.005f, scaleRange.min.x);
+
+
     ImGui::Text("------- 移動 -------");
-    ImGui::Checkbox("目標位置を設定するか", &isSetGoalPosition);
+    ImGui::Checkbox("目標位置を設定するか" + idTag_, &isSetGoalPosition);
     if(isSetGoalPosition){
-        ImGui::Checkbox("目標位置で終了するか", &isEndWithGoalPosition);
-        ImGui::DragFloat3("ゴール位置", &goalPosition.x, 0.05f);
+        ImGui::Checkbox("目標位置で終了するか" + idTag_, &isEndWithGoalPosition);
+        ImGui::DragFloat3("ゴール位置" + idTag_, &goalPosition.x, 0.05f);
     } else{
         isEndWithGoalPosition = false;
-        if(ImGui::DragFloat3("基礎となる方向", &baseDirection.x, 0.01f)){
+        if(ImGui::DragFloat3("基礎となる方向" + idTag_, &baseDirection.x, 0.01f)){
             baseDirection = MyMath::Normalize(baseDirection);
         };
     }
     if(!isEndWithGoalPosition){
-        ImGui::DragFloat("方向のばらけ具合", &directionRange, 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat("最低速度", &speedRange.min, 0.02f, 0.0f, speedRange.max);
-        ImGui::DragFloat("最高速度", &speedRange.max, 0.02f, speedRange.min);
+        ImGui::DragFloat("方向のばらけ具合" + idTag_, &directionRange, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("最低速度" + idTag_, &speedRange.min, 0.02f, 0.0f, speedRange.max);
+        ImGui::DragFloat("最高速度" + idTag_, &speedRange.max, 0.02f, speedRange.min);
     }
-    
-    
-    ImGui::Text("------ 寿命 ------");
-    ImGui::DragFloat("最短", &lifeTimeRange.min, 0.05f, 0.0f, lifeTimeRange.max);
-    ImGui::DragFloat("最長", &lifeTimeRange.max, 0.05f, lifeTimeRange.min);
 
-    
+
+    ImGui::Text("------ 寿命 ------");
+    ImGui::DragFloat("最短" + idTag_, &lifeTimeRange.min, 0.05f, 0.0f, lifeTimeRange.max);
+    ImGui::DragFloat("最長" + idTag_, &lifeTimeRange.max, 0.05f, lifeTimeRange.min);
+
+
     ImGui::Text("------- 回転 -------");
-    ImGui::Checkbox("ビルボードするか", &isBillboard);
-    ImGui::Checkbox("回転の初期化値をランダムにするか", &isRoteteRandomInit_);
-    ImGui::Checkbox("回転するか", &isUseRotate);
+    ImGui::Checkbox("ビルボードするか" + idTag_, &isBillboard);
+    ImGui::Checkbox("回転の初期化値をランダムにするか" + idTag_, &isRoteteRandomInit_);
+    ImGui::Checkbox("回転するか" + idTag_, &isUseRotate);
     if(isUseRotate){
-        ImGui::Checkbox("回転軸を指定するか", &useRotateDirection);
+        ImGui::Checkbox("回転軸を指定するか" + idTag_, &useRotateDirection);
         if(useRotateDirection){
-            ImGui::DragFloat3("回転軸", &rotateDirection.x, 0.01f);
+            ImGui::DragFloat3("回転軸" + idTag_, &rotateDirection.x, 0.01f);
             rotateDirection = MyMath::Normalize(rotateDirection);
         }
-        ImGui::DragFloat("最小回転速度", &rotateSpeedRange.min, 0.01f, -10000.0f, rotateSpeedRange.max);
-        ImGui::DragFloat("最大回転速度", &rotateSpeedRange.max, 0.01f, rotateSpeedRange.min);
+        ImGui::DragFloat("最小回転速度" + idTag_, &rotateSpeedRange.min, 0.01f, -10000.0f, rotateSpeedRange.max);
+        ImGui::DragFloat("最大回転速度" + idTag_, &rotateSpeedRange.max, 0.01f, rotateSpeedRange.min);
     }
 
-    
+
     ImGui::Text("------- 重力 -------");
-    ImGui::Checkbox("重力を使用するか", &isUseGravity);
+    ImGui::Checkbox("重力を使用するか" + idTag_, &isUseGravity);
     if(isUseGravity){
-        ImGui::DragFloat("重力", &gravity, 0.01f);
+        ImGui::DragFloat("重力" + idTag_, &gravity, 0.01f);
     }
 }
 
@@ -139,14 +158,14 @@ void Emitter_Model::EditRangeParameters(){
 /*------------------------*/
 /*      イージング関数の情報  */
 /*------------------------*/
-void Emitter_Model::EditEaseType(){
+void Emitter3D::EditEaseType(){
     ImGui::Text("-------- 出現・消失パラメーター --------");
-    ImGui::DragFloat3("出現時のスケール", &kInScale.x, 0.01f);
-    ImGui::DragFloat3("消失時のスケール", &kOutScale.x, 0.01f);
-    ImGui::SliderFloat("出現時のアルファ値", &kInAlpha, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat("消失時のアルファ値", &kOutAlpha, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat("最大に到達する時間", &maxTimePoint, 0.0f, 1.0f, "%.2f");
-    ImGui::SliderFloat("最大を維持する時間割合", &maxTimeRate, 0.0f, 1.0f, "%.2f");
+    ImGui::DragFloat3("出現時のスケール" + idTag_, &kInScale.x, 0.01f);
+    ImGui::DragFloat3("消失時のスケール" + idTag_, &kOutScale.x, 0.01f);
+    ImGui::SliderFloat("出現時のアルファ値" + idTag_, &kInAlpha, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("消失時のアルファ値" + idTag_, &kOutAlpha, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("最大に到達する時間" + idTag_, &maxTimePoint, 0.0f, 1.0f, "%.2f");
+    ImGui::SliderFloat("最大を維持する時間割合" + idTag_, &maxTimeRate, 0.0f, 1.0f, "%.2f");
     ImGui::Text("-------- イージング関数 --------");
     ImFunc::Combo("速度", velocityEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImFunc::Combo("回転", rotateEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
@@ -158,37 +177,35 @@ void Emitter_Model::EditEaseType(){
 /*------------------------*/
 /*     マテリアルなどの情報  */
 /*------------------------*/
-void Emitter_Model::EditMaterial(){
-
-    static std::string label = "";
+void Emitter3D::EditMaterial(){
 
     // BlendMode, CullingMode,LightingTypeの設定
     ImGui::Text("-------- 描画設定 --------");
-    ImFunc::Combo("ブレンドモード", blendMode, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
-    ImFunc::Combo("ライティング", lightingType_, { "なし","ランバート","ハーフランバート" });
-    ImFunc::Combo("カリング設定", cullingMode, { "なし","前面","背面" }, 1);
+    ImFunc::Combo("ブレンドモード" + idTag_, blendMode, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
+    ImFunc::Combo("ライティング" + idTag_, lightingType_, { "なし","ランバート","ハーフランバート" });
+    ImFunc::Combo("カリング設定" + idTag_, cullingMode, { "なし","前面","背面" }, 1);
 
     // 色の設定
     ImGui::Text("-------- 色 --------");
-    if(ImGui::CollapsingHeader("出現色の一覧")){
+    if(ImGui::CollapsingHeader("出現色の一覧" + idTag_)){
         ImGui::Indent();
 
         // 色のリスト
         for(int32_t i = 0; i < (int)colors.size(); ++i){
-            std::string colorName = "color_" + std::to_string(i);
-            ImGui::ColorEdit4(colorName.c_str(), &colors[i].value.x);
+            std::string colorLabel = "##" + MyFunc::PtrToStr(&colors[i]);
+            ImGui::ColorEdit4("color" + colorLabel, &colors[i].value.x);
             // 削除ボタン
-            label = "削除" + idTag_;
-            if(ImGui::Button(label.c_str())){
+            if(ImGui::Button("削除" + colorLabel)){
                 if(colors.size() > 1){
                     colors.erase(colors.begin() + i);
+                    break;
                 }
             }
         }
 
         // 追加ボタン
         ImGui::Text("-- 色の追加 --");
-        if(ImGui::Button("追加")){
+        if(ImGui::Button("追加" + idTag_)){
             colors.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         }
 
@@ -197,23 +214,26 @@ void Emitter_Model::EditMaterial(){
 
     // テクスチャの設定
     ImGui::Text("-------- テクスチャ --------");
-    if(ImGui::CollapsingHeader("テクスチャ設定")){
+    if(ImGui::CollapsingHeader("テクスチャ設定" + idTag_)){
         ImGui::Indent();
 
         // エミッターに追加されたテクスチャのリスト
-        ImGui::Checkbox("モデルのデフォルトテクスチャ使用する", &useDefaultTexture);
+        ImGui::Checkbox("モデルのデフォルトテクスチャ使用する" + idTag_, &useDefaultTexture);
         if(!useDefaultTexture){
-            if(ImGui::CollapsingHeader("カスタムテクスチャ")){
+            static ImVec2 buttonSize = ImVec2(50, 50);
+            float curRightX = ImGui::GetCursorPosX();
+            float availRegionX = ImGui::GetContentRegionAvail().x;
+
+            if(ImGui::CollapsingHeader("カスタムテクスチャ" + idTag_)){
                 ImGui::Indent();
 
                 // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
                 for(int32_t i = 0; i < texturePaths.size(); i++){
 
-                    label = texturePaths[i].c_str() + idTag_;
-                    if(ImGui::ImageButton(label.c_str(), textureDict[texturePaths[i]], ImVec2(50, 50))){
+                    // テクスチャの表示(押したら消す)
+                    if(ImGui::ImageButton(MyFunc::PtrToStr(&texturePaths[i]), textureDict[texturePaths[i]], buttonSize)){
                         // 消す
                         if(texturePaths.size() > 1){
-                            textureSet.erase(texturePaths[i]);
                             texturePaths.erase(
                                 std::remove(texturePaths.begin(), texturePaths.end(), texturePaths[i]),
                                 texturePaths.end()
@@ -221,8 +241,14 @@ void Emitter_Model::EditMaterial(){
                         }
                     }
 
-                    if((i + 1) % 5 != 0){
-                        ImGui::SameLine();
+                    // ボタンの位置を更新
+                    ImGui::SameLine();
+                    curRightX = ImGui::GetCursorPosX();
+
+                    // 右端まで来ていたら改行
+                    if(curRightX > availRegionX){
+                        ImGui::NewLine();
+                        curRightX = 0.0f;
                     }
                 }
 
@@ -230,30 +256,16 @@ void Emitter_Model::EditMaterial(){
                 ImGui::Unindent();
             }
 
-            // すべてのテクスチャのリスト
-            if(ImGui::CollapsingHeader("ライブラリ")){
-                ImGui::Indent();
+            // テクスチャの追加用のフォルダビュー
+            static const std::filesystem::path rootPath = "Resources/Textures";
+            static std::filesystem::path curPath = rootPath;
+            std::string selected = ImFunc::FolderView("追加テクスチャを選択", curPath, false, { ".png", ".jpg" }, rootPath);
 
-                // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
-                int i = 0;
-                for(auto& texture : textureDict){
-                    label = texture.first + idTag_ + '1';
-                    if(ImGui::ImageButton(label.c_str(), texture.second, ImVec2(50, 50))){
-                        if(textureSet.find(texture.first) == textureSet.end()){
-                            // テクスチャを追加
-                            textureSet.insert(texture.first);
-                            texturePaths.push_back(texture.first);
-                        }
-                    }
-
-                    if((i + 1) % 5 != 0){
-                        ImGui::SameLine();
-                    }
-                    i++;
-                }
-
-                ImGui::NewLine();
-                ImGui::Unindent();
+            // テクスチャが選択されたら追加
+            if(!selected.empty()){
+                // テクスチャをエミッターに追加
+                textureDict[selected] = TextureManager::GetImGuiTexture(selected);
+                texturePaths.push_back(selected);
             }
         }
         ImGui::Unindent();
@@ -264,16 +276,14 @@ void Emitter_Model::EditMaterial(){
     if(ImGui::CollapsingHeader("モデル一覧")){
         ImGui::Indent();
         // モデルの一覧から選択したものをエミッターのモデルリストに追加
-        static std::vector<std::string> modelPaths;
-        modelPaths = ModelManager::GetModelNames();
-        ImGui::Text("現在のモデル:%s", emitModelFilePath_.c_str());
-        for(auto& modelName : modelPaths){
-            if(ImGui::Button(modelName.c_str())){
-                // モデルをエミッターに追加
-                emitModelFilePath_ = modelName;
-            }
+        static const std::filesystem::path rootPath = "Resources/Models";
+        static std::filesystem::path curPath = rootPath;
+        std::string selected = ImFunc::FolderView("モデル形状を選択", curPath, false, { ".obj", ".gltf",".glb"}, rootPath);
+
+        // 選択されたら変更
+        if(!selected.empty()){
+            emitModelFilePath_ = selected;
         }
-        ImGui::Unindent();
     }
 }
 
@@ -281,7 +291,7 @@ void Emitter_Model::EditMaterial(){
 /*------------------------*/
 /*      頻度などの情報      */
 /*------------------------*/
-void Emitter_Model::EditFrequency(){
+void Emitter3D::EditFrequency(){
     ImGui::DragFloat("発生間隔", &interval, 0.01f, 0.0f);
     ImGui::DragInt("一度に発生する数", &numEmitEvery, 1, 0, 100);
 }
@@ -289,7 +299,7 @@ void Emitter_Model::EditFrequency(){
 ///////////////////////////////////////////////////////////
 // 描画
 ///////////////////////////////////////////////////////////
-void Emitter_Model::DrawEditData(){
+void Emitter3D::DrawEditData(){
 
     // アクティブでない場合は描画しない
     if(!isActive){
@@ -298,18 +308,20 @@ void Emitter_Model::DrawEditData(){
 
     // 範囲の描画
     AABB area;
-    area.center = center;
+    area.center = center.translate;
     area.halfSize = emitRange * 0.5f;
     if(parentGroup){
-        area.center += parentGroup->GetCenter();
+        if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(parentGroup)){
+            area.center += group3D->GetPosition();
+        }
     }
 
     SEED::DrawAABB(area, { 0.0f,0.0f,1.0f,1.0f });
 
     // 発生範囲の中心に球を描画
     if(isSetGoalPosition){
-        Vector3 goalPos = center + goalPosition;
-        SEED::DrawSphere(goalPos, 1.0f, 6,{ 1.0f,0.0f,0.0f,1.0f });
+        Vector3 goalPos = center.translate + goalPosition;
+        SEED::DrawSphere(goalPos, 1.0f, 6, { 1.0f,0.0f,0.0f,1.0f });
     }
 }
 
@@ -317,7 +329,7 @@ void Emitter_Model::DrawEditData(){
 ///////////////////////////////////////////////////////////
 // 出力
 ///////////////////////////////////////////////////////////
-nlohmann::json Emitter_Model::ExportToJson(){
+nlohmann::json Emitter3D::ExportToJson(){
     nlohmann::json j;
 
     // 全般の情報
@@ -327,11 +339,10 @@ nlohmann::json Emitter_Model::ExportToJson(){
     j["isUseRotate"] = isUseRotate;
     j["isUseGravity"] = isUseGravity;
     j["emitType"] = (int)emitType;
-    j["particleType"] = (int)particleType;
     j["blendMode"] = (int)blendMode;
     j["CullingMode"] = (int)cullingMode;
     j["lightingType"] = (int)lightingType_;
-    j["center"] = { center.x, center.y, center.z };
+    j["center"] = { center.translate.x, center.translate.y, center.translate.z };
 
     // 範囲・パラメーターなどの情報
     j["emitRange"] = { emitRange.x, emitRange.y, emitRange.z };
@@ -387,7 +398,7 @@ nlohmann::json Emitter_Model::ExportToJson(){
 ///////////////////////////////////////////////////////////
 // 読み込み
 ///////////////////////////////////////////////////////////
-void Emitter_Model::LoadFromJson(const nlohmann::json& j){
+void Emitter3D::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
     isActive = true;//j["isActive"];
@@ -395,11 +406,10 @@ void Emitter_Model::LoadFromJson(const nlohmann::json& j){
     isUseRotate = j["isUseRotate"];
     isUseGravity = j["isUseGravity"];
     emitType = (EmitType)j["emitType"];
-    particleType = (ParticleType)j["particleType"];
     blendMode = (BlendMode)j["blendMode"];
     cullingMode = (D3D12_CULL_MODE)j["CullingMode"];
     lightingType_ = (LIGHTING_TYPE)j["lightingType"];
-    center = Vector3(
+    center.translate = Vector3(
         j["center"][0], j["center"][1], j["center"][2]
     );
 
@@ -449,13 +459,20 @@ void Emitter_Model::LoadFromJson(const nlohmann::json& j){
     for(auto& textureHandle : j["textureHandles"]){
         texturePaths.push_back(textureHandle);
         // テクスチャのセットに追加
-        if(textureSet.find(textureHandle) == textureSet.end()){
-            textureSet.insert(textureHandle);
-            textureDict[textureHandle] = TextureManager::GetImGuiTexture(textureHandle);
-        }
+        textureDict[textureHandle] = TextureManager::GetImGuiTexture(textureHandle);
     }
 
     // モデルの情報
     emitModelFilePath_ = j["emitModelFilePath"].get<std::string>();
 }
 
+
+// 発生位置の中心を取得
+Vector3 Emitter3D::GetCenter() const{
+    if(parentGroup){
+        if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(parentGroup)){
+            return center.translate + group3D->GetPosition();
+        }
+    }
+    return center.translate;
+}

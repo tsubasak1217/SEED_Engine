@@ -3,7 +3,7 @@
 #include <SEED/Source/Basic/Scene/SceneState_Base.h>
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
-#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/ParticleManager.h>
 #include <SEED/Source/SEED.h>
 
 class GameObject;

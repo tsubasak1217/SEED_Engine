@@ -1,7 +1,7 @@
 #include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
-#include <SEED/Source/Manager/EffectSystem/EffectSystem.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/ParticleManager.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 

@@ -44,6 +44,7 @@ public:
 
 protected:
     virtual void DrawEditData() = 0;
+    void CreateTag();
 
     //---------------------- フラグ類 ----------------------//
 public:
@@ -60,6 +61,7 @@ public:
     EmitterGroupBase* parentGroup = nullptr;// 親グループ
     float interval = 0.1f;// 発生間隔
     int32_t numEmitEvery = 1;// 一度に発生させる数
+    float initUpdateTime_ = 0.0f;// 初期化時にあらかじめ更新しておく時間
 
     // texture
     static inline std::unordered_map<std::string, ImTextureID> textureDict;// テクスチャの辞書
@@ -92,6 +94,5 @@ public:// アクティブ・非アクティブ管理のための変数
 protected:
     float totalTime;// 経過時間
     int32_t emitCount = 0;// 発生させた回数
-    inline static int nextEmitterID_ = 0; // エミッターIDのカウンター
     std::string idTag_;// IDタグ（エディター用）
 };

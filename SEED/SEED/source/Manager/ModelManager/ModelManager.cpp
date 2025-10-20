@@ -67,15 +67,15 @@ void ModelManager::StartUpLoad(){
 
 void ModelManager::LoadModel(const std::string& filename){
 
+    // すでに読み込み済みのファイルであればreturn
+    if(instance_->modelData_.find(filename) != instance_->modelData_.end()){ return; }
+
     // "Resources/"の階層からのパスならdirを空にする
     std::string dir = instance_->directoryPath_;
     std::string path = filename;
     if(path.starts_with("Resources")){
         dir = "";
     }
-
-    // すでに読み込み済みのファイルであればreturn
-    if(instance_->modelData_.find(path) != instance_->modelData_.end()){ return; }
 
     // 読み込み
     instance_->modelData_[path] = instance_->LoadModelFile(dir, path);
@@ -93,9 +93,9 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string filePath = directoryPath + filename;
+    std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath + filename);
     const aiScene* scene = importer.ReadFile(
-        filePath.c_str(),
+        fullPath.generic_string().c_str(),
         // 三角形反転・UV反転・自動三角形化
         aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_GenSmoothNormals
     );
@@ -370,8 +370,8 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::string filePath = directoryPath + filename;
-    const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
+    std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath + filename);
+    const aiScene* scene = importer.ReadFile(fullPath.generic_string().c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 
     // アニメーションの解析を行っていく

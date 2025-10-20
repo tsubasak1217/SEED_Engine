@@ -179,7 +179,9 @@ void PlayField::Initialize(){
 
     // エフェクトの初期化
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
-    //ParticleManager::AddEffectEndless("stageBack.json", SEED::GetMainCamera()->GetTranslation(), nullptr);
+    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    GameObject* backEffect = hierarchy->LoadObject("PlayScene/Effects/StageBack.prefab");
+    backEffect->SetWorldTranslate(SEED::GetMainCamera()->GetTranslation());
 
     // 背景の初期化
     backImage_ = Sprite("PlayField/tempBack.png");
@@ -188,8 +190,23 @@ void PlayField::Initialize(){
     backImage_.size = kWindowSize;
 
     // シーンの読み込み
-    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadFromJson("Resources/Jsons/Scenes/PlayScene.scene", false).objects2D_;
+    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadScene("PlayScene.scene", false).objects2D_;
 
+    // エフェクトオブジェクトの読み込み
+    /*レーン*/
+    laneEffectObjects_[Judgement::Evalution::PERFECT] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Perfect.prefab");
+    laneEffectObjects_[Judgement::Evalution::GREAT] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Great.prefab");
+    laneEffectObjects_[Judgement::Evalution::GOOD] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Good.prefab");
+    /*ホイール*/
+    wheelEffectObjects_[(int)UpDown::UP] = hierarchy->LoadObject("PlayScene/Effects/Wheel_UP.prefab");
+    wheelEffectObjects_[(int)UpDown::DOWN] = hierarchy->LoadObject("PlayScene/Effects/Wheel_DOWN.prefab");
+    /*ㇾクトフリック*/
+    rectFlickEffectObjects_[0] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_LT.prefab");
+    rectFlickEffectObjects_[1] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_RT.prefab");
+    rectFlickEffectObjects_[2] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_LB.prefab");
+    rectFlickEffectObjects_[3] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_RB.prefab");
+
+    // 背景色の設定
     SEED::windowBackColor_ = 0x00557CFF;
 }
 
@@ -447,21 +464,16 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
 void PlayField::LaneEffect(int evalution, LaneBit laneBit){
     laneBit;
     switch(evalution){
-    case Judgement::Evaluation::PERFECT:
-        //ParticleManager::AddEffectOnce("hitEffect_perfect.json", effectEmitPoints_[laneBit]);
-        break;
-
-    case Judgement::Evaluation::GREAT:
-        //ParticleManager::AddEffectOnce("hitEffect_great.json", effectEmitPoints_[laneBit]);
-        break;
-
-    case Judgement::Evaluation::GOOD:
-        //ParticleManager::AddEffectOnce("hitEffect_good.json", effectEmitPoints_[laneBit]);
-        break;
-
-    default:
+    case Judgement::Evalution::MISS:
         // MISSのときは何もしない
-        return;
+        break;
+
+    default:// それ以外のとき
+        laneEffectObjects_[evalution]->SetWorldTranslate(effectEmitPoints_[laneBit]);
+        laneEffectObjects_[evalution]->UpdateMatrix();
+        laneEffectObjects_[evalution]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        laneEffectObjects_[evalution]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        break;
     }
 }
 
@@ -470,29 +482,23 @@ void PlayField::LaneEffect(int evalution, LaneBit laneBit){
 /////////////////////////////////////////////////////////////
 void PlayField::WheelEffect(int evalution, LaneBit laneBit){
 
-    std::string filename;
+    UpDown dir;
     if(laneBit & LaneBit::WHEEL_UP){
-        filename = "wheel_up.json";
+        dir = UpDown::UP;
     } else{
-        filename = "wheel_down.json";
+        dir = UpDown::DOWN;
     }
 
     switch(evalution){
-    case Judgement::Evaluation::PERFECT:
-        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
+    case Judgement::Evalution::MISS:// MISSのときは何もしない
         break;
 
-    case Judgement::Evaluation::GREAT:
-        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
-        break;
+    default:// それ以外のとき
+        wheelEffectObjects_[int(dir)]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        wheelEffectObjects_[int(dir)]->UpdateMatrix();
+        wheelEffectObjects_[int(dir)]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        wheelEffectObjects_[int(dir)]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
 
-    case Judgement::Evaluation::GOOD:
-        //ParticleManager::AddEffectOnce(filename, effectEmitPoints_[laneBit]);
-        break;
-
-    default:
-        // MISSのときは何もしない
-        return;
     }
 }
 
@@ -504,16 +510,28 @@ void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 
     evalution;
     if(laneBit & LaneBit::RECTFLICK_LT){
-        //ParticleManager::AddEffectOnce("rectFlick_LT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[0]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[0]->UpdateMatrix();
+        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_RT){
-        //ParticleManager::AddEffectOnce("rectFlick_RT.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[1]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[1]->UpdateMatrix();
+        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_LB){
-        //ParticleManager::AddEffectOnce("rectFlick_LB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[2]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[2]->UpdateMatrix();
+        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_RB){
-        //ParticleManager::AddEffectOnce("rectFlick_RB.json", effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[3]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
+        rectFlickEffectObjects_[3]->UpdateMatrix();
+        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup3D>()->Activate();
+        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
     }
 }
 
@@ -553,7 +571,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
 
 // スクリーンのカーソル座標をワールドに
 Vector3 PlayField::GetCursorWorldPos(float cursorX){
-    float t = (cursorX - playFieldPointsScreen_[LEFT].x) / 
+    float t = (cursorX - playFieldPointsScreen_[LEFT].x) /
         (playFieldPointsScreen_[RIGHT].x - playFieldPointsScreen_[LEFT].x);
     Vector3 result = MyMath::Lerp(playFieldPointsWorld_[LEFT], playFieldPointsWorld_[RIGHT], t);
     return result;

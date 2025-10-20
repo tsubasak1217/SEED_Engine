@@ -127,11 +127,11 @@ void RythmGameManager::EndFrame(){
         // 譜面が終了した瞬間の処理
         if(playEndTimer_.GetProgress() == 0.0f){
             // プレイ結果をScene_Clearに渡す
-            playResult_.isFullCombo = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] == 0;
+            playResult_.isFullCombo = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] == 0;
             playResult_.isAllPerfect =
                 playResult_.isFullCombo &&
-                playResult_.evalutionCount[(int)Judgement::Evaluation::GREAT] == 0 &&
-                playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] == 0;
+                playResult_.evalutionCount[(int)Judgement::Evalution::GREAT] == 0 &&
+                playResult_.evalutionCount[(int)Judgement::Evalution::GOOD] == 0;
             Scene_Clear::SetResult(playResult_);
 
             // クリアエフェクトを出す
@@ -139,10 +139,10 @@ void RythmGameManager::EndFrame(){
             auto* hierarchy = scene->GetHierarchy();
             hierarchy;
             if(playResult_.isAllPerfect){
-                hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ClearEffect/Effect_AP.prefab", false);
+                hierarchy->LoadObject2D("ClearEffect/Effect_AP.prefab");
             } else{
                 if(playResult_.isFullCombo){
-                    hierarchy->LoadFromJson("Resources/Jsons/Prefabs/ClearEffect/Effect_FC.prefab", false);
+                    hierarchy->LoadObject2D("ClearEffect/Effect_FC.prefab");
                 }
             }
         }
@@ -255,9 +255,9 @@ float RythmGameManager::CalculateScore(){
     float scorePerNote = 100.0f / playResult_.totalCombo;
     float scoreSubtractRateGreat = 0.5f;
     float scoreSubtractRateGood = 0.75f;
-    float subtractGreat = playResult_.evalutionCount[(int)Judgement::Evaluation::GREAT] * scorePerNote * scoreSubtractRateGreat;
-    float subtractGood = playResult_.evalutionCount[(int)Judgement::Evaluation::GOOD] * scorePerNote * scoreSubtractRateGood;
-    float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evaluation::MISS] * scorePerNote;
+    float subtractGreat = playResult_.evalutionCount[(int)Judgement::Evalution::GREAT] * scorePerNote * scoreSubtractRateGreat;
+    float subtractGood = playResult_.evalutionCount[(int)Judgement::Evalution::GOOD] * scorePerNote * scoreSubtractRateGood;
+    float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] * scorePerNote;
     result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
     return std::clamp(result, 0.0f, 100.0f);
 }

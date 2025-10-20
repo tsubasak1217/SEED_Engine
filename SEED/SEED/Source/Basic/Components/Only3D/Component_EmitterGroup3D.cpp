@@ -27,11 +27,14 @@ void Component_EmitterGroup3D::BeginFrame(){
 // 更新処理
 //////////////////////////////////////////////////////////////////////////
 void Component_EmitterGroup3D::Update(){
-    for(auto& emitter : emitterGroup_->emitters){
-        emitter->Update();
-        if(emitter->emitOrder == true){
-            // ここでEffectSystemにパーティクルを発生させる
-            ParticleManager::Emit(emitter.get());
+
+    if(isActive_){
+        for(auto& emitter : emitterGroup_->emitters){
+            emitter->Update();
+            if(emitter->emitOrder == true){
+                // ここでEffectSystemにパーティクルを発生させる
+                ParticleManager::Emit(emitter.get());
+            }
         }
     }
 }
@@ -90,11 +93,17 @@ void Component_EmitterGroup3D::EditGUI(){
         emitterGroup_->emitters.clear(); // 既存のエミッターをクリア
         emitterGroup_->LoadFromJson(j);
         emitterGroup_->TeachParent();
-        emitterGroup_->isEditMode_ = true; // 編集モードにする
     }
 
     ImGui::Unindent();
 #endif
+}
+
+//////////////////////////////////////////////////////////////////////////
+// エミッターを初期化する
+//////////////////////////////////////////////////////////////////////////
+void Component_EmitterGroup3D::InitEmitters(){
+    emitterGroup_->InitEmitters();
 }
 
 
@@ -106,6 +115,7 @@ void Component_EmitterGroup3D::LoadFromJson(const nlohmann::json& jsonData){
 
     // コンポーネントの設定を読み込み
     isParentToOwner_ = jsonData.value("isParentToOwner", true);
+    isActive_ = jsonData.value("isActive", true);
 
     // エミッターグループの情報を読み込み
     if(jsonData.contains("emitterGroup")){
@@ -126,6 +136,7 @@ nlohmann::json Component_EmitterGroup3D::GetJsonData() const{
 
     // コンポーネントの設定を保存
     jsonData["isParentToOwner"] = isParentToOwner_;
+    jsonData["isActive"] = isActive_;
 
     // エミッターグループの情報を保存
     jsonData["emitterGroup"] = emitterGroup_->GetJson();

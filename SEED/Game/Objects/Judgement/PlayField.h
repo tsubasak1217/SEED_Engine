@@ -88,4 +88,9 @@ private:
     //
     Sprite backImage_;
     std::vector<GameObject2D*> objects2D_;
+
+    // エフェクトオブジェクト
+    GameObject* laneEffectObjects_[3];
+    GameObject* wheelEffectObjects_[2];
+    GameObject* rectFlickEffectObjects_[4];
 };

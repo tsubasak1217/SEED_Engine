@@ -43,7 +43,7 @@ void SongSelector::Initialize(){
     SongInfoDrawer::Initialize();
 
     // jsonから設定を読み込む
-    std::string loadPath = "Resources/Jsons/Settings/song_selector.json";
+    std::filesystem::path loadPath = MyFunc::ToFullPath("Resources/Jsons/Settings/song_selector.json");
     std::ifstream ifs(loadPath);
     if(ifs.is_open()){
         nlohmann::json json;
@@ -92,9 +92,10 @@ void SongSelector::Initialize(){
     SEED::SetMainCamera("default");
     camera_ = SEED::GetMainCamera();
 
-    // パーティクルを出す
+    // パーティクルを初期化しエミッターを読み込む
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
-    //ParticleManager::AddEffectEndless("selectScene.json", { 0.0f,0.0f,0.0f }, nullptr);
+    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    hierarchy->LoadObject("SelectScene/cubeParticle.prefab");
 }
 
 

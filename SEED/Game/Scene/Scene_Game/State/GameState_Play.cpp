@@ -8,6 +8,11 @@ GameState_Play::GameState_Play(Scene_Base* pScene){
 GameState_Play::GameState_Play(Scene_Base* pScene, const nlohmann::json& songData){
     // シーンの設定
     pScene_ = pScene;
+
+    // 既存のオブジェクトの削除
+    Hierarchy* hierarchy = pScene_->GetHierarchy();
+    hierarchy->EraseAllObject();
+
     // 曲データの設定
     RythmGameManager::GetInstance()->Initialize(songData);
 }

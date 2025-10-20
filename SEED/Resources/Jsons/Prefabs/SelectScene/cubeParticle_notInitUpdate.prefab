@@ -132,7 +132,7 @@
                                 "velocityEaseType": 0
                             }
                         ],
-                        "initUpdateTime": 5.0
+                        "initUpdateTime": 0.0
                     },
                     "isActive": true,
                     "isParentToOwner": true

@@ -212,7 +212,7 @@ AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, floa
 /// <param name="loop">ループ可否</param>
 AudioHandle AudioManager::GetAudioHandle(const std::string& filename){
 
-    if (instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()) {
+    if(instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()){
         return UINT32_MAX;
     }
     return instance_->filenameToHandle_[filename];
@@ -249,10 +249,10 @@ void AudioManager::EndAudio(AudioHandle handle){
     instance_->volumeMap_.erase(handle);
 
     // ファイル名マッピングを削除
-    for (auto it = instance_->filenameToHandle_.begin(); it != instance_->filenameToHandle_.end();) {
-        if (it->second == handle) {
+    for(auto it = instance_->filenameToHandle_.begin(); it != instance_->filenameToHandle_.end();){
+        if(it->second == handle){
             it = instance_->filenameToHandle_.erase(it);
-        } else {
+        } else{
             ++it;
         }
     }
@@ -381,7 +381,7 @@ bool AudioManager::IsPlayingAudio(AudioHandle handle){
 /// <returns>音声が再生されているか</returns>
 bool AudioManager::IsPlayingAudio(const std::string& filename){
 
-    if (instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()) {
+    if(instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()){
         return false;
     }
     AudioHandle handle = instance_->filenameToHandle_[filename];
@@ -396,25 +396,24 @@ bool AudioManager::IsPlayingAudio(const std::string& filename){
 
 // WAV,MP3,M4Aファイルに対応。
 void AudioManager::LoadAudio(const std::string& filename){
+
     // 要素がなければ
     if(instance_->audios_.find(filename) == instance_->audios_.end()){
         // 音をロードして追加
-        std::string correctPath = directoryPath_ + filename;
+        std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath_ + filename);
 
         // 拡張子を取得
-        size_t pos = filename.find_last_of('.');
-        if(pos == std::string::npos || pos == filename.length() - 1){ assert(false); }
-        std::string extention = filename.substr(pos + 1);
+        std::string extention = fullPath.extension().string();
 
         // 拡張子に応じて処理
-        if(extention == "wav"){
-            instance_->audios_[filename] = instance_->LoadWave(correctPath.c_str());
+        if(extention == ".wav"){
+            instance_->audios_[filename] = instance_->LoadWave(fullPath.generic_string().c_str());
 
-        } else if(extention == "mp3" or extention == "m4a"){
-            instance_->audios_[filename] = instance_->LoadMP3(MyFunc::ConvertString(correctPath).c_str());
+        } else if(extention == ".mp3" or extention == ".m4a"){
+            instance_->audios_[filename] = instance_->LoadMP3(fullPath.generic_wstring().c_str());
 
-        } else if(extention == "mp4"){
-            instance_->audios_[filename] = instance_->LoadMP4(MyFunc::ConvertString(correctPath).c_str());
+        } else if(extention == ".mp4"){
+            instance_->audios_[filename] = instance_->LoadMP4(fullPath.generic_wstring().c_str());
 
         } else{
             assert(false);

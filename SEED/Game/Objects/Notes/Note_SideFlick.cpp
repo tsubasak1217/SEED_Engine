@@ -13,7 +13,7 @@ void Note_SideFlick::Draw(float currentTime, float appearLength){
     Note_Base::Draw(currentTime,appearLength);
 }
 
-Judgement::Evaluation Note_SideFlick::Judge(float dif){
+Judgement::Evalution Note_SideFlick::Judge(float dif){
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     LR flickDirection = input->GetSideFlickDirection();
@@ -21,21 +21,21 @@ Judgement::Evaluation Note_SideFlick::Judge(float dif){
 
     // フリックしていないなら、判定しない
     if(!isFlick){
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evalution::MISS;
     }
 
     // フリックの方向が自身のレーンと一致しているか
     if(flickDirection != flickDirection_){
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evalution::MISS;
     }
 
     // ノーツの判定(判定はゆるめにしてパーフェクトかミスだけにする)
-    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
+    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
         // MISS
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evalution::MISS;
     } else{
         // PERFECT
-        return Judgement::Evaluation::PERFECT;
+        return Judgement::Evalution::PERFECT;
     }
 }
 

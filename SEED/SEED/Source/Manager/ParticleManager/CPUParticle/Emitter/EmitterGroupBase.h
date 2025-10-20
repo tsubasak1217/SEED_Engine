@@ -31,7 +31,9 @@ public:
 
 protected:
     // ヘルパー関数
+    void ContextMenu();
     void Reactivation();
+    void InitEmitters();
     void TeachParent();
 
 protected:
@@ -40,8 +42,12 @@ protected:
     std::string name = "";
     std::vector<std::unique_ptr<EmitterBase>> emitters;
     std::string outputFileName_;
-    bool isEditMode_ = false; // 編集モードかどうか
     float kReactiveTime_ = 3.0f; // 再復活までの時間
     float curReactiveTime_ = 0.0f; // 現在の再復活時間
+    float initUpdateTime_ = 0.0f;// 初期化時にあらかじめ更新しておく時間
     std::unordered_map<std::string, ImTextureID> icons_;
+
+#ifdef _DEBUG
+    int32_t selectEmitterIdx_ = -1;
+#endif // _DEBUG
 };

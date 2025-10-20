@@ -37,23 +37,23 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
     }
 }
 
-Judgement::Evaluation Note_RectFlick::Judge(float dif){
+Judgement::Evalution Note_RectFlick::Judge(float dif){
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     DIRECTION8 flickDirection = input->GetRectFlickDirection();
 
     // フリックの方向が自身のレーンと一致しているか
     if(!CheckBit(flickDirection)){
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evalution::MISS;
     }
 
     // ノーツの判定(判定はゆるめにしてパーフェクトかミスだけにする)
-    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
+    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
         // MISS
-        return Judgement::Evaluation::MISS;
+        return Judgement::Evalution::MISS;
     } else{
         // PERFECT
-        return Judgement::Evaluation::PERFECT;
+        return Judgement::Evalution::PERFECT;
     }
 }
 

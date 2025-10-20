@@ -123,29 +123,15 @@ public:// operators
 
 // ColorをJSONに変換する関数
 inline void to_json(nlohmann::json& j, const Color& color){
-    j = { {"r", color.value.x}, {"g", color.value.y}, {"b", color.value.z},{"a",color.value.w} };
+    to_json(j, color.value);
 }
 inline void to_json(nlohmann::ordered_json& j, const Color& color){
-    j = { {"r", color.value.x}, {"g", color.value.y}, {"b", color.value.z},{"a",color.value.w} };
+    to_json(j, color.value);
 }
 
 // JSONをColorに変換する関数
 inline void from_json(const nlohmann::ordered_json& j, Color& color){
-    if(j.contains("r") && j.contains("g") && j.contains("b") && j.contains("a")){
-        color.value.x = j.at("r").get<float>();
-        color.value.y = j.at("g").get<float>();
-        color.value.z = j.at("b").get<float>();
-        color.value.w = j.at("a").get<float>();
-    } else{
-        if(j.contains("x") && j.contains("y") && j.contains("z") && j.contains("w")){
-            color.value.x = j.at("x").get<float>();
-            color.value.y = j.at("y").get<float>();
-            color.value.z = j.at("z").get<float>();
-            color.value.w = j.at("w").get<float>();
-        } else{
-            color.value = Vector4(0.0f);
-        }
-    }
+    from_json(j, color.value);
 }
 
 inline void from_json(const nlohmann::json& j, Color& color){

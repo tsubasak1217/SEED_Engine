@@ -472,12 +472,15 @@ bool MyFunc::CompareStr(const std::string& str1, const std::string& str2){
 // entry階層以下のフォルダリストを取得する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, bool isRelative){
+
+    std::filesystem::path fullPath = ToFullPath(entryPath);
     std::vector<std::string> folderList;
-    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+
+    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
         // ディレクトリのみを探す
         if(cur.is_directory()){
             if(isRelative){
-                folderList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                folderList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
             } else{
                 folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
             }
@@ -492,16 +495,16 @@ std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, boo
 std::vector<std::string> MyFunc::GetFileList(
     const std::string& entryPath, std::initializer_list<std::string>extensions, bool isRelative
 ){
-
+    std::filesystem::path fullPath = ToFullPath(entryPath);
     std::vector<std::string> fileList;
 
-    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
         // 拡張子が合致するファイルを探す
         for(const auto& ext : extensions){
             if(cur.is_regular_file() && cur.path().extension() == ext){
                 // ファイル名を格納
                 if(isRelative){
-                    fileList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                    fileList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
                 } else{
                     fileList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
@@ -517,24 +520,25 @@ std::vector<std::string> MyFunc::GetFileList(
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPath, bool isRelative, bool isRecursive){
 
+    std::filesystem::path fullPath = ToFullPath(entryPath);
     std::vector<std::string> dirList;
     if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+        for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
                 } else{
                     dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
     } else{
-        for(const auto& cur : fs::directory_iterator(entryPath)){
+        for(const auto& cur : fs::directory_iterator(fullPath)){
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
                 } else{
                     dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
@@ -549,14 +553,15 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(const std::string& entryPath, bool isRecursive){
 
+    std::filesystem::path fullPath = ToFullPath(entryPath);
     std::vector<std::filesystem::directory_entry> entryList;
     if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+        for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
             // ディレクトリエントリを格納
             entryList.push_back(cur);
         }
     } else{
-        for(const auto& cur : fs::directory_iterator(entryPath)){
+        for(const auto& cur : fs::directory_iterator(fullPath)){
             // ディレクトリエントリを格納
             entryList.push_back(cur);
         }
@@ -568,12 +573,14 @@ std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(cons
 // entry階層以下に指定したファイル名が存在するかを確認し、あればそのパスを返す関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::string MyFunc::FindFile(const std::string& entryPath, const std::string& filePath, bool isRelative){
-    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+
+    std::filesystem::path fullPath = ToFullPath(entryPath);
+    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
         // 名前の合致するファイルを探す
         if(cur.is_regular_file() && cur.path().filename() == filePath){
             // 存在する場合はパスを返す
             if(isRelative){
-                return fs::relative(cur.path(), entryPath).generic_string(); // 相対パスを返す
+                return fs::relative(cur.path(), fullPath).generic_string(); // 相対パスを返す
             } else{
                 return cur.path().generic_string(); // 絶対パスを返す
             }
@@ -649,11 +656,11 @@ nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
     std::replace(fullPath.begin(), fullPath.end(), '/', '\\');
 
     // ファイルを開く
-    std::ifstream file(filePath);
+    std::ifstream file(fullPath);
     if(!file.is_open()){
         if(createFile){
             // ファイルが存在しない場合は新規作成
-            std::ofstream newFile(filePath);
+            std::ofstream newFile(fullPath);
             if(!newFile.is_open()){
                 assert(false && "Jsonファイルの作成に失敗");
                 return nlohmann::json();

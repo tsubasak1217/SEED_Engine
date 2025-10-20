@@ -7,20 +7,20 @@
 // Emitter
 #include "Emitter3D.h"
 
+///////////////////////////////////////////////////////////////////////////////////////
 // EmitterGroupのコンストラクタ
+///////////////////////////////////////////////////////////////////////////////////////
 EmitterGroupBase::EmitterGroupBase(){
     idTag_ = "##" + std::to_string(nextGroupID_); // ユニークなIDタグを生成
     nextGroupID_++;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// アクセッサ
+///////////////////////////////////////////////////////////////////////////////////////
 bool EmitterGroupBase::GetIsAlive() const{
     // エミッターが1つもない場合はtrueを返す
     if(emitters.size() == 0){
-        return true;
-    }
-
-    if(isEditMode_){
-        // 編集モードの場合は常にtrueを返す
         return true;
     }
 
@@ -35,13 +35,18 @@ bool EmitterGroupBase::GetIsAlive() const{
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+// 子に自分を親として設定してあげる
+///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::TeachParent(){
     for(auto& emitter : emitters){
         emitter->parentGroup = this;
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
 // 編集関数
+///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::Edit(){
 
     // 初期化変数
@@ -50,6 +55,10 @@ void EmitterGroupBase::Edit(){
         icons_["visible"] = TextureManager::GetImGuiTexture("[Engine]visible.png");
         icons_["invisible"] = TextureManager::GetImGuiTexture("[Engine]invisible.png");
     }
+
+    // グループのパラメーター編集
+    ImGui::Text("--初期化時にあらかじめ経過させておく時間--");
+    ImGui::DragFloat("秒" + idTag_, &initUpdateTime_, 0.05f, 0.0f, 100.0f);
 
     // エミッターごとに編集
     ImGui::Text("エミッター一覧(要素数:%d)", (int)emitters.size());
@@ -66,8 +75,16 @@ void EmitterGroupBase::Edit(){
 
         // エミッターのヘッダー
         ImGui::SameLine();
-        if(ImGui::CollapsingHeader("Emitter_" + std::to_string(i))){
+        bool isOpen = ImFunc::CollapsingHeader("Emitter_" + std::to_string(i), EditorColor::emitterHeader);
+        bool isRightClicked = ImGui::IsItemClicked(ImGuiMouseButton_Right);
+        if(isOpen){
             emitters[i]->Edit();
+        }
+
+        // 右クリックメニューを開く
+        if(isRightClicked){
+            ImGui::OpenPopup("エミッターメニュー" + idTag_);
+            selectEmitterIdx_ = i;
         }
     }
 
@@ -81,10 +98,16 @@ void EmitterGroupBase::Edit(){
     }
 
     // エミッターグループをjsonに保存
-    ImGui::Separator();
-    ImGui::Text("出力");
-    if(ImGui::Button("jsonに保存" + tag)){
+    ImGui::SeparatorText("出力");
+    ImGui::Spacing();
+    if(ImGui::Button("エフェクトをファイルに出力" + tag)){
         OutputGUI();
+    }
+
+    // コンテキストメニューの表示
+    if(ImGui::BeginPopup("エミッターメニュー" + idTag_)){
+        ContextMenu();
+        ImGui::EndPopup();
     }
 
     // 再活性化処理(編集中のみ)
@@ -92,6 +115,9 @@ void EmitterGroupBase::Edit(){
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+// 出力GUIの表示関数
+///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::OutputGUI(){
 
     std::string outputDir = "";
@@ -109,18 +135,50 @@ void EmitterGroupBase::OutputGUI(){
 }
 
 
-nlohmann::json EmitterGroupBase::GetJson(){
-
-    // エミッターの情報をjsonに保存
-    nlohmann::json j;
-    for(auto& emitter : emitters){
-        j["emitters"].push_back(emitter->ExportToJson());
+///////////////////////////////////////////////////////////////////////////////////////
+// コンテキストメニュー
+///////////////////////////////////////////////////////////////////////////////////////
+void EmitterGroupBase::ContextMenu(){
+    // エミッターの削除
+    if(ImGui::MenuItem("削除")){
+        if(selectEmitterIdx_ >= 0 && selectEmitterIdx_ < emitters.size()){
+            emitters.erase(emitters.begin() + selectEmitterIdx_);
+            selectEmitterIdx_ = -1;
+        }
+        ImGui::CloseCurrentPopup();
     }
 
-    return j;
+    // 複製
+    if(ImGui::MenuItem("複製")){
+        if(selectEmitterIdx_ >= 0 && selectEmitterIdx_ < emitters.size()){
+            // コピーコンストラクタで複製
+            EmitterBase* selectedEmitter = emitters[selectEmitterIdx_].get();
+            EmitterBase* newEmitter = nullptr;
+
+            // 型を確認してインスタンス作成
+            if(Emitter3D* asEmitter3D = dynamic_cast<Emitter3D*>(selectedEmitter)){
+                newEmitter = new Emitter3D();
+                // 型を変換してからコピー
+                *dynamic_cast<Emitter3D*>(newEmitter) = *asEmitter3D;
+
+            } else{// 未対応タイプは処理しない
+                ImGui::CloseCurrentPopup();
+                return;
+            }
+
+            // 追加
+            newEmitter->parentGroup = this;
+            newEmitter->CreateTag();
+            emitters.emplace_back(std::unique_ptr<EmitterBase>(newEmitter));
+        }
+        ImGui::CloseCurrentPopup();
+    }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////
 // エミッターの再活性化処理
+///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::Reactivation(){
     // 復活処理など
     bool isAllStopped = true;
@@ -156,9 +214,26 @@ void EmitterGroupBase::Reactivation(){
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+// エミッターを初期状態に戻す
+///////////////////////////////////////////////////////////////////////////////////////
+void EmitterGroupBase::InitEmitters(){
+    for(auto& emitter : emitters){
+        emitter->isAlive = true; // 生存状態にする
+        emitter->emitCount = 0; // 発生回数をリセット
+        emitter->totalTime = 0.0f;
+        emitter->emitOrder = false;
+    }
+}
 
-// Jsonから読み込み
+
+///////////////////////////////////////////////////////////////////////////////////////
+// Json入出力
+///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::LoadFromJson(const nlohmann::json& j){
+
+    // グループのパラメーターを読み込み
+    initUpdateTime_ = j.value("initUpdateTime", 0.0f);
 
     // エミッターの情報を読み込み
     for(auto& emitterJson : j["emitters"]){
@@ -168,13 +243,28 @@ void EmitterGroupBase::LoadFromJson(const nlohmann::json& j){
         if(emitterJson["emitterType"] == "Emitter_Model3D" or emitterJson["emitterType"] == "Emitter3D"){
             emitter = std::make_unique<Emitter3D>();
 
-        } else if(emitterJson["emitterType"] == "Emitter2D"){
-            // emitter = std::make_unique<Emitter2D>();
-        } else{
-            continue; // 未対応タイプはスキップ
+        } else{// 未対応タイプはスキップ
+            continue;
         }
 
         emitter->LoadFromJson(emitterJson);
+        emitter->parentGroup = this;
+        emitter->initUpdateTime_ = initUpdateTime_;
         emitters.push_back(std::move(emitter));
     }
+}
+
+
+nlohmann::json EmitterGroupBase::GetJson(){
+
+    // エミッターの情報をjsonに保存
+    nlohmann::json j;
+    for(auto& emitter : emitters){
+        j["emitters"].push_back(emitter->ExportToJson());
+    }
+
+    // グループのパラメーターを保存
+    j["initUpdateTime"] = initUpdateTime_;
+
+    return j;
 }

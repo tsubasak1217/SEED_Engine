@@ -2,9 +2,11 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <concepts>
 #include <json.hpp>
 #include "LoadObjectData.h"
 
+// ソートモード
 enum class ObjSortMode{
     AscendX,
     DescendX,
@@ -14,6 +16,9 @@ enum class ObjSortMode{
     DescendZ
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+// オブジェクトの階層管理クラス
+///////////////////////////////////////////////////////////////////////////////////////////////
 class Hierarchy{
 
 public:
@@ -26,6 +31,7 @@ public:
     void RemoveGameObject(GameObject2D* gameObject);
     void EraseObject(GameObject* gameObject);
     void EraseObject(GameObject2D* gameObject);
+    void EraseAllObject();
 
 public:
     // フレームの開始時処理
@@ -53,21 +59,25 @@ private:
     void EditGUI();
     void RecursiveTreeNode(GameObject* gameObject, int32_t depth);
     void RecursiveTreeNode(GameObject2D* gameObject, int32_t depth);
-    void CreateEmptyObject();
+    void AddEmptyObjectGUI();
     void InOutOnGUI();
     void OutputPrefab(GameObject* gameObject);
     void OutputPrefab(GameObject2D* gameObject);
     void ExecuteContextMenu();
 
 public:
-    // json
-    nlohmann::json OutputToJson(std::list<GameObject*> grandParentObjects,bool isSaveOnOrigin = false) const;
-    nlohmann::json OutputToJson(std::list<GameObject2D*> grandParentObjects,bool isSaveOnOrigin = false) const;
-    LoadObjectData LoadFromJson(const std::string& filePath, bool resetObjects = true);
+    // 入出力関連関数
+    nlohmann::json OutputToJson(std::list<GameObject*> grandParentObjects, bool isSaveOnOrigin = false) const;
+    nlohmann::json OutputToJson(std::list<GameObject2D*> grandParentObjects, bool isSaveOnOrigin = false) const;
+    LoadObjectData LoadScene(const std::string& filePath, bool resetObjects = true);
+    GameObject* LoadObject(const std::string& filePath);
+    GameObject2D* LoadObject2D(const std::string& filePath);
+    GameObject* CreateEmptyObject();
+    GameObject2D* CreateEmptyObject2D();
 
 private:
-    std::list<GameObject*> gameObjects_;// 登録されているゲームオブジェクトのリスト
-    std::list<GameObject2D*> gameObjects2D_;
+    std::list<std::unique_ptr<GameObject>> gameObjects_; // 自分で生成したオブジェクトのリスト
+    std::list<std::unique_ptr<GameObject2D>> gameObjects2D_;
     std::list<GameObject*> grandParentObjects_;// 親オブジェクトのリスト
     std::list<GameObject2D*> grandParentObjects2D_;
 
@@ -75,10 +85,15 @@ private:
     GameObject2D* selectedObject2D_ = nullptr;
     GameObject* contextMenuObject_ = nullptr; // コンテキストメニューのオブジェクト
     GameObject2D* contextMenuObject2D_ = nullptr;
-    std::list<std::unique_ptr<GameObject>> selfCreateObjects_; // 自分で生成したオブジェクトのリスト
-    std::list<std::unique_ptr<GameObject2D>> selfCreateObjects2D_;
     std::unordered_set<uint32_t> existObjectIdMap_; // 使用されているIDの集合
     std::unordered_set<uint32_t> existObjectIdMap2D_; // 使用されているIDの集合(2D)
     std::string executeMenuName_;
+    std::string sceneJsonDirectory_ = "Resources/Jsons/Scenes/";
+    std::string prefabJsonDirectory_ = "Resources/Jsons/Prefabs/";
     static inline bool isEndHierarchy_ = false;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// prefab読み込み関数
+////////////////////////////////////////////////////////////////////////////////////////////////////////////

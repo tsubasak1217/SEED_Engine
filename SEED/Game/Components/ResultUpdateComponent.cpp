@@ -30,9 +30,11 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
     // リザルトシーンの読み込み
     auto* scene = GameSystem::GetScene();
     auto* hierarchy = scene->GetHierarchy();
-    hierarchy->LoadFromJson("Resources/Jsons/Scenes/ResultScene.scene", false);
-    rankObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/Result/Ranks/" + rankToString_[playResult_.rank], false).objects3D_[0];
-    cameraPointObj_ = hierarchy->LoadFromJson("Resources/Jsons/Prefabs/Result/ResultCameraPoints.prefab", false).objects3D_[0];
+    hierarchy->LoadScene("ResultScene.scene", false);
+    rankObj_ = hierarchy->LoadObject("Result/Ranks/" + rankToString_[playResult_.rank]);
+    cameraPointObj_ = hierarchy->LoadObject("Result/ResultCameraPoints.prefab");
+    // 背景エフェクトの読み込み
+    hierarchy->LoadObject("PlayScene/Effects/StageBack.prefab");
 
     // カメラ位置の設定
     if(cameraPointObj_){

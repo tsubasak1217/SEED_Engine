@@ -37,7 +37,7 @@ public:
     void AddCombo();
 
     // 評価関連のカウントを追加
-    void AddEvaluation(Judgement::Evaluation evalution){playResult_.evalutionCount[(int)evalution]++;}
+    void AddEvaluation(Judgement::Evalution evalution){playResult_.evalutionCount[(int)evalution]++;}
     void AddFastCount(int count = 1){playResult_.fastCount += count;}
     void AddLateCount(int count = 1){playResult_.lateCount += count;}
 

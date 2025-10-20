@@ -15,7 +15,6 @@
 #include <SEED/Source/Basic/Components/ComponentDictionary.h>
 
 class Scene_Base;
-class Hierarchy;
 
 struct ParentComponentInfo{
     IComponent* pComponent = nullptr;
@@ -23,14 +22,17 @@ struct ParentComponentInfo{
 };
 
 class GameObject{
+    // hierarchyのみコンストラクタを呼び出せる
+    friend class Hierarchy;
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー関数
     ////////////////////////////////////////////////////////////////////////////
 
     /*----------- 基本関数 ----------*/
-public:
+private:
     GameObject(Scene_Base* pScene);
+public:
     ~GameObject();
     void Initialize();
     void Update();

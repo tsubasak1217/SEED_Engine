@@ -73,4 +73,7 @@ protected:
     float kOutAlpha_;
     EasingFunction enterEaseFunc_;
     EasingFunction exitEaseFunc_;
+
+    // 初回にあらかじめアップデートする秒数(必要であれば)
+    float initUpdateTime_ = 0.0f;
 };

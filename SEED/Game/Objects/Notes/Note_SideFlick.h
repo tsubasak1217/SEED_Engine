@@ -7,7 +7,7 @@ public:
     ~Note_SideFlick() override;
     void Update() override;
     void Draw(float currentTime, float appearLength) override;
-    Judgement::Evaluation Judge(float dif) override;
+    Judgement::Evalution Judge(float dif) override;
 
     // 入出力関数
     nlohmann::json ToJson() override;

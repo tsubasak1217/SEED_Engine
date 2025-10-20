@@ -19,15 +19,15 @@ Judgement* Judgement::instance_ = nullptr;
 ////////////////////////////////////////////////////////
 Judgement::Judgement(){
     // 判定の幅の設定
-    judgeTime_[Evaluation::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後3フレーム)
-    judgeTime_[Evaluation::GREAT] = 8.0f / 60.0f;// グレート(前後5フレーム)
-    judgeTime_[Evaluation::GOOD] = 12.0f / 60.0f;// グッド(前後7フレーム)
+    judgeTime_[Evalution::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後3フレーム)
+    judgeTime_[Evalution::GREAT] = 8.0f / 60.0f;// グレート(前後5フレーム)
+    judgeTime_[Evalution::GOOD] = 12.0f / 60.0f;// グッド(前後7フレーム)
 
     // 判定の色の設定
-    judgeColor_[Evaluation::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
-    judgeColor_[Evaluation::GREAT] = { 1.0f, 0.0f, 1.0f, 1.0f };// ピンク
-    judgeColor_[Evaluation::GOOD] = { 0.0f, 1.0f, 1.0f, 1.0f };// 水色
-    judgeColor_[Evaluation::MISS] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白
+    judgeColor_[Evalution::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
+    judgeColor_[Evalution::GREAT] = { 1.0f, 0.0f, 1.0f, 1.0f };// ピンク
+    judgeColor_[Evalution::GOOD] = { 0.0f, 1.0f, 1.0f, 1.0f };// 水色
+    judgeColor_[Evalution::MISS] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白
 }
 
 Judgement::~Judgement(){
@@ -80,7 +80,7 @@ void Judgement::Judge(NotesData* noteGroup){
         std::weak_ptr<Note_Base> note;
         float signedDif; // 正しい時間との差
         float dif; // 差の絶対値
-        Judgement::Evaluation evaluation; // 判定結果
+        Judgement::Evalution evaluation; // 判定結果
     };
 
     std::list<NoteJudgeInfo> hitNotes;// 判定を拾ったノーツ一覧
@@ -90,8 +90,8 @@ void Judgement::Judge(NotesData* noteGroup){
         float dif = std::abs(signedDif);
 
         // 判定を拾ったノーツをリストにする
-        Judgement::Evaluation evaluation = note.lock()->Judge(dif);
-        if(evaluation != Evaluation::MISS){
+        Judgement::Evalution evaluation = note.lock()->Judge(dif);
+        if(evaluation != Evalution::MISS){
 
             NoteJudgeInfo info;
             info.note = note;
@@ -131,11 +131,11 @@ void Judgement::Judge(NotesData* noteGroup){
             RythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
 
             // fast,lateの計算
-            if(note.signedDif > judgeTime_[(int)Evaluation::PERFECT]){
+            if(note.signedDif > judgeTime_[(int)Evalution::PERFECT]){
                 // 遅れすぎた場合
                 RythmGameManager::GetInstance()->AddLateCount();
 
-            } else if(note.signedDif < -judgeTime_[(int)Evaluation::PERFECT]){
+            } else if(note.signedDif < -judgeTime_[(int)Evalution::PERFECT]){
                 // 早すぎた場合
                 RythmGameManager::GetInstance()->AddFastCount();
             }
@@ -147,15 +147,15 @@ void Judgement::Judge(NotesData* noteGroup){
 void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // ホールドノーツの終点を判定する
-    Evaluation evaluation = note->JudgeHoldEnd();
+    Evalution evaluation = note->JudgeHoldEnd();
 
     // コンボの管理
-    if(evaluation != Evaluation::MISS){
+    if(evaluation != Evalution::MISS){
         RythmGameManager::GetInstance()->AddCombo();// コンボを加算
         RythmGameManager::GetInstance()->AddEvaluation(evaluation);// 評価を追加
     } else{
         RythmGameManager::GetInstance()->BreakCombo();// コンボを切る
-        RythmGameManager::GetInstance()->AddEvaluation(Evaluation::MISS);// ミスを追加
+        RythmGameManager::GetInstance()->AddEvaluation(Evalution::MISS);// ミスを追加
     }
 
     // 終点の判定に応じてエフェクトとか出す

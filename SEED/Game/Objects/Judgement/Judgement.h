@@ -10,7 +10,7 @@ class PlayField;
 // 音ゲーの判定を行うクラス
 class Judgement{
 public:
-    enum Evaluation{
+    enum Evalution{
         PERFECT = 0,
         GREAT,
         GOOD,
@@ -33,7 +33,7 @@ public:
     void Draw();
 
 public:
-    float GetJudgeTime(Evaluation evaluation){ return judgeTime_[evaluation]; }
+    float GetJudgeTime(Evalution evaluation){ return judgeTime_[evaluation]; }
 
 private:
     float judgeTime_[kEvaluationCount];

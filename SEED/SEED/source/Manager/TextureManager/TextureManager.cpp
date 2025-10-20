@@ -48,7 +48,7 @@ uint32_t TextureManager::LoadTexture(const std::string& filename, const aiTextur
     }
 
     // filenameが"Resources/"から始まる場合、basePathを空に
-    std::string basePath = "Resources/textures/";
+    std::string basePath = "Resources/Textures/";
     if(filename.starts_with("Resources")){
         basePath = "";
 

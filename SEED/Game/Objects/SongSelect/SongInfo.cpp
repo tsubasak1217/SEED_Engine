@@ -10,22 +10,14 @@
 void SongInfo::Initialize(const std::string& _folderName){
 
     folderName = _folderName;
-    std::string jsonNames[diffcultySize] = { "Basic.json", "Expert.json", "Master.json", "Parallel.json" };
+    static std::string difficultyName[diffcultySize] = { "Basic", "Expert", "Master", "Parallel" };
     std::string directoryPath = "Resources/NoteDatas/" + _folderName + "/";
 
     // jsonファイルの存在を確認し、読み込む
     for(int i = 0; i < diffcultySize; i++){
-        std::string filePath = directoryPath + jsonNames[i];
-        // あるか確認
-        std::ifstream file(filePath);
-        // ファイルが存在しない場合はスキップ
-        if(!file.is_open()){
-            file.close();
-            continue;
-        }
 
         // JSONファイルを読み込む
-        nlohmann::json noteData = nlohmann::json::parse(std::ifstream(filePath));
+        nlohmann::json noteData = MyFunc::GetJson(directoryPath + difficultyName[i] + ".json");
         noteDatas[i] = noteData;
 
         // アーティスト名を取得
@@ -65,24 +57,15 @@ void SongInfo::Initialize(const std::string& _folderName){
     }
 
     // スコア情報を初期化
-    directoryPath = "Resources/NoteDatas/" + _folderName + "/" + "scoreData.json";
-    // jsonファイルの存在を確認し、読み込む
-    for(int i = 0; i < diffcultySize; i++){
-        std::string filePath = directoryPath + jsonNames[i];
-        // あるか確認
-        std::ifstream file(filePath);
-        // ファイルが存在しない場合はスキップ
-        if(!file.is_open()){
-            file.close();
-            continue;
-        }
+    //directoryPath = "Resources/NoteDatas/" + _folderName + "/" + "scoreData.json";
+    //// jsonファイルの存在を確認し、読み込む
+    //for(int i = 0; i < diffcultySize; i++){
 
-        // JSONファイルを読み込む
-        nlohmann::json scoreData = nlohmann::json::parse(std::ifstream(filePath));
-        score[i] = scoreData["score"];
-        ranks[i] = ScoreRankUtils::GetScoreRank(score[i]);
-        clearIcons[i] = (ClearIcon)scoreData["clearIcon"];
-    }
+    //    nlohmann::json scoreData = MyFunc::GetJson(directoryPath);
+    //    score[i] = scoreData["score"][difficultyName[i]];
+    //    ranks[i] = ScoreRankUtils::GetScoreRank(score[i]);
+    //    clearIcons[i] = (ClearIcon)scoreData["clearIcon"][difficultyName[i]];
+    //}
 }
 
 
@@ -264,34 +247,28 @@ void SongInfoDrawer::SaveSettings(){
 void SongInfoDrawer::LoadSettings(){
 
     std::string filePath = "Resources/Jsons/Settings/SongInfoDrawerSettings.json";
-    std::ifstream file(filePath);
+    nlohmann::json settingsJson = MyFunc::GetJson(filePath);
 
-    if(file.is_open()){
-        nlohmann::json settingsJson;
-        file >> settingsJson;
-        file.close();
+    // 設定を読み込む
+    if(settingsJson.contains("kDrawSize")){
+        kDrawSize = settingsJson["kDrawSize"];
+    }
 
-        // 設定を読み込む
-        if(settingsJson.contains("kDrawSize")){
-            kDrawSize = settingsJson["kDrawSize"];
-        }
-
-        for(auto key : textBoxKeys){
-            if(settingsJson.contains(key)){
-                if(settingsJson[key].contains("textBox")){
-                    textBox[key]->LoadFromJson(settingsJson[key]["textBox"]);
-                }
-                if(settingsJson[key].contains("RelativePos")){
-                    textBoxRelativePos[key] = settingsJson[key]["RelativePos"];
-                }
+    for(auto key : textBoxKeys){
+        if(settingsJson.contains(key)){
+            if(settingsJson[key].contains("textBox")){
+                textBox[key]->LoadFromJson(settingsJson[key]["textBox"]);
+            }
+            if(settingsJson[key].contains("RelativePos")){
+                textBoxRelativePos[key] = settingsJson[key]["RelativePos"];
             }
         }
+    }
 
-        // 背景色の読み込み
-        if(settingsJson.contains("backColors")){
-            for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
-                backColors[i] = settingsJson["backColors"][i];
-            }
+    // 背景色の読み込み
+    if(settingsJson.contains("backColors")){
+        for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+            backColors[i] = settingsJson["backColors"][i];
         }
     }
 }

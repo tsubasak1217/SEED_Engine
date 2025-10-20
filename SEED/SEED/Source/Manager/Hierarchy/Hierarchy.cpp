@@ -16,13 +16,11 @@ Hierarchy::~Hierarchy(){
 /////////////////////////////////////////////////////////////////////
 void Hierarchy::RegisterGameObject(GameObject* gameObject){
     // ゲームオブジェクトを登録
-    gameObjects_.push_back(gameObject);
     existObjectIdMap_.insert(gameObject->GetObjectID());
 }
 
 void Hierarchy::RegisterGameObject(GameObject2D* gameObject2D){
     // 2Dゲームオブジェクトを登録
-    gameObjects2D_.push_back(gameObject2D);
     existObjectIdMap2D_.insert(gameObject2D->GetObjectID());
 }
 
@@ -30,7 +28,6 @@ void Hierarchy::RemoveGameObject(GameObject* gameObject){
     // ゲームオブジェクトを削除
     if(isEndHierarchy_){ return; }
     existObjectIdMap_.erase(gameObject->GetObjectID());
-    gameObjects_.remove(gameObject);
 
     // 親子関係の再構築
     if(gameObject->GetParent()){
@@ -60,7 +57,6 @@ void Hierarchy::RemoveGameObject(GameObject2D* gameObject){
     // ゲームオブジェクトを削除
     if(isEndHierarchy_){ return; }
     existObjectIdMap2D_.erase(gameObject->GetObjectID());
-    gameObjects2D_.remove(gameObject);
 
     // 親子関係の再構築
     if(gameObject->GetParent()){
@@ -93,12 +89,12 @@ void Hierarchy::EraseObject(GameObject* gameObject){
 
     for(auto* child : childrenCopy){
         // selfCreatedObjectにあるか確認
-        auto it = std::find_if(selfCreateObjects_.begin(), selfCreateObjects_.end(),
+        auto it = std::find_if(gameObjects_.begin(), gameObjects_.end(),
             [child](const std::unique_ptr<GameObject>& obj){ return obj.get() == child; });
 
         // selfCreateObjects_から解放
-        if(it != selfCreateObjects_.end()){
-            selfCreateObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
+        if(it != gameObjects_.end()){
+            gameObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
 
         } else{// 直接解放
             delete child; // 子オブジェクトを削除
@@ -107,12 +103,12 @@ void Hierarchy::EraseObject(GameObject* gameObject){
     }
 
     // selfCreatedObjectにあるか確認
-    auto it = std::find_if(selfCreateObjects_.begin(), selfCreateObjects_.end(),
+    auto it = std::find_if(gameObjects_.begin(), gameObjects_.end(),
         [gameObject](const std::unique_ptr<GameObject>& obj){ return obj.get() == gameObject; });
 
     // selfCreateObjects_から解放
-    if(it != selfCreateObjects_.end()){
-        selfCreateObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
+    if(it != gameObjects_.end()){
+        gameObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
 
     } else{// 直接解放
         delete gameObject; // 自分自身を削除
@@ -127,12 +123,12 @@ void Hierarchy::EraseObject(GameObject2D* gameObject){
 
     for(auto* child : childrenCopy){
         // selfCreatedObjectにあるか確認
-        auto it = std::find_if(selfCreateObjects2D_.begin(), selfCreateObjects2D_.end(),
+        auto it = std::find_if(gameObjects2D_.begin(), gameObjects2D_.end(),
             [child](const std::unique_ptr<GameObject2D>& obj){ return obj.get() == child; });
 
         // selfCreateObjects_から解放
-        if(it != selfCreateObjects2D_.end()){
-            selfCreateObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
+        if(it != gameObjects2D_.end()){
+            gameObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
 
         } else{// 直接解放
             delete child; // 子オブジェクトを削除
@@ -141,17 +137,28 @@ void Hierarchy::EraseObject(GameObject2D* gameObject){
     }
 
     // selfCreatedObjectにあるか確認
-    auto it = std::find_if(selfCreateObjects2D_.begin(), selfCreateObjects2D_.end(),
+    auto it = std::find_if(gameObjects2D_.begin(), gameObjects2D_.end(),
         [gameObject](const std::unique_ptr<GameObject2D>& obj){ return obj.get() == gameObject; });
 
     // selfCreateObjects_から解放
-    if(it != selfCreateObjects2D_.end()){
-        selfCreateObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
+    if(it != gameObjects2D_.end()){
+        gameObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
 
     } else{// 直接解放
         delete gameObject; // 自分自身を削除
         gameObject = nullptr; // ポインタをクリア
     }
+}
+
+///////////////////////////////////////////////////////////////////
+// 全オブジェクトの削除
+///////////////////////////////////////////////////////////////////
+void Hierarchy::EraseAllObject(){
+    // 全オブジェクトを削除
+    gameObjects_.clear();
+    gameObjects2D_.clear();
+    existObjectIdMap_.clear();
+    existObjectIdMap2D_.clear();
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -228,7 +235,7 @@ void Hierarchy::EndFrame(){
         if(!(*it)->isAlive_){
             //消す前に次のイテレータを保存しておく
             auto nextIt = std::next(it);
-            EraseObject(*it);
+            EraseObject((*it).get());
             it = nextIt; // イテレータを次に進める
         } else{
             ++it;
@@ -239,7 +246,7 @@ void Hierarchy::EndFrame(){
         if(!(*it)->isAlive_){
             //消す前に次のイテレータを保存しておく
             auto nextIt = std::next(it);
-            EraseObject(*it);
+            EraseObject((*it).get());
             it = nextIt; // イテレータを次に進める
         } else{
             ++it;
@@ -252,8 +259,6 @@ void Hierarchy::EndFrame(){
 // 終了処理
 /////////////////////////////////////////////////////////////////////
 void Hierarchy::Finalize(){
-    gameObjects_.clear();
-    gameObjects2D_.clear();
     grandParentObjects_.clear();
     grandParentObjects2D_.clear();
 }
@@ -273,7 +278,7 @@ bool Hierarchy::IsExistObject2D(uint32_t id) const{
 // オブジェクトのソート
 /////////////////////////////////////////////////////////////////////
 void Hierarchy::SortObject2DByTranslate(ObjSortMode sortMode){
-    gameObjects2D_.sort([sortMode](const GameObject2D* a, const GameObject2D* b){
+    gameObjects2D_.sort([sortMode](const std::unique_ptr<GameObject2D>& a, const std::unique_ptr<GameObject2D>& b){
 
         const Vector2& ta = a->GetWorldTranslate();
         const Vector2& tb = b->GetWorldTranslate();
@@ -290,26 +295,25 @@ void Hierarchy::SortObject2DByTranslate(ObjSortMode sortMode){
         default:
             return false; // Zはここでは無視
         }
-    }
-    );
+    });
 }
 
 ////////////////////////////////////////////////////////////////////
 // IDからオブジェクトを取得
 ////////////////////////////////////////////////////////////////////
 GameObject* Hierarchy::GetGameObject(uint32_t id) const{
-    for(auto* gameObject : gameObjects_){
+    for(auto& gameObject : gameObjects_){
         if(gameObject->GetObjectID() == id){
-            return gameObject;
+            return gameObject.get();
         }
     }
     return nullptr;
 }
 
 GameObject2D* Hierarchy::GetGameObject2D(uint32_t id) const{
-    for(auto* gameObject2D : gameObjects2D_){
+    for(auto& gameObject2D : gameObjects2D_){
         if(gameObject2D->GetObjectID() == id){
-            return gameObject2D;
+            return gameObject2D.get();
         }
     }
     return nullptr;
@@ -319,18 +323,18 @@ GameObject2D* Hierarchy::GetGameObject2D(uint32_t id) const{
 // 名前からオブジェクトを取得
 ////////////////////////////////////////////////////////////////////
 GameObject* Hierarchy::GetGameObject(const std::string& name) const{
-    for(auto* gameObject : gameObjects_){
+    for(auto& gameObject : gameObjects_){
         if(gameObject->GetName() == name){
-            return gameObject;
+            return gameObject.get();
         }
     }
     return nullptr;
 }
 
 GameObject2D* Hierarchy::GetGameObject2D(const std::string& name) const{
-    for(auto* gameObject2D : gameObjects2D_){
+    for(auto& gameObject2D : gameObjects2D_){
         if(gameObject2D->GetName() == name){
-            return gameObject2D;
+            return gameObject2D.get();
         }
     }
     return nullptr;
@@ -346,35 +350,37 @@ void Hierarchy::RebuildParentInfo(){
 
     // 親子関係の再構築(親のいないオブジェクトだけのリストを作成)
     std::unordered_set<GameObject*> addedObjects;
-    for(auto* gameObject : gameObjects_){
+    for(auto& gameObject : gameObjects_){
+        GameObject* currentObject = gameObject.get();
         while(true){
-            GameObject* parent = gameObject->GetParent();
-            if(!parent){
-                if(addedObjects.find(gameObject) != addedObjects.end()){
+            GameObject* parent = currentObject->GetParent();
+            if(parent == nullptr){
+                if(addedObjects.find(currentObject) != addedObjects.end()){
                     break;
                 }
-                grandParentObjects_.push_back(gameObject);
-                addedObjects.insert(gameObject);
+                grandParentObjects_.push_back(currentObject);
+                addedObjects.insert(currentObject);
                 break;
             }
 
-            gameObject = parent; // 親に移動
+            currentObject = parent; // 親に移動
         }
     }
 
     std::unordered_set<GameObject2D*> addedObjects2D;
-    for(auto* gameObject2D : gameObjects2D_){
+    for(auto& gameObject2D : gameObjects2D_){
+        GameObject2D* currentObject = gameObject2D.get();
         while(true){
-            GameObject2D* parent = gameObject2D->GetParent();
+            GameObject2D* parent = currentObject->GetParent();
             if(!parent){
-                if(addedObjects2D.find(gameObject2D) != addedObjects2D.end()){
+                if(addedObjects2D.find(currentObject) != addedObjects2D.end()){
                     break;
                 }
-                grandParentObjects2D_.push_back(gameObject2D);
-                addedObjects2D.insert(gameObject2D);
+                grandParentObjects2D_.push_back(currentObject);
+                addedObjects2D.insert(currentObject);
                 break;
             }
-            gameObject2D = parent; // 親に移動
+            currentObject = parent; // 親に移動
         }
     }
 }
@@ -394,7 +400,7 @@ void Hierarchy::EditGUI(){
     ImGui::Text("3Dオブジェクト");
     ImGui::Separator();
 
-    for(auto& gameObject : grandParentObjects_){
+    for(auto* gameObject : grandParentObjects_){
         // ツリーノードの再帰的な作成
         RecursiveTreeNode(gameObject, 0);
     }
@@ -411,7 +417,7 @@ void Hierarchy::EditGUI(){
 
     // オブジェクトの追加ボタン
     ImGui::Separator();
-    CreateEmptyObject();
+    AddEmptyObjectGUI();
 
     // 入出力関連のGUI編集
     ImGui::Separator();
@@ -631,17 +637,17 @@ void Hierarchy::RecursiveTreeNode(GameObject2D* gameObject, int32_t depth){
     }
 }
 
-void Hierarchy::CreateEmptyObject(){
+void Hierarchy::AddEmptyObjectGUI(){
 #ifdef _DEBUG
     if(ImGui::Button("空の3Dオブジェクトを追加")){
         // 空のゲームオブジェクトを作成
-        auto& newObj = selfCreateObjects_.emplace_back(std::make_unique<GameObject>(GameSystem::GetScene()));
+        auto& newObj = gameObjects_.emplace_back(std::unique_ptr<GameObject>(new GameObject(GameSystem::GetScene())));
         newObj.get()->UpdateMatrix();
     }
 
     if(ImGui::Button("空の2Dオブジェクトを追加")){
         // 空のゲームオブジェクトを作成
-        auto& newObj = selfCreateObjects2D_.emplace_back(std::make_unique<GameObject2D>(GameSystem::GetScene()));
+        auto& newObj = gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(new GameObject2D(GameSystem::GetScene())));
         newObj.get()->UpdateMatrix();
     }
 
@@ -690,7 +696,7 @@ void Hierarchy::InOutOnGUI(){
             std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, false, { ".scene" }, "Resources/jsons/Scenes/");
 
             if(selectedFile != ""){
-                LoadFromJson(selectedFile);
+                LoadScene(selectedFile);
             }
         }
         {
@@ -698,7 +704,10 @@ void Hierarchy::InOutOnGUI(){
             static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
             std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".prefab" }, "Resources/jsons/Prefabs/");
             if(selectedFile != ""){
-                LoadFromJson(selectedFile, false);
+                // 2Dか3Dか判別できないので両方実行して確実に読み込む
+                if(!LoadObject(selectedFile)){
+                    LoadObject2D(selectedFile);
+                }
             }
         }
     }
@@ -809,10 +818,10 @@ void Hierarchy::ExecuteContextMenu(){
             // オブジェクトの複製
             nlohmann::json jsonData = contextMenuObject_->GetJsonData(0);
             // 子を再帰的に探索し、家族グループを作成
-            std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(jsonData);
+            std::vector<GameObject*> familyObjects = GameObject::CreateFamily(jsonData);
             // vector内の要素を自身の所有物にする
             for(auto& obj : familyObjects){
-                selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+                gameObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
             }
         }
 
@@ -831,7 +840,7 @@ void Hierarchy::ExecuteContextMenu(){
                 std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(jsonData);
                 // vector内の要素を自身の所有物にする
                 for(auto& obj : familyObjects){
-                    selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+                    gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
                 }
             }
         }
@@ -902,51 +911,136 @@ nlohmann::json Hierarchy::OutputToJson(
 /////////////////////////////////////////////////////////////////////////
 // Jsonファイルからの読み込み
 /////////////////////////////////////////////////////////////////////////
-LoadObjectData Hierarchy::LoadFromJson(const std::string& filePath, bool resetObjects){
+
+// シーン全体の読み込み
+LoadObjectData Hierarchy::LoadScene(const std::string& filePath, bool resetObjects){
 
     // 結果格納用
     LoadObjectData result;
 
-    // フルパスに変換
-    std::string fullPath = MyFunc::ToFullPath(filePath);
-
-    // ファイルを開く
-    std::ifstream ifs(fullPath);
-    if(ifs.fail()){
+    // ファイルパスが".scene"じゃなければ何もしない
+    if(std::filesystem::path(filePath).extension() != ".scene"){
         assert(false);
         return result;
     }
 
-    // jsonデータに変換
-    nlohmann::json jsonData;
-    ifs >> jsonData;
-    ifs.close();
+    // ファイルを開く
+    nlohmann::json json;
+    if(filePath.starts_with("Resources")){
+        json = MyFunc::GetJson(filePath);
+    } else{
+        json = MyFunc::GetJson(sceneJsonDirectory_ + filePath);
+    }
 
     // 現在のシーンをクリアする
     if(resetObjects){
-        selfCreateObjects_.clear();
+        gameObjects_.clear();
     }
 
     // 読み込む
-    for(const auto& gameObjectJson : jsonData["gameObjects"]){
+    for(const auto& gameObjectJson : json["gameObjects"]){
         // 子を再帰的に探索し、家族グループを作成
         std::vector<GameObject*> familyObjects = GameObject::CreateFamily(gameObjectJson);
         // vector内の要素を自身の所有物にする
         for(auto& obj : familyObjects){
-            selfCreateObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
+            gameObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
             result.objects3D_.emplace_back(obj);
         }
     }
 
-    for(const auto& gameObjectJson : jsonData["gameObjects2D"]){
+    for(const auto& gameObjectJson : json["gameObjects2D"]){
         // 子を再帰的に探索し、家族グループを作成
         std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(gameObjectJson);
         // vector内の要素を自身の所有物にする
         for(auto& obj : familyObjects){
-            selfCreateObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+            gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
             result.objects2D_.emplace_back(obj);
         }
     }
 
     return result;
+}
+
+
+// Prefab単体の読み込み(3D)
+GameObject* Hierarchy::LoadObject(const std::string& filePath){
+
+    // ファイルが".prefab"ではなければnullptrを返す
+    if(std::filesystem::path(filePath).extension() != ".prefab"){
+        assert(false);
+        return nullptr;
+    }
+
+    // ファイルを開く
+    nlohmann::json json;
+    if(filePath.starts_with("Resources")){
+        json = MyFunc::GetJson(filePath);
+    } else{
+        json = MyFunc::GetJson(prefabJsonDirectory_ + filePath);
+    }
+
+    // 3Dの場合
+    if(json.contains("gameObjects")){
+        // 子を再帰的に探索し、家族グループを作成
+        std::vector<GameObject*> familyObjects = GameObject::CreateFamily(json["gameObjects"][0]);
+        // vector内の要素を自身の所有物にする
+        for(auto& obj : familyObjects){
+            gameObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
+        }
+
+        // 読み込んだ結果を返す(無ければnullptr)
+        if(familyObjects.empty()){ return nullptr; }
+        return familyObjects.front();
+    }
+
+    return nullptr;
+}
+
+
+// Prefab単体の読み込み(2D)
+GameObject2D* Hierarchy::LoadObject2D(const std::string& filePath){
+
+    // ファイルが".prefab"ではなければnullptrを返す
+    if(std::filesystem::path(filePath).extension() != ".prefab"){
+        assert(false);
+        return nullptr;
+    }
+
+    // ファイルを開く
+    nlohmann::json json;
+    if(filePath.starts_with("Resources")){
+        json = MyFunc::GetJson(filePath);
+    } else{
+        json = MyFunc::GetJson(prefabJsonDirectory_ + filePath);
+    }
+    
+    // 2Dの場合
+    if(json.contains("gameObjects2D")){
+        // 子を再帰的に探索し、家族グループを作成
+        std::vector<GameObject2D*> familyObjects = GameObject2D::CreateFamily(json["gameObjects2D"][0]);
+        // vector内の要素を自身の所有物にする
+        for(auto& obj : familyObjects){
+            gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
+        }
+        // 読み込んだ結果を返す(無ければnullptr)
+        if(familyObjects.empty()){ return nullptr; }
+        return familyObjects.front();
+    }
+    return nullptr;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+// 空のオブジェクト作成
+//////////////////////////////////////////////////////////////////////
+GameObject* Hierarchy::CreateEmptyObject(){
+    auto& newObj = gameObjects_.emplace_back(std::unique_ptr<GameObject>(new GameObject(GameSystem::GetScene())));
+    newObj.get()->UpdateMatrix();
+    return newObj.get();
+}
+
+GameObject2D* Hierarchy::CreateEmptyObject2D(){
+    auto& newObj = gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(new GameObject2D(GameSystem::GetScene())));
+    newObj.get()->UpdateMatrix();
+    return newObj.get();
 }

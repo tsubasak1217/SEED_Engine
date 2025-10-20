@@ -76,14 +76,14 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evaluation Note_Wheel::Judge(float dif){
+Judgement::Evalution Note_Wheel::Judge(float dif){
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     bool isScroll = input->GetIsWheelTrigger();
 
     // タップしていないなら、判定しない
     if(!isScroll){
-        return Judgement::Evaluation::NONE;
+        return Judgement::Evalution::NONE;
     }
 
     // 自身のレーンと押したレーンに含まれているか
@@ -92,26 +92,26 @@ Judgement::Evaluation Note_Wheel::Judge(float dif){
 
     if(int32_t(lane) & laneBit_){
         // ノーツの判定
-        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
+        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
             // MISS
-            return Judgement::Evaluation::MISS;
+            return Judgement::Evalution::MISS;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GREAT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT)){
             // GOOD
-            return Judgement::Evaluation::GOOD;
+            return Judgement::Evalution::GOOD;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::PERFECT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT)){
             // GREAT
-            return Judgement::Evaluation::GREAT;
+            return Judgement::Evalution::GREAT;
 
         } else{
             // PERFECT
-            return Judgement::Evaluation::PERFECT;
+            return Judgement::Evalution::PERFECT;
         }
     }
 
     // 押したレーンに含まれていないなら、MISS
-    return Judgement::Evaluation::MISS;
+    return Judgement::Evalution::MISS;
 }
 
 nlohmann::json Note_Wheel::ToJson(){

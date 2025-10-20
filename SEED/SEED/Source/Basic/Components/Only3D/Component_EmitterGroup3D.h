@@ -19,6 +19,9 @@ public:
     void EditGUI()override;
 
 public:// accessor
+    void Activate(){ isActive_ = true; }
+    void Deactivate(){ isActive_ = false; }
+    void InitEmitters();
 
 public:// json
     void LoadFromJson(const nlohmann::json& jsonData) override;
@@ -27,4 +30,5 @@ public:// json
 protected:
     std::unique_ptr<EmitterGroup3D> emitterGroup_;
     bool isParentToOwner_ = true;
+    bool isActive_ = true;
 };

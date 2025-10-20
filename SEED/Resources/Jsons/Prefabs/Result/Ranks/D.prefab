@@ -6,7 +6,7 @@
                     "animationName": "",
                     "animationSpeedRate": 1.0,
                     "blendMode": 3,
-                    "componentID": 39,
+                    "componentID": 46,
                     "componentTag": "ModelRender_ID:0",
                     "componentType": "ModelRender",
                     "cullMode": 3,
@@ -15,10 +15,10 @@
                     "kAnimLerpTime": 0.20000000298023224,
                     "lightingType": 2,
                     "masterColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
                     },
                     "modelFilePath": "Resources/Models/Nethmi\\D.gltf",
                     "transform": {
@@ -43,8 +43,8 @@
                 {
                     "color": [
                         1.0,
-                        0.6563706398010254,
-                        0.6563706398010254,
+                        1.0,
+                        1.0,
                         0.0
                     ],
                     "componentID": 1,
@@ -104,9 +104,9 @@
             "objectType": 0,
             "transform": {
                 "rotate": {
-                    "w": 0.9979821443557739,
+                    "w": -0.4893401861190796,
                     "x": 0.0,
-                    "y": 0.06351375579833984,
+                    "y": -0.8720970749855042,
                     "z": 0.0
                 },
                 "scale": {

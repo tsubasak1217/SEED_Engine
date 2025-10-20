@@ -105,15 +105,8 @@ Particle3D::Particle3D(EmitterBase* emitter){
     //////////////////////// テクスチャを設定 ////////////////////////
 
     // モデルのテクスチャを取得し、無ければ追加
-    if(modelEmitter->useDefaultTexture){
-        //ModelData* modelData = ModelManager::GetModelData(modelEmitter->emitModelFilePath_);
-        //auto& materials = modelData->materials;
-        //for(auto material : materials){
-        //    std::string& texturePath = material.textureFilePath_;
-        //    modelEmitter->texturePaths.push_back(texturePath);
-        //}
-
-    } else{// カスタムテクスチャを使用する場合、メッシュごとにランダムなテクスチャを設定
+    if(!modelEmitter->useDefaultTexture){
+        // カスタムテクスチャを使用する場合、メッシュごとにランダムなテクスチャを設定
         for(auto& material : particle_->materials_){
             textureHandle_ = TextureManager::LoadTexture(
                 modelEmitter->texturePaths[MyFunc::Random(0, (int)modelEmitter->texturePaths.size() - 1)]
@@ -141,6 +134,11 @@ Particle3D::Particle3D(EmitterBase* emitter){
     // 消失の開始時間
     borderTime_[1] = (kLifeTime_ * maxTimePoint_) + (maxTimeRate_ * kLifeTime_ * 0.5f);
     borderTime_[1] = std::clamp(borderTime_[1], 0.0f, kLifeTime_);
+
+    //////////////////////// 初回更新時間 ////////////////////////
+    if(modelEmitter->initUpdateTime_ > 0.0f){
+        initUpdateTime_ = modelEmitter->initUpdateTime_;
+    }
 }
 
 void Particle3D::Update(){
@@ -149,11 +147,18 @@ void Particle3D::Update(){
     Exit();
 
     float t = lifeTime_ / kLifeTime_;
+    float deltaTime = ClockManager::DeltaTime();
+
+    // 初回アップデート時間が設定されている場合はその時間を使用
+    if(initUpdateTime_ > 0.0f){
+        deltaTime += initUpdateTime_;
+        initUpdateTime_ = 0.0f; // 空に戻す
+    }
 
     //////////////////////////////////////
     // 寿命を減らす
     //////////////////////////////////////
-    lifeTime_ += ClockManager::DeltaTime();
+    lifeTime_ += deltaTime;
 
 
     //////////////////////////////////
@@ -167,16 +172,16 @@ void Particle3D::Update(){
     if(goalPos_ == std::nullopt){
         // 基本速度
         if(&velocityEaseFunc_ == &Easing::Ease[0]){ velocityEase = 1.0f; }
-        velocity_ = direction_ * speed_ * velocityEase * ClockManager::DeltaTime();
+        velocity_ = direction_ * speed_ * velocityEase * deltaTime;
 
         // 加速度の計算
-        totalAcceleration_ += acceleration_ * ClockManager::DeltaTime();
-        velocity_ += totalAcceleration_ * ClockManager::DeltaTime();
+        totalAcceleration_ += acceleration_ * deltaTime;
+        velocity_ += totalAcceleration_ * deltaTime;
 
         // 重力処理
         if(isUseGravity_){
-            gravityAcceleration_ += gravity_ * ClockManager::DeltaTime();
-            velocity_.y += gravityAcceleration_ * ClockManager::DeltaTime();
+            gravityAcceleration_ += gravity_ * deltaTime;
+            velocity_.y += gravityAcceleration_ * deltaTime;
         }
         // translateの更新
         particle_->transform_.translate += velocity_;

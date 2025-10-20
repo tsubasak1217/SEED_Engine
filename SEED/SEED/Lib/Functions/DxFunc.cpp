@@ -145,7 +145,8 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     DirectX::ScratchImage image{};
     DirectX::ScratchImage mipImages{};
 
-    std::wstring filePathW = MyFunc::ConvertString(filePath);// wstring型に変換
+    std::filesystem::path fullPath = MyFunc::ToFullPath(filePath);
+    std::wstring filePathW = fullPath.wstring();// wstring型に変換
     // ファイルを読み込む
     HRESULT hr = S_FALSE;
     

@@ -41,7 +41,7 @@ private:
     int32_t step_ = 0;
     int32_t kMaxStep_ = 4;// 最大ステップ数
     Timer stepTimer_ = Timer(0.7f);
-    std::unique_ptr<GameObject2D> resultUpdater_ = nullptr;
+    GameObject2D* resultUpdater_ = nullptr;
 
     bool sceneChangeOrder = false; // シーン変更のオーダーが出ているかどうか
 };

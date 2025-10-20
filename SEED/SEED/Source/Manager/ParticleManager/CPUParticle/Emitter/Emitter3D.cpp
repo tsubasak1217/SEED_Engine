@@ -342,6 +342,7 @@ nlohmann::json Emitter3D::ExportToJson(){
     j["blendMode"] = (int)blendMode;
     j["CullingMode"] = (int)cullingMode;
     j["lightingType"] = (int)lightingType_;
+    j["initUpdateTime"] = initUpdateTime_;
     j["center"] = { center.translate.x, center.translate.y, center.translate.z };
 
     // 範囲・パラメーターなどの情報
@@ -409,6 +410,7 @@ void Emitter3D::LoadFromJson(const nlohmann::json& j){
     blendMode = (BlendMode)j["blendMode"];
     cullingMode = (D3D12_CULL_MODE)j["CullingMode"];
     lightingType_ = (LIGHTING_TYPE)j["lightingType"];
+    initUpdateTime_ = j.value("initUpdateTime",0.0f);
     center.translate = Vector3(
         j["center"][0], j["center"][1], j["center"][2]
     );

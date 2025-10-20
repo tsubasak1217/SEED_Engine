@@ -26,7 +26,7 @@ public:
     virtual ~Note_Base() = default;
     virtual void Update() = 0;
     virtual void Draw(float currentTime,float appearLength);
-    virtual Judgement::Evaluation Judge(float dif) = 0;
+    virtual Judgement::Evalution Judge(float dif) = 0;
 
     // 入出力関数
     virtual nlohmann::json ToJson() = 0;

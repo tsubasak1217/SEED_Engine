@@ -17,17 +17,19 @@
 #include <SEED/Source/Basic/Components/ComponentDictionary.h>
 
 class Scene_Base;
-class Hierarchy;
 
 class GameObject2D{
+    // hierarchyのみコンストラクタを呼び出せる
+    friend class Hierarchy;
 
     ////////////////////////////////////////////////////////////////////////////
     // メンバー関数
     ////////////////////////////////////////////////////////////////////////////
 
     /*----------- 基本関数 ----------*/
-public:
+private:
     GameObject2D(Scene_Base* pScene);
+public:
     ~GameObject2D();
     void Initialize();
     void Update();

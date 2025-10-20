@@ -24,7 +24,8 @@ void Scene_Clear::Initialize(){
     SEED::SetMainCamera("default");
 
     // リザルト更新用オブジェクトの生成
-    resultUpdater_ = std::make_unique<GameObject2D>(this);
+    Hierarchy* hierarchy = GetHierarchy();
+    resultUpdater_ = hierarchy->CreateEmptyObject2D();
     resultUpdater_->AddComponent<ResultUpdate2DComponent>();
 }
 

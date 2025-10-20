@@ -160,7 +160,7 @@ std::vector<std::weak_ptr<Note_Base>> NotesData::GetNearNotes(float time){
     std::vector<std::weak_ptr<Note_Base>> nearNotes;
 
     // 判定範囲を取得
-    float borderTime = Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
+    float borderTime = Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD);
     Range1D range(time - borderTime, time + borderTime);
 
     // 範囲内にあるノーツを入れていく
@@ -197,7 +197,7 @@ int32_t NotesData::GetTotalCombo(){
 void NotesData::DeleteNotes(){
 
     // ボーダーとなる時間を計算
-    float borderTime = songTimer_.currentTime - Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
+    float borderTime = songTimer_.currentTime - Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD);
 
     // 条件を満たすノーツを削除する
     for(auto it = notes_.begin(); it != notes_.end();){
@@ -224,9 +224,9 @@ void NotesData::DeleteNotes(){
                         activeHoldNotes_.push_back(it->second);
 
                         // 先頭を押せなかった場合
-                        if(holdNote->headEvaluation_ == Judgement::Evaluation::NONE){
+                        if(holdNote->headEvaluation_ == Judgement::Evalution::NONE){
                             RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
-                            RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
+                            RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evalution::MISS);// ミスを追加
 
                         }
                     }
@@ -246,7 +246,7 @@ void NotesData::DeleteNotes(){
                     it = notes_.erase(it);
                     // 押せずに通り過ぎたノーツなのでコンボを切る
                     RythmGameManager::GetInstance()->BreakCombo(); // コンボを切る
-                    RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evaluation::MISS);// ミスを追加
+                    RythmGameManager::GetInstance()->AddEvaluation(Judgement::Evalution::MISS);// ミスを追加
 
                 } else{
                     if(Note_Warning* warningNote = dynamic_cast<Note_Warning*>(it->second.get())){

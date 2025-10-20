@@ -1,0 +1,279 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "componentID": 1,
+                    "componentTag": "EmitterGroup3D_ID:1",
+                    "componentType": "EmitterGroup3D",
+                    "emitterGroup": {
+                        "emitters": [
+                            {
+                                "CullingMode": 3,
+                                "baseDirection": [
+                                    0.0,
+                                    0.0,
+                                    -1.0
+                                ],
+                                "blendMode": 4,
+                                "center": [
+                                    -300.0,
+                                    0.0,
+                                    1500.0
+                                ],
+                                "colors": [
+                                    [
+                                        1.0,
+                                        0.0,
+                                        0.5096526145935059,
+                                        1.0
+                                    ],
+                                    [
+                                        0.0,
+                                        0.8030886650085449,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    [
+                                        1.0,
+                                        0.9729729294776917,
+                                        0.0,
+                                        1.0
+                                    ]
+                                ],
+                                "directionRange": 0.0,
+                                "emitModelFilePath": "DefaultAssets/cube/cube.obj",
+                                "emitRange": [
+                                    300.0,
+                                    650.0,
+                                    10.0
+                                ],
+                                "emitType": 1,
+                                "emitterType": "Emitter_Model3D",
+                                "enterEaseType": 0,
+                                "exitEaseType": 0,
+                                "goalPosition": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "gravity": -9.800000190734863,
+                                "inAlpha": 0.0,
+                                "inScale": {
+                                    "x": 1.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "initUpdateTime": 0.0,
+                                "interval": 0.07000000029802322,
+                                "isActive": true,
+                                "isBillboard": false,
+                                "isEndWithGoalPosition": false,
+                                "isRoteteRandomInit": false,
+                                "isSetGoalPosition": false,
+                                "isUseGravity": false,
+                                "isUseRotate": false,
+                                "kMaxEmitCount": 5,
+                                "lifeTimeRange": [
+                                    5.0,
+                                    5.0
+                                ],
+                                "lightingType": 0,
+                                "maxTimePoint": 0.5,
+                                "maxTimeRate": 0.20000000298023224,
+                                "numEmitEvery": 1,
+                                "outAlpha": 0.0,
+                                "outScale": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "radiusRange": [
+                                    0.5,
+                                    3.0
+                                ],
+                                "rotateDirection": [
+                                    0.0,
+                                    1.0,
+                                    0.0
+                                ],
+                                "rotateEaseType": 0,
+                                "rotateSpeedRange": [
+                                    0.0,
+                                    1.0
+                                ],
+                                "scaleRange": [
+                                    {
+                                        "x": 2.0,
+                                        "y": 2.0,
+                                        "z": 25.0
+                                    },
+                                    {
+                                        "x": 10.0,
+                                        "y": 10.0,
+                                        "z": 50.0
+                                    }
+                                ],
+                                "speedRange": [
+                                    300.0,
+                                    1000.0
+                                ],
+                                "textureHandles": [
+                                    "../models/DefaultAssets/bunny/uvChecker.png",
+                                    "DefaultAssets/white1x1.png"
+                                ],
+                                "useDefaultTexture": true,
+                                "useRotateDirection": false,
+                                "velocityEaseType": 0
+                            },
+                            {
+                                "CullingMode": 3,
+                                "baseDirection": [
+                                    0.0,
+                                    0.0,
+                                    -1.0
+                                ],
+                                "blendMode": 4,
+                                "center": [
+                                    300.0,
+                                    0.0,
+                                    1500.0
+                                ],
+                                "colors": [
+                                    [
+                                        1.0,
+                                        0.0,
+                                        0.5096526145935059,
+                                        1.0
+                                    ],
+                                    [
+                                        0.0,
+                                        0.8030886650085449,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    [
+                                        1.0,
+                                        0.9729729294776917,
+                                        0.0,
+                                        1.0
+                                    ]
+                                ],
+                                "directionRange": 0.0,
+                                "emitModelFilePath": "DefaultAssets/cube/cube.obj",
+                                "emitRange": [
+                                    300.0,
+                                    650.0,
+                                    10.0
+                                ],
+                                "emitType": 1,
+                                "emitterType": "Emitter_Model3D",
+                                "enterEaseType": 0,
+                                "exitEaseType": 0,
+                                "goalPosition": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "gravity": -9.800000190734863,
+                                "inAlpha": 0.0,
+                                "inScale": {
+                                    "x": 1.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "initUpdateTime": 0.0,
+                                "interval": 0.07000000029802322,
+                                "isActive": true,
+                                "isBillboard": false,
+                                "isEndWithGoalPosition": false,
+                                "isRoteteRandomInit": false,
+                                "isSetGoalPosition": false,
+                                "isUseGravity": false,
+                                "isUseRotate": false,
+                                "kMaxEmitCount": 5,
+                                "lifeTimeRange": [
+                                    5.0,
+                                    5.0
+                                ],
+                                "lightingType": 0,
+                                "maxTimePoint": 0.5,
+                                "maxTimeRate": 0.20000000298023224,
+                                "numEmitEvery": 1,
+                                "outAlpha": 0.0,
+                                "outScale": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "radiusRange": [
+                                    0.5,
+                                    3.0
+                                ],
+                                "rotateDirection": [
+                                    0.0,
+                                    1.0,
+                                    0.0
+                                ],
+                                "rotateEaseType": 0,
+                                "rotateSpeedRange": [
+                                    0.0,
+                                    1.0
+                                ],
+                                "scaleRange": [
+                                    {
+                                        "x": 2.0,
+                                        "y": 2.0,
+                                        "z": 25.0
+                                    },
+                                    {
+                                        "x": 10.0,
+                                        "y": 10.0,
+                                        "z": 50.0
+                                    }
+                                ],
+                                "speedRange": [
+                                    300.0,
+                                    1000.0
+                                ],
+                                "textureHandles": [
+                                    "../models/DefaultAssets/bunny/uvChecker.png",
+                                    "DefaultAssets/white1x1.png"
+                                ],
+                                "useDefaultTexture": true,
+                                "useRotateDirection": false,
+                                "velocityEaseType": 0
+                            }
+                        ],
+                        "initUpdateTime": 5.0
+                    },
+                    "isActive": true,
+                    "isParentToOwner": true
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "StageBackEffect",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

@@ -207,11 +207,11 @@ std::array<Vector2, 2> MyMath::LineClosestPoints(const Line2D& l1, const Line2D&
     // 2直線の方向ベクトル
     Vector2 dir1 = l1.end_ - l1.origin_;
     Vector2 dir2 = l2.end_ - l2.origin_;
-    
+
     // 2直線の長さ
     float length1 = MyMath::Length(dir1);
     float length2 = MyMath::Length(dir2);
-    
+
     // 点が同じ場所の場合
     if(length1 == 0.0f){
         if(length2 == 0.0f){
@@ -226,23 +226,23 @@ std::array<Vector2, 2> MyMath::LineClosestPoints(const Line2D& l1, const Line2D&
             return { MyMath::ClosestPoint(l1.origin_,l1.end_,l2.origin_),l2.origin_ };
         }
     }
-    
+
     // 2直線の始点間のベクトル
     Vector2 originVec = l2.origin_ - l1.origin_;
-    
+
     // 2直線の方向ベクトルの外積
     float cross = MyMath::Cross(dir1, dir2);
-    
+
     // 2直線が平行な場合
     if(std::abs(cross) < 1e-6f){
         return { l1.origin_,l2.origin_ };
     }
-    
+
     // 最近傍点を計算
     float crossLengthSq = cross * cross;
     float t1 = MyMath::Dot(MyMath::Cross(originVec, dir2), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
     float t2 = MyMath::Dot(MyMath::Cross(originVec, dir1), Vector3(0.0f, 0.0f, cross)) / crossLengthSq;
-    
+
     // t1, t2 を [0, 1] に制限
     t1 = std::clamp(t1, 0.0f, 1.0f);
     t2 = std::clamp(t2, 0.0f, 1.0f);
@@ -272,13 +272,13 @@ float MyMath::Deg2Rad(float deg){
 
 // tを配列の要素数に変換する関数
 int32_t MyMath::CalcElement(float t, int32_t size){
-    int idx = int(t * (size-1));
+    int idx = int(t * (size - 1));
     return idx;
 }
 
 // tを現在の区間のtに変換する関数
 float MyMath::CalcSectionT(float t, int32_t size){
-    float t2 = std::fmod(t * (size-1), 1.0f);
+    float t2 = std::fmod(t * (size - 1), 1.0f);
     return t2;
 }
 
@@ -319,7 +319,7 @@ Vector3 MyMath::Lerp(const Vector3& v1, const Vector3& v2, float t){
     return v1 + (v2 - v1) * t;
 }
 
-Vector4 MyMath::Lerp(const Vector4& v1,const Vector4& v2,float t){
+Vector4 MyMath::Lerp(const Vector4& v1, const Vector4& v2, float t){
     return v1 + (v2 - v1) * t;
 }
 
@@ -730,11 +730,29 @@ uint32_t MyMath::IntColor(const Vector4& color){
     return red + green + blue + alpha;
 }
 
-uint32_t MyMath::IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a){
-    uint32_t red = std::clamp((int)r, 0, 255) << 24;
-    uint32_t green = std::clamp((int)g, 0, 255) << 16;
-    uint32_t blue = std::clamp((int)b, 0, 255) << 8;
-    uint32_t alpha = std::clamp((int)a, 0, 255);
+uint32_t MyMath::IntColor(uint32_t r, uint32_t g, uint32_t b, uint32_t a, bool isCorrectionToLiner){
+
+    // 各要素を0~1floatに変換
+    Vector4 colorf = {
+        float(r) / 255.0f,
+        float(g) / 255.0f,
+        float(b) / 255.0f,
+        float(a) / 255.0f
+    };
+
+    // ガンマ補正を行う
+    if(isCorrectionToLiner){
+        colorf.x = std::pow(colorf.x, 2.2f);
+        colorf.y = std::pow(colorf.y, 2.2f);
+        colorf.z = std::pow(colorf.z, 2.2f);
+    }
+
+    // 各要素を0~255に変換してからuint32_tに変換
+    uint32_t red = std::clamp(int(colorf.x * 255.0f), 0, 255) << 24;
+    uint32_t green = std::clamp(int(colorf.y * 255.0f), 0, 255) << 16;
+    uint32_t blue = std::clamp(int(colorf.z * 255.0f), 0, 255) << 8;
+    uint32_t alpha = std::clamp(int(colorf.w * 255.0f), 0, 255);
+
     return red + green + blue + alpha;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "EmitterGroupBase.h"
 
+
 // パーティクルをプリセット化するための構造体
 class EmitterGroup3D : public EmitterGroupBase{
     friend class Component_EmitterGroup3D;
@@ -14,6 +15,7 @@ public:
     Vector3 GetPosition() const;
 
 private:
+    std::list<Particle3D*> particles_;
     const Matrix4x4* parentMat = nullptr;
     Vector3 offset;
 };

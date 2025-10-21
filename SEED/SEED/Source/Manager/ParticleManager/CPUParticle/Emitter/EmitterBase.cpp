@@ -81,6 +81,27 @@ void EmitterBase::Update(){
 }
 
 
+void EmitterBase::EditCurves(){
+    ImGui::Checkbox("カーブを使用する" + idTag_, &useCurve_);
+    if(useCurve_){
+        
+        if(ImGui::CollapsingHeader("スケールカーブ" + idTag_)){
+            scaleCurve_.Edit();
+        }
+        if(ImGui::CollapsingHeader("移動速度カーブ" + idTag_)){
+            velocityCurve_.Edit();
+        }
+        if(ImGui::CollapsingHeader("回転速度カーブ" + idTag_)){
+            rotateCurve_.Edit();
+        }
+        if(ImGui::CollapsingHeader("色カーブ" + idTag_)){
+            colorCurve_.Edit();
+            ImFunc::Combo("色の制御方法##" + idTag_, colorMode_, { "RGBA","HSVA" });
+        }
+    }
+}
+
+
 ///////////////////////////////////////////////////////////
 // タグの作成
 ////////////////////////////////////////////////////////////

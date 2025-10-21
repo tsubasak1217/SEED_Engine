@@ -203,9 +203,9 @@ void CurveEditor::EditCurves(){
     ImFunc::RadioButton("編集中のチャンネル", curveIdx_, channelStrs, channelCount);
     ImGui::DragFloat("1.0の基準ボーダー" + tag_, &unitValueBorder_, 0.05f, 0.05f, 1.0f);
     ImFunc::Combo("カーブの種類" + tag_, curveType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-    if(ImFunc::Combo("チャンネル数" + tag_, curveChannel_, { "Float","Vector2","Vector3","Vector4" })){
-        curveIdx_ = 0;
-    }
+    //if(ImFunc::Combo("チャンネル数" + tag_, curveChannel_, { "Float","Vector2","Vector3","Vector4" })){
+    //    curveIdx_ = 0;
+    //}
 
     // フォルダ表示,読み込み
     static std::filesystem::path folderPath = "Resources/Jsons/Curves";

@@ -19,7 +19,7 @@ void ColorControlComponent::Initialize(){
     // タイマー初期化
     timer_ = Timer(1.0f);
     // カーブ初期化
-    colorCurve_.channel_ = CurveChannel::VECTOR4;
+    colorCurve_ = Curve(CurveChannel::VECTOR4);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,10 +36,10 @@ void ColorControlComponent::Update(){
 
     // 色を計算
     Vector4 rgbaColor = Vector4(1);
-    if(colorControlMode_ == ColorControlMode::RGBA){
+    if(colorControlMode_ == ColorMode::RGBA){
         rgbaColor = colorCurve_.GetValue4(timer_.GetProgress());
 
-    } else if(colorControlMode_ == ColorControlMode::HSVA){
+    } else if(colorControlMode_ == ColorMode::HSVA){
         Vector4 hsvaValue = colorCurve_.GetValue4(timer_.GetProgress());
         rgbaColor = MyMath::HSV_to_RGB(hsvaValue);
     }
@@ -142,5 +142,5 @@ void ColorControlComponent::LoadFromJson(const nlohmann::json& jsonData){
     timeScale_ = jsonData.value("timeScale", 1.0f);
     isLoop_ = jsonData.value("isLoop", false);
     isMultiply_ = jsonData.value("isMultiply", false);
-    colorControlMode_ = static_cast<ColorControlMode>(jsonData.value("colorControlMode", 0));
+    colorControlMode_ = static_cast<ColorMode>(jsonData.value("colorControlMode", 0));
 }

@@ -9,6 +9,15 @@ Curve::Curve(){
     }
 }
 
+Curve::Curve(CurveChannel channel){
+    channel_ = channel;
+    for(auto& curve : curves_){
+        curve.clear();
+        curve.push_back(Vector2(0.0f, 0.0f));
+        curve.push_back(Vector2(1.0f, 1.0f));
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // t0~1の範囲で補間した値を取得
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +77,7 @@ void Curve::FromJson(const nlohmann::json& json){
     if(json.is_null() || json.empty()){ return; }
 
     // チャンネル数
-    channel_ = static_cast<CurveChannel>(json.value("channel",0));
+    channel_ = static_cast<CurveChannel>(json.value("channel", 0));
 
     // カーブタイプ
     curveType_ = static_cast<Easing::Type>(json.value("type", 0));

@@ -11,7 +11,8 @@
 #include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Lib/Functions/Easing.h>
 #include <SEED/Lib/Structs/Model.h>
-
+#include <SEED/Lib/Structs/Curve.h>
+#include <SEED/Lib/enums/ColorMode.h>
 
 // lib
 #include <vector>
@@ -39,6 +40,7 @@ public:
 
     // 編集処理
     virtual void Edit() = 0;
+    void EditCurves();
     virtual nlohmann::json ExportToJson() = 0;
     virtual void LoadFromJson(const nlohmann::json& j) = 0;
 
@@ -51,6 +53,7 @@ public:
     bool isActive = true;// アクティブかどうか
     bool isAlive = true;// 生存しているかどうか
     bool emitOrder = false;// 発生命令が出されたかどうか
+    bool useCurve_ = false;// カーブを使用するかどうか
 #ifdef _DEBUG
     bool useGuizmo_ = true;
 #endif // _DEBUG
@@ -85,6 +88,15 @@ public:
     Easing::Type rotateEaseType_ = Easing::Type::None;
     Easing::Type enterEaseType_ = Easing::Type::None;
     Easing::Type exitEaseType_ = Easing::Type::None;
+
+    // カーブ
+    Curve scaleCurve_;
+    Curve velocityCurve_;// 速度カーブ
+    Curve rotateCurve_;// 回転カーブ
+    Curve colorCurve_;// 色カーブ
+    
+    // 色操作のモード
+    ColorMode colorMode_ = ColorMode::RGBA;// カラーモード
 
     //-------------------- 管理用パラメータ ------------------//
 public:// アクティブ・非アクティブ管理のための変数

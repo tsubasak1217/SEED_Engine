@@ -130,6 +130,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\Curve.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\Only2D\Component_EmitterGroup2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Routine2DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
@@ -163,6 +164,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.cpp" />
@@ -248,6 +250,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
     <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp" />
+    <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\PolygonManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.cpp" />
@@ -290,6 +293,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />
     <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
     <ClInclude Include="Game\Config\PlaySettings.h" />
@@ -299,6 +303,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\LifetimeComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\ComponentRegister.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\Only2D\Component_EmitterGroup2D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\Routine2DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only3D\Component_EmitterGroup3D.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
@@ -335,6 +340,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
       <SubType />
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterContext.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.h" />
@@ -431,6 +437,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\DxResource.h" />
     <ClInclude Include="SEED\Source\Manager\Hierarchy\LoadObjectData.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.h" />
+    <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectContext.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\IPipeline.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\PSO\MSPipeline.h" />

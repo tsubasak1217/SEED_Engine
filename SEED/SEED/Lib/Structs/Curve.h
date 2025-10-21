@@ -16,12 +16,13 @@ public:
     CurveChannel channel_ = CurveChannel::FLOAT;
 
 private:
-    std::array<Points,4> curves_;
+    std::array<Points, 4> curves_;
     float unitValueBorder_ = 1.0f;
     CurveEditor editor_;
 
 public:
     Curve();
+    Curve(CurveChannel channel);
     void Edit();
 
 public:// アクセッサ

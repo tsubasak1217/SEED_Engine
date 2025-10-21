@@ -2,11 +2,7 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Lib/Structs/Curve.h>
 #include <SEED/Lib/Structs/Timer.h>
-
-enum class ColorControlMode : int32_t{
-    RGBA,
-    HSVA
-};
+#include <SEED/Lib/enums/ColorMode.h>
 
 class ColorControlComponent : public IComponent{
 public:// 基礎関数
@@ -31,7 +27,7 @@ public:// 入出力
 
 private:
     Curve colorCurve_;
-    ColorControlMode colorControlMode_ = ColorControlMode::RGBA;
+    ColorMode colorControlMode_ = ColorMode::RGBA;
     Timer timer_ ;
     float timeScale_ = 1.0f;
     bool isLoop_ = false;

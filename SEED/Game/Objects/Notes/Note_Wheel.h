@@ -1,6 +1,9 @@
 #pragma once
 #include <Game/Objects/Notes/Note_Base.h>
 
+/// <summary>
+/// ホイールノーツ
+/// </summary>
 class Note_Wheel : public Note_Base{
 public:
     Note_Wheel();

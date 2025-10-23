@@ -7,7 +7,9 @@
 #include <memory>
 #include <vector>
 
-/*----------- 衝突判定をするやつ ----------*/
+/// <summary>
+/// UI描画コンポーネント(テキスト・スプライト)
+/// </summary>
 class UIComponent : public IComponent{
 public:
     UIComponent(GameObject2D* pOwner, const std::string& tagName = "");

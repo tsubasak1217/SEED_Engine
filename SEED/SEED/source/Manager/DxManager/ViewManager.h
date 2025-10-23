@@ -6,6 +6,9 @@
 
 class DescriptorHeap;
 
+/// <summary>
+/// viewの作成や管理を行うクラス
+/// </summary>
 class ViewManager{
 private:
     // privateコンストラクタ

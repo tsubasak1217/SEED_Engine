@@ -2,7 +2,9 @@
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterBase.h>
 #include <string>
 
-// パーティクルを発生させるための構造体
+/// <summary>
+// 2Dパーティクルを発生させるエミッター
+/// </summary>
 class Emitter2D : public EmitterBase{
 public:
     Emitter2D();
@@ -17,19 +19,9 @@ public:
     Vector2 GetCenter() const;
 
 private:
-    void EditGeneral();
     void EditRangeParameters();
-    void EditEaseType();
     void EditMaterial();
     void EditFrequency();
-
-    //---------------------- フラグ類 ----------------------//
-public:
-    bool isUseGravity = false;// 重力を有効にするかどうか
-    bool isSetGoalPosition = false;// ゴール位置を設定するかどうか
-    bool isEndWithGoalPosition = false;// ゴール位置で終了するかどうか
-    bool isUseRotate = false;// 回転処理を行うかどうか
-    bool isRoteteRandomInit_ = false;
 
     //-------------------- 発生パラメータ ------------------//
 public:
@@ -42,6 +34,5 @@ public:
     float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
     Range1D speedRange = { 0.1f,1.0f };// 速度の幅
     Range1D rotateSpeedRange = { 0.0f,1.0f };// 回転速度の幅
-    float gravity = -9.8f;// 重力
     Range1D lifeTimeRange = { 1.0f,3.0f };// 寿命時間の幅
 };

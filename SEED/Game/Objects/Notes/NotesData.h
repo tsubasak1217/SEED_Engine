@@ -8,6 +8,9 @@
 #include <SEED/Lib/Structs/Timer.h>
 struct TempoData;
 
+/// <summary>
+/// 譜面情報を保持するクラス
+/// </summary>
 class NotesData{
 public:
     NotesData();
@@ -17,7 +20,7 @@ public:
     void Draw();
     void BeginFrame();
 
-public:
+public:// アクセッサ
     float GetCurMusicTime(){ return songTimer_.currentTime; }
     std::vector<std::weak_ptr<Note_Base>> GetNearNotes(float time);
     float GetDuration(){ return songTimer_.duration; }
@@ -27,12 +30,12 @@ public:
     void Pause();
     void Resume();
 
-private:
+private:// 内部関数
     void DeleteNotes();
     void AppearNotes();// ノーツを出現させる
     void PlayAudio();
 
-private:
+private:// 入出力
     void FromJson(const nlohmann::json& songData);
     void HotReload();
 

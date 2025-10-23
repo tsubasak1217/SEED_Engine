@@ -15,11 +15,16 @@
 #include <SEED/Source/Basic/Collision/3D/Collider_Plane.h>
 #include <SEED/Source/Basic/Collision/Octree.h>
 
+// 当たり判定の順序
 enum class CollisionOrder{
     InOrder,// 登録順
     InReverseOrder,// 登録逆順
 };
 
+
+/// <summary>
+/// 登録されたコライダーの当たり判定・押し戻しなどを行うクラス
+/// </summary>
 class CollisionManager{
 private:
     // シングルトン

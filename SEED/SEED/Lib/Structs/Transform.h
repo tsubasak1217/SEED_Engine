@@ -5,6 +5,9 @@
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 #include <SEED/Lib/Tensor/Quaternion.h>
 
+/// <summary>
+/// 二次元の拡縮・回転・移動情報を保持する構造体
+/// </summary>
 struct Transform2D{
     Vector2 scale = { 1.0f,1.0f };
     float rotate = 0.0f; // radians
@@ -15,6 +18,9 @@ struct Transform2D{
     void FromMatrix4x4(const Matrix4x4& mat);
 };
 
+/// <summary>
+/// 三次元の拡縮・回転・移動情報を保持する構造体
+/// </summary>
 struct Transform{
     Vector3 scale = {1.0f,1.0f,1.0f};
     Quaternion rotate;
@@ -25,21 +31,16 @@ struct Transform{
     void FromMatrix(const Matrix4x4& mat);
 };
 
+
+/// <summary>
+/// 頂点変換を行う行列をまとめた構造体
+/// </summary>
 struct TransformMatrix{
     Matrix4x4 WVP;
     Matrix4x4 world;
     Matrix4x4 worldInverseTranspose;
 };
 
-struct TransformSegment{
-    Transform start;
-    Transform end;
-};
-
-struct TransformSegment2D{
-    Transform2D start;
-    Transform2D end;
-};
 
 // jsosnコンバート関数
 inline void to_json(nlohmann::json& j, const Transform2D& transformMatrix) {

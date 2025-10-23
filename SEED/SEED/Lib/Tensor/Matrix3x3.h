@@ -2,6 +2,10 @@
 // 前方宣言
 struct Matrix4x4;
 
+
+/// <summary>
+/// 3x3行列
+/// </summary>
 struct Matrix3x3 final {
     float m[3][3];
 

@@ -1,6 +1,10 @@
 #pragma once
 #include "Collider2D.h"
 
+
+/// <summary>
+/// 2次元AABBコライダー
+/// </summary>
 class Collider_AABB2D : public Collider2D{
 public:
     Collider_AABB2D();

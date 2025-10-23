@@ -3,6 +3,9 @@
 #include <unordered_map>
 #include <SEED/Lib/Functions/MyFunc.h>
 
+/// <summary>
+/// 音声情報を辞書登録して管理するクラス
+/// </summary>
 class AudioDictionary{
 public:
     static void Initialize();

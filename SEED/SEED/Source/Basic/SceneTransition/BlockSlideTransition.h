@@ -8,6 +8,9 @@
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Timer.h>
 
+/// <summary>
+/// 各矩形の情報
+/// </summary>
 struct TransitionQuad{
     Quad2D quad;
     float appearTime;
@@ -17,6 +20,9 @@ struct TransitionQuad{
     Vector2 endPos;
 };
 
+/// <summary>
+/// 矩形をスライドさせてシーン遷移を行うクラス
+/// </summary>
 class BlockSlideTransition : public ISceneTransition{
 public:
     BlockSlideTransition() = default;

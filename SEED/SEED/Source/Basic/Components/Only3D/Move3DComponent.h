@@ -2,6 +2,9 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
+/// <summary>
+/// 3次元の簡易的な移動機能を追加するコンポーネント
+/// </summary>
 class Move3DComponent : public IComponent{
 public:
     Move3DComponent(GameObject* pOwner, const std::string& tagName = "");

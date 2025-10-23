@@ -14,6 +14,9 @@
 // imgui
 #include <imgui.h>
 
+/// <summary>
+/// テクスチャを読み込み管理するクラス
+/// </summary>
 class TextureManager{
 
 private:

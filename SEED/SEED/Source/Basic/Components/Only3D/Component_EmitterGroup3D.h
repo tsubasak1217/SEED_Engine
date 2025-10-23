@@ -7,6 +7,9 @@
 #include <vector>
 
 
+/// <summary>
+/// 3Dパーティクルのエミッターを追加するコンポーネント
+/// </summary>
 class Component_EmitterGroup3D : public IComponent{
 public:
     Component_EmitterGroup3D(GameObject* pOwner, const std::string& tagName = "");

@@ -1,6 +1,9 @@
 #pragma once
 #include "Collider.h"
 
+/// <summary>
+/// OBBコライダー
+/// </summary>
 class Collider_OBB : public Collider{
 public:
     Collider_OBB();

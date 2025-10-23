@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap.h>
 
+/// <summary>
+/// DepthStencilView用のディスクリプタヒープ
+/// </summary>
 class DescriptorHeap_DSV : public DescriptorHeap{
 
 public:

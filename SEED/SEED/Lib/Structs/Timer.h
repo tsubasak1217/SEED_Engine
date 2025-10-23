@@ -3,6 +3,10 @@
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Lib/Functions/Easing.h>
 
+
+/// <summary>
+/// タイマー
+/// </summary>
 struct Timer{
     Timer() = default;
     Timer(float _duration,float current = 0.0f);
@@ -30,6 +34,9 @@ public:
 };
 
 
+/// <summary>
+/// 複数のタイムポイントを保持できるタイマー
+/// </summary>
 struct TimerArray{
     TimerArray() = default;
     TimerArray(std::initializer_list<float> timePoints);

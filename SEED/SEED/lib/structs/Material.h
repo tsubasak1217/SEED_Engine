@@ -15,12 +15,16 @@
 #include <SEED/Lib/Functions/MatrixFunc.h>
 #include <SEED/Lib/Structs/Color.h>
 
+// ライティングの種類
 enum LIGHTING_TYPE : int32_t{
     LIGHTINGTYPE_NONE = 0,
     LIGHTINGTYPE_LAMBERT,
     LIGHTINGTYPE_HALF_LAMBERT
 };
 
+/// <summary>
+/// マテリアル情報を格納する構造体
+/// </summary>
 struct Material{
     Color color = { 1.0f,1.0f,1.0f,1.0f };
     uint32_t GH;
@@ -29,6 +33,9 @@ struct Material{
     float environmentCoef = 0.01f;// 環境光の係数
 };
 
+/// <summary>
+/// GPUのマテリアル構造に合わせたマテリアル構造体
+/// </summary>
 struct MaterialForGPU{
     Color color_;
     Matrix4x4 uvTransform_;
@@ -38,6 +45,9 @@ struct MaterialForGPU{
     float environmentCoef_;
 };
 
+/// <summary>
+/// モデルのマテリアルの読み込み情報
+/// </summary>
 struct ModelMaterialLoadData{
     std::string textureFilePath_;
     Vector3 UV_scale_;

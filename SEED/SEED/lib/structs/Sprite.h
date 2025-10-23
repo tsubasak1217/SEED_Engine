@@ -11,6 +11,10 @@
 #include <SEED/Lib/Structs/DrawLocation.h>
 #include <SEED/Lib/Structs/Color.h>
 
+
+/// <summary>
+/// スプライト画像構造体
+/// </summary>
 struct Sprite{
 
 public:

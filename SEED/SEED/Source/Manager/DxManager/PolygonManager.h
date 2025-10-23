@@ -31,7 +31,10 @@ class DxManager;
 struct D3D12_VERTEX_BUFFER_VIEW;
 struct ID3D12Resource;
 
+
+/// <summary>
 // 全部の描画が種類ごとに最終的にこの形に情報をまとめられる
+/// </summary>
 struct ModelDrawData{
 
     // 識別情報
@@ -79,7 +82,7 @@ struct ModelDrawData{
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-// 本体
+// すべてのポリゴン描画を管理するクラス
 ///////////////////////////////////////////////////////////////////////////////
 class PolygonManager{
 

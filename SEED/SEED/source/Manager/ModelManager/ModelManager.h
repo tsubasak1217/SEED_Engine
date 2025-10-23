@@ -18,6 +18,9 @@
 #include <SEED/Lib/Structs/ModelData.h>
 #include <SEED/Lib/Structs/ModelAnimation.h>
 
+/// <summary>
+/// モデルの読み込みや読み込んだモデルの情報の保持などを行うクラス
+/// </summary>
 class ModelManager{
 
     friend class Model;

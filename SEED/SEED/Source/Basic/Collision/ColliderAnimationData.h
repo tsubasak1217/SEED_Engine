@@ -8,6 +8,9 @@
 #include <SEED/Lib/Tensor/Quaternion.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 
+/// <summary>
+/// コライダーを動かす情報
+/// </summary>
 class ColliderAnimationData{
 public:
     ColliderAnimationData();

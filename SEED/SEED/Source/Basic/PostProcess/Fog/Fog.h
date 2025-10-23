@@ -2,6 +2,9 @@
 #include "../IPostProcess.h"
 #include "FogParam.h"
 
+/// <summary>
+/// フォグを掛けるクラス
+/// </summary>
 class Fog : public IPostProcess{
 public:
     Fog();

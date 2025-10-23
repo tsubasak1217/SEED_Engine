@@ -31,11 +31,13 @@ enum class GroupMode{
     kMaxCount
 };
 
+// 選択中のもののカテゴリ
 enum class SelectMode{
     Song, // 楽曲選択
     Group, // グループ選択
 };
 
+// 選択物の詳細
 namespace SelectUtil{
     inline std::string groupModeNames[(int)GroupMode::kMaxCount] = {
         "全曲", "ジャンル", "難易度", "ランク"
@@ -46,7 +48,11 @@ namespace SelectUtil{
     };
 }
 
-// 楽曲選択の管理クラス
+
+
+/// <summary>
+/// 楽曲選択の管理クラス 
+/// </summary>
 class SongSelector{
 public:
     SongSelector();

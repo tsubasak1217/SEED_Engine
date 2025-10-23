@@ -6,6 +6,10 @@
 #include <list>
 #include <SEED/Lib/Structs/TextBox.h>
 
+
+/// <summary>
+/// プレイシーンでのポーズ状態
+/// </summary>
 class GameState_Pause : public SceneState_Base{
 public:
     GameState_Pause();

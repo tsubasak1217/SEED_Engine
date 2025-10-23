@@ -15,7 +15,9 @@ using Microsoft::WRL::ComPtr;
 // local
 #include <SEED/Lib/Tensor/Vector2.h>
 
-
+/// <summary>
+/// window情報をまとめたクラス
+/// </summary>
 class WindowInfo{
 public:
     WindowInfo() = default;

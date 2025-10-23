@@ -3,12 +3,16 @@
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <stdint.h>
 
+// 線の種類
 enum LINE_TYPE{
     SEGMENT = 0,
     RAY,
     LINE
 };
 
+/// <summary>
+/// 三次元の線
+/// </summary>
 struct Line{
     Vector3 origin_;
     Vector3 end_;
@@ -22,6 +26,9 @@ struct Line{
     }
 };
 
+/// <summary>
+/// 二次元の線
+/// </summary>
 struct Line2D{
     Vector2 origin_;
     Vector2 end_;

@@ -8,7 +8,10 @@
 #include "PostEffectContext.h"
 
 
-// ポストエフェクト管理クラス
+
+/// <summary>
+// ポストエフェクトを管理するクラス
+/// </summary>
 class PostEffectSystem{
     friend class DxManager;// DxManagerからアクセスを許可
     friend class PolygonManager; // PolygonManagerからアクセスを許可

@@ -4,6 +4,9 @@
 #include <wrl/client.h>
 using Microsoft::WRL::ComPtr;
 
+/// <summary>
+/// ID3D12ResourceのView作成やTransitionを簡単かつ安全に行うための構造体
+/// </summary>
 struct DxResource{
     // リソースの種類
     ComPtr<ID3D12Resource> resource;

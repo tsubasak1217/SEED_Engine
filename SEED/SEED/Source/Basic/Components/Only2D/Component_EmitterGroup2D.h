@@ -6,7 +6,9 @@
 #include <memory>
 #include <vector>
 
-
+/// <summary>
+/// 2Dパーティクルのエミッターを追加するコンポーネント
+/// </summary>
 class Component_EmitterGroup2D : public IComponent{
 public:
     Component_EmitterGroup2D(GameObject* pOwner, const std::string& tagName = "");

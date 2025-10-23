@@ -8,6 +8,7 @@
 #include <SEED/Lib/Structs/TextBox.h>
 #include <SEED/Lib/Structs/Sprite.h>
 
+// 譜面の難易度区分
 enum class TrackDifficulty : int32_t {
     Basic = 0,
     Expert,
@@ -16,11 +17,13 @@ enum class TrackDifficulty : int32_t {
     kMaxDifficulty
 };
 
+// 曲のジャンル
 enum class SongGenre : int32_t {
     Original = 0,
     GameMusic
 };
 
+// スコアのランク
 enum class ScoreRank : int32_t {
     None = 0,
     D,
@@ -34,12 +37,14 @@ enum class ScoreRank : int32_t {
     kMaxRank
 };
 
+// クリアアイコン
 enum class ClearIcon : int32_t {
     None = 0,
     FullCombo,
     Perfect
 };
 
+// 実際の名前の定義
 namespace GroupNameUtils{
     inline std::array<std::string, int(SongGenre::GameMusic) + 1> genreNames = {
         "オリジナル", "ゲームミュージック"
@@ -50,7 +55,7 @@ namespace GroupNameUtils{
     };
 }
 
-
+// ランクのボーダー値の定義
 namespace ScoreRankUtils {
     inline float scoreRankBorders[(int)ScoreRank::kMaxRank] = { 
         0.0f, 60.0f, 80.0f, 95.0f, 97.0f, 98.0f, 99.0f,100.0f
@@ -67,6 +72,10 @@ namespace ScoreRankUtils {
     }
 }
 
+
+/// <summary>
+/// 曲情報を格納するクラス
+/// </summary>
 struct SongInfo{
     void Initialize(const std::string& _folderName);
 

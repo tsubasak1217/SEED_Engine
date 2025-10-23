@@ -12,6 +12,9 @@
 #include <unordered_map>
 #include <string>
 
+/// <summary>
+/// リザルトシーンを更新するコンポーネント
+/// </summary>
 class ResultUpdate2DComponent : public IComponent{
 public:
     ResultUpdate2DComponent(GameObject2D* pOwner, const std::string& tagName = "");

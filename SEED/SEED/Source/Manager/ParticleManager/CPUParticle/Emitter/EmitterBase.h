@@ -13,6 +13,7 @@
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Lib/Structs/Curve.h>
 #include <SEED/Lib/enums/ColorMode.h>
+#include <SEED/Lib/Structs/Color.h>
 
 // lib
 #include <vector>
@@ -24,7 +25,9 @@
 #include <json.hpp>
 
 
-// パーティクルを発生させるための構造体
+/// <summary>
+// パーティクルを発生させるエミッターの基底クラス
+/// </summary>
 class EmitterBase{
     friend class EmitterGroupBase;
 public:
@@ -45,15 +48,19 @@ public:
     virtual void LoadFromJson(const nlohmann::json& j) = 0;
 
 protected:
-    virtual void DrawEditData() = 0;
+    void EditGeneral();
+    void EditFrequency();
     void CreateTag();
 
     //---------------------- フラグ類 ----------------------//
 public:
-    bool isActive = true;// アクティブかどうか
-    bool isAlive = true;// 生存しているかどうか
-    bool emitOrder = false;// 発生命令が出されたかどうか
-    bool useCurve_ = false;// カーブを使用するかどうか
+    bool isActive_ = true;// アクティブかどうか
+    bool isAlive_ = true;// 生存しているかどうか
+    bool emitOrder_ = false;// 発生命令が出されたかどうか
+    bool isUseGravity_ = false;// 重力を有効にするかどうか
+    bool isUseRotate_ = false;// 回転処理を行うかどうか
+    bool isRoteteRandomInit_ = false;// 回転初期価値をランダムにするか
+    bool isSetGoalPosition_ = false;// ゴール位置を設定するかどうか
 #ifdef _DEBUG
     bool useGuizmo_ = true;
 #endif // _DEBUG
@@ -61,33 +68,19 @@ public:
     //-------------------- 発生パラメータ ------------------//
 public:
     // parameter
-    EmitterGroupBase* parentGroup = nullptr;// 親グループ
-    float interval = 0.1f;// 発生間隔
-    int32_t numEmitEvery = 1;// 一度に発生させる数
+    EmitterGroupBase* parentGroup_ = nullptr;// 親グループ
+    float interval_ = 0.1f;// 発生間隔
+    int32_t numEmitEvery_ = 1;// 一度に発生させる数
+    float gravity_ = 0.0f;// 重力
     float initUpdateTime_ = 0.0f;// 初期化時にあらかじめ更新しておく時間
 
     // texture
-    static inline std::unordered_map<std::string, ImTextureID> textureDict;// テクスチャの辞書
-    std::vector<std::string> texturePaths;// 使用するテクスチャのパス一覧
+    static inline std::unordered_map<std::string, ImTextureID> textureDict_;// テクスチャの辞書
+    std::vector<std::string> texturePaths_; // 使用するテクスチャのパス一覧
 
     // material
-    std::vector<Color> colors;// 発生させる色の一覧
-    BlendMode blendMode = BlendMode::ADD;// ブレンドモード
-
-    // 発生・消滅の動きに関わるパラメータ
-    float maxTimePoint = 0.5f;// 中心(scale,Alphaともに最大になる場所)の時間(0.0f~1.0f/lifeTime)
-    float maxTimeRate = 0.2f;// 最大になっている時間の割合
-    Vector3 kInScale = { 1.0f,1.0f,1.0f };// 出現時のスケール
-    Vector3 kOutScale = { 0.0f,0.0f,0.0f };// 消失時のスケール
-    float kInAlpha = 0.0f;// 出現時のアルファ値
-    float kOutAlpha = 0.0f;// 消失時のアルファ値
-
-
-    // ease関数
-    Easing::Type velocityEaseType_ = Easing::Type::None;
-    Easing::Type rotateEaseType_ = Easing::Type::None;
-    Easing::Type enterEaseType_ = Easing::Type::None;
-    Easing::Type exitEaseType_ = Easing::Type::None;
+    std::vector<Color> colors_;// 発生させる色の一覧
+    BlendMode blendMode_ = BlendMode::ADD;// ブレンドモード
 
     // カーブ
     Curve scaleCurve_;
@@ -100,11 +93,11 @@ public:
 
     //-------------------- 管理用パラメータ ------------------//
 public:// アクティブ・非アクティブ管理のための変数
-    EmitType emitType = EmitType::kInfinite;// 発生方法
-    int32_t kMaxEmitCount = 5;// 最大発生回数(EmitType::kCustomの時用)
+    EmitType emitType_ = EmitType::kInfinite;// 発生方法
+    int32_t kMaxEmitCount_ = 5;// 最大発生回数(EmitType::kCustomの時用)
 
 protected:
-    float totalTime;// 経過時間
-    int32_t emitCount = 0;// 発生させた回数
-    std::string idTag_;// IDタグ（エディター用）
+    float totalTime_ = 0.0f;// 経過時間
+    int32_t emitCount_ = 0;// 発生させた回数
+    std::string idTag_;// IDタグ
 };

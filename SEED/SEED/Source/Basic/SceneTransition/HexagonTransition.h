@@ -9,6 +9,9 @@
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Structs/Color.h>
 
+/// <summary>
+/// 各六角形の情報
+/// </summary>
 struct TransitionHexagon{
     Vector2 pos;
     Color color;
@@ -16,6 +19,9 @@ struct TransitionHexagon{
     Timer scalingTimer;
 };
 
+/// <summary>
+/// 画面を六角形で埋め尽くしてシーン遷移をするクラス
+/// </summary>
 class HexagonTransition : public ISceneTransition{
 public:
     HexagonTransition() = default;

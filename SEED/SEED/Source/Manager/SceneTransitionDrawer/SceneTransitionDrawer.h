@@ -2,6 +2,9 @@
 #include <memory>
 #include <SEED/Source/Basic/SceneTransition/ISceneTransition.h>
 
+/// <summary>
+/// シーン遷移描画クラス
+/// </summary>
 class SceneTransitionDrawer{
 public:
     SceneTransitionDrawer() = default;

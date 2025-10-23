@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Lib/Tensor/Vector3.h>
 
+/// <summary>
+/// 円筒形
+/// </summary>
 struct Cylinder{
     
     Vector3 bottomCenter;

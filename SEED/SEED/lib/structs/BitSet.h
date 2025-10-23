@@ -2,6 +2,9 @@
 #include <vector>
 #include <initializer_list>
 
+/// <summary>
+/// 32ビットなどの数の収まりきらないビットを管理する構造体
+/// </summary>
 struct BitSet{
 public:
     BitSet() = default;

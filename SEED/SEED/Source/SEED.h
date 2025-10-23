@@ -50,6 +50,9 @@
 #endif // _DEBUG
 
 
+/// <summary>
+/// エンジンの大元のクラス。エンジン側の各マネージャなどの更新や描画を行う
+/// </summary>
 class SEED{
 
     friend TextureManager;
@@ -113,10 +116,10 @@ public:
     );
 
     // 2D矩形
-    static void DrawQuad2D(const Quad2D& quad);
+    static void DrawQuad2D(const Quad2D& quad, const Color& masterColor = Color(1.0f));
 
     // スプライト
-    static void DrawSprite(const Sprite& sprite,const std::optional<Color> masterColor = std::nullopt);
+    static void DrawSprite(const Sprite& sprite, const std::optional<Color>& masterColor = std::nullopt);
 
     /*==========================モデルの描画関数==========================*/
 
@@ -126,13 +129,13 @@ public:
 
     // 3D線
     static void DrawLine(
-        const Vector3& v1, const Vector3& v2, 
-        const Color& color = {1.0f,1.0f,1.0f,1.0f}, BlendMode blendMode = BlendMode::NORMAL
+        const Vector3& v1, const Vector3& v2,
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL
     );
 
     // 2D線
     static void DrawLine2D(
-        const Vector2& v1, const Vector2& v2, 
+        const Vector2& v1, const Vector2& v2,
         const Color& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, bool isApplyViewMat = false
     );
 
@@ -156,10 +159,10 @@ public:
 
     // 六角形の描画
     static void DrawHexagon(
-        const Vector2& center, float radius, float theta, 
-        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, 
+        const Vector2& center, float radius, float theta,
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL,
-        DrawLocation drawLocation = DrawLocation::Front, 
+        DrawLocation drawLocation = DrawLocation::Front,
         int32_t layer = 0, bool isApplyViewMat = true
     );
 
@@ -173,7 +176,7 @@ public:
 
     // 球の描画関数
     static void DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawSphere(const Vector3& center, float radius,int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawSphere(const Vector3& center, float radius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // 円柱の描画関数
     static void DrawCylinder(const Vector3& start, const Vector3& end, float startRadius, float endRadius, int32_t subdivision = 6, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // カプセルの描画関数
@@ -186,13 +189,13 @@ public:
     static void DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     // スプライン曲線の描画
-    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f },bool isControlPointVisible = true);
+    static void DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     static void DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isControlPointVisible = true);
     // ライトのデバッグ用描画
     static void DrawLight(const BaseLight* light);
     // SkyBoxの描画関数
     static void SetSkyBox(const std::string& textureName, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawSkyBox(bool isFollowCameraPos = true,const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 100.0f);
+    static void DrawSkyBox(bool isFollowCameraPos = true, const Vector3& position = { 0.0f,0.0f,0.0f }, float scale = 100.0f);
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                その他細かい関数                                   */
@@ -210,7 +213,7 @@ public:
     static void ChangeResolutionRate(float resolutionRate);
     static float GetResolutionRate(){ return DxManager::GetInstance()->GetResolutionRate(); }
     // カメラにシェイクを設定する関数
-    static void SetCameraShake(float time, float power, const Vector3& shakeLevel = {1.0f,1.0f,1.0f});
+    static void SetCameraShake(float time, float power, const Vector3& shakeLevel = { 1.0f,1.0f,1.0f });
 
     /////////////////////////////////////////////////////////////////////////////////////
     /*                                 アクセッサ関数                                    */
@@ -224,7 +227,7 @@ public:
     static std::string GetMainCameraName(){ return DxManager::GetInstance()->GetMainCameraName(); }
     static void RegisterCamera(const std::string& cameraName, BaseCamera* pCamera){ DxManager::GetInstance()->RegisterCamera(cameraName, pCamera); }
     static void RemoveCamera(const std::string& cameraName){ DxManager::GetInstance()->RemoveCamera(cameraName); }
-    static void SetIsCameraActive(const std::string& cameraName, bool isActive){DxManager::GetInstance()->SetIsCameraActive(cameraName, isActive);}
+    static void SetIsCameraActive(const std::string& cameraName, bool isActive){ DxManager::GetInstance()->SetIsCameraActive(cameraName, isActive); }
     // ライト
     static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
     // ウィンドウ

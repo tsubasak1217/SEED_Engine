@@ -31,7 +31,7 @@ void Component_EmitterGroup3D::Update(){
     if(isActive_){
         for(auto& emitter : emitterGroup_->emitters){
             emitter->Update();
-            if(emitter->emitOrder == true){
+            if(emitter->emitOrder_ == true){
                 // ここでEffectSystemにパーティクルを発生させる
                 ParticleManager::Emit(emitter.get());
             }

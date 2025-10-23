@@ -1,7 +1,9 @@
 #pragma once
 #include "EmitterGroupBase.h"
 
-// パーティクルをプリセット化するための構造体
+/// <summary>
+/// 2Dエミッターをグループで管理するクラス
+/// </summary>
 class EmitterGroup2D : public EmitterGroupBase{
     friend class ParticleManager;
     friend class Component_EmitterGroup2D;

@@ -5,6 +5,9 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <SEED/Source/SEED.h>
 
+/// <summary>
+/// 音ゲーのプレイヤー入力を格納するクラス
+/// </summary>
 class PlayerInput{// プレイヤーの入力状態を格納するクラス
 private:
     PlayerInput();

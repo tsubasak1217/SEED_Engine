@@ -1,6 +1,9 @@
 #pragma once
 #include <Game/Objects/Notes/Note_Base.h>
 
+/// <summary>
+/// ホールドノーツ
+/// </summary>
 class Note_Hold : public Note_Base{
 public:
     Note_Hold();

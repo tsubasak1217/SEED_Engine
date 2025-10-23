@@ -18,6 +18,9 @@ enum class ShaderType{
     CS
 };
 
+/// <summary>
+/// 読み込んだシェーダーの辞書を作成するクラス
+/// </summary>
 class ShaderDictionary{
 private:
     ShaderDictionary() = default;

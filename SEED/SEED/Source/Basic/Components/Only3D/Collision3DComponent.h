@@ -8,7 +8,9 @@
 #include <memory>
 #include <vector>
 
-/*----------- 衝突判定をするやつ ----------*/
+/// <summary>
+/// 3次元衝突判定コンポーネント
+/// </summary>
 class Collision3DComponent : public IComponent{
 public:
     Collision3DComponent(GameObject* pOwner, const std::string& tagName = "");

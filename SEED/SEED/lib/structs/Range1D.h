@@ -1,6 +1,10 @@
 #pragma once
 #include <algorithm> // 追加
 
+
+/// <summary>
+/// 1次元の範囲を表す構造体
+/// </summary>
 struct Range1D{
 
     Range1D() = default;
@@ -25,3 +29,17 @@ public:
         max -= value;
     }
 };
+
+
+// Range1DをJSONに変換する関数
+inline void to_json(nlohmann::json& j, const Range1D& range){
+    j["min"] = range.min;
+    j["max"] = range.max;
+}
+
+
+// JSON から Range1D に変換
+inline void from_json(const nlohmann::json& j, Range1D& range){
+    range.min = j.value("min", 0.0f);
+    range.min = j.value("max", 0.0f);
+}

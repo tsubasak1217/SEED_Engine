@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap.h>
 
+/// <summary>
+/// RenderTargetView用のディスクリプターヒープ
+/// </summary>
 class DescriptorHeap_RTV : public DescriptorHeap{
 
 public:

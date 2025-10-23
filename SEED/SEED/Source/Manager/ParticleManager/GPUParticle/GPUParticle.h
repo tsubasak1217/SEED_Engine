@@ -3,6 +3,9 @@
 #include <SEED/Lib/Tensor/Quaternion.h>
 #include <SEED/Lib/Structs/Color.h>
 
+/// <summary>
+/// GPUパーティクル(3D)
+/// </summary>
 struct GPUParticle{
     Vector3 position;
     float rotation;

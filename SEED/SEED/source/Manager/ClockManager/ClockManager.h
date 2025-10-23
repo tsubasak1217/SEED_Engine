@@ -4,6 +4,9 @@
 #include <string>
 #include <chrono>
 
+/// <summary>
+/// ゲーム内時間を管理するクラス
+/// </summary>
 class ClockManager{
 
 private:

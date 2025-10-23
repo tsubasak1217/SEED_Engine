@@ -1,6 +1,9 @@
 #pragma once
 #include "../IPostProcess.h"
 
+/// <summary>
+/// RGBずらし(疑似色収差)を行うクラス
+/// </summary>
 class RGBShift : public IPostProcess{
 public:
     RGBShift();

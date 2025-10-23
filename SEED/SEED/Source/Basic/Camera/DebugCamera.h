@@ -2,6 +2,9 @@
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
 #include <SEED/Lib/Tensor/Vector3.h>
 
+/// <summary>
+/// デバッグカメラ
+/// </summary>
 struct DebugCamera : public BaseCamera{
     DebugCamera();
     ~DebugCamera()override;

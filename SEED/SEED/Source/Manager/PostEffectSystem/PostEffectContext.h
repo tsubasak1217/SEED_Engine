@@ -19,6 +19,7 @@ enum class DEAPTH_TEXTURE_FORMAT{
     FOCUS
 };
 
+// リソースの種類
 enum class DX_RESOURCE_TYPE{
     TEXTURE2D = 0,
     TEXTURE3D,

@@ -8,6 +8,9 @@
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Model.h>
 
+/// <summary>
+/// タイトルシーン(まだ実装してない)
+/// </summary>
 class Scene_Title : public Scene_Base{
 public:
     Scene_Title();

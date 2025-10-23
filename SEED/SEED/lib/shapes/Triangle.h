@@ -11,6 +11,9 @@
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Structs/DrawLocation.h>
 
+/// <summary>
+/// 三次元の三角形
+/// </summary>
 struct Triangle{
 
     Triangle();
@@ -35,6 +38,10 @@ struct Triangle{
     Matrix4x4 uvTransform = IdentityMat4();
 };
 
+
+/// <summary>
+/// 二次元の三角形
+/// </summary>
 struct Triangle2D{
 
     Triangle2D();

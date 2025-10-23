@@ -4,11 +4,18 @@
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Shapes/Line.h>
 
+/// <summary>
+/// 射影方式
+/// </summary>
 enum PROJECTIONMODE{
     PERSPECTIVE,
     ORTHO
 };
 
+
+/// <summary>
+/// カメラの基底構造体
+/// </summary>
 struct BaseCamera{
     friend class CameraManager;
     friend class DxManager;
@@ -73,9 +80,7 @@ protected:
     float zfar_;
     float fov_;
     PROJECTIONMODE projectionMode_;
-
     Vector3 normal_;
-
     Matrix4x4 worldMat_;
     Matrix4x4 worldMat2D_;
     Matrix4x4 viewMat_;

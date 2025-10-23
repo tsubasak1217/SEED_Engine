@@ -1,6 +1,9 @@
 #pragma once
 #include <Game/Objects/Notes/Note_Base.h>
 
+/// <summary>
+/// ㇾクトフリック
+/// </summary>
 class Note_RectFlick : public Note_Base{
 public:
     Note_RectFlick();

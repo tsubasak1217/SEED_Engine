@@ -107,12 +107,12 @@ void ParticleManager::DeleteAll(){
 
 void ParticleManager::Emit(EmitterBase* emitter){
 
-    if(!emitter->emitOrder){ return; }
-    if(!emitter->isActive){ return; }
+    if(!emitter->emitOrder_){ return; }
+    if(!emitter->isActive_){ return; }
 
     // パーティクルを発生させる
     if(Emitter3D* emitter3D = dynamic_cast<Emitter3D*>(emitter)){
-        for(int32_t i = 0; i < emitter->numEmitEvery; ++i){
+        for(int32_t i = 0; i < emitter->numEmitEvery_; ++i){
             instance_->particles_.emplace_back(
                 std::make_unique<Particle3D>(emitter3D)
             );
@@ -123,7 +123,7 @@ void ParticleManager::Emit(EmitterBase* emitter){
     }
 
     // 発生命令をリセット
-    emitter->emitOrder = false;
+    emitter->emitOrder_ = false;
 }
 
 

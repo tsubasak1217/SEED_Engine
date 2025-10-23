@@ -3,6 +3,9 @@
 
 struct VideoItems;
 
+/// <summary>
+/// ビデオ再生のために作成したデータなどを管理しておくクラス
+/// </summary>
 class VideoManager{
     friend class VideoPlayer;
 

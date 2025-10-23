@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
 
+/// <summary>
+/// 各入力のビット設定
+/// </summary>
 enum LaneBit{
     // Lane
     LANE_1 = 1 << 0,

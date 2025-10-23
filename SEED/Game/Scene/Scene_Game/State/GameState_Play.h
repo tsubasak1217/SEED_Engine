@@ -3,6 +3,9 @@
 #include <Game/Manager/RythmGameManager.h>
 #include <json.hpp>
 
+/// <summary>
+/// 音ゲーをプレイするステート
+/// </summary>
 class GameState_Play : public SceneState_Base{
 public:
     GameState_Play() = default;

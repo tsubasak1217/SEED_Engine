@@ -7,13 +7,19 @@
 class GameObject; // GameObjectからのみアクセス可能にする
 class GameObject2D;
 
+/// <summary>
+/// コンポーネントの所有者情報を格納する構造体
+/// </summary>
 struct ComponentOwner{
     bool is2D = false; // 2Dか3Dか
     GameObject* owner3D = nullptr; // GameObject3D*
     GameObject2D* owner2D = nullptr; // GameObject2D*
 };
 
+
+/// <summary>
 // コンポーネントのインターフェース
+/// </summary>
 class IComponent{
     friend GameObject; // GameObjectからのみアクセス可能にする
     friend GameObject2D;

@@ -38,9 +38,9 @@ void Emitter3D::Edit(){
     }
 
     // イージング関数の情報
-    if(ImGui::CollapsingHeader("出現/消滅パラメーター・イージング" + idTag_)){
+    if(ImGui::CollapsingHeader("カーブ編集" + idTag_)){
         ImGui::Indent();
-        EditEaseType();
+        EditCurves();
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
         ImGui::Unindent();
     }
@@ -66,14 +66,14 @@ void Emitter3D::Edit(){
     if(useGuizmo_){
         // 親グループの位置を考慮する
         Matrix4x4 parentMat = IdentityMat4();
-        if(parentGroup){
-            if(auto group3D = dynamic_cast<EmitterGroup3D*>(parentGroup)){
+        if(parentGroup_){
+            if(auto group3D = dynamic_cast<EmitterGroup3D*>(parentGroup_)){
                 parentMat = TranslateMatrix(group3D->GetPosition());
             }
         }
 
         // 登録
-        ImGuiManager::RegisterGuizmoItem(&center,parentMat);
+        ImGuiManager::RegisterGuizmoItem(&center, parentMat);
     }
 
     // 出現範囲の可視化
@@ -90,9 +90,9 @@ void Emitter3D::Edit(){
 /*        全般の情報       */
 /*------------------------*/
 void Emitter3D::EditGeneral(){
-    ImFunc::Combo("発生タイプ" + idTag_, emitType, { "一度のみ","ずっと","指定回数" });
-    if(emitType == EmitType::kCustom){
-        ImGui::DragInt("発生回数" + idTag_, &kMaxEmitCount, 1);
+    ImFunc::Combo("発生タイプ" + idTag_, emitType_, { "一度のみ","ずっと","指定回数" });
+    if(emitType_ == EmitType::kCustom){
+        ImGui::DragInt("発生回数" + idTag_, &kMaxEmitCount_, 1);
     }
 }
 
@@ -115,33 +115,30 @@ void Emitter3D::EditRangeParameters(){
 
 
     ImGui::Text("------- 移動 -------");
-    ImGui::Checkbox("目標位置を設定するか" + idTag_, &isSetGoalPosition);
-    if(isSetGoalPosition){
-        ImGui::Checkbox("目標位置で終了するか" + idTag_, &isEndWithGoalPosition);
+    ImGui::Checkbox("目標位置を設定するか" + idTag_, &isSetGoalPosition_);
+    if(isSetGoalPosition_){
         ImGui::DragFloat3("ゴール位置" + idTag_, &goalPosition.x, 0.05f);
     } else{
-        isEndWithGoalPosition = false;
         if(ImGui::DragFloat3("基礎となる方向" + idTag_, &baseDirection.x, 0.01f)){
             baseDirection = MyMath::Normalize(baseDirection);
         };
     }
-    if(!isEndWithGoalPosition){
-        ImGui::DragFloat("方向のばらけ具合" + idTag_, &directionRange, 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat("最低速度" + idTag_, &speedRange.min, 0.02f, 0.0f, speedRange.max);
-        ImGui::DragFloat("最高速度" + idTag_, &speedRange.max, 0.02f, speedRange.min);
-    }
+
+    ImGui::DragFloat("方向のばらけ具合" + idTag_, &directionRange, 0.01f, 0.0f, 1.0f);
+    ImGui::DragFloat("最低速度" + idTag_, &speedRange.min, 0.02f, 0.0f, speedRange.max);
+    ImGui::DragFloat("最高速度" + idTag_, &speedRange.max, 0.02f, speedRange.min);
 
 
     ImGui::Text("------ 寿命 ------");
-    ImGui::DragFloat("最短" + idTag_, &lifeTimeRange.min, 0.05f, 0.0f, lifeTimeRange.max);
-    ImGui::DragFloat("最長" + idTag_, &lifeTimeRange.max, 0.05f, lifeTimeRange.min);
+    ImGui::DragFloat("最短" + idTag_, &lifeTimeRange_.min, 0.05f, 0.0f, lifeTimeRange_.max);
+    ImGui::DragFloat("最長" + idTag_, &lifeTimeRange_.max, 0.05f, lifeTimeRange_.min);
 
 
     ImGui::Text("------- 回転 -------");
     ImGui::Checkbox("ビルボードするか" + idTag_, &isBillboard);
     ImGui::Checkbox("回転の初期化値をランダムにするか" + idTag_, &isRoteteRandomInit_);
-    ImGui::Checkbox("回転するか" + idTag_, &isUseRotate);
-    if(isUseRotate){
+    ImGui::Checkbox("回転するか" + idTag_, &isUseRotate_);
+    if(isUseRotate_){
         ImGui::Checkbox("回転軸を指定するか" + idTag_, &useRotateDirection);
         if(useRotateDirection){
             ImGui::DragFloat3("回転軸" + idTag_, &rotateDirection.x, 0.01f);
@@ -153,38 +150,9 @@ void Emitter3D::EditRangeParameters(){
 
 
     ImGui::Text("------- 重力 -------");
-    ImGui::Checkbox("重力を使用するか" + idTag_, &isUseGravity);
-    if(isUseGravity){
-        ImGui::DragFloat("重力" + idTag_, &gravity, 0.01f);
-    }
-}
-
-
-/*------------------------*/
-/*      イージング関数の情報  */
-/*------------------------*/
-void Emitter3D::EditEaseType(){
-    ImGui::Checkbox("カーブを使用するか" + idTag_, &useCurve_);
-
-    // カーブを使用しない場合はイージング関数で設定
-    if(!useCurve_){
-        ImGui::Text("-------- 出現・消失パラメーター --------");
-        ImGui::DragFloat3("出現時のスケール" + idTag_, &kInScale.x, 0.01f);
-        ImGui::DragFloat3("消失時のスケール" + idTag_, &kOutScale.x, 0.01f);
-        ImGui::SliderFloat("出現時のアルファ値" + idTag_, &kInAlpha, 0.0f, 1.0f, "%.2f");
-        ImGui::SliderFloat("消失時のアルファ値" + idTag_, &kOutAlpha, 0.0f, 1.0f, "%.2f");
-        ImGui::SliderFloat("最大に到達する時間" + idTag_, &maxTimePoint, 0.0f, 1.0f, "%.2f");
-        ImGui::SliderFloat("最大を維持する時間割合" + idTag_, &maxTimeRate, 0.0f, 1.0f, "%.2f");
-        ImGui::Text("-------- イージング関数 --------");
-        ImFunc::Combo("速度", velocityEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-        ImFunc::Combo("回転", rotateEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-        ImFunc::Combo("出現", enterEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-        ImFunc::Combo("消滅", exitEaseType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-    
-    } else{
-        // カーブを使用する場合はカーブエディタを表示
-        ImGui::Text("-------- カーブエディタ --------");
-        EditCurves();
+    ImGui::Checkbox("重力を使用するか" + idTag_, &isUseGravity_);
+    if(isUseGravity_){
+        ImGui::DragFloat("重力" + idTag_, &gravity_, 0.01f);
     }
 }
 
@@ -196,9 +164,9 @@ void Emitter3D::EditMaterial(){
 
     // BlendMode, CullingMode,LightingTypeの設定
     ImGui::Text("-------- 描画設定 --------");
-    ImFunc::Combo("ブレンドモード" + idTag_, blendMode, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
+    ImFunc::Combo("ブレンドモード" + idTag_, blendMode_, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
     ImFunc::Combo("ライティング" + idTag_, lightingType_, { "なし","ランバート","ハーフランバート" });
-    ImFunc::Combo("カリング設定" + idTag_, cullingMode, { "なし","前面","背面" }, 1);
+    ImFunc::Combo("カリング設定" + idTag_, cullingMode_, { "なし","前面","背面" }, 1);
 
     // 色の設定
     ImGui::Text("-------- 色 --------");
@@ -206,13 +174,13 @@ void Emitter3D::EditMaterial(){
         ImGui::Indent();
 
         // 色のリスト
-        for(int32_t i = 0; i < (int)colors.size(); ++i){
-            std::string colorLabel = "##" + MyFunc::PtrToStr(&colors[i]);
-            ImGui::ColorEdit4("color" + colorLabel, &colors[i].value.x);
+        for(int32_t i = 0; i < (int)colors_.size(); ++i){
+            std::string colorLabel = "##" + MyFunc::PtrToStr(&colors_[i]);
+            ImGui::ColorEdit4("color" + colorLabel, &colors_[i].value.x);
             // 削除ボタン
             if(ImGui::Button("削除" + colorLabel)){
-                if(colors.size() > 1){
-                    colors.erase(colors.begin() + i);
+                if(colors_.size() > 1){
+                    colors_.erase(colors_.begin() + i);
                     break;
                 }
             }
@@ -221,7 +189,7 @@ void Emitter3D::EditMaterial(){
         // 追加ボタン
         ImGui::Text("-- 色の追加 --");
         if(ImGui::Button("追加" + idTag_)){
-            colors.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+            colors_.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         }
 
         ImGui::Unindent();
@@ -243,15 +211,15 @@ void Emitter3D::EditMaterial(){
                 ImGui::Indent();
 
                 // 画像の一覧から選択したものをエミッターのテクスチャリストに追加
-                for(int32_t i = 0; i < texturePaths.size(); i++){
+                for(int32_t i = 0; i < texturePaths_.size(); i++){
 
                     // テクスチャの表示(押したら消す)
-                    if(ImGui::ImageButton(MyFunc::PtrToStr(&texturePaths[i]), textureDict[texturePaths[i]], buttonSize)){
+                    if(ImGui::ImageButton(MyFunc::PtrToStr(&texturePaths_[i]), textureDict_[texturePaths_[i]], buttonSize)){
                         // 消す
-                        if(texturePaths.size() > 1){
-                            texturePaths.erase(
-                                std::remove(texturePaths.begin(), texturePaths.end(), texturePaths[i]),
-                                texturePaths.end()
+                        if(texturePaths_.size() > 1){
+                            texturePaths_.erase(
+                                std::remove(texturePaths_.begin(), texturePaths_.end(), texturePaths_[i]),
+                                texturePaths_.end()
                             );
                         }
                     }
@@ -279,8 +247,8 @@ void Emitter3D::EditMaterial(){
             // テクスチャが選択されたら追加
             if(!selected.empty()){
                 // テクスチャをエミッターに追加
-                textureDict[selected] = TextureManager::GetImGuiTexture(selected);
-                texturePaths.push_back(selected);
+                textureDict_[selected] = TextureManager::GetImGuiTexture(selected);
+                texturePaths_.push_back(selected);
             }
         }
         ImGui::Unindent();
@@ -293,22 +261,13 @@ void Emitter3D::EditMaterial(){
         // モデルの一覧から選択したものをエミッターのモデルリストに追加
         static const std::filesystem::path rootPath = "Resources/Models";
         static std::filesystem::path curPath = rootPath;
-        std::string selected = ImFunc::FolderView("モデル形状を選択", curPath, false, { ".obj", ".gltf",".glb"}, rootPath);
+        std::string selected = ImFunc::FolderView("モデル形状を選択", curPath, false, { ".obj", ".gltf",".glb" }, rootPath);
 
         // 選択されたら変更
         if(!selected.empty()){
             emitModelFilePath_ = selected;
         }
     }
-}
-
-
-/*------------------------*/
-/*      頻度などの情報      */
-/*------------------------*/
-void Emitter3D::EditFrequency(){
-    ImGui::DragFloat("発生間隔", &interval, 0.01f, 0.0f);
-    ImGui::DragInt("一度に発生する数", &numEmitEvery, 1, 0, 100);
 }
 
 
@@ -319,62 +278,28 @@ nlohmann::json Emitter3D::ExportToJson(){
     nlohmann::json j;
 
     // 全般の情報
-    j["emitterType"] = "Emitter_Model3D";
-    j["isActive"] = true;
+    j["emitterType"] = "Emitter3D";
     j["isBillboard"] = isBillboard;
-    j["isUseRotate"] = isUseRotate;
-    j["isUseGravity"] = isUseGravity;
-    j["emitType"] = (int)emitType;
-    j["blendMode"] = (int)blendMode;
-    j["CullingMode"] = (int)cullingMode;
     j["lightingType"] = (int)lightingType_;
-    j["initUpdateTime"] = initUpdateTime_;
-    j["center"] = { center.translate.x, center.translate.y, center.translate.z };
+    j["center"] = center.translate;
 
     // 範囲・パラメーターなどの情報
-    j["emitRange"] = { emitRange.x, emitRange.y, emitRange.z };
-    j["radiusRange"] = { radiusRange.min, radiusRange.max };
-    j["baseDirection"] = { baseDirection.x, baseDirection.y, baseDirection.z };
+    j["emitRange"] = emitRange;
+    j["radiusRange"] = radiusRange;
+    j["baseDirection"] = baseDirection;
     j["directionRange"] = directionRange;
-    j["isSetGoalPosition"] = isSetGoalPosition;
-    j["isEndWithGoalPosition"] = isEndWithGoalPosition;
-    j["goalPosition"] = { goalPosition.x, goalPosition.y, goalPosition.z };
-    j["speedRange"] = { speedRange.min, speedRange.max };
-    j["rotateSpeedRange"] = { rotateSpeedRange.min, rotateSpeedRange.max };
+    j["goalPosition"] = goalPosition;
+    j["speedRange"] = speedRange;
+    j["rotateSpeedRange"] = rotateSpeedRange;
     j["useRotateDirection"] = useRotateDirection;
     j["isRoteteRandomInit"] = isRoteteRandomInit_;
-    j["rotateDirection"] = { rotateDirection.x, rotateDirection.y, rotateDirection.z };
-    j["lifeTimeRange"] = { lifeTimeRange.min, lifeTimeRange.max };
-    j["gravity"] = gravity;
-    j["scaleRange"] = { scaleRange.min, scaleRange.max };
-
-    // 減衰・イージング関数の情報
-    j["inScale"] = kInScale;
-    j["outScale"] = kOutScale;
-    j["inAlpha"] = kInAlpha;
-    j["outAlpha"] = kOutAlpha;
-    j["maxTimePoint"] = maxTimePoint;
-    j["maxTimeRate"] = maxTimeRate;
-    j["velocityEaseType"] = (int)velocityEaseType_;
-    j["rotateEaseType"] = (int)rotateEaseType_;
-    j["enterEaseType"] = (int)enterEaseType_;
-    j["exitEaseType"] = (int)exitEaseType_;
-
-    // 発生頻度などの情報
-    j["interval"] = interval;
-    j["numEmitEvery"] = numEmitEvery;
-    j["kMaxEmitCount"] = kMaxEmitCount;
-
-    // 色の情報
-    for(auto& color : colors){
-        j["colors"].push_back({ color.value.x, color.value.y, color.value.z, color.value.w });
-    }
+    j["rotateDirection"] = rotateDirection;
+    j["lifeTimeRange"] = lifeTimeRange_;
+    j["gravity"] = gravity_;
+    j["scaleRange"] = scaleRange;
 
     // テクスチャの情報
     j["useDefaultTexture"] = useDefaultTexture;
-    for(auto& textureHandle : texturePaths){
-        j["textureHandles"].push_back(textureHandle);
-    }
 
     // モデルの情報
     j["emitModelFilePath"] = emitModelFilePath_;
@@ -388,77 +313,35 @@ nlohmann::json Emitter3D::ExportToJson(){
 void Emitter3D::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
-    isActive = true;//j["isActive"];
-    isBillboard = j["isBillboard"];
-    isUseRotate = j["isUseRotate"];
-    isUseGravity = j["isUseGravity"];
-    emitType = (EmitType)j["emitType"];
-    blendMode = (BlendMode)j["blendMode"];
-    cullingMode = (D3D12_CULL_MODE)j["CullingMode"];
-    lightingType_ = (LIGHTING_TYPE)j["lightingType"];
-    initUpdateTime_ = j.value("initUpdateTime",0.0f);
-    center.translate = Vector3(
-        j["center"][0], j["center"][1], j["center"][2]
-    );
+    isBillboard = j.value("isBillboard", true);
+    cullingMode_ = (D3D12_CULL_MODE)j.value("CullingMode", 3);
+    lightingType_ = (LIGHTING_TYPE)j.value("lightingType", 0);
+    initUpdateTime_ = j.value("initUpdateTime", 0.0f);
+    center.translate = j.value("center", Vector3(0.0f));
 
     // 範囲やパラメーターなどの情報
-    emitRange = j["emitRange"];
-    radiusRange = Range1D(j["radiusRange"][0], j["radiusRange"][1]);
-    isSetGoalPosition = j["isSetGoalPosition"];
-    isEndWithGoalPosition = j["isEndWithGoalPosition"];
-    goalPosition = j["goalPosition"];
-    baseDirection = j["baseDirection"];
-    directionRange = j["directionRange"];
-    speedRange = Range1D(j["speedRange"][0], j["speedRange"][1]);
-    rotateSpeedRange = Range1D(j["rotateSpeedRange"][0], j["rotateSpeedRange"][1]);
-    useRotateDirection = j["useRotateDirection"];
-    isRoteteRandomInit_ = j["isRoteteRandomInit"];
-    rotateDirection = j["rotateDirection"];
-    lifeTimeRange = Range1D(j["lifeTimeRange"][0], j["lifeTimeRange"][1]);
-    gravity = j["gravity"];
-    scaleRange = Range3D(j["scaleRange"][0], j["scaleRange"][1]);
-
-    // 出現・消失・イージング関数の情報
-    kInScale = j["inScale"];
-    kOutScale = j["outScale"];
-    kInAlpha = j["inAlpha"];
-    kOutAlpha = j["outAlpha"];
-    maxTimePoint = j["maxTimePoint"];
-    maxTimeRate = j["maxTimeRate"];
-    velocityEaseType_ = (Easing::Type)j["velocityEaseType"];
-    rotateEaseType_ = (Easing::Type)j["rotateEaseType"];
-    enterEaseType_ = (Easing::Type)j["enterEaseType"];
-    exitEaseType_ = (Easing::Type)j["exitEaseType"];
-
-    // 発生頻度などの情報
-    interval = j["interval"];
-    numEmitEvery = j["numEmitEvery"];
-    kMaxEmitCount = j["kMaxEmitCount"];
-
-    // 色の情報
-    colors.clear();
-    for(auto& color : j["colors"]){
-        colors.emplace_back(Vector4(color[0], color[1], color[2], color[3]));
-    }
-
-    // テクスチャの情報
-    texturePaths.clear();
-    useDefaultTexture = j["useDefaultTexture"];
-    for(auto& textureHandle : j["textureHandles"]){
-        texturePaths.push_back(textureHandle);
-        // テクスチャのセットに追加
-        textureDict[textureHandle] = TextureManager::GetImGuiTexture(textureHandle);
-    }
+    emitRange = j.value("emitRange", Vector3());
+    radiusRange = j.value("radiusRange", Range1D());
+    goalPosition = j.value("goalPosition", Vector3());
+    baseDirection = j.value("baseDirection", Vector3(0.0f, 1.0f, 0.0f));
+    directionRange = j.value("directionRange", 0.3f);
+    speedRange = j.value("speedRange", Range1D());
+    rotateSpeedRange = j.value("rotateSpeedRange", Range1D());
+    useRotateDirection = j.value("useRotateDirection", false);
+    isRoteteRandomInit_ = j.value("isRoteteRandomInit", false);
+    rotateDirection = j.value("rotateDirection", Vector3());
+    lifeTimeRange_ = j.value("lifeTimeRange", Range1D());
+    scaleRange = j.value("scaleRange", Range3D());
 
     // モデルの情報
-    emitModelFilePath_ = j["emitModelFilePath"].get<std::string>();
+    emitModelFilePath_ = j.value("emitModelFilePath", "DefaultAssets/Plane/Plane.obj");
 }
 
 
 // 発生位置の中心を取得
 Vector3 Emitter3D::GetCenter() const{
-    if(parentGroup){
-        if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(parentGroup)){
+    if(parentGroup_){
+        if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(parentGroup_)){
             return center.translate + group3D->GetPosition();
         }
     }

@@ -12,6 +12,9 @@
 #include <SEED/Lib/Structs/DrawLocation.h>
 #include <SEED/Lib/Structs/Color.h>
 
+/// <summary>
+/// 3D矩形
+/// </summary>
 struct Quad{
 
     Quad() = default;
@@ -39,6 +42,9 @@ struct Quad{
 };
 
 
+/// <summary>
+/// 2D矩形
+/// </summary>
 struct Quad2D{
 
     Quad2D() = default;

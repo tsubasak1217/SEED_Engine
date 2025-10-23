@@ -2,6 +2,9 @@
 #include <optional>
 #include <SEED/Lib/Tensor/Vector3.h>
 
+/// <summary>
+/// 当たり判定の結果を格納する構造体(3D)
+/// </summary>
 struct CollisionData{
     // 基礎衝突情報
     bool error = false;
@@ -19,6 +22,9 @@ struct CollisionData{
     std::optional<Vector3> hitPos;
 };
 
+/// <summary>
+///  当たり判定の結果を格納する構造体(2D)
+/// </summary>
 struct CollisionData2D{
     // 基礎衝突情報
     bool error = false;

@@ -2,6 +2,9 @@
 #include <SEED/Lib/Structs/BaseLight.h>
 #include <cmath>
 
+/// <summary>
+/// スポットライト光源
+/// </summary>
 struct SpotLight : public BaseLight{
     SpotLight();
     Vector3 position;

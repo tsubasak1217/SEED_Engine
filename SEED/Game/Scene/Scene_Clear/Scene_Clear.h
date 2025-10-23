@@ -15,6 +15,10 @@
 #include <SEED/Lib/Structs/Timer.h>
 #include <Game/Objects/Result/PlayResult.h>
 
+
+/// <summary>
+/// クリアシーンクラス
+/// </summary>
 class Scene_Clear
     : public Scene_Base{
 public:

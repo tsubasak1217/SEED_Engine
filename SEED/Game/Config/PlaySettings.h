@@ -2,6 +2,10 @@
 #include <json.hpp>
 #include <memory>
 
+
+/// <summary>
+/// 音ゲーのセッティング情報を持つクラス
+/// </summary>
 class PlaySettings{
 private:
     PlaySettings();

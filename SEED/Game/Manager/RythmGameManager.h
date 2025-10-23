@@ -8,6 +8,9 @@
 #include <Game/Manager/NotesEditor.h>
 #include <Game/Objects/Result/PlayResult.h>
 
+/// <summary>
+/// リズムゲーム管理クラス
+/// </summary>
 class RythmGameManager{
 private:
     RythmGameManager();

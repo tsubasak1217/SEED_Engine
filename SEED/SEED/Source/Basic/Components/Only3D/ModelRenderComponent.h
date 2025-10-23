@@ -6,7 +6,9 @@
 // stl
 #include <memory>
 
-/*----------- モデルを描画するやつ ----------*/
+/// <summary>
+/// モデルを描画するコンポーネント
+/// </summary>
 class ModelRenderComponent : public IComponent{
 public:
     ModelRenderComponent(GameObject* pOwner, const std::string& tagName = "");

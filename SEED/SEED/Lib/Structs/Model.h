@@ -11,6 +11,9 @@
 #include <SEED/Lib/Structs/Material.h>
 #include <SEED/Lib/Structs/blendMode.h>
 
+/// <summary>
+/// モデルの情報を格納するクラス
+/// </summary>
 class Model{
 
     friend class PolygonManager;

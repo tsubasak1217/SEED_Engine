@@ -1,6 +1,9 @@
 #pragma once
 #include "Collider2D.h"
 
+/// <summary>
+/// 円コライダー
+/// </summary>
 class Collider_Circle : public Collider2D{
 public:
     Collider_Circle();

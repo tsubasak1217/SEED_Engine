@@ -2,6 +2,9 @@
 #include "../IPostProcess.h"
 #include "../GaussianFilter/BlurParam.h"
 
+/// <summary>
+/// 被写界深度を行うクラス
+/// </summary>
 class DoF : public IPostProcess{
 public:
     DoF();

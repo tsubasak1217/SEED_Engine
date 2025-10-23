@@ -8,6 +8,9 @@
 #include <Environment/Environment.h>
 #include <json.hpp>
 
+/// <summary>
+/// ポストプロセスの基底クラス
+/// </summary>
 class IPostProcess{
     friend class PostEffectSystem;
     friend struct PostProcessGroup;

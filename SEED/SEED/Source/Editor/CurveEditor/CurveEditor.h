@@ -5,6 +5,9 @@
 #include <vector>
 
 
+/// <summary>
+/// カーブ編集を行うクラス
+/// </summary>
 class CurveEditor{
     friend class Curve;
 public:

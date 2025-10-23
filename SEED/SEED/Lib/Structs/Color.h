@@ -1,6 +1,10 @@
 #pragma once
 #include <SEED/Lib/Tensor/Vector4.h>
 #include <SEED/Lib/Functions/MyMath.h>
+
+/// <summary>
+/// 色情報を格納する構造体
+/// </summary>
 struct Color{
     Vector4 value = Vector4(1.0f);
 

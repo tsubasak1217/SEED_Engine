@@ -1,6 +1,9 @@
 #pragma once
 #include <Game/Objects/Notes/Note_Base.h>
 
+/// <summary>
+/// サイドフリックノーツ
+/// </summary>
 class Note_SideFlick : public Note_Base{
 public:
     Note_SideFlick();

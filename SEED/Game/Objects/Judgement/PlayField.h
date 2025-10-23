@@ -14,6 +14,9 @@
 // 前方宣言
 class NotesData;
 
+/// <summary>
+/// 音ゲーの遊戯フィールドを描画するクラス
+/// </summary>
 class PlayField{
 private:
     enum PlayFieldPoint{

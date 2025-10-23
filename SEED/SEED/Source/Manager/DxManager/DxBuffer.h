@@ -2,6 +2,9 @@
 #include "DxResource.h"
 #include <SEED/Lib/Functions/DxFunc.h>
 
+/// <summary>
+/// DirectXのバッファを扱いやすくするために用意した構造体
+/// </summary>
 template<typename T>
 struct DxBuffer{
     T* data;

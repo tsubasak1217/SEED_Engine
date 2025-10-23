@@ -1,5 +1,6 @@
 #pragma once
 
+// ブレンドモード
 enum class BlendMode{
     NONE = 0,
     MULTIPLY,

@@ -16,6 +16,9 @@
 #include <SEED/Source/Basic/Camera/FollowCamera.h>
 
 
+/// <summary>
+/// ゲームシーンクラス
+/// </summary>
 class Scene_Game
     : public Scene_Base{
 

@@ -3,6 +3,7 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Structs/Color.h>
 
+// ライトの種類
 enum LIGHT_TYPE{
     BASE_LIGHT = 0,
     DIRECTIONAL_LIGHT,
@@ -10,7 +11,9 @@ enum LIGHT_TYPE{
     SPOT_LIGHT
 };
 
-
+/// <summary>
+/// ライトの基底クラス
+/// </summary>
 class BaseLight{
 public:
     // polygonManagerに渡すための関数

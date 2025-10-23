@@ -12,6 +12,9 @@
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Shapes/Triangle.h>
 
+/// <summary>
+/// ロードシーン(まだ実装してない)
+/// </summary>
 class Scene_Load
     : public Scene_Base{
 

@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Lib/Shapes/Triangle.h>
 
+/// <summary>
+/// レーンを押した際のリアクションを表示する用のクラス
+/// </summary>
 struct AnswerLane{
 public:
     void Update();

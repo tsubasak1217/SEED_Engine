@@ -26,7 +26,7 @@ bool EmitterGroupBase::GetIsAlive() const{
 
     // 1つでも生存しているエミッターがあればtrueを返す
     for(const auto& emitter : emitters){
-        if(emitter->isAlive){
+        if(emitter->isAlive_){
             return true;
         }
     }
@@ -40,7 +40,7 @@ bool EmitterGroupBase::GetIsAlive() const{
 ///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::TeachParent(){
     for(auto& emitter : emitters){
-        emitter->parentGroup = this;
+        emitter->parentGroup_ = this;
     }
 }
 
@@ -70,7 +70,7 @@ void EmitterGroupBase::Edit(){
 
         // アクティブかどうかのチェックボックス
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-        ImFunc::ActivateImageButton("visible" + tag, emitters[i]->isActive, icons_["visible"], icons_["invisible"], ImVec2(30, 20));
+        ImFunc::ActivateImageButton("visible" + tag, emitters[i]->isActive_, icons_["visible"], icons_["invisible"], ImVec2(30, 20));
         ImGui::PopStyleColor();
 
         // エミッターのヘッダー
@@ -94,7 +94,7 @@ void EmitterGroupBase::Edit(){
     // エミッターの追加ボタン
     if(ImGui::Button("エミッターの追加" + tag)){
         emitters.emplace_back(new Emitter3D());
-        emitters.back()->parentGroup = this;
+        emitters.back()->parentGroup_ = this;
     }
 
     // エミッターグループをjsonに保存
@@ -167,7 +167,7 @@ void EmitterGroupBase::ContextMenu(){
             }
 
             // 追加
-            newEmitter->parentGroup = this;
+            newEmitter->parentGroup_ = this;
             newEmitter->CreateTag();
             emitters.emplace_back(std::unique_ptr<EmitterBase>(newEmitter));
         }
@@ -190,7 +190,7 @@ void EmitterGroupBase::Reactivation(){
 
     // 1つでも生存しているエミッターがあればfalse
     for(const auto& emitter : emitters){
-        if(emitter->isAlive){
+        if(emitter->isAlive_){
             isAllStopped = false;
         }
     }
@@ -207,9 +207,9 @@ void EmitterGroupBase::Reactivation(){
 
         // 全てのエミッターを再活性化
         for(auto& emitter : emitters){
-            emitter->isAlive = true; // 生存状態にする
-            emitter->emitCount = 0; // 発生回数をリセット
-            emitter->totalTime = 0.0f;
+            emitter->isAlive_ = true; // 生存状態にする
+            emitter->emitCount_ = 0; // 発生回数をリセット
+            emitter->totalTime_ = 0.0f;
         }
     }
 }
@@ -219,10 +219,10 @@ void EmitterGroupBase::Reactivation(){
 ///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::InitEmitters(){
     for(auto& emitter : emitters){
-        emitter->isAlive = true; // 生存状態にする
-        emitter->emitCount = 0; // 発生回数をリセット
-        emitter->totalTime = 0.0f;
-        emitter->emitOrder = false;
+        emitter->isAlive_ = true; // 生存状態にする
+        emitter->emitCount_ = 0; // 発生回数をリセット
+        emitter->totalTime_ = 0.0f;
+        emitter->emitOrder_ = false;
     }
 }
 
@@ -248,7 +248,7 @@ void EmitterGroupBase::LoadFromJson(const nlohmann::json& j){
         }
 
         emitter->LoadFromJson(emitterJson);
-        emitter->parentGroup = this;
+        emitter->parentGroup_ = this;
         emitter->initUpdateTime_ = initUpdateTime_;
         emitters.push_back(std::move(emitter));
     }

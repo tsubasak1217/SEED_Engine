@@ -5,6 +5,10 @@
 #include <SEED/Source/Basic/Object/GameObject.h>
 #include <SEED/Source/Manager/InputManager/InputHandler.h>
 
+
+/// <summary>
+/// 追従カメラ
+/// </summary>
 struct FollowCamera : public BaseCamera{
 
 public:

@@ -27,7 +27,11 @@ enum class ColliderType2D : uint32_t{
     Quad,
 };
 
-// コライダーの基底クラス
+
+
+/// <summary>
+// 2次元コライダーの基底クラス
+/// </summary>
 class Collider2D{
     friend class ColliderEditor;
     friend class ColliderEditor2D;

@@ -2,6 +2,9 @@
 #include "../IPostProcess.h"
 #include "BlurParam.h"
 
+/// <summary>
+/// ガウスぼかしを行うクラス
+/// </summary>
 class GaussianFilter : public IPostProcess{
 public:
     GaussianFilter();

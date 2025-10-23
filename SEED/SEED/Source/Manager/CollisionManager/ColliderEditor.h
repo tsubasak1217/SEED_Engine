@@ -15,6 +15,9 @@
 
 class GameObject;
 
+/// <summary>
+/// コライダーの編集クラス(3D)
+/// </summary>
 class ColliderEditor{
     friend class Collision3DComponent;
 private:// 基本関数

@@ -16,18 +16,24 @@
 
 using BindData = std::variant<std::reference_wrapper<std::string>, std::reference_wrapper<int>, std::reference_wrapper<float>>;
 
+// 横の字詰め方式
 enum class TextAlignX{
     LEFT,
     CENTER,
     RIGHT
 };
 
+// 縦の字詰め方式
 enum class TextAlignY{
     TOP,
     CENTER,
     BOTTOM
 };
 
+
+/// <summary>
+/// 2次元テキストボックス構造体
+/// </summary>
 struct TextBox2D{
 
     TextBox2D() = default;

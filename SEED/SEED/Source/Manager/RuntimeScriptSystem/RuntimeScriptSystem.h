@@ -13,11 +13,18 @@
 #include <SEED/Lib/Functions/MyFunc.h>
 #include "FunctionTypeDefines.h"
 
+/// <summary>
+/// HostFxrの情報
+/// </summary>
 struct HostFxrContext{
     hostfxr_handle handle;
     load_assembly_and_get_function_pointer_fn loadFunc;
 };
 
+
+/// <summary>
+/// ランタイムでC#スクリプトをコンパイルするシステム
+/// </summary>
 class RuntimeScriptSystem{
 private:
     RuntimeScriptSystem();

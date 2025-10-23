@@ -194,7 +194,7 @@ void Model::StartAnimation(int32_t animationIndex, bool loop, float speedRate){
 
     // アニメーション名の取得
     int index = 0;
-    for(auto animetion : animations){
+    for(auto& animetion : animations){
         if(index == animationIndex){
             animationName_ = animetion.first;
             break;

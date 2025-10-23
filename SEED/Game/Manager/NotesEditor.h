@@ -13,6 +13,9 @@
 #include <SEED/Lib/Functions/MyMath.h>
 #include <Game/Objects/Notes/Note_Base.h>
 
+/// <summary>
+/// 譜面のテンポ情報を持つクラス
+/// </summary>
 struct TempoData{
     float bpm = 150;
     int timeSignature_denominator = 4;// 拍子の分母

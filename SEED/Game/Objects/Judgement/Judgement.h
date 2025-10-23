@@ -7,7 +7,10 @@ class NotesData;
 class Note_Hold;
 class PlayField;
 
-// 音ゲーの判定を行うクラス
+
+/// <summary>
+/// 音ゲーの判定を行うクラス
+/// </summary>
 class Judgement{
 public:
     enum Evalution{

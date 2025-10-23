@@ -1826,7 +1826,7 @@ void PolygonManager::AddSkyBox(){
         if(transform.size() <= drawCount){ transform.resize(drawCount + 1); }
 
         Matrix4x4 worldMat;
-        if(SkyBox::isFollowCameraPos_){
+        if(SkyBox::isFollowToCamera_){
             Matrix4x4 cameraTranslateMat = TranslateMatrix(camera->GetTranslation());
             worldMat = skyBoxMat * cameraTranslateMat;
         } else{

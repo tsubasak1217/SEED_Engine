@@ -9,6 +9,9 @@
 
 class SEED;
 
+/// <summary>
+/// ウィンドウの作成や更新、管理などをするクラス
+/// </summary>
 class WindowManager{
 private:
     // プライベートコンストラクタ

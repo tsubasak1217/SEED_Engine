@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <string>
 
+/// <summary>
+/// カメラ管理構造体
+/// </summary>
 class CameraManager{
     friend class SEED;
     friend class DxManager;

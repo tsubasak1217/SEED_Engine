@@ -1,6 +1,9 @@
 #pragma once
 #include "../IPostProcess.h"
 
+/// <summary>
+/// 走査線を掛けるクラス
+/// </summary>
 class ScanLine : public IPostProcess{
 public:
     ScanLine();

@@ -8,7 +8,6 @@
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/Scene/Scene_Game/State/GameState_Select.h>
-#include <Game/Scene/Scene_Game/State/GameState_Strolling.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //

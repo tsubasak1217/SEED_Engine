@@ -21,6 +21,9 @@ struct ParentComponentInfo{
     Matrix4x4* pMatrix = nullptr;
 };
 
+/// <summary>
+/// 3Dゲームオブジェクト
+/// </summary>
 class GameObject{
     // hierarchyのみコンストラクタを呼び出せる
     friend class Hierarchy;

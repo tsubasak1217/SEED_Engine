@@ -2,6 +2,9 @@
 #include <imgui.h>
 #include <vector>
 
+/// <summary>
+/// ImGuiで英語以外を描画できるようにするために文字コードを作成するクラス
+/// </summary>
 struct GlyphRanges{
 
     static inline std::vector<int> CreateJpGlyphSet(){

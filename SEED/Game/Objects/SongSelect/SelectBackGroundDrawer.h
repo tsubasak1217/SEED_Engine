@@ -1,6 +1,9 @@
 #pragma once
 #include <Game/Objects/SongSelect/SongInfo.h>
 
+/// <summary>
+/// セレクトシーンの背景を描画するクラス
+/// </summary>
 class SelectBackGroundDrawer{
 public:
     SelectBackGroundDrawer();

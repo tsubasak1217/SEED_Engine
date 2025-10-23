@@ -3,6 +3,9 @@
 #include <SEED/Lib/Functions/MatrixFunc.h>
 #include <array>
 
+/// <summary>
+/// 軸平行でないバウンディングボックス
+/// </summary>
 struct OBB{
     Vector3 center;
     Vector3 halfSize = {1.0f,1.0f,1.0f};

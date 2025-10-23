@@ -1,6 +1,10 @@
 #pragma once
 #include "Collider.h"
 
+
+/// <summary>
+/// 3D線コライダー
+/// </summary>
 class Collider_Line : public Collider{
 public:
     Collider_Line();

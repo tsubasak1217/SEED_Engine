@@ -12,7 +12,9 @@
 
 class EmitterBase;
 
-// パーティクルをプリセット化するための構造体
+/// <summary>
+/// エミッターをグループで管理するクラスの基底クラス
+/// </summary>
 class EmitterGroupBase{
 public:
     EmitterGroupBase();

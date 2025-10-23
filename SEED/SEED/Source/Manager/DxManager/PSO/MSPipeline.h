@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/DxManager/PSO/IPipeline.h>
 using Microsoft::WRL::ComPtr;
 
+/// <summary>
+/// MeshShader用のパイプラインのDesc情報を格納する構造体
+/// </summary>
 struct MSPipelineDescs{
     StateParam_RootSignature rootSignature;
     StateParam_AS as;
@@ -21,7 +24,11 @@ struct MSPipelineDescs{
     StateParam_PrimitiveTopologyType primitiveTopologyType;
 };
 
-// パイプラインステートの情報を格納する構造体
+
+
+/// <summary>
+// MeshShaderのパイプラインステートの情報を格納する構造体
+/// </summary>
 struct MSPipeline : public IPipeline{
 
 public:

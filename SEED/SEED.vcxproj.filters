@@ -375,9 +375,6 @@
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp">
       <Filter>Game\Scene\Scene_Load</Filter>
     </ClCompile>
@@ -395,9 +392,6 @@
     </ClCompile>
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp">
       <Filter>SEED\Source\Basic\SceneTransition</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
-      <Filter>SEED\Lib\JsonAdapter</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp">
       <Filter>SEED\Lib\Structs</Filter>
@@ -607,9 +601,6 @@
     <ClCompile Include="SEED\Source\Manager\ClockManager\ClockManager.cpp">
       <Filter>SEED\Source\Manager\ClockManager</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp">
-      <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Source\Manager\DxManager\DxManager.cpp">
       <Filter>SEED\Source\Manager\DxManager</Filter>
     </ClCompile>
@@ -660,9 +651,6 @@
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\InputManager\InputManager.cpp">
       <Filter>SEED\Source\Manager\InputManager</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Source\Manager\JsonManager\JsonManager.cpp">
-      <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Source\Manager\ModelManager\ModelManager.cpp">
       <Filter>SEED\Source\Manager\ModelManager</Filter>
@@ -838,17 +826,11 @@
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
       <Filter>Game\Scene\Scene_Game\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h">
       <Filter>Game\Scene\Scene_Load</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h">
       <Filter>Game\Scene\Scene_Title</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
-      <Filter>SEED\Lib\Random</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h">
       <Filter>SEED\Source\Basic\Components\Only2D</Filter>
@@ -856,23 +838,8 @@
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h">
       <Filter>SEED\Source\Basic\SceneTransition</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
-      <Filter>SEED\Lib\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Input\InputMapper.h">
-      <Filter>SEED\Lib\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
-      <Filter>SEED\Lib\JsonAdapter</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
-      <Filter>SEED\Lib\MagicEnumAdapter</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Circle.h">
       <Filter>SEED\Lib\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Structs\Rect.h">
-      <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h">
       <Filter>SEED\Lib\Structs</Filter>
@@ -924,9 +891,6 @@
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h">
       <Filter>SEED\Source\Basic\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h">
-      <Filter>Game\Objects\FieldObject</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h">
       <Filter>SEED\Source\Basic\Object</Filter>
@@ -1255,9 +1219,6 @@
     <ClInclude Include="SEED\Source\Manager\ClockManager\ClockManager.h">
       <Filter>SEED\Source\Manager\ClockManager</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.h">
-      <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h">
       <Filter>SEED\Source\Manager\DxManager\DescriptorHeap</Filter>
     </ClInclude>
@@ -1287,9 +1248,6 @@
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\InputManager\InputManager.h">
       <Filter>SEED\Source\Manager\InputManager</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Source\Manager\JsonManager\JsonManager.h">
-      <Filter>SEED\Source\Manager\JsonManager</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Source\Manager\ModelManager\ModelManager.h">
       <Filter>SEED\Source\Manager\ModelManager</Filter>

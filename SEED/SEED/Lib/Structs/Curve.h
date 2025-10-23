@@ -8,7 +8,9 @@
 
 using Points = std::vector<Vector2>;
 
-// カーブ構造体
+/// <summary>
+/// パラメーターなどの操作に使用できるカーブ構造体
+/// </summary>
 class Curve{
     friend CurveEditor;
 public:

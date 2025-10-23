@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Lib/Structs/BaseLight.h>
 
+/// <summary>
+/// 点光源
+/// </summary>
 struct PointLight : public BaseLight{
     PointLight();
     Vector3 position;

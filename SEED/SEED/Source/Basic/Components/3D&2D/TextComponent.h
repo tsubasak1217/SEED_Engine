@@ -2,6 +2,9 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Lib/Structs/TextBox.h>
 
+/// <summary>
+/// テキストを描画するコンポーネント
+/// </summary>
 class TextComponent : public IComponent{
 public:
     TextComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");

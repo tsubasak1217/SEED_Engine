@@ -5,8 +5,9 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 
-
-// シーン管理クラス(シングルトン)
+/// <summary>
+// シーン管理クラス
+/// </summary>
 class SceneManager {
 
 private:

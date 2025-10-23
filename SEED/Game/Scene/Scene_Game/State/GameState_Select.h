@@ -7,6 +7,9 @@
 #include <SEED/Source/Editor/CurveEditor/CurveEditor.h>
 #include <memory>
 
+/// <summary>
+/// 楽曲を選択するステート
+/// </summary>
 class GameState_Select : public SceneState_Base{
 public:
     GameState_Select();

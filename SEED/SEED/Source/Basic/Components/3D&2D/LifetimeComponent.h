@@ -3,6 +3,9 @@
 #include <SEED/Lib/Structs/Timer.h>
 
 
+/// <summary>
+/// 寿命を設定するコンポーネント
+/// </summary>
 class LifetimeComponent : public IComponent{
 public:// 基礎関数
     LifetimeComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");

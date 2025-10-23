@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/DxManager/PSO/IPipeline.h>
 using Microsoft::WRL::ComPtr;
 
+/// <summary>
+/// 通常パイプラインのDesc情報をまとめた構造体
+/// </summary>
 struct PipelineDescs{
     StateParam_RootSignature rootSignature;
     StateParam_InputLayoutDesc inputLayoutDesc;
@@ -22,7 +25,9 @@ struct PipelineDescs{
 };
 
 
-// パイプラインステートの情報を格納する構造体
+/// <summary>
+// 通常のパイプラインステートの情報を格納する構造体
+/// </summary>
 struct Pipeline : public IPipeline{
 
 public:

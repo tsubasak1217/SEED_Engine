@@ -1,8 +1,9 @@
 #pragma once
 #include "EmitterGroupBase.h"
 
-
-// パーティクルをプリセット化するための構造体
+/// <summary>
+/// 3Dエミッターをグループで管理するクラス
+/// </summary>
 class EmitterGroup3D : public EmitterGroupBase{
     friend class Component_EmitterGroup3D;
 public:

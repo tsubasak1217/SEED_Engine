@@ -1,6 +1,9 @@
 #pragma once
 #include "Collider2D.h"
 
+/// <summary>
+/// 二次元矩形コライダー
+/// </summary>
 class Collider_Quad2D : public Collider2D{
 public:
     Collider_Quad2D();

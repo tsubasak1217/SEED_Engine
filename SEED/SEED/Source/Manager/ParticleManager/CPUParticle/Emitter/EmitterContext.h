@@ -8,6 +8,7 @@ enum class EmitType : int32_t{
     kCustom,// カスタム
 };
 
+// 2Dか3Dか
 enum class EmitterGroupType : int32_t{
     kEmitterGroup3D = 0,
     kEmitterGroup2D

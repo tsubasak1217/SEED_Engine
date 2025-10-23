@@ -1,6 +1,9 @@
 #pragma once
 #include <SEED/Source/Manager/DxManager/DescriptorHeap/DescriptorHeap.h>
 
+/// <summary>
+/// SRV・UAV・CBV用のディスクリプタヒープ
+/// </summary>
 class DescriptorHeap_SRV_CBV_UAV : public DescriptorHeap{
 public:
     DescriptorHeap_SRV_CBV_UAV();

@@ -25,6 +25,7 @@ using Microsoft::WRL::ComPtr;
 
 using AudioHandle = uint32_t;
 
+
 // 読み込みに必要な構造体
 struct ChunkHeader{
     char id[4];
@@ -50,6 +51,10 @@ struct SoundData{
     uint32_t bufferSize;
 };
 
+
+/// <summary>
+/// 音声管理クラス
+/// </summary>
 class AudioManager{
 
 private:

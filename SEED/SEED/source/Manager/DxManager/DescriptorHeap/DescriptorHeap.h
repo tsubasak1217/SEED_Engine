@@ -4,7 +4,9 @@
 #include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DescriptorHeap/ViewManager_Enum.h>
 
-
+/// <summary>
+/// ディスクリプタヒープの基底クラス
+/// </summary>
 class DescriptorHeap{
 public:
     DescriptorHeap() = default;

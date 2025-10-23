@@ -344,7 +344,7 @@ void SEED::AddQuad3DPrimitive(
     );
 }
 
-void SEED::DrawQuad2D(const Quad2D& quad){
+void SEED::DrawQuad2D(const Quad2D& quad,const Color& masterColor){
 
     Matrix4x4 worldMat = AffineMatrix(quad.scale.ToVec3(), { 0.0f,0.0f,quad.rotate }, quad.translate.ToVec3());
     instance_->pPolygonManager_->AddQuad(
@@ -353,7 +353,7 @@ void SEED::DrawQuad2D(const Quad2D& quad){
         quad.localVertex[2].ToVec3(),
         quad.localVertex[3].ToVec3(),
         quad.texCoord[0], quad.texCoord[1], quad.texCoord[2], quad.texCoord[3],
-        worldMat, quad.color, quad.lightingType,
+        worldMat, masterColor * quad.color, quad.lightingType,
         quad.uvTransform, false, quad.isApplyViewMat,
         quad.GH != -1 ? quad.GH : TextureManager::LoadTexture("DefaultAssets/white1x1.png"),
         quad.blendMode, quad.isText, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK,
@@ -364,7 +364,7 @@ void SEED::DrawQuad2D(const Quad2D& quad){
 /*========================================== スプライト ===========================================*/
 
 
-void SEED::DrawSprite(const Sprite& sprite, const std::optional<Color> masterColor){
+void SEED::DrawSprite(const Sprite& sprite, const std::optional<Color>& masterColor){
 
     instance_->pPolygonManager_->AddSprite(
         sprite,
@@ -920,7 +920,7 @@ void SEED::SetSkyBox(const std::string& textureName, const Color& color){
 void SEED::DrawSkyBox(bool isFollowCameraPos, const Vector3& position, float scale){
     SkyBox::scale_ = scale;
     SkyBox::translate_ = position;
-    SkyBox::isFollowCameraPos_ = isFollowCameraPos;
+    SkyBox::isFollowToCamera_ = isFollowCameraPos;
     instance_->pPolygonManager_->AddSkyBoxDrawCommand();
 }
 

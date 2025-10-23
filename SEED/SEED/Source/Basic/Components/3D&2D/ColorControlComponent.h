@@ -4,6 +4,9 @@
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/enums/ColorMode.h>
 
+/// <summary>
+/// 色を制御するコンポーネント
+/// </summary>
 class ColorControlComponent : public IComponent{
 public:// 基礎関数
     ColorControlComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");

@@ -10,6 +10,7 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <Game/Objects/Judgement/LaneBit.h>
 
+// ノーツの種類を表すenum
 enum class NoteType{
     None = -1,
     Tap,
@@ -20,6 +21,10 @@ enum class NoteType{
     Warning,
 };
 
+
+/// <summary>
+/// ノーツの基底クラス
+/// </summary>
 class Note_Base{
 public:
     Note_Base();

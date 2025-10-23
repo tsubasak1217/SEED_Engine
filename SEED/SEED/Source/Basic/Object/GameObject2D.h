@@ -18,6 +18,9 @@
 
 class Scene_Base;
 
+/// <summary>
+/// 2Dゲームオブジェクト
+/// </summary>
 class GameObject2D{
     // hierarchyのみコンストラクタを呼び出せる
     friend class Hierarchy;

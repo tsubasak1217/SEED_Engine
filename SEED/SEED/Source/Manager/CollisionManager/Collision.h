@@ -14,6 +14,9 @@
 #include <SEED/Source/Basic/Collision/2D/Collider2D.h>
 #include <SEED/Source/Manager/CollisionManager/CollisionData.h>
 
+/// <summary>
+/// 各形状の当たり判定関数をまとめたnamespace
+/// </summary>
 namespace Collision{
 
     namespace OBB{

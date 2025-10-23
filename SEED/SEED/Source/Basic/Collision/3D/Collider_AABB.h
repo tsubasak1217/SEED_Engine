@@ -1,6 +1,9 @@
 #pragma once
 #include "Collider.h"
 
+/// <summary>
+/// 3次元AABBコライダー
+/// </summary>
 class Collider_AABB : public Collider{
 public:
     Collider_AABB();

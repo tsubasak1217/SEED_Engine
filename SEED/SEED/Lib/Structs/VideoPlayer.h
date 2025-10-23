@@ -30,6 +30,9 @@ using Microsoft::WRL::ComPtr;
 using VideoHandle = uint32_t;
 
 
+/// <summary>
+/// ビデオ情報を格納する構造体
+/// </summary>
 struct VideoData{
     std::string filePath;
     uint32_t widthY = 0;
@@ -42,11 +45,17 @@ struct VideoData{
     GUID videoFormat;
 };
 
+/// <summary>
+/// フレーム情報
+/// </summary>
 struct Frame{
     double timePoint; // 表示時刻(秒)
     ComPtr<IMFSample> sample;
 };
 
+/// <summary>
+///　動画プレイヤーの詳細情報
+/// </summary>
 struct VideoPlayerContext{
     float decodedTime = 0.0f; // デコード済みの時間
     float currentTime = 0.0f;
@@ -58,6 +67,10 @@ struct VideoPlayerContext{
     float playSpeedRate = 1.0f;
 };
 
+
+/// <summary>
+/// 動画用のバッファなどを保持する構造体
+/// </summary>
 struct VideoItems{
     bool removeOrder = false;
     ComPtr<IMFSourceReader> reader_;
@@ -75,6 +88,9 @@ struct VideoItems{
 };
 
 
+/// <summary>
+/// 動画再生をするクラス
+/// </summary>
 class VideoPlayer{
     friend class DxManager;
     friend class VideoManager;

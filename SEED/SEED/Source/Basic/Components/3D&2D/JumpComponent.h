@@ -2,6 +2,9 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
+/// <summary>
+/// ジャンプ機能を追加するコンポーネント
+/// </summary>
 class JumpComponent : public IComponent{
 public:
     JumpComponent(std::variant<GameObject*, GameObject2D*> pOwner, const std::string& tagName = "");

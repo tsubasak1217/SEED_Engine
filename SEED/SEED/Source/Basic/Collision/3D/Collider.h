@@ -31,7 +31,10 @@ enum class ColliderType : uint32_t{
     Plane
 };
 
-// コライダーの基底クラス
+
+/// <summary>
+// 3次元コライダーの基底クラス
+/// </summary>
 class Collider{
     friend class ColliderEditor;
 public:// 基本関数--------------------------------------------------------------

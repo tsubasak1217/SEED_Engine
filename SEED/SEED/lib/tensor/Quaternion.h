@@ -2,7 +2,11 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Tensor/Matrix4x4.h>
 
-// クォータニオンクラス(左手座標系)
+
+
+/// <summary>
+/// クォータニオン(左手座標系)
+/// </summary>
 struct Quaternion{
 public:
 

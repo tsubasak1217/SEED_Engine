@@ -1,6 +1,10 @@
 #pragma once
 #include "../IPostProcess.h"
 
+
+/// <summary>
+/// グレースケールを掛けるクラス
+/// </summary>
 class GrayScale : public IPostProcess{
 public:
     GrayScale();

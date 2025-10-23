@@ -9,6 +9,9 @@
 class GameObject;
 class GameObject2D;
 
+/// <summary>
+/// シーンの基底クラス
+/// </summary>
 class Scene_Base{
     friend class GameSystem;
 public:

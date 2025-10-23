@@ -4,6 +4,9 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 
+/// <summary>
+/// ゲームのシーンの所有者
+/// </summary>
 class GameSystem{
 private:
     GameSystem() = default;
@@ -14,7 +17,7 @@ public:
     ~GameSystem(){};
     static GameSystem* GetInstance();
 
-public:
+public:// 外から触れる基本関数
     static void Initialize();
     static void Finalize();
     static void Run();
@@ -22,7 +25,7 @@ public:
     static void EndFrame();
     static void ChangeScene(const std::string& sceneName);
 
-private:
+private:// 内部の基本関数
     void Update();
     void Draw();
     void DrawGUI();

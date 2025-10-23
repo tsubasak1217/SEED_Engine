@@ -6,7 +6,10 @@
 // local
 #include <SEED/Lib/Tensor/Vector2.h>
 
+
+/// <summary>
 // 文字データ
+/// </summary>
 struct GlyphData{
     int32_t graphHandle = -1; // グラフハンドル(フォントアトラスの)
     Vector2 texcoordLT; // グリフのテクスチャ座標(左上)
@@ -16,7 +19,10 @@ struct GlyphData{
     float yOffset; // yオフセット(ベースラインからのオフセット)
 };
 
-// フォントアトラスデータ
+
+/// <summary>
+// フォントアトラスデータ(フォント画像一枚分)
+/// </summary>
 struct FontAtlas{
     int32_t textureHandle = -1;
     std::string atlasName;
@@ -25,7 +31,10 @@ struct FontAtlas{
     static const int texWidth = 4096, texHeight = 4096;// アトラスのテクスチャサイズ
 };
 
+
+/// <summary>
 // フォントデータ
+/// </summary>
 struct FontData{
     std::vector<FontAtlas> atlases;
     // 文字コードでグリフデータを管理

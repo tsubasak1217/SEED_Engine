@@ -6,12 +6,17 @@
 #include <variant>
 using Microsoft::WRL::ComPtr;
 
+/// <summary>
+/// 各ルートパラメーターを格納する構造体
+/// </summary>
 struct Parameter{
     int32_t parameterIndex = -1;
     std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> bindInfo;
 };
 
-// ルートシグネチャの情報を格納する構造体
+/// <summary>
+// ルートシグネチャの情報を格納する構造体(シェーダに渡す変数情報など)
+/// </summary>
 struct RootSignature{
     RootSignature();
     void AddParameter(

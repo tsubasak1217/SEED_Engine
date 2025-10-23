@@ -1,6 +1,9 @@
 #pragma once
 #include <cstdint>
 
+/// <summary>
+/// オブジェクトの属性を定義する
+/// </summary>
 enum class ObjectType : int32_t{
     // 全般
     All = 0,

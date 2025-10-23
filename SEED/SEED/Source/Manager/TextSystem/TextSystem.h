@@ -14,6 +14,9 @@
 // 前方宣言
 struct stbtt_fontinfo;
 
+/// <summary>
+/// フォントの読み込みを行い、読み込んだデータを保持するクラス
+/// </summary>
 class TextSystem{
 private:
     // privateコンストラクタ

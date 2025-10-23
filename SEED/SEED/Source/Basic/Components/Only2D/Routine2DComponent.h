@@ -10,6 +10,9 @@
 
 using RoutinePoint2D = std::pair<Transform2D, float>;// 座標とその座標までの時間
 
+/// <summary>
+/// 2次元のルーチン設定コンポーネント
+/// </summary>
 class Routine2DComponent : public IComponent{
 public:
     Routine2DComponent(GameObject2D* pOwner, const std::string& tagName = "");

@@ -2,6 +2,10 @@
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <Environment/Physics.h>
 
+
+/// <summary>
+/// 重力を適用するコンポーネント
+/// </summary>
 class Gravity3DComponent : public IComponent{
 public:
     Gravity3DComponent(GameObject* pOwner, const std::string& tagName = "");

@@ -158,7 +158,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Strolling.cpp" />
     <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
@@ -169,9 +168,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.cpp" />
     <ClCompile Include="SEED\Source\Basic\SceneTransition\HexagonTransition.cpp" />
-    <ClCompile Include="SEED\Lib\JsonAdapter\JsonAdapter.cpp">
-      <SubType />
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\VideoPlayer.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider2D.cpp" />
     <ClCompile Include="SEED\Source\Basic\Collision\2D\Collider_AABB2D.cpp" />
@@ -246,7 +242,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\AudioManager\XAPO\XAPO_Pitch.cpp" />
     <ClCompile Include="SEED\Source\Manager\CameraManager\CameraManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\ClockManager\ClockManager.cpp" />
-    <ClCompile Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\DxManager\DxResource.cpp" />
     <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiEx.cpp" />
@@ -265,7 +260,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\Manager\Hierarchy\Hierarchy.cpp" />
     <ClCompile Include="SEED\Source\Manager\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\InputManager\InputManager.cpp" />
-    <ClCompile Include="SEED\Source\Manager\JsonManager\JsonManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\ModelManager\ModelManager.cpp" />
     <ClCompile Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.cpp" />
     <ClCompile Include="SEED\Source\Manager\SceneManager\SceneManager.cpp" />
@@ -333,12 +327,8 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Strolling.h" />
     <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
-    <ClInclude Include="SEED\Lib\Random\RandomGenerator.h">
-      <SubType />
-    </ClInclude>
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterContext.h" />
@@ -346,22 +336,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroupBase.h" />
     <ClInclude Include="SEED\Source\Basic\SceneTransition\HexagonTransition.h" />
-    <ClInclude Include="SEED\Lib\Input\IInputDevice.h">
-      <SubType />
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Input\InputMapper.h">
-      <SubType />
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\JsonAdapter\JsonAdapter.h">
-      <SubType />
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\MagicEnumAdapter\EnumAdapter.h">
-      <SubType />
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Shapes\Circle.h" />
-    <ClInclude Include="SEED\Lib\Structs\Rect.h">
-      <SubType />
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Timer.h" />
     <ClInclude Include="SEED\Lib\Structs\VideoPlayer.h" />
     <ClInclude Include="SEED\Source\Basic\Collision\2D\Collider2D.h" />
@@ -379,7 +354,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Basic\Components\IComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\TextComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject.h" />
-    <ClInclude Include="Game\Objects\FieldObject\FieldObjectName.h" />
     <ClInclude Include="SEED\Source\Basic\Object\GameObject2D.h" />
     <ClInclude Include="SEED\Source\Basic\PostProcess\Bloom\Bloom.h">
       <SubType />
@@ -495,7 +469,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\AudioManager\XAPO\XAPO_Pitch.h" />
     <ClInclude Include="SEED\Source\Manager\CameraManager\CameraManager.h" />
     <ClInclude Include="SEED\Source\Manager\ClockManager\ClockManager.h" />
-    <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewDesc.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DescriptorHeap\ViewManager_Enum.h" />
     <ClInclude Include="SEED\Source\Manager\DxManager\DxManager.h" />
     <ClInclude Include="SEED\Source\Manager\PostEffectSystem\PostEffectSystem.h" />
@@ -506,7 +479,6 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClInclude Include="SEED\Source\Manager\DxManager\ViewManager.h" />
     <ClInclude Include="SEED\Source\Manager\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\InputManager.h" />
-    <ClInclude Include="SEED\Source\Manager\JsonManager\JsonManager.h" />
     <ClInclude Include="SEED\Source\Manager\ModelManager\ModelManager.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\FunctionTypeDefines.h" />
     <ClInclude Include="SEED\Source\Manager\RuntimeScriptSystem\RuntimeScriptSystem.h" />

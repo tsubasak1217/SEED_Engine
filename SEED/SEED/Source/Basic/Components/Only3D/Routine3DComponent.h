@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 
+/// <summary>
+/// 3次元のルーチンポイントを設定するコンポーネント
+/// </summary>
 class Routine3DComponent : public IComponent{
 public:
     Routine3DComponent(GameObject* pOwner, const std::string& tagName = "");

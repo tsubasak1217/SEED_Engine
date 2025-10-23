@@ -4,7 +4,10 @@
 #include <unordered_map>
 #include <SEED/Lib/Functions/MyFunc.h>
 
+
+/// <summary>
 // 描画レイヤーの索引辞書
+/// </summary>
 class LayerDictionary{
 public:
     static void Initialize();

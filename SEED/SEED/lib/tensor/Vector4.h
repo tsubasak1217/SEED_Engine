@@ -5,6 +5,9 @@
 struct Vector3;
 struct Matrix4x4;
 
+/// <summary>
+/// 4次元ベクトル
+/// </summary>
 struct Vector4 final{
     float x, y, z, w;
 

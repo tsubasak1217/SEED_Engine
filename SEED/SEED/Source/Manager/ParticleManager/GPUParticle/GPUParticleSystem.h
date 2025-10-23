@@ -11,7 +11,9 @@
 #include "GPUParticle.h"
 
 
-
+/// <summary>
+/// GPUパーティクルのシステム
+/// </summary>
 class GPUParticleSystem{
 private:
     struct GPUCameraInfo{

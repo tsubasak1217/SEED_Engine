@@ -12,7 +12,7 @@ Component_EmitterGroup2D::Component_EmitterGroup2D(GameObject* pOwner, const std
     }
 
     // EmitterGroupの生成
-    emitterGroup_ = std::make_unique<EmitterGroup2D>(owner_.owner3D->GetWorldMatPtr());
+    emitterGroup_ = std::make_unique<EmitterGroup2D>(owner_.owner2D->GetWorldMatPtr());
 }
 
 
@@ -31,7 +31,7 @@ void Component_EmitterGroup2D::Update(){
     if(isActive_){
         for(auto& emitter : emitterGroup_->emitters){
             emitter->Update();
-            if(emitter->emitOrder == true){
+            if(emitter->emitOrder_ == true){
                 // ここでEffectSystemにパーティクルを発生させる
                 ParticleManager::Emit(emitter.get());
             }

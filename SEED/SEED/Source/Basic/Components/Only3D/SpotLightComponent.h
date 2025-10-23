@@ -4,6 +4,9 @@
 #include <SEED/Lib/Structs/SpotLight.h>
 #include <SEED/Lib/Structs/PointLight.h>
 
+/// <summary>
+/// スポットライトを追加するコンポーネント
+/// </summary>
 class SpotLightComponent : public IComponent{
 public:
     SpotLightComponent(GameObject* pOwner, const std::string& tagName = "");

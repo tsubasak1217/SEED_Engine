@@ -3,6 +3,9 @@
 #include <SEED/Lib/Functions/DxFunc.h>
 #include <SEED/Source/Manager/DxManager/DxBuffer.h>
 
+/// <summary>
+/// リードバックバッファを扱いやすくするための構造体
+/// </summary>
 template<typename T>
 struct DxReadbackBuffer{
     DxBuffer<T> gpuBuffer;

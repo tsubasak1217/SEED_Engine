@@ -40,11 +40,17 @@ using Microsoft::WRL::ComPtr;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-
+/// <summary>
+/// 未開放のリソースがないかチェックする構造体
+/// </summary>
 struct LeakChecker{
     ~LeakChecker();
 };
 
+
+/// <summary>
+/// エンジンでDirectXを動かす基盤
+/// </summary>
 class DxManager{
 
     friend PolygonManager;

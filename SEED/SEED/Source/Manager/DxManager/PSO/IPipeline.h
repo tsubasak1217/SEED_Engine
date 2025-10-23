@@ -6,11 +6,15 @@
 #include <SEED/Lib/Functions/DxFunc.h>
 using Microsoft::WRL::ComPtr;
 
+// ポリゴンの形状
 enum class PolygonTopology : int{
     TRIANGLE,
     LINE
 };
 
+/// <summary>
+/// パイプラインの基底クラス
+/// </summary>
 struct IPipeline{
 
     virtual ~IPipeline() = default;

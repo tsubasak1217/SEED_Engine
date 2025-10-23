@@ -2,6 +2,9 @@
 #include <SEED/Lib/Includes/include_tensors.h>
 #include <SEED/Lib/Structs/Color.h>
 
+/// <summary>
+/// GPUパーティクル用のエミッター
+/// </summary>
 struct GPUEmitter{
     // position
     Vector3 position;

@@ -5,7 +5,9 @@
 
 class Scene_Base;
 
-// ゲームの基底ステート
+/// <summary>
+/// 各シーンのステートの基底クラス
+/// </summary>
 class SceneState_Base {
 public:
     SceneState_Base() = default;

@@ -8,7 +8,10 @@
 #include <memory>
 #include <vector>
 
-/*----------- 衝突判定をするやつ ----------*/
+
+/// <summary>
+/// 2次元衝突判定コンポーネント
+/// </summary>
 class Collision2DComponent : public IComponent{
 public:
     Collision2DComponent(GameObject2D* pOwner, const std::string& tagName = "");

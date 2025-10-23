@@ -1,6 +1,9 @@
 #pragma once
 #include "Collider.h"
 
+/// <summary>
+/// 3Dカプセルコライダー
+/// </summary>
 class Collider_Capsule : public Collider{
 public:
     Collider_Capsule();

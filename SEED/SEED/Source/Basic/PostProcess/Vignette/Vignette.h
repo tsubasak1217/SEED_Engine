@@ -1,6 +1,9 @@
 #pragma once
 #include "../IPostProcess.h"
 
+/// <summary>
+/// ビネットを掛けるクラス
+/// </summary>
 class Vignette : public IPostProcess{
 public:
     Vignette();

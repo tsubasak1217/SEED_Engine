@@ -9,6 +9,9 @@
 #include <SEED/Lib/Functions/Easing.h>
 
 
+/// <summary>
+/// シーン遷移の基底クラス
+/// </summary>
 class ISceneTransition {
     friend class SceneTransitionDrawer;
 public:

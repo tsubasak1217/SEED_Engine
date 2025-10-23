@@ -2,6 +2,9 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Structs/Range3D.h>
 
+/// <summary>
+/// 加速場
+/// </summary>
 struct AccelerationField{
 
     AccelerationField() = default;

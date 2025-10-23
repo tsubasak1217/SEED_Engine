@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/CollisionManager/Collision.h>
 #include <SEED/Lib/Shapes/AABB.h>
 
+/// <summary>
+/// 当たり判定用の八分木
+/// </summary>
 class Octree{
 public:
     Octree() = default;

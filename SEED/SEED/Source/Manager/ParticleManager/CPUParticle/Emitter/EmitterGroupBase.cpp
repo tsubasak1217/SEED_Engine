@@ -48,6 +48,7 @@ void EmitterGroupBase::TeachParent(){
 // 編集関数
 ///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::Edit(){
+#ifdef _DEBUG
 
     // 初期化変数
     static bool isInitialized = false;
@@ -112,6 +113,8 @@ void EmitterGroupBase::Edit(){
 
     // 再活性化処理(編集中のみ)
     Reactivation();
+
+#endif // _DEBUG
 }
 
 
@@ -119,6 +122,7 @@ void EmitterGroupBase::Edit(){
 // 出力GUIの表示関数
 ///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::OutputGUI(){
+#ifdef _DEBUG
 
     std::string outputDir = "";
 
@@ -132,6 +136,7 @@ void EmitterGroupBase::OutputGUI(){
     if(!outputDir.empty()){
         MyFunc::CreateJsonFile(outputDir, GetJson());
     }
+#endif // _DEBUG
 }
 
 
@@ -139,6 +144,8 @@ void EmitterGroupBase::OutputGUI(){
 // コンテキストメニュー
 ///////////////////////////////////////////////////////////////////////////////////////
 void EmitterGroupBase::ContextMenu(){
+#ifdef _DEBUG
+
     // エミッターの削除
     if(ImGui::MenuItem("削除")){
         if(selectEmitterIdx_ >= 0 && selectEmitterIdx_ < emitters.size()){
@@ -173,6 +180,7 @@ void EmitterGroupBase::ContextMenu(){
         }
         ImGui::CloseCurrentPopup();
     }
+#endif // _DEBUG
 }
 
 

@@ -10,20 +10,22 @@ public:
     Emitter2D();
     ~Emitter2D() = default;
 
-public:
-    void Edit();
-    nlohmann::json ExportToJson();
-    void LoadFromJson(const nlohmann::json& j);
-
-public:
+public:// アクセッサ ------------------------------------------
     Vector2 GetCenter() const;
 
+#ifdef _DEBUG// デバッグ用編集関数 -----------------------------
+public:
+    void Edit();
 private:
     void EditRangeParameters();
     void EditMaterial();
-    void EditFrequency();
+#endif
 
-    //-------------------- 発生パラメータ ------------------//
+public:// JSON入出力 ----------------------------------------
+    nlohmann::json ExportToJson();
+    void LoadFromJson(const nlohmann::json& j);
+
+    // 発生パラメータ ----------------------------------------
 public:
     Transform2D center;// 中心座標(guizmoに渡せるようTransform構造体)
     Vector2 emitRange = { 100.0f,100.0f };// 発生範囲

@@ -10,26 +10,29 @@ public:
     Emitter3D();
     ~Emitter3D() = default;
 
-public:
-    void Edit();
-    nlohmann::json ExportToJson();
-    void LoadFromJson(const nlohmann::json& j);
-
-public:
+public:// アクセッサ ------------------------------------------
     Vector3 GetCenter() const;
 
+#ifdef _DEBUG// デバッグ用編集関数 -----------------------------
+public:
+    void Edit();
 private:
     void EditGeneral();
     void EditRangeParameters();
     void EditMaterial();
+#endif // _DEBUG
 
-    //---------------------- フラグ類 ----------------------//
+public:// JSON入出力 ----------------------------------------
+    nlohmann::json ExportToJson();
+    void LoadFromJson(const nlohmann::json& j);
+
+    // フラグ類 ---------------------------------------------
 public:
     bool isBillboard = true;// ビルボード処理を行うかどうか
     bool useRotateDirection = false;// 回転方向を自分で決めるかどうか
     bool useDefaultTexture = true;// モデルのデフォルトのテクスチャを使用するかどうか
 
-    //-------------------- 発生パラメータ ------------------//
+    // 発生パラメータ ----------------------------------------
 public:
     Transform center;// 中心座標(guizmoに渡せるようTransform構造体)
     Vector3 emitRange = { 10.0f,10.0f,10.0f };// 発生範囲

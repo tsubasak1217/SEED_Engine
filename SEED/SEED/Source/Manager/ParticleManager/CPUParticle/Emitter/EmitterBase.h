@@ -30,7 +30,7 @@
 /// </summary>
 class EmitterBase{
     friend class EmitterGroupBase;
-public:
+public:// コンストラクタ・デストラクタ・コピーコンストラクタ・代入演算子
     EmitterBase();
     virtual ~EmitterBase() = default;
     EmitterBase(const EmitterBase& other) = default;
@@ -38,21 +38,26 @@ public:
     EmitterBase& operator=(const EmitterBase& other) = default;
     EmitterBase& operator=(EmitterBase&& other) = default;
 
-    // 更新処理
+public:// 基本関数---------------------------------------------
     void Update();
 
-    // 編集処理
+protected:// 内部関数------------------------------------------
+    void CreateTag();
+    
+#ifdef _DEBUG// 編集処理---------------------------------------
+public:
     virtual void Edit() = 0;
+protected:
     void EditCurves();
+    void EditGeneral();
+    void EditFrequency();
+#endif // _DEBUG
+
+public:// json入出力 -----------------------------------------
     virtual nlohmann::json ExportToJson() = 0;
     virtual void LoadFromJson(const nlohmann::json& j) = 0;
 
-protected:
-    void EditGeneral();
-    void EditFrequency();
-    void CreateTag();
-
-    //---------------------- フラグ類 ----------------------//
+    // フラグ類 ----------------------------------------------
 public:
     bool isActive_ = true;// アクティブかどうか
     bool isAlive_ = true;// 生存しているかどうか
@@ -65,7 +70,7 @@ public:
     bool useGuizmo_ = true;
 #endif // _DEBUG
 
-    //-------------------- 発生パラメータ ------------------//
+    // 発生パラメータ -----------------------------------------
 public:
     // parameter
     EmitterGroupBase* parentGroup_ = nullptr;// 親グループ
@@ -87,11 +92,11 @@ public:
     Curve velocityCurve_;// 速度カーブ
     Curve rotateCurve_;// 回転カーブ
     Curve colorCurve_;// 色カーブ
-    
+
     // 色操作のモード
     ColorMode colorMode_ = ColorMode::RGBA;// カラーモード
 
-    //-------------------- 管理用パラメータ ------------------//
+    // 管理用パラメータ -----------------------------------------
 public:// アクティブ・非アクティブ管理のための変数
     EmitType emitType_ = EmitType::kInfinite;// 発生方法
     int32_t kMaxEmitCount_ = 5;// 最大発生回数(EmitType::kCustomの時用)

@@ -13,6 +13,7 @@ Emitter2D::Emitter2D() : EmitterBase(){
     colorCurve_ = Curve(CurveChannel::VECTOR4);
 }
 
+#ifdef _DEBUG
 //
 void Emitter2D::Edit(){
     ImGui::Indent();
@@ -90,6 +91,7 @@ void Emitter2D::Edit(){
 /*      範囲などの情報      */
 /*------------------------*/
 void Emitter2D::EditRangeParameters(){
+
     ImGui::Text("-------- 出現 --------");
     ImGui::DragFloat2("中心座標" + idTag_, &center.translate.x, 0.05f);
     ImGui::DragFloat2("発生範囲" + idTag_, &emitRange.x, 0.05f);
@@ -233,14 +235,7 @@ void Emitter2D::EditMaterial(){
     }
 }
 
-
-/*------------------------*/
-/*      頻度などの情報      */
-/*------------------------*/
-void Emitter2D::EditFrequency(){
-    ImGui::DragFloat("発生間隔", &interval_, 0.01f, 0.0f);
-    ImGui::DragInt("一度に発生する数", &numEmitEvery_, 1, 0, 100);
-}
+#endif // _DEBUG
 
 
 ///////////////////////////////////////////////////////////

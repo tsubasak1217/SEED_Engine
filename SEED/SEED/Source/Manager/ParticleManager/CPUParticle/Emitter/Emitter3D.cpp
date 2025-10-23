@@ -13,8 +13,10 @@ Emitter3D::Emitter3D() : EmitterBase(){
     colorCurve_ = Curve(CurveChannel::VECTOR4);
 }
 
-//
+
+#ifdef _DEBUG
 void Emitter3D::Edit(){
+
     ImGui::Indent();
 
     // Guizmoの表示フラグ
@@ -101,6 +103,7 @@ void Emitter3D::EditGeneral(){
 /*      範囲などの情報      */
 /*------------------------*/
 void Emitter3D::EditRangeParameters(){
+
     ImGui::Text("-------- 出現 --------");
     ImGui::DragFloat3("中心座標" + idTag_, &center.translate.x, 0.05f);
     ImGui::DragFloat3("発生範囲" + idTag_, &emitRange.x, 0.05f);
@@ -268,8 +271,10 @@ void Emitter3D::EditMaterial(){
             emitModelFilePath_ = selected;
         }
     }
+
 }
 
+#endif // _DEBUG
 
 ///////////////////////////////////////////////////////////
 // 出力

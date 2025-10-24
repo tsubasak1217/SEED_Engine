@@ -121,67 +121,13 @@ void PostProcessGroup::Edit(){
 
         label = "ポストプロセスグループの保存##" + std::to_string(handle_);
         if(ImGui::Button(label.c_str())){
-            ImGui::OpenPopup("ポストプロセスの保存");
-        }
+            // 保存ボタンが押されたら保存ダイアログを開く
+            std::string fillename = MyFunc::OpenSaveFileDialog("Resources/Jsons/PostProcess/", ".json");
 
-        if(ImGui::BeginPopupModal("ポストプロセスの保存", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
-
-            if(!wantsToOverwrite){
-                ImGui::Text("ファイル名を入力");
-                ImFunc::InputText(".json", saveFileName);
-
-                if(ImGui::Button("保存")){
-                    // フルパスを構築
-                    pendingPath = "Resources/Jsons/PostProcess/" + saveFileName + ".json";
-
-                    if(std::filesystem::exists(pendingPath)){
-                        // 上書き確認が必要
-                        wantsToOverwrite = true;
-
-                    } else{
-                        std::ofstream file(pendingPath);
-                        if(file.is_open()){
-                            nlohmann::json json = ToJson();
-                            file << json.dump(4);
-                            file.close();
-                            ImGui::CloseCurrentPopup();
-                        } else{
-                            assert(false); // 書き込み失敗
-                        }
-                    }
-                }
-
-                ImGui::SameLine();
-                if(ImGui::Button("キャンセル")){
-                    ImGui::CloseCurrentPopup();
-                }
-
-
-            } else{
-                ImGui::Text("既に存在します。上書きしますか？");
-
-                if(ImGui::Button("はい")){
-                    std::ofstream file(pendingPath);
-                    if(file.is_open()){
-                        nlohmann::json json = ToJson();
-                        file << json.dump(4);
-                        file.close();
-                    } else{
-                        assert(false); // 書き込み失敗
-                    }
-
-                    wantsToOverwrite = false;
-                    pendingPath.clear();
-                    ImGui::CloseCurrentPopup();
-                }
-
-                ImGui::SameLine();
-                if(ImGui::Button("いいえ")){
-                    wantsToOverwrite = false;
-                }
+            // ダイアログ上で保存ボタンが押されたら保存処理を行う
+            if(!fillename.empty()){
+                MyFunc::CreateJsonFile(fillename, ToJson());
             }
-
-            ImGui::EndPopup();
         }
     }
 #endif // _DEBUG

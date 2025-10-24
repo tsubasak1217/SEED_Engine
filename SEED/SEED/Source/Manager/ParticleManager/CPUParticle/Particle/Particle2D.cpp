@@ -27,11 +27,12 @@ Particle2D::Particle2D(EmitterBase* emitter){
 
     ////////////////////// 座標をランダム決定 ////////////////////////
     Range2D emitRange;
-    Vector2 center = emitter2D->GetCenter();
-    emitRange.min = center - emitter2D->emitRange_ * 0.5f;
-    emitRange.max = center + emitter2D->emitRange_ * 0.5f;
-    particle_.translate = MyFunc::Random(emitRange);
-    emitPos_ = particle_.translate;
+    emitRange.min = -emitter2D->emitRange_ * 0.5f;
+    emitRange.max = emitter2D->emitRange_ * 0.5f;
+    emitPos_ = MyFunc::Random(emitRange);
+    emitPos_ *= RotateMatrix(emitter2D->center_.rotate);
+    emitPos_ += emitter2D->GetCenter();
+    particle_.translate = emitPos_;
 
 
     ///////////////////// 速度を決定 ////////////////////////
@@ -116,6 +117,7 @@ void Particle2D::Update(){
     // 初回アップデート時間が設定されている場合はその時間を使用
     if(initUpdateTime_ > 0.0f){
         deltaTime += initUpdateTime_;
+        lifetimer_.currentTime += initUpdateTime_;
         initUpdateTime_ = 0.0f; // 空に戻す
     }
 

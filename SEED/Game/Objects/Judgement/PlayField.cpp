@@ -183,12 +183,6 @@ void PlayField::Initialize(){
     GameObject* backEffect = hierarchy->LoadObject("PlayScene/Effects/StageBack.prefab");
     backEffect->SetWorldTranslate(SEED::GetMainCamera()->GetTranslation());
 
-    // 背景の初期化
-    backImage_ = Sprite("PlayField/tempBack.png");
-    backImage_.drawLocation = DrawLocation::Back;
-    backImage_.isStaticDraw = false;
-    backImage_.size = kWindowSize;
-
     // シーンの読み込み
     objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadScene("PlayScene.scene", false).objects2D_;
 
@@ -201,10 +195,10 @@ void PlayField::Initialize(){
     wheelEffectObjects_[(int)UpDown::UP] = hierarchy->LoadObject("PlayScene/Effects/Wheel_UP.prefab");
     wheelEffectObjects_[(int)UpDown::DOWN] = hierarchy->LoadObject("PlayScene/Effects/Wheel_DOWN.prefab");
     /*ㇾクトフリック*/
-    rectFlickEffectObjects_[0] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_LT.prefab");
-    rectFlickEffectObjects_[1] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_RT.prefab");
-    rectFlickEffectObjects_[2] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_LB.prefab");
-    rectFlickEffectObjects_[3] = hierarchy->LoadObject("PlayScene/Effects/RectFlick_RB.prefab");
+    rectFlickEffectObjects_[0] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_LT.prefab");
+    rectFlickEffectObjects_[1] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RT.prefab");
+    rectFlickEffectObjects_[2] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_LB.prefab");
+    rectFlickEffectObjects_[3] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RB.prefab");
 
     // 背景色の設定
     SEED::windowBackColor_ = 0x00557CFF;
@@ -510,28 +504,20 @@ void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 
     evalution;
     if(laneBit & LaneBit::RECTFLICK_LT){
-        rectFlickEffectObjects_[0]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
-        rectFlickEffectObjects_[0]->UpdateMatrix();
-        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup3D>()->Activate();
-        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup2D>()->Activate();
+        rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup2D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_RT){
-        rectFlickEffectObjects_[1]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
-        rectFlickEffectObjects_[1]->UpdateMatrix();
-        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup3D>()->Activate();
-        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup2D>()->Activate();
+        rectFlickEffectObjects_[1]->GetComponent<Component_EmitterGroup2D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_LB){
-        rectFlickEffectObjects_[2]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
-        rectFlickEffectObjects_[2]->UpdateMatrix();
-        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup3D>()->Activate();
-        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup2D>()->Activate();
+        rectFlickEffectObjects_[2]->GetComponent<Component_EmitterGroup2D>()->InitEmitters();
     }
     if(laneBit & LaneBit::RECTFLICK_RB){
-        rectFlickEffectObjects_[3]->SetWorldTranslate(effectEmitPoints_[LaneBit::RECTFLICK_ALL]);
-        rectFlickEffectObjects_[3]->UpdateMatrix();
-        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup3D>()->Activate();
-        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup2D>()->Activate();
+        rectFlickEffectObjects_[3]->GetComponent<Component_EmitterGroup2D>()->InitEmitters();
     }
 }
 

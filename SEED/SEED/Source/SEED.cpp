@@ -445,45 +445,40 @@ void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color){
 
 void SEED::DrawOBB(const OBB& obb, const Color& color){
 
-    //ローカルな頂点を計算
-    Vector3 vertex[8] = {
-        Vector3(-obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z),
-        Vector3(obb.halfSize.x,-obb.halfSize.y,-obb.halfSize.z),
-        Vector3(obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z),
-        Vector3(-obb.halfSize.x,obb.halfSize.y,-obb.halfSize.z),
-        Vector3(-obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z),
-        Vector3(obb.halfSize.x,-obb.halfSize.y,obb.halfSize.z),
-        Vector3(obb.halfSize.x,obb.halfSize.y,obb.halfSize.z),
-        Vector3(-obb.halfSize.x,obb.halfSize.y,obb.halfSize.z)
-    };
+    // 頂点を取得
+    static std::array<Vector3, 8> vertex;
+    vertex = obb.GetVertices();
 
-    // 回転がある場合は回転を適用
-    if(MyMath::Length(obb.rotate)){
-        for(int i = 0; i < 8; i++){
-            vertex[i] *= RotateMatrix(obb.rotate);
-        }
-    }
-
-    // 移動を適用
-    for(int i = 0; i < 8; i++){
-        vertex[i] += obb.center;
-    }
-
-    // 描画
+    // 手前面
     DrawLine(vertex[0], vertex[1], color);
-    DrawLine(vertex[1], vertex[2], color);
-    DrawLine(vertex[2], vertex[3], color);
-    DrawLine(vertex[3], vertex[0], color);
-
+    DrawLine(vertex[1], vertex[3], color);
+    DrawLine(vertex[3], vertex[2], color);
+    DrawLine(vertex[2], vertex[0], color);
+    // 奥面
     DrawLine(vertex[4], vertex[5], color);
-    DrawLine(vertex[5], vertex[6], color);
-    DrawLine(vertex[6], vertex[7], color);
-    DrawLine(vertex[7], vertex[4], color);
-
+    DrawLine(vertex[5], vertex[7], color);
+    DrawLine(vertex[7], vertex[6], color);
+    DrawLine(vertex[6], vertex[4], color);
+    // 接続線
     DrawLine(vertex[0], vertex[4], color);
     DrawLine(vertex[1], vertex[5], color);
     DrawLine(vertex[2], vertex[6], color);
     DrawLine(vertex[3], vertex[7], color);
+}
+
+/////////////////////////////////////////////////////////////
+// 2次元OBBの描画
+/////////////////////////////////////////////////////////////
+void SEED::DrawOBB2D(const OBB2D& obb, const Color& color){
+    // 頂点を計算
+    static std::array<Vector2, 4> vertex;
+    vertex = obb.GetVertices();
+
+    // 描画
+    DrawLine2D(vertex[0], vertex[1], color);
+    DrawLine2D(vertex[1], vertex[3], color);
+    DrawLine2D(vertex[3], vertex[2], color);
+    DrawLine2D(vertex[2], vertex[0], color);
 }
 
 /////////////////////////////////////////////////////////////

@@ -3,593 +3,388 @@
         {
             "components": [
                 {
-                    "componentID": 1,
-                    "componentTag": "EmitterGroup3D_ID:1",
+                    "componentID": 10,
+                    "componentTag": "EmitterGroup3D_ID:10",
                     "componentType": "EmitterGroup3D",
                     "emitterGroup": {
                         "emitters": [
                             {
-                                "CullingMode": 3,
-                                "baseDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
+                                "baseDirection": {
+                                    "x": 0.0,
+                                    "y": 1.0,
+                                    "z": 0.0
+                                },
                                 "blendMode": 4,
-                                "center": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
+                                "center": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "colorCurve": {
+                                    "channel": 3,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.2491408735513687,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.5057274103164673,
+                                                "y": 0.9947089552879333
+                                            },
+                                            {
+                                                "x": 0.7485681772232056,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.1851852387189865
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.6772485375404358
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.5194730162620544,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                },
+                                "colorMode": 1,
                                 "colors": [
                                     [
+                                        0.0,
+                                        0.8494207859039307,
                                         1.0,
-                                        0.5096524953842163,
+                                        1.0
+                                    ],
+                                    [
+                                        0.9806950092315674,
+                                        1.0,
                                         0.0,
                                         1.0
                                     ],
                                     [
                                         1.0,
-                                        0.9990012049674988,
-                                        0.7413127422332764,
-                                        1.0
-                                    ],
-                                    [
-                                        1.0,
-                                        0.9961389899253845,
                                         0.0,
+                                        0.7876448631286621,
                                         1.0
                                     ]
                                 ],
-                                "directionRange": 1.0,
+                                "directionRange": 0.20000000298023224,
                                 "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
-                                "emitRange": [
-                                    20.0,
-                                    0.0,
-                                    0.0
-                                ],
+                                "emitRange": {
+                                    "x": 20.950000762939453,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
                                 "emitType": 0,
-                                "emitterType": "Emitter_Model3D",
-                                "enterEaseType": 0,
-                                "exitEaseType": 10,
-                                "goalPosition": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "gravity": -9.800000190734863,
-                                "inAlpha": 0.8899999856948853,
-                                "inScale": {
+                                "emitterType": "Emitter3D",
+                                "goalPosition": {
                                     "x": 0.0,
                                     "y": 0.0,
                                     "z": 0.0
                                 },
+                                "gravity": 0.0,
+                                "initUpdateTime": 0.0,
                                 "interval": 0.0,
-                                "isActive": true,
                                 "isBillboard": true,
-                                "isEndWithGoalPosition": false,
-                                "isRoteteRandomInit": true,
-                                "isSetGoalPosition": false,
+                                "isRotateRandomInit": false,
+                                "isSetEndPosition": false,
                                 "isUseGravity": false,
                                 "isUseRotate": true,
                                 "kMaxEmitCount": 5,
-                                "lifeTimeRange": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "lightingType": 0,
-                                "maxTimePoint": 0.0,
-                                "maxTimeRate": 0.0,
-                                "numEmitEvery": 24,
-                                "outAlpha": 0.0,
-                                "outScale": {
-                                    "x": 3.0,
-                                    "y": 3.0,
-                                    "z": 3.0
+                                "lifeTimeRange": {
+                                    "max": 0.699999988079071,
+                                    "min": 0.699999988079071
                                 },
-                                "radiusRange": [
-                                    1.0,
-                                    2.0
-                                ],
-                                "rotateDirection": [
-                                    0.0,
-                                    -4.1327344661112875e-05,
-                                    1.0
-                                ],
-                                "rotateEaseType": 0,
-                                "rotateSpeedRange": [
-                                    -1.0,
-                                    1.0
-                                ],
-                                "scaleRange": [
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    },
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    }
-                                ],
-                                "speedRange": [
-                                    0.10000000149011612,
-                                    1.0
-                                ],
-                                "textureHandles": [
-                                    "ParticleTextures/twinkle.png"
-                                ],
-                                "useDefaultTexture": false,
-                                "useRotateDirection": true,
-                                "velocityEaseType": 16
-                            },
-                            {
-                                "CullingMode": 3,
-                                "baseDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "blendMode": 4,
-                                "center": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "colors": [
-                                    [
-                                        1.0,
-                                        1.0,
-                                        1.0,
-                                        1.0
+                                "lightingType": 0,
+                                "numEmitEvery": 80,
+                                "positionInterpolationCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
                                     ],
-                                    [
-                                        1.0,
-                                        0.9168915152549744,
-                                        0.13899612426757813,
-                                        1.0
-                                    ],
-                                    [
-                                        1.0,
-                                        0.48648643493652344,
-                                        0.0,
-                                        1.0
-                                    ]
-                                ],
-                                "directionRange": 0.3100000023841858,
-                                "emitModelFilePath": "DefaultAssets/cube/cube.obj",
-                                "emitRange": [
-                                    20.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "emitType": 0,
-                                "emitterType": "Emitter_Model3D",
-                                "enterEaseType": 0,
-                                "exitEaseType": 16,
-                                "goalPosition": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "gravity": -9.800000190734863,
-                                "inAlpha": 0.0,
-                                "inScale": {
+                                    "type": 0,
+                                    "unitBorder": 1.0
+                                },
+                                "radiusRange": {
+                                    "max": 0.800000011920929,
+                                    "min": 0.20000000298023224
+                                },
+                                "rotate": {
+                                    "w": 1.0,
                                     "x": 0.0,
                                     "y": 0.0,
                                     "z": 0.0
                                 },
-                                "interval": 0.0,
-                                "isActive": true,
-                                "isBillboard": false,
-                                "isEndWithGoalPosition": false,
-                                "isRoteteRandomInit": false,
-                                "isSetGoalPosition": false,
-                                "isUseGravity": false,
-                                "isUseRotate": false,
-                                "kMaxEmitCount": 5,
-                                "lifeTimeRange": [
-                                    0.699999988079071,
-                                    1.0
-                                ],
-                                "lightingType": 0,
-                                "maxTimePoint": 0.0,
-                                "maxTimeRate": 0.0,
-                                "numEmitEvery": 24,
-                                "outAlpha": 0.0,
-                                "outScale": {
-                                    "x": 1.0,
-                                    "y": 1.0,
-                                    "z": 1.0
+                                "rotateCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.39576175808906555,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.30687832832336426
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
                                 },
-                                "radiusRange": [
-                                    0.30000001192092896,
-                                    0.5
-                                ],
-                                "rotateDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "rotateEaseType": 0,
-                                "rotateSpeedRange": [
-                                    -2.0,
-                                    2.0
-                                ],
-                                "scaleRange": [
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    },
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    }
-                                ],
-                                "speedRange": [
-                                    0.8799999952316284,
-                                    5.179999828338623
-                                ],
-                                "textureHandles": [
-                                    "ParticleTextures/white.png",
-                                    "ParticleTextures/rectRing.png"
-                                ],
-                                "useDefaultTexture": false,
-                                "useRotateDirection": false,
-                                "velocityEaseType": 16
-                            },
-                            {
-                                "CullingMode": 3,
-                                "baseDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "blendMode": 4,
-                                "center": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "colors": [
-                                    [
-                                        1.0,
-                                        0.876552164554596,
-                                        0.3474903702735901,
-                                        1.0
-                                    ]
-                                ],
-                                "directionRange": 1.0,
-                                "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
-                                "emitRange": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "emitType": 0,
-                                "emitterType": "Emitter_Model3D",
-                                "enterEaseType": 0,
-                                "exitEaseType": 1,
-                                "goalPosition": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "gravity": -9.800000190734863,
-                                "inAlpha": 0.0,
-                                "inScale": {
+                                "rotateDirection": {
                                     "x": 0.0,
                                     "y": 0.0,
-                                    "z": 0.0
+                                    "z": 1.0
                                 },
-                                "interval": 0.0,
-                                "isActive": true,
-                                "isBillboard": true,
-                                "isEndWithGoalPosition": false,
-                                "isRoteteRandomInit": false,
-                                "isSetGoalPosition": false,
-                                "isUseGravity": false,
-                                "isUseRotate": true,
-                                "kMaxEmitCount": 5,
-                                "lifeTimeRange": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "lightingType": 0,
-                                "maxTimePoint": 0.3199999928474426,
-                                "maxTimeRate": 0.0,
-                                "numEmitEvery": 1,
-                                "outAlpha": 0.0,
-                                "outScale": {
-                                    "x": 0.0,
-                                    "y": 2.0,
-                                    "z": 0.0
+                                "rotateSpeedRange": {
+                                    "max": 6.0,
+                                    "min": -6.0
                                 },
-                                "radiusRange": [
-                                    2.0,
-                                    2.0
-                                ],
-                                "rotateDirection": [
-                                    0.0,
-                                    0.0,
-                                    1.0
-                                ],
-                                "rotateEaseType": 0,
-                                "rotateSpeedRange": [
-                                    -4.5,
-                                    -4.5
-                                ],
-                                "scaleRange": [
-                                    {
+                                "scaleCurve": {
+                                    "channel": 2,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.5057273507118225,
+                                                "y": 0.3518519401550293
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.15343914926052094
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.5057273507118225,
+                                                "y": 0.3518519401550293
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.15343914926052094
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.5057273507118225,
+                                                "y": 0.3518519401550293
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.15343914926052094
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                },
+                                "scaleRange": {
+                                    "max": {
                                         "x": 1.0,
                                         "y": 1.0,
                                         "z": 1.0
                                     },
-                                    {
+                                    "min": {
                                         "x": 1.0,
                                         "y": 1.0,
                                         "z": 1.0
                                     }
-                                ],
-                                "speedRange": [
-                                    0.0,
-                                    0.0
-                                ],
+                                },
+                                "speedRange": {
+                                    "max": 5.0,
+                                    "min": 0.0
+                                },
                                 "textureHandles": [
-                                    "ParticleTextures/rectRing.png"
+                                    "Resources/Textures/DefaultAssets/white1x1.png",
+                                    "Resources/Textures/ParticleTextures/rectRing.png"
                                 ],
                                 "useDefaultTexture": false,
                                 "useRotateDirection": true,
-                                "velocityEaseType": 0
-                            },
-                            {
-                                "CullingMode": 3,
-                                "baseDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "blendMode": 4,
-                                "center": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "colors": [
-                                    [
-                                        1.0,
-                                        1.0,
-                                        1.0,
-                                        1.0
-                                    ]
-                                ],
-                                "directionRange": 1.0,
-                                "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
-                                "emitRange": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "emitType": 0,
-                                "emitterType": "Emitter_Model3D",
-                                "enterEaseType": 0,
-                                "exitEaseType": 0,
-                                "goalPosition": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "gravity": -9.800000190734863,
-                                "inAlpha": 0.0,
-                                "inScale": {
-                                    "x": 0.0,
-                                    "y": 0.0,
-                                    "z": 0.0
-                                },
-                                "interval": 0.0,
-                                "isActive": true,
-                                "isBillboard": true,
-                                "isEndWithGoalPosition": false,
-                                "isRoteteRandomInit": false,
-                                "isSetGoalPosition": false,
-                                "isUseGravity": false,
-                                "isUseRotate": false,
-                                "kMaxEmitCount": 5,
-                                "lifeTimeRange": [
-                                    0.699999988079071,
-                                    0.699999988079071
-                                ],
-                                "lightingType": 0,
-                                "maxTimePoint": 0.27000001072883606,
-                                "maxTimeRate": 0.0,
-                                "numEmitEvery": 1,
-                                "outAlpha": 0.0,
-                                "outScale": {
-                                    "x": 2.0,
-                                    "y": 2.0,
-                                    "z": 0.0
-                                },
-                                "radiusRange": [
-                                    1.0,
-                                    1.0
-                                ],
-                                "rotateDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "rotateEaseType": 0,
-                                "rotateSpeedRange": [
-                                    0.0,
-                                    1.0
-                                ],
-                                "scaleRange": [
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    },
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    }
-                                ],
-                                "speedRange": [
-                                    0.0,
-                                    0.0
-                                ],
-                                "textureHandles": [
-                                    "ParticleTextures/shine.png"
-                                ],
-                                "useDefaultTexture": false,
-                                "useRotateDirection": false,
-                                "velocityEaseType": 0
-                            },
-                            {
-                                "CullingMode": 3,
-                                "baseDirection": [
-                                    0.0,
-                                    1.0,
-                                    0.0
-                                ],
-                                "blendMode": 4,
-                                "center": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "colors": [
-                                    [
-                                        0.11196911334991455,
-                                        1.0,
-                                        0.1462559700012207,
-                                        1.0
+                                "velosityCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.1575029194355011,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.10052908957004547
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
                                     ],
-                                    [
-                                        1.0,
-                                        0.763852596282959,
-                                        0.162162184715271,
-                                        1.0
-                                    ],
-                                    [
-                                        1.0,
-                                        0.3011583089828491,
-                                        0.3011583089828491,
-                                        1.0
-                                    ],
-                                    [
-                                        0.8783261179924011,
-                                        0.5907335877418518,
-                                        1.0,
-                                        1.0
-                                    ],
-                                    [
-                                        0.10810810327529907,
-                                        0.9070228338241577,
-                                        1.0,
-                                        1.0
-                                    ],
-                                    [
-                                        1.0,
-                                        0.79420405626297,
-                                        0.030888020992279053,
-                                        1.0
-                                    ],
-                                    [
-                                        1.0,
-                                        1.0,
-                                        1.0,
-                                        1.0
-                                    ]
-                                ],
-                                "directionRange": 0.0,
-                                "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
-                                "emitRange": [
-                                    20.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "emitType": 0,
-                                "emitterType": "Emitter_Model3D",
-                                "enterEaseType": 0,
-                                "exitEaseType": 0,
-                                "goalPosition": [
-                                    0.0,
-                                    0.0,
-                                    0.0
-                                ],
-                                "gravity": -9.800000190734863,
-                                "inAlpha": 0.0,
-                                "inScale": {
-                                    "x": 1.0,
-                                    "y": 1.0,
-                                    "z": 1.0
-                                },
-                                "interval": 0.0,
-                                "isActive": true,
-                                "isBillboard": true,
-                                "isEndWithGoalPosition": false,
-                                "isRoteteRandomInit": false,
-                                "isSetGoalPosition": false,
-                                "isUseGravity": false,
-                                "isUseRotate": true,
-                                "kMaxEmitCount": 5,
-                                "lifeTimeRange": [
-                                    0.5,
-                                    1.0
-                                ],
-                                "lightingType": 0,
-                                "maxTimePoint": 0.0,
-                                "maxTimeRate": 0.0,
-                                "numEmitEvery": 16,
-                                "outAlpha": 0.0,
-                                "outScale": {
-                                    "x": 1.0,
-                                    "y": 1.0,
-                                    "z": 1.0
-                                },
-                                "radiusRange": [
-                                    0.30000001192092896,
-                                    0.800000011920929
-                                ],
-                                "rotateDirection": [
-                                    0.0,
-                                    0.0,
-                                    1.0
-                                ],
-                                "rotateEaseType": 0,
-                                "rotateSpeedRange": [
-                                    -2.0,
-                                    2.0
-                                ],
-                                "scaleRange": [
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    },
-                                    {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    }
-                                ],
-                                "speedRange": [
-                                    2.0,
-                                    8.0
-                                ],
-                                "textureHandles": [
-                                    "ParticleTextures/rectRing.png"
-                                ],
-                                "useDefaultTexture": false,
-                                "useRotateDirection": true,
-                                "velocityEaseType": 0
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                }
                             }
-                        ]
+                        ],
+                        "initUpdateTime": 0.0
                     },
                     "isActive": true,
                     "isParentToOwner": true
@@ -598,7 +393,7 @@
             "isParentRotate": true,
             "isParentScale": true,
             "isParentTranslate": true,
-            "objectName": "Wheel_UP",
+            "objectName": "WheelEffect_UP",
             "objectType": 0,
             "transform": {
                 "rotate": {

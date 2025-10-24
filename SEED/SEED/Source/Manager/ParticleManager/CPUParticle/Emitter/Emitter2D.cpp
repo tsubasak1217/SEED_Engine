@@ -94,10 +94,11 @@ void Emitter2D::Edit(){
     }
 
     // 出現範囲の可視化
-    AABB2D rangeBox;
+    OBB2D rangeBox;
     rangeBox.center = GetCenter();
     rangeBox.halfSize = emitRange_ * 0.5f;
-    SEED::DrawAABB2D(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
+    rangeBox.rotate = center_.rotate;
+    SEED::DrawOBB2D(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
 
     ImGui::Unindent();
 }
@@ -107,7 +108,18 @@ void Emitter2D::Edit(){
 /*        全般の情報       */
 /*------------------------*/
 void Emitter2D::EditGeneral(){
-    ImFunc::Combo("発生タイプ" + idTag_, emitType_, { "一度のみ","ずっと","指定回数" });
+
+    // エミッター自身のトランスフォーム
+    ImGui::SeparatorText("発生範囲の設定");
+    ImGui::DragFloat2("エミッター中心座標" + idTag_, &center_.translate.x);
+    ImGui::DragFloat2("発生範囲" + idTag_, &emitRange_.x);
+    ImGui::DragFloat("エミッター回転角度" + idTag_, &center_.rotate, 0.005f);
+    ImGui::Spacing();
+
+    // 発生タイプ
+    ImGui::SeparatorText("発生タイプの設定");
+    ImFunc::Combo("発生タイプ" + idTag_, emitType_, { "一度のみ","永続","指定回数" });
+    ImFunc::HelpTip("エミッターが終了するまでの発生回数");
     if(emitType_ == EmitType::kCustom){
         ImGui::DragInt("発生回数" + idTag_, &kMaxEmitCount_, 1);
     }
@@ -119,16 +131,8 @@ void Emitter2D::EditGeneral(){
 /*------------------------*/
 void Emitter2D::EditTransformSettings(){
 
-    // 座標関連------------------------------------------------
-    if(ImFunc::CollapsingHeader("エミッター座標・範囲" + idTag_)){
-        ImGui::Indent();
-        ImGui::DragFloat2("エミッター中心座標" + idTag_, &center_.translate.x, 0.05f);
-        ImGui::DragFloat2("発生範囲" + idTag_, &emitRange_.x, 0.05f);
-        ImGui::Unindent();
-    }
-
     // 大きさ関連の情報-----------------------------------------
-    if(ImFunc::CollapsingHeader("大きさ" + idTag_)){
+    if(ImFunc::CollapsingHeader("大きさ・スケール" + idTag_)){
         ImGui::Indent();
         ImGui::SeparatorText("半径");
         ImGui::DragFloat("最小半径" + idTag_, &radiusRange_.min, 0.01f, 0.0f, radiusRange_.max);
@@ -226,8 +230,8 @@ void Emitter2D::EditTextureAndDrawSettings(){
     // BlendMode, CullingMode,LightingTypeの設定
     ImGui::Text("-------- 描画設定 --------");
     ImFunc::Combo("ブレンドモード" + idTag_, blendMode_, { "NONE","MULTIPLY","SUBTRACT","NORMAL","ADD","SCREEN" });
-    ImFunc::Combo("描画場所" + idTag_, (int&)drawLocation_, { "背景" ,"前景"},1);
-    ImGui::DragInt("描画レイヤー" + idTag_, &layer_,0.1f, -100, 100);
+    ImFunc::Combo("描画場所" + idTag_, (int&)drawLocation_, { "背景" ,"前景" }, 1);
+    ImGui::DragInt("描画レイヤー" + idTag_, &layer_, 0.1f, -100, 100);
     ImGui::Checkbox("ビュー行列を適用するか" + idTag_, &isApplyViewMatrix_);
     ImFunc::HelpTip("ビュー行列を適用すると、パーティクルがカメラ面に固定されなくなります");
 
@@ -304,6 +308,7 @@ nlohmann::json Emitter2D::ExportToJson(){
     // 全般の情報
     j["emitterType"] = "Emitter2D";
     j["center"] = center_.translate;
+    j["rotate"] = center_.rotate;
 
     // 範囲・パラメーターなどの情報
     j["emitRange"] = emitRange_;
@@ -335,6 +340,7 @@ void Emitter2D::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
     center_.translate = j.value("center", Vector2(0.0f));
+    center_.rotate = j.value("rotate", 0.0f);
 
     // 範囲やパラメーターなどの情報
     emitRange_ = j.value("emitRange", Vector2());

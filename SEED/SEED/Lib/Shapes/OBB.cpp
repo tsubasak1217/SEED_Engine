@@ -20,3 +20,19 @@ std::array<Vector3, 8> OBB::GetVertices()const{
 
     return vertex;
 }
+
+// OBB2Dの頂点を取得
+std::array<Vector2, 4> OBB2D::GetVertices()const{
+    std::array<Vector2, 4> vertex;
+    vertex[0] = Vector2(-halfSize.x, -halfSize.y);// 左上
+    vertex[1] = Vector2(halfSize.x, -halfSize.y);// 右上
+    vertex[2] = Vector2(-halfSize.x, halfSize.y);// 左下
+    vertex[3] = Vector2(halfSize.x, halfSize.y);// 右下
+    // 回転して中心を加算
+    for(auto& v : vertex){
+        v *= RotateMatrix(rotate);
+        v += center;
+    }
+
+    return vertex;
+}

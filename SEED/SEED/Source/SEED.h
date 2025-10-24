@@ -156,6 +156,7 @@ public:
     static void DrawAABB(const AABB& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawAABB2D(const AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
     static void DrawOBB(const OBB& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawOBB2D(const OBB2D& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
 
     // 六角形の描画
     static void DrawHexagon(

@@ -27,11 +27,12 @@ Particle3D::Particle3D(EmitterBase* emitter){
 
     ////////////////////// 座標をランダム決定 ////////////////////////
     Range3D emitRange;
-    Vector3 center = modelEmitter->GetCenter();
-    emitRange.min = center - modelEmitter->emitRange_ * 0.5f;
-    emitRange.max = center + modelEmitter->emitRange_ * 0.5f;
-    particle_->transform_.translate = MyFunc::Random(emitRange);
-    emitPos_ = particle_->transform_.translate;
+    emitRange.min = -modelEmitter->emitRange_ * 0.5f;
+    emitRange.max = modelEmitter->emitRange_ * 0.5f;
+    emitPos_ = MyFunc::Random(emitRange);
+    emitPos_ *= RotateMatrix(modelEmitter->center_.rotate);
+    emitPos_ += modelEmitter->GetCenter();
+    particle_->transform_.translate = emitPos_;
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
     float radius = MyFunc::Random(modelEmitter->radiusRange_.min, modelEmitter->radiusRange_.max);
@@ -136,6 +137,7 @@ void Particle3D::Update(){
     // 初回アップデート時間が設定されている場合はその時間を使用
     if(initUpdateTime_ > 0.0f){
         deltaTime += initUpdateTime_;
+        lifetimer_.currentTime += initUpdateTime_;
         initUpdateTime_ = 0.0f; // 空に戻す
     }
 

@@ -89,11 +89,10 @@ private:
     std::unordered_map<LaneBit, Vector3>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
 
     //
-    Sprite backImage_;
     std::vector<GameObject2D*> objects2D_;
 
     // エフェクトオブジェクト
     GameObject* laneEffectObjects_[3];
     GameObject* wheelEffectObjects_[2];
-    GameObject* rectFlickEffectObjects_[4];
+    GameObject2D* rectFlickEffectObjects_[4];
 };

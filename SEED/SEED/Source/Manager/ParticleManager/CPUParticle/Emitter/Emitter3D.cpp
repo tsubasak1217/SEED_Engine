@@ -101,10 +101,11 @@ void Emitter3D::Edit(){
     }
 
     // 出現範囲の可視化
-    AABB rangeBox;
+    OBB rangeBox;
     rangeBox.center = GetCenter();
     rangeBox.halfSize = emitRange_ * 0.5f;
-    SEED::DrawAABB(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
+    rangeBox.rotate = center_.rotate.ToEuler();
+    SEED::DrawOBB(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
 
     ImGui::Unindent();
 }
@@ -114,7 +115,31 @@ void Emitter3D::Edit(){
 /*        全般の情報       */
 /*------------------------*/
 void Emitter3D::EditGeneral(){
-    ImFunc::Combo("発生タイプ" + idTag_, emitType_, { "一度のみ","ずっと","指定回数" });
+
+    // エミッター自身のトランスフォーム
+    static Vector3 eulerAngles;
+    ImGui::SeparatorText("発生範囲の設定");
+    ImGui::DragFloat3("エミッター中心座標" + idTag_, &center_.translate.x, 0.05f);
+    ImGui::DragFloat3("発生範囲" + idTag_, &emitRange_.x, 0.05f);
+    if(ImGui::Button("エミッター回転角の編集")){
+        ImGui::OpenPopup("エミッター回転角の編集" + idTag_);
+        eulerAngles = Vector3(0.0f);
+    }
+
+    // 回転の編集ポップアップ
+    if(ImGui::BeginPopup("エミッター回転角の編集" + idTag_)){
+        ImGui::DragFloat3("オイラー角で入力" + idTag_, &eulerAngles.x, 0.005f);
+        if(ImGui::Button("適用")){
+            center_.rotate = Quaternion::ToQuaternion(eulerAngles);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    // 発生タイプ
+    ImGui::SeparatorText("発生タイプの設定");
+    ImFunc::Combo("発生タイプ" + idTag_, emitType_, { "一度のみ","永続","指定回数" });
+    ImFunc::HelpTip("エミッターが終了するまでの発生回数");
     if(emitType_ == EmitType::kCustom){
         ImGui::DragInt("発生回数" + idTag_, &kMaxEmitCount_, 1);
     }
@@ -125,14 +150,6 @@ void Emitter3D::EditGeneral(){
 /*      範囲などの情報      */
 /*------------------------*/
 void Emitter3D::EditTransformSettings(){
-
-    // 座標関連------------------------------------------------
-    if(ImFunc::CollapsingHeader("エミッター座標・範囲" + idTag_)){
-        ImGui::Indent();
-        ImGui::DragFloat3("エミッター中心座標" + idTag_, &center_.translate.x, 0.05f);
-        ImGui::DragFloat3("発生範囲" + idTag_, &emitRange_.x, 0.05f);
-        ImGui::Unindent();
-    }
 
     // 大きさ関連の情報-----------------------------------------
     if(ImFunc::CollapsingHeader("大きさ" + idTag_)){
@@ -336,6 +353,7 @@ nlohmann::json Emitter3D::ExportToJson(){
     j["isBillboard"] = isBillboard_;
     j["lightingType"] = (int)lightingType_;
     j["center"] = center_.translate;
+    j["rotate"] = center_.rotate;
 
     // 範囲・パラメーターなどの情報
     j["emitRange"] = emitRange_;
@@ -373,6 +391,7 @@ void Emitter3D::LoadFromJson(const nlohmann::json& j){
     cullingMode_ = (D3D12_CULL_MODE)j.value("CullingMode", 3);
     lightingType_ = (LIGHTING_TYPE)j.value("lightingType", 0);
     center_.translate = j.value("center", Vector3(0.0f));
+    center_.rotate = j.value("rotate", Quaternion());
 
     // 範囲やパラメーターなどの情報
     emitRange_ = j.value("emitRange", Vector3());

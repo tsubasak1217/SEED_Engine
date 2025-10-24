@@ -174,9 +174,10 @@ void EmitterGroupBase::ContextMenu(){
                 // 型を変換してからコピー
                 *dynamic_cast<Emitter3D*>(newEmitter) = *asEmitter3D;
 
-            } else{// 未対応タイプは処理しない
-                ImGui::CloseCurrentPopup();
-                return;
+            } else if(Emitter2D* asEmitter2D = dynamic_cast<Emitter2D*>(selectedEmitter)){
+                newEmitter = new Emitter2D();
+                // 型を変換してからコピー
+                *dynamic_cast<Emitter2D*>(newEmitter) = *asEmitter2D;
             }
 
             // 追加

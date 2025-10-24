@@ -383,7 +383,7 @@
                                 }
                             }
                         ],
-                        "initUpdateTime": 0.0
+                        "initUpdateTime": 5.0
                     },
                     "isActive": true,
                     "isParentToOwner": true

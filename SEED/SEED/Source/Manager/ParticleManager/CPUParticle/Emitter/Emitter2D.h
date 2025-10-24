@@ -17,8 +17,9 @@ public:// アクセッサ ------------------------------------------
 public:
     void Edit();
 private:
-    void EditRangeParameters();
-    void EditMaterial();
+    void EditGeneral();
+    void EditTransformSettings();
+    void EditTextureAndDrawSettings();
 #endif
 
 public:// JSON入出力 ----------------------------------------
@@ -27,14 +28,18 @@ public:// JSON入出力 ----------------------------------------
 
     // 発生パラメータ ----------------------------------------
 public:
-    Transform2D center;// 中心座標(guizmoに渡せるようTransform構造体)
-    Vector2 emitRange = { 100.0f,100.0f };// 発生範囲
-    Range1D radiusRange = { 2.0f,6.0f };// 大きさの幅
-    Range2D scaleRange = { { 1.0f,1.0f },{ 1.0f,1.0f } };// スケールの幅
-    Vector2 baseDirection = { 0.0f,1.0f };// パーティクルの向き
-    Vector2 goalPosition = { 0.0f,0.0f };// ゴール位置(移動する場合の目標位置)
-    float directionRange = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
-    Range1D speedRange = { 0.1f,1.0f };// 速度の幅
-    Range1D rotateSpeedRange = { 0.0f,1.0f };// 回転速度の幅
-    Range1D lifeTimeRange = { 1.0f,3.0f };// 寿命時間の幅
+    Transform2D center_;// 中心座標(guizmoに渡せるようTransform構造体)
+    Vector2 emitRange_ = { 100.0f,100.0f };// 発生範囲
+    Range1D radiusRange_ = { 10.0f,30.0f };// 大きさの幅
+    Range2D scaleRange_ = { { 1.0f,1.0f },{ 1.0f,1.0f } };// スケールの幅
+    Vector2 baseDirection_ = { 0.0f,1.0f };// パーティクルの向き
+    Vector2 goalPosition_ = { 0.0f,0.0f };// ゴール位置(移動する場合の目標位置)
+    float directionRange_ = 1.0f;// パーティクルの向きの範囲(ばらけ具合。1がmax)
+    Range1D speedRange_ = { 100.0f,300.0f };// 速度の幅
+    Range1D rotateSpeedRange_ = { 0.0f,1.0f };// 回転速度の幅
+
+    // 描画設定
+    int32_t layer_ = 0;// 描画レイヤー
+    DrawLocation drawLocation_ = DrawLocation::Front;// 描画位置
+    bool isApplyViewMatrix_ = false;// ビュー行列を適用するかどうか
 };

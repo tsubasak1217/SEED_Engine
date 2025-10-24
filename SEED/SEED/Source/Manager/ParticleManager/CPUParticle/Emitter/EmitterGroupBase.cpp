@@ -3,9 +3,11 @@
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <SEED/Source/Manager/TextureManager/TextureManager.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterGroup3D.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterGroup2D.h>
 
 // Emitter
 #include "Emitter3D.h"
+#include "Emitter2D.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // EmitterGroupのコンストラクタ
@@ -94,7 +96,11 @@ void EmitterGroupBase::Edit(){
 
     // エミッターの追加ボタン
     if(ImGui::Button("エミッターの追加" + tag)){
-        emitters.emplace_back(new Emitter3D());
+        if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(this)){
+            emitters.emplace_back(new Emitter3D());
+        } else{
+            emitters.emplace_back(new Emitter2D());
+        }
         emitters.back()->parentGroup_ = this;
     }
 
@@ -251,8 +257,9 @@ void EmitterGroupBase::LoadFromJson(const nlohmann::json& j){
         if(emitterJson["emitterType"] == "Emitter_Model3D" or emitterJson["emitterType"] == "Emitter3D"){
             emitter = std::make_unique<Emitter3D>();
 
-        } else{// 未対応タイプはスキップ
-            continue;
+        } else if(emitterJson["emitterType"] == "Emitter2D"){
+            emitter = std::make_unique<Emitter2D>();
+
         }
 
         emitter->LoadFromJson(emitterJson);

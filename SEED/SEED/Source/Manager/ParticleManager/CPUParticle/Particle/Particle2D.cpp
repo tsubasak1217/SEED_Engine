@@ -10,37 +10,49 @@ Particle2D::Particle2D(EmitterBase* emitter){
         return;
     }
 
+    ///////////////////// 寿命をランダム決定 ////////////////////////
+
+    lifetimer_.Initialize(MyFunc::Random(emitter2D->lifeTimeRange_.min, emitter2D->lifeTimeRange_.max));
+
+    /////////////////////// フラグ類を決定 ///////////////////////////
+
+    isUseGravity_ = emitter2D->isUseGravity_;
+    isUseRotate_ = emitter2D->isUseRotate_;
+
+    ///////////////////// 大きさをランダム決定 ////////////////////////
+    float radius = MyFunc::Random(emitter2D->radiusRange_.min, emitter2D->radiusRange_.max);
+    particle_ = MakeEqualQuad2D(1.0f);
+    particle_.scale = MyFunc::Random(emitter2D->scaleRange_) * radius;
+    kScale_ = particle_.scale;
+
     ////////////////////// 座標をランダム決定 ////////////////////////
     Range2D emitRange;
     Vector2 center = emitter2D->GetCenter();
-    emitRange.min = center - emitter2D->emitRange * 0.5f;
-    emitRange.max = center + emitter2D->emitRange * 0.5f;
+    emitRange.min = center - emitter2D->emitRange_ * 0.5f;
+    emitRange.max = center + emitter2D->emitRange_ * 0.5f;
     particle_.translate = MyFunc::Random(emitRange);
     emitPos_ = particle_.translate;
 
-    ///////////////////// 大きさをランダム決定 ////////////////////////
-    float radius = MyFunc::Random(emitter2D->radiusRange.min, emitter2D->radiusRange.max);
-    particle_ = MakeEqualQuad2D(radius);
-    particle_.scale = MyFunc::Random(emitter2D->scaleRange);
-    kScale_ = particle_.scale;
-
-    /////////////////////// 進行方向を決定 ////////////////////////
-
-    // 目標位置が設定されている場合
-    if(emitter2D->isSetGoalPosition_){
-        endPos_.value() = emitter2D->GetCenter() + emitter2D->goalPosition;
-    }
-
-    // 進行方向を範囲内でばらけさせる
-    float angleRange = 3.14f * std::clamp(emitter2D->directionRange, 0.0f, 1.0f);
-    float theta = MyFunc::Random(-angleRange, angleRange); // 水平回転
-
-    // 基本方向とランダムな方向を組み合わせて最終的な方向を決定
-    direction_ = emitter2D->baseDirection * RotateMatrix(theta); // 回転を適用
 
     ///////////////////// 速度を決定 ////////////////////////
 
-    speed_ = MyFunc::Random(emitter2D->speedRange.min, emitter2D->speedRange.max);
+    speed_ = MyFunc::Random(emitter2D->speedRange_.min, emitter2D->speedRange_.max);
+
+    /////////////////////// 進行方向を決定 ////////////////////////
+
+    // 目標位置が設定されている場合は終了位置を設定
+    if(emitter2D->isSetGoalPosition_){
+        // 終了位置を設定
+        endPos_ = emitter2D->GetCenter() + emitter2D->goalPosition_;
+    }
+
+    // 進行方向を範囲内でばらけさせる
+    float angleRange = 3.14f * std::clamp(emitter2D->directionRange_, 0.0f, 1.0f);
+    float theta = MyFunc::Random(-angleRange, angleRange);
+
+    // 基本方向とランダムな方向を組み合わせて最終的な方向を決定
+    direction_ = emitter2D->baseDirection_ * RotateMatrix(theta); // 回転を適用
+
 
     //////////////////////// 回転情報を決定 ////////////////////////
 
@@ -51,23 +63,22 @@ Particle2D::Particle2D(EmitterBase* emitter){
     }
 
     // 回転速度の決定
-    rotateSpeed_ = MyFunc::Random(emitter2D->rotateSpeedRange.min, emitter2D->rotateSpeedRange.max);
+    rotateSpeed_ = MyFunc::Random(emitter2D->rotateSpeedRange_.min, emitter2D->rotateSpeedRange_.max);
 
     //////////////////////// 重力を決定 //////////////////////////
+
     gravity_ = emitter2D->gravity_;
 
-    ///////////////////// 寿命をランダム決定 ////////////////////////
-    lifetimer_.Initialize(MyFunc::Random(emitter2D->lifeTimeRange.min, emitter2D->lifeTimeRange.max));
-
     ////////////////////// 色をランダム決定 ////////////////////////
+
     masterColor_ = emitter2D->colors_[MyFunc::Random(0, (int)emitter2D->colors_.size() - 1)];
 
     ///////////////////// ブレンドモードを設定 ////////////////////////
+
     particle_.blendMode = emitter2D->blendMode_;
 
     //////////////////////// テクスチャを設定 ////////////////////////
 
-    // モデルのテクスチャを取得し、無ければ追加
     textureHandle_ = TextureManager::LoadTexture(
         emitter2D->texturePaths_[MyFunc::Random(0, (int)emitter2D->texturePaths_.size() - 1)]
     );
@@ -79,10 +90,17 @@ Particle2D::Particle2D(EmitterBase* emitter){
     velocityCurve_ = emitter2D->velocityCurve_;
     colorCurve_ = emitter2D->colorCurve_;
     scaleCurve_ = emitter2D->scaleCurve_;
+    positionInterpolationCurve_ = emitter2D->positionInterpolationCurve_;
 
     ///////////////////// 色操作のモード /////////////////////////
 
     colorMode_ = emitter2D->colorMode_;
+
+    ///////////////////////// 描画設定 //////////////////////////
+
+    particle_.layer = emitter2D->layer_;
+    particle_.isApplyViewMat = emitter2D->isApplyViewMatrix_;
+    particle_.drawLocation = emitter2D->drawLocation_;
 
     //////////////////////// 初回更新時間 ////////////////////////
     if(emitter2D->initUpdateTime_ > 0.0f){
@@ -111,29 +129,30 @@ void Particle2D::Update(){
     // 速度の計算
     //////////////////////////////////
 
-    // 特に目標地点がない場合
-    if(endPos_ == std::nullopt){
-        // 基本速度
-        velocity_ = direction_ * speed_ * velocityCurve_.GetValue(t) * deltaTime;
+    // 基本速度
+    velocity_ = direction_ * speed_ * velocityCurve_.GetValue(t) * deltaTime;
 
-        // 加速度の計算
-        totalAcceleration_ += acceleration_ * deltaTime;
-        velocity_ += totalAcceleration_ * deltaTime;
+    // 加速度の計算
+    totalAcceleration_ += acceleration_ * deltaTime;
+    velocity_ += totalAcceleration_ * deltaTime;
 
-        // 重力処理
-        if(isUseGravity_){
-            gravityAcceleration_ += gravity_ * deltaTime;
-            velocity_.y += gravityAcceleration_ * deltaTime;
-        }
-        // translateの更新
-        particle_.translate += velocity_;
+    // 重力処理
+    if(isUseGravity_){
+        gravityAcceleration_ += gravity_ * deltaTime;
+        velocity_.y += gravityAcceleration_ * deltaTime;
+    }
 
-    } else{
+    // translateの更新
+    particle_.translate += velocity_;
+
+
+    // 目標地点がある場合は徐々に近づける
+    if(endPos_ != std::nullopt){
         // 明確な目標地点がある場合
         particle_.translate = MyMath::Lerp(
-            emitPos_,
+            particle_.translate,
             endPos_.value(),
-            velocityCurve_.GetValue(t)
+            positionInterpolationCurve_.GetValue(t)
         );
     }
 
@@ -146,14 +165,26 @@ void Particle2D::Update(){
         particle_.rotate += rotateSpeed_ * rotateCurve_.GetValue(t) * deltaTime;
     }
 
+
+    //////////////////////////////////
+    // スケール処理
+    //////////////////////////////////
+
+    particle_.scale = kScale_ * scaleCurve_.GetValue2(t);
+
     //////////////////////////////////
     // 色の更新
     //////////////////////////////////
 
-    particle_.color = masterColor_ * colorCurve_.GetValue4(t);
+    // 色の扱いがRGBAかHSVAかで分岐
+    if(colorMode_ == ColorMode::RGBA){
+        particle_.color = colorCurve_.GetValue4(t);
+    } else{
+        particle_.color = MyMath::HSV_to_RGB(colorCurve_.GetValue4(t));
+    }
 }
 
 void Particle2D::Draw(){
     // パーティクル描画
-    SEED::DrawQuad2D(particle_);
+    SEED::DrawQuad2D(particle_,masterColor_);
 }

@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // 初期化
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void CurveEditor::Initialize(){
+void CurveEditor::Initialize(CurveChannel channel){
     // 初期ポイントの設定
     for(auto& curve : curves_){
         curve.points.clear();
@@ -20,7 +20,7 @@ void CurveEditor::Initialize(){
     curves_[3].curveColor_ = ImColor(255, 0, 255, 255);
 
     // カーブ設定の初期化
-    curveChannel_ = CurveChannel::FLOAT;
+    curveChannel_ = channel;
     curveType_ = Easing::Type::InOutSine;
 
     // tagの初期化
@@ -34,7 +34,7 @@ void CurveEditor::Initialize(){
 void CurveEditor::Initialize(const Curve& curve){
     // カーブが何もなければデフォルト初期化
     if(curve.curves_.size() == 0){
-        Initialize();
+        Initialize(curve.channel_);
     }
 
     // カーブの情報をコピー
@@ -69,6 +69,7 @@ void CurveEditor::Initialize(const Curve& curve){
     // カーブ設定の初期化
     curveChannel_ = curve.channel_;
     curveType_ = curve.curveType_;
+    curveType_ = Easing::Type::InOutSine;
 
     // tagの初期化
     tag_ = "##" + MyFunc::PtrToStr(this);
@@ -85,7 +86,7 @@ void CurveEditor::EditGUI(bool popWindow){
 
     // 一度のみ初期化
     if(!isInitialized_){
-        Initialize();
+        Initialize(CurveChannel::FLOAT);
     }
 
     if(popWindow){
@@ -203,9 +204,6 @@ void CurveEditor::EditCurves(){
     ImFunc::RadioButton("編集中のチャンネル", curveIdx_, channelStrs, channelCount);
     ImGui::DragFloat("1.0の基準ボーダー" + tag_, &unitValueBorder_, 0.05f, 0.05f, 1.0f);
     ImFunc::Combo("カーブの種類" + tag_, curveType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-    //if(ImFunc::Combo("チャンネル数" + tag_, curveChannel_, { "Float","Vector2","Vector3","Vector4" })){
-    //    curveIdx_ = 0;
-    //}
 
     // フォルダ表示,読み込み
     static std::filesystem::path folderPath = "Resources/Jsons/Curves";
@@ -227,7 +225,7 @@ void CurveEditor::DrawBG(){
     ImVec2 maxPos = ImVec2(cursorPos.x + availSize.x - space.x, cursorPos.y + availSize.y - space.y);
 
     // 最低のサイズ以下の場合は最小サイズにする
-    ImVec2 minSize = ImVec2(220.0f, 220.0f);
+    ImVec2 minSize = ImVec2(220.0f, 350.0f);
     ImVec2 maxSize = ImVec2(495.0f, 400.0f);
     if(availSize.x < minSize.x){ maxPos.x = cursorPos.x + minSize.x - space.x; }
     if(availSize.y < minSize.y){ maxPos.y = cursorPos.y + minSize.y - space.y; }
@@ -410,7 +408,7 @@ void CurveEditor::ContextMenuSelect(){
 
     // 初期化
     if(ImGui::MenuItem("リセット")){
-        Initialize();
+        Initialize(curveChannel_);
         operation_ = Operation::None;
         ImGui::CloseCurrentPopup();
     }

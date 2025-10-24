@@ -49,6 +49,7 @@ protected:
     Curve velocityCurve_;// 速度カーブ
     Curve rotateCurve_;// 回転カーブ
     Curve colorCurve_;// 色カーブ
+    Curve positionInterpolationCurve_;// 位置補間カーブ
 
     // 色
     Color masterColor_;
@@ -57,7 +58,7 @@ protected:
     // 重力関連
     bool isUseGravity_;
     float gravity_;
-    float gravityAcceleration_;
+    float gravityAcceleration_ = 0.0f;
 
     // 回転関連
     bool isUseRotate_;
@@ -66,6 +67,11 @@ protected:
 
     // テクスチャ
     uint32_t textureHandle_;
+
+    // 描画設定
+    int32_t layer_ = 0;// 描画レイヤー
+    DrawLocation drawLocation_ = DrawLocation::Front;// 描画位置
+    bool isApplyViewMatrix_ = false;// ビュー行列を適用するかどうか
 
     // 初回にあらかじめアップデートする秒数(必要であれば)
     float initUpdateTime_ = 0.0f;

@@ -6,6 +6,8 @@
 
 EmitterBase::EmitterBase(){
     colors_.push_back(Color());
+    texturePaths_.push_back("DefaultAssets/white1x1.png");
+    textureDict_[texturePaths_[0]] = TextureManager::GetImGuiTexture(texturePaths_[0]);
     totalTime_ = interval_;
     // タグの生成
     CreateTag();
@@ -82,23 +84,46 @@ void EmitterBase::Update(){
 
 
 #ifdef _DEBUG
-////////////////////////////////////////////////////////////
-// カーブパラメーターの編集
-////////////////////////////////////////////////////////////
-void EmitterBase::EditCurves(){
 
-    if(ImGui::CollapsingHeader("スケールカーブ" + idTag_)){
-        scaleCurve_.Edit();
+////////////////////////////////////////////////////////////
+// 色の編集
+////////////////////////////////////////////////////////////
+void EmitterBase::EditColors(){
+
+    // 色の制御方法
+    ImFunc::Combo("色の制御方法##" + idTag_, colorMode_, { "RGBA","HSVA" });
+
+    // 出現色の一覧
+    if(ImGui::CollapsingHeader("出現色の一覧(マスターカラー)" + idTag_)){
+        ImGui::Indent();
+
+        // 色のリスト
+        for(int32_t i = 0; i < (int)colors_.size(); ++i){
+            std::string colorLabel = "##" + MyFunc::PtrToStr(&colors_[i]);
+            ImGui::ColorEdit4("color" + colorLabel, &colors_[i].value.x);
+            // 削除ボタン
+            if(ImGui::Button("削除" + colorLabel)){
+                if(colors_.size() > 1){
+                    colors_.erase(colors_.begin() + i);
+                    break;
+                }
+            }
+        }
+
+        // 追加ボタン
+        ImGui::Text("-- 色の追加 --");
+        if(ImGui::Button("追加" + idTag_)){
+            colors_.emplace_back(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+        }
+
+        ImGui::Unindent();
     }
-    if(ImGui::CollapsingHeader("移動速度カーブ" + idTag_)){
-        velocityCurve_.Edit();
-    }
-    if(ImGui::CollapsingHeader("回転速度カーブ" + idTag_)){
-        rotateCurve_.Edit();
-    }
+
+    // 色の制御を行うカーブの編集
     if(ImGui::CollapsingHeader("色カーブ" + idTag_)){
+        ImGui::Indent();
         colorCurve_.Edit();
-        ImFunc::Combo("色の制御方法##" + idTag_, colorMode_, { "RGBA","HSVA" });
+        ImGui::Unindent();
     }
 }
 
@@ -119,6 +144,10 @@ void EmitterBase::EditGeneral(){
 void EmitterBase::EditFrequency(){
     ImGui::DragFloat("発生間隔", &interval_, 0.01f, 0.0f);
     ImGui::DragInt("一度に発生する数", &numEmitEvery_, 1, 0, 100);
+
+    ImGui::Text("------ 寿命 ------");
+    ImGui::DragFloat("最短" + idTag_, &lifeTimeRange_.min, 0.05f, 0.0f, lifeTimeRange_.max);
+    ImGui::DragFloat("最長" + idTag_, &lifeTimeRange_.max, 0.05f, lifeTimeRange_.min);
 }
 
 #endif // _DEBUG
@@ -156,6 +185,7 @@ nlohmann::json EmitterBase::ExportToJson(){
     j["colorCurve"] = colorCurve_.ToJson();
     j["rotateCurve"] = rotateCurve_.ToJson();
     j["velosityCurve"] = velocityCurve_.ToJson();
+    j["positionInterpolationCurve"] = positionInterpolationCurve_.ToJson();
 
     // 発生頻度などの情報
     j["interval"] = interval_;
@@ -166,6 +196,9 @@ nlohmann::json EmitterBase::ExportToJson(){
     for(auto& color : colors_){
         j["colors"].push_back({ color.value.x, color.value.y, color.value.z, color.value.w });
     }
+
+    // 色の扱い
+    j["colorMode"] = (int)colorMode_;
 
     // テクスチャの情報
     for(auto& textureHandle : texturePaths_){
@@ -181,12 +214,12 @@ nlohmann::json EmitterBase::ExportToJson(){
 void EmitterBase::LoadFromJson(const nlohmann::json& j){
 
     // 全般の情報
-    emitType_ = (EmitType)j.value("emitType",0);
-    blendMode_ = (BlendMode)j.value("blendMode",3);
+    emitType_ = (EmitType)j.value("emitType", 0);
+    blendMode_ = (BlendMode)j.value("blendMode", 3);
     initUpdateTime_ = j.value("initUpdateTime", 0.0f);
 
     // パラメータ
-    gravity_ = j.value("gravity",0.0f);
+    gravity_ = j.value("gravity", 0.0f);
 
     // フラグ類
     isUseGravity_ = j.value("isUseGravity", false);
@@ -207,11 +240,14 @@ void EmitterBase::LoadFromJson(const nlohmann::json& j){
     if(j.contains("velosityCurve")){
         velocityCurve_.FromJson(j["velosityCurve"]);
     }
+    if(j.contains("positionInterpolationCurve")){
+        positionInterpolationCurve_.FromJson(j["positionInterpolationCurve"]);
+    }
 
     // 発生頻度などの情報
-    interval_ = j.value("interval",0.1f);
-    numEmitEvery_ = j.value("numEmitEvery",1);
-    kMaxEmitCount_ = j.value("kMaxEmitCount",5);
+    interval_ = j.value("interval", 0.1f);
+    numEmitEvery_ = j.value("numEmitEvery", 1);
+    kMaxEmitCount_ = j.value("kMaxEmitCount", 5);
 
     // 色の情報
     colors_.clear();
@@ -223,6 +259,9 @@ void EmitterBase::LoadFromJson(const nlohmann::json& j){
     } else{
         colors_.emplace_back(Color());
     }
+
+    // 色の扱い
+    colorMode_ = (ColorMode)j.value("colorMode", 0);
 
     // テクスチャの情報
     texturePaths_.clear();

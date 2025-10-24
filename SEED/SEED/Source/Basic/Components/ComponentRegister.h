@@ -71,6 +71,10 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
                 owner->AddComponent<Routine2DComponent>();
                 return true;
             }
+            if(ImGui::Button("EmitterGroup2D / 2Dエミッターグループ")){
+                owner->AddComponent<Component_EmitterGroup2D>();
+                return true;
+            }
             ImGui::Unindent();
         }
     }
@@ -157,6 +161,11 @@ inline void ComponentRegister::LoadComponents(T* owner, const nlohmann::json& js
         } else if(componentType == "Routine2D"){
             auto* uiComponent = owner->AddComponent<Routine2DComponent>();
             uiComponent->LoadFromJson(json);
+        
+        } else if(componentType == "EmitterGroup2D"){
+            auto* emitterGroupComponent = owner->AddComponent<Component_EmitterGroup2D>();
+            emitterGroupComponent->LoadFromJson(json);
+
         }
     }
 

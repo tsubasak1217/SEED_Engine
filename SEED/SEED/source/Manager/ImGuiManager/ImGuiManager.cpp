@@ -744,9 +744,30 @@ bool ImFunc::PlayBar(const std::string& label, Timer& timer){
 // 折りたたみヘッダー拡張関数
 /////////////////////////////////////////////////////////////////
 bool ImFunc::CollapsingHeader(const std::string& label, const ImU32& color, ImGuiTreeNodeFlags flags){
-    if(color != 0){ ImGui::PushStyleColor(ImGuiCol_Header, color); }
+
+    // スタイルを変更
+    ImGui::PushStyleColor(ImGuiCol_Header, color);
+    // ホバー時の色は指定色を少し明るくする
+    if(color != 0){
+        ImGui::PushStyleColor(ImGuiCol_HeaderHovered,
+            ImVec4(
+                ((color >> 0) & 0xFF) / 255.0f * 1.2f,
+                ((color >> 8) & 0xFF) / 255.0f * 1.2f,
+                ((color >> 16) & 0xFF) / 255.0f * 1.2f,
+                1.0f
+            )
+        );
+    }
+
+    // 折りたたみヘッダーの表示
     bool isOpen = ImGui::CollapsingHeader(label.c_str(), flags);
-    if(color != 0){ ImGui::PopStyleColor(); }
+
+    // スタイルを元に戻す
+    ImGui::PopStyleColor();
+    if(color != 0){
+        ImGui::PopStyleColor();
+    }
+
     return isOpen;
 }
 
@@ -877,6 +898,38 @@ bool ImFunc::InputText(const std::string& label, string& str){
     }
 
     return changed;
+}
+
+/////////////////////////////////////////////////////////////////
+// ツールチップ表示関数
+/////////////////////////////////////////////////////////////////
+void ImFunc::ToolTip(const std::string& text){
+    if(ImGui::IsItemHovered()){
+        ImGui::BeginTooltip();
+        ImGui::TextUnformatted(text.c_str());
+        ImGui::EndTooltip();
+    }
+}
+
+/////////////////////////////////////////////////////////////////
+// ヘルプマーク表示関数
+/////////////////////////////////////////////////////////////////
+void ImFunc::HelpTip(const std::string& text, bool isSameLine){
+    static bool isLoaded = false;
+    static ImTextureID helpIcon;
+    if(!isLoaded){
+        helpIcon = TextureManager::GetImGuiTexture("[Engine]help.png");
+        isLoaded = true;
+    }
+
+    // ImageButtonで表示(背景色なし)
+    if(isSameLine){ ImGui::SameLine(); }
+    //ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+    //ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
+    //ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
+    ImGui::Image(helpIcon, ImVec2(16, 16));
+    //ImGui::PopStyleColor(3);
+    ToolTip(text);
 }
 
 

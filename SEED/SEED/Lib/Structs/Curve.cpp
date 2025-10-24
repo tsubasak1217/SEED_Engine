@@ -7,6 +7,9 @@ Curve::Curve(){
         curve.push_back(Vector2(0.0f, 0.0f));
         curve.push_back(Vector2(1.0f, 1.0f));
     }
+
+    // エディタの初期化
+    editor_.Initialize(*this);
 }
 
 Curve::Curve(CurveChannel channel){
@@ -16,6 +19,9 @@ Curve::Curve(CurveChannel channel){
         curve.push_back(Vector2(0.0f, 0.0f));
         curve.push_back(Vector2(1.0f, 1.0f));
     }
+
+    // エディタの初期化
+    editor_.Initialize(*this);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

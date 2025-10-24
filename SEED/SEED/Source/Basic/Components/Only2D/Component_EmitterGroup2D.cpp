@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////////
 // コンストラクタ
 //////////////////////////////////////////////////////////////////////////
-Component_EmitterGroup2D::Component_EmitterGroup2D(GameObject* pOwner, const std::string& tagName)
+Component_EmitterGroup2D::Component_EmitterGroup2D(GameObject2D* pOwner, const std::string& tagName)
     : IComponent(pOwner, tagName){
 
     if(tagName == ""){
@@ -83,9 +83,9 @@ void Component_EmitterGroup2D::EditGUI(){
     }
 
     // ファイル一覧を取得
-    static const std::filesystem::path rootPath = "Resources/Jsons/Particle/3D";
+    static const std::filesystem::path rootPath = "Resources/Jsons/Particle/2D";
     static std::filesystem::path curPath = rootPath;
-    std::string selected = ImFunc::FolderView("ファイルを選択", curPath, false, { ".emtg3" }, rootPath);
+    std::string selected = ImFunc::FolderView("ファイルを選択", curPath, false, { ".emtg2" }, rootPath);
 
     // 選択されたら読み込み
     if(!selected.empty()){

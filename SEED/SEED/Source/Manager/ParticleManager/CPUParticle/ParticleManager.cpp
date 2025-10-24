@@ -6,7 +6,9 @@
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterGroupBase.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/Emitter3D.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/Emitter2D.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Particle/Particle3D.h>
+#include <SEED/Source/Manager/ParticleManager/CPUParticle/Particle/Particle2D.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*                                                                                                               */
@@ -53,9 +55,19 @@ void ParticleManager::Update(){
     //==============================================//
     // パーティクルの更新
     //==============================================//
-    std::for_each(std::execution::par_unseq, instance_->particles_.begin(), instance_->particles_.end(), [](auto& p){
-        p->Update();
-    });
+    //std::for_each(std::execution::par_unseq, instance_->particles3D_.begin(), instance_->particles3D_.end(), [](auto& p){
+    //    p->Update();
+    //});
+    //std::for_each(std::execution::par_unseq, instance_->particles2D_.begin(), instance_->particles2D_.end(), [](auto& p){
+    //    p->Update();
+    //});
+
+    for(auto& particle : instance_->particles3D_){
+        particle->Update();
+    }
+    for(auto& particle : instance_->particles2D_){
+        particle->Update();
+    }
 
     //==============================================//
     // パーティクルとフィールドの衝突判定
@@ -67,7 +79,10 @@ void ParticleManager::Update(){
     //==============================================//
     // 死んでいる要素の削除
     //==============================================//
-    instance_->particles_.remove_if([](auto& particle){
+    instance_->particles3D_.remove_if([](auto& particle){
+        return !particle->GetIsAlive();
+    });
+    instance_->particles2D_.remove_if([](auto& particle){
         return !particle->GetIsAlive();
     });
 }
@@ -78,7 +93,11 @@ void ParticleManager::Update(){
 void ParticleManager::Draw(){
 
     // パーティクルの描画
-    for(auto& particle : instance_->particles_){
+    for(auto& particle : instance_->particles3D_){
+        particle->Draw();
+    }
+
+    for(auto& particle : instance_->particles2D_){
         particle->Draw();
     }
 }
@@ -97,7 +116,8 @@ void ParticleManager::CreateAccelerationField(const Range3D& range, const Vector
 // エフェクトを削除する
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ParticleManager::DeleteAll(){
-    instance_->particles_.clear();
+    instance_->particles3D_.clear();
+    instance_->particles2D_.clear();
     instance_->accelerationFields_.clear();
 }
 
@@ -113,13 +133,17 @@ void ParticleManager::Emit(EmitterBase* emitter){
     // パーティクルを発生させる
     if(Emitter3D* emitter3D = dynamic_cast<Emitter3D*>(emitter)){
         for(int32_t i = 0; i < emitter->numEmitEvery_; ++i){
-            instance_->particles_.emplace_back(
+            instance_->particles3D_.emplace_back(
                 std::make_unique<Particle3D>(emitter3D)
             );
         }
 
-    } else if(false){
-
+    } else if(Emitter2D* emitter2D = dynamic_cast<Emitter2D*>(emitter)){
+        for(int32_t i = 0; i < emitter->numEmitEvery_; ++i){
+            instance_->particles2D_.emplace_back(
+                std::make_unique<Particle2D>(emitter2D)
+            );
+        }
     }
 
     // 発生命令をリセット
@@ -135,13 +159,15 @@ void ParticleManager::Emit(EmitterBase* emitter){
 /// パーティクルと加速フィールドの衝突判定
 /// </summary>
 void ParticleManager::CollisionParticle2Field(){
-    for(auto& particle : instance_->particles_){
+    for(auto& particle : instance_->particles3D_){
         for(auto& field : instance_->accelerationFields_){
             if(field->CheckCollision(particle->GetPos())){
                 particle->SetAcceleration(field->acceleration);
             }
         }
     }
+
+    // 2D版は未実装
 }
 
 

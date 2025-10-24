@@ -26,6 +26,6 @@ inline void to_json(nlohmann::json& j, const Range3D& range){
 
 // JSON から Range3D に変換
 inline void from_json(const nlohmann::json& j, Range3D& range){
-    range.min = j.value("min", 0.0f);
-    range.min = j.value("max", 0.0f);
+    range.min = j.value("min", Vector3(0.0f));
+    range.max = j.value("max", Vector3(0.0f));
 }

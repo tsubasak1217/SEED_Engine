@@ -17,7 +17,7 @@ public:
     void EdittingDataToCurve(class Curve& curve);
 
 private:
-    void Initialize();
+    void Initialize(CurveChannel channel);
     void Initialize(const class Curve& curve);
 
 private:

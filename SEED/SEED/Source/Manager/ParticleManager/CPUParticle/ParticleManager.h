@@ -19,6 +19,7 @@
 
 // particles
 class Particle3D;
+class Particle2D;
 
 //////////////////////////////////////////////////////////////////////////////////
 // エミッターが生成したパーティクルや加速フィールドを管理するクラス
@@ -57,7 +58,8 @@ private:
     bool isFieldVisible_ = true;
 
     // パーティクル、フィールドのリスト
-    std::list<std::unique_ptr<Particle3D>> particles_;
+    std::list<std::unique_ptr<Particle3D>> particles3D_;
+    std::list<std::unique_ptr<Particle2D>> particles2D_;
     std::list<std::unique_ptr<AccelerationField>> accelerationFields_;
 
     // 読み込み済みのグループ情報のjsonのマップ

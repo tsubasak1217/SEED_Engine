@@ -1,5 +1,5 @@
 #pragma once
-#include <SEED/Source/Basic/Object/GameObject.h>
+#include <SEED/Source/Basic/Object/GameObject2D.h>
 #include <SEED/Source/Basic/Components/IComponent.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/Emitter/EmitterGroup2D.h>
 // stl
@@ -11,7 +11,7 @@
 /// </summary>
 class Component_EmitterGroup2D : public IComponent{
 public:
-    Component_EmitterGroup2D(GameObject* pOwner, const std::string& tagName = "");
+    Component_EmitterGroup2D(GameObject2D* pOwner, const std::string& tagName = "");
     ~Component_EmitterGroup2D() = default;
     void BeginFrame()override;
     void Update()override;

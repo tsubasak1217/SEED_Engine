@@ -61,6 +61,7 @@ protected:
     Curve velocityCurve_;// 速度カーブ
     Curve rotateCurve_;// 回転カーブ
     Curve colorCurve_;// 色カーブ
+    Curve positionInterpolationCurve_;// 位置補間カーブ
 
     // 色
     Color masterColor_;

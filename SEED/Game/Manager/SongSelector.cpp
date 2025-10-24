@@ -94,8 +94,8 @@ void SongSelector::Initialize(){
 
     // パーティクルを初期化しエミッターを読み込む
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
-    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
-    hierarchy->LoadObject("SelectScene/cubeParticle.prefab");
+    //Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    //hierarchy->LoadObject("SelectScene/cubeParticle.prefab");
 }
 
 

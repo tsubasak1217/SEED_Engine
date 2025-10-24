@@ -162,6 +162,10 @@ struct ImFunc{
     static bool InputTextMultiLine(const std::string& label, string& str, ImGuiInputTextFlags flags = 0,const ImVec2& size = ImVec2(0, 0));
     static bool InputText(const std::string& label, string& str);
 
+    // toolTip
+    static void ToolTip(const std::string& text);
+    static void HelpTip(const std::string& text,bool isSameLine = true);
+
     // ImGuizmoの操作を行う関数
     static void Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);
     static void Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rectRange);

@@ -48,7 +48,7 @@ protected:// 内部関数------------------------------------------
 public:
     virtual void Edit() = 0;
 protected:
-    void EditCurves();
+    void EditColors();
     void EditGeneral();
     void EditFrequency();
 #endif // _DEBUG
@@ -76,6 +76,7 @@ public:
     EmitterGroupBase* parentGroup_ = nullptr;// 親グループ
     float interval_ = 0.1f;// 発生間隔
     int32_t numEmitEvery_ = 1;// 一度に発生させる数
+    Range1D lifeTimeRange_ = { 1.0f,3.0f };// 寿命時間の幅
     float gravity_ = 0.0f;// 重力
     float initUpdateTime_ = 0.0f;// 初期化時にあらかじめ更新しておく時間
 
@@ -92,6 +93,7 @@ public:
     Curve velocityCurve_;// 速度カーブ
     Curve rotateCurve_;// 回転カーブ
     Curve colorCurve_;// 色カーブ
+    Curve positionInterpolationCurve_;// 位置補間カーブ
 
     // 色操作のモード
     ColorMode colorMode_ = ColorMode::RGBA;// カラーモード

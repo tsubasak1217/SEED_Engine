@@ -6,6 +6,7 @@
 #include <SEED/Source/Basic/Components/Only2D/Collision2DComponent.h>
 #include <SEED/Source/Basic/Components/Only2D/UIComponent.h>
 #include <SEED/Source/Basic/Components/Only2D/Routine2DComponent.h>
+#include <SEED/Source/Basic/Components/Only2D/Component_EmitterGroup2D.h>
 
 // 3D専用のコンポーネント
 #include <SEED/Source/Basic/Components/Only3D/ModelRenderComponent.h>

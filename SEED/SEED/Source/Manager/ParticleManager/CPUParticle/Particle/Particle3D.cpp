@@ -21,40 +21,40 @@ Particle3D::Particle3D(EmitterBase* emitter){
 
     /////////////////////// フラグ類を決定 ///////////////////////////
 
-    isBillboard_ = modelEmitter->isBillboard;
+    isBillboard_ = modelEmitter->isBillboard_;
     isUseGravity_ = modelEmitter->isUseGravity_;
     isUseRotate_ = modelEmitter->isUseRotate_;
 
     ////////////////////// 座標をランダム決定 ////////////////////////
     Range3D emitRange;
     Vector3 center = modelEmitter->GetCenter();
-    emitRange.min = center - modelEmitter->emitRange * 0.5f;
-    emitRange.max = center + modelEmitter->emitRange * 0.5f;
+    emitRange.min = center - modelEmitter->emitRange_ * 0.5f;
+    emitRange.max = center + modelEmitter->emitRange_ * 0.5f;
     particle_->transform_.translate = MyFunc::Random(emitRange);
     emitPos_ = particle_->transform_.translate;
 
     ///////////////////// 大きさをランダム決定 ////////////////////////
-    float radius = MyFunc::Random(modelEmitter->radiusRange.min, modelEmitter->radiusRange.max);
-    particle_->transform_.scale = MyFunc::Random(modelEmitter->scaleRange) * radius;
+    float radius = MyFunc::Random(modelEmitter->radiusRange_.min, modelEmitter->radiusRange_.max);
+    particle_->transform_.scale = MyFunc::Random(modelEmitter->scaleRange_) * radius;
     kScale_ = particle_->transform_.scale;
 
     ///////////////////// 速度を決定 ////////////////////////
 
-    speed_ = MyFunc::Random(modelEmitter->speedRange.min, modelEmitter->speedRange.max);
+    speed_ = MyFunc::Random(modelEmitter->speedRange_.min, modelEmitter->speedRange_.max);
 
     /////////////////////// 進行方向を決定 ////////////////////////
 
-    direction_ = modelEmitter->baseDirection; // 基本方向を設定
+    direction_ = modelEmitter->baseDirection_; // 基本方向を設定
 
     // 目標位置が設定されている場合、方向を目標位置に向ける
     if(modelEmitter->isSetGoalPosition_){
         // 終了位置を設定
-        endPos_ = modelEmitter->GetCenter() + modelEmitter->goalPosition;
+        endPos_ = modelEmitter->GetCenter() + modelEmitter->goalPosition_;
     }
 
 
     // 進行方向を範囲内でばらけさせる
-    float angleRange = 3.14f * std::clamp(modelEmitter->directionRange, 0.0f, 1.0f);
+    float angleRange = 3.14f * std::clamp(modelEmitter->directionRange_, 0.0f, 1.0f);
     float theta = MyFunc::Random(-angleRange, angleRange); // 水平回転
     float phi = MyFunc::Random(-angleRange / 2.0f, angleRange / 2.0f); // 垂直回転 (範囲を制限)
     Vector3 randomDirection = {// 球座標から方向ベクトルを計算
@@ -70,8 +70,8 @@ Particle3D::Particle3D(EmitterBase* emitter){
     //////////////////////// 回転情報を決定 ////////////////////////
 
     // 回転軸指定がある場合、軸を決定
-    if(modelEmitter->useRotateDirection){
-        rotateAxis_ = modelEmitter->rotateDirection; // 基本方向を使用
+    if(modelEmitter->useRotateDirection_){
+        rotateAxis_ = modelEmitter->rotateDirection_; // 基本方向を使用
     } else{
         rotateAxis_ = MyFunc::RandomVector();
     }
@@ -83,7 +83,7 @@ Particle3D::Particle3D(EmitterBase* emitter){
     }
 
     // 回転速度の決定
-    rotateSpeed_ = MyFunc::Random(modelEmitter->rotateSpeedRange.min, modelEmitter->rotateSpeedRange.max);
+    rotateSpeed_ = MyFunc::Random(modelEmitter->rotateSpeedRange_.min, modelEmitter->rotateSpeedRange_.max);
 
     //////////////////////// 重力を決定 //////////////////////////
     gravity_ = modelEmitter->gravity_;
@@ -100,7 +100,7 @@ Particle3D::Particle3D(EmitterBase* emitter){
     //////////////////////// テクスチャを設定 ////////////////////////
 
     // モデルのテクスチャを取得し、無ければ追加
-    if(!modelEmitter->useDefaultTexture){
+    if(!modelEmitter->useDefaultTexture_){
         // カスタムテクスチャを使用する場合、メッシュごとにランダムなテクスチャを設定
         for(auto& material : particle_->materials_){
             textureHandle_ = TextureManager::LoadTexture(
@@ -116,6 +116,7 @@ Particle3D::Particle3D(EmitterBase* emitter){
     velocityCurve_ = modelEmitter->velocityCurve_;
     colorCurve_ = modelEmitter->colorCurve_;
     scaleCurve_ = modelEmitter->scaleCurve_;
+    positionInterpolationCurve_ = modelEmitter->positionInterpolationCurve_;
 
     ///////////////////// 色操作のモード /////////////////////////
 
@@ -148,30 +149,30 @@ void Particle3D::Update(){
     // 速度の計算
     //////////////////////////////////
 
-    // 特に目標地点がない場合
-    if(endPos_ == std::nullopt){
-        // 基本速度
-        velocity_ = direction_ * speed_ * velocityCurve_.GetValue(t) * deltaTime;
+    // 基本速度
+    velocity_ = direction_ * speed_ * velocityCurve_.GetValue(t) * deltaTime;
 
-        // 加速度の計算
-        totalAcceleration_ += acceleration_ * deltaTime;
-        velocity_ += totalAcceleration_ * deltaTime;
+    // 加速度の計算
+    totalAcceleration_ += acceleration_ * deltaTime;
+    velocity_ += totalAcceleration_ * deltaTime;
 
-        // 重力処理
-        if(isUseGravity_){
-            gravityAcceleration_ += gravity_ * deltaTime;
-            velocity_.y += gravityAcceleration_ * deltaTime;
-        }
+    // 重力処理
+    if(isUseGravity_){
+        gravityAcceleration_ += gravity_ * deltaTime;
+        velocity_.y += gravityAcceleration_ * deltaTime;
+    }
 
-        // translateの更新
-        particle_->transform_.translate += velocity_;
+    // translateの更新
+    particle_->transform_.translate += velocity_;
 
-    } else{
+
+    // 目標地点がある場合は徐々に近づける
+    if(endPos_ != std::nullopt){
         // 明確な目標地点がある場合
         particle_->transform_.translate = MyMath::Lerp(
-            emitPos_,
+            particle_->transform_.translate,
             endPos_.value(),
-            velocityCurve_.GetValue(t)
+            positionInterpolationCurve_.GetValue(t)
         );
     }
 
@@ -203,6 +204,13 @@ void Particle3D::Update(){
         }
     }
 
+
+    //////////////////////////////////
+    // スケール処理
+    //////////////////////////////////
+
+    particle_->transform_.scale = kScale_ * scaleCurve_.GetValue3(t);
+
     //////////////////////////////////
     // パーティクルのトランスフォーム更新
     //////////////////////////////////
@@ -212,7 +220,12 @@ void Particle3D::Update(){
     // 色の更新
     //////////////////////////////////
 
-    particle_->masterColor_ = colorCurve_.GetValue4(t);
+    // 色の扱いがRGBAかHSVAかで分岐
+    if(colorMode_ == ColorMode::RGBA){
+        particle_->masterColor_ = colorCurve_.GetValue4(t);
+    } else{
+        particle_->masterColor_ = MyMath::HSV_to_RGB(colorCurve_.GetValue4(t));
+    }
 }
 
 void Particle3D::Draw(){

@@ -406,9 +406,9 @@ ImVec2 ImFunc::SceneWindowBegin(const std::string& label, const std::string& cam
 std::string ImFunc::FolderView(
     const std::string& label,
     std::filesystem::path& currentPath,
-    bool isFileNameOnly,
     std::initializer_list<std::string> filterExts,
     std::filesystem::path rootPath,
+    bool isFileNameOnly,
     bool returnDirectoryName
 ){
     static bool isLoaded = false;

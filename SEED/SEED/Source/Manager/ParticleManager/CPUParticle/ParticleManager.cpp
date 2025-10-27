@@ -55,19 +55,12 @@ void ParticleManager::Update(){
     //==============================================//
     // パーティクルの更新
     //==============================================//
-    //std::for_each(std::execution::par_unseq, instance_->particles3D_.begin(), instance_->particles3D_.end(), [](auto& p){
-    //    p->Update();
-    //});
-    //std::for_each(std::execution::par_unseq, instance_->particles2D_.begin(), instance_->particles2D_.end(), [](auto& p){
-    //    p->Update();
-    //});
-
-    for(auto& particle : instance_->particles3D_){
-        particle->Update();
-    }
-    for(auto& particle : instance_->particles2D_){
-        particle->Update();
-    }
+    std::for_each(std::execution::par_unseq, instance_->particles3D_.begin(), instance_->particles3D_.end(), [](auto& p){
+        p->Update();
+    });
+    std::for_each(std::execution::par_unseq, instance_->particles2D_.begin(), instance_->particles2D_.end(), [](auto& p){
+        p->Update();
+    });
 
     //==============================================//
     // パーティクルとフィールドの衝突判定

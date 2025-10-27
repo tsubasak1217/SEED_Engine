@@ -15,51 +15,49 @@
 
 void PostProcessGroup::Edit(){
 #ifdef _DEBUG
-    static std::string saveFileName = "postProcess";
-    static std::string label;
+
+    std::string hash = "##" + std::to_string(handle_);
 
     // ポストプロセスグループのアクティブ切り替え =======================================
-    label = "アクティブ##" + std::to_string(handle_);
-    ImGui::Checkbox(label.c_str(), &isActive);
+    ImGui::Checkbox("アクティブ" + hash, &isActive);
 
     // 新しいポストエフェクトの追加 ===================================================
-    label = "新しいポストエフェクトの追加##" + std::to_string(handle_);
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("新しいポストエフェクトの追加" + hash)){
         ImGui::Indent();
         {
-            if(ImGui::Button("グレースケール")){
+            if(ImGui::Button("グレースケール" + hash)){
                 postProcesses.push_back({ std::make_unique<GrayScale>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("ガウスぼかし")){
+            if(ImGui::Button("ガウスぼかし" + hash)){
                 postProcesses.push_back({ std::make_unique<GaussianFilter>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("被写界深度")){
+            if(ImGui::Button("被写界深度" + hash)){
                 postProcesses.push_back({ std::make_unique<DoF>() ,false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("ビネット")){
+            if(ImGui::Button("ビネット" + hash)){
                 postProcesses.push_back({ std::make_unique<Vignette>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("RGBシフト")){
+            if(ImGui::Button("RGBシフト" + hash)){
                 postProcesses.push_back({ std::make_unique<RGBShift>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("スキャンライン")){
+            if(ImGui::Button("スキャンライン" + hash)){
                 postProcesses.push_back({ std::make_unique<ScanLine>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("フォグ")){
+            if(ImGui::Button("フォグ" + hash)){
                 postProcesses.push_back({ std::make_unique<Fog>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("ブルーム")){
+            if(ImGui::Button("ブルーム" + hash)){
                 postProcesses.push_back({ std::make_unique<Bloom>(),false });
                 postProcesses.back().first->Initialize();
             }
-            if(ImGui::Button("グリッチ")){
+            if(ImGui::Button("グリッチ" + hash)){
                 postProcesses.push_back({ std::make_unique<Glitch>(),false });
                 postProcesses.back().first->Initialize();
             }
@@ -69,14 +67,13 @@ void PostProcessGroup::Edit(){
 
     // パラメーターの編集 ===================================================
     ImGui::Separator();
-    label = "ポストプロセスの編集##" + std::to_string(handle_);
-    if(ImGui::CollapsingHeader(label.c_str())){
+    if(ImGui::CollapsingHeader("ポストプロセスの編集" + hash)){
         ImGui::Indent();
 
         for(auto& postProcess : postProcesses){
 
             // ポストプロセスの有効/無効を切り替えるチェックボックス
-            label = "##" + std::to_string(postProcess.first->GetId());
+            std::string label = "##" + std::to_string(postProcess.first->GetId());
             ImGui::Checkbox(label.c_str(), &postProcess.first->isActive_);
 
             // ↑,↓ ボタンを表示して順番を変更できるようにする
@@ -101,8 +98,7 @@ void PostProcessGroup::Edit(){
 
             // 削除ボタン
             ImGui::SameLine();
-            label = "削除##" + std::to_string(postProcess.first->GetId());
-            if(ImGui::Button(label.c_str())){
+            if(ImGui::Button("削除##" + std::to_string(postProcess.first->GetId()))){
                 postProcess.second = true; // 削除フラグを立てる
             }
 
@@ -116,11 +112,7 @@ void PostProcessGroup::Edit(){
 
     // ポストプロセスの保存 ===================================================
     {
-        static bool wantsToOverwrite = false;
-        static std::string pendingPath = "";
-
-        label = "ポストプロセスグループの保存##" + std::to_string(handle_);
-        if(ImGui::Button(label.c_str())){
+        if(ImGui::Button("ポストプロセスグループの保存" + hash)){
             // 保存ボタンが押されたら保存ダイアログを開く
             std::string fillename = MyFunc::OpenSaveFileDialog("Resources/Jsons/PostProcess/", ".json");
 

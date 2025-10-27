@@ -85,7 +85,7 @@ void Component_EmitterGroup2D::EditGUI(){
     // ファイル一覧を取得
     static const std::filesystem::path rootPath = "Resources/Jsons/Particle/2D";
     static std::filesystem::path curPath = rootPath;
-    std::string selected = ImFunc::FolderView("ファイルを選択", curPath, false, { ".emtg2" }, rootPath);
+    std::string selected = ImFunc::FolderView("ファイルを選択", curPath, { ".emtg2" }, rootPath);
 
     // 選択されたら読み込み
     if(!selected.empty()){

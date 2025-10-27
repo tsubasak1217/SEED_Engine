@@ -533,7 +533,7 @@ void GPUParticleSystem::DrawGUI(){
         // モデル形状の選択
         static std::filesystem::path modelPath = "Resources/Models/";
         static std::filesystem::path rootPath = "Resources/Models/";
-        std::string selected = ImFunc::FolderView("エミットモデル選択", modelPath, false, { ".obj", ".gltf",".glb"}, rootPath);
+        std::string selected = ImFunc::FolderView("エミットモデル選択", modelPath, { ".obj", ".gltf",".glb"}, rootPath);
         if(!selected.empty()){
             // 選択されたモデルを読み込む
             instance_->currentModelData_ = ModelManager::GetInstance()->GetModelData(selected);

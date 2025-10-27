@@ -281,7 +281,7 @@ void Emitter2D::EditTextureAndDrawSettings(){
         // テクスチャの追加用のフォルダビュー
         static const std::filesystem::path rootPath = "Resources/Textures";
         static std::filesystem::path curPath = rootPath;
-        std::string selected = ImFunc::FolderView("追加テクスチャを選択", curPath, false, { ".png", ".jpg" }, rootPath);
+        std::string selected = ImFunc::FolderView("追加テクスチャを選択", curPath, { ".png", ".jpg" }, rootPath);
 
         // テクスチャが選択されたら追加
         if(!selected.empty()){

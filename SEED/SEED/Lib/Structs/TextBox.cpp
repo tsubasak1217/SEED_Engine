@@ -9,8 +9,11 @@ void TextBox2D::Edit(const std::string& hash){
     ImFunc::InputTextMultiLine("テキスト##" + hash, text, ImGuiInputTextFlags_CtrlEnterForNewLine);
 
     // フォント設定
-    static std::filesystem::path currentDir = "Resources/Fonts";
-    std::string selectedFont = ImFunc::FolderView("フォント設定##" + hash, currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
+    static const std::filesystem::path rootDir = "Resources/Fonts";
+    static std::filesystem::path currentDir = rootDir;
+    std::string selectedFont = ImFunc::FolderView("フォント設定##" + hash, currentDir, { ".ttf",".otf" }, rootDir);
+
+    // 何かしら選択されたらフォントを設定
     if(!selectedFont.empty()){
         SetFont(selectedFont);
     }

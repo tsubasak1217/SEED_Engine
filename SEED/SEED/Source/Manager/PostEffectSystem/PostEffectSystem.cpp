@@ -334,7 +334,7 @@ void PostEffectSystem::Edit(){
         {
             static std::filesystem::path currentPath = "Resources/Jsons/PostProcess/";
             static std::filesystem::path rootPath = "Resources/Jsons/PostProcess/";
-            std::string selectedFile = ImFunc::FolderView("ポストプロセスの読み込み", currentPath, false, { ".json" }, rootPath);
+            std::string selectedFile = ImFunc::FolderView("ポストプロセスの読み込み", currentPath, { ".json" }, rootPath);
 
             // ファイルが選択された場合、読み込む
             if(!selectedFile.empty()){

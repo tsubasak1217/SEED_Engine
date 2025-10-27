@@ -121,9 +121,9 @@ struct ImFunc{
     static std::string FolderView(
         const std::string& label,
         std::filesystem::path& currentPath,
-        bool isFileNameOnly = false,
         std::initializer_list<std::string> filterExts = { "" },
         std::filesystem::path rootPath = "",
+        bool isFileNameOnly = false,
         bool returnDirectoryName = false
     );
     // アクティブボタンの表示
@@ -174,6 +174,7 @@ struct ImFunc{
     static const Range2D& GetSceneWindowRange(const std::string& label);
 
 private:
+    ImFunc() = default;
     static inline std::unordered_map<std::string, Range2D> sceneWindowRanges_; // シーンウィンドウの範囲を保存するマップ
 };
 

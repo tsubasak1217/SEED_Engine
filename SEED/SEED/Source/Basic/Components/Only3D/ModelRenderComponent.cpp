@@ -77,7 +77,7 @@ void ModelRenderComponent::EditGUI(){
     // モデルの変更
     label = "モデル変更##" + std::to_string(componentID_);
     static std::filesystem::path modelPath = "Resources/Models/";
-    std::string path = ImFunc::FolderView(label.c_str(), modelPath, false, { "obj","gltf","glb" }, "Resources/Models/");
+    std::string path = ImFunc::FolderView(label.c_str(), modelPath, { "obj","gltf","glb" }, "Resources/Models/");
     if(path != ""){
         ChangeModel(path);
     }

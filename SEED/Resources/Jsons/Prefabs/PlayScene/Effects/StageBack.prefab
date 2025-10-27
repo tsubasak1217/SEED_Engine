@@ -718,7 +718,7 @@
             "isParentRotate": true,
             "isParentScale": true,
             "isParentTranslate": true,
-            "objectName": "Object_1",
+            "objectName": "StageBackEffect",
             "objectType": 0,
             "transform": {
                 "rotate": {

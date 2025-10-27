@@ -207,7 +207,7 @@ void CurveEditor::EditCurves(){
 
     // フォルダ表示,読み込み
     static std::filesystem::path folderPath = "Resources/Jsons/Curves";
-    std::string selectedFile = ImFunc::FolderView("フォルダ表示" + tag_, folderPath, false, { "curve" }, "Resources/Jsons/Curves");
+    std::string selectedFile = ImFunc::FolderView("フォルダ表示" + tag_, folderPath, { "curve" }, "Resources/Jsons/Curves");
     if(!selectedFile.empty()){
         FromJson(MyFunc::GetJson(selectedFile));
     }

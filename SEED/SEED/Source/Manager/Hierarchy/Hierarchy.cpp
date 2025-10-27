@@ -693,7 +693,7 @@ void Hierarchy::InOutOnGUI(){
         {
             ImGui::Text("シーンの読み込み");
             static std::filesystem::path prefabPath = "Resources/jsons/Scenes/";
-            std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, false, { ".scene" }, "Resources/jsons/Scenes/");
+            std::string selectedFile = ImFunc::FolderView("Scene", prefabPath, { ".scene" }, "Resources/jsons/Scenes/");
 
             if(selectedFile != ""){
                 LoadScene(selectedFile);
@@ -702,7 +702,7 @@ void Hierarchy::InOutOnGUI(){
         {
             ImGui::Text("Prefabの読み込み");
             static std::filesystem::path prefabPath = "Resources/jsons/Prefabs/";
-            std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, false, { ".prefab" }, "Resources/jsons/Prefabs/");
+            std::string selectedFile = ImFunc::FolderView("Prefab", prefabPath, { ".prefab" }, "Resources/jsons/Prefabs/");
             if(selectedFile != ""){
                 // 2Dか3Dか判別できないので両方実行して確実に読み込む
                 if(!LoadObject(selectedFile)){

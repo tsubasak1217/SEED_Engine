@@ -308,7 +308,7 @@ void Emitter3D::EditTextureAndDrawSettings(){
             // テクスチャの追加用のフォルダビュー
             static const std::filesystem::path rootPath = "Resources/Textures";
             static std::filesystem::path curPath = rootPath;
-            std::string selected = ImFunc::FolderView("追加テクスチャを選択", curPath, false, { ".png", ".jpg" }, rootPath);
+            std::string selected = ImFunc::FolderView("追加テクスチャを選択", curPath, { ".png", ".jpg" }, rootPath);
 
             // テクスチャが選択されたら追加
             if(!selected.empty()){
@@ -329,7 +329,7 @@ void Emitter3D::EditModel(){
     // モデルの一覧から選択したものをエミッターのモデルリストに追加
     static const std::filesystem::path rootPath = "Resources/Models";
     static std::filesystem::path curPath = rootPath;
-    std::string selected = ImFunc::FolderView("モデル形状を選択", curPath, false, { ".obj", ".gltf",".glb" }, rootPath);
+    std::string selected = ImFunc::FolderView("モデル形状を選択", curPath, { ".obj", ".gltf",".glb" }, rootPath);
 
     // 選択されたら変更
     if(!selected.empty()){

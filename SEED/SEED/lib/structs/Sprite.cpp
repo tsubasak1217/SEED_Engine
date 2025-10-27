@@ -151,7 +151,7 @@ void Sprite::Edit([[maybe_unused]]const std::string& hash){
         ImGui::Indent();
         static std::filesystem::path rootDir = "Resources/Textures";
         static std::filesystem::path currentDir = rootDir;
-        std::string selected = ImFunc::FolderView("テクスチャ選択##" + hash, currentDir, false, { ".png",".jpg" }, rootDir);
+        std::string selected = ImFunc::FolderView("テクスチャ選択##" + hash, currentDir, { ".png",".jpg" }, rootDir);
         if(!selected.empty()){
             SetTexture(selected);
         }

@@ -1440,6 +1440,7 @@
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\Component_EmitterGroup2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.cpp" />
+    <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
@@ -1456,5 +1457,6 @@
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
+    <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 #include "../Object3d.hlsli"
 
 // texture
-Texture2D<float4> gTexture[128] : register(t0, space0);
+Texture2D<float4> gTexture[256] : register(t0, space0);
 SamplerState gSampler : register(s0);
 
 

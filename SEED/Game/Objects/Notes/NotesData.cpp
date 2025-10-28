@@ -346,27 +346,24 @@ void NotesData::PlayAudio(){
         songTimer_.prevTime - PlaySettings::GetInstance()->GetOffsetAnswerSE()
     };
 
-    // 条件を満たすノーツ
-    for(auto it = notes_.begin(); it != notes_.end(); ++it){
+    // アンサー音を鳴らすべきか判定
+    for(auto it = answerTimes_.begin(); it != answerTimes_.end();){
 
-        // 判定時間を超えていたら
-        if(it->first < borderTime[0] && it->first >= borderTime[1]){
-            // アンサー音を鳴らす
+        // 今の時間より後ろなら終了
+        if(*it > borderTime[0]){
+            break;
+        }
+
+        // ボーダー時間内を超えたばかりならアンサー音を鳴らす
+        if(*it <= borderTime[0] && *it > borderTime[1]){
+            // 鳴らしたら削除
             AudioManager::PlayAudio(answerSEFilePath_, false);
-
+            it = answerTimes_.erase(it);
+        } else{
+            ++it;
         }
     }
 
-    // 終点でも同様にアンサー音を鳴らす
-    for(auto it = activeHoldNotes_.begin(); it != activeHoldNotes_.end(); ++it){
-        Note_Base* note = it->lock().get();
-        if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note)){
-            float end = holdNote->time_ + holdNote->kHoldTime_;
-            if(end < borderTime[0] && end >= borderTime[1]){
-                AudioManager::PlayAudio(answerSEFilePath_, false);
-            }
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -481,6 +478,26 @@ void NotesData::FromJson(const nlohmann::json& songData){
         float duration = tempoDataList_.back().time + tempoDataList_.back().CalcDuration();
         songTimer_.duration = duration; // 譜面の長さを設定
     }
+
+    // アンサー音を鳴らす時間のリストを作成
+    answerTimes_.clear();
+    for(auto& note : notes_){
+        // 警告ノーツはアンサー音を鳴らさないため無視
+        if(Note_Warning* warningNote = dynamic_cast<Note_Warning*>(note.second.get())){
+            continue;
+        }
+
+        // ノーツの開始時間を追加
+        answerTimes_.push_back(note.first);
+
+        // ホールドノーツは終点も鳴らすため追加
+        if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.second.get())){
+            answerTimes_.push_back(holdNote->time_ + holdNote->kHoldTime_);
+        }
+    }
+
+    // 時間でソート
+    answerTimes_.sort();
 }
 
 //////////////////////////////////////////////////////////////////////

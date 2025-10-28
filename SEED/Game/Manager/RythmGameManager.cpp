@@ -81,6 +81,12 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // 判定の初期化
     Judgement::GetInstance();
+
+    // チュートリアルマネージャの初期化
+    if(songData["songName"] == "都立チュートリアル中学校"){
+        tutorialManager_ = TutorialObjectManager(notesData_->GetSongTimerPtr());
+        tutorialManager_->Initialize();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -93,9 +99,9 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    //Input::SetMouseCursorVisible(false);
+    Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
     Input::RepeatCursor();
 #endif
@@ -145,6 +151,9 @@ void RythmGameManager::EndFrame(){
                     hierarchy->LoadObject2D("ClearEffect/Effect_FC.prefab");
                 }
             }
+
+            // チュートリアルマネージャの終了処理
+            tutorialManager_.reset();
         }
 
         // プレイ終了タイマーを更新
@@ -180,6 +189,11 @@ void RythmGameManager::Update(){
         // プレイフィールドの更新
         PlayField::GetInstance()->Update();
 
+        // チュートリアルマネージャの更新
+        if(tutorialManager_){
+            tutorialManager_->Update();
+        }
+
         // コンボテキストの更新
         comboObject_->Update();
 
@@ -209,6 +223,11 @@ void RythmGameManager::Draw(){
 
     // 譜面データの描画
     notesData_->Draw();
+
+    // チュートリアルオブジェクトの描画
+    if(tutorialManager_){
+        tutorialManager_->Draw();
+    }
 
     // ゲームカメラ画面の描画
 #ifdef _DEBUG
@@ -253,8 +272,8 @@ void RythmGameManager::AddCombo(){
 float RythmGameManager::CalculateScore(){
     float result;
     float scorePerNote = 100.0f / playResult_.totalCombo;
-    float scoreSubtractRateGreat = 0.5f;
-    float scoreSubtractRateGood = 0.75f;
+    float scoreSubtractRateGreat = 0.25f;
+    float scoreSubtractRateGood = 0.5f;
     float subtractGreat = playResult_.evalutionCount[(int)Judgement::Evalution::GREAT] * scorePerNote * scoreSubtractRateGreat;
     float subtractGood = playResult_.evalutionCount[(int)Judgement::Evalution::GOOD] * scorePerNote * scoreSubtractRateGood;
     float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] * scorePerNote;

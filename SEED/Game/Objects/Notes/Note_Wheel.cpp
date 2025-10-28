@@ -90,6 +90,7 @@ Judgement::Evalution Note_Wheel::Judge(float dif){
     LaneBit lane = input->GetWheelScrollDirection() == UpDown::UP ?
         LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
 
+    // MISS以外はPERFECT扱いにする
     if(int32_t(lane) & laneBit_){
         // ノーツの判定
         if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
@@ -98,11 +99,11 @@ Judgement::Evalution Note_Wheel::Judge(float dif){
 
         } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT)){
             // GOOD
-            return Judgement::Evalution::GOOD;
+            return Judgement::Evalution::PERFECT;
 
         } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT)){
             // GREAT
-            return Judgement::Evalution::GREAT;
+            return Judgement::Evalution::PERFECT;
 
         } else{
             // PERFECT

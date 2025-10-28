@@ -678,7 +678,7 @@ void Hierarchy::InOutOnGUI(){
                 if(!j.empty()){ result.update(j); }
                 if(!j2.empty()){ result.update(j2); }
                 // 出力
-                MyFunc::CreateJsonFile(filename,result);
+                MyFunc::CreateJsonFile(filename, result);
                 // filenameをファイル名のみに戻す
                 filename = std::filesystem::path(filename).filename().stem().string();
             }
@@ -946,6 +946,11 @@ LoadObjectData Hierarchy::LoadScene(const std::string& filePath, bool resetObjec
             gameObjects_.emplace_back(std::unique_ptr<GameObject>(obj));
             result.objects3D_.emplace_back(obj);
         }
+
+        // Matrixを初期に更新しておく
+        for(auto& obj : familyObjects){
+            obj->UpdateMatrix();
+        }
     }
 
     for(const auto& gameObjectJson : json["gameObjects2D"]){
@@ -955,6 +960,11 @@ LoadObjectData Hierarchy::LoadScene(const std::string& filePath, bool resetObjec
         for(auto& obj : familyObjects){
             gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
             result.objects2D_.emplace_back(obj);
+        }
+
+        // Matrixを初期に更新しておく
+        for(auto& obj : familyObjects){
+            obj->UpdateMatrix();
         }
     }
 
@@ -990,6 +1000,12 @@ GameObject* Hierarchy::LoadObject(const std::string& filePath){
 
         // 読み込んだ結果を返す(無ければnullptr)
         if(familyObjects.empty()){ return nullptr; }
+
+        // Matrixを初期に更新しておく
+        for(auto& obj : familyObjects){
+            obj->UpdateMatrix();
+        }
+
         return familyObjects.front();
     }
 
@@ -1013,7 +1029,7 @@ GameObject2D* Hierarchy::LoadObject2D(const std::string& filePath){
     } else{
         json = MyFunc::GetJson(prefabJsonDirectory_ + filePath);
     }
-    
+
     // 2Dの場合
     if(json.contains("gameObjects2D")){
         // 子を再帰的に探索し、家族グループを作成
@@ -1022,10 +1038,20 @@ GameObject2D* Hierarchy::LoadObject2D(const std::string& filePath){
         for(auto& obj : familyObjects){
             gameObjects2D_.emplace_back(std::unique_ptr<GameObject2D>(obj));
         }
+
         // 読み込んだ結果を返す(無ければnullptr)
         if(familyObjects.empty()){ return nullptr; }
+
+        // Matrixを初期に更新しておく
+        for(auto& obj : familyObjects){
+            obj->UpdateMatrix();
+        }
+
         return familyObjects.front();
     }
+
+
+
     return nullptr;
 }
 

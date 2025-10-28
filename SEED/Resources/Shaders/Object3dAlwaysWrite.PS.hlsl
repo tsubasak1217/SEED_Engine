@@ -16,7 +16,7 @@ ConstantBuffer<Int> gDirectionalLightCount : register(b1);
 ConstantBuffer<Int> gPointLightCount : register(b2);
 ConstantBuffer<Int> gSpotLightCount : register(b3);
 // texture
-Texture2D<float4> gTexture[128] : register(t5, space0);
+Texture2D<float4> gTexture[256] : register(t5, space0);
 SamplerState gSampler : register(s0);
 
 

@@ -7,6 +7,7 @@
 #include <Game/Objects/Combo/ComboObject.h>
 #include <Game/Manager/NotesEditor.h>
 #include <Game/Objects/Result/PlayResult.h>
+#include <Game/Objects/Tutorial/TutorialObjectManager.h>
 
 /// <summary>
 /// リズムゲーム管理クラス
@@ -56,4 +57,5 @@ private:
     PlayResult playResult_; // プレイ結果
     Timer playEndTimer_;
     bool isPaused_ = false; // ポーズ中かどうか
+    std::optional<TutorialObjectManager> tutorialManager_; // チュートリアルマネージャ
 };

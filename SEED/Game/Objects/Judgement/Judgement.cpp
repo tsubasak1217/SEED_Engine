@@ -19,9 +19,9 @@ Judgement* Judgement::instance_ = nullptr;
 ////////////////////////////////////////////////////////
 Judgement::Judgement(){
     // 判定の幅の設定
-    judgeTime_[Evalution::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後3フレーム)
-    judgeTime_[Evalution::GREAT] = 8.0f / 60.0f;// グレート(前後5フレーム)
-    judgeTime_[Evalution::GOOD] = 12.0f / 60.0f;// グッド(前後7フレーム)
+    judgeTime_[Evalution::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後5フレーム)
+    judgeTime_[Evalution::GREAT] = 8.0f / 60.0f;// グレート(前後8フレーム)
+    judgeTime_[Evalution::GOOD] = 12.0f / 60.0f;// グッド(前後12フレーム)
 
     // 判定の色の設定
     judgeColor_[Evalution::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
@@ -118,7 +118,9 @@ void Judgement::Judge(NotesData* noteGroup){
             if(notePtr->noteType_ != NoteType::Hold){
                 notePtr->isEnd_ = true;// ノーツを終了させる
             }
-            hitBits |= notePtr->laneBit_;// ビットを立てる
+
+            // ビットを立てる
+            hitBits |= notePtr->laneBit_;
             pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.evaluation]);// レーンを押下状態にする
 
             // エフェクトを出す
@@ -131,13 +133,15 @@ void Judgement::Judge(NotesData* noteGroup){
             RythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
 
             // fast,lateの計算
-            if(note.signedDif > judgeTime_[(int)Evalution::PERFECT]){
-                // 遅れすぎた場合
-                RythmGameManager::GetInstance()->AddLateCount();
+            if(note.evaluation != Evalution::PERFECT){
+                if(note.signedDif > 0.0f){
+                    // 遅れすぎた場合
+                    RythmGameManager::GetInstance()->AddLateCount();
 
-            } else if(note.signedDif < -judgeTime_[(int)Evalution::PERFECT]){
-                // 早すぎた場合
-                RythmGameManager::GetInstance()->AddFastCount();
+                } else {
+                    // 早すぎた場合
+                    RythmGameManager::GetInstance()->AddFastCount();
+                }
             }
         }
     }
@@ -153,6 +157,12 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
     if(evaluation != Evalution::MISS){
         RythmGameManager::GetInstance()->AddCombo();// コンボを加算
         RythmGameManager::GetInstance()->AddEvaluation(evaluation);// 評価を追加
+
+        // perfect以外の場合はfastになる(押している時間が足りていないため)
+        if(evaluation != Evalution::PERFECT){
+            RythmGameManager::GetInstance()->AddFastCount();
+        }
+
     } else{
         RythmGameManager::GetInstance()->BreakCombo();// コンボを切る
         RythmGameManager::GetInstance()->AddEvaluation(Evalution::MISS);// ミスを追加

@@ -1,7 +1,7 @@
 #include "DescriptorHeap_SRV_CBV_UAV.h"
 
 DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
-    kMaxViewCount_ = 0xfff;
+    kMaxViewCount_ = 0xff;
     viewCount_ = 1;
 
     descriptorSize_ =

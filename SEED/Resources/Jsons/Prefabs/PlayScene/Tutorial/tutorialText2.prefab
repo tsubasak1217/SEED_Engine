@@ -1,0 +1,205 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 16,
+                    "componentTag": "UI_ID:16",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 0.9098039269447327,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "layer": 0,
+                            "name": "sprite0",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 1280.0,
+                                "y": 416.0
+                            },
+                            "texturePath": "Resources/Textures/DefaultAssets/gradation.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts/DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Medium.ttf",
+                            "fontSize": 32.0,
+                            "glyphSpacing": 9.399999618530273,
+                            "isApplyViewMat": false,
+                            "layer": 5,
+                            "lineSpacing": -3.0,
+                            "name": "text0",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 3.200000047683716,
+                            "size": {
+                                "x": 1256.0,
+                                "y": 176.0
+                            },
+                            "text": "左のレーンから順番に\nA,S,D,F,space\nマウスの左クリックでもOK!\n真ん中に来たタイミングでボタンを押そう!",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 122.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                },
+                {
+                    "colorControlMode": 0,
+                    "componentID": 44,
+                    "componentTag": "ColorControl_ID:44",
+                    "componentType": "ColorControl",
+                    "curve": {
+                        "channel": 3,
+                        "curves": [
+                            [
+                                {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                },
+                                {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                }
+                            ],
+                            [
+                                {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                },
+                                {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                }
+                            ],
+                            [
+                                {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                },
+                                {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                }
+                            ],
+                            [
+                                {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                {
+                                    "x": 0.049828171730041504,
+                                    "y": 1.0
+                                },
+                                {
+                                    "x": 0.9410080909729004,
+                                    "y": 1.0
+                                },
+                                {
+                                    "x": 1.0,
+                                    "y": 0.0
+                                }
+                            ]
+                        ],
+                        "type": 19,
+                        "unitBorder": 1.0
+                    },
+                    "isLoop": false,
+                    "isMultiply": false,
+                    "time": 8.0,
+                    "timeScale": 1.0
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object2D_9",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 640.0,
+                    "y": 516.1799926757813
+                }
+            }
+        }
+    ]
+}

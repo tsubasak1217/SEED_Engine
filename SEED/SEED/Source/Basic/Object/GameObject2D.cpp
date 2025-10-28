@@ -196,6 +196,22 @@ std::list<GameObject2D*> GameObject2D::GetAllChildren() const{
     return allChildren;
 }
 
+
+// 名前の一致する子を取得
+GameObject2D* GameObject2D::GetChild(const std::string& name){
+    if(children_.size() == 0){
+        return nullptr;
+    }
+
+    for(auto& child : children_){
+        if(child->GetName() == name){
+            return &(*child);
+        }
+    }
+
+    return nullptr;
+}
+
 void GameObject2D::RemoveChild(GameObject2D* child){
     if(child){
         child->ReleaseParent();

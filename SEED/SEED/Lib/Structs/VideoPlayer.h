@@ -112,11 +112,12 @@ private:// VideoManagerが呼び出す
     void Update();
     void StartAudio();
 
-public:// 操作用
+public:// 操作用・アクセッサ
 
     void Play(float time = 0.0f, float speedRate = 1.0f,bool loop = false);
     void Pause();
     void Resume();
+    Vector2 GetVideoSize() const;
 
 private:// 内部関数
     void CreateReader(ID3D12Device* pDevice,const std::string& filePath);
@@ -131,5 +132,5 @@ private:
     static inline std::string directory_ = "Resources/Videos/";
     VideoData videoData_;
     VideoPlayerContext context_;
-    VideoItems* videoItem_;
+    VideoItems* videoItem_ = nullptr;
 };

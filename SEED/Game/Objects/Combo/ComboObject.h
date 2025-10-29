@@ -5,18 +5,31 @@
 #include <SEED/Lib/Structs/Timer.h>
 
 /// <summary>
-/// コンボのテキストを管理する構造体
+/// コンボのテキストを管理するクラス
 /// </summary>
-struct ComboObject{
-    int32_t comboCount = 0;
-    GameObject2D* comboTextObj = nullptr;
-    TextBox2D* text = nullptr;
-    Timer scalingTimer;
+class ComboObject{
+    int32_t comboCount_ = 0;
+    GameObject2D* comboTextObj_ = nullptr;
+    TextBox2D* text_ = nullptr;
+    Timer scalingTimer_;
 
-public:
+public:// 基本関数
     ComboObject();
     void Update();
 
-private:
+public:// アクセッサ
+
+    int32_t GetComboCount()const{ return comboCount_; }
+
+    void AddCombo(){
+        comboCount_++;
+        scalingTimer_.Reset();
+    }
+
+    void BreakCombo(){
+        comboCount_ = 0;
+    }
+
+private:// 内部関数
     void Initialize();
 };

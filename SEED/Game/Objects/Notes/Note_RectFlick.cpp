@@ -37,7 +37,12 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
     }
 }
 
-Judgement::Evalution Note_RectFlick::Judge(float dif){
+Judgement::Evalution Note_RectFlick::Judge(float curTime){
+
+    // 時間差を計算
+    float signedDif = curTime - time_;
+    float dif = std::fabsf(signedDif);
+
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     DIRECTION8 flickDirection = input->GetRectFlickDirection();

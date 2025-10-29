@@ -1553,6 +1553,7 @@ void NotesEditor::FileControl(){
         ImFunc::InputText("アーティスト名", artistName_);
         ImFunc::InputText("譜面制作者名", notesDesignerName_);
         ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
+        ImGui::DragFloat("曲自体のオフセット値", &offsetTime_, 0.001f, -1.0f, 1.0f);
 
         if(ImGui::Button("保存")){
 
@@ -1687,6 +1688,10 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
         saveDifficultyName_ = jsonData["difficultyName"];
     }
 
+    if(jsonData.contains("offsetTime")){
+        offsetTime_ = jsonData["offsetTime"];
+    }
+
     difficulty_ = jsonData["difficulty"];
     artistName_ = jsonData["artist"];
     notesDesignerName_ = jsonData["notesDesigner"];
@@ -1787,6 +1792,7 @@ nlohmann::json NotesEditor::ToJson(){
     jsonData["bpm"] = bpm;
     jsonData["maxCombo"] = comboCount; // コンボ数を保存
     jsonData["genre"] = (int32_t)songGenre_; // ジャンルを保存
+    jsonData["offsetTime"] = offsetTime_; // 曲自体のオフセット値を保存
 
     return jsonData;
 }

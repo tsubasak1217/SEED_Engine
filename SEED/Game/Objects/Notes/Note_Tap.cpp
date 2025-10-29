@@ -34,7 +34,12 @@ void Note_Tap::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Tap::Judge(float dif){
+Judgement::Evalution Note_Tap::Judge(float curTime){
+
+    // 時間差を計算
+    float signedDif = curTime - time_;
+    float dif = std::fabsf(signedDif);
+
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     bool isTap = input->GetIsTap();

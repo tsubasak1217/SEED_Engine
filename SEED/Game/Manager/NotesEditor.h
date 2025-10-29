@@ -132,6 +132,7 @@ private:
     std::string artistName_; // アーティスト名
     std::string notesDesignerName_; // ノーツ制作者名
     SongGenre songGenre_; // 曲のジャンル
+    float offsetTime_ = 0.0f; // 曲のオフセット時間
 
     // 表示する情報
     unordered_map<std::string, ImTextureID> textureIDs_;

@@ -5,313 +5,6 @@
                 {
                     "components": [
                         {
-                            "componentID": 7,
-                            "componentTag": "UI_ID:7",
-                            "componentType": "UI",
-                            "texts": [
-                                {
-                                    "alignX": 1,
-                                    "alignY": 1,
-                                    "anchorPos": {
-                                        "x": 0.5,
-                                        "y": 0.5
-                                    },
-                                    "blendMode": 3,
-                                    "color": {
-                                        "w": 1.0,
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    },
-                                    "fontName": "Resources/Fonts/DefaultAssets/Digital/nicokaku-plus_v2.5\\nicokaku_v2-5.ttf",
-                                    "fontSize": 100.0,
-                                    "glyphSpacing": 8.0,
-                                    "isApplyViewMat": false,
-                                    "layer": 10,
-                                    "lineSpacing": 8.0,
-                                    "name": "text0",
-                                    "outlineColor": {
-                                        "w": 1.0,
-                                        "x": 0.0,
-                                        "y": 0.0,
-                                        "z": 0.0
-                                    },
-                                    "outlineSplitCount": 16,
-                                    "outlineWidth": 9.100000381469727,
-                                    "size": {
-                                        "x": 1280.0,
-                                        "y": 181.0
-                                    },
-                                    "text": "FULL COBO",
-                                    "textBoxVisible": false,
-                                    "transform": {
-                                        "rotate": 0.0,
-                                        "scale": {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        },
-                                        "translate": {
-                                            "x": 0.0,
-                                            "y": 0.0
-                                        }
-                                    },
-                                    "useOutline": true
-                                }
-                            ]
-                        },
-                        {
-                            "componentID": 3,
-                            "componentTag": "Routine2D_ID:3",
-                            "componentType": "Routine2D",
-                            "controlPoints": [
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 10.0,
-                                        "y": 10.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 1.0,
-                                        "y": 1.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 1.2000000476837158,
-                                        "y": 1.2000000476837158
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 1.0,
-                                        "y": 1.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 1.0,
-                                        "y": 1.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 0.800000011920929,
-                                        "y": 0.800000011920929
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 1.0,
-                                        "y": 1.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                },
-                                {
-                                    "rotate": 0.0,
-                                    "scale": {
-                                        "x": 6.0,
-                                        "y": 0.0
-                                    },
-                                    "translate": {
-                                        "x": 640.0,
-                                        "y": 348.0
-                                    }
-                                }
-                            ],
-                            "defaultPaused": false,
-                            "duration": 3.0,
-                            "easingType": 0,
-                            "interpolationType": 1,
-                            "isLoop": false,
-                            "timePoints": [
-                                0.0,
-                                0.07285714149475098,
-                                0.1257142871618271,
-                                0.1785714328289032,
-                                0.8600000143051147,
-                                0.9014285802841187,
-                                0.9457142949104309,
-                                1.0
-                            ]
-                        },
-                        {
-                            "colorControlMode": 1,
-                            "componentID": 13,
-                            "componentTag": "ColorControl_ID:13",
-                            "componentType": "ColorControl",
-                            "curve": {
-                                "channel": 3,
-                                "curves": [
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.4743589758872986
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 0.4829059839248657
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.7905983328819275
-                                        },
-                                        {
-                                            "x": 0.5,
-                                            "y": 1.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 0.7905983328819275
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 1.0
-                                        },
-                                        {
-                                            "x": 0.50238436460495,
-                                            "y": 0.8931623697280884
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 1.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ]
-                                ],
-                                "type": 19,
-                                "unitBorder": 1.0
-                            },
-                            "isLoop": true,
-                            "isMultiply": false,
-                            "time": 1.0,
-                            "timeScale": 1.0
-                        },
-                        {
-                            "colorControlMode": 0,
-                            "componentID": 26,
-                            "componentTag": "ColorControl_ID:26",
-                            "componentType": "ColorControl",
-                            "curve": {
-                                "channel": 3,
-                                "curves": [
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ],
-                                    [
-                                        {
-                                            "x": 0.0,
-                                            "y": 0.0
-                                        },
-                                        {
-                                            "x": 1.0,
-                                            "y": 1.0
-                                        }
-                                    ]
-                                ],
-                                "type": 0,
-                                "unitBorder": 1.0
-                            },
-                            "isLoop": false,
-                            "isMultiply": true,
-                            "time": 1.0,
-                            "timeScale": 1.0
-                        }
-                    ],
-                    "isParentRotate": true,
-                    "isParentScale": true,
-                    "isParentTranslate": true,
-                    "objectName": "Text",
-                    "objectType": 0,
-                    "transform": {
-                        "rotate": 0.0,
-                        "scale": {
-                            "x": 6.0,
-                            "y": 0.0
-                        },
-                        "translate": {
-                            "x": 640.0,
-                            "y": 348.0
-                        }
-                    }
-                },
-                {
-                    "components": [
-                        {
                             "componentID": 5,
                             "componentTag": "UI_ID:5",
                             "componentType": "UI",
@@ -331,7 +24,7 @@
                                         "y": 0.0
                                     },
                                     "color": {
-                                        "w": 0.9058823585510254,
+                                        "w": 0.9411764740943909,
                                         "x": 0.0,
                                         "y": 0.0,
                                         "z": 0.0
@@ -516,12 +209,323 @@
                             "y": 360.0
                         }
                     }
+                },
+                {
+                    "components": [
+                        {
+                            "componentID": 7,
+                            "componentTag": "UI_ID:7",
+                            "componentType": "UI",
+                            "texts": [
+                                {
+                                    "alignX": 1,
+                                    "alignY": 1,
+                                    "anchorPos": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "fontName": "Resources/Fonts/DefaultAssets/Digital/nicokaku-plus_v2.5\\nicokaku_v2-5.ttf",
+                                    "fontSize": 100.0,
+                                    "glyphSpacing": 8.0,
+                                    "isApplyViewMat": false,
+                                    "layer": 10,
+                                    "lineSpacing": 8.0,
+                                    "name": "text0",
+                                    "outlineColor": {
+                                        "w": 1.0,
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "outlineSplitCount": 16,
+                                    "outlineWidth": 9.100000381469727,
+                                    "size": {
+                                        "x": 1280.0,
+                                        "y": 181.0
+                                    },
+                                    "text": "チュートリアル",
+                                    "textBoxVisible": false,
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "useOutline": true
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 3,
+                            "componentTag": "Routine2D_ID:3",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 10.0,
+                                        "y": 10.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.2000000476837158,
+                                        "y": 1.2000000476837158
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.800000011920929,
+                                        "y": 0.800000011920929
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 6.0,
+                                        "y": 0.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 348.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "duration": 3.0,
+                            "easingType": 0,
+                            "interpolationType": 1,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                0.07285714149475098,
+                                0.1257142871618271,
+                                0.1785714328289032,
+                                0.8600000143051147,
+                                0.9014285802841187,
+                                0.9457142949104309,
+                                1.0
+                            ]
+                        },
+                        {
+                            "colorControlMode": 1,
+                            "componentID": 13,
+                            "componentTag": "ColorControl_ID:13",
+                            "componentType": "ColorControl",
+                            "curve": {
+                                "channel": 3,
+                                "curves": [
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.8518518209457397
+                                        },
+                                        {
+                                            "x": 0.5011454820632935,
+                                            "y": 0.8121693730354309
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 0.8374033570289612
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.9228734374046326
+                                        },
+                                        {
+                                            "x": 0.4977090358734131,
+                                            "y": 1.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 0.9175824522972107
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 1.0
+                                        },
+                                        {
+                                            "x": 0.50238436460495,
+                                            "y": 0.8931623697280884
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 1.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ]
+                                ],
+                                "type": 19,
+                                "unitBorder": 1.0
+                            },
+                            "isLoop": true,
+                            "isMultiply": false,
+                            "time": 1.0,
+                            "timeScale": 1.0
+                        },
+                        {
+                            "colorControlMode": 0,
+                            "componentID": 26,
+                            "componentTag": "ColorControl_ID:26",
+                            "componentType": "ColorControl",
+                            "curve": {
+                                "channel": 3,
+                                "curves": [
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ]
+                                ],
+                                "type": 19,
+                                "unitBorder": 1.0
+                            },
+                            "isLoop": false,
+                            "isMultiply": true,
+                            "time": 1.0,
+                            "timeScale": 1.0
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "Text",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 0.0,
+                        "scale": {
+                            "x": 0.9938985705375671,
+                            "y": 0.9938985705375671
+                        },
+                        "translate": {
+                            "x": 640.0,
+                            "y": 348.0
+                        }
+                    }
                 }
             ],
             "isParentRotate": true,
             "isParentScale": true,
             "isParentTranslate": true,
-            "objectName": "tutorialText",
+            "objectName": "TutorialTitle",
             "objectType": 0,
             "transform": {
                 "rotate": 0.0,

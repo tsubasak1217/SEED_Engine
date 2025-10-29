@@ -1,5 +1,5 @@
 {
-    "artist": "都立TJHS教頭",
+    "artist": "都立TJHS教頭 feat.ずんだもん",
     "audioPath": "../../Resources/NoteDatas/toritsuTutorialJHS/toritsuTutorialJHS.wav",
     "bpm": 120.0,
     "difficulty": 5,
@@ -864,6 +864,7 @@
         }
     ],
     "notesDesigner": "tbs",
+    "offsetTime": 0.10000000149011612,
     "songName": "都立チュートリアル中学校",
     "tempoData": [
         {

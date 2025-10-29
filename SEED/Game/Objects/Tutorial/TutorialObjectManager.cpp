@@ -34,7 +34,7 @@ void TutorialObjectManager::Initialize(){
 
     // ビデオ表示時間の設定
     float tutorialDuration = 8.0f;
-    tutorials_[TutorialName::Tap].tutorialTimer.Initialize(tutorialDuration);
+    tutorials_[TutorialName::Tap].tutorialTimer.Initialize(tutorialDuration + 2.0f);
     tutorials_[TutorialName::Hold].tutorialTimer.Initialize(tutorialDuration);
     tutorials_[TutorialName::Wheel].tutorialTimer.Initialize(tutorialDuration);
     tutorials_[TutorialName::Frame].tutorialTimer.Initialize(tutorialDuration);
@@ -68,7 +68,14 @@ void TutorialObjectManager::Initialize(){
         tutorials_[i].videoQuad = MakeQuad2D(Vector2(1.0f, aspectRatio) * videoWidth);
         tutorials_[i].videoQuad.translate = kWindowCenter; // 画面中央に配置
         tutorials_[i].videoQuad.lightingType = LIGHTINGTYPE_NONE; // ライティングを無効化
+        tutorials_[i].videoQuad.isApplyViewMat = false; // ビュー行列を適用しない
+        tutorials_[i].videoQuad.layer = 5; // 手前に描画
     }
+
+    // 読み込み改善のために先に一度読み込んですぐ削除
+    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    hierarchy->EraseObject(hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab"));
+    hierarchy->EraseObject(hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText2.prefab"));
 }
 
 
@@ -92,6 +99,14 @@ void TutorialObjectManager::Update(){
         if(tutorials_[i].tutorialTimer.IsFinished()){
             tutorials_[i].isPlaying = false;
             tutorials_[i].videoScalingTimer.Update(-1.0f);
+
+            if(tutorials_[i].videoScalingTimer.IsReturnNow()){
+                Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+                hierarchy->EraseObject(tutorials_[i].tutorialTitleObject);
+                hierarchy->EraseObject(tutorials_[i].tutorialTextObject);
+                tutorials_[i].videoPlayer.Unload();
+            }
+
             continue;
         }
 
@@ -104,8 +119,8 @@ void TutorialObjectManager::Update(){
                 if(tutorials_[i].videoScalingTimer.GetProgress() == 0.0f){
                     // 下部のテキストオブジェクトを読み込む
                     Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
-                    tutorials_[i].textObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText2.prefab");
-                    tutorials_[i].textObject->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].explainText;
+                    tutorials_[i].tutorialTextObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText2.prefab");
+                    tutorials_[i].tutorialTextObject->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].explainText;
                 }
 
 
@@ -123,8 +138,8 @@ void TutorialObjectManager::Update(){
 
                 // テキストオブジェクトを読み込む
                 Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
-                tutorials_[i].textObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab");
-                GameObject2D* text = tutorials_[i].textObject->GetChild("Text");
+                tutorials_[i].tutorialTitleObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab");
+                GameObject2D* text = tutorials_[i].tutorialTitleObject->GetChild("Text");
                 text->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].text;
             }
         }

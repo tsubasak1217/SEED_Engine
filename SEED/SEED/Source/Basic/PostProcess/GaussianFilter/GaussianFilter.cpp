@@ -69,7 +69,7 @@ void GaussianFilter::Apply(){
 void GaussianFilter::Release(){
     // リソースの解放
     if(blurParamsBuffer_.bufferResource.resource){
-        blurParamsBuffer_.bufferResource.resource->Release();
+        blurParamsBuffer_.bufferResource.resource.Reset();
     }
 }
 

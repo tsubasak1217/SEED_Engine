@@ -45,6 +45,11 @@ bool Timer::IsFinishedNow() const{
     return prevTime < duration && currentTime >= duration;
 }
 
+// 0に戻ったか
+bool Timer::IsReturnNow() const{
+    return currentTime == 0.0f && prevTime > 0.0f;
+}
+
 // リセット
 void Timer::Reset(){
     currentTime = 0.0f;

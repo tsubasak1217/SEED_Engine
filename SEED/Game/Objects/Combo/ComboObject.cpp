@@ -5,33 +5,36 @@ ComboObject::ComboObject() = default;
 
 void ComboObject::Initialize(){
 
+    // コンボテキストオブジェクトの読み込み
+    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    comboTextObj_ = hierarchy->LoadObject2D("PlayScene/ComboCount.prefab");
+
     // テキストの初期化
-    comboTextObj = GameSystem::GetScene()->GetGameObject2D("comboCount");
-    if(comboTextObj){
-        text = &comboTextObj->GetComponent<UIComponent>()->GetText(0);
-        text->text = "%d";
-        text->BindDatas({ comboCount });
+    if(comboTextObj_){
+        text_ = &comboTextObj_->GetComponent<UIComponent>(0)->GetText(0);
+        text_->text = "%d";
+        text_->BindDatas({ comboCount_ });
     }
 
     // タイマーの初期化
-    scalingTimer.Initialize(0.3f, 0.3f);
+    scalingTimer_.Initialize(0.3f, 0.3f);
 }
 
 void ComboObject::Update(){
 
     // 未初期化なら初期化
-    if(!comboTextObj){
+    if(!comboTextObj_){
         Initialize();
-        if(!comboTextObj){
+        if(!comboTextObj_){
             return;
         }
     }
 
     // タイマーの更新
-    scalingTimer.Update();
+    scalingTimer_.Update();
 
     // 時間に応じてスケーリング
-    float ease = scalingTimer.GetEase(Easing::OutBack);
-    text->transform.scale = Vector2(ease);
+    float ease = scalingTimer_.GetEase(Easing::OutBack);
+    text_->transform.scale = Vector2(ease);
     //text->transform.rotate = 3.14f * (1.0f - scalingTimer.GetProgress());
 }

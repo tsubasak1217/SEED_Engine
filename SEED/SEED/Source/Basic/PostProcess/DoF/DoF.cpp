@@ -154,13 +154,11 @@ void DoF::Apply(){
 void DoF::Release(){
     // リソースの解放
     if(blurParamsBuffer_.bufferResource.resource){
-        blurParamsBuffer_.bufferResource.resource->Release();
-        blurParamsBuffer_.bufferResource.resource = nullptr;
+        blurParamsBuffer_.bufferResource.resource.Reset();
     }
     for(int i = 0; i < 2; i++){
         if(halfTexture_[i].resource){
-            halfTexture_[i].resource->Release();
-            halfTexture_[i].resource = nullptr;
+            halfTexture_[i].resource.Reset();
         }
     }
 }

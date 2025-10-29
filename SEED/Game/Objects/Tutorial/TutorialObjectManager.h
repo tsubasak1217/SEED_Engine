@@ -34,7 +34,8 @@ private:
         Timer videoScalingTimer = Timer(1.5f);
         Quad2D videoQuad;
         VideoPlayer videoPlayer;
-        GameObject2D* textObject = nullptr;
+        GameObject2D* tutorialTitleObject = nullptr;
+        GameObject2D* tutorialTextObject = nullptr;
         bool isPlaying = false;
         std::string text;
         std::string explainText;

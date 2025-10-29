@@ -86,11 +86,12 @@ void Judgement::Judge(NotesData* noteGroup){
     std::list<NoteJudgeInfo> hitNotes;// 判定を拾ったノーツ一覧
     for(auto& note : nearNotes){
         // 正しい時間との差を取得
-        float signedDif = note.lock()->time_ + PlaySettings::GetInstance()->GetOffsetJudge() - time;
+        float judgeTime = time + PlaySettings::GetInstance()->GetOffsetJudge();
+        float signedDif = judgeTime - note.lock()->time_;
         float dif = std::abs(signedDif);
 
         // 判定を拾ったノーツをリストにする
-        Judgement::Evalution evaluation = note.lock()->Judge(dif);
+        Judgement::Evalution evaluation = note.lock()->Judge(judgeTime);
         if(evaluation != Evalution::MISS){
 
             NoteJudgeInfo info;
@@ -170,6 +171,9 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // 終点の判定に応じてエフェクトとか出す
     pPlayField_->SetEvalution(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする
+
+    // エフェクトを出す
+    pPlayField_->EmitEffect(note->laneBit_, note->layer_, evaluation);
 }
 
 

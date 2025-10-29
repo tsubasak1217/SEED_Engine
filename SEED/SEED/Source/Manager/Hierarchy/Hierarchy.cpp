@@ -76,9 +76,9 @@ void Hierarchy::RemoveGameObject(GameObject2D* gameObject){
         gameObject->ReleaseChildren();
     }
 
-    // ヒエラルキーから削除
+    // 選択中のオブジェクトをクリア
     if(selectedObject2D_ == gameObject){
-        selectedObject2D_ = nullptr; // 選択中のオブジェクトをクリア
+        selectedObject2D_ = nullptr;
     }
 }
 
@@ -88,30 +88,23 @@ void Hierarchy::EraseObject(GameObject* gameObject){
     existObjectIdMap_.erase(gameObject->GetObjectID());
 
     for(auto* child : childrenCopy){
-        // selfCreatedObjectにあるか確認
+        // リストにあるか確認
         auto it = std::find_if(gameObjects_.begin(), gameObjects_.end(),
             [child](const std::unique_ptr<GameObject>& obj){ return obj.get() == child; });
 
-        // selfCreateObjects_から解放
+        // リストから解放
         if(it != gameObjects_.end()){
             gameObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
-
-        } else{// 直接解放
-            delete child; // 子オブジェクトを削除
-            child = nullptr; // ポインタをクリア
         }
     }
 
-    // selfCreatedObjectにあるか確認
+    // リストにあるか確認
     auto it = std::find_if(gameObjects_.begin(), gameObjects_.end(),
         [gameObject](const std::unique_ptr<GameObject>& obj){ return obj.get() == gameObject; });
 
-    // selfCreateObjects_から解放
+    // リストから解放
     if(it != gameObjects_.end()){
-        gameObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
-
-    } else{// 直接解放
-        delete gameObject; // 自分自身を削除
+        gameObjects_.erase(it); // オブジェクトのリストから削除
         gameObject = nullptr; // ポインタをクリア
     }
 }
@@ -122,30 +115,23 @@ void Hierarchy::EraseObject(GameObject2D* gameObject){
     existObjectIdMap2D_.erase(gameObject->GetObjectID());
 
     for(auto* child : childrenCopy){
-        // selfCreatedObjectにあるか確認
+        // リストにあるか確認
         auto it = std::find_if(gameObjects2D_.begin(), gameObjects2D_.end(),
             [child](const std::unique_ptr<GameObject2D>& obj){ return obj.get() == child; });
 
-        // selfCreateObjects_から解放
+        // リストから解放
         if(it != gameObjects2D_.end()){
             gameObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
-
-        } else{// 直接解放
-            delete child; // 子オブジェクトを削除
-            child = nullptr; // ポインタをクリア
         }
     }
 
-    // selfCreatedObjectにあるか確認
+    // リストにあるか確認
     auto it = std::find_if(gameObjects2D_.begin(), gameObjects2D_.end(),
         [gameObject](const std::unique_ptr<GameObject2D>& obj){ return obj.get() == gameObject; });
 
-    // selfCreateObjects_から解放
+    // リストから解放
     if(it != gameObjects2D_.end()){
-        gameObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
-
-    } else{// 直接解放
-        delete gameObject; // 自分自身を削除
+        gameObjects2D_.erase(it); // オブジェクトのリストから削除
         gameObject = nullptr; // ポインタをクリア
     }
 }

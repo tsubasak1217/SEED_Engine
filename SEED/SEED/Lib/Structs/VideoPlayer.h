@@ -102,22 +102,23 @@ public:
     }
     ~VideoPlayer();
 
-public: // 操作用
-    void LoadVideo(const std::string& filename,bool isUseAudio = true);
+public: // 基本関数
     void Draw(Quad2D quad);
     void Draw(Quad quad);
+    void Unload();
+    void LoadVideo(const std::string& filename,bool isUseAudio = true);
     void DrawGUI();
 
-private:// VideoManagerが呼び出す
-    void Update();
-    void StartAudio();
 
-public:// 操作用・アクセッサ
-
+public:// 再生制御用関数・アクセッサ
     void Play(float time = 0.0f, float speedRate = 1.0f,bool loop = false);
     void Pause();
     void Resume();
     Vector2 GetVideoSize() const;
+
+private:// VideoManagerが呼び出す内部関数
+    void Update();
+    void StartAudio();
 
 private:// 内部関数
     void CreateReader(ID3D12Device* pDevice,const std::string& filePath);

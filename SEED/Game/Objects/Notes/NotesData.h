@@ -65,6 +65,7 @@ private:
     std::vector<std::weak_ptr<Note_Base>> activeHoldNotes_;// アクティブなホールドノーツ
     std::list<std::weak_ptr<Note_Base>> onFieldNotes_;// フィールド上のノーツ(見えているノーツ)
     std::list<TempoData> tempoDataList_;
+    float songOffsetTime_ = 0.0f;// 曲全体のオフセット時間
 
 public:
 #ifdef _DEBUG

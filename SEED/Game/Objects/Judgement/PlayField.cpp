@@ -183,9 +183,6 @@ void PlayField::Initialize(){
     GameObject* backEffect = hierarchy->LoadObject("PlayScene/Effects/StageBack.prefab");
     backEffect->SetWorldTranslate(SEED::GetMainCamera()->GetTranslation());
 
-    // シーンの読み込み
-    objects2D_ = GameSystem::GetScene()->GetHierarchy()->LoadScene("PlayScene.scene", false).objects2D_;
-
     // エフェクトオブジェクトの読み込み
     /*レーン*/
     laneEffectObjects_[Judgement::Evalution::PERFECT] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Perfect.prefab");
@@ -199,6 +196,12 @@ void PlayField::Initialize(){
     rectFlickEffectObjects_[1] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RT.prefab");
     rectFlickEffectObjects_[2] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_LB.prefab");
     rectFlickEffectObjects_[3] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RB.prefab");
+
+    // ボタンUIの初期化
+    buttonUIObject_ = hierarchy->LoadObject2D("PlayScene/ButtonUIs.prefab");
+
+    // その他のオブジェクトの初期化
+    backLightObject_ = hierarchy->LoadObject2D("PlayScene/BackLight.prefab");
 
     // 背景色の設定
     SEED::windowBackColor_ = 0x00557CFF;
@@ -252,9 +255,6 @@ void PlayField::Draw(){
             SEED::DrawTriangle(laneBorderLineAura_[i][j]);
         }
     }
-
-    // 背景の描画
-    //backImage_.Draw();
 }
 
 

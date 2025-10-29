@@ -216,7 +216,7 @@ void NotesData::DeleteNotes(){
             if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(it->second.get())){
 
                 // 後ろがまだ判定ラインよりも前ならアクティブなホールドノーツに追加
-                if(holdNote->time_ + holdNote->kHoldTime_ >= borderTime){
+                if(holdNote->time_ + holdNote->kHoldTime_ >= songTimer_.currentTime){
 
                     // まだアクティブリストに入っていないなら追加
                     if(holdNote->isStackedToHoldList_ == false){
@@ -269,6 +269,8 @@ void NotesData::DeleteNotes(){
         }
     }
 
+    float judgeTime = GetCurMusicTime() + PlaySettings::GetInstance()->GetOffsetJudge();
+
     // 解放されたホールドノーツを削除
     for(auto it = activeHoldNotes_.begin(); it != activeHoldNotes_.end();){
         // ノーツが終わっているなら削除
@@ -276,7 +278,7 @@ void NotesData::DeleteNotes(){
             it = activeHoldNotes_.erase(it);
             continue;
         } else{
-            it->lock()->Judge(0.0f);
+            it->lock()->Judge(judgeTime);
             ++it;
         }
     }
@@ -400,6 +402,14 @@ void NotesData::FromJson(const nlohmann::json& songData){
         AudioManager::LoadAudio(songFilePath_); // オーディオをロード
     }
 
+    // 曲全体のオフセット時間を取得
+    if(songData.contains("offsetTime")){
+        songOffsetTime_ = songData["offsetTime"];
+    }
+
+    // 読み込みオフセット = 譜面自体のオフセット + プレイヤー設定のオフセット
+    float loadOffset = songOffsetTime_ + PlaySettings::GetInstance()->GetOffsetView();
+
     // ノーツデータの読み込み
     if(songData.contains("notes")){
         for(const auto& noteJson : songData["notes"]){
@@ -408,31 +418,31 @@ void NotesData::FromJson(const nlohmann::json& songData){
             if(noteType == "tap"){
                 Note_Tap* note = new Note_Tap();
                 note->FromJson(noteJson);
-                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                note->time_ += loadOffset;
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
             } else if(noteType == "hold" or noteType == "Hold"){
                 Note_Hold* note = new Note_Hold();
                 note->FromJson(noteJson);
-                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                note->time_ += loadOffset;
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
             } else if(noteType == "rectFlick" or noteType == "RectFlick"){
                 Note_RectFlick* note = new Note_RectFlick();
                 note->FromJson(noteJson);
-                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                note->time_ += loadOffset;
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
             } else if(noteType == "wheel"){
                 Note_Wheel* note = new Note_Wheel();
                 note->FromJson(noteJson);
-                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                note->time_ += loadOffset;
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
             } else if(noteType == "warning"){
                 Note_Warning* note = new Note_Warning();
                 note->FromJson(noteJson);
-                note->time_ += PlaySettings::GetInstance()->GetOffsetView();// 表示(配置そのもの)のオフセット
+                note->time_ += loadOffset;
                 notes_.emplace_back(std::make_pair(note->time_, note));
 
             } else{

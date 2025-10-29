@@ -19,6 +19,7 @@ public:
     float GetPrevProgress() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
+    bool IsReturnNow() const;
     void Reset();
     void ToEnd();
     void Stop();

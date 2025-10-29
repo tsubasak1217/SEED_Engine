@@ -32,7 +32,7 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
-                            "layer": 0,
+                            "layer": 6,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -82,12 +82,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "fontName": "Resources/Fonts/DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Medium.ttf",
-                            "fontSize": 32.0,
-                            "glyphSpacing": 9.399999618530273,
+                            "fontName": "Resources/Fonts/DefaultAssets/Pop/RiiPopkkR.otf",
+                            "fontSize": 25.0,
+                            "glyphSpacing": 6.099999904632568,
                             "isApplyViewMat": false,
-                            "layer": 5,
-                            "lineSpacing": -3.0,
+                            "layer": 7,
+                            "lineSpacing": 8.800000190734863,
                             "name": "text0",
                             "outlineColor": {
                                 "w": 1.0,

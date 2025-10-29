@@ -57,9 +57,10 @@ void Note_Hold::Draw(float currentTime, float appearLength){
 
         // 押していない場合に色を暗くする(頭が判定ラインを超えていない場合はそのまま)
         if(headEvaluation_ == Judgement::Evalution::NONE){
-            bool isTrigger = PlayerInput::GetInstance()->GetIsTap(lane_);
-            if(!isTrigger && timeRatio[0] < 0.0f){
-                noteQuad_->color.value.w *= 0.25f;
+            if(releaseTime_ > 0.0f){
+                if(!isHold_){
+                    noteQuad_->color.value.w *= 0.25f;
+                }
             }
         } else{
             if(isReleased_){
@@ -77,7 +78,12 @@ void Note_Hold::Draw(float currentTime, float appearLength){
 /////////////////////////////////////////////////////////////////////
 // ホールドノーツの判定
 /////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Hold::Judge(float dif){
+Judgement::Evalution Note_Hold::Judge(float curTime){
+
+    // 時間差を計算
+    float signedDif = curTime - time_;
+    float dif = std::fabsf(signedDif);
+
 
     // 入力情報を取得
     uint32_t lane = lane_ % PlayField::kKeyCount_;
@@ -106,7 +112,10 @@ Judgement::Evalution Note_Hold::Judge(float dif){
 
         // ホールドしていないなら、判定しない
         if(!isHold_){
-            releaseTime_ += ClockManager::DeltaTime();
+            if(curTime > time_){
+                // 離している時間を加算
+                releaseTime_ += ClockManager::DeltaTime();
+            }
             return Judgement::Evalution::NONE;
 
         } else{// ホールドしている
@@ -116,6 +125,9 @@ Judgement::Evalution Note_Hold::Judge(float dif){
             if(!isTrigger){
                 return Judgement::Evalution::NONE;
             }
+
+            // 判定時間を保存
+            hitTime_ = curTime;
 
             // ノーツの判定
             if(dif > judgeTime[Judgement::Evalution::GOOD]){
@@ -138,8 +150,8 @@ Judgement::Evalution Note_Hold::Judge(float dif){
 
     } else{// 頭をもう押している場合
 
-        if(isReleased_){
-            if(!isHold_){
+        if(!isHold_){
+            if(curTime > time_){
                 // 離している時間を加算
                 releaseTime_ += ClockManager::DeltaTime();
             }
@@ -156,17 +168,18 @@ Judgement::Evalution Note_Hold::JudgeHoldEnd(){
 
     // 
     static float rate = 5.0f;
+    static float timePadding = 0.0f;//20.0f / 60.0f; // 最低限の時間の猶予を持たせる
 
     // 判定時間の取得
     static float judgeTime[Judgement::kEvaluationCount] = {
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT) * rate,
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT) * rate,
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD) * rate,
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::MISS) * rate
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::MISS) * rate
     };
 
-    // 押していないないなら、ミス
-    if(headEvaluation_ == Judgement::Evalution::NONE){
+    // 押していなければ判定しない
+    if(headEvaluation_ == Judgement::Evalution::MISS){
         return Judgement::Evalution::MISS;
     }
 
@@ -203,6 +216,6 @@ void Note_Hold::Edit(){
     Note_Base::Edit();
     ImGui::Separator();
     // ホールドノーツの情報の編集
-    ImGui::DragFloat("ホールドの長さ", &kHoldTime_, 0.01f, 0.1f,FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+    ImGui::DragFloat("ホールドの長さ", &kHoldTime_, 0.01f, 0.1f, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
 }
 #endif // _DEBUG

@@ -46,8 +46,8 @@ void Note_Warning::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Warning::Judge(float dif){
-    dif;
+Judgement::Evalution Note_Warning::Judge(float curTime){
+    curTime;
     return Judgement::Evalution::NONE;
 }
 

@@ -175,12 +175,12 @@ void PostEffectSystem::Release(){
 
     for(int i = 0; i < 2; i++){
         if(postEffectTextureResource[i].resource){
-            postEffectTextureResource[i].resource->Release();
+            postEffectTextureResource[i].resource.Reset();
         }
     }
 
     if(postEffectResultResource.resource){
-        postEffectResultResource.resource->Release();
+        postEffectResultResource.resource.Reset();
     }
 }
 

@@ -13,7 +13,12 @@ void Note_SideFlick::Draw(float currentTime, float appearLength){
     Note_Base::Draw(currentTime,appearLength);
 }
 
-Judgement::Evalution Note_SideFlick::Judge(float dif){
+Judgement::Evalution Note_SideFlick::Judge(float curTime){
+
+    // 時間差を計算
+    float signedDif = curTime - time_;
+    float dif = std::fabsf(signedDif);
+
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
     LR flickDirection = input->GetSideFlickDirection();

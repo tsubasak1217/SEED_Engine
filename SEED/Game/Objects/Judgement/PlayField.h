@@ -88,11 +88,14 @@ private:
     std::array<std::array<Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
     std::unordered_map<LaneBit, Vector3>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
 
-    //
-    std::vector<GameObject2D*> objects2D_;
-
     // エフェクトオブジェクト
     GameObject* laneEffectObjects_[3];
     GameObject* wheelEffectObjects_[2];
     GameObject2D* rectFlickEffectObjects_[4];
+
+    // UIオブジェクト
+    GameObject2D* buttonUIObject_;// ボタンUIオブジェクト
+
+    // その他のオブジェクト
+    GameObject2D* backLightObject_;// 背景光オブジェクト
 };

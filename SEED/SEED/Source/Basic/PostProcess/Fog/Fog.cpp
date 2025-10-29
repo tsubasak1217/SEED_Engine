@@ -52,7 +52,7 @@ void Fog::Apply(){
 void Fog::Release(){
     // リソースの解放
     if(fogParamsBuffer_.bufferResource.resource){
-        fogParamsBuffer_.bufferResource.resource->Release();
+        fogParamsBuffer_.bufferResource.resource.Reset();
     }
 }
 

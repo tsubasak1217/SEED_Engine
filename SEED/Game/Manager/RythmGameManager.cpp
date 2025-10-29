@@ -99,11 +99,11 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    Input::SetMouseCursorVisible(false);
+    //Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
-    Input::RepeatCursor();
+    //Input::RepeatCursor();
 #endif
 
     PlayerInput::GetInstance()->BeginFrame();
@@ -257,13 +257,12 @@ void RythmGameManager::Resume(){
 // コンボの加算、終了
 //////////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::BreakCombo(){
-    comboObject_->comboCount = 0;
+    comboObject_->BreakCombo();
 }
 
 void RythmGameManager::AddCombo(){
-    comboObject_->scalingTimer.Reset();
-    comboObject_->comboCount++;
-    comboObject_->comboCount > playResult_.maxCombo ? playResult_.maxCombo = comboObject_->comboCount : playResult_.maxCombo;
+    comboObject_->AddCombo();
+    comboObject_->GetComboCount() > playResult_.maxCombo ? playResult_.maxCombo = comboObject_->GetComboCount() : playResult_.maxCombo;
 }
 
 //////////////////////////////////////////////////////////////////////////////////

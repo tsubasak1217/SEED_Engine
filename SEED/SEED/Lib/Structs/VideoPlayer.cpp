@@ -143,10 +143,14 @@ void VideoPlayer::Update(){
 }
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // 再生・一時停止・解除
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void VideoPlayer::Play(float time, float speedRate, bool loop){
+    // 動画が読み込まれていない場合は何もしない
+    if(!videoItem_){ return; }
+
     // 再生位置を設定
     SetStartPosition(time);
     context_.currentTime = std::clamp(time, 0.0f, videoData_.duration);
@@ -157,6 +161,9 @@ void VideoPlayer::Play(float time, float speedRate, bool loop){
 }
 
 void VideoPlayer::Pause(){
+    // 動画が読み込まれていない場合は何もしない
+    if(!videoItem_){ return; }
+
     context_.isPlaying = false;
     if(videoItem_->audioHandle.has_value()){
         AudioManager::PauseAudio(videoItem_->audioHandle.value());
@@ -164,6 +171,9 @@ void VideoPlayer::Pause(){
 }
 
 void VideoPlayer::Resume(){
+    // 動画が読み込まれていない場合は何もしない
+    if(!videoItem_){ return; }
+
     context_.isPlaying = true;
     if(videoItem_->audioHandle.has_value()){
         AudioManager::RestartAudio(videoItem_->audioHandle.value());
@@ -195,6 +205,8 @@ void VideoPlayer::StartAudio(){
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void VideoPlayer::Draw(Quad2D quad){
+    // 動画が読み込まれていない場合は何もしない
+    if(!videoItem_){ return; }
     // NV12からRGBAへ変換
     NV12ToRGBA();
     // Quadのテクスチャを設定
@@ -204,6 +216,8 @@ void VideoPlayer::Draw(Quad2D quad){
 }
 
 void VideoPlayer::Draw(Quad quad){
+    // 動画が読み込まれていない場合は何もしない
+    if(!videoItem_){ return; }
     // NV12からRGBAへ変換
     NV12ToRGBA();
     // Quadのテクスチャを設定
@@ -211,6 +225,16 @@ void VideoPlayer::Draw(Quad quad){
     quad.lightingType = LIGHTINGTYPE_NONE; // ライティングを無効化
     // 描画
     SEED::DrawQuad(quad);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// ビデオのアンロード
+//////////////////////////////////////////////////////////////////////////////////////////////////
+void VideoPlayer::Unload(){
+    if(videoItem_){
+        videoItem_->removeOrder = true; // 削除フラグを立てる
+        videoItem_ = nullptr;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,8 +258,9 @@ void VideoPlayer::CreateReader(ID3D12Device* pDevice, const std::string& filePat
     attr->SetUINT32(MF_SOURCE_READER_DISABLE_DXVA, TRUE);  // ← GPUデコード無効化
 
     // SourceReader の作成はこれ一度だけ
+    std::filesystem::path fullPath = MyFunc::ToFullPath(filePath);
     hr = MFCreateSourceReaderFromURL(
-        MyFunc::ConvertString(filePath).c_str(),
+        fullPath.c_str(),
         attr.Get(),
         &videoItem_->reader_
     );

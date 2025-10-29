@@ -10,7 +10,7 @@ public:
     ~Note_Hold() override;
     void Update() override;
     void Draw(float currentTime, float appearLength) override;
-    Judgement::Evalution Judge(float dif) override;
+    Judgement::Evalution Judge(float curTime) override;
     Judgement::Evalution JudgeHoldEnd();
 
     // 入出力関数
@@ -20,6 +20,7 @@ public:
 public:
     float kHoldTime_;
     float releaseTime_ = 0.0f;
+    float hitTime_;// 判定時間
     bool isHold_ = false;// ホールドしているかどうか
     bool isReleased_ = false;// リリースしたかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか

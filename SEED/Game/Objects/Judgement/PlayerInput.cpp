@@ -273,7 +273,7 @@ void PlayerInput::Draw(){
     // カーソルの描画
     for(int i = 0; i < 2; i++){
         //SEED::DrawTriangle(cursor_[i]);
-        SEED::DrawTriangle2D(cursor2D_[i]);
+        //SEED::DrawTriangle2D(cursor2D_[i]);
         SEED::DrawQuad(cursorLine_[i]);
     }
 

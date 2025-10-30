@@ -16,6 +16,15 @@ struct Transform2D{
     Matrix3x3 ToMatrix()const;
     Matrix4x4 ToMatrix4x4()const;
     void FromMatrix4x4(const Matrix4x4& mat);
+
+    // 比較演算子
+    bool operator==(const Transform2D& other) const {
+        return scale == other.scale && rotate == other.rotate && translate == other.translate;
+    }
+
+    bool operator!=(const Transform2D& other) const {
+        return !(*this == other);
+    }
 };
 
 /// <summary>
@@ -29,6 +38,14 @@ struct Transform{
     // 変換関数
     Matrix4x4 ToMatrix();
     void FromMatrix(const Matrix4x4& mat);
+
+    // 比較演算子
+    bool operator==(const Transform& other) const {
+        return scale == other.scale && rotate == other.rotate && translate == other.translate;
+    }
+    bool operator!=(const Transform& other) const {
+        return !(*this == other);
+    }
 };
 
 

@@ -46,7 +46,7 @@ public:
     Vector2 clipSize;
 
     // UVトランスフォーム
-    Transform2D uvTransform;  
+    Transform2D uvTransform;
     bool flipX = false;
     bool flipY = false;
 

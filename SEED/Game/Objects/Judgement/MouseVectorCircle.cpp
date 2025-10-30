@@ -54,11 +54,11 @@ void MouseVectorCircle::Update(){
 
         // マウスベクトルと長さを取得
         Vector2 mouseVec = Input::GetMouseVector();
-        float discardZone = PlayerInput::GetInstance()->GetFlickDeadZone() * 0.5f;// 無視するデッドゾーンの大きさ
+        float deadZone = PlayerInput::GetInstance()->GetFlickDeadZone();// 無視するデッドゾーンの大きさ
         float len = mouseVec.Length();
 
         // 長さに応じた処理
-        if(len >= PlayerInput::GetInstance()->GetFlickDeadZone()){
+        if(len >= deadZone){
             // フリック判定の際は緑っぽい色に
             circleObj_->masterColor_ = Color(0.0f, 1.0f, 0.25f, 1.0f);
 
@@ -76,12 +76,12 @@ void MouseVectorCircle::Update(){
 
         // カーソル位置更新
         if(cursorObj_){
-            float lenRate = std::clamp(len / PlayerInput::GetInstance()->GetFlickDeadZone(), 0.0f, 1.0f);
+            float lenRate = std::clamp(len / deadZone, 0.0f, 1.0f);
             Vector2 targetVec = mouseVec.Normalized() * radius * lenRate;
 
             // ラープ係数
             float lerpRate;
-            if(len > discardZone){
+            if(len > deadZone){
                 lerpRate = 20.0f * ClockManager::DeltaTime();
             } else{
                 lerpRate = 5.0f * ClockManager::DeltaTime();

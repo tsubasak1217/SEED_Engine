@@ -185,17 +185,38 @@ void PlayField::Initialize(){
 
     // エフェクトオブジェクトの読み込み
     /*レーン*/
-    laneEffectObjects_[Judgement::Evalution::PERFECT] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Perfect.prefab");
-    laneEffectObjects_[Judgement::Evalution::GREAT] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Great.prefab");
-    laneEffectObjects_[Judgement::Evalution::GOOD] = hierarchy->LoadObject("PlayScene/Effects/LaneEffect_Good.prefab");
+    for(int32_t i = 0; i < laneEffectObjects_.size(); i++){
+        // エフェクトオブジェクトを読み込み
+        laneEffectObjects_[i] = hierarchy->LoadObject("PlayScene/Effects/LaneEffects.prefab");
+        // 座標を設定
+        LaneBit laneBit = LaneBit(1 << i);
+        laneEffectObjects_[i]->SetWorldTranslate(effectEmitPoints_[laneBit]);
+        laneEffectObjects_[i]->UpdateMatrix();
+        // 最初は非アクティブにしておく
+        for(int32_t j = 0; j < 3; j++){
+            laneEffectObjects_[i]->GetComponent<Component_EmitterGroup3D>(j)->Deactivate();
+        }
+    }
+
     /*ホイール*/
     wheelEffectObjects_[(int)UpDown::UP] = hierarchy->LoadObject("PlayScene/Effects/Wheel_UP.prefab");
     wheelEffectObjects_[(int)UpDown::DOWN] = hierarchy->LoadObject("PlayScene/Effects/Wheel_DOWN.prefab");
+
+    for(int32_t i = 0; i < wheelEffectObjects_.size(); i++){
+        // 最初は非アクティブにしておく
+        wheelEffectObjects_[i]->GetComponent<Component_EmitterGroup3D>(0)->Deactivate();
+    }
+
     /*ㇾクトフリック*/
     rectFlickEffectObjects_[0] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_LT.prefab");
     rectFlickEffectObjects_[1] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RT.prefab");
     rectFlickEffectObjects_[2] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_LB.prefab");
     rectFlickEffectObjects_[3] = hierarchy->LoadObject2D("PlayScene/Effects/RectFlick_RB.prefab");
+
+    for(int32_t i = 0; i < rectFlickEffectObjects_.size(); i++){
+        // 最初は非アクティブにしておく
+        rectFlickEffectObjects_[i]->GetComponent<Component_EmitterGroup2D>(0)->Deactivate();
+    }
 
     // ボタンUIの初期化
     buttonUIObject_ = hierarchy->LoadObject2D("PlayScene/ButtonUIs.prefab");
@@ -456,17 +477,18 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
 // レーンのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
 void PlayField::LaneEffect(int evalution, LaneBit laneBit){
-    laneBit;
+    
+    // レーン番号を取得
+    int laneIndex = GetLaneBitIndex(uint32_t(laneBit));
+
     switch(evalution){
     case Judgement::Evalution::MISS:
         // MISSのときは何もしない
         break;
 
     default:// それ以外のとき
-        laneEffectObjects_[evalution]->SetWorldTranslate(effectEmitPoints_[laneBit]);
-        laneEffectObjects_[evalution]->UpdateMatrix();
-        laneEffectObjects_[evalution]->GetComponent<Component_EmitterGroup3D>()->Activate();
-        laneEffectObjects_[evalution]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evalution)->Activate();
+        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evalution)->InitEmitters();
         break;
     }
 }

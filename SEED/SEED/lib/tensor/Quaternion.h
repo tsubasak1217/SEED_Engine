@@ -62,8 +62,9 @@ public:
     Quaternion operator*(float f)const;
     Quaternion operator/(float f)const;
     void operator*=(const Quaternion& q);
-
     Vector3 operator*(const Vector3& v) const;
+    bool operator==(const Quaternion& q)const;
+    bool operator!=(const Quaternion& q)const;
 
 public:
 

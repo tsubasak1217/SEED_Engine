@@ -24,6 +24,59 @@ void UIComponent::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////
 void UIComponent::Update(){
 
+    // UVスクロール処理
+    for(auto& spritePair : sprites_){
+        auto& spriteItem = spritePair.second;
+
+        // UVスクロールが有効でなければスキップ
+        if(!spriteItem.isUVScroll){
+            continue;
+        }
+
+        // UVスクロールタイプごとの処理
+        switch(spriteItem.uvScrollType){
+        case ScrollType::Normal:
+            // 通常スクロール
+            spriteItem.finalUVTransform.translate += spriteItem.uvScrollValue * ClockManager::DeltaTime();
+
+            break;
+
+        case ScrollType::StepImage:
+            // 一定時間ごとに指定値をスクロール
+            spriteItem.stepTimer.Update();
+            if(spriteItem.stepTimer.IsFinished()){
+
+                // ステップを加算
+                spriteItem.stepTimer.Reset();
+                spriteItem.curColmnCount++;
+                spriteItem.totalStepCount++;
+
+                // 一定ステップ数を超えたら初期化
+                if(spriteItem.totalStepCount >= spriteItem.maxStepCount){
+                    spriteItem.totalStepCount = 0;
+                    spriteItem.curColmnCount = 0;
+                    spriteItem.finalUVTransform = spriteItem.originalUVTransform;
+
+                } else{
+                    // 列数が最大値を超えたら改行
+                    if(spriteItem.curColmnCount >= spriteItem.maxColmnCount){
+                        spriteItem.curColmnCount = 0;
+                        spriteItem.finalUVTransform.translate.y += spriteItem.uvScrollValue.y;
+                        spriteItem.finalUVTransform.translate.x = spriteItem.originalUVTransform.translate.x;
+                    
+                    } else{
+                        spriteItem.finalUVTransform.translate.x += spriteItem.uvScrollValue.x;
+                    }
+                }
+            }
+
+            break;
+
+        default:
+            break;
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,8 +85,14 @@ void UIComponent::Update(){
 void UIComponent::Draw(){
     // スプライトの描画
     for(auto& spritePair : sprites_){
-        spritePair.second.Draw(masterColor_ * owner_.owner2D->masterColor_);
+        // UVTransformを最終値に更新
+        spritePair.second.sprite.uvTransform = spritePair.second.finalUVTransform;
+        // 描画
+        spritePair.second.sprite.Draw(masterColor_ * owner_.owner2D->masterColor_);
+        // 描画後に元のUVTransformに戻す
+        spritePair.second.sprite.uvTransform = spritePair.second.originalUVTransform;
     }
+
     // テキストの描画
     for(auto& textPair : texts_){
         textPair.second.Draw(masterColor_ * owner_.owner2D->masterColor_);
@@ -69,7 +128,7 @@ void UIComponent::EditGUI(){
             // スプライトの追加
             if(ImGui::Button("スプライトの追加" + idStr)){
                 auto& sprite = sprites_.emplace_back("sprite" + std::to_string(spriteCount_++), Sprite());
-                sprite.second.parentMat = owner_.owner2D->GetWorldMatPtr();
+                sprite.second.sprite.parentMat = owner_.owner2D->GetWorldMatPtr();
             }
 
             {
@@ -96,7 +155,16 @@ void UIComponent::EditGUI(){
                         // 名前の編集
                         ImFunc::InputText("スプライト名" + ptrHash, spritePair.first);
                         // スプライトの編集
-                        spritePair.second.Edit(ptrStr);
+                        spritePair.second.sprite.Edit(ptrStr);
+
+                        // UVTransformに変更があったら初期値に
+                        if(spritePair.second.sprite.uvTransform != spritePair.second.originalUVTransform){
+                            spritePair.second.originalUVTransform = spritePair.second.sprite.uvTransform;
+                            spritePair.second.finalUVTransform = spritePair.second.sprite.uvTransform;
+                        }
+
+                        // UVスクロール設定の編集
+                        EditUVScroll(int32_t(i));
 
                         ImGui::Unindent();
                     }
@@ -159,13 +227,13 @@ Sprite& UIComponent::GetSprite(size_t index){
     if(index >= sprites_.size()){
         throw std::out_of_range("UIComponent::GetSprite(): index out of range");
     }
-    return sprites_[index].second;
+    return sprites_[index].second.sprite;
 }
 
 Sprite& UIComponent::GetSprite(const std::string& name){
     for(auto& spritePair : sprites_){
         if(spritePair.first == name){
-            return spritePair.second;
+            return spritePair.second.sprite;
         }
     }
     throw std::out_of_range("UIComponent::GetSprite(): name not found");
@@ -203,10 +271,26 @@ void UIComponent::LoadFromJson(const nlohmann::json& jsonData){
     sprites_.clear();
     if(jsonData.contains("sprites")){
         for(auto& spriteJson : jsonData["sprites"]){
+            SpriteItems spriteItem;
             Sprite sprite;
             sprite.FromJson(spriteJson);
             sprite.parentMat = owner_.owner2D->GetWorldMatPtr();
-            sprites_.emplace_back(spriteJson["name"], sprite);
+            spriteItem.sprite = sprite;
+
+            // UVスクロール情報
+            spriteItem.isUVScroll = spriteJson.value("isUVScroll", false);
+            spriteItem.uvScrollType = static_cast<ScrollType>(spriteJson.value("uvScrollType", 0));
+            spriteItem.uvScrollValue = spriteJson.value("uvScrollValue", Vector2(0.0f));
+            spriteItem.maxStepCount = spriteJson.value("maxStepCount", 1);
+            spriteItem.maxColmnCount = spriteJson.value("maxColmnCount", 1);
+            spriteItem.stepTimer.duration = spriteJson.value("stepTime", 0.1f);
+
+            // UVTransformの初期値を保存
+            spriteItem.originalUVTransform = spriteItem.sprite.uvTransform;
+            spriteItem.finalUVTransform = spriteItem.sprite.uvTransform;
+
+            // 追加
+            sprites_.emplace_back(spriteJson["name"], spriteItem);
         }
     }
 
@@ -233,8 +317,15 @@ nlohmann::json UIComponent::GetJsonData() const{
 
     // sprite情報
     for(auto& spritePair : sprites_){
-        jsonData["sprites"].push_back(spritePair.second.ToJson());
+        jsonData["sprites"].push_back(spritePair.second.sprite.ToJson());
         jsonData["sprites"].back()["name"] = spritePair.first;
+        // uvScroll情報
+        jsonData["sprites"].back()["isUVScroll"] = spritePair.second.isUVScroll;
+        jsonData["sprites"].back()["uvScrollType"] = int32_t(spritePair.second.uvScrollType);
+        jsonData["sprites"].back()["uvScrollValue"] = spritePair.second.uvScrollValue;
+        jsonData["sprites"].back()["maxStepCount"] = spritePair.second.maxStepCount;
+        jsonData["sprites"].back()["maxColmnCount"] = spritePair.second.maxColmnCount;
+        jsonData["sprites"].back()["stepTime"] = spritePair.second.stepTimer.duration;
     }
 
     // text情報
@@ -244,4 +335,35 @@ nlohmann::json UIComponent::GetJsonData() const{
     }
 
     return jsonData;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// UVスクロール設定編集
+//////////////////////////////////////////////////////////////////////////
+void UIComponent::EditUVScroll(int32_t index){
+    if(index < 0 || index >= static_cast<int32_t>(sprites_.size())){
+        return;
+    }
+    auto& spriteItem = sprites_[index].second;
+    std::string tag = "##" + MyFunc::PtrToStr(&spriteItem);
+
+    // UVスクロール設定
+    if(ImGui::CollapsingHeader("UVスクロール" + tag)){
+
+        ImGui::Checkbox("UVスクロールをするか" + tag, &spriteItem.isUVScroll);
+
+        if(spriteItem.isUVScroll){
+            ImFunc::Combo("スクロールタイプ" + tag, spriteItem.uvScrollType, { "Normal", "Step" });
+            ImFunc::HelpTip("Normal: 通常スクロール\nStep: 一定時間ごとに指定値をスクロール(連番画像など)");
+
+            ImGui::DragFloat2("スクロール速度" + tag, &spriteItem.uvScrollValue.x,0.01f);
+
+            // ステップスクロール時の設定
+            if(spriteItem.uvScrollType == ScrollType::StepImage){
+                ImGui::DragFloat("何秒に一回スクロールするか" + tag, &spriteItem.stepTimer.duration, 0.01f, 0.01f, 10.0f);
+                ImGui::DragInt("列数" + tag, &spriteItem.maxColmnCount, 1, 1, 100);
+                ImGui::DragInt("総コマ数" + tag, &spriteItem.maxStepCount, 1, 1, 1000);
+            }
+        }
+    }
 }

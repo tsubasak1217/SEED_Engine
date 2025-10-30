@@ -34,7 +34,10 @@
                                     "flipY": false,
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
+                                    "isUVScroll": false,
                                     "layer": 0,
+                                    "maxColmnCount": 1,
+                                    "maxStepCount": 1,
                                     "name": "sprite0",
                                     "offset": {
                                         "x": 0.0,
@@ -44,6 +47,7 @@
                                         "x": 1280.0,
                                         "y": 720.0
                                     },
+                                    "stepTime": 0.10000000149011612,
                                     "texturePath": "",
                                     "transform": {
                                         "rotate": 0.0,
@@ -55,6 +59,11 @@
                                             "x": 640.0,
                                             "y": 360.0
                                         }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
                                     },
                                     "uvTransform": {
                                         "rotate": 0.0,
@@ -516,7 +525,10 @@
                                     "flipY": false,
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
+                                    "isUVScroll": true,
                                     "layer": 5,
+                                    "maxColmnCount": 1,
+                                    "maxStepCount": 1,
                                     "name": "sprite0",
                                     "offset": {
                                         "x": 0.0,
@@ -526,6 +538,7 @@
                                         "x": 1280.0,
                                         "y": 160.0
                                     },
+                                    "stepTime": 0.10000000149011612,
                                     "texturePath": "Resources/Textures/DefaultAssets\\borderLine.png",
                                     "transform": {
                                         "rotate": 0.0,
@@ -537,6 +550,11 @@
                                             "x": 0.0,
                                             "y": 0.0
                                         }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.17000000178813934
                                     },
                                     "uvTransform": {
                                         "rotate": 1.5707459449768066,
@@ -683,8 +701,8 @@
                     "transform": {
                         "rotate": 0.0,
                         "scale": {
-                            "x": 6.0,
-                            "y": 0.0
+                            "x": 1.5,
+                            "y": 0.9758809804916382
                         },
                         "translate": {
                             "x": 640.0,

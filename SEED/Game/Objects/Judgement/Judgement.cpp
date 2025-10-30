@@ -110,6 +110,8 @@ void Judgement::Judge(NotesData* noteGroup){
     uint32_t hitBits = 0;
     for(auto& note : hitNotes){
 
+        if(note.evaluation == Evalution::NONE){ continue; }
+
         Note_Base* notePtr = note.note.lock().get();
 
         // すでにビットが立っているなら、重複しているのでスルー

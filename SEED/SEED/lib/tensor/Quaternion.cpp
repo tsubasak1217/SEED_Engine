@@ -558,3 +558,11 @@ Vector3 Quaternion::operator*(const Vector3& v) const{
     return Vector3(result.x, result.y, result.z);
 }
 
+bool Quaternion::operator==(const Quaternion& q) const{
+    return (x == q.x) && (y == q.y) && (z == q.z) && (w == q.w);
+}
+
+bool Quaternion::operator!=(const Quaternion& q) const{
+    return !(*this == q);
+}
+

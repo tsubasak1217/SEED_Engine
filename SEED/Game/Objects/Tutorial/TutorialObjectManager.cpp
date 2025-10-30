@@ -141,6 +141,7 @@ void TutorialObjectManager::Update(){
                 tutorials_[i].tutorialTitleObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab");
                 GameObject2D* text = tutorials_[i].tutorialTitleObject->GetChild("Text");
                 text->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].text;
+                text->Update();
             }
         }
     }

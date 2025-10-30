@@ -150,10 +150,12 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
 
     } else{// 頭をもう押している場合
 
-        if(!isHold_){
-            if(curTime > time_){
-                // 離している時間を加算
-                releaseTime_ += ClockManager::DeltaTime();
+        if(isReleased_){
+            if(!isHold_){
+                if(curTime > time_){
+                    // 離している時間を加算
+                    releaseTime_ += ClockManager::DeltaTime();
+                }
             }
         }
 
@@ -179,7 +181,7 @@ Judgement::Evalution Note_Hold::JudgeHoldEnd(){
     };
 
     // 押していなければ判定しない
-    if(headEvaluation_ == Judgement::Evalution::MISS){
+    if(headEvaluation_ == Judgement::Evalution::NONE){
         return Judgement::Evalution::MISS;
     }
 

@@ -14,11 +14,11 @@ class PlayField;
 class Judgement{
 public:
     enum Evalution{
-        PERFECT = 0,
+        NONE = -1,
+        PERFECT,
         GREAT,
         GOOD,
         MISS,
-        NONE = MISS,
         kEvaluationCount
     };
 

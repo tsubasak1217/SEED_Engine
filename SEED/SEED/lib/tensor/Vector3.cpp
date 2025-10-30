@@ -13,3 +13,11 @@ void Vector3::Normalize(){
     y = normalized.y;
     z = normalized.z;
 }
+
+Vector3 Vector3::Normalized() const{
+    return MyMath::Normalize(*this);
+}
+
+float Vector3::Length() const{
+    return MyMath::Length(*this);
+}

@@ -122,6 +122,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
     <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
     <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
@@ -288,6 +289,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />

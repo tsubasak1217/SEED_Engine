@@ -168,6 +168,8 @@ struct Vector3 final {
 
     Vector4 ToVec4();
     void Normalize();
+    Vector3 Normalized() const;
+    float Length() const;
 };
 
 // Vector3をJSONに変換する関数

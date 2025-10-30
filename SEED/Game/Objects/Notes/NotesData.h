@@ -21,7 +21,7 @@ public:
     void BeginFrame();
 
 public:// アクセッサ
-    float GetCurMusicTime(){ return songTimer_.currentTime; }
+    float GetCurMusicTime()const{ return songTimer_.currentTime; }
     std::vector<std::weak_ptr<Note_Base>> GetNearNotes(float time);
     float GetDuration(){ return songTimer_.duration; }
     const Timer* GetSongTimerPtr(){ return &songTimer_; }
@@ -30,6 +30,8 @@ public:// アクセッサ
     void AddActiveHoldNote(std::weak_ptr<Note_Base> note){activeHoldNotes_.push_back(note);}
     void Pause();
     void Resume();
+    // 指定した時間範囲に指定した形式のノーツが存在するか検索する
+    bool SearchNoteByTime(float minTime, float maxTime, NoteType noteType)const;
 
 private:// 内部関数
     void DeleteNotes();

@@ -28,6 +28,9 @@ public:// extra methods
     void FromHSVA(const Vector4& hsva);
     Vector4 ToHSVA();
 
+    // 色相を変更する関数
+    void AddHue(float deltaH,bool isClamp = false,float clampMin = 0.0f,float clampMax = 1.0f);
+
     // グレースケールを求める関数
     Vector4 GetGrayScale(bool isCorrectionToLiner = true);
 

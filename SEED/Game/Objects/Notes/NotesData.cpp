@@ -389,6 +389,21 @@ void NotesData::Resume(){
 }
 
 //////////////////////////////////////////////////////////////////////
+// 指定した時間範囲に指定した形式のノーツが存在するか検索する
+//////////////////////////////////////////////////////////////////////
+bool NotesData::SearchNoteByTime(float minTime, float maxTime, NoteType noteType)const{
+    Range1D searchRange(minTime, maxTime);
+    for(auto& note : notes_){
+        if(MyFunc::IsContain(searchRange, note.first)){
+            if(note.second->noteType_ == noteType){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//////////////////////////////////////////////////////////////////////
 // JSONからノーツデータを読み込む
 //////////////////////////////////////////////////////////////////////
 void NotesData::FromJson(const nlohmann::json& songData){

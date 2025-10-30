@@ -20,3 +20,11 @@ void Vector2::Normalize(){
     x = normalized.x;
     y = normalized.y;
 }
+
+Vector2 Vector2::Normalized() const{
+    return MyMath::Normalize(*this);
+}
+
+float Vector2::Length() const{
+    return MyMath::Length(*this);
+}

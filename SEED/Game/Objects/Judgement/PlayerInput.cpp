@@ -3,6 +3,7 @@
 #include <SEED/Lib/Functions/MatrixFunc.h>
 #include <Game/Objects/Judgement/PlayField.h>
 #include <SEED/Lib/enums/Direction.h>
+#include <Game/Objects/Judgement/MouseVectorCircle.h>
 
 /////////////////////////////////////////////////////////
 // static変数の初期化
@@ -203,8 +204,15 @@ void PlayerInput::Initialize(){
         cursorLine_[i] = Quad();
         cursorLine_[i].GH = TextureManager::LoadTexture("PlayField/lineAura.png");
         cursorLine_[i].color = { 1.0f,1.0f,0.0f,1.0f };
-
     }
+
+    // パラメータの初期化
+    flickDeadZone_ = 30.0f;// フリックのデッドゾーン
+    cursorSenstivity_ = 1.0f;// カーソルの感度
+
+    // マウスベクトル表示UIの初期化
+    mouseVectorCircle_ = std::make_unique<MouseVectorCircle>();
+    mouseVectorCircle_->Initialize();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +260,9 @@ void PlayerInput::Update(){
         cursor2D_[0].localVertex[i] = camera->ToScreenPosition(cursor_[0].localVertex[i]);
         cursor2D_[1].localVertex[i] = camera->ToScreenPosition(cursor_[1].localVertex[i]);
     }
+
+    // マウスベクトル表示UIの更新
+    mouseVectorCircle_->Update();
 
 }
 
@@ -475,6 +486,14 @@ std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
         }
     }
     return releaseLane;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 譜面データのセット
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+void PlayerInput::SetNotesData(const NotesData* pNotesData){
+    mouseVectorCircle_->SetNotesData(pNotesData);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

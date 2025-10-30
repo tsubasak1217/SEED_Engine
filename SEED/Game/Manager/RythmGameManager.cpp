@@ -51,9 +51,6 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     // settingsの初期化
     PlaySettings::GetInstance();
 
-    // Inputの初期化
-    PlayerInput::GetInstance()->Initialize();
-
     // リザルトの初期化
     playResult_ = PlayResult();
     playResult_.songData = songData;
@@ -63,6 +60,9 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     notesData_->Initialize(songData);
     playResult_.totalCombo = notesData_->GetTotalCombo();
 
+    // Inputの初期化
+    PlayerInput::GetInstance()->Initialize();
+    PlayerInput::GetInstance()->SetNotesData(notesData_.get());
 
     // エディタの初期化
     if(songData.contains("jsonFilePath")){
@@ -103,7 +103,7 @@ void RythmGameManager::BeginFrame(){
 #ifdef _DEBUG
     //Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else
-    //Input::RepeatCursor();
+    Input::RepeatCursor();
 #endif
 
     PlayerInput::GetInstance()->BeginFrame();

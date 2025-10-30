@@ -1441,6 +1441,7 @@
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.cpp" />
     <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
@@ -1458,5 +1459,6 @@
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle\Particle2D.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
+    <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
   </ItemGroup>
 </Project>

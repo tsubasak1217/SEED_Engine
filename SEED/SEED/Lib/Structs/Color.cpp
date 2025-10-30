@@ -37,6 +37,19 @@ Vector4 Color::ToHSVA(){
     return MyMath::RGB_to_HSV(value);
 }
 
+void Color::AddHue(float deltaH, bool isClamp, float clampMin, float clampMax){
+    Vector4 hsva = ToHSVA();
+    hsva.x += deltaH;
+    if(isClamp){
+        if(clampMax < clampMin){
+            std::swap(clampMin, clampMax);
+        }
+
+        hsva.x = std::clamp(hsva.x,clampMin,clampMax);
+    }
+    FromHSVA(hsva);
+}
+
 Vector4 Color::GetGrayScale(bool isCorrectionToLiner){
     return MyMath::FloatColor(MyMath::GrayScale(MyMath::IntColor(value)), isCorrectionToLiner);
 }

@@ -438,14 +438,12 @@ std::string ImFunc::FolderView(
         folderViewRect.Min = ImGui::GetCursorScreenPos();
 
         // ディレクトリ表示
-        std::filesystem::path fullPath = MyFunc::ToFullPath(currentPath.string());
-        ImGui::Text("Current Path: %s", fullPath.string().c_str());
-        if(fullPath.has_parent_path()){
+        ImGui::Text("Current Path: %s", currentPath.string().c_str());
+        if(currentPath.has_parent_path()){
 
             if(!rootPath.empty()){
                 // rootPathより上の階層にいるときのみBackボタンを表示
-                std::filesystem::path fullRootPath = MyFunc::ToFullPath(rootPath.string());
-                if(fullPath != fullRootPath){
+                if(currentPath != rootPath){
                     if(ImGui::Button("<< Back")){
                         currentPath = currentPath.parent_path();
                         return "";
@@ -457,7 +455,7 @@ std::string ImFunc::FolderView(
         // 表示対象のファイル・フォルダを収集
         std::error_code ec;
         std::vector<std::filesystem::directory_entry> entries;
-        for(auto& entry : std::filesystem::directory_iterator(fullPath, ec)){
+        for(auto& entry : std::filesystem::directory_iterator(currentPath, ec)){
             if(ec){// エラー発生時はスキップ
                 break;
             }

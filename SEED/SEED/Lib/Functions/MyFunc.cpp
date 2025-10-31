@@ -473,14 +473,14 @@ bool MyFunc::CompareStr(const std::string& str1, const std::string& str2){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, bool isRelative){
 
-    std::filesystem::path fullPath = ToFullPath(entryPath);
+    std::filesystem::path path = entryPath;
     std::vector<std::string> folderList;
 
-    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
+    for(const auto& cur : fs::recursive_directory_iterator(path)){
         // ディレクトリのみを探す
         if(cur.is_directory()){
             if(isRelative){
-                folderList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
+                folderList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
             } else{
                 folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
             }
@@ -495,16 +495,16 @@ std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, boo
 std::vector<std::string> MyFunc::GetFileList(
     const std::string& entryPath, std::initializer_list<std::string>extensions, bool isRelative
 ){
-    std::filesystem::path fullPath = ToFullPath(entryPath);
+    std::filesystem::path path = entryPath;
     std::vector<std::string> fileList;
 
-    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
+    for(const auto& cur : fs::recursive_directory_iterator(path)){
         // 拡張子が合致するファイルを探す
         for(const auto& ext : extensions){
             if(cur.is_regular_file() && cur.path().extension() == ext){
                 // ファイル名を格納
                 if(isRelative){
-                    fileList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
+                    fileList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
                 } else{
                     fileList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
@@ -520,25 +520,25 @@ std::vector<std::string> MyFunc::GetFileList(
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPath, bool isRelative, bool isRecursive){
 
-    std::filesystem::path fullPath = ToFullPath(entryPath);
+    std::filesystem::path path = entryPath;
     std::vector<std::string> dirList;
     if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
+        for(const auto& cur : fs::recursive_directory_iterator(path)){
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
                 } else{
                     dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
             }
         }
     } else{
-        for(const auto& cur : fs::directory_iterator(fullPath)){
+        for(const auto& cur : fs::directory_iterator(path)){
             // ディレクトリのみを探す
             if(cur.is_directory()){
                 if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), fullPath).generic_string()); // 相対パスを格納
+                    dirList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
                 } else{
                     dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
@@ -553,15 +553,15 @@ std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPa
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(const std::string& entryPath, bool isRecursive){
 
-    std::filesystem::path fullPath = ToFullPath(entryPath);
+    std::filesystem::path path = entryPath;
     std::vector<std::filesystem::directory_entry> entryList;
     if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
+        for(const auto& cur : fs::recursive_directory_iterator(path)){
             // ディレクトリエントリを格納
             entryList.push_back(cur);
         }
     } else{
-        for(const auto& cur : fs::directory_iterator(fullPath)){
+        for(const auto& cur : fs::directory_iterator(path)){
             // ディレクトリエントリを格納
             entryList.push_back(cur);
         }
@@ -574,13 +574,13 @@ std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(cons
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::string MyFunc::FindFile(const std::string& entryPath, const std::string& filePath, bool isRelative){
 
-    std::filesystem::path fullPath = ToFullPath(entryPath);
-    for(const auto& cur : fs::recursive_directory_iterator(fullPath)){
+    std::filesystem::path path = entryPath;
+    for(const auto& cur : fs::recursive_directory_iterator(path)){
         // 名前の合致するファイルを探す
         if(cur.is_regular_file() && cur.path().filename() == filePath){
             // 存在する場合はパスを返す
             if(isRelative){
-                return fs::relative(cur.path(), fullPath).generic_string(); // 相対パスを返す
+                return fs::relative(cur.path(), path).generic_string(); // 相対パスを返す
             } else{
                 return cur.path().generic_string(); // 絶対パスを返す
             }
@@ -650,17 +650,12 @@ std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 
-    // フルパスに変換
-    std::string fullPath = ToFullPath(filePath);
-    // '/'を'\\'に変換
-    std::replace(fullPath.begin(), fullPath.end(), '/', '\\');
-
     // ファイルを開く
-    std::ifstream file(fullPath);
+    std::ifstream file(filePath);
     if(!file.is_open()){
         if(createFile){
             // ファイルが存在しない場合は新規作成
-            std::ofstream newFile(fullPath);
+            std::ofstream newFile(filePath);
             if(!newFile.is_open()){
                 assert(false && "Jsonファイルの作成に失敗");
                 return nlohmann::json();
@@ -809,6 +804,11 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
         const std::wstring& initialDir = L"",
         const std::wstring& initName = L""
         ){
+        // 現在のディレクトリを保存
+        char prevDir[MAX_PATH];
+        GetCurrentDirectoryA(MAX_PATH, prevDir);
+
+        // ファイル名を格納するバッファ
         wchar_t filePath[MAX_PATH];
         // 初期ファイル名をセット
         if(!initName.empty()){
@@ -829,7 +829,10 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
         ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST;
 
         if(GetSaveFileNameW(&ofn)){
-            return std::wstring(filePath); // ユーザーが選択したパス
+            // カレントディレクトリを復元
+            SetCurrentDirectoryA(prevDir);
+            // ユーザーが保存したパス+ファイル名を返す
+            return std::wstring(filePath);
         }
         return std::wstring(); // キャンセル時
     };

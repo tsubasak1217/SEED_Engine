@@ -232,7 +232,8 @@ public:
     Color masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
 
     //------- トランスフォーム情報 ------//
-    Transform2D localTransform_;
+    Transform2D localTransform_;// 基本のローカルトランスフォーム
+    Transform2D aditionalTransform_;// 最後に加算されるトランスフォーム
 private:
     Transform2D worldTransform_;
     Matrix3x3 localMat_;

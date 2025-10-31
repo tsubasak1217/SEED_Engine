@@ -131,7 +131,11 @@ void GameObject2D::EndFrame(){
 void GameObject2D::UpdateMatrix(){
 
     // ローカル変換行列の更新
-    localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotate, localTransform_.translate);
+    localMat_ = AffineMatrix(
+        localTransform_.scale * aditionalTransform_.scale,
+        localTransform_.rotate + aditionalTransform_.rotate,
+        localTransform_.translate + aditionalTransform_.translate
+    );
 
     // ワールド行列の更新
     if(parent_){
@@ -163,12 +167,14 @@ void GameObject2D::UpdateMatrix(){
 
             Matrix3x3 canceledMat = cancelMat * parentMat;
             worldMat_ = (localMat_ * parentMat) * cancelMat;
-            //worldMat_ = localMat_ * canceledMat;
+
         }
     } else{
         worldMat_ = localMat_;
     }
 
+
+    // ワールド変換情報の更新
     worldTransform_.translate = ExtractTranslation(worldMat_);
     worldTransform_.rotate = ExtractRotation(worldMat_);
     worldTransform_.scale = ExtractScale(worldMat_);
@@ -500,7 +506,7 @@ void GameObject2D::EditGUI(){
     for(auto& component : components_){
         // ラベルの設定
         bool opened = ImFunc::CollapsingHeader(
-            component->componentTag_ + "##" + std::to_string(component->componentID_), 
+            component->componentTag_ + "##" + std::to_string(component->componentID_),
             EditorColor::componentHeader
         );
 

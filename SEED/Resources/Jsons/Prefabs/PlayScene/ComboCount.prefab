@@ -16,13 +16,13 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.7843137383460999,
+                                "w": 0.6666666865348816,
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
                             "fontName": "Resources/Fonts\\DefaultAssets\\Digital\\851Gkktt_005.ttf",
-                            "fontSize": 82.0,
+                            "fontSize": 64.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
                             "layer": -4,
@@ -30,12 +30,12 @@
                             "name": "text0",
                             "outlineColor": {
                                 "w": 1.0,
-                                "x": 0.011583030223846436,
-                                "y": 0.010516778565943241,
-                                "z": 0.0005366656696423888
+                                "x": 0.17760616540908813,
+                                "y": 0.17760616540908813,
+                                "z": 0.17760616540908813
                             },
                             "outlineSplitCount": 8,
-                            "outlineWidth": 7.0,
+                            "outlineWidth": 2.0,
                             "size": {
                                 "x": 276.0,
                                 "y": 145.0
@@ -53,7 +53,7 @@
                                     "y": 0.0
                                 }
                             },
-                            "useOutline": false
+                            "useOutline": true
                         },
                         {
                             "alignX": 1,
@@ -64,13 +64,13 @@
                             },
                             "blendMode": 3,
                             "color": {
-                                "w": 0.7843137383460999,
+                                "w": 0.6666666865348816,
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
                             "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
-                            "fontSize": 49.0,
+                            "fontSize": 42.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
                             "layer": 0,
@@ -78,12 +78,12 @@
                             "name": "text1",
                             "outlineColor": {
                                 "w": 1.0,
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": 0.1764705926179886,
+                                "y": 0.1764705926179886,
+                                "z": 0.1764705926179886
                             },
                             "outlineSplitCount": 16,
-                            "outlineWidth": 6.199999809265137,
+                            "outlineWidth": 2.0,
                             "size": {
                                 "x": 388.0,
                                 "y": 124.0
@@ -101,7 +101,7 @@
                                     "y": 52.0
                                 }
                             },
-                            "useOutline": false
+                            "useOutline": true
                         }
                     ]
                 }

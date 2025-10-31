@@ -45,8 +45,12 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
+    SEED::RemoveCamera("gameCamera");// 既存の物があることを想定して登録前に削除
     SEED::RegisterCamera("gameCamera", gameCamera_.get());
     SEED::SetMainCamera("gameCamera");
+
+    // gameObjectをクリア
+    GameSystem::GetScene()->GetHierarchy()->EraseAllObject();
 
     // settingsの初期化
     PlaySettings::GetInstance();
@@ -81,6 +85,9 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // 判定の初期化
     Judgement::GetInstance();
+
+    // pause状態の初期化
+    isPaused_ = false;
 
     // チュートリアルマネージャの初期化
     if(songData["songName"] == "都立チュートリアル中学校"){
@@ -278,4 +285,14 @@ float RythmGameManager::CalculateScore(){
     float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] * scorePerNote;
     result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
     return std::clamp(result, 0.0f, 100.0f);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// リトライ
+///////////////////////////////////////////////////////////////////////////////
+void RythmGameManager::Retry(){
+    // シーンを再読み込み
+    nlohmann::json songData_ = playResult_.songData;
+    Initialize(songData_);
 }

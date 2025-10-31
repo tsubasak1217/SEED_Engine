@@ -27,6 +27,7 @@ public:
 public:// アクセッサ
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
+    void RevercePlay(){ timeScale_ *= -1.0f; }
 
 public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;
@@ -37,6 +38,7 @@ private:
     bool isLoop_ = false;
     bool isPlaying_ = false;
     Timer timer_;
+    float timeScale_ = 1.0f;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;
     std::vector<RoutinePoint2D> controlPoints_;
     Easing::Type easingType_ = Easing::Type::None;

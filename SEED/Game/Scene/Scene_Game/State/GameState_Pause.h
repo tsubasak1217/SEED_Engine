@@ -27,12 +27,29 @@ public:
     void ManageState() override;
 
 private:
-    std::vector<GameObject2D*> pauseUIs_;
-    Sprite pauseBg_;
+    void SelectMenuItem();
+
+private:
+
+    enum PauseMenuItem{
+        Resume,
+        Retry,
+        ToSelect,
+        PauseMenuItemCount
+    };
+
+private:
+    // 読み込んだものを格納するポインタ
+    GameObject2D* pauseItemsParent_;
+    std::array<GameObject2D*, PauseMenuItemCount> menus_;
+    GameObject2D* backSpriteObj_ = nullptr;
+
+    //選択項目
     int32_t selectedIndex_ = 0;
 
     // タイマー関連
     Timer pauseTimer_;
+    std::array<Timer, PauseMenuItemCount> scalingTimers_;
 
     // state遷移用
     bool isExit_ = false;

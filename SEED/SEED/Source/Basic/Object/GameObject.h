@@ -228,7 +228,8 @@ public:
     Color masterColor_ = { 1.0f,1.0f,1.0f,1.0f };// オブジェクト全体の色
 
     //------- トランスフォーム情報 ------//
-    Transform localTransform_;
+    Transform localTransform_;// ローカルトランスフォーム
+    Transform aditionalTransform_;// 最後に加算されるトランスフォーム
 private:
     Transform worldTransform_;
     Matrix4x4 localMat_;

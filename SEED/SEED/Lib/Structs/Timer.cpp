@@ -83,6 +83,14 @@ void Timer::Update(float timeScale,bool isLoop){
         if(isLoop){
             currentTime = overtime;
         }
+
+    } else if(currentTime <= 0.0f){// 逆再生時の処理
+        overtime = currentTime;
+        // ループフラグがあればループ
+        if(isLoop){
+            currentTime = duration + overtime;
+        }
+
     }
 
     // Clamp

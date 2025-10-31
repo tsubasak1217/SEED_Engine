@@ -94,15 +94,7 @@ void Routine2DComponent::Update(){
     // 再生中なら更新
     if(isPlaying_){
         // タイマー更新
-        timer_.Update();
-
-        // 必要であればループ処理
-        if(timer_.IsFinished()){
-            if(isLoop_){
-                timer_.Reset();
-                timer_.currentTime = timer_.overtime;
-            }
-        }
+        timer_.Update(timeScale_, isLoop_);
     }
 }
 

@@ -117,7 +117,11 @@ void GameObject::EndFrame(){
 void GameObject::UpdateMatrix(){
 
     // ローカル変換行列の更新
-    localMat_ = AffineMatrix(localTransform_.scale, localTransform_.rotate.ToEuler(), localTransform_.translate);
+    localMat_ = AffineMatrix(
+        localTransform_.scale * aditionalTransform_.scale,
+        aditionalTransform_.rotate * localTransform_.rotate,
+        localTransform_.translate + aditionalTransform_.translate
+    );
 
     // ワールド行列の更新
     if(parent_){
@@ -162,6 +166,7 @@ void GameObject::UpdateMatrix(){
         worldMat_ = localMat_;
     }
 
+    // ワールド変換情報の更新
     worldTransform_.translate = ExtractTranslation(worldMat_);
     worldTransform_.rotate = Quaternion::ToQuaternion(ExtractRotation(worldMat_));
     worldTransform_.scale = ExtractScale(worldMat_);

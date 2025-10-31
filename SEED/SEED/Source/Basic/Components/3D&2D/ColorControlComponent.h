@@ -20,6 +20,7 @@ public:// 基礎関数
 
 public:// アクセッサ
     void SetTimeScale(float timeScale){ timeScale_ = timeScale; }
+    void RevercePlay(){ timeScale_ *= -1.0f; }
 
 public:// 入出力
     // GUI編集

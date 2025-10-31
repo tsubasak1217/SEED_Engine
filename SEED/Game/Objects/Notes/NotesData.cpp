@@ -97,8 +97,11 @@ void NotesData::Update(){
 // 描画処理
 ////////////////////////////////////////////////////////////////////
 void NotesData::Draw(){
-    // ノーツの描画(hold->tap->wheel->rectFlickの順)
-    for(auto& note : onFieldNotes_){
+
+    // ノーツの描画(hold->tap->警告→wheel->rectFlickの順)
+    // 奥から描画するためreverse_viewで逆順にする
+
+    for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Hold){
                 notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
@@ -106,7 +109,7 @@ void NotesData::Draw(){
         }
     }
 
-    for(auto& note : onFieldNotes_){
+    for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Tap){
                 notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
@@ -114,7 +117,15 @@ void NotesData::Draw(){
         }
     }
 
-    for(auto& note : onFieldNotes_){
+    for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
+        if(auto notePtr = note.lock()){
+            if(notePtr->noteType_ == NoteType::Warning){
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+            }
+        }
+    }
+
+    for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::Wheel){
                 notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
@@ -122,7 +133,7 @@ void NotesData::Draw(){
         }
     }
 
-    for(auto& note : onFieldNotes_){
+    for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::RectFlick){
                 notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
@@ -130,13 +141,6 @@ void NotesData::Draw(){
         }
     }
 
-    for(auto& note : onFieldNotes_){
-        if(auto notePtr = note.lock()){
-            if(notePtr->noteType_ == NoteType::Warning){
-                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
-            }
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////

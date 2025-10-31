@@ -94,7 +94,10 @@ void Hierarchy::EraseObject(GameObject* gameObject){
 
         // リストから解放
         if(it != gameObjects_.end()){
-            gameObjects_.erase(it); // 自分で生成したオブジェクトのリストから削除
+            //existObjectIdMap2D_からも削除
+            existObjectIdMap_.erase(child->GetObjectID());
+            // オブジェクトのリストから削除
+            gameObjects_.erase(it);
         }
     }
 
@@ -121,7 +124,10 @@ void Hierarchy::EraseObject(GameObject2D* gameObject){
 
         // リストから解放
         if(it != gameObjects2D_.end()){
-            gameObjects2D_.erase(it); // 自分で生成したオブジェクトのリストから削除
+            //existObjectIdMap2D_からも削除
+            existObjectIdMap2D_.erase(child->GetObjectID());
+            // オブジェクトのリストから削除
+            gameObjects2D_.erase(it);
         }
     }
 

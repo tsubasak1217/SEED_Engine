@@ -45,6 +45,9 @@ public:
     void AddFastCount(int count = 1){playResult_.fastCount += count;}
     void AddLateCount(int count = 1){playResult_.lateCount += count;}
 
+    // リトライ
+    void Retry();
+
 private:
     // スコアの計算
     float CalculateScore();

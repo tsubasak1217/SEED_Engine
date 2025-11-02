@@ -35,12 +35,15 @@ enum class TextAlignY{
 /// 2次元テキストボックス構造体
 /// </summary>
 struct TextBox2D{
-
     TextBox2D() = default;
     TextBox2D(const std::string& _text) : text(_text){ SetFont(""); }
     void Draw(const std::optional<Color>& masterColor = std::nullopt)const;
+    void ScrollDraw(float scrollSpeed,const std::optional<Color>& masterColor = std::nullopt)const;
     void SetFont(const std::string& fileName);
     void BindDatas(std::initializer_list<BindData> datas);
+
+private:
+    void DrawTextBoxRange(const Matrix3x3& textBoxMat,const Vector2& anchorOffset,const Color& boxColor)const;
 
 public:// パラメータなど
     std::string text;
@@ -67,7 +70,7 @@ public:// パラメータなど
 
 private:// フォーマット解析
     std::vector<BindData> bindedDatas; // バインドされたデータ(表示するもの)
-    std::vector<std::string> AnalyzeFormatToken(const std::string& sourceText)const;
+    float scrollTime = 0.0f; // 総スクロール時間
 
 public:// 編集・入出力関連
 #ifdef _DEBUG
@@ -76,6 +79,8 @@ public:// 編集・入出力関連
     nlohmann::json GetJsonData() const;
     void LoadFromJson(const nlohmann::json& jsonData);
 };
+
+
 
 struct TextBox3D{
     std::string text;

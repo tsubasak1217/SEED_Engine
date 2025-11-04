@@ -45,6 +45,10 @@ bool Timer::IsFinishedNow() const{
     return prevTime < duration && currentTime >= duration;
 }
 
+bool Timer::IsLoopedNow() const{
+    return isLoopedNow;
+}
+
 // 0に戻ったか
 bool Timer::IsReturnNow() const{
     return currentTime == 0.0f && prevTime > 0.0f;
@@ -72,6 +76,9 @@ void Timer::Restart(){
 
 // 時間の更新
 void Timer::Update(float timeScale,bool isLoop){
+    // ループフラグのリセット
+    isLoopedNow = false;
+    // 時間の更新
     prevTime = currentTime;
     currentTime += ClockManager::DeltaTime() * timeScale * !isStop;
 
@@ -82,6 +89,7 @@ void Timer::Update(float timeScale,bool isLoop){
         // ループフラグがあればループ
         if(isLoop){
             currentTime = overtime;
+            isLoopedNow = true;
         }
 
     } else if(currentTime <= 0.0f){// 逆再生時の処理

@@ -21,7 +21,7 @@ void Color::FromColorCode(uint32_t colorCode, bool isCorrectionToLiner){
     *this = MyMath::FloatColor(colorCode, isCorrectionToLiner);
 }
 
-uint32_t Color::GetColorCode(){
+uint32_t Color::GetColorCode()const{
     return MyMath::IntColor(value);
 }
 

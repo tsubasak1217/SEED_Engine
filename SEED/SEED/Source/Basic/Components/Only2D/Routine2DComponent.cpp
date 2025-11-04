@@ -78,7 +78,7 @@ void Routine2DComponent::Update(){
         }
         case InterpolationType::CATMULLROM:
         {
-            result = MyFunc::CatmullRomInterpolate(transforms, uniformT);
+            result = MyFunc::CatmullRomInterpolate(transforms, uniformT,isConnectEdge_);
             break;
         }
         default:
@@ -349,6 +349,7 @@ void Routine2DComponent::EditSettings(){
     ImFunc::Combo("イージング補間関数", easingType_, Easing::names, IM_ARRAYSIZE(Easing::names));
     ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);
     ImGui::Checkbox("ループするか", &isLoop_);
+    ImGui::Checkbox("両端を接続するか", &isConnectEdge_);
     ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
 }
 
@@ -446,6 +447,7 @@ void Routine2DComponent::LoadFromJson(const nlohmann::json& jsonData){
     interpolationType_ = static_cast<InterpolationType>(jsonData.value("interpolationType", 0));
     easingType_ = static_cast<Easing::Type>(jsonData.value("easingType", 0));
     isLoop_ = jsonData.value("isLoop", false);
+    isConnectEdge_ = jsonData.value("isConnectEdge", false);
     defaultPaused_ = jsonData.value("defaultPaused", false);
     timer_.duration = jsonData.value("duration", 1.0f);
     timer_.Reset();
@@ -475,6 +477,7 @@ nlohmann::json Routine2DComponent::GetJsonData() const{
     jsonData["interpolationType"] = static_cast<int>(interpolationType_);
     jsonData["easingType"] = static_cast<int>(easingType_);
     jsonData["isLoop"] = isLoop_;
+    jsonData["isConnectEdge"] = isConnectEdge_;
     jsonData["defaultPaused"] = defaultPaused_;
     jsonData["duration"] = timer_.duration;
 

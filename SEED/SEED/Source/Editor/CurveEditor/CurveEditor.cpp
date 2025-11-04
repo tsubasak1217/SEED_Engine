@@ -602,7 +602,7 @@ void CurveEditor::DrawSpline(const std::vector<ImVec2>& points, const ImColor& c
         t = float(i) / totalSubdivision;
 
         // 現在の区間の点を求める
-        Vector2 p = MyMath::CatmullRomPosition(vector2Points, t);
+        Vector2 p = MyMath::MultiCatmullRom(vector2Points, t);
 
         // 線を描画
         if(previous != std::nullopt){

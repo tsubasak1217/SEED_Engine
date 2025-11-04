@@ -157,6 +157,7 @@ public:
     float GetLocalRotate() const{ return localTransform_.rotate; }
     void SetWorldRotate(float rotate);
     void SetLocalRotate(float rotate);
+    void AddWorldRotate(float addValue);
     /*------ translate -------*/
     const Vector2& GetWorldTranslate() const{ return worldTransform_.translate; }
     const Vector2& GetLocalTranslate() const{ return localTransform_.translate; }

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <SEED/Lib/Includes/include_tensors.h>
 #include <SEED/Lib/Shapes/Line.h>
+#include <SEED/Lib/Tensor/Quaternion.h>
 
 const float kDeltaTime = 0.016f;
 
@@ -139,13 +140,18 @@ public:
     static Vector2 CatmullRomInterpolation(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Vector2& p3, float t);
     static float CatmullRomInterpolation(const float p0, const float p1, const float p2, const float p3, float t);
     //スプライン補完を使用して位置を設定する関数
-    static Vector3 CatmullRomPosition(const std::vector<Vector3>& controlPoints,float t);
-    static Vector3 CatmullRomPosition(const std::vector<Vector3*>& controlPoints,float t);
-    static Vector2 CatmullRomPosition(const std::vector<Vector2>& controlPoints, float t);
-    static float CatmullRomPosition(const std::vector<float>& controlPoints, float t);
+    static Vector3 MultiCatmullRom(const std::vector<Vector3>& controlPoints,float t, bool isConnectEdge = false);
+    static Vector3 MultiCatmullRom(const std::vector<Vector3*>& controlPoints,float t, bool isConnectEdge = false);
+    static Vector2 MultiCatmullRom(const std::vector<Vector2>& controlPoints, float t, bool isConnectEdge = false);
+    static float MultiCatmullRom(const std::vector<float>& controlPoints, float t, bool isConnectEdge = false);
     // 制御点を等間隔に修正する関数
     static void ToConstantControlPoints(std::vector<Vector3>* pControlPoints);
     static void ToConstantControlPoints(std::vector<Vector2>* pControlPoints);
+
+    // Quaternionの補間
+    static Quaternion ComputeTangent(const Quaternion& qprev, const Quaternion& q, const Quaternion& qnext);
+    static Quaternion Squad(const Quaternion& q1, const Quaternion& q2, const Quaternion& a, const Quaternion& b, float t);
+    static Quaternion MultiSquad(const std::vector<Quaternion>& quats, float t,bool isConnectEdge = false);
 
     static Vector3 TransformNormal(const Vector3& normal,const Matrix4x4& matrix);
 

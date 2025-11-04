@@ -292,7 +292,7 @@ Quaternion MyFunc::Interpolate(const std::vector<Quaternion>& transforms, float 
 }
 
 // 2D Catmull-Rom補間
-Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t){
+Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t, bool connectEdge){
     Transform2D result;
 
     // 各成分をそれぞれ配列に分解
@@ -306,14 +306,14 @@ Transform2D MyFunc::CatmullRomInterpolate(const std::vector<Transform2D>& transf
     }
 
     // 結果の各成分を求める
-    result.scale = MyMath::CatmullRomPosition(scales, t);
-    result.rotate = MyMath::CatmullRomPosition(rotations, t);
-    result.translate = MyMath::CatmullRomPosition(positions, t);
+    result.scale = MyMath::MultiCatmullRom(scales, t, connectEdge);
+    result.rotate = MyMath::MultiCatmullRom(rotations, t, connectEdge);
+    result.translate = MyMath::MultiCatmullRom(positions, t, connectEdge);
     return result;
 }
 
 // 3D Catmull-Rom補間
-Transform MyFunc::CatmullRomInterpolate(const std::vector<Transform>& transforms, float t){
+Transform MyFunc::CatmullRomInterpolate(const std::vector<Transform>& transforms, float t, bool connectEdge){
     Transform result;
 
     // 各成分をそれぞれ配列に分解
@@ -327,9 +327,9 @@ Transform MyFunc::CatmullRomInterpolate(const std::vector<Transform>& transforms
     }
 
     // 結果の各成分を求める
-    result.scale = MyMath::CatmullRomPosition(scales, t);
-    result.rotate = Interpolate(rotations, t);
-    result.translate = MyMath::CatmullRomPosition(positions, t);
+    result.scale = MyMath::MultiCatmullRom(scales, t, connectEdge);
+    result.rotate = MyMath::MultiSquad(rotations, t, connectEdge);
+    result.translate = MyMath::MultiCatmullRom(positions, t, connectEdge);
     return result;
 }
 
@@ -598,8 +598,14 @@ std::filesystem::path MyFunc::GetProjectDirectory(){
     GetModuleFileNameA(NULL, path, MAX_PATH);
     auto exeDir = std::filesystem::path(path).parent_path();
 
-    // Debug/Release → EXE → Build ->SEED_Engine -> SEED
-    return exeDir.parent_path().parent_path().parent_path() / "SEED";
+    // 開発環境では exeDir の3階層上がプロジェクトルート
+    auto candidate = exeDir.parent_path().parent_path().parent_path() / "SEED";
+    if(std::filesystem::exists(candidate)){
+        return candidate;
+    }
+
+    // パッケージ化された実行環境では exeDir がプロジェクトルート
+    return exeDir;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

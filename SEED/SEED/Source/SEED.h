@@ -233,6 +233,7 @@ public:
     static void SendLightData(BaseLight* light){ instance_->pPolygonManager_->AddLight(light); }
     // ウィンドウ
     static void SetWindowColor(uint32_t color){ GetInstance()->windowBackColor_ = color; }
+    static void SetWindowColor(const Color& color){ GetInstance()->windowBackColor_ = color.GetColorCode(); }
     static uint32_t GetWindowColor(){ return GetInstance()->windowBackColor_; }
     static const std::wstring& GetWindowTitle(){ return GetInstance()->windowTitle_; }
     // アプリケーション終了フラグ

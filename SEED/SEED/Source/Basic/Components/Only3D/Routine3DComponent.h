@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+using RoutinePoint3D = std::pair<Transform, float>;// 座標とその座標までの時間
+
 /// <summary>
 /// 3次元のルーチンポイントを設定するコンポーネント
 /// </summary>
@@ -25,24 +27,44 @@ public:
 public:// accessor
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
-    const Transform* GetControlPoint(int32_t index) const;
+    void RevercePlay(){ timeScale_ *= -1.0f; }
+    bool IsEndRoutine() const{ return timer_.IsFinished(); }
+    const Transform& GetControlPoint(size_t index) const;
 
-public:// json
+public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;
     nlohmann::json GetJsonData() const override;
 
 private:
     bool defaultPaused_ = false;
     bool isLoop_ = false;
+    bool isConnectEdge_ = false;
     bool isPlaying_ = false;
     Timer timer_;
+    float timeScale_ = 1.0f;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;
-    std::vector<Transform> controlPoints_;
+    std::vector<RoutinePoint3D> controlPoints_;
     Easing::Type easingType_ = Easing::Type::None;
 
 #ifdef _DEBUG
+    // 編集用内部関数
+    void TimelineView();
+    void DragPoint();
+    void EditTransform();
+    void EditSettings();
+    void PopupMenu();
+    void AddPoint(float time);
+
+    // 編集用変数
+    int32_t edittingIdx_ = -1;
+    bool isDragging_ = false;
+    ImVec2 clickedMousePos_;
+    ImVec2 originalPointPos_;
+    ImVec2 timelineMinMaxX_;
     bool isDebugItemVisible_ = true;
     bool isEditting_ = false;
     Model debugPointModel_;
+    Vector3 eulerRotate_;
+
 #endif // _DEBUG
 };

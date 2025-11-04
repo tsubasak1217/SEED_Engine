@@ -137,29 +137,31 @@ void ModelRenderComponent::EditGUI(){
         }
 
         // ジョイントの取得
-        label = "ジョイント情報##" + std::to_string(componentID_);
-        if(ImGui::CollapsingHeader(label.c_str())){
-            ImGui::Indent();
+        if(model_->isAnimation_){
+            label = "ジョイント情報##" + std::to_string(componentID_);
+            if(ImGui::CollapsingHeader(label.c_str())){
+                ImGui::Indent();
 
-            // スケルトンの可視フラグ設定
-            ImGui::Checkbox("スケルトン表示", &model_->isSkeletonVisible_);
+                // スケルトンの可視フラグ設定
+                ImGui::Checkbox("スケルトン表示", &model_->isSkeletonVisible_);
 
-            // ジョイントの情報を表示
-            for(auto& [jointName, index] : model_->animetedSkeleton_->jointMap){
-                ImGui::Button(jointName.c_str());
-                static DragInfo_Joint jointInfo;
-                jointInfo.pComponent = this;
-                jointInfo.pJoint = &model_->animetedSkeleton_->joints[index];
+                // ジョイントの情報を表示
+                for(auto& [jointName, index] : model_->animetedSkeleton_->jointMap){
+                    ImGui::Button(jointName.c_str());
+                    static DragInfo_Joint jointInfo;
+                    jointInfo.pComponent = this;
+                    jointInfo.pJoint = &model_->animetedSkeleton_->joints[index];
 
-                // ドラッグでジョイントのポインタを取得
-                if(ImGui::BeginDragDropSource()){
-                    ImGui::SetDragDropPayload("JOINT", &jointInfo, sizeof(DragInfo_Joint*)); // ポインタのアドレスを渡す
-                    ImGui::Text("%s", jointName.c_str());
-                    ImGui::EndDragDropSource();
+                    // ドラッグでジョイントのポインタを取得
+                    if(ImGui::BeginDragDropSource()){
+                        ImGui::SetDragDropPayload("JOINT", &jointInfo, sizeof(DragInfo_Joint*)); // ポインタのアドレスを渡す
+                        ImGui::Text("%s", jointName.c_str());
+                        ImGui::EndDragDropSource();
+                    }
                 }
-            }
 
-            ImGui::Unindent();
+                ImGui::Unindent();
+            }
         }
 
     }

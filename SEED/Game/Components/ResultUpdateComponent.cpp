@@ -38,8 +38,8 @@ ResultUpdate2DComponent::ResultUpdate2DComponent(GameObject2D* pOwner, const std
 
     // カメラ位置の設定
     if(cameraPointObj_){
-        const Transform* cameraPoint = cameraPointObj_->GetComponent<Routine3DComponent>()->GetControlPoint(0);
-        SEED::GetMainCamera()->SetTransform(*cameraPoint);
+        Transform cameraPoint = cameraPointObj_->GetComponent<Routine3DComponent>()->GetControlPoint(0);
+        SEED::GetMainCamera()->SetTransform(cameraPoint);
     }
 
     // オブジェクトの取得

@@ -21,7 +21,7 @@ public:// extra methods
     void FromColorCode(uint32_t colorCode, bool isCorrectionToLiner = true);
 
     // カラーコード変換関数
-    uint32_t GetColorCode();
+    uint32_t GetColorCode()const;
 
     // HSV↔RGB変換関数
     void FromHSVA(float h, float s, float v, float alpha);

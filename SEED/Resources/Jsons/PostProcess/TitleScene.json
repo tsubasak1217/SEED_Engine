@@ -1,0 +1,39 @@
+{
+    "postProcesses": [
+        {
+            "blurRadius": 12,
+            "focusDepth": 0.00010001000191550702,
+            "focusDistance": 0.10000000149011612,
+            "focusRange": 1.0,
+            "resolutionRate": 1.0,
+            "type": "DoF"
+        },
+        {
+            "scanLineStrength": 0.01600000075995922,
+            "stripeFrequency": 0.6430000066757202,
+            "type": "ScanLine"
+        },
+        {
+            "type": "Vignette",
+            "vignetteStrength": 0.5299999713897705
+        },
+        {
+            "gap": 1,
+            "type": "RGBShift"
+        },
+        {
+            "blockSize_": 28.270000457763672,
+            "colorOffset_": 8.199999809265137,
+            "intensity_": -0.07999999821186066,
+            "lineSpeed_": 9.90999984741211,
+            "noiseStrength_": 0.8999999761581421,
+            "type": "Glitch"
+        },
+        {
+            "radius_": 8,
+            "sigma_": 71.8499984741211,
+            "threshold_": 0.949999988079071,
+            "type": "Bloom"
+        }
+    ]
+}

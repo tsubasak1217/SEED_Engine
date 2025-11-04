@@ -28,6 +28,7 @@ public:// アクセッサ
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
     void RevercePlay(){ timeScale_ *= -1.0f; }
+    bool IsEndRoutine() const{ return timer_.IsFinished(); }
 
 public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;
@@ -36,6 +37,7 @@ public:// json関連
 private:
     bool defaultPaused_ = false;
     bool isLoop_ = false;
+    bool isConnectEdge_ = false;
     bool isPlaying_ = false;
     Timer timer_;
     float timeScale_ = 1.0f;

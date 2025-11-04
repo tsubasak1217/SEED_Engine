@@ -72,8 +72,8 @@ public:
     static Transform2D Interpolate(const std::vector<Transform2D>& transforms, float t);
     static Transform Interpolate(const std::vector<Transform>& transforms, float t);
     static Quaternion Interpolate(const std::vector<Quaternion>& transforms, float t);
-    static Transform2D CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t);
-    static Transform CatmullRomInterpolate(const std::vector<Transform>& transforms, float t);
+    static Transform2D CatmullRomInterpolate(const std::vector<Transform2D>& transforms, float t, bool connectEdge = false);
+    static Transform CatmullRomInterpolate(const std::vector<Transform>& transforms, float t,bool connectEdge = false);
 
    /// <summary>
    /// ある時間 t(0~1) での放物線の位置を計算

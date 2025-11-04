@@ -444,7 +444,7 @@ void DxManager::ClearViewSettings(){
 
     for(const auto& [cameraName, offScreenHandle] : offScreenHandles){
         // オフスクリーンのRTVをクリアする
-        clearColor = MyMath::FloatColor(SEED::GetWindowColor());
+        clearColor = MyMath::FloatColor(SEED::GetWindowColor(),false);
         commandList->ClearRenderTargetView(
             offScreenHandle,
             &clearColor.value.x, 0, nullptr

@@ -488,6 +488,50 @@ float Quaternion::Norm(const Quaternion& q){
     return std::sqrt(q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w);
 }
 
+// Log関数
+Quaternion Quaternion::Log(const Quaternion& q){
+    Quaternion res;
+    float a = acosf(std::clamp(q.w, -1.0f, 1.0f));
+    float sin_a = sinf(a);
+
+    res.w = 0.0f;
+
+    if(fabsf(sin_a) > 1e-6f){
+        float coeff = a / sin_a;
+        res.x = q.x * coeff;
+        res.y = q.y * coeff;
+        res.z = q.z * coeff;
+    } else{
+        res.x = q.x;
+        res.y = q.y;
+        res.z = q.z;
+    }
+
+    return res;
+}
+
+// Exp関数
+Quaternion Quaternion::Exp(const Quaternion& q){
+    float a = sqrtf(q.x * q.x + q.y * q.y + q.z * q.z);
+    float sin_a = sinf(a);
+
+    Quaternion res;
+    res.w = cosf(a);
+
+    if(fabsf(a) > 1e-6f){
+        float coeff = sin_a / a;
+        res.x = q.x * coeff;
+        res.y = q.y * coeff;
+        res.z = q.z * coeff;
+    } else{
+        res.x = q.x;
+        res.y = q.y;
+        res.z = q.z;
+    }
+
+    return res;
+}
+
 //////////////////////////////////////////////////////////
 // operator
 //////////////////////////////////////////////////////////

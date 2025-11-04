@@ -49,7 +49,7 @@ void ModelManager::Initialize(){
     GetInstance();
 
     // 初期化時読み込み
-    StartUpLoad();
+    //StartUpLoad();
 
 }
 

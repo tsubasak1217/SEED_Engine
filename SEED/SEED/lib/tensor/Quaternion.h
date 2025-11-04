@@ -54,6 +54,12 @@ public:
     float Norm()const;
     static float Norm(const Quaternion& q);
 
+    // Log関数
+    static Quaternion Log(const Quaternion& q);
+
+    // Exp関数
+    static Quaternion Exp(const Quaternion& q);
+
 public:
     // Operators
     Quaternion operator+(const Quaternion& q)const;

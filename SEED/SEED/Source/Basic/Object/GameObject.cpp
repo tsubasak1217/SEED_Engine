@@ -194,6 +194,22 @@ std::list<GameObject*> GameObject::GetAllChildren() const{
     return allChildren;
 }
 
+// 名前の一致する子を取得
+GameObject* GameObject::GetChild(const std::string& name){
+    if(children_.size() == 0){
+        return nullptr;
+    }
+
+    for(auto& child : children_){
+        if(child->GetName() == name){
+            return &(*child);
+        }
+    }
+
+    return nullptr;
+}
+
+
 void GameObject::RemoveChild(GameObject* child){
     if(child){
         child->ReleaseParent();

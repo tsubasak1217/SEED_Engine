@@ -288,6 +288,16 @@ void GameObject2D::SetLocalRotate(float rotate){
     localTransform_.rotate = rotate;
 }
 
+void GameObject2D::AddWorldRotate(float addValue){
+    if(parent_ != nullptr){
+        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        float localAddValue = ExtractRotation(RotateMatrix(addValue) * invParentMat);
+        localTransform_.rotate += localAddValue;
+    } else{
+        localTransform_.rotate += addValue;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
 //////////////////////////////////////////////////////////////////////////

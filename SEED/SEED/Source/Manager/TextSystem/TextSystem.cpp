@@ -21,7 +21,7 @@ void TextSystem::Initialize(){
     // インスタンスの取得
     GetInstance();
     // フォントの起動時読み込み
-    instance_->StartupLoad();
+    //instance_->StartupLoad();
 }
 
 ///////////////////////////////////////////////////////////////////

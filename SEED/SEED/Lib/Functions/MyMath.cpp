@@ -411,8 +411,17 @@ float MyMath::CatmullRomInterpolation(const float p0, const float p1, const floa
     return ((e3 * t3) + (e2 * t2) + (e1 * t) + e0) * 0.5f;
 }
 
+// 内部で使用する関数
+int32_t CatmullRomIndex(int32_t curIdx, int32_t size, bool connectEdge){
+    if(connectEdge){
+        return curIdx < 0 ? (size + curIdx) % size : curIdx % size;
+    } else{
+        return std::clamp(curIdx, 0, size - 1);
+    }
+}
+
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
-Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, float t){
+Vector3 MyMath::MultiCatmullRom(const std::vector<Vector3>& controlPoints, float t, bool isConnectEdge){
 
     if(controlPoints.size() == 0){ return{ 0.0f,0.0f,0.0f }; }
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
@@ -430,15 +439,15 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, fl
         ToConstantControlPoints(&tmpControlPoints);
     }
 
-    int size = int(tmpControlPoints.size() - 1);
-    float t2 = std::fmod(t * size, 1.0f);
-    int idx = int(t * size);
+    int size = int(tmpControlPoints.size());
+    float t2 = std::fmod(t * (size - 1), 1.0f);
+    int idx = int(t * (size - 1));
 
     result = CatmullRomInterpolation(
-        tmpControlPoints[std::clamp(idx - 1, 0, size)],
-        tmpControlPoints[idx],
-        tmpControlPoints[std::clamp(idx + 1, 0, size)],
-        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        tmpControlPoints[CatmullRomIndex(idx - 1,size,isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 1,size,isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 2,size,isConnectEdge)],
         t2
     );
 
@@ -446,7 +455,7 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3>& controlPoints, fl
 }
 
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数
-Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, float t){
+Vector3 MyMath::MultiCatmullRom(const std::vector<Vector3*>& controlPoints, float t, bool isConnectEdge){
 
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
 
@@ -468,15 +477,15 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
         ToConstantControlPoints(&tmpControlPoints);
     }
 
-    int size = int(tmpControlPoints.size() - 1);
-    float t2 = std::fmod(t * size, 1.0f);
-    int idx = int(t * size);
+    int size = int(tmpControlPoints.size());
+    float t2 = std::fmod(t * (size - 1), 1.0f);
+    int idx = int(t * (size - 1));
 
     result = CatmullRomInterpolation(
-        tmpControlPoints[std::clamp(idx - 1, 0, size)],
-        tmpControlPoints[idx],
-        tmpControlPoints[std::clamp(idx + 1, 0, size)],
-        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        tmpControlPoints[CatmullRomIndex(idx - 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 2, size, isConnectEdge)],
         t2
     );
 
@@ -484,7 +493,7 @@ Vector3 MyMath::CatmullRomPosition(const std::vector<Vector3*>& controlPoints, f
 }
 
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数 (2次元版)
-Vector2 MyMath::CatmullRomPosition(const std::vector<Vector2>& controlPoints, float t){
+Vector2 MyMath::MultiCatmullRom(const std::vector<Vector2>& controlPoints, float t, bool isConnectEdge){
     if(controlPoints.size() == 0){ return{ 0.0f,0.0f }; }
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
     Vector2 result;
@@ -498,21 +507,22 @@ Vector2 MyMath::CatmullRomPosition(const std::vector<Vector2>& controlPoints, fl
         // 等間隔に制御点を修正
         //ToConstantControlPoints(&tmpControlPoints);
     }
-    int size = int(tmpControlPoints.size() - 1);
-    float t2 = std::fmod(t * size, 1.0f);
-    int idx = int(t * size);
+    int size = int(tmpControlPoints.size());
+    float t2 = std::fmod(t * (size - 1), 1.0f);
+    int idx = int(t * (size - 1));
+
     result = CatmullRomInterpolation(
-        tmpControlPoints[std::clamp(idx - 1, 0, size)],
-        tmpControlPoints[idx],
-        tmpControlPoints[std::clamp(idx + 1, 0, size)],
-        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        tmpControlPoints[CatmullRomIndex(idx - 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 2, size, isConnectEdge)],
         t2
     );
     return result;
 }
 
 // 自由な数の制御点からCatmull-Rom補間を行い、tの地点を返す関数 (float版)
-float MyMath::CatmullRomPosition(const std::vector<float>& controlPoints, float t){
+float MyMath::MultiCatmullRom(const std::vector<float>& controlPoints, float t, bool isConnectEdge){
     if(controlPoints.size() == 0){ return 0.0f; }
     t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
     float result = 0.0f;
@@ -524,14 +534,15 @@ float MyMath::CatmullRomPosition(const std::vector<float>& controlPoints, float 
             tmpControlPoints.push_back(tmpControlPoints.back());
         }
     }
-    int size = int(tmpControlPoints.size() - 1);
-    float t2 = std::fmod(t * size, 1.0f);
-    int idx = int(t * size);
+    int size = int(tmpControlPoints.size());
+    float t2 = std::fmod(t * (size - 1), 1.0f);
+    int idx = int(t * (size - 1));
+
     result = CatmullRomInterpolation(
-        tmpControlPoints[std::clamp(idx - 1, 0, size)],
-        tmpControlPoints[idx],
-        tmpControlPoints[std::clamp(idx + 1, 0, size)],
-        tmpControlPoints[std::clamp(idx + 2, 0, size)],
+        tmpControlPoints[CatmullRomIndex(idx - 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 1, size, isConnectEdge)],
+        tmpControlPoints[CatmullRomIndex(idx + 2, size, isConnectEdge)],
         t2
     );
     return result;
@@ -546,7 +557,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
     Vector3 prev = pControlPoints->front();
 
     for(int i = 1; i <= kLoop; i++){
-        Vector3 next = CatmullRomPosition(*pControlPoints, (float)i / (float)kLoop);
+        Vector3 next = MultiCatmullRom(*pControlPoints, (float)i / (float)kLoop);
         totalLength += Length(next - prev);
         prev = next;
     }
@@ -561,7 +572,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector3>* pControlPoints){
     int prevIdx = 0;
 
     for(int i = 0; i < kLoop; i++){
-        Vector3 next = CatmullRomPosition(original, (float)i / (float)kLoop);
+        Vector3 next = MultiCatmullRom(original, (float)i / (float)kLoop);
         totalLength += Length(next - prev);
         prev = next;
 
@@ -584,7 +595,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector2>* pControlPoints){
     float totalLength = 0.0f;
     Vector2 prev = pControlPoints->front();
     for(int i = 1; i <= kLoop; i++){
-        Vector2 next = CatmullRomPosition(*pControlPoints, (float)i / (float)kLoop);
+        Vector2 next = MultiCatmullRom(*pControlPoints, (float)i / (float)kLoop);
         totalLength += Length(next - prev);
         prev = next;
     }
@@ -596,7 +607,7 @@ void MyMath::ToConstantControlPoints(std::vector<Vector2>* pControlPoints){
     totalLength = 0.0f;
     int prevIdx = 0;
     for(int i = 0; i < kLoop; i++){
-        Vector2 next = CatmullRomPosition(original, (float)i / (float)kLoop);
+        Vector2 next = MultiCatmullRom(original, (float)i / (float)kLoop);
         totalLength += Length(next - prev);
         prev = next;
         // 区間が一つ進んだら制御点を修正
@@ -609,6 +620,60 @@ void MyMath::ToConstantControlPoints(std::vector<Vector2>* pControlPoints){
     if(pControlPoints->size() != original.size()){ assert(false); }
 }
 
+//================================================================
+//                      クォータニオン補間の関数
+//================================================================
+
+// クォータニオンの接線を計算する関数
+Quaternion MyMath::ComputeTangent(const Quaternion& qprev, const Quaternion& q, const Quaternion& qnext){
+    Quaternion invQ = q.Inverse();
+    Quaternion log1 = Quaternion::Log(invQ * qnext);
+    Quaternion log2 = Quaternion::Log(invQ * qprev);
+    Quaternion expPart = Quaternion::Exp((log1 + log2) * (-0.25f));
+    return q * expPart;
+}
+
+// Squad補間(4点から補間を行うQuaternionの補間。Splineみたいな感じ)
+Quaternion MyMath::Squad(const Quaternion& q1, const Quaternion& q2, const Quaternion& a, const Quaternion& b, float t){
+    Quaternion slerp1 = Quaternion::Slerp(q1, q2, t);
+    Quaternion slerp2 = Quaternion::Slerp(a, b, t);
+    return Quaternion::Slerp(slerp1, slerp2, 2 * t * (1 - t));
+}
+
+// 複数のクォータニオンからSquad補間を行う関数
+Quaternion MyMath::MultiSquad(const std::vector<Quaternion>& quats, float t, bool isConnectEdge){
+
+    // 入力チェック
+    if(quats.size() == 0){ return{ 0.0f,0.0f }; }
+
+    // tを0~1に収める
+    t = std::clamp(t, 0.0f, 1.0f);
+
+    // 要素数が必要数に達するまでコピーして追加
+    std::vector<Quaternion> tmpQuats = quats;
+    while(tmpQuats.size() < 4){
+        // 要素数が必要数に達するまでコピーして追加
+        while(tmpQuats.size() < 4){
+            tmpQuats.push_back(tmpQuats.back());
+        }
+    }
+
+    // 区間とその中でのtを求める
+    int size = int(tmpQuats.size());
+    float localT = std::fmod(t * (size - 1), 1.0f);
+    int idx = int(t * (size - 1));
+
+    // 4点を取得して補間を行う
+    const Quaternion& q0 = tmpQuats[CatmullRomIndex(idx - 1, size, isConnectEdge)];
+    const Quaternion& q1 = tmpQuats[CatmullRomIndex(idx, size, isConnectEdge)];
+    const Quaternion& q2 = tmpQuats[CatmullRomIndex(idx + 1, size, isConnectEdge)];
+    const Quaternion& q3 = tmpQuats[CatmullRomIndex(idx + 2, size, isConnectEdge)];
+
+    Quaternion a = ComputeTangent(q0, q1, q2);
+    Quaternion b = ComputeTangent(q1, q2, q3);
+
+    return Squad(q1, q2, a, b, localT);
+}
 
 
 Vector3 MyMath::TransformNormal(const Vector3& normal, const Matrix4x4& matrix){

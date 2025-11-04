@@ -19,6 +19,7 @@ public:
     float GetPrevProgress() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
+    bool IsLoopedNow() const;
     bool IsReturnNow() const;
     void Reset();
     void ToEnd();
@@ -28,6 +29,7 @@ public:
 
 public:
     bool isStop = false;
+    bool isLoopedNow = false;
     float currentTime = 0.0f;
     float prevTime = 0.0f;
     float duration = 0.0f;

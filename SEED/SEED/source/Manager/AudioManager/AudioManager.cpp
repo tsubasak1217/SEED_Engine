@@ -49,7 +49,7 @@ void AudioManager::Initialize(){
     hr = instance_->InitializeMediaFoundation();
     assert(SUCCEEDED(hr));
 
-    StartUpLoad();
+    //StartUpLoad();
 }
 
 

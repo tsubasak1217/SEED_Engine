@@ -370,7 +370,7 @@ Vector3 ColliderAnimationData::GetTranslation(float time) const{
     for(int i = 0; i < nodeAnimation.translate.keyframes.size(); i++){
         translate.push_back(nodeAnimation.translate.keyframes[i].value);
     }
-    return MyMath::CatmullRomPosition(translate, t);
+    return MyMath::MultiCatmullRom(translate, t);
 }
 
 //////////////////////////////////////////////////////////////////////////////

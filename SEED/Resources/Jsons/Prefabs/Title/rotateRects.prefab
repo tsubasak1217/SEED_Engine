@@ -1,0 +1,560 @@
+{
+    "gameObjects2D": [
+        {
+            "children": [
+                {
+                    "components": [
+                        {
+                            "componentID": 0,
+                            "componentTag": "UI_ID:0",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 0.0,
+                                        "y": 0.5907335877418518,
+                                        "z": 0.5838910937309265
+                                    },
+                                    "drawLocation": 1,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": false,
+                                    "isUVScroll": false,
+                                    "layer": 3,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "sprite0",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/DefaultAssets/white1x1.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 2,
+                            "componentTag": "Routine2D_ID:2",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.7850000262260437,
+                                    "scale": {
+                                        "x": 470.0,
+                                        "y": 470.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "duration": 1.0,
+                            "easingType": 23,
+                            "interpolationType": 0,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "rect1",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 0.7850000262260437,
+                        "scale": {
+                            "x": 470.0,
+                            "y": 470.0
+                        },
+                        "translate": {
+                            "x": 640.0,
+                            "y": 360.0
+                        }
+                    }
+                },
+                {
+                    "components": [
+                        {
+                            "componentID": 0,
+                            "componentTag": "UI_ID:0",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 0.8996139168739319,
+                                        "y": 0.6975524425506592,
+                                        "z": 0.041680965572595596
+                                    },
+                                    "drawLocation": 1,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": false,
+                                    "isUVScroll": false,
+                                    "layer": 2,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "sprite0",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/DefaultAssets/white1x1.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 2,
+                            "componentTag": "Routine2D_ID:2",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                },
+                                {
+                                    "rotate": 1.034999966621399,
+                                    "scale": {
+                                        "x": 600.0,
+                                        "y": 600.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "duration": 1.0,
+                            "easingType": 23,
+                            "interpolationType": 0,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "rect2",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 1.034999966621399,
+                        "scale": {
+                            "x": 600.0,
+                            "y": 600.0
+                        },
+                        "translate": {
+                            "x": 640.0,
+                            "y": 360.0
+                        }
+                    }
+                },
+                {
+                    "components": [
+                        {
+                            "componentID": 0,
+                            "componentTag": "UI_ID:0",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 0.9498069286346436,
+                                        "y": 0.30804547667503357,
+                                        "z": 0.0
+                                    },
+                                    "drawLocation": 1,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": false,
+                                    "isUVScroll": false,
+                                    "layer": 1,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "sprite0",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/DefaultAssets/white1x1.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 2,
+                            "componentTag": "Routine2D_ID:2",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                },
+                                {
+                                    "rotate": 1.284999966621399,
+                                    "scale": {
+                                        "x": 750.0,
+                                        "y": 750.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "duration": 1.0,
+                            "easingType": 23,
+                            "interpolationType": 0,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "rect3",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 1.284999966621399,
+                        "scale": {
+                            "x": 750.0,
+                            "y": 750.0
+                        },
+                        "translate": {
+                            "x": 640.0,
+                            "y": 360.0
+                        }
+                    }
+                },
+                {
+                    "components": [
+                        {
+                            "componentID": 0,
+                            "componentTag": "UI_ID:0",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 0.837837815284729,
+                                        "y": 0.0,
+                                        "z": 0.5240529179573059
+                                    },
+                                    "drawLocation": 1,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": false,
+                                    "isUVScroll": false,
+                                    "layer": 0,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "sprite0",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/DefaultAssets/white1x1.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 2,
+                            "componentTag": "Routine2D_ID:2",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                },
+                                {
+                                    "rotate": 1.5700000524520874,
+                                    "scale": {
+                                        "x": 1500.0,
+                                        "y": 1500.0
+                                    },
+                                    "translate": {
+                                        "x": 640.0,
+                                        "y": 360.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "duration": 1.0,
+                            "easingType": 23,
+                            "interpolationType": 0,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "rect4",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 1.5700000524520874,
+                        "scale": {
+                            "x": 1500.0,
+                            "y": 1500.0
+                        },
+                        "translate": {
+                            "x": 640.0,
+                            "y": 360.0
+                        }
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "rotateRects",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        }
+    ]
+}

@@ -7,6 +7,7 @@ static LeakChecker leakChecker;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
+
     // エンジン側の初期化
     SEED::Initialize(kWindowSizeX, kWindowSizeY, hInstance, nCmdShow);
     // ゲーム側の初期化

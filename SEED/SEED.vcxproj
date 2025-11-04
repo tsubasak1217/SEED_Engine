@@ -114,11 +114,7 @@ copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)SEED\Source\Manager\RuntimeScriptSystem\sln\ScriptCompiler\bin\$(Configuration)\net9.0\ScriptCompiler.dll" "$(TargetDir)ScriptCompiler.dll"
-copy "$(ProjectDir)SEED\Source\Manager\RuntimeScriptSystem\sln\ScriptCompiler\netstandard.dll" "$(TargetDir)netstandard.dll"
-copy "$(ProjectDir)SEED\Source\Manager\RuntimeScriptSystem\sln\ScriptCompiler\System.Runtime.dll" "$(TargetDir)System.Runtime.dll"
-copy "$(ProjectDir)SEED\External\dotNet\hostfxr.dll" "$(TargetDir)hostfxr.dll"</Command>
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

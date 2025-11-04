@@ -141,6 +141,7 @@ public:
     GameObject* GetParent(){ return parent_; }
     const std::list<GameObject*>& GetChildren() const{ return children_; }
     std::list<GameObject*> GetAllChildren()const;
+    GameObject* GetChild(const std::string& name);
     void RemoveChild(GameObject* child);
     void ReleaseParent();
     void ReleaseChildren();

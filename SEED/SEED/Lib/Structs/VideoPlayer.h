@@ -115,6 +115,7 @@ public:// 再生制御用関数・アクセッサ
     void Pause();
     void Resume();
     Vector2 GetVideoSize() const;
+    int32_t GetVideoGH() const;
 
 private:// VideoManagerが呼び出す内部関数
     void Update();

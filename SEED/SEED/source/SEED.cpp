@@ -178,6 +178,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
     CollisionManager::Initialize();
     GPUParticleSystem::Initialize();
 
+
     // カメラの作成と追加
     instance_->defaultCamera_ = std::make_unique<BaseCamera>();
     instance_->debugCamera_ = std::make_unique<DebugCamera>();
@@ -781,7 +782,7 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
         t = float(i) / totalSubdivision;
 
         // 現在の区間の点を求める
-        Vector3 p = MyMath::CatmullRomPosition(points, t);
+        Vector3 p = MyMath::MultiCatmullRom(points, t);
 
         // 線を描画
         if(previous != std::nullopt){
@@ -823,7 +824,7 @@ void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, 
         t = float(i) / totalSubdivision;
 
         // 現在の区間の点を求める
-        Vector2 p = MyMath::CatmullRomPosition(points, t);
+        Vector2 p = MyMath::MultiCatmullRom(points, t);
 
         // 線を描画
         if(previous != std::nullopt){

@@ -613,32 +613,32 @@
                             "animationName": "",
                             "animationSpeedRate": 1.0,
                             "blendMode": 3,
-                            "componentID": 21,
+                            "componentID": 11,
                             "componentTag": "ModelRender_ID:12",
                             "componentType": "ModelRender",
                             "cullMode": 3,
                             "isAnimation": false,
                             "isAnimationLoop": false,
                             "kAnimLerpTime": 0.20000000298023224,
-                            "lightingType": 0,
+                            "lightingType": 2,
                             "masterColor": {
                                 "w": 1.0,
                                 "x": 1.0,
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "modelFilePath": "Resources/Models/DefaultAssets/cube/cube.obj",
+                            "modelFilePath": "Resources/Models/DefaultAssets/plane/plane.obj",
                             "transform": {
                                 "rotate": {
-                                    "w": 1.0,
+                                    "w": 3.1391647326017846e-07,
                                     "x": 0.0,
-                                    "y": 0.0,
+                                    "y": 1.0,
                                     "z": 0.0
                                 },
                                 "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0,
-                                    "z": 0.20000000298023224
+                                    "x": 0.5,
+                                    "y": 0.5,
+                                    "z": 1.0
                                 },
                                 "translate": {
                                     "x": 0.0,
@@ -668,7 +668,7 @@
                         "translate": {
                             "x": 0.0,
                             "y": 3.3410353660583496,
-                            "z": 0.1063133180141449
+                            "z": 0.2276458740234375
                         }
                     }
                 }

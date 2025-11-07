@@ -9,6 +9,7 @@
 #include <SEED/Lib/Structs/Sprite.h>
 #include <SEED/Lib/Structs/Model.h>
 #include <SEED/Lib/Structs/VideoPlayer.h>
+#include <SEED/Source/Manager/InputManager/InputHandler.h>
 
 /// <summary>
 /// タイトルシーン(まだ実装してない)
@@ -30,16 +31,26 @@ public:
 private:
     // 読み込むオブジェクト類
     GameObject2D* titleLogo_ = nullptr;
+    GameObject2D* pressSpace_ = nullptr;
     GameObject2D* rotateRects_ = nullptr;
     GameObject* cameraParents_ = nullptr;
+    GameObject* toSelectCamerawork_ = nullptr;
     GameObject* models_ = nullptr;
     GameObject* display_ = nullptr;
 
-    // タイトル表示用タイマー
+    // タイマー類
     Timer titleStartTimer_;
+    Timer titleEndTimer_;
     float totalTime_ = 0.0f;
     float cameraParentTime_ = 3.0f;
 
     // Video
     std::unique_ptr<VideoPlayer> videoPlayer_;
+
+    // 入力格納用
+    InputHandler<bool> startButtonInput_;
+
+    // その他メンバー変数
+    int32_t prevCameraParentIdx_;
+    bool isStartButtonPressed_ = false;
 };

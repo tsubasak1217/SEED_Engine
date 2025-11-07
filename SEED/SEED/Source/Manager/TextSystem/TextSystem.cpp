@@ -21,7 +21,7 @@ void TextSystem::Initialize(){
     // インスタンスの取得
     GetInstance();
     // フォントの起動時読み込み
-    //instance_->StartupLoad();
+    instance_->StartupLoad();
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -186,6 +186,13 @@ void TextSystem::CreateFontAtlas(
         std::vector<unsigned char> bitmap(glyphWidth * glyphHeight);
         stbtt_MakeCodepointBitmap(&font, bitmap.data(), glyphWidth, glyphHeight, glyphWidth, scale, scale, codePoint);
 
+        // 半透明値は0に変換
+        for(auto& pixel : bitmap){
+            if(pixel < 0xff){
+                pixel = 0;
+            }
+        }
+        
         int drawY = penY + (baseline - y0); // baseline 揃え位置
 
         // アトラスに書き込み

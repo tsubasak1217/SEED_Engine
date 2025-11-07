@@ -105,13 +105,21 @@ void SongSelector::Initialize(){
 void SongSelector::EndFrame(){
     // 曲の選択が完了したら、曲の詳細を非表示にする
     if(changeSceneOrder_){
-        Scene_Clear::SetJacketPath(
-            "Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
-        );
 
-        auto* scene = GameSystem::GetScene();
-        GameSystem::GetScene()->ChangeState(new GameState_Play(scene, currentSong.first->noteDatas[(int)currentDifficulty]));
-        return;
+        if(selectMode_ == SelectMode::Song){
+            // ゲームシーンに移行
+            Scene_Clear::SetJacketPath(
+                "Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
+            );
+
+            auto* scene = GameSystem::GetScene();
+            GameSystem::GetScene()->ChangeState(new GameState_Play(scene, currentSong.first->noteDatas[(int)currentDifficulty]));
+            return;
+        } else{
+            //titleに戻る
+            GameSystem::GetScene()->ChangeScene("Title");
+            return;
+        }
     }
 }
 
@@ -627,6 +635,9 @@ void SongSelector::SelectItems(){
 
         } else if(Input::IsTriggerKey({ DIK_SPACE })){
             selectMode_ = SelectMode::Song;
+
+        } else if(Input::IsTriggerKey({ DIK_ESCAPE })){
+            changeSceneOrder_ = true; // シーン変更フラグを立てる
         }
     }
 

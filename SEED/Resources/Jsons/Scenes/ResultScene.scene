@@ -32,7 +32,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": 0,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -42,6 +45,7 @@
                                 "x": 1280.0,
                                 "y": 73.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -53,6 +57,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -150,7 +159,12 @@
                     "duration": 1.0,
                     "easingType": 16,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -202,7 +216,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -212,6 +229,7 @@
                                 "x": 556.0,
                                 "y": 73.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -223,6 +241,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -368,7 +391,12 @@
                     "duration": 1.0,
                     "easingType": 16,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -420,7 +448,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -430,6 +461,7 @@
                                 "x": 556.0,
                                 "y": 73.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -441,6 +473,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -586,7 +623,12 @@
                     "duration": 1.0,
                     "easingType": 16,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -638,7 +680,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -648,6 +693,7 @@
                                 "x": 556.0,
                                 "y": 73.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -659,6 +705,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -804,7 +855,12 @@
                     "duration": 1.0,
                     "easingType": 16,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -856,7 +912,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -866,6 +925,7 @@
                                 "x": 556.0,
                                 "y": 73.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -877,6 +937,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -1022,7 +1087,12 @@
                     "duration": 1.0,
                     "easingType": 16,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -1074,7 +1144,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -1084,6 +1157,7 @@
                                 "x": 1195.0,
                                 "y": 295.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -1095,6 +1169,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -1142,7 +1221,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -1194,7 +1278,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -5,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -1204,6 +1291,7 @@
                                 "x": 1195.0,
                                 "y": 295.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\white.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -1215,6 +1303,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -1262,7 +1355,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -1314,7 +1412,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": -10,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -1324,6 +1425,7 @@
                                 "x": 500.0,
                                 "y": 500.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\uvChecker.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -1335,6 +1437,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -1382,7 +1489,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -1878,7 +1990,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": 1,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -1888,6 +2003,7 @@
                                 "x": 150.0,
                                 "y": 150.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -1899,6 +2015,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -1996,7 +2117,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -2048,7 +2174,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": 1,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -2058,6 +2187,7 @@
                                 "x": 120.0,
                                 "y": 120.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -2069,6 +2199,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -2102,7 +2237,7 @@
                             "fontSize": 43.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
-                            "layer": 2,
+                            "layer": 3,
                             "lineSpacing": 8.0,
                             "name": "text0",
                             "outlineColor": {
@@ -2166,7 +2301,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,
@@ -2218,7 +2358,10 @@
                             "flipY": false,
                             "isApplyViewMat": false,
                             "isStaticDraw": false,
+                            "isUVScroll": false,
                             "layer": 1,
+                            "maxColmnCount": 1,
+                            "maxStepCount": 1,
                             "name": "sprite0",
                             "offset": {
                                 "x": 0.0,
@@ -2228,6 +2371,7 @@
                                 "x": 120.0,
                                 "y": 120.0
                             },
+                            "stepTime": 0.10000000149011612,
                             "texturePath": "Resources/Textures\\DefaultAssets\\GameUI\\hexagonDesign.png",
                             "transform": {
                                 "rotate": 0.0,
@@ -2239,6 +2383,11 @@
                                     "x": 0.0,
                                     "y": 0.0
                                 }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "uvTransform": {
                                 "rotate": 0.0,
@@ -2272,7 +2421,7 @@
                             "fontSize": 43.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
-                            "layer": 2,
+                            "layer": 3,
                             "lineSpacing": 8.0,
                             "name": "text0",
                             "outlineColor": {
@@ -2336,7 +2485,12 @@
                     "duration": 1.0,
                     "easingType": 25,
                     "interpolationType": 0,
-                    "isLoop": false
+                    "isConnectEdge": false,
+                    "isLoop": false,
+                    "timePoints": [
+                        0.0,
+                        1.0
+                    ]
                 }
             ],
             "isParentRotate": true,

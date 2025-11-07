@@ -25,7 +25,7 @@
                             "fontSize": 86.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
-                            "layer": 5,
+                            "layer": 100,
                             "lineSpacing": 8.0,
                             "name": "text0",
                             "outlineColor": {
@@ -122,6 +122,7 @@
                     "duration": 2.0,
                     "easingType": 0,
                     "interpolationType": 1,
+                    "isConnectEdge": false,
                     "isLoop": true,
                     "timePoints": [
                         0.0,
@@ -138,14 +139,14 @@
             "objectName": "pressSpace",
             "objectType": 0,
             "transform": {
-                "rotate": 0.049848709255456924,
+                "rotate": 0.04976344853639603,
                 "scale": {
-                    "x": 1.0018129348754883,
-                    "y": 1.0018129348754883
+                    "x": 1.0022257566452026,
+                    "y": 1.0022257566452026
                 },
                 "translate": {
-                    "x": 640.0,
-                    "y": 488.31072998046875
+                    "x": 0.0,
+                    "y": 0.0
                 }
             }
         }

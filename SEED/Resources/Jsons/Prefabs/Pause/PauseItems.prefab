@@ -37,7 +37,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -112,7 +112,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -188,6 +188,7 @@
                                     "duration": 0.30000001192092896,
                                     "easingType": 16,
                                     "interpolationType": 0,
+                                    "isConnectEdge": false,
                                     "isLoop": false,
                                     "timePoints": [
                                         0.0,
@@ -203,8 +204,8 @@
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
+                                    "x": 0.0,
+                                    "y": 0.0
                                 },
                                 "translate": {
                                     "x": 0.0,
@@ -245,7 +246,7 @@
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
                                     "isUVScroll": false,
-                                    "layer": 90,
+                                    "layer": 88,
                                     "maxColmnCount": 1,
                                     "maxStepCount": 1,
                                     "name": "back",
@@ -448,6 +449,7 @@
                             "duration": 0.800000011920929,
                             "easingType": 25,
                             "interpolationType": 0,
+                            "isConnectEdge": false,
                             "isLoop": false,
                             "timePoints": [
                                 0.0,
@@ -507,7 +509,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -582,7 +584,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -658,6 +660,7 @@
                                     "duration": 0.30000001192092896,
                                     "easingType": 16,
                                     "interpolationType": 0,
+                                    "isConnectEdge": false,
                                     "isLoop": false,
                                     "timePoints": [
                                         0.0,
@@ -673,8 +676,8 @@
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
-                                    "x": 1.0,
-                                    "y": 1.0
+                                    "x": 0.0,
+                                    "y": 0.0
                                 },
                                 "translate": {
                                     "x": 0.0,
@@ -715,7 +718,7 @@
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
                                     "isUVScroll": false,
-                                    "layer": 90,
+                                    "layer": 89,
                                     "maxColmnCount": 1,
                                     "maxStepCount": 1,
                                     "name": "back",
@@ -914,6 +917,7 @@
                             "duration": 0.800000011920929,
                             "easingType": 25,
                             "interpolationType": 0,
+                            "isConnectEdge": false,
                             "isLoop": false,
                             "timePoints": [
                                 0.0,
@@ -973,7 +977,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -1048,7 +1052,7 @@
                                             "isApplyViewMat": false,
                                             "isStaticDraw": false,
                                             "isUVScroll": true,
-                                            "layer": 89,
+                                            "layer": 80,
                                             "maxColmnCount": 0,
                                             "maxStepCount": 0,
                                             "name": "sprite0",
@@ -1124,6 +1128,7 @@
                                     "duration": 0.30000001192092896,
                                     "easingType": 16,
                                     "interpolationType": 0,
+                                    "isConnectEdge": false,
                                     "isLoop": false,
                                     "timePoints": [
                                         0.0,
@@ -1181,7 +1186,7 @@
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
                                     "isUVScroll": false,
-                                    "layer": 90,
+                                    "layer": 89,
                                     "maxColmnCount": 1,
                                     "maxStepCount": 1,
                                     "name": "back",
@@ -1380,6 +1385,7 @@
                             "duration": 0.800000011920929,
                             "easingType": 25,
                             "interpolationType": 0,
+                            "isConnectEdge": false,
                             "isLoop": false,
                             "timePoints": [
                                 0.0,
@@ -1437,7 +1443,7 @@
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
                                     "isUVScroll": false,
-                                    "layer": 88,
+                                    "layer": 79,
                                     "maxColmnCount": 0,
                                     "maxStepCount": 0,
                                     "name": "sprite0",

@@ -15,25 +15,11 @@
         },
         {
             "type": "Vignette",
-            "vignetteStrength": 0.5299999713897705
+            "vignetteStrength": 0.4099999964237213
         },
         {
             "gap": 1,
             "type": "RGBShift"
-        },
-        {
-            "blockSize_": 28.270000457763672,
-            "colorOffset_": 8.199999809265137,
-            "intensity_": -0.07999999821186066,
-            "lineSpeed_": 9.90999984741211,
-            "noiseStrength_": 0.8999999761581421,
-            "type": "Glitch"
-        },
-        {
-            "radius_": 8,
-            "sigma_": 71.8499984741211,
-            "threshold_": 0.949999988079071,
-            "type": "Bloom"
         }
     ]
 }

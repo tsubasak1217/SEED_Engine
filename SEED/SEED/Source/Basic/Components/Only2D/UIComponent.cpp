@@ -302,6 +302,7 @@ void UIComponent::LoadFromJson(const nlohmann::json& jsonData){
             text.LoadFromJson(textJson);
             text.parentMat = owner_.owner2D->GetWorldMatPtr();
             texts_.emplace_back(textJson["name"], text);
+            TextSystem::GetInstance()->LoadFont(text.fontName);
         }
     }
 }

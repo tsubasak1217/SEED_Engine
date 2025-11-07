@@ -27,6 +27,7 @@ public:
 public:// アクセッサ
     void Play(){ isPlaying_ = true; }
     void Pause(){ isPlaying_ = false; }
+    void Reset(){ timer_.Reset(); }
     void RevercePlay(){ timeScale_ *= -1.0f; }
     bool IsEndRoutine() const{ return timer_.IsFinished(); }
 

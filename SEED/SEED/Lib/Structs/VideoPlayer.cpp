@@ -41,6 +41,7 @@ void VideoPlayer::LoadVideo(const std::string& filename, bool isUseAudio){
     if(videoItem_->frameTextureY_.GetSRVIndex() != -1){
         ViewManager::UnloadView(HEAP_TYPE::SRV_CBV_UAV, videoItem_->frameTextureY_.GetSRVIndex());
         ViewManager::UnloadView(HEAP_TYPE::SRV_CBV_UAV, videoItem_->frameTextureUV_.GetSRVIndex());
+        ViewManager::UnloadView(HEAP_TYPE::SRV_CBV_UAV, videoItem_->frameTextureRGBA_.GetSRVIndex());
         ViewManager::UnloadView(HEAP_TYPE::SRV_CBV_UAV, videoItem_->frameTextureRGBA_.GetUAVIndex());
     }
 
@@ -140,6 +141,9 @@ void VideoPlayer::Update(){
         context_.frameAccumulator -= frameDuration;
         context_.currentTime += frameDuration;
     }
+
+    // NV12からRGBAへ変換
+    NV12ToRGBA();
 }
 
 
@@ -215,8 +219,6 @@ void VideoPlayer::StartAudio(){
 void VideoPlayer::Draw(Quad2D quad){
     // 動画が読み込まれていない場合は何もしない
     if(!videoItem_){ return; }
-    // NV12からRGBAへ変換
-    NV12ToRGBA();
     // Quadのテクスチャを設定
     quad.GH = videoItem_->frameTextureRGBA_.GetSRVIndex();
     // 描画
@@ -226,8 +228,6 @@ void VideoPlayer::Draw(Quad2D quad){
 void VideoPlayer::Draw(Quad quad){
     // 動画が読み込まれていない場合は何もしない
     if(!videoItem_){ return; }
-    // NV12からRGBAへ変換
-    NV12ToRGBA();
     // Quadのテクスチャを設定
     quad.GH = videoItem_->frameTextureRGBA_.GetSRVIndex();
     quad.lightingType = LIGHTINGTYPE_NONE; // ライティングを無効化

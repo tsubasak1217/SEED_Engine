@@ -76,7 +76,7 @@ void Routine3DComponent::Update(){
         }
         case InterpolationType::CATMULLROM:
         {
-            result = MyFunc::CatmullRomInterpolate(transforms, uniformT,isConnectEdge_);
+            result = MyFunc::CatmullRomInterpolate(transforms, uniformT, isConnectEdge_);
             break;
         }
         default:
@@ -84,9 +84,15 @@ void Routine3DComponent::Update(){
         }
 
         // オーナーに反映
-        owner_.owner3D->SetWorldScale(result.scale);
-        owner_.owner3D->SetWorldRotate(result.rotate);
-        owner_.owner3D->SetWorldTranslate(result.translate);
+        if(!disableScale_){
+            owner_.owner3D->SetWorldScale(result.scale);
+        }
+        if(!disableRotate_){
+            owner_.owner3D->SetWorldRotate(result.rotate);
+        }
+        if(!disableTranslate_){
+            owner_.owner3D->SetWorldTranslate(result.translate);
+        }
     }
 
     // 再生中なら更新
@@ -330,22 +336,40 @@ void Routine3DComponent::DragPoint(){
 
 // トランスフォーム編集 =============================================================
 void Routine3DComponent::EditTransform(){
+
+    // 変形の無効化オプション
+    ImGui::SeparatorText("ルーチンの無効化オプション");
+    ImGui::Checkbox("移動を無効化", &disableTranslate_);
+    ImGui::Checkbox("回転を無効化", &disableRotate_);
+    ImGui::Checkbox("スケールを無効化", &disableScale_);
+
+    // トランスフォームの編集
     if(edittingIdx_ != -1){
-        // トランスフォームの編集
         std::string tag = "##" + std::to_string(reinterpret_cast<uintptr_t>(&controlPoints_[edittingIdx_]));
         ImGui::SeparatorText("制御点" + std::to_string(edittingIdx_));
-        ImGui::DragFloat2("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
-        ImGui::DragFloat2("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
-        ImGui::Text("回転値: {%f,%f,%f}", controlPoints_[edittingIdx_].first.rotate.x, controlPoints_[edittingIdx_].first.rotate.y, controlPoints_[edittingIdx_].first.rotate.z);
-        ImGui::DragFloat3("適用させる回転値" + tag, &eulerRotate_.x, 0.5f);
-        if(ImGui::Button("オイラー回転をQuaternion回転に適用" + tag)){
-            controlPoints_[edittingIdx_].first.rotate = Quaternion::ToQuaternion(eulerRotate_);
+
+        if(!disableTranslate_){
+            ImGui::DragFloat3("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
         }
 
-        // デバッグカメラの値を適用
-        if(ImGui::Button("デバッグカメラの値を適用" + tag)){
-            BaseCamera* debugCam = SEED::GetCamera("debug");
-            controlPoints_[edittingIdx_].first = debugCam->GetTransform();
+        if(!disableScale_){
+            ImGui::DragFloat3("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
+        }
+
+        if(!disableRotate_){
+            ImGui::Text("回転値: {%f,%f,%f}", controlPoints_[edittingIdx_].first.rotate.x, controlPoints_[edittingIdx_].first.rotate.y, controlPoints_[edittingIdx_].first.rotate.z);
+            ImGui::DragFloat3("適用させる回転値" + tag, &eulerRotate_.x, 0.5f);
+            if(ImGui::Button("オイラー回転をQuaternion回転に適用" + tag)){
+                controlPoints_[edittingIdx_].first.rotate = Quaternion::ToQuaternion(eulerRotate_);
+            }
+        }
+
+        if(disableTranslate_ + disableScale_ + disableRotate_ == 0){
+            // デバッグカメラの値を適用
+            if(ImGui::Button("デバッグカメラの値を適用" + tag)){
+                BaseCamera* debugCam = SEED::GetCamera("debug");
+                controlPoints_[edittingIdx_].first = debugCam->GetTransform();
+            }
         }
     }
 }
@@ -462,6 +486,10 @@ void Routine3DComponent::LoadFromJson(const nlohmann::json& jsonData){
         }
     }
 
+    // 無効化設定の読み込み
+    disableTranslate_ = jsonData.value("disableTranslate", false);
+    disableRotate_ = jsonData.value("disableRotate", false);
+    disableScale_ = jsonData.value("disableScale", false);
 
     // その他設定の読み込み
     interpolationType_ = static_cast<InterpolationType>(jsonData.value("interpolationType", 0));
@@ -492,6 +520,11 @@ nlohmann::json Routine3DComponent::GetJsonData() const{
     for(const auto& point : controlPoints_){
         jsonData["timePoints"].push_back(point.second);
     }
+
+    // 無効化設定
+    jsonData["disableTranslate"] = disableTranslate_;
+    jsonData["disableRotate"] = disableRotate_;
+    jsonData["disableScale"] = disableScale_;
 
     // その他設定
     jsonData["interpolationType"] = static_cast<int>(interpolationType_);

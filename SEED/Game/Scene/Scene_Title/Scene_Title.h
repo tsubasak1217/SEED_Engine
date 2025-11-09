@@ -28,11 +28,15 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
+private:// 内部関数
+    void SelectTutorial();
+
 private:
     // 読み込むオブジェクト類
     GameObject2D* titleLogo_ = nullptr;
     GameObject2D* pressSpace_ = nullptr;
     GameObject2D* rotateRects_ = nullptr;
+    GameObject2D* tutorialSelectItems_ = nullptr;
     GameObject* cameraParents_ = nullptr;
     GameObject* toSelectCamerawork_ = nullptr;
     GameObject* models_ = nullptr;
@@ -48,9 +52,14 @@ private:
     std::unique_ptr<VideoPlayer> videoPlayer_;
 
     // 入力格納用
-    InputHandler<bool> startButtonInput_;
+    InputHandler<bool> decideButtonInput_;
+    InputHandler<bool> tutorialSelectInput_;
+
+    // チュートリアル選択用
+    bool isPlayTutorial_ = true;
 
     // その他メンバー変数
     int32_t prevCameraParentIdx_;
     bool isStartButtonPressed_ = false;
+    bool sceneChangeOrder_ = false;
 };

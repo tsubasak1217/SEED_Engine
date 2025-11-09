@@ -126,6 +126,7 @@ public:
     void SetObjectType(ObjectType type){ objectType_ = type; }
     const std::string& GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
+    float GetAliveTime() const{ return aliveTime_; }
 
     //=====================================
     // 親子付け関連
@@ -135,6 +136,7 @@ public:
     const std::list<GameObject2D*>& GetChildren() const{ return children_; }
     std::list<GameObject2D*> GetAllChildren()const;
     GameObject2D* GetChild(const std::string& name);
+    GameObject2D* GetChild(uint32_t index);
     void RemoveChild(GameObject2D* child);
     void ReleaseParent();
     void ReleaseChildren();
@@ -260,4 +262,6 @@ private:
     // 前の座標
     Vector2 prePos_;
 
+    /*---------- その他情報 ----------*/
+    float aliveTime_ = 0.0f;// オブジェクトが生成されてからの経過時間
 };

@@ -85,10 +85,17 @@ void Routine2DComponent::Update(){
             break;
         }
 
+
         // オーナーに反映
-        owner_.owner2D->SetWorldScale(result.scale);
-        owner_.owner2D->SetWorldRotate(result.rotate);
-        owner_.owner2D->SetWorldTranslate(result.translate);
+        if(!disableScale_){
+            owner_.owner2D->SetWorldScale(result.scale);
+        }
+        if(!disableRotate_){
+            owner_.owner2D->SetWorldRotate(result.rotate);
+        }
+        if(!disableTranslate_){
+            owner_.owner2D->SetWorldTranslate(result.translate);
+        }
     }
 
     // 再生中なら更新
@@ -331,13 +338,26 @@ void Routine2DComponent::DragPoint(){
 
 // トランスフォーム編集 =============================================================
 void Routine2DComponent::EditTransform(){
+
+    // 変形の無効化オプション
+    ImGui::SeparatorText("ルーチンの無効化オプション");
+    ImGui::Checkbox("移動を無効化", &disableTranslate_);
+    ImGui::Checkbox("回転を無効化", &disableRotate_);
+    ImGui::Checkbox("スケールを無効化", &disableScale_);
+
     if(edittingIdx_ != -1){
         // トランスフォームの編集
         std::string tag = "##" + std::to_string(reinterpret_cast<uintptr_t>(&controlPoints_[edittingIdx_]));
         ImGui::SeparatorText("制御点" + std::to_string(edittingIdx_));
-        ImGui::DragFloat2("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
-        ImGui::DragFloat("回転" + tag, &controlPoints_[edittingIdx_].first.rotate, 0.05f);
-        ImGui::DragFloat2("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
+        if(!disableTranslate_){
+            ImGui::DragFloat2("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
+        }
+        if(!disableRotate_){
+            ImGui::DragFloat("回転" + tag, &controlPoints_[edittingIdx_].first.rotate, 0.05f);
+        }
+        if(!disableScale_){
+            ImGui::DragFloat2("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
+        }
     }
 }
 
@@ -442,6 +462,10 @@ void Routine2DComponent::LoadFromJson(const nlohmann::json& jsonData){
         }
     }
 
+    // 無効化設定の読み込み
+    disableTranslate_ = jsonData.value("disableTranslate", false);
+    disableRotate_ = jsonData.value("disableRotate", false);
+    disableScale_ = jsonData.value("disableScale", false);
 
     // その他設定の読み込み
     interpolationType_ = static_cast<InterpolationType>(jsonData.value("interpolationType", 0));
@@ -472,6 +496,11 @@ nlohmann::json Routine2DComponent::GetJsonData() const{
     for(const auto& point : controlPoints_){
         jsonData["timePoints"].push_back(point.second);
     }
+
+    // 無効化設定
+    jsonData["disableTranslate"] = disableTranslate_;
+    jsonData["disableRotate"] = disableRotate_;
+    jsonData["disableScale"] = disableScale_;
 
     // その他設定
     jsonData["interpolationType"] = static_cast<int>(interpolationType_);

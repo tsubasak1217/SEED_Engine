@@ -40,6 +40,9 @@ private:
     bool isLoop_ = false;
     bool isConnectEdge_ = false;
     bool isPlaying_ = false;
+    bool disableTranslate_ = false;
+    bool disableRotate_ = false;
+    bool disableScale_ = false;
     Timer timer_;
     float timeScale_ = 1.0f;
     InterpolationType interpolationType_ = InterpolationType::CATMULLROM;

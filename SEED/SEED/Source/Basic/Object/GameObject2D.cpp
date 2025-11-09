@@ -62,6 +62,9 @@ void GameObject2D::Update(){
 
     // マトリックスの更新
     UpdateMatrix();
+
+    // 生成されてからの時間を更新
+    aliveTime_ += ClockManager::DeltaTime();
 }
 
 
@@ -216,6 +219,16 @@ GameObject2D* GameObject2D::GetChild(const std::string& name){
     }
 
     return nullptr;
+}
+
+// インデックスで子を取得
+GameObject2D* GameObject2D::GetChild(uint32_t index){
+    if(children_.size() == 0 || index >= children_.size()){
+        return nullptr;
+    }
+    auto it = children_.begin();
+    std::advance(it, index);
+    return *it;
 }
 
 void GameObject2D::RemoveChild(GameObject2D* child){

@@ -79,8 +79,12 @@ void Scene_Title::Initialize(){
     PostEffectSystem::Load("TitleScene.json");
 
     // 入力の初期化
-    startButtonInput_.Trigger = []{
+    decideButtonInput_.Trigger = []{
         return Input::IsTriggerKey(DIK_SPACE);
+    };
+
+    tutorialSelectInput_.Trigger = []{
+        return Input::IsTriggerKey({ DIK_A,DIK_D });
     };
 }
 
@@ -148,7 +152,7 @@ void Scene_Title::Update(){
             }
 
             // スタートボタンが押されたら移行フラグを立てる
-            if(startButtonInput_.Trigger()){
+            if(decideButtonInput_.Trigger()){
                 isStartButtonPressed_ = true;
                 if(toSelectCamerawork_){
                     // カメラワークルーチンを初期位置に
@@ -162,6 +166,31 @@ void Scene_Title::Update(){
             // シーン遷移用のカメラワークを行う
             if(toSelectCamerawork_){
                 SEED::GetMainCamera()->SetTransform(toSelectCamerawork_->GetWorldTransform());
+
+                // カメラワークが終了したらチュートリアル選択UIを表示開始
+                if(toSelectCamerawork_->GetComponent<Routine3DComponent>()->IsEndRoutine()){
+                    if(!tutorialSelectItems_){
+                        // チュートリアル選択UIを読み込む
+                        tutorialSelectItems_ = hierarchy_->LoadObject2D("Title/tutorialSelectItems.prefab");
+                        // "はい"項目をアクティブ化
+                        auto* item_yes = tutorialSelectItems_->GetChild(1);
+                        item_yes->GetComponent<Routine2DComponent>()->Play();// アニメーションを再生
+                        // "いいえ"項目を非アクティブ化
+                        auto* item_no = tutorialSelectItems_->GetChild(2);
+                        item_no->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
+                        item_no->GetComponent<Routine2DComponent>()->Play();// アニメーションを再生
+                        item_no->GetComponent<Routine2DComponent>()->RevercePlay();// アニメーションを逆再生に
+                        item_no->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+                        // 最初はscale0にしておく
+                        item_yes->aditionalTransform_.scale = Vector2(0.0f);
+                        item_no->aditionalTransform_.scale = Vector2(0.0f);
+                        item_yes->UpdateMatrix();
+                        item_no->UpdateMatrix();
+                    } else{
+                        // チュートリアル選択処理
+                        SelectTutorial();
+                    }
+                }
             }
 
             // ロゴやUIのフェードアウト処理
@@ -218,7 +247,7 @@ void Scene_Title::EndFrame(){
 
     // カメラワークルーチンが終了したらシーン遷移
     if(toSelectCamerawork_){
-        if(toSelectCamerawork_->GetComponent<Routine3DComponent>()->IsEndRoutine()){
+        if(sceneChangeOrder_){
             ChangeScene("Game");
             return;
         }
@@ -233,4 +262,59 @@ void Scene_Title::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Title::HandOverColliders(){
     Scene_Base::HandOverColliders();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//  チュートリアル選択処理
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+void Scene_Title::SelectTutorial(){
+
+    // オブジェクトの取得
+    auto* item_yes = tutorialSelectItems_->GetChild(1);
+    auto* item_no = tutorialSelectItems_->GetChild(2);
+
+    // チュートリアル選択UIの拡大処理
+    float startTime = 0.3f; // 選択開始時の時間
+    float waitTime = 0.5f; // 選択開始までの待機時間
+    float t = std::clamp((tutorialSelectItems_->GetAliveTime() - waitTime) / startTime, 0.0f, 1.0f);
+    float ease = EaseOutExpo(t);
+    item_yes->aditionalTransform_.scale = Vector2(ease);
+    item_no->aditionalTransform_.scale = Vector2(ease);
+
+    // waitTime中は入力受付しない
+    if(t == 0.0f){
+        return;
+    }
+
+    // 選択項目の切り替え処理
+    if(tutorialSelectInput_.Trigger()){
+
+        // チュートリアル選択状態を反転
+        isPlayTutorial_ = !isPlayTutorial_;
+
+        // "はい"項目の処理
+        if(isPlayTutorial_){
+            item_yes->GetComponent<ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
+            item_no->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+            item_no->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
+
+        } else{// "いいえ"項目の処理
+            item_yes->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+            item_no->GetComponent<ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
+            item_yes->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "はい"を灰色に
+        }
+
+        // アニメーションを逆再生
+        item_yes->GetComponent<Routine2DComponent>()->RevercePlay();
+        item_no->GetComponent<Routine2DComponent>()->RevercePlay();
+    }
+
+    // 決定処理
+    if(decideButtonInput_.Trigger()){
+        // シーン遷移フラグを立てる
+        sceneChangeOrder_ = true;
+    }
 }

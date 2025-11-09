@@ -132,6 +132,7 @@ public:
     ObjectType GetObjectType() const{ return objectType_; }
     std::string GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
+    float GetAliveTime() const{ return aliveTime_; }
 
     //=====================================
     // 親子付け関連
@@ -142,6 +143,7 @@ public:
     const std::list<GameObject*>& GetChildren() const{ return children_; }
     std::list<GameObject*> GetAllChildren()const;
     GameObject* GetChild(const std::string& name);
+    GameObject* GetChild(uint32_t index);
     void RemoveChild(GameObject* child);
     void ReleaseParent();
     void ReleaseChildren();
@@ -244,4 +246,7 @@ private:
     bool isOnGround_ = true;
     bool preIsOnGround_ = true;
     Vector3 prePos_;
+
+    /*----------- その他 ----------*/
+    float aliveTime_ = 0.0f;// オブジェクトが生成されてからの時間
 };

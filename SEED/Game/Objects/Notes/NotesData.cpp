@@ -14,7 +14,7 @@
 #include <Game/Objects/Notes/Note_Wheel.h>
 #include <Game/Objects/Notes/Note_Warning.h>
 
-// managerのインクルード
+// 固有managerやエディタのインクルード
 #include <Game/Manager/RythmGameManager.h>
 #include <Game/Manager/NotesEditor.h>
 
@@ -24,7 +24,7 @@
 NotesData::NotesData(){
 
     // タイマーの初期化
-    waitTimer_.Initialize(3.0f);
+    waitTimer_.Initialize(6.0f);
 
     // 音源情報の初期化
     metronomeFilePath_ = "SE/metronome.mp3"; // メトロノームのファイルパス
@@ -68,6 +68,7 @@ void NotesData::Update(){
     }
 
 
+    // 待機時間が終了していたら譜面再生
     if(waitTimer_.IsFinished()){
 
         // 条件を満たすノーツの削除
@@ -82,6 +83,12 @@ void NotesData::Update(){
     } else{
         // 待機時間を進める
         waitTimer_.Update();
+
+        // すこし経過したら「Ready?」テキストを出現させる
+        if(waitTimer_.GetTrigger(1.0f)){
+            auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+            hierarchy->LoadObject2D("PlayScene/readyText.prefab");
+        }
     }
 
     // 譜面が終了したらプレイ終了
@@ -333,11 +340,14 @@ void NotesData::PlayAudio(){
         // メトロノームの再生
         static float signatureTime = 0.0f;
         signatureTime = tempoDataList_.front().GetBeatDuration();
+
+        // 拍のラインを超えた瞬間を検出
         int signatureCount[2] = {
             (int)std::ceil(songTimer_.currentTime / signatureTime),
             (int)std::ceil(songTimer_.prevTime / signatureTime)
         };
 
+        // 拍のラインを超えた瞬間であればメトロノームを鳴らす
         if((signatureCount[0] != signatureCount[1])){
             // メトロノームの再生
             AudioManager::PlayAudio(metronomeFilePath_, false);

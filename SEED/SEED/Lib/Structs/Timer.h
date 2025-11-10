@@ -21,6 +21,7 @@ public:
     bool IsFinishedNow() const;
     bool IsLoopedNow() const;
     bool IsReturnNow() const;
+    bool GetTrigger(float triggerTime) const;
     void Reset();
     void ToEnd();
     void Stop();

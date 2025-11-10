@@ -54,6 +54,11 @@ bool Timer::IsReturnNow() const{
     return currentTime == 0.0f && prevTime > 0.0f;
 }
 
+// 指定時間に達した瞬間かどうか
+bool Timer::GetTrigger(float triggerTime) const{
+    return prevTime < triggerTime && currentTime >= triggerTime;
+}
+
 // リセット
 void Timer::Reset(){
     currentTime = 0.0f;

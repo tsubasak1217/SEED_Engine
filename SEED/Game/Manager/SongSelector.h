@@ -33,7 +33,9 @@ private:// ソート関連
     void CreateGroup();// グループ分け
     void SortInGroup();// グループ内ソート
     void UpdateIndex(); // インデックス更新
-    void UpdateVisibleItems(); // 表示されている楽曲の更新
+    void UpdateVisibleSongs(); // 表示されている楽曲の更新
+    void UpdateVisibleGroups(); // 表示されているグループの更新
+    void FindTrack(const Track& track, int32_t& outSongIndex, int32_t& outGroupIndex);
 
 private:// 選択関連
     void SelectItems();// 項目選択処理
@@ -45,9 +47,10 @@ private:// 選択関連
 private:// 更新関連
     void CameraControl();// カメラ制御
     void UpdateJacket(); // ジャケットの更新
-    void UpdateUIContents(); // UI内容更新
+    void UpdateUIContents(bool allUpdate = false); // UI内容更新
 
 private:// 入出力
+    void Edit();
     void ToJson();
     void FromJson();
 
@@ -92,7 +95,7 @@ private:
     Timer inputTimer_;
     Timer itemShiftTimer_;
     Timer toDifficultySelectTimer_;
-    
+
     // フラグ類
     static inline bool isFirstPlay_ = true;
     bool changeSceneOrder_ = false;// シーン変更命令フラグ
@@ -109,4 +112,7 @@ private:
     // 3Dのもの
     BaseCamera* camera_ = nullptr; // カメラ
     Quad jacket3D_;
+
+    // その他
+    std::string preGroupName_;
 };

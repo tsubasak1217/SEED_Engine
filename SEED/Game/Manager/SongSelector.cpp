@@ -14,6 +14,8 @@ SongSelector::SongSelector(){
 
 // デストラクタ
 SongSelector::~SongSelector(){
+    // 設定を保存
+    ToJson();
 }
 
 void SongSelector::Initialize(){
@@ -27,9 +29,6 @@ void SongSelector::Initialize(){
         data->Initialize(folderName);
     }
 
-    // 描画クラスの初期化
-    SongInfoDrawer::Initialize();
-
     // jsonから設定を読み込む
     FromJson();
 
@@ -39,12 +38,20 @@ void SongSelector::Initialize(){
     // ソート処理を実行
     Sort();
 
+    // 可視項目の更新
+    UpdateVisibleGroups();
+    UpdateVisibleSongs();
+    preGroupName_ = currentGroup->groupName;
+
     // Timerの初期化
     inputTimer_.Initialize(0.3f, 0.3f);
     itemShiftTimer_.Initialize(0.2f, 0.2f);
 
     // 初期位置に移動
     ShiftItem(true);
+
+    // UI内容の更新
+    UpdateUIContents(true);
 
     // ジャケット矩形の初期化
     jacket3D_ = MakeEqualQuad(3.0f);
@@ -98,14 +105,14 @@ void SongSelector::EndFrame(){
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Update(){
 
-    // アイテム移動処理
-    if(isShiftItem_){
-        ShiftItem();
-    }
-
     // 項目の選択
     if(!isTransitionToDifficultySelect_){
         SelectItems();
+    }
+
+    // アイテム移動処理
+    if(isShiftItem_){
+        ShiftItem();
     }
 
     // カメラの制御
@@ -113,6 +120,11 @@ void SongSelector::Update(){
 
     // ジャケットの更新
     UpdateJacket();
+
+#ifdef _DEBUG
+    // 編集
+    Edit();
+#endif // _DEBUG
 }
 
 
@@ -261,10 +273,8 @@ void SongSelector::Sort(){
     CreateGroup();
     // グループ内でのソート
     SortInGroup();
-    // 各曲のインデックスを更新
+    // 各曲・グループのインデックスを更新
     UpdateIndex();
-    // 可視曲の更新
-    UpdateVisibleItems();
 }
 
 
@@ -511,15 +521,18 @@ void SongSelector::UpdateIndex(){
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// 可視曲の更新処理
+// 可視曲・グループの更新処理
 /////////////////////////////////////////////////////////////////////////////////////
-void SongSelector::UpdateVisibleItems(){
+
+void SongSelector::UpdateVisibleSongs(){
 
     if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
+
     // 現在の選択を更新
     currentGroup = &songGroups[currentGroupIndex];
     currentSong = currentGroup->groupMembers[currentSongIndex];
+    currentDifficulty = currentSong.second;
 
     // 真ん中に表示する要素のインデックスを計算
     centerIdx_ = int(visibleSongs.size()) / 2;
@@ -544,6 +557,20 @@ void SongSelector::UpdateVisibleItems(){
         }
     }
 
+    // UI情報の更新
+    UpdateUIContents();
+}
+
+void SongSelector::UpdateVisibleGroups(){
+
+    if(!currentGroup){ return; }
+    if(currentGroup->groupMembers.empty()){ return; }
+    // 現在の選択を更新
+    currentGroup = &songGroups[currentGroupIndex];
+
+    // 真ん中に表示する要素のインデックスを計算
+    centerIdx_ = int(visibleSongs.size()) / 2;
+
     {// 可視グループの更新----------------------------------------
 
         // 真ん中の要素を選択中のグループに設定
@@ -561,6 +588,31 @@ void SongSelector::UpdateVisibleItems(){
             int32_t dif = i - centerIdx_;
             int32_t index = MyFunc::Spiral(currentGroupIndex + dif, 0, int32_t(songGroups.size()) - 1);
             visibleGroups[i] = &songGroups[index];
+        }
+    }
+
+    // UI情報の更新
+    UpdateUIContents();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 曲の検索処理
+/////////////////////////////////////////////////////////////////////////////////////
+void SongSelector::FindTrack(const Track& track, int32_t& outSongIndex, int32_t& outGroupIndex){
+
+    // 全グループを走査
+    for(size_t g = 0; g < songGroups.size(); g++){
+        const auto& group = songGroups[g];
+
+        // グループ内のメンバーを検索
+        for(size_t s = 0; s < group.groupMembers.size(); s++){
+            const auto& member = group.groupMembers[s];
+            if(member.first == track.first && member.second == track.second){
+                outGroupIndex = static_cast<int32_t>(g);
+                outSongIndex = static_cast<int32_t>(s);
+                return;
+            }
         }
     }
 }
@@ -607,7 +659,7 @@ void SongSelector::SelectSong(){
             currentSongIndex = MyFunc::Spiral(currentSongIndex, 0, int32_t(currentGroup->groupMembers.size()) - 1);
             isShiftItem_ = true;
             shiftDirection_ = verticalValue;
-            UpdateVisibleItems();
+            UpdateVisibleSongs();
             itemShiftTimer_.Reset();
             return;
         }
@@ -618,7 +670,7 @@ void SongSelector::SelectSong(){
     }
 
     // ソートモードの変更
-    if(modeChangeValue != LR::NONE){
+    if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
         int sortModeInt = (int)currentSortMode;
         sortModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
         sortModeInt = MyFunc::Spiral(sortModeInt, 0, (int)SortMode::kMaxCount - 1);
@@ -626,12 +678,19 @@ void SongSelector::SelectSong(){
 
         // ソート処理を実行
         Sort();
+        // 項目の更新
+        UpdateVisibleSongs();
+        UpdateUIContents();
         return;
     }
 
     // 決定入力があれば難易度選択へ移行
     if(decideInput_.Trigger()){
         selectMode_ = SelectMode::Difficulty;
+        currentDifficulty = currentSong.second;
+        ShiftItem();
+
+        // UIのアクティブ状態を切り替え
         for(auto& ui : difficultyUIs){
             ui->isActive_ = true;
         }
@@ -644,6 +703,11 @@ void SongSelector::SelectSong(){
     // 戻る入力があればグループ選択へ戻る
     if(backInput_.Trigger()){
         selectMode_ = SelectMode::Group;
+        preGroupName_ = currentGroup->groupName;
+
+        // 項目の更新
+        UpdateVisibleGroups();
+        UpdateUIContents();
 
         // UIのアクティブ状態を切り替え
         for(auto& ui : groupUIs){
@@ -674,10 +738,10 @@ void SongSelector::SelectGroup(){
         if(inputTimer_.IsLoopedNow()){
             currentGroupIndex += (verticalValue == UpDown::UP) ? -1 : 1;
             currentGroupIndex = MyFunc::Spiral(currentGroupIndex, 0, int32_t(songGroups.size()) - 1);
-            UpdateVisibleItems();
             isShiftItem_ = true;
             shiftDirection_ = verticalValue;
             itemShiftTimer_.Reset();
+            UpdateVisibleGroups();
             return;
         }
 
@@ -687,20 +751,30 @@ void SongSelector::SelectGroup(){
     }
 
     // グループモードの変更
-    if(modeChangeValue != LR::NONE){
+    if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
         int groupModeInt = (int)currentGroupMode;
         groupModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
         groupModeInt = MyFunc::Spiral(groupModeInt, 0, (int)GroupMode::kMaxCount - 1);
         currentGroupMode = (GroupMode)groupModeInt;
-
         // ソート処理を実行
         Sort();
+        // 項目の更新
+        UpdateVisibleGroups();
+        UpdateUIContents();
         return;
     }
 
     // 決定入力があれば楽曲選択へ移行
     if(decideInput_.Trigger()){
         selectMode_ = SelectMode::Song;
+
+        // グループが変わっていたら曲インデックスをリセット
+        if(currentGroup->groupName != preGroupName_){
+            currentSongIndex = 0;
+        }
+
+        // 可視曲の更新
+        UpdateVisibleSongs();
 
         // UIのアクティブ状態を切り替え
         for(auto& ui : songUIs){
@@ -739,12 +813,17 @@ void SongSelector::SelectDifficulty(){
             int nextDiffInt = int(currentDifficulty) + ((verticalValue == UpDown::UP) ? 1 : -1);
             nextDiffInt = std::clamp(nextDiffInt, 0, (int)TrackDifficulty::kMaxDifficulty - 1);
             currentDifficulty = (TrackDifficulty)nextDiffInt;
-            UpdateVisibleItems();
+
             // 難易度が変わっていたらフラグを立てる
             if(currentDifficulty != previousDifficulty){
                 isShiftItem_ = true;
                 shiftDirection_ = verticalValue;
                 itemShiftTimer_.Reset();
+
+                // currentSongを現在の難易度に合わせて更新
+                currentSong = { currentSong.first,currentDifficulty };
+                FindTrack(currentSong, currentSongIndex, currentGroupIndex);
+                UpdateVisibleSongs();
             }
             return;
         }
@@ -763,6 +842,12 @@ void SongSelector::SelectDifficulty(){
     // 戻る入力があれば楽曲選択へ戻る
     if(backInput_.Trigger()){
         selectMode_ = SelectMode::Song;
+
+        // currentSongを現在の難易度に合わせて更新
+        currentSong = { currentSong.first,currentDifficulty };
+        FindTrack(currentSong, currentSongIndex, currentGroupIndex);
+        UpdateVisibleSongs();
+
         // UIのアクティブ状態を切り替え
         for(auto& ui : songUIs){
             ui->isActive_ = true;
@@ -867,6 +952,8 @@ void SongSelector::ShiftItem(bool allUpdate){
     // タイマーが終了したらリセット
     if(itemShiftTimer_.IsFinished()){
         isShiftItem_ = false;
+        shiftDirection_ = UpDown::NONE;
+        itemShiftTimer_.Reset();
     }
 }
 
@@ -900,14 +987,142 @@ void SongSelector::UpdateJacket(){
 //////////////////////////////////////////////////////////////////////////////////
 // UI内容の更新
 //////////////////////////////////////////////////////////////////////////////////
-void SongSelector::UpdateUIContents(){
+void SongSelector::UpdateUIContents(bool allUpdate){
 
+    if(selectMode_ == SelectMode::Song or allUpdate){
+        // 曲選択UIの更新
+        for(int32_t i = 0; i < songUIs.size(); i++){
+
+            auto* ui = songUIs[i]->GetComponent<UIComponent>();
+            int32_t difficulty = (int)visibleSongs[i]->second;
+            SongInfo* songInfo = visibleSongs[i]->first;
+
+            // 画像の更新
+            ui->GetSprite("itemBG").color = uiBackColors_[(int)difficulty];
+            ui->GetSprite("levelBG").color = uiBackColors_[(int)difficulty];
+            ui->GetSprite("Jacket").GH = TextureManager::LoadTexture(
+                "../../Resources/NoteDatas/" + songInfo->folderName + "/" + songInfo->folderName + ".png"
+            );
+
+            // スコアを小数点4位までに変換
+            std::string scoreStr = "-----------------";
+            std::string rankStr = "-----";
+            if(songInfo->score[difficulty] > 0.0f){
+                scoreStr = std::to_string(songInfo->score[difficulty]);
+                scoreStr = scoreStr.substr(0, scoreStr.find(".") + 4) + "%";
+                rankStr = GroupNameUtils::rankNames[(int)songInfo->ranks[difficulty]];
+            }
+
+            // テキストの更新
+            ui->GetText("title").text = songInfo->songName;
+            ui->GetText("artistName").text = songInfo->artistName;
+            ui->GetText("score").text = scoreStr;
+            ui->GetText("level").text = std::to_string(songInfo->difficulty[difficulty]);
+            ui->GetText("bpm").text = "BPM" + std::to_string(static_cast<int>(songInfo->bpm));
+            ui->GetText("rank").text = rankStr;
+        }
+    }
+
+    if(selectMode_ == SelectMode::Group or allUpdate){
+        // グループ選択UIの更新
+        for(int32_t i = 0; i < groupUIs.size(); i++){
+            auto* ui = groupUIs[i]->GetComponent<UIComponent>();
+            SongGroup* group = visibleGroups[i];
+
+            // Spriteの更新
+            ui->GetSprite("itemBG").color = uiBackColors_[(int)currentDifficulty];
+            // Textの更新
+            ui->GetText("genre").text = group->groupName;
+        }
+
+    }
+
+    if(selectMode_ == SelectMode::Difficulty or allUpdate){
+        // 難易度選択UIの更新
+        for(int32_t i = 0; i < difficultyUIs.size(); i++){
+            auto* ui = difficultyUIs[i]->GetComponent<UIComponent>();
+            auto* songInfo = currentSong.first;
+            int32_t difficulty = int(TrackDifficulty::Parallel) - i;
+
+            // 画像の更新
+            ui->GetSprite("itemBG").color = uiBackColors_[difficulty];
+            ui->GetSprite("levelBG").color = uiBackColors_[difficulty];
+            ui->GetSprite("Jacket").GH = TextureManager::LoadTexture(
+                "../../Resources/NoteDatas/" + songInfo->folderName + "/" + songInfo->folderName + ".png"
+            );
+
+            // スコアを小数点4位までに変換
+            std::string scoreStr = "----------";
+            std::string rankStr = "-----";
+            if(songInfo->score[difficulty] > 0.0f){
+                scoreStr = std::to_string(songInfo->score[difficulty]);
+                scoreStr = scoreStr.substr(0, scoreStr.find(".") + 5) + "%";
+                rankStr = GroupNameUtils::rankNames[(int)songInfo->ranks[difficulty]];
+            }
+
+            // テキストの更新
+            ui->GetText("title").text = songInfo->songName;
+            ui->GetText("artistName").text = songInfo->artistName;
+            ui->GetText("score").text = scoreStr;
+            ui->GetText("level").text = std::to_string(songInfo->difficulty[difficulty]);
+            ui->GetText("bpm").text = "BPM" + std::to_string(static_cast<int>(songInfo->bpm));
+            ui->GetText("rank").text = rankStr;
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// 編集
+//////////////////////////////////////////////////////////////////////////////////
+void SongSelector::Edit(){
+#ifdef _DEBUG
+
+    ImFunc::CustomBegin("SongSelector", MoveOnly_TitleBar);
+    {
+        // 色の編集
+        for(int i = 0; i < uiBackColors_.size(); i++){
+            std::string label = "UI Back Color " + std::to_string(i);
+            ImGui::ColorEdit4(label.c_str(), &uiBackColors_[i].value.x);
+        }
+
+        ImGui::Separator();//--------------------------------
+
+        // 現在の各種モード
+        ImGui::Text("現在のソート方法: %s", ModeUtil::sortModeNames[(int)currentSortMode].c_str());
+        ImGui::Text("現在のグループ方法: %s", ModeUtil::groupModeNames[(int)currentGroupMode].c_str());
+
+        ImGui::Separator();//--------------------------------
+
+        // indexの表示
+        ImGui::Text("現在のグループIndex: %d", currentGroupIndex);
+        ImGui::Text("現在の楽曲Index: %d", currentSongIndex);
+
+        ImGui::End();
+    }
+
+#endif // _DEBUG
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // JSONへ書き出し
 //////////////////////////////////////////////////////////////////////////////////
 void SongSelector::ToJson(){
+    nlohmann::json j;
+    // 色の書き出し
+    for(int i = 0; i < uiBackColors_.size(); i++){
+        j["uiBackColors"][i] = uiBackColors_[i];
+    }
+
+    // indexの書き出し
+    j["currentGroupIndex"] = currentGroupIndex;
+    j["currentSongIndex"] = currentSongIndex;
+
+    // modeの書き出し
+    j["currentSortMode"] = (int)currentSortMode;
+    j["currentGroupMode"] = (int)currentGroupMode;
+
+    // JSONの保存
+    MyFunc::CreateJsonFile("Resources/Jsons/Settings/song_selector.json", j);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -917,5 +1132,19 @@ void SongSelector::FromJson(){
     nlohmann::json j = MyFunc::GetJson("Resources/Jsons/Settings/song_selector.json");
     if(!j.empty()){
 
+        // 色の読み込み
+        if(j.contains("uiBackColors")){
+            for(int i = 0; i < uiBackColors_.size(); i++){
+                uiBackColors_[i] = j["uiBackColors"][i];
+            }
+        }
+
+        // indexの読み込み
+        currentGroupIndex = j.value("currentGroupIndex", 0);
+        currentSongIndex = j.value("currentSongIndex", 0);
+
+        // modeの読み込み
+        currentSortMode = (SortMode)j.value("currentSortMode", 0);
+        currentGroupMode = (GroupMode)j.value("currentGroupMode", 0);
     }
 }

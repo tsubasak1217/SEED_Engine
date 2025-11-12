@@ -1,0 +1,149 @@
+{
+    "gameObjects2D": [
+        {
+            "components": [
+                {
+                    "componentID": 40,
+                    "componentTag": "UI_ID:40",
+                    "componentType": "UI",
+                    "sprites": [
+                        {
+                            "anchorPoint": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "clipLT": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "clipSize": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 0.6254825592041016,
+                                "z": 0.0
+                            },
+                            "drawLocation": 2,
+                            "flipX": false,
+                            "flipY": false,
+                            "isApplyViewMat": false,
+                            "isStaticDraw": false,
+                            "isUVScroll": false,
+                            "layer": 5,
+                            "maxColmnCount": 0,
+                            "maxStepCount": 0,
+                            "name": "itemBG",
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 688.0,
+                                "y": 149.0
+                            },
+                            "stepTime": 0.0,
+                            "texturePath": "Resources/Textures/DefaultAssets/GameUI/sampleBG2.png",
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": -15.0,
+                                    "y": -1.0
+                                }
+                            },
+                            "uvScrollType": 0,
+                            "uvScrollValue": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "uvTransform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                }
+                            }
+                        }
+                    ],
+                    "texts": [
+                        {
+                            "alignX": 1,
+                            "alignY": 1,
+                            "anchorPos": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "blendMode": 3,
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
+                            "fontSize": 62.0,
+                            "glyphSpacing": 0.8999999761581421,
+                            "isApplyViewMat": false,
+                            "layer": 6,
+                            "lineSpacing": 8.0,
+                            "name": "title",
+                            "outlineColor": {
+                                "w": 1.0,
+                                "x": 0.4285714030265808,
+                                "y": 0.27799224853515625,
+                                "z": 0.0
+                            },
+                            "outlineSplitCount": 16,
+                            "outlineWidth": 2.9000000953674316,
+                            "size": {
+                                "x": 509.0,
+                                "y": 64.0
+                            },
+                            "text": "ジャンル名",
+                            "textBoxVisible": false,
+                            "transform": {
+                                "rotate": 0.0,
+                                "scale": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "translate": {
+                                    "x": 0.0,
+                                    "y": 6.0
+                                }
+                            },
+                            "useOutline": false
+                        }
+                    ]
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "SongItem",
+            "objectType": 0,
+            "transform": {
+                "rotate": 0.0,
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            }
+        }
+    ]
+}

@@ -660,15 +660,22 @@ nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
     std::ifstream file(filePath);
     if(!file.is_open()){
         if(createFile){
-            // ファイルが存在しない場合は新規作成
+            // ディレクトリを作成
+            std::filesystem::path path(filePath);
+            if(path.has_parent_path()){
+                std::filesystem::create_directories(path.parent_path());
+            }
+
+            // ファイル作成
             std::ofstream newFile(filePath);
             if(!newFile.is_open()){
-                assert(false && "Jsonファイルの作成に失敗");
+                assert(false && "Jsonファイルの作成に失敗しました");
                 return nlohmann::json();
             }
             newFile << "{}"; // 空のJSONオブジェクトを書き込む
             newFile.close();
         }
+
 
         return nlohmann::json();
     }

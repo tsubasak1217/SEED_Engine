@@ -57,10 +57,11 @@ void TutorialObjectManager::Initialize(){
 
     // ビデオの読み込み
     for(int i = 0; i < (int)TutorialName::kTutorialCount; i++){
-        tutorials_[i].videoPlayer.LoadVideo(tutorials_[i].tutorialVideoFilePath, false);
+        // ビデオプレイヤーの作成
+        tutorials_[i].videoPlayer = std::make_unique<VideoPlayer>(tutorials_[i].tutorialVideoFilePath, false);
 
         // ビデオのサイズに応じてQuadを設定
-        Vector2 videoSize = tutorials_[i].videoPlayer.GetVideoSize();
+        Vector2 videoSize = tutorials_[i].videoPlayer->GetVideoSize();
         float aspectRatio = videoSize.y / videoSize.x;
 
         // X値基準でQuadを作成(チュートリアル動画は横長なので)
@@ -104,7 +105,7 @@ void TutorialObjectManager::Update(){
                 Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
                 hierarchy->EraseObject(tutorials_[i].tutorialTitleObject);
                 hierarchy->EraseObject(tutorials_[i].tutorialTextObject);
-                tutorials_[i].videoPlayer.Unload();
+                tutorials_[i].videoPlayer->Unload();
             }
 
             continue;
@@ -133,7 +134,7 @@ void TutorialObjectManager::Update(){
 
             // 再生していない場合、開始時間になったら再生
             if(pSongPlayTimer_->currentTime >= tutorials_[i].startTime){
-                tutorials_[i].videoPlayer.Play(0.0f,1.0f,true);
+                tutorials_[i].videoPlayer->Play(0.0f,1.0f,true);
                 tutorials_[i].isPlaying = true;
 
                 // テキストオブジェクトを読み込む
@@ -155,7 +156,7 @@ void TutorialObjectManager::Draw(){
     // 再生中のチュートリアルを描画
     for(int i = 0; i < (int)TutorialName::kTutorialCount; i++){
         if(tutorials_[i].tutorialTimer.GetProgress() != 0.0f){
-            tutorials_[i].videoPlayer.Draw(tutorials_[i].videoQuad);
+            tutorials_[i].videoPlayer->Draw(tutorials_[i].videoQuad);
         }
     }
 }

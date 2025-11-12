@@ -1,4 +1,5 @@
 #include <Game/Scene/Scene_Title/Scene_Title.h>
+#include <Game/Scene/Scene_Game/Scene_Game.h>
 #include <SEED/Source/SEED.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/ParticleManager.h>
@@ -248,6 +249,7 @@ void Scene_Title::EndFrame(){
     // カメラワークルーチンが終了したらシーン遷移
     if(toSelectCamerawork_){
         if(sceneChangeOrder_){
+            Scene_Game::SetIsPlayTutorial(isPlayTutorial_);
             ChangeScene("Game");
             return;
         }

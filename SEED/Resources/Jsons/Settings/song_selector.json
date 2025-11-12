@@ -73,8 +73,8 @@
             }
         }
     ],
-    "currentDifficulty": 3,
-    "currentGroupIndex": 0,
+    "currentDifficulty": 0,
+    "currentGroupIndex": 1,
     "currentGroupMode": 1,
     "currentSongIndex": 0,
     "currentSortMode": 3,
@@ -86,7 +86,7 @@
                 "y": 1.0
             },
             "translate": {
-                "x": 324.0,
+                "x": 326.18988037109375,
                 "y": -35.467620849609375
             }
         },
@@ -279,5 +279,6 @@
                 "y": 969.538818359375
             }
         }
-    ]
+    ],
+    "selectMode": 0
 }

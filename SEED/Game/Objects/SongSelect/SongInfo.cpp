@@ -56,16 +56,27 @@ void SongInfo::Initialize(const std::string& _folderName){
         notesDesignerName[i] = noteDatas[i]["notesDesigner"];
     }
 
-    // スコア情報を初期化
-    //directoryPath = "Resources/NoteDatas/" + _folderName + "/" + "scoreData.json";
-    //// jsonファイルの存在を確認し、読み込む
-    //for(int i = 0; i < diffcultySize; i++){
+    // jsonファイルの存在を確認し、読み込む
+    directoryPath = "Resources/ScoreDatas/" + _folderName + "/scoreData.json";
+    nlohmann::json scoreData = MyFunc::GetJson(directoryPath);
 
-    //    nlohmann::json scoreData = MyFunc::GetJson(directoryPath);
-    //    score[i] = scoreData["score"][difficultyName[i]];
-    //    ranks[i] = ScoreRankUtils::GetScoreRank(score[i]);
-    //    clearIcons[i] = (ClearIcon)scoreData["clearIcon"][difficultyName[i]];
-    //}
+    // スコア情報を初期化
+    if(!scoreData.empty()){
+        for(int i = 0; i < diffcultySize; i++){
+            // スコアの取得
+            if(scoreData.contains("score")){
+                nlohmann::json scoreJson = scoreData["score"];
+                score[i] = scoreJson.value(difficultyName[i], 0.0f);
+                ranks[i] = ScoreRankUtils::GetScoreRank(score[i]);
+            }
+
+            // クリアアイコンの取得
+            if(scoreData.contains("clearIcon")){
+                nlohmann::json clearIconData = scoreData["clearIcon"];
+                clearIcons[i] = (ClearIcon)clearIconData.value(difficultyName[i], 0);
+            }
+        }
+    }
 }
 
 
@@ -151,9 +162,15 @@ void SongInfoDrawer::Draw(const SongInfo& songInfo, const Transform2D& transform
 
         } else if(key == "Score"){
             if(songInfo.score[difficultyIndex] == 0){
-                continue; // スコアが0の場合は描画しない(未プレイ)
+                // スコアが存在しない場合
+                textBox[key]->text = "-------%";
+            } else{
+                // 小数点4桁まで表示
+                std::string keyStr = std::to_string(songInfo.score[difficultyIndex]);
+                keyStr = keyStr.substr(0, keyStr.find('.') + 5);
+                keyStr += "%";
+                textBox[key]->text = keyStr;
             }
-            textBox[key]->text = std::to_string(songInfo.score[difficultyIndex]);
         }
 
         textBox[key]->transform.scale = transform.scale;

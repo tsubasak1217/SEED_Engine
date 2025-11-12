@@ -36,7 +36,7 @@
                 "x": 250.0,
                 "y": 64.0
             },
-            "text": "妖精さん",
+            "text": "カマキリ楽団",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -89,7 +89,7 @@
                 "x": 187.0,
                 "y": 64.0
             },
-            "text": "BPM177",
+            "text": "BPM160",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -142,7 +142,7 @@
                 "x": 124.0,
                 "y": 64.0
             },
-            "text": "9",
+            "text": "1",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -266,8 +266,8 @@
     },
     "Score": {
         "RelativePos": {
-            "x": 77.0,
-            "y": 70.0
+            "x": 319.0,
+            "y": 109.0
         },
         "textBox": {
             "alignX": 0,
@@ -283,11 +283,11 @@
                 "y": 1.0,
                 "z": 1.0
             },
-            "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-            "fontSize": 100.0,
-            "glyphSpacing": 8.0,
+            "fontName": "Resources/Fonts/DefaultAssets/English/Shock Surgent.otf",
+            "fontSize": 23.0,
+            "glyphSpacing": 0.699999988079071,
             "isApplyViewMat": false,
-            "layer": 0,
+            "layer": 1,
             "lineSpacing": 8.0,
             "outlineColor": {
                 "w": 1.0,
@@ -298,10 +298,10 @@
             "outlineSplitCount": 16,
             "outlineWidth": 2.0,
             "size": {
-                "x": 128.0,
+                "x": 415.0,
                 "y": 64.0
             },
-            "text": "",
+            "text": "93.750000",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,
@@ -310,8 +310,8 @@
                     "y": 1.0
                 },
                 "translate": {
-                    "x": 0.0,
-                    "y": 0.0
+                    "x": 1068.559326171875,
+                    "y": 905.6369018554688
                 }
             },
             "useOutline": false
@@ -354,7 +354,7 @@
                 "x": 404.0,
                 "y": 64.0
             },
-            "text": "飛べない鯉はただの鯉",
+            "text": "TinySummerKnight",
             "textBoxVisible": false,
             "transform": {
                 "rotate": 0.0,

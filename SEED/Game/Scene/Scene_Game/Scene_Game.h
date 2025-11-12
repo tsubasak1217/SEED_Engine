@@ -33,4 +33,9 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
+public:
+    static void SetIsPlayTutorial(bool isPlay){ isPlayTutorial_ = isPlay; }
+
+private:
+    static inline bool isPlayTutorial_ = false;
 };

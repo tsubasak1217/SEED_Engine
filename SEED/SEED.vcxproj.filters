@@ -1460,5 +1460,6 @@
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
     <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
   </ItemGroup>
 </Project>

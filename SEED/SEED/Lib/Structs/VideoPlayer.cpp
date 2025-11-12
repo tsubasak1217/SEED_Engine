@@ -21,7 +21,8 @@ static void GetNV12PlaneSizes(IMFMediaType* mediaType, UINT32* yWidth, UINT32* y
 VideoPlayer::~VideoPlayer(){
     if(SEED::GetIsEndAplication()){ return; }
     if(videoItem_){
-        videoItem_->removeOrder = true; // 削除フラグを立てる
+        // 削除フラグを立てる
+        videoItem_->removeOrder = true;
     }
 }
 

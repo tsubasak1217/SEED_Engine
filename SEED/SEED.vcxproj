@@ -286,6 +286,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />

@@ -38,7 +38,7 @@ RythmGameManager* RythmGameManager::GetInstance(){
 //////////////////////////////////////////////////////////////////////////////////
 // 初期化
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Initialize(const nlohmann::json& songData){
+void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // カメラの初期化
     gameCamera_ = std::make_unique<BaseCamera>();
     gameCamera_->SetTranslation(Vector3(0.0f, 0.0f, 0.0f));
@@ -54,6 +54,11 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // settingsの初期化
     PlaySettings::GetInstance();
+
+    // 曲情報の保存
+    songInfo_ = songInfo;
+    playDifficulty_ = difficulty;
+    const auto& songData = songInfo_.noteDatas[difficulty];
 
     // リザルトの初期化
     playResult_ = PlayResult();
@@ -91,8 +96,8 @@ void RythmGameManager::Initialize(const nlohmann::json& songData){
 
     // チュートリアルマネージャの初期化
     if(songData["songName"] == "都立チュートリアル中学校"){
-        tutorialManager_ = TutorialObjectManager(notesData_->GetSongTimerPtr());
-        tutorialManager_->Initialize();
+        tutorialManager_ = std::make_unique<TutorialObjectManager>(notesData_->GetSongTimerPtr());
+        tutorialManager_.value()->Initialize();
     }
 }
 
@@ -159,6 +164,44 @@ void RythmGameManager::EndFrame(){
                 }
             }
 
+            // scoreDataを書き込む(無ければ作成)
+            std::string path = "Resources/ScoreDatas/" + songInfo_.folderName + "/scoreData.json";
+            nlohmann::json scoreJson = MyFunc::GetJson(path, true);
+            static std::string difficultyName[4] = { "Basic", "Expert", "Master", "Parallel" };
+
+            // クリアアイコンの決定
+            ClearIcon clearIcon;
+            if(playResult_.isAllPerfect){
+                clearIcon = ClearIcon::Perfect;
+            } else if(playResult_.isFullCombo){
+                clearIcon = ClearIcon::FullCombo;
+            } else{
+                clearIcon = ClearIcon::None;
+            }
+
+            // スコアの書き込み(値を更新すれば)
+            if(scoreJson.contains("score")){
+                float preScore = scoreJson["score"].value(difficultyName[playDifficulty_], 0.0f);
+                if(playResult_.score > preScore){
+                    scoreJson["score"][difficultyName[playDifficulty_]] = playResult_.score;
+                }
+            } else{
+                scoreJson["score"][difficultyName[playDifficulty_]] = playResult_.score;
+            }
+
+            // クリアアイコンの書き込み(値を更新すれば)
+            if(scoreJson.contains("clearIcon")){
+                int preIcon = scoreJson["clearIcon"].value(difficultyName[playDifficulty_], 0);
+                if(static_cast<int>(clearIcon) > preIcon){
+                    scoreJson["clearIcon"][difficultyName[playDifficulty_]] = static_cast<int>(clearIcon);
+                }
+            } else{
+                scoreJson["clearIcon"][difficultyName[playDifficulty_]] = static_cast<int>(clearIcon);
+            }
+
+            // ファイルを置き換える
+            MyFunc::CreateJsonFile(path, scoreJson);
+
             // チュートリアルマネージャの終了処理
             tutorialManager_.reset();
         }
@@ -198,7 +241,7 @@ void RythmGameManager::Update(){
 
         // チュートリアルマネージャの更新
         if(tutorialManager_){
-            tutorialManager_->Update();
+            tutorialManager_.value()->Update();
         }
 
         // コンボテキストの更新
@@ -233,7 +276,7 @@ void RythmGameManager::Draw(){
 
     // チュートリアルオブジェクトの描画
     if(tutorialManager_){
-        tutorialManager_->Draw();
+        tutorialManager_.value()->Draw();
     }
 
     // ゲームカメラ画面の描画
@@ -293,6 +336,5 @@ float RythmGameManager::CalculateScore(){
 ///////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::Retry(){
     // シーンを再読み込み
-    nlohmann::json songData_ = playResult_.songData;
-    Initialize(songData_);
+    Initialize(songInfo_,playDifficulty_);
 }

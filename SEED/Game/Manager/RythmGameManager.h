@@ -22,7 +22,7 @@ private:
 public:
     ~RythmGameManager();
     static RythmGameManager* GetInstance();
-    void Initialize(const nlohmann::json& songData);
+    void Initialize(const SongInfo& songInfo, int32_t difficulty);
     void BeginFrame();
     void EndFrame();
     void Update();
@@ -53,6 +53,8 @@ private:
     float CalculateScore();
 
 private:
+    SongInfo songInfo_;// 曲情報
+    int32_t playDifficulty_; // プレイ中の難易度
     std::unique_ptr<BaseCamera> gameCamera_;// カメラ
     std::unique_ptr<NotesData> notesData_;// 譜面データ
     std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
@@ -60,5 +62,5 @@ private:
     PlayResult playResult_; // プレイ結果
     Timer playEndTimer_;
     bool isPaused_ = false; // ポーズ中かどうか
-    std::optional<TutorialObjectManager> tutorialManager_; // チュートリアルマネージャ
+    std::optional<std::unique_ptr<TutorialObjectManager>> tutorialManager_; // チュートリアルマネージャ
 };

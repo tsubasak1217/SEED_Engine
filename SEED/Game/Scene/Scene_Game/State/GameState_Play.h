@@ -10,7 +10,7 @@ class GameState_Play : public SceneState_Base{
 public:
     GameState_Play() = default;
     GameState_Play(Scene_Base* pScene);
-    GameState_Play(Scene_Base* pScene, const nlohmann::json& songData);
+    GameState_Play(Scene_Base* pScene, const SongInfo& songInfo,int32_t difficulty);
     ~GameState_Play() override;
 
 public:

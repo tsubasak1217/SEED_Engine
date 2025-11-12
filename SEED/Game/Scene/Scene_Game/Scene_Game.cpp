@@ -37,9 +37,19 @@ void Scene_Game::Initialize(){
     // 共通初期化
     Scene_Base::Initialize();
 
-    // ステート初期化
-    ChangeState(new GameState_Select(this));
+    // チュートリアルプレイ選択に応じてステートを変更
+    if(isPlayTutorial_){
+        // チュートリアル楽曲データの読み込み
+        SongInfo data;
+        data.Initialize("toritsuTutorialJHS");
+        // ステート初期化
+        ChangeState(new GameState_Play(this,data,0));
+        isPlayTutorial_ = false;
 
+    } else{
+        // ステート初期化
+        ChangeState(new GameState_Select(this));
+    }
 }
 
 void Scene_Game::Finalize() {

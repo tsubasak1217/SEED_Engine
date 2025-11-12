@@ -31,6 +31,7 @@ public:// accessor
     void RevercePlay(){ timeScale_ *= -1.0f; }
     bool IsEndRoutine() const{ return timer_.IsFinished(); }
     const Transform& GetControlPoint(size_t index) const;
+    const std::vector<RoutinePoint3D>& GetControlPoints() const{ return controlPoints_; }
 
 public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;

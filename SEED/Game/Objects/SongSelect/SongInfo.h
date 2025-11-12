@@ -7,74 +7,11 @@
 #include <json.hpp>
 #include <SEED/Lib/Structs/TextBox.h>
 #include <SEED/Lib/Structs/Sprite.h>
-
-// 譜面の難易度区分
-enum class TrackDifficulty : int32_t {
-    Basic = 0,
-    Expert,
-    Master,
-    Parallel,
-    kMaxDifficulty
-};
-
-// 曲のジャンル
-enum class SongGenre : int32_t {
-    Original = 0,
-    GameMusic
-};
-
-// スコアのランク
-enum class ScoreRank : int32_t {
-    None = 0,
-    D,
-    C,
-    B,
-    A,
-    S,
-    SS,
-    SSS,
-    ULT,
-    kMaxRank
-};
-
-// クリアアイコン
-enum class ClearIcon : int32_t {
-    None = 0,
-    FullCombo,
-    Perfect
-};
-
-// 実際の名前の定義
-namespace GroupNameUtils{
-    inline std::array<std::string, int(SongGenre::GameMusic) + 1> genreNames = {
-        "オリジナル", "ゲームミュージック"
-    };
-
-    inline std::array<std::string, int(ScoreRank::kMaxRank)> rankNames = {
-        "未プレイ", "D", "C", "B", "A", "S", "SS", "SSS", "ULT"
-    };
-}
-
-// ランクのボーダー値の定義
-namespace ScoreRankUtils {
-    inline float scoreRankBorders[(int)ScoreRank::kMaxRank] = { 
-        0.0f, 60.0f, 80.0f, 95.0f, 97.0f, 98.0f, 99.0f,100.0f
-    };
-
-    inline ScoreRank GetScoreRank(float score) {
-        for (int i = 1; i < (int)ScoreRank::kMaxRank; ++i) {
-            if (score < scoreRankBorders[i]) {
-                return static_cast<ScoreRank>(i);
-            }
-        }
-
-        return ScoreRank::ULT; // 最後のランクを返す
-    }
-}
+#include "SongSelectUtils.h"
 
 
 /// <summary>
-/// 曲情報を格納するクラス
+/// 曲情報を格納する構造体
 /// </summary>
 struct SongInfo{
     void Initialize(const std::string& _folderName);
@@ -99,17 +36,19 @@ struct SongInfo{
     int32_t groupIndex[diffcultySize] = { -1,-1,-1,-1 };
 };
 
+// ペアの省略形
+using Track = std::pair<SongInfo*, TrackDifficulty>;
+
 // 楽曲グループ情報
-using SongAndDiffidulty = std::pair<SongInfo*, TrackDifficulty>;
 struct SongGroup{
     uint32_t groupIdx; // グループ番号
     std::string groupName; // グループ名
-    std::list<SongAndDiffidulty> groupMembers; // グループに属する楽曲とその難易度のリスト
+    std::vector<Track> groupMembers; // グループに属する楽曲とその難易度のリスト
 };
 
 struct SongInfoDrawer{
     static void Initialize();
-    static void Draw(const SongInfo& songInfo,const Transform2D& transform, TrackDifficulty difficulty,bool isSelected,float alpha = 1.0f);
+    static void Draw(const SongInfo& songInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected, float alpha = 1.0f);
     static void Draw(const SongGroup& groupInfo, const Transform2D& transform, TrackDifficulty difficulty, bool isSelected, float alpha = 1.0f);
     static void Edit();
 
@@ -131,6 +70,4 @@ private:
     static inline std::vector<std::string> textBoxKeys = {
         "SongName", "GroupName","ArtistName", "BPM","NotesDesigner","Difficulty","Score"
     };
-
-    
 };

@@ -5,7 +5,7 @@ GameState_Play::GameState_Play(Scene_Base* pScene){
     pScene_ = pScene;
 }
 
-GameState_Play::GameState_Play(Scene_Base* pScene, const nlohmann::json& songData){
+GameState_Play::GameState_Play(Scene_Base* pScene, const SongInfo& songInfo, int32_t difficulty){
     // シーンの設定
     pScene_ = pScene;
 
@@ -14,7 +14,7 @@ GameState_Play::GameState_Play(Scene_Base* pScene, const nlohmann::json& songDat
     hierarchy->EraseAllObject();
 
     // 曲データの設定
-    RythmGameManager::GetInstance()->Initialize(songData);
+    RythmGameManager::GetInstance()->Initialize(songInfo,difficulty);
 }
 
 GameState_Play::~GameState_Play(){

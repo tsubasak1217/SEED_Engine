@@ -48,6 +48,8 @@ private:// 更新関連
     void CameraControl();// カメラ制御
     void UpdateJacket(); // ジャケットの更新
     void UpdateUIContents(bool allUpdate = false); // UI内容更新
+    void ToDifficultySelectUpdate(float timeScale);
+    void PlayWaitUpdate();
 
 private:// 入出力
     void Edit();
@@ -76,6 +78,7 @@ private:
     // コントロールポイント
     GameObject2D* songControlPts_ = nullptr; // 楽曲選択時コントロールポイント
     GameObject2D* difficultyControlPts_ = nullptr; // 難易度選択時コントロールポイント
+    GameObject* cameraControlPts_ = nullptr; // カメラ制御用コントロールポイント
 
     // 表示曲・グループのリスト
     std::vector<Track*> visibleSongs; // 表示されている楽曲のリスト
@@ -95,12 +98,14 @@ private:
     Timer inputTimer_;
     Timer itemShiftTimer_;
     Timer toDifficultySelectTimer_;
+    Timer playWaitTimer_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;
     bool changeSceneOrder_ = false;// シーン変更命令フラグ
     bool isShiftItem_ = false; // アイテムが変更されたかどうか
-    bool isTransitionToDifficultySelect_ = false; // 難易度選択へ移行中かどうか
+    bool isTransitionDifficulty_Select_ = false; // 難易度選択へ移行中かどうか
+    bool isPlayWaiting_ = false; // 曲再生待ち中かどうか
 
     // 音声
     AudioHandle songHandle_;
@@ -115,4 +120,6 @@ private:
 
     // その他
     std::string preGroupName_;
+    Transform2D songUICenterTransform_;
+    Transform2D difficultyUICenterTransform_;
 };

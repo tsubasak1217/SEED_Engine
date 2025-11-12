@@ -46,6 +46,8 @@ void SongSelector::Initialize(){
     // Timerの初期化
     inputTimer_.Initialize(0.3f, 0.3f);
     itemShiftTimer_.Initialize(0.2f, 0.2f);
+    toDifficultySelectTimer_.Initialize(0.8f);
+    playWaitTimer_.Initialize(2.0f);
 
     // 初期位置に移動
     ShiftItem(true);
@@ -105,14 +107,21 @@ void SongSelector::EndFrame(){
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Update(){
 
-    // 項目の選択
-    if(!isTransitionToDifficultySelect_){
-        SelectItems();
-    }
+    if(!isPlayWaiting_){
+        // 項目の選択
+        if(!isTransitionDifficulty_Select_){
+            SelectItems();
 
-    // アイテム移動処理
-    if(isShiftItem_){
-        ShiftItem();
+        } else{// 難易度選択へ移行中
+            ToDifficultySelectUpdate(selectMode_ == SelectMode::Difficulty ? 1.0f : -1.0f);
+        }
+
+        // アイテム移動処理
+        if(isShiftItem_){
+            ShiftItem();
+        }
+    } else{
+        PlayWaitUpdate();
     }
 
     // カメラの制御
@@ -132,14 +141,6 @@ void SongSelector::Update(){
 // 描画処理
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Draw(){
-
-    // 曲のリストを描画
-    if(selectMode_ == SelectMode::Song){
-
-    } else{
-
-    }
-
     // ジャケットの描画
     SEED::DrawQuad(jacket3D_);
 }
@@ -236,6 +237,12 @@ void SongSelector::InitializeUIs(){
     songUIs.resize(size);
     groupUIs.resize(size);
 
+    // centerのTransform2Dを取得
+    int centerIdx = (int)(size / 2);
+    songUICenterTransform_ = songControlPts_->GetComponent<Routine2DComponent>()->GetControlPoint(centerIdx + 1);
+    centerIdx = (int)difficultyControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints().size() / 2;
+    difficultyUICenterTransform_ = difficultyControlPts_->GetComponent<Routine2DComponent>()->GetControlPoint(centerIdx);
+
     // 楽曲UI・グループUIの読み込み
     for(size_t i = 0; i < size; i++){
         songUIs[i] = hierarchy->LoadObject2D("SelectScene/songUI.prefab");
@@ -245,6 +252,7 @@ void SongSelector::InitializeUIs(){
     difficultyUIs.resize((size_t)TrackDifficulty::kMaxDifficulty);
     for(size_t i = 0; i < difficultyUIs.size(); i++){
         difficultyUIs[i] = hierarchy->LoadObject2D("SelectScene/songUI.prefab");
+        difficultyUIs[i]->aditionalTransform_.scale = Vector2(0.0f);
     }
 
     // 選択モードに応じてアクティブを切る
@@ -688,15 +696,14 @@ void SongSelector::SelectSong(){
     if(decideInput_.Trigger()){
         selectMode_ = SelectMode::Difficulty;
         currentDifficulty = currentSong.second;
+        isTransitionDifficulty_Select_ = true;
+        UpdateUIContents();
         ShiftItem();
-
         // UIのアクティブ状態を切り替え
         for(auto& ui : difficultyUIs){
             ui->isActive_ = true;
         }
-        for(auto& ui : songUIs){
-            ui->isActive_ = false;
-        }
+
         return;
     }
 
@@ -835,7 +842,7 @@ void SongSelector::SelectDifficulty(){
 
     // 決定入力があればプレイシーンへ移行
     if(decideInput_.Trigger()){
-        changeSceneOrder_ = true;
+        isPlayWaiting_ = true;
         return;
     }
 
@@ -849,12 +856,11 @@ void SongSelector::SelectDifficulty(){
         UpdateVisibleSongs();
 
         // UIのアクティブ状態を切り替え
+        isTransitionDifficulty_Select_ = true;
         for(auto& ui : songUIs){
             ui->isActive_ = true;
         }
-        for(auto& ui : difficultyUIs){
-            ui->isActive_ = false;
-        }
+
         return;
     }
 }
@@ -1005,11 +1011,11 @@ void SongSelector::UpdateUIContents(bool allUpdate){
             );
 
             // スコアを小数点4位までに変換
-            std::string scoreStr = "-----------------";
+            std::string scoreStr = "-----------";
             std::string rankStr = "-----";
             if(songInfo->score[difficulty] > 0.0f){
                 scoreStr = std::to_string(songInfo->score[difficulty]);
-                scoreStr = scoreStr.substr(0, scoreStr.find(".") + 4) + "%";
+                scoreStr = scoreStr.substr(0, scoreStr.find(".") + 5) + "%";
                 rankStr = GroupNameUtils::rankNames[(int)songInfo->ranks[difficulty]];
             }
 
@@ -1052,7 +1058,7 @@ void SongSelector::UpdateUIContents(bool allUpdate){
             );
 
             // スコアを小数点4位までに変換
-            std::string scoreStr = "----------";
+            std::string scoreStr = "-----------";
             std::string rankStr = "-----";
             if(songInfo->score[difficulty] > 0.0f){
                 scoreStr = std::to_string(songInfo->score[difficulty]);
@@ -1068,6 +1074,100 @@ void SongSelector::UpdateUIContents(bool allUpdate){
             ui->GetText("bpm").text = "BPM" + std::to_string(static_cast<int>(songInfo->bpm));
             ui->GetText("rank").text = rankStr;
         }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// 難易度選択画面への更新
+//////////////////////////////////////////////////////////////////////////////////
+void SongSelector::ToDifficultySelectUpdate(float timeScale){
+
+    toDifficultySelectTimer_.Update(timeScale);
+    float ease = toDifficultySelectTimer_.GetEase(Easing::InOutExpo);
+
+    // UIの拡縮
+    for(int i = 0; i < songUIs.size(); i++){
+        if(i == centerIdx_){
+            songUIs[i]->aditionalTransform_.scale = Vector2(0.0f);
+            songUIs[i]->UpdateMatrix();
+        } else{
+            songUIs[i]->aditionalTransform_.translate.x = 680.0f * ease;
+            songUIs[i]->UpdateMatrix();
+        }
+    }
+
+    for(int i = 0; i < difficultyUIs.size(); i++){
+        int32_t idx = int32_t(TrackDifficulty::Parallel) - i;
+        if(idx == (int)currentDifficulty){
+            difficultyUIs[i]->aditionalTransform_.scale = Vector2(1.0f);
+            difficultyUIs[i]->localTransform_.translate = MyMath::Lerp(
+                songUICenterTransform_.translate,
+                difficultyUICenterTransform_.translate,
+                ease
+            );
+            difficultyUIs[i]->UpdateMatrix();
+        } else{
+            difficultyUIs[i]->aditionalTransform_.scale = Vector2(ease);
+            difficultyUIs[i]->UpdateMatrix();
+        }
+    }
+
+    // タイマーが終点か始点に達したらフラグを更新
+    if(toDifficultySelectTimer_.IsFinishedNow()){
+
+        // 遷移フラグをオフに
+        isTransitionDifficulty_Select_ = false;
+
+        // UIのアクティブ状態を切り替え
+        for(auto& ui : difficultyUIs){
+            ui->isActive_ = true;
+        }
+        for(auto& ui : songUIs){
+            ui->isActive_ = false;
+        }
+    } else if(toDifficultySelectTimer_.IsReturnNow()){
+
+        // 遷移フラグをオフに
+        isTransitionDifficulty_Select_ = false;
+
+        // UIのアクティブ状態を切り替え
+        for(auto& ui : difficultyUIs){
+            ui->isActive_ = false;
+            ui->aditionalTransform_.scale = Vector2(0.0f);
+        }
+        for(auto& ui : songUIs){
+            ui->isActive_ = true;
+            ui->aditionalTransform_.scale = Vector2(1.0f);
+            ui->UpdateMatrix();
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// プレイ待機画面の更新
+//////////////////////////////////////////////////////////////////////////////////
+void SongSelector::PlayWaitUpdate(){
+    playWaitTimer_.Update();
+    float ease = playWaitTimer_.GetEase(Easing::OutExpo);
+
+    // UIのフェードアウトと中央寄せ
+    for(int i = 0; i < difficultyUIs.size(); i++){
+        int32_t idx = int32_t(TrackDifficulty::Parallel) - i;
+        if(idx == (int)currentDifficulty){
+            difficultyUIs[i]->localTransform_.translate = MyMath::Lerp(
+                difficultyUICenterTransform_.translate,
+                kWindowCenter,
+                ease
+            );
+            difficultyUIs[i]->UpdateMatrix();
+        } else{
+            difficultyUIs[i]->masterColor_.value.w = 1.0f - ease;
+        }
+    }
+
+    // タイマーが終了したらシーン遷移フラグを立てる
+    if(playWaitTimer_.IsFinishedNow()){
+        changeSceneOrder_ = true;
     }
 }
 

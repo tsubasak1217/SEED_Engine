@@ -699,54 +699,56 @@ void SongSelector::SelectSong(){
         inputTimer_.currentTime = inputTimer_.duration;
     }
 
-    // ソートモードの変更
-    if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
-        int sortModeInt = (int)currentSortMode;
-        sortModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
-        sortModeInt = MyFunc::Spiral(sortModeInt, 0, (int)SortMode::kMaxCount - 1);
-        currentSortMode = (SortMode)sortModeInt;
+    if(!isShiftItem_){
+        // ソートモードの変更
+        if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
+            int sortModeInt = (int)currentSortMode;
+            sortModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
+            sortModeInt = MyFunc::Spiral(sortModeInt, 0, (int)SortMode::kMaxCount - 1);
+            currentSortMode = (SortMode)sortModeInt;
 
-        // ソート処理を実行
-        Sort();
-        // 項目の更新
-        UpdateVisibleSongs();
-        UpdateUIContents();
-        return;
-    }
-
-    // 決定入力があれば難易度選択へ移行
-    if(decideInput_.Trigger()){
-        selectMode_ = SelectMode::Difficulty;
-        currentDifficulty = currentSong.second;
-        isTransitionDifficulty_Select_ = true;
-        UpdateUIContents();
-        ShiftItem();
-        // UIのアクティブ状態を切り替え
-        for(auto& ui : difficultyUIs){
-            ui->isActive_ = true;
+            // ソート処理を実行
+            Sort();
+            // 項目の更新
+            UpdateVisibleSongs();
+            UpdateUIContents();
+            return;
         }
 
-        return;
-    }
+        // 決定入力があれば難易度選択へ移行
+        if(decideInput_.Trigger()){
+            selectMode_ = SelectMode::Difficulty;
+            currentDifficulty = currentSong.second;
+            isTransitionDifficulty_Select_ = true;
+            UpdateUIContents();
+            ShiftItem();
+            // UIのアクティブ状態を切り替え
+            for(auto& ui : difficultyUIs){
+                ui->isActive_ = true;
+            }
 
-    // 戻る入力があればグループ選択へ戻る
-    if(backInput_.Trigger()){
-        selectMode_ = SelectMode::Group;
-        preGroupName_ = currentGroup->groupName;
-
-        // 項目の更新
-        UpdateVisibleGroups();
-        UpdateUIContents();
-
-        // UIのアクティブ状態を切り替え
-        for(auto& ui : groupUIs){
-            ui->isActive_ = true;
-        }
-        for(auto& ui : songUIs){
-            ui->isActive_ = false;
+            return;
         }
 
-        return;
+        // 戻る入力があればグループ選択へ戻る
+        if(backInput_.Trigger()){
+            selectMode_ = SelectMode::Group;
+            preGroupName_ = currentGroup->groupName;
+
+            // 項目の更新
+            UpdateVisibleGroups();
+            UpdateUIContents();
+
+            // UIのアクティブ状態を切り替え
+            for(auto& ui : groupUIs){
+                ui->isActive_ = true;
+            }
+            for(auto& ui : songUIs){
+                ui->isActive_ = false;
+            }
+
+            return;
+        }
     }
 }
 
@@ -793,33 +795,36 @@ void SongSelector::SelectGroup(){
         return;
     }
 
-    // 決定入力があれば楽曲選択へ移行
-    if(decideInput_.Trigger()){
-        selectMode_ = SelectMode::Song;
 
-        // グループが変わっていたら曲インデックスをリセット
-        if(currentGroup->groupName != preGroupName_){
-            currentSongIndex = 0;
+    if(!isShiftItem_){
+        // 決定入力があれば楽曲選択へ移行
+        if(decideInput_.Trigger()){
+            selectMode_ = SelectMode::Song;
+
+            // グループが変わっていたら曲インデックスをリセット
+            if(currentGroup->groupName != preGroupName_){
+                currentSongIndex = 0;
+            }
+
+            // 可視曲の更新
+            UpdateVisibleSongs();
+
+            // UIのアクティブ状態を切り替え
+            for(auto& ui : songUIs){
+                ui->isActive_ = true;
+            }
+            for(auto& ui : groupUIs){
+                ui->isActive_ = false;
+            }
+
+            return;
         }
 
-        // 可視曲の更新
-        UpdateVisibleSongs();
-
-        // UIのアクティブ状態を切り替え
-        for(auto& ui : songUIs){
-            ui->isActive_ = true;
+        // 戻る入力があればタイトルへ戻る
+        if(backInput_.Trigger()){
+            changeSceneOrder_ = true;
+            return;
         }
-        for(auto& ui : groupUIs){
-            ui->isActive_ = false;
-        }
-
-        return;
-    }
-
-    // 戻る入力があればタイトルへ戻る
-    if(backInput_.Trigger()){
-        changeSceneOrder_ = true;
-        return;
     }
 }
 
@@ -860,29 +865,32 @@ void SongSelector::SelectDifficulty(){
         inputTimer_.currentTime = inputTimer_.duration;
     }
 
-    // 決定入力があればプレイシーンへ移行
-    if(decideInput_.Trigger()){
-        isPlayWaiting_ = true;
-        return;
-    }
 
-    // 戻る入力があれば楽曲選択へ戻る
-    if(backInput_.Trigger()){
-        selectMode_ = SelectMode::Song;
-
-        // currentSongを現在の難易度に合わせて更新
-        currentSong = { currentSong.first,currentDifficulty };
-        Sort();
-        FindTrack(currentSong, currentSongIndex, currentGroupIndex);
-        UpdateVisibleSongs();
-
-        // UIのアクティブ状態を切り替え
-        isTransitionDifficulty_Select_ = true;
-        for(auto& ui : songUIs){
-            ui->isActive_ = true;
+    if(!isShiftItem_){
+        // 決定入力があればプレイシーンへ移行
+        if(decideInput_.Trigger()){
+            isPlayWaiting_ = true;
+            return;
         }
 
-        return;
+        // 戻る入力があれば楽曲選択へ戻る
+        if(backInput_.Trigger()){
+            selectMode_ = SelectMode::Song;
+
+            // currentSongを現在の難易度に合わせて更新
+            currentSong = { currentSong.first,currentDifficulty };
+            Sort();
+            FindTrack(currentSong, currentSongIndex, currentGroupIndex);
+            UpdateVisibleSongs();
+
+            // UIのアクティブ状態を切り替え
+            isTransitionDifficulty_Select_ = true;
+            for(auto& ui : songUIs){
+                ui->isActive_ = true;
+            }
+
+            return;
+        }
     }
 }
 

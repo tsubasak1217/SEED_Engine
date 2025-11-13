@@ -33,7 +33,7 @@ private:// ソート関連
     void CreateGroup();// グループ分け
     void SortInGroup();// グループ内ソート
     void UpdateIndex(); // インデックス更新
-    void UpdateVisibleSongs(); // 表示されている楽曲の更新
+    void UpdateVisibleSongs(bool isPlayAudio = true); // 表示されている楽曲の更新
     void UpdateVisibleGroups(); // 表示されているグループの更新
     void FindTrack(const Track& track, int32_t& outSongIndex, int32_t& outGroupIndex);
 
@@ -99,6 +99,7 @@ private:
     Timer itemShiftTimer_;
     Timer toDifficultySelectTimer_;
     Timer playWaitTimer_;
+    Timer cameraMoveTimer_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;
@@ -114,12 +115,15 @@ private:
     std::array<Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;
     std::array<Color, (int)TrackDifficulty::kMaxDifficulty> clearColors_;
 
-    // 3Dのもの
+    // その他細かいもの
     BaseCamera* camera_ = nullptr; // カメラ
     Quad jacket3D_;
-
-    // その他
     std::string preGroupName_;
+    std::string preSongName_;
     Transform2D songUICenterTransform_;
     Transform2D difficultyUICenterTransform_;
+    int32_t cameraControlIdx_;
+    int32_t preCameraControlIdx_;
+    Transform preCameraTransform_;
+    std::array<float, 4> cameraInterpolationTimes_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 };

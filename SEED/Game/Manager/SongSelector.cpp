@@ -40,7 +40,7 @@ void SongSelector::Initialize(){
 
     // 可視項目の更新
     UpdateVisibleGroups();
-    UpdateVisibleSongs();
+    UpdateVisibleSongs(false);
     preGroupName_ = currentGroup->groupName;
 
     // Timerの初期化
@@ -48,6 +48,7 @@ void SongSelector::Initialize(){
     itemShiftTimer_.Initialize(0.2f, 0.2f);
     toDifficultySelectTimer_.Initialize(0.8f);
     playWaitTimer_.Initialize(2.0f);
+    cameraMoveTimer_.Initialize(cameraInterpolationTimes_[0]);
 
     // 初期位置に移動
     ShiftItem(true);
@@ -63,6 +64,14 @@ void SongSelector::Initialize(){
         "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
     );
 
+    // カメラコントロールポイントの読み込み
+    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    cameraControlPts_ = hierarchy->LoadObject("SelectScene/cameraControlPts.prefab");
+    auto& controlPoints = cameraControlPts_->GetComponent<Routine3DComponent>()->GetControlPoints();
+    if(!controlPoints.empty()){
+        preCameraTransform_ = controlPoints[0].first;
+    }
+
     // カメラの取得
     SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
@@ -70,7 +79,6 @@ void SongSelector::Initialize(){
 
     // パーティクルを初期化しエミッターを読み込む
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
-    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
     hierarchy->LoadObject("SelectScene/cubeParticle.prefab");
 
     // 入力関数の初期化
@@ -532,7 +540,7 @@ void SongSelector::UpdateIndex(){
 // 可視曲・グループの更新処理
 /////////////////////////////////////////////////////////////////////////////////////
 
-void SongSelector::UpdateVisibleSongs(){
+void SongSelector::UpdateVisibleSongs(bool isPlayAudio){
 
     if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
@@ -541,6 +549,20 @@ void SongSelector::UpdateVisibleSongs(){
     currentGroup = &songGroups[currentGroupIndex];
     currentSong = currentGroup->groupMembers[currentSongIndex];
     currentDifficulty = currentSong.second;
+
+    if(currentSong.first->songName != preSongName_){
+        // 曲名が変わったら再生する曲を切り替える
+        if(isPlayAudio){
+            preSongName_ = currentSong.first->songName;
+            AudioManager::EndAudio(songHandle_);
+            songHandle_ = AudioManager::PlayAudio(
+                currentSong.first->audioFilePath,
+                true, 0.5f
+            );
+        } else{
+
+        }
+    }
 
     // 真ん中に表示する要素のインデックスを計算
     centerIdx_ = int(visibleSongs.size()) / 2;
@@ -829,8 +851,6 @@ void SongSelector::SelectDifficulty(){
 
                 // currentSongを現在の難易度に合わせて更新
                 currentSong = { currentSong.first,currentDifficulty };
-                FindTrack(currentSong, currentSongIndex, currentGroupIndex);
-                UpdateVisibleSongs();
             }
             return;
         }
@@ -852,6 +872,7 @@ void SongSelector::SelectDifficulty(){
 
         // currentSongを現在の難易度に合わせて更新
         currentSong = { currentSong.first,currentDifficulty };
+        Sort();
         FindTrack(currentSong, currentSongIndex, currentGroupIndex);
         UpdateVisibleSongs();
 
@@ -969,6 +990,46 @@ void SongSelector::ShiftItem(bool allUpdate){
 /////////////////////////////////////////////////////////////////////////////////////
 void SongSelector::CameraControl(){
 
+    // 制御点オブジェクトが存在しない場合は抜ける
+    if(!cameraControlPts_){ return; }
+
+    // 制御点一覧の取得
+    auto& controlPoints = cameraControlPts_->GetComponent<Routine3DComponent>()->GetControlPoints();
+    // 制御点が足りない場合は抜ける
+    if(controlPoints.size() < 4){ return; }
+
+    // 制御点番号の更新
+    preCameraControlIdx_ = cameraControlIdx_;
+    if(selectMode_ == SelectMode::Song){
+        cameraControlIdx_ = 1;
+    } else if(selectMode_ == SelectMode::Group){
+        cameraControlIdx_ = 0;
+    } else if(selectMode_ == SelectMode::Difficulty){
+        if(!isPlayWaiting_){
+            cameraControlIdx_ = 2;
+        } else{
+            cameraControlIdx_ = 3;
+        }
+    }
+
+    // 制御点が切り替わった場合
+    if(preCameraControlIdx_ != cameraControlIdx_){
+        cameraMoveTimer_.Initialize(cameraInterpolationTimes_[cameraControlIdx_]);
+        preCameraTransform_ = camera_->GetTransform();
+    }
+
+    // カメラ移動タイマーの更新
+    cameraMoveTimer_.Update();
+    float ease = cameraMoveTimer_.GetEase(Easing::InOutExpo);
+
+    // カメラの位置・注視点を補完して更新
+    camera_->SetTransform(
+        MyFunc::Interpolate(
+            preCameraTransform_,
+            controlPoints[cameraControlIdx_].first,
+            ease
+        )
+    );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -986,6 +1047,11 @@ void SongSelector::UpdateJacket(){
         float swingHeight = 0.1f; // 揺らす高さ
         float t = std::sin(ClockManager::TotalTime() * 2.0f) * swingHeight; // サイン波で上下に揺らす
         jacket3D_.translate.y = t; // ジャケットのY座標を更新
+
+        // ジャケットのテクスチャを更新
+        jacket3D_.GH = TextureManager::LoadTexture(
+            "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
+        );
 
     }
 }
@@ -1186,6 +1252,13 @@ void SongSelector::Edit(){
         }
 
         ImGui::Separator();//--------------------------------
+        // カメラ補間時間の編集
+        for(int i = 0; i < cameraInterpolationTimes_.size(); i++){
+            std::string label = "カメラ補間時間" + std::to_string(i);
+            ImGui::DragFloat(label.c_str(), &cameraInterpolationTimes_[i], 0.1f, 0.1f, 10.0f);
+        }
+
+        ImGui::Separator();//--------------------------------
 
         // 現在の各種モード
         ImGui::Text("現在のソート方法: %s", ModeUtil::sortModeNames[(int)currentSortMode].c_str());
@@ -1213,6 +1286,11 @@ void SongSelector::ToJson(){
         j["uiBackColors"][i] = uiBackColors_[i];
     }
 
+    // カメラ補間時間の書き出し
+    for(int i = 0; i < cameraInterpolationTimes_.size(); i++){
+        j["cameraMoveDurations"][i] = cameraInterpolationTimes_[i];
+    }
+
     // indexの書き出し
     j["currentGroupIndex"] = currentGroupIndex;
     j["currentSongIndex"] = currentSongIndex;
@@ -1236,6 +1314,13 @@ void SongSelector::FromJson(){
         if(j.contains("uiBackColors")){
             for(int i = 0; i < uiBackColors_.size(); i++){
                 uiBackColors_[i] = j["uiBackColors"][i];
+            }
+        }
+
+        // カメラ補間時間の読み込み
+        if(j.contains("cameraMoveDurations")){
+            for(int i = 0; i < cameraInterpolationTimes_.size(); i++){
+                cameraInterpolationTimes_[i] = j["cameraMoveDurations"][i];
             }
         }
 

@@ -154,7 +154,7 @@ void TextSystem::CreateFontAtlas(
     const stbtt_fontinfo& font,
     std::vector<int32_t>& codePoints
 ){
-    int padding = 16;
+    int padding = 24;
     std::vector<unsigned char> atlasBitmap(FontAtlas::texWidth * FontAtlas::texHeight, 0);
 
     // 各種情報を取得

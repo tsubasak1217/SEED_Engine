@@ -2,12 +2,20 @@
     "artist": "都立TJHS教頭 feat.ずんだもん",
     "audioPath": "../../Resources/NoteDatas/toritsuTutorialJHS/toritsuTutorialJHS.wav",
     "bpm": 120.0,
-    "difficulty": 8,
+    "difficulty": 15,
     "difficultyName": "Parallel",
     "genre": 0,
     "jsonFilePath": "Resources/NoteDatas/toritsuTutorialJHS/Parallel.json",
-    "maxCombo": 194,
+    "maxCombo": 369,
     "notes": [
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 17.916667938232422
+        },
         {
             "isExtraNote": false,
             "lane": 0,
@@ -18,11 +26,75 @@
         },
         {
             "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 18.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 18.41666603088379
+        },
+        {
+            "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
             "layer": 0,
             "noteType": "tap",
-            "time": 18.0
+            "time": 18.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 18.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 18.91666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.16666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.41666603088379
         },
         {
             "isExtraNote": false,
@@ -30,7 +102,15 @@
             "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
-            "time": 18.75
+            "time": 19.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.66666603088379
         },
         {
             "isExtraNote": false,
@@ -38,53 +118,20 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
-            "time": 18.75
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "tap",
-            "time": 19.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "tap",
-            "time": 19.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 0,
-            "noteType": "tap",
-            "time": 19.70833396911621
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "tap",
             "time": 19.75
         },
         {
-            "duration": 1.5,
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
-            "noteType": "warning",
-            "time": 20.0
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 19.91666603088379
         },
         {
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
+            "lane": 2,
+            "laneBit": 4,
             "layer": 0,
             "noteType": "tap",
             "time": 20.0
@@ -99,6 +146,14 @@
         },
         {
             "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 20.41666603088379
+        },
+        {
+            "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
             "layer": 0,
@@ -107,33 +162,73 @@
         },
         {
             "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
+            "lane": 4,
+            "laneBit": 16,
             "layer": 0,
             "noteType": "tap",
             "time": 20.75
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 20.91666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
             "time": 21.0
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 21.16666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 21.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 21.41666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 21.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 21.75
         },
         {
             "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
-            "layer": 1,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 22.0
         },
@@ -141,31 +236,47 @@
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 22.0
+            "time": 22.16666603088379
         },
         {
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
             "noteType": "tap",
-            "time": 22.75
+            "time": 22.33333396911621
         },
         {
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 22.75
+            "time": 22.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 22.66666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 22.83333396911621
         },
         {
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 23.0
         },
@@ -173,60 +284,196 @@
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 23.0
+            "time": 23.16666603088379
         },
         {
             "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 1,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.20833396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.29166603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.33333396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.66666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.70833396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
             "noteType": "tap",
             "time": 23.75
         },
         {
             "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.79166603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 23.83333396911621
+        },
+        {
+            "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 24.0
         },
         {
             "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
-            "layer": 1,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
             "noteType": "tap",
-            "time": 24.25
+            "time": 24.16666603088379
         },
         {
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 24.33333396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
             "noteType": "tap",
             "time": 24.5
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
             "noteType": "tap",
-            "time": 24.75
+            "time": 24.66666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 24.83333396911621
         },
         {
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 25.0
         },
         {
-            "holdTime": 0.25,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.08333396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.16666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.33333396911621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.41666603088379
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.5
+        },
+        {
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
@@ -235,7 +482,7 @@
             "time": 42.0
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
@@ -244,7 +491,7 @@
             "time": 42.25
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
@@ -253,7 +500,7 @@
             "time": 42.5
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
@@ -262,7 +509,7 @@
             "time": 42.75
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
@@ -271,52 +518,52 @@
             "time": 43.0
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
-            "layer": 0,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 43.0
+        },
+        {
+            "holdTime": 1.0,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 43.25
+        },
+        {
+            "holdTime": 1.0,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
             "noteType": "Hold",
             "time": 43.5
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 43.75
+        },
+        {
+            "holdTime": 1.0,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
-            "layer": 0,
+            "layer": 1,
             "noteType": "Hold",
             "time": 44.0
         },
         {
-            "holdTime": 0.25,
-            "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 44.25
-        },
-        {
-            "holdTime": 0.25,
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 44.5
-        },
-        {
-            "holdTime": 0.25,
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 44.75
-        },
-        {
-            "holdTime": 0.25,
+            "holdTime": 1.25,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
@@ -325,31 +572,22 @@
             "time": 45.0
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 1.0,
             "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 45.25
+        },
+        {
+            "holdTime": 0.75,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
             "layer": 0,
             "noteType": "Hold",
             "time": 45.5
-        },
-        {
-            "holdTime": 0.5,
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 46.0
-        },
-        {
-            "holdTime": 0.5,
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 46.25
         },
         {
             "holdTime": 0.5,
@@ -358,10 +596,46 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "Hold",
+            "time": 45.75
+        },
+        {
+            "holdTime": 0.25,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 46.0
+        },
+        {
+            "holdTime": 3.0,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 46.5
+        },
+        {
+            "holdTime": 2.75,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 46.75
+        },
+        {
+            "holdTime": 2.5,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
             "time": 47.0
         },
         {
-            "holdTime": 0.5,
+            "holdTime": 2.25,
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
@@ -370,13 +644,58 @@
             "time": 47.25
         },
         {
-            "holdTime": 1.0,
+            "holdTime": 2.0,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
             "layer": 0,
             "noteType": "Hold",
+            "time": 47.5
+        },
+        {
+            "holdTime": 1.5,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 1,
+            "noteType": "Hold",
             "time": 48.0
+        },
+        {
+            "holdTime": 1.25,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 48.25
+        },
+        {
+            "holdTime": 1.0,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 48.5
+        },
+        {
+            "holdTime": 0.75,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 48.75
+        },
+        {
+            "holdTime": 0.5,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 49.0
         },
         {
             "direction": 0,
@@ -392,44 +711,71 @@
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 66.25
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 66.5
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
             "time": 66.75
         },
         {
-            "direction": 0,
+            "direction": 1,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 2048,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
             "time": 67.0
         },
         {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 67.25
+        },
+        {
             "direction": 1,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
-            "layer": 0,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 67.5
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
             "noteType": "wheel",
             "time": 67.75
         },
         {
-            "direction": 0,
+            "direction": 1,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 2048,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
-            "time": 68.0
-        },
-        {
-            "duration": 1.659999966621399,
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
-            "noteType": "warning",
             "time": 68.0
         },
         {
@@ -439,14 +785,14 @@
             "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
-            "time": 68.375
+            "time": 68.25
         },
         {
             "direction": 1,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
-            "layer": 0,
+            "layer": 1,
             "noteType": "wheel",
             "time": 68.5
         },
@@ -455,7 +801,7 @@
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 2048,
-            "layer": 0,
+            "layer": 1,
             "noteType": "wheel",
             "time": 68.75
         },
@@ -469,6 +815,15 @@
             "time": 69.0
         },
         {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 69.25
+        },
+        {
             "direction": 0,
             "isExtraNote": false,
             "lane": 0,
@@ -476,6 +831,15 @@
             "layer": 0,
             "noteType": "wheel",
             "time": 69.5
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 69.75
         },
         {
             "direction": 0,
@@ -493,7 +857,7 @@
             "laneBit": 4096,
             "layer": 1,
             "noteType": "wheel",
-            "time": 70.75
+            "time": 70.25
         },
         {
             "direction": 0,
@@ -501,6 +865,24 @@
             "lane": 0,
             "laneBit": 2048,
             "layer": 1,
+            "noteType": "wheel",
+            "time": 70.5
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 70.75
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
             "noteType": "wheel",
             "time": 71.0
         },
@@ -511,13 +893,31 @@
             "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
-            "time": 71.75
+            "time": 71.25
         },
         {
             "direction": 1,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 71.5
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 71.75
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
             "time": 72.0
@@ -529,7 +929,25 @@
             "laneBit": 4096,
             "layer": 1,
             "noteType": "wheel",
+            "time": 72.25
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
             "time": 72.5
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 72.75
         },
         {
             "direction": 1,
@@ -563,7 +981,7 @@
             "laneBit": 1024,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 90.5
+            "time": 90.125
         },
         {
             "isExtraNote": false,
@@ -571,7 +989,63 @@
             "laneBit": 256,
             "layer": 0,
             "noteType": "RectFlick",
+            "time": 90.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 90.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 90.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 90.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 90.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 90.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
             "time": 91.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 91.25
         },
         {
             "isExtraNote": false,
@@ -584,7 +1058,15 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1664,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 91.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 92.0
@@ -592,7 +1074,31 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1792,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 92.5
@@ -600,7 +1106,31 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1408,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 92.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 93.0
@@ -608,34 +1138,10 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 896,
-            "layer": 0,
-            "noteType": "RectFlick",
-            "time": 93.5
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 640,
-            "layer": 0,
-            "noteType": "RectFlick",
-            "time": 94.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
             "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 94.5
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1280,
-            "layer": 0,
-            "noteType": "RectFlick",
-            "time": 95.0
+            "time": 93.25
         },
         {
             "isExtraNote": false,
@@ -643,7 +1149,71 @@
             "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 95.5
+            "time": 93.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 93.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1664,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 94.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 94.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 94.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1408,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 95.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 95.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 95.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1920,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 96.0
         },
         {
             "isExtraNote": false,
@@ -659,7 +1229,7 @@
             "laneBit": 1024,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 97.125
+            "time": 97.08333587646484
         },
         {
             "isExtraNote": false,
@@ -667,7 +1237,7 @@
             "laneBit": 256,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 97.25
+            "time": 97.16666412353516
         },
         {
             "isExtraNote": false,
@@ -675,7 +1245,7 @@
             "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 97.375
+            "time": 97.25
         },
         {
             "isExtraNote": false,
@@ -683,7 +1253,31 @@
             "laneBit": 512,
             "layer": 0,
             "noteType": "RectFlick",
+            "time": 97.33333587646484
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 97.41666412353516
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
             "time": 97.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.0
         },
         {
             "isExtraNote": false,
@@ -695,11 +1289,43 @@
         },
         {
             "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.125
+        },
+        {
+            "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
             "layer": 0,
             "noteType": "tap",
-            "time": 114.0
+            "time": 114.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.625
         },
         {
             "isExtraNote": false,
@@ -711,11 +1337,27 @@
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
             "time": 114.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.0
         },
         {
             "isExtraNote": false,
@@ -727,6 +1369,54 @@
         },
         {
             "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 115.75
+        },
+        {
+            "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
             "layer": 0,
@@ -735,8 +1425,8 @@
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
+            "lane": 1,
+            "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
             "time": 115.875
@@ -750,49 +1440,87 @@
             "time": 116.0
         },
         {
-            "duration": 1.5399999618530273,
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
-            "noteType": "warning",
-            "time": 116.0
-        },
-        {
-            "duration": 1.559999942779541,
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
-            "layer": 1,
-            "noteType": "warning",
+            "layer": 0,
+            "noteType": "tap",
             "time": 116.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.125
         },
         {
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
             "time": 116.375
         },
         {
             "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
+            "lane": 3,
+            "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
             "time": 116.5
         },
         {
             "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
             "time": 116.75
         },
         {
             "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 116.875
+        },
+        {
+            "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
             "layer": 0,
@@ -809,114 +1537,273 @@
         },
         {
             "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 117.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 117.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 117.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 117.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 117.625
+        },
+        {
+            "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 117.75
         },
         {
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 118.0
-        },
-        {
-            "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 118.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 118.75
-        },
-        {
-            "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 118.75
+            "time": 117.875
         },
         {
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 119.0
+            "time": 118.0
         },
         {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 119.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 119.75
-        },
-        {
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 119.75
-        },
-        {
-            "duration": 1.5,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
             "layer": 0,
-            "noteType": "warning",
-            "time": 120.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
             "noteType": "tap",
-            "time": 120.0
-        },
-        {
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
-            "noteType": "tap",
-            "time": 121.0
+            "time": 118.0
         },
         {
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
-            "time": 120.875
+            "time": 118.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.75
         },
         {
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
-            "layer": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 118.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 119.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.25
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.5
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 120.5
         },
@@ -924,20 +1811,77 @@
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
-            "layer": 1,
+            "layer": 0,
             "noteType": "tap",
             "time": 120.625
         },
         {
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 1,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
             "noteType": "tap",
             "time": 120.75
         },
         {
-            "holdTime": 1.0,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 121.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 121.04166412353516
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 121.08333587646484
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 121.125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 121.16666412353516
+        },
+        {
+            "holdTime": 0.5,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 121.5
+        },
+        {
+            "holdTime": 4.0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
@@ -946,7 +1890,16 @@
             "time": 122.0
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 3.75,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 122.25
+        },
+        {
+            "holdTime": 2.5,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
@@ -955,79 +1908,70 @@
             "time": 122.5
         },
         {
-            "holdTime": 1.0,
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 123.0
-        },
-        {
-            "holdTime": 0.25,
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 123.5
-        },
-        {
-            "duration": 1.559999942779541,
+            "holdTime": 2.25,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
             "layer": 1,
-            "noteType": "warning",
-            "time": 124.0
-        },
-        {
-            "holdTime": 0.25,
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
             "noteType": "Hold",
-            "time": 124.0
+            "time": 122.75
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 2.75,
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
             "layer": 0,
             "noteType": "Hold",
-            "time": 124.25
+            "time": 123.0
         },
         {
-            "holdTime": 0.25,
+            "holdTime": 2.25,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
             "layer": 0,
             "noteType": "Hold",
+            "time": 123.25
+        },
+        {
+            "holdTime": 1.75,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 123.5
+        },
+        {
+            "holdTime": 1.25,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 124.0
+        },
+        {
+            "holdTime": 1.25,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 124.25
+        },
+        {
+            "holdTime": 1.25,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 1,
+            "noteType": "Hold",
             "time": 124.5
         },
         {
-            "holdTime": 0.5,
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 125.0
-        },
-        {
-            "holdTime": 0.5,
-            "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 125.0
-        },
-        {
-            "holdTime": 1.0,
+            "holdTime": 3.0,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
@@ -1036,7 +1980,7 @@
             "time": 126.0
         },
         {
-            "holdTime": 1.0,
+            "holdTime": 0.75,
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
@@ -1045,7 +1989,7 @@
             "time": 126.25
         },
         {
-            "holdTime": 1.0,
+            "holdTime": 1.25,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
@@ -1054,7 +1998,7 @@
             "time": 126.5
         },
         {
-            "holdTime": 1.0,
+            "holdTime": 1.75,
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
@@ -1063,7 +2007,7 @@
             "time": 126.75
         },
         {
-            "holdTime": 1.0,
+            "holdTime": 2.0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
@@ -1072,13 +2016,22 @@
             "time": 127.0
         },
         {
-            "holdTime": 1.5,
+            "holdTime": 0.25,
             "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
+            "lane": 3,
+            "laneBit": 8,
             "layer": 1,
             "noteType": "Hold",
-            "time": 128.0
+            "time": 127.25
+        },
+        {
+            "holdTime": 1.25,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 127.75
         },
         {
             "duration": 1.5399999618530273,
@@ -1090,10 +2043,28 @@
             "time": 128.0
         },
         {
-            "holdTime": 0.75,
+            "holdTime": 0.25,
             "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 128.0
+        },
+        {
+            "holdTime": 0.5,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 128.5
+        },
+        {
+            "holdTime": 0.25,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
             "layer": 1,
             "noteType": "Hold",
             "time": 128.75
@@ -1114,7 +2085,7 @@
             "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
-            "time": 130.75
+            "time": 130.25
         },
         {
             "direction": 0,
@@ -1123,7 +2094,7 @@
             "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
-            "time": 131.0
+            "time": 130.375
         },
         {
             "direction": 1,
@@ -1132,7 +2103,7 @@
             "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
-            "time": 131.75
+            "time": 130.625
         },
         {
             "direction": 0,
@@ -1141,10 +2112,73 @@
             "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
+            "time": 130.75
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.0
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.125
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.25
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.375
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.625
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 131.75
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
             "time": 132.0
         },
         {
-            "duration": 1.5199999809265137,
+            "duration": 1.9600000381469727,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
@@ -1159,6 +2193,15 @@
             "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
+            "time": 132.25
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
             "time": 132.375
         },
         {
@@ -1168,34 +2211,52 @@
             "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
-            "time": 132.5
+            "time": 132.625
         },
         {
             "direction": 1,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 132.75
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
             "time": 133.0
         },
         {
-            "direction": 0,
+            "direction": 1,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 2048,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
-            "time": 133.5
+            "time": 133.125
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 133.375
         },
         {
             "direction": 0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 2048,
-            "layer": 1,
+            "layer": 0,
             "noteType": "wheel",
-            "time": 134.0
+            "time": 133.75
         },
         {
             "direction": 1,
@@ -1204,13 +2265,49 @@
             "laneBit": 4096,
             "layer": 1,
             "noteType": "wheel",
-            "time": 134.75
+            "time": 134.0
         },
         {
             "direction": 0,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 134.25
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 134.375
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 134.625
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 134.875
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
             "layer": 1,
             "noteType": "wheel",
             "time": 135.0
@@ -1222,13 +2319,49 @@
             "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
-            "time": 135.75
+            "time": 135.125
         },
         {
             "direction": 1,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 135.25
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 135.375
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 135.625
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
+            "time": 135.875
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
             "time": 136.0
@@ -1240,6 +2373,15 @@
             "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
+            "time": 136.25
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
             "time": 136.375
         },
         {
@@ -1249,7 +2391,7 @@
             "laneBit": 4096,
             "layer": 1,
             "noteType": "wheel",
-            "time": 136.5
+            "time": 136.625
         },
         {
             "direction": 0,
@@ -1258,12 +2400,21 @@
             "laneBit": 2048,
             "layer": 1,
             "noteType": "wheel",
+            "time": 136.875
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 1,
+            "noteType": "wheel",
             "time": 137.0
         },
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 256,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 138.0
@@ -1271,7 +2422,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 256,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 138.25
@@ -1279,7 +2430,23 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 138.3333282470703
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 138.4166717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 138.5
@@ -1287,7 +2454,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 512,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 138.75
@@ -1295,7 +2462,23 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 138.8333282470703
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 138.9166717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 139.0
@@ -1303,7 +2486,15 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 640,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 139.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 139.75
@@ -1311,7 +2502,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1280,
+            "laneBit": 1664,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 140.0
@@ -1319,7 +2510,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1664,
+            "laneBit": 1408,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 140.25
@@ -1327,10 +2518,18 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1408,
+            "laneBit": 1664,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 140.5
+            "time": 140.375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1792,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 140.625
         },
         {
             "isExtraNote": false,
@@ -1338,7 +2537,7 @@
             "laneBit": 896,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 140.75
+            "time": 140.875
         },
         {
             "isExtraNote": false,
@@ -1367,7 +2566,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 256,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 144.0
@@ -1375,7 +2574,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 256,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 144.5
@@ -1383,7 +2582,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 256,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 145.0
@@ -1391,15 +2590,23 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 128,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 145.125
+            "time": 145.0833282470703
         },
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 512,
+            "laneBit": 384,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 145.1666717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 145.25
@@ -1407,27 +2614,100 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1024,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 145.375
+            "time": 145.3333282470703
         },
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 256,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 145.4166717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 145.5
         },
         {
-            "holdTime": 1.75,
+            "holdTime": 1.6666717529296875,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 146.0
+        },
+        {
+            "holdTime": 1.6666717529296875,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 146.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.7083282470703
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.7083282470703
+        },
+        {
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
             "layer": 0,
-            "noteType": "Hold",
-            "time": 146.0
+            "noteType": "tap",
+            "time": 147.75
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.7916717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.7916717529297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.8333282470703
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 147.8333282470703
         }
     ],
     "notesDesigner": "tbs",

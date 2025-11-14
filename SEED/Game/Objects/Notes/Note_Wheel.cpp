@@ -104,7 +104,7 @@ Judgement::Evalution Note_Wheel::Judge(float curTime){
 
         } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT)){
             // GOOD
-            return Judgement::Evalution::PERFECT;
+            return Judgement::Evalution::GREAT;
 
         } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT)){
             // GREAT

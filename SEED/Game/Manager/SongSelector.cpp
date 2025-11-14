@@ -39,8 +39,8 @@ void SongSelector::Initialize(){
     Sort();
 
     // 可視項目の更新
-    UpdateVisibleGroups();
-    UpdateVisibleSongs(false);
+    UpdateVisibleGroups(false);
+    UpdateVisibleSongs(false,false);
     preGroupName_ = currentGroup->groupName;
 
     // Timerの初期化
@@ -428,12 +428,6 @@ void SongSelector::CreateGroup(){
     default:
         break;
     }
-
-    // まだnullptrならデフォルト値を適用
-    if(!currentGroup){
-        currentGroup = &songGroups[0];
-        currentSong = currentGroup->groupMembers[0];
-    }
 }
 
 
@@ -500,6 +494,12 @@ void SongSelector::SortInGroup(){
             break;
         }
     }
+
+    // まだnullptrならデフォルト値を適用
+    if(!currentGroup){
+        currentGroup = &songGroups[currentGroupIndex];
+        currentSong = currentGroup->groupMembers[currentSongIndex];
+    }
 }
 
 
@@ -540,7 +540,7 @@ void SongSelector::UpdateIndex(){
 // 可視曲・グループの更新処理
 /////////////////////////////////////////////////////////////////////////////////////
 
-void SongSelector::UpdateVisibleSongs(bool isPlayAudio){
+void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
 
     if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
@@ -588,10 +588,12 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio){
     }
 
     // UI情報の更新
-    UpdateUIContents();
+    if(isUpdateUIs){
+        UpdateUIContents();
+    }
 }
 
-void SongSelector::UpdateVisibleGroups(){
+void SongSelector::UpdateVisibleGroups(bool isUpdateUIs){
 
     if(!currentGroup){ return; }
     if(currentGroup->groupMembers.empty()){ return; }
@@ -622,7 +624,9 @@ void SongSelector::UpdateVisibleGroups(){
     }
 
     // UI情報の更新
-    UpdateUIContents();
+    if(isUpdateUIs){
+        UpdateUIContents();
+    }
 }
 
 
@@ -1306,6 +1310,11 @@ void SongSelector::ToJson(){
     // modeの書き出し
     j["currentSortMode"] = (int)currentSortMode;
     j["currentGroupMode"] = (int)currentGroupMode;
+    selectMode_ == SelectMode::Difficulty ? selectMode_ = SelectMode::Song : selectMode_;
+    j["selectMode"] = (int)selectMode_;
+
+    // 難易度の書き出し
+    j["currentDifficulty"] = (int)currentDifficulty;
 
     // JSONの保存
     MyFunc::CreateJsonFile("Resources/Jsons/Settings/song_selector.json", j);
@@ -1339,5 +1348,14 @@ void SongSelector::FromJson(){
         // modeの読み込み
         currentSortMode = (SortMode)j.value("currentSortMode", 0);
         currentGroupMode = (GroupMode)j.value("currentGroupMode", 0);
+        if(!isFirstPlay_){
+            selectMode_ = (SelectMode)j.value("selectMode", 0);
+        } else{
+            selectMode_ = SelectMode::Group;
+            isFirstPlay_ = false;
+        }
+
+        // 難易度の読み込み
+        currentDifficulty = (TrackDifficulty)j.value("currentDifficulty", 0);
     }
 }

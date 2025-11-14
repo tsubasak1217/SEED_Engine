@@ -2,35 +2,237 @@
     "artist": "妖精さん",
     "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
     "bpm": 177.0,
-    "difficulty": 1,
+    "difficulty": 4,
     "difficultyName": "Basic",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Basic.json",
-    "maxCombo": 4,
+    "maxCombo": 268,
     "notes": [
         {
+            "holdTime": 0.6779661178588867,
             "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
             "layer": 0,
-            "noteType": "tap",
+            "noteType": "Hold",
             "time": 1.3559322357177734
         },
         {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 2.711864471435547
+        },
+        {
+            "holdTime": 0.6779661178588867,
             "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
             "layer": 0,
-            "noteType": "tap",
-            "time": 1.6949152946472168
+            "noteType": "Hold",
+            "time": 4.06779670715332
         },
         {
+            "holdTime": 0.6779661178588867,
             "isExtraNote": false,
             "lane": 3,
             "laneBit": 8,
             "layer": 0,
+            "noteType": "Hold",
+            "time": 4.745762825012207
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 5.423728942871094
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 6.779661178588867
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 8.13559341430664
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 9.491525650024414
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 10.1694917678833
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 10.847457885742188
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
             "noteType": "tap",
-            "time": 2.03389835357666
+            "time": 12.203390121459961
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 12.881356239318848
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.559322357177734
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.898305892944336
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 14.237288475036621
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 14.915254592895508
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 15.593220710754395
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 16.27118682861328
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 16.610170364379883
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 16.949153900146484
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 17.627119064331055
+        },
+        {
+            "holdTime": 0.6779651641845703,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 18.983051300048828
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 20.3389835357666
+        },
+        {
+            "holdTime": 0.6779651641845703,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 21.016950607299805
+        },
+        {
+            "holdTime": 0.6779651641845703,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 21.694915771484375
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 22.372880935668945
         },
         {
             "isExtraNote": false,
@@ -38,10 +240,1494 @@
             "laneBit": 16,
             "layer": 0,
             "noteType": "tap",
-            "time": 2.3728814125061035
+            "time": 23.05084800720215
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 23.72881507873535
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 24.406780242919922
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 24.745763778686523
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 25.084745407104492
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 25.762712478637695
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 26.4406795501709
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 27.11864471435547
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 27.45762825012207
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 27.79660987854004
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 28.474576950073242
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 29.152544021606445
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 29.830509185791016
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 30.169492721557617
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 30.508474349975586
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 31.18644142150879
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 31.864408493041992
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 32.54237365722656
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 33.89830780029297
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 34.576271057128906
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 35.254241943359375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 35.93220520019531
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 36.61016845703125
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 37.966102600097656
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 38.644065856933594
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 39.32203674316406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 40.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 40.67797088623047
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 41.355934143066406
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 42.033897399902344
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 43.38983154296875
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 44.06779479980469
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 44.745765686035156
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 45.423728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 46.10169982910156
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 46.7796630859375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 47.45762634277344
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 48.135597229003906
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 48.813560485839844
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 50.16949462890625
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 51.525428771972656
+        },
+        {
+            "holdTime": 2.0338973999023438,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 52.88135528564453
+        },
+        {
+            "holdTime": 1.3559303283691406,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 53.559326171875
+        },
+        {
+            "holdTime": 0.6779670715332031,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 54.23728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 55.593223571777344
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 55.93220520019531
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 56.27118682861328
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 56.61016845703125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 56.94915771484375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 58.305084228515625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 58.644065856933594
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 58.983055114746094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 59.32203674316406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 59.66101837158203
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 61.01695251464844
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 61.355934143066406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 61.694915771484375
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 62.033897399902344
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 62.372886657714844
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 63.72881317138672
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 64.40678405761719
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 65.08474731445313
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 65.76271057128906
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 66.44068145751953
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 67.11864471435547
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 67.79661560058594
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 68.47457885742188
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 69.15254974365234
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 69.83051300048828
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 70.50847625732422
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 71.18643951416016
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 71.86441040039063
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 72.54237365722656
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 73.22034454345703
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 73.89830780029297
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 74.5762710571289
+        },
+        {
+            "holdTime": 0.3389892578125,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 75.25423431396484
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 75.93220520019531
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 77.28813934326172
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 78.64407348632813
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 80.00000762939453
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 81.3559341430664
+        },
+        {
+            "holdTime": 0.6779708862304688,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 82.03389739990234
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 82.71186828613281
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 84.06780242919922
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 85.4237289428711
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 86.7796630859375
+        },
+        {
+            "holdTime": 0.6779708862304688,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 87.45762634277344
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 88.1355972290039
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 89.49153137207031
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 90.16949462890625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 90.84746551513672
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 91.18644714355469
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 91.52542877197266
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 92.2033920288086
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 92.88135528564453
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 93.559326171875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 93.89830780029297
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 94.23728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 94.9152603149414
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 95.59322357177734
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 96.27118682861328
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 96.61016845703125
+        },
+        {
+            "direction": 1,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 4096,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 96.94915008544922
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 97.62712097167969
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 98.30508422851563
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 98.9830551147461
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 100.3389892578125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 100.67797088623047
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 101.01695251464844
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 101.35594177246094
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 101.6949234008789
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 103.05084991455078
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 103.38983154296875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 103.72881317138672
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 104.06780242919922
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 104.40678405761719
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 105.08474731445313
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 105.7627182006836
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 106.44068145751953
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 107.11864471435547
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 107.7966079711914
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 108.47457885742188
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 109.83051300048828
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 110.50847625732422
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 111.18644714355469
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 111.86441040039063
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 112.5423812866211
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 113.22034454345703
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 113.89830780029297
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 115.25424194335938
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 115.93220520019531
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 512,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 116.61017608642578
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1024,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 117.28813934326172
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 256,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 117.96610260009766
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 128,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 118.6440658569336
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1536,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 119.32203674316406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 384,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 120.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 120.67797088623047
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 122.03390502929688
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 123.38983917236328
+        },
+        {
+            "holdTime": 2.0338973999023438,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 124.74576568603516
+        },
+        {
+            "holdTime": 1.3559341430664063,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 125.4237289428711
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 126.10169982910156
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 127.45763397216797
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 128.13558959960938
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 128.8135528564453
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 129.49151611328125
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 130.16949462890625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 130.8474578857422
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 131.52542114257813
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 132.20338439941406
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 132.88134765625
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 133.55931091308594
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 134.23728942871094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 134.91525268554688
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 135.5932159423828
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 136.27117919921875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 136.94915771484375
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 137.6271209716797
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 138.30508422851563
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 138.64407348632813
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 138.98304748535156
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 139.6610107421875
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 140.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 140.33897399902344
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 141.01695251464844
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 141.35594177246094
+        },
+        {
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 141.69491577148438
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 142.3728790283203
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 142.7118682861328
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 143.05084228515625
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 143.7288055419922
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 145.08474731445313
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 146.440673828125
+        },
+        {
+            "direction": 0,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 2048,
+            "layer": 0,
+            "noteType": "wheel",
+            "time": 147.11863708496094
+        },
+        {
+            "holdTime": 0.6779632568359375,
+            "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 147.79660034179688
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 640,
+            "layer": 0,
+            "noteType": "RectFlick",
+            "time": 148.4745635986328
         }
     ],
     "notesDesigner": "tbs",
+    "offsetTime": 0.1599999964237213,
     "songName": "飛べない鯉はただの鯉",
     "tempoData": [
         {

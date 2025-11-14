@@ -33,8 +33,8 @@ private:// ソート関連
     void CreateGroup();// グループ分け
     void SortInGroup();// グループ内ソート
     void UpdateIndex(); // インデックス更新
-    void UpdateVisibleSongs(bool isPlayAudio = true); // 表示されている楽曲の更新
-    void UpdateVisibleGroups(); // 表示されているグループの更新
+    void UpdateVisibleSongs(bool isPlayAudio = true, bool isUpdateUIs = true); // 表示されている楽曲の更新
+    void UpdateVisibleGroups(bool isUpdateUIs = true); // 表示されているグループの更新
     void FindTrack(const Track& track, int32_t& outSongIndex, int32_t& outGroupIndex);
 
 private:// 選択関連

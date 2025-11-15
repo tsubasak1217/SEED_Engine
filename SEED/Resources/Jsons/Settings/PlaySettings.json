@@ -1,4 +1,5 @@
 {
+    "cursorSenstivity": 0.5,
     "isReverseLR": false,
     "isReverseUD": false,
     "kNoteAppearTime": 4.0,

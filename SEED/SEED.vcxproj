@@ -331,6 +331,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
+    <ClInclude Include="SEED\Source\Manager\InputManager\RawInput.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterContext.h" />
     <ClInclude Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.h" />

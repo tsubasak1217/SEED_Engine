@@ -17,6 +17,7 @@
 // local
 #include <Environment/Environment.h>
 #include <SEED/Lib/Tensor/Vector2.h>
+#include <SEED/Source/Manager/InputManager/RawInput.h>
 #include <SEED/Source/Manager/InputManager/PadDefinitions.h>
 #include <SEED/Source/Manager/InputManager/MouseDefinitions.h>
 #include <SEED/Lib/enums/Direction.h>
@@ -36,7 +37,6 @@ enum class InputDevice{
 };
 
 class Input{
-
 private:
     Input() = default;
 
@@ -46,16 +46,25 @@ private:
 
 public:
     ~Input();
-    static const Input* GetInstance();
+    static Input* GetInstance();
     static void Initialize();
     static void GetAllInput();
 
 private:
+    void InitializeRawInput();
     void InitializeDInput();
     void InitializeXInput();
 
+    // 各種入力取得関数
+    void GetRawInputState(HWND hwnd,LPARAM lparam);
     void GetDInputState();
     void GetXInputState();
+
+    // 破棄
+    void DestroyRawInput();
+
+    // ウィンドウプロシージャにアクセス権を与える
+    friend LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 public:// キーの状態を返す関数
 
@@ -141,9 +150,7 @@ private:
     BYTE preKeys_[kMaxKey_];
 
     // マウス入力を格納する変数
-    std::unordered_map<HWND,IDirectInputDevice8*> mouses_;
-    DIMOUSESTATE mouseState_;
-    DIMOUSESTATE preMouseState_;
+    std::unordered_map<HWND, RawInputMouse> mouses_;
 
     // ゲームパッド
     XINPUT_STATE xInputState_[XUSER_MAX_COUNT];

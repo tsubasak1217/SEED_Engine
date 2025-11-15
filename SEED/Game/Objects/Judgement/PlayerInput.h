@@ -65,7 +65,6 @@ private:
     float flickDeadZone_;// フリックのデッドゾーン
     float cursorPos_;// カーソルの位置(X軸移動のみ)
     float preCursorPos_;// 1フレーム前のカーソルの位置
-    float cursorSenstivity_;// カーソルの感度
     float edgePos_[2];// カーソルの端の位置
 
 private:

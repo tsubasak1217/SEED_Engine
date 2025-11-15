@@ -16,6 +16,7 @@ PlaySettings::PlaySettings(){
         offset_judge_ = jsonData["offset_judge"];
         offset_view_ = jsonData["offset_view"];
         offset_answerSE_ = jsonData["offset_answerSE"];
+        cursorSenstivity_ = jsonData.value("cursorSenstivity",1.0f);
         isReverseLR_ = jsonData["isReverseLR"];
         isReverseUD_ = jsonData["isReverseUD"];
         file.close();
@@ -35,6 +36,7 @@ PlaySettings::~PlaySettings(){
     jsonData["offset_judge"] = offset_judge_;
     jsonData["offset_view"] = offset_view_;
     jsonData["offset_answerSE"] = offset_answerSE_;
+    jsonData["cursorSenstivity"] = cursorSenstivity_;
     jsonData["isReverseLR"] = isReverseLR_;
     jsonData["isReverseUD"] = isReverseUD_;
 
@@ -62,6 +64,7 @@ void PlaySettings::Edit(){
     ImGui::DragFloat("offset_judge", &offset_judge_, 0.001f, -10.0f, 10.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
     ImGui::DragFloat("offset_view", &offset_view_, 0.001f, -10.0f, 10.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
     ImGui::DragFloat("offset_answerSE", &offset_answerSE_, 0.001f, -10.0f, 10.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
+    ImGui::DragFloat("cursorSenstivity", &cursorSenstivity_, 0.001f, 0.0f, 10.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);
     ImGui::Checkbox("isReverseLR", &isReverseLR_);
     ImGui::Checkbox("isReverseUD", &isReverseUD_);
 

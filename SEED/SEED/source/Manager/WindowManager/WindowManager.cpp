@@ -2,6 +2,7 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/DxManager/DxManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Source/Manager/InputManager/InputManager.h>
 
 ///////////////////////////////////////////////////////////////////////////////////
 //                                static変数の初期化
@@ -145,28 +146,36 @@ void WindowManager::Update(){
     }
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////
 //                                    コールバック関数
 ///////////////////////////////////////////////////////////////////////////////////
 
-LRESULT CALLBACK WindowProc(
-    HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
+    if(uMsg == WM_DESTROY){
+        // 入力デバイスの破棄
+        Input::GetInstance()->DestroyRawInput();
+        PostQuitMessage(0);
+        return 0;
+    }
+
+    // 生の入力情報を取得
+    if(uMsg == WM_INPUT){
+        Input::GetInstance()->GetRawInputState(hwnd, lParam);
+    }
+
+    // ImGuiのウィンドウプロシージャハンドラに渡す
     if(ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam)){
         return true;
     }
 
-    int a = 0;
-
+    // その他メッセージ
     switch(uMsg){
 
     case WM_NCRBUTTONDOWN:// マウス右ボタンが押されているとき
-        a = 0;
         break;
 
     case WM_NCRBUTTONUP:// マウス右ボタンが離されたとき
-        a = 0;
         break;
 
     case WM_NCLBUTTONDOWN:// マウス左ボタンが押されているとき
@@ -179,16 +188,7 @@ LRESULT CALLBACK WindowProc(
         AudioManager::GetInstance()->RestartAll();
         break;
 
-    case WM_DESTROY:// ウィンドウが破棄されるとき
-        PostQuitMessage(0);
-        return 0;
-
-    case WM_NULL://特に何もないとき
-        a = 0;
-        break;
-
     default:
-        a = 0;
         break;
     }
 

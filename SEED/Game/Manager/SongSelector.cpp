@@ -261,6 +261,8 @@ void SongSelector::InitializeUIs(){
     for(size_t i = 0; i < size; i++){
         songUIs[i] = hierarchy->LoadObject2D("SelectScene/songUI.prefab");
         groupUIs[i] = hierarchy->LoadObject2D("SelectScene/genreUI.prefab");
+        songUIs[i]->GetChild(0)->SetIsActive(false);
+        groupUIs[i]->GetChild(0)->SetIsActive(false);
     }
 
     difficultyUIs.resize((size_t)TrackDifficulty::kMaxDifficulty);
@@ -275,19 +277,16 @@ void SongSelector::InitializeUIs(){
     if(selectMode_ != SelectMode::Song){
         for(auto& ui : songUIs){
             ui->SetIsActive(false);
-            ui->GetChild(0)->SetIsActive(false);
         }
     }
     if(selectMode_ != SelectMode::Group){
         for(auto& ui : groupUIs){
             ui->SetIsActive(false);
-            ui->GetChild(0)->SetIsActive(false);
         }
     }
     if(selectMode_ != SelectMode::Difficulty){
         for(auto& ui : difficultyUIs){
             ui->SetIsActive(false);
-            ui->GetChild(0)->SetIsActive(false);
         }
     }
 
@@ -758,6 +757,7 @@ void SongSelector::SelectSong(){
             // 項目の更新
             UpdateVisibleGroups();
             UpdateUIContents();
+            ShiftItem();
 
             // UIのアクティブ状態を切り替え
             for(auto& ui : groupUIs){
@@ -828,6 +828,7 @@ void SongSelector::SelectGroup(){
 
             // 可視曲の更新
             UpdateVisibleSongs();
+            ShiftItem();
 
             // UIのアクティブ状態を切り替え
             for(auto& ui : songUIs){
@@ -902,6 +903,7 @@ void SongSelector::SelectDifficulty(){
             Sort();
             FindTrack(currentSong, currentSongIndex, currentGroupIndex);
             UpdateVisibleSongs();
+            ShiftItem();
 
             // UIのアクティブ状態を切り替え
             isTransitionDifficulty_Select_ = true;
@@ -1037,7 +1039,6 @@ void SongSelector::ShiftItem(bool allUpdate){
     if(itemShiftTimer_.IsFinished()){
         isShiftItem_ = false;
         shiftDirection_ = UpDown::NONE;
-        itemShiftTimer_.Reset();
     }
 }
 
@@ -1372,6 +1373,11 @@ void SongSelector::UpdateSelectButtonUIs(){
         backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "メニュー";
     } else{
         backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "もどる";
+    }
+
+    // プレイ待機中は選択ボタンを非アクティブにする
+    if(isPlayWaiting_){
+        songSelectButtonUI_->SetIsActive(false);
     }
 }
 

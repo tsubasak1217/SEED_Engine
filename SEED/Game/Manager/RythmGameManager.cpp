@@ -86,7 +86,7 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     comboObject_ = std::make_unique<ComboObject>();
 
     // timer
-    playEndTimer_.Initialize(3.0f);
+    playEndTimer_.Initialize(3.5f);
 
     // 判定の初期化
     Judgement::GetInstance();
@@ -94,7 +94,7 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // pause状態の初期化
     isPaused_ = false;
 
-    // チュートリアルマネージャの初期化
+    // チュートリアルであればチュートリアルマネージャの初期化
     if(songData["songName"] == "都立チュートリアル中学校"){
         tutorialManager_ = std::make_unique<TutorialObjectManager>(notesData_->GetSongTimerPtr());
         tutorialManager_.value()->Initialize();
@@ -207,8 +207,10 @@ void RythmGameManager::EndFrame(){
         }
 
         // プレイ終了タイマーを更新
-        playEndTimer_.Update();
-
+        if(!isPaused_){
+            playEndTimer_.Update();
+        }
+        
         // タイマーが終了したらシーン遷移
         if(playEndTimer_.IsFinished()){
             // Inputのカーソルを表示状態に戻す
@@ -336,5 +338,5 @@ float RythmGameManager::CalculateScore(){
 ///////////////////////////////////////////////////////////////////////////////
 void RythmGameManager::Retry(){
     // シーンを再読み込み
-    Initialize(songInfo_,playDifficulty_);
+    Initialize(songInfo_, playDifficulty_);
 }

@@ -4,6 +4,7 @@
 #include <Game/Objects/Judgement/PlayField.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Judgement/MouseVectorCircle.h>
+#include <Game/Config/PlaySettings.h>
 
 /////////////////////////////////////////////////////////
 // static変数の初期化
@@ -208,7 +209,6 @@ void PlayerInput::Initialize(){
 
     // パラメータの初期化
     flickDeadZone_ = 30.0f;// フリックのデッドゾーン
-    cursorSenstivity_ = 1.0f;// カーソルの感度
 
     // マウスベクトル表示UIの初期化
     mouseVectorCircle_ = std::make_unique<MouseVectorCircle>();
@@ -255,6 +255,13 @@ void PlayerInput::Update(){
     cursorLine_[1].localVertex[2] = corsorWorldPos + Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
     cursorLine_[1].localVertex[3] = corsorWorldPos - Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
 
+    // zファイティング防止
+    for(int i = 0; i < 4; i++){
+        cursorLine_[0].localVertex[i].z -= 0.1f;
+        cursorLine_[1].localVertex[i].z -= 0.1f;
+    }
+
+
     BaseCamera* camera = SEED::GetMainCamera();
     for(int i = 0; i < 3; i++){
         cursor2D_[0].localVertex[i] = camera->ToScreenPosition(cursor_[0].localVertex[i]);
@@ -294,7 +301,7 @@ void PlayerInput::BeginFrame(){
     Vector2 mouseVal = Input::GetMouseVector();
 
     // カーソルの移動量を加算
-    cursorPos_ += mouseVal.x * cursorSenstivity_;
+    cursorPos_ += mouseVal.x * PlaySettings::GetInstance()->GetCursorSenstivity();
 
     // 入力情報の更新
     DecideLaneInput();
@@ -399,7 +406,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
             int preLane = cursorLane_.PreValue();
             int curLane = cursorLane_.Value();
             int kLaneCount = PlayField::kKeyCount_;
-            float horizontalVal = Input::GetMouseVector().x;
+            float horizontalVal = Input::GetMouseVector().x * PlaySettings::GetInstance()->GetCursorSenstivity();
 
             // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
             if(curLane != preLane){
@@ -570,6 +577,8 @@ void PlayerInput::DisplayInputInfo(){
     {
         ImGui::Text("カーソルのレーン: %d", GetCursorLane());
         ImGui::Text("前のカーソルのレーン: %d", GetPreCursorLane());
+        Vector2 mouseVal = Input::GetMouseVector() * PlaySettings::GetInstance()->GetCursorSenstivity();
+        ImGui::Text("マウスの移動量: %.2f", mouseVal.x);
         ImGui::Separator();
     }
 
@@ -592,6 +601,9 @@ void PlayerInput::DisplayInputInfo(){
         ImGui::Text("wheel↑ %d", wheelScroll == UpDown::UP);
         ImGui::Text("wheel↓ %d", wheelScroll == UpDown::DOWN);
         ImGui::Text("Trigger %d", GetIsWheelTrigger());
+        int32_t scrollVal = Input::GetMouseWheel();
+        ImGui::Text("ホイールの移動量: %f", scrollVal);
+
         ImGui::Separator();
     }
 

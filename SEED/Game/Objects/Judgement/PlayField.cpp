@@ -223,6 +223,8 @@ void PlayField::Initialize(){
 
     // その他のオブジェクトの初期化
     backLightObject_ = hierarchy->LoadObject2D("PlayScene/BackLight.prefab");
+    hierarchy->LoadObject2D("SelectScene/escUI.prefab");
+
 
     // 背景色の設定
     SEED::windowBackColor_ = 0x00557CFF;

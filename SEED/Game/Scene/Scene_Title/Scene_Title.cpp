@@ -68,7 +68,7 @@ void Scene_Title::Initialize(){
 
     // "spaceキーで進む"旨のオブジェクトを読み込む
     pressSpace_ = hierarchy_->LoadObject2D("Title/pressSpace.prefab");
-    pressSpace_->isActive_ = false;
+    pressSpace_->SetIsActive(false);
     pressSpace_->aditionalTransform_.scale = Vector2(0.0f);
     pressSpace_->Update();
 
@@ -124,7 +124,7 @@ void Scene_Title::Update(){
 
         // 開始タイマーが終了した直後の処理
         if(titleStartTimer_.IsFinishedNow()){
-            pressSpace_->isActive_ = true;
+            pressSpace_->SetIsActive(true);
         }
 
         // スタートボタンが押されていない場合の処理

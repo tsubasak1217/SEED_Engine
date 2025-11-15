@@ -1,6 +1,231 @@
 {
     "gameObjects2D": [
         {
+            "children": [
+                {
+                    "components": [
+                        {
+                            "componentID": 647,
+                            "componentTag": "UI_ID:647",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 129.0
+                                    },
+                                    "clipSize": {
+                                        "x": 231.0,
+                                        "y": 129.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "drawLocation": 2,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": false,
+                                    "isUVScroll": false,
+                                    "layer": 17,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "sprite0",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 109.0,
+                                        "y": 47.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/DefaultAssets/GameUI/buttons231x129.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ],
+                            "texts": [
+                                {
+                                    "alignX": 1,
+                                    "alignY": 1,
+                                    "anchorPos": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 0.9729729294776917,
+                                        "z": 0.0
+                                    },
+                                    "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
+                                    "fontSize": 34.0,
+                                    "glyphSpacing": 5.199999809265137,
+                                    "isApplyViewMat": false,
+                                    "layer": 10,
+                                    "lineSpacing": 8.0,
+                                    "name": "text0",
+                                    "outlineColor": {
+                                        "w": 1.0,
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "outlineSplitCount": 16,
+                                    "outlineWidth": 3.5,
+                                    "size": {
+                                        "x": 161.0,
+                                        "y": 64.0
+                                    },
+                                    "text": "OK",
+                                    "textBoxVisible": false,
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 90.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "useOutline": true
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 79,
+                            "componentTag": "Routine2D_ID:79",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.75,
+                                        "y": 0.75
+                                    },
+                                    "translate": {
+                                        "x": 60.570274353027344,
+                                        "y": 430.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.800000011920929,
+                                        "y": 0.800000011920929
+                                    },
+                                    "translate": {
+                                        "x": 591.6846923828125,
+                                        "y": 430.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.75,
+                                        "y": 0.75
+                                    },
+                                    "translate": {
+                                        "x": 602.6754760742188,
+                                        "y": 430.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.800000011920929,
+                                        "y": 0.800000011920929
+                                    },
+                                    "translate": {
+                                        "x": 592.46923828125,
+                                        "y": 430.0
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 0.75,
+                                        "y": 0.75
+                                    },
+                                    "translate": {
+                                        "x": 558.8469848632813,
+                                        "y": 430.0
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "disableRotate": false,
+                            "disableScale": false,
+                            "disableTranslate": true,
+                            "duration": 3.0,
+                            "easingType": 0,
+                            "interpolationType": 1,
+                            "isConnectEdge": false,
+                            "isLoop": true,
+                            "timePoints": [
+                                0.0,
+                                0.25033342838287354,
+                                0.49985700845718384,
+                                0.7503808736801147,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "decideUI",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 0.0,
+                        "scale": {
+                            "x": 0.7966365218162537,
+                            "y": 0.7966365218162537
+                        },
+                        "translate": {
+                            "x": -323.4288330078125,
+                            "y": 73.67462158203125
+                        }
+                    }
+                }
+            ],
             "components": [
                 {
                     "componentID": 40,
@@ -23,9 +248,9 @@
                             },
                             "color": {
                                 "w": 1.0,
-                                "x": 1.0,
-                                "y": 0.6254825592041016,
-                                "z": 0.0
+                                "x": 0.5926860570907593,
+                                "y": 0.0,
+                                "z": 0.7451737523078918
                             },
                             "drawLocation": 2,
                             "flipX": false,
@@ -110,7 +335,7 @@
                                 "x": 509.0,
                                 "y": 64.0
                             },
-                            "text": "ジャンル名",
+                            "text": "全楽曲",
                             "textBoxVisible": false,
                             "transform": {
                                 "rotate": 0.0,
@@ -131,7 +356,7 @@
             "isParentRotate": true,
             "isParentScale": true,
             "isParentTranslate": true,
-            "objectName": "SongItem",
+            "objectName": "GenreItem",
             "objectType": 0,
             "transform": {
                 "rotate": 0.0,

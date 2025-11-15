@@ -379,11 +379,17 @@ Vector4 TransformToVec4(const Vector2& vec){
 
 Matrix4x4 ToMat4x4(const Matrix3x3& mat){
     Matrix4x4 result = IdentityMat4();
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
+
+    // scale,rotate成分
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
             result.m[i][j] = mat.m[i][j];
         }
     }
+    // translate成分
+    result.m[3][0] = mat.m[2][0];
+    result.m[3][1] = mat.m[2][1];
+
     return result;
 }
 
@@ -730,10 +736,10 @@ float ExtractRotation(const Matrix3x3& matrix){
     // スケールを取り除くために各軸を正規化
     Vector2 scale = ExtractScale(matrix);
     Matrix3x3 rotationMatrix = matrix;
-    rotationMatrix.m[0][0] /= scale.x;
-    rotationMatrix.m[0][1] /= scale.x;
-    rotationMatrix.m[1][0] /= scale.y;
-    rotationMatrix.m[1][1] /= scale.y;
+    rotationMatrix.m[0][0] /= (scale.x != 0.0f) ? scale.x : 1e-10f;
+    rotationMatrix.m[0][1] /= (scale.x != 0.0f) ? scale.x : 1e-10f;
+    rotationMatrix.m[1][0] /= (scale.y != 0.0f) ? scale.y : 1e-10f;
+    rotationMatrix.m[1][1] /= (scale.y != 0.0f) ? scale.y : 1e-10f;
     // 回転角を抽出
     return atan2(rotationMatrix.m[0][1], rotationMatrix.m[0][0]);
 }
@@ -744,17 +750,17 @@ Vector3 ExtractRotation(const Matrix4x4& matrix){
     Vector3 scale = ExtractScale(matrix);
     Matrix4x4 rotationMatrix = matrix;
 
-    rotationMatrix.m[0][0] /= scale.x;
-    rotationMatrix.m[0][1] /= scale.x;
-    rotationMatrix.m[0][2] /= scale.x;
+    rotationMatrix.m[0][0] /= (scale.x != 0.0f) ? scale.x : 1e-10f;
+    rotationMatrix.m[0][1] /= (scale.x != 0.0f) ? scale.x : 1e-10f;
+    rotationMatrix.m[0][2] /= (scale.x != 0.0f) ? scale.x : 1e-10f;
 
-    rotationMatrix.m[1][0] /= scale.y;
-    rotationMatrix.m[1][1] /= scale.y;
-    rotationMatrix.m[1][2] /= scale.y;
+    rotationMatrix.m[1][0] /= (scale.y != 0.0f) ? scale.y : 1e-10f;
+    rotationMatrix.m[1][1] /= (scale.y != 0.0f) ? scale.y : 1e-10f;
+    rotationMatrix.m[1][2] /= (scale.y != 0.0f) ? scale.y : 1e-10f;
 
-    rotationMatrix.m[2][0] /= scale.z;
-    rotationMatrix.m[2][1] /= scale.z;
-    rotationMatrix.m[2][2] /= scale.z;
+    rotationMatrix.m[2][0] /= (scale.z != 0.0f) ? scale.z : 1e-10f;
+    rotationMatrix.m[2][1] /= (scale.z != 0.0f) ? scale.z : 1e-10f;
+    rotationMatrix.m[2][2] /= (scale.z != 0.0f) ? scale.z : 1e-10f;
 
     // オイラー角を抽出 (YXZ順)
     float pitch, yaw, roll;

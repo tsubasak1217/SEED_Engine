@@ -131,7 +131,7 @@ void GameObject2D::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 // マトリックスの更新
 //////////////////////////////////////////////////////////////////////////
-void GameObject2D::UpdateMatrix(){
+void GameObject2D::UpdateMatrix(bool isUpdateChildren){
 
     // ローカル変換行列の更新
     localMat_ = AffineMatrix(
@@ -146,8 +146,11 @@ void GameObject2D::UpdateMatrix(){
         Matrix3x3 parentMat = parent_->worldMat_;
 
         if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
-            worldMat_ = localMat_ * parentMat;
 
+            if(parent_->aditionalTransform_.scale.x == 0.0f && parent_->aditionalTransform_.scale.y == 0.0f){
+                worldMat_ = worldMat_;
+            }
+            worldMat_ = localMat_ * parentMat;
         } else{
 
             Matrix3x3 cancelMat = IdentityMat3();
@@ -181,12 +184,33 @@ void GameObject2D::UpdateMatrix(){
     worldTransform_.translate = ExtractTranslation(worldMat_);
     worldTransform_.rotate = ExtractRotation(worldMat_);
     worldTransform_.scale = ExtractScale(worldMat_);
+
+    // フラグが立っていれば子オブジェクトのマトリックスも更新
+    if(isUpdateChildren){
+        for(auto* child : children_){
+            child->UpdateMatrix(true);
+        }
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// アクティブ設定
+//////////////////////////////////////////////////////////////////////////
+void GameObject2D::SetIsActive(bool isActive, bool isUpdateChildren){
+    isActive_ = isActive;
+    if(isUpdateChildren){
+        for(auto* child : children_){
+            child->SetIsActive(isActive, true);
+        }
+    }
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 // 親子付け関連
 //////////////////////////////////////////////////////////////////////////
+
 
 void GameObject2D::SetParent(GameObject2D* parent){
     ReleaseParent();

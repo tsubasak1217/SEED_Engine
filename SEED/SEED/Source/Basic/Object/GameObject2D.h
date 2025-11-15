@@ -93,7 +93,7 @@ public:// コンポーネントの管理関数
 
     /*--- 物理・トランスフォーム関連 ---*/
 public:
-    void UpdateMatrix();
+    void UpdateMatrix(bool isUpdateChildren = false);
 
     /*-------- 当たり判定時関数 --------*/
 public:
@@ -127,6 +127,10 @@ public:
     const std::string& GetName() const{ return objectName_; }
     void SetName(const std::string& name){ objectName_ = name; }
     float GetAliveTime() const{ return aliveTime_; }
+    void SetIsActive(bool isActive,bool isUpdateChildren = true);
+    bool GetIsActive() const{ return isActive_; }
+    void SetIsAlive(bool isAlive){ isAlive_ = isAlive; }
+    bool GetIsAlive() const{ return isAlive_; }
 
     //=====================================
     // 親子付け関連
@@ -218,7 +222,7 @@ private:
     std::list<std::unique_ptr<IComponent>> components_;
     Vector2 targetOffset_;
 
-public:
+private:
     bool isAlive_ = true;
     bool isActive_ = true;
     bool isMustDraw_ = false;

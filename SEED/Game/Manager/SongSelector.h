@@ -50,6 +50,7 @@ private:// 更新関連
     void UpdateUIContents(bool allUpdate = false); // UI内容更新
     void ToDifficultySelectUpdate(float timeScale);
     void PlayWaitUpdate();
+    void UpdateSelectButtonUIs();
 
 private:// 入出力
     void Edit();
@@ -87,6 +88,11 @@ private:
     std::vector<GameObject2D*> groupUIs; // グループUIのリスト
     std::vector<GameObject2D*> difficultyUIs; // 難易度ごとUIのリスト
 
+    // ボタンUI
+    GameObject2D* songSelectButtonUI_ = nullptr;
+    GameObject2D* difficultySelectButtonUI_ = nullptr;
+    GameObject2D* backButtonUI_ = nullptr;
+
     // 入力格納変数
     InputHandler<UpDown> verticalInput_;
     InputHandler<LR> holozontalInput_;
@@ -100,6 +106,9 @@ private:
     Timer toDifficultySelectTimer_;
     Timer playWaitTimer_;
     Timer cameraMoveTimer_;
+    Timer buttonUIScalingTimer_;
+    Timer buttonUIPressScaleTimer_Up_;
+    Timer buttonUIPressScaleTimer_Down_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;

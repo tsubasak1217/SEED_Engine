@@ -5,6 +5,9 @@
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 
+// scene
+#include <Game/Scene/Scene_Clear/Scene_Clear.h>
+
 // state
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/Scene/Scene_Game/State/GameState_Select.h>
@@ -42,6 +45,10 @@ void Scene_Game::Initialize(){
         // チュートリアル楽曲データの読み込み
         SongInfo data;
         data.Initialize("toritsuTutorialJHS");
+        Scene_Clear::SetJacketPath(
+            "Resources/NoteDatas/" + data.folderName + "/" + data.folderName + ".png"
+        );
+
         // ステート初期化
         ChangeState(new GameState_Play(this,data,0));
         isPlayTutorial_ = false;

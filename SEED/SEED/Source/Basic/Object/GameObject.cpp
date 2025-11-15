@@ -117,7 +117,7 @@ void GameObject::EndFrame(){
 //////////////////////////////////////////////////////////////////////////
 // マトリックスの更新
 //////////////////////////////////////////////////////////////////////////
-void GameObject::UpdateMatrix(){
+void GameObject::UpdateMatrix(bool isUpdateChildren){
 
     // ローカル変換行列の更新
     localMat_ = AffineMatrix(
@@ -173,8 +173,27 @@ void GameObject::UpdateMatrix(){
     worldTransform_.translate = ExtractTranslation(worldMat_);
     worldTransform_.rotate = Quaternion::ToQuaternion(ExtractRotation(worldMat_));
     worldTransform_.scale = ExtractScale(worldMat_);
+
+    // フラグが立っていれば子オブジェクトのマトリックスも更新
+    if(isUpdateChildren){
+        for(auto* child : children_){
+            child->UpdateMatrix(true);
+        }
+    }
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+// アクティブ設定
+//////////////////////////////////////////////////////////////////////////
+void GameObject::SetIsActive(bool isActive, bool isUpdateChildren){
+    isActive_ = isActive;
+    if(isUpdateChildren){
+        for(auto* child : children_){
+            child->SetIsActive(isActive, true);
+        }
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // 親子付け関連

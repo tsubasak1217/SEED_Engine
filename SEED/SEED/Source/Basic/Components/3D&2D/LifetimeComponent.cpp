@@ -56,9 +56,9 @@ void LifetimeComponent::EndFrame(){
     if(!stayAlive_ && timer_.IsFinished()){
         // オーナーを終了状態にする
         if(owner_.is2D){
-            owner_.owner2D->isAlive_ = false;
+            owner_.owner2D->SetIsAlive(false);
         } else{
-            owner_.owner3D->isAlive_ = false;
+            owner_.owner3D->SetIsAlive(false);
         }
     }
 }

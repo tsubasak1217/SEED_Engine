@@ -1461,5 +1461,6 @@
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
     <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
+    <ClInclude Include="SEED\Source\Manager\InputManager\RawInput.h" />
   </ItemGroup>
 </Project>

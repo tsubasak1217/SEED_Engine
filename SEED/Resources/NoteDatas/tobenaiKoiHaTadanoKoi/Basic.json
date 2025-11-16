@@ -11,24 +11,6 @@
         {
             "holdTime": 0.6779661178588867,
             "isExtraNote": false,
-            "lane": 0,
-            "laneBit": 1,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 1.3559322357177734
-        },
-        {
-            "holdTime": 0.6779661178588867,
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 2.711864471435547
-        },
-        {
-            "holdTime": 0.6779661178588867,
-            "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
             "layer": 0,
@@ -43,6 +25,24 @@
             "layer": 0,
             "noteType": "Hold",
             "time": 4.745762825012207
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 1.3559322357177734
+        },
+        {
+            "holdTime": 0.6779661178588867,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 2.711864471435547
         },
         {
             "holdTime": 0.6779661178588867,

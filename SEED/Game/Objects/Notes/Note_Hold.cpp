@@ -132,19 +132,19 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
             // ノーツの判定
             if(dif > judgeTime[Judgement::Evalution::GOOD]){
                 // MISS
-                return headEvaluation_ = Judgement::Evalution::MISS;
+                return Judgement::Evalution::MISS;
 
             } else if(dif > judgeTime[Judgement::Evalution::GREAT]){
                 // GOOD
-                return headEvaluation_ = Judgement::Evalution::GOOD;
+                return Judgement::Evalution::GOOD;
 
             } else if(dif > judgeTime[Judgement::Evalution::PERFECT]){
                 // GREAT
-                return headEvaluation_ = Judgement::Evalution::GREAT;
+                return Judgement::Evalution::GREAT;
 
             } else{
                 // PERFECT
-                return headEvaluation_ = Judgement::Evalution::PERFECT;
+                return Judgement::Evalution::PERFECT;
             }
         }
 

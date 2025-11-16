@@ -6,7 +6,7 @@
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Parallel.json",
-    "maxCombo": 775,
+    "maxCombo": 780,
     "notes": [
         {
             "direction": 0,
@@ -4136,31 +4136,31 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
-            "time": 114.18079376220703
-        },
-        {
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 0,
-            "noteType": "tap",
-            "time": 114.20904541015625
-        },
-        {
-            "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 0,
-            "noteType": "tap",
             "time": 114.23728942871094
         },
         {
             "isExtraNote": false,
+            "lane": 2,
+            "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.26554107666016
+        },
+        {
+            "isExtraNote": false,
             "lane": 1,
             "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
-            "time": 114.68927001953125
+            "time": 114.29378509521484
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 114.74576568603516
         },
         {
             "isExtraNote": false,
@@ -4168,7 +4168,7 @@
             "laneBit": 4,
             "layer": 0,
             "noteType": "tap",
-            "time": 114.71751403808594
+            "time": 114.77401733398438
         },
         {
             "isExtraNote": false,
@@ -4176,7 +4176,7 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
-            "time": 114.74576568603516
+            "time": 114.80226135253906
         },
         {
             "direction": 0,
@@ -4215,7 +4215,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 116.61017608642578
@@ -4231,7 +4231,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 116.94915771484375
@@ -4247,7 +4247,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 117.28813934326172
@@ -4279,7 +4279,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 117.96610260009766
@@ -4295,7 +4295,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 118.30508422851563
@@ -4311,7 +4311,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 118.6440658569336
@@ -4343,7 +4343,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 119.32203674316406
@@ -4359,7 +4359,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 119.66101837158203
@@ -4375,7 +4375,7 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
             "time": 120.0
@@ -4390,16 +4390,40 @@
         },
         {
             "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
+            "lane": 0,
+            "laneBit": 1,
             "layer": 0,
             "noteType": "tap",
             "time": 120.3389892578125
         },
         {
             "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.38135528564453
+        },
+        {
+            "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.4237289428711
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 120.46610260009766
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
             "layer": 0,
             "noteType": "tap",
             "time": 120.50847625732422
@@ -4410,7 +4434,7 @@
             "laneBit": 1,
             "layer": 0,
             "noteType": "tap",
-            "time": 120.67797088623047
+            "time": 120.50847625732422
         },
         {
             "isExtraNote": false,
@@ -4418,7 +4442,7 @@
             "laneBit": 2,
             "layer": 0,
             "noteType": "tap",
-            "time": 120.84746551513672
+            "time": 120.55084991455078
         },
         {
             "isExtraNote": false,
@@ -4426,7 +4450,7 @@
             "laneBit": 4,
             "layer": 0,
             "noteType": "tap",
-            "time": 121.01695251464844
+            "time": 120.59322357177734
         },
         {
             "isExtraNote": false,
@@ -4434,7 +4458,16 @@
             "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
-            "time": 121.18644714355469
+            "time": 120.6355972290039
+        },
+        {
+            "holdTime": 0.33898162841796875,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "Hold",
+            "time": 120.67797088623047
         },
         {
             "isExtraNote": false,
@@ -4788,19 +4821,19 @@
             "time": 131.35594177246094
         },
         {
-            "direction": 1,
+            "direction": 0,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 4096,
+            "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
             "time": 131.52542114257813
         },
         {
-            "direction": 0,
+            "direction": 1,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 2048,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
             "time": 131.86441040039063
@@ -5027,7 +5060,7 @@
             "time": 136.7796630859375
         },
         {
-            "holdTime": 1.0169525146484375,
+            "holdTime": 1.1864471435546875,
             "isExtraNote": false,
             "lane": 4,
             "laneBit": 16,
@@ -5288,19 +5321,19 @@
             "time": 142.20339965820313
         },
         {
-            "direction": 1,
+            "direction": 0,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 4096,
+            "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
             "time": 142.3728790283203
         },
         {
-            "direction": 0,
+            "direction": 1,
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 2048,
+            "laneBit": 4096,
             "layer": 0,
             "noteType": "wheel",
             "time": 142.7118682861328

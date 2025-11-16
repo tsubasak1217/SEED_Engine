@@ -375,6 +375,7 @@ void NotesData::PlayAudio(){
             // 鳴らしたら削除
             AudioManager::PlayAudio(answerSEFilePath_, false);
             it = answerTimes_.erase(it);
+
         } else{
             ++it;
         }

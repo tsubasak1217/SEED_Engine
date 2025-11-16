@@ -120,6 +120,9 @@ void Judgement::Judge(NotesData* noteGroup){
         } else{
             if(notePtr->noteType_ != NoteType::Hold){
                 notePtr->isEnd_ = true;// ノーツを終了させる
+            } else{
+                Note_Hold* holdNote = dynamic_cast<Note_Hold*>(notePtr);
+                holdNote->headEvaluation_ = note.evaluation;// ホールドノーツの頭の評価を設定
             }
 
             // ビットを立てる
@@ -141,7 +144,7 @@ void Judgement::Judge(NotesData* noteGroup){
                     // 遅れすぎた場合
                     RythmGameManager::GetInstance()->AddLateCount();
 
-                } else {
+                } else{
                     // 早すぎた場合
                     RythmGameManager::GetInstance()->AddFastCount();
                 }

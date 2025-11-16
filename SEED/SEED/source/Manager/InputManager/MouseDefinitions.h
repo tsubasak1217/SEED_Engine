@@ -5,5 +5,8 @@
 enum class MOUSE_BUTTON : uint32_t{
     LEFT = 0,
     RIGHT,
-    MIDDLE
+    MIDDLE,
+    X1,
+    X2,
+    kMouseButtonCount
 };

@@ -547,6 +547,7 @@ void PlayerInput::DisplayInputInfo(){
             ImGui::SameLine();
         }
         ImGui::Text("}");
+        ImGui::Text("マウスを押しているか:%d", Input::IsPressMouse(MOUSE_BUTTON::LEFT));
         ImGui::Separator();
     }
 

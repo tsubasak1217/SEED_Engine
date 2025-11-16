@@ -161,6 +161,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\Only2D\UIComponent.cpp" />
+    <ClCompile Include="SEED\Source\Manager\InputManager\RawInput.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\Emitter2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup2D.cpp" />
     <ClCompile Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter\EmitterGroup3D.cpp" />

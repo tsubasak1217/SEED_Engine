@@ -138,9 +138,13 @@ void SEED::DrawGUI(){
     }
 
     // マウス移動量
-    Vector2 mouseVec = Input::GetMouseVector();
+    Vector2 mouseVec = Input::GetMouseVector(INPUT_STATE::BEFORE);
     Vector2 mousePos = Input::GetMousePosition();
-    ImGui::Text("Mouse Vector: (%.1f, %.1f)", mouseVec.x, mouseVec.y);
+    if(mouseVec.Length() > 500.0f){
+        mouseVec = Vector2(0.0f);
+    }
+
+    ImGui::Text("Mouse Vector: (%f, %f)", mouseVec.x, mouseVec.y);
     ImGui::Text("Mouse Position: (%.1f, %.1f)", mousePos.x, mousePos.y);
 
     ImGui::End();

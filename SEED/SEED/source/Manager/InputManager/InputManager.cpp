@@ -35,7 +35,7 @@ Input::~Input(){
 }
 
 // 単一のインスタンスを返す関数
-const Input* Input::GetInstance(){
+Input* Input::GetInstance(){
     if(!instance_){
         instance_ = new Input();
     }
@@ -54,6 +54,8 @@ void Input::Initialize(){
     GetInstance();
 
     /*=========== 初期化 ===========*/
+    // RawInput
+    instance_->InitializeRawInput();
     // DirectInput
     instance_->InitializeDInput();
     // XInput
@@ -64,6 +66,16 @@ void Input::Initialize(){
 }
 
 
+// RawInputの初期化-------------------------------------------------------
+void Input::InitializeRawInput(){
+    // ウィンドウハンドルの一覧
+    auto hwnds = WindowManager::GetAllHWNDs();
+
+    // デバイスの生成
+    mouse_.Create();
+}
+
+// DirectInputの初期化----------------------------------------------------
 void Input::InitializeDInput(){
     HRESULT hr;
 
@@ -97,26 +109,10 @@ void Input::InitializeDInput(){
             DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
         );
         assert(SUCCEEDED(hr));
-
-
-        /*========================== マウス ==========================*/
-
-        // マウスデバイスの生成
-        hr = directInput->CreateDevice(GUID_SysMouse, &mouses_[hwnd], NULL);
-        assert(SUCCEEDED(hr));
-
-        // 入力形式のセット
-        hr = mouses_[hwnd]->SetDataFormat(&c_dfDIMouse);
-        assert(SUCCEEDED(hr));
-
-        // 制御レベルの設定
-        hr = mouses_[hwnd]->SetCooperativeLevel(
-            hwnd,
-            DISCL_FOREGROUND | DISCL_NONEXCLUSIVE
-        );
     }
 }
 
+// XInputの初期化-----------------------------------------------------------------
 void Input::InitializeXInput(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++){
         ZeroMemory(&xInputState_[i], sizeof(XINPUT_STATE));
@@ -165,7 +161,12 @@ void Input::GetAllInput(){
     }
 }
 
-// DirectInputの状態取得
+// RawInputの状態取得------------------------------------------------------
+void Input::GetRawInputState(LPARAM lparam){
+    mouse_.GetRawInputState(lparam);
+}
+
+// DirectInputの状態取得-----------------------------------------------------
 void Input::GetDInputState(){
 
     // 現在フォーカスされているウィンドウを取得
@@ -181,18 +182,9 @@ void Input::GetDInputState(){
     std::memcpy(preKeys_, keys_, sizeof(BYTE) * kMaxKey_);
     // 現在の全キーの状態を取得する
     keyboards_[activeWindow]->GetDeviceState(sizeof(keys_), keys_);
-
-
-    // マウスの情報取得開始
-    mouses_[activeWindow]->Acquire();
-    // 前のフレームのマウス情報を保存
-    std::memcpy(&preMouseState_, &mouseState_, sizeof(DIMOUSESTATE));
-    // 現在のマウス状態を取得
-    mouses_[activeWindow]->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
-
 }
 
-// XInputの状態取得
+// XInputの状態取得--------------------------------------------------------
 void Input::GetXInputState(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++){
 
@@ -220,6 +212,14 @@ void Input::GetXInputState(){
 
 void Input::EndFrame(){
     instance_->preMousePos_ = GetMousePosition();
+
+    // フレームの終了時に初期化
+    instance_->mouse_.Reset();
+}
+
+// RawInputの破棄-----------------------------------------------------------
+void Input::DestroyRawInput(){
+    mouse_.Destroy();
 }
 
 
@@ -321,67 +321,49 @@ bool Input::IsReleaseAnyKey(){
 
 // マウスのボタンが押されているかどうか
 bool Input::IsPressMouse(MOUSE_BUTTON button){
+    // 例外処理
     if(!instance_->isActive_){ return false; }
-    switch(button){
-    case MOUSE_BUTTON::LEFT:
-        return instance_->mouseState_.rgbButtons[0] & 0x80;
-    case MOUSE_BUTTON::RIGHT:
-        return instance_->mouseState_.rgbButtons[1] & 0x80;
-    case MOUSE_BUTTON::MIDDLE:
-        return instance_->mouseState_.rgbButtons[2] & 0x80;
-    default:
-        return false;
-    }
+    if(button == MOUSE_BUTTON::kMouseButtonCount){ return false; }
+    // 押されているかどうか
+    return instance_->mouse_.state[(int)INPUT_STATE::CURRENT].buttons[(int)button];
 }
 
 // マウスのボタンが押された瞬間
 bool Input::IsTriggerMouse(MOUSE_BUTTON button){
+    // 例外処理
     if(!instance_->isActive_){ return false; }
-    switch(button){
-    case MOUSE_BUTTON::LEFT:
-        return (instance_->mouseState_.rgbButtons[0] & 0x80) && !(instance_->preMouseState_.rgbButtons[0] & 0x80);
-    case MOUSE_BUTTON::RIGHT:
-        return (instance_->mouseState_.rgbButtons[1] & 0x80) && !(instance_->preMouseState_.rgbButtons[1] & 0x80);
-    case MOUSE_BUTTON::MIDDLE:
-        return (instance_->mouseState_.rgbButtons[2] & 0x80) && !(instance_->preMouseState_.rgbButtons[2] & 0x80);
-    default:
-        return false;
-    }
-
+    if(button == MOUSE_BUTTON::kMouseButtonCount){ return false; }
+    // 押されていて、前のフレームでは押されていなかったらtrue
+    return instance_->mouse_.state[(int)INPUT_STATE::CURRENT].buttons[(int)button] &&
+        !instance_->mouse_.state[(int)INPUT_STATE::BEFORE].buttons[(int)button];
 }
 
 // マウスのボタンが離された瞬間かどうか
 bool Input::IsReleaseMouse(MOUSE_BUTTON button){
+    // 例外処理
     if(!instance_->isActive_){ return false; }
-    switch(button){
-    case MOUSE_BUTTON::LEFT:
-        return !(instance_->mouseState_.rgbButtons[0] & 0x80) && (instance_->preMouseState_.rgbButtons[0] & 0x80);
-    case MOUSE_BUTTON::RIGHT:
-        return !(instance_->mouseState_.rgbButtons[1] & 0x80) && (instance_->preMouseState_.rgbButtons[1] & 0x80);
-    case MOUSE_BUTTON::MIDDLE:
-        return !(instance_->mouseState_.rgbButtons[2] & 0x80) && (instance_->preMouseState_.rgbButtons[2] & 0x80);
-    default:
-        return false;
-    }
+    if(button == MOUSE_BUTTON::kMouseButtonCount){ return false; }
+    // 離されていて、前のフレームでは押されていたらtrue
+    return !instance_->mouse_.state[(int)INPUT_STATE::CURRENT].buttons[(int)button] &&
+        instance_->mouse_.state[(int)INPUT_STATE::BEFORE].buttons[(int)button];
 }
 
 // マウスのホイールの回転量を取得
 int32_t Input::GetMouseWheel(INPUT_STATE inputState){
     if(!instance_->isActive_){ return 0; }
-    if(inputState == INPUT_STATE::CURRENT){
-        return instance_->mouseState_.lZ / 120;
-    } else{
-        return instance_->preMouseState_.lZ / 120;
-    }
+    return instance_->mouse_.state[(int)inputState].wheelDelta;
 }
 
 // マウスの移動量を取得
 Vector2 Input::GetMouseVector(INPUT_STATE inputState){
+    if(!instance_->isActive_){ return Vector2(0.0f, 0.0f); }
 
-    return {
-        inputState == INPUT_STATE::CURRENT ? (float)instance_->mouseState_.lX : (float)instance_->preMouseState_.lX,
-        inputState == INPUT_STATE::CURRENT ? (float)instance_->mouseState_.lY : (float)instance_->preMouseState_.lY
-    };
+    if(instance_->mouse_.state[(int)inputState].delta.Length()){
+        Vector2 delta = instance_->mouse_.state[(int)inputState].delta;
+        delta;
+    }
+
+    return instance_->mouse_.state[(int)inputState].delta;
 }
 
 // マウスの方向を取得
@@ -398,15 +380,10 @@ Vector2 Input::GetMouseDirection(INPUT_STATE inputState){
 // マウスの座標を取得
 Vector2 Input::GetMousePosition(INPUT_STATE inputState){
 
-    HWND activeWindow = GetForegroundWindow();
-    if(instance_->mouses_.find(activeWindow) == instance_->mouses_.end()){
-        // フォーカスされているウィンドウがない場合は何もしない
-        return { 0.0f, 0.0f };
-    }
-
     if(inputState == INPUT_STATE::CURRENT){
         // マウスの座標を取得
         POINT point;
+        HWND activeWindow = GetForegroundWindow();
         GetCursorPos(&point);
         ScreenToClient(activeWindow, &point);
         Vector2 result = { (float)point.x,(float)point.y };
@@ -428,13 +405,16 @@ bool Input::IsMouseMoved(INPUT_STATE inputState){
 // マウスのボタンが何かしら押されているか
 bool Input::IsMouseInputAny(){
     if(!instance_->isActive_){ return false; }
-    for(int i = 0; i < 3; i++){
-        if(instance_->mouseState_.rgbButtons[i] & 0x80){
+
+    auto& mouse = instance_->mouse_.state[(int)INPUT_STATE::CURRENT];
+    for(int i = 0; i < (int)MOUSE_BUTTON::kMouseButtonCount; i++){
+        if(mouse.buttons[i]){
             return true;
         }
     }
     return false;
 }
+
 
 /*------------------ マウスカーソルをリピートさせる関数 ------------------*/
 

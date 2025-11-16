@@ -49,6 +49,7 @@ public:
     static const Input* GetInstance();
     static void Initialize();
     static void GetAllInput();
+    static void EndFrame();
 
 private:
     void InitializeDInput();
@@ -144,6 +145,7 @@ private:
     std::unordered_map<HWND,IDirectInputDevice8*> mouses_;
     DIMOUSESTATE mouseState_;
     DIMOUSESTATE preMouseState_;
+    Vector2 preMousePos_;
 
     // ゲームパッド
     XINPUT_STATE xInputState_[XUSER_MAX_COUNT];

@@ -58,6 +58,9 @@ void Input::Initialize(){
     instance_->InitializeDInput();
     // XInput
     instance_->InitializeXInput();
+
+    // マウス位置の初期化
+    instance_->preMousePos_ = GetMousePosition();
 }
 
 
@@ -162,7 +165,7 @@ void Input::GetAllInput(){
     }
 }
 
-
+// DirectInputの状態取得
 void Input::GetDInputState(){
 
     // 現在フォーカスされているウィンドウを取得
@@ -189,6 +192,7 @@ void Input::GetDInputState(){
 
 }
 
+// XInputの状態取得
 void Input::GetXInputState(){
     for(DWORD i = 0; i < XUSER_MAX_COUNT; i++){
 
@@ -205,6 +209,17 @@ void Input::GetXInputState(){
             connected_[i] = false;
         }
     }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+/*                              フレーム終了時関数                                    */
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+void Input::EndFrame(){
+    instance_->preMousePos_ = GetMousePosition();
 }
 
 
@@ -362,6 +377,7 @@ int32_t Input::GetMouseWheel(INPUT_STATE inputState){
 
 // マウスの移動量を取得
 Vector2 Input::GetMouseVector(INPUT_STATE inputState){
+
     return {
         inputState == INPUT_STATE::CURRENT ? (float)instance_->mouseState_.lX : (float)instance_->preMouseState_.lX,
         inputState == INPUT_STATE::CURRENT ? (float)instance_->mouseState_.lY : (float)instance_->preMouseState_.lY
@@ -400,7 +416,7 @@ Vector2 Input::GetMousePosition(INPUT_STATE inputState){
 
         return result * adjustScale;
     } else{
-        return instance_->GetMousePosition() - instance_->GetMouseVector();
+        return instance_->preMousePos_;
     }
 }
 

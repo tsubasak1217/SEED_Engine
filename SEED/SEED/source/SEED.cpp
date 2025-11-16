@@ -257,6 +257,9 @@ void SEED::EndFrame(){
     // videoの終了時処理
     VideoManager::GetInstance()->EndFrame();
 
+    // inputのフレーム終了処理
+    Input::EndFrame();
+
     // 経過時間を取得
     ClockManager::EndFrame();
 }

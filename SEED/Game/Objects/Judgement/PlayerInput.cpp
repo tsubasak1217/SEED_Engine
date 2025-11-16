@@ -430,7 +430,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
 
             } else{
                 // マウスの移動量がkeyWidthより大きいとき、全部押している
-                if(fabsf(horizontalVal) > PlayField::kKeyWidth_){
+                if(fabsf(horizontalVal) > PlayField::kKeyWidth_ && isLooped_){
                     for(int i = 0; i < kLaneCount; ++i){
                         tapLane.insert(i);
                     }
@@ -484,7 +484,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
 
             } else{
                 // マウスの移動量がkeyWidthより大きいとき、全部押している
-                if(fabsf(horizontalVal) > PlayField::kKeyWidth_){
+                if(fabsf(horizontalVal) > PlayField::kKeyWidth_ && isLooped_){
                     for(int i = 0; i < kLaneCount; ++i){
                         releaseLane.insert(i);
                     }
@@ -510,6 +510,7 @@ void PlayerInput::DecideLaneInput(){
 
     // マウス右ボタン押していればループ、押していなければクランプ
     if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
+        isLooped_ = cursorPos_ < edgePos_[(int)LR::LEFT] || cursorPos_ > edgePos_[(int)LR::RIGHT];
         cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
     } else{
         cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);

@@ -66,6 +66,7 @@ private:
     float cursorPos_;// カーソルの位置(X軸移動のみ)
     float preCursorPos_;// 1フレーム前のカーソルの位置
     float edgePos_[2];// カーソルの端の位置
+    bool isLooped_;// カーソルがループしたかどうか
 
 private:
     // 入力を格納するハンドラ群

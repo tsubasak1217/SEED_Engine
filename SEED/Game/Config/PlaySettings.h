@@ -36,7 +36,7 @@ public:
     bool GetIsReverseUD() const{ return isReverseUD_; }
     void SetIsReverseUD(bool isReverse){ isReverseUD_ = isReverse; }
     // カーソル感度
-    float GetCursorSenstivity() const{ return cursorSenstivity_; }
+    float GetCursorSenstivity() const{ return baseCursorSensitivity_ * cursorSenstivity_; }
 
 #ifdef _DEBUG
     void Edit();
@@ -53,6 +53,7 @@ private:
     float offset_view_ = 0.0f;// 表示のオフセット
     float offset_answerSE_ = 0.0f;// アンサー音のオフセット
     // カーソル設定
+    float baseCursorSensitivity_ = 0.5f;// 基本カーソル感度
     float cursorSenstivity_ = 1.0f;// カーソルの感度
     // 反転設定
     bool isReverseLR_ = false;// 左右反転

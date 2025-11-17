@@ -12,7 +12,9 @@
 Scene_Clear::Scene_Clear() : Scene_Base(){
 }
 
-Scene_Clear::~Scene_Clear(){}
+Scene_Clear::~Scene_Clear(){
+    AudioManager::EndAudio(bgmHandle_);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,10 @@ void Scene_Clear::Update(){
 
     // 共通更新
     Scene_Base::Update();
+
+    if(bgmHandle_ == -1){
+        bgmHandle_ = AudioManager::PlayAudio("BGM/NETHMi_Result.wav", true, 0.5f);
+    }
 
     // タイマーの更新
     if(Input::IsTriggerKey(DIK_SPACE)){

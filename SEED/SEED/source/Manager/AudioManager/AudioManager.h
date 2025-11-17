@@ -23,7 +23,7 @@ using Microsoft::WRL::ComPtr;
 #include <SEED/Source/Basic/Dictionary/AudioDictionary.h>
 
 
-using AudioHandle = uint32_t;
+using AudioHandle = int32_t;
 
 
 // 読み込みに必要な構造体

@@ -46,6 +46,8 @@ private:
     int32_t kMaxStep_ = 4;// 最大ステップ数
     Timer stepTimer_ = Timer(0.7f);
     GameObject2D* resultUpdater_ = nullptr;
-
     bool sceneChangeOrder = false; // シーン変更のオーダーが出ているかどうか
+
+    // BGMハンドル
+    AudioHandle bgmHandle_ = -1;
 };

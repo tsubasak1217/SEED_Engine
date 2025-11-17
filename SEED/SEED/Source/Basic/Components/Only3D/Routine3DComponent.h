@@ -32,6 +32,7 @@ public:// accessor
     bool IsEndRoutine() const{ return timer_.IsFinished(); }
     const Transform& GetControlPoint(size_t index) const;
     const std::vector<RoutinePoint3D>& GetControlPoints() const{ return controlPoints_; }
+    const Timer& GetTimer()const{ return timer_; }
 
 public:// json関連
     void LoadFromJson(const nlohmann::json& jsonData) override;

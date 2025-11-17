@@ -55,6 +55,9 @@ private:
     InputHandler<bool> decideButtonInput_;
     InputHandler<bool> tutorialSelectInput_;
 
+    // BGM
+    AudioHandle bgmHandle_;
+
     // チュートリアル選択用
     bool isPlayTutorial_ = true;
 

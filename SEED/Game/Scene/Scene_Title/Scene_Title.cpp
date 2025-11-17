@@ -75,6 +75,9 @@ void Scene_Title::Initialize(){
     // 開始時フェード
     hierarchy_->LoadObject2D("Title/titleStart.prefab");
 
+    // BGM読み込み
+    AudioManager::LoadAudio("BGM/NETHMi_title.wav");
+
     // ポストプロセスの初期化
     PostEffectSystem::DeleteAll();
     PostEffectSystem::Load("TitleScene.json");
@@ -125,6 +128,7 @@ void Scene_Title::Update(){
         // 開始タイマーが終了した直後の処理
         if(titleStartTimer_.IsFinishedNow()){
             pressSpace_->SetIsActive(true);
+            bgmHandle_ = AudioManager::PlayAudio("BGM/NETHMi_title.wav", true, 0.5f);
         }
 
         // スタートボタンが押されていない場合の処理
@@ -169,7 +173,8 @@ void Scene_Title::Update(){
                 SEED::GetMainCamera()->SetTransform(toSelectCamerawork_->GetWorldTransform());
 
                 // カメラワークが終了したらチュートリアル選択UIを表示開始
-                if(toSelectCamerawork_->GetComponent<Routine3DComponent>()->IsEndRoutine()){
+                auto* routine = toSelectCamerawork_->GetComponent<Routine3DComponent>();
+                if(routine->IsEndRoutine()){
                     if(!tutorialSelectItems_){
                         // チュートリアル選択UIを読み込む
                         tutorialSelectItems_ = hierarchy_->LoadObject2D("Title/tutorialSelectItems.prefab");
@@ -191,6 +196,12 @@ void Scene_Title::Update(){
                         // チュートリアル選択処理
                         SelectTutorial();
                     }
+                }
+
+                // 音量を設定
+                if(routine->GetTimer().GetProgress() > 0.7f){
+                    float volumeRate = 1.0f - (routine->GetTimer().GetProgress() - 0.7f) / 0.3f;
+                    AudioManager::SetAudioVolume(bgmHandle_, 0.5f * volumeRate);
                 }
             }
 
@@ -250,6 +261,7 @@ void Scene_Title::EndFrame(){
     if(toSelectCamerawork_){
         if(sceneChangeOrder_){
             Scene_Game::SetIsPlayTutorial(isPlayTutorial_);
+            AudioManager::EndAudio(bgmHandle_);
             ChangeScene("Game");
             return;
         }

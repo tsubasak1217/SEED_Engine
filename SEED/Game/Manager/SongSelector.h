@@ -119,6 +119,7 @@ private:
 
     // 音声
     AudioHandle songHandle_;
+    std::string defaultSelectBGMPath_ = "BGM/NETHMi_select.wav";
 
     // 色
     std::array<Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;

@@ -598,7 +598,11 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
                 true, 0.5f
             );
         } else{
-
+            AudioManager::EndAudio(songHandle_);
+            songHandle_ = AudioManager::PlayAudio(
+                defaultSelectBGMPath_,
+                true, 0.5f
+            );
         }
     }
 
@@ -777,10 +781,19 @@ void SongSelector::SelectSong(){
             selectMode_ = SelectMode::Group;
             preGroupName_ = currentGroup->groupName;
 
+
             // 項目の更新
             UpdateVisibleGroups();
             UpdateUIContents();
             ShiftItem();
+
+            // グループ選択時はデフォルト選曲BGMを再生
+            AudioManager::EndAudio(songHandle_);
+            preSongName_.clear();
+            songHandle_ = AudioManager::PlayAudio(
+                defaultSelectBGMPath_,
+                true, 0.5f
+            );
 
             // UIのアクティブ状態を切り替え
             for(auto& ui : groupUIs){

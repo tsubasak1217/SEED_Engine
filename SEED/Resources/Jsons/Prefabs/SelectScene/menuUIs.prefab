@@ -5,8 +5,8 @@
                 {
                     "components": [
                         {
-                            "componentID": 208,
-                            "componentTag": "UI_ID:208",
+                            "componentID": 103,
+                            "componentTag": "UI_ID:103",
                             "componentType": "UI",
                             "sprites": [
                                 {
@@ -24,18 +24,19 @@
                                         "y": 0.0
                                     },
                                     "color": {
-                                        "w": 0.8941176533699036,
+                                        "w": 0.9058823585510254,
                                         "x": 0.0,
                                         "y": 0.0,
                                         "z": 0.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
                                     "isApplyViewMat": false,
                                     "isStaticDraw": true,
                                     "isUVScroll": false,
-                                    "layer": -5,
+                                    "layer": -1,
                                     "maxColmnCount": 0,
                                     "maxStepCount": 0,
                                     "name": "sprite0",
@@ -78,6 +79,63 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "colorControlMode": 0,
+                            "componentID": 219,
+                            "componentTag": "ColorControl_ID:219",
+                            "componentType": "ColorControl",
+                            "curve": {
+                                "channel": 3,
+                                "curves": [
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        }
+                                    ]
+                                ],
+                                "type": 13,
+                                "unitBorder": 1.0
+                            },
+                            "isLoop": false,
+                            "isMultiply": false,
+                            "time": 1.0,
+                            "timeScale": 1.0
                         }
                     ],
                     "isParentRotate": true,
@@ -124,6 +182,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -133,7 +192,291 @@
                                     "layer": 0,
                                     "maxColmnCount": 0,
                                     "maxStepCount": 0,
-                                    "name": "sprite0",
+                                    "name": "icon",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 280.0,
+                                        "y": 280.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "Resources/Textures/Select/backTitleUI.png",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                },
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.0,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "cullMode": 3,
+                                    "drawLocation": 2,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": true,
+                                    "isUVScroll": false,
+                                    "layer": 0,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "linesprite1",
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "size": {
+                                        "x": 570.0,
+                                        "y": 7.0
+                                    },
+                                    "stepTime": 0.0,
+                                    "texturePath": "",
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 164.0,
+                                            "y": 29.0
+                                        }
+                                    },
+                                    "uvScrollType": 0,
+                                    "uvScrollValue": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "uvTransform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        }
+                                    }
+                                }
+                            ],
+                            "texts": [
+                                {
+                                    "alignX": 0,
+                                    "alignY": 1,
+                                    "anchorPos": {
+                                        "x": 0.0,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "drawLocation": 2,
+                                    "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                                    "fontSize": 58.0,
+                                    "glyphSpacing": 4.0,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": true,
+                                    "layer": 0,
+                                    "lineSpacing": 8.0,
+                                    "name": "text0",
+                                    "outlineColor": {
+                                        "w": 1.0,
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "outlineSplitCount": 16,
+                                    "outlineWidth": 2.0,
+                                    "size": {
+                                        "x": 986.0,
+                                        "y": 64.0
+                                    },
+                                    "text": "タイトル画面に戻ります",
+                                    "textBoxVisible": false,
+                                    "textDisplayRate": 1.0,
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 171.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "useOutline": false
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 207,
+                            "componentTag": "Routine2D_ID:207",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 835.8552856445313,
+                                        "y": -275.1259460449219
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 659.833740234375,
+                                        "y": -4.948570251464844
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 560.3714599609375,
+                                        "y": 291.6599426269531
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 530.0711669921875,
+                                        "y": 550.0908813476563
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "disableRotate": false,
+                            "disableScale": false,
+                            "disableTranslate": false,
+                            "duration": 1.0,
+                            "easingType": 16,
+                            "interpolationType": 1,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                0.35100001096725464,
+                                0.6874284744262695,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "isParentRotate": true,
+                    "isParentScale": true,
+                    "isParentTranslate": true,
+                    "objectName": "backTitleUI",
+                    "objectType": 0,
+                    "transform": {
+                        "rotate": 0.0,
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "translate": {
+                            "x": 835.8552856445313,
+                            "y": -275.1259460449219
+                        }
+                    }
+                },
+                {
+                    "components": [
+                        {
+                            "componentID": 207,
+                            "componentTag": "UI_ID:207",
+                            "componentType": "UI",
+                            "sprites": [
+                                {
+                                    "anchorPoint": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "clipLT": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "clipSize": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    },
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "cullMode": 3,
+                                    "drawLocation": 2,
+                                    "flipX": false,
+                                    "flipY": false,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": true,
+                                    "isUVScroll": false,
+                                    "layer": 0,
+                                    "maxColmnCount": 0,
+                                    "maxStepCount": 0,
+                                    "name": "icon",
                                     "offset": {
                                         "x": 0.0,
                                         "y": 0.0
@@ -192,6 +535,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -201,13 +545,13 @@
                                     "layer": 0,
                                     "maxColmnCount": 0,
                                     "maxStepCount": 0,
-                                    "name": "sprite1",
+                                    "name": "linesprite1",
                                     "offset": {
                                         "x": 0.0,
                                         "y": 0.0
                                     },
                                     "size": {
-                                        "x": 736.0,
+                                        "x": 696.0,
                                         "y": 7.0
                                     },
                                     "stepTime": 0.0,
@@ -219,7 +563,7 @@
                                             "y": 1.0
                                         },
                                         "translate": {
-                                            "x": 203.0,
+                                            "x": 213.0,
                                             "y": 29.0
                                         }
                                     },
@@ -240,6 +584,125 @@
                                         }
                                     }
                                 }
+                            ],
+                            "texts": [
+                                {
+                                    "alignX": 0,
+                                    "alignY": 1,
+                                    "anchorPos": {
+                                        "x": 0.0,
+                                        "y": 0.5
+                                    },
+                                    "blendMode": 3,
+                                    "color": {
+                                        "w": 1.0,
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "drawLocation": 2,
+                                    "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
+                                    "fontSize": 58.0,
+                                    "glyphSpacing": 4.0,
+                                    "isApplyViewMat": false,
+                                    "isStaticDraw": true,
+                                    "layer": 0,
+                                    "lineSpacing": 8.0,
+                                    "name": "text0",
+                                    "outlineColor": {
+                                        "w": 1.0,
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "outlineSplitCount": 16,
+                                    "outlineWidth": 2.0,
+                                    "size": {
+                                        "x": 986.0,
+                                        "y": 64.0
+                                    },
+                                    "text": "ゲームに関する設定が行えます",
+                                    "textBoxVisible": false,
+                                    "textDisplayRate": 1.0,
+                                    "transform": {
+                                        "rotate": 0.0,
+                                        "scale": {
+                                            "x": 1.0,
+                                            "y": 1.0
+                                        },
+                                        "translate": {
+                                            "x": 235.0,
+                                            "y": 0.0
+                                        }
+                                    },
+                                    "useOutline": false
+                                }
+                            ]
+                        },
+                        {
+                            "componentID": 208,
+                            "componentTag": "Routine2D_ID:208",
+                            "componentType": "Routine2D",
+                            "controlPoints": [
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": -15.519287109375,
+                                        "y": 1181.900634765625
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": -37.3919677734375,
+                                        "y": 816.3602905273438
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 76.72999572753906,
+                                        "y": 490.7220458984375
+                                    }
+                                },
+                                {
+                                    "rotate": 0.0,
+                                    "scale": {
+                                        "x": 1.0,
+                                        "y": 1.0
+                                    },
+                                    "translate": {
+                                        "x": 233.41192626953125,
+                                        "y": 293.38116455078125
+                                    }
+                                }
+                            ],
+                            "defaultPaused": false,
+                            "disableRotate": false,
+                            "disableScale": false,
+                            "disableTranslate": false,
+                            "duration": 1.0,
+                            "easingType": 16,
+                            "interpolationType": 1,
+                            "isConnectEdge": false,
+                            "isLoop": false,
+                            "timePoints": [
+                                0.0,
+                                0.3109999895095825,
+                                0.6391426920890808,
+                                1.0
                             ]
                         }
                     ],
@@ -255,8 +718,8 @@
                             "y": 1.0
                         },
                         "translate": {
-                            "x": 247.5562744140625,
-                            "y": 310.8845520019531
+                            "x": -15.519287109375,
+                            "y": 1181.900634765625
                         }
                     }
                 }

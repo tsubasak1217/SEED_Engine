@@ -93,6 +93,7 @@ nlohmann::json Sprite::ToJson() const{
     data["texturePath"] = texturePath;
     data["color"] = color;
     data["blendMode"] = static_cast<int>(blendMode);
+    data["cullMode"] = static_cast<int>(cullMode);
     data["transform"] = transform;
     data["offset"] = offset;
     data["anchorPoint"] = anchorPoint;
@@ -118,6 +119,7 @@ void Sprite::FromJson(const nlohmann::json& data){
     texturePath = data.value("texturePath", texturePath);
     color = data.value("color", color.value);
     blendMode = static_cast<BlendMode>(data.value("blendMode", static_cast<int>(blendMode)));
+    cullMode = static_cast<D3D12_CULL_MODE>(data.value("cullMode", static_cast<int>(cullMode)));
     transform = data.value("transform", transform);
     offset = data.value("offset", offset);
     anchorPoint = data.value("anchorPoint", anchorPoint);
@@ -163,6 +165,7 @@ void Sprite::Edit([[maybe_unused]]const std::string& hash){
 
         ImGui::ColorEdit4("色##" + hash, &color.value.x);
         ImFunc::Combo<BlendMode>("ブレンドモード##" + hash, blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
+        ImFunc::Combo<D3D12_CULL_MODE>("カリングモード##" + hash, cullMode, { "なし","前面","背面" },1);
 
         ImGui::Unindent();
     }

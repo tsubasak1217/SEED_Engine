@@ -400,12 +400,13 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Color& color, Bl
 }
 
 void SEED::DrawLine2D(
-    const Vector2& v1, const Vector2& v2, const Color& color, BlendMode blendMode, bool isApplyViewMat
+    const Vector2& v1, const Vector2& v2, const Color& color, BlendMode blendMode,
+    bool isApplyViewMat, bool isIgnoreDepth
 ){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
-        IdentityMat4(), color, false, isApplyViewMat,blendMode, false, DrawLocation::Front, 100
+        IdentityMat4(), color, false, isApplyViewMat, blendMode, false, DrawLocation::Front, 100, isIgnoreDepth
     );
 }
 
@@ -438,17 +439,17 @@ void SEED::DrawAABB(const AABB& aabb, const Color& color){
     DrawOBB(obb, color);
 }
 
-void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color){
+void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color, bool isIgnoreDepth){
     Vector2 vertex[4] = {
         Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
         Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
         Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y + aabb.halfSize.y),
         Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y + aabb.halfSize.y)
     };
-    DrawLine2D(vertex[0], vertex[1], color);
-    DrawLine2D(vertex[1], vertex[2], color);
-    DrawLine2D(vertex[2], vertex[3], color);
-    DrawLine2D(vertex[3], vertex[0], color);
+    DrawLine2D(vertex[0], vertex[1], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[1], vertex[2], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[2], vertex[3], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[3], vertex[0], color,BlendMode::NORMAL,false,isIgnoreDepth);
 }
 
 void SEED::DrawOBB(const OBB& obb, const Color& color){
@@ -477,16 +478,16 @@ void SEED::DrawOBB(const OBB& obb, const Color& color){
 /////////////////////////////////////////////////////////////
 // 2次元OBBの描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawOBB2D(const OBB2D& obb, const Color& color){
+void SEED::DrawOBB2D(const OBB2D& obb, const Color& color, bool isIgnoreDepth){
     // 頂点を計算
     static std::array<Vector2, 4> vertex;
     vertex = obb.GetVertices();
 
     // 描画
-    DrawLine2D(vertex[0], vertex[1], color);
-    DrawLine2D(vertex[1], vertex[3], color);
-    DrawLine2D(vertex[3], vertex[2], color);
-    DrawLine2D(vertex[2], vertex[0], color);
+    DrawLine2D(vertex[0], vertex[1], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[1], vertex[3], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[3], vertex[2], color,BlendMode::NORMAL,false,isIgnoreDepth);
+    DrawLine2D(vertex[2], vertex[0], color,BlendMode::NORMAL,false,isIgnoreDepth);
 }
 
 /////////////////////////////////////////////////////////////

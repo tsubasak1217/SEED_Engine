@@ -251,17 +251,17 @@ void PolygonManager::InitResources(){
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gPointLightCount", &pointLightCount_);
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
 
-    // AlwaysWriteVSPipeline
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gPointLightCount", &pointLightCount_);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
+    // IgnoreDepthVSPipeline
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gCamera", gpuHandles_[(int)HANDLE_TYPE::CameraResource]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gMaterial", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Material]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gDirectionalLight", gpuHandles_[(int)HANDLE_TYPE::DirectionalLight]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gPointLight", gpuHandles_[(int)HANDLE_TYPE::PointLight]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gSpotLight", gpuHandles_[(int)HANDLE_TYPE::SpotLight]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gTexture", gpuHandles_[(int)HANDLE_TYPE::TextureTable]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gDirectionalLightCount", &directionalLightCount_);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gPointLightCount", &pointLightCount_);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gSpotLightCount", &spotLightCount_);
 
     // SkinningVSPipeline
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "transforms", gpuHandles_[(int)HANDLE_TYPE::InstancingResource_Transform]);
@@ -308,12 +308,12 @@ void PolygonManager::BindFrameDatas(){
 void PolygonManager::BindCameraDatas(const std::string& cameraName){
     // カメラのインデックスを設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "gCameraIndex", &cameraOrder_[cameraName]);
     // カメラが切り替わるインスタンス数を設定
     PSOManager::SetBindInfo("CommonVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
-    PSOManager::SetBindInfo("AlwaysWriteVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
+    PSOManager::SetBindInfo("IgnoreDepthVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("SkinningVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("TextVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
     PSOManager::SetBindInfo("SkyBoxVSPipeline.pip", "cameraIndexOffset", &cameraSwitchInstanceCount_[cameraName]);
@@ -1093,12 +1093,12 @@ void PolygonManager::AddSprite(
     ///////////////////////////////////////////////////////////////////
 
     auto* modelData = sprite.isStaticDraw ?
-        &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1] :
-        &primitiveData_[PRIMITIVE_SPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1];
+        &primitiveData_[PRIMITIVE_STATIC_SPRITE][(int)sprite.blendMode][(int)sprite.cullMode - 1] :
+        &primitiveData_[PRIMITIVE_SPRITE][(int)sprite.blendMode][(int)sprite.cullMode - 1];
 
     // 背景描画の場合は背景用のモデルデータを使用
     modelData = sprite.drawLocation == DrawLocation::Back ?
-        &primitiveData_[PRIMITIVE_BACKSPRITE][(int)sprite.blendMode][(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1] : modelData;
+        &primitiveData_[PRIMITIVE_BACKSPRITE][(int)sprite.blendMode][(int)sprite.cullMode - 1] : modelData;
 
     static std::string drawDataName;
     // 背面描画の場合はzFarに設定
@@ -1115,7 +1115,7 @@ void PolygonManager::AddSprite(
     drawDataName += sprite.isStaticDraw ? "SSP" : "SP";
     sprite.drawLocation == DrawLocation::Back ? drawDataName = "BSP" : drawDataName;
     drawDataName += blendName[(int)sprite.blendMode];
-    drawDataName += cullName[(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1];
+    drawDataName += cullName[(int)sprite.cullMode - 1];
     uint64_t hash = MyFunc::Hash64(drawDataName);
 
     // もし該当する描画データがなければ作成する
@@ -1128,7 +1128,7 @@ void PolygonManager::AddSprite(
         modelDrawData_[hash]->pso =
             PSOManager::GetPSO(
                 "CommonVSPipeline.pip",
-                sprite.blendMode, D3D12_CULL_MODE::D3D12_CULL_MODE_BACK, PolygonTopology::TRIANGLE
+                sprite.blendMode, sprite.cullMode, PolygonTopology::TRIANGLE
             );
 
         // 描画種類の設定
@@ -1254,7 +1254,7 @@ void PolygonManager::AddSprite(
     }
 
 
-    objCountCull_[(int)D3D12_CULL_MODE::D3D12_CULL_MODE_BACK - 1]++;
+    objCountCull_[(int)sprite.cullMode - 1]++;
     objCountBlend_[(int)sprite.blendMode]++;
     spriteCount_++;
     drawData->indexCount += 6;
@@ -1464,7 +1464,7 @@ void PolygonManager::AddModel(Model* model,const std::optional<Color>& masterCol
 void PolygonManager::AddLine(
     const Vector4& v1, const Vector4& v2, const Matrix4x4& worldMat,
     const Color& color, bool view3D, bool isApplyViewMat, BlendMode blendMode,
-    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool alwaysWrite
+    bool isStaticDraw, DrawLocation drawLocation, int32_t layer, bool isIgnoreDepth
 ){
 
     assert(lineCount_ < kMaxLineCount_);
@@ -1509,9 +1509,9 @@ void PolygonManager::AddLine(
     drawDataName[1] += isStaticDraw ? "SL2" : "L2";
     drawDataName[1] += blendName[(int)blendMode];
     drawDataName[1] += cullName[0];
-    if(alwaysWrite){
-        drawDataName[0] += "_ALW";
-        drawDataName[1] += "_ALW";
+    if(isIgnoreDepth){
+        drawDataName[0] += "_IgnD";
+        drawDataName[1] += "_IgnD";
     }
 
     // もし該当する描画データがなければ作成する
@@ -1522,9 +1522,9 @@ void PolygonManager::AddLine(
         modelDrawData_[hash]->modelData = modelData;
 
         // パイプラインの設定
-        modelDrawData_[hash]->pso = alwaysWrite ?
+        modelDrawData_[hash]->pso = isIgnoreDepth ?
             PSOManager::GetPSO(
-                "AlwaysWriteVSPipeline.pip",
+                "IgnoreDepthVSPipeline.pip",
                 blendMode, D3D12_CULL_MODE_NONE, PolygonTopology::LINE
             ) :
             PSOManager::GetPSO(

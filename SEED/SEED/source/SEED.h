@@ -136,7 +136,8 @@ public:
     // 2D線
     static void DrawLine2D(
         const Vector2& v1, const Vector2& v2,
-        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, bool isApplyViewMat = false
+        const Color& color = { 1.0f,1.0f,1.0f,1.0f }, BlendMode blendMode = BlendMode::NORMAL, 
+        bool isApplyViewMat = false, bool isIgnoreDepth = false
     );
 
     /*========================テキストの描画関数==========================*/
@@ -154,9 +155,9 @@ public:
 
     // AABB, OBBの描画関数
     static void DrawAABB(const AABB& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawAABB2D(const AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawAABB2D(const AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
     static void DrawOBB(const OBB& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-    static void DrawOBB2D(const OBB2D& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+    static void DrawOBB2D(const OBB2D& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
 
     // 六角形の描画
     static void DrawHexagon(

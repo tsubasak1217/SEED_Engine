@@ -84,6 +84,8 @@ void Hierarchy::RemoveGameObject(GameObject2D* gameObject){
 
 void Hierarchy::EraseObject(GameObject* gameObject){
     if(isEndHierarchy_){ return; }
+    if(!gameObject){ return; }
+
     auto childrenCopy = gameObject->GetAllChildren();
     existObjectIdMap_.erase(gameObject->GetObjectID());
 
@@ -114,6 +116,7 @@ void Hierarchy::EraseObject(GameObject* gameObject){
 
 void Hierarchy::EraseObject(GameObject2D* gameObject){
     if(isEndHierarchy_){ return; }
+    if(!gameObject){ return; }
     auto childrenCopy = gameObject->GetAllChildren();
     existObjectIdMap2D_.erase(gameObject->GetObjectID());
 

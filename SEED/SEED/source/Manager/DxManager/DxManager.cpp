@@ -391,7 +391,7 @@ void DxManager::InitPSO(){
     /*==================================================================================*/
 
     PSOManager::CreatePipelines("CommonVSPipeline.pip");// VSのパイプライン。ふつうのやつ
-    PSOManager::CreatePipelines("AlwaysWriteVSPipeline.pip");// VSのパイプライン。深度に関わらず必ず書き込む
+    PSOManager::CreatePipelines("IgnoreDepthVSPipeline.pip");// VSのパイプライン。深度に関わらず必ず書き込む
     PSOManager::CreatePipelines("SkinningVSPipeline.pip");// VSのパイプライン。スキニング用
     PSOManager::CreatePipelines("TextVSPipeline.pip");// テキストのパイプライン。
     PSOManager::CreatePipelines("SkyBoxVSPipeline.pip");// スカイボックス用のパイプライン。

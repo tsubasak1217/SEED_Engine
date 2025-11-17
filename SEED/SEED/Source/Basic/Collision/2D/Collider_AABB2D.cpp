@@ -51,7 +51,7 @@ void Collider_AABB2D::UpdateMatrix() {
 //////////////////////////////////////////////////////////////////
 void Collider_AABB2D::Draw() {
 
-    SEED::DrawAABB2D(body_, color_);
+    SEED::DrawAABB2D(body_, color_,true);
 }
 
 
@@ -153,7 +153,7 @@ void Collider_AABB2D::Edit() {
     // 中心座標
     ImGui::Text("------ Center ------");
     ImGui::Indent();
-    ImGui::DragFloat2(std::string("Center" + colliderID).c_str(), &local_.center.x, 0.1f);
+    ImGui::DragFloat2(std::string("中心座標" + colliderID).c_str(), &local_.center.x, 0.1f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -161,7 +161,7 @@ void Collider_AABB2D::Edit() {
     // 半径
     ImGui::Text("------ HalfSie ------");
     ImGui::Indent();
-    ImGui::DragFloat2(std::string("HalfSie" + colliderID).c_str(), &body_.halfSize.x, 0.025f);
+    ImGui::DragFloat2(std::string("ハーフサイズ" + colliderID).c_str(), &local_.halfSize.x, 0.025f);
     ImGui::Unindent();
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
@@ -169,7 +169,7 @@ void Collider_AABB2D::Edit() {
     // オフセット
     ImGui::Text("------ Offset ------");
     ImGui::Indent();
-    ImGui::DragFloat2(std::string("Offset" + colliderID).c_str(), &offset_.x, 0.1f);
+    ImGui::DragFloat2(std::string("オフセット" + colliderID).c_str(), &offset_.x, 0.1f);
     ImGui::Unindent();
 
     // ワールド座標
@@ -192,7 +192,7 @@ nlohmann::json Collider_AABB2D::GetJsonData() {
 
     // ローカル座標
     json["local"]["center"] = local_.center;
-    json["local"]["halfSize"] = body_.halfSize;
+    json["local"]["halfSize"] = local_.halfSize;
 
     // オフセット
     json["offset"] = offset_;
@@ -209,7 +209,7 @@ void Collider_AABB2D::LoadFromJson(const nlohmann::json& jsonData) {
 
     // ローカル座標
     local_.center = jsonData["local"]["center"];
-    body_.halfSize = jsonData["local"]["halfSize"];
+    local_.halfSize = jsonData["local"]["halfSize"];
 
     // オフセット
     offset_ = jsonData["offset"];

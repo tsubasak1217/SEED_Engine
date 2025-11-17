@@ -8,6 +8,9 @@
 #include <Game/Scene/Scene_Clear/Scene_Clear.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
 
+// state
+#include <Game/Scene/Scene_Game/State/GameState_SelectMenu.h>
+
 // コンストラクタ
 SongSelector::SongSelector(){
 }
@@ -105,10 +108,6 @@ void SongSelector::EndFrame(){
             auto* scene = GameSystem::GetScene();
             GameSystem::GetScene()->ChangeState(new GameState_Play(scene, *currentSong.first, (int)currentDifficulty));
             return;
-        } else{
-            //titleに戻る
-            GameSystem::GetScene()->ChangeScene("Title");
-            return;
         }
     }
 }
@@ -166,6 +165,9 @@ void SongSelector::InitializeInput(){
 
     // 縦方向入力-----------------------------------------------------
     verticalInput_.Value = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return UpDown::NONE;// イベント中は入力を受け付けない
+        }
         if(Input::IsPressKey({ DIK_W,DIK_UP })){
             return UpDown::UP;
         }
@@ -175,6 +177,9 @@ void SongSelector::InitializeInput(){
         return UpDown::NONE;
     };
     verticalInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
         if(Input::IsTriggerKey({ DIK_W,DIK_UP,DIK_S,DIK_DOWN })){
             return true;
         }
@@ -183,6 +188,9 @@ void SongSelector::InitializeInput(){
 
     // 横方向入力-----------------------------------------------------
     holozontalInput_.Value = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return LR::NONE;// イベント中は入力を受け付けない
+        }
         if(Input::IsPressKey({ DIK_A,DIK_LEFT })){
             return LR::LEFT;
         }
@@ -192,6 +200,9 @@ void SongSelector::InitializeInput(){
         return LR::NONE;
     };
     holozontalInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
         if(Input::IsTriggerKey({ DIK_A,DIK_LEFT,DIK_D,DIK_RIGHT })){
             return true;
         }
@@ -200,6 +211,9 @@ void SongSelector::InitializeInput(){
 
     // ソート変更入力-------------------------------------------------
     modeChangeInput_.Value = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return LR::NONE;// イベント中は入力を受け付けない
+        }
         if(Input::IsPressKey(DIK_Q)){
             return LR::LEFT;
         }
@@ -209,6 +223,9 @@ void SongSelector::InitializeInput(){
         return LR::NONE;
     };
     modeChangeInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
         if(Input::IsTriggerKey({ DIK_Q,DIK_E })){
             return true;
         }
@@ -217,6 +234,9 @@ void SongSelector::InitializeInput(){
 
     // 決定入力-------------------------------------------------------
     decideInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
         if(Input::IsTriggerKey({ DIK_SPACE,DIK_RETURN })){
             return true;
         }
@@ -225,6 +245,9 @@ void SongSelector::InitializeInput(){
 
     // 戻る入力-------------------------------------------------------
     backInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
         if(Input::IsTriggerKey(DIK_ESCAPE)){
             return true;
         }
@@ -841,9 +864,10 @@ void SongSelector::SelectGroup(){
             return;
         }
 
-        // 戻る入力があればタイトルへ戻る
+        // escでメニュー表示
         if(backInput_.Trigger()){
-            changeSceneOrder_ = true;
+            auto* scene = GameSystem::GetScene();
+            scene->CauseEvent(new GameState_SelectMenu(scene));
             return;
         }
     }

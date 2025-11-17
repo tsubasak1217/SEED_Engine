@@ -22,6 +22,6 @@
 (↓使わないシェーダーは何も書かなくてOK)
 #3 シェーダー名_VS = Object3d.VS.hlsl
 #4 シェーダー名_MS = 
-#5 シェーダー名_PS = Object3dAlwaysWrite.PS.hlsl
+#5 シェーダー名_PS = Object3dIgnoreDepth.PS.hlsl
 #6 シェーダー名_CS = 
 #7 シェーダー名_AS = 

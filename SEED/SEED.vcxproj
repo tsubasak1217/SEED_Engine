@@ -120,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
     <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
     <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
     <ClCompile Include="Game\Config\PlaySettings.cpp" />
@@ -289,6 +290,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />
     <ClInclude Include="Game\Components\ResultUpdateComponent.h" />

@@ -59,12 +59,15 @@ void Collision2DComponent::Update(){
 // 描画処理
 //////////////////////////////////////////////////////////////////////////
 void Collision2DComponent::Draw(){
+
+#ifdef _DEBUG
     // コライダーの描画
     if(isColliderVisible_){
         for(auto& collider : colliders_){
             collider->Draw();
         }
     }
+#endif // _DEBUG
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,6 +91,9 @@ void Collision2DComponent::Finalize(){
 void Collision2DComponent::EditGUI(){
 #ifdef _DEBUG
     ImGui::Indent();
+
+    // コライダーの表示切替
+    ImGui::Checkbox("コライダー表示", &isColliderVisible_);
 
     // コライダーエディターのGUI編集
     colliderEditor_->Edit();

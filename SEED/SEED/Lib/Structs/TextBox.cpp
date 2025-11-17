@@ -122,7 +122,7 @@ namespace TextBoxHelper{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     std::vector<LineGlyphData> ToLineGlyphs(
         const std::vector<std::vector<unsigned int>>& codePointsList,
-        const std::string& fontName, float fontSize, float glyphSpacing, const Vector2& textBoxSize
+        const std::string& fontName, float fontSize, float glyphSpacing, const Vector2& textBoxSize, float textDisplayRate
     ){
         // 行の文字データ
         std::vector<LineGlyphData> result;
@@ -130,7 +130,18 @@ namespace TextBoxHelper{
         // オフセット計算用
         int lineCount = 0;
 
+        // 文字数の最大値をtextDisplayRateに応じて設定
+        int32_t originalTotalChars = 0;
+        for(auto& lineCodePoints : codePointsList){
+            originalTotalChars += static_cast<int32_t>(lineCodePoints.size());
+        }
+
+        // 表示する最大文字数
+        int32_t maxDisplayChars = static_cast<int32_t>(std::clamp(textDisplayRate,0.0f,1.0f) * originalTotalChars);
+
+
         // 収まる行ごとに分割して文字データを取得
+        int32_t currentCharCount = 0;
         for(auto& lineCodePoints : codePointsList){
             // 一行
             for(size_t i = 0; i < lineCodePoints.size(); i++){
@@ -145,6 +156,13 @@ namespace TextBoxHelper{
                 lineGlyph.totalWidth += glyphWidth + glyphSpacing;
                 lineGlyph.glyphs.push_back(glyph);
 
+                // 最大表示文字数に達したら終了
+                currentCharCount++;
+                if(currentCharCount >= maxDisplayChars){
+                    result.push_back(lineGlyph);
+                    break;
+                }
+
                 // 行がいっぱいになる or 最後の文字に達したら次の行へ
                 if(lineGlyph.totalWidth + glyphWidth + glyphSpacing > textBoxSize.x or i == lineCodePoints.size() - 1){
                     lineCount++;
@@ -153,6 +171,12 @@ namespace TextBoxHelper{
                     lineGlyph.totalWidth = 0.0f;
                     lineGlyph.glyphs.clear();
                 }
+
+            }
+
+            // 最大表示文字数に達したら終了
+            if(currentCharCount >= maxDisplayChars){
+                break;
             }
         }
 
@@ -206,6 +230,9 @@ namespace TextBoxHelper{
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 void TextBox2D::Draw(const std::optional<Color>& masterColor)const{
 
+    // 表示率が0なら何もしない
+    if(textDisplayRate == 0.0f){ return; }
+
     // マスターカラーが指定されていれば乗算
     Color _color = this->color;
     if(masterColor != std::nullopt){
@@ -241,7 +268,7 @@ void TextBox2D::Draw(const std::optional<Color>& masterColor)const{
     // 各行の文字データリストを取得
     const FontData& fontData = TextSystem::GetInstance()->GetFont(fontName);// フォントデータ
     float heightOffset = fontSize * fontData.baselneHeightRate; // ベースラインのオフセット
-    auto lineGlyphsList = TextBoxHelper::ToLineGlyphs(codePointsList, fontName, fontSize, glyphSpacing, size);
+    auto lineGlyphsList = TextBoxHelper::ToLineGlyphs(codePointsList, fontName, fontSize, glyphSpacing, size, textDisplayRate);
 
     // 最終的に描画する矩形を入れていくリスト(行数で初期化)
     std::vector<std::vector<Quad2D>> quadLineList;
@@ -285,14 +312,18 @@ void TextBox2D::Draw(const std::optional<Color>& masterColor)const{
             quad.texCoord[1] = { glyph->texcoordRB.x, glyph->texcoordLT.y };
             quad.texCoord[2] = { glyph->texcoordLT.x, glyph->texcoordRB.y };
             quad.texCoord[3] = glyph->texcoordRB;
+
             // グラフハンドルを設定
             quad.GH = glyph->graphHandle;
+
             // 色を設定
             quad.color = _color;
+
             // その他設定
             quad.isText = true;
 
             // 描画設定
+            quad.isStaticDraw = isStaticDraw;
             quad.isApplyViewMat = isApplyViewMat;
             quad.layer = layer;
             quad.blendMode = blendMode;
@@ -556,9 +587,11 @@ void TextBox2D::Edit(const std::string& hash){
         ImFunc::Combo<BlendMode>("ブレンドモード##" + hash, blendMode, { "NONE","0MUL" ,"SUB","NORMAL","ADD","SCREEN" });
         ImFunc::Combo<DrawLocation>("描画位置##" + hash, drawLocation, { "背景","前景" }, 1);
         ImGui::DragInt("描画レイヤー##" + hash, &layer);
+        ImGui::SliderFloat("表示率##" + hash, &textDisplayRate, 0.0f, 1.0f);
         ImGui::ColorEdit4("文字色##" + hash, (float*)&color);
         ImGui::Checkbox("テキストボックス表示##" + hash, &textBoxVisible);
         ImGui::Checkbox("ビュー行列を適用##" + hash, &isApplyViewMat);
+        ImGui::Checkbox("静的描画##" + hash, &isStaticDraw);
         ImGui::Checkbox("アウトライン##" + hash, &useOutline);
         if(useOutline){
             ImGui::DragFloat("アウトライン幅##" + hash, &outlineWidth, 0.1f, 0.0f);
@@ -590,6 +623,7 @@ nlohmann::json TextBox2D::GetJsonData() const{
     jsonData["alignX"] = static_cast<int>(alignX);
     jsonData["alignY"] = static_cast<int>(alignY);
     jsonData["blendMode"] = static_cast<int>(blendMode);
+    jsonData["textDisplayRate"] = textDisplayRate;
     jsonData["useOutline"] = useOutline;
     jsonData["outlineWidth"] = outlineWidth;
     jsonData["outlineSplitCount"] = outlineSplitCount;
@@ -597,6 +631,8 @@ nlohmann::json TextBox2D::GetJsonData() const{
     jsonData["outlineColor"] = outlineColor;
     jsonData["textBoxVisible"] = textBoxVisible;
     jsonData["isApplyViewMat"] = isApplyViewMat;
+    jsonData["isStaticDraw"] = isStaticDraw;
+    jsonData["drawLocation"] = static_cast<int>(drawLocation);
     jsonData["layer"] = layer;
     return jsonData; // JSONデータを返す
 }
@@ -616,6 +652,7 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     alignX = static_cast<TextAlignX>(jsonData.value("alignX", 1));
     alignY = static_cast<TextAlignY>(jsonData.value("alignY", 0));
     blendMode = static_cast<BlendMode>(jsonData["blendMode"]);
+    textDisplayRate = jsonData.value("textDisplayRate", 1.0f);
     useOutline = jsonData["useOutline"];
     outlineWidth = jsonData["outlineWidth"];
     outlineSplitCount = jsonData["outlineSplitCount"];
@@ -623,6 +660,8 @@ void TextBox2D::LoadFromJson(const nlohmann::json& jsonData){
     outlineColor = jsonData["outlineColor"];
     textBoxVisible = jsonData.value("textBoxVisible", true);
     isApplyViewMat = jsonData.value("isApplyViewMat", false);
+    isStaticDraw = jsonData.value("isStaticDraw", false);
+    drawLocation = static_cast<DrawLocation>(jsonData.value("drawLocation", 2));
     layer = jsonData.value("layer", 0);
     // フォントを設定
     SetFont(fontName);

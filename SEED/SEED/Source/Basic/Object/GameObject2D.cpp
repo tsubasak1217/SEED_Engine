@@ -351,7 +351,7 @@ void GameObject2D::AddWorldTranslate(const Vector2& addValue){
 void GameObject2D::SetWorldTranslate(const Vector2& translate){
     // 親の位置を考慮してワールド軸基準で位置を設定
     if(parent_ != nullptr){
-        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
+        Matrix3x3 invParentMat = InverseMatrix(parent_->GetWorldMat());
         localTransform_.translate = translate * invParentMat;
     } else{
         localTransform_.translate = translate;

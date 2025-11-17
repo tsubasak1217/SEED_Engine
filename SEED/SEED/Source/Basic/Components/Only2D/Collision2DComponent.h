@@ -45,7 +45,7 @@ protected:
     bool isCollide_ = false;
     bool preIsCollide_ = false;
     bool isActive_ = true;
-    bool isColliderVisible_ = false;
+    bool isColliderVisible_ = true;
     Vector3 prePos_;
     ObjectType objectType_ = ObjectType::All; // オブジェクトの種類
     std::unique_ptr<ColliderEditor2D> colliderEditor_;

@@ -58,6 +58,7 @@ public:// パラメータなど
     TextAlignX alignX = TextAlignX::CENTER;// テキストの配置
     TextAlignY alignY = TextAlignY::TOP;// テキストの配置
     BlendMode blendMode = BlendMode::NORMAL;
+    float textDisplayRate = 1.0f; // テキスト表示率(0.0~1.0)
     bool useOutline = false;
     float outlineWidth = 2.0f; // アウトラインの幅
     int outlineSplitCount = 16;
@@ -65,6 +66,7 @@ public:// パラメータなど
     Vector4 outlineColor = { 0.0f, 0.0f, 0.0f, 1.0f };
     bool isApplyViewMat = false;// ビュー行列を適用するかどうか
     bool textBoxVisible = true;
+    bool isStaticDraw = false; // 静的描画かどうか
     DrawLocation drawLocation = DrawLocation::Front;
     int32_t layer = 0; // 描画順。大きいほど手前に描画
 

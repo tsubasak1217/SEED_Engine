@@ -10,7 +10,7 @@
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Structs/DrawLocation.h>
 #include <SEED/Lib/Structs/Color.h>
-
+#include <SEED/Lib/Functions/DxFunc.h>
 
 /// <summary>
 /// スプライト画像構造体
@@ -27,11 +27,12 @@ public:
 
     Vector2 size;
 
-    // 色；マテリアル
+    // 描画設定類
     uint32_t GH;
     std::string texturePath;
     Color color;
     BlendMode blendMode;
+    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
 
     // SRT
     Transform2D transform;

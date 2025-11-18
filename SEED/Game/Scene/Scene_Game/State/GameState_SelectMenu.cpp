@@ -149,7 +149,6 @@ void GameState_SelectMenu::ManageState(){
                 } else{
                     // optionページを閉じる
                     isInOptionPage_ = false;
-                    ReleaseOptionItems();
                 }
 
                 return;

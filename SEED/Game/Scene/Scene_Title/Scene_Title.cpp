@@ -88,7 +88,7 @@ void Scene_Title::Initialize(){
     };
 
     tutorialSelectInput_.Trigger = []{
-        return Input::IsTriggerKey({ DIK_A,DIK_D });
+        return Input::IsTriggerKey({ DIK_A,DIK_D,DIK_LEFT,DIK_RIGHT });
     };
 }
 

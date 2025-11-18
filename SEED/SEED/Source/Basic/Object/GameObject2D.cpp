@@ -351,6 +351,11 @@ void GameObject2D::AddWorldTranslate(const Vector2& addValue){
 void GameObject2D::SetWorldTranslate(const Vector2& translate){
     // 親の位置を考慮してワールド軸基準で位置を設定
     if(parent_ != nullptr){
+        // 親のスケールが0の場合は何もしない
+        if(parent_->GetWorldScale().Length() == 0.0f){
+            return;
+        }
+        // 親の行列の逆行列を取得して位置を変換
         Matrix3x3 invParentMat = InverseMatrix(parent_->GetWorldMat());
         localTransform_.translate = translate * invParentMat;
     } else{

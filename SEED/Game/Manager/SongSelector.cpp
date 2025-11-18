@@ -535,6 +535,8 @@ void SongSelector::SortInGroup(){
 
     // まだnullptrならデフォルト値を適用
     if(!currentGroup){
+        currentGroupIndex = std::clamp(currentGroupIndex, 0, int32_t(songGroups.size()) - 1);
+        currentSongIndex = std::clamp(currentSongIndex, 0, int32_t(songGroups[currentGroupIndex].groupMembers.size()) - 1);
         currentGroup = &songGroups[currentGroupIndex];
         currentSong = currentGroup->groupMembers[currentSongIndex];
     }
@@ -881,6 +883,7 @@ void SongSelector::SelectGroup(){
         if(backInput_.Trigger()){
             auto* scene = GameSystem::GetScene();
             scene->CauseEvent(new GameState_SelectMenu(scene));
+
             return;
         }
     }
@@ -1406,11 +1409,19 @@ void SongSelector::UpdateSelectButtonUIs(){
 
 
     // 表示内容の更新
-    if(selectMode_ == SelectMode::Group){
-        backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "メニュー";
+    if(GameSystem::GetScene()->HasEvent()){
+        backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "閉じる";
+        backButtonUI_->GetComponent<UIComponent>()->GetText(0).isStaticDraw = true;
+        backButtonUI_->GetComponent<UIComponent>()->GetSprite(0).isStaticDraw = true;
+
     } else{
-        backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "もどる";
+        if(selectMode_ == SelectMode::Group){
+            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "メニュー";
+        } else{
+            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "もどる";
+        }
     }
+
 
     // プレイ待機中は選択ボタンを非アクティブにする
     if(isPlayWaiting_){

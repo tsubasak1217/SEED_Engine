@@ -262,7 +262,7 @@ void Scene_Title::EndFrame(){
         if(sceneChangeOrder_){
             Scene_Game::SetIsPlayTutorial(isPlayTutorial_);
             AudioManager::EndAudio(bgmHandle_);
-            ChangeScene("Game");
+                ChangeScene("Game");
             return;
         }
     }

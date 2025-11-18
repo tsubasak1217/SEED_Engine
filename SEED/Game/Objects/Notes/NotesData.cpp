@@ -143,7 +143,7 @@ void NotesData::Draw(){
     for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::RectFlick){
-                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetLaneNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetKNoteAppearTime());
             }
         }
     }
@@ -358,8 +358,8 @@ void NotesData::PlayAudio(){
     // アンサー音の再生
     // ボーダーとなる時間を計算
     float borderTime[2] = {
-        songTimer_.currentTime - PlaySettings::GetInstance()->GetOffsetAnswerSE(),
-        songTimer_.prevTime - PlaySettings::GetInstance()->GetOffsetAnswerSE()
+        songTimer_.currentTime - PlaySettings::GetInstance()->GetTotalOffsetAnswerSE(),
+        songTimer_.prevTime - PlaySettings::GetInstance()->GetTotalOffsetAnswerSE()
     };
 
     // アンサー音を鳴らすべきか判定

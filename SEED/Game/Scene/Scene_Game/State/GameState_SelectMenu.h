@@ -32,6 +32,7 @@ private:
     void UpdateHelpTexts();
 
 private:// option関連
+    void InitializeSliderValues();
     void LoadOptionItems();
     void UpdateOptionItems();
     void ReleaseOptionItems();
@@ -39,6 +40,8 @@ private:// option関連
     void UpdateHeaders();
     void UpdateSlider();
     void ApplyAdditionalTransform();
+    void ApplyOptionSettings();
+    void ApplyToValueText();
 
 private:
 

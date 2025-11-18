@@ -161,7 +161,9 @@ Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix){
     result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
     w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
 
-    assert(w != 0);
+    if(w == 0){
+        return result;
+    }
 
     result.x /= w;
     result.y /= w;
@@ -851,30 +853,51 @@ Matrix2x2 InverseMatrix(const Matrix2x2& matrix){
 
 Matrix3x3 InverseMatrix(const Matrix3x3& matrix){
 
+    Matrix3x3 m = matrix;
+
+    // スケール0対策（列ベクトル長が0に近い場合）
+    const float eps = 1e-6f;
+
+    // X方向
+    float sx = std::sqrt(m.m[0][0] * m.m[0][0] + m.m[1][0] * m.m[1][0]);
+    if(std::fabs(sx) < eps){
+        sx = (sx < 0 ? -eps : eps);
+        m.m[0][0] = sx;
+    }
+
+    // Y方向
+    float sy = std::sqrt(m.m[0][1] * m.m[0][1] + m.m[1][1] * m.m[1][1]);
+    if(std::fabs(sy) < eps){
+        sy = (sy < 0 ? -eps : eps);
+        m.m[1][1] = sy;
+    }
+
+    // 逆行列の計算
     float det =
-        (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2]) +
-        (matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0]) +
-        (matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1]) -
-        (matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0]) -
-        (matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2]) -
-        (matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1]);
+        (m.m[0][0] * m.m[1][1] * m.m[2][2]) +
+        (m.m[0][1] * m.m[1][2] * m.m[2][0]) +
+        (m.m[0][2] * m.m[1][0] * m.m[2][1]) -
+        (m.m[0][2] * m.m[1][1] * m.m[2][0]) -
+        (m.m[0][1] * m.m[1][0] * m.m[2][2]) -
+        (m.m[0][0] * m.m[1][2] * m.m[2][1]);
 
-    assert(det != 0);
+    if(std::fabs(det) < eps){
+        det = (det < 0 ? -eps : eps);
+    }
 
-    Matrix3x3 result;
-    result.m[0][0] = matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1];
-    result.m[0][1] = -(matrix.m[0][1] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][1]);
-    result.m[0][2] = matrix.m[0][1] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][1];
+    m.m[0][0] = matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1];
+    m.m[0][1] = -(matrix.m[0][1] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][1]);
+    m.m[0][2] = matrix.m[0][1] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][1];
 
-    result.m[1][0] = -(matrix.m[1][0] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][0]);
-    result.m[1][1] = matrix.m[0][0] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][0];
-    result.m[1][2] = -(matrix.m[0][0] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][0]);
+    m.m[1][0] = -(matrix.m[1][0] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][0]);
+    m.m[1][1] = matrix.m[0][0] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][0];
+    m.m[1][2] = -(matrix.m[0][0] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][0]);
 
-    result.m[2][0] = matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0];
-    result.m[2][1] = -(matrix.m[0][0] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][0]);
-    result.m[2][2] = matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0];
+    m.m[2][0] = matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0];
+    m.m[2][1] = -(matrix.m[0][0] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][0]);
+    m.m[2][2] = matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0];
 
-    return Devide(result, det);
+    return Devide(m, det);
 }
 
 Matrix4x4 InverseMatrix(const Matrix4x4& matrix){

@@ -1,5 +1,6 @@
 #include "GameState_SelectMenu.h"
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
+#include <Game/Config/PlaySettings.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
@@ -28,7 +29,7 @@ void GameState_SelectMenu::Initialize(){
     // ポーズ背景
     backSpriteObj_ = menuItemsParent_->GetChild("bg");
 
-    // メニュータイマー
+    // タイマー
     menuTransitionTimer_.Initialize(1.0f);
     optionPageTimer_.Initialize(0.5f);
 
@@ -45,13 +46,6 @@ void GameState_SelectMenu::Initialize(){
             menus_[i]->masterColor_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
-
-    // スライダーの値の範囲設定
-    sliderValueRanges_[NotesSpeed] = Range1D(0.5f, 2.0f);
-    sliderValueRanges_[JudgeOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[DisplayOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[AnswerOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[MouseSensitivity] = Range1D(0.5f, 2.0f);
 }
 
 void GameState_SelectMenu::Finalize(){
@@ -239,12 +233,58 @@ void GameState_SelectMenu::UpdateHelpTexts(){
 
 
 //////////////////////////////////////////////////////////////////////////////
+// スライダー値初期化
+//////////////////////////////////////////////////////////////////////////////
+void GameState_SelectMenu::InitializeSliderValues(){
+
+    // スライダーの値の範囲設定
+    sliderValueRanges_[NotesSpeed] = Range1D(0.5f, 2.0f);
+    sliderValueRanges_[JudgeOffset] = Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[DisplayOffset] = Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[AnswerOffset] = Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[MouseSensitivity] = Range1D(0.5f, 2.0f);
+
+    // 現在の値を取得
+    sliderValues_[NotesSpeed] = PlaySettings::GetInstance()->GetNoteSpeedRate();
+    sliderValues_[JudgeOffset] = PlaySettings::GetInstance()->GetOffsetJudge();
+    sliderValues_[DisplayOffset] = PlaySettings::GetInstance()->GetOffsetView();
+    sliderValues_[AnswerOffset] = PlaySettings::GetInstance()->GetOffsetAnswerSE();
+    sliderValues_[MouseSensitivity] = PlaySettings::GetInstance()->GetCursorSenstivity();
+
+    // スライダーのt値を設定
+    for(int32_t i = 0; i < sliderValues_.size(); i++){
+        float minValue = sliderValueRanges_[(OptionPageItem)i].min;
+        float maxValue = sliderValueRanges_[(OptionPageItem)i].max;
+        slidersT_[i] = (sliderValues_[i] - minValue) / (maxValue - minValue);
+        slidersT_[i] = std::clamp(slidersT_[i], 0.0f, 1.0f);
+    }
+
+    // タイマー初期値設定
+    sliderScalingTimer_.Reset();
+    for(int32_t i = 0; i < optionItemTimers_.size(); i++){
+        // 選択中の項目だけタイマーを進めておき、他はリセット
+        if(i == currentOptionItem_){
+            optionItemTimers_[i].ToEnd();
+        } else{
+            optionItemTimers_[i].Reset();
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // option関連
 //////////////////////////////////////////////////////////////////////////////
 void GameState_SelectMenu::LoadOptionItems(){
 
+    // 初期選択項目をノーツ速度に設定
+    currentOptionItem_ = NotesSpeed;
+
     // すでに読み込んでいるなら処理しない
     if(isLoadOptionItems_){
+        optionTexts_[DetailText]->text = sliderDetailTexts_[currentOptionItem_];
+        InitializeSliderValues();
+        UpdateHeaders();
+        UpdateSlider();
         return;
     }
 
@@ -268,24 +308,32 @@ void GameState_SelectMenu::LoadOptionItems(){
     sliderSprites_[Body] = &sliderObj_->GetComponent<UIComponent>()->GetSprite("body");
 
     // テキスト関連
+    sliderDetailTexts_[NotesSpeed] = "ノーツの動く速さを調整します。";
+    sliderDetailTexts_[JudgeOffset] = "判定のタイミングを調整します。\n音や見た目は合っているけど\n判定がずれて感じる人におすすめ!";
+    sliderDetailTexts_[DisplayOffset] = "ノーツの表示タイミングを調整します。\n判定も見た目に連動して動きます。";
+    sliderDetailTexts_[AnswerOffset] = "アンサー音の再生タイミングを調整します。\nノーツの音が見た目とずれて聞こえる人におすすめ!\n(判定はそのままです)";
+    sliderDetailTexts_[MouseSensitivity] = "マウスの感度を調整します。\nマウス操作がしづらいと感じる人におすすめ!";
+
     optionTexts_[ValueText] = &sliderObj_->GetComponent<UIComponent>()->GetText(0);
     optionTexts_[DetailText] = &optionPageParent_->GetChild("detail")->GetComponent<UIComponent>()->GetText(0);
-
-    sliderDetailTexts_[NotesSpeed] = "ノーツの動く速さを調整します。";
-    sliderDetailTexts_[JudgeOffset] = "判定のタイミングを調整します。\n音や見た目は合っているけど判定がずれている人におすすめ！";
-    sliderDetailTexts_[DisplayOffset] = "ノーツの表示タイミングを調整します。\n判定も見た目に連動して動きます。";
-    sliderDetailTexts_[AnswerOffset] = "アンサー音の再生タイミングを調整します。\n音がずれて聞こえる人におすすめ！(判定はそのままです)";
-    sliderDetailTexts_[MouseSensitivity] = "マウスの感度を調整します。\nマウス操作がしづらいと感じる人におすすめ！";
+    optionTexts_[DetailText]->text = sliderDetailTexts_[currentOptionItem_];
 
     // コライダー関連
     mouseColliderObj_ = pScene_->GetHierarchy()->LoadObject2D("SelectScene/cursorColliderObj.prefab");
     sliderColliderObj_ = optionPageParent_->GetChild("sliderColliderObj");
 
     // タイマー
+    sliderScalingTimer_.Initialize(0.2f);
     for(int32_t i = 0; i < optionItems_.size(); i++){
         optionItemTimers_[i].Initialize(0.2f);
         optionItemHoverTimers_[i].Initialize(0.2f);
     }
+
+    // スライダー値初期化
+    InitializeSliderValues();
+
+    // ヘッダー更新
+    UpdateHeaders();
 
     // 読み込み完了フラグON
     isLoadOptionItems_ = true;
@@ -321,7 +369,10 @@ void GameState_SelectMenu::UpdateOptionItems(){
     // スライダー更新
     UpdateSlider();
 
-    optionTexts_[DetailText]->textDisplayRate = optionItemTimers_[currentOptionItem_].GetProgress();
+    // テキストを時間に応じて出現させる
+    if(currentOptionItem_ != OkButton){
+        optionTexts_[DetailText]->textDisplayRate = optionItemTimers_[currentOptionItem_].GetProgress();
+    }
 }
 
 
@@ -416,11 +467,6 @@ void GameState_SelectMenu::UpdateHeaders(){
 ///////////////////////////////////////////////////////////////////////////////
 void GameState_SelectMenu::UpdateSlider(){
 
-    // optionページが表示されていないなら処理しない
-    if(optionPageTimer_.GetProgress() != 1.0f){
-        return;
-    }
-
     // okNuttonにスライダーは存在しない
     if(currentOptionItem_ == OkButton){
         return;
@@ -442,28 +488,12 @@ void GameState_SelectMenu::UpdateSlider(){
         isDraggingSlider_ = false;
     }
 
-    // スライダー位置更新
-    sliderColliderObj_->SetWorldTranslate(
-        Vector2(
-            MyMath::Lerp(sliderLeftPos_.x, sliderRightPos_.x, (slidersT_[(int)currentOptionItem_] + 1.0f) * 0.5f),
-            sliderColliderObj_->GetWorldTranslate().y
-        )
-    );
-
     // スライダーをドラッグ中なら
     if(isDraggingSlider_){
-        // マウス位置に応じてtを更新(-1.0f ~ 1.0f)
+        // マウス位置に応じてtを更新
         Vector2 mousePos = Input::GetMousePosition();
-        float t = ((mousePos.x - sliderLeftPos_.x) / (sliderRightPos_.x - sliderLeftPos_.x) - 0.5f) * 2.0f;
-        t = std::clamp(t, -1.0f, 1.0f);
-
-        // スライダー位置更新
-        sliderColliderObj_->SetWorldTranslate(
-            Vector2(
-                MyMath::Lerp(sliderLeftPos_.x, sliderRightPos_.x, (t + 1.0f) * 0.5f),
-                sliderColliderObj_->GetWorldTranslate().y
-            )
-        );
+        float t = (mousePos.x - sliderLeftPos_.x) / (sliderRightPos_.x - sliderLeftPos_.x);
+        t = std::clamp(t, 0.0f, 1.0f);
 
         // スライダー値更新
         slidersT_[(int)currentOptionItem_] = t;
@@ -477,28 +507,32 @@ void GameState_SelectMenu::UpdateSlider(){
     }
 
     // 状態に応じて見た目を更新
-    float scale = 1.0f + 0.1f * sliderScalingTimer_.GetEase(Easing::OutBack);
+    float scale = 1.0f + 0.2f * sliderScalingTimer_.GetEase(Easing::OutBack);
     sliderColliderObj_->aditionalTransform_.scale = Vector2(scale);
     sliderColliderObj_->UpdateMatrix();
 
     // スライダー本体の長さ更新
-    sliderSprites_[Body]->transform.scale.x = slidersT_[(int)currentOptionItem_];
+    sliderSprites_[Body]->transform.scale.x = (slidersT_[(int)currentOptionItem_] - 0.5f) / 0.5f;
 
-    // スライダー本体の色更新
-    if(slidersT_[(int)currentOptionItem_] > 0.0f){
-        sliderSprites_[Body]->color = Color(0.0f, 1.0f, 0.0f, 1.0f);
+
+    // ノーツ速度とマウス感度は中央のポイントおよびbodyを非表示にする
+    if(currentOptionItem_ == NotesSpeed or currentOptionItem_ == MouseSensitivity){
+        sliderSprites_[Body]->color.value.w = 0.0f;
+        sliderSprites_[MidPoint]->color.value.w = 0.0f;
     } else{
-        sliderSprites_[Body]->color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+        // スライダー本体の色更新
+        if(sliderSprites_[Body]->transform.scale.x > 0.0f){
+            sliderSprites_[Body]->color = Color(0.0f, 1.0f, 0.0f, 1.0f);
+        } else{
+            sliderSprites_[Body]->color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+        }
     }
 
     // スライダー値を反映
-    Range1D valueRange = sliderValueRanges_[(int)currentOptionItem_];
-    float value = MyMath::Lerp(valueRange.min, valueRange.max, (slidersT_[(int)currentOptionItem_] + 1.0f) * 0.5f);
-    sliderValues_[(int)currentOptionItem_] = value;
+    ApplyOptionSettings();
 
     // スライダー値テキスト更新(小数点2桁まで)
-    optionTexts_[ValueText]->text = std::to_string(value);
-    optionTexts_[ValueText]->text = optionTexts_[ValueText]->text.substr(0, optionTexts_[ValueText]->text.find(".") + 3);
+    ApplyToValueText();
 }
 
 
@@ -517,4 +551,83 @@ void GameState_SelectMenu::ApplyAdditionalTransform(){
         optionPageParent_->aditionalTransform_.scale = Vector2(ease);
         optionPageParent_->UpdateMatrix();
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// オプション設定適用
+///////////////////////////////////////////////////////////////////////////////
+void GameState_SelectMenu::ApplyOptionSettings(){
+
+    // 値を計算
+    Range1D valueRange = sliderValueRanges_[(int)currentOptionItem_];
+    float value = MyMath::Lerp(valueRange.min, valueRange.max, slidersT_[(int)currentOptionItem_]);
+
+    // 小数点2桁までに丸める(正:切り捨て 負:切り上げ)
+    if(value >= 0.0f){
+        value = std::floor(value * 100.0f) / 100.0f;
+    } else{
+        value = std::ceil(value * 100.0f) / 100.0f;
+        if(value == -0.0f){
+            value = 0.0f;// -0.0fを防止
+        }
+    }
+
+    sliderValues_[(int)currentOptionItem_] = value;
+
+    // スライダー位置更新
+    sliderColliderObj_->SetWorldTranslate(
+        Vector2(
+            MyMath::Lerp(sliderLeftPos_.x, sliderRightPos_.x, slidersT_[(int)currentOptionItem_]),
+            sliderColliderObj_->GetWorldTranslate().y
+        )
+    );
+
+    sliderColliderObj_->UpdateMatrix();
+
+
+    // PlaySettingsに反映(小数点2桁まで)
+    switch(currentOptionItem_){
+    case NotesSpeed:
+        PlaySettings::GetInstance()->SetNoteSpeedRate(value);
+        break;
+    case JudgeOffset:
+        PlaySettings::GetInstance()->SetOffsetJudge(value);
+        break;
+    case DisplayOffset:
+        PlaySettings::GetInstance()->SetOffsetView(value);
+        break;
+    case AnswerOffset:
+        PlaySettings::GetInstance()->SetOffsetAnswerSE(value);
+        break;
+    case MouseSensitivity:
+        PlaySettings::GetInstance()->SetCursorSenstivity(value);
+        break;
+    default:
+        break;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// スライダー値をテキストに適用
+///////////////////////////////////////////////////////////////////////////////
+void GameState_SelectMenu::ApplyToValueText(){
+
+    auto* t = optionTexts_[ValueText];
+    float value = sliderValues_[(int)currentOptionItem_];
+    t->text.clear();
+
+    // 先頭に付与する文字列を設定
+    if(currentOptionItem_ == NotesSpeed or currentOptionItem_ == MouseSensitivity){
+        t->text = "x";
+
+    } else{
+        if(value > 0.0f){
+            t->text = "+";
+        }
+    }
+
+    // 小数点2桁までを末尾に追加
+    std::string valueStr = std::to_string(value);
+    valueStr = valueStr.substr(0, valueStr.find(".") + 3);
+    t->text += valueStr;
 }

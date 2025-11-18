@@ -301,7 +301,7 @@ void PlayerInput::BeginFrame(){
     Vector2 mouseVal = Input::GetMouseVector();
 
     // カーソルの移動量を加算
-    cursorPos_ += mouseVal.x * PlaySettings::GetInstance()->GetCursorSenstivity();
+    cursorPos_ += mouseVal.x * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
 
     // 入力情報の更新
     DecideLaneInput();
@@ -406,7 +406,7 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
             int preLane = cursorLane_.PreValue();
             int curLane = cursorLane_.Value();
             int kLaneCount = PlayField::kKeyCount_;
-            float horizontalVal = Input::GetMouseVector().x * PlaySettings::GetInstance()->GetCursorSenstivity();
+            float horizontalVal = Input::GetMouseVector().x * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
 
             // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
             if(curLane != preLane){
@@ -579,7 +579,7 @@ void PlayerInput::DisplayInputInfo(){
     {
         ImGui::Text("カーソルのレーン: %d", GetCursorLane());
         ImGui::Text("前のカーソルのレーン: %d", GetPreCursorLane());
-        Vector2 mouseVal = Input::GetMouseVector() * PlaySettings::GetInstance()->GetCursorSenstivity();
+        Vector2 mouseVal = Input::GetMouseVector() * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
         ImGui::Text("マウスの移動量: %.2f", mouseVal.x);
         ImGui::Separator();
     }

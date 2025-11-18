@@ -111,7 +111,7 @@ void RythmGameManager::BeginFrame(){
     }
 
     // inputのフレーム開始処理
-    Input::SetMouseCursorVisible(false);
+    //Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
     Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
 #else

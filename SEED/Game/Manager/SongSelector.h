@@ -92,6 +92,7 @@ private:
     GameObject2D* songSelectButtonUI_ = nullptr;
     GameObject2D* difficultySelectButtonUI_ = nullptr;
     GameObject2D* backButtonUI_ = nullptr;
+    GameObject2D* modeChangeButtonUI_ = nullptr;
 
     // 入力格納変数
     InputHandler<UpDown> verticalInput_;
@@ -109,6 +110,8 @@ private:
     Timer buttonUIScalingTimer_;
     Timer buttonUIPressScaleTimer_Up_;
     Timer buttonUIPressScaleTimer_Down_;
+    Timer buttonUIPressScaleTimer_Q_;
+    Timer buttonUIPressScaleTimer_E_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;

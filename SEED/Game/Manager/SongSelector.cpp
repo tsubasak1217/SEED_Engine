@@ -55,6 +55,8 @@ void SongSelector::Initialize(){
     buttonUIScalingTimer_.Initialize(0.8f, 0.8f);
     buttonUIPressScaleTimer_Up_.Initialize(0.3f);
     buttonUIPressScaleTimer_Down_.Initialize(0.3f);
+    buttonUIPressScaleTimer_Q_.Initialize(0.3f);
+    buttonUIPressScaleTimer_E_.Initialize(0.3f);
 
     // 初期位置に移動
     ShiftItem(true);
@@ -317,6 +319,7 @@ void SongSelector::InitializeUIs(){
     songSelectButtonUI_ = hierarchy->LoadObject2D("SelectScene/ui_WS_1.prefab");
     difficultySelectButtonUI_ = hierarchy->LoadObject2D("SelectScene/ui_WS_2.prefab");
     backButtonUI_ = hierarchy->LoadObject2D("SelectScene/escUI.prefab");
+    modeChangeButtonUI_ = hierarchy->LoadObject2D("SelectScene/ui_QE.prefab");
 }
 
 ///////////////////////////////////////////////////////////////
@@ -1190,6 +1193,19 @@ void SongSelector::UpdateUIContents(bool allUpdate){
             ui->GetText("level").text = std::to_string(songInfo->difficulty[difficulty]);
             ui->GetText("bpm").text = "BPM" + std::to_string(static_cast<int>(songInfo->bpm));
             ui->GetText("rank").text = rankStr;
+
+            // AP,FCアイコンの表示更新
+            if(songInfo->clearIcons[difficulty] == ClearIcon::Perfect){
+                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/apIcon.png");
+                ui->GetSprite("clearIcon").color = Color(1.0f);
+
+            } else if(songInfo->clearIcons[difficulty] == ClearIcon::FullCombo){
+                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/fcIcon.png");
+                ui->GetSprite("clearIcon").color = Color(1.0f);
+
+            } else{
+                ui->GetSprite("clearIcon").color = Color(0.0f);
+            }
         }
     }
 
@@ -1237,6 +1253,19 @@ void SongSelector::UpdateUIContents(bool allUpdate){
             ui->GetText("level").text = std::to_string(songInfo->difficulty[difficulty]);
             ui->GetText("bpm").text = "BPM" + std::to_string(static_cast<int>(songInfo->bpm));
             ui->GetText("rank").text = rankStr;
+
+            // AP,FCアイコンの表示更新
+            if(songInfo->clearIcons[difficulty] == ClearIcon::Perfect){
+                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/apIcon.png");
+                ui->GetSprite("clearIcon").color = Color(1.0f);
+
+            } else if(songInfo->clearIcons[difficulty] == ClearIcon::FullCombo){
+                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/fcIcon.png");
+                ui->GetSprite("clearIcon").color = Color(1.0f);
+
+            } else{
+                ui->GetSprite("clearIcon").color = Color(0.0f);
+            }
         }
     }
 }
@@ -1370,41 +1399,69 @@ void SongSelector::UpdateSelectButtonUIs(){
         buttonUIPressScaleTimer_Down_.Update();
     }
 
+    LR modeChangeDir = modeChangeInput_.Value();
+    {
+        if(modeChangeDir == LR::LEFT){
+            buttonUIPressScaleTimer_Q_.Reset();
+
+        } else if(modeChangeDir == LR::RIGHT){
+            buttonUIPressScaleTimer_E_.Reset();
+        }
+        buttonUIPressScaleTimer_Q_.Update();
+        buttonUIPressScaleTimer_E_.Update();
+    }
+
 
     float ease = buttonUIScalingTimer_.GetEase(Easing::InOutExpo);
     float sinValue = std::sinf((3.14f / 1.5f) * songSelectButtonUI_->GetAliveTime());
     float waveRadius = 5.0f;
 
     for(int32_t i = 0; i < 2; i++){
+        {
+            // 必要な変数の取得・計算
+            auto* songChild = songSelectButtonUI_->GetChild(i);
+            auto* difficultyChild = difficultySelectButtonUI_->GetChild(i);
+            Timer* buttonUIPressScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Up_ : &buttonUIPressScaleTimer_Down_;
+            float baseScale = 1.0f + 0.2f * (1.0f - buttonUIPressScaleTimer->GetProgress());
 
-        // 必要な変数の取得・計算
-        auto* songChild = songSelectButtonUI_->GetChild(i);
-        auto* difficultyChild = difficultySelectButtonUI_->GetChild(i);
-        Timer* buttonUIPressScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Up_ : &buttonUIPressScaleTimer_Down_;
-        float baseScale = 1.0f + 0.2f * (1.0f - buttonUIPressScaleTimer->GetProgress());
+            // 上下ボタンUIの拡縮
+            songChild->aditionalTransform_.scale = Vector2(baseScale * ease);
+            difficultyChild->aditionalTransform_.scale = Vector2(baseScale * (1.0f - ease));
 
-        // 上下ボタンUIの拡縮
-        songChild->aditionalTransform_.scale = Vector2(baseScale * ease);
-        difficultyChild->aditionalTransform_.scale = Vector2(baseScale * (1.0f - ease));
+            // 上下に動かす
+            songChild->aditionalTransform_.translate.y = waveRadius * sinValue * (i == 0 ? -1.0f : 1.0f);
+            difficultyChild->aditionalTransform_.translate.y = waveRadius * sinValue * (i == 0 ? -1.0f : 1.0f);
 
-        // 上下に動かす
-        songChild->aditionalTransform_.translate.y = waveRadius * sinValue * (i == 0 ? -1.0f : 1.0f);
-        difficultyChild->aditionalTransform_.translate.y = waveRadius * sinValue * (i == 0 ? -1.0f : 1.0f);
-
-        // 端で表示しないようにする処理
-        if(currentDifficulty == TrackDifficulty::Basic){
-            if(i == 1){
-                difficultyChild->aditionalTransform_.scale = Vector2(0.0f);
+            // 端で表示しないようにする処理
+            if(currentDifficulty == TrackDifficulty::Basic){
+                if(i == 1){
+                    difficultyChild->aditionalTransform_.scale = Vector2(0.0f);
+                }
+            } else if(currentDifficulty == TrackDifficulty::Parallel){
+                if(i == 0){
+                    difficultyChild->aditionalTransform_.scale = Vector2(0.0f);
+                }
             }
-        } else if(currentDifficulty == TrackDifficulty::Parallel){
-            if(i == 0){
-                difficultyChild->aditionalTransform_.scale = Vector2(0.0f);
-            }
+
+            // 行列の更新
+            songChild->UpdateMatrix();
+            difficultyChild->UpdateMatrix();
         }
 
-        // 行列の更新
-        songChild->UpdateMatrix();
-        difficultyChild->UpdateMatrix();
+        {// QEボタンUIの更新
+            auto* modeChangeUIChild = modeChangeButtonUI_->GetChild(i);
+            Timer* modeChangeButtonScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Q_ : &buttonUIPressScaleTimer_E_;
+            float baseScale = 1.0f + 0.2f * (1.0f - modeChangeButtonScaleTimer->GetProgress());
+
+            // 上下ボタンUIの拡縮
+            modeChangeUIChild->aditionalTransform_.scale = Vector2(baseScale * ease);
+
+            // 上下に動かす
+            modeChangeUIChild->aditionalTransform_.translate.x = waveRadius * sinValue * (i == 0 ? -1.0f : 1.0f);
+
+            // 行列の更新
+            modeChangeUIChild->UpdateMatrix();
+        }
     }
 
 
@@ -1417,8 +1474,18 @@ void SongSelector::UpdateSelectButtonUIs(){
     } else{
         if(selectMode_ == SelectMode::Group){
             backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "メニュー";
-        } else{
+            modeChangeButtonUI_->SetIsActive(true);
+            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<UIComponent>()->GetText(0);
+            text.text = ModeUtil::groupModeNames[(int)currentGroupMode];
+
+        } else if(selectMode_ == SelectMode::Song){
             backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "もどる";
+            modeChangeButtonUI_->SetIsActive(true);
+            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<UIComponent>()->GetText(0);
+            text.text = ModeUtil::sortModeNames[(int)currentSortMode];
+
+        } else{
+            modeChangeButtonUI_->SetIsActive(false);
         }
     }
 

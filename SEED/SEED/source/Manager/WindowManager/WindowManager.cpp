@@ -152,16 +152,22 @@ void WindowManager::Update(){
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 
-    // 生の入力情報を取得
-    if(uMsg == WM_INPUT){
-        Input::GetInstance()->GetRawInputState(lParam);
-    }
-
     if(uMsg == WM_DESTROY){
+    #ifdef USE_RAWINPUT// RawInput使用時
         // 入力デバイスの破棄
-        Input::GetInstance()->mouse_.Destroy();
+        Input::GetInstance()->DestroyRawInput();
+    #endif
+
+        // ウィンドウが閉じられたらアプリケーションを終了
         PostQuitMessage(0);
         return 0;
+    }
+
+    // 生の入力情報を取得
+    if(uMsg == WM_INPUT){
+    #ifdef USE_RAWINPUT// RawInput使用時
+        Input::GetInstance()->GetRawInputState(lParam);
+    #endif
     }
 
     // ImGuiのウィンドウプロシージャハンドラに渡す

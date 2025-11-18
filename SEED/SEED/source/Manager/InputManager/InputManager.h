@@ -1,5 +1,6 @@
 #pragma once
 
+//#define USE_RAWINPUT// RawInputを使用するかどうか
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <Xinput.h>
@@ -152,6 +153,8 @@ private:
     BYTE preKeys_[kMaxKey_];
 
     // マウス入力を格納する変数
+    std::unordered_map<HWND, IDirectInputDevice8*> mouses_;
+    DIMOUSESTATE mouseStates_[2];
     RawInputMouse mouse_;
     Vector2 preMousePos_;
 

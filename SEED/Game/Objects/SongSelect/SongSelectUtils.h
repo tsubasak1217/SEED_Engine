@@ -94,7 +94,7 @@ namespace ModeUtil{
     };
 
     inline std::string sortModeNames[(int)SortMode::kMaxCount] = {
-        "タイトル", "アーティスト名", "難易度", "スコア", "クリアアイコン", "BPM"
+        "タイトル順", "アーティスト順", "レベル順", "スコア順", "クリアアイコン順", "BPM順"
     };
 }
 

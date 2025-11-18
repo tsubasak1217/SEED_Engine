@@ -531,6 +531,7 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing
         wheelEffectObjects_[int(dir)]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
     }
 
+
     // lateかfastの場合、追加でエフェクトを発生させる
     if(timing != Timing::OK){
         auto* hierarchy = GameSystem::GetScene()->GetHierarchy();

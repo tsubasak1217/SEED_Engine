@@ -15,7 +15,7 @@
 class NotesData;
 
 enum Timing{
-    OK = 0,
+    OK = -1,
     Fast,
     Late,
 };
@@ -99,7 +99,7 @@ private:
     std::array<GameObject*, kKeyCount_> laneEffectObjects_;
     std::array<GameObject*,2> wheelEffectObjects_;
     std::array<GameObject2D*,4> rectFlickEffectObjects_;
-    GameObject* fastLateObj_;
+    GameObject* fastLateObj_ = nullptr;
     std::string fastLateObjNames_[2][2];
 
     // UIオブジェクト

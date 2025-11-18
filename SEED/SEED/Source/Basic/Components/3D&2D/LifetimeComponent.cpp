@@ -53,7 +53,7 @@ void LifetimeComponent::Draw(){
 void LifetimeComponent::EndFrame(){
 
     // 生存状態の確認
-    if(!stayAlive_ && timer_.IsFinished()){
+    if(/*!stayAlive_ && */timer_.IsFinished()){
         // オーナーを終了状態にする
         if(owner_.is2D){
             owner_.owner2D->SetIsAlive(false);

@@ -225,6 +225,11 @@ void PlayField::Initialize(){
     backLightObject_ = hierarchy->LoadObject2D("PlayScene/BackLight.prefab");
     hierarchy->LoadObject2D("SelectScene/escUI.prefab");
 
+    // エフェクトオブジェクト名の設定
+    fastLateObjNames_[(int)UpDown::UP][(int)Timing::Fast] = "PlayScene/Effects/fast_up.prefab";
+    fastLateObjNames_[(int)UpDown::UP][(int)Timing::Late] = "PlayScene/Effects/late_up.prefab";
+    fastLateObjNames_[(int)UpDown::DOWN][(int)Timing::Fast] = "PlayScene/Effects/fast_down.prefab";
+    fastLateObjNames_[(int)UpDown::DOWN][(int)Timing::Late] = "PlayScene/Effects/late_down.prefab";
 
     // 背景色の設定
     SEED::windowBackColor_ = 0x00557CFF;
@@ -478,7 +483,7 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
 /////////////////////////////////////////////////////////////
 // レーンのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::LaneEffect(int evalution, LaneBit laneBit){
+void PlayField::LaneEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing){
     
     // レーン番号を取得
     int laneIndex = GetLaneBitIndex(uint32_t(laneBit));
@@ -493,12 +498,20 @@ void PlayField::LaneEffect(int evalution, LaneBit laneBit){
         laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evalution)->InitEmitters();
         break;
     }
+
+    // lateかfastの場合、追加でエフェクトを発生させる
+    if(timing != Timing::OK){
+        auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+        fastLateObj_ = hierarchy->LoadObject(fastLateObjNames_[(int)layer][(int)timing]);
+        fastLateObj_->SetWorldTranslate(effectEmitPoints_[laneBit]);
+        fastLateObj_->UpdateMatrix();
+    }
 }
 
 /////////////////////////////////////////////////////////////
 // wheelノーツのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::WheelEffect(int evalution, LaneBit laneBit){
+void PlayField::WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing){
 
     UpDown dir;
     if(laneBit & LaneBit::WHEEL_UP){
@@ -516,7 +529,14 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit){
         wheelEffectObjects_[int(dir)]->UpdateMatrix();
         wheelEffectObjects_[int(dir)]->GetComponent<Component_EmitterGroup3D>()->Activate();
         wheelEffectObjects_[int(dir)]->GetComponent<Component_EmitterGroup3D>()->InitEmitters();
+    }
 
+    // lateかfastの場合、追加でエフェクトを発生させる
+    if(timing != Timing::OK){
+        auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+        fastLateObj_ = hierarchy->LoadObject(fastLateObjNames_[(int)layer][(int)timing]);
+        fastLateObj_->SetWorldTranslate(effectEmitPoints_[laneBit]);
+        fastLateObj_->UpdateMatrix();
     }
 }
 
@@ -548,9 +568,7 @@ void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 /////////////////////////////////////////////////////////////
 // エフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
-
-    layer;
+void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution, Timing timing){
 
     //===================================
     // レーンに属するノーツの場合(tap,hold)
@@ -558,7 +576,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
     for(int i = 0; i < kKeyCount_; i++){
         if(laneBit & (1 << i)){
             // レーンのエフェクトを発生させる
-            LaneEffect(evalution, LaneBit(LANE_1 << i));
+            LaneEffect(evalution, LaneBit(LANE_1 << i),layer,timing);
         }
     }
 
@@ -566,7 +584,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution){
     // ホイールノーツの場合
     //===================================
     if(laneBit & LaneBit::WHEEL){
-        WheelEffect(evalution, laneBit);
+        WheelEffect(evalution, laneBit, layer, timing);
     }
 
     //===================================

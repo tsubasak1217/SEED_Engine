@@ -14,6 +14,13 @@
 // 前方宣言
 class NotesData;
 
+enum Timing{
+    OK = 0,
+    Fast,
+    Late,
+};
+
+
 /// <summary>
 /// 音ゲーの遊戯フィールドを描画するクラス
 /// </summary>
@@ -50,7 +57,7 @@ public:
     Quad GetWheelDirectionQuad(float timeRatio, UpDown layer);
     Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
-    void EmitEffect(LaneBit laneBit, UpDown layer, int evalution);
+    void EmitEffect(LaneBit laneBit, UpDown layer, int evalution,Timing timing);
     // 座標や大きさを返す
     Vector3 GetCursorWorldPos(float cursorX);
     const Vector3& GetPlayFieldPointWorld(int index) const{ return playFieldPointsWorld_[index]; }
@@ -59,8 +66,8 @@ public:
 private:
     void CalcEffectEmitPoints();
     int GetLaneBitIndex(uint32_t laneBit);
-    void LaneEffect(int evalution, LaneBit laneBit);
-    void WheelEffect(int evalution, LaneBit laneBit);
+    void LaneEffect(int evalution, LaneBit laneBit,UpDown layer, Timing timing);
+    void WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing);
     void RectFlickEffect(int evalution, LaneBit laneBit);
 
 public:
@@ -92,6 +99,8 @@ private:
     std::array<GameObject*, kKeyCount_> laneEffectObjects_;
     std::array<GameObject*,2> wheelEffectObjects_;
     std::array<GameObject2D*,4> rectFlickEffectObjects_;
+    GameObject* fastLateObj_;
+    std::string fastLateObjNames_[2][2];
 
     // UIオブジェクト
     GameObject2D* buttonUIObject_;// ボタンUIオブジェクト

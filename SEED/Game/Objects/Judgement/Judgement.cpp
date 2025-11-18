@@ -129,8 +129,6 @@ void Judgement::Judge(NotesData* noteGroup){
             hitBits |= notePtr->laneBit_;
             pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.evaluation]);// レーンを押下状態にする
 
-            // エフェクトを出す
-            pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.evaluation);
 
             // コンボを加算
             RythmGameManager::GetInstance()->AddCombo();
@@ -139,16 +137,23 @@ void Judgement::Judge(NotesData* noteGroup){
             RythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
 
             // fast,lateの計算
+            Timing timing = Timing::OK;
             if(note.evaluation != Evalution::PERFECT){
                 if(note.signedDif > 0.0f){
                     // 遅れすぎた場合
                     RythmGameManager::GetInstance()->AddLateCount();
+                    timing = Timing::Late;
 
                 } else{
                     // 早すぎた場合
                     RythmGameManager::GetInstance()->AddFastCount();
+                    timing = Timing::Fast;
                 }
             }
+
+            // エフェクトを出す
+            pPlayField_->EmitEffect(notePtr->laneBit_, notePtr->layer_, (int)note.evaluation,timing);
+
         }
     }
 }
@@ -158,6 +163,7 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // ホールドノーツの終点を判定する
     Evalution evaluation = note->JudgeHoldEnd();
+    Timing timing = Timing::OK;
 
     // コンボの管理
     if(evaluation != Evalution::MISS){
@@ -167,6 +173,7 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
         // perfect以外の場合はfastになる(押している時間が足りていないため)
         if(evaluation != Evalution::PERFECT){
             RythmGameManager::GetInstance()->AddFastCount();
+            timing = Timing::Fast;
         }
 
     } else{
@@ -178,7 +185,7 @@ void Judgement::JudgeHoldEnd(Note_Hold* note){
     pPlayField_->SetEvalution(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする
 
     // エフェクトを出す
-    pPlayField_->EmitEffect(note->laneBit_, note->layer_, evaluation);
+    pPlayField_->EmitEffect(note->laneBit_, note->layer_, evaluation,timing);
 }
 
 

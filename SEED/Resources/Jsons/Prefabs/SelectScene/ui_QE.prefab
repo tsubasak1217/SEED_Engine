@@ -355,8 +355,8 @@
                                     },
                                     "drawLocation": 2,
                                     "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
-                                    "fontSize": 43.0,
-                                    "glyphSpacing": 4.5,
+                                    "fontSize": 40.0,
+                                    "glyphSpacing": 2.5999999046325684,
                                     "isApplyViewMat": false,
                                     "isStaticDraw": false,
                                     "layer": 0,
@@ -406,7 +406,7 @@
                         },
                         "translate": {
                             "x": 0.0,
-                            "y": 0.0
+                            "y": 0.0001220703125
                         }
                     }
                 }
@@ -424,7 +424,7 @@
                 },
                 "translate": {
                     "x": 240.9498748779297,
-                    "y": 684.9886474609375
+                    "y": 688.058349609375
                 }
             }
         }

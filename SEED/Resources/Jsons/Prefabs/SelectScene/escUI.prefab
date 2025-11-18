@@ -27,6 +27,7 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -91,10 +92,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
-                            "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
+                            "drawLocation": 2,
+                            "fontName": "Resources/Fonts/DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
                             "fontSize": 38.0,
                             "glyphSpacing": 4.900000095367432,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 10,
                             "lineSpacing": 8.0,
                             "name": "text0",
@@ -105,13 +108,14 @@
                                 "z": 0.0
                             },
                             "outlineSplitCount": 16,
-                            "outlineWidth": 3.0,
+                            "outlineWidth": 2.0,
                             "size": {
                                 "x": 166.0,
                                 "y": 64.0
                             },
-                            "text": "メニュー",
+                            "text": "もどる",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -120,7 +124,7 @@
                                 },
                                 "translate": {
                                     "x": 133.0,
-                                    "y": 0.0
+                                    "y": 4.0
                                 }
                             },
                             "useOutline": true

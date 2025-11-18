@@ -129,6 +129,7 @@ void Scene_Title::Update(){
         if(titleStartTimer_.IsFinishedNow()){
             pressSpace_->SetIsActive(true);
             bgmHandle_ = AudioManager::PlayAudio("BGM/NETHMi_title.wav", true, 0.5f);
+            cameraParents_->GetChild(0)->GetComponent<Routine3DComponent>()->Reset();
         }
 
         // スタートボタンが押されていない場合の処理
